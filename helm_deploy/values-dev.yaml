@@ -14,17 +14,5 @@ generic-service:
     ENVIRONMENT_NAME: DEV
     AUDIT_ENABLED: "false"
 
-  # Pre-existing kubernetes secrets to load as environment variables in the deployment.
-  # namespace_secrets:
-  #   [name of kubernetes secret]:
-  #     [name of environment variable as seen by app]: [key of kubernetes secret to load]
-
-  namespace_secrets:
-    hmpps-contacts-ui:
-      SIGN_IN_CLIENT_ID: "SIGN_IN_CLIENT_ID"
-      SIGN_IN_CLIENT_SECRET: "SIGN_IN_CLIENT_SECRET"
-      SYSTEM_CLIENT_ID: "SYSTEM_CLIENT_ID"
-      SYSTEM_CLIENT_SECRET : "SYSTEM_CLIENT_SECRET"
-
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev
