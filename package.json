@@ -1,7 +1,7 @@
 {
   "name": "hmpps-contacts-ui",
   "version": "0.0.1",
-  "description": "Digital Prison Services",
+  "description": "Hmpps Contacts Ui",
   "repository": "git@github.com:ministryofjustice/hmpps-contacts-ui.git",
   "license": "MIT",
   "scripts": {
