@@ -1,11 +1,44 @@
 {% extends "../partials/layout.njk" %}
+{% from "components/card.njk" import card %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 
 {% set pageTitle = applicationName + " - Home" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
+{{ govukBreadcrumbs({
+  items: [
+    {
+      text: "Digital Prison Services",
+      href: "https://dps-dev.prison.service.justice.gov.uk/"
+    }
+  ]
+}) }}
 
-  <h1>This site is under construction...</h1>
-  <p>Please check back later when there is content to view.</p>
+<h1 class="govuk-heading-l">Contacts</h1>
+<div class="card-group govuk-grid-row">
+  <div class="govuk-grid-column-one-third card-group__item">
+      {{ card({
+          "href": "#",
+          "clickable": "true",
+          "heading": "Manage contacts",
+          "description": "Manage the social contacts for a prisoner",
+          "data-qa": "manage-contacts-card"
+      }) }}
+  </div>
 
+  <div class="govuk-grid-column-one-third card-group__item">
+      {{ card({
+          "href": "#",
+          "clickable": "true",
+          "heading": "Manage contact restrictions",
+          "description": "Manage restrictions for prisoner contacts",
+          "data-qa": "manage-restrictions-card"
+      }) }}
+  </div>
+</div>
+
+{% endblock %}
+{% block pageScripts %}
+    <script src="/js/card.js"></script>
 {% endblock %}
