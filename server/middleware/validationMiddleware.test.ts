@@ -8,6 +8,10 @@ const DESCRIPTION_OF_INFORMATION = 'Enter information description'
 const DESCRIPTION_OF_OTHER_INFORMATION = 'Enter other information description'
 
 describe('validationMiddleware', () => {
+  beforeAll(() => {
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+  })
+
   describe('middleware', () => {
     const res = { redirect: jest.fn(), locals: {} } as unknown as Response
     let req = {} as Request
