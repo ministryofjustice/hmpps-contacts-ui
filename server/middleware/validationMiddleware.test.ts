@@ -9,7 +9,7 @@ const DESCRIPTION_OF_OTHER_INFORMATION = 'Enter other information description'
 
 describe('validationMiddleware', () => {
   beforeAll(() => {
-    jest.spyOn(console, 'error').mockImplementation(() => {});
+    jest.spyOn(console, 'error').mockImplementation(() => {})
   })
 
   describe('middleware', () => {
