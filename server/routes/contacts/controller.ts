@@ -6,7 +6,6 @@ export default class ContactsController {
 
   GET = async (req: Request, res: Response): Promise<void> => {
     await this.auditService.logPageView(Page.EXAMPLE_PAGE, { who: res.locals.user.username, correlationId: req.id })
-    // res.render('pages/contacts')
     res.render('contacts/view')
   }
 }
