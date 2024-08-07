@@ -10,6 +10,10 @@
   {% include "./header.njk" %}
 {% endblock %}
 
+{% block beforeContent %}
+  {% include '../partials/formErrorSummary.njk' %}
+{% endblock %}
+
 {% block bodyStart %}
 {% endblock %}
 
