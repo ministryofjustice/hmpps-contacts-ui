@@ -91,6 +91,9 @@ export default {
       enabled: get('TOKEN_VERIFICATION_ENABLED', 'false') === 'true',
     },
   },
+  serviceUrls: {
+    digitalPrison: get('DPS_HOME_PAGE_URL', 'http://localhost:3001', requiredInProduction),
+  },
   sqs: {
     audit: auditConfig(),
   },

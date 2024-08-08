@@ -8,11 +8,14 @@ generic-service:
     host: contacts-dev.hmpps.service.justice.gov.uk
 
   env:
-    INGRESS_URL: "https://contacts-dev.hmpps.service.justice.gov.uk"
-    HMPPS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
-    TOKEN_VERIFICATION_API_URL: "https://token-verification-api-dev.prison.service.justice.gov.uk"
+    INGRESS_URL: 'https://contacts-dev.hmpps.service.justice.gov.uk'
+    HMPPS_AUTH_URL: 'https://sign-in-dev.hmpps.service.justice.gov.uk/auth'
+    TOKEN_VERIFICATION_API_URL: 'https://token-verification-api-dev.prison.service.justice.gov.uk'
+    COMPONENT_API_URL: 'https://frontend-components-dev.hmpps.service.justice.gov.uk' # used by hmpps-connect-dps-components module
+    DPS_HOME_PAGE_URL: 'https://digital-dev.prison.service.justice.gov.uk'
+    COMMON_COMPONENTS_ENABLED: true
     ENVIRONMENT_NAME: DEV
-    AUDIT_ENABLED: "false"
+    AUDIT_ENABLED: 'false'
 
 generic-prometheus-alerts:
   alertSeverity: digital-prison-service-dev
