@@ -1,12 +1,11 @@
 import express from 'express'
-
 import createError from 'http-errors'
-
+import dpsComponents from '@ministryofjustice/hmpps-connect-dps-components'
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
+import config from './config'
 import { appInsightsMiddleware } from './utils/azureAppInsights'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
-
 import setUpAuthentication from './middleware/setUpAuthentication'
 import setUpCsrf from './middleware/setUpCsrf'
 import setUpCurrentUser from './middleware/setUpCurrentUser'
@@ -35,10 +34,16 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpStaticResources())
   nunjucksSetup(app)
   app.use(setUpAuthentication())
-  app.use(authorisationMiddleware([AuthorisedRoles.ROLE_PRISON]))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())
-
+  app.get(
+    '*',
+    dpsComponents.getPageComponents({
+      includeMeta: true,
+      dpsUrl: config.serviceUrls.digitalPrison,
+    }),
+  )
+  app.use(authorisationMiddleware([AuthorisedRoles.ROLE_PRISON]))
   app.use(routes(services))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))

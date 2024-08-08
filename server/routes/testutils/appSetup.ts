@@ -1,7 +1,8 @@
 import express, { Express } from 'express'
 import { NotFound } from 'http-errors'
 import { v4 as uuidv4 } from 'uuid'
-
+import dpsComponents from '@ministryofjustice/hmpps-connect-dps-components'
+import config from '../../config'
 import routes from '../index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
@@ -50,6 +51,13 @@ function appSetup(services: Services, production: boolean, userSupplier: () => H
   app.use(routes(services))
   app.use((req, res, next) => next(new NotFound()))
   app.use(errorHandler(production))
+
+  app.get(
+    '*',
+    dpsComponents.getPageComponents({
+      dpsUrl: config.serviceUrls.digitalPrison,
+    }),
+  )
 
   return app
 }
