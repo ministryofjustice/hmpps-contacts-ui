@@ -46,4 +46,5 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
   njkEnv.addFilter('buildErrorSummaryList', buildErrorSummaryList)
   njkEnv.addFilter('findError', findError)
+  njkEnv.addGlobal('DPS_HOME_PAGE_URL', config.serviceUrls.digitalPrison)
 }
