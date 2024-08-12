@@ -1,0 +1,67 @@
+{% extends "../../views/partials/layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+
+{% set pageTitle = applicationName + " - Home" %}
+{% set title = "Search for a prisoner" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+
+{% block content %}
+
+<div class="govuk-grid-row govuk-!-static-margin-bottom-8">
+    <div class="govuk-grid-column-full">
+        {{ govukBreadcrumbs({
+        items: [
+            {
+                text: "Digital Prison Services",
+                href: DPS_HOME_PAGE_URL
+            },
+            {
+                text: "Contacts",
+                href: "/"
+            }
+        ]
+        }) }}
+    </div>
+</div>
+
+<span class="govuk-caption-l">Manage Contacts</span>
+<h1 class="govuk-heading-l">{{ title }}</h1>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <div class="block-background">
+            <div class="moj-search govuk-!-width-one-half">
+                <form method="POST"> 
+                    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+                    {{ govukInput({
+                        classes: "moj-search__input",
+                        label: {
+                            text: "Enter name or prison number"
+                        },
+                        id: "search",
+                        name: "search",
+                        spellcheck: false,
+                        value: search,
+                        autocomplete: "off",
+                        errorMessage: validationErrors | findError('search')
+                    }) }}
+
+                    {{ govukButton({
+                        classes: "moj-search__button",
+                        text: "Search",
+                        preventDoubleClick: true,
+                        attributes: {
+                            "data-test": "search"
+                        },
+                        type: submit
+                    }) }}
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
