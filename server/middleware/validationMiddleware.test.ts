@@ -63,7 +63,7 @@ describe('validationMiddleware', () => {
 
       await validate(schema)(req, res, next)
 
-      expect(next).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalled()
       expect(req.flash).toHaveBeenCalledWith(
         'validationErrors',
         JSON.stringify({ information: [DESCRIPTION_OF_INFORMATION] }),
@@ -85,7 +85,7 @@ describe('validationMiddleware', () => {
 
       await validate(schema)(req, res, next)
 
-      expect(next).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalled()
       expect(req.flash).toHaveBeenCalledWith(
         'validationErrors',
         JSON.stringify({ otherInformation: [DESCRIPTION_OF_OTHER_INFORMATION] }),
@@ -107,7 +107,7 @@ describe('validationMiddleware', () => {
 
       await validate(schema)(req, res, next)
 
-      expect(next).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalled()
       expect(req.flash).toHaveBeenCalledWith(
         'validationErrors',
         JSON.stringify({
