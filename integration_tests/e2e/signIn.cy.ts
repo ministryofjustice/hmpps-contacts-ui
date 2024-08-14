@@ -25,12 +25,6 @@ context('Sign In', () => {
     contactsPage.headerUserName().should('contain.text', 'J. Smith')
   })
 
-  it('User name visible in header', () => {
-    cy.signIn()
-    const contactsPage = Page.verifyOnPage(ContactsPage)
-    contactsPage.headerUserName().should('contain.text', 'J. Smith')
-  })
-
   it('User can sign out', () => {
     cy.signIn()
     const contactsPage = Page.verifyOnPage(ContactsPage)
