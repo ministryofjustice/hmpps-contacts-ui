@@ -8,9 +8,7 @@ export default class SearchController {
   GET = async (req: Request, res: Response): Promise<void> => {
     await this.auditService.logPageView(Page.EXAMPLE_PAGE, { who: res.locals.user.username, correlationId: req.id })
 
-    let validationErrors = req.flash('validationErrors')[0]
-    validationErrors = validationErrors ? JSON.parse(validationErrors) : null
-    res.render('search/view', { validationErrors })
+    res.render('search/view', { validationErrors: res.locals.validationErrors })
   }
 
   POST = async (req: Request, res: Response): Promise<void> => {
