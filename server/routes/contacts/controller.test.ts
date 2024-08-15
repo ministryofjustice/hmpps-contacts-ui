@@ -23,19 +23,20 @@ afterEach(() => {
 })
 
 describe('GET /', () => {
-  it('should render index page', () => {
+  it('should render contact page', async () => {
+    // Given
     auditService.logPageView.mockResolvedValue(null)
 
-    return request(app)
-      .get('/')
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('Contacts')
-        expect(res.text).toContain('Hmpps Contacts Ui')
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.EXAMPLE_PAGE, {
-          who: user.username,
-          correlationId: expect.any(String),
-        })
-      })
+    // When
+    const response = await request(app).get('/')
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect(response.text).toContain('Contacts')
+    expect(response.text).toContain('Hmpps Contacts Ui')
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.EXAMPLE_PAGE, {
+      who: user.username,
+      correlationId: expect.any(String),
+    })
   })
 })

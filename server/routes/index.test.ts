@@ -1,7 +1,8 @@
 import type { Express } from 'express'
 import request from 'supertest'
-import { appWithAllRoutes, user } from './testutils/appSetup'
+import { appWithAllRoutes, flashProvider, user } from './testutils/appSetup'
 import AuditService, { Page } from '../services/auditService'
+import SEARCH_PRISONER_URL from './urls'
 
 jest.mock('../services/auditService')
 
@@ -23,19 +24,34 @@ afterEach(() => {
 })
 
 describe('GET /', () => {
-  it('should render index page', () => {
+  it('should render index page', async () => {
+    // Given
     auditService.logPageView.mockResolvedValue(null)
 
-    return request(app)
-      .get('/')
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.text).toContain('Contacts')
-        expect(res.text).toContain('Hmpps Contacts Ui')
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.EXAMPLE_PAGE, {
-          who: user.username,
-          correlationId: expect.any(String),
-        })
-      })
+    // When
+    const response = await request(app).get('/')
+
+    // Then
+    expect(response.text).toContain('Contacts')
+    expect(response.text).toContain('Hmpps Contacts Ui')
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.EXAMPLE_PAGE, {
+      who: user.username,
+      correlationId: expect.any(String),
+    })
+  })
+})
+
+describe('GET /search/prisoner', () => {
+  it('should render index page', async () => {
+    // Given
+    flashProvider.mockReturnValue({ search: [''] })
+    auditService.logPageView.mockResolvedValue(null)
+
+    // When
+    const response = await request(app).get(SEARCH_PRISONER_URL)
+
+    // Then
+    expect(response.text).toContain('Manage Contacts')
+    expect(response.text).toContain('Search for a prisoner')
   })
 })
