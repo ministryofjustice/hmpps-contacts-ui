@@ -19,6 +19,7 @@ import routes from './routes'
 import type { Services } from './services'
 import AuthorisedRoles from './enumeration/authorisedRoles'
 import populateValidationErrors from './middleware/populateValidationErrors'
+import populateClientToken from './middleware/populateSystemClientToken'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -35,8 +36,10 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpStaticResources())
   nunjucksSetup(app)
   app.use(setUpAuthentication())
+  app.use(authorisationMiddleware([AuthorisedRoles.ROLE_PRISON]))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())
+  app.use(populateClientToken())
   app.use(populateValidationErrors())
   app.get(
     '*',
@@ -45,7 +48,6 @@ export default function createApp(services: Services): express.Application {
       dpsUrl: config.serviceUrls.digitalPrison,
     }),
   )
-  app.use(authorisationMiddleware([AuthorisedRoles.ROLE_PRISON]))
   app.use(routes(services))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
