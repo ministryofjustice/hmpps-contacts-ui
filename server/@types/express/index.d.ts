@@ -7,6 +7,7 @@ export declare module 'express-session' {
     returnTo: string
     nowInMinutes: number
     journey: object
+    prisonId: string
   }
 }
 
@@ -22,6 +23,7 @@ export declare global {
       verified?: boolean
       id: string
       logout(done: (err: unknown) => void): void
+      systemClientToken: string
     }
 
     interface Locals {
