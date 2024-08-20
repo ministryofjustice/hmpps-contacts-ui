@@ -27,14 +27,6 @@ export default class PrisonerSearchClient {
     })
   }
 
-  // async getPrisoners(
-  //   search: string,
-  //   prisonId: string,
-  //   page = 0,
-  // ): Promise<{}> {
-  //   return prisoners
-  // }
-
   async getPrisoner(search: string, prisonId: string): Promise<{ content: Prisoner[] }> {
     return this.restClient.get({
       path: `/prison/${prisonId}/prisoners`,
