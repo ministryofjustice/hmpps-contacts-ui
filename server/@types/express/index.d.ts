@@ -6,11 +6,12 @@ export declare module 'express-session' {
   interface SessionData {
     returnTo: string
     nowInMinutes: number
-    journey: object
     prisonId: string
+    prisonName: string
+    search: string
+    journey: object
   }
 }
-
 export declare global {
   namespace Express {
     interface User {

@@ -38,9 +38,7 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpAuthentication())
   app.use(authorisationMiddleware([AuthorisedRoles.ROLE_PRISON]))
   app.use(setUpCsrf())
-  app.use(setUpCurrentUser())
   app.use(populateClientToken())
-  app.use(populateValidationErrors())
   app.get(
     '*',
     dpsComponents.getPageComponents({
@@ -48,6 +46,8 @@ export default function createApp(services: Services): express.Application {
       dpsUrl: config.serviceUrls.digitalPrison,
     }),
   )
+  app.use(setUpCurrentUser())
+  app.use(populateValidationErrors())
   app.use(routes(services))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
