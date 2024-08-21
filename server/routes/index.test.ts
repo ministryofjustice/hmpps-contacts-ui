@@ -34,7 +34,7 @@ describe('GET /', () => {
     // Then
     expect(response.text).toContain('Contacts')
     expect(response.text).toContain('Hmpps Contacts Ui')
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.EXAMPLE_PAGE, {
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.SEARCH_PRISONER_CONTACT_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })

@@ -1,11 +1,11 @@
 import { Request, Response } from 'express'
-import AuditService, { Page } from '../../services/auditService'
+import { Page } from '../../services/auditService'
+import { PageHandler } from '../../interfaces/pageHandler'
 
-export default class ContactsController {
-  constructor(private readonly auditService: AuditService) {}
+export default class ContactsController implements PageHandler {
+  public PAGE_NAME = Page.SEARCH_PRISONER_CONTACT_PAGE
 
   GET = async (req: Request, res: Response): Promise<void> => {
-    await this.auditService.logPageView(Page.EXAMPLE_PAGE, { who: res.locals.user.username, correlationId: req.id })
     res.render('contacts/view')
   }
 }
