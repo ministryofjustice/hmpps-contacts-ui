@@ -46,6 +46,6 @@ export const validate = (schema: z.ZodTypeAny | SchemaFactory): RequestHandler =
       )
     }
     req.flash('validationErrors', JSON.stringify(deduplicatedFieldErrors))
-    return res.redirect('back')
+    return next()
   }
 }
