@@ -1,3 +1,5 @@
+import { format, parseISO } from 'date-fns'
+
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
 
@@ -20,4 +22,75 @@ export const initialiseName = (fullName?: string): string | null => {
 
   const array = fullName.split(' ')
   return `${array[0][0]}. ${array.reverse()[0]}`
+}
+
+export const properCaseFullName = (name: string): string =>
+  isBlank(name)
+    ? ''
+    : name
+        .split(/(\s+)/)
+        .filter(s => s.trim().length)
+        .map(properCaseName)
+        .join(' ')
+
+export const prisonerDatePretty = ({
+  dateToFormat,
+  wrapDate = true,
+}: {
+  dateToFormat: string
+  wrapDate?: boolean
+}): string => {
+  if (wrapDate) {
+    return format(parseISO(dateToFormat), 'd MMMM yyyy')
+  }
+
+  return `<span class="bapv-table_cell--nowrap">${format(parseISO(dateToFormat), 'd MMMM')}</span> ${format(
+    parseISO(dateToFormat),
+    'yyyy',
+  )}`
+}
+
+export const getResultsPagingLinks = ({
+  pagesToShow = 1,
+  numberOfPages = 1,
+  currentPage = 1,
+  searchParam = '',
+  searchUrl,
+}: {
+  pagesToShow: number
+  numberOfPages: number
+  currentPage: number
+  searchParam: string
+  searchUrl: string
+}): Array<{ text: string; href: string; selected: boolean }> => {
+  let pageStartNumber = 1
+  let pageEndNumber = pagesToShow
+  const pageLinks = []
+
+  if (numberOfPages <= pagesToShow) {
+    pageEndNumber = numberOfPages
+  } else {
+    const endPageOffset = currentPage + (pagesToShow - 1)
+
+    if (endPageOffset === numberOfPages) {
+      pageStartNumber = endPageOffset - (pagesToShow - 1)
+      pageEndNumber = endPageOffset
+    } else if (endPageOffset > numberOfPages) {
+      pageStartNumber = numberOfPages - pagesToShow + 1
+      pageEndNumber = numberOfPages
+    } else {
+      pageStartNumber = currentPage
+      pageEndNumber = endPageOffset
+    }
+  }
+
+  for (let pageIndex = pageStartNumber; pageIndex <= pageEndNumber; pageIndex += 1) {
+    pageLinks.push({
+      text: pageIndex.toString(),
+      href: `${searchUrl}?${searchParam}&page=${pageIndex}`,
+      selected: pageIndex === currentPage,
+    })
+  }
+
+  return pageLinks
 }
