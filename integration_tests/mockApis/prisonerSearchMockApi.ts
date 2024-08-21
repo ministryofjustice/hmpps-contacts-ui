@@ -24,6 +24,8 @@ export default {
       request: {
         method: 'GET',
         url: `/offenderSearch/prison/${prisonId}/prisoners?term=${term}&page=${page}&size=${size}`,
+        //url: `/prison/${prisonId}/prisoners?search=${term}&page=${page}&size=${size}`,
+        //url: `/prison/${prisonId}/prisoners`,
       },
       response: {
         status: 200,
@@ -32,7 +34,19 @@ export default {
       },
     })
   },
-
+  stubPrisonerById: (prisoner: Prisoner): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        url: `/offenderSearch/prisoner/${prisoner.prisonerNumber}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: prisoner,
+      },
+    })
+  },
   stubPrisonerSearchPing: () => {
     return stubFor({
       request: {

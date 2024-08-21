@@ -42,7 +42,7 @@ export default class SearchController {
           numberOfPages: prisoners.numberOfPages,
           currentPage: parsedPage,
           searchParam: `search=${req.session.search}`,
-          searchUrl: `${SEARCH_PRISONER_URL}?`,
+          searchUrl: `${SEARCH_PRISONER_URL}`,
         })
 
         // Display messages for prisoners not found

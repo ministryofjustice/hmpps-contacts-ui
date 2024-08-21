@@ -1,5 +1,6 @@
 import SearchPrisonerPage from '../pages/searchPrisoner'
 import Page from '../pages/page'
+import TestData from '../../server/routes/testutils/testData'
 
 context('Contacts', () => {
   beforeEach(() => {
@@ -17,7 +18,7 @@ context('Contacts', () => {
     searchPrisonerPage.prisonerSearchSearchButton().should('be.visible')
   })
 
-  it('User can manage their contacts', () => {
+  it('should shwow validation error', () => {
     Page.verifyOnPage(SearchPrisonerPage)
     cy.get('[data-test="search"]').should('be.visible')
     cy.get('[data-test="search"]').click()
@@ -25,6 +26,21 @@ context('Contacts', () => {
     cy.get('.govuk-list > li > a').should('be.visible')
     cy.get('#search-error').should('be.visible')
     cy.get('#search').type('Ehshapeter', { force: true })
-    // cy.get('[data-test="search"]').click()
+  })
+
+  context('when there are no results', () => {
+    const { prisonerNumber } = TestData.prisoner()
+    const prisoner = TestData.prisoner()
+
+    it('should show that there are no results', () => {
+      cy.task('stubPrisoners', { term: prisonerNumber })
+
+      const searchPrisonerPage = Page.verifyOnPage(SearchPrisonerPage)
+      
+      searchPrisonerPage.prisonerSearchFormField().clear().type(prisonerNumber)
+      searchPrisonerPage.prisonerSearchSearchButton().click()
+
+      searchPrisonerPage.searchResultsNone().should('be.visible')
+    })
   })
 })
