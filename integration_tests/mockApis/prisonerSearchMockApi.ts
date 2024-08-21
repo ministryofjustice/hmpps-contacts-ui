@@ -24,8 +24,8 @@ export default {
       request: {
         method: 'GET',
         url: `/offenderSearch/prison/${prisonId}/prisoners?term=${term}&page=${page}&size=${size}`,
-        //url: `/prison/${prisonId}/prisoners?search=${term}&page=${page}&size=${size}`,
-        //url: `/prison/${prisonId}/prisoners`,
+        // url: `/prison/${prisonId}/prisoners?search=${term}&page=${page}&size=${size}`,
+        // url: `/prison/${prisonId}/prisoners`,
       },
       response: {
         status: 200,

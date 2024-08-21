@@ -1,4 +1,10 @@
-import { convertToTitleCase, initialiseName } from './utils'
+import {
+  convertToTitleCase,
+  getResultsPagingLinks,
+  initialiseName,
+  prisonerDatePretty,
+  properCaseFullName,
+} from './utils'
 
 describe('convert to title case', () => {
   it.each([
@@ -26,5 +32,46 @@ describe('initialise name', () => {
     ['Double barrelled', 'Robert-John Smith-Jones-Wilson', 'R. Smith-Jones-Wilson'],
   ])('%s initialiseName(%s, %s)', (_: string, a: string, expected: string) => {
     expect(initialiseName(a)).toEqual(expected)
+  })
+})
+
+describe('Proper Case Full Name', () => {
+  it('shuould remove extra spaces at the end and capitalize name', () => {
+    const fullName = properCaseFullName('ALANOINE, EHSHAPETER    ')
+
+    expect(fullName).toEqual('Alanoine, Ehshapeter')
+  })
+
+  it('shuould remove extra spaces before and after and capitalize name', () => {
+    const fullName = properCaseFullName('   ALANOINE, EHSHAPETER    ')
+
+    expect(fullName).toEqual('Alanoine, Ehshapeter')
+  })
+})
+
+describe('Prisoner Date Pretty', () => {
+  it('shuould format date to dd MMMM YYYY', () => {
+    const fullName = prisonerDatePretty({ dateToFormat: '1981-01-30' })
+
+    expect(fullName).toEqual('30 January 1981')
+  })
+})
+
+describe('Prisoner Date Pretty', () => {
+  it('shuould format date to dd MMMM YYYY', () => {
+    const parameters = {
+      pagesToShow: 3,
+      numberOfPages: 3,
+      currentPage: 1,
+      searchParam: 'search=Al',
+      searchUrl: '/search/prisoner',
+    }
+    const fullName = getResultsPagingLinks(parameters)
+
+    expect(fullName).toEqual([
+      { href: '/search/prisoner?search=Al&page=1', selected: true, text: '1' },
+      { href: '/search/prisoner?search=Al&page=2', selected: false, text: '2' },
+      { href: '/search/prisoner?search=Al&page=3', selected: false, text: '3' },
+    ])
   })
 })

@@ -18,5 +18,4 @@ export default class SearchPrisonerPage extends Page {
   searchResultsTrue = (): PageElement => cy.get('#search-results-true')
 
   searchResultsNone = (): PageElement => cy.get('#search-results-none')
-
 }

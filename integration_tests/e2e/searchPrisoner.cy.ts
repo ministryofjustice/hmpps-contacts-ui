@@ -36,7 +36,7 @@ context('Contacts', () => {
       cy.task('stubPrisoners', { term: prisonerNumber })
 
       const searchPrisonerPage = Page.verifyOnPage(SearchPrisonerPage)
-      
+
       searchPrisonerPage.prisonerSearchFormField().clear().type(prisonerNumber)
       searchPrisonerPage.prisonerSearchSearchButton().click()
 
