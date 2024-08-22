@@ -30,7 +30,6 @@ context('Contacts', () => {
 
   context('when there are no results', () => {
     const { prisonerNumber } = TestData.prisoner()
-    const prisoner = TestData.prisoner()
 
     it('should show that there are no results', () => {
       cy.task('stubPrisoners', { term: prisonerNumber })
@@ -40,7 +39,7 @@ context('Contacts', () => {
       searchPrisonerPage.prisonerSearchFormField().clear().type(prisonerNumber)
       searchPrisonerPage.prisonerSearchSearchButton().click()
 
-      //searchPrisonerPage.searchResultsNone().should('be.visible')
+      // searchPrisonerPage.searchResultsNone().should('be.visible')
     })
   })
 })

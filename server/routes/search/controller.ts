@@ -8,30 +8,25 @@ import logger from '../../../logger'
 import { getResultsPagingLinks } from '../../utils/utils'
 
 export default class SearchController implements PageHandler {
-  constructor(
-    private readonly prisonerSearchService: PrisonerSearchService,
-  ) {}
+  constructor(private readonly prisonerSearchService: PrisonerSearchService) {}
 
   public PAGE_NAME = Page.SEARCH_PRISONERS_PAGE
-  
-  GET = async (req: Request, res: Response): Promise<void> => {
 
+  GET = async (req: Request, res: Response): Promise<void> => {
     let prisoners = null
     let pageLinks: object
     let to: number
     let parsedPage: number
     let prisonerNotFoundMessage: string
-    const searchTerm = req.session.search
     const { pageSize } = config.apis.prisonerSearch
     try {
-      if (res.locals.validationErrors === undefined && searchTerm) {
-        req.session.search = null
+      if (res.locals.validationErrors === undefined && req.session.search) {
         const currentPage = typeof req.query.page === 'string' ? req.query.page : ''
         parsedPage = Number.parseInt(currentPage, 10) || 1
 
         // Get prisoner list
         prisoners = await this.prisonerSearchService.getPrisoners(
-          searchTerm,
+          req.session.search,
           req.session.prisonId,
           res.locals.user.username,
           parsedPage,
@@ -44,13 +39,13 @@ export default class SearchController implements PageHandler {
           pagesToShow: config.apis.prisonerSearch.pagesLinksToShow,
           numberOfPages: prisoners.numberOfPages,
           currentPage: parsedPage,
-          searchParam: `search=${searchTerm}`,
+          searchParam: `search=${req.session.search}`,
           searchUrl: `${SEARCH_PRISONER_URL}`,
         })
 
         // Display messages for prisoners not found
         prisonerNotFoundMessage = await this.prisonerSearchService.validatePrisonNumber(
-          searchTerm,
+          req.session.search,
           prisoners.numberOfResults,
           req.session.prisonName,
           res.locals.user.username,
@@ -64,7 +59,7 @@ export default class SearchController implements PageHandler {
         results: prisoners ? prisoners.results : null,
         previous: prisoners ? prisoners.previous : null,
         next: prisoners ? prisoners.next : null,
-        search: searchTerm,
+        search: req.session.search,
         from: (parsedPage - 1) * pageSize + 1,
         to,
         pageLinks: prisoners && prisoners.numberOfPages <= 1 ? [] : pageLinks,
