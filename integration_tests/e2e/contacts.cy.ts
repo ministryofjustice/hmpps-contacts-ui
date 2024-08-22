@@ -17,6 +17,7 @@ context('Contacts', () => {
   })
 
   it('User can manage their restriction contacts', () => {
+
     cy.signIn()
     const contactsPage = Page.verifyOnPage(ContactsPage)
     contactsPage.manageContactsRestrictionsCard().click()
