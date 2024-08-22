@@ -1,7 +1,7 @@
 import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
 import { Prisoner } from '../../server/data/prisonerOffenderSearchTypes'
-import TestData, { prisoners } from '../../server/routes/testutils/testData'
+import TestData from '../../server/routes/testutils/testData'
 
 export default {
   stubPrisoners: ({

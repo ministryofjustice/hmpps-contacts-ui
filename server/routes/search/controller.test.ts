@@ -57,7 +57,7 @@ describe('GET /search/prisoner', () => {
     expect(response.status).toEqual(200)
     expect(response.text).toContain('Manage Contacts')
     expect(response.text).toContain('Search for a prisoner')
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.EXAMPLE_PAGE, {
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.SEARCH_PRISONERS_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })
