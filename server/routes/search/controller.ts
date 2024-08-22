@@ -20,15 +20,17 @@ export default class SearchController {
     let to: number
     let parsedPage: number
     let prisonerNotFoundMessage: string
+    const searchTerm = req.session.search
     const { pageSize } = config.apis.prisonerSearch
     try {
-      if (res.locals.validationErrors === undefined && req.session.search) {
+      if (res.locals.validationErrors === undefined && searchTerm) {
+        req.session.search = null
         const currentPage = typeof req.query.page === 'string' ? req.query.page : ''
         parsedPage = Number.parseInt(currentPage, 10) || 1
 
         // Get prisoner list
         prisoners = await this.prisonerSearchService.getPrisoners(
-          req.session.search,
+          searchTerm,
           req.session.prisonId,
           res.locals.user.username,
           parsedPage,
@@ -41,13 +43,13 @@ export default class SearchController {
           pagesToShow: config.apis.prisonerSearch.pagesLinksToShow,
           numberOfPages: prisoners.numberOfPages,
           currentPage: parsedPage,
-          searchParam: `search=${req.session.search}`,
+          searchParam: `search=${searchTerm}`,
           searchUrl: `${SEARCH_PRISONER_URL}`,
         })
 
         // Display messages for prisoners not found
         prisonerNotFoundMessage = await this.prisonerSearchService.validatePrisonNumber(
-          req.session.search,
+          searchTerm,
           prisoners.numberOfResults,
           req.session.prisonName,
           res.locals.user.username,
@@ -61,7 +63,7 @@ export default class SearchController {
         results: prisoners ? prisoners.results : null,
         previous: prisoners ? prisoners.previous : null,
         next: prisoners ? prisoners.next : null,
-        search: req.session.search,
+        search: searchTerm,
         from: (parsedPage - 1) * pageSize + 1,
         to,
         pageLinks: prisoners && prisoners.numberOfPages <= 1 ? [] : pageLinks,
