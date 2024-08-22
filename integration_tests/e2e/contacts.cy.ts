@@ -20,7 +20,7 @@ context('Contacts', () => {
 
     cy.signIn()
     const contactsPage = Page.verifyOnPage(ContactsPage)
-    contactsPage.manageContactsRestrictionsCard().click()
+    contactsPage.manageContactRestrictionsCard().click()
 
     cy.get('a.card__link')
       .invoke('attr', 'href')

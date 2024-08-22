@@ -16,8 +16,4 @@ export default abstract class Page {
   signOut = (): PageElement => cy.get('[data-qa=signOut]')
 
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
-
-  manageContactsCard = (): PageElement => cy.get('[data-qa=manage-contacts-card]')
-
-  manageContactsRestrictionsCard = (): PageElement => cy.get('[data-qa=manage-restrictions-card]')
 }
