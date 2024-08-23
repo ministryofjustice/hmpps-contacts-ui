@@ -33,7 +33,7 @@ context('Sign In', () => {
     Page.verifyOnPage(AuthSignInPage)
   })
 
-  xit('User can manage their details', () => {
+  it('User can manage their details', () => {
     cy.signIn()
     cy.task('stubAuthManageDetails')
     const contactsPage = Page.verifyOnPage(ContactsPage)
