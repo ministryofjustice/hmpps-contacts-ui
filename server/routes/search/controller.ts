@@ -28,9 +28,14 @@ export default class SearchController implements PageHandler {
         const currentPage = typeof req.query.page === 'string' ? req.query.page : ''
         parsedPage = Number.parseInt(currentPage, 10) || 1
 
+        // TODO: This value should really be set against the res.locals.user ojbect, as `activeCaseloadId`
+        // populateCurrentUser middleware is the place to set these things.
+        req.session.prisonId = 'HEI'
+
         // Get prisoner list
         prisoners = await this.prisonerSearchService.getPrisoners(
           search.toString(),
+          // TODO: Change to res.locals.user.activeCaseloadId here
           req.session.prisonId,
           res.locals.user.username,
           parsedPage,

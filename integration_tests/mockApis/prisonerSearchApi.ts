@@ -13,7 +13,7 @@ export default {
     prisonId = 'HEI',
     term,
     page = '0',
-    size = '10',
+    size = '20',
   }: {
     results: { totalPages: number; totalElements: number; content: Partial<Prisoner>[] }
     prisonId: string
@@ -24,7 +24,18 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        url: `/prison/${prisonId}/prisoners?term=${term}&page=${page}&size=${size}`,
+        urlPath: `/prison/${prisonId}/prisoners`,
+        queryParameters: {
+           term: {
+             equalTo: `${term}`
+           },
+           page: {
+             equalTo: `${page}`
+           },
+           size: {
+             equalTo: `${size}`
+           }
+        },
       },
       response: {
         status: 200,
