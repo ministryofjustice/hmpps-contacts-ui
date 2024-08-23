@@ -26,15 +26,15 @@ export default {
         method: 'GET',
         urlPath: `/prison/${prisonId}/prisoners`,
         queryParameters: {
-           term: {
-             equalTo: `${term}`
-           },
-           page: {
-             equalTo: `${page}`
-           },
-           size: {
-             equalTo: `${size}`
-           }
+          term: {
+            equalTo: `${term}`,
+          },
+          page: {
+            equalTo: `${page}`,
+          },
+          size: {
+            equalTo: `${size}`,
+          },
         },
       },
       response: {

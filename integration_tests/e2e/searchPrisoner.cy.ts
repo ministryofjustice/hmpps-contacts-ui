@@ -30,7 +30,7 @@ context('Contacts', () => {
 
   context('when there are results', () => {
     const { prisonerNumber } = TestData.prisoner()
-    
+
     it('should show that there are no results', () => {
       cy.task('stubPrisoners', { term: prisonerNumber })
 
