@@ -1,4 +1,4 @@
-import { isValidPrisonerNumber, extractPrisonerNumber, isValidVisitReference } from './validationChecks'
+import { isValidPrisonerNumber, extractPrisonerNumber } from './validationChecks'
 
 describe('isValidPrisonerNumber', () => {
   it('valid', () => {
@@ -30,17 +30,5 @@ describe('extractPrisonerNumber', () => {
     ['wrong format', '1ABCD23', false],
   ])('%s: extractPrisonerNumber(%s) => %s', (_: string, input: string, expected: string | false) => {
     expect(extractPrisonerNumber(input)).toEqual(expected)
-  })
-})
-
-describe('isValidVisitReference', () => {
-  it('valid', () => {
-    expect(isValidVisitReference('aa-bb-cc-dd')).toEqual(true)
-  })
-  it('invalid', () => {
-    expect(isValidVisitReference('addfewf')).toEqual(false)
-  })
-  it('empty string', () => {
-    expect(isValidVisitReference('')).toEqual(false)
   })
 })

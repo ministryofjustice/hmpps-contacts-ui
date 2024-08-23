@@ -100,14 +100,6 @@ export default {
       pageSize: 20,
       pagesLinksToShow: 3,
     },
-    prisonApi: {
-      url: get('PRISON_API_URL', 'http://127.0.0.1:8080', requiredInProduction),
-      timeout: {
-        response: Number(get('PRISON_API_TIMEOUT_RESPONSE', 10000)),
-        deadline: Number(get('PRISON_API_TIMEOUT_DEADLINE', 10000)),
-      },
-      agent: new AgentConfig(Number(get('PRISON_API_TIMEOUT_RESPONSE', 10000))),
-    },
   },
   serviceUrls: {
     digitalPrison: get('DPS_HOME_PAGE_URL', 'http://localhost:3001', requiredInProduction),
