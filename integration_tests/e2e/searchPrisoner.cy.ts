@@ -33,6 +33,7 @@ context('Contacts', () => {
 
     it('should show that there are no results', () => {
       cy.task('stubPrisoners', { term: prisonerNumber })
+      cy.task('stubPrisonerById', TestData.prisoner())
 
       const searchPrisonerPage = Page.verifyOnPage(SearchPrisonerPage)
 
