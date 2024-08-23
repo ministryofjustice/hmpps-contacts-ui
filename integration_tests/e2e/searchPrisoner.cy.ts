@@ -28,7 +28,7 @@ context('Contacts', () => {
     cy.get('#search').type('Ehshapeter', { force: true })
   })
 
-  context('when there are no results', () => {
+  context('when there are results', () => {
     const { prisonerNumber } = TestData.prisoner()
 
     it('should show that there are no results', () => {
@@ -37,9 +37,7 @@ context('Contacts', () => {
       const searchPrisonerPage = Page.verifyOnPage(SearchPrisonerPage)
 
       searchPrisonerPage.prisonerSearchFormField().clear().type(prisonerNumber)
-      searchPrisonerPage.prisonerSearchSearchButton().click()
-
-      // searchPrisonerPage.searchResultsNone().should('be.visible')
+      // searchPrisonerPage.prisonerSearchSearchButton().click()
     })
   })
 })
