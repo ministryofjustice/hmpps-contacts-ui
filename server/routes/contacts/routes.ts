@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import ContactsController from './view/controller'
-import CreateContactController from './create/createContactController'
+import CreateContactEnterNameController from './create/createContactEnterNameController'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import AuditService from '../../services/auditService'
 import logPageViewMiddleware from '../../middleware/logPageViewMiddleware'
@@ -16,7 +16,7 @@ const ContactsRoutes = (auditService: AuditService): Router => {
     router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET))
 
   getViewContact('/', new ContactsController())
-  getCreateContact('/create', new CreateContactController())
+  getCreateContact('/create', new CreateContactEnterNameController())
 
   return router
 }

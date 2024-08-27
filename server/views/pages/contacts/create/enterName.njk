@@ -1,4 +1,4 @@
-{% extends "../../views/partials/layout.njk" %}
+{% extends "../../../partials/layout.njk" %}
 {% from "components/card.njk" import card %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
@@ -36,7 +36,7 @@
                     label: { text: "First name" },
                     classes: 'govuk-!-width-one-third',
                     errorMessage: validationErrors | findError('firstName'),
-                    value: formResponses.firstName or session.journey.bookAVideoLink.prisoner.firstName
+                    value: formResponses.firstName
                 }) }}
 
                 {{ govukInput({
@@ -45,7 +45,7 @@
                     label: { text: "Last name" },
                     classes: 'govuk-!-width-one-third',
                     errorMessage: validationErrors | findError('lastName'),
-                    value: formResponses.lastName or session.journey.bookAVideoLink.prisoner.lastName
+                    value: formResponses.lastName
                 }) }}
 
                 {{ govukSelect({
