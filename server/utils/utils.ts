@@ -1,4 +1,4 @@
-import { format, parseISO } from 'date-fns'
+import { format, isValid, parseISO } from 'date-fns'
 
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
@@ -93,4 +93,11 @@ export const getResultsPagingLinks = ({
   }
 
   return pageLinks
+}
+
+export const formatDate = (date: string | Date, fmt = 'd MMMM yyyy') => {
+  if (!date) return undefined
+  const richDate = typeof date === 'string' ? parseISO(date) : date
+  if (!isValid(richDate)) return undefined
+  return format(richDate, fmt)
 }
