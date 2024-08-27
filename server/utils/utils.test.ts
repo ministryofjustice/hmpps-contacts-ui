@@ -1,5 +1,6 @@
 import {
-  convertToTitleCase, formatDate,
+  convertToTitleCase,
+  formatDate,
   getResultsPagingLinks,
   initialiseName,
   prisonerDatePretty,
