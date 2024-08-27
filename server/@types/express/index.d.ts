@@ -6,10 +6,12 @@ export declare module 'express-session' {
   interface SessionData {
     returnTo: string
     nowInMinutes: number
+    prisonId: string
+    prisonName: string
+    search: string
     journey: object
   }
 }
-
 export declare global {
   namespace Express {
     interface User {
@@ -22,6 +24,7 @@ export declare global {
       verified?: boolean
       id: string
       logout(done: (err: unknown) => void): void
+      systemClientToken: string
     }
 
     interface Locals {

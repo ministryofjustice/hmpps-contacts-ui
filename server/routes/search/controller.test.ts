@@ -1,4 +1,4 @@
-import type { Express } from 'express'
+import type { Express, Locals } from 'express'
 import request from 'supertest'
 import { appWithAllRoutes, flashProvider, user } from '../testutils/appSetup'
 import AuditService, { Page } from '../../services/auditService'
@@ -10,12 +10,14 @@ jest.mock('../../services/auditService')
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 
 let app: Express
+let validationErrors: Locals['validationErrors']
 
 beforeEach(() => {
   app = appWithAllRoutes({
     services: {
       auditService,
     },
+    validationErrors,
     userSupplier: () => user,
   })
 })
@@ -25,6 +27,24 @@ afterEach(() => {
 })
 
 describe('GET /search/prisoner', () => {
+  it('should render search prisoner page', async () => {
+    // Given
+    flashProvider.mockReturnValue({ search: [''] })
+    auditService.logPageView.mockResolvedValue(null)
+
+    // When
+    const response = await request(app).get(SEARCH_PRISONER_URL)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect(response.text).toContain('Manage Contacts')
+    expect(response.text).toContain('Search for a prisoner')
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.SEARCH_PRISONERS_PAGE, {
+      who: user.username,
+      correlationId: expect.any(String),
+    })
+  })
+
   it('should render search prisoner page', async () => {
     // Given
     flashProvider.mockReturnValue({ search: [''] })

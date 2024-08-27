@@ -10,4 +10,48 @@ const getMatchingRequests = body => superagent.post(`${url}/requests/find`).send
 const resetStubs = (): Promise<Array<Response>> =>
   Promise.all([superagent.delete(`${url}/mappings`), superagent.delete(`${url}/requests`)])
 
-export { stubFor, getMatchingRequests, resetStubs }
+// TODO: These utility methods can be used - more generic matching / returning responses from static files.
+
+const stubGet = (urlPattern, jsonBody?) =>
+  stubFor({
+    request: { method: 'GET', urlPattern },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody,
+    },
+  })
+
+const stubPost = (urlPattern, jsonBody?) =>
+  stubFor({
+    request: { method: 'POST', urlPattern },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: jsonBody || undefined,
+      body: !jsonBody ? 1 : undefined,
+    },
+  })
+
+const stubPut = (urlPattern, jsonBody?) =>
+  stubFor({
+    request: { method: 'PUT', urlPattern },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: jsonBody || undefined,
+      body: !jsonBody ? 1 : undefined,
+    },
+  })
+
+const stubDelete = (urlPattern, jsonBody?) =>
+  stubFor({
+    request: { method: 'DELETE', urlPattern },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody,
+    },
+  })
+
+export { stubFor, getMatchingRequests, resetStubs, stubGet, stubPost, stubPut, stubDelete }

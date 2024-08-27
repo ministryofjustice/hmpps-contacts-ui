@@ -15,7 +15,7 @@
     "lint": "eslint . --cache --max-warnings 0",
     "lint-fix": "eslint . --cache --max-warnings 0 --fix",
     "typecheck": "tsc && tsc -p integration_tests",
-    "test": "jest",
+    "test": "jest --detectOpenHandles --forceExit",
     "test:ci": "jest --runInBand",
     "security_audit": "npx audit-ci --config audit-ci.json",
     "int-test": "cypress run --config video=false",
@@ -36,6 +36,7 @@
         }
       ]
     },
+    "collectCoverage": false,
     "collectCoverageFrom": [
       "server/**/*.{ts,js,jsx,mjs}"
     ],
@@ -88,6 +89,7 @@
     "connect-flash": "^0.1.1",
     "connect-redis": "^7.1.1",
     "csurf": "^1.11.0",
+    "date-fns": "^3.6.0",
     "express": "^4.19.2",
     "express-session": "^1.18.0",
     "fast-xml-parser": "^4.4.1",

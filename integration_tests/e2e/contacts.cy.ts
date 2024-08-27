@@ -19,19 +19,7 @@ context('Contacts', () => {
   it('User can manage their restriction contacts', () => {
     cy.signIn()
     const contactsPage = Page.verifyOnPage(ContactsPage)
-    contactsPage.manageContactsRestrictionsCard().click()
-
-    cy.get('a.card__link')
-      .invoke('attr', 'href')
-      .then(href => {
-        cy.visit(href)
-      })
-  })
-
-  it('User can manage their contacts', () => {
-    cy.signIn()
-    const contactsPage = Page.verifyOnPage(ContactsPage)
-    contactsPage.manageContactsCard().click()
+    contactsPage.manageContactRestrictionsCard().click()
 
     cy.get('a.card__link')
       .invoke('attr', 'href')
