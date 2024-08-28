@@ -70,6 +70,28 @@ describe('validationMiddleware', () => {
       )
       expect(req.flash).toHaveBeenCalledWith('formResponses', JSON.stringify(req.body))
     })
+    it('should redirect to error url if specified', async () => {
+      const next = jest.fn()
+      req = {
+        params: {},
+        flash: jest.fn(),
+        body: {
+          information: '',
+          otherInformation: 'other info here',
+        },
+        session: {},
+      } as unknown as Request
+      const redirectUrl = '/some-page-where-errors-are-shown'
+
+      await validate(schema, redirectUrl)(req, res, next)
+
+      expect(res.redirect).toHaveBeenCalledWith(redirectUrl)
+      expect(req.flash).toHaveBeenCalledWith(
+        'validationErrors',
+        JSON.stringify({ information: [DESCRIPTION_OF_INFORMATION] }),
+      )
+      expect(req.flash).toHaveBeenCalledWith('formResponses', JSON.stringify(req.body))
+    })
 
     it('should return flash responses for other info', async () => {
       const next = jest.fn()

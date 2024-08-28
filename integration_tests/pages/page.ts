@@ -16,4 +16,9 @@ export default abstract class Page {
   signOut = (): PageElement => cy.get('[data-qa=signOut]')
 
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
+
+  hasFieldInError(field: string, expectedError: string) {
+    cy.get(`#${Cypress.$.escapeSelector(field)}-error`).should('contain.text', expectedError)
+    return this
+  }
 }
