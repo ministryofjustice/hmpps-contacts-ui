@@ -6,7 +6,7 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% set pageTitle = applicationName + " - Home" %}
+{% set pageTitle = applicationName + " - Enter name" %}
 {% set title = "What is the contacts name" %}
 {% set mainClasses = "app-container govuk-body" %}
 
@@ -18,11 +18,16 @@
           {
             text: "Digital Prison Services",
             href: DPS_HOME_PAGE_URL
+          },
+          {
+              text: "Contacts",
+              href: "/"
           }
       ]
       }) }}
   </div>
 </div>
+{% include '../../../partials/formErrorSummary.njk' %}
 <span class="govuk-caption-l">Manage Contacts</span>
 <h1 class="govuk-heading-l">{{ title }}</h1>
  <div class="govuk-grid-row">
@@ -31,21 +36,30 @@
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
                 {{ govukInput({
+                    id: "lastName",
+                    name: "lastName",
+                    label: { text: "Surname" },
+                    classes: 'govuk-!-width-one-third',
+                    errorMessage: validationErrors | findError('lastName'),
+                    value: formResponses.lastName
+                }) }}
+
+                {{ govukInput({
                     id: "firstName",
                     name: "firstName",
-                    label: { text: "First name" },
+                    label: { text: "Given name 1" },
                     classes: 'govuk-!-width-one-third',
                     errorMessage: validationErrors | findError('firstName'),
                     value: formResponses.firstName
                 }) }}
 
                 {{ govukInput({
-                    id: "lastName",
-                    name: "lastName",
-                    label: { text: "Last name" },
+                    id: "middleName",
+                    name: "middleName",
+                    label: { text: "Given name 2" },
                     classes: 'govuk-!-width-one-third',
-                    errorMessage: validationErrors | findError('lastName'),
-                    value: formResponses.lastName
+                    errorMessage: validationErrors | findError('middleName'),
+                    value: formResponses.middleName
                 }) }}
 
                 {{ govukSelect({
@@ -55,7 +69,7 @@
                         text: "Title"
                     },
                     items: [
-                        { "value": "choose", "text": "" , selected: true},
+                        { "value": "", "text": "" , selected: true},
                         { "value": "DAME", "text": "Dame" },
                         { "value": "FR", "text": "Father" },
                         { "value": "LORD", "text": "Lord" },
@@ -73,16 +87,17 @@
                         { "value": "IMAM", "text": "Imam" }
                     ]
                     }) }}
-
-                {{ govukButton({
-                    html: "Continue",
-                    type: "submit",
-                    classes: 'govuk-!-margin-top-6'
-                }) }}
-
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        html: "Continue",
+                        type: "submit",
+                        classes: 'govuk-!-margin-top-6',
+                        attributes: {"data-qa": "continue-button"}
+                    }) }}
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="/">Cancel</a>
+                </div>
             </form>
-            
-            <a href="/" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
+
         </div>
     </div>
 

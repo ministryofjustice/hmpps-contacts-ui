@@ -1,9 +1,9 @@
 import type { Express } from 'express'
 import request from 'supertest'
-import { appWithAllRoutes, user } from '../../testutils/appSetup'
-import AuditService, { Page } from '../../../services/auditService'
+import { appWithAllRoutes, user } from '../../../testutils/appSetup'
+import AuditService, { Page } from '../../../../services/auditService'
 
-jest.mock('../../../services/auditService')
+jest.mock('../../../../services/auditService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 
@@ -23,18 +23,18 @@ afterEach(() => {
 })
 
 describe('GET /', () => {
-  it('should render contact page', async () => {
+  it('should render success page', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
 
     // When
-    const response = await request(app).get('/')
+    const response = await request(app).get('/contacts/create/success')
 
     // Then
     expect(response.status).toEqual(200)
     expect(response.text).toContain('Contacts')
     expect(response.text).toContain('Hmpps Contacts Ui')
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.SEARCH_PRISONER_CONTACT_PAGE, {
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_SUCCESS_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })
