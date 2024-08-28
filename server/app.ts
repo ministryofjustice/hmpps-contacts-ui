@@ -14,7 +14,6 @@ import setUpStaticResources from './middleware/setUpStaticResources'
 import setUpWebRequestParsing from './middleware/setupRequestParsing'
 import setUpWebSecurity from './middleware/setUpWebSecurity'
 import setUpWebSession from './middleware/setUpWebSession'
-
 import routes from './routes'
 import type { Services } from './services'
 import AuthorisedRoles from './enumeration/authorisedRoles'
@@ -44,10 +43,15 @@ export default function createApp(services: Services): express.Application {
     dpsComponents.getPageComponents({
       includeMeta: true,
       dpsUrl: config.serviceUrls.digitalPrison,
+      timeoutOptions: {
+        response: config.apis.componentApi.timeout.response,
+        deadline: config.apis.componentApi.timeout.deadline,
+      },
     }),
   )
   app.use(setUpCurrentUser())
   app.use(populateValidationErrors())
+
   app.use(routes(services))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))

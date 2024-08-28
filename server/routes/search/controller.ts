@@ -22,20 +22,18 @@ export default class SearchController implements PageHandler {
       req.session.search = null
     }
     const search = req.session.search ? req.session.search : req.query.search
-    const { pageSize } = config.apis.prisonerSearch
+    const { pageSize } = config.apis.prisonerSearchApi
     try {
       if (res.locals.validationErrors === undefined && search) {
         const currentPage = typeof req.query.page === 'string' ? req.query.page : ''
         parsedPage = Number.parseInt(currentPage, 10) || 1
 
-        // TODO: This value should really be set against the res.locals.user ojbect, as `activeCaseloadId`
-        // populateCurrentUser middleware is the place to set these things.
-        req.session.prisonId = 'HEI'
+        logger.info(`Before search - using prisonID from session ${req.session?.prisonId}`)
 
-        // Get prisoner list
+        // This search relies on the activeCaseloadId being obtained from the frontendComponentsAPI
+        // Set within middleware populateCurrentEstablishment
         prisoners = await this.prisonerSearchService.getPrisoners(
           search.toString(),
-          // TODO: Change to res.locals.user.activeCaseloadId here
           req.session.prisonId,
           res.locals.user.username,
           parsedPage,
@@ -45,7 +43,7 @@ export default class SearchController implements PageHandler {
         const currentPageMax = parsedPage * pageSize
         to = prisoners.numberOfResults < currentPageMax ? prisoners.numberOfResults : currentPageMax
         pageLinks = getResultsPagingLinks({
-          pagesToShow: config.apis.prisonerSearch.pagesLinksToShow,
+          pagesToShow: config.apis.prisonerSearchApi.pagesLinksToShow,
           numberOfPages: prisoners.numberOfPages,
           currentPage: parsedPage,
           searchParam: `search=${search}`,

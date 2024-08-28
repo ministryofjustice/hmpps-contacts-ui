@@ -10,8 +10,6 @@ const getMatchingRequests = body => superagent.post(`${url}/requests/find`).send
 const resetStubs = (): Promise<Array<Response>> =>
   Promise.all([superagent.delete(`${url}/mappings`), superagent.delete(`${url}/requests`)])
 
-// TODO: These utility methods can be used - more generic matching / returning responses from static files.
-
 const stubGet = (urlPattern, jsonBody?) =>
   stubFor({
     request: { method: 'GET', urlPattern },

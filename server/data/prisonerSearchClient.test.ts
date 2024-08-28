@@ -11,7 +11,7 @@ describe('prisonSearchClientBuilder', () => {
   const token = 'token-1'
 
   beforeEach(() => {
-    fakePrisonerSearchApi = nock(config.apis.prisonerSearch.url)
+    fakePrisonerSearchApi = nock(config.apis.prisonerSearchApi.url)
     prisonerSearchClient = new PrisonerSearchClient(token)
   })
 
@@ -43,7 +43,7 @@ describe('prisonSearchClientBuilder', () => {
         .query({
           term: 'test',
           page: '0',
-          size: config.apis.prisonerSearch.pageSize,
+          size: config.apis.prisonerSearchApi.pageSize,
         })
         .matchHeader('authorization', `Bearer ${token}`)
         .reply(200, results)

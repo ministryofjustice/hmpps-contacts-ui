@@ -12,14 +12,16 @@ context('Contacts', () => {
 
   it('Contacts cards visible', () => {
     const searchPrisonerPage = Page.verifyOnPage(SearchPrisonerPage)
+
     searchPrisonerPage.manageContactsCaption().should('contain.text', 'Manage Contacts')
     searchPrisonerPage.manageContactH1().should('contain.text', 'Search for a prisoner')
     searchPrisonerPage.prisonerSearchFormLabel().should('be.visible')
     searchPrisonerPage.prisonerSearchSearchButton().should('be.visible')
   })
 
-  it('should shwow validation error', () => {
+  it('should show validation error', () => {
     Page.verifyOnPage(SearchPrisonerPage)
+
     cy.get('[data-test="search"]').should('be.visible')
     cy.get('[data-test="search"]').click()
     cy.get('.govuk-error-summary__title').should('be.visible')
@@ -31,7 +33,9 @@ context('Contacts', () => {
   context('when there are results', () => {
     const { prisonerNumber } = TestData.prisoner()
 
-    it('should show that there are no results', () => {
+    it('should show that there are results', () => {
+      // Provides a default header/footer/caseload with no javascript
+      cy.task('stubComponentsMeta')
       cy.task('stubPrisoners', { term: prisonerNumber })
       cy.task('stubPrisonerById', TestData.prisoner())
 
