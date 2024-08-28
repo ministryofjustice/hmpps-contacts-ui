@@ -1,0 +1,36 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "components/card.njk" import card %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = applicationName + " - Created Contact" %}
+{% set title = "Create contact success" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+<div class="govuk-grid-row govuk-!-static-margin-bottom-5">
+  <div class="govuk-grid-column-full">
+      {{ govukBreadcrumbs({
+      items: [
+          {
+            text: "Digital Prison Services",
+            href: DPS_HOME_PAGE_URL
+          },
+          {
+              text: "Contacts",
+              href: "/"
+          }
+      ]
+      }) }}
+  </div>
+</div>
+<span class="govuk-caption-l">Manage Contacts</span>
+<h1 class="govuk-heading-l">{{ title }}</h1>
+
+{% endblock %}
+{% block pageScripts %}
+    <script src="/js/card.js"></script>
+{% endblock %}
