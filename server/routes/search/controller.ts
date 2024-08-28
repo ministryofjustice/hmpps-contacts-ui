@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 import { Page } from '../../services/auditService'
 import { PageHandler } from '../../interfaces/pageHandler'
-import SEARCH_PRISONER_URL from '../urls'
 import PrisonerSearchService from '../../services/prisonerSearchService'
 import config from '../../config'
 import logger from '../../../logger'
@@ -47,7 +46,7 @@ export default class SearchController implements PageHandler {
           numberOfPages: prisoners.numberOfPages,
           currentPage: parsedPage,
           searchParam: `search=${search}`,
-          searchUrl: `${SEARCH_PRISONER_URL}`,
+          searchUrl: '/search/prisoner',
         })
 
         // Display messages for prisoners not found
@@ -59,7 +58,7 @@ export default class SearchController implements PageHandler {
         )
       }
 
-      res.render('search/view', {
+      res.render('pages/search/searchPrisoners', {
         validationErrors: res.locals.validationErrors,
         numberOfPages: prisoners ? prisoners.numberOfPages : 0,
         numberOfResults: prisoners ? prisoners.numberOfResults : 0,
@@ -79,6 +78,6 @@ export default class SearchController implements PageHandler {
 
   POST = async (req: Request, res: Response): Promise<void> => {
     req.session.search = req.body.search
-    res.redirect(SEARCH_PRISONER_URL)
+    res.redirect('/search/prisoner')
   }
 }

@@ -2,7 +2,6 @@ import type { Express } from 'express'
 import request from 'supertest'
 import { appWithAllRoutes, flashProvider, user } from './testutils/appSetup'
 import AuditService, { Page } from '../services/auditService'
-import SEARCH_PRISONER_URL from './urls'
 
 jest.mock('../services/auditService')
 
@@ -42,13 +41,13 @@ describe('GET /', () => {
 })
 
 describe('GET /search/prisoner', () => {
-  it('should render index page', async () => {
+  it('should render search page', async () => {
     // Given
     flashProvider.mockReturnValue({ search: [''] })
     auditService.logPageView.mockResolvedValue(null)
 
     // When
-    const response = await request(app).get(SEARCH_PRISONER_URL)
+    const response = await request(app).get('/search/prisoner')
 
     // Then
     expect(response.text).toContain('Manage Contacts')
