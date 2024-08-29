@@ -1,7 +1,13 @@
-import nock from 'nock'
+import nock, { RequestBodyMatcher } from 'nock'
+
 import config from '../config'
+import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import PrisonerSearchApiClient from './prisonerSearchApiClient'
 import TestData from '../routes/testutils/testData'
+
+jest.mock('./tokenStore/inMemoryTokenStore')
+
+const user = { token: 'userToken', username: 'user1' } as Express.User
 
 describe('prisonSearchClientBuilder', () => {
   let fakePrisonerSearchApi: nock.Scope
@@ -12,10 +18,12 @@ describe('prisonSearchClientBuilder', () => {
 
   beforeEach(() => {
     fakePrisonerSearchApi = nock(config.apis.prisonerSearchApi.url)
-    prisonerSearchApiClient = new PrisonerSearchApiClient(token)
+    prisonerSearchApiClient = new PrisonerSearchApiClient()
+    jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
   })
 
   afterEach(() => {
+    jest.resetAllMocks()
     if (!nock.isDone()) {
       nock.cleanAll()
       throw new Error('Not all nock interceptors were used!')
@@ -45,10 +53,10 @@ describe('prisonSearchClientBuilder', () => {
           page: '0',
           size: config.apis.prisonerSearchApi.pageSize,
         })
-        .matchHeader('authorization', `Bearer ${token}`)
+        .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, results)
 
-      const output = await prisonerSearchApiClient.getPrisoners('test', prisonId)
+      const output = await prisonerSearchApiClient.getPrisoners('test', prisonId, 0, user)
 
       expect(output).toEqual(results)
     })
@@ -73,10 +81,10 @@ describe('prisonSearchClientBuilder', () => {
         .query({
           term: 'test',
         })
-        .matchHeader('authorization', `Bearer ${token}`)
+        .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, results)
 
-      const output = await prisonerSearchApiClient.getPrisoner('test', prisonId)
+      const output = await prisonerSearchApiClient.getPrisoner('test', prisonId, user)
 
       expect(output).toEqual(results)
     })
@@ -88,10 +96,10 @@ describe('prisonSearchClientBuilder', () => {
 
       fakePrisonerSearchApi
         .get('/prisoner/A1234BC')
-        .matchHeader('authorization', `Bearer ${token}`)
+        .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, prisoner)
 
-      const output = await prisonerSearchApiClient.getPrisonerById('A1234BC')
+      const output = await prisonerSearchApiClient.getPrisonerById('A1234BC', user)
 
       expect(output).toEqual(prisoner)
     })

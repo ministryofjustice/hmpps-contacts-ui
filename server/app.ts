@@ -18,7 +18,6 @@ import routes from './routes'
 import type { Services } from './services'
 import AuthorisedRoles from './enumeration/authorisedRoles'
 import populateValidationErrors from './middleware/populateValidationErrors'
-import populateClientToken from './middleware/populateSystemClientToken'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -37,7 +36,6 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpAuthentication())
   app.use(authorisationMiddleware([AuthorisedRoles.ROLE_PRISON]))
   app.use(setUpCsrf())
-  app.use(populateClientToken())
   app.get(
     '*',
     dpsComponents.getPageComponents({
