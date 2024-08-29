@@ -1,7 +1,7 @@
 import { properCaseFullName, prisonerDatePretty } from '../utils/utils'
 import { Prisoner } from '../data/prisonerOffenderSearchTypes'
 import { HmppsAuthClient, RestClientBuilder } from '../data'
-import PrisonerSearchClient from '../data/prisonerSearchClient'
+import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
 import { extractPrisonerNumber } from '../routes/search/validationChecks'
 
 export type PrisonerDetailsItem = {
@@ -19,7 +19,7 @@ export default class PrisonerSearchService {
   private currentPage = 0 // API page number is 0-indexed
 
   constructor(
-    private readonly prisonerSearchClientFactory: RestClientBuilder<PrisonerSearchClient>,
+    private readonly prisonerSearchApiClientFactory: RestClientBuilder<PrisonerSearchApiClient>,
     private readonly hmppsAuthClient: HmppsAuthClient,
   ) {}
 
@@ -44,9 +44,9 @@ export default class PrisonerSearchService {
     previous: number
   }> {
     const token = await this.hmppsAuthClient.getSystemClientToken(username)
-    const prisonerSearchClient = this.prisonerSearchClientFactory(token)
+    const prisonerSearchApiClient = this.prisonerSearchApiClientFactory(token)
     this.currentPage = page - 1
-    const { totalPages, totalElements, content } = await prisonerSearchClient.getPrisoners(
+    const { totalPages, totalElements, content } = await prisonerSearchApiClient.getPrisoners(
       search,
       prisonId,
       this.currentPage,
@@ -100,23 +100,23 @@ export default class PrisonerSearchService {
 
   async getPrisoner(search: string, prisonId: string, username: string): Promise<Prisoner> {
     const token = await this.hmppsAuthClient.getSystemClientToken(username)
-    const prisonerSearchClient = this.prisonerSearchClientFactory(token)
-    const { content } = await prisonerSearchClient.getPrisoner(search, prisonId)
+    const prisonerSearchApiClient = this.prisonerSearchApiClientFactory(token)
+    const { content } = await prisonerSearchApiClient.getPrisoner(search, prisonId)
     return content.length === 1 ? content[0] : null
   }
 
   async getPrisonerById(id: string, username: string): Promise<Prisoner> {
     const token = await this.hmppsAuthClient.getSystemClientToken(username)
-    const prisonerSearchClient = this.prisonerSearchClientFactory(token)
+    const prisonerSearchClient = this.prisonerSearchApiClientFactory(token)
     return prisonerSearchClient.getPrisonerById(id)
   }
 
   async getPrisonerNotFoundMessage(id: string, prisonName: string, username: string): Promise<string> {
     const token = await this.hmppsAuthClient.getSystemClientToken(username)
-    const prisonerSearchClient = this.prisonerSearchClientFactory(token)
+    const prisonerSearchApiClient = this.prisonerSearchApiClientFactory(token)
 
     try {
-      const prisoner = await prisonerSearchClient.getPrisonerById(id)
+      const prisoner = await prisonerSearchApiClient.getPrisonerById(id)
       if (prisoner.inOutStatus === 'OUT' || prisoner.inOutStatus === 'TRN') {
         return `This prisoner is not in ${prisonName}. They might be being moved to another establishment or have been released.`
       }

@@ -3,7 +3,7 @@ import RestClient from './restClient'
 import { Prisoner } from './prisonerOffenderSearchTypes'
 import config, { ApiConfig } from '../config'
 
-export default class PrisonerSearchClient {
+export default class PrisonerSearchApiClient {
   private restClient: RestClient
 
   private pageSize = config.apis.prisonerSearchApi.pageSize

@@ -1,18 +1,18 @@
 import nock from 'nock'
 import config from '../config'
-import PrisonerSearchClient from './prisonerSearchClient'
+import PrisonerSearchApiClient from './prisonerSearchApiClient'
 import TestData from '../routes/testutils/testData'
 
 describe('prisonSearchClientBuilder', () => {
   let fakePrisonerSearchApi: nock.Scope
-  let prisonerSearchClient: PrisonerSearchClient
+  let prisonerSearchApiClient: PrisonerSearchApiClient
 
   const prisonId = 'HEI'
   const token = 'token-1'
 
   beforeEach(() => {
     fakePrisonerSearchApi = nock(config.apis.prisonerSearchApi.url)
-    prisonerSearchClient = new PrisonerSearchClient(token)
+    prisonerSearchApiClient = new PrisonerSearchApiClient(token)
   })
 
   afterEach(() => {
@@ -48,7 +48,7 @@ describe('prisonSearchClientBuilder', () => {
         .matchHeader('authorization', `Bearer ${token}`)
         .reply(200, results)
 
-      const output = await prisonerSearchClient.getPrisoners('test', prisonId)
+      const output = await prisonerSearchApiClient.getPrisoners('test', prisonId)
 
       expect(output).toEqual(results)
     })
@@ -76,7 +76,7 @@ describe('prisonSearchClientBuilder', () => {
         .matchHeader('authorization', `Bearer ${token}`)
         .reply(200, results)
 
-      const output = await prisonerSearchClient.getPrisoner('test', prisonId)
+      const output = await prisonerSearchApiClient.getPrisoner('test', prisonId)
 
       expect(output).toEqual(results)
     })
@@ -91,7 +91,7 @@ describe('prisonSearchClientBuilder', () => {
         .matchHeader('authorization', `Bearer ${token}`)
         .reply(200, prisoner)
 
-      const output = await prisonerSearchClient.getPrisonerById('A1234BC')
+      const output = await prisonerSearchApiClient.getPrisonerById('A1234BC')
 
       expect(output).toEqual(prisoner)
     })

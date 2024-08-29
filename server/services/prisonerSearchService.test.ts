@@ -2,12 +2,12 @@ import createError, { BadRequest } from 'http-errors'
 import PrisonerSearchService from './prisonerSearchService'
 import TestData from '../routes/testutils/testData'
 import HmppsAuthClient from '../data/hmppsAuthClient'
-import PrisonerSearchClient from '../data/prisonerSearchClient'
+import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
 
 const token = 'some token'
 
 export const createMockHmppsAuthClient = () => new HmppsAuthClient(null) as jest.Mocked<HmppsAuthClient>
-export const createMockPrisonerSearchClient = () => new PrisonerSearchClient(null) as jest.Mocked<PrisonerSearchClient>
+export const createMockPrisonerSearchClient = () => new PrisonerSearchApiClient(null) as jest.Mocked<PrisonerSearchApiClient>
 
 describe('Prisoner search service', () => {
   const hmppsAuthClient = createMockHmppsAuthClient()
