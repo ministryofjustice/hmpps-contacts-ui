@@ -6,10 +6,10 @@ import config, { ApiConfig } from '../config'
 export default class PrisonerSearchClient {
   private restClient: RestClient
 
-  private pageSize = config.apis.prisonerSearch.pageSize
+  private pageSize = config.apis.prisonerSearchApi.pageSize
 
   constructor(token: string) {
-    this.restClient = new RestClient('prisonerSearchApiClient', config.apis.prisonerSearch as ApiConfig, token)
+    this.restClient = new RestClient('prisonerSearchApiClient', config.apis.prisonerSearchApi as ApiConfig, token)
   }
 
   async getPrisoners(

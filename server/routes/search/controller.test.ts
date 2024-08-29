@@ -2,7 +2,6 @@ import type { Express, Locals } from 'express'
 import request from 'supertest'
 import { appWithAllRoutes, flashProvider, user } from '../testutils/appSetup'
 import AuditService, { Page } from '../../services/auditService'
-import SEARCH_PRISONER_URL from '../urls'
 import { ENTER_TWO_CHARS_MIN } from './schema'
 
 jest.mock('../../services/auditService')
@@ -33,25 +32,7 @@ describe('GET /search/prisoner', () => {
     auditService.logPageView.mockResolvedValue(null)
 
     // When
-    const response = await request(app).get(SEARCH_PRISONER_URL)
-
-    // Then
-    expect(response.status).toEqual(200)
-    expect(response.text).toContain('Manage Contacts')
-    expect(response.text).toContain('Search for a prisoner')
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.SEARCH_PRISONERS_PAGE, {
-      who: user.username,
-      correlationId: expect.any(String),
-    })
-  })
-
-  it('should render search prisoner page', async () => {
-    // Given
-    flashProvider.mockReturnValue({ search: [''] })
-    auditService.logPageView.mockResolvedValue(null)
-
-    // When
-    const response = await request(app).get(SEARCH_PRISONER_URL)
+    const response = await request(app).get('/search/prisoner')
 
     // Then
     expect(response.status).toEqual(200)
@@ -71,7 +52,7 @@ describe('POST /search/prisoner', () => {
     auditService.logPageView.mockResolvedValue(null)
 
     // When
-    const response = await request(app).post(SEARCH_PRISONER_URL).send({ search: 'Prisoner' })
+    const response = await request(app).post('/search/prisoner').send({ search: 'Prisoner' })
 
     // Then
     expect(response.status).toEqual(302)
