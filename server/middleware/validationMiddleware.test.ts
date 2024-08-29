@@ -59,18 +59,19 @@ describe('validationMiddleware', () => {
           otherInformation: 'other info here',
         },
         session: {},
+        originalUrl: '/url-being-validated',
       } as unknown as Request
 
       await validate(schema)(req, res, next)
 
-      expect(next).toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalledWith('/url-being-validated')
       expect(req.flash).toHaveBeenCalledWith(
         'validationErrors',
         JSON.stringify({ information: [DESCRIPTION_OF_INFORMATION] }),
       )
       expect(req.flash).toHaveBeenCalledWith('formResponses', JSON.stringify(req.body))
     })
-    it('should redirect to error url if specified', async () => {
+    it('should redirect to original url', async () => {
       const next = jest.fn()
       req = {
         params: {},
@@ -80,12 +81,12 @@ describe('validationMiddleware', () => {
           otherInformation: 'other info here',
         },
         session: {},
+        originalUrl: '/url-being-validated',
       } as unknown as Request
-      const redirectUrl = '/some-page-where-errors-are-shown'
 
-      await validate(schema, redirectUrl)(req, res, next)
+      await validate(schema)(req, res, next)
 
-      expect(res.redirect).toHaveBeenCalledWith(redirectUrl)
+      expect(res.redirect).toHaveBeenCalledWith('/url-being-validated')
       expect(req.flash).toHaveBeenCalledWith(
         'validationErrors',
         JSON.stringify({ information: [DESCRIPTION_OF_INFORMATION] }),
@@ -103,11 +104,12 @@ describe('validationMiddleware', () => {
           otherInformation: '',
         },
         session: {},
+        originalUrl: '/url-being-validated',
       } as unknown as Request
 
       await validate(schema)(req, res, next)
 
-      expect(next).toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalledWith('/url-being-validated')
       expect(req.flash).toHaveBeenCalledWith(
         'validationErrors',
         JSON.stringify({ otherInformation: [DESCRIPTION_OF_OTHER_INFORMATION] }),
@@ -125,11 +127,12 @@ describe('validationMiddleware', () => {
           otherInformation: '',
         },
         session: {},
+        originalUrl: '/url-being-validated',
       } as unknown as Request
 
       await validate(schema)(req, res, next)
 
-      expect(next).toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalledWith('/url-being-validated')
       expect(req.flash).toHaveBeenCalledWith(
         'validationErrors',
         JSON.stringify({

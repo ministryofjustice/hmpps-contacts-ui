@@ -2,6 +2,7 @@ import express, { Express, Locals } from 'express'
 import { NotFound } from 'http-errors'
 import { v4 as uuidv4 } from 'uuid'
 import dpsComponents from '@ministryofjustice/hmpps-connect-dps-components'
+import { SessionData } from 'express-session'
 import config from '../../config'
 import routes from '../index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
@@ -34,6 +35,7 @@ function appSetup(
   production: boolean,
   userSupplier: () => HmppsUser,
   validationErrors?: Locals['validationErrors'],
+  sessionReceiver?: (session: Partial<SessionData>) => void,
 ): Express {
   const app = express()
 
@@ -52,6 +54,10 @@ function appSetup(
   })
   app.use((req, res, next) => {
     req.id = uuidv4()
+    next()
+  })
+  app.use((req, res, next) => {
+    if (sessionReceiver) sessionReceiver(req.session)
     next()
   })
   if (validationErrors) {
@@ -84,12 +90,14 @@ export function appWithAllRoutes({
   },
   userSupplier = () => user,
   validationErrors,
+  sessionReceiver = undefined,
 }: {
   production?: boolean
   services?: Partial<Services>
   userSupplier?: () => HmppsUser
   validationErrors?: Locals['validationErrors']
+  sessionReceiver?: (session: Partial<SessionData>) => void
 }): Express {
   auth.default.authenticationMiddleware = () => (req, res, next) => next()
-  return appSetup(services as Services, production, userSupplier, validationErrors)
+  return appSetup(services as Services, production, userSupplier, validationErrors, sessionReceiver)
 }

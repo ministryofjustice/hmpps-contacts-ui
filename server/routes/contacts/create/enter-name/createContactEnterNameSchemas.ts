@@ -9,7 +9,7 @@ const FIRST_NAME_TOO_LONG_ERROR_MSG = "Contact's first name must be 35 character
 
 const MIDDLE_NAME_TOO_LONG_ERROR_MSG = "Contact's middle name must be 35 characters or less"
 
-export const schemaFactory = () => async () => {
+export const createContactEnterNameSchemaFactory = () => async () => {
   return createSchema({
     title: z.string().optional(),
     lastName: z
@@ -24,4 +24,6 @@ export const schemaFactory = () => async () => {
   })
 }
 
-export type SchemaType = z.infer<Awaited<ReturnType<ReturnType<typeof schemaFactory>>>>
+export type CreateContactEnterNameSchemaType = z.infer<
+  Awaited<ReturnType<ReturnType<typeof createContactEnterNameSchemaFactory>>>
+>

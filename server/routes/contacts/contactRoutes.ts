@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import CreateContactRoutes from './create/routes'
+import CreateContactRoutes from './create/createContactRoutes'
 import AuditService from '../../services/auditService'
 
 const ContactsRoutes = (auditService: AuditService): Router => {

@@ -1,0 +1,107 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " - Enter date of birth" %}
+{% set title = "Do you know " + journey.names.lastName + ", " + journey.names.firstName + "'s date of birth?" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+<div class="govuk-grid-row govuk-!-static-margin-bottom-5">
+  <div class="govuk-grid-column-full">
+      {{ govukBreadcrumbs({
+      items: [
+          {
+            text: "Digital Prison Services",
+            href: DPS_HOME_PAGE_URL
+          },
+          {
+              text: "Contacts",
+              href: "/"
+          }
+      ]
+      }) }}
+  </div>
+</div>
+{% include '../../../partials/formErrorSummary.njk' %}
+<span class="govuk-caption-l">Manage Contacts</span>
+<h1 class="govuk-heading-l">{{ title }}</h1>
+ <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                {% set dobHtml %}
+                    {{ govukDateInput({
+                        id: "dob",
+                        fieldset: {
+                            legend: {
+                                text: "Date of birth",
+                                classes: "govuk-visually-hidden"
+                            }
+                        },
+                        hint: {
+                            text: "For example, 15 6 2000"
+                        },
+                        items: [
+                            {
+                                id: 'day',
+                                label: 'Day',
+                                name: "day",
+                                classes: 'govuk-input--width-2',
+                                value: formResponses.day
+                            },
+                            {
+                                id: 'month',
+                                label: 'Month',
+                                name: "month",
+                                classes: 'govuk-input--width-2',
+                                value: formResponses.month
+                            },
+                            {
+                                id: 'year',
+                                label: 'Year',
+                                name: "year",
+                                classes: 'govuk-input--width-4',
+                                value: formResponses.year
+                            }
+                        ]
+                    }) }}
+
+                {% endset %}
+                {{ govukRadios({
+                    name: "isDobKnown",
+                    items: [
+                        {
+                            value: true,
+                            text: "Yes",
+                            checked: formResponses.isDobKnown === 'true',
+                            conditional: {
+                                html: dobHtml
+                            }
+                        },
+                        {
+                            value: false,
+                            text: "No",
+                            checked: formResponses.isDobKnown === 'false'
+                        }
+                    ],
+                    errorMessage: validationErrors | findError('isDobKnown')
+                }) }}
+
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        html: "Continue",
+                        type: "submit",
+                        classes: 'govuk-!-margin-top-6',
+                        attributes: {"data-qa": "continue-button"}
+                    }) }}
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="/">Cancel</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}
