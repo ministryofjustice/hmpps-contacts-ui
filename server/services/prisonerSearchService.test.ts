@@ -94,8 +94,12 @@ describe('Prisoner search service', () => {
       const prisoners = { totalPages: 1, totalElements: 1, content: [prisoner] }
       prisonerSearchApiClient.getPrisoners.mockResolvedValue(prisoners)
 
-      const { results, numberOfResults, numberOfPages, next, previous } =
-        await prisonerSearchService.getPrisoners(search, prisonId,0, user)
+      const { results, numberOfResults, numberOfPages, next, previous } = await prisonerSearchService.getPrisoners(
+        search,
+        prisonId,
+        0,
+        user,
+      )
 
       expect(results).toEqual([
         [
@@ -112,8 +116,9 @@ describe('Prisoner search service', () => {
 
     it('Propagates errors', async () => {
       prisonerSearchApiClient.getPrisoners.mockRejectedValue(new Error('some error'))
-      await expect(prisonerSearchService.getPrisoners(search, prisonId, 0, user))
-        .rejects.toEqual(new Error('some error') )
+      await expect(prisonerSearchService.getPrisoners(search, prisonId, 0, user)).rejects.toEqual(
+        new Error('some error'),
+      )
     })
   })
 })

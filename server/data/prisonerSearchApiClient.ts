@@ -13,8 +13,8 @@ export default class PrisonerSearchApiClient extends RestClient {
   async getPrisoners(
     search: string,
     prisonId: string,
-    page = 0,
     user: Express.User,
+    page = 0,
   ): Promise<{ totalPages: number; totalElements: number; content: Prisoner[] }> {
     return this.get(
       {

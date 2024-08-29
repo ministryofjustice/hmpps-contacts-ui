@@ -14,7 +14,8 @@ export type PrisonerDetailsItem = {
 
 export default class PrisonerSearchService {
   private numberOfPages = 1
-  private currentPage = 0 // API page number is 0-indexed
+
+  private currentPage = 0
 
   constructor(private readonly prisonerSearchApiClient: PrisonerSearchApiClient) {}
 
@@ -39,8 +40,12 @@ export default class PrisonerSearchService {
     previous: number
   }> {
     this.currentPage = page - 1
-    const { totalPages, totalElements, content } =
-      await this.prisonerSearchApiClient.getPrisoners(search, prisonId, this.currentPage, user)
+    const { totalPages, totalElements, content } = await this.prisonerSearchApiClient.getPrisoners(
+      search,
+      prisonId,
+      user,
+      this.currentPage,
+    )
 
     this.numberOfPages = totalPages
     const nextPage = this.getNextPage()

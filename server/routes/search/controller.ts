@@ -24,7 +24,7 @@ export default class SearchController implements PageHandler {
       req.session.search = null
     }
 
-    const search = req.session.search ? req.session.search : req.query.search as string
+    const search = req.session.search ? req.session.search : (req.query.search as string)
 
     const { pageSize } = config.apis.prisonerSearchApi
 

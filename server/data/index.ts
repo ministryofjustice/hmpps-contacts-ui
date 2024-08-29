@@ -18,7 +18,7 @@ import ContactsApiClient from './contactsApiClient'
 export const dataAccess = () => ({
   applicationInfo,
   hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
-  prisonerSearchApiClient:  new PrisonerSearchApiClient(),
+  prisonerSearchApiClient: new PrisonerSearchApiClient(),
   contactsApiClient: new ContactsApiClient(),
 })
 

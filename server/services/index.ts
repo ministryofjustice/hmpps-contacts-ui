@@ -4,12 +4,7 @@ import PrisonerSearchService from './prisonerSearchService'
 import ContactsService from './contactsService'
 
 export const services = () => {
-  const {
-    applicationInfo,
-    hmppsAuditClient,
-    prisonerSearchApiClient,
-    contactsApiClient,
-  } = dataAccess()
+  const { applicationInfo, hmppsAuditClient, prisonerSearchApiClient, contactsApiClient } = dataAccess()
 
   const auditService = new AuditService(hmppsAuditClient)
   const prisonerSearchService = new PrisonerSearchService(prisonerSearchApiClient)

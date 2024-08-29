@@ -1,4 +1,4 @@
-import nock, { RequestBodyMatcher } from 'nock'
+import nock from 'nock'
 
 import config from '../config'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
@@ -14,7 +14,6 @@ describe('prisonSearchClientBuilder', () => {
   let prisonerSearchApiClient: PrisonerSearchApiClient
 
   const prisonId = 'HEI'
-  const token = 'token-1'
 
   beforeEach(() => {
     fakePrisonerSearchApi = nock(config.apis.prisonerSearchApi.url)
@@ -56,7 +55,7 @@ describe('prisonSearchClientBuilder', () => {
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, results)
 
-      const output = await prisonerSearchApiClient.getPrisoners('test', prisonId, 0, user)
+      const output = await prisonerSearchApiClient.getPrisoners('test', prisonId, user, 0)
 
       expect(output).toEqual(results)
     })

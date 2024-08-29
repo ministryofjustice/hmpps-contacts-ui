@@ -65,6 +65,7 @@ function getSystemClientTokenFromHmppsAuth(username: string): Promise<superagent
 
 export default abstract class RestClient {
   agent: Agent
+
   tokenStore: TokenStore
 
   protected constructor(
