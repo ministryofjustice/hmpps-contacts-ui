@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-export default function createUserToken(authorities: string[]) {
+function createUserToken(authorities: string[]) {
   const payload = {
     user_name: 'user1',
     scope: ['read', 'write'],
@@ -11,4 +11,8 @@ export default function createUserToken(authorities: string[]) {
   }
 
   return jwt.sign(payload, 'secret', { expiresIn: '1h' })
+}
+
+export default function createUser(authorities: string[]) {
+  return { token: createUserToken(authorities), username: 'user1' } as Express.User
 }

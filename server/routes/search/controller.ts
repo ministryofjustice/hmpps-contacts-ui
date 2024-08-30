@@ -12,16 +12,22 @@ export default class SearchController implements PageHandler {
   public PAGE_NAME = Page.SEARCH_PRISONERS_PAGE
 
   GET = async (req: Request, res: Response): Promise<void> => {
+    const { user } = res.locals
+
     let prisoners = null
     let pageLinks: object
     let to: number
     let parsedPage: number
     let prisonerNotFoundMessage: string
+
     if (req.query.search) {
       req.session.search = null
     }
-    const search = req.session.search ? req.session.search : req.query.search
+
+    const search = req.session.search ? req.session.search : (req.query.search as string)
+
     const { pageSize } = config.apis.prisonerSearchApi
+
     try {
       if (res.locals.validationErrors === undefined && search) {
         const currentPage = typeof req.query.page === 'string' ? req.query.page : ''
@@ -34,8 +40,8 @@ export default class SearchController implements PageHandler {
         prisoners = await this.prisonerSearchService.getPrisoners(
           search.toString(),
           req.session.prisonId,
-          res.locals.user.username,
           parsedPage,
+          user,
         )
 
         // Set pagination links
@@ -54,7 +60,7 @@ export default class SearchController implements PageHandler {
           search.toString(),
           prisoners.numberOfResults,
           req.session.prisonName,
-          res.locals.user.username,
+          user,
         )
       }
 

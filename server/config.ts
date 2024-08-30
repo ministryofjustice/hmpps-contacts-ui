@@ -100,6 +100,14 @@ export default {
       pageSize: 20,
       pagesLinksToShow: 3,
     },
+    contactsApi: {
+      url: get('CONTACTS_API_URL', 'http://localhost:8080', requiredInProduction),
+      timeout: {
+        response: Number(get('CONTACTS_API_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('CONTACTS_API_TIMEOUT_DEADLINE', 10000)),
+      },
+      agent: new AgentConfig(Number(get('CONTACTS_API_TIMEOUT_RESPONSE', 10000))),
+    },
     componentApi: {
       timeout: {
         response: Number(get('COMPONENT_API_TIMEOUT_RESPONSE', 5000)),
