@@ -1,4 +1,4 @@
-declare module journeys {
+declare namespace journeys {
   export interface CreateContactJourney {
     id: string
     names?: ContactNames
