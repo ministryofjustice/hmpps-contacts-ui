@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import type { Services } from '../services'
-import ContactsRoutes from './contacts/routes'
+import ContactsRoutes from './contacts/contactRoutes'
 import SearchRoutes from './search/routes'
 import HomeRoutes from './home/routes'
 

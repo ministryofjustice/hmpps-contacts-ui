@@ -23,7 +23,7 @@ export const findError = (errors: fieldErrors, fieldName: string) => {
 
 export type SchemaFactory = (request: Request) => Promise<z.ZodTypeAny>
 
-export const validate = (schema: z.ZodTypeAny | SchemaFactory, redirectOnError?: string): RequestHandler => {
+export const validate = (schema: z.ZodTypeAny | SchemaFactory): RequestHandler => {
   return async (req, res, next) => {
     if (!schema) {
       return next()
@@ -46,10 +46,7 @@ export const validate = (schema: z.ZodTypeAny | SchemaFactory, redirectOnError?:
       )
     }
     req.flash('validationErrors', JSON.stringify(deduplicatedFieldErrors))
-    if (redirectOnError) {
-      return res.redirect(redirectOnError)
-    }
-    return next()
+    return res.redirect(req.originalUrl)
   }
 }
 

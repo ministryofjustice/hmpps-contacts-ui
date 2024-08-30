@@ -21,4 +21,12 @@ export default abstract class Page {
     cy.get(`#${Cypress.$.escapeSelector(field)}-error`).should('contain.text', expectedError)
     return this
   }
+
+  get errorSummaryItems(): PageElement {
+    return this.errorSummary.find('.govuk-error-summary__list a')
+  }
+
+  get errorSummary(): PageElement {
+    return cy.get('.govuk-error-summary')
+  }
 }
