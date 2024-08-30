@@ -16,12 +16,16 @@ describe('createContactMiddleware', () => {
       res = { redirect: jest.fn() } as unknown as Response
     })
 
-    it('should proceed if the journey is in the session', () => {
+    it('should proceed if the journey is in the session and update the last touched date', () => {
       const next = jest.fn()
+      const lastTouchedBeforeCall = new Date(2020, 1, 1)
       req.session.createContactJourneys = {}
-      req.session.createContactJourneys[journeyId] = { id: journeyId }
+      req.session.createContactJourneys[journeyId] = { id: journeyId, lastTouched: lastTouchedBeforeCall }
       ensureInCreateContactJourney()(req, res, next)
       expect(next).toHaveBeenCalledTimes(1)
+      expect(req.session.createContactJourneys[journeyId].lastTouched.getTime()).toBeGreaterThan(
+        lastTouchedBeforeCall.getTime(),
+      )
     })
     it('should return to start if the journey is not in the session', () => {
       const next = jest.fn()

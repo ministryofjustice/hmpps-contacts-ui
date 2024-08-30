@@ -24,6 +24,7 @@ beforeEach(() => {
       session.createContactJourneys = {}
       session.createContactJourneys[journeyId] = {
         id: journeyId,
+        lastTouched: new Date(),
       }
     },
   })
