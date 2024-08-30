@@ -184,7 +184,7 @@ describe.each(['get', 'patch', 'post', 'put', 'delete'] as const)('Method: %s', 
         path: '/test',
       },
       user,
-      Client.USER_CLIENT,
+      Client.USER_TOKEN,
     )
 
     expect(nock.isDone()).toBe(true)
