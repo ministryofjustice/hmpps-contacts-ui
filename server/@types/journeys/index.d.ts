@@ -1,6 +1,7 @@
 declare namespace journeys {
   export interface CreateContactJourney {
     id: string
+    lastTouched: Date
     names?: ContactNames
     dateOfBirth?: DateOfBirth
   }

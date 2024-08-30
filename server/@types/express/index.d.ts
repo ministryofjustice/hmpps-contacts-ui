@@ -11,7 +11,6 @@ export declare module 'express-session' {
     prisonId: string
     prisonName: string
     search: string
-    journey: object
     createContactJourneys: Record<string, CreateContactJourney>
   }
 }
