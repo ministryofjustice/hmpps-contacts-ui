@@ -14,8 +14,7 @@ declare namespace journeys {
   }
 
   export interface DateOfBirth {
-    day: number
-    month: number
-    year: number
+    isKnown: boolean
+    dateOfBirth?: Date
   }
 }

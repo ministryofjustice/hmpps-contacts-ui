@@ -15,7 +15,7 @@ export const createContactEnterDobSchema = () => async () => {
     day: z.coerce.number({ message: DAY_TYPE_MESSAGE }).optional(),
     month: z.coerce.number({ message: MONTH_TYPE_MESSAGE }).optional(),
     year: z.coerce.number({ message: YEAR_TYPE_MESSAGE }).optional(),
-    dob: z.date().optional(),
+    dateOfBirth: z.date().optional(),
   })
     .superRefine((val, ctx) => {
       if (val.isDobKnown === true) {
@@ -32,7 +32,7 @@ export const createContactEnterDobSchema = () => async () => {
     })
     .transform(val => {
       if (val.isDobKnown === true) {
-        return { ...val, dob: new Date(val.year, val.month, val.day) }
+        return { ...val, dateOfBirth: new Date(`${val.year}-${val.month}-${val.day}Z`) }
       }
       return val
     })

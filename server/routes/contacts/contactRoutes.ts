@@ -1,10 +1,11 @@
 import { Router } from 'express'
 import CreateContactRoutes from './create/createContactRoutes'
 import AuditService from '../../services/auditService'
+import { ContactsService } from '../../services'
 
-const ContactsRoutes = (auditService: AuditService): Router => {
+const ContactsRoutes = (auditService: AuditService, contactsService: ContactsService): Router => {
   const router = Router({ mergeParams: true })
-  router.use('/create', CreateContactRoutes(auditService))
+  router.use('/create', CreateContactRoutes(auditService, contactsService))
   return router
 }
 
