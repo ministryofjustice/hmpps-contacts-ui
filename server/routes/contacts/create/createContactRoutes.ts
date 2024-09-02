@@ -9,8 +9,9 @@ import CreateContactEnterDobController from './enter-dob/createContactEnterDobCo
 import { createContactEnterDobSchema } from './enter-dob/createContactEnterDobSchemas'
 import StartCreateContactJourneyController from './start/startCreateContactJourneyController'
 import ensureInCreateContactJourney from './createContactMiddleware'
+import { ContactsService } from '../../../services'
 
-const CreateContactRoutes = (auditService: AuditService) => {
+const CreateContactRoutes = (auditService: AuditService, contactsService: ContactsService) => {
   const router = Router({ mergeParams: true })
 
   const startController = new StartCreateContactJourneyController()
@@ -30,7 +31,7 @@ const CreateContactRoutes = (auditService: AuditService) => {
     enterNameController.POST,
   )
 
-  const enterDobController = new CreateContactEnterDobController()
+  const enterDobController = new CreateContactEnterDobController(contactsService)
   router.get(
     '/enter-dob/:journeyId',
     ensureInCreateContactJourney(),

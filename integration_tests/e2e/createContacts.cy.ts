@@ -12,6 +12,7 @@ context('Create Contacts', () => {
   it('Can create a contact without dob', () => {
     cy.signIn()
     cy.visit('/contacts/create/start')
+    cy.task('stubCreateContact', { id: 132456 })
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
@@ -29,6 +30,7 @@ context('Create Contacts', () => {
   it('Can create a contact with dob', () => {
     cy.signIn()
     cy.visit('/contacts/create/start')
+    cy.task('stubCreateContact', { id: 132456 })
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
