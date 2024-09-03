@@ -14,8 +14,4 @@ export default class SearchPrisonerPage extends Page {
   prisonerSearchFormField = (): PageElement => cy.get('#search')
 
   prisonerSearchSearchButton = (): PageElement => cy.get('[data-test="search"]')
-
-  searchResultsTrue = (): PageElement => cy.get('#search-results-true')
-
-  searchResultsNone = (): PageElement => cy.get('#search-results-none')
 }

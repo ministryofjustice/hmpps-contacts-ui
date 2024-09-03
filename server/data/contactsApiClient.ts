@@ -2,6 +2,7 @@ import config from '../config'
 import RestClient from './restClient'
 import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
+import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
 
 export default class ContactsApiClient extends RestClient {
   constructor() {
@@ -13,6 +14,20 @@ export default class ContactsApiClient extends RestClient {
       {
         path: `/contact`,
         data: request,
+      },
+      user,
+    )
+  }
+
+  async getPrisonerContacts(
+    prisonerNumber: string,
+    activeOnly: boolean,
+    user: Express.User,
+  ): Promise<PrisonerContactSummary[]> {
+    return this.get<Contact[]>(
+      {
+        path: `/prisoner/${prisonerNumber}`,
+        query: { active: activeOnly },
       },
       user,
     )

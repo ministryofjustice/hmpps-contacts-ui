@@ -9,7 +9,7 @@ export default class PrisonerSearchController implements PageHandler {
   GET = async (req: Request, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.manageContactsJourneys[journeyId]
-    const search = res.locals?.formResponses?.search ? res.locals?.formResponses?.search : journey?.search?.searchTerm
+    const search = res.locals?.formResponses?.search ?? journey?.search?.searchTerm
     res.render('pages/contacts/manage/prisonerSearch', { search, journey })
   }
 

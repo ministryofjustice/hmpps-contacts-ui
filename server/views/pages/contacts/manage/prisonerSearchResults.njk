@@ -11,6 +11,9 @@
 
 {% set pageTitle = "Search for a prisoner" %}
 
+{% set searchLink = "/contacts/manage/prisoner-search/" + journey.id %}
+{% set backLinkHref = searchLink %}
+
 {% block content %}
 
   <div class="govuk-grid-row govuk-!-static-margin-bottom-5">
@@ -19,7 +22,7 @@
           items: [
               {  text: "Digital Prison Services", href: DPS_HOME_PAGE_URL },
               {  text: "Contacts", href: "/" },
-              {  text: "Search",   href: "/contacts/manage/start" }
+              {  text: "Search",   href: searchLink }
           ]
           }) }}
       </div>
@@ -35,8 +38,7 @@
         <div class="govuk-grid-column-full-from-desktop">
             {% set resultString = 'result' if results.totalElements === 1 else 'results' %}
             <p class="govuk-body">
-                Showing {{ results.totalElements }} {{ resultString }}{{ (" (page " + (results.number + 1) + " of " + results.totalPages + ")") if results.totalPages > 1 }}.
-                <a href="../prisoner-search/{{ journey.id }}"  class="govuk-link govuk-!-font-size-19">Search again</a>
+                Showing {{ results.totalElements }} {{ resultString }}{{ (" (page " + (results.number + 1) + " of " + results.totalPages + ")") if results.totalPages > 1 }}
             </p>
 
             {% set rows = [] %}

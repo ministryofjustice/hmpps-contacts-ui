@@ -11,7 +11,7 @@ const ContactsRoutes = (
 ): Router => {
   const router = Router({ mergeParams: true })
   router.use('/create', CreateContactRoutes(auditService, contactsService))
-  router.use('/manage', ManageContactsRoutes(auditService, prisonerSearchService))
+  router.use('/manage', ManageContactsRoutes(auditService, prisonerSearchService, contactsService))
   return router
 }
 

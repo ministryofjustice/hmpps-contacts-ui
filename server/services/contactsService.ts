@@ -2,6 +2,7 @@ import ContactsApiClient from '../data/contactsApiClient'
 import CreateContactJourney = journeys.CreateContactJourney
 import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
+import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
 
 export default class ContactsService {
   constructor(private readonly contactsApiClient: ContactsApiClient) {}
@@ -16,5 +17,13 @@ export default class ContactsService {
       createdBy: user.username,
     }
     return this.contactsApiClient.createContact(request, user)
+  }
+
+  async getPrisonerContacts(
+    prisonerNumber: string,
+    active: boolean,
+    user: Express.User,
+  ): Promise<PrisonerContactSummary[]> {
+    return this.contactsApiClient.getPrisonerContacts(prisonerNumber, active, user)
   }
 }

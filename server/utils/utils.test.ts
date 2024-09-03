@@ -1,7 +1,6 @@
 import {
   convertToTitleCase,
   formatDate,
-  getResultsPagingLinks,
   initialiseName,
   prisonerDatePretty,
   properCaseFullName,
@@ -57,25 +56,6 @@ describe('Prisoner Date Pretty', () => {
     const fullName = prisonerDatePretty({ dateToFormat: '1981-01-30' })
 
     expect(fullName).toEqual('30 January 1981')
-  })
-})
-
-describe('Get results paging links', () => {
-  it('should get paging links', () => {
-    const parameters = {
-      pagesToShow: 3,
-      numberOfPages: 3,
-      currentPage: 1,
-      searchParam: 'search=Al',
-      searchUrl: '/search/prisoner',
-    }
-    const fullName = getResultsPagingLinks(parameters)
-
-    expect(fullName).toEqual([
-      { href: '/search/prisoner?search=Al&page=1', selected: true, text: '1' },
-      { href: '/search/prisoner?search=Al&page=2', selected: false, text: '2' },
-      { href: '/search/prisoner?search=Al&page=3', selected: false, text: '3' },
-    ])
   })
 })
 

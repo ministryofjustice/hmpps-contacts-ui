@@ -1,14 +1,17 @@
-{% extends "../../partials/layout.njk" %}
+{% extends "../../../partials/layout.njk" %}
+
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 {% from "moj/components/pagination/macro.njk" import mojPagination %}
 
-{% set pageTitle = applicationName + " - Home" %}
+{% set pageTitle = applicationName + " - List contacts" %}
 {% set title = "List contacts" %}
 {% set mainClasses = "app-container govuk-body" %}
-{% set backLinkHref = "/search/prisoner" %}
+
+{% set searchLink = "/contacts/manage/prisoner-search/" + journey.id %}
+{% set backLinkHref = "/contacts/manage/prisoner-search-results/" + journey.id %}
 
 {% block content %}
 
@@ -16,14 +19,10 @@
     <div class="govuk-grid-column-full">
         {{ govukBreadcrumbs({
         items: [
-            {
-                text: "Digital Prison Services",
-                href: DPS_HOME_PAGE_URL
-            },
-            {
-                text: "Contacts",
-                href: "/"
-            }
+            { text: "Digital Prison Services", href: DPS_HOME_PAGE_URL },
+            { text: "Contacts", href: "/" },
+            { text: "Search", href: searchLink },
+            { text: "Results", href: backLinkHref }
         ]
         }) }}
     </div>
@@ -31,5 +30,6 @@
 
 <span class="govuk-caption-l">Manage Contacts</span>
 <h1 class="govuk-heading-l">{{ title }}</h1>
+
 
 {% endblock %}

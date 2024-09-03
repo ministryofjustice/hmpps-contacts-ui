@@ -50,51 +50,6 @@ export const prisonerDatePretty = ({
   )}`
 }
 
-export const getResultsPagingLinks = ({
-  pagesToShow = 1,
-  numberOfPages = 1,
-  currentPage = 1,
-  searchParam = '',
-  searchUrl,
-}: {
-  pagesToShow: number
-  numberOfPages: number
-  currentPage: number
-  searchParam: string
-  searchUrl: string
-}): Array<{ text: string; href: string; selected: boolean }> => {
-  let pageStartNumber = 1
-  let pageEndNumber = pagesToShow
-  const pageLinks = []
-
-  if (numberOfPages <= pagesToShow) {
-    pageEndNumber = numberOfPages
-  } else {
-    const endPageOffset = currentPage + (pagesToShow - 1)
-
-    if (endPageOffset === numberOfPages) {
-      pageStartNumber = endPageOffset - (pagesToShow - 1)
-      pageEndNumber = endPageOffset
-    } else if (endPageOffset > numberOfPages) {
-      pageStartNumber = numberOfPages - pagesToShow + 1
-      pageEndNumber = numberOfPages
-    } else {
-      pageStartNumber = currentPage
-      pageEndNumber = endPageOffset
-    }
-  }
-
-  for (let pageIndex = pageStartNumber; pageIndex <= pageEndNumber; pageIndex += 1) {
-    pageLinks.push({
-      text: pageIndex.toString(),
-      href: `${searchUrl}?${searchParam}&page=${pageIndex}`,
-      selected: pageIndex === currentPage,
-    })
-  }
-
-  return pageLinks
-}
-
 export const formatDate = (date: string | Date, fmt = 'd MMMM yyyy') => {
   if (!date) return undefined
   const richDate = typeof date === 'string' ? parseISO(date) : date

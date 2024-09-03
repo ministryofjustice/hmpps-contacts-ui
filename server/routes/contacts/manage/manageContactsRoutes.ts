@@ -8,9 +8,13 @@ import PrisonerSearchController from './prisoner-search/prisonerSearchController
 import PrisonerSearchResultsController from './prisoner-search/prisonerSearchResultsController'
 import { prisonerSearchSchemaFactory } from './prisoner-search/prisonerSearchSchema'
 import ListContactsController from './list/listContactsController'
-import { PrisonerSearchService } from '../../../services'
+import { ContactsService, PrisonerSearchService } from '../../../services'
 
-const ManageContactsRoutes = (auditService: AuditService, prisonerSearchService: PrisonerSearchService) => {
+const ManageContactsRoutes = (
+  auditService: AuditService,
+  prisonerSearchService: PrisonerSearchService,
+  contactsService: ContactsService,
+) => {
   const router = Router({ mergeParams: true })
 
   // Part 1: Start manage contacts
@@ -42,9 +46,9 @@ const ManageContactsRoutes = (auditService: AuditService, prisonerSearchService:
   )
 
   // Part 4: List contacts for a prisoner
-  const listContactsController = new ListContactsController()
+  const listContactsController = new ListContactsController(prisonerSearchService, contactsService)
   router.get(
-    '/prisoner/contact-list/:journeyId',
+    '/list/:journeyId',
     ensureInManageContactsJourney(),
     logPageViewMiddleware(auditService, listContactsController),
     listContactsController.GET,
