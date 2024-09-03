@@ -5,7 +5,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% set pageTitle = applicationName + " - Enter name" %}
-{% set title = "What is the contacts name" %}
+{% set title = "What is the contacts name?" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
@@ -33,33 +33,6 @@
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
-                {{ govukInput({
-                    id: "lastName",
-                    name: "lastName",
-                    label: { text: "Surname" },
-                    classes: 'govuk-!-width-one-third',
-                    errorMessage: validationErrors | findError('lastName'),
-                    value: formResponses.lastName
-                }) }}
-
-                {{ govukInput({
-                    id: "firstName",
-                    name: "firstName",
-                    label: { text: "Given name 1" },
-                    classes: 'govuk-!-width-one-third',
-                    errorMessage: validationErrors | findError('firstName'),
-                    value: formResponses.firstName
-                }) }}
-
-                {{ govukInput({
-                    id: "middleName",
-                    name: "middleName",
-                    label: { text: "Given name 2" },
-                    classes: 'govuk-!-width-one-third',
-                    errorMessage: validationErrors | findError('middleName'),
-                    value: formResponses.middleName
-                }) }}
-
                 {{ govukSelect({
                     id: "title",
                     name: "title",
@@ -84,7 +57,35 @@
                         { "value": "MRS", "text": "Mrs" },
                         { "value": "IMAM", "text": "Imam" }
                     ]
-                    }) }}
+                }) }}
+
+                {{ govukInput({
+                    id: "firstName",
+                    name: "firstName",
+                    label: { text: "First name" },
+                    classes: 'govuk-!-width-one-third',
+                    errorMessage: validationErrors | findError('firstName'),
+                    value: formResponses.firstName
+                }) }}
+
+                {{ govukInput({
+                    id: "middleName",
+                    name: "middleName",
+                    label: { text: "Middle names" },
+                    classes: 'govuk-!-width-one-third',
+                    errorMessage: validationErrors | findError('middleName'),
+                    value: formResponses.middleName
+                }) }}
+
+                {{ govukInput({
+                    id: "lastName",
+                    name: "lastName",
+                    label: { text: "Last name" },
+                    classes: 'govuk-!-width-one-third',
+                    errorMessage: validationErrors | findError('lastName'),
+                    value: formResponses.lastName
+                }) }}
+
                 <div class="govuk-button-group">
                     {{ govukButton({
                         html: "Continue",

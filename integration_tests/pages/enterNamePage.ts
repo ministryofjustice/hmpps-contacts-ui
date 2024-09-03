@@ -2,7 +2,7 @@ import Page, { PageElement } from './page'
 
 export default class EnterNamePage extends Page {
   constructor() {
-    super('What is the contacts name')
+    super('What is the contacts name?')
   }
 
   enterLastName(value: string): EnterNamePage {
