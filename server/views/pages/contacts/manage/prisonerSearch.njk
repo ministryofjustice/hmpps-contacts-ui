@@ -1,4 +1,4 @@
-{% extends "../../partials/layout.njk" %}
+{% extends "../../../partials/layout.njk" %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
@@ -8,7 +8,7 @@
 {% set pageTitle = applicationName + " - Home" %}
 {% set title = "Search for a prisoner" %}
 {% set mainClasses = "app-container govuk-body" %}
-{% set backLinkHref = "/search/prisoner" %}
+{% set backLinkHref = "/" %}
 
 {% block content %}
 
@@ -29,7 +29,7 @@
     </div>
 </div>
 
-{% include '../../partials/formErrorSummary.njk' %}
+{% include '../../../partials/formErrorSummary.njk' %}
 
 <span class="govuk-caption-l">Manage Contacts</span>
 <h1 class="govuk-heading-l">{{ title }}</h1>
@@ -37,13 +37,13 @@
     <div class="govuk-grid-column-full">
         <div class="block-background">
             <div class="moj-search govuk-!-width-one-half">
-                <form method="POST"> 
+                <form method="POST">
                     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
                     {{ govukInput({
                         classes: "moj-search__input",
                         label: {
-                            text: "Enter name or prison number"
+                            text: "Enter a name or a prison number"
                         },
                         id: "search",
                         name: "search",
@@ -66,55 +66,6 @@
                 </form>
             </div>
         </div>
-    </div>
-    <div class="govuk-grid-column-full">
-        {% set pagination %}
-            {{ mojPagination({
-                results: {
-                    from: from,
-                    to: to,
-                    count: numberOfResults,
-                    text: "result" | pluralise(numberOfResults)
-                },
-                previous: {
-                    text: 'Previous',
-                    href: backLinkHref + '?search=' + search + '&page=' + previous
-                } if numberOfResults > 10,
-                next: {
-                    text: 'Next',
-                    href: backLinkHref + '?search=' + search + '&page=' + next
-                } if numberOfResults > 10,
-                items: pageLinks if numberOfResults > 10
-            }) }}
-        {% endset %}
-
-        {% if results.length > 0 %}
-            {{ govukTable({
-                classes: "bapv-table govuk-!-margin-top-3",
-                captionClasses: "govuk-table__caption--m",
-                attributes: {
-                "id": "search-results-true"
-                },
-                head: [
-                    {
-                        text: "Name"
-                    },
-                    {
-                        text: "Prison number"
-                    },
-                    {
-                        text: "Date of birth"
-                    }
-                ],
-                rows: results
-            }) }}
-
-            {{ pagination | safe }}
-        {% endif %}
-
-        {% if prisonerNotFoundMessage and results.length == 0 %}
-            <p class="govuk-!-margin-top-6 govuk-!-margin-bottom-6" id="search-results-none">{{ prisonerNotFoundMessage }}</p>
-        {% endif %}
     </div>
 </div>
 {% endblock %}

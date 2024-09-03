@@ -1,0 +1,102 @@
+{% extends "../../../partials/layout.njk" %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/pagination/macro.njk" import govukPagination %}
+
+{% set pageTitle = "Search for a prisoner" %}
+
+{% block content %}
+
+  <div class="govuk-grid-row govuk-!-static-margin-bottom-5">
+      <div class="govuk-grid-column-full">
+          {{ govukBreadcrumbs({
+          items: [
+              {  text: "Digital Prison Services", href: DPS_HOME_PAGE_URL },
+              {  text: "Contacts", href: "/" },
+              {  text: "Search",   href: "/contacts/manage/start" }
+          ]
+          }) }}
+      </div>
+  </div>
+
+  <div class="govuk-grid-row">
+      <div class="govuk-grid-column-three-quarters">
+          <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+      </div>
+  </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full-from-desktop">
+            {% set resultString = 'result' if results.totalElements === 1 else 'results' %}
+            <p class="govuk-body">
+                Showing {{ results.totalElements }} {{ resultString }}{{ (" (page " + (results.number + 1) + " of " + results.totalPages + ")") if results.totalPages > 1 }}.
+                <a href="../prisoner-search/{{ journey.id }}"  class="govuk-link govuk-!-font-size-19">Search again</a>
+            </p>
+
+            {% set rows = [] %}
+            {% for result in results.content %}
+                {% set prisonerNameHtml %}
+                   <a href="../list/{{journey.id}}?prisoner={{ result.prisonerNumber }}" class="govuk-link govuk-link--no-visited-state bapv-result-row">
+                      {{ (result.lastName + ", " + result.firstName) | convertToTitleCase }}
+                   </a>
+                {% endset %}
+
+                {% set rows = (rows.push([
+                    { html: prisonerNameHtml },
+                    { text: result.prisonerNumber },
+                    { text: result.dateOfBirth | formatDate }
+                ]), rows) %}
+            {% else %}
+                {% set rows = (rows.push([
+                    {
+                        text: 'No results found',
+                        attributes: { colspan:3 },
+                        classes: 'govuk-!-text-align-centre'
+                    }
+                ]), rows) %}
+            {% endfor %}
+
+            {{ govukTable({
+                head: [
+                    { text: "Name" },
+                    { text: "Prison number" },
+                    { text: "Date of birth" }
+                ],
+                rows: rows
+            }) }}
+
+            {% if results.totalPages > 1 %}
+                {% set paginationItems = [] %}
+                {% for i in range(0, results.totalPages) %}
+                    {% if i === 0 or i === (results.totalPages - 1) or (i >= results.number - 1 and i <= results.number + 1) %}
+                        {% set paginationItems = (paginationItems.push(
+                            {
+                                number: i + 1,
+                                href: "?page=" + i,
+                                current: (i === results.number)
+                            }
+                        ), paginationItems) %}
+                        {% elif i === 1 or i === results.totalPages - 2 %}
+                        {% set paginationItems = (paginationItems.push({ ellipsis: true }), paginationItems) %}
+                    {% endif %}
+                {% endfor %}
+
+                {{ govukPagination({
+                    previous: {
+                        href: "?page=" + (results.number - 1)
+                    } if not results.first,
+                    next: {
+                        href: "?page=" + (results.number + 1)
+                    } if not results.last,
+                    items: paginationItems
+                }) }}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

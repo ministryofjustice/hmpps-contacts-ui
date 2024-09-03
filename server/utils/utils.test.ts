@@ -5,6 +5,8 @@ import {
   initialiseName,
   prisonerDatePretty,
   properCaseFullName,
+  isValidPrisonerNumber,
+  extractPrisonerNumber,
 } from './utils'
 
 describe('convert to title case', () => {
@@ -86,5 +88,38 @@ describe('Format date', () => {
     ['Date Object', new Date(2022, 2, 20), 'd MMMM yyyy', '20 March 2022'],
   ])('%s formatDate(%s, %s)', (_: string, a: string | Date, fmt: string, expected: string) => {
     expect(formatDate(a, fmt)).toEqual(expected)
+  })
+})
+
+describe('isValidPrisonerNumber', () => {
+  it('valid', () => {
+    expect(isValidPrisonerNumber('A1234BC')).toEqual(true)
+  })
+  it('invalid', () => {
+    expect(isValidPrisonerNumber('AB1234C')).toEqual(false)
+  })
+  it('empty string', () => {
+    expect(isValidPrisonerNumber('')).toEqual(false)
+  })
+  it('disallowed characters', () => {
+    expect(isValidPrisonerNumber(' A1234BC-')).toEqual(false)
+  })
+  it('wrong case', () => {
+    expect(isValidPrisonerNumber('A1234bC')).toEqual(false)
+  })
+})
+
+describe('extractPrisonerNumber', () => {
+  it.each([
+    ['valid prisoner number', 'A1234BC', 'A1234BC'],
+    ['valid prisoner number (lowercase)', 'a1234bc', 'A1234BC'],
+    ['valid prisoner number (within string)', 'name A1234BC name', 'A1234BC'],
+    ['do not match a sub-string', 'nameA1234BCname', false],
+    ['empty string', '', false],
+    ['disallowed characters', 'A123-4BC', false],
+    ['wrong format', '1ABCD23', false],
+    ['null string', null, false],
+  ])('%s: extractPrisonerNumber(%s) => %s', (_: string, input: string, expected: string | false) => {
+    expect(extractPrisonerNumber(input)).toEqual(expected)
   })
 })

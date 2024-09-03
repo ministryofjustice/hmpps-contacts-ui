@@ -39,12 +39,7 @@ export const validate = (schema: z.ZodTypeAny | SchemaFactory): RequestHandler =
     const deduplicatedFieldErrors = Object.fromEntries(
       Object.entries(result.error.flatten().fieldErrors).map(([key, value]) => [key, [...new Set(value || [])]]),
     )
-    if (process.env.NODE_ENV === 'test') {
-      // eslint-disable-next-line no-console
-      console.error(
-        `There were validation errors: ${JSON.stringify(result.error.format())} || body was: ${JSON.stringify(req.body)}`,
-      )
-    }
+
     req.flash('validationErrors', JSON.stringify(deduplicatedFieldErrors))
     return res.redirect(req.originalUrl)
   }

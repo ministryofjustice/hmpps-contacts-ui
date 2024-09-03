@@ -18,4 +18,21 @@ declare namespace journeys {
     month: number
     year: number
   }
+
+  export interface ManageContactsJourney {
+    id: string
+    lastTouched: Date
+    search?: {
+      searchTerm?: string
+    }
+    prisoner?: {
+      firstName?: string
+      lastName?: string
+      prisonerNumber?: string
+      dateOfBirth?: string
+      prisonId?: string
+      prisonName?: string
+    }
+    contactId?: number
+  }
 }
