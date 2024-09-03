@@ -17,4 +17,21 @@ declare namespace journeys {
     isKnown: boolean
     dateOfBirth?: Date
   }
+
+  export interface ManageContactsJourney {
+    id: string
+    lastTouched: Date
+    search?: {
+      searchTerm?: string
+    }
+    prisoner?: {
+      firstName?: string
+      lastName?: string
+      prisonerNumber?: string
+      dateOfBirth?: string
+      prisonId?: string
+      prisonName?: string
+    }
+    contactId?: number
+  }
 }

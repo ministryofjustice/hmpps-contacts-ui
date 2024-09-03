@@ -3,7 +3,7 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
-import { initialiseName, formatDate } from './utils'
+import { initialiseName, formatDate, convertToTitleCase, properCaseFullName } from './utils'
 import config from '../config'
 import logger from '../../logger'
 import { buildErrorSummaryList, findError } from '../middleware/validationMiddleware'
@@ -43,6 +43,8 @@ export default function nunjucksSetup(app: express.Express): void {
   )
 
   njkEnv.addFilter('initialiseName', initialiseName)
+  njkEnv.addFilter('convertToTitleCase', convertToTitleCase)
+  njkEnv.addFilter('properCaseFullName', properCaseFullName)
   njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
   njkEnv.addFilter('buildErrorSummaryList', buildErrorSummaryList)
   njkEnv.addFilter('findError', findError)

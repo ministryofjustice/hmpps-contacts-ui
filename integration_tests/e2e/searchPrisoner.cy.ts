@@ -7,7 +7,7 @@ context('Contacts', () => {
     cy.task('reset')
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.signIn()
-    cy.visit('/search/prisoner')
+    cy.visit('/contacts/manage/prisoner-search/start')
   })
 
   it('Contacts cards visible', () => {

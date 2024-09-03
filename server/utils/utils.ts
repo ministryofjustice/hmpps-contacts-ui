@@ -101,3 +101,14 @@ export const formatDate = (date: string | Date, fmt = 'd MMMM yyyy') => {
   if (!isValid(richDate)) return undefined
   return format(richDate, fmt)
 }
+
+export const isValidPrisonerNumber = (prisonerNo: string): boolean => {
+  const prisonerNoRegExp = /^[A-Z][0-9]{4}[A-Z]{2}$/
+  const matches = prisonerNo.match(prisonerNoRegExp)
+  return matches !== null
+}
+
+export const extractPrisonerNumber = (search: string): string | false => {
+  const searchTerms = search?.toUpperCase().split(' ')
+  return (searchTerms && searchTerms.find(term => isValidPrisonerNumber(term))) || false
+}

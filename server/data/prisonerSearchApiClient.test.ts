@@ -9,10 +9,9 @@ jest.mock('./tokenStore/inMemoryTokenStore')
 
 const user = { token: 'userToken', username: 'user1' } as Express.User
 
-describe('prisonSearchClientBuilder', () => {
+describe('Prisoner search', () => {
   let fakePrisonerSearchApi: nock.Scope
   let prisonerSearchApiClient: PrisonerSearchApiClient
-
   const prisonId = 'HEI'
 
   beforeEach(() => {
@@ -31,8 +30,8 @@ describe('prisonSearchClientBuilder', () => {
     nock.cleanAll()
   })
 
-  describe('getPrisoners', () => {
-    it('should return data from api', async () => {
+  describe('searchInCaseload', () => {
+    it('should return expected data', async () => {
       const results = {
         totalPage: 1,
         totalElements: 1,
@@ -45,52 +44,25 @@ describe('prisonSearchClientBuilder', () => {
           },
         ],
       }
+
       fakePrisonerSearchApi
         .get('/prison/HEI/prisoners')
         .query({
           term: 'test',
-          page: '0',
-          size: config.apis.prisonerSearchApi.pageSize,
+          page: 0,
+          size: 20,
         })
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, results)
 
-      const output = await prisonerSearchApiClient.getPrisoners('test', prisonId, user, 0)
+      const output = await prisonerSearchApiClient.searchInCaseload('test', prisonId, user, { page: 0, size: 20 })
 
       expect(output).toEqual(results)
     })
   })
 
-  describe('getPrisoner', () => {
-    it('should return data from api', async () => {
-      const results = {
-        totalPage: 1,
-        totalElements: 1,
-        content: [
-          {
-            lastName: 'test',
-            firstName: 'test',
-            prisonerNumber: 'test',
-            dateOfBirth: '2000-01-01',
-          },
-        ],
-      }
-      fakePrisonerSearchApi
-        .get('/prison/HEI/prisoners')
-        .query({
-          term: 'test',
-        })
-        .matchHeader('authorization', `Bearer systemToken`)
-        .reply(200, results)
-
-      const output = await prisonerSearchApiClient.getPrisoner('test', prisonId, user)
-
-      expect(output).toEqual(results)
-    })
-  })
-
-  describe('getPrisonerById', () => {
-    it('should return data for single prisoner by prisoner ID', async () => {
+  describe('getByPrisonerNumber', () => {
+    it('should return a single prisoner by prisoner number', async () => {
       const prisoner = TestData.prisoner()
 
       fakePrisonerSearchApi
@@ -98,7 +70,7 @@ describe('prisonSearchClientBuilder', () => {
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, prisoner)
 
-      const output = await prisonerSearchApiClient.getPrisonerById('A1234BC', user)
+      const output = await prisonerSearchApiClient.getByPrisonerNumber('A1234BC', user)
 
       expect(output).toEqual(prisoner)
     })

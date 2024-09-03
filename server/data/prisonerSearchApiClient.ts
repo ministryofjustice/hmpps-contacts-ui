@@ -1,52 +1,29 @@
-import { URLSearchParams } from 'url'
 import RestClient from './restClient'
-import { Prisoner } from './prisonerOffenderSearchTypes'
+import { Prisoner, PagePrisoner, PaginationRequest } from './prisonerOffenderSearchTypes'
 import config, { ApiConfig } from '../config'
 
 export default class PrisonerSearchApiClient extends RestClient {
-  private pageSize = config.apis.prisonerSearchApi.pageSize
-
   constructor() {
     super('prisonerSearchApiClient', config.apis.prisonerSearchApi as ApiConfig)
   }
 
-  async getPrisoners(
-    search: string,
+  async searchInCaseload(
+    searchTerm: string,
     prisonId: string,
     user: Express.User,
-    page = 0,
-  ): Promise<{ totalPages: number; totalElements: number; content: Prisoner[] }> {
+    pagination?: PaginationRequest,
+  ): Promise<PagePrisoner> {
+    const paginationParameters = pagination ?? { page: 0, size: config.apis.prisonerSearchApi.pageSize || 20 }
     return this.get(
       {
         path: `/prison/${prisonId}/prisoners`,
-        query: new URLSearchParams({
-          term: search,
-          page: page.toString(),
-          size: this.pageSize.toString(),
-        }).toString(),
+        query: { term: searchTerm, ...paginationParameters },
       },
       user,
     )
   }
 
-  async getPrisoner(search: string, prisonId: string, user: Express.User): Promise<{ content: Prisoner[] }> {
-    return this.get(
-      {
-        path: `/prison/${prisonId}/prisoners`,
-        query: new URLSearchParams({
-          term: search,
-        }).toString(),
-      },
-      user,
-    )
-  }
-
-  async getPrisonerById(id: string, user: Express.User): Promise<Prisoner> {
-    return this.get(
-      {
-        path: `/prisoner/${id}`,
-      },
-      user,
-    )
+  async getByPrisonerNumber(prisonerNumber: string, user: Express.User): Promise<Prisoner> {
+    return this.get({ path: `/prisoner/${prisonerNumber}` }, user)
   }
 }

@@ -1,7 +1,8 @@
-import createError, { BadRequest } from 'http-errors'
+import { BadRequest, NotFound } from 'http-errors'
 import PrisonerSearchService from './prisonerSearchService'
 import TestData from '../routes/testutils/testData'
 import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
+import { PagePrisoner, PaginationRequest } from '../data/prisonerOffenderSearchTypes'
 
 jest.mock('../data/prisonerSearchApiClient')
 
@@ -11,9 +12,7 @@ describe('Prisoner search service', () => {
   let prisonerSearchApiClient: jest.Mocked<PrisonerSearchApiClient>
   let prisonerSearchService: PrisonerSearchService
 
-  // Test data
   const prisonId = 'HEI'
-  const prisonName = 'Hewell (HMP)'
   const search = 'some search'
   const prisoner = TestData.prisoner()
 
@@ -26,97 +25,72 @@ describe('Prisoner search service', () => {
     jest.resetAllMocks()
   })
 
-  describe('getPrisoner', () => {
-    it('should return null if no matching prisoner', async () => {
-      prisonerSearchApiClient.getPrisoner.mockResolvedValue({ content: [] })
-      const result = await prisonerSearchService.getPrisoner('test', prisonId, user)
-      expect(result).toBe(null)
-    })
-
-    it('should return matching prisoner', async () => {
-      prisonerSearchApiClient.getPrisoner.mockResolvedValue({ content: [prisoner] })
-      const result = await prisonerSearchService.getPrisoner('A1234BC', prisonId, user)
+  describe('getByPrisonerNumber', () => {
+    it('should return prisoner details', async () => {
+      prisonerSearchApiClient.getByPrisonerNumber.mockResolvedValue(prisoner)
+      const result = await prisonerSearchService.getByPrisonerNumber('A1234BC', user)
       expect(result).toBe(prisoner)
     })
-  })
 
-  describe('getPrisonerById', () => {
-    it('should return prisoner details for given prisoner ID', async () => {
-      prisonerSearchApiClient.getPrisonerById.mockResolvedValue(prisoner)
-      const result = await prisonerSearchService.getPrisonerById('A1234BC', user)
-      expect(result).toBe(prisoner)
+    it('should handle prisoner not found', async () => {
+      prisonerSearchApiClient.getByPrisonerNumber.mockRejectedValue(NotFound())
+      await expect(prisonerSearchService.getByPrisonerNumber(prisoner.prisonerNumber, user)).rejects.toEqual(NotFound())
     })
-  })
 
-  describe('getPrisonerNotFoundMessages', () => {
-    it('should handle prisoner not found in any establishment', async () => {
-      prisonerSearchApiClient.getPrisonerById.mockRejectedValue(createError.NotFound())
-      const message = await prisonerSearchService.getPrisonerNotFoundMessage('A1234BC', prisonName, user)
-      expect(message).toBe(
-        'There are no results for this prison number at any establishment. Check the number is correct and try again.',
+    it('should handle a bad request', async () => {
+      prisonerSearchApiClient.getByPrisonerNumber.mockRejectedValue(BadRequest())
+      await expect(prisonerSearchService.getByPrisonerNumber(prisoner.prisonerNumber, user)).rejects.toEqual(
+        BadRequest(),
       )
-    })
-
-    it('should handle bad requests', async () => {
-      prisonerSearchApiClient.getPrisonerById.mockRejectedValue(createError.BadRequest())
-      await expect(
-        prisonerSearchService.getPrisonerNotFoundMessage('A1234BC', prisonName, user),
-      ).rejects.toBeInstanceOf(BadRequest)
     })
 
     it('should handle a prisoner being found in another establishment', async () => {
-      prisonerSearchApiClient.getPrisonerById.mockResolvedValue({ ...prisoner, inOutStatus: 'IN' })
-      const message = await prisonerSearchService.getPrisonerNotFoundMessage('A1234BC', prisonName, user)
-      expect(message).toBe(
-        'This prisoner is located at another establishment. The visitor should contact the prisoner to find out their location.',
-      )
+      prisonerSearchApiClient.getByPrisonerNumber.mockResolvedValue({ ...prisoner, inOutStatus: 'IN', prisonId: 'MDI' })
+      const result = await prisonerSearchService.getByPrisonerNumber(prisoner.prisonerNumber, user)
+      expect(result.prisonerNumber).toBe(prisoner.prisonerNumber)
+      expect(result.prisonId).not.toEqual(prisonId)
+      expect(result.inOutStatus).toEqual('IN')
     })
 
     it('should handle a prisoner who has been released', async () => {
-      prisonerSearchApiClient.getPrisonerById.mockResolvedValue({ ...prisoner, inOutStatus: 'OUT' })
-      const message = await prisonerSearchService.getPrisonerNotFoundMessage('A1234BC', prisonName, user)
-      expect(message).toBe(
-        `This prisoner is not in ${prisonName}. They might be being moved to another establishment or have been released.`,
-      )
+      prisonerSearchApiClient.getByPrisonerNumber.mockResolvedValue({ ...prisoner, inOutStatus: 'OUT' })
+      const result = await prisonerSearchService.getByPrisonerNumber(prisoner.prisonerNumber, user)
+      expect(result.inOutStatus).toEqual('OUT')
     })
 
     it('should handle a prisoner who is being transferred', async () => {
-      prisonerSearchApiClient.getPrisonerById.mockResolvedValue({ ...prisoner, inOutStatus: 'TRN' })
-      const message = await prisonerSearchService.getPrisonerNotFoundMessage('A1234BC', prisonName, user)
-      expect(message).toBe(
-        `This prisoner is not in ${prisonName}. They might be being moved to another establishment or have been released.`,
-      )
+      prisonerSearchApiClient.getByPrisonerNumber.mockResolvedValue({ ...prisoner, inOutStatus: 'TRN' })
+      const result = await prisonerSearchService.getByPrisonerNumber(prisoner.prisonerNumber, user)
+      expect(result.inOutStatus).toEqual('TRN')
     })
   })
 
   describe('getPrisoners', () => {
-    it('Retrieves and formats the prisoner name correctly', async () => {
-      const prisoners = { totalPages: 1, totalElements: 1, content: [prisoner] }
-      prisonerSearchApiClient.getPrisoners.mockResolvedValue(prisoners)
+    const pagination = { page: 0, size: 20 } as PaginationRequest
 
-      const { results, numberOfResults, numberOfPages, next, previous } = await prisonerSearchService.getPrisoners(
-        search,
-        prisonId,
-        0,
-        user,
-      )
+    it('Retrieves prisoner details matching the search criteria', async () => {
+      const prisoners = {
+        totalPages: 1,
+        totalElements: 1,
+        first: true,
+        last: true,
+        size: 20,
+        empty: false,
+        content: [prisoner],
+      } as PagePrisoner
 
-      expect(results).toEqual([
-        [
-          { html: `<a href="#" class="govuk-link--no-visited-state bapv-result-row">Smith, John</a>` },
-          { html: 'A1234BC' },
-          { html: '2 April 1975' },
-        ],
-      ])
-      expect(numberOfResults).toEqual(1)
-      expect(numberOfPages).toEqual(1)
-      expect(next).toEqual(1)
-      expect(previous).toEqual(1)
+      await prisonerSearchApiClient.searchInCaseload.mockResolvedValue(prisoners)
+
+      const results = await prisonerSearchService.searchInCaseload(search, prisonId, pagination, user)
+
+      expect(results?.content[0].prisonerNumber).toEqual(prisoner.prisonerNumber)
+      expect(results.totalPages).toEqual(1)
+      expect(results.totalElements).toEqual(1)
     })
 
     it('Propagates errors', async () => {
-      prisonerSearchApiClient.getPrisoners.mockRejectedValue(new Error('some error'))
-      await expect(prisonerSearchService.getPrisoners(search, prisonId, 0, user)).rejects.toEqual(
+      prisonerSearchApiClient.searchInCaseload.mockRejectedValue(new Error('some error'))
+      await expect(prisonerSearchService.searchInCaseload(search, prisonId, pagination, user)).rejects.toEqual(
         new Error('some error'),
       )
     })
