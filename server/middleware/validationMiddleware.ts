@@ -1,5 +1,6 @@
-import { RequestHandler, Request } from 'express'
+import { Request, RequestHandler } from 'express'
 import z from 'zod'
+import { SafeParseError, SafeParseSuccess } from 'zod/lib/types'
 
 export type fieldErrors = {
   [field: string | number | symbol]: string[] | undefined
@@ -36,9 +37,7 @@ export const validate = (schema: z.ZodTypeAny | SchemaFactory): RequestHandler =
     }
     req.flash('formResponses', JSON.stringify(req.body))
 
-    const deduplicatedFieldErrors = Object.fromEntries(
-      Object.entries(result.error.flatten().fieldErrors).map(([key, value]) => [key, [...new Set(value || [])]]),
-    )
+    const deduplicatedFieldErrors = deduplicateFieldErrors(result)
 
     req.flash('validationErrors', JSON.stringify(deduplicatedFieldErrors))
     return res.redirect(req.originalUrl)
@@ -60,3 +59,13 @@ const zodAlwaysRefine = <T extends z.ZodTypeAny>(zodType: T) =>
     if (!res.success) res.error.issues.forEach(ctx.addIssue)
     return res.data || val
   }) as unknown as T
+
+export const deduplicateFieldErrors = <Input, Output, Result>(
+  result: SafeParseSuccess<Output> | SafeParseError<Input>,
+) =>
+  Object.fromEntries(
+    Object.entries(result.error.flatten().fieldErrors).map(([key, value]) => [
+      key,
+      [...new Set((value as Array<Result>) || [])],
+    ]),
+  )
