@@ -1,9 +1,9 @@
 import { Request, Response } from 'express'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
-import logger from '../../../../../logger'
-import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import config from '../../../../config'
+import logger from '../../../../../logger'
+import { PrisonerSearchService } from '../../../../services'
 import { PaginationRequest } from '../../../../data/prisonerOffenderSearchTypes'
 
 export default class PrisonerSearchController implements PageHandler {

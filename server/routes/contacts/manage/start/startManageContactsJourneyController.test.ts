@@ -32,6 +32,7 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.resetAllMocks()
+  preExistingJourneysToAddToSession = []
 })
 
 describe('GET /contacts/manage/start', () => {
