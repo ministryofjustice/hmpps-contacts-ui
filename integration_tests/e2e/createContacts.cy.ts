@@ -9,9 +9,10 @@ context('Create Contacts', () => {
     cy.task('stubSignIn', { roles: ['PRISON'] })
   })
 
-  it('Can create a contact without dob', () => {
+  it('Can create a contact with only required fields', () => {
     cy.signIn()
     cy.visit('/contacts/create/start')
+    cy.task('stubCreateContact', { id: 132456 })
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
@@ -24,14 +25,28 @@ context('Create Contacts', () => {
       .clickContinue()
 
     Page.verifyOnPage(CreatedContactPage)
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: '/contact',
+      },
+      {
+        lastName: 'Last',
+        firstName: 'First',
+        createdBy: 'USER1',
+      },
+    )
   })
 
-  it('Can create a contact with dob', () => {
+  it('Can create a contact with all fields', () => {
     cy.signIn()
     cy.visit('/contacts/create/start')
+    cy.task('stubCreateContact', { id: 132456 })
     Page.verifyOnPage(EnterNamePage) //
+      .selectTitle('Mr')
       .enterLastName('Last')
       .enterFirstName('First')
+      .enterMiddleName('Middle')
       .clickContinue()
 
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
@@ -44,6 +59,20 @@ context('Create Contacts', () => {
       .clickContinue()
 
     Page.verifyOnPage(CreatedContactPage)
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: '/contact',
+      },
+      {
+        title: 'MR',
+        lastName: 'Last',
+        firstName: 'First',
+        middleName: 'Middle',
+        createdBy: 'USER1',
+        dateOfBirth: '1982-06-15T00:00:00.000Z',
+      },
+    )
   })
 
   it('First name is required', () => {
@@ -80,6 +109,20 @@ context('Create Contacts', () => {
     enterNamePage.hasFieldInError('lastName', "Contact's last name must be 35 characters or less")
     enterNamePage.hasFieldInError('firstName', "Contact's first name must be 35 characters or less")
     enterNamePage.hasFieldInError('middleName', "Contact's middle name must be 35 characters or less")
+  })
+
+  it('Cannot enter a blank first name or last name', () => {
+    cy.signIn()
+    cy.visit('/contacts/create/start')
+
+    const enterNamePage = Page.verifyOnPage(EnterNamePage)
+    enterNamePage //
+      .enterLastName('  ')
+      .enterFirstName('  ')
+      .clickContinue()
+
+    enterNamePage.hasFieldInError('lastName', "Enter the contact's last name")
+    enterNamePage.hasFieldInError('firstName', "Enter the contact's first name")
   })
 
   it('Must select whether dob is known', () => {

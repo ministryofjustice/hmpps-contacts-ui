@@ -11,7 +11,11 @@ const MIDDLE_NAME_TOO_LONG_ERROR_MSG = "Contact's middle name must be 35 charact
 
 export const createContactEnterNameSchemaFactory = () => async () => {
   return createSchema({
-    title: z.string().optional(),
+    title: z
+      .string()
+      .optional()
+      .transform(val => (val?.trim().length > 0 ? val.trim() : undefined))
+      .transform(val => val?.trim()),
     lastName: z
       .string({ message: LAST_NAME_REQUIRED_MESSAGE })
       .max(35, LAST_NAME_TOO_LONG_ERROR_MSG)
@@ -19,8 +23,13 @@ export const createContactEnterNameSchemaFactory = () => async () => {
     firstName: z
       .string({ message: FIRST_NAME_REQUIRED_MESSAGE })
       .max(35, FIRST_NAME_TOO_LONG_ERROR_MSG)
-      .refine(val => val?.trim().length > 0, { message: FIRST_NAME_REQUIRED_MESSAGE }),
-    middleName: z.string().max(35, MIDDLE_NAME_TOO_LONG_ERROR_MSG).optional(),
+      .refine(val => val?.trim().length > 0, { message: FIRST_NAME_REQUIRED_MESSAGE })
+      .transform(val => val?.trim()),
+    middleName: z
+      .string()
+      .max(35, MIDDLE_NAME_TOO_LONG_ERROR_MSG)
+      .optional()
+      .transform(val => (val?.trim().length > 0 ? val.trim() : undefined)),
   })
 }
 
