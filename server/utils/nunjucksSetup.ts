@@ -3,7 +3,7 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
-import { initialiseName, formatDate, convertToTitleCase, properCaseFullName } from './utils'
+import { initialiseName, formatDate, convertToTitleCase, properCaseFullName, getFormatDistanceToNow } from './utils'
 import config from '../config'
 import logger from '../../logger'
 import { buildErrorSummaryList, findError } from '../middleware/validationMiddleware'
@@ -58,4 +58,37 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('formatDate', formatDate)
   njkEnv.addGlobal('DPS_HOME_PAGE_URL', config.serviceUrls.digitalPrison)
   njkEnv.addFilter('pluralise', (word, count, plural = `${word}s`) => (count === 1 ? word : plural))
+
+  njkEnv.addFilter('createContactsListRows', contactList => {
+    const activeContactsRows: Array<unknown> = []
+    contactList.forEach((item: Record<string, Date>) => {
+      activeContactsRows.push([
+        { html: `<a href="">${item.surname}, ${item.forename}</a>` },
+        { html: `${formatDate(item.dateOfBirth)}<br />(${getFormatDistanceToNow(item.dateOfBirth)} old)` },
+        {
+          html: `
+            ${item.flat}<br />
+            ${item.street}<br />
+            ${item.area}'<br />
+            ${item.cityCode}<br />
+            ${item.postCode}<br />
+            ${item.cityCode}<br />
+            ${item.countryCode}<br />`,
+        },
+        {
+          text: item.relationshipDescription,
+        },
+        {
+          text: item.emergencyContact ? 'Yes' : 'No',
+        },
+        {
+          text: item.nextOfKin ? 'Yes' : 'No',
+        },
+        {
+          text: item.approvedVisitor ? 'Yes' : 'No',
+        },
+      ])
+    })
+    return activeContactsRows
+  })
 }
