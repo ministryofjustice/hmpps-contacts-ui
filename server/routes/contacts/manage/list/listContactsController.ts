@@ -30,7 +30,7 @@ export default class ListContactsController implements PageHandler {
     }
 
     const activeContacts = await this.contactsService.getPrisonerContacts(prisoner as string, true, user)
-    const inactiveContacts = await this.contactsService.getPrisonerContacts(prisoner as string, true, user)
+    const inactiveContacts = await this.contactsService.getPrisonerContacts(prisoner as string, false, user)
 
     logger.info(`List contacts journey ${JSON.stringify(journey)}`)
 

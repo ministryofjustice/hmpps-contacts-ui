@@ -1,0 +1,9 @@
+{#
+ Parameters:
+    person = prisoner details - object from prisoner search
+    personImgUrl = path to the local route to get the image data
+    personProfileUrl = URL to the prisoner's profile page
+#}
+{% macro miniProfile(person, personImgUrl, personProfileUrl) %}
+    {%- include "./template.njk" -%}
+{% endmacro %}

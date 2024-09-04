@@ -2,12 +2,21 @@ import { Router } from 'express'
 import type { Services } from '../services'
 import ContactsRoutes from './contacts/contactRoutes'
 import HomeRoutes from './home/routes'
+import PrisonerImageRoutes from './prisonerImage/prisonerImageRoutes'
 
-export default function routes({ auditService, prisonerSearchService, contactsService }: Services): Router {
+export default function routes({
+  auditService,
+  prisonerSearchService,
+  contactsService,
+  prisonerImageService,
+}: Services): Router {
   const router = Router({ mergeParams: true })
 
   router.use('/contacts', ContactsRoutes(auditService, contactsService, prisonerSearchService))
   router.use('/', HomeRoutes(auditService))
+
+  // Special route - which gives the mini-profile nunjucks macro access to prisoner images
+  router.get('/prisoner-image/:prisonerNumber', new PrisonerImageRoutes(prisonerImageService).GET)
 
   return router
 }

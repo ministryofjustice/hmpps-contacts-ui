@@ -48,6 +48,7 @@ function appSetup(
     req.user = userSupplier() as Express.User
     req.flash = flashProvider
     res.locals = {
+      ...res.locals,
       user: { ...req.user } as HmppsUser,
     }
     next()

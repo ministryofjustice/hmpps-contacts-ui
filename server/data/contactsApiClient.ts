@@ -26,7 +26,7 @@ export default class ContactsApiClient extends RestClient {
   ): Promise<PrisonerContactSummary[]> {
     return this.get<PrisonerContactSummary[]>(
       {
-        path: `/prisoner/${prisonerNumber}`,
+        path: `/prisoner/${prisonerNumber}/contact`,
         query: { active: activeOnly },
       },
       user,
