@@ -33,6 +33,7 @@ export declare global {
     interface Locals {
       user: HmppsUser
       validationErrors?: fieldErrors
+      digitalPrisonServicesUrl: string
     }
   }
 }

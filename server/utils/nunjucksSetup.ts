@@ -26,6 +26,13 @@ export default function nunjucksSetup(app: express.Express): void {
     }
   }
 
+  // Set up the digital prison services URL in res.locals for use in views/macros - mini profile
+  app.locals.digitalPrisonServicesUrl = config.serviceUrls.digitalPrison
+  app.use((_req, res, next) => {
+    res.locals.digitalPrisonServicesUrl = config.serviceUrls.digitalPrison
+    return next()
+  })
+
   const njkEnv = nunjucks.configure(
     [
       path.join(__dirname, '../../server/views'),

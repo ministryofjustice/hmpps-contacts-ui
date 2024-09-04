@@ -9,7 +9,9 @@ $govuk-page-width: $moj-page-width;
 
 @import './components/header-bar';
 @import './components/card';
+@import './components/mini-profile';
 @import './local';
 
 @import 'node_modules/@ministryofjustice/hmpps-connect-dps-components/dist/assets/footer';
 @import 'node_modules/@ministryofjustice/hmpps-connect-dps-components/dist/assets/header-bar';
+
