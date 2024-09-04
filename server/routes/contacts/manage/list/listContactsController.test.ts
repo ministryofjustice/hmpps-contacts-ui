@@ -98,6 +98,9 @@ describe('GET /contacts/manage/list', () => {
     expect(response.text).toContain('HMP Hewell')
     expect(response.text).toContain('1-1-C-028')
 
+    // Button
+    expect(response.text).toContain('Add prisoner contact')
+
     // Contact List Table
     expect(response.text).toContain('Contacts')
     expect(response.text).toContain('Name')

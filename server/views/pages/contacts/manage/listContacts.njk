@@ -62,6 +62,11 @@
 {# Test the mini profile macro #}
 {{ miniProfile(prisonerDetails, '/prisoner-image/' + prisonerDetails.prisonerNumber, digitalPrisonServicesUrl + '/prisoner/' + prisonerDetails.prisonerNumber) }}
 
+{{ govukButton({
+    text: "Add prisoner contact",
+    href: "/"
+}) }}
+
 <span class="govuk-caption-l">Manage Contacts</span>
 <h1 class="govuk-heading-l">{{ title }}</h1>
 {% set activeContacts %}
