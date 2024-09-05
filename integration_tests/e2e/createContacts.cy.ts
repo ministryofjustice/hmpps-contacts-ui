@@ -2,6 +2,7 @@ import Page from '../pages/page'
 import EnterNamePage from '../pages/enterNamePage'
 import CreatedContactPage from '../pages/createdContactPage'
 import EnterContactDateOfBirthPage from '../pages/enterContactDateOfBirthPage'
+import CreateContactCheckYourAnswersPage from '../pages/createContactCheckYourAnswersPage'
 
 context('Create Contacts', () => {
   beforeEach(() => {
@@ -23,6 +24,11 @@ context('Create Contacts', () => {
     enterDobPage //
       .selectIsDobKnown(false)
       .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowsNameAs('Last, First')
+      .verifyShowsDateOfBirthAs('Not provided')
+      .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
     cy.verifyLastAPICall(
@@ -57,6 +63,11 @@ context('Create Contacts', () => {
       .enterMonth('06')
       .enterYear('1982')
       .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowsNameAs('Last, First')
+      .verifyShowsDateOfBirthAs('15 June 1982')
+      .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
     cy.verifyLastAPICall(
