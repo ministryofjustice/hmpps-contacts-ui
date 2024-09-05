@@ -1,7 +1,7 @@
 /* eslint-disable import/first */
 /*
- * Do app insights first as it does some magic instrumentation work, i.e. it affects other 'require's
- * In particular, applicationinsights automatically collects bunyan logs
+ * Do app insights first as it does some magic instrumentation work, i.e. it affects other imports
+ * In particular, application insights automatically collects bunyan logs
  */
 import { initialiseAppInsights, buildAppInsightsClient } from '../utils/azureAppInsights'
 import applicationInfoSupplier from '../applicationInfo'
@@ -23,7 +23,5 @@ export const dataAccess = () => ({
   contactsApiClient: new ContactsApiClient(),
   prisonApiClient: new PrisonApiClient(),
 })
-
-export type DataAccess = ReturnType<typeof dataAccess>
 
 export { HmppsAuditClient, PrisonerSearchApiClient, ContactsApiClient, PrisonApiClient }
