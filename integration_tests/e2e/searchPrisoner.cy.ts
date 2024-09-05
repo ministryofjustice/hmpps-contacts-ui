@@ -33,16 +33,34 @@ context('Contacts', () => {
   context('when there are results', () => {
     const { prisonerNumber } = TestData.prisoner()
 
-    it('should show that there are results', () => {
+    it('should show contact list page with contacts', () => {
       // Provides a default header/footer/caseload with no javascript
       cy.task('stubComponentsMeta')
       cy.task('stubPrisoners', { term: prisonerNumber })
       cy.task('stubPrisonerById', TestData.prisoner())
+      cy.task('stubContactList', 'A1234BC')
 
       const searchPrisonerPage = Page.verifyOnPage(SearchPrisonerPage)
 
       searchPrisonerPage.prisonerSearchFormField().clear().type(prisonerNumber)
       searchPrisonerPage.prisonerSearchSearchButton().click()
+
+      Page.verifyOnPage(SearchPrisonerPage).clicktoViewContactsList()
+    })
+
+    it('should show contact list page with no contacts available', () => {
+      // Provides a default header/footer/caseload with no javascript
+      cy.task('stubComponentsMeta')
+      cy.task('stubPrisoners', { term: prisonerNumber })
+      cy.task('stubPrisonerById', TestData.prisoner())
+      cy.task('stubEmptyContactList', 'A1234BC')
+
+      const searchPrisonerPage = Page.verifyOnPage(SearchPrisonerPage)
+
+      searchPrisonerPage.prisonerSearchFormField().clear().type(prisonerNumber)
+      searchPrisonerPage.prisonerSearchSearchButton().click()
+
+      Page.verifyOnPage(SearchPrisonerPage).clicktoViewContactsList()
     })
   })
 })
