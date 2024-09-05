@@ -30,6 +30,7 @@ describe('contactsService', () => {
       const journey: CreateContactJourney = {
         id: '1',
         lastTouched: new Date(),
+        isCheckingAnswers: false,
         names: {
           title: 'Mr',
           lastName: 'last',
@@ -66,6 +67,7 @@ describe('contactsService', () => {
       const journey: CreateContactJourney = {
         id: '1',
         lastTouched: new Date(),
+        isCheckingAnswers: false,
         names: {
           lastName: 'last',
           firstName: 'first',
@@ -97,6 +99,7 @@ describe('contactsService', () => {
           {
             id: '1',
             lastTouched: new Date(),
+            isCheckingAnswers: false,
             names: { firstName: 'first', lastName: 'last' },
             dateOfBirth: { isKnown: false },
           },

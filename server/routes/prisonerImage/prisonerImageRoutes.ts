@@ -12,7 +12,7 @@ export default class PrisonerImageRoutes {
     const { user } = res.locals
 
     return this.prisonerImageService
-      .getImage(req, prisonerNumber as string, user)
+      .getImage(prisonerNumber as string, user)
       .then(data => {
         res.set('Cache-control', 'private, max-age=86400')
         res.removeHeader('pragma')

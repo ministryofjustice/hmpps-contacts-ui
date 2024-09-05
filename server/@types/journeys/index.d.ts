@@ -2,6 +2,7 @@ declare namespace journeys {
   export interface CreateContactJourney {
     id: string
     lastTouched: Date
+    isCheckingAnswers: boolean
     names?: ContactNames
     dateOfBirth?: DateOfBirth
   }

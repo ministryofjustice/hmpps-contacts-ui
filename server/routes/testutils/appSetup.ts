@@ -40,6 +40,7 @@ function appSetup(
   const app = express()
 
   app.set('view engine', 'njk')
+  flashProvider.mockImplementation(_ => [])
 
   nunjucksSetup(app)
   app.use(setUpWebSession())
@@ -69,10 +70,10 @@ function appSetup(
   }
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
+  app.use(populateValidationErrors())
   app.use(routes(services))
   app.use((req, res, next) => next(new NotFound()))
   app.use(errorHandler(production))
-  app.use(populateValidationErrors())
 
   app.get(
     '*',

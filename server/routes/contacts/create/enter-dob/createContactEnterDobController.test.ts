@@ -4,14 +4,11 @@ import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
-import ContactsService from '../../../../services/contactsService'
 import CreateContactJourney = journeys.CreateContactJourney
 
 jest.mock('../../../../services/auditService')
-jest.mock('../../../../services/contactsService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
 
 let app: Express
 let session: Partial<SessionData>
@@ -19,6 +16,7 @@ const journeyId: string = uuidv4()
 const baseJourney: CreateContactJourney = {
   id: journeyId,
   lastTouched: new Date(),
+  isCheckingAnswers: false,
   names: {
     lastName: 'last',
     firstName: 'first',
@@ -29,7 +27,6 @@ beforeEach(() => {
   app = appWithAllRoutes({
     services: {
       auditService,
-      contactsService,
     },
     userSupplier: () => user,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -71,21 +68,15 @@ describe('GET /contacts/create/enter-dob/:journeyId', () => {
 
 describe('POST /contacts/create/enter-name', () => {
   it('should pass to success page if there are no validation errors and we created the contact with no dob', async () => {
-    // Given
-    contactsService.createContact.mockResolvedValue(null)
-
-    // When
     await request(app)
       .post(`/contacts/create/enter-dob/${journeyId}`)
       .type('form')
       .send({ isDobKnown: 'false' })
       .expect(302)
-      .expect('Location', '/contacts/create/success')
+      .expect('Location', `/contacts/create/check-answers/${journeyId}`)
 
-    // Then
     const expectedDob = { isKnown: false }
     expect(session.createContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
-    expect(contactsService.createContact).toHaveBeenCalledWith(session.createContactJourneys[journeyId], user)
   })
 
   it.each([
@@ -94,16 +85,12 @@ describe('POST /contacts/create/enter-name', () => {
   ])(
     'should pass to success page if there are no validation errors and we created the contact with a dob',
     async (day, month, year, expected) => {
-      // Given
-      contactsService.createContact.mockResolvedValue(null)
-
-      // When
       await request(app)
         .post(`/contacts/create/enter-dob/${journeyId}`)
         .type('form')
         .send({ isDobKnown: 'true', day, month, year })
         .expect(302)
-        .expect('Location', '/contacts/create/success')
+        .expect('Location', `/contacts/create/check-answers/${journeyId}`)
 
       // Then
       const expectedDob = {
@@ -111,7 +98,6 @@ describe('POST /contacts/create/enter-name', () => {
         dateOfBirth: expected,
       }
       expect(session.createContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
-      expect(contactsService.createContact).toHaveBeenCalledWith(session.createContactJourneys[journeyId], user)
     },
   )
 

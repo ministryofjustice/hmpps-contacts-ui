@@ -1,11 +1,10 @@
-import { Request } from 'express'
 import { Readable } from 'stream'
 import PrisonApiClient from '../data/prisonApiClient'
 
 export default class PrisonerImageService {
   constructor(private readonly prisonApiClient: PrisonApiClient) {}
 
-  getImage(req: Request, prisonerNumber: string, user: Express.User): Promise<Readable> {
+  getImage(prisonerNumber: string, user: Express.User): Promise<Readable> {
     return this.prisonApiClient.getImage(prisonerNumber, user)
   }
 }
