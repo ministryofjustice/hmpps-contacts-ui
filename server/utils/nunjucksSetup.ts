@@ -63,16 +63,15 @@ export default function nunjucksSetup(app: express.Express): void {
     const activeContactsRows: Array<unknown> = []
     contactList.forEach((item: Record<string, Date>) => {
       activeContactsRows.push([
-        { html: `<a href="">${item.surname}, ${item.forename}</a>` },
+        { html: `<a href="">${item.surname}, ${item.forename} ${item.middleName}</a>` },
         { html: `${formatDate(item.dateOfBirth)}<br />(${getFormatDistanceToNow(item.dateOfBirth)} old)` },
         {
           html: `
-            ${item.flat}<br />
+            ${item.flat} ${item.property}<br />
             ${item.street}<br />
-            ${item.area}'<br />
-            ${item.cityCode}<br />
+            ${item.area}<br />
+            ${item.cityCode}<br />${item.countyCode}<br />
             ${item.postCode}<br />
-            ${item.cityCode}<br />
             ${item.countryCode}<br />`,
         },
         {
