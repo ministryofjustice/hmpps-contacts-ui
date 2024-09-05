@@ -1,0 +1,98 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set pageTitle = applicationName + " - Enter date of birth" %}
+{% set title = "Check your answers" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+<div class="govuk-grid-row govuk-!-static-margin-bottom-5">
+  <div class="govuk-grid-column-full">
+      {{ govukBreadcrumbs({
+      items: [
+          {
+            text: "Digital Prison Services",
+            href: DPS_HOME_PAGE_URL
+          },
+          {
+              text: "Contacts",
+              href: "/"
+          }
+      ]
+      }) }}
+  </div>
+</div>
+{% include '../../../partials/formErrorSummary.njk' %}
+<span class="govuk-caption-l">Manage Contacts</span>
+<h1 class="govuk-heading-l">{{ title }}</h1>
+ <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                {%set  formattedDateOfBirth %}{% if journey.dateOfBirth.isKnown %}{{ journey.dateOfBirth.dateOfBirth | formatDate }}{% else %}Not provided{% endif %}{% endset %}
+                {{ govukSummaryList({
+                    card: {
+                        title: {
+                            text: "Contact details"
+                        }
+                    },
+                    rows: [
+                        {
+                            key: {
+                                text: "Name"
+                            },
+                            value: {
+                                html: journey.names.lastName + ", " + journey.names.firstName,
+                                classes: 'check-answers-name-value'
+                            },
+                            actions: {
+                                items: [
+                                    {
+                                        href: "/contacts/create/enter-name/"  + journey.id,
+                                        text: "Change",
+                                        visuallyHiddenText: "name",
+                                        attributes: {"data-qa": "change-enter-name-link"},
+                                        classes: "govuk-link--no-visited-state"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Date of birth"
+                            },
+                            value: {
+                                html: formattedDateOfBirth,
+                                classes: 'check-answers-dob-value'
+                            },
+                            actions: {
+                                items: [
+                                    {
+                                        href: "/contacts/create/enter-dob/"  + journey.id,
+                                        text: "Change",
+                                        visuallyHiddenText: "date of birth",
+                                        attributes: {"data-qa": "change-dob-link"},
+                                        classes: "govuk-link--no-visited-state"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }) }}
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        html: "Create prisoner contact",
+                        type: "submit",
+                        classes: 'govuk-!-margin-top-6',
+                        attributes: {"data-qa": "create-prisoner-contact-button"}
+                    }) }}
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="/">Cancel</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}
