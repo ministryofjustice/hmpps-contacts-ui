@@ -39,24 +39,7 @@
                     label: {
                         text: "Title"
                     },
-                    items: [
-                        { "value": "", "text": "" , selected: true},
-                        { "value": "DAME", "text": "Dame" },
-                        { "value": "FR", "text": "Father" },
-                        { "value": "LORD", "text": "Lord" },
-                        { "value": "MS", "text": "Ms" },
-                        { "value": "RABBI", "text": "Rabbi" },
-                        { "value": "REV", "text": "Reverend" },
-                        { "value": "SIR", "text": "Sir" },
-                        { "value": "SR", "text": "Sister" },
-                        { "value": "MR", "text": "Mr" },
-                        { "value": "BR", "text": "Brother" },
-                        { "value": "DR", "text": "Dr" },
-                        { "value": "LADY", "text": "Lady" },
-                        { "value": "MISS", "text": "Miss" },
-                        { "value": "MRS", "text": "Mrs" },
-                        { "value": "IMAM", "text": "Imam" }
-                    ]
+                    items: titleOptions
                 }) }}
 
                 {{ govukInput({
@@ -65,7 +48,7 @@
                     label: { text: "First name" },
                     classes: 'govuk-!-width-one-third',
                     errorMessage: validationErrors | findError('firstName'),
-                    value: formResponses.firstName
+                    value: firstName
                 }) }}
 
                 {{ govukInput({
@@ -74,7 +57,7 @@
                     label: { text: "Middle names" },
                     classes: 'govuk-!-width-one-third',
                     errorMessage: validationErrors | findError('middleName'),
-                    value: formResponses.middleName
+                    value: middleName
                 }) }}
 
                 {{ govukInput({
@@ -83,7 +66,7 @@
                     label: { text: "Last name" },
                     classes: 'govuk-!-width-one-third',
                     errorMessage: validationErrors | findError('lastName'),
-                    value: formResponses.lastName
+                    value: lastName
                 }) }}
 
                 <div class="govuk-button-group">

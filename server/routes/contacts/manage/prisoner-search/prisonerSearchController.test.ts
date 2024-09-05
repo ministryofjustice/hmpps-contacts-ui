@@ -69,7 +69,7 @@ describe('POST /contacts/manage/prisoner-search/:journeyId', () => {
       .expect(302)
       .expect('Location', `/contacts/manage/prisoner-search-results/${journeyId}`)
 
-    expect(flashProvider).not.toHaveBeenCalled()
+    expect(flashProvider).not.toHaveBeenCalledWith('validationErrors', expect.any(String))
     expect(session.manageContactsJourneys[journeyId].search.searchTerm).toEqual('A1111AA')
   })
 

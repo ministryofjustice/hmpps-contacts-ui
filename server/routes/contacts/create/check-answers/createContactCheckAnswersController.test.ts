@@ -19,6 +19,7 @@ const journeyId: string = uuidv4()
 const journey: CreateContactJourney = {
   id: journeyId,
   lastTouched: new Date(),
+  isCheckingAnswers: false,
   names: {
     lastName: 'last',
     firstName: 'first',
@@ -65,6 +66,7 @@ describe('GET /contacts/create/check-answers', () => {
         who: user.username,
         correlationId: expect.any(String),
       })
+      expect(journey.isCheckingAnswers).toStrictEqual(true)
     })
     it('should return to start if no journey in session', async () => {
       await request(app)
