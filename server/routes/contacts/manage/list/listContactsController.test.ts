@@ -2,6 +2,7 @@ import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
+import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
@@ -65,7 +66,7 @@ describe('GET /contacts/manage/list', () => {
         prisonerNumber: 'G9381UV',
         surname: 'Adams',
         forename: 'Claire',
-        middleName: '',
+        middleName: 'Middle',
         dateOfBirth: new Date('1973-01-10'),
         relationshipCode: 'code here',
         relationshipDescription: 'Friend',
@@ -74,7 +75,7 @@ describe('GET /contacts/manage/list', () => {
         street: '123 High Street',
         area: 'Mayfair',
         cityCode: 'London',
-        countyCode: 'county code here',
+        countyCode: 'Greater London',
         postCode: 'W1 1AA',
         countryCode: 'England',
         approvedVisitor: true,
@@ -89,38 +90,50 @@ describe('GET /contacts/manage/list', () => {
     contactsService.getPrisonerContacts.mockReturnValue(contactsList)
 
     const response = await request(app).get(`/contacts/manage/list/${journeyId}`)
+    const $ = cheerio.load(response.text)
 
     // Prisoner
-    expect(response.status).toEqual(200)
-    expect(response.text).toContain('John')
-    expect(response.text).toContain('Smith')
-    expect(response.text).toContain('2 April 1975')
-    expect(response.text).toContain('HMP Hewell')
-    expect(response.text).toContain('1-1-C-028')
+    expect($('[data-qa="mini-profile-person-profile-link"]').text()).toStrictEqual('Smith, John')
+    expect($('[data-qa="mini-profile-prisoner-number"]').text()).toStrictEqual('A1234BC')
+    expect($('[data-qa="mini-profile-dob"]').text()).toStrictEqual('2 April 1975')
+    expect($('[data-qa="mini-profile-prison-name"]').text()).toStrictEqual('HMP Hewell')
+    expect($('[data-qa="mini-profile-cell-location"]').text()).toStrictEqual('1-1-C-028')
 
     // Button
-    expect(response.text).toContain('Add prisoner contact')
+    expect($('.govuk-button').text()).toContain('Add prisoner contact')
 
     // Contact List Table
-    expect(response.text).toContain('Contacts')
-    expect(response.text).toContain('Name')
-    expect(response.text).toContain('Date of birth')
-    expect(response.text).toContain('Address')
-    expect(response.text).toContain('Relationship to prisoner')
-    expect(response.text).toContain('Emergency contact')
-    expect(response.text).toContain('Next of kin')
-    expect(response.text).toContain('Approved')
+    expect($('.govuk-heading-l').text()).toStrictEqual('List contacts')
+    expect($('.govuk-table__header').eq(0).text()).toStrictEqual('Name')
+    expect($('.govuk-table__header').eq(1).text()).toStrictEqual('Date of birth')
 
-    expect(response.text).toContain('Adams, Claire')
-    expect(response.text).toContain('10 January 1973')
-    expect(response.text).toContain('(52 years old)')
-    expect(response.text).toContain('FLAT 1')
-    expect(response.text).toContain('123 High Street')
-    expect(response.text).toContain('Mayfair')
-    expect(response.text).toContain('London')
-    expect(response.text).toContain('W1 1AA')
-    expect(response.text).toContain('London')
-    expect(response.text).toContain('England')
+    expect($('.govuk-table__header').eq(2).text()).toStrictEqual('Address')
+    expect($('.govuk-table__header').eq(3).text()).toStrictEqual('Relationship to prisoner')
+    expect($('.govuk-table__header').eq(4).text()).toStrictEqual('Emergency contact')
+    expect($('.govuk-table__header').eq(5).text()).toStrictEqual('Next of kin')
+    expect($('.govuk-table__header').eq(6).text()).toStrictEqual('Approved')
+
+    expect(
+      $('#active-contacts > .govuk-table > .govuk-table__body > .govuk-table__row > :nth-child(1) > a').text(),
+    ).toStrictEqual('Adams, Claire Middle')
+    expect(
+      $('#active-contacts > .govuk-table > .govuk-table__body > .govuk-table__row > :nth-child(2)').text(),
+    ).toStrictEqual('10 January 1973(52 years old)')
+    expect(
+      $('#active-contacts > .govuk-table > .govuk-table__body > .govuk-table__row > :nth-child(3)').text(),
+    ).toStrictEqual('FLAT 1Proeperty123 High StreetMayfairLondonGreater LondonW1 1AAEngland')
+    expect(
+      $('#active-contacts > .govuk-table > .govuk-table__body > .govuk-table__row > :nth-child(4)').text(),
+    ).toStrictEqual('Friend')
+    expect(
+      $('#active-contacts > .govuk-table > .govuk-table__body > .govuk-table__row > :nth-child(5)').text(),
+    ).toStrictEqual('Yes')
+    expect(
+      $('#active-contacts > .govuk-table > .govuk-table__body > .govuk-table__row > :nth-child(6)').text(),
+    ).toStrictEqual('Yes')
+    expect(
+      $('#active-contacts > .govuk-table > .govuk-table__body > .govuk-table__row > :nth-child(7)').text(),
+    ).toStrictEqual('Yes')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.LIST_CONTACTS_PAGE, {
       who: user.username,
@@ -136,9 +149,10 @@ describe('GET /contacts/manage/list', () => {
     contactsService.getPrisonerContacts.mockReturnValue(contactsList)
 
     const response = await request(app).get(`/contacts/manage/list/${journeyId}`)
+    const $ = cheerio.load(response.text)
 
-    expect(response.text).toContain('John Smith does not have any active contacts')
-    expect(response.text).toContain('John Smith does not have any inactive contacts')
+    expect($('#active-contacts > p').text()).toStrictEqual('John Smith does not have any active contacts')
+    expect($('#inactive-contacts > p').text()).toStrictEqual('John Smith does not have any inactive contacts')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.LIST_CONTACTS_PAGE, {
       who: user.username,
