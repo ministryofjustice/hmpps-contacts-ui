@@ -9,6 +9,7 @@ import PrisonerSearchResultsController from './prisoner-search/prisonerSearchRes
 import { prisonerSearchSchemaFactory } from './prisoner-search/prisonerSearchSchema'
 import ListContactsController from './list/listContactsController'
 import { ContactsService, PrisonerSearchService } from '../../../services'
+import asyncMiddleware from '../../../middleware/asyncMiddleware'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -19,7 +20,7 @@ const ManageContactsRoutes = (
 
   // Part 1: Start manage contacts
   const startController = new StartManageContactsJourneyController()
-  router.get('/start', logPageViewMiddleware(auditService, startController), startController.GET)
+  router.get('/start', logPageViewMiddleware(auditService, startController), asyncMiddleware(startController.GET))
 
   // Part 2: Prisoner search
   const prisonerSearchController = new PrisonerSearchController()
@@ -27,13 +28,13 @@ const ManageContactsRoutes = (
     '/prisoner-search/:journeyId',
     ensureInManageContactsJourney(),
     logPageViewMiddleware(auditService, prisonerSearchController),
-    prisonerSearchController.GET,
+    asyncMiddleware(prisonerSearchController.GET),
   )
   router.post(
     '/prisoner-search/:journeyId',
     ensureInManageContactsJourney(),
     validate(prisonerSearchSchemaFactory()),
-    prisonerSearchController.POST,
+    asyncMiddleware(prisonerSearchController.POST),
   )
 
   // Part 3: Prisoner search results
@@ -42,7 +43,7 @@ const ManageContactsRoutes = (
     '/prisoner-search-results/:journeyId',
     ensureInManageContactsJourney(),
     logPageViewMiddleware(auditService, prisonerSearchResultsController),
-    prisonerSearchResultsController.GET,
+    asyncMiddleware(prisonerSearchResultsController.GET),
   )
 
   // Part 4: List contacts for a prisoner
@@ -51,7 +52,7 @@ const ManageContactsRoutes = (
     '/list/:journeyId',
     ensureInManageContactsJourney(),
     logPageViewMiddleware(auditService, listContactsController),
-    listContactsController.GET,
+    asyncMiddleware(listContactsController.GET),
   )
 
   // Part 5: View one contact

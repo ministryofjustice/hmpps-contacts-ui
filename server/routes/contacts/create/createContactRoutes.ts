@@ -11,25 +11,26 @@ import StartCreateContactJourneyController from './start/startCreateContactJourn
 import ensureInCreateContactJourney from './createContactMiddleware'
 import { ContactsService } from '../../../services'
 import CreateContactCheckAnswersController from './check-answers/createContactCheckAnswersController'
+import asyncMiddleware from '../../../middleware/asyncMiddleware'
 
 const CreateContactRoutes = (auditService: AuditService, contactsService: ContactsService) => {
   const router = Router({ mergeParams: true })
 
   const startController = new StartCreateContactJourneyController()
-  router.get('/start', logPageViewMiddleware(auditService, startController), startController.GET)
+  router.get('/start', logPageViewMiddleware(auditService, startController), asyncMiddleware(startController.GET))
 
   const enterNameController = new EnterNameController()
   router.get(
     '/enter-name/:journeyId',
     ensureInCreateContactJourney(),
     logPageViewMiddleware(auditService, enterNameController),
-    enterNameController.GET,
+    asyncMiddleware(enterNameController.GET),
   )
   router.post(
     '/enter-name/:journeyId',
     ensureInCreateContactJourney(),
     validate(createContactEnterNameSchemaFactory()),
-    enterNameController.POST,
+    asyncMiddleware(enterNameController.POST),
   )
 
   const enterDobController = new CreateContactEnterDobController()
@@ -37,13 +38,13 @@ const CreateContactRoutes = (auditService: AuditService, contactsService: Contac
     '/enter-dob/:journeyId',
     ensureInCreateContactJourney(),
     logPageViewMiddleware(auditService, enterDobController),
-    enterDobController.GET,
+    asyncMiddleware(enterDobController.GET),
   )
   router.post(
     '/enter-dob/:journeyId',
     ensureInCreateContactJourney(),
     validate(createContactEnterDobSchema()),
-    enterDobController.POST,
+    asyncMiddleware(enterDobController.POST),
   )
 
   const checkAnswersController = new CreateContactCheckAnswersController(contactsService)
@@ -51,12 +52,12 @@ const CreateContactRoutes = (auditService: AuditService, contactsService: Contac
     '/check-answers/:journeyId',
     ensureInCreateContactJourney(),
     logPageViewMiddleware(auditService, checkAnswersController),
-    checkAnswersController.GET,
+    asyncMiddleware(checkAnswersController.GET),
   )
-  router.post('/check-answers/:journeyId', ensureInCreateContactJourney(), checkAnswersController.POST)
+  router.post('/check-answers/:journeyId', ensureInCreateContactJourney(), asyncMiddleware(checkAnswersController.POST))
 
   const successController = new SuccessController()
-  router.get('/success', logPageViewMiddleware(auditService, successController), successController.GET)
+  router.get('/success', logPageViewMiddleware(auditService, successController), asyncMiddleware(successController.GET))
 
   return router
 }
