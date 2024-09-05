@@ -3,7 +3,6 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import { PrisonerSearchService, ContactsService } from '../../../../services'
 import logger from '../../../../../logger'
-import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
 
 export default class ListContactsController implements PageHandler {
   constructor(
