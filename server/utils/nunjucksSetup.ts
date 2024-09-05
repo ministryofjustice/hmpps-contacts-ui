@@ -62,17 +62,21 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('createContactsListRows', contactList => {
     const activeContactsRows: Array<unknown> = []
     contactList.forEach((item: Record<string, Date>) => {
+      let addressLine = ''
+      addressLine += item.flat ? `${item.flat}<br />` : ''
+      addressLine += item.property ? `${item.property}<br />` : ''
+      addressLine += item.street ? `${item.street}<br />` : ''
+      addressLine += item.area ? `${item.area}<br />` : ''
+      addressLine += item.cityCode ? `${item.cityCode}<br />` : ''
+      addressLine += item.countyCode ? `${item.countyCode}<br />` : ''
+      addressLine += item.postCode ? `${item.postCode}<br />` : ''
+      addressLine += item.countryCode ? `${item.countryCode}<br />` : ''
+
       activeContactsRows.push([
         { html: `<a href="">${item.surname}, ${item.forename} ${item.middleName}</a>` },
         { html: `${formatDate(item.dateOfBirth)}<br />(${getFormatDistanceToNow(item.dateOfBirth)} old)` },
         {
-          html: `
-            ${item.flat} ${item.property}<br />
-            ${item.street}<br />
-            ${item.area}<br />
-            ${item.cityCode}<br />${item.countyCode}<br />
-            ${item.postCode}<br />
-            ${item.countryCode}<br />`,
+          html: addressLine,
         },
         {
           text: item.relationshipDescription,
@@ -88,6 +92,7 @@ export default function nunjucksSetup(app: express.Express): void {
         },
       ])
     })
+
     return activeContactsRows
   })
 }
