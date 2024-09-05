@@ -20,7 +20,11 @@ describe('createContactMiddleware', () => {
       const next = jest.fn()
       const lastTouchedBeforeCall = new Date(2020, 1, 1)
       req.session.createContactJourneys = {}
-      req.session.createContactJourneys[journeyId] = { id: journeyId, lastTouched: lastTouchedBeforeCall }
+      req.session.createContactJourneys[journeyId] = {
+        id: journeyId,
+        lastTouched: lastTouchedBeforeCall,
+        isCheckingAnswers: false,
+      }
       ensureInCreateContactJourney()(req, res, next)
       expect(next).toHaveBeenCalledTimes(1)
       expect(req.session.createContactJourneys[journeyId].lastTouched.getTime()).toBeGreaterThan(

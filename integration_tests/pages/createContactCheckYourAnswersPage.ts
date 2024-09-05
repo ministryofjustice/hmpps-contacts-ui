@@ -9,6 +9,10 @@ export default class CreateContactCheckYourAnswersPage extends Page {
     this.createPrisonerContactButton().click()
   }
 
+  clickChangeNameLink() {
+    this.changeNameLink().click()
+  }
+
   verifyShowsNameAs(expected: string): CreateContactCheckYourAnswersPage {
     this.checkAnswersNameValue().should('contain.text', expected)
     return this
@@ -24,4 +28,6 @@ export default class CreateContactCheckYourAnswersPage extends Page {
   private checkAnswersNameValue = (): PageElement => cy.get('.check-answers-name-value')
 
   private checkAnswersDobValue = (): PageElement => cy.get('.check-answers-dob-value')
+
+  private changeNameLink = (): PageElement => cy.get('[data-qa=change-name-link]')
 }

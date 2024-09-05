@@ -78,6 +78,7 @@ describe('GET /contacts/create/start', () => {
       {
         id: uuidv4(),
         lastTouched: new Date(),
+        isCheckingAnswers: false,
         names: {
           lastName: 'foo',
           firstName: 'bar',
@@ -106,11 +107,11 @@ describe('GET /contacts/create/start', () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
     preExistingJourneysToAddToSession = [
-      { id: 'old', lastTouched: new Date(2024, 1, 1, 11, 30) },
-      { id: 'middle-aged', lastTouched: new Date(2024, 1, 1, 12, 30) },
-      { id: 'youngest', lastTouched: new Date(2024, 1, 1, 14, 30) },
-      { id: 'oldest', lastTouched: new Date(2024, 1, 1, 10, 30) },
-      { id: 'young', lastTouched: new Date(2024, 1, 1, 13, 30) },
+      { id: 'old', lastTouched: new Date(2024, 1, 1, 11, 30), isCheckingAnswers: false },
+      { id: 'middle-aged', lastTouched: new Date(2024, 1, 1, 12, 30), isCheckingAnswers: false },
+      { id: 'youngest', lastTouched: new Date(2024, 1, 1, 14, 30), isCheckingAnswers: false },
+      { id: 'oldest', lastTouched: new Date(2024, 1, 1, 10, 30), isCheckingAnswers: false },
+      { id: 'young', lastTouched: new Date(2024, 1, 1, 13, 30), isCheckingAnswers: false },
     ]
 
     // When

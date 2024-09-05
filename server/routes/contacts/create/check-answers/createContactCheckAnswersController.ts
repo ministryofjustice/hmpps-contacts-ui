@@ -11,6 +11,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
   GET = async (req: Request<{ journeyId: string }, unknown, unknown>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.createContactJourneys[journeyId]
+    journey.isCheckingAnswers = true
     res.render('pages/contacts/create/checkAnswers', { journey })
   }
 

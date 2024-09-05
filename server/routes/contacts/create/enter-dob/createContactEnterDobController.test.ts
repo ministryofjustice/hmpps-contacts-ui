@@ -16,6 +16,7 @@ const journeyId: string = uuidv4()
 const baseJourney: CreateContactJourney = {
   id: journeyId,
   lastTouched: new Date(),
+  isCheckingAnswers: false,
   names: {
     lastName: 'last',
     firstName: 'first',

@@ -10,7 +10,7 @@ export default class StartCreateContactJourneyController implements PageHandler 
   private MAX_JOURNEYS = 5
 
   GET = async (req: Request, res: Response): Promise<void> => {
-    const journey: CreateContactJourney = { id: uuidv4(), lastTouched: new Date() }
+    const journey: CreateContactJourney = { id: uuidv4(), lastTouched: new Date(), isCheckingAnswers: false }
     if (!req.session.createContactJourneys) {
       req.session.createContactJourneys = {}
     }
