@@ -70,7 +70,7 @@ describe('GET /contacts/manage/list', () => {
         relationshipCode: 'code here',
         relationshipDescription: 'Friend',
         flat: 'FLAT 1',
-        property: 'Proeprty',
+        property: 'Proeperty',
         street: '123 High Street',
         area: 'Mayfair',
         cityCode: 'London',
