@@ -3,10 +3,11 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
-import { initialiseName, formatDate, convertToTitleCase, properCaseFullName } from './utils'
+import { initialiseName, formatDate, convertToTitleCase, properCaseFullName, getFormatDistanceToNow } from './utils'
 import config from '../config'
 import logger from '../../logger'
 import { buildErrorSummaryList, findError } from '../middleware/validationMiddleware'
+import addressToLines from './addressToLines'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -58,4 +59,7 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('formatDate', formatDate)
   njkEnv.addGlobal('DPS_HOME_PAGE_URL', config.serviceUrls.digitalPrison)
   njkEnv.addFilter('pluralise', (word, count, plural = `${word}s`) => (count === 1 ? word : plural))
+  njkEnv.addFilter('addressToLines', addressToLines)
+  njkEnv.addFilter('getFormatDistanceToNow', getFormatDistanceToNow)
+  njkEnv.addFilter('formatDate', formatDate)
 }

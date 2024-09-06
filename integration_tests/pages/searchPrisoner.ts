@@ -5,6 +5,15 @@ export default class SearchPrisonerPage extends Page {
     super('Search for a prisoner')
   }
 
+  enterSearchTerm(value: string): SearchPrisonerPage {
+    this.searchTermTextBox().type(value)
+    return this
+  }
+
+  clicktoViewContactsList() {
+    this.continuePrisonerLink().click()
+  }
+
   manageContactsCaption = (): PageElement => cy.get('.govuk-caption-l')
 
   manageContactH1 = (): PageElement => cy.get('.govuk-heading-l')
@@ -14,4 +23,8 @@ export default class SearchPrisonerPage extends Page {
   prisonerSearchFormField = (): PageElement => cy.get('#search')
 
   prisonerSearchSearchButton = (): PageElement => cy.get('[data-test="search"]')
+
+  private searchTermTextBox = (): PageElement => cy.get('#search')
+
+  private continuePrisonerLink = (): PageElement => cy.get('.govuk-table__row > :nth-child(1) > .govuk-link')
 }

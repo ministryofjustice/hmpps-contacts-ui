@@ -6,3 +6,21 @@
   background-color: govuk-colour("light-grey");
   padding: 30px 15px;
 }
+
+#active-contacts, #inactive-contacts {
+  border: 0;
+  padding: 20px 0;
+
+  .govuk-summary-list {
+    width: auto;
+    .govuk-summary-list__value {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+    .govuk-summary-list__key {
+      width: 0;
+      padding: 0;
+      margin: 0;
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import { format, isValid, parseISO } from 'date-fns'
+import { format, formatDistanceStrict, isValid, parseISO } from 'date-fns'
 
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
@@ -66,4 +66,8 @@ export const isValidPrisonerNumber = (prisonerNo: string): boolean => {
 export const extractPrisonerNumber = (search: string): string | false => {
   const searchTerms = search?.toUpperCase().split(' ')
   return (searchTerms && searchTerms.find(term => isValidPrisonerNumber(term))) || false
+}
+
+export const getFormatDistanceToNow = (date: Date) => {
+  return formatDistanceStrict(date, new Date())
 }
