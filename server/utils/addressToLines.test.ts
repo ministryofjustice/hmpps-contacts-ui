@@ -1,7 +1,7 @@
 import addressToLines from './addressToLines'
 
-describe('convert array to string with a breakline tag', () => {
-  it('', () => {
+describe('Convert address to string', () => {
+  it('should convert array to string with a breakline tag', () => {
     const address = {
       flat: '24',
       premise: '',
