@@ -38,8 +38,10 @@ describe('contactsService', () => {
           middleName: 'middle',
         },
         dateOfBirth: {
-          isKnown: true,
-          dateOfBirth: new Date('1982-06-01T00:00:00.000Z'),
+          isKnown: 'Yes',
+          day: 1,
+          month: 6,
+          year: 1982,
         },
       }
       const expectedRequest: CreateContactRequest = {
@@ -73,7 +75,7 @@ describe('contactsService', () => {
           firstName: 'first',
         },
         dateOfBirth: {
-          isKnown: false,
+          isKnown: 'No',
         },
       }
       const expectedRequest: CreateContactRequest = {
@@ -101,7 +103,7 @@ describe('contactsService', () => {
             lastTouched: new Date(),
             isCheckingAnswers: false,
             names: { firstName: 'first', lastName: 'last' },
-            dateOfBirth: { isKnown: false },
+            dateOfBirth: { isKnown: 'No' },
           },
           user,
         ),

@@ -50,44 +50,44 @@
                                 label: 'Day',
                                 name: "day",
                                 classes: 'govuk-input--width-2',
-                                value: formResponses.day
+                                value: day
                             },
                             {
                                 id: 'month',
                                 label: 'Month',
                                 name: "month",
                                 classes: 'govuk-input--width-2',
-                                value: formResponses.month
+                                value: month
                             },
                             {
                                 id: 'year',
                                 label: 'Year',
                                 name: "year",
                                 classes: 'govuk-input--width-4',
-                                value: formResponses.year
+                                value: year
                             }
                         ]
                     }) }}
 
                 {% endset %}
                 {{ govukRadios({
-                    name: "isDobKnown",
+                    name: "isKnown",
                     items: [
                         {
-                            value: true,
+                            value: 'Yes',
                             text: "Yes",
-                            checked: formResponses.isDobKnown === 'true',
+                            checked: isKnown === 'Yes',
                             conditional: {
                                 html: dobHtml
                             }
                         },
                         {
-                            value: false,
+                            value: 'No',
                             text: "No",
-                            checked: formResponses.isDobKnown === 'false'
+                            checked: isKnown === 'No'
                         }
                     ],
-                    errorMessage: validationErrors | findError('isDobKnown')
+                    errorMessage: validationErrors | findError('isKnown')
                 }) }}
 
                 <div class="govuk-button-group">

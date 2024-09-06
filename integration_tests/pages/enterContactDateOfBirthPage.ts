@@ -5,23 +5,23 @@ export default class EnterContactDateOfBirthPage extends Page {
     super(`Do you know ${name}'s date of birth?`)
   }
 
-  selectIsDobKnown(value: boolean): EnterContactDateOfBirthPage {
+  selectIsKnown(value: 'Yes' | 'No'): EnterContactDateOfBirthPage {
     this.radio(value).click()
     return this
   }
 
   enterDay(day: string): EnterContactDateOfBirthPage {
-    this.dayTextBox().type(day)
+    this.dayTextBox().clear().type(day)
     return this
   }
 
   enterMonth(month: string): EnterContactDateOfBirthPage {
-    this.monthTextBox().type(month)
+    this.monthTextBox().clear().type(month)
     return this
   }
 
   enterYear(year: string): EnterContactDateOfBirthPage {
-    this.yearTextBox().type(year)
+    this.yearTextBox().clear().type(year)
     return this
   }
 
@@ -31,7 +31,7 @@ export default class EnterContactDateOfBirthPage extends Page {
 
   private continueButton = (): PageElement => cy.get('[data-qa=continue-button]')
 
-  private radio = (value: boolean): PageElement => cy.get(`.govuk-radios__input[value='${value}']`)
+  private radio = (value: 'Yes' | 'No'): PageElement => cy.get(`.govuk-radios__input[value='${value}']`)
 
   private dayTextBox = (): PageElement => cy.get('#day')
 

@@ -8,12 +8,12 @@ context('Create contact and update from check answers', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn', { roles: ['PRISON'] })
-  })
-
-  it('Can change a contacts names when creating a new contact', () => {
     cy.signIn()
     cy.visit('/contacts/create/start')
     cy.task('stubCreateContact', { id: 132456 })
+  })
+
+  it('Can change a contacts names when creating a new contact', () => {
     Page.verifyOnPage(EnterNamePage) //
       .selectTitle('MR')
       .enterLastName('Last')
@@ -24,7 +24,7 @@ context('Create contact and update from check answers', () => {
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
     enterDobPage //
-      .selectIsDobKnown(true)
+      .selectIsKnown('Yes')
       .enterDay('15')
       .enterMonth('06')
       .enterYear('1982')
@@ -58,6 +58,144 @@ context('Create contact and update from check answers', () => {
         lastName: 'Last Updated',
         firstName: 'First Updated',
         middleName: 'Middle Updated',
+        createdBy: 'USER1',
+        dateOfBirth: '1982-06-15T00:00:00.000Z',
+      },
+    )
+  })
+
+  it('Can change a contacts dob from known to a different known dob', () => {
+    Page.verifyOnPage(EnterNamePage) //
+      .enterLastName('Last')
+      .enterFirstName('First')
+      .clickContinue()
+
+    const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
+    enterDobPage.checkOnPage()
+    enterDobPage //
+      .selectIsKnown('Yes')
+      .enterDay('15')
+      .enterMonth('06')
+      .enterYear('1982')
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowsNameAs('Last, First')
+      .verifyShowsDateOfBirthAs('15 June 1982')
+      .clickChangeDateOfBirthLink()
+
+    const revisitedDobPage = new EnterContactDateOfBirthPage('Last, First')
+    revisitedDobPage.checkOnPage()
+    revisitedDobPage //
+      .enterDay('16')
+      .enterMonth('07')
+      .enterYear('1983')
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowsNameAs('Last, First')
+      .verifyShowsDateOfBirthAs('16 July 1983')
+      .clickCreatePrisonerContact()
+
+    Page.verifyOnPage(CreatedContactPage)
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: '/contact',
+      },
+      {
+        lastName: 'Last',
+        firstName: 'First',
+        createdBy: 'USER1',
+        dateOfBirth: '1983-07-16T00:00:00.000Z',
+      },
+    )
+  })
+
+  it('Can change a contacts dob from known to unknown', () => {
+    Page.verifyOnPage(EnterNamePage) //
+      .enterLastName('Last')
+      .enterFirstName('First')
+      .clickContinue()
+
+    const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
+    enterDobPage.checkOnPage()
+    enterDobPage //
+      .selectIsKnown('Yes')
+      .enterDay('15')
+      .enterMonth('06')
+      .enterYear('1982')
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowsNameAs('Last, First')
+      .verifyShowsDateOfBirthAs('15 June 1982')
+      .clickChangeDateOfBirthLink()
+
+    const revisitedDobPage = new EnterContactDateOfBirthPage('Last, First')
+    revisitedDobPage.checkOnPage()
+    revisitedDobPage //
+      .selectIsKnown('No')
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowsNameAs('Last, First')
+      .verifyShowsDateOfBirthAs('Not provided')
+      .clickCreatePrisonerContact()
+
+    Page.verifyOnPage(CreatedContactPage)
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: '/contact',
+      },
+      {
+        lastName: 'Last',
+        firstName: 'First',
+        createdBy: 'USER1',
+      },
+    )
+  })
+  it('Can change a contacts dob from known to unknown', () => {
+    Page.verifyOnPage(EnterNamePage) //
+      .enterLastName('Last')
+      .enterFirstName('First')
+      .clickContinue()
+
+    const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
+    enterDobPage.checkOnPage()
+    enterDobPage //
+      .selectIsKnown('No')
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowsNameAs('Last, First')
+      .verifyShowsDateOfBirthAs('Not provided')
+      .clickChangeDateOfBirthLink()
+
+    const revisitedDobPage = new EnterContactDateOfBirthPage('Last, First')
+    revisitedDobPage.checkOnPage()
+    revisitedDobPage //
+      .selectIsKnown('Yes')
+      .enterDay('15')
+      .enterMonth('06')
+      .enterYear('1982')
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowsNameAs('Last, First')
+      .verifyShowsDateOfBirthAs('15 June 1982')
+      .clickCreatePrisonerContact()
+
+    Page.verifyOnPage(CreatedContactPage)
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: '/contact',
+      },
+      {
+        lastName: 'Last',
+        firstName: 'First',
         createdBy: 'USER1',
         dateOfBirth: '1982-06-15T00:00:00.000Z',
       },

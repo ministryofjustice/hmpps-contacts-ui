@@ -2,10 +2,11 @@ import type { Express } from 'express'
 import request from 'supertest'
 import { v4 as uuidv4 } from 'uuid'
 import { SessionData } from 'express-session'
+import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
-import CreateContactJourney = journeys.CreateContactJourney
 import ContactsService from '../../../../services/contactsService'
+import CreateContactJourney = journeys.CreateContactJourney
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/contactsService')
@@ -16,20 +17,24 @@ const contactsService = new ContactsService(null) as jest.Mocked<ContactsService
 let app: Express
 let session: Partial<SessionData>
 const journeyId: string = uuidv4()
-const journey: CreateContactJourney = {
-  id: journeyId,
-  lastTouched: new Date(),
-  isCheckingAnswers: false,
-  names: {
-    lastName: 'last',
-    firstName: 'first',
-  },
-  dateOfBirth: {
-    isKnown: true,
-    dateOfBirth: new Date('2024-01-01'),
-  },
-}
+let journey: CreateContactJourney
 beforeEach(() => {
+  journey = {
+    id: journeyId,
+    lastTouched: new Date(),
+    isCheckingAnswers: false,
+    names: {
+      lastName: 'last',
+      firstName: 'first',
+    },
+    dateOfBirth: {
+      isKnown: 'Yes',
+      day: 1,
+      month: 1,
+      year: 2024,
+    },
+  }
+
   app = appWithAllRoutes({
     services: {
       auditService,
@@ -50,7 +55,7 @@ afterEach(() => {
 
 describe('GET /contacts/create/check-answers', () => {
   describe('GET /contacts/create/check-answers/:journeyId', () => {
-    it('should render contact page', async () => {
+    it('should render check answers page with dob', async () => {
       // Given
       auditService.logPageView.mockResolvedValue(null)
 
@@ -67,7 +72,32 @@ describe('GET /contacts/create/check-answers', () => {
         correlationId: expect.any(String),
       })
       expect(journey.isCheckingAnswers).toStrictEqual(true)
+      const $ = cheerio.load(response.text)
+      expect($('.check-answers-dob-value').first().text().trim()).toStrictEqual('1 January 2024')
     })
+
+    it('should render check answers page without dob', async () => {
+      // Given
+      auditService.logPageView.mockResolvedValue(null)
+      journey.dateOfBirth = { isKnown: 'No' }
+
+      // When
+      const response = await request(app).get(`/contacts/create/check-answers/${journeyId}`)
+
+      // Then
+      expect(response.status).toEqual(200)
+      expect(response.text).toContain('Contacts')
+      expect(response.text).toContain('Hmpps Contacts Ui')
+      expect(response.text).toContain('Check your answers')
+      expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, {
+        who: user.username,
+        correlationId: expect.any(String),
+      })
+      expect(journey.isCheckingAnswers).toStrictEqual(true)
+      const $ = cheerio.load(response.text)
+      expect($('.check-answers-dob-value').first().text().trim()).toStrictEqual('Not provided')
+    })
+
     it('should return to start if no journey in session', async () => {
       await request(app)
         .get(`/contacts/create/check-answers/${uuidv4()}`)

@@ -13,6 +13,10 @@ export default class CreateContactCheckYourAnswersPage extends Page {
     this.changeNameLink().click()
   }
 
+  clickChangeDateOfBirthLink() {
+    this.changeDateOfBirthLink().click()
+  }
+
   verifyShowsNameAs(expected: string): CreateContactCheckYourAnswersPage {
     this.checkAnswersNameValue().should('contain.text', expected)
     return this
@@ -30,4 +34,6 @@ export default class CreateContactCheckYourAnswersPage extends Page {
   private checkAnswersDobValue = (): PageElement => cy.get('.check-answers-dob-value')
 
   private changeNameLink = (): PageElement => cy.get('[data-qa=change-name-link]')
+
+  private changeDateOfBirthLink = (): PageElement => cy.get('[data-qa=change-dob-link]')
 }
