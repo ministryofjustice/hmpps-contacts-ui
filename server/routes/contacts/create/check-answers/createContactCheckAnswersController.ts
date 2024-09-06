@@ -12,7 +12,16 @@ export default class CreateContactCheckAnswersController implements PageHandler 
     const { journeyId } = req.params
     const journey = req.session.createContactJourneys[journeyId]
     journey.isCheckingAnswers = true
-    res.render('pages/contacts/create/checkAnswers', { journey })
+    let dateOfBirth
+    if (journey.dateOfBirth.isKnown === 'Yes') {
+      dateOfBirth = new Date(`${journey.dateOfBirth.year}-${journey.dateOfBirth.month}-${journey.dateOfBirth.day}Z`)
+    }
+
+    const view = {
+      journey,
+      dateOfBirth,
+    }
+    res.render('pages/contacts/create/checkAnswers', view)
   }
 
   POST = async (req: Request<{ journeyId: string }, unknown, unknown>, res: Response): Promise<void> => {

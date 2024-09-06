@@ -31,7 +31,7 @@
         <div class="govuk-grid-column-three-quarters">
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-                {%set  formattedDateOfBirth %}{% if journey.dateOfBirth.isKnown %}{{ journey.dateOfBirth.dateOfBirth | formatDate }}{% else %}Not provided{% endif %}{% endset %}
+                {%set  formattedDateOfBirth %}{% if journey.dateOfBirth.isKnown === 'Yes' %}{{ dateOfBirth | formatDate }}{% else %}Not provided{% endif %}{% endset %}
                 {{ govukSummaryList({
                     card: {
                         title: {

@@ -22,7 +22,7 @@ context('Create Contacts', () => {
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
     enterDobPage //
-      .selectIsDobKnown(false)
+      .selectIsKnown('No')
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
@@ -58,7 +58,7 @@ context('Create Contacts', () => {
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
     enterDobPage //
-      .selectIsDobKnown(true)
+      .selectIsKnown('Yes')
       .enterDay('15')
       .enterMonth('06')
       .enterYear('1982')
@@ -149,7 +149,7 @@ context('Create Contacts', () => {
     enterDobPage //
       .clickContinue()
 
-    enterDobPage.hasFieldInError('isDobKnown', 'Select whether the date of birth is known')
+    enterDobPage.hasFieldInError('isKnown', 'Select whether the date of birth is known')
   })
 
   it('Must enter dob if it is known', () => {
@@ -163,7 +163,7 @@ context('Create Contacts', () => {
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
     enterDobPage //
-      .selectIsDobKnown(true)
+      .selectIsKnown('Yes')
       .clickContinue()
 
     enterDobPage.errorSummaryItems.spread((...$lis) => {
@@ -185,7 +185,7 @@ context('Create Contacts', () => {
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
     enterDobPage //
-      .selectIsDobKnown(true)
+      .selectIsKnown('Yes')
       .enterDay('aa')
       .enterMonth('bb')
       .enterYear('cc')

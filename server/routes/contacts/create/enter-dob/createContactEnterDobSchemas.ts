@@ -9,7 +9,7 @@ const DOB_IN_FUTURE_MESSAGE = 'The date of birth must not be in the future'
 
 export const createContactEnterDobSchema = () => async () => {
   return createSchema({
-    isDobKnown: z.string({ message: SELECT_IS_DOB_KNOWN_MESSAGE }).transform(value => value === 'true'),
+    isKnown: z.string({ message: SELECT_IS_DOB_KNOWN_MESSAGE }),
     day: z.union(
       [
         z.literal(''),
@@ -45,7 +45,7 @@ export const createContactEnterDobSchema = () => async () => {
     dateOfBirth: z.date().optional(),
   })
     .superRefine((val, ctx) => {
-      if (val.isDobKnown === true) {
+      if (val.isKnown === 'Yes') {
         if (!val.day) {
           ctx.addIssue({ code: z.ZodIssueCode.custom, message: DAY_TYPE_MESSAGE, path: ['day'] })
         }
@@ -55,18 +55,23 @@ export const createContactEnterDobSchema = () => async () => {
         if (!val.year) {
           ctx.addIssue({ code: z.ZodIssueCode.custom, message: YEAR_TYPE_MESSAGE, path: ['year'] })
         }
+        if (val.day && val.month && val.year) {
+          if (new Date(`${val.year}-${val.month}-${val.day}Z`) > new Date()) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: DOB_IN_FUTURE_MESSAGE, path: ['isKnown'] })
+          }
+        }
       }
     })
-    .transform((val): { isDobKnown: boolean; dateOfBirth?: Date } => {
-      if (val.isDobKnown === true) {
-        return { isDobKnown: true, dateOfBirth: new Date(`${val.year}-${val.month}-${val.day}Z`) }
+    .transform((val): { isKnown: 'Yes' | 'No'; day?: number; month?: number; year?: number } => {
+      if (val.isKnown === 'Yes') {
+        return {
+          isKnown: 'Yes',
+          day: val.day as number,
+          month: val.month as number,
+          year: val.year as number,
+        }
       }
-      return { isDobKnown: false }
-    })
-    .superRefine((val, ctx) => {
-      if (val.isDobKnown === true && val.dateOfBirth > new Date()) {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, message: DOB_IN_FUTURE_MESSAGE, path: ['isDobKnown'] })
-      }
+      return { isKnown: 'No' }
     })
 }
 

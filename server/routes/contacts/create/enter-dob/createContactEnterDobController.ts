@@ -9,7 +9,14 @@ export default class CreateContactEnterDobController implements PageHandler {
   GET = async (req: Request, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.createContactJourneys[journeyId]
-    res.render('pages/contacts/create/enterDob', { journey })
+    const view = {
+      journey,
+      isKnown: res.locals?.formResponses?.isKnown ?? journey?.dateOfBirth?.isKnown,
+      day: res.locals?.formResponses?.day ?? journey?.dateOfBirth?.day,
+      month: res.locals?.formResponses?.month ?? journey?.dateOfBirth?.month,
+      year: res.locals?.formResponses?.year ?? journey?.dateOfBirth?.year,
+    }
+    res.render('pages/contacts/create/enterDob', view)
   }
 
   POST = async (
@@ -19,14 +26,16 @@ export default class CreateContactEnterDobController implements PageHandler {
     const { journeyId } = req.params
     const journey = req.session.createContactJourneys[journeyId]
     const { body } = req
-    if (body.isDobKnown) {
+    if (body.isKnown === 'Yes') {
       journey.dateOfBirth = {
-        isKnown: body.isDobKnown,
-        dateOfBirth: body.dateOfBirth,
+        isKnown: 'Yes',
+        day: body.day,
+        month: body.month,
+        year: body.year,
       }
     } else {
       journey.dateOfBirth = {
-        isKnown: body.isDobKnown,
+        isKnown: 'No',
       }
     }
     res.redirect(`/contacts/create/check-answers/${journeyId}`)
