@@ -11,7 +11,7 @@ export default class StartManageContactsJourneyController implements PageHandler
 
   GET = async (req: Request, res: Response): Promise<void> => {
     // Create a new journey object for managing contacts
-    const journey: ManageContactsJourney = { id: uuidv4(), lastTouched: new Date() }
+    const journey: ManageContactsJourney = { id: uuidv4(), lastTouched: new Date().toISOString() }
 
     // Create the object for journeys if not present in the session
     if (!req.session.manageContactsJourneys) {
@@ -24,7 +24,10 @@ export default class StartManageContactsJourneyController implements PageHandler
     // Replace the oldest journey if more than MAX_JOURNEYS exist
     if (Object.entries(req.session.manageContactsJourneys).length > this.MAX_JOURNEYS) {
       Object.values(req.session.manageContactsJourneys)
-        .sort((a: ManageContactsJourney, b: ManageContactsJourney) => b.lastTouched.getTime() - a.lastTouched.getTime())
+        .sort(
+          (a: ManageContactsJourney, b: ManageContactsJourney) =>
+            new Date(b.lastTouched).getTime() - new Date(a.lastTouched).getTime(),
+        )
         .slice(this.MAX_JOURNEYS)
         .forEach(journeyToRemove => delete req.session.manageContactsJourneys[journeyToRemove.id])
     }

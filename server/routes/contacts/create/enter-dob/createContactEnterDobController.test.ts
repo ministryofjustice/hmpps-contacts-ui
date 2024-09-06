@@ -19,7 +19,7 @@ let existingJourney: CreateContactJourney
 beforeEach(() => {
   existingJourney = {
     id: journeyId,
-    lastTouched: new Date(),
+    lastTouched: new Date().toISOString(),
     isCheckingAnswers: false,
     names: {
       lastName: 'last',

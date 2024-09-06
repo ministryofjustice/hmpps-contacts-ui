@@ -29,7 +29,7 @@ describe('contactsService', () => {
       apiClient.createContact.mockResolvedValue(expectedCreated)
       const journey: CreateContactJourney = {
         id: '1',
-        lastTouched: new Date(),
+        lastTouched: new Date().toISOString(),
         isCheckingAnswers: false,
         names: {
           title: 'Mr',
@@ -68,7 +68,7 @@ describe('contactsService', () => {
       apiClient.createContact.mockResolvedValue(expectedCreated)
       const journey: CreateContactJourney = {
         id: '1',
-        lastTouched: new Date(),
+        lastTouched: new Date().toISOString(),
         isCheckingAnswers: false,
         names: {
           lastName: 'last',
@@ -100,7 +100,7 @@ describe('contactsService', () => {
         service.createContact(
           {
             id: '1',
-            lastTouched: new Date(),
+            lastTouched: new Date().toISOString(),
             isCheckingAnswers: false,
             names: { firstName: 'first', lastName: 'last' },
             dateOfBirth: { isKnown: 'No' },

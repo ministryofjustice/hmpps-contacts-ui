@@ -31,7 +31,7 @@ beforeEach(() => {
       session.manageContactsJourneys = {}
       session.manageContactsJourneys[journeyId] = {
         id: journeyId,
-        lastTouched: new Date(),
+        lastTouched: new Date().toISOString(),
         search: {
           searchTerm: 'test',
         },

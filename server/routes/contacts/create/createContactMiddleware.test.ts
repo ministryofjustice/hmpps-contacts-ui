@@ -22,12 +22,12 @@ describe('createContactMiddleware', () => {
       req.session.createContactJourneys = {}
       req.session.createContactJourneys[journeyId] = {
         id: journeyId,
-        lastTouched: lastTouchedBeforeCall,
+        lastTouched: lastTouchedBeforeCall.toISOString(),
         isCheckingAnswers: false,
       }
       ensureInCreateContactJourney()(req, res, next)
       expect(next).toHaveBeenCalledTimes(1)
-      expect(req.session.createContactJourneys[journeyId].lastTouched.getTime()).toBeGreaterThan(
+      expect(new Date(req.session.createContactJourneys[journeyId].lastTouched).getTime()).toBeGreaterThan(
         lastTouchedBeforeCall.getTime(),
       )
     })

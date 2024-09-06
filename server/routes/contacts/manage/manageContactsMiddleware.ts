@@ -12,7 +12,7 @@ const ensureInManageContactsJourney = (): RequestHandler => {
       return res.redirect('/contacts/manage/start')
     }
 
-    req.session.manageContactsJourneys[journeyId].lastTouched = new Date()
+    req.session.manageContactsJourneys[journeyId].lastTouched = new Date().toISOString()
     return next()
   }
 }
