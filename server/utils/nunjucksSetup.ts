@@ -7,6 +7,7 @@ import { initialiseName, formatDate, convertToTitleCase, properCaseFullName, get
 import config from '../config'
 import logger from '../../logger'
 import { buildErrorSummaryList, findError } from '../middleware/validationMiddleware'
+import addressToLines from './addressToLines'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -58,41 +59,7 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('formatDate', formatDate)
   njkEnv.addGlobal('DPS_HOME_PAGE_URL', config.serviceUrls.digitalPrison)
   njkEnv.addFilter('pluralise', (word, count, plural = `${word}s`) => (count === 1 ? word : plural))
-
-  njkEnv.addFilter('createContactsListRows', contactList => {
-    const activeContactsRows: Array<unknown> = []
-    contactList.forEach((item: Record<string, Date>) => {
-      let addressLine = ''
-      addressLine += item.flat ? `${item.flat}<br />` : ''
-      addressLine += item.property ? `${item.property}<br />` : ''
-      addressLine += item.street ? `${item.street}<br />` : ''
-      addressLine += item.area ? `${item.area}<br />` : ''
-      addressLine += item.cityCode ? `${item.cityCode}<br />` : ''
-      addressLine += item.countyCode ? `${item.countyCode}<br />` : ''
-      addressLine += item.postCode ? `${item.postCode}<br />` : ''
-      addressLine += item.countryCode ? `${item.countryCode}<br />` : ''
-
-      activeContactsRows.push([
-        { html: `<a href="">${item.surname}, ${item.forename} ${item.middleName}</a>` },
-        { html: `${formatDate(item.dateOfBirth)}<br />(${getFormatDistanceToNow(item.dateOfBirth)} old)` },
-        {
-          html: addressLine,
-        },
-        {
-          text: item.relationshipDescription,
-        },
-        {
-          text: item.emergencyContact ? 'Yes' : 'No',
-        },
-        {
-          text: item.nextOfKin ? 'Yes' : 'No',
-        },
-        {
-          text: item.approvedVisitor ? 'Yes' : 'No',
-        },
-      ])
-    })
-
-    return activeContactsRows
-  })
+  njkEnv.addFilter('addressToLines', addressToLines)
+  njkEnv.addFilter('getFormatDistanceToNow', getFormatDistanceToNow)
+  njkEnv.addFilter('formatDate', formatDate)
 }

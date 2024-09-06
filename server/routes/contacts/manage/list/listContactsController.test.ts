@@ -58,6 +58,7 @@ afterEach(() => {
 
 describe('GET /contacts/manage/list', () => {
   it('should render the contacts list for a prisoner', async () => {
+    const classes = '#active-contacts > .govuk-table > .govuk-table__body > .govuk-table__row >'
     auditService.logPageView.mockResolvedValue(null)
     const contactsList: PrisonerContactSummary = [
       {
@@ -66,21 +67,21 @@ describe('GET /contacts/manage/list', () => {
         prisonerNumber: 'G9381UV',
         surname: 'Adams',
         forename: 'Claire',
-        middleName: 'Middle',
+        middleName: '',
         dateOfBirth: new Date('1973-01-10'),
         relationshipCode: 'code here',
         relationshipDescription: 'Friend',
-        flat: 'FLAT 1',
-        property: 'Proeperty',
+        flat: '1',
+        property: 'Property',
         street: '123 High Street',
         area: 'Mayfair',
         cityCode: 'London',
         countyCode: 'Greater London',
         postCode: 'W1 1AA',
         countryCode: 'England',
-        approvedVisitor: true,
-        nextOfKin: true,
-        emergencyContact: true,
+        approvedVisitor: 'Yes',
+        nextOfKin: 'Yes',
+        emergencyContact: 'Yes',
         awareOfCharges: true,
         comments: 'comments here',
       },
@@ -113,27 +114,21 @@ describe('GET /contacts/manage/list', () => {
     expect($('.govuk-table__header').eq(5).text()).toStrictEqual('Next of kin')
     expect($('.govuk-table__header').eq(6).text()).toStrictEqual('Approved')
 
-    expect(
-      $('#active-contacts > .govuk-table > .govuk-table__body > .govuk-table__row > :nth-child(1) > a').text(),
-    ).toStrictEqual('Adams, Claire Middle')
-    expect(
-      $('#active-contacts > .govuk-table > .govuk-table__body > .govuk-table__row > :nth-child(2)').text(),
-    ).toStrictEqual('10 January 1973(52 years old)')
-    expect(
-      $('#active-contacts > .govuk-table > .govuk-table__body > .govuk-table__row > :nth-child(3)').text(),
-    ).toStrictEqual('FLAT 1Proeperty123 High StreetMayfairLondonGreater LondonW1 1AAEngland')
-    expect(
-      $('#active-contacts > .govuk-table > .govuk-table__body > .govuk-table__row > :nth-child(4)').text(),
-    ).toStrictEqual('Friend')
-    expect(
-      $('#active-contacts > .govuk-table > .govuk-table__body > .govuk-table__row > :nth-child(5)').text(),
-    ).toStrictEqual('Yes')
-    expect(
-      $('#active-contacts > .govuk-table > .govuk-table__body > .govuk-table__row > :nth-child(6)').text(),
-    ).toStrictEqual('Yes')
-    expect(
-      $('#active-contacts > .govuk-table > .govuk-table__body > .govuk-table__row > :nth-child(7)').text(),
-    ).toStrictEqual('Yes')
+    expect($(`${classes} :nth-child(1) > a`).text()).toContain('Adams, Claire')
+    expect($(`${classes} :nth-child(2)`).text()).toContain('10 January 1973')
+    expect($(`${classes} :nth-child(2)`).text()).toContain('(52 years old)')
+    expect($(`${classes} :nth-child(3)`).text()).toContain('Flat 1,')
+    expect($(`${classes} :nth-child(3)`).text()).toContain('Property')
+    expect($(`${classes} :nth-child(3)`).text()).toContain('123 High Street')
+    expect($(`${classes} :nth-child(3)`).text()).toContain('Mayfair')
+    expect($(`${classes} :nth-child(3)`).text()).toContain('London')
+    expect($(`${classes} :nth-child(3)`).text()).toContain('Greater London')
+    expect($(`${classes} :nth-child(3)`).text()).toContain('W1 1AA')
+    expect($(`${classes} :nth-child(3)`).text()).toContain('England')
+    expect($(`${classes} :nth-child(4)`).text()).toContain('Friend')
+    expect($(`${classes} :nth-child(5)`).text()).toContain('Yes')
+    expect($(`${classes} :nth-child(6)`).text()).toContain('Yes')
+    expect($(`${classes} :nth-child(7)`).text()).toContain('Yes')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.LIST_CONTACTS_PAGE, {
       who: user.username,
