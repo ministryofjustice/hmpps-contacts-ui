@@ -24,12 +24,15 @@ describe('manageContactsMiddleware', () => {
     it('should proceed if the journey is in the session and update the last touched date', () => {
       const lastTouchedBeforeCall = new Date(2020, 1, 1)
       req.session.manageContactsJourneys = {}
-      req.session.manageContactsJourneys[journeyId] = { id: journeyId, lastTouched: lastTouchedBeforeCall }
+      req.session.manageContactsJourneys[journeyId] = {
+        id: journeyId,
+        lastTouched: lastTouchedBeforeCall.toISOString(),
+      }
 
       ensureInManageContactsJourney()(req, res, next)
 
       expect(next).toHaveBeenCalledTimes(1)
-      expect(req.session.manageContactsJourneys[journeyId].lastTouched.getTime()).toBeGreaterThan(
+      expect(new Date(req.session.manageContactsJourneys[journeyId].lastTouched).getTime()).toBeGreaterThan(
         lastTouchedBeforeCall.getTime(),
       )
     })

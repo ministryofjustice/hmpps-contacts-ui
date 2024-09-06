@@ -9,7 +9,7 @@ const ensureInCreateContactJourney = (): RequestHandler => {
     if (!req.session.createContactJourneys[journeyId]) {
       return res.redirect('/contacts/create/start')
     }
-    req.session.createContactJourneys[journeyId].lastTouched = new Date()
+    req.session.createContactJourneys[journeyId].lastTouched = new Date().toISOString()
 
     return next()
   }

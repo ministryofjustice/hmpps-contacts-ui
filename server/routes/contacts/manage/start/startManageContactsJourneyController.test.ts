@@ -55,7 +55,7 @@ describe('GET /contacts/manage/start', () => {
     preExistingJourneysToAddToSession = [
       {
         id: uuidv4(),
-        lastTouched: new Date(),
+        lastTouched: new Date().toISOString(),
         search: {
           searchTerm: 'hello',
         },
@@ -86,7 +86,7 @@ describe('GET /contacts/manage/start', () => {
     preExistingJourneysToAddToSession = [
       {
         id: uuidv4(),
-        lastTouched: new Date(),
+        lastTouched: new Date().toISOString(),
         search: {
           searchTerm: 'hello',
         },
@@ -107,11 +107,11 @@ describe('GET /contacts/manage/start', () => {
   it('should remove the oldest journey if there will be more than 5 journeys', async () => {
     auditService.logPageView.mockResolvedValue(null)
     preExistingJourneysToAddToSession = [
-      { id: 'old', lastTouched: new Date(2024, 1, 1, 11, 30) },
-      { id: 'middle-aged', lastTouched: new Date(2024, 1, 1, 12, 30) },
-      { id: 'youngest', lastTouched: new Date(2024, 1, 1, 14, 30) },
-      { id: 'oldest', lastTouched: new Date(2024, 1, 1, 10, 30) },
-      { id: 'young', lastTouched: new Date(2024, 1, 1, 13, 30) },
+      { id: 'old', lastTouched: new Date(2024, 1, 1, 11, 30).toISOString() },
+      { id: 'middle-aged', lastTouched: new Date(2024, 1, 1, 12, 30).toISOString() },
+      { id: 'youngest', lastTouched: new Date(2024, 1, 1, 14, 30).toISOString() },
+      { id: 'oldest', lastTouched: new Date(2024, 1, 1, 10, 30).toISOString() },
+      { id: 'young', lastTouched: new Date(2024, 1, 1, 13, 30).toISOString() },
     ]
 
     const response = await request(app).get('/contacts/manage/start')

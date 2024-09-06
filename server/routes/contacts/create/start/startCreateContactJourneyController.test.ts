@@ -77,7 +77,7 @@ describe('GET /contacts/create/start', () => {
     preExistingJourneysToAddToSession = [
       {
         id: uuidv4(),
-        lastTouched: new Date(),
+        lastTouched: new Date().toISOString(),
         isCheckingAnswers: false,
         names: {
           lastName: 'foo',
@@ -107,11 +107,11 @@ describe('GET /contacts/create/start', () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
     preExistingJourneysToAddToSession = [
-      { id: 'old', lastTouched: new Date(2024, 1, 1, 11, 30), isCheckingAnswers: false },
-      { id: 'middle-aged', lastTouched: new Date(2024, 1, 1, 12, 30), isCheckingAnswers: false },
-      { id: 'youngest', lastTouched: new Date(2024, 1, 1, 14, 30), isCheckingAnswers: false },
-      { id: 'oldest', lastTouched: new Date(2024, 1, 1, 10, 30), isCheckingAnswers: false },
-      { id: 'young', lastTouched: new Date(2024, 1, 1, 13, 30), isCheckingAnswers: false },
+      { id: 'old', lastTouched: new Date(2024, 1, 1, 11, 30).toISOString(), isCheckingAnswers: false },
+      { id: 'middle-aged', lastTouched: new Date(2024, 1, 1, 12, 30).toISOString(), isCheckingAnswers: false },
+      { id: 'youngest', lastTouched: new Date(2024, 1, 1, 14, 30).toISOString(), isCheckingAnswers: false },
+      { id: 'oldest', lastTouched: new Date(2024, 1, 1, 10, 30).toISOString(), isCheckingAnswers: false },
+      { id: 'young', lastTouched: new Date(2024, 1, 1, 13, 30).toISOString(), isCheckingAnswers: false },
     ]
 
     // When
