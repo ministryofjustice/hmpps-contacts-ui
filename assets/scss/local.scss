@@ -13,6 +13,10 @@
 
   .govuk-summary-list {
     width: auto;
+    .govuk-summary-list__value {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
     .govuk-summary-list__key {
       width: 0;
       padding: 0;
