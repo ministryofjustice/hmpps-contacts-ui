@@ -10,17 +10,17 @@ export default class ContactsService {
   async createContact(journey: CreateContactJourney, user: Express.User): Promise<Contact> {
     let dateOfBirth: Date
     let isOverEighteen
-    if (journey.dateOfBirth.isKnown === 'Yes') {
+    if (journey.dateOfBirth.isKnown === 'YES') {
       dateOfBirth = new Date(`${journey.dateOfBirth.year}-${journey.dateOfBirth.month}-${journey.dateOfBirth.day}Z`)
     } else {
       switch (journey.dateOfBirth.isOverEighteen) {
-        case 'Yes':
+        case 'YES':
           isOverEighteen = 'YES'
           break
-        case 'No':
+        case 'NO':
           isOverEighteen = 'NO'
           break
-        case 'Do not know':
+        case 'DO_NOT_KNOW':
           isOverEighteen = 'DO_NOT_KNOW'
           break
         default:

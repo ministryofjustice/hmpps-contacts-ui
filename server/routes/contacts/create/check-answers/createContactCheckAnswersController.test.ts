@@ -28,7 +28,7 @@ beforeEach(() => {
       firstName: 'first',
     },
     dateOfBirth: {
-      isKnown: 'Yes',
+      isKnown: 'YES',
       day: 1,
       month: 1,
       year: 2024,
@@ -79,7 +79,7 @@ describe('GET /contacts/create/check-answers', () => {
     it('should render check answers page without dob', async () => {
       // Given
       auditService.logPageView.mockResolvedValue(null)
-      journey.dateOfBirth = { isKnown: 'No' }
+      journey.dateOfBirth = { isKnown: 'NO' }
 
       // When
       const response = await request(app).get(`/contacts/create/check-answers/${journeyId}`)

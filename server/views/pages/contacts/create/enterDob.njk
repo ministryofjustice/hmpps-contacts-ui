@@ -74,17 +74,17 @@
                     name: "isKnown",
                     items: [
                         {
-                            value: 'Yes',
-                            text: "Yes",
-                            checked: isKnown === 'Yes',
+                            value: 'YES',
+                            text: 'YES' | formatYesNo,
+                            checked: isKnown === 'YES',
                             conditional: {
                                 html: dobHtml
                             }
                         },
                         {
-                            value: 'No',
-                            text: "No",
-                            checked: isKnown === 'No'
+                            value: 'NO',
+                            text: 'NO' | formatYesNo,
+                            checked: isKnown === 'NO'
                         }
                     ],
                     errorMessage: validationErrors | findError('isKnown')

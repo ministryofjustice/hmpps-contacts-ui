@@ -31,7 +31,7 @@
         <div class="govuk-grid-column-three-quarters">
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-                {% set  formattedDateOfBirth %}{% if journey.dateOfBirth.isKnown === 'Yes' %}{{ dateOfBirth | formatDate }}{% else %}Not provided{% endif %}{% endset %}
+                {% set  formattedDateOfBirth %}{% if journey.dateOfBirth.isKnown === 'YES' %}{{ dateOfBirth | formatDate }}{% else %}Not provided{% endif %}{% endset %}
                 {% set rows = [
                     {
                         key: {
@@ -74,14 +74,14 @@
                         }
                     }
                 ] %}
-                {% if journey.dateOfBirth.isKnown === 'No' %}
+                {% if journey.dateOfBirth.isKnown === 'NO' %}
                     {% set rows = (rows.push(
                         {
                             key: {
                                 text: "Is over 18 years old?"
                             },
                             value: {
-                                html: journey.dateOfBirth.isOverEighteen,
+                                html: journey.dateOfBirth.isOverEighteen | formatYesNo,
                                 classes: 'check-answers-estimated-dob-value'
                             },
                             actions: {

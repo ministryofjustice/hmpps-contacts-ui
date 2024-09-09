@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { CreateContactEnterDobSchemaType } from './createContactEnterDobSchemas'
+import DateOfBirth = journeys.DateOfBirth
 
 export default class CreateContactEnterDobController implements PageHandler {
   public PAGE_NAME = Page.CREATE_CONTACT_DOB_PAGE
@@ -26,19 +27,19 @@ export default class CreateContactEnterDobController implements PageHandler {
     const { journeyId } = req.params
     const journey = req.session.createContactJourneys[journeyId]
     const { body } = req
-    if (body.isKnown === 'Yes') {
+    if (body.isKnown === 'YES') {
       journey.dateOfBirth = {
-        isKnown: 'Yes',
+        isKnown: 'YES',
         day: body.day,
         month: body.month,
         year: body.year,
-      }
+      } as DateOfBirth
     } else {
       journey.dateOfBirth = {
-        isKnown: 'No',
-      }
+        isKnown: 'NO',
+      } as DateOfBirth
     }
-    if (journey.dateOfBirth.isKnown === 'Yes') {
+    if (journey.dateOfBirth.isKnown === 'YES') {
       res.redirect(`/contacts/create/check-answers/${journeyId}`)
     } else {
       res.redirect(`/contacts/create/enter-estimated-dob/${journeyId}`)
