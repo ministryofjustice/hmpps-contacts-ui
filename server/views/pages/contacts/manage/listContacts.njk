@@ -35,11 +35,6 @@
 {# Test the mini profile macro #}
 {{ miniProfile(prisonerDetails, '/prisoner-image/' + prisonerDetails.prisonerNumber, digitalPrisonServicesUrl + '/prisoner/' + prisonerDetails.prisonerNumber) }}
 
-{{ govukButton({
-    text: "Add prisoner contact",
-    href: "/"
-}) }}
-
 {% macro createTable(contactsList) %}
     <table class="govuk-table">
         <thead class="govuk-table__head">
@@ -86,9 +81,9 @@
                 }) }}
             </td>
             <td class="govuk-table__cell">{{ item.relationshipDescription }}</td>
-            <td class="govuk-table__cell">{{ item.emergencyContact }}</td>
-            <td class="govuk-table__cell">{{ item.nextOfKin }}</td>
-            <td class="govuk-table__cell">{{ item.approvedVisitor }}</td>
+            <td class="govuk-table__cell">{{ 'Yes' if item.emergencyContact else 'No' }}</td>
+            <td class="govuk-table__cell">{{ 'Yes' if item.nextOfKin else 'No'}}</td>
+            <td class="govuk-table__cell">{{ 'Yes' if item.approvedVisitor else 'No'}}</td>
         </tr>
         {% endfor %}
         </tbody>
@@ -100,7 +95,12 @@
 {% endmacro %}
 
 <span class="govuk-caption-l">Manage Contacts</span>
-<h1 class="govuk-heading-l">{{ title }}</h1>
+<h1 class="govuk-heading-l">Contacts for {{ journey.prisoner.lastName | convertToTitleCase }}, {{ journey.prisoner.firstName | convertToTitleCase }}</h1>
+
+{{ govukButton({
+    text: "Add prisoner contact",
+    href: "/"
+}) }}
 
 <div class="govuk-tabs" data-module="govuk-tabs">
     <ul class="govuk-tabs__list">
@@ -119,14 +119,14 @@
         {% if activeContacts.length > 0 %}
             {{ createTable(activeContacts) }}
         {% else %}
-            {{ prisonerDoesNotHaveAnyContactsMessage(journey, 'active') }}
+        <div class="govuk-!-static-margin-top-4">{{ prisonerDoesNotHaveAnyContactsMessage(journey, 'active') }}</div>
         {% endif %}
     </div>
     <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="inactive-contacts">
         {% if inactiveContacts.length > 0 %}
             {{ createTable(inactiveContacts) }}
         {% else %}
-            {{ prisonerDoesNotHaveAnyContactsMessage(journey, 'inactive') }}
+            <div class="govuk-!-static-margin-top-4">{{ prisonerDoesNotHaveAnyContactsMessage(journey, 'inactive') }}</div>
         {% endif %}
     </div>
 </div>

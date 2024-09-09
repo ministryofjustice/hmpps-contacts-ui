@@ -104,7 +104,7 @@ describe('GET /contacts/manage/list', () => {
     expect($('.govuk-button').text()).toContain('Add prisoner contact')
 
     // Contact List Table
-    expect($('.govuk-heading-l').text()).toStrictEqual('List contacts')
+    expect($('.govuk-heading-l').text()).toStrictEqual('Contacts for Smith, John')
     expect($('.govuk-table__header').eq(0).text()).toStrictEqual('Name')
     expect($('.govuk-table__header').eq(1).text()).toStrictEqual('Date of birth')
 
@@ -146,8 +146,8 @@ describe('GET /contacts/manage/list', () => {
     const response = await request(app).get(`/contacts/manage/list/${journeyId}`)
     const $ = cheerio.load(response.text)
 
-    expect($('#active-contacts > p').text()).toStrictEqual('John Smith does not have any active contacts')
-    expect($('#inactive-contacts > p').text()).toStrictEqual('John Smith does not have any inactive contacts')
+    expect($('#active-contacts > div > p').text()).toStrictEqual('John Smith does not have any active contacts')
+    expect($('#inactive-contacts > div > p').text()).toStrictEqual('John Smith does not have any inactive contacts')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.LIST_CONTACTS_PAGE, {
       who: user.username,
