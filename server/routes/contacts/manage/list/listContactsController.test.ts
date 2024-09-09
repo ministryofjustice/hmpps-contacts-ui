@@ -79,9 +79,9 @@ describe('GET /contacts/manage/list', () => {
         countyCode: 'Greater London',
         postCode: 'W1 1AA',
         countryCode: 'England',
-        approvedVisitor: 'Yes',
-        nextOfKin: 'Yes',
-        emergencyContact: 'Yes',
+        approvedVisitor: true,
+        nextOfKin: true,
+        emergencyContact: true,
         awareOfCharges: true,
         comments: 'comments here',
       },
@@ -104,7 +104,7 @@ describe('GET /contacts/manage/list', () => {
     expect($('.govuk-button').text()).toContain('Add prisoner contact')
 
     // Contact List Table
-    expect($('.govuk-heading-l').text()).toStrictEqual('List contacts')
+    expect($('.govuk-heading-l').text()).toStrictEqual('Contacts for Smith, John')
     expect($('.govuk-table__header').eq(0).text()).toStrictEqual('Name')
     expect($('.govuk-table__header').eq(1).text()).toStrictEqual('Date of birth')
 
@@ -136,6 +136,52 @@ describe('GET /contacts/manage/list', () => {
     })
   })
 
+  it('should render the contacts list for a prisoner with emergency contact, next of kin and approved visitors with "No" value', async () => {
+    const classes = '#active-contacts > .govuk-table > .govuk-table__body > .govuk-table__row >'
+    auditService.logPageView.mockResolvedValue(null)
+    const contactsList: PrisonerContactSummary = [
+      {
+        prisonerContactId: 100,
+        contactId: 200,
+        prisonerNumber: 'G9381UV',
+        surname: 'Adams',
+        forename: 'Claire',
+        middleName: '',
+        dateOfBirth: new Date('1973-01-10'),
+        relationshipCode: 'code here',
+        relationshipDescription: 'Friend',
+        flat: '1',
+        property: 'Property',
+        street: '123 High Street',
+        area: 'Mayfair',
+        cityCode: 'London',
+        countyCode: 'Greater London',
+        postCode: 'W1 1AA',
+        countryCode: 'England',
+        approvedVisitor: false,
+        nextOfKin: false,
+        emergencyContact: false,
+        awareOfCharges: true,
+        comments: 'comments here',
+      },
+    ]
+
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.getPrisonerContacts.mockReturnValue(contactsList)
+
+    const response = await request(app).get(`/contacts/manage/list/${journeyId}`)
+    const $ = cheerio.load(response.text)
+
+    expect($(`${classes} :nth-child(5)`).text()).toContain('No')
+    expect($(`${classes} :nth-child(6)`).text()).toContain('No')
+    expect($(`${classes} :nth-child(7)`).text()).toContain('No')
+
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.LIST_CONTACTS_PAGE, {
+      who: user.username,
+      correlationId: expect.any(String),
+    })
+  })
+
   it('should render a message that the prisoner does not have any active/inactive contacts', async () => {
     auditService.logPageView.mockResolvedValue(null)
     const contactsList: PrisonerContactSummary = []
@@ -146,8 +192,8 @@ describe('GET /contacts/manage/list', () => {
     const response = await request(app).get(`/contacts/manage/list/${journeyId}`)
     const $ = cheerio.load(response.text)
 
-    expect($('#active-contacts > p').text()).toStrictEqual('John Smith does not have any active contacts')
-    expect($('#inactive-contacts > p').text()).toStrictEqual('John Smith does not have any inactive contacts')
+    expect($('#active-contacts > div > p').text()).toStrictEqual('John Smith does not have any active contacts')
+    expect($('#inactive-contacts > div > p').text()).toStrictEqual('John Smith does not have any inactive contacts')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.LIST_CONTACTS_PAGE, {
       who: user.username,
