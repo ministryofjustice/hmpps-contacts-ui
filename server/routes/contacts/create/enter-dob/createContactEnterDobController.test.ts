@@ -159,13 +159,13 @@ describe('GET /contacts/create/enter-dob/:journeyId', () => {
 })
 
 describe('POST /contacts/create/enter-name', () => {
-  it('should pass to success page if there are no validation errors and we created the contact with no dob', async () => {
+  it('should pass to enter estimated dob page if there are no validation errors and we created the contact with no dob', async () => {
     await request(app)
       .post(`/contacts/create/enter-dob/${journeyId}`)
       .type('form')
-      .send({ isKnown: 'false' })
+      .send({ isKnown: 'No' })
       .expect(302)
-      .expect('Location', `/contacts/create/check-answers/${journeyId}`)
+      .expect('Location', `/contacts/create/enter-estimated-dob/${journeyId}`)
 
     const expectedDob = { isKnown: 'No' }
     expect(session.createContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)

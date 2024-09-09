@@ -31,55 +31,80 @@
         <div class="govuk-grid-column-three-quarters">
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-                {%set  formattedDateOfBirth %}{% if journey.dateOfBirth.isKnown === 'Yes' %}{{ dateOfBirth | formatDate }}{% else %}Not provided{% endif %}{% endset %}
+                {% set  formattedDateOfBirth %}{% if journey.dateOfBirth.isKnown === 'Yes' %}{{ dateOfBirth | formatDate }}{% else %}Not provided{% endif %}{% endset %}
+                {% set rows = [
+                    {
+                        key: {
+                            text: "Name"
+                        },
+                        value: {
+                            html: journey.names.lastName + ", " + journey.names.firstName,
+                            classes: 'check-answers-name-value'
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "/contacts/create/enter-name/"  + journey.id,
+                                    text: "Change",
+                                    visuallyHiddenText: "name",
+                                    attributes: {"data-qa": "change-name-link"},
+                                    classes: "govuk-link--no-visited-state"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Date of birth"
+                        },
+                        value: {
+                            html: formattedDateOfBirth,
+                            classes: 'check-answers-dob-value'
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "/contacts/create/enter-dob/"  + journey.id,
+                                    text: "Change",
+                                    visuallyHiddenText: "date of birth",
+                                    attributes: {"data-qa": "change-dob-link"},
+                                    classes: "govuk-link--no-visited-state"
+                                }
+                            ]
+                        }
+                    }
+                ] %}
+                {% if journey.dateOfBirth.isKnown === 'No' %}
+                    {% set rows = (rows.push(
+                        {
+                            key: {
+                                text: "Is over 18 years old?"
+                            },
+                            value: {
+                                html: journey.dateOfBirth.isOverEighteen,
+                                classes: 'check-answers-estimated-dob-value'
+                            },
+                            actions: {
+                                items: [
+                                    {
+                                        href: "/contacts/create/enter-estimated-dob/"  + journey.id,
+                                        text: "Change",
+                                        visuallyHiddenText: "is over 18",
+                                        attributes: {"data-qa": "change-estimated-dob-link"},
+                                        classes: "govuk-link--no-visited-state"
+                                    }
+                                ]
+                            }
+                        }
+                    ), rows) %}
+                {% endif %}
                 {{ govukSummaryList({
                     card: {
                         title: {
                             text: "Contact details"
                         }
                     },
-                    rows: [
-                        {
-                            key: {
-                                text: "Name"
-                            },
-                            value: {
-                                html: journey.names.lastName + ", " + journey.names.firstName,
-                                classes: 'check-answers-name-value'
-                            },
-                            actions: {
-                                items: [
-                                    {
-                                        href: "/contacts/create/enter-name/"  + journey.id,
-                                        text: "Change",
-                                        visuallyHiddenText: "name",
-                                        attributes: {"data-qa": "change-name-link"},
-                                        classes: "govuk-link--no-visited-state"
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            key: {
-                                text: "Date of birth"
-                            },
-                            value: {
-                                html: formattedDateOfBirth,
-                                classes: 'check-answers-dob-value'
-                            },
-                            actions: {
-                                items: [
-                                    {
-                                        href: "/contacts/create/enter-dob/"  + journey.id,
-                                        text: "Change",
-                                        visuallyHiddenText: "date of birth",
-                                        attributes: {"data-qa": "change-dob-link"},
-                                        classes: "govuk-link--no-visited-state"
-                                    }
-                                ]
-                            }
-                        }
-                    ]
+                    rows: rows
                 }) }}
                 <div class="govuk-button-group">
                     {{ govukButton({

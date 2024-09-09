@@ -19,6 +19,7 @@ declare namespace journeys {
     day?: number
     month?: number
     year?: number
+    isOverEighteen?: 'Yes' | 'No' | 'Do not know'
   }
 
   export interface ManageContactsJourney {

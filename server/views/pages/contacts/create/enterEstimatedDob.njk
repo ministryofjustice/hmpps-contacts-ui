@@ -1,0 +1,71 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " - Enter date of birth" %}
+{% set title = "Is " + journey.names.lastName + ", " + journey.names.firstName + " over 18 years old?" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+<div class="govuk-grid-row govuk-!-static-margin-bottom-5">
+  <div class="govuk-grid-column-full">
+      {{ govukBreadcrumbs({
+      items: [
+          {
+            text: "Digital Prison Services",
+            href: DPS_HOME_PAGE_URL
+          },
+          {
+              text: "Contacts",
+              href: "/"
+          }
+      ]
+      }) }}
+  </div>
+</div>
+{% include '../../../partials/formErrorSummary.njk' %}
+<span class="govuk-caption-l">Manage Contacts</span>
+<h1 class="govuk-heading-l">{{ title }}</h1>
+ <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                {{ govukRadios({
+                    name: "isOverEighteen",
+                    items: [
+                        {
+                            value: 'Yes',
+                            text: "Yes",
+                            checked: isOverEighteen === 'Yes'
+                        },
+                        {
+                            value: 'No',
+                            text: "No",
+                            checked: isOverEighteen === 'No'
+                        },
+                        {
+                            value: 'Do not know',
+                            text: "Do not know",
+                            checked: isOverEighteen === 'Do not know'
+                        }
+                    ],
+                    errorMessage: validationErrors | findError('isOverEighteen')
+                }) }}
+
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        html: "Continue",
+                        type: "submit",
+                        classes: 'govuk-!-margin-top-6',
+                        attributes: {"data-qa": "continue-button"}
+                    }) }}
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="/">Cancel</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

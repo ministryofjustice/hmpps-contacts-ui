@@ -3,6 +3,7 @@ import EnterNamePage from '../pages/enterNamePage'
 import CreatedContactPage from '../pages/createdContactPage'
 import EnterContactDateOfBirthPage from '../pages/enterContactDateOfBirthPage'
 import CreateContactCheckYourAnswersPage from '../pages/createContactCheckYourAnswersPage'
+import EnterContactEstimatedDateOfBirthPage from '../pages/enterContactEstimatedDateOfBirthPage'
 
 context('Create Contacts', () => {
   beforeEach(() => {
@@ -25,9 +26,16 @@ context('Create Contacts', () => {
       .selectIsKnown('No')
       .clickContinue()
 
+    const estimatedDobPage = new EnterContactEstimatedDateOfBirthPage('Last, First')
+    estimatedDobPage.checkOnPage()
+    estimatedDobPage //
+      .selectIsOverEighteen('Do not know')
+      .clickContinue()
+
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsNameAs('Last, First')
       .verifyShowsDateOfBirthAs('Not provided')
+      .verifyShowsEstimatedDateOfBirthAs('Do not know')
       .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
@@ -39,6 +47,7 @@ context('Create Contacts', () => {
       {
         lastName: 'Last',
         firstName: 'First',
+        isOverEighteen: 'DO_NOT_KNOW',
         createdBy: 'USER1',
       },
     )
@@ -197,5 +206,27 @@ context('Create Contacts', () => {
       expect($lis[1]).to.contain('Enter a valid month (1-12)')
       expect($lis[2]).to.contain('Enter a valid year. Must be at least 1900')
     })
+  })
+
+  it('Must select whether contact is over 18 if no dob is known', () => {
+    cy.signIn()
+    cy.visit('/contacts/create/start')
+    Page.verifyOnPage(EnterNamePage) //
+      .enterLastName('Last')
+      .enterFirstName('First')
+      .clickContinue()
+
+    const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
+    enterDobPage.checkOnPage()
+    enterDobPage //
+      .selectIsKnown('No')
+      .clickContinue()
+
+    const estimatedDobPage = new EnterContactEstimatedDateOfBirthPage('Last, First')
+    estimatedDobPage.checkOnPage()
+    estimatedDobPage //
+      .clickContinue()
+
+    estimatedDobPage.hasFieldInError('isOverEighteen', 'Select whether the contact is over 18')
   })
 })

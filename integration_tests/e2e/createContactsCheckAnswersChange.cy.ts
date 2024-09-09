@@ -3,6 +3,7 @@ import EnterNamePage from '../pages/enterNamePage'
 import CreatedContactPage from '../pages/createdContactPage'
 import EnterContactDateOfBirthPage from '../pages/enterContactDateOfBirthPage'
 import CreateContactCheckYourAnswersPage from '../pages/createContactCheckYourAnswersPage'
+import EnterContactEstimatedDateOfBirthPage from '../pages/enterContactEstimatedDateOfBirthPage'
 
 context('Create contact and update from check answers', () => {
   beforeEach(() => {
@@ -138,6 +139,12 @@ context('Create contact and update from check answers', () => {
       .selectIsKnown('No')
       .clickContinue()
 
+    const estimatedDobPage = new EnterContactEstimatedDateOfBirthPage('Last, First')
+    estimatedDobPage.checkOnPage()
+    estimatedDobPage //
+      .selectIsOverEighteen('Do not know')
+      .clickContinue()
+
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsNameAs('Last, First')
       .verifyShowsDateOfBirthAs('Not provided')
@@ -152,11 +159,13 @@ context('Create contact and update from check answers', () => {
       {
         lastName: 'Last',
         firstName: 'First',
+        isOverEighteen: 'DO_NOT_KNOW',
         createdBy: 'USER1',
       },
     )
   })
-  it('Can change a contacts dob from known to unknown', () => {
+
+  it('Can change a contacts dob from unknown to known', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
@@ -166,6 +175,12 @@ context('Create contact and update from check answers', () => {
     enterDobPage.checkOnPage()
     enterDobPage //
       .selectIsKnown('No')
+      .clickContinue()
+
+    const estimatedDobPage = new EnterContactEstimatedDateOfBirthPage('Last, First')
+    estimatedDobPage.checkOnPage()
+    estimatedDobPage //
+      .selectIsOverEighteen('Yes')
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
@@ -198,6 +213,56 @@ context('Create contact and update from check answers', () => {
         firstName: 'First',
         createdBy: 'USER1',
         dateOfBirth: '1982-06-15T00:00:00.000Z',
+      },
+    )
+  })
+
+  it('Can change a contacts estimated dob', () => {
+    Page.verifyOnPage(EnterNamePage) //
+      .enterLastName('Last')
+      .enterFirstName('First')
+      .clickContinue()
+
+    const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
+    enterDobPage.checkOnPage()
+    enterDobPage //
+      .selectIsKnown('No')
+      .clickContinue()
+
+    const estimatedDobPage = new EnterContactEstimatedDateOfBirthPage('Last, First')
+    estimatedDobPage.checkOnPage()
+    estimatedDobPage //
+      .selectIsOverEighteen('Do not know')
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowsNameAs('Last, First')
+      .verifyShowsDateOfBirthAs('Not provided')
+      .verifyShowsEstimatedDateOfBirthAs('Do not know')
+      .clickChangeEstimatedDateOfBirthLink()
+
+    estimatedDobPage.checkOnPage()
+    estimatedDobPage //
+      .selectIsOverEighteen('Yes')
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowsNameAs('Last, First')
+      .verifyShowsDateOfBirthAs('Not provided')
+      .verifyShowsEstimatedDateOfBirthAs('Yes')
+      .clickCreatePrisonerContact()
+
+    Page.verifyOnPage(CreatedContactPage)
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: '/contact',
+      },
+      {
+        lastName: 'Last',
+        firstName: 'First',
+        isOverEighteen: 'YES',
+        createdBy: 'USER1',
       },
     )
   })
