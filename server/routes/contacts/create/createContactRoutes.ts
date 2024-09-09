@@ -12,6 +12,8 @@ import ensureInCreateContactJourney from './createContactMiddleware'
 import { ContactsService } from '../../../services'
 import CreateContactCheckAnswersController from './check-answers/createContactCheckAnswersController'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
+import CreateContactEnterEstimatedDobController from './enter-estimated-dob/createContactEnterEstimatedDobController'
+import { createContactEnterEstimatedDobSchema } from './enter-estimated-dob/createContactEnterEstimatedDobSchemas'
 
 const CreateContactRoutes = (auditService: AuditService, contactsService: ContactsService) => {
   const router = Router({ mergeParams: true })
@@ -45,6 +47,20 @@ const CreateContactRoutes = (auditService: AuditService, contactsService: Contac
     ensureInCreateContactJourney(),
     validate(createContactEnterDobSchema()),
     asyncMiddleware(enterDobController.POST),
+  )
+
+  const enterEstimatedDobController = new CreateContactEnterEstimatedDobController()
+  router.get(
+    '/enter-estimated-dob/:journeyId',
+    ensureInCreateContactJourney(),
+    logPageViewMiddleware(auditService, enterEstimatedDobController),
+    asyncMiddleware(enterEstimatedDobController.GET),
+  )
+  router.post(
+    '/enter-estimated-dob/:journeyId',
+    ensureInCreateContactJourney(),
+    validate(createContactEnterEstimatedDobSchema()),
+    asyncMiddleware(enterEstimatedDobController.POST),
   )
 
   const checkAnswersController = new CreateContactCheckAnswersController(contactsService)

@@ -17,6 +17,10 @@ export default class CreateContactCheckYourAnswersPage extends Page {
     this.changeDateOfBirthLink().click()
   }
 
+  clickChangeEstimatedDateOfBirthLink() {
+    this.changeEstimatedDateOfBirthLink().click()
+  }
+
   verifyShowsNameAs(expected: string): CreateContactCheckYourAnswersPage {
     this.checkAnswersNameValue().should('contain.text', expected)
     return this
@@ -27,13 +31,22 @@ export default class CreateContactCheckYourAnswersPage extends Page {
     return this
   }
 
+  verifyShowsEstimatedDateOfBirthAs(expected: string): CreateContactCheckYourAnswersPage {
+    this.checkAnswersEstimatedDobValue().should('contain.text', expected)
+    return this
+  }
+
   private createPrisonerContactButton = (): PageElement => cy.get('[data-qa=create-prisoner-contact-button]')
 
   private checkAnswersNameValue = (): PageElement => cy.get('.check-answers-name-value')
 
   private checkAnswersDobValue = (): PageElement => cy.get('.check-answers-dob-value')
 
+  private checkAnswersEstimatedDobValue = (): PageElement => cy.get('.check-answers-estimated-dob-value')
+
   private changeNameLink = (): PageElement => cy.get('[data-qa=change-name-link]')
 
   private changeDateOfBirthLink = (): PageElement => cy.get('[data-qa=change-dob-link]')
+
+  private changeEstimatedDateOfBirthLink = (): PageElement => cy.get('[data-qa=change-estimated-dob-link]')
 }

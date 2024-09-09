@@ -111,18 +111,16 @@ export interface components {
        */
       dateOfBirth?: string | null
       /**
+       * @description If the date of birth is not known, this indicates whether they are believed to be over 18 or not
+       * @example YES
+       * @enum {string|null}
+       */
+      isOverEighteen?: 'YES' | 'NO' | 'DO_NOT_KNOW' | null
+      /**
        * @description The id of the user creating the contact
        * @example JD000001
        */
       createdBy: string
-    }
-    ErrorResponse: {
-      /** Format: int32 */
-      status: number
-      errorCode?: string
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
     }
     /** @description The details of a contact as an individual */
     Contact: {
@@ -159,6 +157,12 @@ export interface components {
        */
       dateOfBirth?: string | null
       /**
+       * @description Whether the contact is over 18, based on their date of birth if it is known
+       * @example YES
+       * @enum {string}
+       */
+      isOverEighteen: 'YES' | 'NO' | 'DO_NOT_KNOW'
+      /**
        * @description The id of the user who created the contact
        * @example JD000001
        */
@@ -169,6 +173,14 @@ export interface components {
        * @example 2024-01-01T00:00:00Z
        */
       createdTime: string
+    }
+    ErrorResponse: {
+      /** Format: int32 */
+      status: number
+      errorCode?: string
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
     }
     /** @description Describes the details of a prisoner's contact */
     PrisonerContactSummary: {
@@ -209,7 +221,13 @@ export interface components {
        * @description The date of birth of the contact
        * @example 1980-01-01
        */
-      dateOfBirth: string
+      dateOfBirth?: string
+      /**
+       * @description YES if the contact is over 18 years old, NO if under, null if unknown
+       * @example YES
+       * @enum {string}
+       */
+      isOverEighteen: 'YES' | 'NO' | 'DO_NOT_KNOW'
       /**
        * @description The relationship code between the prisoner and the contact
        * @example FRI
