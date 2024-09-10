@@ -19,17 +19,21 @@ const CreateContactRoutes = (auditService: AuditService, contactsService: Contac
   const router = Router({ mergeParams: true })
 
   const startController = new StartCreateContactJourneyController()
-  router.get('/start', logPageViewMiddleware(auditService, startController), asyncMiddleware(startController.GET))
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/create/start',
+    logPageViewMiddleware(auditService, startController),
+    asyncMiddleware(startController.GET),
+  )
 
   const enterNameController = new EnterNameController()
   router.get(
-    '/enter-name/:journeyId',
+    '/prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId',
     ensureInCreateContactJourney(),
     logPageViewMiddleware(auditService, enterNameController),
     asyncMiddleware(enterNameController.GET),
   )
   router.post(
-    '/enter-name/:journeyId',
+    '/prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId',
     ensureInCreateContactJourney(),
     validate(createContactEnterNameSchemaFactory()),
     asyncMiddleware(enterNameController.POST),
@@ -37,13 +41,13 @@ const CreateContactRoutes = (auditService: AuditService, contactsService: Contac
 
   const enterDobController = new CreateContactEnterDobController()
   router.get(
-    '/enter-dob/:journeyId',
+    '/prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId',
     ensureInCreateContactJourney(),
     logPageViewMiddleware(auditService, enterDobController),
     asyncMiddleware(enterDobController.GET),
   )
   router.post(
-    '/enter-dob/:journeyId',
+    '/prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId',
     ensureInCreateContactJourney(),
     validate(createContactEnterDobSchema()),
     asyncMiddleware(enterDobController.POST),
@@ -51,13 +55,13 @@ const CreateContactRoutes = (auditService: AuditService, contactsService: Contac
 
   const enterEstimatedDobController = new CreateContactEnterEstimatedDobController()
   router.get(
-    '/enter-estimated-dob/:journeyId',
+    '/prisoner/:prisonerNumber/contacts/create/enter-estimated-dob/:journeyId',
     ensureInCreateContactJourney(),
     logPageViewMiddleware(auditService, enterEstimatedDobController),
     asyncMiddleware(enterEstimatedDobController.GET),
   )
   router.post(
-    '/enter-estimated-dob/:journeyId',
+    '/prisoner/:prisonerNumber/contacts/create/enter-estimated-dob/:journeyId',
     ensureInCreateContactJourney(),
     validate(createContactEnterEstimatedDobSchema()),
     asyncMiddleware(enterEstimatedDobController.POST),
@@ -65,15 +69,23 @@ const CreateContactRoutes = (auditService: AuditService, contactsService: Contac
 
   const checkAnswersController = new CreateContactCheckAnswersController(contactsService)
   router.get(
-    '/check-answers/:journeyId',
+    '/prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId',
     ensureInCreateContactJourney(),
     logPageViewMiddleware(auditService, checkAnswersController),
     asyncMiddleware(checkAnswersController.GET),
   )
-  router.post('/check-answers/:journeyId', ensureInCreateContactJourney(), asyncMiddleware(checkAnswersController.POST))
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId',
+    ensureInCreateContactJourney(),
+    asyncMiddleware(checkAnswersController.POST),
+  )
 
   const successController = new SuccessController()
-  router.get('/success', logPageViewMiddleware(auditService, successController), asyncMiddleware(successController.GET))
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/create/success',
+    logPageViewMiddleware(auditService, successController),
+    asyncMiddleware(successController.GET),
+  )
 
   return router
 }

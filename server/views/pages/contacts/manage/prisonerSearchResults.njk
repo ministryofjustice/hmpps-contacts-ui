@@ -84,7 +84,7 @@
             {% set rows = [] %}
             {% for result in results.content %}
                 {% set prisonerNameHtml %}
-                   <a href="../list/{{journey.id}}?prisoner={{ result.prisonerNumber }}" class="govuk-link govuk-link--no-visited-state bapv-result-row">
+                   <a href="/prisoner/{{ result.prisonerNumber }}/contacts/list/{{journey.id}}" class="govuk-link govuk-link--no-visited-state bapv-result-row">
                       {{ (result.lastName + ", " + result.firstName) | convertToTitleCase }}
                    </a>
                 {% endset %}

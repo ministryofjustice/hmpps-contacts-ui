@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import { PrisonerSearchService, ContactsService } from '../../../../services'
+import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 
 export default class ListContactsController implements PageHandler {
   constructor(
@@ -11,13 +12,12 @@ export default class ListContactsController implements PageHandler {
 
   public PAGE_NAME = Page.LIST_CONTACTS_PAGE
 
-  GET = async (req: Request, res: Response): Promise<void> => {
+  GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { user } = res.locals
-    const { prisoner } = req.query
-    const { journeyId } = req.params
+    const { journeyId, prisonerNumber } = req.params
     const journey = req.session.manageContactsJourneys[journeyId]
 
-    const prisonerDetails = await this.prisonerSearchService.getByPrisonerNumber(prisoner as string, user)
+    const prisonerDetails = await this.prisonerSearchService.getByPrisonerNumber(prisonerNumber as string, user)
 
     journey.prisoner = {
       firstName: prisonerDetails?.firstName,
@@ -28,8 +28,8 @@ export default class ListContactsController implements PageHandler {
       prisonName: prisonerDetails?.prisonName,
     }
 
-    const activeContacts = await this.contactsService.getPrisonerContacts(prisoner as string, true, user)
-    const inactiveContacts = await this.contactsService.getPrisonerContacts(prisoner as string, false, user)
+    const activeContacts = await this.contactsService.getPrisonerContacts(prisonerNumber as string, true, user)
+    const inactiveContacts = await this.contactsService.getPrisonerContacts(prisonerNumber as string, false, user)
 
     res.render('pages/contacts/manage/listContacts', {
       activeContacts,
