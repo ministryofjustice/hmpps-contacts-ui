@@ -5,10 +5,6 @@ export default class SearchPrisonerPage extends Page {
     super('Search for a prisoner')
   }
 
-  viewFirstPrisonersContacts() {
-    this.clickPrisonerLink().click()
-  }
-
   manageContactsCaption = (): PageElement => cy.get('.govuk-caption-l')
 
   manageContactH1 = (): PageElement => cy.get('.govuk-heading-l')
@@ -19,11 +15,7 @@ export default class SearchPrisonerPage extends Page {
 
   prisonerSearchSearchButton = (): PageElement => cy.get('[data-test="search"]')
 
-  noResultMessage = (): PageElement => cy.get('[data-qa=no-result-message]')
+  noResultMessage = (): PageElement => cy.get('[data-qa="no-result-message"]')
 
-  // private continueButton = (): PageElement => cy.get('[data-qa=continue-button]')
-
-  // private searchTermTextBox = (): PageElement => cy.get('#search')
-
-  private clickPrisonerLink = (): PageElement => cy.get('.govuk-table__row > :nth-child(1) > .govuk-link')
+  clickPrisonerLink = (): PageElement => cy.get('.govuk-table__row > :nth-child(1) > .govuk-link').click()
 }

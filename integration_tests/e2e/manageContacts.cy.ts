@@ -1,6 +1,7 @@
 import SearchPrisonerPage from '../pages/searchPrisoner'
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
+import ListContactsPage from '../pages/listContacts'
 
 context('Manage contacts ', () => {
   beforeEach(() => {
@@ -12,7 +13,6 @@ context('Manage contacts ', () => {
 
   it('Start of journey prompts for search', () => {
     const searchPrisonerPage = Page.verifyOnPage(SearchPrisonerPage)
-
     searchPrisonerPage.manageContactsCaption().should('contain.text', 'Manage Contacts')
     searchPrisonerPage.manageContactH1().should('contain.text', 'Search for a prisoner')
     searchPrisonerPage.prisonerSearchFormLabel().should('be.visible')
@@ -20,23 +20,27 @@ context('Manage contacts ', () => {
   })
 
   it('Should show validation error for empty search term', () => {
-    Page.verifyOnPage(SearchPrisonerPage)
-
+    const searchPrisonerPage = Page.verifyOnPage(SearchPrisonerPage)
     cy.get('[data-test="search"]').should('be.visible')
-    cy.get('[data-test="search"]').click()
+    searchPrisonerPage.prisonerSearchFormField().clear()
+    searchPrisonerPage.prisonerSearchSearchButton().click()
     cy.get('.govuk-error-summary__title').should('be.visible')
     cy.get('.govuk-list > li > a').should('be.visible')
     cy.get('#search-error').should('be.visible')
-    cy.get('#search').type('Ehshapeter', { force: true })
+  })
+
+  it('Should show validation error for less than 2 characters entered', () => {
+    const searchPrisonerPage = Page.verifyOnPage(SearchPrisonerPage)
+    searchPrisonerPage.prisonerSearchFormField().clear().type('a')
+    searchPrisonerPage.prisonerSearchSearchButton().click()
+    cy.get('.govuk-error-summary__title').should('be.visible')
+    cy.get('.govuk-list > li > a').should('be.visible')
+    cy.get('#search-error').should('be.visible')
   })
 
   it('should show clickable search results for a prisoner', () => {
     const { prisonerNumber } = TestData.prisoner()
-
-    // Provides a default header/footer/caseload with no javascript
     cy.task('stubComponentsMeta')
-
-    // Stub a matching result
     cy.task('stubPrisoners', {
       results: {
         totalPages: 1,
@@ -50,35 +54,23 @@ context('Manage contacts ', () => {
     cy.task('stubContactList', 'A1234BC')
 
     const searchPrisonerPage = Page.verifyOnPage(SearchPrisonerPage)
-
     searchPrisonerPage.prisonerSearchFormField().clear().type(prisonerNumber)
     searchPrisonerPage.prisonerSearchSearchButton().click()
-
-    Page.verifyOnPage(SearchPrisonerPage).viewFirstPrisonersContacts()
+    Page.verifyOnPage(SearchPrisonerPage)
+    searchPrisonerPage.clickPrisonerLink()
+    Page.verifyOnPage(ListContactsPage)
   })
 
   it('should show a message that no contacts match the criteria', () => {
     const { prisonerNumber } = TestData.prisoner()
-
-    // Provides a default header/footer/caseload with no javascript
     cy.task('stubComponentsMeta')
-
-    // Stub empty search result
-    cy.task('stubPrisoners', { term: prisonerNumber })
-
-    cy.task('stubPrisonerById', TestData.prisoner())
-    cy.task('stubEmptyContactList', 'A1234BC')
-
+    cy.task('stubPrisoners', { term: prisonerNumber }) // Empty search result
     const searchPrisonerPage = Page.verifyOnPage(SearchPrisonerPage)
-
     searchPrisonerPage.prisonerSearchFormField().clear().type(prisonerNumber)
     searchPrisonerPage.prisonerSearchSearchButton().click()
-
     Page.verifyOnPage(SearchPrisonerPage)
-
-    // Verify the message is shown and no prisoners
-    // cy.get('div #no-result-message').should('have.text','There are no results for this name or number at Hewell')
-    // cy.get('[data-qa="no-result-message"]').should('have.text', 'There are no results for this name or number at Hewell')
-    // searchPrisonerPage.noResultMessage().contains('There are no results for this name or number at Hewell')
+    searchPrisonerPage
+      .noResultMessage()
+      .should('contain.text', 'There are no results for this name or number at HMP Hewell')
   })
 })

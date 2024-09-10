@@ -1,14 +1,13 @@
 import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
 import { Prisoner } from '../../server/data/prisonerOffenderSearchTypes'
-import TestData from '../../server/routes/testutils/testData'
 
 export default {
   stubPrisoners: ({
     results = {
       totalPages: 0,
       totalElements: 0,
-      content: [TestData.prisoner()],
+      content: [],
     },
     prisonId = 'HEI',
     term,

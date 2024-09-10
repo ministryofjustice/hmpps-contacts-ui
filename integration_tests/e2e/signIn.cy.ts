@@ -1,4 +1,4 @@
-import ContactsPage from '../pages/contacts'
+import ContactsPage from '../pages/listContacts'
 import AuthSignInPage from '../pages/authSignIn'
 import Page from '../pages/page'
 import AuthManageDetailsPage from '../pages/authManageDetails'
