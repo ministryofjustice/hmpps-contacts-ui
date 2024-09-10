@@ -13,7 +13,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
     const journey = req.session.createContactJourneys[journeyId]
     journey.isCheckingAnswers = true
     let dateOfBirth
-    if (journey.dateOfBirth.isKnown === 'Yes') {
+    if (journey.dateOfBirth.isKnown === 'YES') {
       dateOfBirth = new Date(`${journey.dateOfBirth.year}-${journey.dateOfBirth.month}-${journey.dateOfBirth.day}Z`)
     }
 

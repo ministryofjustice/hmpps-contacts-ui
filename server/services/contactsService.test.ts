@@ -4,6 +4,7 @@ import ContactsService from './contactsService'
 import CreateContactJourney = journeys.CreateContactJourney
 import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
+import IsOverEighteenOptions = journeys.YesNoOrDoNotKnow
 
 jest.mock('../data/contactsApiClient')
 
@@ -38,7 +39,7 @@ describe('contactsService', () => {
           middleName: 'middle',
         },
         dateOfBirth: {
-          isKnown: 'Yes',
+          isKnown: 'YES',
           day: 1,
           month: 6,
           year: 1982,
@@ -77,8 +78,8 @@ describe('contactsService', () => {
           firstName: 'first',
         },
         dateOfBirth: {
-          isKnown: 'No',
-          isOverEighteen: 'Do not know',
+          isKnown: 'NO',
+          isOverEighteen: 'DO_NOT_KNOW',
         },
       }
       const expectedRequest: CreateContactRequest = {
@@ -100,48 +101,45 @@ describe('contactsService', () => {
     })
 
     it.each([
-      ['Yes', 'YES'],
-      ['No', 'NO'],
-      ['Do not know', 'DO_NOT_KNOW'],
-    ])(
-      'should map isOverEighteen if dob is not known',
-      async (input: 'Yes' | 'No' | 'Do not know', expected: string) => {
-        // Given
-        const expectedCreated: Contact = {
-          id: 2136718213,
-        }
-        apiClient.createContact.mockResolvedValue(expectedCreated)
-        const journey: CreateContactJourney = {
-          id: '1',
-          lastTouched: new Date().toISOString(),
-          isCheckingAnswers: false,
-          names: {
-            lastName: 'last',
-            firstName: 'first',
-          },
-          dateOfBirth: {
-            isKnown: 'No',
-            isOverEighteen: input,
-          },
-        }
-        const expectedRequest: CreateContactRequest = {
-          title: undefined,
+      ['YES', 'YES'],
+      ['NO', 'NO'],
+      ['DO_NOT_KNOW', 'DO_NOT_KNOW'],
+    ])('should map isOverEighteen if dob is not known', async (input: IsOverEighteenOptions, expected: string) => {
+      // Given
+      const expectedCreated: Contact = {
+        id: 2136718213,
+      }
+      apiClient.createContact.mockResolvedValue(expectedCreated)
+      const journey: CreateContactJourney = {
+        id: '1',
+        lastTouched: new Date().toISOString(),
+        isCheckingAnswers: false,
+        names: {
           lastName: 'last',
           firstName: 'first',
-          middleName: undefined,
-          dateOfBirth: undefined,
-          isOverEighteen: expected,
-          createdBy: 'user1',
-        }
+        },
+        dateOfBirth: {
+          isKnown: 'NO',
+          isOverEighteen: input,
+        },
+      }
+      const expectedRequest: CreateContactRequest = {
+        title: undefined,
+        lastName: 'last',
+        firstName: 'first',
+        middleName: undefined,
+        dateOfBirth: undefined,
+        isOverEighteen: expected,
+        createdBy: 'user1',
+      }
 
-        // When
-        const created = await service.createContact(journey, user)
+      // When
+      const created = await service.createContact(journey, user)
 
-        // Then
-        expect(created).toStrictEqual(expectedCreated)
-        expect(apiClient.createContact).toHaveBeenCalledWith(expectedRequest, user)
-      },
-    )
+      // Then
+      expect(created).toStrictEqual(expectedCreated)
+      expect(apiClient.createContact).toHaveBeenCalledWith(expectedRequest, user)
+    })
     it('should handle a bad request', async () => {
       apiClient.createContact.mockRejectedValue(createError.BadRequest())
       await expect(
@@ -151,7 +149,7 @@ describe('contactsService', () => {
             lastTouched: new Date().toISOString(),
             isCheckingAnswers: false,
             names: { firstName: 'first', lastName: 'last' },
-            dateOfBirth: { isKnown: 'No' },
+            dateOfBirth: { isKnown: 'NO' },
           },
           user,
         ),

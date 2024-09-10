@@ -25,7 +25,7 @@ context('Create contact and update from check answers', () => {
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
     enterDobPage //
-      .selectIsKnown('Yes')
+      .selectIsKnown('YES')
       .enterDay('15')
       .enterMonth('06')
       .enterYear('1982')
@@ -74,7 +74,7 @@ context('Create contact and update from check answers', () => {
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
     enterDobPage //
-      .selectIsKnown('Yes')
+      .selectIsKnown('YES')
       .enterDay('15')
       .enterMonth('06')
       .enterYear('1982')
@@ -122,7 +122,7 @@ context('Create contact and update from check answers', () => {
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
     enterDobPage //
-      .selectIsKnown('Yes')
+      .selectIsKnown('YES')
       .enterDay('15')
       .enterMonth('06')
       .enterYear('1982')
@@ -136,13 +136,13 @@ context('Create contact and update from check answers', () => {
     const revisitedDobPage = new EnterContactDateOfBirthPage('Last, First')
     revisitedDobPage.checkOnPage()
     revisitedDobPage //
-      .selectIsKnown('No')
+      .selectIsKnown('NO')
       .clickContinue()
 
     const estimatedDobPage = new EnterContactEstimatedDateOfBirthPage('Last, First')
     estimatedDobPage.checkOnPage()
     estimatedDobPage //
-      .selectIsOverEighteen('Do not know')
+      .selectIsOverEighteen('DO_NOT_KNOW')
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
@@ -174,13 +174,13 @@ context('Create contact and update from check answers', () => {
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
     enterDobPage //
-      .selectIsKnown('No')
+      .selectIsKnown('NO')
       .clickContinue()
 
     const estimatedDobPage = new EnterContactEstimatedDateOfBirthPage('Last, First')
     estimatedDobPage.checkOnPage()
     estimatedDobPage //
-      .selectIsOverEighteen('Yes')
+      .selectIsOverEighteen('YES')
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
@@ -191,7 +191,7 @@ context('Create contact and update from check answers', () => {
     const revisitedDobPage = new EnterContactDateOfBirthPage('Last, First')
     revisitedDobPage.checkOnPage()
     revisitedDobPage //
-      .selectIsKnown('Yes')
+      .selectIsKnown('YES')
       .enterDay('15')
       .enterMonth('06')
       .enterYear('1982')
@@ -226,24 +226,24 @@ context('Create contact and update from check answers', () => {
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
     enterDobPage //
-      .selectIsKnown('No')
+      .selectIsKnown('NO')
       .clickContinue()
 
     const estimatedDobPage = new EnterContactEstimatedDateOfBirthPage('Last, First')
     estimatedDobPage.checkOnPage()
     estimatedDobPage //
-      .selectIsOverEighteen('Do not know')
+      .selectIsOverEighteen('DO_NOT_KNOW')
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsNameAs('Last, First')
       .verifyShowsDateOfBirthAs('Not provided')
-      .verifyShowsEstimatedDateOfBirthAs('Do not know')
+      .verifyShowsEstimatedDateOfBirthAs("I don't know")
       .clickChangeEstimatedDateOfBirthLink()
 
     estimatedDobPage.checkOnPage()
     estimatedDobPage //
-      .selectIsOverEighteen('Yes')
+      .selectIsOverEighteen('YES')
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //

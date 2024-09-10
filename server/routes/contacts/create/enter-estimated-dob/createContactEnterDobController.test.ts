@@ -64,7 +64,7 @@ describe('GET /contacts/create/enter-estimated-dob/:journeyId', () => {
   it('should render previously entered details if no validation errors but there are session values', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
-    existingJourney.dateOfBirth = { isKnown: 'No', isOverEighteen: 'Yes' }
+    existingJourney.dateOfBirth = { isKnown: 'NO', isOverEighteen: 'YES' }
 
     // When
     const response = await request(app).get(`/contacts/create/enter-estimated-dob/${journeyId}`)
@@ -72,7 +72,7 @@ describe('GET /contacts/create/enter-estimated-dob/:journeyId', () => {
     // Then
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
-    expect($('input[type=radio]:checked').val()).toStrictEqual('Yes')
+    expect($('input[type=radio]:checked').val()).toStrictEqual('YES')
   })
 
   it('should return to start if no journey in session', async () => {
@@ -86,18 +86,18 @@ describe('GET /contacts/create/enter-estimated-dob/:journeyId', () => {
 describe('POST /contacts/create/enter-estimated-dob', () => {
   it('should pass to success page if there are no validation errors', async () => {
     // Given
-    existingJourney.dateOfBirth = { isKnown: 'No' }
+    existingJourney.dateOfBirth = { isKnown: 'NO' }
 
     // When
     await request(app)
       .post(`/contacts/create/enter-estimated-dob/${journeyId}`)
       .type('form')
-      .send({ isOverEighteen: 'No' })
+      .send({ isOverEighteen: 'NO' })
       .expect(302)
       .expect('Location', `/contacts/create/check-answers/${journeyId}`)
 
     // Then
-    const expectedDob = { isKnown: 'No', isOverEighteen: 'No' }
+    const expectedDob = { isKnown: 'NO', isOverEighteen: 'NO' }
     expect(session.createContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
   })
 
