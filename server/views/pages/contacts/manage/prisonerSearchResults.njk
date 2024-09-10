@@ -30,17 +30,57 @@
 
   <div class="govuk-grid-row">
       <div class="govuk-grid-column-three-quarters">
+          <span class="govuk-caption-l">Manage Contacts</span>
           <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
       </div>
   </div>
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full-from-desktop">
-            {% set resultString = 'result' if results.totalElements === 1 else 'results' %}
-            <p class="govuk-body">
-                Showing {{ results.totalElements }} {{ resultString }}{{ (" (page " + (results.number + 1) + " of " + results.totalPages + ")") if results.totalPages > 1 }}
-            </p>
+  {% include '../../../partials/formErrorSummary.njk' %}
 
+  {# Re-show the search box and form - pre-populated with term #}
+  <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+          <div class="block-background">
+              <div class="moj-search govuk-!-width-one-half">
+                  <form method="POST">
+                      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+                      {{ govukInput({
+                          classes: "moj-search__input",
+                          label: {
+                              text: "Enter name or prison number"
+                          },
+                          id: "search",
+                          name: "search",
+                          spellcheck: false,
+                          value: search,
+                          autocomplete: "off",
+                          attributes: {
+                              autofocus: true
+                          },
+                          errorMessage: validationErrors | findError('search')
+                      }) }}
+
+                      {{ govukButton({
+                          classes: "moj-search__button",
+                          text: "Search",
+                          preventDoubleClick: true,
+                          attributes: {
+                              "data-test": "search"
+                          },
+                          type: submit
+                      }) }}
+
+                  </form>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  {# Show any results #}
+  {% if results.totalElements > 0 %}
+  <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full-from-desktop">
             {% set rows = [] %}
             {% for result in results.content %}
                 {% set prisonerNameHtml %}
@@ -99,6 +139,16 @@
                     items: paginationItems
                 }) }}
             {% endif %}
+
+            {% set resultString = 'result' if results.totalElements === 1 else 'results' %}
+              <p class="govuk-body govuk-!-margin-top-2 float-right">
+                Showing {{ results.totalElements }} {{ resultString }}{{ (" (page " + (results.number + 1) + " of " + results.totalPages + ")") if results.totalPages > 1 }}
+             </p>
         </div>
     </div>
+  {% else %}
+    <p class="govuk-body govuk-!-margin-top-4">
+       There are no results for this name or number at {{ prisonName }}
+    </p>
+  {% endif %}
 {% endblock %}

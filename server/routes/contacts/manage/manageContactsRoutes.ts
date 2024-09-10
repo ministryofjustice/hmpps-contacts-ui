@@ -45,6 +45,12 @@ const ManageContactsRoutes = (
     logPageViewMiddleware(auditService, prisonerSearchResultsController),
     asyncMiddleware(prisonerSearchResultsController.GET),
   )
+  router.post(
+    '/prisoner-search-results/:journeyId',
+    ensureInManageContactsJourney(),
+    validate(prisonerSearchSchemaFactory()),
+    asyncMiddleware(prisonerSearchResultsController.POST),
+  )
 
   // Part 4: List contacts for a prisoner
   const listContactsController = new ListContactsController(prisonerSearchService, contactsService)
