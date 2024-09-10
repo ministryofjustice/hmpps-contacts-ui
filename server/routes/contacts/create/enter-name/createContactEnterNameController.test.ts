@@ -14,12 +14,14 @@ const auditService = new AuditService(null) as jest.Mocked<AuditService>
 let app: Express
 let session: Partial<SessionData>
 const journeyId: string = uuidv4()
+const prisonerNumber = 'A1234BC'
 let existingJourney: CreateContactJourney
 
 beforeEach(() => {
   existingJourney = {
     id: journeyId,
     lastTouched: new Date().toISOString(),
+    prisonerNumber,
     isCheckingAnswers: false,
   }
   app = appWithAllRoutes({
@@ -39,13 +41,13 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /contacts/create/enter-name', () => {
-  it('should render contact page', async () => {
+describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
+  it('should render enter name page', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
 
     // When
-    const response = await request(app).get(`/contacts/create/enter-name/${journeyId}`)
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${journeyId}`)
 
     // Then
     expect(response.status).toEqual(200)
@@ -63,7 +65,7 @@ describe('GET /contacts/create/enter-name', () => {
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
-    const response = await request(app).get(`/contacts/create/enter-name/${journeyId}`)
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${journeyId}`)
 
     // Then
     expect(response.status).toEqual(200)
@@ -80,7 +82,7 @@ describe('GET /contacts/create/enter-name', () => {
     existingJourney.names = { firstName: 'first', lastName: 'last', middleName: 'middle', title: 'MR' }
 
     // When
-    const response = await request(app).get(`/contacts/create/enter-name/${journeyId}`)
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${journeyId}`)
 
     // Then
     expect(response.status).toEqual(200)
@@ -98,7 +100,7 @@ describe('GET /contacts/create/enter-name', () => {
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
-    const response = await request(app).get(`/contacts/create/enter-name/${journeyId}`)
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${journeyId}`)
 
     // Then
     expect(response.status).toEqual(200)
@@ -110,20 +112,20 @@ describe('GET /contacts/create/enter-name', () => {
   })
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .get(`/contacts/create/enter-name/${uuidv4()}`)
+      .get(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${uuidv4()}`)
       .expect(302)
-      .expect('Location', '/contacts/create/start')
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
 })
 
-describe('POST /contacts/create/enter-name/:journeyId', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId', () => {
   it('should pass to success page if there are no validation errors', async () => {
     await request(app)
-      .post(`/contacts/create/enter-name/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${journeyId}`)
       .type('form')
       .send({ firstName: 'first', lastName: 'last', middleName: 'middle', title: 'Mr' })
       .expect(302)
-      .expect('Location', `/contacts/create/enter-dob/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
 
     expect(session.createContactJourneys[journeyId].names).toStrictEqual({
       lastName: 'last',
@@ -145,11 +147,11 @@ describe('POST /contacts/create/enter-name/:journeyId', () => {
 
     // When
     await request(app)
-      .post(`/contacts/create/enter-name/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${journeyId}`)
       .type('form')
       .send({ firstName: 'first updated', lastName: 'last updated', middleName: 'middle updated', title: 'DR' })
       .expect(302)
-      .expect('Location', `/contacts/create/check-answers/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
 
     // Then
     expect(session.createContactJourneys[journeyId].names).toStrictEqual({
@@ -162,19 +164,19 @@ describe('POST /contacts/create/enter-name/:journeyId', () => {
 
   it('should return to enter page with details kept if there are validation errors', async () => {
     await request(app)
-      .post(`/contacts/create/enter-name/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${journeyId}`)
       .type('form')
       .send({ firstName: 'first' })
       .expect(302)
-      .expect('Location', `/contacts/create/enter-name/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-name/${journeyId}`)
   })
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .post(`/contacts/create/enter-name/${uuidv4()}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${uuidv4()}`)
       .type('form')
       .send({ firstName: 'first' })
       .expect(302)
-      .expect('Location', '/contacts/create/start')
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
 })

@@ -3,6 +3,7 @@ import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { CreateContactEnterDobSchemaType } from './createContactEnterDobSchemas'
 import DateOfBirth = journeys.DateOfBirth
+import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 
 export default class CreateContactEnterDobController implements PageHandler {
   public PAGE_NAME = Page.CREATE_CONTACT_DOB_PAGE
@@ -21,10 +22,10 @@ export default class CreateContactEnterDobController implements PageHandler {
   }
 
   POST = async (
-    req: Request<{ journeyId: string }, unknown, CreateContactEnterDobSchemaType>,
+    req: Request<PrisonerJourneyParams, unknown, CreateContactEnterDobSchemaType>,
     res: Response,
   ): Promise<void> => {
-    const { journeyId } = req.params
+    const { journeyId, prisonerNumber } = req.params
     const journey = req.session.createContactJourneys[journeyId]
     const { body } = req
     if (body.isKnown === 'YES') {
@@ -40,9 +41,9 @@ export default class CreateContactEnterDobController implements PageHandler {
       } as DateOfBirth
     }
     if (journey.dateOfBirth.isKnown === 'YES') {
-      res.redirect(`/contacts/create/check-answers/${journeyId}`)
+      res.redirect(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
     } else {
-      res.redirect(`/contacts/create/enter-estimated-dob/${journeyId}`)
+      res.redirect(`/prisoner/${prisonerNumber}/contacts/create/enter-estimated-dob/${journeyId}`)
     }
   }
 }

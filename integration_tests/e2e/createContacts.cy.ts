@@ -13,7 +13,7 @@ context('Create Contacts', () => {
 
   it('Can create a contact with only required fields', () => {
     cy.signIn()
-    cy.visit('/contacts/create/start')
+    cy.visit('/prisoner/A1234BC/contacts/create/start')
     cy.task('stubCreateContact', { id: 132456 })
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
@@ -55,7 +55,7 @@ context('Create Contacts', () => {
 
   it('Can create a contact with all fields', () => {
     cy.signIn()
-    cy.visit('/contacts/create/start')
+    cy.visit('/prisoner/A1234BC/contacts/create/start')
     cy.task('stubCreateContact', { id: 132456 })
     Page.verifyOnPage(EnterNamePage) //
       .selectTitle('Mr')
@@ -97,7 +97,7 @@ context('Create Contacts', () => {
 
   it('First name is required', () => {
     cy.signIn()
-    cy.visit('/contacts/create/start')
+    cy.visit('/prisoner/A1234BC/contacts/create/start')
 
     const enterNamePage = Page.verifyOnPage(EnterNamePage)
     enterNamePage.enterLastName('Last').clickContinue()
@@ -107,7 +107,7 @@ context('Create Contacts', () => {
 
   it('Last name is required', () => {
     cy.signIn()
-    cy.visit('/contacts/create/start')
+    cy.visit('/prisoner/A1234BC/contacts/create/start')
 
     const enterNamePage = Page.verifyOnPage(EnterNamePage)
     enterNamePage.enterFirstName('First').clickContinue()
@@ -117,7 +117,7 @@ context('Create Contacts', () => {
 
   it('Names are limited to 35 characters', () => {
     cy.signIn()
-    cy.visit('/contacts/create/start')
+    cy.visit('/prisoner/A1234BC/contacts/create/start')
 
     const enterNamePage = Page.verifyOnPage(EnterNamePage)
     enterNamePage //
@@ -133,7 +133,7 @@ context('Create Contacts', () => {
 
   it('Cannot enter a blank first name or last name', () => {
     cy.signIn()
-    cy.visit('/contacts/create/start')
+    cy.visit('/prisoner/A1234BC/contacts/create/start')
 
     const enterNamePage = Page.verifyOnPage(EnterNamePage)
     enterNamePage //
@@ -147,7 +147,7 @@ context('Create Contacts', () => {
 
   it('Must select whether dob is known', () => {
     cy.signIn()
-    cy.visit('/contacts/create/start')
+    cy.visit('/prisoner/A1234BC/contacts/create/start')
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
@@ -163,7 +163,7 @@ context('Create Contacts', () => {
 
   it('Must enter dob if it is known', () => {
     cy.signIn()
-    cy.visit('/contacts/create/start')
+    cy.visit('/prisoner/A1234BC/contacts/create/start')
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
@@ -185,7 +185,7 @@ context('Create Contacts', () => {
 
   it('Day, month and year must be numbers', () => {
     cy.signIn()
-    cy.visit('/contacts/create/start')
+    cy.visit('/prisoner/A1234BC/contacts/create/start')
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
@@ -210,7 +210,7 @@ context('Create Contacts', () => {
 
   it('Must select whether contact is over 18 if no dob is known', () => {
     cy.signIn()
-    cy.visit('/contacts/create/start')
+    cy.visit('/prisoner/A1234BC/contacts/create/start')
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
