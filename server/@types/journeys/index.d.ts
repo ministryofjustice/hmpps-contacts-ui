@@ -15,11 +15,11 @@ declare namespace journeys {
   }
 
   export interface DateOfBirth {
-    isKnown: 'Yes' | 'No'
+    isKnown: YesOrNo
     day?: number
     month?: number
     year?: number
-    isOverEighteen?: 'Yes' | 'No' | 'Do not know'
+    isOverEighteen?: YesNoOrDoNotKnow
   }
 
   export interface ManageContactsJourney {
@@ -38,4 +38,7 @@ declare namespace journeys {
     }
     contactId?: number
   }
+
+  type YesOrNo = 'YES' | 'NO'
+  type YesNoOrDoNotKnow = 'YES' | 'NO' | 'DO_NOT_KNOW'
 }

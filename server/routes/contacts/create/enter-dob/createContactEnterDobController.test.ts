@@ -63,7 +63,7 @@ describe('GET /contacts/create/enter-dob/:journeyId', () => {
 
   it('should render previously entered details if validation errors', async () => {
     // Given
-    const form = { isKnown: 'Yes', day: '01', month: '06', year: '1982' }
+    const form = { isKnown: 'YES', day: '01', month: '06', year: '1982' }
     auditService.logPageView.mockResolvedValue(null)
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
@@ -76,12 +76,12 @@ describe('GET /contacts/create/enter-dob/:journeyId', () => {
     expect($('#day').val()).toStrictEqual('01')
     expect($('#month').val()).toStrictEqual('06')
     expect($('#year').val()).toStrictEqual('1982')
-    expect($('input[type=radio]:checked').val()).toStrictEqual('Yes')
+    expect($('input[type=radio]:checked').val()).toStrictEqual('YES')
   })
 
   it('should render previously entered details if validation errors with unknown dob', async () => {
     // Given
-    const form = { isKnown: 'No' }
+    const form = { isKnown: 'NO' }
     auditService.logPageView.mockResolvedValue(null)
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
@@ -94,13 +94,13 @@ describe('GET /contacts/create/enter-dob/:journeyId', () => {
     expect($('#day').val()).toBeUndefined()
     expect($('#month').val()).toBeUndefined()
     expect($('#year').val()).toBeUndefined()
-    expect($('input[type=radio]:checked').val()).toStrictEqual('No')
+    expect($('input[type=radio]:checked').val()).toStrictEqual('NO')
   })
 
   it('should render previously entered details if no validation errors but there are session values', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
-    existingJourney.dateOfBirth = { isKnown: 'Yes', day: 1, month: 6, year: 1982 }
+    existingJourney.dateOfBirth = { isKnown: 'YES', day: 1, month: 6, year: 1982 }
 
     // When
     const response = await request(app).get(`/contacts/create/enter-dob/${journeyId}`)
@@ -111,13 +111,13 @@ describe('GET /contacts/create/enter-dob/:journeyId', () => {
     expect($('#day').val()).toStrictEqual('1')
     expect($('#month').val()).toStrictEqual('6')
     expect($('#year').val()).toStrictEqual('1982')
-    expect($('input[type=radio]:checked').val()).toStrictEqual('Yes')
+    expect($('input[type=radio]:checked').val()).toStrictEqual('YES')
   })
 
   it('should render previously entered details if no validation errors but there are session values with unknown dob', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
-    existingJourney.dateOfBirth = { isKnown: 'No' }
+    existingJourney.dateOfBirth = { isKnown: 'NO' }
 
     // When
     const response = await request(app).get(`/contacts/create/enter-dob/${journeyId}`)
@@ -128,14 +128,14 @@ describe('GET /contacts/create/enter-dob/:journeyId', () => {
     expect($('#day').val()).toBeUndefined()
     expect($('#month').val()).toBeUndefined()
     expect($('#year').val()).toBeUndefined()
-    expect($('input[type=radio]:checked').val()).toStrictEqual('No')
+    expect($('input[type=radio]:checked').val()).toStrictEqual('NO')
   })
 
   it('should render submitted options on validation error even if there is a version in the session', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
-    existingJourney.dateOfBirth = { isKnown: 'Yes', day: 1, month: 6, year: 1982 }
-    const form = { isKnown: 'No' }
+    existingJourney.dateOfBirth = { isKnown: 'YES', day: 1, month: 6, year: 1982 }
+    const form = { isKnown: 'NO' }
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
@@ -147,7 +147,7 @@ describe('GET /contacts/create/enter-dob/:journeyId', () => {
     expect($('#day').val()).toStrictEqual('1')
     expect($('#month').val()).toStrictEqual('6')
     expect($('#year').val()).toStrictEqual('1982')
-    expect($('input[type=radio]:checked').val()).toStrictEqual('No')
+    expect($('input[type=radio]:checked').val()).toStrictEqual('NO')
   })
 
   it('should return to start if no journey in session', async () => {
@@ -163,11 +163,11 @@ describe('POST /contacts/create/enter-name', () => {
     await request(app)
       .post(`/contacts/create/enter-dob/${journeyId}`)
       .type('form')
-      .send({ isKnown: 'No' })
+      .send({ isKnown: 'NO' })
       .expect(302)
       .expect('Location', `/contacts/create/enter-estimated-dob/${journeyId}`)
 
-    const expectedDob = { isKnown: 'No' }
+    const expectedDob = { isKnown: 'NO' }
     expect(session.createContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
   })
 
@@ -180,13 +180,13 @@ describe('POST /contacts/create/enter-name', () => {
       await request(app)
         .post(`/contacts/create/enter-dob/${journeyId}`)
         .type('form')
-        .send({ isKnown: 'Yes', day, month, year })
+        .send({ isKnown: 'YES', day, month, year })
         .expect(302)
         .expect('Location', `/contacts/create/check-answers/${journeyId}`)
 
       // Then
       const expectedDob = {
-        isKnown: 'Yes',
+        isKnown: 'YES',
         day: 1,
         month: 6,
         year: 1982,

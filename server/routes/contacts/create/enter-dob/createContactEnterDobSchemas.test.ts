@@ -22,8 +22,8 @@ describe('createContactEnterDobSchema', () => {
       expect(deduplicatedFieldErrors).toStrictEqual({ isKnown: ['Select whether the date of birth is known'] })
     })
     it.each([
-      ['Yes', 'Yes'],
-      ['No', 'No'],
+      ['YES', 'YES'],
+      ['NO', 'NO'],
     ])('should map Yes or No for isKnown (%s, %s)', async (isKnown: string, expected: string) => {
       // Given
       const form = { isKnown, day: '1', month: '1', year: '1900' }
@@ -38,19 +38,19 @@ describe('createContactEnterDobSchema', () => {
 
     it('if dob is not known then do not require day, month and year', async () => {
       // Given
-      const form = { isKnown: 'No' }
+      const form = { isKnown: 'NO' }
 
       // When
       const result = await doValidate(form)
 
       // Then
       expect(result.success).toStrictEqual(true)
-      expect(result.data).toStrictEqual({ isKnown: 'No' })
+      expect(result.data).toStrictEqual({ isKnown: 'NO' })
     })
 
     it('if dob is known then require day, month and year', async () => {
       // Given
-      const form = { isKnown: 'Yes' }
+      const form = { isKnown: 'YES' }
 
       // When
       const result = await doValidate(form)
@@ -66,7 +66,7 @@ describe('createContactEnterDobSchema', () => {
     })
     it('if dob is known then require day, month and year not be empty', async () => {
       // Given
-      const form = { isKnown: 'Yes', day: '', month: '', year: '' }
+      const form = { isKnown: 'YES', day: '', month: '', year: '' }
 
       // When
       const result = await doValidate(form)
@@ -83,7 +83,7 @@ describe('createContactEnterDobSchema', () => {
 
     it('if dob is known then require day, month and year be numbers', async () => {
       // Given
-      const form = { isKnown: 'Yes', day: 'd', month: 'm', year: 'y' }
+      const form = { isKnown: 'YES', day: 'd', month: 'm', year: 'y' }
 
       // When
       const result = await doValidate(form)
@@ -106,7 +106,7 @@ describe('createContactEnterDobSchema', () => {
       ['31', true],
     ])('if dob is known then day must be in range of 1-31 (%s, %s)', async (day: string, isValid: boolean) => {
       // Given
-      const form = { isKnown: 'Yes', day, month: '1', year: '1999' }
+      const form = { isKnown: 'YES', day, month: '1', year: '1999' }
 
       // When
       const result = await doValidate(form)
@@ -129,7 +129,7 @@ describe('createContactEnterDobSchema', () => {
       ['12', true],
     ])('if dob is known then month must be in range of 1-12 (%s, %s)', async (month: string, isValid: boolean) => {
       // Given
-      const form = { isKnown: 'Yes', day: '1', month, year: '1999' }
+      const form = { isKnown: 'YES', day: '1', month, year: '1999' }
 
       // When
       const result = await doValidate(form)
@@ -151,7 +151,7 @@ describe('createContactEnterDobSchema', () => {
       ['1900', true],
     ])('if dob is known then year must be at least 1900 (%s, %s)', async (year: string, isValid: boolean) => {
       // Given
-      const form = { isKnown: 'Yes', day: '1', month: '1', year }
+      const form = { isKnown: 'YES', day: '1', month: '1', year }
 
       // When
       const result = await doValidate(form)
@@ -168,7 +168,7 @@ describe('createContactEnterDobSchema', () => {
 
     it('dob must not be in the future', async () => {
       // Given
-      const form = { isKnown: 'Yes', day: '1', month: '1', year: '2045' }
+      const form = { isKnown: 'YES', day: '1', month: '1', year: '2045' }
 
       // When
       const result = await doValidate(form)
@@ -185,7 +185,7 @@ describe('createContactEnterDobSchema', () => {
       ['1', '6', '1982'],
     ])('dob should parse to a date correctly', async (day: string, month: string, year: string) => {
       // Given
-      const form = { isKnown: 'Yes', day, month, year }
+      const form = { isKnown: 'YES', day, month, year }
 
       // When
       const result = await doValidate(form)
@@ -193,7 +193,7 @@ describe('createContactEnterDobSchema', () => {
       // Then
       expect(result.success).toStrictEqual(true)
       expect(result.data).toStrictEqual({
-        isKnown: 'Yes',
+        isKnown: 'YES',
         day: 1,
         month: 6,
         year: 1982,
@@ -201,7 +201,7 @@ describe('createContactEnterDobSchema', () => {
     })
     it('should not map dob if not known as we can select yes and enter day, month and year and then change to no so they may be populated in the form', async () => {
       // Given
-      const form = { isKnown: 'No', day: '1', month: '1', year: '1900' }
+      const form = { isKnown: 'NO', day: '1', month: '1', year: '1900' }
 
       // When
       const result = await doValidate(form)
@@ -209,13 +209,13 @@ describe('createContactEnterDobSchema', () => {
       // Then
       expect(result.success).toStrictEqual(true)
       expect(result.data).toStrictEqual({
-        isKnown: 'No',
+        isKnown: 'NO',
       })
     })
 
     it('should handle empty/invalid dob fields if dob is not known', async () => {
       // Given
-      const form = { isKnown: 'No', day: '', month: '', year: '' }
+      const form = { isKnown: 'NO', day: '', month: '', year: '' }
 
       // When
       const result = await doValidate(form)
@@ -223,7 +223,7 @@ describe('createContactEnterDobSchema', () => {
       // Then
       expect(result.success).toStrictEqual(true)
       expect(result.data).toStrictEqual({
-        isKnown: 'No',
+        isKnown: 'NO',
       })
     })
 

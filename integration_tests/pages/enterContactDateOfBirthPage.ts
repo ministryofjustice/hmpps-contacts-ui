@@ -5,7 +5,7 @@ export default class EnterContactDateOfBirthPage extends Page {
     super(`Do you know ${name}'s date of birth?`)
   }
 
-  selectIsKnown(value: 'Yes' | 'No'): EnterContactDateOfBirthPage {
+  selectIsKnown(value: 'YES' | 'NO'): EnterContactDateOfBirthPage {
     this.radio(value).click()
     return this
   }
@@ -31,7 +31,7 @@ export default class EnterContactDateOfBirthPage extends Page {
 
   private continueButton = (): PageElement => cy.get('[data-qa=continue-button]')
 
-  private radio = (value: 'Yes' | 'No'): PageElement => cy.get(`.govuk-radios__input[value='${value}']`)
+  private radio = (value: 'YES' | 'NO'): PageElement => cy.get(`.govuk-radios__input[value='${value}']`)
 
   private dayTextBox = (): PageElement => cy.get('#day')
 

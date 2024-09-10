@@ -1,5 +1,6 @@
 import z from 'zod'
 import { createSchema } from '../../../../middleware/validationMiddleware'
+import IsDateOfBirthKnownOptions = journeys.YesOrNo
 
 const SELECT_IS_DOB_KNOWN_MESSAGE = 'Select whether the date of birth is known'
 const DAY_TYPE_MESSAGE = 'Enter a valid day of the month (1-31)'
@@ -45,7 +46,7 @@ export const createContactEnterDobSchema = () => async () => {
     dateOfBirth: z.date().optional(),
   })
     .superRefine((val, ctx) => {
-      if (val.isKnown === 'Yes') {
+      if (val.isKnown === 'YES') {
         if (!val.day) {
           ctx.addIssue({ code: z.ZodIssueCode.custom, message: DAY_TYPE_MESSAGE, path: ['day'] })
         }
@@ -62,16 +63,16 @@ export const createContactEnterDobSchema = () => async () => {
         }
       }
     })
-    .transform((val): { isKnown: 'Yes' | 'No'; day?: number; month?: number; year?: number } => {
-      if (val.isKnown === 'Yes') {
+    .transform((val): { isKnown: IsDateOfBirthKnownOptions; day?: number; month?: number; year?: number } => {
+      if (val.isKnown === 'YES') {
         return {
-          isKnown: 'Yes',
+          isKnown: 'YES',
           day: val.day as number,
           month: val.month as number,
           year: val.year as number,
         }
       }
-      return { isKnown: 'No' }
+      return { isKnown: 'NO' }
     })
 }
 

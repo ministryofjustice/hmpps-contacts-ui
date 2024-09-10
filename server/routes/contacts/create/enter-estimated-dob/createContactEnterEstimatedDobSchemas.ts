@@ -5,7 +5,7 @@ const SELECT_IS_OVER_18_MESSAGE = 'Select whether the contact is over 18'
 
 export const createContactEnterEstimatedDobSchema = () => async () => {
   return createSchema({
-    isOverEighteen: z.enum(['Yes', 'No', 'Do not know'], { message: SELECT_IS_OVER_18_MESSAGE }),
+    isOverEighteen: z.enum(['YES', 'NO', 'DO_NOT_KNOW'], { message: SELECT_IS_OVER_18_MESSAGE }),
   })
 }
 

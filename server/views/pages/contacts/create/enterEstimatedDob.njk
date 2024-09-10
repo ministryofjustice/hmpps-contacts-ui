@@ -36,19 +36,19 @@
                     name: "isOverEighteen",
                     items: [
                         {
-                            value: 'Yes',
-                            text: "Yes",
-                            checked: isOverEighteen === 'Yes'
+                            value: 'YES',
+                            text: 'YES' | formatYesNo,
+                            checked: isOverEighteen === 'YES'
                         },
                         {
-                            value: 'No',
-                            text: "No",
-                            checked: isOverEighteen === 'No'
+                            value: 'NO',
+                            text: 'NO' | formatYesNo,
+                            checked: isOverEighteen === 'NO'
                         },
                         {
-                            value: 'Do not know',
-                            text: "Do not know",
-                            checked: isOverEighteen === 'Do not know'
+                            value: 'DO_NOT_KNOW',
+                            text: 'DO_NOT_KNOW' | formatYesNo,
+                            checked: isOverEighteen === 'DO_NOT_KNOW'
                         }
                     ],
                     errorMessage: validationErrors | findError('isOverEighteen')

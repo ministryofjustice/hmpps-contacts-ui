@@ -5,7 +5,7 @@ export default class EnterContactEstimatedDateOfBirthPage extends Page {
     super(`Is ${name} over 18 years old?`)
   }
 
-  selectIsOverEighteen(value: 'Yes' | 'No' | 'Do not know'): EnterContactEstimatedDateOfBirthPage {
+  selectIsOverEighteen(value: 'YES' | 'NO' | 'DO_NOT_KNOW'): EnterContactEstimatedDateOfBirthPage {
     this.radio(value).click()
     return this
   }
@@ -16,5 +16,5 @@ export default class EnterContactEstimatedDateOfBirthPage extends Page {
 
   private continueButton = (): PageElement => cy.get('[data-qa=continue-button]')
 
-  private radio = (value: 'Yes' | 'No' | 'Do not know'): PageElement => cy.get(`.govuk-radios__input[value='${value}']`)
+  private radio = (value: 'YES' | 'NO' | 'DO_NOT_KNOW'): PageElement => cy.get(`.govuk-radios__input[value='${value}']`)
 }
