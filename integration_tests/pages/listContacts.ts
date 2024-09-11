@@ -1,6 +1,6 @@
 import Page, { PageElement } from './page'
 
-export default class ContactsPage extends Page {
+export default class ListContactsPage extends Page {
   constructor() {
     super('Contacts')
   }

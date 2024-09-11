@@ -1,4 +1,4 @@
-import ContactsPage from '../pages/contacts'
+import ContactsPage from '../pages/listContacts'
 import Page from '../pages/page'
 
 context('Contacts', () => {

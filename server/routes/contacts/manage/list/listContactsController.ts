@@ -2,7 +2,6 @@ import { Request, Response } from 'express'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import { PrisonerSearchService, ContactsService } from '../../../../services'
-import logger from '../../../../../logger'
 
 export default class ListContactsController implements PageHandler {
   constructor(
@@ -31,11 +30,6 @@ export default class ListContactsController implements PageHandler {
 
     const activeContacts = await this.contactsService.getPrisonerContacts(prisoner as string, true, user)
     const inactiveContacts = await this.contactsService.getPrisonerContacts(prisoner as string, false, user)
-
-    logger.info(`List contacts journey ${JSON.stringify(journey)}`)
-
-    logger.info(`Active contacts ${JSON.stringify(activeContacts)}`)
-    logger.info(`Inactive contacts ${JSON.stringify(inactiveContacts)}`)
 
     res.render('pages/contacts/manage/listContacts', {
       activeContacts,
