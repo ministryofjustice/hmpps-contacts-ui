@@ -33,6 +33,7 @@ describe('contactsService', () => {
         lastTouched: new Date().toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
+        returnPoint: { type: 'HOME', url: '/foo-bar' },
         names: {
           title: 'Mr',
           lastName: 'last',
@@ -54,6 +55,12 @@ describe('contactsService', () => {
         dateOfBirth: new Date('1982-06-01T00:00:00.000Z'),
         isOverEighteen: undefined,
         createdBy: 'user1',
+        relationship: {
+          prisonerNumber,
+          relationshipCode: 'FRI',
+          isNextOfKin: false,
+          isEmergencyContact: false,
+        },
       }
 
       // When
@@ -75,6 +82,7 @@ describe('contactsService', () => {
         lastTouched: new Date().toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
+        returnPoint: { type: 'HOME', url: '/foo-bar' },
         names: {
           lastName: 'last',
           firstName: 'first',
@@ -91,6 +99,12 @@ describe('contactsService', () => {
         middleName: undefined,
         dateOfBirth: undefined,
         isOverEighteen: 'DO_NOT_KNOW',
+        relationship: {
+          prisonerNumber,
+          relationshipCode: 'FRI',
+          isNextOfKin: false,
+          isEmergencyContact: false,
+        },
         createdBy: 'user1',
       }
 
@@ -117,6 +131,7 @@ describe('contactsService', () => {
         lastTouched: new Date().toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
+        returnPoint: { type: 'HOME', url: '/foo-bar' },
         names: {
           lastName: 'last',
           firstName: 'first',
@@ -133,6 +148,12 @@ describe('contactsService', () => {
         middleName: undefined,
         dateOfBirth: undefined,
         isOverEighteen: expected,
+        relationship: {
+          prisonerNumber,
+          relationshipCode: 'FRI',
+          isNextOfKin: false,
+          isEmergencyContact: false,
+        },
         createdBy: 'user1',
       }
 
@@ -152,6 +173,7 @@ describe('contactsService', () => {
             lastTouched: new Date().toISOString(),
             prisonerNumber,
             isCheckingAnswers: false,
+            returnPoint: { type: 'HOME', url: '/foo-bar' },
             names: { firstName: 'first', lastName: 'last' },
             dateOfBirth: { isKnown: 'NO' },
           },

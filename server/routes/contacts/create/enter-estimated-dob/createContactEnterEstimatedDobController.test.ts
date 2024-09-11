@@ -23,6 +23,7 @@ beforeEach(() => {
     lastTouched: new Date().toISOString(),
     prisonerNumber,
     isCheckingAnswers: false,
+    returnPoint: { type: 'MANAGE_PRISONER_CONTACTS', url: '/foo-bar' },
     names: {
       lastName: 'last',
       firstName: 'first',
@@ -57,8 +58,24 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-estimated-dob/:jou
 
     // Then
     expect(response.status).toEqual(200)
-    expect(response.text).toContain('Contacts')
-    expect(response.text).toContain('Hmpps Contacts Ui')
+
+    const $ = cheerio.load(response.text)
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Is last, first over 18 years old?')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=contact-list-breadcrumb-link]').first().attr('href')).toStrictEqual('/foo-bar')
+  })
+
+  it('should call the audit service for the page view', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/create/enter-estimated-dob/${journeyId}`,
+    )
+
+    // Then
+    expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_ESTIMATED_DOB_PAGE, {
       who: user.username,
       correlationId: expect.any(String),

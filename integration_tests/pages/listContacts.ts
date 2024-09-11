@@ -10,4 +10,10 @@ export default class ListContactsPage extends Page {
   manageContactsCard = (): PageElement => cy.get('[data-qa=manage-contacts-card]')
 
   manageContactRestrictionsCard = (): PageElement => cy.get('[data-qa=manage-restrictions-card]')
+
+  clickCreateNewContactButton() {
+    this.createNewContactButton().click()
+  }
+
+  private createNewContactButton = (): PageElement => cy.get('[data-qa=create-new-contact-button]')
 }

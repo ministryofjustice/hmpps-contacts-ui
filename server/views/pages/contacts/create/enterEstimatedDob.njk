@@ -9,25 +9,10 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-<div class="govuk-grid-row govuk-!-static-margin-bottom-5">
-  <div class="govuk-grid-column-full">
-      {{ govukBreadcrumbs({
-      items: [
-          {
-            text: "Digital Prison Services",
-            href: DPS_HOME_PAGE_URL
-          },
-          {
-              text: "Contacts",
-              href: "/"
-          }
-      ]
-      }) }}
-  </div>
-</div>
+{% include './partials/createContactBreadcrumbs.njk' %}
 {% include '../../../partials/formErrorSummary.njk' %}
 <span class="govuk-caption-l">Manage Contacts</span>
-<h1 class="govuk-heading-l">{{ title }}</h1>
+<h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
  <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
             <form method='POST'>
@@ -61,7 +46,7 @@
                         classes: 'govuk-!-margin-top-6',
                         attributes: {"data-qa": "continue-button"}
                     }) }}
-                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="/">Cancel</a>
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ journey.returnPoint.url }}" data-qa="cancel-button">Cancel</a>
                 </div>
             </form>
 

@@ -34,6 +34,12 @@ export default class ContactsService {
       middleName: journey.names.middleName,
       dateOfBirth,
       isOverEighteen,
+      relationship: {
+        prisonerNumber: journey.prisonerNumber,
+        relationshipCode: 'FRI',
+        isNextOfKin: false,
+        isEmergencyContact: false,
+      },
       createdBy: user.username,
     }
     return this.contactsApiClient.createContact(request, user)

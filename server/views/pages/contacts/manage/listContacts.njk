@@ -104,7 +104,8 @@
 
     {{ govukButton({
         text: "Create new prisoner contact",
-        href: "/prisoner/" + journey.prisoner.prisonerNumber + "/contacts/create/start"
+        href: "/prisoner/" + journey.prisoner.prisonerNumber + "/contacts/create/start?returnJourneyType=MANAGE_PRISONER_CONTACTS&returnJourneyId=" + journey.id,
+        attributes: {"data-qa": "create-new-contact-button"}
     }) }}
 
 <div class="govuk-tabs" data-module="govuk-tabs">

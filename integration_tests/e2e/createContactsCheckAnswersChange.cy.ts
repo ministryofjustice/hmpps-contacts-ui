@@ -9,6 +9,7 @@ context('Create contact and update from check answers', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn', { roles: ['PRISON'] })
+    cy.task('stubComponentsMeta')
     cy.signIn()
     cy.visit('/prisoner/A1234BC/contacts/create/start')
     cy.task('stubCreateContact', { id: 132456 })
@@ -61,6 +62,12 @@ context('Create contact and update from check answers', () => {
         middleName: 'Middle Updated',
         createdBy: 'USER1',
         dateOfBirth: '1982-06-15T00:00:00.000Z',
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipCode: 'FRI',
+          isNextOfKin: false,
+          isEmergencyContact: false,
+        },
       },
     )
   })
@@ -109,6 +116,12 @@ context('Create contact and update from check answers', () => {
         firstName: 'First',
         createdBy: 'USER1',
         dateOfBirth: '1983-07-16T00:00:00.000Z',
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipCode: 'FRI',
+          isNextOfKin: false,
+          isEmergencyContact: false,
+        },
       },
     )
   })
@@ -161,6 +174,12 @@ context('Create contact and update from check answers', () => {
         firstName: 'First',
         isOverEighteen: 'DO_NOT_KNOW',
         createdBy: 'USER1',
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipCode: 'FRI',
+          isNextOfKin: false,
+          isEmergencyContact: false,
+        },
       },
     )
   })
@@ -213,6 +232,12 @@ context('Create contact and update from check answers', () => {
         firstName: 'First',
         createdBy: 'USER1',
         dateOfBirth: '1982-06-15T00:00:00.000Z',
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipCode: 'FRI',
+          isNextOfKin: false,
+          isEmergencyContact: false,
+        },
       },
     )
   })
@@ -263,6 +288,12 @@ context('Create contact and update from check answers', () => {
         firstName: 'First',
         isOverEighteen: 'YES',
         createdBy: 'USER1',
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipCode: 'FRI',
+          isNextOfKin: false,
+          isEmergencyContact: false,
+        },
       },
     )
   })
