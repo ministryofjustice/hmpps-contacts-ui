@@ -8,7 +8,7 @@ jest.mock('../../../../services/auditService')
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 
 let app: Express
-
+const prisonerNumber = 'A1234BC'
 beforeEach(() => {
   app = appWithAllRoutes({
     services: {
@@ -22,13 +22,13 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /contacts/create/success', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/create/success', () => {
   it('should render success page', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
 
     // When
-    const response = await request(app).get('/contacts/create/success')
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/success`)
 
     // Then
     expect(response.status).toEqual(200)

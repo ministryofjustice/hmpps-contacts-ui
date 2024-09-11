@@ -43,20 +43,21 @@ export default class EnterNameController implements PageHandler {
     req: Request<
       {
         journeyId: string
+        prisonerNumber: string
       },
       unknown,
       CreateContactEnterNameSchemaType
     >,
     res: Response,
   ): Promise<void> => {
-    const { journeyId } = req.params
+    const { journeyId, prisonerNumber } = req.params
     const { title, lastName, firstName, middleName } = req.body
     const journey = req.session.createContactJourneys[journeyId]
     journey.names = { title, lastName, firstName, middleName }
     if (journey.isCheckingAnswers) {
-      res.redirect(`/contacts/create/check-answers/${journeyId}`)
+      res.redirect(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
     } else {
-      res.redirect(`/contacts/create/enter-dob/${journeyId}`)
+      res.redirect(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
     }
   }
 

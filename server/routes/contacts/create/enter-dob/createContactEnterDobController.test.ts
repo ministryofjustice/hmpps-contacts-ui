@@ -14,12 +14,14 @@ const auditService = new AuditService(null) as jest.Mocked<AuditService>
 let app: Express
 let session: Partial<SessionData>
 const journeyId: string = uuidv4()
+const prisonerNumber = 'A1234BC'
 let existingJourney: CreateContactJourney
 
 beforeEach(() => {
   existingJourney = {
     id: journeyId,
     lastTouched: new Date().toISOString(),
+    prisonerNumber,
     isCheckingAnswers: false,
     names: {
       lastName: 'last',
@@ -43,13 +45,13 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /contacts/create/enter-dob/:journeyId', () => {
-  it('should render contact page', async () => {
+describe('GET /prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId', () => {
+  it('should render enter dob page', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
 
     // When
-    const response = await request(app).get(`/contacts/create/enter-dob/${journeyId}`)
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
 
     // Then
     expect(response.status).toEqual(200)
@@ -68,7 +70,7 @@ describe('GET /contacts/create/enter-dob/:journeyId', () => {
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
-    const response = await request(app).get(`/contacts/create/enter-dob/${journeyId}`)
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
 
     // Then
     expect(response.status).toEqual(200)
@@ -86,7 +88,7 @@ describe('GET /contacts/create/enter-dob/:journeyId', () => {
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
-    const response = await request(app).get(`/contacts/create/enter-dob/${journeyId}`)
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
 
     // Then
     expect(response.status).toEqual(200)
@@ -103,7 +105,7 @@ describe('GET /contacts/create/enter-dob/:journeyId', () => {
     existingJourney.dateOfBirth = { isKnown: 'YES', day: 1, month: 6, year: 1982 }
 
     // When
-    const response = await request(app).get(`/contacts/create/enter-dob/${journeyId}`)
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
 
     // Then
     expect(response.status).toEqual(200)
@@ -120,7 +122,7 @@ describe('GET /contacts/create/enter-dob/:journeyId', () => {
     existingJourney.dateOfBirth = { isKnown: 'NO' }
 
     // When
-    const response = await request(app).get(`/contacts/create/enter-dob/${journeyId}`)
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
 
     // Then
     expect(response.status).toEqual(200)
@@ -139,7 +141,7 @@ describe('GET /contacts/create/enter-dob/:journeyId', () => {
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
-    const response = await request(app).get(`/contacts/create/enter-dob/${journeyId}`)
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
 
     // Then
     expect(response.status).toEqual(200)
@@ -152,20 +154,20 @@ describe('GET /contacts/create/enter-dob/:journeyId', () => {
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .get(`/contacts/create/enter-dob/${uuidv4()}`)
+      .get(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${uuidv4()}`)
       .expect(302)
-      .expect('Location', '/contacts/create/start')
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
 })
 
-describe('POST /contacts/create/enter-name', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
   it('should pass to enter estimated dob page if there are no validation errors and we created the contact with no dob', async () => {
     await request(app)
-      .post(`/contacts/create/enter-dob/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
       .type('form')
       .send({ isKnown: 'NO' })
       .expect(302)
-      .expect('Location', `/contacts/create/enter-estimated-dob/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-estimated-dob/${journeyId}`)
 
     const expectedDob = { isKnown: 'NO' }
     expect(session.createContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
@@ -178,11 +180,11 @@ describe('POST /contacts/create/enter-name', () => {
     'should pass to check answers page if there are no validation errors with the date parsable',
     async (day, month, year) => {
       await request(app)
-        .post(`/contacts/create/enter-dob/${journeyId}`)
+        .post(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
         .type('form')
         .send({ isKnown: 'YES', day, month, year })
         .expect(302)
-        .expect('Location', `/contacts/create/check-answers/${journeyId}`)
+        .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
 
       // Then
       const expectedDob = {
@@ -197,19 +199,19 @@ describe('POST /contacts/create/enter-name', () => {
 
   it('should return to enter page if there are validation errors', async () => {
     await request(app)
-      .post(`/contacts/create/enter-dob/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
       .type('form')
       .send({})
       .expect(302)
-      .expect('Location', `/contacts/create/enter-dob/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
   })
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .post(`/contacts/create/enter-dob/${uuidv4()}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${uuidv4()}`)
       .type('form')
       .send({})
       .expect(302)
-      .expect('Location', '/contacts/create/start')
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
 })

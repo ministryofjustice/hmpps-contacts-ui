@@ -20,18 +20,22 @@ const ManageContactsRoutes = (
 
   // Part 1: Start manage contacts
   const startController = new StartManageContactsJourneyController()
-  router.get('/start', logPageViewMiddleware(auditService, startController), asyncMiddleware(startController.GET))
+  router.get(
+    '/contacts/manage/start',
+    logPageViewMiddleware(auditService, startController),
+    asyncMiddleware(startController.GET),
+  )
 
   // Part 2: Prisoner search
   const prisonerSearchController = new PrisonerSearchController()
   router.get(
-    '/prisoner-search/:journeyId',
+    '/contacts/manage/prisoner-search/:journeyId',
     ensureInManageContactsJourney(),
     logPageViewMiddleware(auditService, prisonerSearchController),
     asyncMiddleware(prisonerSearchController.GET),
   )
   router.post(
-    '/prisoner-search/:journeyId',
+    '/contacts/manage/prisoner-search/:journeyId',
     ensureInManageContactsJourney(),
     validate(prisonerSearchSchemaFactory()),
     asyncMiddleware(prisonerSearchController.POST),
@@ -40,13 +44,13 @@ const ManageContactsRoutes = (
   // Part 3: Prisoner search results
   const prisonerSearchResultsController = new PrisonerSearchResultsController(prisonerSearchService)
   router.get(
-    '/prisoner-search-results/:journeyId',
+    '/contacts/manage/prisoner-search-results/:journeyId',
     ensureInManageContactsJourney(),
     logPageViewMiddleware(auditService, prisonerSearchResultsController),
     asyncMiddleware(prisonerSearchResultsController.GET),
   )
   router.post(
-    '/prisoner-search-results/:journeyId',
+    '/contacts/manage/prisoner-search-results/:journeyId',
     ensureInManageContactsJourney(),
     validate(prisonerSearchSchemaFactory()),
     asyncMiddleware(prisonerSearchResultsController.POST),
@@ -55,7 +59,7 @@ const ManageContactsRoutes = (
   // Part 4: List contacts for a prisoner
   const listContactsController = new ListContactsController(prisonerSearchService, contactsService)
   router.get(
-    '/list/:journeyId',
+    '/prisoner/:prisonerNumber/contacts/list/:journeyId',
     ensureInManageContactsJourney(),
     logPageViewMiddleware(auditService, listContactsController),
     asyncMiddleware(listContactsController.GET),

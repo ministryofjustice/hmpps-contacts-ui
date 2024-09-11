@@ -97,10 +97,15 @@
 <span class="govuk-caption-l">Manage Contacts</span>
 <h1 class="govuk-heading-l">Contacts for {{ journey.prisoner.lastName | convertToTitleCase }}, {{ journey.prisoner.firstName | convertToTitleCase }}</h1>
 
-{{ govukButton({
-    text: "Add prisoner contact",
-    href: "/"
-}) }}
+    {{ govukButton({
+        text: "Add prisoner contact",
+        href: "/"
+    }) }}
+
+    {{ govukButton({
+        text: "Create new prisoner contact",
+        href: "/prisoner/" + journey.prisoner.prisonerNumber + "/contacts/create/start"
+    }) }}
 
 <div class="govuk-tabs" data-module="govuk-tabs">
     <ul class="govuk-tabs__list">
