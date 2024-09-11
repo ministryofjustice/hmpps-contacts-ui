@@ -50,7 +50,7 @@ const ManageContactsRoutes = (
     asyncMiddleware(prisonerSearchResultsController.GET),
   )
   router.post(
-    '/prisoner-search-results/:journeyId',
+    '/contacts/manage/prisoner-search-results/:journeyId',
     ensureInManageContactsJourney(),
     validate(prisonerSearchSchemaFactory()),
     asyncMiddleware(prisonerSearchResultsController.POST),
