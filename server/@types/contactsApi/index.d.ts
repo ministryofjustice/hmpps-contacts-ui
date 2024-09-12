@@ -58,6 +58,266 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/language-reference': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get language reference
+     * @description Gets all language references
+     */
+    get: operations['getAllCountries']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/language-reference/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get language reference
+     * @description Gets a language reference by their id
+     */
+    get: operations['getLanguageById']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/language-reference/nomis-code/{code}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get language reference
+     * @description Gets a language reference by their nomis code
+     */
+    get: operations['getLanguageByNomisCode']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/language-reference/iso-alpha3/{code}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get language reference
+     * @description Gets a language reference by their by ISO Alpha 3 code
+     */
+    get: operations['getLanguageByIsoAlpha3']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/language-reference/iso-alpha2/{code}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get language reference
+     * @description Gets a language reference by their ISO Alpha 2 code
+     */
+    get: operations['getLanguageByIsoAlpha2']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/county-reference': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get county reference
+     * @description Gets all county references
+     */
+    get: operations['getAllCountries_1']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/county-reference/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get county reference
+     * @description Gets a county reference by their id
+     */
+    get: operations['getCountyById']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/county-reference/nomis-code/{code}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get county reference
+     * @description Gets a county reference by their nomis code
+     */
+    get: operations['getCountyByNomisCode']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/country-reference': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get country reference
+     * @description Gets all country references
+     */
+    get: operations['getAllCountries_2']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/country-reference/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get country reference
+     * @description Gets a country reference by their id
+     */
+    get: operations['getCountryById']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/country-reference/nomis-code/{code}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get country reference
+     * @description Gets a country reference by their nomis code
+     */
+    get: operations['getCountryByNomisCode']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/country-reference/iso-alpha3/{code}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get country reference
+     * @description Gets a country reference by their by ISO Alpha 3 code
+     */
+    get: operations['getCountryByIsoAlpha3']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/country-reference/iso-alpha2/{code}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get country reference
+     * @description Gets a country reference by their ISO Alpha 2 code
+     */
+    get: operations['getCountryByIsoAlpha2']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/contact/{contactId}': {
     parameters: {
       query?: never
@@ -78,10 +338,98 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/city-reference': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get city reference
+     * @description Gets all city references
+     */
+    get: operations['getAllCountries_3']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/city-reference/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get city reference
+     * @description Gets a city reference by their id
+     */
+    get: operations['getCityById']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/city-reference/nomis-code/{code}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get city reference
+     * @description Gets a city reference by their nomis code
+     */
+    get: operations['getCityByNomisCode']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
 }
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
+    /** @description A description of the relationship if the contact should be linked to a prisoner */
+    ContactRelationshipRequest: {
+      /**
+       * @description Prisoner number (NOMS ID)
+       * @example A1234BC
+       */
+      prisonerNumber: string
+      /**
+       * @description The relationship code between the prisoner and the contact
+       * @example FRI
+       */
+      relationshipCode: string
+      /**
+       * @description Whether they are the next of kin for the prisoner
+       * @example true
+       */
+      isNextOfKin: boolean
+      /**
+       * @description Whether they are the emergency contact for the prisoner
+       * @example true
+       */
+      isEmergencyContact: boolean
+      /**
+       * @description Comments about the contacts relationship with the prisoner
+       * @example Some additional information
+       */
+      comments?: string | null
+    } | null
     /** @description Request to create a new contact */
     CreateContactRequest: {
       /**
@@ -116,11 +464,20 @@ export interface components {
        * @enum {string|null}
        */
       isOverEighteen?: 'YES' | 'NO' | 'DO_NOT_KNOW' | null
+      relationship?: components['schemas']['ContactRelationshipRequest']
       /**
        * @description The id of the user creating the contact
        * @example JD000001
        */
       createdBy: string
+    }
+    ErrorResponse: {
+      /** Format: int32 */
+      status: number
+      errorCode?: string
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
     }
     /** @description The details of a contact as an individual */
     Contact: {
@@ -173,14 +530,6 @@ export interface components {
        * @example 2024-01-01T00:00:00Z
        */
       createdTime: string
-    }
-    ErrorResponse: {
-      /** Format: int32 */
-      status: number
-      errorCode?: string
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
     }
     /** @description Describes the details of a prisoner's contact */
     PrisonerContactSummary: {
@@ -304,6 +653,142 @@ export interface components {
        */
       comments?: string | null
     }
+    /** @description Language reference entity */
+    Language: {
+      /**
+       * Format: int64
+       * @description Unique identifier of the language
+       * @example 1
+       */
+      languageId: number | null
+      /**
+       * @description Nomis code of the language
+       * @example GBR
+       */
+      nomisCode: string
+      /**
+       * @description Nomis description of the language
+       * @example United Kingdom
+       */
+      nomisDescription: string
+      /**
+       * @description ISO Alpha-2 code of the language
+       * @example GB
+       */
+      isoAlpha2: string
+      /**
+       * @description ISO Alpha-3 code of the language
+       * @example GBR
+       */
+      isoAlpha3: string
+      /**
+       * @description ISO language description
+       * @example United Kingdom of Great Britain and Northern Ireland
+       */
+      isoLanguageDesc: string
+      /**
+       * Format: int32
+       * @description Display sequence for the language
+       * @example 1
+       */
+      displaySequence: number
+    }
+    /** @description County reference entity */
+    County: {
+      /**
+       * Format: int64
+       * @description Unique identifier of the county
+       * @example 1
+       */
+      countyId: number | null
+      /**
+       * @description Nomis code of the county
+       * @example GBR
+       */
+      nomisCode: string
+      /**
+       * @description Nomis description of the county
+       * @example United Kingdom
+       */
+      nomisDescription: string
+      /**
+       * Format: int32
+       * @description Display sequence for the county
+       * @example 1
+       */
+      displaySequence: number
+    }
+    /** @description Country reference entity */
+    Country: {
+      /**
+       * Format: int64
+       * @description Unique identifier of the country
+       * @example 1
+       */
+      countryId: number | null
+      /**
+       * @description Nomis code of the country
+       * @example GBR
+       */
+      nomisCode: string
+      /**
+       * @description Nomis description of the country
+       * @example United Kingdom
+       */
+      nomisDescription: string
+      /**
+       * Format: int32
+       * @description ISO numeric code of the country
+       * @example 826
+       */
+      isoNumeric: number
+      /**
+       * @description ISO Alpha-2 code of the country
+       * @example GB
+       */
+      isoAlpha2: string
+      /**
+       * @description ISO Alpha-3 code of the country
+       * @example GBR
+       */
+      isoAlpha3: string
+      /**
+       * @description ISO country description
+       * @example United Kingdom of Great Britain and Northern Ireland
+       */
+      isoCountryDesc: string
+      /**
+       * Format: int32
+       * @description Display sequence for the country
+       * @example 1
+       */
+      displaySequence: number
+    }
+    /** @description City reference entity */
+    City: {
+      /**
+       * Format: int64
+       * @description Unique identifier of the city
+       * @example 1
+       */
+      cityId: number | null
+      /**
+       * @description Nomis code of the city
+       * @example GBR
+       */
+      nomisCode: string
+      /**
+       * @description Nomis description of the city
+       * @example United Kingdom
+       */
+      nomisDescription: string
+      /**
+       * Format: int32
+       * @description Display sequence for the city
+       * @example 1
+       */
+      displaySequence: number
+    }
   }
   responses: never
   parameters: never
@@ -360,6 +845,15 @@ export interface operations {
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the prisoner that this contact has a relationship to */
+      404: {
         headers: {
           [name: string]: unknown
         }
@@ -469,6 +963,610 @@ export interface operations {
       }
     }
   }
+  getAllCountries: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the language reference */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Language']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getLanguageById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the language reference */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Language']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No language reference with that id could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Language']
+        }
+      }
+    }
+  }
+  getLanguageByNomisCode: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        code: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the language reference */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Language']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No language reference with that nomis code could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Language']
+        }
+      }
+    }
+  }
+  getLanguageByIsoAlpha3: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        code: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the language reference */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Language']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No language reference with that ISO Alpha 3 code could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Language']
+        }
+      }
+    }
+  }
+  getLanguageByIsoAlpha2: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        code: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the language reference */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Language']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No language reference with that ISO Alpha 2 code could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Language']
+        }
+      }
+    }
+  }
+  getAllCountries_1: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the county reference */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['County']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getCountyById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the county reference */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['County']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No county reference with that id could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['County']
+        }
+      }
+    }
+  }
+  getCountyByNomisCode: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        code: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the county reference */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['County']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No county reference with that nomis code could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['County']
+        }
+      }
+    }
+  }
+  getAllCountries_2: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the country reference */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Country']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getCountryById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the country reference */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Country']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No country reference with that id could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Country']
+        }
+      }
+    }
+  }
+  getCountryByNomisCode: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        code: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the country reference */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Country']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No country reference with that nomis code could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Country']
+        }
+      }
+    }
+  }
+  getCountryByIsoAlpha3: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        code: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the country reference */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Country']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No country reference with that ISO Alpha 3 code could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Country']
+        }
+      }
+    }
+  }
+  getCountryByIsoAlpha2: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        code: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the country reference */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Country']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No country reference with that ISO Alpha 2 code could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Country']
+        }
+      }
+    }
+  }
   getContact: {
     parameters: {
       query?: never
@@ -518,6 +1616,142 @@ export interface operations {
         }
         content: {
           'application/json': Record<string, never>
+        }
+      }
+    }
+  }
+  getAllCountries_3: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the city reference */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['City']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getCityById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the city reference */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['City']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No city reference with that id could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['City']
+        }
+      }
+    }
+  }
+  getCityByNomisCode: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        code: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the city reference */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['City']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No city reference with that nomis code could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['City']
         }
       }
     }

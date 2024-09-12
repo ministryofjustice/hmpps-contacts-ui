@@ -26,6 +26,7 @@ describe('createContactMiddleware', () => {
         lastTouched: lastTouchedBeforeCall.toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
+        returnPoint: { type: 'HOME', url: '/foo-bar' },
       }
       ensureInCreateContactJourney()(req, res, next)
       expect(next).toHaveBeenCalledTimes(1)

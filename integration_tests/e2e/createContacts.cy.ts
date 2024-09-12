@@ -4,14 +4,18 @@ import CreatedContactPage from '../pages/createdContactPage'
 import EnterContactDateOfBirthPage from '../pages/enterContactDateOfBirthPage'
 import CreateContactCheckYourAnswersPage from '../pages/createContactCheckYourAnswersPage'
 import EnterContactEstimatedDateOfBirthPage from '../pages/enterContactEstimatedDateOfBirthPage'
+import TestData from '../../server/routes/testutils/testData'
+import SearchPrisonerPage from '../pages/searchPrisoner'
+import ListContactsPage from '../pages/listContacts'
 
 context('Create Contacts', () => {
   beforeEach(() => {
     cy.task('reset')
+    cy.task('stubComponentsMeta')
     cy.task('stubSignIn', { roles: ['PRISON'] })
   })
 
-  it('Can create a contact with only required fields', () => {
+  it('Can create a contact with only required fields with direct link', () => {
     cy.signIn()
     cy.visit('/prisoner/A1234BC/contacts/create/start')
     cy.task('stubCreateContact', { id: 132456 })
@@ -49,6 +53,12 @@ context('Create Contacts', () => {
         firstName: 'First',
         isOverEighteen: 'DO_NOT_KNOW',
         createdBy: 'USER1',
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipCode: 'FRI',
+          isNextOfKin: false,
+          isEmergencyContact: false,
+        },
       },
     )
   })
@@ -91,6 +101,12 @@ context('Create Contacts', () => {
         middleName: 'Middle',
         createdBy: 'USER1',
         dateOfBirth: '1982-06-15T00:00:00.000Z',
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipCode: 'FRI',
+          isNextOfKin: false,
+          isEmergencyContact: false,
+        },
       },
     )
   })
@@ -228,5 +244,53 @@ context('Create Contacts', () => {
       .clickContinue()
 
     estimatedDobPage.hasFieldInError('isOverEighteen', 'Select whether the contact is over 18')
+  })
+
+  it('Can create a contact from prisoner contact page', () => {
+    cy.signIn()
+    const { prisonerNumber } = TestData.prisoner()
+    cy.task('stubComponentsMeta')
+    cy.task('stubPrisoners', {
+      results: {
+        totalPages: 1,
+        totalElements: 1,
+        content: [TestData.prisoner()],
+      },
+      prisonId: 'HEI',
+      term: prisonerNumber,
+    })
+    cy.task('stubPrisonerById', TestData.prisoner())
+    cy.task('stubContactList', prisonerNumber)
+    cy.task('stubCreateContact', { id: 132456 })
+
+    cy.visit('/contacts/manage/prisoner-search/start')
+    const searchPrisonerPage = Page.verifyOnPage(SearchPrisonerPage)
+    searchPrisonerPage.prisonerSearchFormField().clear().type(prisonerNumber)
+    searchPrisonerPage.prisonerSearchSearchButton().click()
+
+    Page.verifyOnPage(SearchPrisonerPage)
+    searchPrisonerPage.clickPrisonerLink()
+
+    Page.verifyOnPage(ListContactsPage) //
+      .clickCreateNewContactButton()
+
+    Page.verifyOnPage(EnterNamePage) //
+      .enterLastName('Last')
+      .enterFirstName('First')
+      .clickContinue()
+
+    const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
+    enterDobPage.checkOnPage()
+    enterDobPage //
+      .selectIsKnown('YES')
+      .enterDay('15')
+      .enterMonth('06')
+      .enterYear('1982')
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .clickCreatePrisonerContact()
+
+    Page.verifyOnPage(ListContactsPage)
   })
 })

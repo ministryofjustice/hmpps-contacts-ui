@@ -4,6 +4,7 @@ declare namespace journeys {
     lastTouched: string
     prisonerNumber: string
     isCheckingAnswers: boolean
+    returnPoint: ReturnPoint
     names?: ContactNames
     dateOfBirth?: DateOfBirth
   }
@@ -40,8 +41,13 @@ declare namespace journeys {
     contactId?: number
   }
 
+  export interface ReturnPoint {
+    type: ReturnPointType
+    url: string
+  }
+
+  type ReturnPointType = 'MANAGE_PRISONER_CONTACTS' | 'HOME'
   type YesOrNo = 'YES' | 'NO'
   type YesNoOrDoNotKnow = 'YES' | 'NO' | 'DO_NOT_KNOW'
-
   type PrisonerJourneyParams = { prisonerNumber: string; journeyId: string }
 }

@@ -23,6 +23,7 @@ beforeEach(() => {
     lastTouched: new Date().toISOString(),
     prisonerNumber,
     isCheckingAnswers: false,
+    returnPoint: { type: 'MANAGE_PRISONER_CONTACTS', url: '/foo-bar' },
   }
   app = appWithAllRoutes({
     services: {
@@ -51,13 +52,28 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
 
     // Then
     expect(response.status).toEqual(200)
-    expect(response.text).toContain('Contacts')
-    expect(response.text).toContain('Hmpps Contacts Ui')
+
+    const $ = cheerio.load(response.text)
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('What is the contacts name?')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=contact-list-breadcrumb-link]').first().attr('href')).toStrictEqual('/foo-bar')
+  })
+
+  it('should call the audit service for the page view', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${journeyId}`)
+
+    // Then
+    expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_NAME_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })
   })
+
   it('should render previously entered details if validation errors', async () => {
     // Given
     const form = { firstName: 'first', lastName: 'last', middleName: 'middle', title: 'MR' }
@@ -92,6 +108,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
     expect($('#lastName').val()).toStrictEqual('last')
     expect($('#title').val()).toStrictEqual('MR')
   })
+
   it('should render submitted options on validation error even if there is a version in the session', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
@@ -110,6 +127,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
     expect($('#lastName').val()).toStrictEqual('last updated')
     expect($('#title').val()).toStrictEqual('DR')
   })
+
   it('should return to start if no journey in session', async () => {
     await request(app)
       .get(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${uuidv4()}`)
