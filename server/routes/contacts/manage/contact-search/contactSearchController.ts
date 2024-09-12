@@ -2,13 +2,21 @@ import { Request, Response } from 'express'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import { ContactSearchSchemaType } from './contactSearchSchema'
+import { PrisonerSearchService, ContactsService } from '../../../../services'
+import logger from '../../../../../logger'
 
 export default class ContactSearchController implements PageHandler {
+  constructor(private readonly prisonerSearchService: PrisonerSearchService) {}
+
   public PAGE_NAME = Page.CONTACT_SEARCH_PAGE
 
   GET = async (req: Request, res: Response): Promise<void> => {
-    const { journeyId } = req.params
+    const { user } = res.locals
+    const { journeyId, prisonerNumber } = req.params
     const journey = req.session.manageContactsJourneys[journeyId]
+
+    const prisonerDetails = await this.prisonerSearchService.getByPrisonerNumber(prisonerNumber as string, user)
+    logger.info('prisonerDetails: ', JSON.stringify(prisonerDetails))
 
     const viewModel = {
       journey,
@@ -20,7 +28,7 @@ export default class ContactSearchController implements PageHandler {
       year: res.locals?.formResponses?.year ?? journey?.searchContact?.dateOfBirth?.year,
     }
 
-    res.render('pages/contacts/manage/contactSearch', viewModel)
+    res.render('pages/contacts/manage/contactSearch', { viewModel, prisonerDetails })
   }
 
   POST = async (req: Request<{ journeyId: string }, ContactSearchSchemaType>, res: Response): Promise<void> => {

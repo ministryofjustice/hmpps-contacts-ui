@@ -5,11 +5,15 @@ import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
+import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import ManageContactsJourney = journeys.ManageContactsJourney
+import TestData from '../../../testutils/testData'
 
 jest.mock('../../../../services/auditService')
+jest.mock('../../../../services/prisonerSearchService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
+const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
 
 let app: Express
 let session: Partial<SessionData>
@@ -34,6 +38,7 @@ beforeEach(() => {
   app = appWithAllRoutes({
     services: {
       auditService,
+      prisonerSearchService,
     },
     userSupplier: () => user,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -52,6 +57,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
   it('should render contact page', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
@@ -71,7 +77,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     expect($('.govuk-form-group .govuk-label').eq(1).text()).toContain('Middle names')
     expect($('.govuk-form-group .govuk-label').eq(2).text()).toContain('Last name')
     expect($('.govuk-fieldset__legend').text()).toContain('Date of birth')
-    expect($('[data-qa=continue-button]').text()).toContain('Search')
+    expect($('[data-qa=search-button]').text()).toContain('Search')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CONTACT_SEARCH_PAGE, {
       who: user.username,
