@@ -24,6 +24,23 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/reference-codes/group/{groupCode}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Endpoint to return reference data for a provided group key */
+    get: operations['getReferenceDataByGroup']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/prisoner/{prisonNumber}': {
     parameters: {
       query?: never
@@ -531,6 +548,30 @@ export interface components {
        */
       createdTime: string
     }
+    /** @description Describes the details of a reference code */
+    ReferenceCode: {
+      /**
+       * Format: int64
+       * @description An internally-generated unique identifier for this reference code.
+       * @example 12345
+       */
+      referenceCodeId: number
+      /**
+       * @description The group name for related reference codes.
+       * @example PHONE_TYPE
+       */
+      groupCode: string
+      /**
+       * @description The code for this reference data
+       * @example MOBILE
+       */
+      code: string
+      /**
+       * @description A fuller description of the reference code
+       * @example Mobile
+       */
+      description?: string
+    }
     /** @description Describes the details of a prisoner's contact */
     PrisonerContactSummary: {
       /**
@@ -854,6 +895,50 @@ export interface operations {
       }
       /** @description Could not find the prisoner that this contact has a relationship to */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getReferenceDataByGroup: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The group code of the reference codes to load
+         * @example PHONE_TYPE
+         */
+        groupCode: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description List of reference data codes/values */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ReferenceCode'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
         headers: {
           [name: string]: unknown
         }

@@ -5,11 +5,15 @@ import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, flashProvider, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
+import ReferenceDataService from '../../../../services/referenceDataService'
 import CreateContactJourney = journeys.CreateContactJourney
+import { mockedReferenceData } from '../../../testutils/stubReferenceData'
 
 jest.mock('../../../../services/auditService')
+jest.mock('../../../../services/referenceDataService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
+const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
 
 let app: Express
 let session: Partial<SessionData>
@@ -28,6 +32,7 @@ beforeEach(() => {
   app = appWithAllRoutes({
     services: {
       auditService,
+      referenceDataService,
     },
     userSupplier: () => user,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -36,6 +41,7 @@ beforeEach(() => {
       session.createContactJourneys[journeyId] = existingJourney
     },
   })
+  referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
 })
 
 afterEach(() => {

@@ -2,36 +2,25 @@ import { Request, Response } from 'express'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { CreateContactEnterNameSchemaType } from './createContactEnterNameSchemas'
+import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
+import ReferenceDataService from '../../../../services/referenceDataService'
+import ReferenceCode = contactsApiClientTypes.ReferenceCode
 
 export default class EnterNameController implements PageHandler {
-  public PAGE_NAME = Page.CREATE_CONTACT_NAME_PAGE
+  constructor(private readonly referenceDataService: ReferenceDataService) {}
 
-  private TITLES = [
-    { value: '', text: '' },
-    { value: 'DAME', text: 'Dame' },
-    { value: 'FR', text: 'Father' },
-    { value: 'LORD', text: 'Lord' },
-    { value: 'MS', text: 'Ms' },
-    { value: 'RABBI', text: 'Rabbi' },
-    { value: 'REV', text: 'Reverend' },
-    { value: 'SIR', text: 'Sir' },
-    { value: 'SR', text: 'Sister' },
-    { value: 'MR', text: 'Mr' },
-    { value: 'BR', text: 'Brother' },
-    { value: 'DR', text: 'Dr' },
-    { value: 'LADY', text: 'Lady' },
-    { value: 'MISS', text: 'Miss' },
-    { value: 'MRS', text: 'Mrs' },
-    { value: 'IMAM', text: 'Imam' },
-  ]
+  public PAGE_NAME = Page.CREATE_CONTACT_NAME_PAGE
 
   GET = async (req: Request, res: Response): Promise<void> => {
     const { journeyId } = req.params
+    const { user } = res.locals
     const journey = req.session.createContactJourneys[journeyId]
-
+    const titleOptions = await this.referenceDataService
+      .getReferenceData(ReferenceCodeType.TITLE, user)
+      .then(val => this.getSelectedTitleOptions(val, res.locals?.formResponses?.title ?? journey?.names?.title))
     const viewModel = {
       journey,
-      titleOptions: this.getSelectedTitleOptions(res.locals?.formResponses?.title ?? journey?.names?.title),
+      titleOptions,
       lastName: res.locals?.formResponses?.lastName ?? journey?.names?.lastName,
       firstName: res.locals?.formResponses?.firstName ?? journey?.names?.firstName,
       middleName: res.locals?.formResponses?.middleName ?? journey?.names?.middleName,
@@ -61,9 +50,21 @@ export default class EnterNameController implements PageHandler {
     }
   }
 
-  private getSelectedTitleOptions(selectedTitle?: string): Array<{ value: string; text: string; selected: boolean }> {
-    return this.TITLES.map((title: { value: string; text: string }) => {
-      return { ...title, selected: title.value === selectedTitle }
+  private getSelectedTitleOptions(
+    options: ReferenceCode[],
+    selectedTitle?: string,
+  ): Array<{
+    value: string
+    text: string
+    selected?: boolean
+  }> {
+    const mappedOptions = options.map((title: ReferenceCode) => {
+      return {
+        text: title.description,
+        value: title.code,
+        selected: title.code === selectedTitle,
+      }
     })
+    return [{ text: '', value: '' }, ...mappedOptions]
   }
 }
