@@ -15,6 +15,7 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% set searchLink = "/contacts/manage/prisoner-search/" + journey.id %}
+{% set addPrisonerContactLink = "/contacts/manage/add-prisoner-contact/" + journey.id %}
 {% set backLinkHref = "/contacts/manage/prisoner-search-results/" + journey.id %}
 
 {% block content %}
@@ -99,7 +100,7 @@
 
 {{ govukButton({
     text: "Add prisoner contact",
-    href: "/"
+    href: addPrisonerContactLink
 }) }}
 
 <div class="govuk-tabs" data-module="govuk-tabs">

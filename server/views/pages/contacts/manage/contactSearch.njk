@@ -1,0 +1,127 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+
+{% set pageTitle = applicationName + " - Search for Contact" %}
+{% set title = "Search for Contact" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% set contactLink = "/contacts/manage/list/" + journey.id + "?prisoner=" + journey.prisoner.prisonerNumber %}
+
+{% block content %}
+<div class="govuk-grid-row govuk-!-static-margin-bottom-5">
+  <div class="govuk-grid-column-full">
+      {{ govukBreadcrumbs({
+      items: [
+          {
+            text: "Digital Prison Services",
+            href: DPS_HOME_PAGE_URL
+          },
+          {
+              text: "Contacts",
+              href: "/"
+          },
+          {
+            text: journey.prisoner.lastName | convertToTitleCase + ", " + journey.prisoner.firstName | convertToTitleCase,
+            href: contactLink
+        }
+      ]
+      }) }}
+  </div>
+</div>
+{% include '../../../partials/formErrorSummary.njk' %}
+<span class="govuk-caption-l">Manage Contacts</span>
+<h1 class="govuk-heading-l">{{ title }}</h1>
+ <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+                {{ govukInput({
+                    id: "firstName",
+                    name: "firstName",
+                    label: { text: "First name" },
+                    classes: 'govuk-!-width-one-third',
+                    errorMessage: validationErrors | findError('firstName'),
+                    value: firstName
+                }) }}
+
+                {{ govukInput({
+                    id: "middleName",
+                    name: "middleName",
+                    label: { text: "Middle names" },
+                    classes: 'govuk-!-width-one-third',
+                    errorMessage: validationErrors | findError('middleName'),
+                    value: middleName
+                }) }}
+
+                {{ govukInput({
+                    id: "lastName",
+                    name: "lastName",
+                    label: { text: "Last name" },
+                    classes: 'govuk-!-width-one-third',
+                    errorMessage: validationErrors | findError('lastName'),
+                    value: lastName
+                }) }}
+
+                {% if validationErrors %}
+                    <span class="govuk-error-message">{{ validationErrors['day'] }}</span>
+                    <span class="govuk-error-message">{{ validationErrors['month'] }}</span>
+                    <span class="govuk-error-message">{{ validationErrors['year'] }}</span>
+                    <span class="govuk-error-message">{{ validationErrors['dob'] }}</span>
+                {% endif %}
+                {{ govukDateInput({
+                    id: "dob",
+                    name: "dob",
+                    fieldset: {
+                        legend: {
+                            text: "Date of birth"
+                        }
+                    },
+                    hint: {
+                        text: "For example, 15 6 2000"
+                    },
+                    errorMessage: {
+                        test: ''
+                    } if validationErrors and not validationErrors['lastName'],
+                    items: [
+                        {
+                            id: 'day',
+                            label: 'Day',
+                            name: "day",
+                            classes: 'govuk-input--width-2',
+                            value: day
+                        },
+                        {
+                            id: 'month',
+                            label: 'Month',
+                            name: "month",
+                            classes: 'govuk-input--width-2',
+                            value: month
+                        },
+                        {
+                            id: 'year',
+                            label: 'Year',
+                            name: "year",
+                            classes: 'govuk-input--width-4',
+                            value: year
+                        }
+                    ]
+                }) }}
+
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        html: "Search",
+                        type: "submit",
+                        classes: 'govuk-!-margin-top-6',
+                        attributes: {"data-qa": "continue-button"}
+                    }) }}
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
