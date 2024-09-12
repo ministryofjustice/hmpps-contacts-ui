@@ -9,11 +9,12 @@ export default class StartCreateContactJourneyController implements PageHandler 
 
   private MAX_JOURNEYS = 5
 
-  GET = async (req: Request, res: Response): Promise<void> => {
+  GET = async (req: Request<{ prisonerNumber: string }, unknown, unknown>, res: Response): Promise<void> => {
     const journey: CreateContactJourney = {
       id: uuidv4(),
       lastTouched: new Date().toISOString(),
       isCheckingAnswers: false,
+      prisonerNumber: req.params.prisonerNumber,
     }
     if (!req.session.createContactJourneys) {
       req.session.createContactJourneys = {}
@@ -28,6 +29,6 @@ export default class StartCreateContactJourneyController implements PageHandler 
         .slice(this.MAX_JOURNEYS)
         .forEach(journeyToRemove => delete req.session.createContactJourneys[journeyToRemove.id])
     }
-    res.redirect(`/contacts/create/enter-name/${journey.id}`)
+    res.redirect(`/prisoner/${req.params.prisonerNumber}/contacts/create/enter-name/${journey.id}`)
   }
 }

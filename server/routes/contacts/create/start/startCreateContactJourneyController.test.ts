@@ -13,6 +13,7 @@ const auditService = new AuditService(null) as jest.Mocked<AuditService>
 let app: Express
 let session: Partial<SessionData>
 let preExistingJourneysToAddToSession: Array<CreateContactJourney>
+const prisonerNumber = 'A1234BC'
 
 beforeEach(() => {
   app = appWithAllRoutes({
@@ -36,13 +37,13 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /contacts/create/start', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
   it('should create the journey and redirect to enter-name page', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
 
     // When
-    const response = await request(app).get('/contacts/create/start')
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/start`)
 
     // Then
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_START_PAGE, {
@@ -59,7 +60,7 @@ describe('GET /contacts/create/start', () => {
     auditService.logPageView.mockResolvedValue(null)
 
     // When
-    const response = await request(app).get('/contacts/create/start')
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/start`)
 
     // Then
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_START_PAGE, {
@@ -69,6 +70,8 @@ describe('GET /contacts/create/start', () => {
     expect(response.status).toEqual(302)
     expect(response.headers.location).toContain('/contacts/create/enter-name/')
     expect(Object.entries(session.createContactJourneys)).toHaveLength(1)
+    const journey = Object.values(session.createContactJourneys)[0]
+    expect(journey.prisonerNumber).toStrictEqual(prisonerNumber)
   })
 
   it('should not remove any existing other journeys in the session', async () => {
@@ -79,6 +82,7 @@ describe('GET /contacts/create/start', () => {
         id: uuidv4(),
         lastTouched: new Date().toISOString(),
         isCheckingAnswers: false,
+        prisonerNumber,
         names: {
           lastName: 'foo',
           firstName: 'bar',
@@ -87,7 +91,7 @@ describe('GET /contacts/create/start', () => {
     ]
 
     // When
-    const response = await request(app).get('/contacts/create/start')
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/start`)
     const { location } = response.headers
 
     // Then
@@ -107,15 +111,35 @@ describe('GET /contacts/create/start', () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
     preExistingJourneysToAddToSession = [
-      { id: 'old', lastTouched: new Date(2024, 1, 1, 11, 30).toISOString(), isCheckingAnswers: false },
-      { id: 'middle-aged', lastTouched: new Date(2024, 1, 1, 12, 30).toISOString(), isCheckingAnswers: false },
-      { id: 'youngest', lastTouched: new Date(2024, 1, 1, 14, 30).toISOString(), isCheckingAnswers: false },
-      { id: 'oldest', lastTouched: new Date(2024, 1, 1, 10, 30).toISOString(), isCheckingAnswers: false },
-      { id: 'young', lastTouched: new Date(2024, 1, 1, 13, 30).toISOString(), isCheckingAnswers: false },
+      { id: 'old', lastTouched: new Date(2024, 1, 1, 11, 30).toISOString(), prisonerNumber, isCheckingAnswers: false },
+      {
+        id: 'middle-aged',
+        lastTouched: new Date(2024, 1, 1, 12, 30).toISOString(),
+        prisonerNumber,
+        isCheckingAnswers: false,
+      },
+      {
+        id: 'youngest',
+        lastTouched: new Date(2024, 1, 1, 14, 30).toISOString(),
+        prisonerNumber,
+        isCheckingAnswers: false,
+      },
+      {
+        id: 'oldest',
+        lastTouched: new Date(2024, 1, 1, 10, 30).toISOString(),
+        prisonerNumber,
+        isCheckingAnswers: false,
+      },
+      {
+        id: 'young',
+        lastTouched: new Date(2024, 1, 1, 13, 30).toISOString(),
+        prisonerNumber,
+        isCheckingAnswers: false,
+      },
     ]
 
     // When
-    const response = await request(app).get('/contacts/create/start')
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/start`)
     const { location } = response.headers
 
     // Then

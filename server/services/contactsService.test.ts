@@ -8,9 +8,9 @@ import IsOverEighteenOptions = journeys.YesNoOrDoNotKnow
 
 jest.mock('../data/contactsApiClient')
 
-const user = { token: 'userToken', username: 'user1' } as Express.User
-
 describe('contactsService', () => {
+  const user = { token: 'userToken', username: 'user1' } as Express.User
+  const prisonerNumber = 'A1234BC'
   let apiClient: jest.Mocked<ContactsApiClient>
   let service: ContactsService
   beforeEach(() => {
@@ -31,6 +31,7 @@ describe('contactsService', () => {
       const journey: CreateContactJourney = {
         id: '1',
         lastTouched: new Date().toISOString(),
+        prisonerNumber,
         isCheckingAnswers: false,
         names: {
           title: 'Mr',
@@ -72,6 +73,7 @@ describe('contactsService', () => {
       const journey: CreateContactJourney = {
         id: '1',
         lastTouched: new Date().toISOString(),
+        prisonerNumber,
         isCheckingAnswers: false,
         names: {
           lastName: 'last',
@@ -113,6 +115,7 @@ describe('contactsService', () => {
       const journey: CreateContactJourney = {
         id: '1',
         lastTouched: new Date().toISOString(),
+        prisonerNumber,
         isCheckingAnswers: false,
         names: {
           lastName: 'last',
@@ -147,6 +150,7 @@ describe('contactsService', () => {
           {
             id: '1',
             lastTouched: new Date().toISOString(),
+            prisonerNumber,
             isCheckingAnswers: false,
             names: { firstName: 'first', lastName: 'last' },
             dateOfBirth: { isKnown: 'NO' },

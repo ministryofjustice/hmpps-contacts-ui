@@ -6,11 +6,12 @@ import ensureInCreateContactJourney from './createContactMiddleware'
 describe('createContactMiddleware', () => {
   describe('ensureInCreateContactJourney', () => {
     const journeyId = uuidv4()
+    const prisonerNumber = 'A1234BC'
     let req: Request
     let res: Response
     beforeEach(() => {
       req = {
-        params: { journeyId },
+        params: { journeyId, prisonerNumber },
         session: {} as Partial<SessionData>,
       } as unknown as Request
       res = { redirect: jest.fn() } as unknown as Response
@@ -23,6 +24,7 @@ describe('createContactMiddleware', () => {
       req.session.createContactJourneys[journeyId] = {
         id: journeyId,
         lastTouched: lastTouchedBeforeCall.toISOString(),
+        prisonerNumber,
         isCheckingAnswers: false,
       }
       ensureInCreateContactJourney()(req, res, next)
@@ -36,13 +38,13 @@ describe('createContactMiddleware', () => {
       req.session.createContactJourneys = {}
       ensureInCreateContactJourney()(req, res, next)
       expect(next).toHaveBeenCalledTimes(0)
-      expect(res.redirect).toHaveBeenCalledWith('/contacts/create/start')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoner/${prisonerNumber}/contacts/create/start`)
     })
     it('should return to start if no journeys created at all', () => {
       const next = jest.fn()
       ensureInCreateContactJourney()(req, res, next)
       expect(next).toHaveBeenCalledTimes(0)
-      expect(res.redirect).toHaveBeenCalledWith('/contacts/create/start')
+      expect(res.redirect).toHaveBeenCalledWith(`/prisoner/${prisonerNumber}/contacts/create/start`)
     })
   })
 })

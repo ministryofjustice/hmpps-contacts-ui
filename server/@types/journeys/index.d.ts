@@ -2,6 +2,7 @@ declare namespace journeys {
   export interface CreateContactJourney {
     id: string
     lastTouched: string
+    prisonerNumber: string
     isCheckingAnswers: boolean
     names?: ContactNames
     dateOfBirth?: DateOfBirth
@@ -45,4 +46,6 @@ declare namespace journeys {
 
   type YesOrNo = 'YES' | 'NO'
   type YesNoOrDoNotKnow = 'YES' | 'NO' | 'DO_NOT_KNOW'
+
+  type PrisonerJourneyParams = { prisonerNumber: string; journeyId: string }
 }

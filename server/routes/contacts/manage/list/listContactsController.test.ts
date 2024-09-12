@@ -56,7 +56,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /contacts/manage/list', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/list/:journeyId', () => {
   it('should render the contacts list for a prisoner', async () => {
     const classes = '#active-contacts > .govuk-table > .govuk-table__body > .govuk-table__row >'
     auditService.logPageView.mockResolvedValue(null)
@@ -90,7 +90,7 @@ describe('GET /contacts/manage/list', () => {
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.getPrisonerContacts.mockReturnValue(contactsList)
 
-    const response = await request(app).get(`/contacts/manage/list/${journeyId}`)
+    const response = await request(app).get(`/prisoner/A462DZ/contacts/list/${journeyId}`)
     const $ = cheerio.load(response.text)
 
     // Prisoner
@@ -169,7 +169,7 @@ describe('GET /contacts/manage/list', () => {
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.getPrisonerContacts.mockReturnValue(contactsList)
 
-    const response = await request(app).get(`/contacts/manage/list/${journeyId}`)
+    const response = await request(app).get(`/prisoner/A462DZ/contacts/list/${journeyId}`)
     const $ = cheerio.load(response.text)
 
     expect($(`${classes} :nth-child(5)`).text()).toContain('No')
@@ -189,7 +189,7 @@ describe('GET /contacts/manage/list', () => {
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.getPrisonerContacts.mockReturnValue(contactsList)
 
-    const response = await request(app).get(`/contacts/manage/list/${journeyId}`)
+    const response = await request(app).get(`/prisoner/A462DZ/contacts/list/${journeyId}`)
     const $ = cheerio.load(response.text)
 
     expect($('#active-contacts > div > p').text()).toStrictEqual('John Smith does not have any active contacts')
@@ -203,7 +203,7 @@ describe('GET /contacts/manage/list', () => {
 
   it('should return to start if the journey ID is not recognised in the session', async () => {
     await request(app)
-      .get(`/contacts/manage/list/${uuidv4()}?prisoner=A462DZ`)
+      .get(`/prisoner/A462DZ/contacts/list/${uuidv4()}`)
       .expect(302)
       .expect('Location', '/contacts/manage/start')
   })

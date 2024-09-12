@@ -1,13 +1,14 @@
 import { Request, RequestHandler } from 'express'
+import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 
 const ensureInCreateContactJourney = (): RequestHandler => {
-  return async (req: Request<{ journeyId: string }, unknown, unknown>, res, next) => {
-    const { journeyId } = req.params
+  return async (req: Request<PrisonerJourneyParams, unknown, unknown>, res, next) => {
+    const { journeyId, prisonerNumber } = req.params
     if (!req.session.createContactJourneys) {
       req.session.createContactJourneys = {}
     }
     if (!req.session.createContactJourneys[journeyId]) {
-      return res.redirect('/contacts/create/start')
+      return res.redirect(`/prisoner/${prisonerNumber}/contacts/create/start`)
     }
     req.session.createContactJourneys[journeyId].lastTouched = new Date().toISOString()
 
