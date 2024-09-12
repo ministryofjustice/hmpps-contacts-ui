@@ -10,8 +10,6 @@ export default class ContactSearchController implements PageHandler {
     const { journeyId } = req.params
     const journey = req.session.manageContactsJourneys[journeyId]
 
-    console.log(journey)
-    console.log(res.locals?.formResponses)
     const viewModel = {
       journey,
       lastName: res.locals?.formResponses?.lastName ?? journey?.searchContact?.contact.lastName,
@@ -42,7 +40,6 @@ export default class ContactSearchController implements PageHandler {
       },
     }
 
-    res.redirect(`/contacts/manage/add-prisoner-contact/${journeyId}`)
-    // res.redirect(`/prisoner/${journeyId}/contacts/create/start`)
+    res.redirect(`/prisoner/${journey.prisoner.prisonerNumber}/contacts/search/${journeyId}`)
   }
 }

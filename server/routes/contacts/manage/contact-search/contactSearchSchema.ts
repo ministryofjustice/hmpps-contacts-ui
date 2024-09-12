@@ -43,9 +43,20 @@ export const contactSearchSchema = () => async () => {
     }),
   })
     .superRefine((val, ctx) => {
-      if (val.day && val.month && val.year) {
-        if (new Date(`${val.year}-${val.month}-${val.day}Z`) > new Date()) {
-          ctx.addIssue({ code: z.ZodIssueCode.custom, message: DOB_IN_FUTURE_MESSAGE, path: ['dob'] })
+      if (val.lastName && (val.day || val.month || val.year)) {
+        if (!val.day) {
+          ctx.addIssue({ code: z.ZodIssueCode.custom, message: DAY_TYPE_MESSAGE, path: ['day'] })
+        }
+        if (!val.month) {
+          ctx.addIssue({ code: z.ZodIssueCode.custom, message: MONTH_TYPE_MESSAGE, path: ['month'] })
+        }
+        if (!val.year) {
+          ctx.addIssue({ code: z.ZodIssueCode.custom, message: YEAR_TYPE_MESSAGE, path: ['year'] })
+        }
+        if (val.day && val.month && val.year) {
+          if (new Date(`${val.year}-${val.month}-${val.day}Z`) > new Date()) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: DOB_IN_FUTURE_MESSAGE, path: ['dob'] })
+          }
         }
       }
     })
