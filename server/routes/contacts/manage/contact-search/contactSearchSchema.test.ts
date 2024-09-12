@@ -110,6 +110,29 @@ describe('contactSearchSchema', () => {
           })
         },
       )
+
+      it.each([
+        ['', '', 'testname', '13', '32', '1982'],
+        ['', '', 'testname', '32', '01', '1982'],
+        ['', '', 'testname', '13', '01', '2145'],
+        ['', '', 'testname', '01', '', ''],
+        ['', '', 'testname', '', '12', ''],
+        ['', '', 'testname', '', '', '1980'],
+        ['', '', 'testname', '13', '32', '198'],
+        ['', '', 'testname', '-13', '-01', '-1980'],
+      ])(
+        'should not map dob',
+        async (firstName: string, middleName: string, lastName: string, day: string, month: string, year: string) => {
+          // Given
+          const form = { firstName, middleName, lastName, day, month, year }
+
+          // When
+          const result = await doValidate(form)
+
+          // Then
+          expect(result.success).toStrictEqual(false)
+        },
+      )
     })
 
     const doValidate = async (form: Form) => {

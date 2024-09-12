@@ -75,12 +75,4 @@ export const contactSearchSchema = () => async () => {
       },
     )
 }
-
 export type ContactSearchSchemaType = z.infer<Awaited<ReturnType<ReturnType<typeof contactSearchSchema>>>>
-
-// export type ContactSearchSchemaType = z.infer<
-//   Awaited<
-//     | ReturnType<ReturnType<typeof createContactEnterNameSchemaFactory>>
-//     | ReturnType<ReturnType<typeof createContactEnterDobSchema>>
-//   >
-// >
