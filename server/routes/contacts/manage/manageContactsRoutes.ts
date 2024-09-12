@@ -10,6 +10,10 @@ import { prisonerSearchSchemaFactory } from './prisoner-search/prisonerSearchSch
 import ListContactsController from './list/listContactsController'
 import { ContactsService, PrisonerSearchService } from '../../../services'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
+import ContactSearchController from './contact-search/contactSearchController'
+import { createContactEnterNameSchemaFactory } from '../create/enter-name/createContactEnterNameSchemas'
+import { contactSearchSchema } from './contact-search/contactSearchSchema'
+import { createContactEnterDobSchema } from '../create/enter-dob/createContactEnterDobSchemas'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -63,6 +67,22 @@ const ManageContactsRoutes = (
   // /prisoner/contact/email/:journeyId
   // /prisoner/contact/address/:journeyId
   // /prisoner/contact/restriction/:journeyId
+
+  // Part 7: Contact search
+  const contactsSearchController = new ContactSearchController()
+  router.get(
+    '/add-prisoner-contact/:journeyId',
+    ensureInManageContactsJourney(),
+    logPageViewMiddleware(auditService, contactsSearchController),
+    asyncMiddleware(contactsSearchController.GET),
+  )
+
+  router.post(
+    '/add-prisoner-contact/:journeyId',
+    ensureInManageContactsJourney(),
+    validate(contactSearchSchema()),
+    asyncMiddleware(contactsSearchController.POST),
+  )
 
   return router
 }
