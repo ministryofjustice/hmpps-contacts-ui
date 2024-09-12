@@ -13,6 +13,7 @@ context('Create Contacts', () => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
     cy.task('stubSignIn', { roles: ['PRISON'] })
+    cy.task('stubTitlesReferenceData')
   })
 
   it('Can create a contact with only required fields with direct link', () => {

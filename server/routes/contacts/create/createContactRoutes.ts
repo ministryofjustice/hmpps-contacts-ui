@@ -14,8 +14,13 @@ import CreateContactCheckAnswersController from './check-answers/createContactCh
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import CreateContactEnterEstimatedDobController from './enter-estimated-dob/createContactEnterEstimatedDobController'
 import { createContactEnterEstimatedDobSchema } from './enter-estimated-dob/createContactEnterEstimatedDobSchemas'
+import ReferenceDataService from '../../../services/referenceDataService'
 
-const CreateContactRoutes = (auditService: AuditService, contactsService: ContactsService) => {
+const CreateContactRoutes = (
+  auditService: AuditService,
+  contactsService: ContactsService,
+  referenceDataService: ReferenceDataService,
+) => {
   const router = Router({ mergeParams: true })
 
   const startController = new StartCreateContactJourneyController()
@@ -25,7 +30,7 @@ const CreateContactRoutes = (auditService: AuditService, contactsService: Contac
     asyncMiddleware(startController.GET),
   )
 
-  const enterNameController = new EnterNameController()
+  const enterNameController = new EnterNameController(referenceDataService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId',
     ensureInCreateContactJourney(),

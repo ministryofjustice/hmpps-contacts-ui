@@ -3,8 +3,10 @@ import nock from 'nock'
 import config from '../config'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import ContactsApiClient from './contactsApiClient'
+import ReferenceCodeType from '../enumeration/referenceCodeType'
 import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
+import ReferenceCode = contactsApiClientTypes.ReferenceCode
 
 jest.mock('./tokenStore/inMemoryTokenStore')
 
@@ -84,6 +86,60 @@ describe('contactsApiClient', () => {
         expect(e.status).toEqual(errorCode)
         expect(e.data).toEqual(expectedErrorBody)
       }
+    })
+  })
+  describe('getReferenceCodes', () => {
+    describe('createContact', () => {
+      it('should create the request and return the response', async () => {
+        // Given
+        const expectedCodes: ReferenceCode[] = [
+          {
+            code: 'MR',
+            description: 'Mr',
+            groupCode: 'TITLE',
+            referenceCodeId: 1,
+          },
+          {
+            code: 'MRS',
+            description: 'Mrs',
+            groupCode: 'TITLE',
+            referenceCodeId: 2,
+          },
+        ]
+        fakeContactsApi
+          .get('/reference-codes/group/TITLE')
+          .matchHeader('authorization', `Bearer systemToken`)
+          .reply(200, expectedCodes)
+
+        // When
+        const createdContact = await contactsApiClient.getReferenceCode(ReferenceCodeType.TITLE, user)
+
+        // Then
+        expect(createdContact).toEqual(expectedCodes)
+      })
+
+      it.each([401, 403])('should propagate errors', async (errorCode: number) => {
+        // Given
+        const expectedErrorBody = {
+          status: errorCode,
+          userMessage: 'Some error',
+          developerMessage: 'Some error',
+        }
+
+        fakeContactsApi
+          .get('/reference-codes/group/TITLE')
+          .matchHeader('authorization', `Bearer systemToken`)
+          .reply(errorCode, expectedErrorBody)
+
+        // When
+        try {
+          await contactsApiClient.getReferenceCode(ReferenceCodeType.TITLE, user)
+        } catch (e) {
+          // Then
+          expect(e.status).toEqual(errorCode)
+          expect(e.data).toEqual(expectedErrorBody)
+        }
+      })
     })
   })
 })
