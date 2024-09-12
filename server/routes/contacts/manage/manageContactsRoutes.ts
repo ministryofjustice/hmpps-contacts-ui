@@ -11,9 +11,7 @@ import ListContactsController from './list/listContactsController'
 import { ContactsService, PrisonerSearchService } from '../../../services'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import ContactSearchController from './contact-search/contactSearchController'
-import { createContactEnterNameSchemaFactory } from '../create/enter-name/createContactEnterNameSchemas'
 import { contactSearchSchema } from './contact-search/contactSearchSchema'
-import { createContactEnterDobSchema } from '../create/enter-dob/createContactEnterDobSchemas'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
