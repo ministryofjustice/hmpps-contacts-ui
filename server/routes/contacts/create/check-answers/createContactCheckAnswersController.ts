@@ -32,6 +32,11 @@ export default class CreateContactCheckAnswersController implements PageHandler 
     await this.contactService
       .createContact(journey, user)
       .then(() => delete req.session.createContactJourneys[journeyId])
-    res.redirect(`/prisoner/${prisonerNumber}/contacts/create/success`)
+
+    if (journey.returnPoint.type === 'MANAGE_PRISONER_CONTACTS') {
+      res.redirect(journey.returnPoint.url)
+    } else {
+      res.redirect(`/prisoner/${prisonerNumber}/contacts/create/success`)
+    }
   }
 }

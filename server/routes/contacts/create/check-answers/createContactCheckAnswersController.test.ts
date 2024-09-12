@@ -25,6 +25,7 @@ beforeEach(() => {
     lastTouched: new Date().toISOString(),
     prisonerNumber,
     isCheckingAnswers: false,
+    returnPoint: { type: 'MANAGE_PRISONER_CONTACTS', url: '/foo-bar' },
     names: {
       lastName: 'last',
       firstName: 'first',
@@ -65,16 +66,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
 
     // Then
     expect(response.status).toEqual(200)
-    expect(response.text).toContain('Contacts')
-    expect(response.text).toContain('Hmpps Contacts Ui')
-    expect(response.text).toContain('Check your answers')
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, {
-      who: user.username,
-      correlationId: expect.any(String),
-    })
     expect(journey.isCheckingAnswers).toStrictEqual(true)
     const $ = cheerio.load(response.text)
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Check your answers')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('.check-answers-dob-value').first().text().trim()).toStrictEqual('1 January 2024')
+    expect($('[data-qa=contact-list-breadcrumb-link]').first().attr('href')).toStrictEqual('/foo-bar')
   })
 
   it('should render check answers page without dob', async () => {
@@ -87,16 +84,27 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
 
     // Then
     expect(response.status).toEqual(200)
-    expect(response.text).toContain('Contacts')
-    expect(response.text).toContain('Hmpps Contacts Ui')
-    expect(response.text).toContain('Check your answers')
+    expect(journey.isCheckingAnswers).toStrictEqual(true)
+    const $ = cheerio.load(response.text)
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Check your answers')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('.check-answers-dob-value').first().text().trim()).toStrictEqual('Not provided')
+    expect($('[data-qa=contact-list-breadcrumb-link]').first().attr('href')).toStrictEqual('/foo-bar')
+  })
+
+  it('should call the audit service for the page view', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+    // Then
+    expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })
-    expect(journey.isCheckingAnswers).toStrictEqual(true)
-    const $ = cheerio.load(response.text)
-    expect($('.check-answers-dob-value').first().text().trim()).toStrictEqual('Not provided')
   })
 
   it('should return to start if no journey in session', async () => {
@@ -107,9 +115,13 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
   })
 })
 describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId', () => {
-  it('should create the contact and pass to success page', async () => {
+  it('should create the contact and pass to success page if return point is home', async () => {
     // Given
     contactsService.createContact.mockResolvedValue(null)
+    journey.returnPoint = {
+      type: 'HOME',
+      url: '/ignored',
+    }
 
     // When
     await request(app)
@@ -122,6 +134,27 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
     expect(contactsService.createContact).toHaveBeenCalledWith(journey, user)
     expect(session.createContactJourneys[journeyId]).toBeUndefined()
   })
+
+  it('should create the contact and pass to return url if return point is not home', async () => {
+    // Given
+    contactsService.createContact.mockResolvedValue(null)
+    journey.returnPoint = {
+      type: 'MANAGE_PRISONER_CONTACTS',
+      url: '/some-prisoner-contact-page',
+    }
+
+    // When
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+      .type('form')
+      .expect(302)
+      .expect('Location', '/some-prisoner-contact-page')
+
+    // Then
+    expect(contactsService.createContact).toHaveBeenCalledWith(journey, user)
+    expect(session.createContactJourneys[journeyId]).toBeUndefined()
+  })
+
   it('should return to start if no journey in session', async () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${uuidv4()}`)
