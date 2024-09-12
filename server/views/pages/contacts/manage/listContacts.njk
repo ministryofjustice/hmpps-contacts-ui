@@ -64,9 +64,13 @@
         %}
         <tr class="govuk-table__row">
             <td class="govuk-table__cell"><a href='#'>{{ item.surname }}, {{ item.forename }}</a></td>
-            <td class="govuk-table__cell">
-                {{ item.dateOfBirth | formatDate }}<br />
-                ({{ item.dateOfBirth | getFormatDistanceToNow }} old)
+            <td class="govuk-table__cell"  data-qa="contact-{{ item.prisonerContactId }}-dob">
+                {% if item.dateOfBirth %}
+                    {{ item.dateOfBirth | formatDate }}<br />
+                    ({{ item.dateOfBirth | getFormatDistanceToNow }} old)
+                {% else %}
+                    Not provided
+                {% endif %}
             </td>
             <td class="govuk-table__cell">
                 {{ govukSummaryList({

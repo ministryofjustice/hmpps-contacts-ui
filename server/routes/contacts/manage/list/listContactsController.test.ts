@@ -201,6 +201,44 @@ describe('GET /prisoner/:prisonerNumber/contacts/list/:journeyId', () => {
     })
   })
 
+  it('should render a message that the prisoner dob was not provided', async () => {
+    auditService.logPageView.mockResolvedValue(null)
+    const contactsList: PrisonerContactSummary = [
+      {
+        prisonerContactId: 100,
+        contactId: 200,
+        prisonerNumber: 'G9381UV',
+        surname: 'Adams',
+        forename: 'Claire',
+        middleName: '',
+        dateOfBirth: undefined,
+        relationshipCode: 'code here',
+        relationshipDescription: 'Friend',
+        flat: '1',
+        property: 'Property',
+        street: '123 High Street',
+        area: 'Mayfair',
+        cityCode: 'London',
+        countyCode: 'Greater London',
+        postCode: 'W1 1AA',
+        countryCode: 'England',
+        approvedVisitor: false,
+        nextOfKin: false,
+        emergencyContact: false,
+        awareOfCharges: true,
+        comments: 'comments here',
+      },
+    ]
+
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.getPrisonerContacts.mockReturnValue(contactsList)
+
+    const response = await request(app).get(`/prisoner/A462DZ/contacts/list/${journeyId}`)
+
+    const $ = cheerio.load(response.text)
+    expect($('[data-qa=contact-100-dob]').text()).toContain('Not provided')
+  })
+
   it('should return to start if the journey ID is not recognised in the session', async () => {
     await request(app)
       .get(`/prisoner/A462DZ/contacts/list/${uuidv4()}`)
