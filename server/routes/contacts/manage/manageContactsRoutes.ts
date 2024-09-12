@@ -79,14 +79,14 @@ const ManageContactsRoutes = (
   // Part 7: Contact search
   const contactsSearchController = new ContactSearchController()
   router.get(
-    '/add-prisoner-contact/:journeyId',
+    '/contacts/manage/add-prisoner-contact/:journeyId',
     ensureInManageContactsJourney(),
     logPageViewMiddleware(auditService, contactsSearchController),
     asyncMiddleware(contactsSearchController.GET),
   )
 
   router.post(
-    '/add-prisoner-contact/:journeyId',
+    '/contacts/manage/add-prisoner-contact/:journeyId',
     ensureInManageContactsJourney(),
     validate(contactSearchSchema()),
     asyncMiddleware(contactsSearchController.POST),

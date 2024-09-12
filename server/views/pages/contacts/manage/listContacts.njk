@@ -15,7 +15,6 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% set searchLink = "/contacts/manage/prisoner-search/" + journey.id %}
-{% set addPrisonerContactLink = "/contacts/manage/add-prisoner-contact/" + journey.id %}
 {% set backLinkHref = "/contacts/manage/prisoner-search-results/" + journey.id %}
 
 {% block content %}
@@ -65,9 +64,13 @@
         %}
         <tr class="govuk-table__row">
             <td class="govuk-table__cell"><a href='#'>{{ item.surname }}, {{ item.forename }}</a></td>
-            <td class="govuk-table__cell">
-                {{ item.dateOfBirth | formatDate }}<br />
-                ({{ item.dateOfBirth | getFormatDistanceToNow }} old)
+            <td class="govuk-table__cell"  data-qa="contact-{{ item.prisonerContactId }}-dob">
+                {% if item.dateOfBirth %}
+                    {{ item.dateOfBirth | formatDate }}<br />
+                    ({{ item.dateOfBirth | getFormatDistanceToNow }} old)
+                {% else %}
+                    Not provided
+                {% endif %}
             </td>
             <td class="govuk-table__cell">
                 {{ govukSummaryList({
@@ -105,7 +108,8 @@
 
     {{ govukButton({
         text: "Create new prisoner contact",
-        href: "/prisoner/" + journey.prisoner.prisonerNumber + "/contacts/create/start"
+        href: "/prisoner/" + journey.prisoner.prisonerNumber + "/contacts/create/start?returnJourneyType=MANAGE_PRISONER_CONTACTS&returnJourneyId=" + journey.id,
+        attributes: {"data-qa": "create-new-contact-button"}
     }) }}
 
 <div class="govuk-tabs" data-module="govuk-tabs">

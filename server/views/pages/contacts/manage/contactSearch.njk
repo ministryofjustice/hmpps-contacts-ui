@@ -9,7 +9,7 @@
 {% set title = "Search for Contact" %}
 {% set mainClasses = "app-container govuk-body" %}
 
-{% set contactLink = "/contacts/manage/list/" + journey.id + "?prisoner=" + journey.prisoner.prisonerNumber %}
+{% set contactLink = "/prisoner/" + journey.prisoner.prisonerNumber + "/contacts/list/" + journey.id %}
 
 {% block content %}
 <div class="govuk-grid-row govuk-!-static-margin-bottom-5">

@@ -43,5 +43,6 @@ export default class ContactSearchController implements PageHandler {
     }
 
     res.redirect(`/contacts/manage/add-prisoner-contact/${journeyId}`)
+    // res.redirect(`/prisoner/${journeyId}/contacts/create/start`)
   }
 }
