@@ -16,7 +16,6 @@ export default class ContactSearchController implements PageHandler {
     const journey = req.session.manageContactsJourneys[journeyId]
 
     const prisonerDetails = await this.prisonerSearchService.getByPrisonerNumber(prisonerNumber as string, user)
-    logger.info('prisonerDetails: ', JSON.stringify(prisonerDetails))
 
     const viewModel = {
       journey,
@@ -28,7 +27,7 @@ export default class ContactSearchController implements PageHandler {
       year: res.locals?.formResponses?.year ?? journey?.searchContact?.dateOfBirth?.year,
     }
 
-    res.render('pages/contacts/manage/contactSearch', { viewModel, prisonerDetails })
+    res.render('pages/contacts/manage/contactSearch', { viewModel, prisonerDetails, journey })
   }
 
   POST = async (req: Request<{ journeyId: string }, ContactSearchSchemaType>, res: Response): Promise<void> => {

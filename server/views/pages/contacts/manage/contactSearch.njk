@@ -10,7 +10,7 @@
 {% set title = "Search for Contact" %}
 {% set mainClasses = "app-container govuk-body" %}
 
-{% set contactLink = "/prisoner/" + journey.prisoner.prisonerNumber + "/contacts/list/" + journey.id %}
+{% set prisonerResultsLink = "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/list/" + journey.id %}
 
 {% block content %}
 <div class="govuk-grid-row govuk-!-static-margin-bottom-5">
@@ -26,14 +26,14 @@
               href: "/"
           },
           {
-            text: journey.prisoner.lastName | convertToTitleCase + ", " + journey.prisoner.firstName | convertToTitleCase,
-            href: contactLink
+            text: prisonerDetails.lastName | convertToTitleCase + ", " + prisonerDetails.firstName | convertToTitleCase,
+            href: prisonerResultsLink
         }
       ]
       }) }}
   </div>
 </div>
-{{ prisonerDetails.prisonerNumber }}
+
 {{ miniProfile(prisonerDetails, '/prisoner-image/' + prisonerDetails.prisonerNumber, digitalPrisonServicesUrl + '/prisoner/' + prisonerDetails.prisonerNumber) }}
 
 {% include '../../../partials/formErrorSummary.njk' %}
