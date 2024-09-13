@@ -36,7 +36,7 @@ export default class ContactsService {
       isOverEighteen,
       relationship: {
         prisonerNumber: journey.prisonerNumber,
-        relationshipCode: 'FRI',
+        relationshipCode: journey.relationship.type,
         isNextOfKin: false,
         isEmergencyContact: false,
       },

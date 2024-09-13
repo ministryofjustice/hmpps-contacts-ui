@@ -46,6 +46,9 @@ describe('contactsService', () => {
           month: 6,
           year: 1982,
         },
+        relationship: {
+          type: 'MOT',
+        },
       }
       const expectedRequest: CreateContactRequest = {
         title: 'Mr',
@@ -57,7 +60,7 @@ describe('contactsService', () => {
         createdBy: 'user1',
         relationship: {
           prisonerNumber,
-          relationshipCode: 'FRI',
+          relationshipCode: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: false,
         },
@@ -91,6 +94,9 @@ describe('contactsService', () => {
           isKnown: 'NO',
           isOverEighteen: 'DO_NOT_KNOW',
         },
+        relationship: {
+          type: 'MOT',
+        },
       }
       const expectedRequest: CreateContactRequest = {
         title: undefined,
@@ -101,7 +107,7 @@ describe('contactsService', () => {
         isOverEighteen: 'DO_NOT_KNOW',
         relationship: {
           prisonerNumber,
-          relationshipCode: 'FRI',
+          relationshipCode: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: false,
         },
@@ -140,6 +146,9 @@ describe('contactsService', () => {
           isKnown: 'NO',
           isOverEighteen: input,
         },
+        relationship: {
+          type: 'MOT',
+        },
       }
       const expectedRequest: CreateContactRequest = {
         title: undefined,
@@ -150,7 +159,7 @@ describe('contactsService', () => {
         isOverEighteen: expected,
         relationship: {
           prisonerNumber,
-          relationshipCode: 'FRI',
+          relationshipCode: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: false,
         },
@@ -176,6 +185,7 @@ describe('contactsService', () => {
             returnPoint: { type: 'HOME', url: '/foo-bar' },
             names: { firstName: 'first', lastName: 'last' },
             dateOfBirth: { isKnown: 'NO' },
+            relationship: { type: 'MOT' },
           },
           user,
         ),

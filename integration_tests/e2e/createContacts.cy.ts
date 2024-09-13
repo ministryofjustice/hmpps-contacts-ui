@@ -7,6 +7,7 @@ import EnterContactEstimatedDateOfBirthPage from '../pages/enterContactEstimated
 import TestData from '../../server/routes/testutils/testData'
 import SearchPrisonerPage from '../pages/searchPrisoner'
 import ListContactsPage from '../pages/listContacts'
+import SelectRelationshipPage from '../pages/selectRelationshipPage'
 
 context('Create Contacts', () => {
   beforeEach(() => {
@@ -14,6 +15,7 @@ context('Create Contacts', () => {
     cy.task('stubComponentsMeta')
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.task('stubTitlesReferenceData')
+    cy.task('stubRelationshipReferenceData')
   })
 
   it('Can create a contact with only required fields with direct link', () => {
@@ -23,6 +25,14 @@ context('Create Contacts', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
+      .clickContinue()
+
+    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
+    selectRelationshipPage.checkOnPage()
+    selectRelationshipPage //
+      .hasSelectedRelationshipHint('')
+      .selectRelationship('MOT')
+      .hasSelectedRelationshipHint("Last, First is the prisoner's mother")
       .clickContinue()
 
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
@@ -41,6 +51,7 @@ context('Create Contacts', () => {
       .verifyShowsNameAs('Last, First')
       .verifyShowsDateOfBirthAs('Not provided')
       .verifyShowsEstimatedDateOfBirthAs("I don't know")
+      .verifyShowRelationshipAs('Mother')
       .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
@@ -56,7 +67,7 @@ context('Create Contacts', () => {
         createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',
-          relationshipCode: 'FRI',
+          relationshipCode: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: false,
         },
@@ -75,6 +86,12 @@ context('Create Contacts', () => {
       .enterMiddleName('Middle')
       .clickContinue()
 
+    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
+    selectRelationshipPage.checkOnPage()
+    selectRelationshipPage //
+      .selectRelationship('MOT')
+      .clickContinue()
+
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
     enterDobPage //
@@ -87,6 +104,7 @@ context('Create Contacts', () => {
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsNameAs('Last, First')
       .verifyShowsDateOfBirthAs('15 June 1982')
+      .verifyShowRelationshipAs('Mother')
       .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
@@ -104,7 +122,7 @@ context('Create Contacts', () => {
         dateOfBirth: '1982-06-15T00:00:00.000Z',
         relationship: {
           prisonerNumber: 'A1234BC',
-          relationshipCode: 'FRI',
+          relationshipCode: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: false,
         },
@@ -162,12 +180,34 @@ context('Create Contacts', () => {
     enterNamePage.hasFieldInError('firstName', "Enter the contact's first name")
   })
 
+  it('Must select the contacts relationship to the prisoner', () => {
+    cy.signIn()
+    cy.visit('/prisoner/A1234BC/contacts/create/start')
+    Page.verifyOnPage(EnterNamePage) //
+      .enterLastName('Last')
+      .enterFirstName('First')
+      .clickContinue()
+
+    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
+    selectRelationshipPage.checkOnPage()
+    selectRelationshipPage //
+      .clickContinue()
+
+    selectRelationshipPage.hasFieldInError('relationship', "Enter the contact's relationship to the prisoner")
+  })
+
   it('Must select whether dob is known', () => {
     cy.signIn()
     cy.visit('/prisoner/A1234BC/contacts/create/start')
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
+      .clickContinue()
+
+    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
+    selectRelationshipPage.checkOnPage()
+    selectRelationshipPage //
+      .selectRelationship('MOT')
       .clickContinue()
 
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
@@ -184,6 +224,12 @@ context('Create Contacts', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
+      .clickContinue()
+
+    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
+    selectRelationshipPage.checkOnPage()
+    selectRelationshipPage //
+      .selectRelationship('MOT')
       .clickContinue()
 
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
@@ -206,6 +252,12 @@ context('Create Contacts', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
+      .clickContinue()
+
+    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
+    selectRelationshipPage.checkOnPage()
+    selectRelationshipPage //
+      .selectRelationship('MOT')
       .clickContinue()
 
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
@@ -231,6 +283,12 @@ context('Create Contacts', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
+      .clickContinue()
+
+    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
+    selectRelationshipPage.checkOnPage()
+    selectRelationshipPage //
+      .selectRelationship('MOT')
       .clickContinue()
 
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
@@ -278,6 +336,12 @@ context('Create Contacts', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
+      .clickContinue()
+
+    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
+    selectRelationshipPage.checkOnPage()
+    selectRelationshipPage //
+      .selectRelationship('MOT')
       .clickContinue()
 
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')

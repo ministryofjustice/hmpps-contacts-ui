@@ -7,12 +7,15 @@ import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import ContactsService from '../../../../services/contactsService'
 import CreateContactJourney = journeys.CreateContactJourney
+import ReferenceDataService from '../../../../services/referenceDataService'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/contactsService')
+jest.mock('../../../../services/referenceDataService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
+const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
 
 let app: Express
 let session: Partial<SessionData>
@@ -36,12 +39,16 @@ beforeEach(() => {
       month: 1,
       year: 2024,
     },
+    relationship: {
+      type: 'MOT',
+    },
   }
 
   app = appWithAllRoutes({
     services: {
       auditService,
       contactsService,
+      referenceDataService,
     },
     userSupplier: () => user,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -50,6 +57,7 @@ beforeEach(() => {
       session.createContactJourneys[journeyId] = journey
     },
   })
+  referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mother')
 })
 
 afterEach(() => {

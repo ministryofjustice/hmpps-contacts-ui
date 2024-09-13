@@ -46,7 +46,7 @@ export default class EnterNameController implements PageHandler {
     if (journey.isCheckingAnswers) {
       res.redirect(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
     } else {
-      res.redirect(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
+      res.redirect(`/prisoner/${prisonerNumber}/contacts/create/select-relationship/${journeyId}`)
     }
   }
 

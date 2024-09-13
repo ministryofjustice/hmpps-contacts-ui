@@ -7,6 +7,7 @@ declare namespace journeys {
     returnPoint: ReturnPoint
     names?: ContactNames
     dateOfBirth?: DateOfBirth
+    relationship?: PrisonerContactRelationship
   }
 
   export interface ContactNames {
@@ -22,6 +23,10 @@ declare namespace journeys {
     month?: number
     year?: number
     isOverEighteen?: YesNoOrDoNotKnow
+  }
+
+  export interface PrisonerContactRelationship {
+    type?: string
   }
 
   export interface ManageContactsJourney {
