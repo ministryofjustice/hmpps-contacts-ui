@@ -144,7 +144,7 @@ describe('contactSearchSchema', () => {
     }
   })
 
-  describe('contactSearchSchema', () => {
+  describe('should validate the enter dob form', () => {
     type Form = {
       firstName: string
       middleName?: string
