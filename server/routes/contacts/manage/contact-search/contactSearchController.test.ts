@@ -84,102 +84,102 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       correlationId: expect.any(String),
     })
   })
+})
 
-  describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
-    it('should pass to result page when last name provided', async () => {
-      await request(app)
-        .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
-        .type('form')
-        .send({ lastName: 'last', middleName: '', firstName: '', day: '', month: '', year: '' })
-        .expect(302)
-        .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
+  it('should pass to result page when last name provided', async () => {
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      .type('form')
+      .send({ lastName: 'last', middleName: '', firstName: '', day: '', month: '', year: '' })
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
-      expect(session.manageContactsJourneys[journeyId].searchContact).toStrictEqual({
-        contact: {
-          firstName: '',
-          middleName: undefined,
-          lastName: 'last',
-        },
-        dateOfBirth: {
-          day: '',
-          month: '',
-          year: '',
-        },
+    expect(session.manageContactsJourneys[journeyId].searchContact).toStrictEqual({
+      contact: {
+        firstName: '',
+        middleName: undefined,
+        lastName: 'last',
+      },
+      dateOfBirth: {
+        day: '',
+        month: '',
+        year: '',
+      },
+    })
+  })
+
+  it('should not pass to result page when last name is not provided', async () => {
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      .type('form')
+      .send({ lastName: '', middleName: '', firstName: '', day: '', month: '', year: '' })
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+
+    expect(session.manageContactsJourneys[journeyId].searchContact).toBeUndefined()
+  })
+
+  it('should not pass to result page when rest of the form is completed except last name', async () => {
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      .type('form')
+      .send({ lastName: '', middleName: 'mid', firstName: 'first', day: '01', month: '12', year: '1970' })
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+
+    expect(session.manageContactsJourneys[journeyId].searchContact).toBeUndefined()
+  })
+
+  it('should not pass to result page when month and year are not provided', async () => {
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      .type('form')
+      .send({ lastName: 'last', middleName: '', firstName: '', day: '01', month: '', year: '' })
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+
+    expect(session.manageContactsJourneys[journeyId].searchContact).toBeUndefined()
+  })
+
+  it('should not pass to result page when year is not provided', async () => {
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      .type('form')
+      .send({ lastName: 'last', middleName: '', firstName: '', day: '01', month: '12', year: '' })
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+
+    expect(session.manageContactsJourneys[journeyId].searchContact).toBeUndefined()
+  })
+
+  it('should not pass to result page when date is in the future', async () => {
+    const date = new Date(Date.now())
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      .type('form')
+      .send({
+        lastName: '',
+        middleName: '',
+        firstName: '',
+        day: '01',
+        month: '12',
+        year: date.setDate(date.getDate() + 1),
       })
-    })
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
-    it('should not pass to result page when last name is not provided', async () => {
-      await request(app)
-        .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
-        .type('form')
-        .send({ lastName: '', middleName: '', firstName: '', day: '', month: '', year: '' })
-        .expect(302)
-        .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+    expect(session.manageContactsJourneys[journeyId].searchContact).toBeUndefined()
+  })
 
-      expect(session.manageContactsJourneys[journeyId].searchContact).toBeUndefined()
-    })
+  it('should not pass to result page when last name contains special characters', async () => {
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      .type('form')
+      .send({ lastName: '&^^^$%%', middleName: '&^^^$%%', firstName: '&^^^$%%', day: '', month: '', year: '' })
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
-    it('should not pass to result page when rest of the form is completed except last name', async () => {
-      await request(app)
-        .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
-        .type('form')
-        .send({ lastName: '', middleName: 'mid', firstName: 'first', day: '01', month: '12', year: '1970' })
-        .expect(302)
-        .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
-
-      expect(session.manageContactsJourneys[journeyId].searchContact).toBeUndefined()
-    })
-
-    it('should not pass to result page when month and year are not provided', async () => {
-      await request(app)
-        .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
-        .type('form')
-        .send({ lastName: 'last', middleName: '', firstName: '', day: '01', month: '', year: '' })
-        .expect(302)
-        .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
-
-      expect(session.manageContactsJourneys[journeyId].searchContact).toBeUndefined()
-    })
-
-    it('should not pass to result page when year is not provided', async () => {
-      await request(app)
-        .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
-        .type('form')
-        .send({ lastName: 'last', middleName: '', firstName: '', day: '01', month: '12', year: '' })
-        .expect(302)
-        .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
-
-      expect(session.manageContactsJourneys[journeyId].searchContact).toBeUndefined()
-    })
-
-    it('should not pass to result page when date is in the future', async () => {
-      const date = new Date(Date.now())
-      await request(app)
-        .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
-        .type('form')
-        .send({
-          lastName: '',
-          middleName: '',
-          firstName: '',
-          day: '01',
-          month: '12',
-          year: date.setDate(date.getDate() + 1),
-        })
-        .expect(302)
-        .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
-
-      expect(session.manageContactsJourneys[journeyId].searchContact).toBeUndefined()
-    })
-
-    it('should not pass to result page when last name contains special characters', async () => {
-      await request(app)
-        .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
-        .type('form')
-        .send({ lastName: '&^^^$%%', middleName: '&^^^$%%', firstName: '&^^^$%%', day: '', month: '', year: '' })
-        .expect(302)
-        .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
-
-      expect(session.manageContactsJourneys[journeyId].searchContact).toBeUndefined()
-    })
+    expect(session.manageContactsJourneys[journeyId].searchContact).toBeUndefined()
   })
 })
