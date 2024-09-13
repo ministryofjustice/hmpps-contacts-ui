@@ -2,8 +2,7 @@ import { Request, Response } from 'express'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import { ContactSearchSchemaType } from './contactSearchSchema'
-import { PrisonerSearchService, ContactsService } from '../../../../services'
-import logger from '../../../../../logger'
+import { PrisonerSearchService } from '../../../../services'
 
 export default class ContactSearchController implements PageHandler {
   constructor(private readonly prisonerSearchService: PrisonerSearchService) {}

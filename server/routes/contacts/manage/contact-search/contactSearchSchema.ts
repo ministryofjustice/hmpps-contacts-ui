@@ -1,7 +1,5 @@
 import z from 'zod'
 import { createSchema } from '../../../../middleware/validationMiddleware'
-import { createContactEnterNameSchemaFactory } from '../../create/enter-name/createContactEnterNameSchemas'
-import { createContactEnterDobSchema } from '../../create/enter-dob/createContactEnterDobSchemas'
 
 const LAST_NAME_REQUIRED_MESSAGE = "Enter the contact's last name"
 const LAST_NAME_INVALID = "Contact's last name must not contain special characters"

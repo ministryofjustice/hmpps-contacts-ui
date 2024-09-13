@@ -172,7 +172,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     })
 
     it('should not pass to result page when last name contains special characters', async () => {
-      const date = new Date(Date.now())
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
         .type('form')
