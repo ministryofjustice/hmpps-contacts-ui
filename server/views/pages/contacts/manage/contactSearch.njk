@@ -50,7 +50,7 @@
                     label: { text: "First name" },
                     classes: 'govuk-!-width-one-third',
                     errorMessage: validationErrors | findError('firstName'),
-                    value: firstName
+                    value: view.firstName
                 }) }}
 
                 {{ govukInput({
@@ -59,7 +59,7 @@
                     label: { text: "Middle names" },
                     classes: 'govuk-!-width-one-third',
                     errorMessage: validationErrors | findError('middleName'),
-                    value: middleName
+                    value: view.middleName
                 }) }}
 
                 {{ govukInput({
@@ -68,7 +68,7 @@
                     label: { text: "Last name" },
                     classes: 'govuk-!-width-one-third',
                     errorMessage: validationErrors | findError('lastName'),
-                    value: lastName
+                    value: view.lastName
                 }) }}
 
                 {% if validationErrors %}
@@ -97,21 +97,21 @@
                             label: 'Day',
                             name: "day",
                             classes: 'govuk-input--width-2',
-                            value: day
+                            value: view.day
                         },
                         {
                             id: 'month',
                             label: 'Month',
                             name: "month",
                             classes: 'govuk-input--width-2',
-                            value: month
+                            value: view.month
                         },
                         {
                             id: 'year',
                             label: 'Year',
                             name: "year",
                             classes: 'govuk-input--width-4',
-                            value: year
+                            value: view.year
                         }
                     ]
                 }) }}
