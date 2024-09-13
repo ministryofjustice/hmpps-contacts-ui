@@ -3,6 +3,8 @@ import RestClient from './restClient'
 import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
+import ReferenceCode = contactsApiClientTypes.ReferenceCode
+import ReferenceCodeType from '../enumeration/referenceCodeType'
 
 export default class ContactsApiClient extends RestClient {
   constructor() {
@@ -28,6 +30,15 @@ export default class ContactsApiClient extends RestClient {
       {
         path: `/prisoner/${prisonerNumber}/contact`,
         query: { active: activeOnly },
+      },
+      user,
+    )
+  }
+
+  async getReferenceCode(type: ReferenceCodeType, user: Express.User): Promise<ReferenceCode[]> {
+    return this.get<PrisonerContactSummary[]>(
+      {
+        path: `/reference-codes/group/${type}`,
       },
       user,
     )

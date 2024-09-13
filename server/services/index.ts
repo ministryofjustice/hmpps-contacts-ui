@@ -3,6 +3,7 @@ import AuditService from './auditService'
 import PrisonerSearchService from './prisonerSearchService'
 import ContactsService from './contactsService'
 import PrisonerImageService from './prisonerImageService'
+import ReferenceDataService from './referenceDataService'
 
 export const services = () => {
   const { applicationInfo, hmppsAuditClient, prisonerSearchApiClient, contactsApiClient, prisonApiClient } =
@@ -12,6 +13,7 @@ export const services = () => {
   const prisonerSearchService = new PrisonerSearchService(prisonerSearchApiClient)
   const contactsService = new ContactsService(contactsApiClient)
   const prisonerImageService = new PrisonerImageService(prisonApiClient)
+  const referenceDataService = new ReferenceDataService(contactsApiClient)
 
   return {
     applicationInfo,
@@ -19,6 +21,7 @@ export const services = () => {
     prisonerSearchService,
     contactsService,
     prisonerImageService,
+    referenceDataService,
   }
 }
 

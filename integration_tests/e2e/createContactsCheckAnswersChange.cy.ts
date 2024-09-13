@@ -10,6 +10,7 @@ context('Create contact and update from check answers', () => {
     cy.task('reset')
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.task('stubComponentsMeta')
+    cy.task('stubTitlesReferenceData')
     cy.signIn()
     cy.visit('/prisoner/A1234BC/contacts/create/start')
     cy.task('stubCreateContact', { id: 132456 })
