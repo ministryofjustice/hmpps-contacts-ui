@@ -31,8 +31,7 @@
     </div>
 </div>
 
-{# Test the mini profile macro #}
-{{ miniProfile(prisonerDetails, '/prisoner-image/' + prisonerDetails.prisonerNumber, digitalPrisonServicesUrl + '/prisoner/' + prisonerDetails.prisonerNumber) }}
+{{ miniProfile(prisonerDetails) }}
 
 {% macro createTable(contactsList) %}
     <table class="govuk-table">

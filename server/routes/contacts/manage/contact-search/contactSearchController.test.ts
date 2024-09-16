@@ -31,7 +31,6 @@ beforeEach(() => {
       lastName: 'last',
       prisonerNumber: 'A1234BC',
       dateOfBirth: '1986-06-27',
-      prisonId: 'MDI',
       prisonName: 'Moorland (HMP & YOI)',
     },
   }

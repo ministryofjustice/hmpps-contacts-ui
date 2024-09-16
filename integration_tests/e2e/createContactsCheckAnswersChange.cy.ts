@@ -5,6 +5,7 @@ import EnterContactDateOfBirthPage from '../pages/enterContactDateOfBirthPage'
 import CreateContactCheckYourAnswersPage from '../pages/createContactCheckYourAnswersPage'
 import EnterContactEstimatedDateOfBirthPage from '../pages/enterContactEstimatedDateOfBirthPage'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
+import TestData from '../../server/routes/testutils/testData'
 
 context('Create contact and update from check answers', () => {
   beforeEach(() => {
@@ -13,6 +14,7 @@ context('Create contact and update from check answers', () => {
     cy.task('stubComponentsMeta')
     cy.task('stubTitlesReferenceData')
     cy.task('stubRelationshipReferenceData')
+    cy.task('stubPrisonerById', TestData.prisoner())
     cy.signIn()
     cy.visit('/prisoner/A1234BC/contacts/create/start')
     cy.task('stubCreateContact', { id: 132456 })

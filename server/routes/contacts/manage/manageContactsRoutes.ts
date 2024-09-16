@@ -12,6 +12,7 @@ import { ContactsService, PrisonerSearchService } from '../../../services'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import ContactSearchController from './contact-search/contactSearchController'
 import { contactSearchSchema } from './contact-search/contactSearchSchema'
+import prisonerDetailsMiddleware from '../../../middleware/prisonerDetailsMiddleware'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -63,6 +64,7 @@ const ManageContactsRoutes = (
   router.get(
     '/prisoner/:prisonerNumber/contacts/list/:journeyId',
     ensureInManageContactsJourney(),
+    prisonerDetailsMiddleware(prisonerSearchService),
     logPageViewMiddleware(auditService, listContactsController),
     asyncMiddleware(listContactsController.GET),
   )
@@ -81,6 +83,7 @@ const ManageContactsRoutes = (
   router.get(
     '/prisoner/:prisonerNumber/contacts/search/:journeyId',
     ensureInManageContactsJourney(),
+    prisonerDetailsMiddleware(prisonerSearchService),
     logPageViewMiddleware(auditService, contactsSearchController),
     asyncMiddleware(contactsSearchController.GET),
   )

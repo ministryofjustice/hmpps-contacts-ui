@@ -10,11 +10,8 @@ export default class ContactSearchController implements PageHandler {
   public PAGE_NAME = Page.CONTACT_SEARCH_PAGE
 
   GET = async (req: Request, res: Response): Promise<void> => {
-    const { user } = res.locals
-    const { journeyId, prisonerNumber } = req.params
+    const { journeyId } = req.params
     const journey = req.session.manageContactsJourneys[journeyId]
-
-    const prisonerDetails = await this.prisonerSearchService.getByPrisonerNumber(prisonerNumber as string, user)
 
     const view = {
       journey,
@@ -26,7 +23,7 @@ export default class ContactSearchController implements PageHandler {
       year: res.locals?.formResponses?.year ?? journey?.searchContact?.dateOfBirth?.year,
     }
 
-    res.render('pages/contacts/manage/contactSearch', { view, prisonerDetails, journey })
+    res.render('pages/contacts/manage/contactSearch', { view, journey })
   }
 
   POST = async (req: Request<{ journeyId: string }, ContactSearchSchemaType>, res: Response): Promise<void> => {

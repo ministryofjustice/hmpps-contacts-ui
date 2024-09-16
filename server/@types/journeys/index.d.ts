@@ -35,14 +35,7 @@ declare namespace journeys {
     search?: {
       searchTerm?: string
     }
-    prisoner?: {
-      firstName?: string
-      lastName?: string
-      prisonerNumber?: string
-      dateOfBirth?: string
-      prisonId?: string
-      prisonName?: string
-    }
+    prisoner?: PrisonerDetails
     searchContact?: {
       contact?: Partial<ContactNames>
       dateOfBirth?: Partial<DateOfBirth>
@@ -53,6 +46,15 @@ declare namespace journeys {
   export interface ReturnPoint {
     type: ReturnPointType
     url: string
+  }
+
+  export interface PrisonerDetails {
+    prisonerNumber: string
+    lastName: string
+    firstName: string
+    dateOfBirth: string
+    prisonName: string
+    cellLocation?: string
   }
 
   type ReturnPointType = 'MANAGE_PRISONER_CONTACTS' | 'HOME'
