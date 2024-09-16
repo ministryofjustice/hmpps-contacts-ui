@@ -72,10 +72,10 @@
                 }) }}
 
                 {% if validationErrors %}
-                    <span class="govuk-error-message">{{ validationErrors['day'] }}</span>
-                    <span class="govuk-error-message">{{ validationErrors['month'] }}</span>
-                    <span class="govuk-error-message">{{ validationErrors['year'] }}</span>
-                    <span class="govuk-error-message">{{ validationErrors['dob'] }}</span>
+                    <span class="govuk-error-message" id="day-error">{{ validationErrors['day'] }}</span>
+                    <span class="govuk-error-message" id="month-error">{{ validationErrors['month'] }}</span>
+                    <span class="govuk-error-message" id="year-error">{{ validationErrors['year'] }}</span>
+                    <span class="govuk-error-message" id="dob-error">{{ validationErrors['dob'] }}</span>
                 {% endif %}
                 {{ govukDateInput({
                     id: "dob",

@@ -1,27 +1,14 @@
 import { v4 as uuidv4 } from 'uuid'
-import Page, { PageElement } from '../pages/page'
+import Page from '../pages/page'
 import SearchPrisonerPage from '../pages/searchPrisoner'
 import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
+import SearchContactPage from '../pages/searchContactPage'
 
 const journeyId: string = uuidv4()
 const { prisonerNumber } = TestData.prisoner()
 
-const firstName = (): PageElement => cy.get('#firstName')
-const lastName = (): PageElement => cy.get('#lastName')
-const middleName = (): PageElement => cy.get('#middleName')
-const day = (): PageElement => cy.get('#day')
-const month = (): PageElement => cy.get('#month')
-const year = (): PageElement => cy.get('#year')
-const searchButton = (): PageElement => cy.get('[data-qa="search-button"]')
-
-const errorSummaryMessageClassElement = '.govuk-error-summary__body > .govuk-list > '
-const firstNameError = '#firstName-error'
-const middleNameError = '#middleName-error'
-const lastNameError = '#lastName-error'
-const formSpanGovukErrorMessage = 'form > span.govuk-error-message'
-
-const ENER_THE_CONTACTS_LAST_NAME = `Enter the contact's last name`
+const ENTER_THE_CONTACTS_LAST_NAME = `Enter the contact's last name`
 const CONTACTS_LAST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS = `Contact's last name must not contain special characters`
 const CONTACTS_MIDDLE_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS = `Contact's middle name must not contain special characters`
 const CONTACTS_FIRST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS = `Contact's first name must not contain special characters`
@@ -61,124 +48,109 @@ context('Search contact', () => {
   })
 
   it(`should not pass validation when last name is not entered`, () => {
-    firstName().clear().type('Firstname')
-    middleName().clear().type('Middlename')
-    searchButton().click()
-    cy.get(`${errorSummaryMessageClassElement} li > a`)
-      .should('be.visible')
-      .should('contain.text', ENER_THE_CONTACTS_LAST_NAME)
-    cy.get(lastNameError).should('be.visible').should('be.visible').should('contain.text', ENER_THE_CONTACTS_LAST_NAME)
+    const searchContactPage = Page.verifyOnPage(SearchContactPage)
+    searchContactPage.enterFirstName('Firstname')
+    searchContactPage.enterMiddleName('Middlename')
+    searchContactPage.clickSearchButton()
+
+    searchContactPage.hasFieldInError('lastName', ENTER_THE_CONTACTS_LAST_NAME)
   })
 
   it(`should not pass validation when special characters are entered`, () => {
-    firstName().clear().type('^%&*(££')
-    middleName().clear().type('^%&*(££')
-    lastName().clear().type('^%&*(££')
-    day().clear().type('^%&*(££')
-    month().clear().type('^%&*(££')
-    year().clear().type('^%&*(££')
-    searchButton().click()
-    cy.get(`${errorSummaryMessageClassElement} :nth-child(1) > a`)
-      .should('be.visible')
-      .should('contain.text', CONTACTS_LAST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
-    cy.get(`${errorSummaryMessageClassElement} :nth-child(2) > a`)
-      .should('be.visible')
-      .should('contain.text', CONTACTS_MIDDLE_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
-    cy.get(`${errorSummaryMessageClassElement} :nth-child(3) > a`)
-      .should('be.visible')
-      .should('contain.text', CONTACTS_FIRST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
-    cy.get(`${errorSummaryMessageClassElement} :nth-child(4) > a`)
-      .should('be.visible')
-      .should('contain.text', ENTER_A_VALID_DAY_OF_THE_MONTH)
-    cy.get(`${errorSummaryMessageClassElement} :nth-child(5) > a`)
-      .should('be.visible')
-      .should('contain.text', ENTER_A_VALID_MONTH)
-    cy.get(`${errorSummaryMessageClassElement} :nth-child(6) > a`)
-      .should('be.visible')
-      .should('contain.text', ENTER_A_VALID_YEAR)
+    const searchContactPage = Page.verifyOnPage(SearchContactPage)
+    searchContactPage.enterFirstName('^%&*(££')
+    searchContactPage.enterMiddleName('^%&*(££')
+    searchContactPage.enterLastName('^%&*(££')
+    searchContactPage.enterDay('^%&*(££')
+    searchContactPage.enterMonth('^%&*(££')
+    searchContactPage.enterYear('^%&*(££')
+    searchContactPage.clickSearchButton()
 
-    cy.get(firstNameError)
-      .should('be.visible')
-      .should('contain.text', CONTACTS_FIRST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
-    cy.get(middleNameError)
-      .should('be.visible')
-      .should('contain.text', CONTACTS_MIDDLE_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
-    cy.get(lastNameError)
-      .should('be.visible')
-      .should('contain.text', CONTACTS_LAST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
-    cy.get(`${formSpanGovukErrorMessage}:eq(0)`)
-      .should('be.visible')
-      .should('contain.text', ENTER_A_VALID_DAY_OF_THE_MONTH)
-    cy.get(`${formSpanGovukErrorMessage}:eq(1)`).should('be.visible').should('contain.text', ENTER_A_VALID_MONTH)
-    cy.get(`${formSpanGovukErrorMessage}:eq(2)`).should('be.visible').should('contain.text', ENTER_A_VALID_YEAR)
+    searchContactPage.hasFieldInError('firstName', CONTACTS_FIRST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
+    searchContactPage.hasFieldInError('middleName', CONTACTS_MIDDLE_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
+    searchContactPage.hasFieldInError('lastName', CONTACTS_LAST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
+    searchContactPage.hasFieldInError('day', ENTER_A_VALID_DAY_OF_THE_MONTH)
+    searchContactPage.hasFieldInError('month', ENTER_A_VALID_MONTH)
+    searchContactPage.hasFieldInError('year', ENTER_A_VALID_YEAR)
+
+    searchContactPage.errorSummaryItems.spread((...$lis) => {
+      expect($lis).to.have.lengthOf(6)
+      expect($lis[0]).to.contain(CONTACTS_LAST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
+      expect($lis[1]).to.contain(CONTACTS_MIDDLE_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
+      expect($lis[2]).to.contain(CONTACTS_FIRST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
+      expect($lis[3]).to.contain(ENTER_A_VALID_DAY_OF_THE_MONTH)
+      expect($lis[4]).to.contain(ENTER_A_VALID_MONTH)
+      expect($lis[5]).to.contain(ENTER_A_VALID_YEAR)
+    })
   })
 
   it(`should not pass validation when lastname and day are entered`, () => {
-    lastName().clear().type('Lastname')
-    day().clear().type('10')
-    searchButton().click()
-    cy.get(`${errorSummaryMessageClassElement} :nth-child(1) > a`)
-      .should('be.visible')
-      .should('contain.text', ENTER_A_VALID_MONTH)
-    cy.get(`${errorSummaryMessageClassElement} :nth-child(2) > a`)
-      .should('be.visible')
-      .should('contain.text', ENTER_A_VALID_YEAR)
-    cy.get(`${formSpanGovukErrorMessage}:eq(1)`).should('be.visible').should('contain.text', ENTER_A_VALID_MONTH)
-    cy.get(`${formSpanGovukErrorMessage}:eq(2)`).should('be.visible').should('contain.text', ENTER_A_VALID_YEAR)
+    const searchContactPage = Page.verifyOnPage(SearchContactPage)
+    searchContactPage.enterLastName('Lastname')
+    searchContactPage.enterDay('10')
+    searchContactPage.clickSearchButton()
+
+    searchContactPage.hasFieldInError('month', ENTER_A_VALID_MONTH)
+    searchContactPage.hasFieldInError('year', ENTER_A_VALID_YEAR)
+
+    searchContactPage.errorSummaryItems.spread((...$lis) => {
+      expect($lis).to.have.lengthOf(2)
+      expect($lis[0]).to.contain(ENTER_A_VALID_MONTH)
+      expect($lis[1]).to.contain(ENTER_A_VALID_YEAR)
+    })
   })
 
   it(`should not pass validation when lastname, day, and month are entered`, () => {
-    lastName().clear().type('Lastname')
-    day().clear().type('10')
-    month().clear().type('02')
-    searchButton().click()
-    cy.get(`${errorSummaryMessageClassElement} :nth-child(1) > a`)
-      .should('be.visible')
-      .should('contain.text', ENTER_A_VALID_YEAR)
-    cy.get(`${formSpanGovukErrorMessage}:eq(2)`).should('be.visible').should('contain.text', ENTER_A_VALID_YEAR)
+    const searchContactPage = Page.verifyOnPage(SearchContactPage)
+    searchContactPage.enterLastName('Lastname')
+    searchContactPage.enterDay('10')
+    searchContactPage.enterMonth('02')
+    searchContactPage.clickSearchButton()
+
+    searchContactPage.hasFieldInError('year', ENTER_A_VALID_YEAR)
+
+    searchContactPage.errorSummaryItems.spread((...$lis) => {
+      expect($lis).to.have.lengthOf(1)
+      expect($lis[0]).to.contain(ENTER_A_VALID_YEAR)
+    })
   })
 
   it(`should not pass validation when year is invalid`, () => {
-    lastName().clear().type('Lastname')
-    day().clear().type('10')
-    month().clear().type('02')
-    year().clear().type('100')
-    searchButton().click()
-    cy.get(`${errorSummaryMessageClassElement} :nth-child(1) > a`)
-      .should('be.visible')
-      .should('contain.text', ENTER_A_VALID_YEAR)
-    cy.get(`${formSpanGovukErrorMessage}:eq(2)`).should('be.visible').should('contain.text', ENTER_A_VALID_YEAR)
+    const searchContactPage = Page.verifyOnPage(SearchContactPage)
+    searchContactPage.enterLastName('Lastname')
+    searchContactPage.enterDay('10')
+    searchContactPage.enterMonth('02')
+    searchContactPage.enterYear('100')
+    searchContactPage.clickSearchButton()
+
+    searchContactPage.hasFieldInError('year', ENTER_A_VALID_YEAR)
+
+    searchContactPage.errorSummaryItems.spread((...$lis) => {
+      expect($lis).to.have.lengthOf(1)
+      expect($lis[0]).to.contain(ENTER_A_VALID_YEAR)
+    })
   })
 
   it(`should not pass validation when dob is in the future`, () => {
-    lastName().clear().type('Lastname')
-    day().clear().type('10')
-    month().clear().type('02')
-    year().clear().type('2090')
-    searchButton().click()
-    cy.get(`${errorSummaryMessageClassElement} :nth-child(1) > a`)
-      .should('be.visible')
-      .should('contain.text', THE_DATE_OF_BIRTH_MUST_NOT_BE_IN_THE_FUTURE)
-    cy.get(`${formSpanGovukErrorMessage}:eq(3)`)
-      .should('be.visible')
-      .should('contain.text', THE_DATE_OF_BIRTH_MUST_NOT_BE_IN_THE_FUTURE)
+    const searchContactPage = Page.verifyOnPage(SearchContactPage)
+    searchContactPage.enterLastName('Lastname')
+    searchContactPage.enterDay('10')
+    searchContactPage.enterMonth('02')
+    searchContactPage.enterYear('2090')
+    searchContactPage.clickSearchButton()
+
+    searchContactPage.hasFieldInError('dob', THE_DATE_OF_BIRTH_MUST_NOT_BE_IN_THE_FUTURE)
+
+    searchContactPage.errorSummaryItems.spread((...$lis) => {
+      expect($lis).to.have.lengthOf(1)
+      expect($lis[0]).to.contain(THE_DATE_OF_BIRTH_MUST_NOT_BE_IN_THE_FUTURE)
+    })
   })
 
   it(`should pass validation when last name is entered`, () => {
-    lastName().clear().type('Lastname')
-    searchButton().click()
-    cy.get(`${errorSummaryMessageClassElement} :nth-child(1) > a`).should('not.exist')
-    cy.get(`${errorSummaryMessageClassElement} :nth-child(2) > a`).should('not.exist')
-    cy.get(`${errorSummaryMessageClassElement} :nth-child(3) > a`).should('not.exist')
-    cy.get(`${errorSummaryMessageClassElement} :nth-child(4) > a`).should('not.exist')
-    cy.get(`${errorSummaryMessageClassElement} :nth-child(5) > a`).should('not.exist')
-    cy.get(`${errorSummaryMessageClassElement} :nth-child(6) > a`).should('not.exist')
-
-    cy.get(firstNameError).should('not.exist')
-    cy.get(middleNameError).should('not.exist')
-    cy.get(lastNameError).should('not.exist')
-    cy.get(`${formSpanGovukErrorMessage}:eq(0)`).should('not.exist')
-    cy.get(`${formSpanGovukErrorMessage}:eq(0)`).should('not.exist')
-    cy.get(`${formSpanGovukErrorMessage}:eq(0)`).should('not.exist')
+    const searchContactPage = Page.verifyOnPage(SearchContactPage)
+    searchContactPage.enterLastName('Lastname')
+    searchContactPage.clickSearchButton()
+    searchContactPage.checkOnPage()
   })
 })
