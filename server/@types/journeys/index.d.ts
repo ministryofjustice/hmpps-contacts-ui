@@ -43,6 +43,10 @@ declare namespace journeys {
       prisonId?: string
       prisonName?: string
     }
+    searchContact?: {
+      contact?: Partial<ContactNames>
+      dateOfBirth?: Partial<DateOfBirth>
+    }
     contactId?: number
   }
 

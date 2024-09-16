@@ -13,7 +13,6 @@
 {% set pageTitle = applicationName + " - List contacts" %}
 {% set title = "List contacts" %}
 {% set mainClasses = "app-container govuk-body" %}
-
 {% set searchLink = "/contacts/manage/prisoner-search/" + journey.id %}
 {% set backLinkHref = "/contacts/manage/prisoner-search-results/" + journey.id %}
 
@@ -103,7 +102,8 @@
 
     {{ govukButton({
         text: "Add prisoner contact",
-        href: "/"
+        href: "/prisoner/" + journey.prisoner.prisonerNumber + "/contacts/search/" + journey.id,
+        attributes: {"data-qa": "add-contact-button"}
     }) }}
 
     {{ govukButton({
