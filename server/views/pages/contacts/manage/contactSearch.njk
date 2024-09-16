@@ -72,11 +72,12 @@
                 }) }}
 
                 {% if validationErrors %}
-                    <span class="govuk-error-message" id="day-error">{{ validationErrors['day'] }}</span>
-                    <span class="govuk-error-message" id="month-error">{{ validationErrors['month'] }}</span>
-                    <span class="govuk-error-message" id="year-error">{{ validationErrors['year'] }}</span>
-                    <span class="govuk-error-message" id="dob-error">{{ validationErrors['dob'] }}</span>
+                    {% set dayError = validationErrors['day'] if validationErrors['day'] else '' %}
+                    {% set monthError = validationErrors['month'] if validationErrors['month'] else '' %}
+                    {% set yearError = validationErrors['year']  if validationErrors['year'] else '' %}
+                    {% set dobError = validationErrors['dob'] if validationErrors['dob'] else '' %}
                 {% endif %}
+
                 {{ govukDateInput({
                     id: "dob",
                     name: "dob",
@@ -89,8 +90,11 @@
                         text: "For example, 15 6 2000"
                     },
                     errorMessage: {
-                        test: ''
-                    } if validationErrors and not validationErrors['lastName'],
+                        html: '<span class="govuk-error-message">' + dayError + '</span>
+                               <span class="govuk-error-message">' + monthError + '</span>
+                               <span class="govuk-error-message">' + yearError + '</span>
+                               <span class="govuk-error-message">' + dobError + '</span>'
+                    } if dayError or monthError or yearError or dobError,
                     items: [
                         {
                             id: 'day',

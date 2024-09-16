@@ -66,22 +66,12 @@ context('Search contact', () => {
     searchContactPage.enterYear('^%&*(££')
     searchContactPage.clickSearchButton()
 
+    searchContactPage.hasFieldInError('lastName', CONTACTS_LAST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
     searchContactPage.hasFieldInError('firstName', CONTACTS_FIRST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
     searchContactPage.hasFieldInError('middleName', CONTACTS_MIDDLE_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
-    searchContactPage.hasFieldInError('lastName', CONTACTS_LAST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
-    searchContactPage.hasFieldInError('day', ENTER_A_VALID_DAY_OF_THE_MONTH)
-    searchContactPage.hasFieldInError('month', ENTER_A_VALID_MONTH)
-    searchContactPage.hasFieldInError('year', ENTER_A_VALID_YEAR)
-
-    searchContactPage.errorSummaryItems.spread((...$lis) => {
-      expect($lis).to.have.lengthOf(6)
-      expect($lis[0]).to.contain(CONTACTS_LAST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
-      expect($lis[1]).to.contain(CONTACTS_MIDDLE_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
-      expect($lis[2]).to.contain(CONTACTS_FIRST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
-      expect($lis[3]).to.contain(ENTER_A_VALID_DAY_OF_THE_MONTH)
-      expect($lis[4]).to.contain(ENTER_A_VALID_MONTH)
-      expect($lis[5]).to.contain(ENTER_A_VALID_YEAR)
-    })
+    searchContactPage.hasFieldInError('dob', ENTER_A_VALID_DAY_OF_THE_MONTH)
+    searchContactPage.hasFieldInError('dob', ENTER_A_VALID_MONTH)
+    searchContactPage.hasFieldInError('dob', ENTER_A_VALID_YEAR)
   })
 
   it(`should not pass validation when lastname and day are entered`, () => {
@@ -90,8 +80,8 @@ context('Search contact', () => {
     searchContactPage.enterDay('10')
     searchContactPage.clickSearchButton()
 
-    searchContactPage.hasFieldInError('month', ENTER_A_VALID_MONTH)
-    searchContactPage.hasFieldInError('year', ENTER_A_VALID_YEAR)
+    searchContactPage.hasFieldInError('dob', ENTER_A_VALID_MONTH)
+    searchContactPage.hasFieldInError('dob', ENTER_A_VALID_YEAR)
 
     searchContactPage.errorSummaryItems.spread((...$lis) => {
       expect($lis).to.have.lengthOf(2)
@@ -107,7 +97,7 @@ context('Search contact', () => {
     searchContactPage.enterMonth('02')
     searchContactPage.clickSearchButton()
 
-    searchContactPage.hasFieldInError('year', ENTER_A_VALID_YEAR)
+    searchContactPage.hasFieldInError('dob', ENTER_A_VALID_YEAR)
 
     searchContactPage.errorSummaryItems.spread((...$lis) => {
       expect($lis).to.have.lengthOf(1)
@@ -123,7 +113,7 @@ context('Search contact', () => {
     searchContactPage.enterYear('100')
     searchContactPage.clickSearchButton()
 
-    searchContactPage.hasFieldInError('year', ENTER_A_VALID_YEAR)
+    searchContactPage.hasFieldInError('dob', ENTER_A_VALID_YEAR)
 
     searchContactPage.errorSummaryItems.spread((...$lis) => {
       expect($lis).to.have.lengthOf(1)
