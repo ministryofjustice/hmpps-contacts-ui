@@ -8,7 +8,7 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-{% include './partials/createContactBreadcrumbs.njk' %}
+{% include '../common/partials/createContactBreadcrumbs.njk' %}
 {% include '../../../partials/formErrorSummary.njk' %}
 <span class="govuk-caption-l">Manage Contacts</span>
 <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
@@ -18,7 +18,7 @@
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
                 {% set baseChangeUrl = "/prisoner/" + journey.prisonerNumber + "/contacts/create" %}
                 {% set  formattedDateOfBirth %}{% if journey.dateOfBirth.isKnown === 'YES' %}{{ dateOfBirth | formatDate }}{% else %}Not provided{% endif %}{% endset %}
-                {% set rows = [
+                {% set contactDetailsRows = [
                     {
                         key: {
                             text: "Name"
@@ -61,7 +61,7 @@
                     }
                 ] %}
                 {% if journey.dateOfBirth.isKnown === 'NO' %}
-                    {% set rows = (rows.push(
+                    {% set contactDetailsRows = (contactDetailsRows.push(
                         {
                             key: {
                                 text: "Is over 18 years old?"
@@ -82,7 +82,7 @@
                                 ]
                             }
                         }
-                    ), rows) %}
+                    ), contactDetailsRows) %}
                 {% endif %}
                 {{ govukSummaryList({
                     card: {
@@ -90,7 +90,38 @@
                             text: "Contact details"
                         }
                     },
-                    rows: rows
+                    rows: contactDetailsRows
+                }) }}
+
+                {{ govukSummaryList({
+                    card: {
+                        title: {
+                            text: "Relationship details"
+                        }
+                    },
+                    rows: [
+                        {
+                            key: {
+                                text: "Relationship to prisoner"
+                            },
+                            value: {
+                                html: relationshipDescription,
+                                classes: 'check-answers-relationship-value'
+                            },
+                            actions: {
+                                items: [
+                                    {
+                                        href: baseChangeUrl + "/select-relationship/"  + journey.id,
+                                        text: "Change",
+                                        visuallyHiddenText: "relationship",
+                                        attributes: {"data-qa": "change-relationship-link"},
+                                        classes: "govuk-link--no-visited-state"
+                                    }
+                                ]
+                            }
+                        }
+
+                    ]
                 }) }}
                 <div class="govuk-button-group">
                     {{ govukButton({

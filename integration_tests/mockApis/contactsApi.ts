@@ -1,6 +1,6 @@
 import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
-import { STUBBED_TITLE_OPTIONS } from '../../server/routes/testutils/stubReferenceData'
+import { STUBBED_RELATIONSHIP_OPTIONS, STUBBED_TITLE_OPTIONS } from '../../server/routes/testutils/stubReferenceData'
 
 export default {
   stubCreateContact: (createdContact: {
@@ -89,6 +89,19 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: STUBBED_TITLE_OPTIONS,
+      },
+    })
+  },
+  stubRelationshipReferenceData: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/reference-codes/group/RELATIONSHIP',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: STUBBED_RELATIONSHIP_OPTIONS,
       },
     })
   },

@@ -15,6 +15,8 @@ import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import CreateContactEnterEstimatedDobController from './enter-estimated-dob/createContactEnterEstimatedDobController'
 import { createContactEnterEstimatedDobSchema } from './enter-estimated-dob/createContactEnterEstimatedDobSchemas'
 import ReferenceDataService from '../../../services/referenceDataService'
+import SelectRelationshipController from '../common/relationship/selectRelationshipController'
+import { selectRelationshipSchemaFactory } from '../common/relationship/selectRelationshipSchemas'
 
 const CreateContactRoutes = (
   auditService: AuditService,
@@ -42,6 +44,20 @@ const CreateContactRoutes = (
     ensureInCreateContactJourney(),
     validate(createContactEnterNameSchemaFactory()),
     asyncMiddleware(enterNameController.POST),
+  )
+
+  const selectRelationshipController = new SelectRelationshipController(referenceDataService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/create/select-relationship/:journeyId',
+    ensureInCreateContactJourney(),
+    logPageViewMiddleware(auditService, selectRelationshipController),
+    asyncMiddleware(selectRelationshipController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/create/select-relationship/:journeyId',
+    ensureInCreateContactJourney(),
+    validate(selectRelationshipSchemaFactory()),
+    asyncMiddleware(selectRelationshipController.POST),
   )
 
   const enterDobController = new CreateContactEnterDobController()
@@ -72,7 +88,7 @@ const CreateContactRoutes = (
     asyncMiddleware(enterEstimatedDobController.POST),
   )
 
-  const checkAnswersController = new CreateContactCheckAnswersController(contactsService)
+  const checkAnswersController = new CreateContactCheckAnswersController(contactsService, referenceDataService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId',
     ensureInCreateContactJourney(),

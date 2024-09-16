@@ -112,7 +112,7 @@ describe('contactsApiClient', () => {
           .reply(200, expectedCodes)
 
         // When
-        const createdContact = await contactsApiClient.getReferenceCode(ReferenceCodeType.TITLE, user)
+        const createdContact = await contactsApiClient.getReferenceCodes(ReferenceCodeType.TITLE, user)
 
         // Then
         expect(createdContact).toEqual(expectedCodes)
@@ -133,7 +133,7 @@ describe('contactsApiClient', () => {
 
         // When
         try {
-          await contactsApiClient.getReferenceCode(ReferenceCodeType.TITLE, user)
+          await contactsApiClient.getReferenceCodes(ReferenceCodeType.TITLE, user)
         } catch (e) {
           // Then
           expect(e.status).toEqual(errorCode)

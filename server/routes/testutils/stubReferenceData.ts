@@ -20,11 +20,23 @@ const STUBBED_TITLE_OPTIONS: StubReferenceData[] = [
   { code: 'IMAM', description: 'Imam', groupCode: 'TITLE' },
 ]
 
+const STUBBED_RELATIONSHIP_OPTIONS: StubReferenceData[] = [
+  { code: 'MOT', description: 'Mother', groupCode: 'RELATIONSHIP' },
+  { code: 'FA', description: 'Father', groupCode: 'RELATIONSHIP' },
+  { code: 'DAU', description: 'Daughter', groupCode: 'RELATIONSHIP' },
+  { code: 'SON', description: 'Son', groupCode: 'RELATIONSHIP' },
+  { code: 'WIFE', description: 'Wife', groupCode: 'RELATIONSHIP' },
+  { code: 'HUS', description: 'Husband', groupCode: 'RELATIONSHIP' },
+]
+
 const mockedReferenceData = (type: ReferenceCodeType, _: HmppsUser): Promise<StubReferenceData[]> => {
   if (type === ReferenceCodeType.TITLE) {
     return Promise.resolve(STUBBED_TITLE_OPTIONS)
   }
+  if (type === ReferenceCodeType.RELATIONSHIP) {
+    return Promise.resolve(STUBBED_RELATIONSHIP_OPTIONS)
+  }
   return Promise.reject(new Error(`You haven't set up the stubbed reference data for ${type} yet`))
 }
 
-export { mockedReferenceData, STUBBED_TITLE_OPTIONS }
+export { mockedReferenceData, STUBBED_TITLE_OPTIONS, STUBBED_RELATIONSHIP_OPTIONS }

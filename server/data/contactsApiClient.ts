@@ -35,7 +35,7 @@ export default class ContactsApiClient extends RestClient {
     )
   }
 
-  async getReferenceCode(type: ReferenceCodeType, user: Express.User): Promise<ReferenceCode[]> {
+  async getReferenceCodes(type: ReferenceCodeType, user: Express.User): Promise<ReferenceCode[]> {
     return this.get<PrisonerContactSummary[]>(
       {
         path: `/reference-codes/group/${type}`,
