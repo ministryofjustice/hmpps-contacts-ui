@@ -18,6 +18,8 @@ import ReferenceDataService from '../../../services/referenceDataService'
 import SelectRelationshipController from '../common/relationship/selectRelationshipController'
 import { selectRelationshipSchemaFactory } from '../common/relationship/selectRelationshipSchemas'
 import prisonerDetailsMiddleware from '../../../middleware/prisonerDetailsMiddleware'
+import EmergencyContactController from '../common/emergency-contact/emergencyContactController'
+import { selectEmergencyContactSchema } from '../common/emergency-contact/emergencyContactSchemas'
 
 const CreateContactRoutes = (
   auditService: AuditService,
@@ -62,6 +64,21 @@ const CreateContactRoutes = (
     ensureInCreateContactJourney(),
     validate(selectRelationshipSchemaFactory()),
     asyncMiddleware(selectRelationshipController.POST),
+  )
+
+  const selectEmergencyContact = new EmergencyContactController()
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/create/select-emergency-contact/:journeyId',
+    ensureInCreateContactJourney(),
+    prisonerDetailsMiddleware(prisonerSearchService),
+    logPageViewMiddleware(auditService, selectEmergencyContact),
+    asyncMiddleware(selectEmergencyContact.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/create/select-emergency-contact/:journeyId',
+    ensureInCreateContactJourney(),
+    validate(selectEmergencyContactSchema()),
+    asyncMiddleware(selectEmergencyContact.POST),
   )
 
   const enterDobController = new CreateContactEnterDobController()

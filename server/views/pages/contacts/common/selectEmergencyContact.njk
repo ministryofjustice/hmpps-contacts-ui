@@ -1,0 +1,53 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
+
+{% set pageTitle = applicationName + " - Select emergency contact" %}
+{% set title = "Is " + journey.names.lastName + ", " + journey.names.firstName + " an emergency contact for the prisoner?" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+{% include '../common/partials/createContactBreadcrumbs.njk' %}
+{{ miniProfile(prisonerDetails) }}
+{% include '../../../partials/formErrorSummary.njk' %}
+<span class="govuk-caption-l">Manage Contacts</span>
+<h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+ <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                {{ govukRadios({
+                    name: "isEmergencyContact",
+                    items: [
+                        {
+                            value: 'YES',
+                            text: 'YES' | formatYesNo,
+                            checked: isEmergencyContact === 'YES'
+                        },
+                        {
+                            value: 'NO',
+                            text: 'NO' | formatYesNo,
+                            checked: isEmergencyContact === 'NO'
+                        }
+                    ],
+                    errorMessage: validationErrors | findError('isEmergencyContact')
+                }) }}
+
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        html: "Continue",
+                        type: "submit",
+                        classes: 'govuk-!-margin-top-6',
+                        attributes: {"data-qa": "continue-button"}
+                    }) }}
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ journey.returnPoint.url }}" data-qa="cancel-button">Cancel</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

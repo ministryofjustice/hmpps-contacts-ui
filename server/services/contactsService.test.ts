@@ -48,6 +48,7 @@ describe('contactsService', () => {
         },
         relationship: {
           type: 'MOT',
+          isEmergencyContact: 'NO',
         },
       }
       const expectedRequest: CreateContactRequest = {
@@ -96,6 +97,7 @@ describe('contactsService', () => {
         },
         relationship: {
           type: 'MOT',
+          isEmergencyContact: 'YES',
         },
       }
       const expectedRequest: CreateContactRequest = {
@@ -109,7 +111,7 @@ describe('contactsService', () => {
           prisonerNumber,
           relationshipCode: 'MOT',
           isNextOfKin: false,
-          isEmergencyContact: false,
+          isEmergencyContact: true,
         },
         createdBy: 'user1',
       }
@@ -148,6 +150,7 @@ describe('contactsService', () => {
         },
         relationship: {
           type: 'MOT',
+          isEmergencyContact: 'YES',
         },
       }
       const expectedRequest: CreateContactRequest = {
@@ -161,7 +164,7 @@ describe('contactsService', () => {
           prisonerNumber,
           relationshipCode: 'MOT',
           isNextOfKin: false,
-          isEmergencyContact: false,
+          isEmergencyContact: true,
         },
         createdBy: 'user1',
       }
@@ -185,7 +188,7 @@ describe('contactsService', () => {
             returnPoint: { type: 'HOME', url: '/foo-bar' },
             names: { firstName: 'first', lastName: 'last' },
             dateOfBirth: { isKnown: 'NO' },
-            relationship: { type: 'MOT' },
+            relationship: { type: 'MOT', isEmergencyContact: 'YES' },
           },
           user,
         ),

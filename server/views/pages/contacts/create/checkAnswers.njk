@@ -121,8 +121,27 @@
                                     }
                                 ]
                             }
+                        },
+                        {
+                            key: {
+                                text: "Emergency contact"
+                            },
+                            value: {
+                                html: journey.relationship.isEmergencyContact | formatYesNo,
+                                classes: 'check-answers-emergency-contact-value'
+                            },
+                            actions: {
+                                items: [
+                                    {
+                                        href: baseChangeUrl + "/select-emergency-contact/"  + journey.id,
+                                        text: "Change",
+                                        visuallyHiddenText: "whether contact is an emergency contact",
+                                        attributes: {"data-qa": "change-emergency-contact-link"},
+                                        classes: "govuk-link--no-visited-state"
+                                    }
+                                ]
+                            }
                         }
-
                     ]
                 }) }}
                 <div class="govuk-button-group">
