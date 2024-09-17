@@ -34,6 +34,7 @@ beforeEach(() => {
     },
     relationship: {
       type: 'MOT',
+      isEmergencyContact: 'YES',
     },
   }
   app = appWithAllRoutes({
@@ -55,14 +56,14 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/create/select-emergency-contact/:journeyId', () => {
-  it('should render enter emergency contact page', async () => {
+describe('GET /prisoner/:prisonerNumber/contacts/create/select-next-of-kin/:journeyId', () => {
+  it('should render enter next of kin page', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/create/select-next-of-kin/${journeyId}`,
     )
 
     // Then
@@ -70,7 +71,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-emergency-contact
 
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Is last, first an emergency contact for the prisoner?',
+      'Is last, first next of kin for the prisoner?',
     )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=contact-list-breadcrumb-link]').first().attr('href')).toStrictEqual('/foo-bar')
@@ -82,12 +83,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-emergency-contact
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/create/select-next-of-kin/${journeyId}`,
     )
 
     // Then
     expect(response.status).toEqual(200)
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.SELECT_EMERGENCY_CONTACT, {
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.SELECT_NEXT_OF_KIN, {
       who: user.username,
       correlationId: expect.any(String),
     })
@@ -96,11 +97,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-emergency-contact
   it('should render previously entered details if no validation errors but there are session values', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
-    existingJourney.relationship = { type: 'MOT', isEmergencyContact: 'YES' }
+    existingJourney.relationship = { type: 'MOT', isEmergencyContact: 'NO', isNextOfKin: 'YES' }
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/create/select-next-of-kin/${journeyId}`,
     )
 
     // Then
@@ -111,13 +112,13 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-emergency-contact
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${uuidv4()}`)
+      .get(`/prisoner/${prisonerNumber}/contacts/create/select-next-of-kin/${uuidv4()}`)
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/create/select-emergency-contact', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/create/select-next-of-kin', () => {
   it('should pass to next page if there are no validation errors and we are not checking answers', async () => {
     // Given
     existingJourney.relationship = { type: 'MOT', isEmergencyContact: 'NO' }
@@ -125,14 +126,14 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-emergency-contac
 
     // When
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/select-next-of-kin/${journeyId}`)
       .type('form')
-      .send({ isEmergencyContact: 'YES' })
+      .send({ isNextOfKin: 'YES' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-next-of-kin/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
 
     // Then
-    const expectedRelationship = { type: 'MOT', isEmergencyContact: 'YES' }
+    const expectedRelationship = { type: 'MOT', isEmergencyContact: 'NO', isNextOfKin: 'YES' }
     expect(session.createContactJourneys[journeyId].relationship).toStrictEqual(expectedRelationship)
   })
 
@@ -143,29 +144,29 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-emergency-contac
 
     // When
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/select-next-of-kin/${journeyId}`)
       .type('form')
-      .send({ isEmergencyContact: 'YES' })
+      .send({ isNextOfKin: 'YES' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
 
     // Then
-    const expectedRelationship = { type: 'MOT', isEmergencyContact: 'YES' }
+    const expectedRelationship = { type: 'MOT', isEmergencyContact: 'NO', isNextOfKin: 'YES' }
     expect(session.createContactJourneys[journeyId].relationship).toStrictEqual(expectedRelationship)
   })
 
   it('should return to enter page if there are validation errors', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/select-next-of-kin/${journeyId}`)
       .type('form')
       .send({})
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-next-of-kin/${journeyId}`)
   })
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${uuidv4()}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/select-next-of-kin/${uuidv4()}`)
       .type('form')
       .send({})
       .expect(302)

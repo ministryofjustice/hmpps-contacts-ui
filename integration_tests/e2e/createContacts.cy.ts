@@ -9,6 +9,7 @@ import SearchPrisonerPage from '../pages/searchPrisoner'
 import ListContactsPage from '../pages/listContacts'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
+import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 
 context('Create Contacts', () => {
   beforeEach(() => {
@@ -29,6 +30,7 @@ context('Create Contacts', () => {
     nameIsFirstLast()
     relationshipIsMother()
     isEmergencyContact('NO')
+    isNextOfKin('YES')
     dobIsUnknown()
 
     const estimatedDobPage = new EnterContactEstimatedDateOfBirthPage('Last, First')
@@ -43,6 +45,7 @@ context('Create Contacts', () => {
       .verifyShowsEstimatedDateOfBirthAs("I don't know")
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('Yes')
       .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
@@ -59,7 +62,7 @@ context('Create Contacts', () => {
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipCode: 'MOT',
-          isNextOfKin: false,
+          isNextOfKin: true,
           isEmergencyContact: false,
         },
       },
@@ -78,6 +81,7 @@ context('Create Contacts', () => {
 
     relationshipIsMother()
     isEmergencyContact('YES')
+    isNextOfKin('NO')
     dobIsKnown()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
@@ -85,6 +89,7 @@ context('Create Contacts', () => {
       .verifyShowsDateOfBirthAs('15 June 1982')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('Yes')
+      .verifyShowIsNextOfKinAs('No')
       .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
@@ -186,12 +191,28 @@ context('Create Contacts', () => {
     )
   })
 
+  it('Must select whether contact is an emergency contact', () => {
+    cy.visit('/prisoner/A1234BC/contacts/create/start')
+
+    nameIsFirstLast()
+    relationshipIsMother()
+    isEmergencyContact('NO')
+
+    const selectNextOfKinPage = new SelectNextOfKinPage('Last, First')
+    selectNextOfKinPage.checkOnPage()
+    selectNextOfKinPage //
+      .clickContinue()
+
+    selectNextOfKinPage.hasFieldInError('isNextOfKin', 'Select whether the contact is next of kin for the prisoner')
+  })
+
   it('Must select whether dob is known', () => {
     cy.visit('/prisoner/A1234BC/contacts/create/start')
 
     nameIsFirstLast()
     relationshipIsMother()
     isEmergencyContact('NO')
+    isNextOfKin('NO')
 
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
@@ -207,6 +228,7 @@ context('Create Contacts', () => {
     nameIsFirstLast()
     relationshipIsMother()
     isEmergencyContact('NO')
+    isNextOfKin('NO')
 
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
@@ -228,6 +250,7 @@ context('Create Contacts', () => {
     nameIsFirstLast()
     relationshipIsMother()
     isEmergencyContact('NO')
+    isNextOfKin('NO')
 
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
@@ -252,6 +275,7 @@ context('Create Contacts', () => {
     nameIsFirstLast()
     relationshipIsMother()
     isEmergencyContact('NO')
+    isNextOfKin('NO')
     dobIsUnknown()
 
     const estimatedDobPage = new EnterContactEstimatedDateOfBirthPage('Last, First')
@@ -261,17 +285,6 @@ context('Create Contacts', () => {
 
     estimatedDobPage.hasFieldInError('isOverEighteen', 'Select whether the contact is over 18')
   })
-
-  function dobIsKnown() {
-    const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
-    enterDobPage.checkOnPage()
-    enterDobPage //
-      .selectIsKnown('YES')
-      .enterDay('15')
-      .enterMonth('06')
-      .enterYear('1982')
-      .clickContinue()
-  }
 
   it('Can create a contact from prisoner contact page', () => {
     const { prisonerNumber } = TestData.prisoner()
@@ -301,6 +314,7 @@ context('Create Contacts', () => {
     nameIsFirstLast()
     relationshipIsMother()
     isEmergencyContact('NO')
+    isNextOfKin('NO')
     dobIsKnown()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
@@ -324,11 +338,30 @@ context('Create Contacts', () => {
       .clickContinue()
   }
 
+  function dobIsKnown() {
+    const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
+    enterDobPage.checkOnPage()
+    enterDobPage //
+      .selectIsKnown('YES')
+      .enterDay('15')
+      .enterMonth('06')
+      .enterYear('1982')
+      .clickContinue()
+  }
+
   function isEmergencyContact(value: 'YES' | 'NO') {
     const selectEmergencyContactPage = new SelectEmergencyContactPage('Last, First')
     selectEmergencyContactPage.checkOnPage()
     selectEmergencyContactPage //
       .selectIsEmergencyContact(value)
+      .clickContinue()
+  }
+
+  function isNextOfKin(value: 'YES' | 'NO') {
+    const selectNextOfKinPage = new SelectNextOfKinPage('Last, First')
+    selectNextOfKinPage.checkOnPage()
+    selectNextOfKinPage //
+      .selectIsNextOfKin(value)
       .clickContinue()
   }
 

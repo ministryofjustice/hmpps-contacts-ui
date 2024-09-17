@@ -49,6 +49,7 @@ describe('contactsService', () => {
         relationship: {
           type: 'MOT',
           isEmergencyContact: 'NO',
+          isNextOfKin: 'YES',
         },
       }
       const expectedRequest: CreateContactRequest = {
@@ -62,7 +63,7 @@ describe('contactsService', () => {
         relationship: {
           prisonerNumber,
           relationshipCode: 'MOT',
-          isNextOfKin: false,
+          isNextOfKin: true,
           isEmergencyContact: false,
         },
       }
@@ -98,6 +99,7 @@ describe('contactsService', () => {
         relationship: {
           type: 'MOT',
           isEmergencyContact: 'YES',
+          isNextOfKin: 'NO',
         },
       }
       const expectedRequest: CreateContactRequest = {
@@ -151,6 +153,7 @@ describe('contactsService', () => {
         relationship: {
           type: 'MOT',
           isEmergencyContact: 'YES',
+          isNextOfKin: 'NO',
         },
       }
       const expectedRequest: CreateContactRequest = {
@@ -176,6 +179,7 @@ describe('contactsService', () => {
       expect(created).toStrictEqual(expectedCreated)
       expect(apiClient.createContact).toHaveBeenCalledWith(expectedRequest, user)
     })
+
     it('should handle a bad request', async () => {
       apiClient.createContact.mockRejectedValue(createError.BadRequest())
       await expect(
@@ -188,7 +192,7 @@ describe('contactsService', () => {
             returnPoint: { type: 'HOME', url: '/foo-bar' },
             names: { firstName: 'first', lastName: 'last' },
             dateOfBirth: { isKnown: 'NO' },
-            relationship: { type: 'MOT', isEmergencyContact: 'YES' },
+            relationship: { type: 'MOT', isEmergencyContact: 'YES', isNextOfKin: 'NO' },
           },
           user,
         ),

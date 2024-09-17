@@ -20,6 +20,8 @@ import { selectRelationshipSchemaFactory } from '../common/relationship/selectRe
 import prisonerDetailsMiddleware from '../../../middleware/prisonerDetailsMiddleware'
 import EmergencyContactController from '../common/emergency-contact/emergencyContactController'
 import { selectEmergencyContactSchema } from '../common/emergency-contact/emergencyContactSchemas'
+import { selectNextOfKinSchema } from '../common/next-of-kin/nextOfKinSchemas'
+import NextOfKinController from '../common/next-of-kin/nextOfKinController'
 
 const CreateContactRoutes = (
   auditService: AuditService,
@@ -79,6 +81,21 @@ const CreateContactRoutes = (
     ensureInCreateContactJourney(),
     validate(selectEmergencyContactSchema()),
     asyncMiddleware(selectEmergencyContact.POST),
+  )
+
+  const selectNextOfKinController = new NextOfKinController()
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/create/select-next-of-kin/:journeyId',
+    ensureInCreateContactJourney(),
+    prisonerDetailsMiddleware(prisonerSearchService),
+    logPageViewMiddleware(auditService, selectNextOfKinController),
+    asyncMiddleware(selectNextOfKinController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/create/select-next-of-kin/:journeyId',
+    ensureInCreateContactJourney(),
+    validate(selectNextOfKinSchema()),
+    asyncMiddleware(selectNextOfKinController.POST),
   )
 
   const enterDobController = new CreateContactEnterDobController()

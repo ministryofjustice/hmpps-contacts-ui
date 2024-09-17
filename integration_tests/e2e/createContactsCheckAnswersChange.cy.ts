@@ -7,6 +7,7 @@ import EnterContactEstimatedDateOfBirthPage from '../pages/enterContactEstimated
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import TestData from '../../server/routes/testutils/testData'
 import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
+import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 
 context('Create contact and update from check answers', () => {
   beforeEach(() => {
@@ -37,6 +38,7 @@ context('Create contact and update from check answers', () => {
       .verifyShowsDateOfBirthAs('15 June 1982')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('No')
       .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
@@ -79,6 +81,7 @@ context('Create contact and update from check answers', () => {
       .verifyShowsDateOfBirthAs('15 June 1982')
       .verifyShowRelationshipAs('Father')
       .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('No')
       .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
@@ -119,6 +122,7 @@ context('Create contact and update from check answers', () => {
       .verifyShowsDateOfBirthAs('15 June 1982')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('Yes')
+      .verifyShowIsNextOfKinAs('No')
       .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
@@ -144,6 +148,47 @@ context('Create contact and update from check answers', () => {
     )
   })
 
+  it('Can change a contacts next of kin status when creating a new contact', () => {
+    everythingIsFilledInUpToCheckAnswers() //
+      .clickChangeNextOfKinLink()
+
+    const editNextOfKinPage = new SelectNextOfKinPage('Last, First')
+    editNextOfKinPage.checkOnPage()
+    editNextOfKinPage //
+      .selectIsNextOfKin('YES')
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowsNameAs('Last, First')
+      .verifyShowsDateOfBirthAs('15 June 1982')
+      .verifyShowRelationshipAs('Mother')
+      .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('Yes')
+      .clickCreatePrisonerContact()
+
+    Page.verifyOnPage(CreatedContactPage)
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: '/contact',
+      },
+      {
+        title: 'MR',
+        lastName: 'Last',
+        firstName: 'First',
+        middleName: 'Middle',
+        createdBy: 'USER1',
+        dateOfBirth: '1982-06-15T00:00:00.000Z',
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipCode: 'MOT',
+          isNextOfKin: true,
+          isEmergencyContact: false,
+        },
+      },
+    )
+  })
+
   it('Can change a contacts dob from known to a different known dob', () => {
     everythingIsFilledInUpToCheckAnswers().clickChangeDateOfBirthLink()
 
@@ -160,6 +205,7 @@ context('Create contact and update from check answers', () => {
       .verifyShowsDateOfBirthAs('16 July 1983')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('No')
       .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
@@ -189,6 +235,7 @@ context('Create contact and update from check answers', () => {
     nameIsFirstLast()
     relationshipIsMother()
     isNotEmergencyContact()
+    isNotNextOfKin()
 
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
@@ -204,6 +251,7 @@ context('Create contact and update from check answers', () => {
       .verifyShowsDateOfBirthAs('15 June 1982')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('No')
       .clickChangeDateOfBirthLink()
 
     const revisitedDobPage = new EnterContactDateOfBirthPage('Last, First')
@@ -223,6 +271,7 @@ context('Create contact and update from check answers', () => {
       .verifyShowsDateOfBirthAs('Not provided')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('No')
       .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
@@ -250,6 +299,7 @@ context('Create contact and update from check answers', () => {
     nameIsFirstLast()
     relationshipIsMother()
     isNotEmergencyContact()
+    isNotNextOfKin()
 
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
@@ -268,6 +318,7 @@ context('Create contact and update from check answers', () => {
       .verifyShowsDateOfBirthAs('Not provided')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('No')
       .clickChangeDateOfBirthLink()
 
     const revisitedDobPage = new EnterContactDateOfBirthPage('Last, First')
@@ -284,6 +335,7 @@ context('Create contact and update from check answers', () => {
       .verifyShowsDateOfBirthAs('15 June 1982')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('No')
       .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
@@ -311,6 +363,7 @@ context('Create contact and update from check answers', () => {
     nameIsFirstLast()
     relationshipIsMother()
     isNotEmergencyContact()
+    isNotNextOfKin()
 
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
@@ -329,6 +382,7 @@ context('Create contact and update from check answers', () => {
       .verifyShowsDateOfBirthAs('Not provided')
       .verifyShowsEstimatedDateOfBirthAs("I don't know")
       .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('No')
       .clickChangeEstimatedDateOfBirthLink()
 
     estimatedDobPage.checkOnPage()
@@ -341,6 +395,7 @@ context('Create contact and update from check answers', () => {
       .verifyShowsDateOfBirthAs('Not provided')
       .verifyShowsEstimatedDateOfBirthAs('Yes')
       .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('No')
       .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
@@ -396,6 +451,14 @@ context('Create contact and update from check answers', () => {
       .clickContinue()
   }
 
+  function isNotNextOfKin() {
+    const selectNextOfKinPage = new SelectNextOfKinPage('Last, First')
+    selectNextOfKinPage.checkOnPage()
+    selectNextOfKinPage //
+      .selectIsNextOfKin('NO')
+      .clickContinue()
+  }
+
   function dobIsKnown() {
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
@@ -411,6 +474,7 @@ context('Create contact and update from check answers', () => {
     nameIsMrFirstMiddleLast()
     relationshipIsMother()
     isNotEmergencyContact()
+    isNotNextOfKin()
     dobIsKnown()
 
     return Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
@@ -418,5 +482,6 @@ context('Create contact and update from check answers', () => {
       .verifyShowsDateOfBirthAs('15 June 1982')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('No')
   }
 })
