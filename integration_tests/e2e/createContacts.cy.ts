@@ -8,6 +8,8 @@ import TestData from '../../server/routes/testutils/testData'
 import SearchPrisonerPage from '../pages/searchPrisoner'
 import ListContactsPage from '../pages/listContacts'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
+import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
+import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 
 context('Create Contacts', () => {
   beforeEach(() => {
@@ -17,30 +19,19 @@ context('Create Contacts', () => {
     cy.task('stubTitlesReferenceData')
     cy.task('stubRelationshipReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
+
+    cy.signIn()
   })
 
   it('Can create a contact with only required fields with direct link', () => {
-    cy.signIn()
     cy.visit('/prisoner/A1234BC/contacts/create/start')
     cy.task('stubCreateContact', { id: 132456 })
-    Page.verifyOnPage(EnterNamePage) //
-      .enterLastName('Last')
-      .enterFirstName('First')
-      .clickContinue()
 
-    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
-    selectRelationshipPage.checkOnPage()
-    selectRelationshipPage //
-      .hasSelectedRelationshipHint('')
-      .selectRelationship('MOT')
-      .hasSelectedRelationshipHint("Last, First is the prisoner's mother")
-      .clickContinue()
-
-    const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
-    enterDobPage.checkOnPage()
-    enterDobPage //
-      .selectIsKnown('NO')
-      .clickContinue()
+    nameIsFirstLast()
+    relationshipIsMother()
+    isEmergencyContact('NO')
+    isNextOfKin('YES')
+    dobIsUnknown()
 
     const estimatedDobPage = new EnterContactEstimatedDateOfBirthPage('Last, First')
     estimatedDobPage.checkOnPage()
@@ -53,6 +44,8 @@ context('Create Contacts', () => {
       .verifyShowsDateOfBirthAs('Not provided')
       .verifyShowsEstimatedDateOfBirthAs("I don't know")
       .verifyShowRelationshipAs('Mother')
+      .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('Yes')
       .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
@@ -69,7 +62,7 @@ context('Create Contacts', () => {
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipCode: 'MOT',
-          isNextOfKin: false,
+          isNextOfKin: true,
           isEmergencyContact: false,
         },
       },
@@ -77,7 +70,6 @@ context('Create Contacts', () => {
   })
 
   it('Can create a contact with all fields', () => {
-    cy.signIn()
     cy.visit('/prisoner/A1234BC/contacts/create/start')
     cy.task('stubCreateContact', { id: 132456 })
     Page.verifyOnPage(EnterNamePage) //
@@ -87,25 +79,17 @@ context('Create Contacts', () => {
       .enterMiddleName('Middle')
       .clickContinue()
 
-    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
-    selectRelationshipPage.checkOnPage()
-    selectRelationshipPage //
-      .selectRelationship('MOT')
-      .clickContinue()
-
-    const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
-    enterDobPage.checkOnPage()
-    enterDobPage //
-      .selectIsKnown('YES')
-      .enterDay('15')
-      .enterMonth('06')
-      .enterYear('1982')
-      .clickContinue()
+    relationshipIsMother()
+    isEmergencyContact('YES')
+    isNextOfKin('NO')
+    dobIsKnown()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsNameAs('Last, First')
       .verifyShowsDateOfBirthAs('15 June 1982')
       .verifyShowRelationshipAs('Mother')
+      .verifyShowIsEmergencyContactAs('Yes')
+      .verifyShowIsNextOfKinAs('No')
       .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
@@ -125,14 +109,13 @@ context('Create Contacts', () => {
           prisonerNumber: 'A1234BC',
           relationshipCode: 'MOT',
           isNextOfKin: false,
-          isEmergencyContact: false,
+          isEmergencyContact: true,
         },
       },
     )
   })
 
   it('First name is required', () => {
-    cy.signIn()
     cy.visit('/prisoner/A1234BC/contacts/create/start')
 
     const enterNamePage = Page.verifyOnPage(EnterNamePage)
@@ -142,7 +125,6 @@ context('Create Contacts', () => {
   })
 
   it('Last name is required', () => {
-    cy.signIn()
     cy.visit('/prisoner/A1234BC/contacts/create/start')
 
     const enterNamePage = Page.verifyOnPage(EnterNamePage)
@@ -152,7 +134,6 @@ context('Create Contacts', () => {
   })
 
   it('Names are limited to 35 characters', () => {
-    cy.signIn()
     cy.visit('/prisoner/A1234BC/contacts/create/start')
 
     const enterNamePage = Page.verifyOnPage(EnterNamePage)
@@ -168,7 +149,6 @@ context('Create Contacts', () => {
   })
 
   it('Cannot enter a blank first name or last name', () => {
-    cy.signIn()
     cy.visit('/prisoner/A1234BC/contacts/create/start')
 
     const enterNamePage = Page.verifyOnPage(EnterNamePage)
@@ -182,12 +162,9 @@ context('Create Contacts', () => {
   })
 
   it('Must select the contacts relationship to the prisoner', () => {
-    cy.signIn()
     cy.visit('/prisoner/A1234BC/contacts/create/start')
-    Page.verifyOnPage(EnterNamePage) //
-      .enterLastName('Last')
-      .enterFirstName('First')
-      .clickContinue()
+
+    nameIsFirstLast()
 
     const selectRelationshipPage = new SelectRelationshipPage('Last, First')
     selectRelationshipPage.checkOnPage()
@@ -197,19 +174,45 @@ context('Create Contacts', () => {
     selectRelationshipPage.hasFieldInError('relationship', "Enter the contact's relationship to the prisoner")
   })
 
-  it('Must select whether dob is known', () => {
-    cy.signIn()
+  it('Must select whether contact is an emergency contact', () => {
     cy.visit('/prisoner/A1234BC/contacts/create/start')
-    Page.verifyOnPage(EnterNamePage) //
-      .enterLastName('Last')
-      .enterFirstName('First')
+
+    nameIsFirstLast()
+    relationshipIsMother()
+
+    const selectEmergencyContactPage = new SelectEmergencyContactPage('Last, First')
+    selectEmergencyContactPage.checkOnPage()
+    selectEmergencyContactPage //
       .clickContinue()
 
-    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
-    selectRelationshipPage.checkOnPage()
-    selectRelationshipPage //
-      .selectRelationship('MOT')
+    selectEmergencyContactPage.hasFieldInError(
+      'isEmergencyContact',
+      'Select whether the contact is an emergency contact for the prisoner',
+    )
+  })
+
+  it('Must select whether contact is an emergency contact', () => {
+    cy.visit('/prisoner/A1234BC/contacts/create/start')
+
+    nameIsFirstLast()
+    relationshipIsMother()
+    isEmergencyContact('NO')
+
+    const selectNextOfKinPage = new SelectNextOfKinPage('Last, First')
+    selectNextOfKinPage.checkOnPage()
+    selectNextOfKinPage //
       .clickContinue()
+
+    selectNextOfKinPage.hasFieldInError('isNextOfKin', 'Select whether the contact is next of kin for the prisoner')
+  })
+
+  it('Must select whether dob is known', () => {
+    cy.visit('/prisoner/A1234BC/contacts/create/start')
+
+    nameIsFirstLast()
+    relationshipIsMother()
+    isEmergencyContact('NO')
+    isNextOfKin('NO')
 
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
@@ -220,18 +223,12 @@ context('Create Contacts', () => {
   })
 
   it('Must enter dob if it is known', () => {
-    cy.signIn()
     cy.visit('/prisoner/A1234BC/contacts/create/start')
-    Page.verifyOnPage(EnterNamePage) //
-      .enterLastName('Last')
-      .enterFirstName('First')
-      .clickContinue()
 
-    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
-    selectRelationshipPage.checkOnPage()
-    selectRelationshipPage //
-      .selectRelationship('MOT')
-      .clickContinue()
+    nameIsFirstLast()
+    relationshipIsMother()
+    isEmergencyContact('NO')
+    isNextOfKin('NO')
 
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
@@ -248,18 +245,12 @@ context('Create Contacts', () => {
   })
 
   it('Day, month and year must be numbers', () => {
-    cy.signIn()
     cy.visit('/prisoner/A1234BC/contacts/create/start')
-    Page.verifyOnPage(EnterNamePage) //
-      .enterLastName('Last')
-      .enterFirstName('First')
-      .clickContinue()
 
-    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
-    selectRelationshipPage.checkOnPage()
-    selectRelationshipPage //
-      .selectRelationship('MOT')
-      .clickContinue()
+    nameIsFirstLast()
+    relationshipIsMother()
+    isEmergencyContact('NO')
+    isNextOfKin('NO')
 
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
@@ -279,24 +270,13 @@ context('Create Contacts', () => {
   })
 
   it('Must select whether contact is over 18 if no dob is known', () => {
-    cy.signIn()
     cy.visit('/prisoner/A1234BC/contacts/create/start')
-    Page.verifyOnPage(EnterNamePage) //
-      .enterLastName('Last')
-      .enterFirstName('First')
-      .clickContinue()
 
-    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
-    selectRelationshipPage.checkOnPage()
-    selectRelationshipPage //
-      .selectRelationship('MOT')
-      .clickContinue()
-
-    const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
-    enterDobPage.checkOnPage()
-    enterDobPage //
-      .selectIsKnown('NO')
-      .clickContinue()
+    nameIsFirstLast()
+    relationshipIsMother()
+    isEmergencyContact('NO')
+    isNextOfKin('NO')
+    dobIsUnknown()
 
     const estimatedDobPage = new EnterContactEstimatedDateOfBirthPage('Last, First')
     estimatedDobPage.checkOnPage()
@@ -307,7 +287,6 @@ context('Create Contacts', () => {
   })
 
   it('Can create a contact from prisoner contact page', () => {
-    cy.signIn()
     const { prisonerNumber } = TestData.prisoner()
     cy.task('stubPrisoners', {
       results: {
@@ -332,17 +311,34 @@ context('Create Contacts', () => {
     Page.verifyOnPage(ListContactsPage) //
       .clickCreateNewContactButton()
 
+    nameIsFirstLast()
+    relationshipIsMother()
+    isEmergencyContact('NO')
+    isNextOfKin('NO')
+    dobIsKnown()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .clickCreatePrisonerContact()
+
+    Page.verifyOnPage(ListContactsPage)
+  })
+
+  function nameIsFirstLast() {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
       .clickContinue()
+  }
 
-    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
-    selectRelationshipPage.checkOnPage()
-    selectRelationshipPage //
-      .selectRelationship('MOT')
+  function dobIsUnknown() {
+    const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
+    enterDobPage.checkOnPage()
+    enterDobPage //
+      .selectIsKnown('NO')
       .clickContinue()
+  }
 
+  function dobIsKnown() {
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
     enterDobPage //
@@ -351,10 +347,31 @@ context('Create Contacts', () => {
       .enterMonth('06')
       .enterYear('1982')
       .clickContinue()
+  }
 
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .clickCreatePrisonerContact()
+  function isEmergencyContact(value: 'YES' | 'NO') {
+    const selectEmergencyContactPage = new SelectEmergencyContactPage('Last, First')
+    selectEmergencyContactPage.checkOnPage()
+    selectEmergencyContactPage //
+      .selectIsEmergencyContact(value)
+      .clickContinue()
+  }
 
-    Page.verifyOnPage(ListContactsPage)
-  })
+  function isNextOfKin(value: 'YES' | 'NO') {
+    const selectNextOfKinPage = new SelectNextOfKinPage('Last, First')
+    selectNextOfKinPage.checkOnPage()
+    selectNextOfKinPage //
+      .selectIsNextOfKin(value)
+      .clickContinue()
+  }
+
+  function relationshipIsMother() {
+    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
+    selectRelationshipPage.checkOnPage()
+    selectRelationshipPage //
+      .hasSelectedRelationshipHint('')
+      .selectRelationship('MOT')
+      .hasSelectedRelationshipHint("Last, First is the prisoner's mother")
+      .clickContinue()
+  }
 })

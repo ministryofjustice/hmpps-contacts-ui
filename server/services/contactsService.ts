@@ -37,8 +37,8 @@ export default class ContactsService {
       relationship: {
         prisonerNumber: journey.prisonerNumber,
         relationshipCode: journey.relationship.type,
-        isNextOfKin: false,
-        isEmergencyContact: false,
+        isNextOfKin: journey.relationship.isNextOfKin === 'YES',
+        isEmergencyContact: journey.relationship.isEmergencyContact === 'YES',
       },
       createdBy: user.username,
     }

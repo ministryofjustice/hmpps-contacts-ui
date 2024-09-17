@@ -6,6 +6,8 @@ import CreateContactCheckYourAnswersPage from '../pages/createContactCheckYourAn
 import EnterContactEstimatedDateOfBirthPage from '../pages/enterContactEstimatedDateOfBirthPage'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import TestData from '../../server/routes/testutils/testData'
+import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
+import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 
 context('Create contact and update from check answers', () => {
   beforeEach(() => {
@@ -21,32 +23,7 @@ context('Create contact and update from check answers', () => {
   })
 
   it('Can change a contacts names when creating a new contact', () => {
-    Page.verifyOnPage(EnterNamePage) //
-      .selectTitle('MR')
-      .enterLastName('Last')
-      .enterMiddleName('Middle')
-      .enterFirstName('First')
-      .clickContinue()
-
-    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
-    selectRelationshipPage.checkOnPage()
-    selectRelationshipPage //
-      .selectRelationship('MOT')
-      .clickContinue()
-
-    const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
-    enterDobPage.checkOnPage()
-    enterDobPage //
-      .selectIsKnown('YES')
-      .enterDay('15')
-      .enterMonth('06')
-      .enterYear('1982')
-      .clickContinue()
-
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowsNameAs('Last, First')
-      .verifyShowsDateOfBirthAs('15 June 1982')
-      .verifyShowRelationshipAs('Mother')
+    everythingIsFilledInUpToCheckAnswers() //
       .clickChangeNameLink()
 
     Page.verifyOnPage(EnterNamePage) //
@@ -60,6 +37,8 @@ context('Create contact and update from check answers', () => {
       .verifyShowsNameAs('Last Updated, First Updated')
       .verifyShowsDateOfBirthAs('15 June 1982')
       .verifyShowRelationshipAs('Mother')
+      .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('No')
       .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
@@ -86,33 +65,7 @@ context('Create contact and update from check answers', () => {
   })
 
   it('Can change a contacts relationship when creating a new contact', () => {
-    Page.verifyOnPage(EnterNamePage) //
-      .selectTitle('MR')
-      .enterLastName('Last')
-      .enterMiddleName('Middle')
-      .enterFirstName('First')
-      .clickContinue()
-
-    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
-    selectRelationshipPage.checkOnPage()
-    selectRelationshipPage //
-      .selectRelationship('MOT')
-      .hasSelectedRelationshipHint("Last, First is the prisoner's mother")
-      .clickContinue()
-
-    const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
-    enterDobPage.checkOnPage()
-    enterDobPage //
-      .selectIsKnown('YES')
-      .enterDay('15')
-      .enterMonth('06')
-      .enterYear('1982')
-      .clickContinue()
-
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowsNameAs('Last, First')
-      .verifyShowsDateOfBirthAs('15 June 1982')
-      .verifyShowRelationshipAs('Mother')
+    everythingIsFilledInUpToCheckAnswers() //
       .clickChangeRelationshipLink()
 
     const editRelationshipPage = new SelectRelationshipPage('Last, First')
@@ -127,6 +80,8 @@ context('Create contact and update from check answers', () => {
       .verifyShowsNameAs('Last, First')
       .verifyShowsDateOfBirthAs('15 June 1982')
       .verifyShowRelationshipAs('Father')
+      .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('No')
       .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
@@ -152,32 +107,90 @@ context('Create contact and update from check answers', () => {
     )
   })
 
-  it('Can change a contacts dob from known to a different known dob', () => {
-    Page.verifyOnPage(EnterNamePage) //
-      .enterLastName('Last')
-      .enterFirstName('First')
-      .clickContinue()
+  it('Can change a contacts emergency contact status when creating a new contact', () => {
+    everythingIsFilledInUpToCheckAnswers() //
+      .clickChangeEmergencyContactLink()
 
-    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
-    selectRelationshipPage.checkOnPage()
-    selectRelationshipPage //
-      .selectRelationship('MOT')
-      .clickContinue()
-
-    const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
-    enterDobPage.checkOnPage()
-    enterDobPage //
-      .selectIsKnown('YES')
-      .enterDay('15')
-      .enterMonth('06')
-      .enterYear('1982')
+    const editEmergencyContactPage = new SelectEmergencyContactPage('Last, First')
+    editEmergencyContactPage.checkOnPage()
+    editEmergencyContactPage //
+      .selectIsEmergencyContact('YES')
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsNameAs('Last, First')
       .verifyShowsDateOfBirthAs('15 June 1982')
       .verifyShowRelationshipAs('Mother')
-      .clickChangeDateOfBirthLink()
+      .verifyShowIsEmergencyContactAs('Yes')
+      .verifyShowIsNextOfKinAs('No')
+      .clickCreatePrisonerContact()
+
+    Page.verifyOnPage(CreatedContactPage)
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: '/contact',
+      },
+      {
+        title: 'MR',
+        lastName: 'Last',
+        firstName: 'First',
+        middleName: 'Middle',
+        createdBy: 'USER1',
+        dateOfBirth: '1982-06-15T00:00:00.000Z',
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipCode: 'MOT',
+          isNextOfKin: false,
+          isEmergencyContact: true,
+        },
+      },
+    )
+  })
+
+  it('Can change a contacts next of kin status when creating a new contact', () => {
+    everythingIsFilledInUpToCheckAnswers() //
+      .clickChangeNextOfKinLink()
+
+    const editNextOfKinPage = new SelectNextOfKinPage('Last, First')
+    editNextOfKinPage.checkOnPage()
+    editNextOfKinPage //
+      .selectIsNextOfKin('YES')
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowsNameAs('Last, First')
+      .verifyShowsDateOfBirthAs('15 June 1982')
+      .verifyShowRelationshipAs('Mother')
+      .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('Yes')
+      .clickCreatePrisonerContact()
+
+    Page.verifyOnPage(CreatedContactPage)
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: '/contact',
+      },
+      {
+        title: 'MR',
+        lastName: 'Last',
+        firstName: 'First',
+        middleName: 'Middle',
+        createdBy: 'USER1',
+        dateOfBirth: '1982-06-15T00:00:00.000Z',
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipCode: 'MOT',
+          isNextOfKin: true,
+          isEmergencyContact: false,
+        },
+      },
+    )
+  })
+
+  it('Can change a contacts dob from known to a different known dob', () => {
+    everythingIsFilledInUpToCheckAnswers().clickChangeDateOfBirthLink()
 
     const revisitedDobPage = new EnterContactDateOfBirthPage('Last, First')
     revisitedDobPage.checkOnPage()
@@ -191,6 +204,8 @@ context('Create contact and update from check answers', () => {
       .verifyShowsNameAs('Last, First')
       .verifyShowsDateOfBirthAs('16 July 1983')
       .verifyShowRelationshipAs('Mother')
+      .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('No')
       .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
@@ -200,8 +215,10 @@ context('Create contact and update from check answers', () => {
         urlPath: '/contact',
       },
       {
+        title: 'MR',
         lastName: 'Last',
         firstName: 'First',
+        middleName: 'Middle',
         createdBy: 'USER1',
         dateOfBirth: '1983-07-16T00:00:00.000Z',
         relationship: {
@@ -215,16 +232,10 @@ context('Create contact and update from check answers', () => {
   })
 
   it('Can change a contacts dob from known to unknown', () => {
-    Page.verifyOnPage(EnterNamePage) //
-      .enterLastName('Last')
-      .enterFirstName('First')
-      .clickContinue()
-
-    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
-    selectRelationshipPage.checkOnPage()
-    selectRelationshipPage //
-      .selectRelationship('MOT')
-      .clickContinue()
+    nameIsFirstLast()
+    relationshipIsMother()
+    isNotEmergencyContact()
+    isNotNextOfKin()
 
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
@@ -239,6 +250,8 @@ context('Create contact and update from check answers', () => {
       .verifyShowsNameAs('Last, First')
       .verifyShowsDateOfBirthAs('15 June 1982')
       .verifyShowRelationshipAs('Mother')
+      .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('No')
       .clickChangeDateOfBirthLink()
 
     const revisitedDobPage = new EnterContactDateOfBirthPage('Last, First')
@@ -257,6 +270,8 @@ context('Create contact and update from check answers', () => {
       .verifyShowsNameAs('Last, First')
       .verifyShowsDateOfBirthAs('Not provided')
       .verifyShowRelationshipAs('Mother')
+      .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('No')
       .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
@@ -281,16 +296,10 @@ context('Create contact and update from check answers', () => {
   })
 
   it('Can change a contacts dob from unknown to known', () => {
-    Page.verifyOnPage(EnterNamePage) //
-      .enterLastName('Last')
-      .enterFirstName('First')
-      .clickContinue()
-
-    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
-    selectRelationshipPage.checkOnPage()
-    selectRelationshipPage //
-      .selectRelationship('MOT')
-      .clickContinue()
+    nameIsFirstLast()
+    relationshipIsMother()
+    isNotEmergencyContact()
+    isNotNextOfKin()
 
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
@@ -308,6 +317,8 @@ context('Create contact and update from check answers', () => {
       .verifyShowsNameAs('Last, First')
       .verifyShowsDateOfBirthAs('Not provided')
       .verifyShowRelationshipAs('Mother')
+      .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('No')
       .clickChangeDateOfBirthLink()
 
     const revisitedDobPage = new EnterContactDateOfBirthPage('Last, First')
@@ -323,6 +334,8 @@ context('Create contact and update from check answers', () => {
       .verifyShowsNameAs('Last, First')
       .verifyShowsDateOfBirthAs('15 June 1982')
       .verifyShowRelationshipAs('Mother')
+      .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('No')
       .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
@@ -347,16 +360,10 @@ context('Create contact and update from check answers', () => {
   })
 
   it('Can change a contacts estimated dob', () => {
-    Page.verifyOnPage(EnterNamePage) //
-      .enterLastName('Last')
-      .enterFirstName('First')
-      .clickContinue()
-
-    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
-    selectRelationshipPage.checkOnPage()
-    selectRelationshipPage //
-      .selectRelationship('MOT')
-      .clickContinue()
+    nameIsFirstLast()
+    relationshipIsMother()
+    isNotEmergencyContact()
+    isNotNextOfKin()
 
     const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
     enterDobPage.checkOnPage()
@@ -374,6 +381,8 @@ context('Create contact and update from check answers', () => {
       .verifyShowsNameAs('Last, First')
       .verifyShowsDateOfBirthAs('Not provided')
       .verifyShowsEstimatedDateOfBirthAs("I don't know")
+      .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('No')
       .clickChangeEstimatedDateOfBirthLink()
 
     estimatedDobPage.checkOnPage()
@@ -385,6 +394,8 @@ context('Create contact and update from check answers', () => {
       .verifyShowsNameAs('Last, First')
       .verifyShowsDateOfBirthAs('Not provided')
       .verifyShowsEstimatedDateOfBirthAs('Yes')
+      .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('No')
       .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
@@ -407,4 +418,70 @@ context('Create contact and update from check answers', () => {
       },
     )
   })
+
+  function nameIsMrFirstMiddleLast() {
+    Page.verifyOnPage(EnterNamePage) //
+      .selectTitle('MR')
+      .enterLastName('Last')
+      .enterMiddleName('Middle')
+      .enterFirstName('First')
+      .clickContinue()
+  }
+
+  function nameIsFirstLast() {
+    Page.verifyOnPage(EnterNamePage) //
+      .enterLastName('Last')
+      .enterFirstName('First')
+      .clickContinue()
+  }
+
+  function relationshipIsMother() {
+    const selectRelationshipPage = new SelectRelationshipPage('Last, First')
+    selectRelationshipPage.checkOnPage()
+    selectRelationshipPage //
+      .selectRelationship('MOT')
+      .clickContinue()
+  }
+
+  function isNotEmergencyContact() {
+    const selectEmergencyContactPage = new SelectEmergencyContactPage('Last, First')
+    selectEmergencyContactPage.checkOnPage()
+    selectEmergencyContactPage //
+      .selectIsEmergencyContact('NO')
+      .clickContinue()
+  }
+
+  function isNotNextOfKin() {
+    const selectNextOfKinPage = new SelectNextOfKinPage('Last, First')
+    selectNextOfKinPage.checkOnPage()
+    selectNextOfKinPage //
+      .selectIsNextOfKin('NO')
+      .clickContinue()
+  }
+
+  function dobIsKnown() {
+    const enterDobPage = new EnterContactDateOfBirthPage('Last, First')
+    enterDobPage.checkOnPage()
+    enterDobPage //
+      .selectIsKnown('YES')
+      .enterDay('15')
+      .enterMonth('06')
+      .enterYear('1982')
+      .clickContinue()
+  }
+
+  function everythingIsFilledInUpToCheckAnswers(): CreateContactCheckYourAnswersPage {
+    nameIsMrFirstMiddleLast()
+    relationshipIsMother()
+    isNotEmergencyContact()
+    isNotNextOfKin()
+    dobIsKnown()
+
+    return Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowsNameAs('Last, First')
+      .verifyShowsDateOfBirthAs('15 June 1982')
+      .verifyShowRelationshipAs('Mother')
+      .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('No')
+  }
 })

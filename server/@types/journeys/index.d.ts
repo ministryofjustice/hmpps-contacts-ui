@@ -27,6 +27,8 @@ declare namespace journeys {
 
   export interface PrisonerContactRelationship {
     type?: string
+    isEmergencyContact?: YesOrNo
+    isNextOfKin?: YesOrNo
   }
 
   export interface ManageContactsJourney {
