@@ -1,6 +1,7 @@
-import Page, { PageElement } from './page'
+import { PageElement } from './page'
+import ContinuablePage from './continuablePage'
 
-export default class EnterNamePage extends Page {
+export default class EnterNamePage extends ContinuablePage {
   constructor() {
     super('What is the contacts name?')
   }
@@ -25,10 +26,6 @@ export default class EnterNamePage extends Page {
     return this
   }
 
-  clickContinue() {
-    this.continueButton().click()
-  }
-
   private lastNameTextBox = (): PageElement => cy.get('#lastName')
 
   private firstNameTextBox = (): PageElement => cy.get('#firstName')
@@ -36,6 +33,4 @@ export default class EnterNamePage extends Page {
   private middleNameTextBox = (): PageElement => cy.get('#middleName')
 
   private titleSelect = (): PageElement => cy.get('#title')
-
-  private continueButton = (): PageElement => cy.get('[data-qa=continue-button]')
 }
