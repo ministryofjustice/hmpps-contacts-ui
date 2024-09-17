@@ -8,12 +8,16 @@ import AuditService, { Page } from '../../../../services/auditService'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import CreateContactJourney = journeys.CreateContactJourney
 import { mockedReferenceData } from '../../../testutils/stubReferenceData'
+import PrisonerSearchService from '../../../../services/prisonerSearchService'
+import TestData from '../../../testutils/testData'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/referenceDataService')
+jest.mock('../../../../services/prisonerSearchService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
+const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
 
 let app: Express
 let session: Partial<SessionData>
@@ -33,6 +37,7 @@ beforeEach(() => {
     services: {
       auditService,
       referenceDataService,
+      prisonerSearchService,
     },
     userSupplier: () => user,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -42,6 +47,7 @@ beforeEach(() => {
     },
   })
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
+  prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
 
 afterEach(() => {

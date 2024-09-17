@@ -16,6 +16,7 @@ context('Create Contacts', () => {
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.task('stubTitlesReferenceData')
     cy.task('stubRelationshipReferenceData')
+    cy.task('stubPrisonerById', TestData.prisoner())
   })
 
   it('Can create a contact with only required fields with direct link', () => {
@@ -308,7 +309,6 @@ context('Create Contacts', () => {
   it('Can create a contact from prisoner contact page', () => {
     cy.signIn()
     const { prisonerNumber } = TestData.prisoner()
-    cy.task('stubComponentsMeta')
     cy.task('stubPrisoners', {
       results: {
         totalPages: 1,
@@ -318,7 +318,6 @@ context('Create Contacts', () => {
       prisonId: 'HEI',
       term: prisonerNumber,
     })
-    cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', prisonerNumber)
     cy.task('stubCreateContact', { id: 132456 })
 

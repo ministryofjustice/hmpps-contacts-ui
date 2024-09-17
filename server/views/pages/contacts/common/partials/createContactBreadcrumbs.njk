@@ -13,7 +13,7 @@
         {% if journey.returnPoint.type === 'MANAGE_PRISONER_CONTACTS' %}
             {% set breadcrumbs = (breadcrumbs.push(
                 {
-                    text: "Prisoner Contacts",
+                    text: (prisonerDetails.lastName + ", " + prisonerDetails.firstName) | convertToTitleCase,
                     href: journey.returnPoint.url,
                     attributes: {"data-qa": "contact-list-breadcrumb-link"}
                 }

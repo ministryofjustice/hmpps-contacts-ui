@@ -3,6 +3,7 @@
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
 
 {% set pageTitle = applicationName + " - Enter date of birth" %}
 {% set title = "Do you know " + journey.names.lastName + ", " + journey.names.firstName + "'s date of birth?" %}
@@ -10,6 +11,7 @@
 
 {% block content %}
 {% include '../common/partials/createContactBreadcrumbs.njk' %}
+{{ miniProfile(prisonerDetails) }}
 {% include '../../../partials/formErrorSummary.njk' %}
 <span class="govuk-caption-l">Manage Contacts</span>
 <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>

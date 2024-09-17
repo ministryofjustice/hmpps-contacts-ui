@@ -6,10 +6,14 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import CreateContactJourney = journeys.CreateContactJourney
+import PrisonerSearchService from '../../../../services/prisonerSearchService'
+import TestData from '../../../testutils/testData'
 
 jest.mock('../../../../services/auditService')
+jest.mock('../../../../services/prisonerSearchService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
+const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
 
 let app: Express
 let session: Partial<SessionData>
@@ -32,6 +36,7 @@ beforeEach(() => {
   app = appWithAllRoutes({
     services: {
       auditService,
+      prisonerSearchService,
     },
     userSupplier: () => user,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -40,6 +45,7 @@ beforeEach(() => {
       session.createContactJourneys[journeyId] = { ...existingJourney }
     },
   })
+  prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
 
 afterEach(() => {

@@ -13,18 +13,15 @@ export default class ListContactsController implements PageHandler {
   public PAGE_NAME = Page.LIST_CONTACTS_PAGE
 
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
-    const { user } = res.locals
+    const { user, prisonerDetails } = res.locals
     const { journeyId, prisonerNumber } = req.params
     const journey = req.session.manageContactsJourneys[journeyId]
-
-    const prisonerDetails = await this.prisonerSearchService.getByPrisonerNumber(prisonerNumber as string, user)
 
     journey.prisoner = {
       firstName: prisonerDetails?.firstName,
       lastName: prisonerDetails?.lastName,
       prisonerNumber: prisonerDetails?.prisonerNumber,
       dateOfBirth: prisonerDetails?.dateOfBirth,
-      prisonId: prisonerDetails?.prisonId,
       prisonName: prisonerDetails?.prisonName,
     }
 
@@ -34,7 +31,6 @@ export default class ListContactsController implements PageHandler {
     res.render('pages/contacts/manage/listContacts', {
       activeContacts,
       inactiveContacts,
-      prisonerDetails,
       journey,
     })
   }

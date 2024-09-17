@@ -8,14 +8,18 @@ import AuditService, { Page } from '../../../../services/auditService'
 import ContactsService from '../../../../services/contactsService'
 import CreateContactJourney = journeys.CreateContactJourney
 import ReferenceDataService from '../../../../services/referenceDataService'
+import TestData from '../../../testutils/testData'
+import PrisonerSearchService from '../../../../services/prisonerSearchService'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/contactsService')
 jest.mock('../../../../services/referenceDataService')
+jest.mock('../../../../services/prisonerSearchService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
 const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
+const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
 
 let app: Express
 let session: Partial<SessionData>
@@ -49,6 +53,7 @@ beforeEach(() => {
       auditService,
       contactsService,
       referenceDataService,
+      prisonerSearchService,
     },
     userSupplier: () => user,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -58,6 +63,7 @@ beforeEach(() => {
     },
   })
   referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mother')
+  prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
 
 afterEach(() => {
