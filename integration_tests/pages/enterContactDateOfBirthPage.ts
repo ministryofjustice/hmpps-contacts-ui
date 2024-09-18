@@ -1,6 +1,7 @@
-import Page, { PageElement } from './page'
+import { PageElement } from './page'
+import ContinuablePage from './continuablePage'
 
-export default class EnterContactDateOfBirthPage extends Page {
+export default class EnterContactDateOfBirthPage extends ContinuablePage {
   constructor(name: string) {
     super(`Do you know ${name}'s date of birth?`)
   }
@@ -24,12 +25,6 @@ export default class EnterContactDateOfBirthPage extends Page {
     this.yearTextBox().clear().type(year)
     return this
   }
-
-  clickContinue() {
-    this.continueButton().click()
-  }
-
-  private continueButton = (): PageElement => cy.get('[data-qa=continue-button]')
 
   private radio = (value: 'YES' | 'NO'): PageElement => cy.get(`.govuk-radios__input[value='${value}']`)
 

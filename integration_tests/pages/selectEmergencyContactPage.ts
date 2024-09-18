@@ -1,6 +1,7 @@
-import Page, { PageElement } from './page'
+import { PageElement } from './page'
+import ContinuablePage from './continuablePage'
 
-export default class SelectEmergencyContactPage extends Page {
+export default class SelectEmergencyContactPage extends ContinuablePage {
   constructor(name: string) {
     super(`Is ${name} an emergency contact for the prisoner?`)
   }
@@ -9,12 +10,6 @@ export default class SelectEmergencyContactPage extends Page {
     this.radio(value).click()
     return this
   }
-
-  clickContinue() {
-    this.continueButton().click()
-  }
-
-  private continueButton = (): PageElement => cy.get('[data-qa=continue-button]')
 
   private radio = (value: 'YES' | 'NO'): PageElement => cy.get(`.govuk-radios__input[value='${value}']`)
 }

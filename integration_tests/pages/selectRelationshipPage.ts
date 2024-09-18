@@ -1,6 +1,7 @@
-import Page, { PageElement } from './page'
+import { PageElement } from './page'
+import ContinuablePage from './continuablePage'
 
-export default class SelectRelationshipPage extends Page {
+export default class SelectRelationshipPage extends ContinuablePage {
   constructor(name: string) {
     super(`How is ${name} related to the prisoner?`)
   }
@@ -15,13 +16,7 @@ export default class SelectRelationshipPage extends Page {
     return this
   }
 
-  clickContinue() {
-    this.continueButton().click()
-  }
-
   private relationshipSelect = (): PageElement => cy.get('#relationship')
-
-  private continueButton = (): PageElement => cy.get('[data-qa=continue-button]')
 
   private selectedRelationshipHint = (): PageElement => cy.get('#selected-relationship-hint')
 }
