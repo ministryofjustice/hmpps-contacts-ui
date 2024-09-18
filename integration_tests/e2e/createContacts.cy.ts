@@ -94,21 +94,21 @@ context('Create Contacts', () => {
       .enterMiddleName('Middle')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Last, First') //
+    Page.verifyOnPage(SelectRelationshipPage, 'Last, First Middle') //
       .hasSelectedRelationshipHint('')
       .selectRelationship('MOT')
-      .hasSelectedRelationshipHint("Last, First is the prisoner's mother")
+      .hasSelectedRelationshipHint("Last, First Middle is the prisoner's mother")
       .clickContinue()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'Last, First') //
+    Page.verifyOnPage(SelectEmergencyContactPage, 'Last, First Middle') //
       .selectIsEmergencyContact('YES')
       .clickContinue()
 
-    Page.verifyOnPage(SelectNextOfKinPage, 'Last, First') //
+    Page.verifyOnPage(SelectNextOfKinPage, 'Last, First Middle') //
       .selectIsNextOfKin('NO')
       .clickContinue()
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First') //
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First Middle') //
       .selectIsKnown('YES')
       .enterDay('15')
       .enterMonth('06')
@@ -116,7 +116,7 @@ context('Create Contacts', () => {
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowsNameAs('Last, First')
+      .verifyShowsNameAs('Last, First Middle')
       .verifyShowsDateOfBirthAs('15 June 1982')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('Yes')

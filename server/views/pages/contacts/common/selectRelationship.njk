@@ -6,7 +6,7 @@
 {% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
 
 {% set pageTitle = applicationName + " - Enter name" %}
-{% set title = "How is " + journey.names.lastName + ", " + journey.names.firstName + " related to the prisoner?" %}
+{% set title = "How is " + journey.names | formatName + " related to the prisoner?" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
@@ -30,7 +30,7 @@
                     items: relationshipOptions,
                     errorMessage: validationErrors | findError('relationship')
                 }) }}
-                <div id="selected-relationship-hint" data-contact="{{ journey.names.lastName }}, {{ journey.names.firstName }}"></div>
+                <div id="selected-relationship-hint" data-contact="{{ journey.names | formatName }}"></div>
                 <div class="govuk-button-group">
                     {{ govukButton({
                         html: "Continue",

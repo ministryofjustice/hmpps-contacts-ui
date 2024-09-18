@@ -66,7 +66,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-estimated-dob/:jou
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Is last, first over 18 years old?')
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Is Last, First over 18 years old?')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=contact-list-breadcrumb-link]').first().attr('href')).toStrictEqual('/foo-bar')
   })
