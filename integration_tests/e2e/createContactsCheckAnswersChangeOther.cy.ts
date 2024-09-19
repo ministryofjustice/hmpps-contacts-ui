@@ -7,6 +7,7 @@ import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import TestData from '../../server/routes/testutils/testData'
 import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
 import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
+import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
 
 context('Create contact and update from check answers excluding DOB changes', () => {
   beforeEach(() => {
@@ -36,12 +37,15 @@ context('Create contact and update from check answers excluding DOB changes', ()
       .enterDay('15')
       .enterMonth('06')
       .enterYear('1982')
+      .continueTo(RelationshipCommentsPage)
+      .enterComments('Some comments about the relationship')
       .continueTo(CreateContactCheckYourAnswersPage)
       .verifyShowsNameAs('Last, First Middle')
       .verifyShowsDateOfBirthAs('15 June 1982')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
       .verifyShowIsNextOfKinAs('No')
+      .verifyShowCommentsAs('Some comments about the relationship')
   })
 
   it('Can change a contacts names when creating a new contact', () => {
@@ -79,6 +83,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
           relationshipCode: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: false,
+          comments: 'Some comments about the relationship',
         },
       },
     )
@@ -118,6 +123,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
           relationshipCode: 'FA',
           isNextOfKin: false,
           isEmergencyContact: false,
+          comments: 'Some comments about the relationship',
         },
       },
     )
@@ -155,6 +161,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
           relationshipCode: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: true,
+          comments: 'Some comments about the relationship',
         },
       },
     )
@@ -192,6 +199,45 @@ context('Create contact and update from check answers excluding DOB changes', ()
           relationshipCode: 'MOT',
           isNextOfKin: true,
           isEmergencyContact: false,
+          comments: 'Some comments about the relationship',
+        },
+      },
+    )
+  })
+
+  it('Can change the comments when creating a new contact', () => {
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowCommentsAs('Some comments about the relationship')
+      .clickChangeCommentsLink()
+
+    Page.verifyOnPage(RelationshipCommentsPage, 'Last, First Middle') //
+      .enterComments('Some new comments I entered')
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowCommentsAs('Some new comments I entered')
+      .clickCreatePrisonerContact()
+
+    Page.verifyOnPage(CreatedContactPage)
+
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: '/contact',
+      },
+      {
+        title: 'MR',
+        lastName: 'Last',
+        firstName: 'First',
+        middleName: 'Middle',
+        createdBy: 'USER1',
+        dateOfBirth: '1982-06-15T00:00:00.000Z',
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipCode: 'MOT',
+          isNextOfKin: false,
+          isEmergencyContact: false,
+          comments: 'Some new comments I entered',
         },
       },
     )

@@ -22,6 +22,8 @@ import EmergencyContactController from '../common/emergency-contact/emergencyCon
 import { selectEmergencyContactSchema } from '../common/emergency-contact/emergencyContactSchemas'
 import { selectNextOfKinSchema } from '../common/next-of-kin/nextOfKinSchemas'
 import NextOfKinController from '../common/next-of-kin/nextOfKinController'
+import EnterRelationshipCommentsController from '../common/relationship-comments/enterRelationshipCommentsController'
+import { enterRelationshipCommentsSchema } from '../common/relationship-comments/enterRelationshipCommentsSchemas'
 
 const CreateContactRoutes = (
   auditService: AuditService,
@@ -126,6 +128,21 @@ const CreateContactRoutes = (
     ensureInCreateContactJourney(),
     validate(createContactEnterEstimatedDobSchema()),
     asyncMiddleware(enterEstimatedDobController.POST),
+  )
+
+  const enterRelationshipCommentsController = new EnterRelationshipCommentsController()
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/create/enter-relationship-comments/:journeyId',
+    ensureInCreateContactJourney(),
+    prisonerDetailsMiddleware(prisonerSearchService),
+    logPageViewMiddleware(auditService, enterRelationshipCommentsController),
+    asyncMiddleware(enterRelationshipCommentsController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/create/enter-relationship-comments/:journeyId',
+    ensureInCreateContactJourney(),
+    validate(enterRelationshipCommentsSchema()),
+    asyncMiddleware(enterRelationshipCommentsController.POST),
   )
 
   const checkAnswersController = new CreateContactCheckAnswersController(contactsService, referenceDataService)

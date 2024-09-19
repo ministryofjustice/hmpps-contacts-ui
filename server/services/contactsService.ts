@@ -39,6 +39,7 @@ export default class ContactsService {
         relationshipCode: journey.relationship.type,
         isNextOfKin: journey.relationship.isNextOfKin === 'YES',
         isEmergencyContact: journey.relationship.isEmergencyContact === 'YES',
+        comments: journey.relationship.comments,
       },
       createdBy: user.username,
     }

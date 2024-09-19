@@ -113,9 +113,27 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-estimated-dob/:jou
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/create/enter-estimated-dob', () => {
-  it('should pass to success page if there are no validation errors', async () => {
+  it('should pass to comments page if there are no validation errors', async () => {
     // Given
     existingJourney.dateOfBirth = { isKnown: 'NO' }
+
+    // When
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/enter-estimated-dob/${journeyId}`)
+      .type('form')
+      .send({ isOverEighteen: 'NO' })
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`)
+
+    // Then
+    const expectedDob = { isKnown: 'NO', isOverEighteen: 'NO' }
+    expect(session.createContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
+  })
+
+  it('should pass to check answers page if we are checking answers', async () => {
+    // Given
+    existingJourney.isCheckingAnswers = true
+    existingJourney.dateOfBirth = { isKnown: 'NO', isOverEighteen: 'DO_NOT_KNOW' }
 
     // When
     await request(app)
