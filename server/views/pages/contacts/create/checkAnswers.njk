@@ -26,7 +26,7 @@
                             text: "Name"
                         },
                         value: {
-                            html: journey.names.lastName + ", " + journey.names.firstName,
+                            html: journey.names | formatName,
                             classes: 'check-answers-name-value'
                         },
                         actions: {

@@ -97,7 +97,7 @@
 {% endmacro %}
 
 <span class="govuk-caption-l">Manage Contacts</span>
-<h1 class="govuk-heading-l">Contacts for {{ journey.prisoner.lastName | convertToTitleCase }}, {{ journey.prisoner.firstName | convertToTitleCase }}</h1>
+<h1 class="govuk-heading-l">Contacts for {{ journey.prisoner | formatName(excludeMiddleNames = true) }}</h1>
 
     {{ govukButton({
         text: "Add prisoner contact",

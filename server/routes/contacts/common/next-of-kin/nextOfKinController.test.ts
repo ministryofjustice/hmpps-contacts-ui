@@ -71,7 +71,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-next-of-kin/:jour
 
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Is last, first next of kin for the prisoner?',
+      'Is Last, First next of kin for the prisoner?',
     )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=contact-list-breadcrumb-link]').first().attr('href')).toStrictEqual('/foo-bar')

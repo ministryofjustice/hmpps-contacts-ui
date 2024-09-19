@@ -9,6 +9,7 @@ import logger from '../../logger'
 import { buildErrorSummaryList, findError } from '../middleware/validationMiddleware'
 import addressToLines from './addressToLines'
 import formatYesNo from './formatYesNo'
+import formatName from './formatName'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -64,4 +65,5 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('getFormatDistanceToNow', getFormatDistanceToNow)
   njkEnv.addFilter('formatDate', formatDate)
   njkEnv.addFilter('formatYesNo', formatYesNo)
+  njkEnv.addFilter('formatName', formatName)
 }
