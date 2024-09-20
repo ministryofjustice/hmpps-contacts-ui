@@ -5,6 +5,9 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% from "../../../partials/address.njk" import convertAddressToLines %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/pagination/macro.njk" import govukPagination %}
 
 {% set pageTitle = applicationName + " - Search for Contact" %}
 {% set title = "Search for Contact" %}
@@ -40,96 +43,184 @@
 <span class="govuk-caption-l">Manage Contacts</span>
 <h1 class="govuk-heading-l">{{ title }}</h1>
  <div class="govuk-grid-row">
-        <div class="govuk-grid-column-three-quarters">
-            <form method='POST'>
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+    <div class="govuk-grid-column-full">
+        <form method='POST'>
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
-                {{ govukInput({
-                    id: "firstName",
-                    name: "firstName",
-                    label: { text: "First name" },
-                    classes: 'govuk-!-width-one-third',
-                    errorMessage: validationErrors | findError('firstName'),
-                    value: view.firstName
-                }) }}
+            {{ govukInput({
+                id: "firstName",
+                name: "firstName",
+                label: { text: "First name" },
+                classes: 'govuk-!-width-one-third',
+                errorMessage: validationErrors | findError('firstName'),
+                value: view.firstName
+            }) }}
 
-                {{ govukInput({
-                    id: "middleName",
-                    name: "middleName",
-                    label: { text: "Middle names" },
-                    classes: 'govuk-!-width-one-third',
-                    errorMessage: validationErrors | findError('middleName'),
-                    value: view.middleName
-                }) }}
+            {{ govukInput({
+                id: "middleName",
+                name: "middleName",
+                label: { text: "Middle names" },
+                classes: 'govuk-!-width-one-third',
+                errorMessage: validationErrors | findError('middleName'),
+                value: view.middleName
+            }) }}
 
-                {{ govukInput({
-                    id: "lastName",
-                    name: "lastName",
-                    label: { text: "Last name" },
-                    classes: 'govuk-!-width-one-third',
-                    errorMessage: validationErrors | findError('lastName'),
-                    value: view.lastName
-                }) }}
+            {{ govukInput({
+                id: "lastName",
+                name: "lastName",
+                label: { text: "Last name" },
+                classes: 'govuk-!-width-one-third',
+                errorMessage: validationErrors | findError('lastName'),
+                value: view.lastName
+            }) }}
 
-                {% if validationErrors %}
-                    {% set dayError = validationErrors['day'] if validationErrors['day'] else '' %}
-                    {% set monthError = validationErrors['month'] if validationErrors['month'] else '' %}
-                    {% set yearError = validationErrors['year']  if validationErrors['year'] else '' %}
-                    {% set dobError = validationErrors['dob'] if validationErrors['dob'] else '' %}
-                {% endif %}
+            {% if validationErrors %}
+                {% set dayError = validationErrors['day'] if validationErrors['day'] else '' %}
+                {% set monthError = validationErrors['month'] if validationErrors['month'] else '' %}
+                {% set yearError = validationErrors['year']  if validationErrors['year'] else '' %}
+                {% set dobError = validationErrors['dob'] if validationErrors['dob'] else '' %}
+            {% endif %}
 
-                {{ govukDateInput({
-                    id: "dob",
-                    name: "dob",
-                    fieldset: {
-                        legend: {
-                            text: "Date of birth"
-                        }
+            {{ govukDateInput({
+                id: "dob",
+                name: "dob",
+                fieldset: {
+                    legend: {
+                        text: "Date of birth"
+                    }
+                },
+                hint: {
+                    text: "For example, 15 6 2000"
+                },
+                errorMessage: {
+                    html: '<span class="govuk-error-message">' + dayError + '</span>
+                            <span class="govuk-error-message">' + monthError + '</span>
+                            <span class="govuk-error-message">' + yearError + '</span>
+                            <span class="govuk-error-message">' + dobError + '</span>'
+                } if dayError or monthError or yearError or dobError,
+                items: [
+                    {
+                        id: 'day',
+                        label: 'Day',
+                        name: "day",
+                        classes: 'govuk-input--width-2',
+                        value: view.day
                     },
-                    hint: {
-                        text: "For example, 15 6 2000"
+                    {
+                        id: 'month',
+                        label: 'Month',
+                        name: "month",
+                        classes: 'govuk-input--width-2',
+                        value: view.month
                     },
-                    errorMessage: {
-                        html: '<span class="govuk-error-message">' + dayError + '</span>
-                               <span class="govuk-error-message">' + monthError + '</span>
-                               <span class="govuk-error-message">' + yearError + '</span>
-                               <span class="govuk-error-message">' + dobError + '</span>'
-                    } if dayError or monthError or yearError or dobError,
-                    items: [
-                        {
-                            id: 'day',
-                            label: 'Day',
-                            name: "day",
-                            classes: 'govuk-input--width-2',
-                            value: view.day
-                        },
-                        {
-                            id: 'month',
-                            label: 'Month',
-                            name: "month",
-                            classes: 'govuk-input--width-2',
-                            value: view.month
-                        },
-                        {
-                            id: 'year',
-                            label: 'Year',
-                            name: "year",
-                            classes: 'govuk-input--width-4',
-                            value: view.year
-                        }
-                    ]
-                }) }}
+                    {
+                        id: 'year',
+                        label: 'Year',
+                        name: "year",
+                        classes: 'govuk-input--width-4',
+                        value: view.year
+                    }
+                ]
+            }) }}
 
-                <div class="govuk-button-group">
-                    {{ govukButton({
-                        html: "Search",
-                        type: "submit",
-                        classes: 'govuk-!-margin-top-6',
-                        attributes: {"data-qa": "search-button"}
-                    }) }}
-                </div>
-            </form>
-        </div>
+            <div class="govuk-button-group">
+                {{ govukButton({
+                    html: "Search",
+                    type: "submit",
+                    classes: 'govuk-!-margin-top-6',
+                    attributes: {"data-qa": "search-button"}
+                }) }}
+            </div>
+        </form>
     </div>
+
+    {% if results.totalElements > 0 %}
+        {% set resultString = 'result' if results.totalElements === 1 else 'results' %}
+        <p class="govuk-grid-column-full govuk-body govuk-!-margin-top-2">
+            Showing {{ results.totalElements }} {{ resultString }}{{ (" (page " + (results.number + 1) + " of " + results.totalPages + ")") if results.totalPages > 1 }}
+        </p>
+        <div class="govuk-grid-column-full govuk-!-padding-left-3 govuk-!-padding-right-3" id="contact-search-results">
+            {% set rows = [] %}
+            {% for result in results.content %}
+                {%
+                    set address = {
+                        flat: result.flat,
+                        premise: result.property,
+                        street: result.street,
+                        area: result.area,
+                        city: result.cityCode,
+                        county: result.countyCode,
+                        postalCode: result.postCode,
+                        country: result.countryCode
+                    }
+                %}
+                
+                {% set contactNameHtml %}
+                    <a href="#" class="govuk-link govuk-link--no-visited-state bapv-result-row">
+                        {{ (result.lastName + ", " + result.firstName) | convertToTitleCase }}
+                    </a>
+                {% endset %}
+
+                {% set rows = (rows.push([
+                    { html: contactNameHtml },
+                    { text: result.dateOfBirth | formatDate('dd/MM/yyyy') },
+                    { html: convertAddressToLines(address) }
+                ]), rows) %}
+            {% else %}
+                {% set rows = (rows.push([
+                    {
+                        text: 'No results found',
+                        attributes: { colspan:3 },
+                        classes: 'govuk-!-text-align-centre'
+                    }
+                ]), rows) %}
+            {% endfor %}
+
+            {{ govukTable({
+                head: [
+                    { text: "Name" },
+                    { text: "Date of birth" },
+                    { text: "Address" }
+                ],
+                rows: rows
+            }) }}
+
+            {% if results.totalPages > 1 %}
+                {% set paginationItems = [] %}
+                {% for i in range(0, results.totalPages) %}
+                    {% if i === 0 or i === (results.totalPages - 1) or (i >= results.number - 1 and i <= results.number + 1) %}
+                        {% set paginationItems = (paginationItems.push(
+                            {
+                                number: i + 1,
+                                href: "?page=" + i,
+                                current: (i === results.number)
+                            }
+                        ), paginationItems) %}
+                        {% elif i === 1 or i === results.totalPages - 2 %}
+                        {% set paginationItems = (paginationItems.push({ ellipsis: true }), paginationItems) %}
+                    {% endif %}
+                {% endfor %}
+
+                {{ govukPagination({
+                    previous: {
+                        href: "?page=" + (results.number - 1)
+                    } if not results.first,
+                    next: {
+                        href: "?page=" + (results.number + 1)
+                    } if not results.last,
+                    items: paginationItems
+                }) }}
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <div class="govuk-grid-column-full govuk-!-margin-top-4">
+        {% if not view.isContactListed %}
+        <a  href="#" class="govuk-body" data-qa="no-result-message" id="no-result-message">
+            The contact is not listed
+        </a>
+        {% endif %}
+    </div>
+</div>
 
 {% endblock %}

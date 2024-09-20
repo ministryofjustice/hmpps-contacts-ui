@@ -1,3 +1,4 @@
+import { contactsApiClientTypes } from '../@types/contactsApiClient'
 import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
 
 const addressToLines = ({

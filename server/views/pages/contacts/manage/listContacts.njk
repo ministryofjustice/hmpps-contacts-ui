@@ -8,7 +8,7 @@
 {% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
-{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "../../../partials/address.njk" import convertAddressToLines %}
 
 {% set pageTitle = applicationName + " - List contacts" %}
 {% set title = "List contacts" %}
@@ -71,16 +71,7 @@
                 {% endif %}
             </td>
             <td class="govuk-table__cell">
-                {{ govukSummaryList({
-                    classes: 'govuk-!-margin-bottom-0',
-                    rows: [
-                        {
-                            key: { text: '' },
-                            value: { html: address | addressToLines},
-                            classes: 'govuk-summary-list__row--no-border'
-                        }
-                    ]
-                }) }}
+                {{ convertAddressToLines(address) }}
             </td>
             <td class="govuk-table__cell">{{ item.relationshipDescription }}</td>
             <td class="govuk-table__cell">{{ 'Yes' if item.emergencyContact else 'No' }}</td>
