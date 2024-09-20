@@ -4,6 +4,7 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { CreateContactEnterNameSchemaType } from './createContactEnterNameSchemas'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../services/referenceDataService'
+import { contactsApiClientTypes } from '../../../../@types/contactsApiClient'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 
 export default class EnterNameController implements PageHandler {

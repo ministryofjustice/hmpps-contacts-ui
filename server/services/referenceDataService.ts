@@ -1,5 +1,6 @@
 import ContactsApiClient from '../data/contactsApiClient'
 import ReferenceCodeType from '../enumeration/referenceCodeType'
+import { contactsApiClientTypes } from '../@types/contactsApiClient'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 
 export default class ReferenceDataService {

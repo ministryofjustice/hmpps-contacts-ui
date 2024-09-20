@@ -7,6 +7,7 @@ import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import ContactsService from '../../../../services/contactsService'
+import { contactsApiClientTypes } from '../../../../@types/contactsApiClient'
 import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
 import TestData from '../../../testutils/testData'
 
