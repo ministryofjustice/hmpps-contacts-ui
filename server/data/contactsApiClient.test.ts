@@ -1,5 +1,4 @@
 import nock from 'nock'
-import { contactsApiClientTypes } from '../@types/contactsApiClient'
 import config from '../config'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import ContactsApiClient from './contactsApiClient'

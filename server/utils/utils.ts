@@ -81,7 +81,7 @@ export const formatDateForApi = (dateOfBirth: string) => {
 }
 
 export const isContactListed = (
-  content: Array<Record<string, string>>,
+  content: Array<Record<number, string>>,
   journey: journeys.ManageContactsJourney,
 ): boolean => {
   return content.some(

@@ -6,7 +6,6 @@ import { ContactsService } from '../../../../services'
 import { PaginationRequest } from '../../../../data/prisonerOffenderSearchTypes'
 import { formatDateForApi, isContactListed } from '../../../../utils/utils'
 import config from '../../../../config'
-import { contactsApiClientTypes } from '../../../../@types/contactsApiClient'
 import Contact = contactsApiClientTypes.Contact
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 

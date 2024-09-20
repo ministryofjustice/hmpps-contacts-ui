@@ -1,7 +1,8 @@
 import { CurrentIncentive, Prisoner } from '../../data/prisonerOffenderSearchTypes'
-import { contactsApiClientTypes } from '../../@types/contactsApiClient'
-import Contact = contactsApiClientTypes.Contact
 
+import { components } from '../../@types/contactsApi'
+
+type ContactSearch = components['schemas']['ContactSearch']
 export default class TestData {
   static currentIncentive = ({
     level = {
@@ -35,12 +36,10 @@ export default class TestData {
 
   static contacts = ({
     id = 13,
-    title = 'Ms',
     lastName = 'Jones',
     firstName = 'Mason',
     middleName = 'M.',
     dateOfBirth = '1990-01-14',
-    isOverEighteen = 'YES',
     flat = '32',
     property = '',
     street = 'Acacia Avenue',
@@ -51,15 +50,13 @@ export default class TestData {
     countryCode = 'UK',
     createdBy = 'User13',
     createdTime = '2024-09-11T11:08:26.191824',
-  }: Partial<Contact> = {}): Contact =>
+  }: Partial<ContactSearch> = {}): ContactSearch =>
     ({
       id,
-      title,
       lastName,
       firstName,
       middleName,
       dateOfBirth,
-      isOverEighteen,
       flat,
       property,
       street,
@@ -70,5 +67,5 @@ export default class TestData {
       countryCode,
       createdBy,
       createdTime,
-    }) as Contact
+    }) as ContactSearch
 }

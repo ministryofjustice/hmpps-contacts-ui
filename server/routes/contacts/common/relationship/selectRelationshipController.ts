@@ -3,7 +3,6 @@ import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../services/referenceDataService'
-import { contactsApiClientTypes } from '../../../../@types/contactsApiClient'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import { SelectRelationshipSchema } from './selectRelationshipSchemas'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams

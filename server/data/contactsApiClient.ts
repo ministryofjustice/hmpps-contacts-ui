@@ -1,6 +1,5 @@
 import config from '../config'
 import RestClient from './restClient'
-import { contactsApiClientTypes } from '../@types/contactsApiClient'
 import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest

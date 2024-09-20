@@ -1,7 +1,6 @@
 import createError, { BadRequest } from 'http-errors'
 import ContactsApiClient from '../data/contactsApiClient'
 import ContactsService from './contactsService'
-import { contactsApiClientTypes } from '../@types/contactsApiClient'
 import CreateContactJourney = journeys.CreateContactJourney
 import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
@@ -12,7 +11,6 @@ import TestData from '../routes/testutils/testData'
 
 jest.mock('../data/contactsApiClient')
 const contacts = TestData.contacts()
-// const dateOfBirth = new Date('1980-03-01')
 const contactSearchRequest: ContactSearchRequest = {
   lastName: 'last',
   middleName: '',
@@ -226,7 +224,7 @@ describe('contactsService', () => {
         size: 20,
         empty: false,
         content: [contacts],
-      } as PagePrisoner
+      } as ContactSearchRequest
 
       await apiClient.searchContact.mockResolvedValue(contactResults)
 

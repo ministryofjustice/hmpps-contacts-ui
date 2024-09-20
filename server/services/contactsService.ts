@@ -1,5 +1,4 @@
 import ContactsApiClient from '../data/contactsApiClient'
-import { contactsApiClientTypes } from '../@types/contactsApiClient'
 import CreateContactJourney = journeys.CreateContactJourney
 import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
