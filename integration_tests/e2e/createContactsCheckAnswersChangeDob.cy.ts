@@ -8,6 +8,7 @@ import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import TestData from '../../server/routes/testutils/testData'
 import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
 import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
+import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
 
 context('Create contact and update from check answers where we are changing the DOB', () => {
   beforeEach(() => {
@@ -40,6 +41,8 @@ context('Create contact and update from check answers where we are changing the 
       .enterMonth('06')
       .enterYear('1982')
       .clickContinue()
+
+    Page.verifyOnPage(RelationshipCommentsPage, 'Last, First').clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsDateOfBirthAs('15 June 1982')
@@ -84,6 +87,8 @@ context('Create contact and update from check answers where we are changing the 
       .enterMonth('06')
       .enterYear('1982')
       .clickContinue()
+
+    Page.verifyOnPage(RelationshipCommentsPage, 'Last, First').clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsDateOfBirthAs('15 June 1982')
@@ -133,6 +138,8 @@ context('Create contact and update from check answers where we are changing the 
       .selectIsOverEighteen('YES')
       .clickContinue()
 
+    Page.verifyOnPage(RelationshipCommentsPage, 'Last, First').clickContinue()
+
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsDateOfBirthAs('Not provided')
       .verifyShowsEstimatedDateOfBirthAs('Yes')
@@ -179,6 +186,8 @@ context('Create contact and update from check answers where we are changing the 
     Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'Last, First') //
       .selectIsOverEighteen('DO_NOT_KNOW')
       .clickContinue()
+
+    Page.verifyOnPage(RelationshipCommentsPage, 'Last, First').clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsDateOfBirthAs('Not provided')

@@ -161,6 +161,26 @@
                                     }
                                 ]
                             }
+                        },
+                        {
+                            key: {
+                                text: "Comments"
+                            },
+                            value: {
+                                html: journey.relationship.comments,
+                                classes: 'check-answers-comments-value'
+                            },
+                            actions: {
+                                items: [
+                                    {
+                                        href: baseChangeUrl + "/enter-relationship-comments/"  + journey.id,
+                                        text: "Change",
+                                        visuallyHiddenText: "comments about the relationship",
+                                        attributes: {"data-qa": "change-comments-link"},
+                                        classes: "govuk-link--no-visited-state"
+                                    }
+                                ]
+                            }
                         }
                     ]
                 }) }}

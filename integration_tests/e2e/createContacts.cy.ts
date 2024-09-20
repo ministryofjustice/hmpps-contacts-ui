@@ -10,6 +10,7 @@ import ListContactsPage from '../pages/listContacts'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
 import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
+import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
 
 context('Create Contacts', () => {
   beforeEach(() => {
@@ -53,6 +54,8 @@ context('Create Contacts', () => {
     Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'Last, First') //
       .selectIsOverEighteen('DO_NOT_KNOW')
       .clickContinue()
+
+    Page.verifyOnPage(RelationshipCommentsPage, 'Last, First').clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsNameAs('Last, First')
@@ -115,6 +118,10 @@ context('Create Contacts', () => {
       .enterYear('1982')
       .clickContinue()
 
+    Page.verifyOnPage(RelationshipCommentsPage, 'Last, First') //
+      .enterComments('Some comments about this relationship')
+      .clickContinue()
+
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsNameAs('Last, First Middle')
       .verifyShowsDateOfBirthAs('15 June 1982')
@@ -141,6 +148,7 @@ context('Create Contacts', () => {
           relationshipCode: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: true,
+          comments: 'Some comments about this relationship',
         },
       },
     )
@@ -384,6 +392,32 @@ context('Create Contacts', () => {
     estimatedDobPage.hasFieldInError('isOverEighteen', 'Select whether the contact is over 18')
   })
 
+  it('Relationship comments must be less than 240 characters', () => {
+    cy.visit('/prisoner/A1234BC/contacts/create/start')
+    cy.task('stubCreateContact', { id: 132456 })
+
+    Page.verifyOnPage(EnterNamePage) //
+      .enterLastName('Last')
+      .enterFirstName('First')
+      .continueTo(SelectRelationshipPage, 'Last, First') //
+      .selectRelationship('MOT')
+      .continueTo(SelectEmergencyContactPage, 'Last, First') //
+      .selectIsEmergencyContact('NO')
+      .continueTo(SelectNextOfKinPage, 'Last, First') //
+      .selectIsNextOfKin('YES')
+      .continueTo(EnterContactDateOfBirthPage, 'Last, First') //
+      .selectIsKnown('NO')
+      .continueTo(EnterContactEstimatedDateOfBirthPage, 'Last, First') //
+      .selectIsOverEighteen('DO_NOT_KNOW')
+      .clickContinue()
+
+    const commentsPage = Page.verifyOnPage(RelationshipCommentsPage, 'Last, First') //
+      .enterComments(''.padEnd(241))
+      .continueTo(RelationshipCommentsPage, 'Last, First')
+
+    commentsPage.hasFieldInError('comments', 'Additional information must be 240 characters or less')
+  })
+
   it('Can create a contact from prisoner contact page', () => {
     const { prisonerNumber } = TestData.prisoner()
     cy.task('stubPrisoners', {
@@ -434,6 +468,8 @@ context('Create Contacts', () => {
       .enterMonth('06')
       .enterYear('1982')
       .clickContinue()
+
+    Page.verifyOnPage(RelationshipCommentsPage, 'Last, First').clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .clickCreatePrisonerContact()

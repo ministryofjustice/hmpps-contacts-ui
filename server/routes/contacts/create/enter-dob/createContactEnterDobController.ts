@@ -40,8 +40,13 @@ export default class CreateContactEnterDobController implements PageHandler {
         isKnown: 'NO',
       } as DateOfBirth
     }
+
     if (journey.dateOfBirth.isKnown === 'YES') {
-      res.redirect(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+      if (journey.isCheckingAnswers) {
+        res.redirect(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+      } else {
+        res.redirect(`/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`)
+      }
     } else {
       res.redirect(`/prisoner/${prisonerNumber}/contacts/create/enter-estimated-dob/${journeyId}`)
     }
