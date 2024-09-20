@@ -216,6 +216,7 @@ describe('contactsService', () => {
     const pagination = { page: 0, size: 20 } as PaginationRequest
 
     it('Retrieves search contact details matching the search criteria', async () => {
+      // Given
       const contactResults = {
         totalPages: 1,
         totalElements: 1,
@@ -226,10 +227,11 @@ describe('contactsService', () => {
         content: [contacts],
       } as ContactSearchRequest
 
+      // When
       await apiClient.searchContact.mockResolvedValue(contactResults)
-
       const results = await service.searchContact(contactSearchRequest, pagination, user)
 
+      // Then
       expect(results?.content[0].lastName).toEqual(contacts.lastName)
       expect(results?.content[0].firstName).toEqual(contacts.firstName)
       expect(results.totalPages).toEqual(1)

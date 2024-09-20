@@ -126,7 +126,7 @@ describe('formatDateForApi', () => {
 })
 
 describe('isContactListed', () => {
-  it('should return true if contact exists on contact search results', () => {
+  it('should return false if contact does not exists on contact search results', () => {
     // Given
     const content = []
     content.push(TestData.contacts())
@@ -161,5 +161,46 @@ describe('isContactListed', () => {
 
     // Then
     expect(results).toBe(false)
+  })
+
+  it('should return true if contact does exists on contact search results', () => {
+    // Given
+    const contact = {
+      ...TestData.contacts(),
+      lastName: 'last',
+    }
+    const content = []
+    content.push(contact)
+    const journey = {
+      id: uuidv4(),
+      lastTouched: '2024-09-20T13:59:15.265Z',
+      search: {
+        searchTerm: 'Tim',
+      },
+      prisoner: {
+        firstName: 'TIMOTHY',
+        lastName: 'JACK',
+        prisonerNumber: 'G4793VF',
+        dateOfBirth: '1986-06-27',
+        prisonName: 'Moorland (HMP & YOI)',
+      },
+      searchContact: {
+        contact: {
+          lastName: 'last',
+          firstName: '',
+        },
+        dateOfBirth: {
+          day: 11,
+          month: 10,
+          year: 2000,
+        },
+      },
+    }
+
+    // When
+    const results = isContactListed(content, journey)
+
+    // Then
+    expect(results).toBe(true)
   })
 })
