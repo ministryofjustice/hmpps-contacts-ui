@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid'
+import TestData from '../routes/testutils/testData'
 import {
   convertToTitleCase,
   formatDate,
@@ -6,6 +8,8 @@ import {
   properCaseFullName,
   isValidPrisonerNumber,
   extractPrisonerNumber,
+  formatDateForApi,
+  isContactListed,
 } from './utils'
 
 describe('convert to title case', () => {
@@ -101,5 +105,61 @@ describe('extractPrisonerNumber', () => {
     ['null string', null, false],
   ])('%s: extractPrisonerNumber(%s) => %s', (_: string, input: string, expected: string | false) => {
     expect(extractPrisonerNumber(input)).toEqual(expected)
+  })
+})
+
+describe('formatDateForApi', () => {
+  it('should return date in YYYY-MM-DD format', () => {
+    // Given
+    const dateOfBirth = {
+      year: 2000,
+      month: 11,
+      day: 1,
+    }
+
+    // When
+    const results = formatDateForApi(JSON.stringify(dateOfBirth))
+
+    // Then
+    expect(results).toEqual('2000-11-1')
+  })
+})
+
+describe('isContactListed', () => {
+  it('should return true if contact exists on contact search results', () => {
+    // Given
+    const content = []
+    content.push(TestData.contacts())
+    const journey = {
+      id: uuidv4(),
+      lastTouched: '2024-09-20T13:59:15.265Z',
+      search: {
+        searchTerm: 'Tim',
+      },
+      prisoner: {
+        firstName: 'TIMOTHY',
+        lastName: 'JACK',
+        prisonerNumber: 'G4793VF',
+        dateOfBirth: '1986-06-27',
+        prisonName: 'Moorland (HMP & YOI)',
+      },
+      searchContact: {
+        contact: {
+          lastName: 'last',
+          firstName: '',
+        },
+        dateOfBirth: {
+          day: 11,
+          month: 10,
+          year: 2000,
+        },
+      },
+    }
+
+    // When
+    const results = isContactListed(content, journey)
+
+    // Then
+    expect(results).toBe(false)
   })
 })

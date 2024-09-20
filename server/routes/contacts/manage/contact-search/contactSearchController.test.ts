@@ -6,14 +6,17 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
+import ContactsService from '../../../../services/contactsService'
 import ManageContactsJourney = journeys.ManageContactsJourney
 import TestData from '../../../testutils/testData'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
+jest.mock('../../../../services/contactsService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
+const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
 
 let app: Express
 let session: Partial<SessionData>
@@ -38,6 +41,7 @@ beforeEach(() => {
     services: {
       auditService,
       prisonerSearchService,
+      contactsService,
     },
     userSupplier: () => user,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -57,6 +61,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.searchContact.mockResolvedValue(TestData.contacts())
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
@@ -180,5 +185,71 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
     expect(session.manageContactsJourneys[journeyId].searchContact).toBeUndefined()
+  })
+})
+
+describe('Contact seaarch results', () => {
+  it('should display contact search results table', async () => {
+    // Given
+    existingJourney = {
+      ...existingJourney,
+      searchContact: {
+        contact: { lastName: 'last', middleName: '', firstName: '' },
+        dateOfBirth: { day: undefined, month: undefined, year: undefined },
+      },
+    }
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+
+    const results = {
+      content: [TestData.contacts()],
+      pageable: {
+        pageNumber: 0,
+        pageSize: 20,
+        sort: {
+          empty: false,
+          sorted: true,
+          unsorted: false,
+        },
+        offset: 0,
+        unpaged: false,
+        paged: true,
+      },
+      last: true,
+      totalElements: 1,
+      totalPages: 1,
+      first: true,
+      size: 20,
+      number: 0,
+      sort: {
+        empty: false,
+        sorted: true,
+        unsorted: false,
+      },
+      numberOfElements: 1,
+      empty: false,
+    }
+    contactsService.searchContact.mockResolvedValue(results)
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+    const $ = cheerio.load(response.text)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect($('table')).toBeDefined()
+    expect($('table .govuk-table__header:eq(0)').text().trim()).toStrictEqual('Name')
+    expect($('table .govuk-table__header:eq(1)').text().trim()).toStrictEqual('Date of birth')
+    expect($('table .govuk-table__header:eq(2)').text().trim()).toStrictEqual('Address')
+
+    expect($('table .govuk-table__cell:eq(0) a').text().trim()).toStrictEqual('Jones, Mason')
+    expect($('table .govuk-table__cell:eq(1)').text().trim()).toStrictEqual('14/01/1990')
+    expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('Flat 32')
+    expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('Acacia Avenue')
+    expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('Bunting')
+    expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('SHEF')
+    expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('SYORKS')
+    expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('S2 3LK')
+    expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('UK')
   })
 })

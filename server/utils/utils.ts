@@ -71,3 +71,28 @@ export const extractPrisonerNumber = (search: string): string | false => {
 export const getFormatDistanceToNow = (date: Date) => {
   return formatDistanceStrict(date, new Date())
 }
+
+export const formatDateForApi = (dateOfBirth: string) => {
+  const date = JSON.parse(dateOfBirth)
+  if (date.year && date.month && date.day) {
+    return `${date.year}-${date.month}-${date.day}`
+  }
+  return null
+}
+
+export const isContactListed = (
+  content: Array<Record<string, string>>,
+  journey: journeys.ManageContactsJourney,
+): boolean => {
+  return content.some(
+    (item: Record<string, string>) =>
+      item.lastName === journey?.searchContact?.contact.lastName ||
+      item.firstName === journey?.searchContact?.contact.firstName ||
+      item.lastName.toLocaleUpperCase() === journey?.searchContact?.contact.lastName ||
+      item.lastName.toLocaleLowerCase() === journey?.searchContact?.contact.lastName ||
+      item.middleName.toLocaleUpperCase() === journey?.searchContact?.contact.middleName ||
+      item.middleName.toLocaleLowerCase() === journey?.searchContact?.contact.middleName ||
+      item.firstName.toLocaleUpperCase() === journey?.searchContact?.contact.firstName ||
+      item.firstName.toLocaleLowerCase() === journey?.searchContact?.contact.firstName,
+  )
+}
