@@ -1,0 +1,120 @@
+{% extends "../../../../partials/layout.njk" %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "../../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% from "govuk/components/tabs/macro.njk" import govukTabs %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = applicationName + " - Contact Confirmation" %}
+{% set prisonerResultsLink = "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/list/" + journey.id %}
+
+{% block content %}
+
+{% macro contactDetailsHtml() %}
+    {%- include "./basicDetails.njk" -%}
+    {%- include "./addresses.njk" -%}
+    {%- include "./phone.njk" -%}
+    {%- include "./emailAddresses.njk" -%}
+    {%- include "./identityNumbers.njk" -%}
+    {%- include "./languageDetails.njk" -%}
+{% endmacro %}
+
+{% macro restrictionsHtml() %}
+{% endmacro %}
+
+{% macro linkedOffendersHtml() %}
+
+{% endmacro %}
+
+<div class="govuk-grid-row govuk-!-static-margin-bottom-5">
+    <div class="govuk-grid-column-full">
+      {{ govukBreadcrumbs({
+      items: [
+          {
+            text: "Digital Prison Services",
+            href: DPS_HOME_PAGE_URL
+          },
+          {
+              text: "Contacts",
+              href: "/"
+          },
+          {
+            text: prisonerDetails.lastName | convertToTitleCase + ", " + prisonerDetails.firstName | convertToTitleCase,
+            href: prisonerResultsLink
+        }
+      ]
+      }) }}
+    </div>
+
+    <div class="govuk-grid-column-full">
+        {{ miniProfile(prisonerDetails) }}
+    </div>
+
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">Is this the right person to add as a contact for {{ journey.prisoner.lastName | convertToTitleCase }}, {{ journey.prisoner.firstName | convertToTitleCase }}?</h1>
+        <form method='POST'>
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+            <div class="govuk-tabs" data-module="govuk-tabs">
+                <ul class="govuk-tabs__list">
+                    <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+                        <a class="govuk-tabs__tab" href="#contact-details">
+                            Contact details
+                        </a>
+                    </li>
+                    <li class="govuk-tabs__list-item">
+                        <a class="govuk-tabs__tab" href="#restrictions">
+                            Restrictions
+                        </a>
+                    </li>
+                    <li class="govuk-tabs__list-item">
+                        <a class="govuk-tabs__tab" href="#linked-offenders">
+                            Linked offenders
+                        </a>
+                    </li>
+                </ul>
+                <div class="govuk-tabs__panel--no-border govuk-!-static-padding-top-7" id="contact-details">
+                    {{ contactDetailsHtml() }}
+                </div>
+                <div class="govuk-tabs__panel--no-border govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" id="restrictions">
+                    {{ restrictionsHtml() }}
+                </div>
+                <div class="govuk-tabs__panel--no-border govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" id="linked-offenders">
+                    {{ linkedOffendersHtml() }}
+                </div>
+            </div>
+
+            {{ govukRadios({
+                name: "whereDoYouLive",
+                fieldset: {
+                legend: {
+                    text: "",
+                    isPageHeading: true,
+                    classes: "govuk-fieldset__legend--l"
+                }
+                },
+                items: [
+                {
+                    value: "yes",
+                    text: "Yes, this is the right person",
+                    checked: true
+                },
+                {
+                    value: "no",
+                    text: "No, this is not the right person"
+                }
+                ]
+            }) }}
+
+            <div class="govuk-button-group">
+                {{ govukButton({
+                    html: "Continue",
+                    type: "submit",
+                    classes: 'govuk-!-margin-top-6',
+                    attributes: {"data-qa": "continue-button"}
+                }) }}
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

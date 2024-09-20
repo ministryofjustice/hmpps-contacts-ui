@@ -1,0 +1,18 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{{ govukSummaryList({
+    card: {
+        title: {
+            text: "Email addresses"
+        }
+    },
+    rows: [{
+        key: {
+            text: "Email addresses"
+        },
+        value: {
+            html: '<p>claireadams@johnson.com</p><p>claire2000@gmail.com</p><p>c.adams@email.com</p>',
+            classes: 'check-answers-email-addresses-value'
+        }
+    }]
+}) }}

@@ -1,0 +1,27 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{{ govukSummaryList({
+    card: {
+        title: {
+            text: "Phone numbers"
+        }
+    },
+    rows: [{
+        key: {
+            text: "Mobile"
+        },
+        value: {
+            html: '',
+            classes: 'check-answers-mobile-number-value'
+        }
+    },
+    {
+        key: {
+            text: "Business"
+        },
+        value: {
+            html: '',
+            classes: 'check-answers-business-number-value'
+        }
+    }]
+}) }}

@@ -1,0 +1,72 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{{ govukSummaryList({
+    card: {
+        title: {
+            text: "Addresses"
+        },
+        actions: {
+            items: [
+              {
+                href: "#",
+                text: "View all addresses",
+                visuallyHiddenText: "addresses"
+              }
+            ]
+        }
+    },
+    rows: [{
+        key: {
+            text: "Address"
+        },
+        value: {
+            html: '',
+            classes: 'check-answers-address-value'
+        }
+    },
+    {
+        key: {
+            text: "Type"
+        },
+        value: {
+            html: '',
+            classes: 'check-answers-type-value'
+        }
+    },
+    {
+        key: {
+            text: "Address-specific phone numbers"
+        },
+        value: {
+            html: '',
+            classes: 'check-answers-specific-phone-value'
+        }
+    },
+    {
+        key: {
+            text: "Mail"
+        },
+        value: {
+            html: '',
+            classes: 'check-answers-mail-value'
+        }
+    },
+    {
+        key: {
+            text: "Comments"
+        },
+        value: {
+            html: '<span class="mid-grey">Not provided</span>',
+            classes: 'check-answers-mail-value'
+        }
+    },
+    {
+        key: {
+            text: "Dates"
+        },
+        value: {
+            html: '',
+            classes: 'check-answers-mail-value'
+        }
+    }]
+}) }}

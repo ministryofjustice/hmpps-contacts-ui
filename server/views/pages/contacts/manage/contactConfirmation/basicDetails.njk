@@ -1,0 +1,36 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{{ govukSummaryList({
+    card: {
+        title: {
+            text: "Basic details"
+        }
+    },
+    rows: [{
+        key: {
+            text: "Name"
+        },
+        value: {
+            html: journey.names.lastName + ", " + journey.names.firstName,
+            classes: 'check-answers-name-value'
+        }
+    },
+    {
+        key: {
+            text: "Date of birth"
+        },
+        value: {
+            html: formattedDateOfBirth,
+            classes: 'check-answers-dob-value'
+        }
+    },
+    {
+        key: {
+            text: "Deceased date"
+        },
+        value: {
+            html: '<span class="mid-grey">Not provided</span>',
+            classes: 'check-answers-deceased-value'
+        }
+    }]
+}) }}

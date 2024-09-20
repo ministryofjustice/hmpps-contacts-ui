@@ -1,0 +1,36 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{{ govukSummaryList({
+    card: {
+        title: {
+            text: "Identity numbers"
+        }
+    },
+    rows: [{
+        key: {
+            text: "Passport number"
+        },
+        value: {
+            html: '<p>425362965</p><p>Issuing authority - UK passport office</p>',
+            classes: 'check-answers-indentity-numbers-value'
+        }
+    },
+    {
+        key: {
+            text: "Driving licence"
+        },
+        value: {
+            html: '',
+            classes: 'check-answers-indentity-numbers-value'
+        }
+    },
+    {
+        key: {
+            text: "PNC number"
+        },
+        value: {
+            html: '',
+            classes: 'check-answers-indentity-numbers-value'
+        }
+    }]
+}) }}
