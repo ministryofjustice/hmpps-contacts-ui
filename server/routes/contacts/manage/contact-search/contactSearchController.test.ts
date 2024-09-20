@@ -189,6 +189,34 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
 })
 
 describe('Contact seaarch results', () => {
+  let results = {
+    content: [TestData.contacts()],
+    pageable: {
+      pageNumber: 0,
+      pageSize: 20,
+      sort: {
+        empty: false,
+        sorted: true,
+        unsorted: false,
+      },
+      offset: 0,
+      unpaged: false,
+      paged: true,
+    },
+    last: true,
+    totalElements: 25,
+    totalPages: 3,
+    first: true,
+    size: 20,
+    number: 0,
+    sort: {
+      empty: false,
+      sorted: true,
+      unsorted: false,
+    },
+    numberOfElements: 1,
+    empty: false,
+  }
   it('should display contact search results table', async () => {
     // Given
     existingJourney = {
@@ -200,35 +228,6 @@ describe('Contact seaarch results', () => {
     }
     auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-
-    const results = {
-      content: [TestData.contacts()],
-      pageable: {
-        pageNumber: 0,
-        pageSize: 20,
-        sort: {
-          empty: false,
-          sorted: true,
-          unsorted: false,
-        },
-        offset: 0,
-        unpaged: false,
-        paged: true,
-      },
-      last: true,
-      totalElements: 1,
-      totalPages: 1,
-      first: true,
-      size: 20,
-      number: 0,
-      sort: {
-        empty: false,
-        sorted: true,
-        unsorted: false,
-      },
-      numberOfElements: 1,
-      empty: false,
-    }
     contactsService.searchContact.mockResolvedValue(results)
 
     // When
@@ -251,5 +250,64 @@ describe('Contact seaarch results', () => {
     expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('SYORKS')
     expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('S2 3LK')
     expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('UK')
+  })
+
+  it('should display pagination when totalPages greater than 1', async () => {
+    // Given
+    existingJourney = {
+      ...existingJourney,
+      searchContact: {
+        contact: { lastName: 'last', middleName: '', firstName: '' },
+        dateOfBirth: { day: undefined, month: undefined, year: undefined },
+      },
+    }
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+
+    const contactsArray = []
+    for (let i = 0; i < 25; i += 1) {
+      contactsArray.push(TestData.contacts())
+    }
+
+    results = {
+      ...results,
+      content: contactsArray,
+      totalElements: 25,
+      totalPages: 3,
+    }
+    contactsService.searchContact.mockResolvedValue(results)
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+    const $ = cheerio.load(response.text)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect($('.govuk-pagination')).toBeDefined()
+    expect($('.govuk-pagination__link').text().trim()).toContain('1')
+    expect($('.govuk-pagination__link:eq(1)').text().trim()).toStrictEqual('2')
+    expect($('.govuk-pagination__link:eq(2)').text().trim()).toStrictEqual('3')
+  })
+
+  it('should display "contact not listed" link when contact searched is not included in the contact search results', async () => {
+    // Given
+    existingJourney = {
+      ...existingJourney,
+      searchContact: {
+        contact: { lastName: 'last', middleName: '', firstName: '' },
+        dateOfBirth: { day: undefined, month: undefined, year: undefined },
+      },
+    }
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.searchContact.mockResolvedValue(results)
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+    const $ = cheerio.load(response.text)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect($('[data-qa=no-result-message]').text()).toContain('The contact is not listed')
   })
 })
