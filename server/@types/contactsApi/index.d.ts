@@ -480,7 +480,7 @@ export interface components {
        * @example YES
        * @enum {string|null}
        */
-      isOverEighteen?: 'YES' | 'NO' | 'DO_NOT_KNOW' | null
+      estimatedIsOverEighteen?: 'YES' | 'NO' | 'DO_NOT_KNOW' | null
       relationship?: components['schemas']['ContactRelationshipRequest']
       /**
        * @description The id of the user creating the contact
@@ -531,11 +531,11 @@ export interface components {
        */
       dateOfBirth?: string | null
       /**
-       * @description Whether the contact is over 18, based on their date of birth if it is known
+       * @description Whether the contact is over 18
        * @example YES
        * @enum {string}
        */
-      isOverEighteen: 'YES' | 'NO' | 'DO_NOT_KNOW'
+      estimatedIsOverEighteen: 'YES' | 'NO' | 'DO_NOT_KNOW'
       /**
        * @description The id of the user who created the contact
        * @example JD000001
@@ -617,7 +617,7 @@ export interface components {
        * @example YES
        * @enum {string}
        */
-      isOverEighteen: 'YES' | 'NO' | 'DO_NOT_KNOW'
+      estimatedIsOverEighteen: 'YES' | 'NO' | 'DO_NOT_KNOW'
       /**
        * @description The relationship code between the prisoner and the contact
        * @example FRI

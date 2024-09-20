@@ -33,7 +33,7 @@ export default class ContactsService {
       firstName: journey.names.firstName,
       middleName: journey.names.middleName,
       dateOfBirth,
-      isOverEighteen,
+      estimatedIsOverEighteen: isOverEighteen,
       relationship: {
         prisonerNumber: journey.prisonerNumber,
         relationshipCode: journey.relationship.type,
