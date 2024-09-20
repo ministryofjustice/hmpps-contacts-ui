@@ -1,6 +1,5 @@
 import { Router } from 'express'
 import AuditService from '../../../services/auditService'
-import SuccessController from './success/createContactSuccessController'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import EnterNameController from './enter-name/createContactEnterNameController'
 import { validate } from '../../../middleware/validationMiddleware'
@@ -157,13 +156,6 @@ const CreateContactRoutes = (
     '/prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId',
     ensureInCreateContactJourney(),
     asyncMiddleware(checkAnswersController.POST),
-  )
-
-  const successController = new SuccessController()
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/create/success',
-    logPageViewMiddleware(auditService, successController),
-    asyncMiddleware(successController.GET),
   )
 
   return router

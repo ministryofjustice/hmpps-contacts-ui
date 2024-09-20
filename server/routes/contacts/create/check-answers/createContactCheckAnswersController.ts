@@ -40,16 +40,11 @@ export default class CreateContactCheckAnswersController implements PageHandler 
 
   POST = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { user } = res.locals
-    const { journeyId, prisonerNumber } = req.params
+    const { journeyId } = req.params
     const journey = req.session.createContactJourneys[journeyId]
     await this.contactService
       .createContact(journey, user)
       .then(() => delete req.session.createContactJourneys[journeyId])
-
-    if (journey.returnPoint.type === 'MANAGE_PRISONER_CONTACTS') {
-      res.redirect(journey.returnPoint.url)
-    } else {
-      res.redirect(`/prisoner/${prisonerNumber}/contacts/create/success`)
-    }
+    res.redirect(journey.returnPoint.url)
   }
 }

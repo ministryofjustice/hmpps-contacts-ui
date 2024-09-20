@@ -1,11 +1,10 @@
-import { v4 as uuidv4 } from 'uuid'
 import Page from '../pages/page'
 import SearchPrisonerPage from '../pages/searchPrisoner'
 import TestData from '../../server/routes/testutils/testData'
-import ListContactsPage from '../pages/listContacts'
 import SearchContactPage from '../pages/searchContactPage'
+import ListContactsPage from '../pages/listContacts'
+import IndexPage from '../pages'
 
-const journeyId: string = uuidv4()
 const { prisonerNumber } = TestData.prisoner()
 
 const ENTER_THE_CONTACTS_LAST_NAME = `Enter the contact's last name`
@@ -22,9 +21,8 @@ context('Search contact', () => {
     cy.task('reset')
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.task('stubComponentsMeta')
-    cy.signIn()
-    cy.visit(`/prisoner/A1234BC/contacts/search/${journeyId}`)
-
+    cy.task('stubPrisonerById', TestData.prisoner())
+    cy.task('stubContactList', TestData.prisoner().prisonerNumber)
     cy.task('stubComponentsMeta')
     cy.task('stubPrisoners', {
       results: {
@@ -35,16 +33,22 @@ context('Search contact', () => {
       prisonId: 'HEI',
       term: prisonerNumber,
     })
-    cy.task('stubPrisonerById', TestData.prisoner())
-    cy.task('stubContactList', 'A1234BC')
+
+    cy.signIn()
+    cy.visit(`/`)
+    Page.verifyOnPage(IndexPage).manageContactsCard().click()
 
     const searchPrisonerPage = Page.verifyOnPage(SearchPrisonerPage)
     searchPrisonerPage.prisonerSearchFormField().clear().type(prisonerNumber)
     searchPrisonerPage.prisonerSearchSearchButton().click()
+
     Page.verifyOnPage(SearchPrisonerPage)
     searchPrisonerPage.clickPrisonerLink()
-    Page.verifyOnPage(ListContactsPage)
-    searchPrisonerPage.clickAddContactButton()
+
+    Page.verifyOnPage(ListContactsPage) //
+      .clickAddNewContactButton()
+
+    Page.verifyOnPage(SearchContactPage)
   })
 
   it(`should not pass validation when last name is not entered`, () => {
