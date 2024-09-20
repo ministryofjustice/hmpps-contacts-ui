@@ -1,4 +1,6 @@
 import { CurrentIncentive, Prisoner } from '../../data/prisonerOffenderSearchTypes'
+import { contactsApiClientTypes } from '../../@types/contactsApiClient'
+import Contact = contactsApiClientTypes.Contact
 
 export default class TestData {
   static currentIncentive = ({
@@ -30,4 +32,43 @@ export default class TestData {
       currentIncentive,
       locationDescription,
     }) as Prisoner
+
+  static contacts = ({
+    id = 13,
+    title = 'Ms',
+    lastName = 'Jones',
+    firstName = 'Mason',
+    middleName = 'M.',
+    dateOfBirth = '1990-01-14',
+    isOverEighteen = 'YES',
+    flat = '32',
+    property = '',
+    street = 'Acacia Avenue',
+    area = 'Bunting',
+    cityCode = 'SHEF',
+    countyCode = 'SYORKS',
+    postCode = 'S2 3LK',
+    countryCode = 'UK',
+    createdBy = 'User13',
+    createdTime = '2024-09-11T11:08:26.191824',
+  }: Partial<Contact> = {}): Contact =>
+    ({
+      id,
+      title,
+      lastName,
+      firstName,
+      middleName,
+      dateOfBirth,
+      isOverEighteen,
+      flat,
+      property,
+      street,
+      area,
+      cityCode,
+      countyCode,
+      postCode,
+      countryCode,
+      createdBy,
+      createdTime,
+    }) as Contact
 }

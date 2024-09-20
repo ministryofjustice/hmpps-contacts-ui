@@ -1,6 +1,9 @@
 import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
 import { STUBBED_RELATIONSHIP_OPTIONS, STUBBED_TITLE_OPTIONS } from '../../server/routes/testutils/stubReferenceData'
+import { components } from '../../server/@types/contactsApi'
+
+type Contact = components['schemas']['Contact']
 
 export default {
   stubCreateContact: (createdContact: {
@@ -102,6 +105,20 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: STUBBED_RELATIONSHIP_OPTIONS,
+      },
+    })
+  },
+
+  stubContactSearch: (contact: Contact): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/contact/search`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: contact,
       },
     })
   },
