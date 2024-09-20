@@ -26,7 +26,7 @@
                             text: "Name"
                         },
                         value: {
-                            html: journey.names.lastName + ", " + journey.names.firstName,
+                            html: journey.names | formatName,
                             classes: 'check-answers-name-value'
                         },
                         actions: {
@@ -157,6 +157,26 @@
                                         text: "Change",
                                         visuallyHiddenText: "whether contact is next of kin",
                                         attributes: {"data-qa": "change-next-of-kin-link"},
+                                        classes: "govuk-link--no-visited-state"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Comments"
+                            },
+                            value: {
+                                html: journey.relationship.comments,
+                                classes: 'check-answers-comments-value'
+                            },
+                            actions: {
+                                items: [
+                                    {
+                                        href: baseChangeUrl + "/enter-relationship-comments/"  + journey.id,
+                                        text: "Change",
+                                        visuallyHiddenText: "comments about the relationship",
+                                        attributes: {"data-qa": "change-comments-link"},
                                         classes: "govuk-link--no-visited-state"
                                     }
                                 ]

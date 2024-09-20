@@ -66,7 +66,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-estimated-dob/:jou
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Is last, first over 18 years old?')
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Is Last, First over 18 years old?')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=contact-list-breadcrumb-link]').first().attr('href')).toStrictEqual('/foo-bar')
   })
@@ -113,9 +113,27 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-estimated-dob/:jou
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/create/enter-estimated-dob', () => {
-  it('should pass to success page if there are no validation errors', async () => {
+  it('should pass to comments page if there are no validation errors', async () => {
     // Given
     existingJourney.dateOfBirth = { isKnown: 'NO' }
+
+    // When
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/enter-estimated-dob/${journeyId}`)
+      .type('form')
+      .send({ isOverEighteen: 'NO' })
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`)
+
+    // Then
+    const expectedDob = { isKnown: 'NO', isOverEighteen: 'NO' }
+    expect(session.createContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
+  })
+
+  it('should pass to check answers page if we are checking answers', async () => {
+    // Given
+    existingJourney.isCheckingAnswers = true
+    existingJourney.dateOfBirth = { isKnown: 'NO', isOverEighteen: 'DO_NOT_KNOW' }
 
     // When
     await request(app)

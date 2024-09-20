@@ -25,6 +25,10 @@ export default class CreateContactEnterEstimatedDobController implements PageHan
     const journey = req.session.createContactJourneys[journeyId]
     const { body } = req
     journey.dateOfBirth.isOverEighteen = body.isOverEighteen
-    res.redirect(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+    if (journey.isCheckingAnswers) {
+      res.redirect(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+    } else {
+      res.redirect(`/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`)
+    }
   }
 }

@@ -1,17 +1,15 @@
 {% extends "../../../partials/layout.njk" %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
-{% from "govuk/components/input/macro.njk" import govukInput %}
-{% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 {% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
 
-{% set pageTitle = applicationName + " - Enter name" %}
-{% set title = "How is " + journey.names | formatName + " related to the prisoner?" %}
+{% set pageTitle = applicationName + " - Select next of kin" %}
+{% set title = "Add additional information about the relationship between the prisoner and " + journey.names | formatName  %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-
-{% include './partials/createContactBreadcrumbs.njk' %}
+{% include '../common/partials/createContactBreadcrumbs.njk' %}
 {{ miniProfile(prisonerDetails) }}
 {% include '../../../partials/formErrorSummary.njk' %}
 <span class="govuk-caption-l">Manage Contacts</span>
@@ -21,16 +19,14 @@
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
-                {{ govukSelect({
-                    id: "relationship",
-                    name: "relationship",
-                    hint: {
-                        text: "This is the relationship from the prisoner to the contact. For example, if the contact is the prisoner's mother, select \"Mother\"."
-                    },
-                    items: relationshipOptions,
-                    errorMessage: validationErrors | findError('relationship')
+                {{ govukCharacterCount({
+                    name: "comments",
+                    id: "comments",
+                    maxlength: 240,
+                    value: comments,
+                    errorMessage: validationErrors | findError('comments')
                 }) }}
-                <div id="selected-relationship-hint" data-contact="{{ journey.names | formatName }}"></div>
+
                 <div class="govuk-button-group">
                     {{ govukButton({
                         html: "Continue",
@@ -45,7 +41,4 @@
         </div>
     </div>
 
-{% endblock %}
-{% block pageScripts %}
-    <script src="/assets/js/unbundled/relationshipHint.js"></script>
 {% endblock %}

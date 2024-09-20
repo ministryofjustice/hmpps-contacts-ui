@@ -29,6 +29,7 @@ declare namespace journeys {
     type?: string
     isEmergencyContact?: YesOrNo
     isNextOfKin?: YesOrNo
+    comments?: string
   }
 
   export interface ManageContactsJourney {

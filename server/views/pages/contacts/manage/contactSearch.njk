@@ -26,7 +26,7 @@
               href: "/"
           },
           {
-            text: prisonerDetails.lastName | convertToTitleCase + ", " + prisonerDetails.firstName | convertToTitleCase,
+            text: prisonerDetails | formatName(excludeMiddleNames = true),
             href: prisonerResultsLink
         }
       ]

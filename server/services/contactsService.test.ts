@@ -50,6 +50,7 @@ describe('contactsService', () => {
           type: 'MOT',
           isEmergencyContact: 'NO',
           isNextOfKin: 'YES',
+          comments: 'Some comments about this relationship',
         },
       }
       const expectedRequest: CreateContactRequest = {
@@ -65,6 +66,7 @@ describe('contactsService', () => {
           relationshipCode: 'MOT',
           isNextOfKin: true,
           isEmergencyContact: false,
+          comments: 'Some comments about this relationship',
         },
       }
 

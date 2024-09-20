@@ -7,6 +7,7 @@ import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import TestData from '../../server/routes/testutils/testData'
 import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
 import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
+import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
 
 context('Create contact and update from check answers excluding DOB changes', () => {
   beforeEach(() => {
@@ -25,28 +26,31 @@ context('Create contact and update from check answers excluding DOB changes', ()
       .enterLastName('Last')
       .enterMiddleName('Middle')
       .enterFirstName('First')
-      .continueTo(SelectRelationshipPage, 'Last, First') //
+      .continueTo(SelectRelationshipPage, 'Last, First Middle')
       .selectRelationship('MOT')
-      .continueTo(SelectEmergencyContactPage, 'Last, First') //
+      .continueTo(SelectEmergencyContactPage, 'Last, First Middle')
       .selectIsEmergencyContact('NO')
-      .continueTo(SelectNextOfKinPage, 'Last, First') //
+      .continueTo(SelectNextOfKinPage, 'Last, First Middle')
       .selectIsNextOfKin('NO')
-      .continueTo(EnterContactDateOfBirthPage, 'Last, First') //
+      .continueTo(EnterContactDateOfBirthPage, 'Last, First Middle')
       .selectIsKnown('YES')
       .enterDay('15')
       .enterMonth('06')
       .enterYear('1982')
-      .continueTo(CreateContactCheckYourAnswersPage) //
-      .verifyShowsNameAs('Last, First')
+      .continueTo(RelationshipCommentsPage)
+      .enterComments('Some comments about the relationship')
+      .continueTo(CreateContactCheckYourAnswersPage)
+      .verifyShowsNameAs('Last, First Middle')
       .verifyShowsDateOfBirthAs('15 June 1982')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
       .verifyShowIsNextOfKinAs('No')
+      .verifyShowCommentsAs('Some comments about the relationship')
   })
 
   it('Can change a contacts names when creating a new contact', () => {
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowsNameAs('Last, First')
+      .verifyShowsNameAs('Last, First Middle')
       .clickChangeNameLink()
 
     Page.verifyOnPage(EnterNamePage) //
@@ -57,7 +61,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowsNameAs('Last Updated, First Updated')
+      .verifyShowsNameAs('Last Updated, First Updated Middle Updated')
       .clickCreatePrisonerContact()
 
     Page.verifyOnPage(CreatedContactPage)
@@ -79,6 +83,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
           relationshipCode: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: false,
+          comments: 'Some comments about the relationship',
         },
       },
     )
@@ -89,10 +94,10 @@ context('Create contact and update from check answers excluding DOB changes', ()
       .verifyShowRelationshipAs('Mother')
       .clickChangeRelationshipLink()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Last, First') //
-      .hasSelectedRelationshipHint("Last, First is the prisoner's mother")
+    Page.verifyOnPage(SelectRelationshipPage, 'Last, First Middle') //
+      .hasSelectedRelationshipHint("Last, First Middle is the prisoner's mother")
       .selectRelationship('FA')
-      .hasSelectedRelationshipHint("Last, First is the prisoner's father")
+      .hasSelectedRelationshipHint("Last, First Middle is the prisoner's father")
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
@@ -118,6 +123,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
           relationshipCode: 'FA',
           isNextOfKin: false,
           isEmergencyContact: false,
+          comments: 'Some comments about the relationship',
         },
       },
     )
@@ -128,7 +134,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
       .verifyShowIsEmergencyContactAs('No')
       .clickChangeEmergencyContactLink()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'Last, First') //
+    Page.verifyOnPage(SelectEmergencyContactPage, 'Last, First Middle') //
       .selectIsEmergencyContact('YES')
       .clickContinue()
 
@@ -155,6 +161,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
           relationshipCode: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: true,
+          comments: 'Some comments about the relationship',
         },
       },
     )
@@ -165,7 +172,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
       .verifyShowIsNextOfKinAs('No')
       .clickChangeNextOfKinLink()
 
-    Page.verifyOnPage(SelectNextOfKinPage, 'Last, First') //
+    Page.verifyOnPage(SelectNextOfKinPage, 'Last, First Middle') //
       .selectIsNextOfKin('YES')
       .clickContinue()
 
@@ -192,6 +199,45 @@ context('Create contact and update from check answers excluding DOB changes', ()
           relationshipCode: 'MOT',
           isNextOfKin: true,
           isEmergencyContact: false,
+          comments: 'Some comments about the relationship',
+        },
+      },
+    )
+  })
+
+  it('Can change the comments when creating a new contact', () => {
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowCommentsAs('Some comments about the relationship')
+      .clickChangeCommentsLink()
+
+    Page.verifyOnPage(RelationshipCommentsPage, 'Last, First Middle') //
+      .enterComments('Some new comments I entered')
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowCommentsAs('Some new comments I entered')
+      .clickCreatePrisonerContact()
+
+    Page.verifyOnPage(CreatedContactPage)
+
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: '/contact',
+      },
+      {
+        title: 'MR',
+        lastName: 'Last',
+        firstName: 'First',
+        middleName: 'Middle',
+        createdBy: 'USER1',
+        dateOfBirth: '1982-06-15T00:00:00.000Z',
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipCode: 'MOT',
+          isNextOfKin: false,
+          isEmergencyContact: false,
+          comments: 'Some new comments I entered',
         },
       },
     )
