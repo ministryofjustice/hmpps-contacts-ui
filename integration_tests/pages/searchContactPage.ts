@@ -39,6 +39,21 @@ export default class SearchContactPage extends Page {
     this.searchButton().click()
   }
 
+  verifyShowsNameAs(expected: string): SearchContactPage {
+    this.checkContactSearchTableNameValue().should('contain.text', expected)
+    return this
+  }
+
+  verifyShowsDobAs(expected: string): SearchContactPage {
+    this.checkContactSearchTableDobValue().should('contain.text', expected)
+    return this
+  }
+
+  verifyShowsAddressAs(expected: string): SearchContactPage {
+    this.checkContactSearchTableAddressValue().should('contain.text', expected)
+    return this
+  }
+
   private firstNameTextBox = (): PageElement => cy.get('#firstName')
 
   private middleNameTextBox = (): PageElement => cy.get('#middleName')
@@ -52,4 +67,13 @@ export default class SearchContactPage extends Page {
   private yearTextBox = (): PageElement => cy.get('#year')
 
   private searchButton = (): PageElement => cy.get('[data-qa="search-button"]')
+
+  private checkContactSearchTableNameValue = (): PageElement =>
+    cy.get('.govuk-table__body > :nth-child(1) > :nth-child(1)')
+
+  private checkContactSearchTableDobValue = (): PageElement =>
+    cy.get('.govuk-table__body > :nth-child(1) > :nth-child(2)')
+
+  private checkContactSearchTableAddressValue = (): PageElement =>
+    cy.get('.govuk-table__body > :nth-child(1) > :nth-child(3)')
 }
