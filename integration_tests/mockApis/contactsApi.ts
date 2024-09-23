@@ -109,16 +109,56 @@ export default {
     })
   },
 
-  stubContactSearch: (contact: Contact): SuperAgentRequest => {
+  stubContactSearch: ({
+    results = {
+      totalPages: 0,
+      totalElements: 0,
+      content: [],
+    },
+    lastName,
+    firstName,
+    middleName,
+    dateOfBirth,
+    page = '0',
+    size = '20',
+  }: {
+    results: { totalPages: number; totalElements: number; content: Contact[] }
+    lastName: string
+    middleName: string
+    firstName: string
+    dateOfBirth: string
+    page: string
+    size: string
+  }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
         urlPath: `/contact/search`,
+        queryParameters: {
+          lastName: {
+            equalTo: `${lastName}`,
+          },
+          middleName: {
+            equalTo: `${middleName}`,
+          },
+          firstName: {
+            equalTo: `${firstName}`,
+          },
+          dateOfBirth: {
+            equalTo: `${dateOfBirth}`,
+          },
+          page: {
+            equalTo: `${page}`,
+          },
+          size: {
+            equalTo: `${size}`,
+          },
+        },
       },
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: contact,
+        jsonBody: results,
       },
     })
   },

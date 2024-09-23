@@ -66,7 +66,7 @@ export default class SearchContactPage extends Page {
 
   private yearTextBox = (): PageElement => cy.get('#year')
 
-  private searchButton = (): PageElement => cy.get('[data-qa="search-button"]')
+  private searchButton = (): PageElement => cy.get('[data-qa=search-button]')
 
   private checkContactSearchTableNameValue = (): PageElement =>
     cy.get('.govuk-table__body > :nth-child(1) > :nth-child(1)')
