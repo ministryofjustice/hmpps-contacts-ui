@@ -118,7 +118,7 @@ context('Create contact and update from check answers where we are changing the 
       {
         lastName: 'Last',
         firstName: 'First',
-        isOverEighteen: 'DO_NOT_KNOW',
+        estimatedIsOverEighteen: 'DO_NOT_KNOW',
         createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',
@@ -214,7 +214,7 @@ context('Create contact and update from check answers where we are changing the 
       {
         lastName: 'Last',
         firstName: 'First',
-        isOverEighteen: 'YES',
+        estimatedIsOverEighteen: 'YES',
         createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',
