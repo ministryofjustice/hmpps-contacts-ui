@@ -79,19 +79,3 @@ export const formatDateForApi = (dateOfBirth: string) => {
   }
   return null
 }
-
-const isListed = (val: string, name: string) => {
-  return val.toLocaleUpperCase() === name.toLocaleUpperCase()
-}
-
-export const isContactListed = (
-  content: Array<Record<number, string>>,
-  journey: journeys.ManageContactsJourney,
-): boolean => {
-  return content.some(
-    (item: Record<string, string>) =>
-      isListed(item.lastName, journey?.searchContact?.contact.lastName) ||
-      isListed(item.middleName, journey?.searchContact?.contact.middleName) ||
-      isListed(item.firstName, journey?.searchContact?.contact.firstName),
-  )
-}

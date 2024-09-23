@@ -4,7 +4,7 @@ import { Page } from '../../../../services/auditService'
 import { ContactSearchSchemaType } from './contactSearchSchema'
 import { ContactsService } from '../../../../services'
 import { PaginationRequest } from '../../../../data/prisonerOffenderSearchTypes'
-import { formatDateForApi, isContactListed } from '../../../../utils/utils'
+import { formatDateForApi } from '../../../../utils/utils'
 import config from '../../../../config'
 import Contact = contactsApiClientTypes.Contact
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
@@ -41,7 +41,6 @@ export default class ContactSearchController implements PageHandler {
     }
     const view = {
       prisonerDetails,
-      isContactListed: results?.content ? isContactListed(results.content, journey) : null,
       lastName: res.locals?.formResponses?.lastName ?? journey?.searchContact?.contact.lastName,
       firstName: res.locals?.formResponses?.firstName ?? journey?.searchContact?.contact.firstName,
       middleName: res.locals?.formResponses?.middleName ?? journey?.searchContact?.contact.middleName,

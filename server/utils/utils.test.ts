@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from 'uuid'
-import TestData from '../routes/testutils/testData'
 import {
   convertToTitleCase,
   formatDate,
@@ -9,7 +7,6 @@ import {
   isValidPrisonerNumber,
   extractPrisonerNumber,
   formatDateForApi,
-  isContactListed,
 } from './utils'
 
 describe('convert to title case', () => {
@@ -122,87 +119,5 @@ describe('formatDateForApi', () => {
 
     // Then
     expect(results).toEqual('2000-11-1')
-  })
-})
-
-describe('isContactListed', () => {
-  it('should return false if contact does not exists on contact search results', () => {
-    // Given
-    const content = []
-    content.push(TestData.contacts())
-    const journey = {
-      id: uuidv4(),
-      lastTouched: '2024-09-20T13:59:15.265Z',
-      search: {
-        searchTerm: 'Tim',
-      },
-      prisoner: {
-        firstName: 'TIMOTHY',
-        lastName: 'JACK',
-        prisonerNumber: 'G4793VF',
-        dateOfBirth: '1986-06-27',
-        prisonName: 'Moorland (HMP & YOI)',
-      },
-      searchContact: {
-        contact: {
-          lastName: 'last',
-          firstName: '',
-          middleName: '',
-          dateofBirth: '',
-        },
-        dateOfBirth: {
-          day: 11,
-          month: 10,
-          year: 2000,
-        },
-      },
-    }
-
-    // When
-    const results = isContactListed(content, journey)
-
-    // Then
-    expect(results).toBe(false)
-  })
-
-  it('should return true if contact does exists on contact search results', () => {
-    // Given
-    const contact = {
-      ...TestData.contacts(),
-      lastName: 'last',
-    }
-    const content = []
-    content.push(contact)
-    const journey = {
-      id: uuidv4(),
-      lastTouched: '2024-09-20T13:59:15.265Z',
-      search: {
-        searchTerm: 'Tim',
-      },
-      prisoner: {
-        firstName: 'TIMOTHY',
-        lastName: 'JACK',
-        prisonerNumber: 'G4793VF',
-        dateOfBirth: '1986-06-27',
-        prisonName: 'Moorland (HMP & YOI)',
-      },
-      searchContact: {
-        contact: {
-          lastName: 'last',
-          firstName: '',
-        },
-        dateOfBirth: {
-          day: 11,
-          month: 10,
-          year: 2000,
-        },
-      },
-    }
-
-    // When
-    const results = isContactListed(content, journey)
-
-    // Then
-    expect(results).toBe(true)
   })
 })

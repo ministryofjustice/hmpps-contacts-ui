@@ -7,7 +7,6 @@ import Pageable = contactsApiClientTypes.Pageable
 import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import ReferenceCodeType from '../enumeration/referenceCodeType'
-import { PaginationRequest } from './prisonerOffenderSearchTypes'
 
 export default class ContactsApiClient extends RestClient {
   constructor() {
@@ -52,7 +51,7 @@ export default class ContactsApiClient extends RestClient {
     user: Express.User,
     pagination?: Pageable,
   ): Promise<Contact> {
-    const paginationParameters = pagination ?? { page: 0, size: config.apis.prisonerSearchApi.pageSize || 20 }
+    const paginationParameters = pagination ?? { page: 0, size: config.apis.prisonerSearchApi.pageSize || 10 }
     return this.get(
       {
         path: `/contact/search`,
