@@ -10,6 +10,7 @@ import CreateContactJourney = journeys.CreateContactJourney
 import ReferenceDataService from '../../../../services/referenceDataService'
 import TestData from '../../../testutils/testData'
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
+import ReturnPointType = journeys.ReturnPointType
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/contactsService')
@@ -129,45 +130,28 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
   })
 })
 describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId', () => {
-  it('should create the contact and pass to success page if return point is home', async () => {
-    // Given
-    contactsService.createContact.mockResolvedValue(null)
-    journey.returnPoint = {
-      type: 'HOME',
-      url: '/ignored',
-    }
+  it.each(['MANAGE_PRISONER_CONTACTS', 'PRISONER_CONTACTS'])(
+    'should create the contact and pass to return url',
+    async (type: ReturnPointType) => {
+      // Given
+      contactsService.createContact.mockResolvedValue(null)
+      journey.returnPoint = {
+        type,
+        url: '/some-prisoner-contact-page',
+      }
 
-    // When
-    await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
-      .type('form')
-      .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/success`)
+      // When
+      await request(app)
+        .post(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+        .type('form')
+        .expect(302)
+        .expect('Location', '/some-prisoner-contact-page')
 
-    // Then
-    expect(contactsService.createContact).toHaveBeenCalledWith(journey, user)
-    expect(session.createContactJourneys[journeyId]).toBeUndefined()
-  })
-
-  it('should create the contact and pass to return url if return point is not home', async () => {
-    // Given
-    contactsService.createContact.mockResolvedValue(null)
-    journey.returnPoint = {
-      type: 'MANAGE_PRISONER_CONTACTS',
-      url: '/some-prisoner-contact-page',
-    }
-
-    // When
-    await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
-      .type('form')
-      .expect(302)
-      .expect('Location', '/some-prisoner-contact-page')
-
-    // Then
-    expect(contactsService.createContact).toHaveBeenCalledWith(journey, user)
-    expect(session.createContactJourneys[journeyId]).toBeUndefined()
-  })
+      // Then
+      expect(contactsService.createContact).toHaveBeenCalledWith(journey, user)
+      expect(session.createContactJourneys[journeyId]).toBeUndefined()
+    },
+  )
 
   it('should return to start if no journey in session', async () => {
     await request(app)

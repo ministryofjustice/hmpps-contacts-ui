@@ -32,7 +32,7 @@ export default class StartCreateContactJourneyController implements PageHandler 
         url: `/prisoner/${prisonerNumber}/contacts/list/${returnJourneyId}`,
       }
     } else {
-      returnPoint = { type: 'HOME', url: '/' }
+      returnPoint = { type: 'PRISONER_CONTACTS', url: `/prisoner/${prisonerNumber}/contacts/list` }
     }
     const journey: CreateContactJourney = {
       id: uuidv4(),
