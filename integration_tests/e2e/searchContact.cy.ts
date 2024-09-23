@@ -62,23 +62,7 @@ context('Search contact', () => {
     Page.verifyOnPage(SearchContactPage)
   })
 
-  it(`should pass validation when last name is entered`, () => {
-    const searchContactPage = Page.verifyOnPage(SearchContactPage)
-    searchContactPage.enterLastName('Mason')
-    searchContactPage.clickSearchButton()
-    searchContactPage.checkOnPage()
-
-    // searchContactPage.verifyShowsNameAs('Mason')
-    // searchContactPage.verifyShowsDobAs('14/01/1990')
-    // searchContactPage.verifyShowsAddressAs('Flat 32, Acacia Avenue')
-    // searchContactPage.verifyShowsAddressAs('Bunting')
-    // searchContactPage.verifyShowsAddressAs('SHEF')
-    // searchContactPage.verifyShowsAddressAs('SYORKS')
-    // searchContactPage.verifyShowsAddressAs('S2 3LK')
-    // searchContactPage.verifyShowsAddressAs('UK')
-  })
-
-  xit(`should not pass validation when last name is not entered`, () => {
+  it(`should not pass validation when last name is not entered`, () => {
     const searchContactPage = Page.verifyOnPage(SearchContactPage)
     searchContactPage.enterFirstName('Firstname')
     searchContactPage.enterMiddleName('Middlename')
@@ -166,5 +150,72 @@ context('Search contact', () => {
       expect($lis).to.have.lengthOf(1)
       expect($lis[0]).to.contain(THE_DATE_OF_BIRTH_MUST_NOT_BE_IN_THE_FUTURE)
     })
+  })
+
+  it(`should pass validation when only last name is entered`, () => {
+    const searchContactPage = Page.verifyOnPage(SearchContactPage)
+    searchContactPage.enterLastName('Mason')
+    searchContactPage.clickSearchButton()
+    searchContactPage.checkOnPage()
+
+    searchContactPage.verifyShowsNameAs('Mason')
+    searchContactPage.verifyShowsDobAs('14/01/1990')
+    searchContactPage.verifyShowsAddressAs('Flat 32, Acacia Avenue')
+    searchContactPage.verifyShowsAddressAs('Bunting')
+    searchContactPage.verifyShowsAddressAs('SHEF')
+    searchContactPage.verifyShowsAddressAs('SYORKS')
+    searchContactPage.verifyShowsAddressAs('S2 3LK')
+    searchContactPage.verifyShowsAddressAs('UK')
+  })
+
+  it(`should pass validation when all the fields are entered`, () => {
+    cy.task('stubContactSearch', {
+      results: {
+        totalPages: 1,
+        totalElements: 1,
+        content: [TestData.contacts()],
+      },
+      lastName: 'Mason',
+      firstName: 'Jones',
+      middleName: 'middle',
+      dateOfBirth: '1990-1-14',
+    })
+    const searchContactPage = Page.verifyOnPage(SearchContactPage)
+    searchContactPage.enterFirstName('Jones')
+    searchContactPage.enterLastName('Mason')
+    searchContactPage.enterMiddleName('middle')
+    searchContactPage.enterDay('14')
+    searchContactPage.enterMonth('1')
+    searchContactPage.enterYear('1990')
+    searchContactPage.clickSearchButton()
+    searchContactPage.checkOnPage()
+
+    searchContactPage.verifyShowsNameAs('Mason')
+    searchContactPage.verifyShowsDobAs('14/01/1990')
+    searchContactPage.verifyShowsAddressAs('Flat 32, Acacia Avenue')
+    searchContactPage.verifyShowsAddressAs('Bunting')
+    searchContactPage.verifyShowsAddressAs('SHEF')
+    searchContactPage.verifyShowsAddressAs('SYORKS')
+    searchContactPage.verifyShowsAddressAs('S2 3LK')
+    searchContactPage.verifyShowsAddressAs('UK')
+  })
+
+  it(`should display "The contact is not listed" link when contact name searched is not in the contact search results`, () => {
+    cy.task('stubContactSearch', {
+      results: {
+        totalPages: 1,
+        totalElements: 1,
+        content: [TestData.contacts()],
+      },
+      lastName: 'Williams',
+      firstName: '',
+      middleName: '',
+      dateOfBirth: '',
+    })
+    const searchContactPage = Page.verifyOnPage(SearchContactPage)
+    searchContactPage.enterLastName('Williams')
+    searchContactPage.clickSearchButton()
+    searchContactPage.checkOnPage()
+    searchContactPage.verifyShowsTheContactIsNotListedAs('The contact is not listed')
   })
 })

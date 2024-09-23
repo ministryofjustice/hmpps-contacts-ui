@@ -54,6 +54,11 @@ export default class SearchContactPage extends Page {
     return this
   }
 
+  verifyShowsTheContactIsNotListedAs(expected: string): SearchContactPage {
+    this.theContactIsNotListedLink().should('contain.text', expected)
+    return this
+  }
+
   private firstNameTextBox = (): PageElement => cy.get('#firstName')
 
   private middleNameTextBox = (): PageElement => cy.get('#middleName')
@@ -67,6 +72,8 @@ export default class SearchContactPage extends Page {
   private yearTextBox = (): PageElement => cy.get('#year')
 
   private searchButton = (): PageElement => cy.get('[data-qa=search-button]')
+
+  private theContactIsNotListedLink = (): PageElement => cy.get('[data-qa="no-result-message"]')
 
   private checkContactSearchTableNameValue = (): PageElement =>
     cy.get('.govuk-table__body > :nth-child(1) > :nth-child(1)')

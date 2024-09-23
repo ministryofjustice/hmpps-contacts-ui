@@ -116,8 +116,8 @@ export default {
       content: [],
     },
     lastName,
-    firstName,
     middleName,
+    firstName,
     dateOfBirth,
     page = '0',
     size = '20',
@@ -136,22 +136,29 @@ export default {
         urlPath: `/contact/search`,
         queryParameters: {
           lastName: {
-            equalTo: `${lastName}`,
-          },
-          middleName: {
-            equalTo: `${middleName}`,
+            equalTo: lastName,
           },
           firstName: {
-            equalTo: `${firstName}`,
+            equalTo: firstName,
+          },
+          middleName: {
+            or: [
+              {
+                equalTo: middleName,
+              },
+              {
+                absent: true,
+              },
+            ],
           },
           dateOfBirth: {
-            equalTo: `${dateOfBirth}`,
+            equalTo: dateOfBirth,
           },
           page: {
-            equalTo: `${page}`,
+            equalTo: page,
           },
           size: {
-            equalTo: `${size}`,
+            equalTo: size,
           },
         },
       },
