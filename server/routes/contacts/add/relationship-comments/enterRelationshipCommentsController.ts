@@ -14,7 +14,7 @@ export default class EnterRelationshipCommentsController implements PageHandler 
       journey,
       comments: res.locals?.formResponses?.comments ?? journey?.relationship?.comments,
     }
-    res.render('pages/contacts/common/enterRelationshipComments', view)
+    res.render('pages/contacts/add/enterRelationshipComments', view)
   }
 
   POST = async (

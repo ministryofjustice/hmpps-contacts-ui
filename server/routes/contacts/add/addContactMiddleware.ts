@@ -1,7 +1,7 @@
 import { Request, RequestHandler } from 'express'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 
-const ensureInCreateContactJourney = (): RequestHandler => {
+const ensureInAddContactJourney = (): RequestHandler => {
   return async (req: Request<PrisonerJourneyParams, unknown, unknown>, res, next) => {
     const { journeyId, prisonerNumber } = req.params
     if (!req.session.createContactJourneys) {
@@ -16,4 +16,4 @@ const ensureInCreateContactJourney = (): RequestHandler => {
   }
 }
 
-export default ensureInCreateContactJourney
+export default ensureInAddContactJourney

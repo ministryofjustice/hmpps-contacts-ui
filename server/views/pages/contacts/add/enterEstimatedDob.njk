@@ -1,16 +1,15 @@
 {% extends "../../../partials/layout.njk" %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
-{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
 
-{% set pageTitle = applicationName + " - Select next of kin" %}
-{% set title = "Is " + journey.names | formatName + " next of kin for the prisoner?" %}
+{% set pageTitle = applicationName + " - Enter date of birth" %}
+{% set title = "Is " + journey.names | formatName + " over 18 years old?" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-{% include '../common/partials/createContactBreadcrumbs.njk' %}
+{% include './partials/createContactBreadcrumbs.njk' %}
 {{ miniProfile(prisonerDetails) }}
 {% include '../../../partials/formErrorSummary.njk' %}
 <span class="govuk-caption-l">Manage Contacts</span>
@@ -20,20 +19,25 @@
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
                 {{ govukRadios({
-                    name: "isNextOfKin",
+                    name: "isOverEighteen",
                     items: [
                         {
                             value: 'YES',
                             text: 'YES' | formatYesNo,
-                            checked: isNextOfKin === 'YES'
+                            checked: isOverEighteen === 'YES'
                         },
                         {
                             value: 'NO',
                             text: 'NO' | formatYesNo,
-                            checked: isNextOfKin === 'NO'
+                            checked: isOverEighteen === 'NO'
+                        },
+                        {
+                            value: 'DO_NOT_KNOW',
+                            text: 'DO_NOT_KNOW' | formatYesNo,
+                            checked: isOverEighteen === 'DO_NOT_KNOW'
                         }
                     ],
-                    errorMessage: validationErrors | findError('isNextOfKin')
+                    errorMessage: validationErrors | findError('isOverEighteen')
                 }) }}
 
                 <div class="govuk-button-group">

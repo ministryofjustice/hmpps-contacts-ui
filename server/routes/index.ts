@@ -3,7 +3,7 @@ import type { Services } from '../services'
 import HomeRoutes from './home/routes'
 import PrisonerImageRoutes from './prisonerImage/prisonerImageRoutes'
 import asyncMiddleware from '../middleware/asyncMiddleware'
-import CreateContactRoutes from './contacts/create/createContactRoutes'
+import AddContactRoutes from './contacts/add/addContactRoutes'
 import ManageContactsRoutes from './contacts/manage/manageContactsRoutes'
 
 export default function routes({
@@ -15,7 +15,7 @@ export default function routes({
 }: Services): Router {
   const router = Router({ mergeParams: true })
 
-  router.use('', CreateContactRoutes(auditService, contactsService, referenceDataService, prisonerSearchService))
+  router.use('', AddContactRoutes(auditService, contactsService, referenceDataService, prisonerSearchService))
   router.use('/', ManageContactsRoutes(auditService, prisonerSearchService, contactsService))
   router.use('/', HomeRoutes(auditService))
 

@@ -14,7 +14,7 @@ export default class CreateContactEnterEstimatedDobController implements PageHan
       journey,
       isOverEighteen: res.locals?.formResponses?.isOverEighteen ?? journey?.dateOfBirth?.isOverEighteen,
     }
-    res.render('pages/contacts/create/enterEstimatedDob', view)
+    res.render('pages/contacts/add/enterEstimatedDob', view)
   }
 
   POST = async (

@@ -35,7 +35,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
       dateOfBirth,
       relationshipDescription,
     }
-    res.render('pages/contacts/create/checkAnswers', view)
+    res.render('pages/contacts/add/checkAnswers', view)
   }
 
   POST = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {

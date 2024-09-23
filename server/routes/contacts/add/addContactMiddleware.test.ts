@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
 import { SessionData } from 'express-session'
-import ensureInCreateContactJourney from './createContactMiddleware'
+import ensureInAddContactJourney from './addContactMiddleware'
 
 describe('createContactMiddleware', () => {
   describe('ensureInCreateContactJourney', () => {
@@ -28,7 +28,7 @@ describe('createContactMiddleware', () => {
         isCheckingAnswers: false,
         returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
       }
-      ensureInCreateContactJourney()(req, res, next)
+      ensureInAddContactJourney()(req, res, next)
       expect(next).toHaveBeenCalledTimes(1)
       expect(new Date(req.session.createContactJourneys[journeyId].lastTouched).getTime()).toBeGreaterThan(
         lastTouchedBeforeCall.getTime(),
@@ -37,13 +37,13 @@ describe('createContactMiddleware', () => {
     it('should return to start if the journey is not in the session', () => {
       const next = jest.fn()
       req.session.createContactJourneys = {}
-      ensureInCreateContactJourney()(req, res, next)
+      ensureInAddContactJourney()(req, res, next)
       expect(next).toHaveBeenCalledTimes(0)
       expect(res.redirect).toHaveBeenCalledWith(`/prisoner/${prisonerNumber}/contacts/create/start`)
     })
     it('should return to start if no journeys created at all', () => {
       const next = jest.fn()
-      ensureInCreateContactJourney()(req, res, next)
+      ensureInAddContactJourney()(req, res, next)
       expect(next).toHaveBeenCalledTimes(0)
       expect(res.redirect).toHaveBeenCalledWith(`/prisoner/${prisonerNumber}/contacts/create/start`)
     })

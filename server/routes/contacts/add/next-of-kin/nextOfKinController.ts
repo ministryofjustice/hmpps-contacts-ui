@@ -1,31 +1,31 @@
 import { Request, Response } from 'express'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
-import { EmergencyContactSchema } from './emergencyContactSchemas'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
+import { NextOfKinSchema } from './nextOfKinSchemas'
 
-export default class EmergencyContactController implements PageHandler {
-  public PAGE_NAME = Page.SELECT_EMERGENCY_CONTACT
+export default class NextOfKinController implements PageHandler {
+  public PAGE_NAME = Page.SELECT_NEXT_OF_KIN
 
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.createContactJourneys[journeyId]
     const view = {
       journey,
-      isEmergencyContact: res.locals?.formResponses?.isEmergencyContact ?? journey?.relationship?.isEmergencyContact,
+      isNextOfKin: res.locals?.formResponses?.isNextOfKin ?? journey?.relationship?.isNextOfKin,
     }
-    res.render('pages/contacts/common/selectEmergencyContact', view)
+    res.render('pages/contacts/add/selectNextOfKin', view)
   }
 
-  POST = async (req: Request<PrisonerJourneyParams, unknown, EmergencyContactSchema>, res: Response): Promise<void> => {
+  POST = async (req: Request<PrisonerJourneyParams, unknown, NextOfKinSchema>, res: Response): Promise<void> => {
     const { journeyId, prisonerNumber } = req.params
     const journey = req.session.createContactJourneys[journeyId]
     const { body } = req
-    journey.relationship.isEmergencyContact = body.isEmergencyContact
+    journey.relationship.isNextOfKin = body.isNextOfKin
     if (journey.isCheckingAnswers) {
       res.redirect(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
     } else {
-      res.redirect(`/prisoner/${prisonerNumber}/contacts/create/select-next-of-kin/${journeyId}`)
+      res.redirect(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
     }
   }
 }
