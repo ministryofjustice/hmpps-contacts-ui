@@ -1,5 +1,5 @@
-import ContactsPage from '../pages/listContacts'
 import Page from '../pages/page'
+import IndexPage from '../pages'
 
 context('Contacts', () => {
   beforeEach(() => {
@@ -9,7 +9,7 @@ context('Contacts', () => {
 
   it('Contacts cards visible', () => {
     cy.signIn()
-    const contactsPage = Page.verifyOnPage(ContactsPage)
+    const contactsPage = Page.verifyOnPage(IndexPage)
     contactsPage.manageContactsCard().should('contain.text', 'Manage contacts')
     contactsPage.manageContactsCard().should('contain.text', 'Manage the social contacts for a prisoner')
     contactsPage.manageContactRestrictionsCard().should('contain.text', 'Manage contact restrictions')
@@ -18,7 +18,7 @@ context('Contacts', () => {
 
   it('User can manage their restriction contacts', () => {
     cy.signIn()
-    const contactsPage = Page.verifyOnPage(ContactsPage)
+    const contactsPage = Page.verifyOnPage(IndexPage)
     contactsPage.manageContactRestrictionsCard().click()
 
     cy.get('a.card__link')

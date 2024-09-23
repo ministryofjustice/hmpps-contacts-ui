@@ -1,6 +1,5 @@
 import Page from '../pages/page'
 import EnterNamePage from '../pages/enterNamePage'
-import CreatedContactPage from '../pages/createdContactPage'
 import EnterContactDateOfBirthPage from '../pages/enterContactDateOfBirthPage'
 import CreateContactCheckYourAnswersPage from '../pages/createContactCheckYourAnswersPage'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
@@ -8,6 +7,7 @@ import TestData from '../../server/routes/testutils/testData'
 import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
 import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
+import ListContactsPage from '../pages/listContacts'
 
 context('Create contact and update from check answers excluding DOB changes', () => {
   beforeEach(() => {
@@ -17,6 +17,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
     cy.task('stubTitlesReferenceData')
     cy.task('stubRelationshipReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
+    cy.task('stubContactList', TestData.prisoner().prisonerNumber)
     cy.task('stubCreateContact', { id: 132456 })
     cy.signIn()
     cy.visit('/prisoner/A1234BC/contacts/create/start')
@@ -64,7 +65,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
       .verifyShowsNameAs('Last Updated, First Updated Middle Updated')
       .clickCreatePrisonerContact()
 
-    Page.verifyOnPage(CreatedContactPage)
+    Page.verifyOnPage(ListContactsPage)
 
     cy.verifyLastAPICall(
       {
@@ -104,7 +105,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
       .verifyShowRelationshipAs('Father')
       .clickCreatePrisonerContact()
 
-    Page.verifyOnPage(CreatedContactPage)
+    Page.verifyOnPage(ListContactsPage)
 
     cy.verifyLastAPICall(
       {
@@ -142,7 +143,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
       .verifyShowIsEmergencyContactAs('Yes')
       .clickCreatePrisonerContact()
 
-    Page.verifyOnPage(CreatedContactPage)
+    Page.verifyOnPage(ListContactsPage)
 
     cy.verifyLastAPICall(
       {
@@ -180,7 +181,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
       .verifyShowIsNextOfKinAs('Yes')
       .clickCreatePrisonerContact()
 
-    Page.verifyOnPage(CreatedContactPage)
+    Page.verifyOnPage(ListContactsPage)
 
     cy.verifyLastAPICall(
       {
@@ -218,7 +219,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
       .verifyShowCommentsAs('Some new comments I entered')
       .clickCreatePrisonerContact()
 
-    Page.verifyOnPage(CreatedContactPage)
+    Page.verifyOnPage(ListContactsPage)
 
     cy.verifyLastAPICall(
       {

@@ -37,20 +37,42 @@ describe('manageContactsMiddleware', () => {
       )
     })
 
-    it('should return to start if the journey is not in the session', () => {
-      req.session.manageContactsJourneys = {}
+    describe('with no prisoner in context', () => {
+      it('should return to start if the journey is not in the session and there is no prisoner param', () => {
+        req.session.manageContactsJourneys = {}
 
-      ensureInManageContactsJourney()(req, res, next)
+        ensureInManageContactsJourney()(req, res, next)
 
-      expect(next).toHaveBeenCalledTimes(0)
-      expect(res.redirect).toHaveBeenCalledWith('/contacts/manage/start')
+        expect(next).toHaveBeenCalledTimes(0)
+        expect(res.redirect).toHaveBeenCalledWith('/contacts/manage/start')
+      })
+
+      it('should return to start if no journeys at all and there is no prisoner param', () => {
+        ensureInManageContactsJourney()(req, res, next)
+
+        expect(next).toHaveBeenCalledTimes(0)
+        expect(res.redirect).toHaveBeenCalledWith('/contacts/manage/start')
+      })
     })
+    describe('with prisoner in context', () => {
+      const prisonerNumber = 'A1234BC'
+      it('should redirect to prisoner contact list if the journey is not in the session and there is a prisoner param', () => {
+        req.params = { journeyId, prisonerNumber }
+        req.session.manageContactsJourneys = {}
 
-    it('should return to start if no journeys at all', () => {
-      ensureInManageContactsJourney()(req, res, next)
+        ensureInManageContactsJourney()(req, res, next)
 
-      expect(next).toHaveBeenCalledTimes(0)
-      expect(res.redirect).toHaveBeenCalledWith('/contacts/manage/start')
+        expect(next).toHaveBeenCalledTimes(0)
+        expect(res.redirect).toHaveBeenCalledWith('/prisoner/A1234BC/contacts/list')
+      })
+
+      it('should redirect to prisoner contact list if the journey is not in the session and there are no journeys at all', () => {
+        req.params = { journeyId, prisonerNumber }
+        ensureInManageContactsJourney()(req, res, next)
+
+        expect(next).toHaveBeenCalledTimes(0)
+        expect(res.redirect).toHaveBeenCalledWith('/prisoner/A1234BC/contacts/list')
+      })
     })
   })
 })

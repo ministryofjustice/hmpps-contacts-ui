@@ -1,11 +1,9 @@
 import Page from '../pages/page'
 import EnterNamePage from '../pages/enterNamePage'
-import CreatedContactPage from '../pages/createdContactPage'
 import EnterContactDateOfBirthPage from '../pages/enterContactDateOfBirthPage'
 import CreateContactCheckYourAnswersPage from '../pages/createContactCheckYourAnswersPage'
 import EnterContactEstimatedDateOfBirthPage from '../pages/enterContactEstimatedDateOfBirthPage'
 import TestData from '../../server/routes/testutils/testData'
-import SearchPrisonerPage from '../pages/searchPrisoner'
 import ListContactsPage from '../pages/listContacts'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
@@ -20,7 +18,7 @@ context('Create Contacts', () => {
     cy.task('stubTitlesReferenceData')
     cy.task('stubRelationshipReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
-
+    cy.task('stubContactList', TestData.prisoner().prisonerNumber)
     cy.signIn()
   })
 
@@ -66,7 +64,7 @@ context('Create Contacts', () => {
       .verifyShowIsNextOfKinAs('Yes')
       .clickCreatePrisonerContact()
 
-    Page.verifyOnPage(CreatedContactPage)
+    Page.verifyOnPage(ListContactsPage)
     cy.verifyLastAPICall(
       {
         method: 'POST',
@@ -130,7 +128,7 @@ context('Create Contacts', () => {
       .verifyShowIsNextOfKinAs('No')
       .clickCreatePrisonerContact()
 
-    Page.verifyOnPage(CreatedContactPage)
+    Page.verifyOnPage(ListContactsPage)
     cy.verifyLastAPICall(
       {
         method: 'POST',
@@ -419,26 +417,9 @@ context('Create Contacts', () => {
   })
 
   it('Can create a contact from prisoner contact page', () => {
-    const { prisonerNumber } = TestData.prisoner()
-    cy.task('stubPrisoners', {
-      results: {
-        totalPages: 1,
-        totalElements: 1,
-        content: [TestData.prisoner()],
-      },
-      prisonId: 'HEI',
-      term: prisonerNumber,
-    })
-    cy.task('stubContactList', prisonerNumber)
     cy.task('stubCreateContact', { id: 132456 })
-
-    cy.visit('/contacts/manage/prisoner-search/start')
-    const searchPrisonerPage = Page.verifyOnPage(SearchPrisonerPage)
-    searchPrisonerPage.prisonerSearchFormField().clear().type(prisonerNumber)
-    searchPrisonerPage.prisonerSearchSearchButton().click()
-
-    Page.verifyOnPage(SearchPrisonerPage)
-    searchPrisonerPage.clickPrisonerLink()
+    const { prisonerNumber } = TestData.prisoner()
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/list`)
 
     Page.verifyOnPage(ListContactsPage) //
       .clickCreateNewContactButton()

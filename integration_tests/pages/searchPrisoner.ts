@@ -18,6 +18,4 @@ export default class SearchPrisonerPage extends Page {
   noResultMessage = (): PageElement => cy.get('[data-qa="no-result-message"]')
 
   clickPrisonerLink = (): PageElement => cy.get('.govuk-table__row > :nth-child(1) > .govuk-link').click()
-
-  clickAddContactButton = (): PageElement => cy.get('[data-qa="add-contact-button"]').click()
 }
