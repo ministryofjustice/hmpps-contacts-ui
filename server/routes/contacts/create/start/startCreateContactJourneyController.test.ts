@@ -56,12 +56,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
     expect(Object.entries(session.createContactJourneys)).toHaveLength(1)
   })
 
-  it('should set the return point to home if no return parameters are specified', async () => {
+  it('should set the return point to prisoner contact if no return parameters are specified', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
     const expectedReturnPoint: ReturnPoint = {
-      type: 'HOME',
-      url: '/',
+      type: 'PRISONER_CONTACTS',
+      url: `/prisoner/${prisonerNumber}/contacts/list`,
     }
 
     // When
@@ -130,7 +130,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
         id: uuidv4(),
         lastTouched: new Date().toISOString(),
         isCheckingAnswers: false,
-        returnPoint: { type: 'HOME', url: '/foo-bar' },
+        returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
         prisonerNumber,
         names: {
           lastName: 'foo',
@@ -165,35 +165,35 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
         lastTouched: new Date(2024, 1, 1, 11, 30).toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { type: 'HOME', url: '/foo-bar' },
+        returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
       },
       {
         id: 'middle-aged',
         lastTouched: new Date(2024, 1, 1, 12, 30).toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { type: 'HOME', url: '/foo-bar' },
+        returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
       },
       {
         id: 'youngest',
         lastTouched: new Date(2024, 1, 1, 14, 30).toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { type: 'HOME', url: '/foo-bar' },
+        returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
       },
       {
         id: 'oldest',
         lastTouched: new Date(2024, 1, 1, 10, 30).toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { type: 'HOME', url: '/foo-bar' },
+        returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
       },
       {
         id: 'young',
         lastTouched: new Date(2024, 1, 1, 13, 30).toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { type: 'HOME', url: '/foo-bar' },
+        returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
       },
     ]
 

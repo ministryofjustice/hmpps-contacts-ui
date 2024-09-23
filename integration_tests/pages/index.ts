@@ -6,4 +6,8 @@ export default class IndexPage extends Page {
   }
 
   headerUserName = (): PageElement => cy.get('[data-qa=header-user-name]')
+
+  manageContactsCard = (): PageElement => cy.get('[data-qa=manage-contacts-card]')
+
+  manageContactRestrictionsCard = (): PageElement => cy.get('[data-qa=manage-restrictions-card]')
 }
