@@ -36,8 +36,8 @@ export default class TestData {
 
   static contacts = ({
     id = 13,
-    lastName = 'Jones',
-    firstName = 'Mason',
+    lastName = 'Mason',
+    firstName = 'Jones',
     middleName = 'M.',
     dateOfBirth = '1990-01-14',
     flat = '32',

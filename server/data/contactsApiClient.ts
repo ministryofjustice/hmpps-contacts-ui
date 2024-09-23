@@ -48,8 +48,8 @@ export default class ContactsApiClient extends RestClient {
 
   async searchContact(
     contactSearchRequest: ContactSearchRequest,
-    pagination: PaginationRequest,
     user: Express.User,
+    pagination?: PaginationRequest,
   ): Promise<Contact> {
     const paginationParameters = pagination ?? { page: 0, size: config.apis.prisonerSearchApi.pageSize || 20 }
     return this.get(

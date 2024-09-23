@@ -6,7 +6,7 @@ import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import IsOverEighteenOptions = journeys.YesNoOrDoNotKnow
-import { PagePrisoner, PaginationRequest } from '../data/prisonerOffenderSearchTypes'
+import { PaginationRequest } from '../data/prisonerOffenderSearchTypes'
 import TestData from '../routes/testutils/testData'
 
 jest.mock('../data/contactsApiClient')
@@ -240,7 +240,7 @@ describe('contactsService', () => {
 
     it('Propagates errors', async () => {
       apiClient.searchContact.mockRejectedValue(new Error('some error'))
-      await expect(apiClient.searchContact(contactSearchRequest, pagination, user)).rejects.toEqual(
+      await expect(apiClient.searchContact(contactSearchRequest, user, pagination)).rejects.toEqual(
         new Error('some error'),
       )
     })

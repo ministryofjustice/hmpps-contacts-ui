@@ -39,10 +39,9 @@ export default class ContactSearchController implements PageHandler {
             user,
           )
     }
-
     const view = {
       prisonerDetails,
-      isContactListed: results ? isContactListed(results.content, journey) : false,
+      isContactListed: results?.content ? isContactListed(results.content, journey) : null,
       lastName: res.locals?.formResponses?.lastName ?? journey?.searchContact?.contact.lastName,
       firstName: res.locals?.formResponses?.firstName ?? journey?.searchContact?.contact.firstName,
       middleName: res.locals?.formResponses?.middleName ?? journey?.searchContact?.contact.middleName,

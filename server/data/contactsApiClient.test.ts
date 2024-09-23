@@ -180,7 +180,7 @@ describe('contactsApiClient', () => {
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, results)
 
-      const output = await contactsApiClient.searchContact(contactSearchRequest, { page: 0, size: 20 }, user)
+      const output = await contactsApiClient.searchContact(contactSearchRequest, user, { page: 0, size: 20 })
 
       expect(output).toEqual(results)
     })

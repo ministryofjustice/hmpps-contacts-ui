@@ -61,6 +61,6 @@ export default class ContactsService {
     pagination: PaginationRequest,
     user: Express.User,
   ): Promise<Contact> {
-    return this.contactsApiClient.searchContact(contactSearchRequest, pagination, user)
+    return this.contactsApiClient.searchContact(contactSearchRequest, user, pagination)
   }
 }
