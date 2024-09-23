@@ -81,7 +81,7 @@ export const formatDateForApi = (dateOfBirth: string) => {
 }
 
 const isListed = (val: string, name: string) => {
-  return val === name || val.toLocaleUpperCase() === name || val.toLocaleLowerCase() === name
+  return val.toLocaleUpperCase() === name.toLocaleUpperCase()
 }
 
 export const isContactListed = (

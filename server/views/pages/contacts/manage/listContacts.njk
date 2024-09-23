@@ -126,14 +126,14 @@
         </a>
       </li>
     </ul>
-    <div class="govuk-tabs__panel" id="active-contacts">
+    <div class="govuk-tabs__panel contact-list" id="active-contacts">
         {% if activeContacts.length > 0 %}
             {{ createTable(activeContacts) }}
         {% else %}
         <div class="govuk-!-static-margin-top-4">{{ prisonerDoesNotHaveAnyContactsMessage(prisonerDetails, 'active') }}</div>
         {% endif %}
     </div>
-    <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="inactive-contacts">
+    <div class="govuk-tabs__panel govuk-tabs__panel--hidden contact-list" id="inactive-contacts">
         {% if inactiveContacts.length > 0 %}
             {{ createTable(inactiveContacts) }}
         {% else %}

@@ -3,6 +3,7 @@ import RestClient from './restClient'
 import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
+import Pageable = contactsApiClientTypes.Pageable
 import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import ReferenceCodeType from '../enumeration/referenceCodeType'
@@ -49,7 +50,7 @@ export default class ContactsApiClient extends RestClient {
   async searchContact(
     contactSearchRequest: ContactSearchRequest,
     user: Express.User,
-    pagination?: PaginationRequest,
+    pagination?: Pageable,
   ): Promise<Contact> {
     const paginationParameters = pagination ?? { page: 0, size: config.apis.prisonerSearchApi.pageSize || 20 }
     return this.get(

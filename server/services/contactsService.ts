@@ -3,8 +3,8 @@ import CreateContactJourney = journeys.CreateContactJourney
 import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
+import Pageable = contactsApiClientTypes.Pageable
 import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
-import { PaginationRequest } from '../data/prisonerOffenderSearchTypes'
 
 export default class ContactsService {
   constructor(private readonly contactsApiClient: ContactsApiClient) {}
@@ -58,7 +58,7 @@ export default class ContactsService {
 
   async searchContact(
     contactSearchRequest: ContactSearchRequest,
-    pagination: PaginationRequest,
+    pagination: Pageable,
     user: Express.User,
   ): Promise<Contact> {
     return this.contactsApiClient.searchContact(contactSearchRequest, user, pagination)

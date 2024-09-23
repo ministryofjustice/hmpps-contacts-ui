@@ -208,12 +208,17 @@ context('Search contact', () => {
         content: [TestData.contacts()],
       },
       lastName: 'Williams',
-      firstName: '',
-      middleName: '',
-      dateOfBirth: '',
+      firstName: 'Jack',
+      middleName: 'middle',
+      dateOfBirth: '1990-1-14',
     })
     const searchContactPage = Page.verifyOnPage(SearchContactPage)
+    searchContactPage.enterFirstName('Jack')
     searchContactPage.enterLastName('Williams')
+    searchContactPage.enterMiddleName('middle')
+    searchContactPage.enterDay('14')
+    searchContactPage.enterMonth('1')
+    searchContactPage.enterYear('1990')
     searchContactPage.clickSearchButton()
     searchContactPage.checkOnPage()
     searchContactPage.verifyShowsTheContactIsNotListedAs('The contact is not listed')

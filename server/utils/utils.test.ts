@@ -147,6 +147,8 @@ describe('isContactListed', () => {
         contact: {
           lastName: 'last',
           firstName: '',
+          middleName: '',
+          dateofBirth: '',
         },
         dateOfBirth: {
           day: 11,
