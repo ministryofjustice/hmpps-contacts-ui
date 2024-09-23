@@ -73,7 +73,7 @@ context('Create Contacts', () => {
       {
         lastName: 'Last',
         firstName: 'First',
-        isOverEighteen: 'DO_NOT_KNOW',
+        estimatedIsOverEighteen: 'DO_NOT_KNOW',
         createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',

@@ -69,7 +69,7 @@ describe('contactsService', () => {
         firstName: 'first',
         middleName: 'middle',
         dateOfBirth: new Date('1982-06-01T00:00:00.000Z'),
-        isOverEighteen: undefined,
+        estimatedIsOverEighteen: undefined,
         createdBy: 'user1',
         relationship: {
           prisonerNumber,
@@ -120,7 +120,7 @@ describe('contactsService', () => {
         firstName: 'first',
         middleName: undefined,
         dateOfBirth: undefined,
-        isOverEighteen: 'DO_NOT_KNOW',
+        estimatedIsOverEighteen: 'DO_NOT_KNOW',
         relationship: {
           prisonerNumber,
           relationshipCode: 'MOT',
@@ -174,7 +174,7 @@ describe('contactsService', () => {
         firstName: 'first',
         middleName: undefined,
         dateOfBirth: undefined,
-        isOverEighteen: expected,
+        estimatedIsOverEighteen: expected,
         relationship: {
           prisonerNumber,
           relationshipCode: 'MOT',
