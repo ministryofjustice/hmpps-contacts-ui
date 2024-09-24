@@ -51,7 +51,7 @@ export default class ContactsApiClient extends RestClient {
     user: Express.User,
     pagination?: Pageable,
   ): Promise<Contact> {
-    const paginationParameters = pagination ?? { page: 0, size: config.apis.prisonerSearchApi.pageSize || 10 }
+    const paginationParameters = pagination ?? { page: 0, size: config.apis.contactsApi.pageSize || 10 }
     return this.get(
       {
         path: `/contact/search`,
