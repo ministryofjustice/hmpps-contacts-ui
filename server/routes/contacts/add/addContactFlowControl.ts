@@ -46,7 +46,10 @@ function nextPageForAddContactJourney(currentPage: Page, journey: AddContactJour
     }
     return `/prisoner/${journey.prisonerNumber}/contacts/create/check-answers/${journey.id}`
   }
-  if (currentPage === Page.CREATE_CONTACT_START_PAGE) {
+  if (currentPage === Page.CREATE_CONTACT_START_PAGE || currentPage === Page.CONTACT_SEARCH_PAGE) {
+    return `/prisoner/${journey.prisonerNumber}/contacts/search/${journey.id}`
+  }
+  if (currentPage === Page.ADD_CONTACT_MODE_PAGE && journey.mode === 'NEW') {
     return `/prisoner/${journey.prisonerNumber}/contacts/create/enter-name/${journey.id}`
   }
   if (currentPage === Page.CREATE_CONTACT_NAME_PAGE) {

@@ -213,12 +213,14 @@
             {% endif %}
         </div>
 
-        <div class="govuk-grid-column-full govuk-!-margin-top-4">
-            <a  href="#" class="govuk-body" data-qa="no-result-message" id="no-result-message">
-                The contact is not listed
-            </a>
-        </div>
     {% endif %}
+     {% if results %}
+         <div class="govuk-grid-column-full govuk-!-margin-top-4">
+             <a  href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/add/mode/NEW/{{ journey.id }}" class="govuk-body" data-qa="contact-not-listed-link" id="contact-not-listed-link">
+                 The contact is not listed
+             </a>
+         </div>
+     {% endif %}
 </div>
 
 {% endblock %}

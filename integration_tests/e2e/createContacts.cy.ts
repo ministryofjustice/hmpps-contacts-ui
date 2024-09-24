@@ -9,6 +9,7 @@ import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
 import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
+import SearchContactPage from '../pages/searchContactPage'
 
 context('Create Contacts', () => {
   beforeEach(() => {
@@ -19,13 +20,36 @@ context('Create Contacts', () => {
     cy.task('stubRelationshipReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', TestData.prisoner().prisonerNumber)
+    cy.task('stubCreateContact', { id: 132456 })
+    cy.task('stubContactSearch', {
+      results: {
+        totalPages: 0,
+        totalElements: 0,
+        content: [],
+      },
+      lastName: 'FOO',
+      firstName: '',
+      middleName: '',
+      dateOfBirth: '',
+    })
+
     cy.signIn()
+    const { prisonerNumber } = TestData.prisoner()
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/list`)
+
+    Page.verifyOnPage(ListContactsPage) //
+      .clickAddNewContactButton()
+
+    Page.verifyOnPage(SearchContactPage) //
+      .enterLastName('FOO')
+      .clickSearchButton()
+
+    Page.verifyOnPage(SearchContactPage) //
+      .verifyShowsTheContactIsNotListedAs('The contact is not listed')
+      .clickTheContactIsNotListed()
   })
 
   it('Can create a contact with only required fields with direct link', () => {
-    cy.visit('/prisoner/A1234BC/contacts/create/start')
-    cy.task('stubCreateContact', { id: 132456 })
-
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
@@ -86,8 +110,6 @@ context('Create Contacts', () => {
   })
 
   it('Can create a contact with all fields', () => {
-    cy.visit('/prisoner/A1234BC/contacts/create/start')
-    cy.task('stubCreateContact', { id: 132456 })
     Page.verifyOnPage(EnterNamePage) //
       .selectTitle('Mr')
       .enterLastName('Last')
@@ -153,8 +175,6 @@ context('Create Contacts', () => {
   })
 
   it('First name is required', () => {
-    cy.visit('/prisoner/A1234BC/contacts/create/start')
-
     const enterNamePage = Page.verifyOnPage(EnterNamePage)
     enterNamePage.enterLastName('Last').clickContinue()
 
@@ -162,8 +182,6 @@ context('Create Contacts', () => {
   })
 
   it('Last name is required', () => {
-    cy.visit('/prisoner/A1234BC/contacts/create/start')
-
     const enterNamePage = Page.verifyOnPage(EnterNamePage)
     enterNamePage.enterFirstName('First').clickContinue()
 
@@ -171,8 +189,6 @@ context('Create Contacts', () => {
   })
 
   it('Names are limited to 35 characters', () => {
-    cy.visit('/prisoner/A1234BC/contacts/create/start')
-
     const enterNamePage = Page.verifyOnPage(EnterNamePage)
     enterNamePage //
       .enterLastName('Last'.padEnd(36))
@@ -186,8 +202,6 @@ context('Create Contacts', () => {
   })
 
   it('Cannot enter a blank first name or last name', () => {
-    cy.visit('/prisoner/A1234BC/contacts/create/start')
-
     const enterNamePage = Page.verifyOnPage(EnterNamePage)
     enterNamePage //
       .enterLastName('  ')
@@ -199,8 +213,6 @@ context('Create Contacts', () => {
   })
 
   it('Must select the contacts relationship to the prisoner', () => {
-    cy.visit('/prisoner/A1234BC/contacts/create/start')
-
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
@@ -213,8 +225,6 @@ context('Create Contacts', () => {
   })
 
   it('Must select whether contact is an emergency contact', () => {
-    cy.visit('/prisoner/A1234BC/contacts/create/start')
-
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
@@ -236,8 +246,6 @@ context('Create Contacts', () => {
   })
 
   it('Must select whether contact is an emergency contact', () => {
-    cy.visit('/prisoner/A1234BC/contacts/create/start')
-
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
@@ -260,8 +268,6 @@ context('Create Contacts', () => {
   })
 
   it('Must select whether dob is known', () => {
-    cy.visit('/prisoner/A1234BC/contacts/create/start')
-
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
@@ -288,8 +294,6 @@ context('Create Contacts', () => {
   })
 
   it('Must enter dob if it is known', () => {
-    cy.visit('/prisoner/A1234BC/contacts/create/start')
-
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
@@ -321,8 +325,6 @@ context('Create Contacts', () => {
   })
 
   it('Day, month and year must be numbers', () => {
-    cy.visit('/prisoner/A1234BC/contacts/create/start')
-
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
@@ -359,8 +361,6 @@ context('Create Contacts', () => {
   })
 
   it('Must select whether contact is over 18 if no dob is known', () => {
-    cy.visit('/prisoner/A1234BC/contacts/create/start')
-
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
@@ -391,9 +391,6 @@ context('Create Contacts', () => {
   })
 
   it('Relationship comments must be less than 240 characters', () => {
-    cy.visit('/prisoner/A1234BC/contacts/create/start')
-    cy.task('stubCreateContact', { id: 132456 })
-
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
@@ -416,52 +413,7 @@ context('Create Contacts', () => {
     commentsPage.hasFieldInError('comments', 'Additional information must be 240 characters or less')
   })
 
-  it('Can create a contact from prisoner contact page', () => {
-    cy.task('stubCreateContact', { id: 132456 })
-    const { prisonerNumber } = TestData.prisoner()
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/list`)
-
-    Page.verifyOnPage(ListContactsPage) //
-      .clickCreateNewContactButton()
-
-    Page.verifyOnPage(EnterNamePage) //
-      .enterLastName('Last')
-      .enterFirstName('First')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectRelationshipPage, 'Last, First') //
-      .hasSelectedRelationshipHint('')
-      .selectRelationship('MOT')
-      .hasSelectedRelationshipHint("Last, First is the prisoner's mother")
-      .clickContinue()
-
-    Page.verifyOnPage(SelectEmergencyContactPage, 'Last, First') //
-      .selectIsEmergencyContact('NO')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectNextOfKinPage, 'Last, First') //
-      .selectIsNextOfKin('NO')
-      .clickContinue()
-
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First') //
-      .selectIsKnown('YES')
-      .enterDay('15')
-      .enterMonth('06')
-      .enterYear('1982')
-      .clickContinue()
-
-    Page.verifyOnPage(RelationshipCommentsPage, 'Last, First').clickContinue()
-
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .clickCreatePrisonerContact()
-
-    Page.verifyOnPage(ListContactsPage)
-  })
-
   it('Can navigate back through all pages when no DOB', () => {
-    cy.visit('/prisoner/A1234BC/contacts/create/start')
-    cy.task('stubCreateContact', { id: 132456 })
-
     const checkYourAnswersPage = Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
@@ -489,9 +441,6 @@ context('Create Contacts', () => {
   })
 
   it('Can navigate back through all pages when DOB is known', () => {
-    cy.visit('/prisoner/A1234BC/contacts/create/start')
-    cy.task('stubCreateContact', { id: 132456 })
-
     const checkYourAnswersPage = Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')

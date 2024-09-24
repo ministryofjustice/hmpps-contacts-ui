@@ -17,7 +17,7 @@ export default class ContactSearchController implements PageHandler {
   GET = async (req: Request, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const { prisonerDetails, user } = res.locals
-    const journey = req.session.manageContactsJourneys[journeyId]
+    const journey = req.session.addContactJourneys[journeyId]
     const validationErrors = res.locals.validationErrors?.search
     const page = Number(req.query.page as unknown) || 0
     const pageSize = config.apis.prisonerSearchApi.pageSize || 20
@@ -55,7 +55,7 @@ export default class ContactSearchController implements PageHandler {
   POST = async (req: Request<{ journeyId: string }, ContactSearchSchemaType>, res: Response): Promise<void> => {
     const { lastName, firstName, middleName, day, month, year } = req.body
     const { journeyId } = req.params
-    const journey = req.session.manageContactsJourneys[journeyId]
+    const journey = req.session.addContactJourneys[journeyId]
     journey.searchContact = {
       contact: {
         lastName,
@@ -69,6 +69,6 @@ export default class ContactSearchController implements PageHandler {
       },
     }
 
-    res.redirect(`/prisoner/${journey.prisoner.prisonerNumber}/contacts/search/${journeyId}`)
+    res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/search/${journeyId}`)
   }
 }

@@ -100,7 +100,7 @@ describe('listContactsController', () => {
       expect($('[data-qa="mini-profile-cell-location"]').text()).toStrictEqual('1-1-C-028')
 
       // Button
-      expect($('.govuk-button').text()).toContain('Create new prisoner contact')
+      expect($('.govuk-button').text()).toContain('Add prisoner contact')
 
       // Contact List Table
       expect($('.govuk-heading-l').text()).toStrictEqual('Contacts for Smith, John')
@@ -291,7 +291,7 @@ describe('listContactsController', () => {
       expect($('[data-qa="mini-profile-cell-location"]').text()).toStrictEqual('1-1-C-028')
 
       // Button
-      expect($('.govuk-button').text()).toContain('Create new prisoner contact')
+      expect($('.govuk-button').text()).toContain('Add prisoner contact')
 
       // Contact List Table
       expect($('.govuk-heading-l').text()).toStrictEqual('Contacts for Smith, John')
