@@ -4,9 +4,19 @@ import ContactsService from './contactsService'
 import CreateContactJourney = journeys.CreateContactJourney
 import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
+import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import IsOverEighteenOptions = journeys.YesNoOrDoNotKnow
+import { PaginationRequest } from '../data/prisonerOffenderSearchTypes'
+import TestData from '../routes/testutils/testData'
 
 jest.mock('../data/contactsApiClient')
+const contacts = TestData.contacts()
+const contactSearchRequest: ContactSearchRequest = {
+  lastName: 'last',
+  middleName: '',
+  firstName: 'first',
+  dateOfBirth: '1980-12-10T00:00:00.000Z',
+}
 
 describe('contactsService', () => {
   const user = { token: 'userToken', username: 'user1' } as Express.User
@@ -199,6 +209,40 @@ describe('contactsService', () => {
           user,
         ),
       ).rejects.toBeInstanceOf(BadRequest)
+    })
+  })
+
+  describe('searchContact', () => {
+    const pagination = { page: 0, size: 20 } as PaginationRequest
+
+    it('Retrieves search contact details matching the search criteria', async () => {
+      // Given
+      const contactResults = {
+        totalPages: 1,
+        totalElements: 1,
+        first: true,
+        last: true,
+        size: 20,
+        empty: false,
+        content: [contacts],
+      } as ContactSearchRequest
+
+      // When
+      await apiClient.searchContact.mockResolvedValue(contactResults)
+      const results = await service.searchContact(contactSearchRequest, pagination, user)
+
+      // Then
+      expect(results?.content[0].lastName).toEqual(contacts.lastName)
+      expect(results?.content[0].firstName).toEqual(contacts.firstName)
+      expect(results.totalPages).toEqual(1)
+      expect(results.totalElements).toEqual(1)
+    })
+
+    it('Propagates errors', async () => {
+      apiClient.searchContact.mockRejectedValue(new Error('some error'))
+      await expect(apiClient.searchContact(contactSearchRequest, user, pagination)).rejects.toEqual(
+        new Error('some error'),
+      )
     })
   })
 })

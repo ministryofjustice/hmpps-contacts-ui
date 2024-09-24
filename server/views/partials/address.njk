@@ -1,0 +1,14 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro convertAddressToLines(address) %}
+    {{ govukSummaryList({
+        classes: 'govuk-!-margin-bottom-0',
+        rows: [
+            {
+                key: { text: '' },
+                value: { html: address | addressToLines},
+                classes: 'govuk-summary-list__row--no-border'
+            }
+        ]
+    }) }}
+{% endmacro %}

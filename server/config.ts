@@ -115,6 +115,7 @@ export default {
         deadline: Number(get('CONTACTS_API_TIMEOUT_DEADLINE', 10000)),
       },
       agent: new AgentConfig(Number(get('CONTACTS_API_TIMEOUT_RESPONSE', 10000))),
+      pageSize: 10,
     },
     componentApi: {
       timeout: {

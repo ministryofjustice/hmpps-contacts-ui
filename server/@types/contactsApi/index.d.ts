@@ -24,6 +24,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/contact/{contactId}/relationship': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Add a new contact relationship
+     * @description Creates a new relationship between the contact and a prisoner.
+     */
+    post: operations['addContactRelationship']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/reference-codes/group/{groupCode}': {
     parameters: {
       query?: never
@@ -355,6 +375,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/contact/search': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Search contacts
+     * @description Search all contacts by their last name or first name or middle name or date of birth
+     */
+    get: operations['searchContacts']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/city-reference': {
     parameters: {
       query?: never
@@ -420,7 +460,7 @@ export type webhooks = Record<string, never>
 export interface components {
   schemas: {
     /** @description A description of the relationship if the contact should be linked to a prisoner */
-    ContactRelationshipRequest: {
+    ContactRelationship: {
       /**
        * @description Prisoner number (NOMS ID)
        * @example A1234BC
@@ -547,6 +587,14 @@ export interface components {
        * @example 2024-01-01T00:00:00Z
        */
       createdTime: string
+    }
+    AddContactRelationshipRequest: {
+      relationship: components['schemas']['ContactRelationship']
+      /**
+       * @description The id of the user creating the contact
+       * @example JD000001
+       */
+      createdBy: string
     }
     /** @description Describes the details of a reference code */
     ReferenceCode: {
@@ -805,6 +853,117 @@ export interface components {
        */
       displaySequence: number
     }
+    Pageable: {
+      /** Format: int32 */
+      page?: number
+      /** Format: int32 */
+      size?: number
+      sort?: string[]
+    }
+    /** @description Contact Search Request */
+    ContactSearchRequest: {
+      /**
+       * @description Last name of the contact
+       * @example Jones
+       */
+      lastName: string
+      /**
+       * @description First name of the contact
+       * @example Elton
+       */
+      firstName?: string | null
+      /**
+       * @description Middle name of the contact
+       * @example Simon
+       */
+      middleName?: string | null
+      /**
+       * Format: date
+       * @description Date of Birth of the contact in ISO format
+       */
+      dateOfBirth?: string | null
+    }
+    /** @description The details of a contact as an individual */
+    ContactSearch: {
+      /**
+       * Format: int64
+       * @description The id of the contact
+       * @example 123456
+       */
+      id: number
+      /**
+       * @description The last name of the contact
+       * @example Doe
+       */
+      lastName: string
+      /**
+       * @description The first name of the contact
+       * @example John
+       */
+      firstName: string
+      /**
+       * @description The middle name of the contact, if any
+       * @example William
+       */
+      middleName?: string | null
+      /**
+       * Format: date
+       * @description The date of birth of the contact, if known
+       * @example 1980-01-01
+       */
+      dateOfBirth?: string | null
+      /**
+       * @description The id of the user who created the contact
+       * @example JD000001
+       */
+      createdBy?: string
+      /**
+       * Format: date-time
+       * @description The timestamp of when the contact was created
+       * @example 2024-01-01T00:00:00Z
+       */
+      createdTime?: string
+      /**
+       * @description The flat of the contact address, if known
+       * @example 01
+       */
+      flat?: string | null
+      /**
+       * @description The property of the contact address, if known
+       * @example 01
+       */
+      property?: string | null
+      /**
+       * @description The street of the contact address, if known
+       * @example Bluebell Crescent
+       */
+      street?: string | null
+      /**
+       * @description The area of the contact address, if known
+       * @example Birmingham
+       */
+      area?: string | null
+      /**
+       * @description The city code of the contact address, if known
+       * @example Birmingham
+       */
+      cityCode?: string | null
+      /**
+       * @description The county code of the contact address, if known
+       * @example SYORKS
+       */
+      countyCode?: string | null
+      /**
+       * @description The postcode of the contact address, if known
+       * @example B42 2QJ
+       */
+      postCode?: string | null
+      /**
+       * @description The country code of the contact address, if known
+       * @example UK
+       */
+      countryCode?: string | null
+    }
     /** @description City reference entity */
     City: {
       /**
@@ -894,6 +1053,72 @@ export interface operations {
         }
       }
       /** @description Could not find the prisoner that this contact has a relationship to */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  addContactRelationship: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AddContactRelationshipRequest']
+      }
+    }
+    responses: {
+      /** @description Created the relationship successfully */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Contact']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the prisoner or contact that this relationship relates to */
       404: {
         headers: {
           [name: string]: unknown
@@ -1701,6 +1926,58 @@ export interface operations {
         }
         content: {
           'application/json': Record<string, never>
+        }
+      }
+    }
+  }
+  searchContacts: {
+    parameters: {
+      query: {
+        /** @description Pageable configurations */
+        pageable: components['schemas']['Pageable']
+        /** @description Contact search criteria */
+        request: components['schemas']['ContactSearchRequest']
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found contacts */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ContactSearch']
+        }
+      }
+      /** @description Invalid request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
         }
       }
     }

@@ -1,11 +1,11 @@
 import nock from 'nock'
-
 import config from '../config'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import ContactsApiClient from './contactsApiClient'
 import ReferenceCodeType from '../enumeration/referenceCodeType'
 import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
+import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 
 jest.mock('./tokenStore/inMemoryTokenStore')
@@ -140,6 +140,49 @@ describe('contactsApiClient', () => {
           expect(e.data).toEqual(expectedErrorBody)
         }
       })
+    })
+  })
+
+  describe('searchContact', () => {
+    it('should return expected data', async () => {
+      const contactSearchRequest: ContactSearchRequest = {
+        lastName: 'last',
+        middleName: 'middle',
+        firstName: 'first',
+        dateOfBirth: '1980-12-10T00:00:00.000Z',
+      }
+
+      const results = {
+        totalPage: 1,
+        totalElements: 1,
+        content: [
+          {
+            lastName: 'last',
+            firstName: 'middle',
+            middleName: 'first',
+            dateOfBirth: '1980-12-10T00:00:00.000Z',
+            createdBy: user.username,
+            createdTime: '2024-01-01',
+          },
+        ],
+      }
+
+      fakeContactsApi
+        .get('/contact/search')
+        .query({
+          lastName: contactSearchRequest.lastName,
+          firstName: contactSearchRequest.firstName,
+          middleName: contactSearchRequest.middleName,
+          dateOfBirth: contactSearchRequest.dateOfBirth,
+          page: 0,
+          size: 20,
+        })
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, results)
+
+      const output = await contactsApiClient.searchContact(contactSearchRequest, user, { page: 0, size: 20 })
+
+      expect(output).toEqual(results)
     })
   })
 })

@@ -86,7 +86,7 @@ const ManageContactsRoutes = (
   // /prisoner/contact/restriction/:journeyId
 
   // Part 7: Contact search
-  const contactsSearchController = new ContactSearchController(prisonerSearchService)
+  const contactsSearchController = new ContactSearchController(contactsService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/search/:journeyId',
     ensureInManageContactsJourney(),
