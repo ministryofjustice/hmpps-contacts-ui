@@ -7,24 +7,24 @@ import { createContactEnterNameSchemaFactory } from './enter-name/createContactE
 import CreateContactEnterDobController from './enter-dob/createContactEnterDobController'
 import { createContactEnterDobSchema } from './enter-dob/createContactEnterDobSchemas'
 import StartCreateContactJourneyController from './start/startCreateContactJourneyController'
-import ensureInCreateContactJourney from './createContactMiddleware'
+import ensureInAddContactJourney from './addContactMiddleware'
 import { ContactsService, PrisonerSearchService } from '../../../services'
 import CreateContactCheckAnswersController from './check-answers/createContactCheckAnswersController'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import CreateContactEnterEstimatedDobController from './enter-estimated-dob/createContactEnterEstimatedDobController'
 import { createContactEnterEstimatedDobSchema } from './enter-estimated-dob/createContactEnterEstimatedDobSchemas'
 import ReferenceDataService from '../../../services/referenceDataService'
-import SelectRelationshipController from '../common/relationship/selectRelationshipController'
-import { selectRelationshipSchemaFactory } from '../common/relationship/selectRelationshipSchemas'
+import SelectRelationshipController from './relationship/selectRelationshipController'
+import { selectRelationshipSchemaFactory } from './relationship/selectRelationshipSchemas'
 import prisonerDetailsMiddleware from '../../../middleware/prisonerDetailsMiddleware'
-import EmergencyContactController from '../common/emergency-contact/emergencyContactController'
-import { selectEmergencyContactSchema } from '../common/emergency-contact/emergencyContactSchemas'
-import { selectNextOfKinSchema } from '../common/next-of-kin/nextOfKinSchemas'
-import NextOfKinController from '../common/next-of-kin/nextOfKinController'
-import EnterRelationshipCommentsController from '../common/relationship-comments/enterRelationshipCommentsController'
-import { enterRelationshipCommentsSchema } from '../common/relationship-comments/enterRelationshipCommentsSchemas'
+import EmergencyContactController from './emergency-contact/emergencyContactController'
+import { selectEmergencyContactSchema } from './emergency-contact/emergencyContactSchemas'
+import { selectNextOfKinSchema } from './next-of-kin/nextOfKinSchemas'
+import NextOfKinController from './next-of-kin/nextOfKinController'
+import EnterRelationshipCommentsController from './relationship-comments/enterRelationshipCommentsController'
+import { enterRelationshipCommentsSchema } from './relationship-comments/enterRelationshipCommentsSchemas'
 
-const CreateContactRoutes = (
+const AddContactRoutes = (
   auditService: AuditService,
   contactsService: ContactsService,
   referenceDataService: ReferenceDataService,
@@ -42,14 +42,14 @@ const CreateContactRoutes = (
   const enterNameController = new EnterNameController(referenceDataService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId',
-    ensureInCreateContactJourney(),
+    ensureInAddContactJourney(),
     prisonerDetailsMiddleware(prisonerSearchService),
     logPageViewMiddleware(auditService, enterNameController),
     asyncMiddleware(enterNameController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId',
-    ensureInCreateContactJourney(),
+    ensureInAddContactJourney(),
     validate(createContactEnterNameSchemaFactory()),
     asyncMiddleware(enterNameController.POST),
   )
@@ -57,14 +57,14 @@ const CreateContactRoutes = (
   const selectRelationshipController = new SelectRelationshipController(referenceDataService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/select-relationship/:journeyId',
-    ensureInCreateContactJourney(),
+    ensureInAddContactJourney(),
     prisonerDetailsMiddleware(prisonerSearchService),
     logPageViewMiddleware(auditService, selectRelationshipController),
     asyncMiddleware(selectRelationshipController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/create/select-relationship/:journeyId',
-    ensureInCreateContactJourney(),
+    ensureInAddContactJourney(),
     validate(selectRelationshipSchemaFactory()),
     asyncMiddleware(selectRelationshipController.POST),
   )
@@ -72,14 +72,14 @@ const CreateContactRoutes = (
   const selectEmergencyContact = new EmergencyContactController()
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/select-emergency-contact/:journeyId',
-    ensureInCreateContactJourney(),
+    ensureInAddContactJourney(),
     prisonerDetailsMiddleware(prisonerSearchService),
     logPageViewMiddleware(auditService, selectEmergencyContact),
     asyncMiddleware(selectEmergencyContact.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/create/select-emergency-contact/:journeyId',
-    ensureInCreateContactJourney(),
+    ensureInAddContactJourney(),
     validate(selectEmergencyContactSchema()),
     asyncMiddleware(selectEmergencyContact.POST),
   )
@@ -87,14 +87,14 @@ const CreateContactRoutes = (
   const selectNextOfKinController = new NextOfKinController()
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/select-next-of-kin/:journeyId',
-    ensureInCreateContactJourney(),
+    ensureInAddContactJourney(),
     prisonerDetailsMiddleware(prisonerSearchService),
     logPageViewMiddleware(auditService, selectNextOfKinController),
     asyncMiddleware(selectNextOfKinController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/create/select-next-of-kin/:journeyId',
-    ensureInCreateContactJourney(),
+    ensureInAddContactJourney(),
     validate(selectNextOfKinSchema()),
     asyncMiddleware(selectNextOfKinController.POST),
   )
@@ -102,14 +102,14 @@ const CreateContactRoutes = (
   const enterDobController = new CreateContactEnterDobController()
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId',
-    ensureInCreateContactJourney(),
+    ensureInAddContactJourney(),
     prisonerDetailsMiddleware(prisonerSearchService),
     logPageViewMiddleware(auditService, enterDobController),
     asyncMiddleware(enterDobController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId',
-    ensureInCreateContactJourney(),
+    ensureInAddContactJourney(),
     validate(createContactEnterDobSchema()),
     asyncMiddleware(enterDobController.POST),
   )
@@ -117,14 +117,14 @@ const CreateContactRoutes = (
   const enterEstimatedDobController = new CreateContactEnterEstimatedDobController()
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/enter-estimated-dob/:journeyId',
-    ensureInCreateContactJourney(),
+    ensureInAddContactJourney(),
     prisonerDetailsMiddleware(prisonerSearchService),
     logPageViewMiddleware(auditService, enterEstimatedDobController),
     asyncMiddleware(enterEstimatedDobController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/create/enter-estimated-dob/:journeyId',
-    ensureInCreateContactJourney(),
+    ensureInAddContactJourney(),
     validate(createContactEnterEstimatedDobSchema()),
     asyncMiddleware(enterEstimatedDobController.POST),
   )
@@ -132,14 +132,14 @@ const CreateContactRoutes = (
   const enterRelationshipCommentsController = new EnterRelationshipCommentsController()
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/enter-relationship-comments/:journeyId',
-    ensureInCreateContactJourney(),
+    ensureInAddContactJourney(),
     prisonerDetailsMiddleware(prisonerSearchService),
     logPageViewMiddleware(auditService, enterRelationshipCommentsController),
     asyncMiddleware(enterRelationshipCommentsController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/create/enter-relationship-comments/:journeyId',
-    ensureInCreateContactJourney(),
+    ensureInAddContactJourney(),
     validate(enterRelationshipCommentsSchema()),
     asyncMiddleware(enterRelationshipCommentsController.POST),
   )
@@ -147,18 +147,18 @@ const CreateContactRoutes = (
   const checkAnswersController = new CreateContactCheckAnswersController(contactsService, referenceDataService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId',
-    ensureInCreateContactJourney(),
+    ensureInAddContactJourney(),
     prisonerDetailsMiddleware(prisonerSearchService),
     logPageViewMiddleware(auditService, checkAnswersController),
     asyncMiddleware(checkAnswersController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId',
-    ensureInCreateContactJourney(),
+    ensureInAddContactJourney(),
     asyncMiddleware(checkAnswersController.POST),
   )
 
   return router
 }
 
-export default CreateContactRoutes
+export default AddContactRoutes

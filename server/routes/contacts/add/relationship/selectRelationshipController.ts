@@ -28,7 +28,7 @@ export default class SelectRelationshipController implements PageHandler {
       journey,
       relationshipOptions,
     }
-    res.render('pages/contacts/common/selectRelationship', viewModel)
+    res.render('pages/contacts/add/selectRelationship', viewModel)
   }
 
   POST = async (

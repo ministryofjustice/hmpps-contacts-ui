@@ -18,7 +18,7 @@ export default class CreateContactEnterDobController implements PageHandler {
       month: res.locals?.formResponses?.month ?? journey?.dateOfBirth?.month,
       year: res.locals?.formResponses?.year ?? journey?.dateOfBirth?.year,
     }
-    res.render('pages/contacts/create/enterDob', view)
+    res.render('pages/contacts/add/enterDob', view)
   }
 
   POST = async (
