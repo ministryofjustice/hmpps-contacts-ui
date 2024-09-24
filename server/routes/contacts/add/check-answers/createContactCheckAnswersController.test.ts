@@ -6,7 +6,7 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import ContactsService from '../../../../services/contactsService'
-import CreateContactJourney = journeys.CreateContactJourney
+import AddContactJourney = journeys.AddContactJourney
 import ReferenceDataService from '../../../../services/referenceDataService'
 import TestData from '../../../testutils/testData'
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
@@ -26,7 +26,7 @@ let app: Express
 let session: Partial<SessionData>
 const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
-let journey: CreateContactJourney
+let journey: AddContactJourney
 beforeEach(() => {
   journey = {
     id: journeyId,
@@ -59,8 +59,8 @@ beforeEach(() => {
     userSupplier: () => user,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
-      session.createContactJourneys = {}
-      session.createContactJourneys[journeyId] = journey
+      session.addContactJourneys = {}
+      session.addContactJourneys[journeyId] = journey
     },
   })
   referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mother')
@@ -149,7 +149,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
 
       // Then
       expect(contactsService.createContact).toHaveBeenCalledWith(journey, user)
-      expect(session.createContactJourneys[journeyId]).toBeUndefined()
+      expect(session.addContactJourneys[journeyId]).toBeUndefined()
     },
   )
 

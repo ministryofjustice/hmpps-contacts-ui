@@ -2,7 +2,8 @@ import { Request, Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
-import CreateContactJourney = journeys.CreateContactJourney
+import { nextPageForAddContactJourney } from '../addContactFlowControl'
+import AddContactJourney = journeys.AddContactJourney
 import ReturnPointType = journeys.ReturnPointType
 import ReturnPoint = journeys.ReturnPoint
 
@@ -34,26 +35,26 @@ export default class StartCreateContactJourneyController implements PageHandler 
     } else {
       returnPoint = { type: 'PRISONER_CONTACTS', url: `/prisoner/${prisonerNumber}/contacts/list` }
     }
-    const journey: CreateContactJourney = {
+    const journey: AddContactJourney = {
       id: uuidv4(),
       lastTouched: new Date().toISOString(),
       isCheckingAnswers: false,
       returnPoint,
       prisonerNumber,
     }
-    if (!req.session.createContactJourneys) {
-      req.session.createContactJourneys = {}
+    if (!req.session.addContactJourneys) {
+      req.session.addContactJourneys = {}
     }
-    req.session.createContactJourneys[journey.id] = journey
-    if (Object.entries(req.session.createContactJourneys).length > this.MAX_JOURNEYS) {
-      Object.values(req.session.createContactJourneys)
+    req.session.addContactJourneys[journey.id] = journey
+    if (Object.entries(req.session.addContactJourneys).length > this.MAX_JOURNEYS) {
+      Object.values(req.session.addContactJourneys)
         .sort(
-          (a: CreateContactJourney, b: CreateContactJourney) =>
+          (a: AddContactJourney, b: AddContactJourney) =>
             new Date(b.lastTouched).getTime() - new Date(a.lastTouched).getTime(),
         )
         .slice(this.MAX_JOURNEYS)
-        .forEach(journeyToRemove => delete req.session.createContactJourneys[journeyToRemove.id])
+        .forEach(journeyToRemove => delete req.session.addContactJourneys[journeyToRemove.id])
     }
-    res.redirect(`/prisoner/${req.params.prisonerNumber}/contacts/create/enter-name/${journey.id}`)
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
   }
 }

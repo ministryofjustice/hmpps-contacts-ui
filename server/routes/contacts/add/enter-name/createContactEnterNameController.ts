@@ -5,6 +5,7 @@ import { CreateContactEnterNameSchemaType } from './createContactEnterNameSchema
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
+import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
 
 export default class EnterNameController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
@@ -14,7 +15,7 @@ export default class EnterNameController implements PageHandler {
   GET = async (req: Request, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const { user } = res.locals
-    const journey = req.session.createContactJourneys[journeyId]
+    const journey = req.session.addContactJourneys[journeyId]
     const titleOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.TITLE, user)
       .then(val => this.getSelectedTitleOptions(val, res.locals?.formResponses?.title ?? journey?.names?.title))
@@ -24,6 +25,7 @@ export default class EnterNameController implements PageHandler {
       lastName: res.locals?.formResponses?.lastName ?? journey?.names?.lastName,
       firstName: res.locals?.formResponses?.firstName ?? journey?.names?.firstName,
       middleName: res.locals?.formResponses?.middleName ?? journey?.names?.middleName,
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
     }
     res.render('pages/contacts/add/enterName', viewModel)
   }
@@ -39,15 +41,11 @@ export default class EnterNameController implements PageHandler {
     >,
     res: Response,
   ): Promise<void> => {
-    const { journeyId, prisonerNumber } = req.params
+    const { journeyId } = req.params
     const { title, lastName, firstName, middleName } = req.body
-    const journey = req.session.createContactJourneys[journeyId]
+    const journey = req.session.addContactJourneys[journeyId]
     journey.names = { title, lastName, firstName, middleName }
-    if (journey.isCheckingAnswers) {
-      res.redirect(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
-    } else {
-      res.redirect(`/prisoner/${prisonerNumber}/contacts/create/select-relationship/${journeyId}`)
-    }
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
   }
 
   private getSelectedTitleOptions(

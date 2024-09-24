@@ -3,7 +3,7 @@ import { fieldErrors } from '../../middleware/validationMiddleware'
 
 export declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
-  import CreateContactJourney = journeys.CreateContactJourney
+  import AddContactJourney = journeys.AddContactJourney
   import ManageContactsJourney = journeys.ManageContactsJourney
 
   interface SessionData {
@@ -12,7 +12,7 @@ export declare module 'express-session' {
     prisonId: string
     prisonName: string
     search: string
-    createContactJourneys: Record<string, CreateContactJourney>
+    addContactJourneys: Record<string, AddContactJourney>
     manageContactsJourneys: Record<string, ManageContactsJourney>
   }
 }

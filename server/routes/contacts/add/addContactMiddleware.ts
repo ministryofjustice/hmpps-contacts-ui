@@ -4,13 +4,13 @@ import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 const ensureInAddContactJourney = (): RequestHandler => {
   return async (req: Request<PrisonerJourneyParams, unknown, unknown>, res, next) => {
     const { journeyId, prisonerNumber } = req.params
-    if (!req.session.createContactJourneys) {
-      req.session.createContactJourneys = {}
+    if (!req.session.addContactJourneys) {
+      req.session.addContactJourneys = {}
     }
-    if (!req.session.createContactJourneys[journeyId]) {
+    if (!req.session.addContactJourneys[journeyId]) {
       return res.redirect(`/prisoner/${prisonerNumber}/contacts/create/start`)
     }
-    req.session.createContactJourneys[journeyId].lastTouched = new Date().toISOString()
+    req.session.addContactJourneys[journeyId].lastTouched = new Date().toISOString()
 
     return next()
   }

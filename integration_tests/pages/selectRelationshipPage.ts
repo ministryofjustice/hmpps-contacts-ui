@@ -1,7 +1,6 @@
-import { PageElement } from './page'
-import ContinuablePage from './continuablePage'
+import Page, { PageElement } from './page'
 
-export default class SelectRelationshipPage extends ContinuablePage {
+export default class SelectRelationshipPage extends Page {
   constructor(name: string) {
     super(`How is ${name} related to the prisoner?`)
   }

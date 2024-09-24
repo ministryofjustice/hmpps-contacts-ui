@@ -457,4 +457,64 @@ context('Create Contacts', () => {
 
     Page.verifyOnPage(ListContactsPage)
   })
+
+  it('Can navigate back through all pages when no DOB', () => {
+    cy.visit('/prisoner/A1234BC/contacts/create/start')
+    cy.task('stubCreateContact', { id: 132456 })
+
+    const checkYourAnswersPage = Page.verifyOnPage(EnterNamePage) //
+      .enterLastName('Last')
+      .enterFirstName('First')
+      .continueTo(SelectRelationshipPage, 'Last, First')
+      .selectRelationship('MOT')
+      .continueTo(SelectEmergencyContactPage, 'Last, First')
+      .selectIsEmergencyContact('NO')
+      .continueTo(SelectNextOfKinPage, 'Last, First')
+      .selectIsNextOfKin('YES')
+      .continueTo(EnterContactDateOfBirthPage, 'Last, First')
+      .selectIsKnown('NO')
+      .continueTo(EnterContactEstimatedDateOfBirthPage, 'Last, First')
+      .selectIsOverEighteen('DO_NOT_KNOW')
+      .continueTo(RelationshipCommentsPage, 'Last, First')
+      .continueTo(CreateContactCheckYourAnswersPage)
+
+    checkYourAnswersPage //
+      .backTo(RelationshipCommentsPage, 'Last, First')
+      .backTo(EnterContactEstimatedDateOfBirthPage, 'Last, First')
+      .backTo(EnterContactDateOfBirthPage, 'Last, First')
+      .backTo(SelectNextOfKinPage, 'Last, First')
+      .backTo(SelectEmergencyContactPage, 'Last, First')
+      .backTo(SelectRelationshipPage, 'Last, First')
+      .backTo(EnterNamePage)
+  })
+
+  it('Can navigate back through all pages when DOB is known', () => {
+    cy.visit('/prisoner/A1234BC/contacts/create/start')
+    cy.task('stubCreateContact', { id: 132456 })
+
+    const checkYourAnswersPage = Page.verifyOnPage(EnterNamePage) //
+      .enterLastName('Last')
+      .enterFirstName('First')
+      .continueTo(SelectRelationshipPage, 'Last, First')
+      .selectRelationship('MOT')
+      .continueTo(SelectEmergencyContactPage, 'Last, First')
+      .selectIsEmergencyContact('NO')
+      .continueTo(SelectNextOfKinPage, 'Last, First')
+      .selectIsNextOfKin('YES')
+      .continueTo(EnterContactDateOfBirthPage, 'Last, First')
+      .selectIsKnown('YES')
+      .enterDay('15')
+      .enterMonth('06')
+      .enterYear('1982')
+      .continueTo(RelationshipCommentsPage, 'Last, First')
+      .continueTo(CreateContactCheckYourAnswersPage)
+
+    checkYourAnswersPage //
+      .backTo(RelationshipCommentsPage, 'Last, First')
+      .backTo(EnterContactDateOfBirthPage, 'Last, First')
+      .backTo(SelectNextOfKinPage, 'Last, First')
+      .backTo(SelectEmergencyContactPage, 'Last, First')
+      .backTo(SelectRelationshipPage, 'Last, First')
+      .backTo(EnterNamePage)
+  })
 })

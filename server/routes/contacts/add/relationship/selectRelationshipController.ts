@@ -6,6 +6,7 @@ import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import { SelectRelationshipSchema } from './selectRelationshipSchemas'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
+import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
 
 export default class SelectRelationshipController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
@@ -15,7 +16,7 @@ export default class SelectRelationshipController implements PageHandler {
   GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const { user } = res.locals
-    const journey = req.session.createContactJourneys[journeyId]
+    const journey = req.session.addContactJourneys[journeyId]
     const relationshipOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.RELATIONSHIP, user)
       .then(val =>
@@ -27,6 +28,7 @@ export default class SelectRelationshipController implements PageHandler {
     const viewModel = {
       journey,
       relationshipOptions,
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
     }
     res.render('pages/contacts/add/selectRelationship', viewModel)
   }
@@ -35,18 +37,14 @@ export default class SelectRelationshipController implements PageHandler {
     req: Request<PrisonerJourneyParams, unknown, SelectRelationshipSchema>,
     res: Response,
   ): Promise<void> => {
-    const { journeyId, prisonerNumber } = req.params
+    const { journeyId } = req.params
     const { relationship } = req.body
-    const journey = req.session.createContactJourneys[journeyId]
+    const journey = req.session.addContactJourneys[journeyId]
     if (!journey.relationship) {
       journey.relationship = {}
     }
     journey.relationship.type = relationship
-    if (journey.isCheckingAnswers) {
-      res.redirect(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
-    } else {
-      res.redirect(`/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${journeyId}`)
-    }
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
   }
 
   private getSelectedRelationshipOptions(

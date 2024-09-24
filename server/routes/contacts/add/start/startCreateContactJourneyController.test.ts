@@ -4,7 +4,7 @@ import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
-import CreateContactJourney = journeys.CreateContactJourney
+import AddContactJourney = journeys.AddContactJourney
 import ReturnPoint = journeys.ReturnPoint
 
 jest.mock('../../../../services/auditService')
@@ -13,7 +13,7 @@ const auditService = new AuditService(null) as jest.Mocked<AuditService>
 
 let app: Express
 let session: Partial<SessionData>
-let preExistingJourneysToAddToSession: Array<CreateContactJourney>
+let preExistingJourneysToAddToSession: Array<AddContactJourney>
 const prisonerNumber = 'A1234BC'
 
 beforeEach(() => {
@@ -25,9 +25,9 @@ beforeEach(() => {
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       if (preExistingJourneysToAddToSession) {
-        session.createContactJourneys = {}
-        preExistingJourneysToAddToSession.forEach((journey: CreateContactJourney) => {
-          session.createContactJourneys[journey.id] = journey
+        session.addContactJourneys = {}
+        preExistingJourneysToAddToSession.forEach((journey: AddContactJourney) => {
+          session.addContactJourneys[journey.id] = journey
         })
       }
     },
@@ -53,7 +53,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
     })
     expect(response.status).toEqual(302)
     expect(response.headers.location).toContain('/contacts/create/enter-name/')
-    expect(Object.entries(session.createContactJourneys)).toHaveLength(1)
+    expect(Object.entries(session.addContactJourneys)).toHaveLength(1)
   })
 
   it('should set the return point to prisoner contact if no return parameters are specified', async () => {
@@ -74,7 +74,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
     })
     expect(response.status).toEqual(302)
     expect(response.headers.location).toContain('/contacts/create/enter-name/')
-    const journey = Object.values(session.createContactJourneys)[0]
+    const journey = Object.values(session.addContactJourneys)[0]
     expect(journey.returnPoint).toStrictEqual(expectedReturnPoint)
   })
 
@@ -99,7 +99,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
     })
     expect(response.status).toEqual(302)
     expect(response.headers.location).toContain('/contacts/create/enter-name/')
-    const journey = Object.values(session.createContactJourneys)[0]
+    const journey = Object.values(session.addContactJourneys)[0]
     expect(journey.returnPoint).toStrictEqual(expectedReturnPoint)
   })
 
@@ -117,8 +117,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
     })
     expect(response.status).toEqual(302)
     expect(response.headers.location).toContain('/contacts/create/enter-name/')
-    expect(Object.entries(session.createContactJourneys)).toHaveLength(1)
-    const journey = Object.values(session.createContactJourneys)[0]
+    expect(Object.entries(session.addContactJourneys)).toHaveLength(1)
+    const journey = Object.values(session.addContactJourneys)[0]
     expect(journey.prisonerNumber).toStrictEqual(prisonerNumber)
   })
 
@@ -150,10 +150,10 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
     })
     expect(response.status).toEqual(302)
     expect(location).toContain('/contacts/create/enter-name/')
-    expect(Object.entries(session.createContactJourneys)).toHaveLength(2)
+    expect(Object.entries(session.addContactJourneys)).toHaveLength(2)
     const newId = location.substring(location.lastIndexOf('/') + 1)
-    expect(session.createContactJourneys[newId].id).toEqual(newId)
-    expect(session.createContactJourneys[newId].lastTouched).toBeTruthy()
+    expect(session.addContactJourneys[newId].id).toEqual(newId)
+    expect(session.addContactJourneys[newId].lastTouched).toBeTruthy()
   })
 
   it('should remove the oldest if there will be more than 5 journeys', async () => {
@@ -209,7 +209,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
     expect(response.status).toEqual(302)
     expect(location).toContain('/contacts/create/enter-name/')
     const newId = location.substring(location.lastIndexOf('/') + 1)
-    expect(Object.keys(session.createContactJourneys).sort()).toStrictEqual(
+    expect(Object.keys(session.addContactJourneys).sort()).toStrictEqual(
       [newId, 'old', 'middle-aged', 'young', 'youngest'].sort(),
     )
   })

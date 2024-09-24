@@ -1,7 +1,7 @@
 import createError, { BadRequest } from 'http-errors'
 import ContactsApiClient from '../data/contactsApiClient'
 import ContactsService from './contactsService'
-import CreateContactJourney = journeys.CreateContactJourney
+import AddContactJourney = journeys.AddContactJourney
 import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
@@ -38,7 +38,7 @@ describe('contactsService', () => {
         id: 2136718213,
       }
       apiClient.createContact.mockResolvedValue(expectedCreated)
-      const journey: CreateContactJourney = {
+      const journey: AddContactJourney = {
         id: '1',
         lastTouched: new Date().toISOString(),
         prisonerNumber,
@@ -94,7 +94,7 @@ describe('contactsService', () => {
         id: 2136718213,
       }
       apiClient.createContact.mockResolvedValue(expectedCreated)
-      const journey: CreateContactJourney = {
+      const journey: AddContactJourney = {
         id: '1',
         lastTouched: new Date().toISOString(),
         prisonerNumber,
@@ -148,7 +148,7 @@ describe('contactsService', () => {
         id: 2136718213,
       }
       apiClient.createContact.mockResolvedValue(expectedCreated)
-      const journey: CreateContactJourney = {
+      const journey: AddContactJourney = {
         id: '1',
         lastTouched: new Date().toISOString(),
         prisonerNumber,

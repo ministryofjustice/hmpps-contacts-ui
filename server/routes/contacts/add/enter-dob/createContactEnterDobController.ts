@@ -4,19 +4,21 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { CreateContactEnterDobSchemaType } from './createContactEnterDobSchemas'
 import DateOfBirth = journeys.DateOfBirth
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
+import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
 
 export default class CreateContactEnterDobController implements PageHandler {
   public PAGE_NAME = Page.CREATE_CONTACT_DOB_PAGE
 
   GET = async (req: Request, res: Response): Promise<void> => {
     const { journeyId } = req.params
-    const journey = req.session.createContactJourneys[journeyId]
+    const journey = req.session.addContactJourneys[journeyId]
     const view = {
       journey,
       isKnown: res.locals?.formResponses?.isKnown ?? journey?.dateOfBirth?.isKnown,
       day: res.locals?.formResponses?.day ?? journey?.dateOfBirth?.day,
       month: res.locals?.formResponses?.month ?? journey?.dateOfBirth?.month,
       year: res.locals?.formResponses?.year ?? journey?.dateOfBirth?.year,
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
     }
     res.render('pages/contacts/add/enterDob', view)
   }
@@ -25,8 +27,8 @@ export default class CreateContactEnterDobController implements PageHandler {
     req: Request<PrisonerJourneyParams, unknown, CreateContactEnterDobSchemaType>,
     res: Response,
   ): Promise<void> => {
-    const { journeyId, prisonerNumber } = req.params
-    const journey = req.session.createContactJourneys[journeyId]
+    const { journeyId } = req.params
+    const journey = req.session.addContactJourneys[journeyId]
     const { body } = req
     if (body.isKnown === 'YES') {
       journey.dateOfBirth = {
@@ -41,14 +43,6 @@ export default class CreateContactEnterDobController implements PageHandler {
       } as DateOfBirth
     }
 
-    if (journey.dateOfBirth.isKnown === 'YES') {
-      if (journey.isCheckingAnswers) {
-        res.redirect(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
-      } else {
-        res.redirect(`/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`)
-      }
-    } else {
-      res.redirect(`/prisoner/${prisonerNumber}/contacts/create/enter-estimated-dob/${journeyId}`)
-    }
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
   }
 }
