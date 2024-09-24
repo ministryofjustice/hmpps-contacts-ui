@@ -1,5 +1,5 @@
 declare namespace journeys {
-  export interface CreateContactJourney {
+  export interface AddContactJourney {
     id: string
     lastTouched: string
     prisonerNumber: string
@@ -8,6 +8,7 @@ declare namespace journeys {
     names?: ContactNames
     dateOfBirth?: DateOfBirth
     relationship?: PrisonerContactRelationship
+    previousAnswers?: CreateContactJourneyPreviousAnswers
   }
 
   export interface ContactNames {
@@ -30,6 +31,12 @@ declare namespace journeys {
     isEmergencyContact?: YesOrNo
     isNextOfKin?: YesOrNo
     comments?: string
+  }
+
+  export interface CreateContactJourneyPreviousAnswers {
+    names?: ContactNames
+    dateOfBirth?: DateOfBirth
+    relationship?: PrisonerContactRelationship
   }
 
   export interface ManageContactsJourney {

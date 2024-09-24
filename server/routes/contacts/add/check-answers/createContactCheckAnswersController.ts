@@ -5,6 +5,7 @@ import { ContactsService } from '../../../../services'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
+import { navigationForAddContactJourney } from '../addContactFlowControl'
 
 export default class CreateContactCheckAnswersController implements PageHandler {
   constructor(
@@ -17,8 +18,13 @@ export default class CreateContactCheckAnswersController implements PageHandler 
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { user } = res.locals
     const { journeyId } = req.params
-    const journey = req.session.createContactJourneys[journeyId]
+    const journey = req.session.addContactJourneys[journeyId]
     journey.isCheckingAnswers = true
+    journey.previousAnswers = {
+      names: journey.names,
+      dateOfBirth: journey.dateOfBirth,
+      relationship: journey.relationship,
+    }
     let dateOfBirth
     if (journey.dateOfBirth.isKnown === 'YES') {
       dateOfBirth = new Date(`${journey.dateOfBirth.year}-${journey.dateOfBirth.month}-${journey.dateOfBirth.day}Z`)
@@ -34,6 +40,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
       journey,
       dateOfBirth,
       relationshipDescription,
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
     }
     res.render('pages/contacts/add/checkAnswers', view)
   }
@@ -41,10 +48,8 @@ export default class CreateContactCheckAnswersController implements PageHandler 
   POST = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { user } = res.locals
     const { journeyId } = req.params
-    const journey = req.session.createContactJourneys[journeyId]
-    await this.contactService
-      .createContact(journey, user)
-      .then(() => delete req.session.createContactJourneys[journeyId])
+    const journey = req.session.addContactJourneys[journeyId]
+    await this.contactService.createContact(journey, user).then(() => delete req.session.addContactJourneys[journeyId])
     res.redirect(journey.returnPoint.url)
   }
 }

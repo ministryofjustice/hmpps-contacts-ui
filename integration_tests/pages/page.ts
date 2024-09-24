@@ -30,4 +30,28 @@ export default abstract class Page {
   get errorSummary(): PageElement {
     return cy.get('.govuk-error-summary')
   }
+
+  clickContinue() {
+    this.continueButton().click()
+  }
+
+  clickBackLink() {
+    this.backLink().click()
+  }
+
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  continueTo<T>(constructor: new (...args: any) => T, ...args: any): T {
+    this.clickContinue()
+    return new constructor(args)
+  }
+
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  backTo<T>(constructor: new (...args: any) => T, ...args: any): T {
+    this.clickBackLink()
+    return new constructor(args)
+  }
+
+  private continueButton = (): PageElement => cy.get('[data-qa=continue-button]')
+
+  private backLink = (): PageElement => cy.get('[data-qa=back-link]')
 }

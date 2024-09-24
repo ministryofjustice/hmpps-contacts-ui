@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
-import CreateContactJourney = journeys.CreateContactJourney
+import AddContactJourney = journeys.AddContactJourney
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import TestData from '../../../testutils/testData'
 
@@ -19,7 +19,7 @@ let app: Express
 let session: Partial<SessionData>
 const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
-let existingJourney: CreateContactJourney
+let existingJourney: AddContactJourney
 
 beforeEach(() => {
   existingJourney = {
@@ -41,8 +41,8 @@ beforeEach(() => {
     userSupplier: () => user,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
-      session.createContactJourneys = {}
-      session.createContactJourneys[journeyId] = { ...existingJourney }
+      session.addContactJourneys = {}
+      session.addContactJourneys[journeyId] = { ...existingJourney }
     },
   })
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
@@ -127,7 +127,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-estimated-dob', (
 
     // Then
     const expectedDob = { isKnown: 'NO', isOverEighteen: 'NO' }
-    expect(session.createContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
+    expect(session.addContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
   })
 
   it('should pass to check answers page if we are checking answers', async () => {
@@ -145,7 +145,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-estimated-dob', (
 
     // Then
     const expectedDob = { isKnown: 'NO', isOverEighteen: 'NO' }
-    expect(session.createContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
+    expect(session.addContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
   })
 
   it('should return to enter page if there are validation errors', async () => {

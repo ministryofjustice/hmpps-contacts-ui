@@ -1,5 +1,5 @@
 import ContactsApiClient from '../data/contactsApiClient'
-import CreateContactJourney = journeys.CreateContactJourney
+import AddContactJourney = journeys.AddContactJourney
 import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
@@ -9,7 +9,7 @@ import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
 export default class ContactsService {
   constructor(private readonly contactsApiClient: ContactsApiClient) {}
 
-  async createContact(journey: CreateContactJourney, user: Express.User): Promise<Contact> {
+  async createContact(journey: AddContactJourney, user: Express.User): Promise<Contact> {
     let dateOfBirth: Date
     let isOverEighteen
     if (journey.dateOfBirth.isKnown === 'YES') {

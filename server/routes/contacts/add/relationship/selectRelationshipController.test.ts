@@ -7,7 +7,7 @@ import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import { mockedReferenceData } from '../../../testutils/stubReferenceData'
-import CreateContactJourney = journeys.CreateContactJourney
+import AddContactJourney = journeys.AddContactJourney
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import TestData from '../../../testutils/testData'
 
@@ -23,7 +23,7 @@ let app: Express
 let session: Partial<SessionData>
 const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
-let existingJourney: CreateContactJourney
+let existingJourney: AddContactJourney
 
 beforeEach(() => {
   existingJourney = {
@@ -43,8 +43,8 @@ beforeEach(() => {
     userSupplier: () => user,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
-      session.createContactJourneys = {}
-      session.createContactJourneys[journeyId] = existingJourney
+      session.addContactJourneys = {}
+      session.addContactJourneys[journeyId] = existingJourney
     },
   })
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
@@ -126,7 +126,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship/:jo
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${journeyId}`)
 
-    expect(session.createContactJourneys[journeyId].relationship).toStrictEqual({
+    expect(session.addContactJourneys[journeyId].relationship).toStrictEqual({
       type: 'MOT',
     })
   })
@@ -147,7 +147,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship/:jo
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
 
     // Then
-    expect(session.createContactJourneys[journeyId].relationship).toStrictEqual({
+    expect(session.addContactJourneys[journeyId].relationship).toStrictEqual({
       type: 'MOT',
     })
   })
