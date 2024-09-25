@@ -35,6 +35,7 @@ beforeEach(() => {
     relationship: {
       type: 'MOT',
     },
+    mode: 'NEW',
   }
   app = appWithAllRoutes({
     services: {
@@ -56,25 +57,29 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/create/select-emergency-contact/:journeyId', () => {
-  it('should render enter emergency contact page', async () => {
-    // Given
-    auditService.logPageView.mockResolvedValue(null)
+  it.each(['NEW', 'EXISTING'])(
+    'should render enter emergency contact page for all modes %s',
+    async (mode: 'NEW' | 'EXISTING') => {
+      // Given
+      auditService.logPageView.mockResolvedValue(null)
+      existingJourney.mode = mode
 
-    // When
-    const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${journeyId}`,
-    )
+      // When
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${journeyId}`,
+      )
 
-    // Then
-    expect(response.status).toEqual(200)
+      // Then
+      expect(response.status).toEqual(200)
 
-    const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Is Last, First an emergency contact for the prisoner?',
-    )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=contact-list-breadcrumb-link]').first().attr('href')).toStrictEqual('/foo-bar')
-  })
+      const $ = cheerio.load(response.text)
+      expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
+        'Is Last, First an emergency contact for the prisoner?',
+      )
+      expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+      expect($('[data-qa=contact-list-breadcrumb-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    },
+  )
 
   it('should call the audit service for the page view', async () => {
     // Given

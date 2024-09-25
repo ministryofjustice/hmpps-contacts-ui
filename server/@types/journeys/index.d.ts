@@ -14,6 +14,7 @@ declare namespace journeys {
     dateOfBirth?: DateOfBirth
     relationship?: PrisonerContactRelationship
     previousAnswers?: CreateContactJourneyPreviousAnswers
+    contactId?: number
   }
 
   export interface ContactNames {

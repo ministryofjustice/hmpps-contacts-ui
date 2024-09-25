@@ -47,6 +47,7 @@ beforeEach(() => {
     relationship: {
       type: 'MOT',
     },
+    mode: 'NEW',
   }
 
   app = appWithAllRoutes({
@@ -72,22 +73,26 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId', () => {
-  it('should render check answers page with dob', async () => {
-    // Given
-    auditService.logPageView.mockResolvedValue(null)
+  it.each(['NEW', 'EXISTING'])(
+    'should render check answers page with dob for mode %s',
+    async (mode: 'NEW' | 'EXISTING') => {
+      // Given
+      auditService.logPageView.mockResolvedValue(null)
+      journey.mode = mode
 
-    // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
 
-    // Then
-    expect(response.status).toEqual(200)
-    expect(journey.isCheckingAnswers).toStrictEqual(true)
-    const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Check your answers')
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('.check-answers-dob-value').first().text().trim()).toStrictEqual('1 January 2024')
-    expect($('[data-qa=contact-list-breadcrumb-link]').first().attr('href')).toStrictEqual('/foo-bar')
-  })
+      // Then
+      expect(response.status).toEqual(200)
+      expect(journey.isCheckingAnswers).toStrictEqual(true)
+      const $ = cheerio.load(response.text)
+      expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Check your answers')
+      expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+      expect($('.check-answers-dob-value').first().text().trim()).toStrictEqual('1 January 2024')
+      expect($('[data-qa=contact-list-breadcrumb-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    },
+  )
 
   it('should render check answers page without dob', async () => {
     // Given
