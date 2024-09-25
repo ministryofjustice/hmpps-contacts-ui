@@ -61,10 +61,17 @@ const ManageContactsRoutes = (
   )
 
   // Part 4: List contacts for a prisoner
-  const listContactsController = new ListContactsController(prisonerSearchService, contactsService)
+  const listContactsController = new ListContactsController(contactsService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/list/:journeyId',
     ensureInManageContactsJourney(),
+    prisonerDetailsMiddleware(prisonerSearchService),
+    logPageViewMiddleware(auditService, listContactsController),
+    asyncMiddleware(listContactsController.GET),
+  )
+  // Direct entry to prisoner contact page
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/list',
     prisonerDetailsMiddleware(prisonerSearchService),
     logPageViewMiddleware(auditService, listContactsController),
     asyncMiddleware(listContactsController.GET),
@@ -88,7 +95,7 @@ const ManageContactsRoutes = (
   // /prisoner/contact/restriction/:journeyId
 
   // Part 7: Contact search
-  const contactsSearchController = new ContactSearchController(prisonerSearchService)
+  const contactsSearchController = new ContactSearchController(contactsService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/search/:journeyId',
     ensureInManageContactsJourney(),

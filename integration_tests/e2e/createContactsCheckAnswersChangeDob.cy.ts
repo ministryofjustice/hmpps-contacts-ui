@@ -1,6 +1,5 @@
 import Page from '../pages/page'
 import EnterNamePage from '../pages/enterNamePage'
-import CreatedContactPage from '../pages/createdContactPage'
 import EnterContactDateOfBirthPage from '../pages/enterContactDateOfBirthPage'
 import CreateContactCheckYourAnswersPage from '../pages/createContactCheckYourAnswersPage'
 import EnterContactEstimatedDateOfBirthPage from '../pages/enterContactEstimatedDateOfBirthPage'
@@ -9,6 +8,7 @@ import TestData from '../../server/routes/testutils/testData'
 import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
 import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
+import ListContactsPage from '../pages/listContacts'
 
 context('Create contact and update from check answers where we are changing the DOB', () => {
   beforeEach(() => {
@@ -18,6 +18,7 @@ context('Create contact and update from check answers where we are changing the 
     cy.task('stubTitlesReferenceData')
     cy.task('stubRelationshipReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
+    cy.task('stubContactList', TestData.prisoner().prisonerNumber)
     cy.task('stubCreateContact', { id: 132456 })
 
     cy.signIn()
@@ -58,7 +59,7 @@ context('Create contact and update from check answers where we are changing the 
       .verifyShowsDateOfBirthAs('16 July 1983')
       .clickCreatePrisonerContact()
 
-    Page.verifyOnPage(CreatedContactPage)
+    Page.verifyOnPage(ListContactsPage)
 
     cy.verifyLastAPICall(
       {
@@ -107,7 +108,7 @@ context('Create contact and update from check answers where we are changing the 
       .verifyShowsEstimatedDateOfBirthAs("I don't know")
       .clickCreatePrisonerContact()
 
-    Page.verifyOnPage(CreatedContactPage)
+    Page.verifyOnPage(ListContactsPage)
 
     cy.verifyLastAPICall(
       {
@@ -117,7 +118,7 @@ context('Create contact and update from check answers where we are changing the 
       {
         lastName: 'Last',
         firstName: 'First',
-        isOverEighteen: 'DO_NOT_KNOW',
+        estimatedIsOverEighteen: 'DO_NOT_KNOW',
         createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',
@@ -156,7 +157,7 @@ context('Create contact and update from check answers where we are changing the 
       .verifyShowsDateOfBirthAs('15 June 1982')
       .clickCreatePrisonerContact()
 
-    Page.verifyOnPage(CreatedContactPage)
+    Page.verifyOnPage(ListContactsPage)
 
     cy.verifyLastAPICall(
       {
@@ -203,7 +204,7 @@ context('Create contact and update from check answers where we are changing the 
       .verifyShowsEstimatedDateOfBirthAs('Yes')
       .clickCreatePrisonerContact()
 
-    Page.verifyOnPage(CreatedContactPage)
+    Page.verifyOnPage(ListContactsPage)
 
     cy.verifyLastAPICall(
       {
@@ -213,7 +214,7 @@ context('Create contact and update from check answers where we are changing the 
       {
         lastName: 'Last',
         firstName: 'First',
-        isOverEighteen: 'YES',
+        estimatedIsOverEighteen: 'YES',
         createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',

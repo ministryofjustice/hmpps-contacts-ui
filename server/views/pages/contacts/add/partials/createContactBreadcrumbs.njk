@@ -1,0 +1,30 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+<div class="govuk-grid-row govuk-!-static-margin-bottom-5">
+    <div class="govuk-grid-column-full">
+        {{ govukBreadcrumbs({
+            items: [
+                {
+                    text: "Digital Prison Services",
+                    href: DPS_HOME_PAGE_URL
+                },
+                {
+                    text: "Contacts",
+                    href: "/"
+                },
+                {
+                    text: prisonerDetails | formatName(excludeMiddleNames = true),
+                    href: journey.returnPoint.url,
+                    attributes: {"data-qa": "contact-list-breadcrumb-link"}
+                }
+            ]
+        }) }}
+    </div>
+</div>
+
+{% if navigation.backLink %}
+    {{ govukBackLink({
+        text: "Back",
+        href: navigation.backLink,
+        attributes: {"data-qa": "back-link"}
+    }) }}
+{% endif %}

@@ -2,6 +2,8 @@ import config from '../config'
 import RestClient from './restClient'
 import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
+import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
+import Pageable = contactsApiClientTypes.Pageable
 import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import ReferenceCodeType from '../enumeration/referenceCodeType'
@@ -39,6 +41,27 @@ export default class ContactsApiClient extends RestClient {
     return this.get<PrisonerContactSummary[]>(
       {
         path: `/reference-codes/group/${type}`,
+      },
+      user,
+    )
+  }
+
+  async searchContact(
+    contactSearchRequest: ContactSearchRequest,
+    user: Express.User,
+    pagination?: Pageable,
+  ): Promise<Contact> {
+    const paginationParameters = pagination ?? { page: 0, size: config.apis.contactsApi.pageSize || 10 }
+    return this.get(
+      {
+        path: `/contact/search`,
+        query: {
+          lastName: contactSearchRequest.lastName,
+          firstName: contactSearchRequest.firstName,
+          middleName: contactSearchRequest.middleName,
+          dateOfBirth: contactSearchRequest.dateOfBirth,
+          ...paginationParameters,
+        },
       },
       user,
     )

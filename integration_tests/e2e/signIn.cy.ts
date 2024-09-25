@@ -3,6 +3,7 @@ import AuthSignInPage from '../pages/authSignIn'
 import Page from '../pages/page'
 import AuthManageDetailsPage from '../pages/authManageDetails'
 import AuthorisationErrorPage from '../pages/authorisationError'
+import IndexPage from '../pages'
 
 context('Sign In', () => {
   beforeEach(() => {
@@ -22,7 +23,7 @@ context('Sign In', () => {
 
   xit('User name visible in header', () => {
     cy.signIn()
-    const contactsPage = Page.verifyOnPage(ContactsPage)
+    const contactsPage = Page.verifyOnPage(IndexPage)
     contactsPage.headerUserName().should('contain.text', 'J. Smith')
   })
 
@@ -54,7 +55,7 @@ context('Sign In', () => {
 
   xit('Token verification failure clears user session', () => {
     cy.signIn()
-    const contactsPage = Page.verifyOnPage(ContactsPage)
+    const contactsPage = Page.verifyOnPage(IndexPage)
     cy.task('stubVerifyToken', false)
 
     // can't do a visit here as cypress requires only one domain

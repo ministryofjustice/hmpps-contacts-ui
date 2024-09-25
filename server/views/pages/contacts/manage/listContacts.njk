@@ -8,25 +8,36 @@
 {% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
-{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "../../../partials/address.njk" import convertAddressToLines %}
 
 {% set pageTitle = applicationName + " - List contacts" %}
 {% set title = "List contacts" %}
 {% set mainClasses = "app-container govuk-body" %}
-{% set searchLink = "/contacts/manage/prisoner-search/" + journey.id %}
-{% set backLinkHref = "/contacts/manage/prisoner-search-results/" + journey.id %}
 
 {% block content %}
 
 <div class="govuk-grid-row govuk-!-static-margin-bottom-5">
     <div class="govuk-grid-column-full">
+        {% set breadcrumbs = [
+            {
+                text: "Digital Prison Services",
+                href: DPS_HOME_PAGE_URL
+            },
+            {
+                text: "Contacts",
+                href: "/"
+            }
+        ] %}
+        {% if journey %}
+            {% set searchLink = "/contacts/manage/prisoner-search/" + journey.id %}
+            {% set backLinkHref = "/contacts/manage/prisoner-search-results/" + journey.id %}
+            {% set breadcrumbs = (breadcrumbs.push(
+                { text: "Search", href: searchLink },
+                { text: "Results", href: backLinkHref }
+            ), breadcrumbs) %}
+        {%  endif %}
         {{ govukBreadcrumbs({
-        items: [
-            { text: "Digital Prison Services", href: DPS_HOME_PAGE_URL },
-            { text: "Contacts", href: "/" },
-            { text: "Search", href: searchLink },
-            { text: "Results", href: backLinkHref }
-        ]
+            items: breadcrumbs
         }) }}
     </div>
 </div>
@@ -71,16 +82,7 @@
                 {% endif %}
             </td>
             <td class="govuk-table__cell">
-                {{ govukSummaryList({
-                    classes: 'govuk-!-margin-bottom-0',
-                    rows: [
-                        {
-                            key: { text: '' },
-                            value: { html: address | addressToLines},
-                            classes: 'govuk-summary-list__row--no-border'
-                        }
-                    ]
-                }) }}
+                {{ convertAddressToLines(address) }}
             </td>
             <td class="govuk-table__cell">{{ item.relationshipDescription }}</td>
             <td class="govuk-table__cell">{{ 'Yes' if item.emergencyContact else 'No' }}</td>
@@ -92,22 +94,22 @@
     </table>
 {% endmacro %}
 
-{% macro prisonerDoesNotHaveAnyContactsMessage(journey, contactListType) %}
-    <p>{{ journey.prisoner.firstName | convertToTitleCase }} {{ journey.prisoner.lastName | convertToTitleCase }} does not have any {{ contactListType }} contacts</p>
+{% macro prisonerDoesNotHaveAnyContactsMessage(prisonerDetails, contactListType) %}
+    <p>{{ prisonerDetails.firstName | convertToTitleCase }} {{ prisonerDetails.lastName | convertToTitleCase }} does not have any {{ contactListType }} contacts</p>
 {% endmacro %}
 
 <span class="govuk-caption-l">Manage Contacts</span>
-<h1 class="govuk-heading-l">Contacts for {{ journey.prisoner | formatName(excludeMiddleNames = true) }}</h1>
+<h1 class="govuk-heading-l">Contacts for {{ prisonerDetails | formatName(excludeMiddleNames = true) }}</h1>
 
     {{ govukButton({
         text: "Add prisoner contact",
-        href: "/prisoner/" + journey.prisoner.prisonerNumber + "/contacts/search/" + journey.id,
+        href: "/prisoner/" + prisonerNumber + "/contacts/search/" + (journey.id if journey),
         attributes: {"data-qa": "add-contact-button"}
     }) }}
 
     {{ govukButton({
         text: "Create new prisoner contact",
-        href: "/prisoner/" + journey.prisoner.prisonerNumber + "/contacts/create/start?returnJourneyType=MANAGE_PRISONER_CONTACTS&returnJourneyId=" + journey.id,
+        href: "/prisoner/" + prisonerNumber + "/contacts/create/start" + ("?returnJourneyType=MANAGE_PRISONER_CONTACTS&returnJourneyId=" + journey.id if journey),
         attributes: {"data-qa": "create-new-contact-button"}
     }) }}
 
@@ -124,18 +126,18 @@
         </a>
       </li>
     </ul>
-    <div class="govuk-tabs__panel" id="active-contacts">
+    <div class="govuk-tabs__panel contact-list" id="active-contacts">
         {% if activeContacts.length > 0 %}
             {{ createTable(activeContacts) }}
         {% else %}
-        <div class="govuk-!-static-margin-top-4">{{ prisonerDoesNotHaveAnyContactsMessage(journey, 'active') }}</div>
+        <div class="govuk-!-static-margin-top-4">{{ prisonerDoesNotHaveAnyContactsMessage(prisonerDetails, 'active') }}</div>
         {% endif %}
     </div>
-    <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="inactive-contacts">
+    <div class="govuk-tabs__panel govuk-tabs__panel--hidden contact-list" id="inactive-contacts">
         {% if inactiveContacts.length > 0 %}
             {{ createTable(inactiveContacts) }}
         {% else %}
-            <div class="govuk-!-static-margin-top-4">{{ prisonerDoesNotHaveAnyContactsMessage(journey, 'inactive') }}</div>
+            <div class="govuk-!-static-margin-top-4">{{ prisonerDoesNotHaveAnyContactsMessage(prisonerDetails, 'inactive') }}</div>
         {% endif %}
     </div>
 </div>

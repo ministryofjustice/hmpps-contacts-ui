@@ -1,14 +1,17 @@
 import { Request, RequestHandler } from 'express'
 
 const ensureInManageContactsJourney = (): RequestHandler => {
-  return async (req: Request<{ journeyId: string }, unknown, unknown>, res, next) => {
-    const { journeyId } = req.params
+  return async (req: Request<{ journeyId: string; prisonerNumber?: string }, unknown, unknown>, res, next) => {
+    const { journeyId, prisonerNumber } = req.params
 
     if (!req.session.manageContactsJourneys) {
       req.session.manageContactsJourneys = {}
     }
 
     if (!req.session.manageContactsJourneys[journeyId]) {
+      if (prisonerNumber) {
+        return res.redirect(`/prisoner/${prisonerNumber}/contacts/list`)
+      }
       return res.redirect('/contacts/manage/start')
     }
 

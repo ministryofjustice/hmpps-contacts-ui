@@ -71,3 +71,11 @@ export const extractPrisonerNumber = (search: string): string | false => {
 export const getFormatDistanceToNow = (date: Date) => {
   return formatDistanceStrict(date, new Date())
 }
+
+export const formatDateForApi = (dateOfBirth: string) => {
+  const date = JSON.parse(dateOfBirth)
+  if (date.year && date.month && date.day) {
+    return `${date.year}-${date.month}-${date.day}`
+  }
+  return null
+}

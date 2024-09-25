@@ -1,6 +1,9 @@
 import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
 import { STUBBED_RELATIONSHIP_OPTIONS, STUBBED_TITLE_OPTIONS } from '../../server/routes/testutils/stubReferenceData'
+import { components } from '../../server/@types/contactsApi'
+
+type Contact = components['schemas']['Contact']
 
 export default {
   stubCreateContact: (createdContact: {
@@ -102,6 +105,67 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: STUBBED_RELATIONSHIP_OPTIONS,
+      },
+    })
+  },
+
+  stubContactSearch: ({
+    results = {
+      totalPages: 0,
+      totalElements: 0,
+      content: [],
+    },
+    lastName,
+    middleName,
+    firstName,
+    dateOfBirth,
+    page = '0',
+    size = '20',
+  }: {
+    results: { totalPages: number; totalElements: number; content: Contact[] }
+    lastName: string
+    middleName: string
+    firstName: string
+    dateOfBirth: string
+    page: string
+    size: string
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/contact/search`,
+        queryParameters: {
+          lastName: {
+            equalTo: lastName,
+          },
+          firstName: {
+            equalTo: firstName,
+          },
+          middleName: {
+            or: [
+              {
+                equalTo: middleName,
+              },
+              {
+                absent: true,
+              },
+            ],
+          },
+          dateOfBirth: {
+            equalTo: dateOfBirth,
+          },
+          page: {
+            equalTo: page,
+          },
+          size: {
+            equalTo: size,
+          },
+        },
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: results,
       },
     })
   },

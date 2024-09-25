@@ -1,0 +1,73 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% set pageTitle = applicationName + " - Enter name" %}
+{% set title = "What is the contacts name?" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+
+{% include './partials/createContactBreadcrumbs.njk' %}
+{{ miniProfile(prisonerDetails) }}
+{% include '../../../partials/formErrorSummary.njk' %}
+<span class="govuk-caption-l">Manage Contacts</span>
+<h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+ <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+                {{ govukSelect({
+                    id: "title",
+                    name: "title",
+                    label: {
+                        text: "Title"
+                    },
+                    items: titleOptions
+                }) }}
+
+                {{ govukInput({
+                    id: "firstName",
+                    name: "firstName",
+                    label: { text: "First name" },
+                    classes: 'govuk-!-width-one-third',
+                    errorMessage: validationErrors | findError('firstName'),
+                    value: firstName
+                }) }}
+
+                {{ govukInput({
+                    id: "middleName",
+                    name: "middleName",
+                    label: { text: "Middle names" },
+                    classes: 'govuk-!-width-one-third',
+                    errorMessage: validationErrors | findError('middleName'),
+                    value: middleName
+                }) }}
+
+                {{ govukInput({
+                    id: "lastName",
+                    name: "lastName",
+                    label: { text: "Last name" },
+                    classes: 'govuk-!-width-one-third',
+                    errorMessage: validationErrors | findError('lastName'),
+                    value: lastName
+                }) }}
+
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        html: "Continue",
+                        type: "submit",
+                        classes: 'govuk-!-margin-top-6',
+                        attributes: {"data-qa": "continue-button"}
+                    }) }}
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ journey.returnPoint.url }}" data-qa="cancel-button">Cancel</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

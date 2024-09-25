@@ -6,6 +6,7 @@ import {
   properCaseFullName,
   isValidPrisonerNumber,
   extractPrisonerNumber,
+  formatDateForApi,
 } from './utils'
 
 describe('convert to title case', () => {
@@ -101,5 +102,22 @@ describe('extractPrisonerNumber', () => {
     ['null string', null, false],
   ])('%s: extractPrisonerNumber(%s) => %s', (_: string, input: string, expected: string | false) => {
     expect(extractPrisonerNumber(input)).toEqual(expected)
+  })
+})
+
+describe('formatDateForApi', () => {
+  it('should return date in YYYY-MM-DD format', () => {
+    // Given
+    const dateOfBirth = {
+      year: 2000,
+      month: 11,
+      day: 1,
+    }
+
+    // When
+    const results = formatDateForApi(JSON.stringify(dateOfBirth))
+
+    // Then
+    expect(results).toEqual('2000-11-1')
   })
 })

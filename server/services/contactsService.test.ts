@@ -1,12 +1,22 @@
 import createError, { BadRequest } from 'http-errors'
 import ContactsApiClient from '../data/contactsApiClient'
 import ContactsService from './contactsService'
-import CreateContactJourney = journeys.CreateContactJourney
+import AddContactJourney = journeys.AddContactJourney
 import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
+import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import IsOverEighteenOptions = journeys.YesNoOrDoNotKnow
+import { PaginationRequest } from '../data/prisonerOffenderSearchTypes'
+import TestData from '../routes/testutils/testData'
 
 jest.mock('../data/contactsApiClient')
+const contacts = TestData.contacts()
+const contactSearchRequest: ContactSearchRequest = {
+  lastName: 'last',
+  middleName: '',
+  firstName: 'first',
+  dateOfBirth: '1980-12-10T00:00:00.000Z',
+}
 
 describe('contactsService', () => {
   const user = { token: 'userToken', username: 'user1' } as Express.User
@@ -28,12 +38,12 @@ describe('contactsService', () => {
         id: 2136718213,
       }
       apiClient.createContact.mockResolvedValue(expectedCreated)
-      const journey: CreateContactJourney = {
+      const journey: AddContactJourney = {
         id: '1',
         lastTouched: new Date().toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { type: 'HOME', url: '/foo-bar' },
+        returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
         names: {
           title: 'Mr',
           lastName: 'last',
@@ -59,7 +69,7 @@ describe('contactsService', () => {
         firstName: 'first',
         middleName: 'middle',
         dateOfBirth: new Date('1982-06-01T00:00:00.000Z'),
-        isOverEighteen: undefined,
+        estimatedIsOverEighteen: undefined,
         createdBy: 'user1',
         relationship: {
           prisonerNumber,
@@ -84,12 +94,12 @@ describe('contactsService', () => {
         id: 2136718213,
       }
       apiClient.createContact.mockResolvedValue(expectedCreated)
-      const journey: CreateContactJourney = {
+      const journey: AddContactJourney = {
         id: '1',
         lastTouched: new Date().toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { type: 'HOME', url: '/foo-bar' },
+        returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
         names: {
           lastName: 'last',
           firstName: 'first',
@@ -110,7 +120,7 @@ describe('contactsService', () => {
         firstName: 'first',
         middleName: undefined,
         dateOfBirth: undefined,
-        isOverEighteen: 'DO_NOT_KNOW',
+        estimatedIsOverEighteen: 'DO_NOT_KNOW',
         relationship: {
           prisonerNumber,
           relationshipCode: 'MOT',
@@ -138,12 +148,12 @@ describe('contactsService', () => {
         id: 2136718213,
       }
       apiClient.createContact.mockResolvedValue(expectedCreated)
-      const journey: CreateContactJourney = {
+      const journey: AddContactJourney = {
         id: '1',
         lastTouched: new Date().toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { type: 'HOME', url: '/foo-bar' },
+        returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
         names: {
           lastName: 'last',
           firstName: 'first',
@@ -164,7 +174,7 @@ describe('contactsService', () => {
         firstName: 'first',
         middleName: undefined,
         dateOfBirth: undefined,
-        isOverEighteen: expected,
+        estimatedIsOverEighteen: expected,
         relationship: {
           prisonerNumber,
           relationshipCode: 'MOT',
@@ -191,7 +201,7 @@ describe('contactsService', () => {
             lastTouched: new Date().toISOString(),
             prisonerNumber,
             isCheckingAnswers: false,
-            returnPoint: { type: 'HOME', url: '/foo-bar' },
+            returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
             names: { firstName: 'first', lastName: 'last' },
             dateOfBirth: { isKnown: 'NO' },
             relationship: { type: 'MOT', isEmergencyContact: 'YES', isNextOfKin: 'NO' },
@@ -199,6 +209,40 @@ describe('contactsService', () => {
           user,
         ),
       ).rejects.toBeInstanceOf(BadRequest)
+    })
+  })
+
+  describe('searchContact', () => {
+    const pagination = { page: 0, size: 20 } as PaginationRequest
+
+    it('Retrieves search contact details matching the search criteria', async () => {
+      // Given
+      const contactResults = {
+        totalPages: 1,
+        totalElements: 1,
+        first: true,
+        last: true,
+        size: 20,
+        empty: false,
+        content: [contacts],
+      } as ContactSearchRequest
+
+      // When
+      await apiClient.searchContact.mockResolvedValue(contactResults)
+      const results = await service.searchContact(contactSearchRequest, pagination, user)
+
+      // Then
+      expect(results?.content[0].lastName).toEqual(contacts.lastName)
+      expect(results?.content[0].firstName).toEqual(contacts.firstName)
+      expect(results.totalPages).toEqual(1)
+      expect(results.totalElements).toEqual(1)
+    })
+
+    it('Propagates errors', async () => {
+      apiClient.searchContact.mockRejectedValue(new Error('some error'))
+      await expect(apiClient.searchContact(contactSearchRequest, user, pagination)).rejects.toEqual(
+        new Error('some error'),
+      )
     })
   })
 })

@@ -1,7 +1,6 @@
-import { PageElement } from './page'
-import ContinuablePage from './continuablePage'
+import Page, { PageElement } from './page'
 
-export default class EnterContactDateOfBirthPage extends ContinuablePage {
+export default class EnterContactDateOfBirthPage extends Page {
   constructor(name: string) {
     super(`Do you know ${name}'s date of birth?`)
   }
