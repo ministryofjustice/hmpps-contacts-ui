@@ -26,6 +26,7 @@ import { enterRelationshipCommentsSchema } from './relationship-comments/enterRe
 import ContactSearchController from '../manage/contact-search/contactSearchController'
 import { contactSearchSchema } from '../manage/contact-search/contactSearchSchema'
 import AddContactModeController from './mode/addContactModeController'
+import ContactConfirmationController from '../manage/contact-confirmation/contactConfirmationController'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -56,6 +57,15 @@ const AddContactRoutes = (
     ensureInAddContactJourney(),
     validate(contactSearchSchema()),
     asyncMiddleware(contactsSearchController.POST),
+  )
+
+  const contactConfirmationController = new ContactConfirmationController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/confirmation/:journeyId',
+    ensureInAddContactJourney(),
+    prisonerDetailsMiddleware(prisonerSearchService),
+    logPageViewMiddleware(auditService, contactConfirmationController),
+    asyncMiddleware(contactConfirmationController.GET),
   )
 
   const modeController = new AddContactModeController()

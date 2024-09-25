@@ -11,7 +11,6 @@ import ListContactsController from './list/listContactsController'
 import { ContactsService, PrisonerSearchService } from '../../../services'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import prisonerDetailsMiddleware from '../../../middleware/prisonerDetailsMiddleware'
-import ContactConfirmationController from './contact-confirmation/contactConfirmationController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -77,14 +76,6 @@ const ManageContactsRoutes = (
 
   // Part 5: View one contact
   // /prisoner/contact/:journeyId
-  const contactConfirmationController = new ContactConfirmationController(contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/confirmation/:journeyId',
-    ensureInManageContactsJourney(),
-    prisonerDetailsMiddleware(prisonerSearchService),
-    logPageViewMiddleware(auditService, contactConfirmationController),
-    asyncMiddleware(contactConfirmationController.GET),
-  )
   // /prisoner/contact/:contactId
 
   // Part 6: Manage the attribute of one contact (phones, addresses, IDs, emails, restrictions)

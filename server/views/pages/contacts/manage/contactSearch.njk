@@ -156,7 +156,7 @@
                 %}
                 
                 {% set contactNameHtml %}
-                    <a href="#" class="govuk-link govuk-link--no-visited-state bapv-result-row">
+                    <a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/confirmation/{{ journey.id }}" class="govuk-link govuk-link--no-visited-state bapv-result-row">
                         {{ (result.lastName + ", " + result.firstName) | convertToTitleCase }}
                     </a>
                 {% endset %}
