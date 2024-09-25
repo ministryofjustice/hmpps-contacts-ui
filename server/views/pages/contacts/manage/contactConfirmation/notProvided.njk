@@ -1,0 +1,20 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro notProvided(param) %}
+    {{ govukSummaryList({
+        card: {
+            title: {
+                text: param.title
+            }
+        },
+        rows: [{
+            key: {
+                text: param.key
+            },
+            value: {
+                html: '<span class="mid-grey">Not provided</span>'
+            }
+        ]}
+    }) }}
+{% endmacro %}
+

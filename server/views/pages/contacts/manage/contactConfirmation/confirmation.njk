@@ -4,6 +4,8 @@
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "./notProvided.njk" import notProvided %}
+
 
 {% set pageTitle = applicationName + " - Contact Confirmation" %}
 {% set prisonerResultsLink = "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/list/" + journey.id %}
@@ -13,10 +15,15 @@
 {% macro contactDetailsHtml() %}
     {%- include "./basicDetails.njk" -%}
     {%- include "./addresses.njk" -%}
+    <!-- {{ notProvided({title: 'Addresses', key: 'Address'}) }} -->
     {%- include "./phone.njk" -%}
+    <!-- {{ notProvided({title: 'Phone', key: 'Phone number'}) }} -->
     {%- include "./emailAddresses.njk" -%}
+    <!-- {{ notProvided({title: 'Email addresses', key: 'Email address'}) }} -->
     {%- include "./identityNumbers.njk" -%}
+    <!-- {{ notProvided({title: 'Indentity numbers', key: 'passport number'}) }} -->
     {%- include "./languageDetails.njk" -%}
+    <!-- {{ notProvided({title: 'Languange details', key: 'Spoken language'}) }} -->
 {% endmacro %}
 
 {% macro restrictionsHtml() %}
