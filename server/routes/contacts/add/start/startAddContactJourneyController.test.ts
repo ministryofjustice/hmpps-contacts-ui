@@ -39,7 +39,7 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
-  it('should create the journey and redirect to enter-name page', async () => {
+  it('should create the journey and redirect to search page', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
 
@@ -52,7 +52,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
       correlationId: expect.any(String),
     })
     expect(response.status).toEqual(302)
-    expect(response.headers.location).toContain('/contacts/create/enter-name/')
+    expect(response.headers.location).toContain('/contacts/search/')
     expect(Object.entries(session.addContactJourneys)).toHaveLength(1)
   })
 
@@ -73,7 +73,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
       correlationId: expect.any(String),
     })
     expect(response.status).toEqual(302)
-    expect(response.headers.location).toContain('/contacts/create/enter-name/')
+    expect(response.headers.location).toContain('/contacts/search/')
     const journey = Object.values(session.addContactJourneys)[0]
     expect(journey.returnPoint).toStrictEqual(expectedReturnPoint)
   })
@@ -98,31 +98,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
       correlationId: expect.any(String),
     })
     expect(response.status).toEqual(302)
-    expect(response.headers.location).toContain('/contacts/create/enter-name/')
+    expect(response.headers.location).toContain('/contacts/search/')
     const journey = Object.values(session.addContactJourneys)[0]
     expect(journey.returnPoint).toStrictEqual(expectedReturnPoint)
   })
 
-  it('should not remove any existing other journeys in the session', async () => {
-    // Given
-    auditService.logPageView.mockResolvedValue(null)
-
-    // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/start`)
-
-    // Then
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_START_PAGE, {
-      who: user.username,
-      correlationId: expect.any(String),
-    })
-    expect(response.status).toEqual(302)
-    expect(response.headers.location).toContain('/contacts/create/enter-name/')
-    expect(Object.entries(session.addContactJourneys)).toHaveLength(1)
-    const journey = Object.values(session.addContactJourneys)[0]
-    expect(journey.prisonerNumber).toStrictEqual(prisonerNumber)
-  })
-
-  it('should not remove any existing other journeys in the session', async () => {
+  it('should not remove any existing add journeys in the session', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
     preExistingJourneysToAddToSession = [
@@ -149,7 +130,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
       correlationId: expect.any(String),
     })
     expect(response.status).toEqual(302)
-    expect(location).toContain('/contacts/create/enter-name/')
+    expect(location).toContain('/contacts/search/')
     expect(Object.entries(session.addContactJourneys)).toHaveLength(2)
     const newId = location.substring(location.lastIndexOf('/') + 1)
     expect(session.addContactJourneys[newId].id).toEqual(newId)
@@ -207,7 +188,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
       correlationId: expect.any(String),
     })
     expect(response.status).toEqual(302)
-    expect(location).toContain('/contacts/create/enter-name/')
+    expect(location).toContain('/contacts/search/')
     const newId = location.substring(location.lastIndexOf('/') + 1)
     expect(Object.keys(session.addContactJourneys).sort()).toStrictEqual(
       [newId, 'old', 'middle-aged', 'young', 'youngest'].sort(),

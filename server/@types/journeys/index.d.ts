@@ -5,6 +5,11 @@ declare namespace journeys {
     prisonerNumber: string
     isCheckingAnswers: boolean
     returnPoint: ReturnPoint
+    mode?: 'EXISTING' | 'NEW'
+    searchContact?: {
+      contact?: Partial<ContactNames>
+      dateOfBirth?: Partial<DateOfBirth>
+    }
     names?: ContactNames
     dateOfBirth?: DateOfBirth
     relationship?: PrisonerContactRelationship

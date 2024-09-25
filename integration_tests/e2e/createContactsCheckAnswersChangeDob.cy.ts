@@ -9,6 +9,7 @@ import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
 import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
 import ListContactsPage from '../pages/listContacts'
+import SearchContactPage from '../pages/searchContactPage'
 
 context('Create contact and update from check answers where we are changing the DOB', () => {
   beforeEach(() => {
@@ -20,9 +21,33 @@ context('Create contact and update from check answers where we are changing the 
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', TestData.prisoner().prisonerNumber)
     cy.task('stubCreateContact', { id: 132456 })
+    cy.task('stubContactSearch', {
+      results: {
+        totalPages: 0,
+        totalElements: 0,
+        content: [],
+      },
+      lastName: 'FOO',
+      firstName: '',
+      middleName: '',
+      dateOfBirth: '',
+    })
 
+    const { prisonerNumber } = TestData.prisoner()
     cy.signIn()
-    cy.visit('/prisoner/A1234BC/contacts/create/start')
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/list`)
+
+    Page.verifyOnPage(ListContactsPage) //
+      .clickAddNewContactButton()
+
+    Page.verifyOnPage(SearchContactPage) //
+      .enterLastName('FOO')
+      .clickSearchButton()
+
+    Page.verifyOnPage(SearchContactPage) //
+      .verifyShowsTheContactIsNotListedAs('The contact is not listed')
+      .clickTheContactIsNotListed()
+
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')

@@ -7,8 +7,8 @@ import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import ContactsService from '../../../../services/contactsService'
-import ManageContactsJourney = journeys.ManageContactsJourney
 import TestData from '../../../testutils/testData'
+import AddContactJourney = journeys.AddContactJourney
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -22,20 +22,15 @@ let app: Express
 let session: Partial<SessionData>
 const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
-let existingJourney: ManageContactsJourney
+let existingJourney: AddContactJourney
 
 beforeEach(() => {
   existingJourney = {
     id: journeyId,
     lastTouched: new Date().toISOString(),
-    search: { searchTerm: 'Name' },
-    prisoner: {
-      firstName: 'first',
-      lastName: 'last',
-      prisonerNumber: 'A1234BC',
-      dateOfBirth: '1986-06-27',
-      prisonName: 'Moorland (HMP & YOI)',
-    },
+    prisonerNumber,
+    isCheckingAnswers: false,
+    returnPoint: { type: 'MANAGE_PRISONER_CONTACTS', url: '/foo-bar' },
   }
   app = appWithAllRoutes({
     services: {
@@ -46,8 +41,8 @@ beforeEach(() => {
     userSupplier: () => user,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
-      session.manageContactsJourneys = {}
-      session.manageContactsJourneys[journeyId] = existingJourney
+      session.addContactJourneys = {}
+      session.addContactJourneys[journeyId] = existingJourney
     },
   })
 })
@@ -99,7 +94,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
-    expect(session.manageContactsJourneys[journeyId].searchContact).toStrictEqual({
+    expect(session.addContactJourneys[journeyId].searchContact).toStrictEqual({
       contact: {
         firstName: '',
         middleName: undefined,
@@ -121,7 +116,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
-    expect(session.manageContactsJourneys[journeyId].searchContact).toBeUndefined()
+    expect(session.addContactJourneys[journeyId].searchContact).toBeUndefined()
   })
 
   it('should not pass to result page when rest of the form is completed except last name', async () => {
@@ -132,7 +127,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
-    expect(session.manageContactsJourneys[journeyId].searchContact).toBeUndefined()
+    expect(session.addContactJourneys[journeyId].searchContact).toBeUndefined()
   })
 
   it('should not pass to result page when month and year are not provided', async () => {
@@ -143,7 +138,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
-    expect(session.manageContactsJourneys[journeyId].searchContact).toBeUndefined()
+    expect(session.addContactJourneys[journeyId].searchContact).toBeUndefined()
   })
 
   it('should not pass to result page when year is not provided', async () => {
@@ -154,7 +149,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
-    expect(session.manageContactsJourneys[journeyId].searchContact).toBeUndefined()
+    expect(session.addContactJourneys[journeyId].searchContact).toBeUndefined()
   })
 
   it('should not pass to result page when date is in the future', async () => {
@@ -173,7 +168,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
-    expect(session.manageContactsJourneys[journeyId].searchContact).toBeUndefined()
+    expect(session.addContactJourneys[journeyId].searchContact).toBeUndefined()
   })
 
   it('should not pass to result page when last name contains special characters', async () => {
@@ -184,7 +179,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
-    expect(session.manageContactsJourneys[journeyId].searchContact).toBeUndefined()
+    expect(session.addContactJourneys[journeyId].searchContact).toBeUndefined()
   })
 })
 
@@ -308,6 +303,6 @@ describe('Contact seaarch results', () => {
 
     // Then
     expect(response.status).toEqual(200)
-    expect($('[data-qa=no-result-message]').text()).toContain('The contact is not listed')
+    expect($('[data-qa=contact-not-listed-link]').text()).toContain('The contact is not listed')
   })
 })
