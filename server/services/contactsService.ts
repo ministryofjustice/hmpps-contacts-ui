@@ -63,4 +63,8 @@ export default class ContactsService {
   ): Promise<Contact> {
     return this.contactsApiClient.searchContact(contactSearchRequest, user, pagination)
   }
+
+  async getContact(contactId: number, user: Express.User): Promise<Contact> {
+    return this.contactsApiClient.getContact(contactId, user)
+  }
 }

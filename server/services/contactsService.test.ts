@@ -1,13 +1,13 @@
 import createError, { BadRequest } from 'http-errors'
 import ContactsApiClient from '../data/contactsApiClient'
 import ContactsService from './contactsService'
+import { PaginationRequest } from '../data/prisonerOffenderSearchTypes'
+import TestData from '../routes/testutils/testData'
 import AddContactJourney = journeys.AddContactJourney
 import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import IsOverEighteenOptions = journeys.YesNoOrDoNotKnow
-import { PaginationRequest } from '../data/prisonerOffenderSearchTypes'
-import TestData from '../routes/testutils/testData'
 
 jest.mock('../data/contactsApiClient')
 const contacts = TestData.contacts()
@@ -243,6 +243,31 @@ describe('contactsService', () => {
       await expect(apiClient.searchContact(contactSearchRequest, user, pagination)).rejects.toEqual(
         new Error('some error'),
       )
+    })
+  })
+
+  describe('getContact', () => {
+    it('Should get the contact', async () => {
+      const expectedContact: Contact = {
+        id: 123456,
+        lastName: 'last',
+        firstName: 'middle',
+        middleName: 'first',
+        dateOfBirth: '1980-12-10T00:00:00.000Z',
+        createdBy: user.username,
+        createdTime: '2024-01-01',
+      }
+      apiClient.getContact.mockResolvedValue(expectedContact)
+
+      const contact = await service.getContact(123456, user)
+
+      expect(contact).toStrictEqual(expectedContact)
+      expect(apiClient.getContact).toHaveBeenCalledWith(123456, user)
+    })
+
+    it('Propagates errors', async () => {
+      apiClient.getContact.mockRejectedValue(new Error('some error'))
+      await expect(apiClient.getContact(123456, user)).rejects.toEqual(new Error('some error'))
     })
   })
 })

@@ -185,4 +185,51 @@ describe('contactsApiClient', () => {
       expect(output).toEqual(results)
     })
   })
+  describe('getContact', () => {
+    it('should create the request and return the response', async () => {
+      // Given
+      const expectedContact: Contact = {
+        id: 123456,
+        lastName: 'last',
+        firstName: 'middle',
+        middleName: 'first',
+        dateOfBirth: '1980-12-10T00:00:00.000Z',
+        createdBy: user.username,
+        createdTime: '2024-01-01',
+      }
+      fakeContactsApi
+        .get('/contact/123456')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, expectedContact)
+
+      // When
+      const createdContact = await contactsApiClient.getContact(123456, user)
+
+      // Then
+      expect(createdContact).toEqual(expectedContact)
+    })
+
+    it.each([401, 403])('should propagate errors', async (errorCode: number) => {
+      // Given
+      const expectedErrorBody = {
+        status: errorCode,
+        userMessage: 'Some error',
+        developerMessage: 'Some error',
+      }
+
+      fakeContactsApi
+        .get('/contact/123456')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(errorCode, expectedErrorBody)
+
+      // When
+      try {
+        await contactsApiClient.getContact(123456, user)
+      } catch (e) {
+        // Then
+        expect(e.status).toEqual(errorCode)
+        expect(e.data).toEqual(expectedErrorBody)
+      }
+    })
+  })
 })

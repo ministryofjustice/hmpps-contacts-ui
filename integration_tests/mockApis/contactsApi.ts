@@ -82,6 +82,20 @@ export default {
     })
   },
 
+  stubGetContactById: (contact: { id: number }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/contact/${contact.id}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: contact,
+      },
+    })
+  },
+
   stubTitlesReferenceData: (): SuperAgentRequest => {
     return stubFor({
       request: {

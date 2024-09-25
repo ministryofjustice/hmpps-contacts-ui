@@ -63,6 +63,10 @@ export default class SearchContactPage extends Page {
     this.theContactIsNotListedLink().click()
   }
 
+  clickTheContactLink(contactId: number) {
+    this.contactLink(contactId).click()
+  }
+
   private firstNameTextBox = (): PageElement => cy.get('#firstName')
 
   private middleNameTextBox = (): PageElement => cy.get('#middleName')
@@ -78,6 +82,8 @@ export default class SearchContactPage extends Page {
   private searchButton = (): PageElement => cy.get('[data-qa=search-button]')
 
   private theContactIsNotListedLink = (): PageElement => cy.get('[data-qa="contact-not-listed-link"]')
+
+  private contactLink = (contactId: number): PageElement => cy.get(`[data-qa="add-contact-${contactId}-link"]`)
 
   private checkContactSearchTableNameValue = (): PageElement =>
     cy.get('.govuk-table__body > :nth-child(1) > :nth-child(1)')

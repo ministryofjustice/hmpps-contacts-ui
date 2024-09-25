@@ -58,7 +58,7 @@ const AddContactRoutes = (
     asyncMiddleware(contactsSearchController.POST),
   )
 
-  const modeController = new AddContactModeController()
+  const modeController = new AddContactModeController(contactsService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId',
     ensureInAddContactJourney(),

@@ -66,4 +66,8 @@ export default class ContactsApiClient extends RestClient {
       user,
     )
   }
+
+  async getContact(contactId: number, user: Express.User): Promise<Contact> {
+    return this.get<Contact>({ path: `/contact/${contactId}` }, user)
+  }
 }
