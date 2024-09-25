@@ -38,7 +38,7 @@
                                     attributes: {"data-qa": "change-name-link"},
                                     classes: "govuk-link--no-visited-state"
                                 }
-                            ]
+                            ] if journey.mode === 'NEW'
                         }
                     },
                     {
@@ -57,7 +57,7 @@
                                     visuallyHiddenText: "date of birth",
                                     attributes: {"data-qa": "change-dob-link"},
                                     classes: "govuk-link--no-visited-state"
-                                }
+                                } if journey.mode === 'NEW'
                             ]
                         }
                     }
@@ -81,7 +81,7 @@
                                         attributes: {"data-qa": "change-estimated-dob-link"},
                                         classes: "govuk-link--no-visited-state"
                                     }
-                                ]
+                                ] if journey.mode === 'NEW'
                             }
                         }
                     ), contactDetailsRows) %}
@@ -184,12 +184,13 @@
                         }
                     ]
                 }) }}
+                {% set buttonLabel = "Create prisoner contact" if journey.mode === 'NEW' else "Add prisoner contact" %}
                 <div class="govuk-button-group">
                     {{ govukButton({
-                        html: "Create prisoner contact",
+                        html: buttonLabel,
                         type: "submit",
                         classes: 'govuk-!-margin-top-6',
-                        attributes: {"data-qa": "create-prisoner-contact-button"}
+                        attributes: {"data-qa": "continue-button"}
                     }) }}
                     <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ journey.returnPoint.url }}" data-qa="cancel-button">Cancel</a>
                 </div>

@@ -49,7 +49,13 @@ export default class CreateContactCheckAnswersController implements PageHandler 
     const { user } = res.locals
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys[journeyId]
-    await this.contactService.createContact(journey, user).then(() => delete req.session.addContactJourneys[journeyId])
+    if (journey.mode === 'NEW') {
+      await this.contactService
+        .createContact(journey, user)
+        .then(() => delete req.session.addContactJourneys[journeyId])
+    } else if (journey.mode === 'EXISTING') {
+      await this.contactService.addContact(journey, user).then(() => delete req.session.addContactJourneys[journeyId])
+    }
     res.redirect(journey.returnPoint.url)
   }
 }

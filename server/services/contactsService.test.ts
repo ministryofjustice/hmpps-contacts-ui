@@ -8,6 +8,7 @@ import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import IsOverEighteenOptions = journeys.YesNoOrDoNotKnow
+import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
 
 jest.mock('../data/contactsApiClient')
 const contacts = TestData.contacts()
@@ -268,6 +269,123 @@ describe('contactsService', () => {
     it('Propagates errors', async () => {
       apiClient.getContact.mockRejectedValue(new Error('some error'))
       await expect(apiClient.getContact(123456, user)).rejects.toEqual(new Error('some error'))
+    })
+  })
+  describe('addContact', () => {
+    it('should add a contact relationship from the journey dto with all fields', async () => {
+      // Given
+      const expectedCreated: Contact = {
+        id: 2136718213,
+      }
+      apiClient.addContactRelationship.mockResolvedValue(expectedCreated)
+      const journey: AddContactJourney = {
+        id: '1',
+        lastTouched: new Date().toISOString(),
+        prisonerNumber,
+        isCheckingAnswers: false,
+        returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
+        names: {
+          title: 'Mr',
+          lastName: 'last',
+          firstName: 'first',
+          middleName: 'middle',
+        },
+        dateOfBirth: {
+          isKnown: 'YES',
+          day: 1,
+          month: 6,
+          year: 1982,
+        },
+        relationship: {
+          type: 'MOT',
+          isEmergencyContact: 'NO',
+          isNextOfKin: 'YES',
+          comments: 'Some comments about this relationship',
+        },
+        contactId: 123456,
+      }
+      const expectedRequest: AddContactRelationshipRequest = {
+        relationship: {
+          prisonerNumber,
+          relationshipCode: 'MOT',
+          isNextOfKin: true,
+          isEmergencyContact: false,
+          comments: 'Some comments about this relationship',
+        },
+        createdBy: 'user1',
+      }
+
+      // When
+      const created = await service.addContact(journey, user)
+
+      // Then
+      expect(created).toStrictEqual(expectedCreated)
+      expect(apiClient.addContactRelationship).toHaveBeenCalledWith(123456, expectedRequest, user)
+    })
+
+    it('should add a contact relationship from the journey dto with only optional fields', async () => {
+      // Given
+      const expectedCreated: Contact = {
+        id: 2136718213,
+      }
+      apiClient.addContactRelationship.mockResolvedValue(expectedCreated)
+      const journey: AddContactJourney = {
+        id: '1',
+        lastTouched: new Date().toISOString(),
+        prisonerNumber,
+        isCheckingAnswers: false,
+        returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
+        names: {
+          lastName: 'last',
+          firstName: 'first',
+        },
+        dateOfBirth: {
+          isKnown: 'NO',
+          isOverEighteen: 'DO_NOT_KNOW',
+        },
+        relationship: {
+          type: 'MOT',
+          isEmergencyContact: 'YES',
+          isNextOfKin: 'NO',
+        },
+        contactId: 123456,
+      }
+      const expectedRequest: AddContactRelationshipRequest = {
+        relationship: {
+          prisonerNumber,
+          relationshipCode: 'MOT',
+          isNextOfKin: false,
+          isEmergencyContact: true,
+        },
+        createdBy: 'user1',
+      }
+
+      // When
+      const created = await service.addContact(journey, user)
+
+      // Then
+      expect(created).toStrictEqual(expectedCreated)
+      expect(apiClient.addContactRelationship).toHaveBeenCalledWith(123456, expectedRequest, user)
+    })
+
+    it('should handle a bad request', async () => {
+      apiClient.addContactRelationship.mockRejectedValue(createError.BadRequest())
+      await expect(
+        service.addContact(
+          {
+            id: '1',
+            lastTouched: new Date().toISOString(),
+            prisonerNumber,
+            isCheckingAnswers: false,
+            returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
+            names: { firstName: 'first', lastName: 'last' },
+            dateOfBirth: { isKnown: 'NO' },
+            relationship: { type: 'MOT', isEmergencyContact: 'YES', isNextOfKin: 'NO' },
+            contactId: 123456,
+          },
+          user,
+        ),
+      ).rejects.toBeInstanceOf(BadRequest)
     })
   })
 })

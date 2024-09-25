@@ -86,9 +86,8 @@ context('Create Contacts', () => {
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
       .verifyShowIsNextOfKinAs('Yes')
-      .clickCreatePrisonerContact()
+      .continueTo(ListContactsPage)
 
-    Page.verifyOnPage(ListContactsPage)
     cy.verifyLastAPICall(
       {
         method: 'POST',
@@ -148,9 +147,8 @@ context('Create Contacts', () => {
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('Yes')
       .verifyShowIsNextOfKinAs('No')
-      .clickCreatePrisonerContact()
+      .continueTo(ListContactsPage)
 
-    Page.verifyOnPage(ListContactsPage)
     cy.verifyLastAPICall(
       {
         method: 'POST',

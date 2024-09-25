@@ -22,6 +22,7 @@ context('Create Contacts', () => {
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', prisonerNumber)
     cy.task('stubGetContactById', contact)
+    cy.task('stubAddContactRelationship', contactId)
     cy.task('stubContactSearch', {
       results: {
         totalPages: 1,
@@ -43,14 +44,18 @@ context('Create Contacts', () => {
     Page.verifyOnPage(SearchContactPage) //
       .enterLastName('FOO')
       .clickSearchButton()
-
-    Page.verifyOnPage(SearchContactPage) //
-      .verifyShowsTheContactIsNotListedAs('The contact is not listed')
-      .clickTheContactLink(contactId)
   })
 
-  it('Can add an existing contact with only required fields', () => {
-    // TODO Confirm contact page goes here
+  it('Can add an existing contact with all fields and the contact has a date of birth', () => {
+    cy.task('stubGetContactById', {
+      id: contactId,
+      firstName: 'Existing',
+      lastName: 'Contact',
+      dateOfBirth: '1990-01-14',
+    })
+
+    Page.verifyOnPage(SearchContactPage) //
+      .clickTheContactLink(contactId)
 
     Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
       .hasSelectedRelationshipHint('')
@@ -66,35 +71,94 @@ context('Create Contacts', () => {
       .selectIsNextOfKin('YES')
       .clickContinue()
 
-    Page.verifyOnPage(RelationshipCommentsPage, 'Contact, Existing').clickContinue()
+    Page.verifyOnPage(RelationshipCommentsPage, 'Contact, Existing') //
+      .enterComments('Some comments about the relationship')
+      .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsNameAs('Contact, Existing')
-      // .verifyShowsDateOfBirthAs('Not provided')
-      // .verifyShowsEstimatedDateOfBirthAs("I don't know")
+      .verifyShowsDateOfBirthAs('14 January 1990')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
       .verifyShowIsNextOfKinAs('Yes')
-    // TODO Confirm create relationship and check answers
-    // verifyNameNotChangeable
-    // verifyDOBNotChangeable
-    // .clickAddPrisonerContact()
+      .verifyShowCommentsAs('Some comments about the relationship')
+      .verifyNameIsNotChangeable()
+      .verifyDateOfBirthIsNotChangeable()
+      .verifyEstimatedDateOfBirthIsNotChangeable()
+      .continueTo(ListContactsPage)
 
-    // Page.verifyOnPage(ListContactsPage)
-    // cy.verifyLastAPICall(
-    //   {
-    //     method: 'POST',
-    //     urlPath: `/contact/${contactId}/relationship`,
-    //   },
-    //   {
-    //     relationship: {
-    //       prisonerNumber: 'A1234BC',
-    //       relationshipCode: 'MOT',
-    //       isNextOfKin: true,
-    //       isEmergencyContact: false,
-    //     },
-    //     createdBy: 'USER1',
-    //   },
-    // )
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: `/contact/${contactId}/relationship`,
+      },
+      {
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipCode: 'MOT',
+          isNextOfKin: true,
+          isEmergencyContact: false,
+          comments: 'Some comments about the relationship',
+        },
+        createdBy: 'USER1',
+      },
+    )
+  })
+
+  it('Can add an existing contact with only optional fields and the contact has an estimated date of birth', () => {
+    cy.task('stubGetContactById', {
+      id: contactId,
+      firstName: 'Existing',
+      lastName: 'Contact',
+      estimatedIsOverEighteen: 'YES',
+    })
+
+    Page.verifyOnPage(SearchContactPage) //
+      .clickTheContactLink(contactId)
+
+    Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
+      .hasSelectedRelationshipHint('')
+      .selectRelationship('MOT')
+      .hasSelectedRelationshipHint("Contact, Existing is the prisoner's mother")
+      .clickContinue()
+
+    Page.verifyOnPage(SelectEmergencyContactPage, 'Contact, Existing') //
+      .selectIsEmergencyContact('YES')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectNextOfKinPage, 'Contact, Existing') //
+      .selectIsNextOfKin('NO')
+      .clickContinue()
+
+    Page.verifyOnPage(RelationshipCommentsPage, 'Contact, Existing') //
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowsNameAs('Contact, Existing')
+      .verifyShowsDateOfBirthAs('Not provided')
+      .verifyShowsEstimatedDateOfBirthAs('Yes')
+      .verifyShowRelationshipAs('Mother')
+      .verifyShowIsEmergencyContactAs('Yes')
+      .verifyShowIsNextOfKinAs('No')
+      .verifyNameIsNotChangeable()
+      .verifyDateOfBirthIsNotChangeable()
+      .verifyEstimatedDateOfBirthIsNotChangeable()
+      .continueTo(ListContactsPage)
+
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: `/contact/${contactId}/relationship`,
+      },
+      {
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipCode: 'MOT',
+          isNextOfKin: false,
+          isEmergencyContact: true,
+        },
+        createdBy: 'USER1',
+      },
+    )
   })
 })

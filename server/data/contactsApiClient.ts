@@ -7,6 +7,7 @@ import Pageable = contactsApiClientTypes.Pageable
 import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import ReferenceCodeType from '../enumeration/referenceCodeType'
+import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
 
 export default class ContactsApiClient extends RestClient {
   constructor() {
@@ -17,6 +18,20 @@ export default class ContactsApiClient extends RestClient {
     return this.post<Contact>(
       {
         path: `/contact`,
+        data: request,
+      },
+      user,
+    )
+  }
+
+  async addContactRelationship(
+    contactId: number,
+    request: AddContactRelationshipRequest,
+    user: Express.User,
+  ): Promise<void> {
+    return this.post(
+      {
+        path: `/contact/${contactId}/relationship`,
         data: request,
       },
       user,

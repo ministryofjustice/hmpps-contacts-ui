@@ -87,9 +87,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsNameAs('Last Updated, First Updated Middle Updated')
-      .clickCreatePrisonerContact()
-
-    Page.verifyOnPage(ListContactsPage)
+      .continueTo(ListContactsPage)
 
     cy.verifyLastAPICall(
       {
@@ -127,9 +125,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowRelationshipAs('Father')
-      .clickCreatePrisonerContact()
-
-    Page.verifyOnPage(ListContactsPage)
+      .continueTo(ListContactsPage)
 
     cy.verifyLastAPICall(
       {
@@ -165,9 +161,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowIsEmergencyContactAs('Yes')
-      .clickCreatePrisonerContact()
-
-    Page.verifyOnPage(ListContactsPage)
+      .continueTo(ListContactsPage)
 
     cy.verifyLastAPICall(
       {
@@ -203,9 +197,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowIsNextOfKinAs('Yes')
-      .clickCreatePrisonerContact()
-
-    Page.verifyOnPage(ListContactsPage)
+      .continueTo(ListContactsPage)
 
     cy.verifyLastAPICall(
       {
@@ -241,9 +233,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowCommentsAs('Some new comments I entered')
-      .clickCreatePrisonerContact()
-
-    Page.verifyOnPage(ListContactsPage)
+      .continueTo(ListContactsPage)
 
     cy.verifyLastAPICall(
       {
