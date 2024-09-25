@@ -10,8 +10,6 @@ import { prisonerSearchSchemaFactory } from './prisoner-search/prisonerSearchSch
 import ListContactsController from './list/listContactsController'
 import { ContactsService, PrisonerSearchService } from '../../../services'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
-import ContactSearchController from './contact-search/contactSearchController'
-import { contactSearchSchema } from './contact-search/contactSearchSchema'
 import prisonerDetailsMiddleware from '../../../middleware/prisonerDetailsMiddleware'
 import ContactConfirmationController from './contact-confirmation/contactConfirmationController'
 
@@ -87,29 +85,13 @@ const ManageContactsRoutes = (
     logPageViewMiddleware(auditService, contactConfirmationController),
     asyncMiddleware(contactConfirmationController.GET),
   )
+  // /prisoner/contact/:contactId
 
   // Part 6: Manage the attribute of one contact (phones, addresses, IDs, emails, restrictions)
-  // /prisoner/contact/phone/:journeyId
-  // /prisoner/contact/email/:journeyId
-  // /prisoner/contact/address/:journeyId
-  // /prisoner/contact/restriction/:journeyId
-
-  // Part 7: Contact search
-  const contactsSearchController = new ContactSearchController(contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/search/:journeyId',
-    ensureInManageContactsJourney(),
-    prisonerDetailsMiddleware(prisonerSearchService),
-    logPageViewMiddleware(auditService, contactsSearchController),
-    asyncMiddleware(contactsSearchController.GET),
-  )
-
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/search/:journeyId',
-    ensureInManageContactsJourney(),
-    validate(contactSearchSchema()),
-    asyncMiddleware(contactsSearchController.POST),
-  )
+  // /prisoner/contact/:contactId/phone
+  // /prisoner/contact/:contactId/email
+  // /prisoner/contact/:contactId/address
+  // /prisoner/contact/:contactId/restriction
 
   return router
 }

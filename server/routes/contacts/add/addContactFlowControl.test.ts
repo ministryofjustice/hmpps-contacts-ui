@@ -86,7 +86,7 @@ describe('addContactFlowControl', () => {
       }
 
       it.each([
-        [Page.CREATE_CONTACT_START_PAGE, undefined, `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`],
+        [Page.CREATE_CONTACT_START_PAGE, undefined, `/prisoner/A1234BC/contacts/search/${journeyId}`],
         [
           Page.CREATE_CONTACT_NAME_PAGE,
           undefined,
@@ -181,6 +181,25 @@ describe('addContactFlowControl', () => {
         const expected = `/prisoner/A1234BC/contacts/create/enter-estimated-dob/${journeyId}`
 
         const nav = nextPageForAddContactJourney(Page.CREATE_CONTACT_DOB_PAGE, journey)
+
+        expect(nav).toStrictEqual(expected)
+      })
+
+      it('Should go to enter-name if selecting mode NEW', () => {
+        const journey: AddContactJourney = {
+          id: journeyId,
+          lastTouched: new Date().toISOString(),
+          prisonerNumber: 'A1234BC',
+          returnPoint: {
+            type: 'PRISONER_CONTACTS',
+            url: '/foo',
+          },
+          isCheckingAnswers: false,
+          mode: 'NEW',
+        }
+        const expected = `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`
+
+        const nav = nextPageForAddContactJourney(Page.ADD_CONTACT_MODE_PAGE, journey)
 
         expect(nav).toStrictEqual(expected)
       })

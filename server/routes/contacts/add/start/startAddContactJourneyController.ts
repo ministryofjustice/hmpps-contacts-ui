@@ -7,7 +7,7 @@ import AddContactJourney = journeys.AddContactJourney
 import ReturnPointType = journeys.ReturnPointType
 import ReturnPoint = journeys.ReturnPoint
 
-export default class StartCreateContactJourneyController implements PageHandler {
+export default class StartAddContactJourneyController implements PageHandler {
   public PAGE_NAME = Page.CREATE_CONTACT_START_PAGE
 
   private MAX_JOURNEYS = 5

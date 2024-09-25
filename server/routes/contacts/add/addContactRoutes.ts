@@ -6,7 +6,7 @@ import { validate } from '../../../middleware/validationMiddleware'
 import { createContactEnterNameSchemaFactory } from './enter-name/createContactEnterNameSchemas'
 import CreateContactEnterDobController from './enter-dob/createContactEnterDobController'
 import { createContactEnterDobSchema } from './enter-dob/createContactEnterDobSchemas'
-import StartCreateContactJourneyController from './start/startCreateContactJourneyController'
+import StartAddContactJourneyController from './start/startAddContactJourneyController'
 import ensureInAddContactJourney from './addContactMiddleware'
 import { ContactsService, PrisonerSearchService } from '../../../services'
 import CreateContactCheckAnswersController from './check-answers/createContactCheckAnswersController'
@@ -23,6 +23,9 @@ import { selectNextOfKinSchema } from './next-of-kin/nextOfKinSchemas'
 import NextOfKinController from './next-of-kin/nextOfKinController'
 import EnterRelationshipCommentsController from './relationship-comments/enterRelationshipCommentsController'
 import { enterRelationshipCommentsSchema } from './relationship-comments/enterRelationshipCommentsSchemas'
+import ContactSearchController from '../manage/contact-search/contactSearchController'
+import { contactSearchSchema } from '../manage/contact-search/contactSearchSchema'
+import AddContactModeController from './mode/addContactModeController'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -32,11 +35,35 @@ const AddContactRoutes = (
 ) => {
   const router = Router({ mergeParams: true })
 
-  const startController = new StartCreateContactJourneyController()
+  const startController = new StartAddContactJourneyController()
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/start',
     logPageViewMiddleware(auditService, startController),
     asyncMiddleware(startController.GET),
+  )
+
+  const contactsSearchController = new ContactSearchController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/search/:journeyId',
+    ensureInAddContactJourney(),
+    prisonerDetailsMiddleware(prisonerSearchService),
+    logPageViewMiddleware(auditService, contactsSearchController),
+    asyncMiddleware(contactsSearchController.GET),
+  )
+
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/search/:journeyId',
+    ensureInAddContactJourney(),
+    validate(contactSearchSchema()),
+    asyncMiddleware(contactsSearchController.POST),
+  )
+
+  const modeController = new AddContactModeController()
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId',
+    ensureInAddContactJourney(),
+    logPageViewMiddleware(auditService, modeController),
+    asyncMiddleware(modeController.GET),
   )
 
   const enterNameController = new EnterNameController(referenceDataService)
