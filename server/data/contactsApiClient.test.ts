@@ -7,6 +7,7 @@ import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
+import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
 
 jest.mock('./tokenStore/inMemoryTokenStore')
 
@@ -88,6 +89,67 @@ describe('contactsApiClient', () => {
       }
     })
   })
+
+  describe('addContactRelationship', () => {
+    it('should create the request and return the response', async () => {
+      // Given
+      const request: AddContactRelationshipRequest = {
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipCode: 'MOT',
+          isNextOfKin: false,
+          isEmergencyContact: true,
+          comments: 'Some comments about this relationship',
+        },
+        createdBy: 'user1',
+      }
+
+      fakeContactsApi
+        .post('/contact/123456/relationship', request)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(201)
+
+      // When
+      await contactsApiClient.addContactRelationship(123456, request, user)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
+    })
+
+    it.each([400, 401, 403, 500])('should propagate errors', async (errorCode: number) => {
+      // Given
+      const request: AddContactRelationshipRequest = {
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipCode: 'MOT',
+          isNextOfKin: false,
+          isEmergencyContact: true,
+          comments: 'Some comments about this relationship',
+        },
+        createdBy: 'user1',
+      }
+      const expectedErrorBody = {
+        status: errorCode,
+        userMessage: 'Some error',
+        developerMessage: 'Some error',
+      }
+
+      fakeContactsApi
+        .post('/contact/123456/relationship', request)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(errorCode, expectedErrorBody)
+
+      // When
+      try {
+        await contactsApiClient.addContactRelationship(123456, request, user)
+      } catch (e) {
+        // Then
+        expect(e.status).toEqual(errorCode)
+        expect(e.data).toEqual(expectedErrorBody)
+      }
+    })
+  })
+
   describe('getReferenceCodes', () => {
     describe('createContact', () => {
       it('should create the request and return the response', async () => {
@@ -183,6 +245,53 @@ describe('contactsApiClient', () => {
       const output = await contactsApiClient.searchContact(contactSearchRequest, user, { page: 0, size: 20 })
 
       expect(output).toEqual(results)
+    })
+  })
+  describe('getContact', () => {
+    it('should create the request and return the response', async () => {
+      // Given
+      const expectedContact: Contact = {
+        id: 123456,
+        lastName: 'last',
+        firstName: 'middle',
+        middleName: 'first',
+        dateOfBirth: '1980-12-10T00:00:00.000Z',
+        createdBy: user.username,
+        createdTime: '2024-01-01',
+      }
+      fakeContactsApi
+        .get('/contact/123456')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, expectedContact)
+
+      // When
+      const createdContact = await contactsApiClient.getContact(123456, user)
+
+      // Then
+      expect(createdContact).toEqual(expectedContact)
+    })
+
+    it.each([401, 403])('should propagate errors', async (errorCode: number) => {
+      // Given
+      const expectedErrorBody = {
+        status: errorCode,
+        userMessage: 'Some error',
+        developerMessage: 'Some error',
+      }
+
+      fakeContactsApi
+        .get('/contact/123456')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(errorCode, expectedErrorBody)
+
+      // When
+      try {
+        await contactsApiClient.getContact(123456, user)
+      } catch (e) {
+        // Then
+        expect(e.status).toEqual(errorCode)
+        expect(e.data).toEqual(expectedErrorBody)
+      }
     })
   })
 })

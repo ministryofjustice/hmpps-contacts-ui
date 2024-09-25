@@ -32,6 +32,7 @@ beforeEach(() => {
     prisonerNumber,
     isCheckingAnswers: false,
     returnPoint: { type: 'MANAGE_PRISONER_CONTACTS', url: '/foo-bar' },
+    mode: 'NEW',
   }
   app = appWithAllRoutes({
     services: {

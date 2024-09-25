@@ -47,6 +47,7 @@ beforeEach(() => {
     relationship: {
       type: 'MOT',
     },
+    mode: 'NEW',
   }
 
   app = appWithAllRoutes({
@@ -72,22 +73,26 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId', () => {
-  it('should render check answers page with dob', async () => {
-    // Given
-    auditService.logPageView.mockResolvedValue(null)
+  it.each(['NEW', 'EXISTING'])(
+    'should render check answers page with dob for mode %s',
+    async (mode: 'NEW' | 'EXISTING') => {
+      // Given
+      auditService.logPageView.mockResolvedValue(null)
+      journey.mode = mode
 
-    // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
 
-    // Then
-    expect(response.status).toEqual(200)
-    expect(journey.isCheckingAnswers).toStrictEqual(true)
-    const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Check your answers')
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('.check-answers-dob-value').first().text().trim()).toStrictEqual('1 January 2024')
-    expect($('[data-qa=contact-list-breadcrumb-link]').first().attr('href')).toStrictEqual('/foo-bar')
-  })
+      // Then
+      expect(response.status).toEqual(200)
+      expect(journey.isCheckingAnswers).toStrictEqual(true)
+      const $ = cheerio.load(response.text)
+      expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Check your answers')
+      expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+      expect($('.check-answers-dob-value').first().text().trim()).toStrictEqual('1 January 2024')
+      expect($('[data-qa=contact-list-breadcrumb-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    },
+  )
 
   it('should render check answers page without dob', async () => {
     // Given
@@ -139,6 +144,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
         type,
         url: '/some-prisoner-contact-page',
       }
+      journey.mode = 'NEW'
 
       // When
       await request(app)
@@ -149,6 +155,31 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
 
       // Then
       expect(contactsService.createContact).toHaveBeenCalledWith(journey, user)
+      expect(session.addContactJourneys[journeyId]).toBeUndefined()
+    },
+  )
+
+  it.each(['MANAGE_PRISONER_CONTACTS', 'PRISONER_CONTACTS'])(
+    'should add the contact relationship and pass to return url',
+    async (type: ReturnPointType) => {
+      // Given
+      contactsService.addContact.mockResolvedValue(null)
+      journey.returnPoint = {
+        type,
+        url: '/some-prisoner-contact-page',
+      }
+      journey.mode = 'EXISTING'
+      journey.contactId = 123456
+
+      // When
+      await request(app)
+        .post(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+        .type('form')
+        .expect(302)
+        .expect('Location', '/some-prisoner-contact-page')
+
+      // Then
+      expect(contactsService.addContact).toHaveBeenCalledWith(journey, user)
       expect(session.addContactJourneys[journeyId]).toBeUndefined()
     },
   )

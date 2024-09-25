@@ -5,6 +5,7 @@ import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import Pageable = contactsApiClientTypes.Pageable
 import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
+import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
 
 export default class ContactsService {
   constructor(private readonly contactsApiClient: ContactsApiClient) {}
@@ -48,6 +49,20 @@ export default class ContactsService {
     return this.contactsApiClient.createContact(request, user)
   }
 
+  async addContact(journey: AddContactJourney, user: Express.User): Promise<Contact> {
+    const request: AddContactRelationshipRequest = {
+      relationship: {
+        prisonerNumber: journey.prisonerNumber,
+        relationshipCode: journey.relationship.type,
+        isNextOfKin: journey.relationship.isNextOfKin === 'YES',
+        isEmergencyContact: journey.relationship.isEmergencyContact === 'YES',
+        comments: journey.relationship.comments,
+      },
+      createdBy: user.username,
+    }
+    return this.contactsApiClient.addContactRelationship(journey.contactId, request, user)
+  }
+
   async getPrisonerContacts(
     prisonerNumber: string,
     active: boolean,
@@ -62,5 +77,9 @@ export default class ContactsService {
     user: Express.User,
   ): Promise<Contact> {
     return this.contactsApiClient.searchContact(contactSearchRequest, user, pagination)
+  }
+
+  async getContact(contactId: number, user: Express.User): Promise<Contact> {
+    return this.contactsApiClient.getContact(contactId, user)
   }
 }

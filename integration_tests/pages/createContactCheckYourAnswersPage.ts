@@ -5,10 +5,6 @@ export default class CreateContactCheckYourAnswersPage extends Page {
     super(`Check your answers`)
   }
 
-  clickCreatePrisonerContact() {
-    this.createPrisonerContactButton().click()
-  }
-
   clickChangeNameLink() {
     this.changeNameLink().click()
   }
@@ -72,7 +68,20 @@ export default class CreateContactCheckYourAnswersPage extends Page {
     return this
   }
 
-  private createPrisonerContactButton = (): PageElement => cy.get('[data-qa=create-prisoner-contact-button]')
+  verifyNameIsNotChangeable(): CreateContactCheckYourAnswersPage {
+    this.changeNameLink().should('not.exist')
+    return this
+  }
+
+  verifyDateOfBirthIsNotChangeable(): CreateContactCheckYourAnswersPage {
+    this.changeDateOfBirthLink().should('not.exist')
+    return this
+  }
+
+  verifyEstimatedDateOfBirthIsNotChangeable(): CreateContactCheckYourAnswersPage {
+    this.changeEstimatedDateOfBirthLink().should('not.exist')
+    return this
+  }
 
   private checkAnswersNameValue = (): PageElement => cy.get('.check-answers-name-value')
 

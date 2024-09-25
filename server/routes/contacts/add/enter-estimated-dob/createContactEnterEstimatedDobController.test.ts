@@ -32,6 +32,7 @@ beforeEach(() => {
       lastName: 'last',
       firstName: 'first',
     },
+    mode: 'NEW',
   }
   app = appWithAllRoutes({
     services: {

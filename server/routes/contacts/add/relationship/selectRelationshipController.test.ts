@@ -33,6 +33,7 @@ beforeEach(() => {
     isCheckingAnswers: false,
     returnPoint: { type: 'MANAGE_PRISONER_CONTACTS', url: '/foo-bar' },
     names: { firstName: 'First', lastName: 'Last' },
+    mode: 'NEW',
   }
   app = appWithAllRoutes({
     services: {
@@ -56,25 +57,29 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship', () => {
-  it('should render select relationship page', async () => {
-    // Given
-    auditService.logPageView.mockResolvedValue(null)
+  it.each(['NEW', 'EXISTING'])(
+    'should render select relationship page for mode %s',
+    async (mode: 'NEW' | 'EXISTING') => {
+      // Given
+      auditService.logPageView.mockResolvedValue(null)
+      existingJourney.mode = mode
 
-    // When
-    const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/create/select-relationship/${journeyId}`,
-    )
+      // When
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/create/select-relationship/${journeyId}`,
+      )
 
-    // Then
-    expect(response.status).toEqual(200)
+      // Then
+      expect(response.status).toEqual(200)
 
-    const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'How is Last, First related to the prisoner?',
-    )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=contact-list-breadcrumb-link]').first().attr('href')).toStrictEqual('/foo-bar')
-  })
+      const $ = cheerio.load(response.text)
+      expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
+        'How is Last, First related to the prisoner?',
+      )
+      expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+      expect($('[data-qa=contact-list-breadcrumb-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    },
+  )
 
   it('should call the audit service for the page view', async () => {
     // Given
