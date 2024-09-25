@@ -82,9 +82,7 @@ context('Create contact and update from check answers where we are changing the 
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsDateOfBirthAs('16 July 1983')
-      .clickCreatePrisonerContact()
-
-    Page.verifyOnPage(ListContactsPage)
+      .continueTo(ListContactsPage)
 
     cy.verifyLastAPICall(
       {
@@ -131,9 +129,7 @@ context('Create contact and update from check answers where we are changing the 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsDateOfBirthAs('Not provided')
       .verifyShowsEstimatedDateOfBirthAs("I don't know")
-      .clickCreatePrisonerContact()
-
-    Page.verifyOnPage(ListContactsPage)
+      .continueTo(ListContactsPage)
 
     cy.verifyLastAPICall(
       {
@@ -180,9 +176,7 @@ context('Create contact and update from check answers where we are changing the 
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsDateOfBirthAs('15 June 1982')
-      .clickCreatePrisonerContact()
-
-    Page.verifyOnPage(ListContactsPage)
+      .continueTo(ListContactsPage)
 
     cy.verifyLastAPICall(
       {
@@ -227,9 +221,7 @@ context('Create contact and update from check answers where we are changing the 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsDateOfBirthAs('Not provided')
       .verifyShowsEstimatedDateOfBirthAs('Yes')
-      .clickCreatePrisonerContact()
-
-    Page.verifyOnPage(ListContactsPage)
+      .continueTo(ListContactsPage)
 
     cy.verifyLastAPICall(
       {

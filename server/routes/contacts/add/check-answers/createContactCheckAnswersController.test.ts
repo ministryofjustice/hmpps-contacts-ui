@@ -144,6 +144,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
         type,
         url: '/some-prisoner-contact-page',
       }
+      journey.mode = 'NEW'
 
       // When
       await request(app)
@@ -154,6 +155,31 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
 
       // Then
       expect(contactsService.createContact).toHaveBeenCalledWith(journey, user)
+      expect(session.addContactJourneys[journeyId]).toBeUndefined()
+    },
+  )
+
+  it.each(['MANAGE_PRISONER_CONTACTS', 'PRISONER_CONTACTS'])(
+    'should add the contact relationship and pass to return url',
+    async (type: ReturnPointType) => {
+      // Given
+      contactsService.addContact.mockResolvedValue(null)
+      journey.returnPoint = {
+        type,
+        url: '/some-prisoner-contact-page',
+      }
+      journey.mode = 'EXISTING'
+      journey.contactId = 123456
+
+      // When
+      await request(app)
+        .post(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+        .type('form')
+        .expect(302)
+        .expect('Location', '/some-prisoner-contact-page')
+
+      // Then
+      expect(contactsService.addContact).toHaveBeenCalledWith(journey, user)
       expect(session.addContactJourneys[journeyId]).toBeUndefined()
     },
   )
