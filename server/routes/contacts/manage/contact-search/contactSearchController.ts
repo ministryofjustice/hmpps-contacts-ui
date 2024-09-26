@@ -20,7 +20,7 @@ export default class ContactSearchController implements PageHandler {
     const journey = req.session.addContactJourneys[journeyId]
     const validationErrors = res.locals.validationErrors?.search
     const page = Number(req.query.page as unknown) || 0
-    const pageSize = config.apis.prisonerSearchApi.pageSize || 20
+    const pageSize = config.apis.contactsApi.pageSize || 10
     let results = null
 
     if (journey?.searchContact) {
