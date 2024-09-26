@@ -69,7 +69,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('What is the contacts name?')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=contact-list-breadcrumb-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
   })
 
   it('should call the audit service for the page view', async () => {

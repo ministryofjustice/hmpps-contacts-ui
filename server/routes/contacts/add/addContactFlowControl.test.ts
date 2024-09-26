@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import {
   AddContactNavigation,
+  BreadcrumbType,
   navigationForAddContactJourney,
   nextPageForAddContactJourney,
 } from './addContactFlowControl'
@@ -68,6 +69,7 @@ describe('addContactFlowControl', () => {
           }
           const expected: AddContactNavigation = {
             backLink: expectedBackUrl,
+            breadcrumbs: undefined,
           }
 
           const nav = navigationForAddContactJourney(page, journey)
@@ -220,6 +222,7 @@ describe('addContactFlowControl', () => {
         }
         const expected: AddContactNavigation = {
           backLink: expectedBackUrl,
+          breadcrumbs: undefined,
         }
 
         const nav = navigationForAddContactJourney(page, journey)
@@ -282,29 +285,30 @@ describe('addContactFlowControl', () => {
   })
   describe('should work correctly before mode set', () => {
     const journeyId = uuidv4()
-    it.each([[Page.CREATE_CONTACT_START_PAGE], [Page.CONTACT_SEARCH_PAGE]])(
-      'Should have no back for initial pages',
-      (page: Page) => {
-        const journey: AddContactJourney = {
-          id: journeyId,
-          lastTouched: new Date().toISOString(),
-          prisonerNumber: 'A1234BC',
-          returnPoint: {
-            type: 'PRISONER_CONTACTS',
-            url: '/foo',
-          },
-          mode: undefined,
-          isCheckingAnswers: false,
-        }
-        const expected: AddContactNavigation = {
-          backLink: undefined,
-        }
+    it.each([
+      [Page.CREATE_CONTACT_START_PAGE, undefined],
+      [Page.CONTACT_SEARCH_PAGE, ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS']],
+    ])('Should have no back for initial pages', (page: Page, breadcrumbs?: BreadcrumbType[]) => {
+      const journey: AddContactJourney = {
+        id: journeyId,
+        lastTouched: new Date().toISOString(),
+        prisonerNumber: 'A1234BC',
+        returnPoint: {
+          type: 'PRISONER_CONTACTS',
+          url: '/foo',
+        },
+        mode: undefined,
+        isCheckingAnswers: false,
+      }
+      const expected: AddContactNavigation = {
+        backLink: undefined,
+        breadcrumbs,
+      }
 
-        const nav = navigationForAddContactJourney(page, journey)
+      const nav = navigationForAddContactJourney(page, journey)
 
-        expect(nav).toStrictEqual(expected)
-      },
-    )
+      expect(nav).toStrictEqual(expected)
+    })
 
     it.each([
       [Page.CREATE_CONTACT_START_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`],

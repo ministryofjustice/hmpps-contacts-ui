@@ -77,7 +77,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship', ()
         'How is Last, First related to the prisoner?',
       )
       expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-      expect($('[data-qa=contact-list-breadcrumb-link]').first().attr('href')).toStrictEqual('/foo-bar')
+      expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     },
   )
 
