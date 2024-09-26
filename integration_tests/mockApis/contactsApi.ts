@@ -147,7 +147,7 @@ export default {
     firstName,
     dateOfBirth,
     page = '0',
-    size = '20',
+    size = '10',
   }: {
     results: { totalPages: number; totalElements: number; content: Contact[] }
     lastName: string

@@ -260,15 +260,15 @@ describe('Contact seaarch results', () => {
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
 
     const contactsArray = []
-    for (let i = 0; i < 25; i += 1) {
+    for (let i = 0; i < 15; i += 1) {
       contactsArray.push(TestData.contacts())
     }
 
     results = {
       ...results,
       content: contactsArray,
-      totalElements: 25,
-      totalPages: 3,
+      totalElements: 15,
+      totalPages: 2,
     }
     contactsService.searchContact.mockResolvedValue(results)
 
@@ -281,7 +281,6 @@ describe('Contact seaarch results', () => {
     expect($('.govuk-pagination')).toBeDefined()
     expect($('.govuk-pagination__link').text().trim()).toContain('1')
     expect($('.govuk-pagination__link:eq(1)').text().trim()).toStrictEqual('2')
-    expect($('.govuk-pagination__link:eq(2)').text().trim()).toStrictEqual('3')
   })
 
   it('should display "contact not listed" link when contact searched is not included in the contact search results', async () => {
