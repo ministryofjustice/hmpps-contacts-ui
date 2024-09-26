@@ -8,7 +8,7 @@ import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
 import SearchContactPage from '../pages/searchContactPage'
 
-context('Create Contacts', () => {
+context('Add Existing Contact', () => {
   const { prisonerNumber } = TestData.prisoner()
   const contactId = 654321
   const contact = TestData.contacts({ id: contactId, lastName: 'Contact', firstName: 'Existing', middleName: '' })
@@ -160,5 +160,73 @@ context('Create Contacts', () => {
         createdBy: 'USER1',
       },
     )
+  })
+
+  it('Should require selection of emergency contact', () => {
+    cy.task('stubGetContactById', {
+      id: contactId,
+      firstName: 'Existing',
+      lastName: 'Contact',
+      estimatedIsOverEighteen: 'YES',
+    })
+
+    Page.verifyOnPage(SearchContactPage) //
+      .clickTheContactLink(contactId)
+
+    Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
+      .hasSelectedRelationshipHint('')
+      .selectRelationship('MOT')
+      .hasSelectedRelationshipHint("Contact, Existing is the prisoner's mother")
+      .clickContinue()
+
+    const selectEmergencyContactPage = Page.verifyOnPage(SelectEmergencyContactPage, 'Contact, Existing')
+    selectEmergencyContactPage.clickContinue()
+    selectEmergencyContactPage.hasFieldInError(
+      'isEmergencyContact',
+      'Select whether the contact is an emergency contact for the prisoner',
+    )
+  })
+
+  it('Should require selection of contact relationship', () => {
+    cy.task('stubGetContactById', {
+      id: contactId,
+      firstName: 'Existing',
+      lastName: 'Contact',
+      estimatedIsOverEighteen: 'YES',
+    })
+
+    Page.verifyOnPage(SearchContactPage) //
+      .clickTheContactLink(contactId)
+
+    const selectRelationshipPage = Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing')
+    selectRelationshipPage.clickContinue()
+
+    selectRelationshipPage.hasFieldInError('relationship', "Enter the contact's relationship to the prisoner")
+  })
+
+  it('Should require selection of next of kin', () => {
+    cy.task('stubGetContactById', {
+      id: contactId,
+      firstName: 'Existing',
+      lastName: 'Contact',
+      estimatedIsOverEighteen: 'YES',
+    })
+
+    Page.verifyOnPage(SearchContactPage) //
+      .clickTheContactLink(contactId)
+
+    Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
+      .hasSelectedRelationshipHint('')
+      .selectRelationship('MOT')
+      .hasSelectedRelationshipHint("Contact, Existing is the prisoner's mother")
+      .clickContinue()
+
+    Page.verifyOnPage(SelectEmergencyContactPage, 'Contact, Existing') //
+      .selectIsEmergencyContact('YES')
+      .clickContinue()
+
+    const selectNextOfKinPage = Page.verifyOnPage(SelectNextOfKinPage, 'Contact, Existing')
+    selectNextOfKinPage.clickContinue()
+    selectNextOfKinPage.hasFieldInError('isNextOfKin', 'Select whether the contact is next of kin for the prisoner')
   })
 })
