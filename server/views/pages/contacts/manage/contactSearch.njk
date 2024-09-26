@@ -16,26 +16,7 @@
 {% set prisonerResultsLink = "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/list/" + journey.id %}
 
 {% block content %}
-<div class="govuk-grid-row govuk-!-static-margin-bottom-5">
-  <div class="govuk-grid-column-full">
-      {{ govukBreadcrumbs({
-      items: [
-          {
-            text: "Digital Prison Services",
-            href: DPS_HOME_PAGE_URL
-          },
-          {
-              text: "Contacts",
-              href: "/"
-          },
-          {
-            text: prisonerDetails | formatName(excludeMiddleNames = true),
-            href: prisonerResultsLink
-        }
-      ]
-      }) }}
-  </div>
-</div>
+{% include '../partials/addContactNavigation.njk' %}
 
 {{ miniProfile(prisonerDetails) }}
 

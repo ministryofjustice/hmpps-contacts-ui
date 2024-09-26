@@ -83,7 +83,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-relationship-comme
         'Add additional information about the relationship between the prisoner and Last, First',
       )
       expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-      expect($('[data-qa=contact-list-breadcrumb-link]').first().attr('href')).toStrictEqual('/foo-bar')
+      expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     },
   )
 
