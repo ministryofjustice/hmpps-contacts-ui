@@ -8,6 +8,7 @@ import { formatDateForApi } from '../../../../utils/utils'
 import config from '../../../../config'
 import Contact = contactsApiClientTypes.Contact
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
+import { navigationForAddContactJourney } from '../../add/addContactFlowControl'
 
 export default class ContactSearchController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -20,7 +21,7 @@ export default class ContactSearchController implements PageHandler {
     const journey = req.session.addContactJourneys[journeyId]
     const validationErrors = res.locals.validationErrors?.search
     const page = Number(req.query.page as unknown) || 0
-    const pageSize = config.apis.prisonerSearchApi.pageSize || 20
+    const pageSize = config.apis.contactsApi.pageSize || 10
     let results = null
 
     if (journey?.searchContact) {
@@ -48,8 +49,8 @@ export default class ContactSearchController implements PageHandler {
       month: res.locals?.formResponses?.month ?? journey?.searchContact?.dateOfBirth?.month,
       year: res.locals?.formResponses?.year ?? journey?.searchContact?.dateOfBirth?.year,
     }
-
-    res.render('pages/contacts/manage/contactSearch', { view, journey, results })
+    const navigation = navigationForAddContactJourney(this.PAGE_NAME, journey)
+    res.render('pages/contacts/manage/contactSearch', { view, journey, results, navigation })
   }
 
   POST = async (req: Request<{ journeyId: string }, ContactSearchSchemaType>, res: Response): Promise<void> => {

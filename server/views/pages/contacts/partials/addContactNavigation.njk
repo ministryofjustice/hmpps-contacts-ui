@@ -1,0 +1,45 @@
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% if navigation.breadcrumbs %}
+    <div class="govuk-grid-row govuk-!-static-margin-bottom-5" data-qa="breadcrumbs">
+        <div class="govuk-grid-column-full">
+            {% set breadcrumbs = []
+            %}
+
+            {% for breadcrumb in navigation.breadcrumbs %}
+                {% if breadcrumb === 'DPS_HOME' %}
+                    {% set breadcrumbs = (breadcrumbs.push(
+                        {
+                            text: "Digital Prison Services",
+                            href: DPS_HOME_PAGE_URL
+                        }
+                    ), breadcrumbs) %}
+                {% elseif breadcrumb === 'DPS_PROFILE' %}
+                    {% set breadcrumbs = (breadcrumbs.push(
+                        {
+                            text: prisonerDetails | formatName(excludeMiddleNames = true),
+                            href: digitalPrisonServicesUrl + "/prisoner/" + prisonerDetails.prisonerNumber
+                        }
+                    ), breadcrumbs) %}
+                {% elseif breadcrumb === 'PRISONER_CONTACTS' %}
+                    {% set breadcrumbs = (breadcrumbs.push(
+                        {
+                            text: "Contacts",
+                            href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/list"
+                        }
+                    ), breadcrumbs) %}
+                {% endif %}
+            {% endfor %}
+
+            {{ govukBreadcrumbs({
+                items: breadcrumbs
+            }) }}
+        </div>
+    </div>
+{% endif %}
+{% if navigation.backLink %}
+    {{ govukBackLink({
+        text: "Back",
+        href: navigation.backLink,
+        attributes: {"data-qa": "back-link"}
+    }) }}
+{% endif %}

@@ -78,7 +78,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-next-of-kin/:jour
         'Is Last, First next of kin for the prisoner?',
       )
       expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-      expect($('[data-qa=contact-list-breadcrumb-link]').first().attr('href')).toStrictEqual('/foo-bar')
+      expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     },
   )
 

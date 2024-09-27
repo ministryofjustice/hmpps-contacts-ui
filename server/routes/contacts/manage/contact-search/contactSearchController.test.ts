@@ -77,6 +77,10 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     expect($('.govuk-form-group .govuk-label').eq(2).text()).toContain('Last name')
     expect($('.govuk-fieldset__legend').text()).toContain('Date of birth')
     expect($('[data-qa=search-button]').text()).toContain('Search')
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(1)
+    expect($('[data-qa=breadcrumbs] a').eq(0).attr('href')).toStrictEqual('http://localhost:3001')
+    expect($('[data-qa=breadcrumbs] a').eq(1).attr('href')).toStrictEqual('http://localhost:3001/prisoner/A1234BC')
+    expect($('[data-qa=breadcrumbs] a').eq(2).attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/list')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CONTACT_SEARCH_PAGE, {
       who: user.username,
@@ -260,15 +264,15 @@ describe('Contact seaarch results', () => {
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
 
     const contactsArray = []
-    for (let i = 0; i < 25; i += 1) {
+    for (let i = 0; i < 15; i += 1) {
       contactsArray.push(TestData.contacts())
     }
 
     results = {
       ...results,
       content: contactsArray,
-      totalElements: 25,
-      totalPages: 3,
+      totalElements: 15,
+      totalPages: 2,
     }
     contactsService.searchContact.mockResolvedValue(results)
 
@@ -281,7 +285,6 @@ describe('Contact seaarch results', () => {
     expect($('.govuk-pagination')).toBeDefined()
     expect($('.govuk-pagination__link').text().trim()).toContain('1')
     expect($('.govuk-pagination__link:eq(1)').text().trim()).toStrictEqual('2')
-    expect($('.govuk-pagination__link:eq(2)').text().trim()).toStrictEqual('3')
   })
 
   it('should display "contact not listed" link when contact searched is not included in the contact search results', async () => {
