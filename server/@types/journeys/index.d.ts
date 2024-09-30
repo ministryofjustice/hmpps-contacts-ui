@@ -10,6 +10,7 @@ declare namespace journeys {
       contact?: Partial<ContactNames>
       dateOfBirth?: Partial<DateOfBirth>
     }
+    isContactConfirmed: YesOrNo
     names?: ContactNames
     dateOfBirth?: DateOfBirth
     relationship?: PrisonerContactRelationship

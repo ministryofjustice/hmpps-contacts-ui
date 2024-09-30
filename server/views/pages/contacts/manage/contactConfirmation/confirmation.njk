@@ -1,5 +1,4 @@
 {% extends "../../../../partials/layout.njk" %}
-{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 {% from "../../../../partials/miniProfile/macro.njk" import miniProfile %}
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
@@ -35,27 +34,14 @@
 
 <div class="govuk-grid-row govuk-!-static-margin-bottom-5">
     <div class="govuk-grid-column-full">
-      {{ govukBreadcrumbs({
-      items: [
-          {
-            text: "Digital Prison Services",
-            href: DPS_HOME_PAGE_URL
-          },
-          {
-              text: "Contacts",
-              href: "/"
-          },
-          {
-            text: prisonerDetails.lastName | convertToTitleCase + ", " + prisonerDetails.firstName | convertToTitleCase,
-            href: prisonerResultsLink
-        }
-      ]
-      }) }}
+        <!-- BACK BTN -->
     </div>
 
     <div class="govuk-grid-column-full">
         {{ miniProfile(prisonerDetails) }}
     </div>
+
+    {% include '../../../../partials/formErrorSummary.njk' %}
 
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-l">Is this the right person to add as a contact for {{ prisonerDetails.lastName | convertToTitleCase + ", " + prisonerDetails.firstName | convertToTitleCase }}?</h1>
@@ -91,25 +77,20 @@
             </div>
 
             {{ govukRadios({
-                name: "whereDoYouLive",
-                fieldset: {
-                legend: {
-                    text: "",
-                    isPageHeading: true,
-                    classes: "govuk-fieldset__legend--l"
-                }
-                },
+                name: "isContactConfirmed",
                 items: [
-                {
-                    value: "yes",
-                    text: "Yes, this is the right person",
-                    checked: true
-                },
-                {
-                    value: "no",
-                    text: "No, this is not the right person"
-                }
-                ]
+                    {
+                        value: "YES",
+                        text: "Yes, this is the right person",
+                        checked: journey.isContactConfirmed === 'YES'
+                    },
+                    {
+                        value: "NO",
+                        text: "No, this is not the right person",
+                        checked: journey.isContactConfirmed === 'NO'
+                    }
+                ],
+                errorMessage: validationErrors | findError('isContactConfirmed')
             }) }}
 
             <div class="govuk-button-group">

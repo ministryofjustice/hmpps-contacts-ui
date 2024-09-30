@@ -34,6 +34,7 @@ beforeEach(() => {
     returnPoint: { type: 'MANAGE_PRISONER_CONTACTS', url: '/foo-bar' },
     names: { firstName: 'First', lastName: 'Last' },
     mode: 'NEW',
+    isContactConfirmed: undefined,
   }
   app = appWithAllRoutes({
     services: {

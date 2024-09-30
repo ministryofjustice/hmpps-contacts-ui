@@ -63,6 +63,7 @@ describe('contactsService', () => {
           isNextOfKin: 'YES',
           comments: 'Some comments about this relationship',
         },
+        isContactConfirmed: undefined,
       }
       const expectedRequest: CreateContactRequest = {
         title: 'Mr',
@@ -114,6 +115,7 @@ describe('contactsService', () => {
           isEmergencyContact: 'YES',
           isNextOfKin: 'NO',
         },
+        isContactConfirmed: undefined,
       }
       const expectedRequest: CreateContactRequest = {
         title: undefined,
@@ -168,6 +170,7 @@ describe('contactsService', () => {
           isEmergencyContact: 'YES',
           isNextOfKin: 'NO',
         },
+        isContactConfirmed: undefined,
       }
       const expectedRequest: CreateContactRequest = {
         title: undefined,
@@ -206,6 +209,7 @@ describe('contactsService', () => {
             names: { firstName: 'first', lastName: 'last' },
             dateOfBirth: { isKnown: 'NO' },
             relationship: { type: 'MOT', isEmergencyContact: 'YES', isNextOfKin: 'NO' },
+            isContactConfirmed: undefined,
           },
           user,
         ),
@@ -303,6 +307,7 @@ describe('contactsService', () => {
           comments: 'Some comments about this relationship',
         },
         contactId: 123456,
+        isContactConfirmed: undefined,
       }
       const expectedRequest: AddContactRelationshipRequest = {
         relationship: {
@@ -349,6 +354,7 @@ describe('contactsService', () => {
           isNextOfKin: 'NO',
         },
         contactId: 123456,
+        isContactConfirmed: undefined,
       }
       const expectedRequest: AddContactRelationshipRequest = {
         relationship: {
@@ -382,6 +388,7 @@ describe('contactsService', () => {
             dateOfBirth: { isKnown: 'NO' },
             relationship: { type: 'MOT', isEmergencyContact: 'YES', isNextOfKin: 'NO' },
             contactId: 123456,
+            isContactConfirmed: undefined,
           },
           user,
         ),

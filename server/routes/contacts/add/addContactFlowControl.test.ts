@@ -66,6 +66,7 @@ describe('addContactFlowControl', () => {
             mode: 'NEW',
             isCheckingAnswers: false,
             dateOfBirth,
+            isContactConfirmed: undefined,
           }
           const expected: AddContactNavigation = {
             backLink: expectedBackUrl,
@@ -134,6 +135,7 @@ describe('addContactFlowControl', () => {
             isCheckingAnswers: false,
             dateOfBirth,
             mode: 'NEW',
+            isContactConfirmed: undefined,
           }
 
           const nav = nextPageForAddContactJourney(page, journey)
@@ -164,6 +166,7 @@ describe('addContactFlowControl', () => {
           },
           isCheckingAnswers: true,
           mode: 'NEW',
+          isContactConfirmed: undefined,
         }
         const expected = `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`
 
@@ -186,6 +189,7 @@ describe('addContactFlowControl', () => {
             isKnown: 'NO',
           },
           mode: 'NEW',
+          isContactConfirmed: undefined,
         }
         const expected = `/prisoner/A1234BC/contacts/create/enter-estimated-dob/${journeyId}`
 
@@ -219,6 +223,7 @@ describe('addContactFlowControl', () => {
           },
           mode: 'EXISTING',
           isCheckingAnswers: false,
+          isContactConfirmed: undefined,
         }
         const expected: AddContactNavigation = {
           backLink: expectedBackUrl,
@@ -251,6 +256,7 @@ describe('addContactFlowControl', () => {
           },
           mode: 'EXISTING',
           isCheckingAnswers: false,
+          isContactConfirmed: undefined,
         }
 
         const nav = nextPageForAddContactJourney(page, journey)
@@ -274,6 +280,7 @@ describe('addContactFlowControl', () => {
           },
           mode: 'EXISTING',
           isCheckingAnswers: true,
+          isContactConfirmed: undefined,
         }
         const expected = `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`
 
@@ -299,6 +306,7 @@ describe('addContactFlowControl', () => {
         },
         mode: undefined,
         isCheckingAnswers: false,
+        isContactConfirmed: undefined,
       }
       const expected: AddContactNavigation = {
         backLink: undefined,
@@ -324,6 +332,7 @@ describe('addContactFlowControl', () => {
         },
         mode: undefined,
         isCheckingAnswers: false,
+        isContactConfirmed: undefined,
       }
 
       const nav = nextPageForAddContactJourney(page, journey)

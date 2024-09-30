@@ -33,6 +33,7 @@ beforeEach(() => {
     isCheckingAnswers: false,
     returnPoint: { type: 'MANAGE_PRISONER_CONTACTS', url: '/foo-bar' },
     mode: 'NEW',
+    isContactConfirmed: undefined,
   }
   app = appWithAllRoutes({
     services: {

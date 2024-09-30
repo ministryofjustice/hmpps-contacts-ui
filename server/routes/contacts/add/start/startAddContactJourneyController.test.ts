@@ -117,6 +117,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
           lastName: 'foo',
           firstName: 'bar',
         },
+        isContactConfirmed: undefined,
       },
     ]
 
@@ -147,6 +148,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
         prisonerNumber,
         isCheckingAnswers: false,
         returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
+        isContactConfirmed: undefined,
       },
       {
         id: 'middle-aged',
@@ -154,6 +156,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
         prisonerNumber,
         isCheckingAnswers: false,
         returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
+        isContactConfirmed: undefined,
       },
       {
         id: 'youngest',
@@ -161,6 +164,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
         prisonerNumber,
         isCheckingAnswers: false,
         returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
+        isContactConfirmed: undefined,
       },
       {
         id: 'oldest',
@@ -168,6 +172,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
         prisonerNumber,
         isCheckingAnswers: false,
         returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
+        isContactConfirmed: undefined,
       },
       {
         id: 'young',
@@ -175,6 +180,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
         prisonerNumber,
         isCheckingAnswers: false,
         returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
+        isContactConfirmed: undefined,
       },
     ]
 

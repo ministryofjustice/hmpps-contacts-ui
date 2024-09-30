@@ -41,6 +41,7 @@ export default class StartAddContactJourneyController implements PageHandler {
       isCheckingAnswers: false,
       returnPoint,
       prisonerNumber,
+      isContactConfirmed: undefined,
     }
     if (!req.session.addContactJourneys) {
       req.session.addContactJourneys = {}

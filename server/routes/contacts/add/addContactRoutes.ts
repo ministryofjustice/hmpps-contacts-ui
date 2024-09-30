@@ -25,6 +25,7 @@ import EnterRelationshipCommentsController from './relationship-comments/enterRe
 import { enterRelationshipCommentsSchema } from './relationship-comments/enterRelationshipCommentsSchemas'
 import ContactSearchController from '../manage/contact-search/contactSearchController'
 import { contactSearchSchema } from '../manage/contact-search/contactSearchSchema'
+import { selectToConfirmContactSchema } from '../manage/contact-confirmation/contactConfirmationSchema'
 import AddContactModeController from './mode/addContactModeController'
 import ContactConfirmationController from '../manage/contact-confirmation/contactConfirmationController'
 
@@ -61,11 +62,18 @@ const AddContactRoutes = (
 
   const contactConfirmationController = new ContactConfirmationController(contactsService)
   router.get(
-    '/prisoner/:prisonerNumber/contacts/confirmation/:journeyId',
+    '/prisoner/:prisonerNumber/contacts/add/mode/:mode/confirmation/:journeyId',
     ensureInAddContactJourney(),
     prisonerDetailsMiddleware(prisonerSearchService),
     logPageViewMiddleware(auditService, contactConfirmationController),
     asyncMiddleware(contactConfirmationController.GET),
+  )
+
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/add/mode/:mode/confirmation/:journeyId',
+    ensureInAddContactJourney(),
+    validate(selectToConfirmContactSchema()),
+    asyncMiddleware(contactConfirmationController.POST),
   )
 
   const modeController = new AddContactModeController(contactsService)
