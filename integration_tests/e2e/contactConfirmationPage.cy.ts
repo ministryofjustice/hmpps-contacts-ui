@@ -3,7 +3,6 @@ import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import SearchContactPage from '../pages/searchContactPage'
 import ContactConfirmationPage from '../pages/contactConfirmationPage'
-import SelectRelationshipPage from '../pages/selectRelationshipPage'
 
 const SELECT_IS_THE_RIGHT_PERSON_MESSAGE = 'Select whether this is the right contact'
 const { prisonerNumber } = TestData.prisoner()
