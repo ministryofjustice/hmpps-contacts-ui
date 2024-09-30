@@ -15,6 +15,11 @@ export default class SelectRelationshipPage extends Page {
     return this
   }
 
+  hasNoRelationshipHint(): SelectRelationshipPage {
+    this.selectedRelationshipHint().should('contain.html', '&nbsp;')
+    return this
+  }
+
   private relationshipSelect = (): PageElement => cy.get('#relationship')
 
   private selectedRelationshipHint = (): PageElement => cy.get('#selected-relationship-hint')

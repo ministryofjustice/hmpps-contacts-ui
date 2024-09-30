@@ -138,7 +138,7 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
     nextUrl: checkAnswersOr(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
   },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
-    previousUrl: _ => undefined,
+    previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
     nextUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT.url),
   },
   [Page.SELECT_EMERGENCY_CONTACT]: {
