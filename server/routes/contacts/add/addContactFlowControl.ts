@@ -81,7 +81,7 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   [Page.CONTACT_SEARCH_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CONTACT_SEARCH_PAGE.url },
   [Page.ADD_CONTACT_MODE_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CREATE_CONTACT_NAME_PAGE.url },
   [Page.CREATE_CONTACT_NAME_PAGE]: {
-    previousUrl: _ => undefined,
+    previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
     nextUrl: checkAnswersOr(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
   },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {

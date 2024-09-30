@@ -222,7 +222,7 @@ context('Create Contacts', () => {
     selectRelationshipPage.hasFieldInError('relationship', "Enter the contact's relationship to the prisoner")
   })
 
-  it('Must select whether contact is an emergency contact', () => {
+  it('Must select contact relationship', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
@@ -463,5 +463,6 @@ context('Create Contacts', () => {
       .backTo(SelectEmergencyContactPage, 'Last, First')
       .backTo(SelectRelationshipPage, 'Last, First')
       .backTo(EnterNamePage)
+      .backTo(SearchContactPage)
   })
 })
