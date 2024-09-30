@@ -21,7 +21,7 @@ describe('addContactFlowControl', () => {
       }
 
       it.each([
-        [Page.CREATE_CONTACT_NAME_PAGE, undefined, undefined],
+        [Page.CREATE_CONTACT_NAME_PAGE, undefined, `/prisoner/A1234BC/contacts/search/${journeyId}`],
         [Page.SELECT_CONTACT_RELATIONSHIP, undefined, `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`],
         [
           Page.SELECT_EMERGENCY_CONTACT,
