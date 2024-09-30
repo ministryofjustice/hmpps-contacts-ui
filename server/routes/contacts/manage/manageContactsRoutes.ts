@@ -75,7 +75,6 @@ const ManageContactsRoutes = (
   )
 
   // Part 5: View one contact
-  // /prisoner/contact/:journeyId
   // /prisoner/contact/:contactId
 
   // Part 6: Manage the attribute of one contact (phones, addresses, IDs, emails, restrictions)
