@@ -58,8 +58,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/EXISTING/confirmation/
     auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.searchContact.mockResolvedValue(TestData.contacts())
-    // const govukTabs__tab = '.govuk-tabs__tab'
-    // const htmlElement = (className: string, elementNumber: number) => `${className}:eq(${elementNumber})`
 
     // When
     const response = await request(app).get(
@@ -73,11 +71,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/EXISTING/confirmation/
       'Is this the right person to add as a contact for Smith, John?',
     )
     expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
-
-    // expect($(htmlElement(govukTabs__tab, 0)).text().trim()).toStrictEqual('Contact details')
-    // expect($(htmlElement(govukTabs__tab, 1)).text().trim()).toStrictEqual('Restrictions')
-    // expect($(htmlElement(govukTabs__tab, 2)).text().trim()).toStrictEqual('Linked offenders')
-
     expect($('.govuk-tabs__tab:eq(0)').text().trim()).toStrictEqual('Contact details')
     expect($('.govuk-tabs__tab:eq(1)').text().trim()).toStrictEqual('Restrictions')
     expect($('.govuk-tabs__tab:eq(2)').text().trim()).toStrictEqual('Linked offenders')
