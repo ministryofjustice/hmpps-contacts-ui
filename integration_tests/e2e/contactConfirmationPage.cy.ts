@@ -12,6 +12,8 @@ context('Contact confirmation', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn', { roles: ['PRISON'] })
+    cy.task('stubTitlesReferenceData')
+    cy.task('stubRelationshipReferenceData')
     cy.task('stubComponentsMeta')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', TestData.prisoner().prisonerNumber)
