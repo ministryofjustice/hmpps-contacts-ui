@@ -7,6 +7,7 @@ import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
 import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
 import SearchContactPage from '../pages/searchContactPage'
+import ContactConfirmationPage from '../pages/contactConfirmationPage'
 
 context('Add Existing Contact', () => {
   const { prisonerNumber } = TestData.prisoner()
@@ -56,6 +57,10 @@ context('Add Existing Contact', () => {
 
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
+
+    Page.verifyOnPage(ContactConfirmationPage, 'Is this the right person to add as a contact for Contact, Existing?') //
+      .selectIsTheRightPersonYesRadio()
+      .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
       .hasNoRelationshipHint()
@@ -116,6 +121,10 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
+    Page.verifyOnPage(ContactConfirmationPage, 'Is this the right person to add as a contact for Contact, Existing?') //
+      .selectIsTheRightPersonYesRadio()
+      .clickContinue()
+
     Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
       .hasNoRelationshipHint()
       .selectRelationship('MOT')
@@ -173,6 +182,10 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
+    Page.verifyOnPage(ContactConfirmationPage, 'Is this the right person to add as a contact for Contact, Existing?') //
+      .selectIsTheRightPersonYesRadio()
+      .clickContinue()
+
     Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
       .hasNoRelationshipHint()
       .selectRelationship('MOT')
@@ -198,6 +211,10 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
+    Page.verifyOnPage(ContactConfirmationPage, 'Is this the right person to add as a contact for Contact, Existing?') //
+      .selectIsTheRightPersonYesRadio()
+      .clickContinue()
+
     const selectRelationshipPage = Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing')
     selectRelationshipPage.clickContinue()
 
@@ -214,6 +231,10 @@ context('Add Existing Contact', () => {
 
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
+
+    Page.verifyOnPage(ContactConfirmationPage, 'Is this the right person to add as a contact for Contact, Existing?') //
+      .selectIsTheRightPersonYesRadio()
+      .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
       .hasNoRelationshipHint()
@@ -241,6 +262,10 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
+    Page.verifyOnPage(ContactConfirmationPage, 'Is this the right person to add as a contact for Contact, Existing?') //
+      .selectIsTheRightPersonYesRadio()
+      .clickContinue()
+
     Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
       .hasNoRelationshipHint()
       .selectRelationship('MOT')
@@ -267,6 +292,10 @@ context('Add Existing Contact', () => {
 
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
+
+    Page.verifyOnPage(ContactConfirmationPage, 'Is this the right person to add as a contact for Contact, Existing?') //
+      .selectIsTheRightPersonYesRadio()
+      .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
       .hasNoRelationshipHint()
