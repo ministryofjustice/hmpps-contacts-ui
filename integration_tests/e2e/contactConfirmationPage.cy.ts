@@ -6,6 +6,8 @@ import ContactConfirmationPage from '../pages/contactConfirmationPage'
 
 const SELECT_IS_THE_RIGHT_PERSON_MESSAGE = 'Select whether this is the right contact'
 const { prisonerNumber } = TestData.prisoner()
+const contactId = 654321
+const contact = TestData.contacts({ id: contactId, lastName: 'Contact', firstName: 'Existing', middleName: '' })
 const journeyId = uuidv4()
 
 context('Contact confirmation', () => {
@@ -17,6 +19,7 @@ context('Contact confirmation', () => {
     cy.task('stubComponentsMeta')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', TestData.prisoner().prisonerNumber)
+    cy.task('stubGetContactById', contact)
     cy.task('stubPrisoners', {
       results: {
         totalPages: 1,
