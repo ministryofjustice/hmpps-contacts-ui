@@ -20,13 +20,6 @@
     {%- include "./languageDetails.njk" -%}
 {% endmacro %}
 
-{% macro restrictionsHtml() %}
-{% endmacro %}
-
-{% macro linkedOffendersHtml() %}
-
-{% endmacro %}
-
 <div class="govuk-grid-row govuk-!-static-margin-bottom-5">
     <div class="govuk-grid-column-full">
         {% include '../../partials/addContactNavigation.njk' %}
@@ -60,12 +53,8 @@
                 <div class="govuk-tabs__panel--no-border govuk-!-static-padding-top-7" id="contact-details">
                     {{ contactDetailsHtml() }}
                 </div>
-                <div class="govuk-tabs__panel--no-border govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" id="restrictions">
-                    {{ restrictionsHtml() }}
-                </div>
-                <div class="govuk-tabs__panel--no-border govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" id="linked-offenders">
-                    {{ linkedOffendersHtml() }}
-                </div>
+                <div class="govuk-tabs__panel--no-border govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" id="restrictions"></div>
+                <div class="govuk-tabs__panel--no-border govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" id="linked-offenders"></div>
             </div>
 
             {{ govukRadios({
