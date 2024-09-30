@@ -204,6 +204,7 @@ describe('addContactFlowControl', () => {
     describe('getNavigationForAddContactJourney', () => {
       const journeyId = uuidv4()
       it.each([
+        [Page.CONTACT_CONFIRMATION_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`],
         [Page.SELECT_CONTACT_RELATIONSHIP, undefined],
         [Page.SELECT_EMERGENCY_CONTACT, `/prisoner/A1234BC/contacts/create/select-relationship/${journeyId}`],
         [Page.SELECT_NEXT_OF_KIN, `/prisoner/A1234BC/contacts/create/select-emergency-contact/${journeyId}`],

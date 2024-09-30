@@ -70,6 +70,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/EXISTING/confirmation/
     expect($('.govuk-heading-l').text().trim()).toStrictEqual(
       'Is this the right person to add as a contact for Smith, John?',
     )
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('.govuk-tabs__tab:eq(0)').text().trim()).toStrictEqual('Contact details')
     expect($('.govuk-tabs__tab:eq(1)').text().trim()).toStrictEqual('Restrictions')
     expect($('.govuk-tabs__tab:eq(2)').text().trim()).toStrictEqual('Linked offenders')

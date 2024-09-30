@@ -30,6 +30,7 @@ type ExistingContactPages =
   | Page.SELECT_NEXT_OF_KIN
   | Page.ENTER_RELATIONSHIP_COMMENTS
   | Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE
+  | Page.CONTACT_CONFIRMATION_PAGE
 type AllAddContactPages = PreModePages | CreateContactPages | ExistingContactPages
 type JourneyUrlProvider = (journey: journeys.AddContactJourney) => string | undefined
 type Spec = { previousUrl: JourneyUrlProvider; nextUrl: JourneyUrlProvider }
@@ -68,6 +69,9 @@ const PAGES: Record<AllAddContactPages, { url: JourneyUrlProvider; breadcrumbs?:
   },
   [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/check-answers/${journey.id}`,
+  },
+  [Page.CONTACT_CONFIRMATION_PAGE]: {
+    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/mode/${journey.mode}/confirmation/${journey.id}`,
   },
 }
 
@@ -136,6 +140,10 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
   [Page.ADD_CONTACT_MODE_PAGE]: {
     previousUrl: _ => undefined,
     nextUrl: checkAnswersOr(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
+  },
+  [Page.CONTACT_CONFIRMATION_PAGE]: {
+    previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
+    nextUrl: _ => undefined,
   },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
     previousUrl: _ => undefined,
