@@ -3,10 +3,10 @@ import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../services/referenceDataService'
-import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import { SelectRelationshipSchema } from './selectRelationshipSchemas'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
+import ReferenceCode = contactsApiClientTypes.ReferenceCode
+import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 
 export default class SelectRelationshipController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
@@ -55,13 +55,15 @@ export default class SelectRelationshipController implements PageHandler {
     text: string
     selected?: boolean
   }> {
-    const mappedOptions = options.map((relationship: ReferenceCode) => {
-      return {
-        text: relationship.description,
-        value: relationship.code,
-        selected: relationship.code === selected,
-      }
-    })
+    const mappedOptions = options
+      .map((relationship: ReferenceCode) => {
+        return {
+          text: relationship.description,
+          value: relationship.code,
+          selected: relationship.code === selected,
+        }
+      })
+      .sort((a, b) => a.text.localeCompare(b.text))
     return [{ text: '', value: '' }, ...mappedOptions]
   }
 }

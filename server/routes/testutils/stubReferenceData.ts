@@ -26,7 +26,11 @@ const STUBBED_RELATIONSHIP_OPTIONS: StubReferenceData[] = [
   { code: 'DAU', description: 'Daughter', groupCode: 'RELATIONSHIP' },
   { code: 'SON', description: 'Son', groupCode: 'RELATIONSHIP' },
   { code: 'WIFE', description: 'Wife', groupCode: 'RELATIONSHIP' },
+  { code: 'FOO', description: 'ZZZ Alphabetically Last', groupCode: 'RELATIONSHIP' },
   { code: 'HUS', description: 'Husband', groupCode: 'RELATIONSHIP' },
+  { code: 'OTHER', description: 'Other - Social', groupCode: 'RELATIONSHIP' },
+  { code: 'NONE', description: 'None', groupCode: 'RELATIONSHIP' },
+  { code: 'ILP', description: 'In Loco Parentes', groupCode: 'RELATIONSHIP' },
 ]
 
 const mockedReferenceData = (type: ReferenceCodeType, _: HmppsUser): Promise<StubReferenceData[]> => {

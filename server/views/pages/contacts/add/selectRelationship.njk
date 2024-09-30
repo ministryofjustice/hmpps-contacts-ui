@@ -30,7 +30,7 @@
                     items: relationshipOptions,
                     errorMessage: validationErrors | findError('relationship')
                 }) }}
-                <div id="selected-relationship-hint" data-contact="{{ journey.names | formatName }}"></div>
+                <div id="selected-relationship-hint" data-contact="{{ journey.names | formatName }}">&nbsp;</div>
                 <div class="govuk-button-group">
                     {{ govukButton({
                         html: "Continue",

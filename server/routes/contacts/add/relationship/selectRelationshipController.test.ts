@@ -6,7 +6,7 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import ReferenceDataService from '../../../../services/referenceDataService'
-import { mockedReferenceData } from '../../../testutils/stubReferenceData'
+import { mockedReferenceData, STUBBED_RELATIONSHIP_OPTIONS } from '../../../testutils/stubReferenceData'
 import AddContactJourney = journeys.AddContactJourney
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import TestData from '../../../testutils/testData'
@@ -78,8 +78,33 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship', ()
       )
       expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+      expect($('#relationship :nth-child(1)').text()).toStrictEqual('')
+      expect($('#relationship :nth-child(2)').text()).toStrictEqual('Daughter')
+      expect($(`#relationship :nth-child(${STUBBED_RELATIONSHIP_OPTIONS.length + 1})`).text()).toStrictEqual(
+        'ZZZ Alphabetically Last',
+      )
     },
   )
+
+  it('options should be alphabetic', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/create/select-relationship/${journeyId}`,
+    )
+
+    // Then
+    expect(response.status).toEqual(200)
+
+    const $ = cheerio.load(response.text)
+    expect($('#relationship :nth-child(1)').text()).toStrictEqual('')
+    expect($('#relationship :nth-child(2)').text()).toStrictEqual('Daughter')
+    expect($(`#relationship :nth-child(${STUBBED_RELATIONSHIP_OPTIONS.length + 1})`).text()).toStrictEqual(
+      'ZZZ Alphabetically Last',
+    )
+  })
 
   it('should call the audit service for the page view', async () => {
     // Given
