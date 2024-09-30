@@ -75,10 +75,6 @@ export default class ContactConfirmationPage extends Page {
     return this
   }
 
-  clickTheContinueButton() {
-    this.clickContinueButton().click()
-  }
-
   private contactTab = (elementNumber: number): PageElement => cy.get(`.govuk-tabs__tab:eq(${elementNumber})`)
 
   private contactCard = (elementNumber: number): PageElement =>

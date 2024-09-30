@@ -3,6 +3,7 @@ import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import SearchContactPage from '../pages/searchContactPage'
 import ContactConfirmationPage from '../pages/contactConfirmationPage'
+import SelectRelationshipPage from '../pages/selectRelationshipPage'
 
 const SELECT_IS_THE_RIGHT_PERSON_MESSAGE = 'Select whether this is the right contact'
 const { prisonerNumber } = TestData.prisoner()
@@ -70,7 +71,7 @@ context('Contact confirmation', () => {
 
   it(`should not pass validation when radiobox is not selected`, () => {
     const contactConfirmationPage = Page.verifyOnPage(ContactConfirmationPage)
-    contactConfirmationPage.clickTheContinueButton()
+    contactConfirmationPage.clickContinue()
 
     contactConfirmationPage.hasFieldInError('isContactConfirmed', SELECT_IS_THE_RIGHT_PERSON_MESSAGE)
     contactConfirmationPage.errorSummaryItems.spread((...$lis) => {
@@ -82,12 +83,12 @@ context('Contact confirmation', () => {
   it(`should navigate to next page when 'Yes, this is the right person' is selected `, () => {
     const contactConfirmationPage = Page.verifyOnPage(ContactConfirmationPage)
     contactConfirmationPage.selectIsTheRightPersonYesRadio()
-    contactConfirmationPage.clickTheContinueButton()
+    contactConfirmationPage.clickContinue()
   })
 
   it(`should navigate back to previous page when 'No, this is not the right person' is selected `, () => {
     const contactConfirmationPage = Page.verifyOnPage(ContactConfirmationPage)
     contactConfirmationPage.selectIsTheRightPersonNoRadio()
-    contactConfirmationPage.clickTheContinueButton()
+    contactConfirmationPage.clickContinue()
   })
 })
