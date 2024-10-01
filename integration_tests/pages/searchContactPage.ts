@@ -2,7 +2,7 @@ import Page, { PageElement } from './page'
 
 export default class SearchContactPage extends Page {
   constructor() {
-    super('Search for Contact')
+    super('Search for a contact')
   }
 
   enterFirstName(value: string): SearchContactPage {
