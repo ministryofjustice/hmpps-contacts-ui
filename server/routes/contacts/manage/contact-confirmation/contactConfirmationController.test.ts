@@ -60,7 +60,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/EXISTING/confirmation/:journeyI
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/add/EXISTING/confirmation/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/add/mode/EXISTING/confirmation/${journeyId}`,
     )
 
     // Then
@@ -72,16 +72,19 @@ describe('GET /prisoner/:prisonerNumber/contacts/EXISTING/confirmation/:journeyI
   })
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/add/EXISTING/confirmation/:journeyId?contactId=', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/add/mode/EXISTING/confirmation/:journeyId?contactId=', () => {
   it('should pass validation when "Yes, this is the right person" is selected', async () => {
     // Given
     // When
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/add/EXISTING/confirmation/${journeyId}?contactId=1`)
+      .post(`/prisoner/${prisonerNumber}/contacts/add/mode/EXISTING/confirmation/${journeyId}?contactId=1`)
       .type('form')
       .send({ isContactConfirmed: 'YES' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/add/EXISTING/confirmation/${journeyId}?contactId=1`)
+      .expect(
+        'Location',
+        `/prisoner/${prisonerNumber}/contacts/add/mode/EXISTING/confirmation/${journeyId}?contactId=1`,
+      )
 
     // Then
     expect(session.addContactJourneys[journeyId].isContactConfirmed).toStrictEqual('YES')
@@ -91,11 +94,14 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/EXISTING/confirmation/:jour
     // Given
     // When
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/add/EXISTING/confirmation/${journeyId}?contactId=1`)
+      .post(`/prisoner/${prisonerNumber}/contacts/add/mode/EXISTING/confirmation/${journeyId}?contactId=1`)
       .type('form')
       .send({ isContactConfirmed: 'NO' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/add/EXISTING/confirmation/${journeyId}?contactId=1`)
+      .expect(
+        'Location',
+        `/prisoner/${prisonerNumber}/contacts/add/mode/EXISTING/confirmation/${journeyId}?contactId=1`,
+      )
 
     // Then
     expect(session.addContactJourneys[journeyId].isContactConfirmed).toStrictEqual('NO')
@@ -105,11 +111,14 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/EXISTING/confirmation/:jour
     // Given
     // When
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/add/EXISTING/confirmation/${journeyId}?contactId=1`)
+      .post(`/prisoner/${prisonerNumber}/contacts/add/mode/EXISTING/confirmation/${journeyId}?contactId=1`)
       .type('form')
       .send({ isContactConfirmed: '' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/add/EXISTING/confirmation/${journeyId}?contactId=1`)
+      .expect(
+        'Location',
+        `/prisoner/${prisonerNumber}/contacts/add/mode/EXISTING/confirmation/${journeyId}?contactId=1`,
+      )
 
     // Then
     expect(session.addContactJourneys[journeyId].isContactConfirmed).toStrictEqual(undefined)

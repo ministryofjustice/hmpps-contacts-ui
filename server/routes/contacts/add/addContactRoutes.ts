@@ -62,7 +62,7 @@ const AddContactRoutes = (
 
   const contactConfirmationController = new ContactConfirmationController(contactsService)
   router.get(
-    '/prisoner/:prisonerNumber/contacts/add/:mode/confirmation/:journeyId',
+    '/prisoner/:prisonerNumber/contacts/add/mode/:mode/confirmation/:journeyId',
     ensureInAddContactJourney(),
     prisonerDetailsMiddleware(prisonerSearchService),
     logPageViewMiddleware(auditService, contactConfirmationController),
@@ -70,7 +70,7 @@ const AddContactRoutes = (
   )
 
   router.post(
-    '/prisoner/:prisonerNumber/contacts/add/:mode/confirmation/:journeyId',
+    '/prisoner/:prisonerNumber/contacts/add/mode/:mode/confirmation/:journeyId',
     ensureInAddContactJourney(),
     validate(selectToConfirmContactSchema()),
     asyncMiddleware(contactConfirmationController.POST),

@@ -15,7 +15,7 @@ export default class ContactConfirmationController implements PageHandler {
     req: Request<PrisonerJourneyParams & { mode?: 'EXISTING' | 'NEW' }, unknown, unknown, { contactId?: string }>,
     res: Response,
   ): Promise<void> => {
-    const { journeyId, mode } = req.params
+    const { journeyId } = req.params
     const { contactId } = req.query
     const { prisonerDetails } = res.locals
     const journey = req.session.addContactJourneys[journeyId]
@@ -45,7 +45,7 @@ export default class ContactConfirmationController implements PageHandler {
     const journey = req.session.addContactJourneys[journeyId]
     journey.isContactConfirmed = isContactConfirmed
     res.redirect(
-      `/prisoner/${journey.prisonerNumber}/contacts/add/EXISTING/confirmation/${journeyId}?contactId=${contactId}`,
+      `/prisoner/${journey.prisonerNumber}/contacts/add/mode/EXISTING/confirmation/${journeyId}?contactId=${contactId}`,
     )
   }
 }
