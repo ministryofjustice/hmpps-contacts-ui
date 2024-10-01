@@ -308,6 +308,7 @@ context('Add Existing Contact', () => {
       .backTo(SelectNextOfKinPage, 'Contact, Existing')
       .backTo(SelectEmergencyContactPage, 'Contact, Existing')
       .backTo(SelectRelationshipPage, 'Contact, Existing')
+      .backTo(ContactConfirmationPage, 'Is this the right person to add as a contact for Contact, Existing?')
       .backTo(SearchContactPage)
       .verifyShowsNameAs('Contact, Existing')
   })
