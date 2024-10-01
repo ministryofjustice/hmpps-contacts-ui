@@ -50,12 +50,13 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/add/EXISTING/confirmation/:journeyId?contactId=', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/EXISTING/confirmation/:journeyId?contactId=', () => {
   it('should render confirmation page', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.searchContact.mockResolvedValue(TestData.contacts())
+    existingJourney.mode = 'EXISTING'
 
     // When
     const response = await request(app).get(

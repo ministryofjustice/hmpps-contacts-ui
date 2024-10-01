@@ -19,7 +19,6 @@ export default class ContactConfirmationController implements PageHandler {
     const { contactId } = req.query
     const { prisonerDetails } = res.locals
     const journey = req.session.addContactJourneys[journeyId]
-    journey.mode = mode
 
     if (journey.isContactConfirmed === 'YES') {
       return res.redirect(
