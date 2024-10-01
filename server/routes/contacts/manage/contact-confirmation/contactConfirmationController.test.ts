@@ -30,6 +30,7 @@ beforeEach(() => {
     prisonerNumber,
     isCheckingAnswers: false,
     returnPoint: { type: 'MANAGE_PRISONER_CONTACTS', url: '/foo-bar' },
+    mode: 'EXISTING',
   }
   app = appWithAllRoutes({
     services: {
@@ -59,9 +60,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/EXISTING/confirmation/:journeyI
     existingJourney.mode = 'EXISTING'
 
     // When
-    const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/add/mode/EXISTING/confirmation/${journeyId}`,
-    )
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
 
     // Then
     expect(response.status).toEqual(200)
@@ -72,53 +71,44 @@ describe('GET /prisoner/:prisonerNumber/contacts/EXISTING/confirmation/:journeyI
   })
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/add/mode/EXISTING/confirmation/:journeyId?contactId=', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/add/confirmation/:journeyId?contactId=', () => {
   it('should pass validation when "Yes, this is the right person" is selected', async () => {
     // Given
     // When
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/add/mode/EXISTING/confirmation/${journeyId}?contactId=1`)
+      .post(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
       .type('form')
       .send({ isContactConfirmed: 'YES' })
       .expect(302)
-      .expect(
-        'Location',
-        `/prisoner/${prisonerNumber}/contacts/add/mode/EXISTING/confirmation/${journeyId}?contactId=1`,
-      )
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship/${journeyId}`)
 
     // Then
     expect(session.addContactJourneys[journeyId].isContactConfirmed).toStrictEqual('YES')
   })
 
-  it('should pass validation when "No, this is not the right person" is selected', async () => {
+  it('should pass validation when "No, this is not the right person" is selected and return to search', async () => {
     // Given
     // When
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/add/mode/EXISTING/confirmation/${journeyId}?contactId=1`)
+      .post(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
       .type('form')
       .send({ isContactConfirmed: 'NO' })
       .expect(302)
-      .expect(
-        'Location',
-        `/prisoner/${prisonerNumber}/contacts/add/mode/EXISTING/confirmation/${journeyId}?contactId=1`,
-      )
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
     // Then
-    expect(session.addContactJourneys[journeyId].isContactConfirmed).toStrictEqual('NO')
+    expect(session.addContactJourneys[journeyId].isContactConfirmed).toBeUndefined()
   })
 
   it('should not pass validation when no option is selected', async () => {
     // Given
     // When
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/add/mode/EXISTING/confirmation/${journeyId}?contactId=1`)
+      .post(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
       .type('form')
       .send({ isContactConfirmed: '' })
       .expect(302)
-      .expect(
-        'Location',
-        `/prisoner/${prisonerNumber}/contacts/add/mode/EXISTING/confirmation/${journeyId}?contactId=1`,
-      )
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
 
     // Then
     expect(session.addContactJourneys[journeyId].isContactConfirmed).toStrictEqual(undefined)

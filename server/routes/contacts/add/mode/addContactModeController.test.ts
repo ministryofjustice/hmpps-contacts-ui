@@ -102,7 +102,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
 
     // Then
     expect(response.status).toEqual(302)
-    expect(response.headers.location).toContain('/contacts/create/select-relationship/')
+    expect(response.headers.location).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`,
+    )
     expect(existingJourney.mode).toStrictEqual('EXISTING')
     expect(contactsService.getContact).toHaveBeenCalledWith(123456, user)
     expect(existingJourney.names).toStrictEqual({
@@ -147,7 +149,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       correlationId: expect.any(String),
     })
     expect(response.status).toEqual(302)
-    expect(response.headers.location).toContain('/contacts/create/select-relationship/')
+    expect(response.headers.location).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`,
+    )
     expect(existingJourney.mode).toStrictEqual('EXISTING')
     expect(contactsService.getContact).toHaveBeenCalledWith(123456, user)
     expect(existingJourney.names).toStrictEqual({
@@ -182,7 +186,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
 
     // Then
     expect(response.status).toEqual(302)
-    expect(response.headers.location).toContain('/contacts/create/select-relationship/')
+    expect(response.headers.location).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`,
+    )
     expect(existingJourney.mode).toStrictEqual('EXISTING')
     expect(contactsService.getContact).toHaveBeenCalledWith(123456, user)
     expect(existingJourney.names).toStrictEqual({

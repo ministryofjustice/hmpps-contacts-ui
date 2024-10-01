@@ -71,7 +71,7 @@ const PAGES: Record<AllAddContactPages, { url: JourneyUrlProvider; breadcrumbs?:
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/check-answers/${journey.id}`,
   },
   [Page.CONTACT_CONFIRMATION_PAGE]: {
-    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/add/${journey.mode}/confirmation/${journey.id}`,
+    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/add/confirmation/${journey.id}`,
   },
 }
 
@@ -139,14 +139,14 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
   [Page.CONTACT_SEARCH_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CONTACT_SEARCH_PAGE.url },
   [Page.ADD_CONTACT_MODE_PAGE]: {
     previousUrl: _ => undefined,
-    nextUrl: checkAnswersOr(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
+    nextUrl: checkAnswersOr(PAGES.CONTACT_CONFIRMATION_PAGE.url),
   },
   [Page.CONTACT_CONFIRMATION_PAGE]: {
     previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
     nextUrl: checkAnswersOr(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
   },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
-    previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
+    previousUrl: PAGES.CONTACT_CONFIRMATION_PAGE.url,
     nextUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT.url),
   },
   [Page.SELECT_EMERGENCY_CONTACT]: {
