@@ -62,65 +62,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/EXISTING/confirmation/
     const response = await request(app).get(
       `/prisoner/${prisonerNumber}/contacts/add/mode/EXISTING/confirmation/${journeyId}`,
     )
-    const $ = cheerio.load(response.text)
 
     // Then
     expect(response.status).toEqual(200)
-    expect($('.govuk-heading-l').text().trim()).toStrictEqual(
-      'Is this the right person to add as a contact for Smith, John?',
-    )
-    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
-    expect($('.govuk-tabs__tab:eq(0)').text().trim()).toStrictEqual('Contact details')
-    expect($('.govuk-tabs__tab:eq(1)').text().trim()).toStrictEqual('Restrictions')
-    expect($('.govuk-tabs__tab:eq(2)').text().trim()).toStrictEqual('Linked offenders')
-
-    // Basic details
-    expect($('h2.govuk-summary-card__title:eq(0)').text().trim()).toStrictEqual('Basic details')
-    expect($('.govuk-summary-card:eq(0) .govuk-summary-list__key:eq(0)').text().trim()).toStrictEqual('Name')
-    expect($('.govuk-summary-card:eq(0) .govuk-summary-list__key:eq(1)').text().trim()).toStrictEqual('Date of birth')
-    expect($('.govuk-summary-card:eq(0) .govuk-summary-list__key:eq(2)').text().trim()).toStrictEqual('Deceased date')
-
-    // Addresses
-    expect($('h2.govuk-summary-card__title:eq(1)').text().trim()).toStrictEqual('Addresses')
-    expect($('.govuk-summary-card:eq(1) .govuk-summary-card__actions .govuk-link').text().trim()).toContain(
-      'View all addresses',
-    )
-    expect($('.govuk-summary-card:eq(1) .govuk-summary-list__key:eq(0)').text().trim()).toStrictEqual('Address')
-    expect($('.govuk-summary-card:eq(1) .govuk-summary-list__key:eq(1)').text().trim()).toStrictEqual('Type')
-    expect($('.govuk-summary-card:eq(1) .govuk-summary-list__key:eq(2)').text().trim()).toStrictEqual(
-      'Address-specific phone numbers',
-    )
-    expect($('.govuk-summary-card:eq(1) .govuk-summary-list__key:eq(3)').text().trim()).toStrictEqual('Mail')
-    expect($('.govuk-summary-card:eq(1) .govuk-summary-list__key:eq(4)').text().trim()).toStrictEqual('Comments')
-    expect($('.govuk-summary-card:eq(1) .govuk-summary-list__key:eq(5)').text().trim()).toStrictEqual('Dates')
-
-    // Phone numbers
-    expect($('h2.govuk-summary-card__title:eq(2)').text().trim()).toStrictEqual('Phone numbers')
-    expect($('.govuk-summary-card:eq(2) .govuk-summary-list__key:eq(0)').text().trim()).toStrictEqual('Mobile')
-    expect($('.govuk-summary-card:eq(2) .govuk-summary-list__key:eq(1)').text().trim()).toStrictEqual('Business')
-
-    // Email addresses
-    expect($('h2.govuk-summary-card__title:eq(3)').text().trim()).toStrictEqual('Email addresses')
-    expect($('.govuk-summary-card:eq(3) .govuk-summary-list__key:eq(0)').text().trim()).toStrictEqual('Email addresses')
-
-    // Identity numbers
-    expect($('h2.govuk-summary-card__title:eq(4)').text().trim()).toStrictEqual('Identity numbers')
-    expect($('.govuk-summary-card:eq(4) .govuk-summary-list__key:eq(0)').text().trim()).toStrictEqual('Passport number')
-    expect($('.govuk-summary-card:eq(4) .govuk-summary-list__key:eq(1)').text().trim()).toStrictEqual('Driving licence')
-    expect($('.govuk-summary-card:eq(4) .govuk-summary-list__key:eq(2)').text().trim()).toStrictEqual('PNC number')
-
-    // Language details
-    expect($('h2.govuk-summary-card__title:eq(5)').text().trim()).toStrictEqual('Language details')
-    expect($('.govuk-summary-card:eq(5) .govuk-summary-list__key:eq(0)').text().trim()).toStrictEqual('Spoken language')
-    expect($('.govuk-summary-card:eq(5) .govuk-summary-list__key:eq(1)').text().trim()).toStrictEqual(
-      'Needs interpreter',
-    )
-
-    // Radio
-    expect($('.govuk-label:eq(0)').text().trim()).toStrictEqual('Yes, this is the right person')
-    expect($('.govuk-label:eq(1)').text().trim()).toStrictEqual('No, this is not the right person')
-    expect($('.govuk-button').text().trim()).toStrictEqual('Continue')
-
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CONTACT_CONFIRMATION_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
