@@ -46,7 +46,7 @@ export default class ContactConfirmationController implements PageHandler {
     const journey = req.session.addContactJourneys[journeyId]
     journey.isContactConfirmed = isContactConfirmed
     res.redirect(
-      `/prisoner/${journey.prisonerNumber}/contacts/add/mode/EXISTING/confirmation/${journeyId}?contactId=${contactId}`,
+      `/prisoner/${journey.prisonerNumber}/contacts/add/EXISTING/confirmation/${journeyId}?contactId=${contactId}`,
     )
   }
 }

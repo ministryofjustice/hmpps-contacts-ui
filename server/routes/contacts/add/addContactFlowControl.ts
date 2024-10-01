@@ -71,7 +71,7 @@ const PAGES: Record<AllAddContactPages, { url: JourneyUrlProvider; breadcrumbs?:
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/check-answers/${journey.id}`,
   },
   [Page.CONTACT_CONFIRMATION_PAGE]: {
-    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/mode/${journey.mode}/confirmation/${journey.id}`,
+    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/confirmation/${journey.id}`, // mode/${journey.mode}
   },
 }
 
