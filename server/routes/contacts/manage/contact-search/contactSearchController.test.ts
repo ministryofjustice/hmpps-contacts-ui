@@ -64,7 +64,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
 
     // Then
     expect(response.status).toEqual(200)
-    expect($('h1.govuk-heading-l').text()).toContain('Search for Contact')
+    expect($('h1.govuk-heading-l').text()).toContain('Search for a contact')
     expect($('input#firstName')).toBeDefined()
     expect($('input#middleName')).toBeDefined()
     expect($('input#lastName')).toBeDefined()
