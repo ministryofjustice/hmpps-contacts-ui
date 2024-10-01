@@ -42,7 +42,6 @@ beforeEach(() => {
       isNextOfKin: 'YES',
     },
     mode: 'NEW',
-    isContactConfirmed: undefined,
   }
   app = appWithAllRoutes({
     services: {

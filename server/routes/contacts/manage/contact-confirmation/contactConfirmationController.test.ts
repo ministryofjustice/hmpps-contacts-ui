@@ -30,7 +30,6 @@ beforeEach(() => {
     lastTouched: new Date().toISOString(),
     prisonerNumber,
     isCheckingAnswers: false,
-    isContactConfirmed: undefined,
     returnPoint: { type: 'MANAGE_PRISONER_CONTACTS', url: '/foo-bar' },
   }
   app = appWithAllRoutes({

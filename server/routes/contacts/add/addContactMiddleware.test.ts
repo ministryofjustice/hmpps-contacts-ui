@@ -27,7 +27,6 @@ describe('createContactMiddleware', () => {
         prisonerNumber,
         isCheckingAnswers: false,
         returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
-        isContactConfirmed: undefined,
       }
       ensureInAddContactJourney()(req, res, next)
       expect(next).toHaveBeenCalledTimes(1)

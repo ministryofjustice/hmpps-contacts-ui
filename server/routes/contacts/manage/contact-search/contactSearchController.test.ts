@@ -31,7 +31,6 @@ beforeEach(() => {
     prisonerNumber,
     isCheckingAnswers: false,
     returnPoint: { type: 'MANAGE_PRISONER_CONTACTS', url: '/foo-bar' },
-    isContactConfirmed: undefined,
   }
   app = appWithAllRoutes({
     services: {

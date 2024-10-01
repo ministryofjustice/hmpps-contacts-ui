@@ -33,7 +33,6 @@ beforeEach(() => {
       firstName: 'first',
     },
     mode: 'NEW',
-    isContactConfirmed: undefined,
   }
   app = appWithAllRoutes({
     services: {

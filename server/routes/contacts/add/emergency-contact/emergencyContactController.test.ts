@@ -36,7 +36,6 @@ beforeEach(() => {
       type: 'MOT',
     },
     mode: 'NEW',
-    isContactConfirmed: undefined,
   }
   app = appWithAllRoutes({
     services: {
