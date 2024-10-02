@@ -245,10 +245,10 @@ describe('Contact seaarch results', () => {
     expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('Flat 32')
     expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('Acacia Avenue')
     expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('Bunting')
-    expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('SHEF')
-    expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('SYORKS')
+    expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('Sheffield')
+    expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('South Yorkshire')
     expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('S2 3LK')
-    expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('UK')
+    expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('England')
   })
 
   it('should display pagination when totalPages greater than 1', async () => {

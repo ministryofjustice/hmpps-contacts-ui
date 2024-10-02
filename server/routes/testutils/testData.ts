@@ -1,8 +1,7 @@
 import { CurrentIncentive, Prisoner } from '../../data/prisonerOffenderSearchTypes'
-
 import { components } from '../../@types/contactsApi'
 
-type ContactSearch = components['schemas']['ContactSearch']
+type ContactSearchResultItem = components['schemas']['ContactSearchResultItem']
 export default class TestData {
   static currentIncentive = ({
     level = {
@@ -44,13 +43,16 @@ export default class TestData {
     property = '',
     street = 'Acacia Avenue',
     area = 'Bunting',
-    cityCode = 'SHEF',
-    countyCode = 'SYORKS',
+    cityCode = '25343',
+    cityDescription = 'Sheffield',
+    countyCode = 'S.YORKSHIRE',
+    countyDescription = 'South Yorkshire',
     postCode = 'S2 3LK',
-    countryCode = 'UK',
+    countryCode = 'ENG',
+    countryDescription = 'England',
     createdBy = 'User13',
     createdTime = '2024-09-11T11:08:26.191824',
-  }: Partial<ContactSearch> = {}): ContactSearch =>
+  }: Partial<ContactSearchResultItem> = {}): ContactSearchResultItem =>
     ({
       id,
       lastName,
@@ -62,10 +64,13 @@ export default class TestData {
       street,
       area,
       cityCode,
+      cityDescription,
       countyCode,
+      countyDescription,
       postCode,
       countryCode,
+      countryDescription,
       createdBy,
       createdTime,
-    }) as ContactSearch
+    }) as ContactSearchResultItem
 }
