@@ -178,7 +178,7 @@ context('Search contact', () => {
       lastName: 'Mason',
       firstName: 'Jones',
       middleName: 'middle',
-      dateOfBirth: '1990-1-14',
+      dateOfBirth: '1990-01-14',
     })
     const searchContactPage = Page.verifyOnPage(SearchContactPage)
     searchContactPage.enterFirstName('Jones')
@@ -199,5 +199,28 @@ context('Search contact', () => {
     searchContactPage.verifyShowsAddressAs('S2 3LK')
     searchContactPage.verifyShowsAddressAs('England')
     searchContactPage.verifyShowsTheContactIsNotListedAs('The contact is not listed')
+  })
+
+  it(`should pass validation when day and month starts with 0`, () => {
+    cy.task('stubContactSearch', {
+      results: {
+        totalPages: 1,
+        totalElements: 1,
+        content: [TestData.contacts()],
+      },
+      lastName: 'Mason',
+      firstName: 'Jones',
+      middleName: 'middle',
+      dateOfBirth: '1990-01-01',
+    })
+    const searchContactPage = Page.verifyOnPage(SearchContactPage)
+    searchContactPage.enterFirstName('Jones')
+    searchContactPage.enterLastName('Mason')
+    searchContactPage.enterMiddleName('middle')
+    searchContactPage.enterDay('01')
+    searchContactPage.enterMonth('01')
+    searchContactPage.enterYear('1990')
+    searchContactPage.clickSearchButton()
+    searchContactPage.checkOnPage()
   })
 })
