@@ -115,7 +115,7 @@ describe('formatDateForApi', () => {
     }
 
     // When
-    const results = formatDateForApi(JSON.stringify(dateOfBirth))
+    const results = formatDateForApi(dateOfBirth)
 
     // Then
     expect(results).toEqual('2000-11-01')

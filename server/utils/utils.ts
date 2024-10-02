@@ -1,5 +1,5 @@
 import { format, formatDistanceStrict, isValid, parseISO } from 'date-fns'
-import logger from '../../logger'
+import DateOfBirth = journeys.DateOfBirth
 
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
@@ -73,22 +73,11 @@ export const getFormatDistanceToNow = (date: Date) => {
   return formatDistanceStrict(date, new Date())
 }
 
-// export const formatDateForApi = (dateOfBirth: string) => {
-//   const date = JSON.parse(dateOfBirth)
-//   logger.info(date)
-//   if (date.year && date.month && date.day) {
-//     return `${date.year}-${date.month}-${date.day}`
-//   }
-//   return null
-// }
-
-export const formatDateForApi = (dateOfBirth: string) => {
-  console.log(dateOfBirth)
-  const date = JSON.parse(dateOfBirth)
-  if (date.year && date.month && date.day) {
-    const day = String(date.day).padStart(2, '0')
-    const month = String(date.month).padStart(2, '0')
-    return `${date.year}-${month}-${day}`
+export const formatDateForApi = (dateOfBirth: Partial<DateOfBirth>) => {
+  if (dateOfBirth.year && dateOfBirth.month && dateOfBirth.day) {
+    const day = String(dateOfBirth.day).padStart(2, '0')
+    const month = String(dateOfBirth.month).padStart(2, '0')
+    return `${dateOfBirth.year}-${month}-${day}`
   }
   return null
 }
