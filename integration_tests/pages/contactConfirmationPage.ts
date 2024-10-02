@@ -1,8 +1,8 @@
 import Page, { PageElement } from './page'
 
 export default class ContactConfirmationPage extends Page {
-  constructor() {
-    super('Is this the right person to add as a contact for Smith, John?')
+  constructor(name: string) {
+    super(`Is this the right person to add as a contact for ${name}?`)
   }
 
   verifyShowsContactDetailsTabTitleAs(expected: string): ContactConfirmationPage {

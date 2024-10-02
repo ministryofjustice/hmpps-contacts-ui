@@ -58,7 +58,7 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Is this the right person to add as a contact for Contact, Existing?') //
+    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
@@ -121,7 +121,7 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Is this the right person to add as a contact for Contact, Existing?') //
+    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
@@ -182,7 +182,7 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Is this the right person to add as a contact for Contact, Existing?') //
+    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
@@ -211,7 +211,7 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Is this the right person to add as a contact for Contact, Existing?') //
+    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
@@ -232,7 +232,7 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Is this the right person to add as a contact for Contact, Existing?') //
+    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
@@ -262,7 +262,7 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Is this the right person to add as a contact for Contact, Existing?') //
+    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
@@ -293,7 +293,7 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Is this the right person to add as a contact for Contact, Existing?') //
+    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
@@ -308,7 +308,7 @@ context('Add Existing Contact', () => {
       .backTo(SelectNextOfKinPage, 'Contact, Existing')
       .backTo(SelectEmergencyContactPage, 'Contact, Existing')
       .backTo(SelectRelationshipPage, 'Contact, Existing')
-      .backTo(ContactConfirmationPage, 'Is this the right person to add as a contact for Contact, Existing?')
+      .backTo(ContactConfirmationPage, 'Smith, John')
       .backTo(SearchContactPage)
       .verifyShowsNameAs('Contact, Existing')
   })

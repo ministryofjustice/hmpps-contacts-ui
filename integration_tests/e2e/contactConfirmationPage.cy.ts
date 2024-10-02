@@ -54,7 +54,7 @@ context('Contact confirmation', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Is this the right person to add as a contact for Contact, Existing?') //
+    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
   })
@@ -70,7 +70,7 @@ context('Contact confirmation', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    const contactConfirmationPage = Page.verifyOnPage(ContactConfirmationPage)
+    const contactConfirmationPage = Page.verifyOnPage(ContactConfirmationPage, 'Smith, John')
     contactConfirmationPage.clickContinue()
 
     contactConfirmationPage.hasFieldInError('isContactConfirmed', SELECT_IS_THE_RIGHT_PERSON_MESSAGE)
@@ -91,7 +91,7 @@ context('Contact confirmation', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    const contactConfirmationPage = Page.verifyOnPage(ContactConfirmationPage)
+    const contactConfirmationPage = Page.verifyOnPage(ContactConfirmationPage, 'Smith, John')
     contactConfirmationPage.selectIsTheRightPersonYesRadio()
     contactConfirmationPage.clickContinue()
 
@@ -109,7 +109,7 @@ context('Contact confirmation', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    const contactConfirmationPage = Page.verifyOnPage(ContactConfirmationPage)
+    const contactConfirmationPage = Page.verifyOnPage(ContactConfirmationPage, 'Smith, John')
     contactConfirmationPage.selectIsTheRightPersonNoRadio()
     contactConfirmationPage.clickContinue()
 
