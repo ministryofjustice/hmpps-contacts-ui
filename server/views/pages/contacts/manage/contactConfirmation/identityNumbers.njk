@@ -1,0 +1,36 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{{ govukSummaryList({
+    card: {
+        title: {
+            text: "Identity numbers"
+        }
+    },
+    rows: [{
+        key: {
+            text: "Passport number"
+        },
+        value: {
+            html: '',
+            attributes: {"data-qa": "confirm-passport-numbers-value"}
+        }
+    },
+    {
+        key: {
+            text: "Driving licence"
+        },
+        value: {
+            html: '',
+            attributes: {"data-qa": "confirm-driving-licence-value"}
+        }
+    },
+    {
+        key: {
+            text: "PNC number"
+        },
+        value: {
+            html: '',
+            attributes: {"data-qa": "confirm-pnc-numbers-value"}
+        }
+    }]
+}) }}

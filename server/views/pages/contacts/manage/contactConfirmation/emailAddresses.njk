@@ -1,0 +1,18 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{{ govukSummaryList({
+    card: {
+        title: {
+            text: "Email addresses"
+        }
+    },
+    rows: [{
+        key: {
+            text: "Email addresses"
+        },
+        value: {
+            html: '',
+            attributes: {"data-qa": "confirm-email-addresses-value"}
+        }
+    }]
+}) }}

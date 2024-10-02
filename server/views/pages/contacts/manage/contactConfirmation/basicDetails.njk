@@ -1,0 +1,36 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{{ govukSummaryList({
+    card: {
+        title: {
+            text: "Basic details"
+        }
+    },
+    rows: [{
+        key: {
+            text: "Name"
+        },
+        value: {
+            html: '',
+            attributes: {"data-qa": "confirm-name-value"}
+        }
+    },
+    {
+        key: {
+            text: "Date of birth"
+        },
+        value: {
+            html: formattedDateOfBirth,
+            attributes: {"data-qa": "confirm-dob-value"}
+        }
+    },
+    {
+        key: {
+            text: "Deceased date"
+        },
+        value: {
+            html: '',
+            attributes: {"data-qa": "confirm-deceased-value"}
+        }
+    }]
+}) }}

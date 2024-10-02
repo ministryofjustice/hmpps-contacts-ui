@@ -7,6 +7,7 @@ import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
 import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
 import SearchContactPage from '../pages/searchContactPage'
+import ContactConfirmationPage from '../pages/contactConfirmationPage'
 
 context('Add Existing Contact Check Answers', () => {
   const { prisonerNumber } = TestData.prisoner()
@@ -53,6 +54,10 @@ context('Add Existing Contact Check Answers', () => {
 
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
+
+    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John') //
+      .selectIsTheRightPersonYesRadio()
+      .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
       .selectRelationship('MOT')
