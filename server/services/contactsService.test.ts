@@ -9,9 +9,10 @@ import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import IsOverEighteenOptions = journeys.YesNoOrDoNotKnow
 import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
+import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
 
 jest.mock('../data/contactsApiClient')
-const contacts = TestData.contacts()
+const searchResult = TestData.contactSearchResultItem()
 const contactSearchRequest: ContactSearchRequest = {
   lastName: 'last',
   middleName: '',
@@ -218,23 +219,23 @@ describe('contactsService', () => {
 
     it('Retrieves search contact details matching the search criteria', async () => {
       // Given
-      const contactResults = {
+      const contactResults: ContactSearchResultItemPage = {
         totalPages: 1,
         totalElements: 1,
         first: true,
         last: true,
         size: 20,
         empty: false,
-        content: [contacts],
-      } as ContactSearchRequest
+        content: [searchResult],
+      }
 
       // When
-      await apiClient.searchContact.mockResolvedValue(contactResults)
+      apiClient.searchContact.mockResolvedValue(contactResults)
       const results = await service.searchContact(contactSearchRequest, pagination, user)
 
       // Then
-      expect(results?.content[0].lastName).toEqual(contacts.lastName)
-      expect(results?.content[0].firstName).toEqual(contacts.firstName)
+      expect(results?.content[0].lastName).toEqual(searchResult.lastName)
+      expect(results?.content[0].firstName).toEqual(searchResult.firstName)
       expect(results.totalPages).toEqual(1)
       expect(results.totalElements).toEqual(1)
     })

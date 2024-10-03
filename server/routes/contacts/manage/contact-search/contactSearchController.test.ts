@@ -9,6 +9,7 @@ import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import ContactsService from '../../../../services/contactsService'
 import TestData from '../../../testutils/testData'
 import AddContactJourney = journeys.AddContactJourney
+import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -56,7 +57,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-    contactsService.searchContact.mockResolvedValue(TestData.contacts())
+    contactsService.searchContact.mockResolvedValue({
+      totalPages: 0,
+      totalElements: 0,
+      content: [TestData.contactSearchResultItem()],
+    })
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
@@ -188,8 +193,8 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
 })
 
 describe('Contact seaarch results', () => {
-  let results = {
-    content: [TestData.contacts()],
+  let results: ContactSearchResultItemPage = {
+    content: [TestData.contactSearchResultItem()],
     pageable: {
       pageNumber: 0,
       pageSize: 20,
@@ -265,7 +270,7 @@ describe('Contact seaarch results', () => {
 
     const contactsArray = []
     for (let i = 0; i < 15; i += 1) {
-      contactsArray.push(TestData.contacts())
+      contactsArray.push(TestData.contactSearchResultItem({ id: i }))
     }
 
     results = {

@@ -8,6 +8,7 @@ import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
+import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
 
 jest.mock('./tokenStore/inMemoryTokenStore')
 
@@ -214,7 +215,7 @@ describe('contactsApiClient', () => {
         dateOfBirth: '1980-12-10T00:00:00.000Z',
       }
 
-      const results = {
+      const results: ContactSearchResultItemPage = {
         totalPage: 1,
         totalElements: 1,
         content: [

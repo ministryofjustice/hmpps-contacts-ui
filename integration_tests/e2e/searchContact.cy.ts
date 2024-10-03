@@ -37,7 +37,7 @@ context('Search contact', () => {
       results: {
         totalPages: 1,
         totalElements: 1,
-        content: [TestData.contacts()],
+        content: [TestData.contactSearchResultItem()],
       },
       lastName: 'Mason',
       firstName: '',
@@ -173,7 +173,7 @@ context('Search contact', () => {
       results: {
         totalPages: 1,
         totalElements: 1,
-        content: [TestData.contacts()],
+        content: [TestData.contactSearchResultItem()],
       },
       lastName: 'Mason',
       firstName: 'Jones',
@@ -206,7 +206,7 @@ context('Search contact', () => {
       results: {
         totalPages: 1,
         totalElements: 1,
-        content: [TestData.contacts()],
+        content: [TestData.contactSearchResultItem()],
       },
       lastName: 'Mason',
       firstName: 'Jones',

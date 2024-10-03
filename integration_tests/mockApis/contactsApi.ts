@@ -3,19 +3,11 @@ import { stubFor } from './wiremock'
 import { STUBBED_RELATIONSHIP_OPTIONS, STUBBED_TITLE_OPTIONS } from '../../server/routes/testutils/stubReferenceData'
 import { components } from '../../server/@types/contactsApi'
 
-type Contact = components['schemas']['Contact']
+export type StubGetContactResponse = components['schemas']['GetContactResponse']
+export type StubContactSearchResultItem = components['schemas']['ContactSearchResultItem']
 
 export default {
-  stubCreateContact: (createdContact: {
-    id: number
-    title?: string | null
-    lastName: string
-    firstName: string
-    middleName?: string | null
-    dateOfBirth?: string | null
-    createdBy: string
-    createdTime: string
-  }): SuperAgentRequest => {
+  stubCreateContact: (createdContact: StubGetContactResponse): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'POST',
@@ -152,7 +144,7 @@ export default {
     page = '0',
     size = '10',
   }: {
-    results: { totalPages: number; totalElements: number; content: Contact[] }
+    results: { totalPages: number; totalElements: number; content: StubContactSearchResultItem[] }
     lastName: string
     middleName: string
     firstName: string

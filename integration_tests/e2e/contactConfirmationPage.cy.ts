@@ -10,7 +10,17 @@ const SELECT_IS_THE_RIGHT_PERSON_MESSAGE = 'Select whether this is the right con
 context('Contact confirmation', () => {
   const { prisonerNumber } = TestData.prisoner()
   const contactId = 654321
-  const contact = TestData.contacts({ id: contactId, lastName: 'Contact', firstName: 'Existing', middleName: '' })
+  const contact = TestData.contact({
+    id: contactId,
+    lastName: 'Contact',
+    firstName: 'Existing',
+  })
+  const searchResult = TestData.contactSearchResultItem({
+    id: contact.id,
+    lastName: contact.lastName,
+    firstName: contact.firstName,
+    middleName: contact.middleName,
+  })
   const journeyId = uuidv4()
 
   beforeEach(() => {
@@ -27,7 +37,7 @@ context('Contact confirmation', () => {
       results: {
         totalPages: 1,
         totalElements: 1,
-        content: [contact],
+        content: [searchResult],
       },
       lastName: 'Contact',
       firstName: '',
