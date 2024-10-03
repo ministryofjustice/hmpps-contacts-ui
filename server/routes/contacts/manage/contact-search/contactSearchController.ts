@@ -29,7 +29,7 @@ export default class ContactSearchController implements PageHandler {
         lastName: journey?.searchContact?.contact.lastName,
         firstName: journey?.searchContact?.contact.firstName,
         middleName: journey?.searchContact?.contact.middleName,
-        dateOfBirth: formatDateForApi(JSON.stringify(journey?.searchContact?.dateOfBirth)),
+        dateOfBirth: formatDateForApi(journey?.searchContact?.dateOfBirth),
       }
 
       results = validationErrors
