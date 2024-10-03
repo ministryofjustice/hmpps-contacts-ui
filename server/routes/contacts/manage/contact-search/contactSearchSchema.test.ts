@@ -75,6 +75,7 @@ describe('contactSearchSchema', () => {
         day: ['Enter a valid day of the month (1-31)'],
         month: ['Enter a valid month (1-12)'],
         year: ['Enter a valid year. Must be at least 1900'],
+        dob: ['The date of birth is invalid'],
       })
     })
 
@@ -188,6 +189,9 @@ describe('contactSearchSchema', () => {
         ['', '', 'testname', '', '', '1980'],
         ['', '', 'testname', '13', '32', '198'],
         ['', '', 'testname', '-13', '-01', '-1980'],
+        ['', '', 'testname', '30', '02', '1980'],
+        ['', '', 'testname', '29', '02', '2023'], // Feb had 28 in 2023
+        ['', '', 'testname', '29', '02', '1990'], // Feb had 28 in 1990
       ])(
         'should not map dob',
         async (firstName: string, middleName: string, lastName: string, day: string, month: string, year: string) => {
@@ -199,6 +203,22 @@ describe('contactSearchSchema', () => {
 
           // Then
           expect(result.success).toStrictEqual(false)
+        },
+      )
+
+      it.each([
+        ['', '', 'testname', '29', '02', '1980'], // Feb had 29 in 1980
+      ])(
+        'should map it as a valid dob',
+        async (firstName: string, middleName: string, lastName: string, day: string, month: string, year: string) => {
+          // Given
+          const form = { firstName, middleName, lastName, day, month, year }
+
+          // When
+          const result = await doValidate(form)
+
+          // Then
+          expect(result.success).toStrictEqual(true)
         },
       )
     })

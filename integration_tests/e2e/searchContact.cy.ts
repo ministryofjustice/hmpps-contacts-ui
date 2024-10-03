@@ -15,6 +15,7 @@ const ENTER_A_VALID_DAY_OF_THE_MONTH = `Enter a valid day of the month (1-31)`
 const ENTER_A_VALID_MONTH = `Enter a valid month (1-12)`
 const ENTER_A_VALID_YEAR = `Enter a valid year. Must be at least 1900`
 const THE_DATE_OF_BIRTH_MUST_NOT_BE_IN_THE_FUTURE = `The date of birth must not be in the future`
+const DOB_IS_INVALID = 'The date of birth is invalid'
 
 context('Search contact', () => {
   beforeEach(() => {
@@ -149,6 +150,22 @@ context('Search contact', () => {
     searchContactPage.errorSummaryItems.spread((...$lis) => {
       expect($lis).to.have.lengthOf(1)
       expect($lis[0]).to.contain(THE_DATE_OF_BIRTH_MUST_NOT_BE_IN_THE_FUTURE)
+    })
+  })
+
+  it(`should not pass validation when dob is not valid`, () => {
+    const searchContactPage = Page.verifyOnPage(SearchContactPage)
+    searchContactPage.enterLastName('Lastname')
+    searchContactPage.enterDay('29')
+    searchContactPage.enterMonth('02')
+    searchContactPage.enterYear('1990')
+    searchContactPage.clickSearchButton()
+
+    searchContactPage.hasFieldInError('dob', DOB_IS_INVALID)
+
+    searchContactPage.errorSummaryItems.spread((...$lis) => {
+      expect($lis).to.have.lengthOf(1)
+      expect($lis[0]).to.contain(DOB_IS_INVALID)
     })
   })
 

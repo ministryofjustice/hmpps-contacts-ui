@@ -1,4 +1,5 @@
 import z from 'zod'
+import { isValid, parse } from 'date-fns'
 import { createSchema } from '../../../../middleware/validationMiddleware'
 
 const LAST_NAME_REQUIRED_MESSAGE = "Enter the contact's last name"
@@ -9,6 +10,7 @@ const DAY_TYPE_MESSAGE = 'Enter a valid day of the month (1-31)'
 const MONTH_TYPE_MESSAGE = 'Enter a valid month (1-12)'
 const YEAR_TYPE_MESSAGE = 'Enter a valid year. Must be at least 1900'
 const DOB_IN_FUTURE_MESSAGE = 'The date of birth must not be in the future'
+const DOB_IS_INVALID = 'The date of birth is invalid'
 
 const NAME_REGEX = /^[a-zA-Z\s,.'-]*$/
 
@@ -54,6 +56,12 @@ export const contactSearchSchema = () => async () => {
         if (val.day && val.month && val.year) {
           if (new Date(`${val.year}-${val.month}-${val.day}Z`) > new Date()) {
             ctx.addIssue({ code: z.ZodIssueCode.custom, message: DOB_IN_FUTURE_MESSAGE, path: ['dob'] })
+          }
+
+          const validate = parse(`${val.year}.${val.month}.${val.day}`, 'yyyy.MM.dd', new Date())
+
+          if (!isValid(validate)) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: DOB_IS_INVALID, path: ['dob'] })
           }
         }
       }
