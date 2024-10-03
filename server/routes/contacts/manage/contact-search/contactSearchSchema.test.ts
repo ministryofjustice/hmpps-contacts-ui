@@ -205,6 +205,22 @@ describe('contactSearchSchema', () => {
           expect(result.success).toStrictEqual(false)
         },
       )
+
+      it.each([
+        ['', '', 'testname', '29', '02', '1980'], // Feb had 29 in 2023
+      ])(
+        'should map it as a valid dob',
+        async (firstName: string, middleName: string, lastName: string, day: string, month: string, year: string) => {
+          // Given
+          const form = { firstName, middleName, lastName, day, month, year }
+
+          // When
+          const result = await doValidate(form)
+
+          // Then
+          expect(result.success).toStrictEqual(true)
+        },
+      )
     })
 
     const doValidate = async (form: Form) => {
