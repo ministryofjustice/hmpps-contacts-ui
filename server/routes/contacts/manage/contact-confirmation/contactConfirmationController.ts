@@ -4,8 +4,13 @@ import { Page } from '../../../../services/auditService'
 import { IsContactConfirmedSchema } from './contactConfirmationSchema'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../../add/addContactFlowControl'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
+import Contact = contactsApiClientTypes.Contact
+import { ContactsService } from '../../../../services'
+import logger from '../../../../../logger'
 
 export default class ContactConfirmationController implements PageHandler {
+  constructor(private readonly contactsService: ContactsService) {}
+
   public PAGE_NAME = Page.CONTACT_CONFIRMATION_PAGE
 
   GET = async (
@@ -13,10 +18,20 @@ export default class ContactConfirmationController implements PageHandler {
     res: Response,
   ): Promise<void> => {
     const { journeyId } = req.params
-    const { prisonerDetails } = res.locals
+    const { prisonerDetails, user } = res.locals
     const journey = req.session.addContactJourneys[journeyId]
+    const validationErrors = res.locals.validationErrors?.isContactConfirmed
+    let contact: Contact
+
+    try {
+      contact = validationErrors ? null : await this.contactsService.getContact(journey.contactId, user)
+      logger.info(JSON.stringify(contact))
+    } catch (error) {
+      logger.info(JSON.stringify(error))
+    }
 
     return res.render('pages/contacts/manage/contactConfirmation/confirmation', {
+      contact,
       prisonerDetails,
       journey,
       isContactConfirmed: res.locals?.formResponses?.isContactConfirmed ?? journey?.isContactConfirmed,

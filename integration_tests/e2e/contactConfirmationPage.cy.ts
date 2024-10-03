@@ -80,6 +80,25 @@ context('Contact confirmation', () => {
     })
   })
 
+  it(`should render contact information`, () => {
+    cy.task('stubGetContactById', {
+      id: contactId,
+      firstName: 'Existing',
+      lastName: 'Contact',
+      dateOfBirth: '1990-01-14',
+      isDeceased: false,
+      deceasedDate: null,
+    })
+
+    Page.verifyOnPage(SearchContactPage) //
+      .clickTheContactLink(contactId)
+
+    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John')
+      .verifyShowLastNameAs('Contact, Existing')
+      .verifyShowMiddleNameAs('')
+      .verifyShowDeceasedDateValueAs('Not provided')
+  })
+
   it(`should navigate to next page when 'Yes, this is the right person' is selected `, () => {
     cy.task('stubGetContactById', {
       id: contactId,

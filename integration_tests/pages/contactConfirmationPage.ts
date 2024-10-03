@@ -75,10 +75,31 @@ export default class ContactConfirmationPage extends Page {
     return this
   }
 
+  verifyShowLastNameAs(expected: string): ContactConfirmationPage {
+    this.lastNameValue().should('contain.text', expected)
+    return this
+  }
+
+  verifyShowMiddleNameAs(expected: string): ContactConfirmationPage {
+    this.middleNameValue().should('contain.text', expected)
+    return this
+  }
+
+  verifyShowDeceasedDateValueAs(expected: string): ContactConfirmationPage {
+    this.deceasedDateValue().should('contain.text', expected)
+    return this
+  }
+
   private contactTab = (elementNumber: number): PageElement => cy.get(`.govuk-tabs__tab:eq(${elementNumber})`)
 
   private contactCard = (elementNumber: number): PageElement =>
     cy.get(`.govuk-summary-card:eq(${elementNumber}) .govuk-summary-card__title`)
+
+  private lastNameValue = (): PageElement => cy.get('[data-qa=confirm-name-value]')
+
+  private middleNameValue = (): PageElement => cy.get('[data-qa=confirm-mid-name-value]')
+
+  private deceasedDateValue = (): PageElement => cy.get('[data-qa=confirm-deceased-date-value]')
 
   private radioBox = (elementNumber: number): PageElement =>
     cy.get(`.govuk-radios .govuk-radios__item:eq(${elementNumber})`)
