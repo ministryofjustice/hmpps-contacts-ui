@@ -2,6 +2,7 @@ import { CurrentIncentive, Prisoner } from '../../data/prisonerOffenderSearchTyp
 import { components } from '../../@types/contactsApi'
 
 type ContactSearchResultItem = components['schemas']['ContactSearchResultItem']
+type GetContactResponse = components['schemas']['GetContactResponse']
 export default class TestData {
   static currentIncentive = ({
     level = {
@@ -33,7 +34,7 @@ export default class TestData {
       locationDescription,
     }) as Prisoner
 
-  static contacts = ({
+  static contactSearchResultItem = ({
     id = 13,
     lastName = 'Mason',
     firstName = 'Jones',
@@ -73,4 +74,31 @@ export default class TestData {
       createdBy,
       createdTime,
     }) as ContactSearchResultItem
+
+  static contact = ({
+    id = 1,
+    title = null,
+    lastName = 'Mason',
+    firstName = 'Jones',
+    middleName = null,
+    dateOfBirth = '1990-01-14',
+    estimatedIsOverEighteen = null,
+    isDeceased = false,
+    deceasedDate = null,
+    createdBy = 'USER1',
+    createdTime = '2024-09-20T10:30:00.000000',
+  }: Partial<GetContactResponse> = {}): GetContactResponse =>
+    ({
+      id,
+      title,
+      lastName,
+      firstName,
+      middleName,
+      dateOfBirth,
+      estimatedIsOverEighteen,
+      isDeceased,
+      deceasedDate,
+      createdBy,
+      createdTime,
+    }) as GetContactResponse
 }

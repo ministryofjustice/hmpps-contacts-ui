@@ -6,7 +6,7 @@ import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import Pageable = contactsApiClientTypes.Pageable
 import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
 import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
-import ContactSearchResultItem = contactsApiClientTypes.ContactSearchResultItem
+import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
 
 export default class ContactsService {
   constructor(private readonly contactsApiClient: ContactsApiClient) {}
@@ -76,7 +76,7 @@ export default class ContactsService {
     contactSearchRequest: ContactSearchRequest,
     pagination: Pageable,
     user: Express.User,
-  ): Promise<ContactSearchResultItem> {
+  ): Promise<ContactSearchResultItemPage> {
     return this.contactsApiClient.searchContact(contactSearchRequest, user, pagination)
   }
 

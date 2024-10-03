@@ -1657,7 +1657,7 @@ export interface components {
       moreInfo?: string
     }
     /** @description The details of a contact as an individual */
-    Contact: {
+    GetContactResponse: {
       /**
        * Format: int64
        * @description The id of the contact
@@ -1696,6 +1696,17 @@ export interface components {
        * @enum {string}
        */
       estimatedIsOverEighteen?: 'YES' | 'NO' | 'DO_NOT_KNOW'
+      /**
+       * @description The date the contact deceased, if known
+       * @example false
+       */
+      isDeceased: boolean
+      /**
+       * Format: date
+       * @description The date the contact deceased, if known
+       * @example 1980-01-01
+       */
+      deceasedDate?: string | null
       /**
        * @description The id of the user who created the contact
        * @example JD000001
@@ -2135,6 +2146,44 @@ export interface components {
        * @example false
        */
       noFixedAddress?: boolean | null
+    }
+    ContactSearchResultItemPage: {
+      content?: components['schemas']['ContactSearchResultItem'][]
+      pageable?: components['schemas']['PageableObject']
+      /** Format: int64 */
+      total?: number
+      last?: boolean
+      /** Format: int64 */
+      totalElements?: number
+      /** Format: int32 */
+      totalPages?: number
+      first?: boolean
+      /** Format: int32 */
+      size?: number
+      /** Format: int32 */
+      number?: number
+      sort?: components['schemas']['SortObject'][]
+      /** Format: int32 */
+      numberOfElements?: number
+      empty?: boolean
+    }
+    PageableObject: {
+      /** Format: int64 */
+      offset?: number
+      sort?: components['schemas']['SortObject'][]
+      /** Format: int32 */
+      pageSize?: number
+      paged?: boolean
+      /** Format: int32 */
+      pageNumber?: number
+      unpaged?: boolean
+    }
+    SortObject: {
+      direction?: string
+      nullHandling?: string
+      ascending?: boolean
+      property?: string
+      ignoreCase?: boolean
     }
     /** @description City reference entity */
     City: {
@@ -2669,7 +2718,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Contact']
+          'application/json': components['schemas']['GetContactResponse']
         }
       }
       /** @description The request has invalid or missing fields */
@@ -2734,9 +2783,7 @@ export interface operations {
         headers: {
           [name: string]: unknown
         }
-        content: {
-          'application/json': components['schemas']['Contact']
-        }
+        content?: never
       }
       /** @description The request has invalid or missing fields */
       400: {
@@ -3545,7 +3592,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Contact']
+          'application/json': components['schemas']['GetContactResponse']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -3597,7 +3644,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactSearchResultItem']
+          'application/json': components['schemas']['ContactSearchResultItemPage']
         }
       }
       /** @description Invalid request */

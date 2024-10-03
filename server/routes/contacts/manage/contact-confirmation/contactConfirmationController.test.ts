@@ -56,8 +56,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/EXISTING/confirmation/:journeyI
     // Given
     auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-    contactsService.searchContact.mockResolvedValue(TestData.contacts())
-    contactsService.getContact.mockResolvedValue(TestData.contacts())
+    contactsService.searchContact.mockResolvedValue(TestData.contact())
+    contactsService.getContact.mockResolvedValue(TestData.contact())
     existingJourney.mode = 'EXISTING'
 
     // When

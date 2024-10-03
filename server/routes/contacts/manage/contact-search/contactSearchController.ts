@@ -6,9 +6,9 @@ import { ContactsService } from '../../../../services'
 import { PaginationRequest } from '../../../../data/prisonerOffenderSearchTypes'
 import { formatDateForApi } from '../../../../utils/utils'
 import config from '../../../../config'
-import Contact = contactsApiClientTypes.Contact
-import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import { navigationForAddContactJourney } from '../../add/addContactFlowControl'
+import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
+import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
 
 export default class ContactSearchController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -33,7 +33,7 @@ export default class ContactSearchController implements PageHandler {
       }
 
       results = validationErrors
-        ? ({ totalPages: 0, totalElements: 0, content: [] } as Contact)
+        ? ({ totalPages: 0, totalElements: 0, content: [] } as ContactSearchResultItemPage)
         : await this.contactsService.searchContact(
             contactSearchRequest,
             { page, size: pageSize } as PaginationRequest,
