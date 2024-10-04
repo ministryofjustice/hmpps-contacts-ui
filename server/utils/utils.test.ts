@@ -7,6 +7,7 @@ import {
   isValidPrisonerNumber,
   extractPrisonerNumber,
   formatDateForApi,
+  capitalizeFirstLetter,
 } from './utils'
 
 describe('convert to title case', () => {
@@ -119,5 +120,18 @@ describe('formatDateForApi', () => {
 
     // Then
     expect(results).toEqual('2000-11-01')
+  })
+})
+
+describe('capitalizeFirstLetter', () => {
+  it('should return string with the first letter capitilized', () => {
+    // Given
+    const val = 'TEST'
+
+    // When
+    const results = capitalizeFirstLetter(val)
+
+    // Then
+    expect(results).toEqual('Test')
   })
 })

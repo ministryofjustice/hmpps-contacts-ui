@@ -5,7 +5,7 @@
 {% if contact.title %}
     {% set contactFullNameRow = (
         contactFullNameRow.push(
-            contact.title
+            (contact.title | capitalizeFirstLetter)
     ), contactFullNameRow) %}
 {% endif %}
 
@@ -42,7 +42,7 @@
             text: "Date of birth"
         },
         value: {
-            html:  '<span data-qa="confirm-mid-name-value">' + contact.dateOfBirth | formatDate + '</span>'
+            html:  '<span data-qa="confirm-dob-value">' + contact.dateOfBirth | formatDate + '</span>'
         }
     },
     {

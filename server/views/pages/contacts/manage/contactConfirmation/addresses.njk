@@ -1,5 +1,102 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
+{% set primaryAddressRow = [] %}
+
+{% for item in contact.addresses %}
+    {% if item.primaryAddress === true %}
+        {% 
+            set address = { 
+                flat: item.flat,
+                premise: item.property,
+                street: item.street,
+                area: item.area,
+                city: item.cityDescription,
+                county: item.countyDescription,
+                postalCode: item.postCode,
+                country: item.countryDescription
+            }
+        %}
+
+        {% if item.mailFlag %}
+            {% set mail = 'Yes' %}
+        {% else %}
+            {% set mail = 'No' %}
+        {% endif %}
+
+        {% set primaryAddressRow = (
+            primaryAddressRow.push(
+                {
+                    key: {
+                        text: "Address"
+                    },
+                    value: { 
+                        html: '<span data-qa="confirm-address-value">' + address | addressToLines + '</span>' 
+                    }
+                }
+        ), primaryAddressRow) %}
+
+        {% set primaryAddressRow = (
+            primaryAddressRow.push(
+                { 
+                    key: {
+                        text: "Type"
+                    },
+                    value: {
+                        html: '<span data-qa="confirm-type-value">' + (item.addressType | capitalizeFirstLetter) + '</span>'
+                    }
+                }
+        ), primaryAddressRow) %}
+
+        {% set primaryAddressRow = (
+            primaryAddressRow.push(
+                {
+                    key: {
+                        text: "Address-specific phone numbers"
+                    },
+                    value: {
+                        html: '<span data-qa="confirm-specific-phone-value">' + 'Not provided' if not item.phone else item.phone + '</span>'
+                    }
+                }
+        ), primaryAddressRow) %}
+
+        {% set primaryAddressRow = (
+            primaryAddressRow.push(
+                {
+                    key: {
+                        text: "Mail"
+                    },
+                    value: {
+                        html: '<span data-qa="confirm-mail-value">' + mail + '</span>'
+                    }
+                }
+        ), primaryAddressRow) %}
+
+        {% set primaryAddressRow = (
+            primaryAddressRow.push(
+                {
+                    key: {
+                        text: "Comments"
+                    },
+                    value: {
+                        html: '<span data-qa="confirm-comments-value">' + 'Not provided' if not item.comments else item.comments + '</span>'
+                    }
+                }
+        ), primaryAddressRow) %}
+
+        {% set primaryAddressRow = (
+            primaryAddressRow.push(
+                {
+                    key: {
+                        text: "Dates"
+                    },
+                    value: {
+                        html: '<span data-qa="confirm-start-date-value">' + 'Not provided' + '</span>' if not item.startDate else '<span data-qa="confirm-start-date-value">From ' + (item.startDate | formatDate('MMMM yyyy')) + '</span>'
+                    }
+                }
+        ), primaryAddressRow) %}
+    {% endif %}
+{% endfor %}
+
 {{ govukSummaryList({
     card: {
         title: {
@@ -14,58 +111,5 @@
             ]
         }
     },
-    rows: [{
-        key: {
-            text: "Address"
-        },
-        value: {
-            html: '',
-            attributes: {"data-qa": "confirm-address-value"}
-        }
-    },
-    {
-        key: {
-            text: "Type"
-        },
-        value: {
-            html: '',
-            attributes: {"data-qa": "confirm-type-value"}
-        }
-    },
-    {
-        key: {
-            text: "Address-specific phone numbers"
-        },
-        value: {
-            html: '',
-            attributes: {"data-qa": "confirm-specific-phone-value"}
-        }
-    },
-    {
-        key: {
-            text: "Mail"
-        },
-        value: {
-            html: '',
-            attributes: {"data-qa": "confirm-mail-value"}
-        }
-    },
-    {
-        key: {
-            text: "Comments"
-        },
-        value: {
-            html: '',
-            attributes: {"data-qa": "confirm-comments-value"}
-        }
-    },
-    {
-        key: {
-            text: "Dates"
-        },
-        value: {
-            html: '',
-            attributes: {"data-qa": "confirm-date-value"}
-        }
-    }]
+    rows: primaryAddressRow
 }) }}

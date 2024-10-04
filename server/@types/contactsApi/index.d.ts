@@ -4,6 +4,80 @@
  */
 
 export interface paths {
+  '/sync/prisoner-contact/{prisonerContactId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns the data for a prisoner contact by prisonerContactId
+     * @description
+     *           Requires role: ROLE_CONTACTS_MIGRATION.
+     *           Used to get the details for one prisoner contact.
+     *
+     */
+    get: operations['getPrisonerContactById']
+    /**
+     * Updates a prisoner contact with new or extra detail
+     * @description
+     *           Requires role: ROLE_CONTACTS_MIGRATION.
+     *           Used to update a prisoner contact.
+     *
+     */
+    put: operations['updatePrisonerContact']
+    post?: never
+    /**
+     * Deletes one prisoner contact by internal ID
+     * @description
+     *           Requires role: ROLE_CONTACTS_MIGRATION.
+     *           Used to delete a prisoner contact.
+     *
+     */
+    delete: operations['deletePrisonerContactById']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/sync/contact/{contactId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns the data for a contact by contactId
+     * @description
+     *           Requires role: ROLE_CONTACTS_MIGRATION.
+     *           Used to get the details for one contact.
+     *
+     */
+    get: operations['getContactById']
+    /**
+     * Updates a contact with new or extra detail
+     * @description
+     *           Requires role: ROLE_CONTACTS_MIGRATION.
+     *           Used to update a contact.
+     *
+     */
+    put: operations['updateContact']
+    post?: never
+    /**
+     * Deletes one contact by internal ID
+     * @description
+     *           Requires role: ROLE_CONTACTS_MIGRATION.
+     *           Used to delete a contact.
+     *
+     */
+    delete: operations['deleteContactById']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/sync/contact-restriction': {
     parameters: {
       query?: never
@@ -113,6 +187,52 @@ export interface paths {
      */
     put: operations['createContactAddress']
     post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/sync/prisoner-contact': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Creates a new prisoner contact
+     * @description
+     *           Requires role: ROLE_CONTACTS_MIGRATION.
+     *           Used to create a prisoner contact.
+     *
+     */
+    post: operations['createPrisonerContact']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/sync/contact': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Creates a new contact
+     * @description
+     *           Requires role: ROLE_CONTACTS_MIGRATION.
+     *           Used to create a contact and associate it with a contact.
+     *
+     */
+    post: operations['createContact']
     delete?: never
     options?: never
     head?: never
@@ -317,7 +437,7 @@ export interface paths {
      * Create a new contact
      * @description Creates a new contact that is not yet associated with any prisoner.
      */
-    post: operations['createContact']
+    post: operations['createContact_1']
     delete?: never
     options?: never
     head?: never
@@ -759,6 +879,453 @@ export interface paths {
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
+    /** @description Request object to update prisoner contact details */
+    UpdatePrisonerContactRequest: {
+      /**
+       * Format: int64
+       * @description The ID of the prisoner contact
+       * @example 12345
+       */
+      contactId: number
+      /**
+       * @description The prisoner number
+       * @example A1234BC
+       */
+      prisonerNumber: string
+      /**
+       * @description The type of relationship
+       * @example Friend
+       */
+      relationshipType: string
+      /**
+       * @description Indicates if the prisoner contact is next of kin
+       * @example true
+       */
+      nextOfKin: boolean
+      /**
+       * @description Indicates if the prisoner contact is an emergency contact
+       * @example true
+       */
+      emergencyContact: boolean
+      /**
+       * @description Additional comments about the prisoner contact
+       * @example Close family friend
+       */
+      comments?: string | null
+      /**
+       * @description Indicates if the prisoner contact is active
+       * @example true
+       */
+      active?: boolean | null
+      /**
+       * @description Indicates if the prisoner contact is an approved visitor
+       * @example true
+       */
+      approvedVisitor?: boolean | null
+      /**
+       * @description Indicates if the prisoner contact is aware of charges
+       * @example true
+       */
+      awareOfCharges?: boolean | null
+      /**
+       * @description Indicates if the prisoner contact can be contacted
+       * @example true
+       */
+      canBeContacted?: boolean | null
+      /**
+       * @description The user who approved the prisoner contact
+       * @example officer123
+       */
+      approvedBy?: string | null
+      /**
+       * Format: date-time
+       * @description The timestamp when the prisoner contact was approved
+       * @example 2024-01-01T14:00:00Z
+       */
+      approvedTime?: string | null
+      /**
+       * Format: date
+       * @description The expiry date of the prisoner contact
+       * @example 2025-01-01
+       */
+      expiryDate?: string | null
+      /**
+       * @description The prison where the prisoner contact was created
+       * @example HMP Belmarsh
+       */
+      createdAtPrison?: string | null
+      /**
+       * @description The user who last amended the prisoner contact
+       * @example adminUser
+       */
+      amendedBy?: string | null
+      /**
+       * Format: date-time
+       * @description The timestamp of when the prisoner contact was changed
+       * @example 2024-01-01T00:00:00Z
+       */
+      updatedTime: string
+    }
+    ErrorResponse: {
+      /** Format: int32 */
+      status: number
+      errorCode?: string
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
+    }
+    /** @description Response object with prisoner contact details */
+    PrisonerContact: {
+      /**
+       * Format: int64
+       * @description The id of the contact
+       * @example 123456
+       */
+      id: number
+      /**
+       * Format: int64
+       * @description The ID of the prisoner contact
+       * @example 12345
+       */
+      contactId: number
+      /**
+       * @description The prisoner number
+       * @example A1234BC
+       */
+      prisonerNumber: string
+      /**
+       * @description The type of relationship
+       * @example Friend
+       */
+      relationshipType: string
+      /**
+       * @description Indicates if the prisoner contact is next of kin
+       * @example true
+       */
+      nextOfKin: boolean
+      /**
+       * @description Indicates if the prisoner contact is an emergency contact
+       * @example true
+       */
+      emergencyContact: boolean
+      /**
+       * @description Additional comments about the prisoner contact
+       * @example Close family friend
+       */
+      comments?: string | null
+      /**
+       * @description Indicates if the prisoner contact is active
+       * @example true
+       */
+      active?: boolean | null
+      /**
+       * @description Indicates if the prisoner contact is an approved visitor
+       * @example true
+       */
+      approvedVisitor?: boolean | null
+      /**
+       * @description Indicates if the prisoner contact is aware of charges
+       * @example true
+       */
+      awareOfCharges?: boolean | null
+      /**
+       * @description Indicates if the prisoner contact can be contacted
+       * @example true
+       */
+      canBeContacted?: boolean | null
+      /**
+       * @description The user who approved the prisoner contact
+       * @example officer123
+       */
+      approvedBy?: string | null
+      /**
+       * Format: date-time
+       * @description The timestamp when the prisoner contact was approved
+       * @example 2024-01-01T14:00:00Z
+       */
+      approvedTime?: string | null
+      /**
+       * Format: date
+       * @description The expiry date of the prisoner contact
+       * @example 2025-01-01
+       */
+      expiryDate?: string | null
+      /**
+       * @description The prison where the prisoner contact was created
+       * @example HMP Belmarsh
+       */
+      createdAtPrison?: string | null
+      /**
+       * @description The user who created the prisoner contact
+       * @example system
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description The timestamp when the prisoner contact was created
+       */
+      createdTime: string
+      /**
+       * @description The user who last amended the prisoner contact
+       * @example adminUser
+       */
+      amendedBy?: string | null
+      /**
+       * Format: date-time
+       * @description The timestamp when the prisoner contact was last amended
+       * @example 2024-02-01T16:00:00Z
+       */
+      amendedTime?: string | null
+    }
+    /** @description Request to update a new contact  */
+    UpdateContactRequest: {
+      /**
+       * @description The title of the contact, if any
+       * @example Mr
+       */
+      title?: string | null
+      /**
+       * @description The last name of the contact
+       * @example Doe
+       */
+      lastName: string
+      /**
+       * @description The first name of the contact
+       * @example John
+       */
+      firstName: string
+      /**
+       * @description The middle name of the contact, if any
+       * @example William
+       */
+      middleName?: string | null
+      /**
+       * Format: date
+       * @description The date of birth of the contact, if known
+       * @example 1980-01-01
+       */
+      dateOfBirth?: string | null
+      /**
+       * @description Whether the contact is over 18, based on their date of birth if it is known
+       * @example YES
+       * @enum {string}
+       */
+      estimatedIsOverEighteen?: 'YES' | 'NO' | 'DO_NOT_KNOW'
+      /**
+       * @description The type code of the contact
+       * @example PERSON
+       */
+      contactTypeCode?: string | null
+      /**
+       * @description The place of birth of the contact
+       * @example London
+       */
+      placeOfBirth?: string | null
+      /**
+       * @description Whether the contact is active
+       * @example true
+       */
+      active?: boolean | null
+      /**
+       * @description Whether the contact is suspended
+       * @example false
+       */
+      suspended?: boolean | null
+      /**
+       * @description Whether the contact is a staff member
+       * @example false
+       */
+      staffFlag?: boolean | null
+      /**
+       * @description Whether the contact is deceased
+       * @example false
+       */
+      deceasedFlag?: boolean | null
+      /**
+       * Format: date
+       * @description The date the contact was deceased, if applicable
+       * @example 2023-05-01
+       */
+      deceasedDate?: string | null
+      /**
+       * @description The coroner's number, if applicable
+       * @example CRN12345
+       */
+      coronerNumber?: string | null
+      /**
+       * @description The gender of the contact
+       * @example Male
+       */
+      gender?: string | null
+      /**
+       * @description The marital status of the contact
+       * @example Single
+       */
+      maritalStatus?: string | null
+      /**
+       * @description The language code of the contact
+       * @example EN
+       */
+      languageCode?: string | null
+      /**
+       * @description The nationality code of the contact
+       * @example GB
+       */
+      nationalityCode?: string | null
+      /**
+       * @description Whether an interpreter is required
+       * @example false
+       */
+      interpreterRequired?: boolean | null
+      /**
+       * @description Additional comments about the contact
+       * @example This contact has special dietary requirements.
+       */
+      comments?: string | null
+      /**
+       * @description The id of the user who updated the contact
+       * @example JD000001
+       */
+      updatedBy: string
+      /**
+       * Format: date-time
+       * @description The timestamp of when the contact was changed
+       * @example 2024-01-01T00:00:00Z
+       */
+      updatedTime: string
+    }
+    /** @description The details of a contact as an individual */
+    Contact: {
+      /**
+       * Format: int64
+       * @description The id of the contact
+       * @example 123456
+       */
+      id: number
+      /**
+       * @description The title of the contact, if any
+       * @example Mr
+       */
+      title?: string | null
+      /**
+       * @description The last name of the contact
+       * @example Doe
+       */
+      lastName: string
+      /**
+       * @description The first name of the contact
+       * @example John
+       */
+      firstName: string
+      /**
+       * @description The middle name of the contact, if any
+       * @example William
+       */
+      middleName?: string | null
+      /**
+       * Format: date
+       * @description The date of birth of the contact, if known
+       * @example 1980-01-01
+       */
+      dateOfBirth?: string | null
+      /**
+       * @description Whether the contact is over 18, based on their date of birth if it is known
+       * @example YES
+       * @enum {string}
+       */
+      estimatedIsOverEighteen?: 'YES' | 'NO' | 'DO_NOT_KNOW'
+      /**
+       * @description The type code of the contact
+       * @example PERSON
+       */
+      contactTypeCode?: string | null
+      /**
+       * @description The place of birth of the contact
+       * @example London
+       */
+      placeOfBirth?: string | null
+      /**
+       * @description Whether the contact is active
+       * @example true
+       */
+      active?: boolean | null
+      /**
+       * @description Whether the contact is suspended
+       * @example false
+       */
+      suspended?: boolean | null
+      /**
+       * @description Whether the contact is a staff member
+       * @example false
+       */
+      staffFlag?: boolean | null
+      /**
+       * @description Whether the contact is deceased
+       * @example false
+       */
+      deceasedFlag?: boolean | null
+      /**
+       * Format: date
+       * @description The date the contact was deceased, if applicable
+       * @example 2023-05-01
+       */
+      deceasedDate?: string | null
+      /**
+       * @description The coroner's number, if applicable
+       * @example CRN12345
+       */
+      coronerNumber?: string | null
+      /**
+       * @description The gender of the contact
+       * @example Male
+       */
+      gender?: string | null
+      /**
+       * @description The marital status of the contact
+       * @example Single
+       */
+      maritalStatus?: string | null
+      /**
+       * @description The language code of the contact
+       * @example EN
+       */
+      languageCode?: string | null
+      /**
+       * @description The nationality code of the contact
+       * @example GB
+       */
+      nationalityCode?: string | null
+      /**
+       * @description Whether an interpreter is required
+       * @example false
+       */
+      interpreterRequired?: boolean | null
+      /**
+       * @description Additional comments about the contact
+       * @example This contact has special dietary requirements.
+       */
+      comments?: string | null
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was created
+       */
+      createdTime: string
+      /**
+       * @description User who amended the entry
+       * @example admin2
+       */
+      amendedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was amended
+       */
+      amendedTime?: string
+    }
     /** @description Request to create a new contact restriction  */
     CreateContactRestrictionRequest: {
       /**
@@ -1335,6 +1902,238 @@ export interface components {
        */
       amendedTime?: string
     }
+    /** @description Request object to create a prisoner contact details */
+    CreatePrisonerContactRequest: {
+      /**
+       * Format: int64
+       * @description The ID of the prisoner contact
+       * @example 12345
+       */
+      contactId: number
+      /**
+       * @description The prisoner number
+       * @example A1234BC
+       */
+      prisonerNumber: string
+      /**
+       * @description The type of relationship
+       * @example Friend
+       */
+      relationshipType: string
+      /**
+       * @description Indicates if the prisoner contact is next of kin
+       * @example true
+       */
+      nextOfKin: boolean
+      /**
+       * @description Indicates if the prisoner contact is an emergency contact
+       * @example true
+       */
+      emergencyContact: boolean
+      /**
+       * @description Additional comments about the prisoner contact
+       * @example Close family friend
+       */
+      comments?: string | null
+      /**
+       * @description The user who created the prisoner contact
+       * @example system
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description The timestamp when the prisoner contact was created
+       */
+      createdTime: string
+      /**
+       * @description Indicates if the prisoner contact is active
+       * @example true
+       */
+      active?: boolean | null
+      /**
+       * @description Indicates if the prisoner contact is an approved visitor
+       * @example true
+       */
+      approvedVisitor?: boolean | null
+      /**
+       * @description Indicates if the prisoner contact is aware of charges
+       * @example true
+       */
+      awareOfCharges?: boolean | null
+      /**
+       * @description Indicates if the prisoner contact can be contacted
+       * @example true
+       */
+      canBeContacted?: boolean | null
+      /**
+       * @description The user who approved the prisoner contact
+       * @example officer123
+       */
+      approvedBy?: string | null
+      /**
+       * Format: date-time
+       * @description The timestamp when the prisoner contact was approved
+       * @example 2024-01-01T14:00:00Z
+       */
+      approvedTime?: string | null
+      /**
+       * Format: date
+       * @description The expiry date of the prisoner contact
+       * @example 2025-01-01
+       */
+      expiryDate?: string | null
+      /**
+       * @description The prison where the prisoner contact was created
+       * @example HMP Belmarsh
+       */
+      createdAtPrison?: string | null
+    }
+    /** @description A description of the relationship if the contact should be linked to a prisoner */
+    ContactRelationship: {
+      /**
+       * @description Prisoner number (NOMS ID)
+       * @example A1234BC
+       */
+      prisonerNumber: string
+      /**
+       * @description The relationship code between the prisoner and the contact
+       * @example FRI
+       */
+      relationshipCode: string
+      /**
+       * @description Whether they are the next of kin for the prisoner
+       * @example true
+       */
+      isNextOfKin: boolean
+      /**
+       * @description Whether they are the emergency contact for the prisoner
+       * @example true
+       */
+      isEmergencyContact: boolean
+      /**
+       * @description Comments about the contacts relationship with the prisoner
+       * @example Some additional information
+       */
+      comments?: string | null
+    } | null
+    /** @description Request to create a new contact */
+    CreateContactRequest: {
+      /**
+       * @description The title of the contact, if any
+       * @example Mr
+       */
+      title?: string | null
+      /**
+       * @description The last name of the contact
+       * @example Doe
+       */
+      lastName: string
+      /**
+       * @description The first name of the contact
+       * @example John
+       */
+      firstName: string
+      /**
+       * @description The middle name of the contact, if any
+       * @example William
+       */
+      middleName?: string | null
+      /**
+       * Format: date
+       * @description The date of birth of the contact, if known
+       * @example 1980-01-01
+       */
+      dateOfBirth?: string | null
+      /**
+       * @description If the date of birth is not known, this indicates whether they are believed to be over 18 or not
+       * @example YES
+       * @enum {string|null}
+       */
+      estimatedIsOverEighteen?: 'YES' | 'NO' | 'DO_NOT_KNOW' | null
+      relationship?: components['schemas']['ContactRelationship']
+      /**
+       * @description The type code of the contact
+       * @example PERSON
+       */
+      contactTypeCode?: string | null
+      /**
+       * @description The place of birth of the contact
+       * @example London
+       */
+      placeOfBirth?: string | null
+      /**
+       * @description Whether the contact is active
+       * @example true
+       */
+      active?: boolean | null
+      /**
+       * @description Whether the contact is suspended
+       * @example false
+       */
+      suspended?: boolean | null
+      /**
+       * @description Whether the contact is a staff member
+       * @example false
+       */
+      staffFlag?: boolean | null
+      /**
+       * @description Whether the contact is deceased
+       * @example false
+       */
+      deceasedFlag?: boolean | null
+      /**
+       * Format: date
+       * @description The date the contact was deceased, if applicable
+       * @example 2023-05-01
+       */
+      deceasedDate?: string | null
+      /**
+       * @description The coroner's number, if applicable
+       * @example CRN12345
+       */
+      coronerNumber?: string | null
+      /**
+       * @description The gender of the contact
+       * @example Male
+       */
+      gender?: string | null
+      /**
+       * @description The marital status of the contact
+       * @example Single
+       */
+      maritalStatus?: string | null
+      /**
+       * @description The language code of the contact
+       * @example EN
+       */
+      languageCode?: string | null
+      /**
+       * @description The nationality code of the contact
+       * @example GB
+       */
+      nationalityCode?: string | null
+      /**
+       * @description Whether an interpreter is required
+       * @example false
+       */
+      interpreterRequired?: boolean | null
+      /**
+       * @description Additional comments about the contact
+       * @example This contact has special dietary requirements.
+       */
+      comments?: string | null
+      /**
+       * @description The id of the user creating the contact
+       * @example JD000001
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description The timestamp of when the contact was created
+       * @example 2024-01-01T00:00:00Z
+       */
+      createdTime: string
+    }
     /** @description Request to update a contact restriction  */
     UpdateContactRestrictionRequest: {
       /**
@@ -1579,83 +2378,151 @@ export interface components {
        */
       updatedTime: string
     }
-    /** @description A description of the relationship if the contact should be linked to a prisoner */
-    ContactRelationship: {
+    /** @description An address related to a contact with descriptions of all reference data */
+    ContactAddressDetails: {
       /**
-       * @description Prisoner number (NOMS ID)
-       * @example A1234BC
+       * Format: int64
+       * @description The id of the contact address
+       * @example 123456
        */
-      prisonerNumber: string
+      contactAddressId: number
       /**
-       * @description The relationship code between the prisoner and the contact
-       * @example FRI
+       * Format: int64
+       * @description The id of the contact
+       * @example 123456
        */
-      relationshipCode: string
+      contactId: number
       /**
-       * @description Whether they are the next of kin for the prisoner
+       * @description The type of address
+       * @example HOME
+       */
+      addressType?: string
+      /**
+       * @description The description of the address type
+       * @example HOME
+       */
+      addressTypeDescription?: string
+      /**
+       * @description True if this is the primary address otherwise false
        * @example true
        */
-      isNextOfKin: boolean
+      primaryAddress: boolean
       /**
-       * @description Whether they are the emergency contact for the prisoner
-       * @example true
+       * @description Flat number or name
+       * @example Flat 2B
        */
-      isEmergencyContact: boolean
+      flat?: string | null
       /**
-       * @description Comments about the contacts relationship with the prisoner
-       * @example Some additional information
+       * @description Building or house number or name
+       * @example Mansion House
        */
-      comments?: string | null
-    } | null
-    /** @description Request to create a new contact */
-    CreateContactRequest: {
+      property?: string | null
       /**
-       * @description The title of the contact, if any
-       * @example Mr
+       * @description Street or road name
+       * @example Acacia Avenue
        */
-      title?: string | null
+      street?: string | null
       /**
-       * @description The last name of the contact
-       * @example Doe
+       * @description Area
+       * @example Morton Heights
        */
-      lastName: string
+      area?: string | null
       /**
-       * @description The first name of the contact
-       * @example John
+       * @description City code
+       * @example 25343
        */
-      firstName: string
+      cityCode?: string | null
       /**
-       * @description The middle name of the contact, if any
-       * @example William
+       * @description The description of city code
+       * @example Sheffield
        */
-      middleName?: string | null
+      cityDescription?: string | null
+      /**
+       * @description County code
+       * @example S.YORKSHIRE
+       */
+      countyCode?: string | null
+      /**
+       * @description The description of county code
+       * @example South Yorkshire
+       */
+      countyDescription?: string | null
+      /**
+       * @description Postcode
+       * @example S13 4FH
+       */
+      postcode?: string | null
+      /**
+       * @description Country code
+       * @example ENG
+       */
+      countryCode?: string | null
+      /**
+       * @description The description of country code
+       * @example England
+       */
+      countryDescription?: string | null
+      /**
+       * @description Whether the address has been verified by postcode lookup
+       * @example false
+       */
+      verified: boolean
+      /**
+       * @description Which username ran the postcode lookup check
+       * @example NJKG44D
+       */
+      verifiedBy?: string
+      /**
+       * Format: date-time
+       * @description The timestamp of when the postcode lookup was done
+       * @example 2024-01-01T00:00:00Z
+       */
+      verifiedTime?: string
+      /**
+       * @description Flag to indicate whether mail is allowed to be sent to this address
+       * @example false
+       */
+      mailFlag: boolean
       /**
        * Format: date
-       * @description The date of birth of the contact, if known
-       * @example 1980-01-01
+       * @description The start date when this address is to be considered active from
+       * @example 2024-01-01
        */
-      dateOfBirth?: string | null
+      startDate?: string
       /**
-       * @description If the date of birth is not known, this indicates whether they are believed to be over 18 or not
-       * @example YES
-       * @enum {string|null}
+       * Format: date
+       * @description The end date when this address is to be considered no longer active
+       * @example 2024-01-01
        */
-      estimatedIsOverEighteen?: 'YES' | 'NO' | 'DO_NOT_KNOW' | null
-      relationship?: components['schemas']['ContactRelationship']
+      endDate?: string
       /**
-       * @description The id of the user creating the contact
+       * @description Flag to indicate whether this address indicates no fixed address
+       * @example false
+       */
+      noFixedAddress: boolean
+      /**
+       * @description The id of the user who created the contact
        * @example JD000001
        */
       createdBy: string
-    }
-    ErrorResponse: {
-      /** Format: int32 */
-      status: number
-      errorCode?: string
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
-    }
+      /**
+       * Format: date-time
+       * @description The timestamp of when the contact was created
+       * @example 2024-01-01T00:00:00Z
+       */
+      createdTime: string
+      /**
+       * @description The id of the user who last amended the contact address
+       * @example JD000001
+       */
+      amendedBy?: string
+      /**
+       * Format: date-time
+       * @description The timestamp of when the contact address was last amended
+       * @example 2024-01-01T00:00:00Z
+       */
+      amendedTime?: string
+    } | null
     /** @description The details of a contact as an individual */
     GetContactResponse: {
       /**
@@ -1707,6 +2574,8 @@ export interface components {
        * @example 1980-01-01
        */
       deceasedDate?: string | null
+      /** @description All addresses for the contact */
+      addresses: components['schemas']['ContactAddressDetails'][] | null
       /**
        * @description The id of the user who created the contact
        * @example JD000001
@@ -2219,6 +3088,324 @@ export interface components {
 }
 export type $defs = Record<string, never>
 export interface operations {
+  getPrisonerContactById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for a prisoner contact. */
+        prisonerContactId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the prisoner contact */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerContact']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No prisoner contact reference with that id could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerContact']
+        }
+      }
+    }
+  }
+  updatePrisonerContact: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the prisoner contact. */
+        prisonerContactId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdatePrisonerContactRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully updated prisoner contact */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerContact']
+        }
+      }
+      /** @description Invalid input data */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerContact']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description PrisonerContact not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerContact']
+        }
+      }
+    }
+  }
+  deletePrisonerContactById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the prisoner contact. */
+        prisonerContactId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successfully deleted prisoner contact */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No prisoner contact reference with that id could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  getContactById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for a contact. */
+        contactId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the contact */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Contact']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No contact reference with that id could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Contact']
+        }
+      }
+    }
+  }
+  updateContact: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the contact. */
+        contactId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateContactRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully updated contact */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Contact']
+        }
+      }
+      /** @description Invalid input data */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Contact']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Contact not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Contact']
+        }
+      }
+    }
+  }
+  deleteContactById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the contact. */
+        contactId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successfully deleted contact */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No contact reference with that id could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
   createContactRestriction: {
     parameters: {
       query?: never
@@ -2335,6 +3522,108 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ContactAddress']
+        }
+      }
+    }
+  }
+  createPrisonerContact: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreatePrisonerContactRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully created prisoner contact */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerContact']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  createContact: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateContactRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully created contact */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Contact']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
@@ -2694,7 +3983,7 @@ export interface operations {
       }
     }
   }
-  createContact: {
+  createContact_1: {
     parameters: {
       query?: never
       header?: never

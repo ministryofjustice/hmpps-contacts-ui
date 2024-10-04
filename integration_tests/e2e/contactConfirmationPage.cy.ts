@@ -91,22 +91,21 @@ context('Contact confirmation', () => {
   })
 
   it(`should render contact information`, () => {
-    cy.task('stubGetContactById', {
-      id: contactId,
-      firstName: 'Existing',
-      lastName: 'Contact',
-      dateOfBirth: '1990-01-14',
-      isDeceased: false,
-      deceasedDate: null,
-    })
+    cy.task('stubGetContactById', TestData.contactSearchResultItem())
 
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
     Page.verifyOnPage(ContactConfirmationPage, 'Smith, John')
-      .verifyShowLastNameAs('Contact, Existing')
-      .verifyShowMiddleNameAs('')
+      .verifyShowNamesValueAs('Contact, Mr Existing')
+      .verifyShowDOBValueAs('14 January 1990')
       .verifyShowDeceasedDateValueAs('Not provided')
+      .verifyShowAddressValueAs(`24, Acacia AvenueBuntingSouth YorkshireEngland`)
+      .verifyShowAddressTypeValueAs('Home')
+      .verifyShowAddressSpecificPhoneValueAs('Not provided')
+      .verifyShowEmailValueAs('No')
+      .verifyShowCommentsValueAs('Not provided')
+      .verifyShowFromStartDateValueAs('January 2020')
   })
 
   it(`should navigate to next page when 'Yes, this is the right person' is selected `, () => {

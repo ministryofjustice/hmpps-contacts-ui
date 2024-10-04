@@ -77,7 +77,7 @@ export default class TestData {
 
   static contact = ({
     id = 1,
-    title = null,
+    title = 'MR',
     lastName = 'Mason',
     firstName = 'Jones',
     middleName = null,
@@ -87,6 +87,37 @@ export default class TestData {
     deceasedDate = null,
     createdBy = 'USER1',
     createdTime = '2024-09-20T10:30:00.000000',
+    addresses = [
+      {
+        contactAddressId: 1,
+        contactId: 1,
+        addressType: 'HOME',
+        addressTypeDescription: 'Home address',
+        primaryAddress: true,
+        flat: null,
+        property: '24',
+        street: 'Acacia Avenue',
+        area: 'Bunting',
+        cityCode: '25343',
+        // cityDescriptionv: 'Sheffield',
+        countyCode: 'S.YORKSHIRE',
+        countyDescription: 'South Yorkshire',
+        postcode: 'S2 3LK',
+        countryCode: 'ENG',
+        countryDescription: 'England',
+        verified: false,
+        verifiedBy: null,
+        verifiedTime: null,
+        mailFlag: false,
+        startDate: '2020-01-02',
+        endDate: null,
+        noFixedAddress: false,
+        createdBy: 'TIM',
+        createdTime: '2024-10-04T0 =3 =44.512401',
+        amendedBy: null,
+        amendedTime: null,
+      },
+    ],
   }: Partial<GetContactResponse> = {}): GetContactResponse =>
     ({
       id,
@@ -100,5 +131,6 @@ export default class TestData {
       deceasedDate,
       createdBy,
       createdTime,
+      addresses,
     }) as GetContactResponse
 }

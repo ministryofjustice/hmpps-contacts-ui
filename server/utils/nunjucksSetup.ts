@@ -3,7 +3,14 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
-import { initialiseName, formatDate, convertToTitleCase, properCaseFullName, getFormatDistanceToNow } from './utils'
+import {
+  initialiseName,
+  formatDate,
+  convertToTitleCase,
+  properCaseFullName,
+  getFormatDistanceToNow,
+  capitalizeFirstLetter,
+} from './utils'
 import config from '../config'
 import logger from '../../logger'
 import { buildErrorSummaryList, findError } from '../middleware/validationMiddleware'
@@ -66,4 +73,5 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('formatDate', formatDate)
   njkEnv.addFilter('formatYesNo', formatYesNo)
   njkEnv.addFilter('formatName', formatName)
+  njkEnv.addFilter('capitalizeFirstLetter', capitalizeFirstLetter)
 }
