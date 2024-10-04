@@ -95,6 +95,7 @@ describe('createContactEnterDobSchema', () => {
         day: ['Enter a valid day of the month (1-31)'],
         month: ['Enter a valid month (1-12)'],
         year: ['Enter a valid year. Must be at least 1900'],
+        dob: ['The date of birth is invalid'],
       })
     })
 
@@ -117,6 +118,7 @@ describe('createContactEnterDobSchema', () => {
         const deduplicatedFieldErrors = deduplicateFieldErrors(result)
         expect(deduplicatedFieldErrors).toStrictEqual({
           day: ['Enter a valid day of the month (1-31)'],
+          dob: ['The date of birth is invalid'],
         })
       }
     })
@@ -140,6 +142,7 @@ describe('createContactEnterDobSchema', () => {
         const deduplicatedFieldErrors = deduplicateFieldErrors(result)
         expect(deduplicatedFieldErrors).toStrictEqual({
           month: ['Enter a valid month (1-12)'],
+          dob: ['The date of birth is invalid'],
         })
       }
     })
@@ -147,24 +150,47 @@ describe('createContactEnterDobSchema', () => {
     it.each([
       ['0', false],
       ['-1', false],
-      ['1899', false],
       ['1900', true],
-    ])('if dob is known then year must be at least 1900 (%s, %s)', async (year: string, isValid: boolean) => {
-      // Given
-      const form = { isKnown: 'YES', day: '1', month: '1', year }
+    ])(
+      'if dob is known and to be valid then year must be at least 1900 (%s, %s)',
+      async (year: string, isValid: boolean) => {
+        // Given
+        const form = { isKnown: 'YES', day: '1', month: '1', year }
 
-      // When
-      const result = await doValidate(form)
+        // When
+        const result = await doValidate(form)
 
-      // Then
-      expect(result.success).toStrictEqual(isValid)
-      if (!isValid) {
-        const deduplicatedFieldErrors = deduplicateFieldErrors(result)
-        expect(deduplicatedFieldErrors).toStrictEqual({
-          year: ['Enter a valid year. Must be at least 1900'],
-        })
-      }
-    })
+        // Then
+        expect(result.success).toStrictEqual(isValid)
+        if (!isValid) {
+          const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+          expect(deduplicatedFieldErrors).toStrictEqual({
+            year: ['Enter a valid year. Must be at least 1900'],
+            dob: ['The date of birth is invalid'],
+          })
+        }
+      },
+    )
+
+    it.each([['1899', false]])(
+      'if dob is known then year must be at least 1900 (%s, %s)',
+      async (year: string, isValid: boolean) => {
+        // Given
+        const form = { isKnown: 'YES', day: '1', month: '1', year }
+
+        // When
+        const result = await doValidate(form)
+
+        // Then
+        expect(result.success).toStrictEqual(isValid)
+        if (!isValid) {
+          const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+          expect(deduplicatedFieldErrors).toStrictEqual({
+            year: ['Enter a valid year. Must be at least 1900'],
+          })
+        }
+      },
+    )
 
     it('dob must not be in the future', async () => {
       // Given
@@ -224,6 +250,35 @@ describe('createContactEnterDobSchema', () => {
       expect(result.success).toStrictEqual(true)
       expect(result.data).toStrictEqual({
         isKnown: 'NO',
+      })
+    })
+
+    describe('should pass validation for a valid date', () => {
+      it.each([
+        ['YES', '29', '02', '2023'], // Feb had 28 in 2023
+        ['YES', '29', '02', '1990'], // Feb had 28 in 1990
+      ])('should map it as a valid dob', async (isKnown: string, day: string, month: string, year: string) => {
+        // Given
+        const form = { isKnown, day, month, year }
+
+        // When
+        const result = await doValidate(form)
+
+        // Then
+        expect(result.success).toStrictEqual(false)
+      })
+
+      it.each([
+        ['YES', '29', '02', '1980'], // Feb had 29 in 1980
+      ])('should not map it as a valid dob', async (isKnown: string, day: string, month: string, year: string) => {
+        // Given
+        const form = { isKnown, day, month, year }
+
+        // When
+        const result = await doValidate(form)
+
+        // Then
+        expect(result.success).toStrictEqual(true)
       })
     })
 
