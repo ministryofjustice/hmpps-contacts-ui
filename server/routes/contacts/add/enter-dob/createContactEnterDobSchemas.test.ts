@@ -253,7 +253,7 @@ describe('createContactEnterDobSchema', () => {
       })
     })
 
-    describe('should pass validation for a valid date', () => {
+    describe('Validation for a valid date', () => {
       it.each([
         ['YES', '29', '02', '2023'], // Feb had 28 in 2023
         ['YES', '29', '02', '1990'], // Feb had 28 in 1990
