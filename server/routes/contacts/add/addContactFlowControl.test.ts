@@ -42,16 +42,8 @@ describe('addContactFlowControl', () => {
           unknownDob,
           `/prisoner/A1234BC/contacts/create/enter-estimated-dob/${journeyId}`,
         ],
-        [
-          Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE,
-          knownDob,
-          `/prisoner/A1234BC/contacts/create/enter-relationship-comments/${journeyId}`,
-        ],
-        [
-          Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE,
-          unknownDob,
-          `/prisoner/A1234BC/contacts/create/enter-relationship-comments/${journeyId}`,
-        ],
+        [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, knownDob, undefined],
+        [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, unknownDob, undefined],
       ])(
         'Should go back to previous page: from %s with dob %s to %s',
         (page: Page, dateOfBirth?: DateOfBirth, expectedBackUrl?: string) => {
@@ -205,10 +197,7 @@ describe('addContactFlowControl', () => {
         [Page.SELECT_EMERGENCY_CONTACT, `/prisoner/A1234BC/contacts/create/select-relationship/${journeyId}`],
         [Page.SELECT_NEXT_OF_KIN, `/prisoner/A1234BC/contacts/create/select-emergency-contact/${journeyId}`],
         [Page.ENTER_RELATIONSHIP_COMMENTS, `/prisoner/A1234BC/contacts/create/select-next-of-kin/${journeyId}`],
-        [
-          Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE,
-          `/prisoner/A1234BC/contacts/create/enter-relationship-comments/${journeyId}`,
-        ],
+        [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, undefined],
       ])('Should go back to previous page: from %s to %s', (page: Page, expectedBackUrl?: string) => {
         const journey: AddContactJourney = {
           id: journeyId,

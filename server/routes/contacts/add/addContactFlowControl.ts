@@ -129,7 +129,7 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
     nextUrl: checkAnswersOr(PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url),
   },
   [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE]: {
-    previousUrl: PAGES.ENTER_RELATIONSHIP_COMMENTS.url,
+    previousUrl: _ => undefined,
     nextUrl: _ => undefined,
   },
 }
@@ -162,7 +162,7 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
     nextUrl: checkAnswersOr(PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url),
   },
   [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE]: {
-    previousUrl: PAGES.ENTER_RELATIONSHIP_COMMENTS.url,
+    previousUrl: _ => undefined,
     nextUrl: _ => undefined,
   },
 }
