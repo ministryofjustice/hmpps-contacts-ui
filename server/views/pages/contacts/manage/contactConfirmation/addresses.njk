@@ -1,8 +1,17 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
 {% set primaryAddressRow = [] %}
+{% set addressSpecificPhoneNumbers = '' %}
 
 {% for item in contact.addresses %}
+    {% if item.phoneNumbers and item.phoneNumbers.length > 0 %}
+        {% for val in item.phoneNumbers %}
+            {% 
+                set addressSpecificPhoneNumbers = addressSpecificPhoneNumbers + '<p data-qa=confirm-specific-phone-' + val.phoneType + '-value>' + (val.phoneType | capitalizeFirstLetter) + ': ' + val.phoneNumber + ' ' + '(' + val.extNumber + ')</p>'
+            %}
+        {% endfor %}
+    {% endif %}
+
     {% if item.primaryAddress === true %}
         {% 
             set address = { 
@@ -54,7 +63,7 @@
                         text: "Address-specific phone numbers"
                     },
                     value: {
-                        html: '<span data-qa="confirm-specific-phone-value">' + 'Not provided' if not item.phone else item.phone + '</span>'
+                        html: '<span>' + 'Not provided' if not addressSpecificPhoneNumbers else addressSpecificPhoneNumbers + '</span>'
                     }
                 }
         ), primaryAddressRow) %}

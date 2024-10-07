@@ -966,14 +966,6 @@ export interface components {
        */
       updatedTime: string
     }
-    ErrorResponse: {
-      /** Format: int32 */
-      status: number
-      errorCode?: string
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
-    }
     /** @description Response object with prisoner contact details */
     PrisonerContact: {
       /**
@@ -1076,6 +1068,14 @@ export interface components {
        * @example 2024-02-01T16:00:00Z
        */
       amendedTime?: string | null
+    }
+    ErrorResponse: {
+      /** Format: int32 */
+      status: number
+      errorCode?: string
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
     }
     /** @description Request to update a new contact  */
     UpdateContactRequest: {
@@ -2500,6 +2500,8 @@ export interface components {
        * @example false
        */
       noFixedAddress: boolean
+      /** @description Phone numbers that are related to this address */
+      phoneNumbers: components['schemas']['ContactPhoneNumberDetails'][]
       /**
        * @description The id of the user who created the contact
        * @example JD000001
@@ -2522,7 +2524,67 @@ export interface components {
        * @example 2024-01-01T00:00:00Z
        */
       amendedTime?: string
-    } | null
+    }
+    /** @description A phone number related to a contact with descriptions of all reference data */
+    ContactPhoneNumberDetails: {
+      /**
+       * Format: int64
+       * @description Unique identifier for the contact phone
+       * @example 1
+       */
+      contactPhoneId: number
+      /**
+       * Format: int64
+       * @description Unique identifier for the contact
+       * @example 123
+       */
+      contactId: number
+      /**
+       * @description Type of phone
+       * @example MOBILE
+       */
+      phoneType: string
+      /**
+       * @description Description of the type of phone
+       * @example Mobile phone
+       */
+      phoneTypeDescription: string
+      /**
+       * @description Phone number
+       * @example +1234567890
+       */
+      phoneNumber: string
+      /**
+       * @description Extension number
+       * @example 123
+       */
+      extNumber?: string
+      /**
+       * @description Indicates if this is the primary phone number
+       * @example true
+       */
+      primaryPhone: boolean
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was created
+       */
+      createdTime: string
+      /**
+       * @description User who amended the entry
+       * @example admin2
+       */
+      amendedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was amended
+       */
+      amendedTime?: string
+    }
     /** @description The details of a contact as an individual */
     GetContactResponse: {
       /**
@@ -2575,7 +2637,9 @@ export interface components {
        */
       deceasedDate?: string | null
       /** @description All addresses for the contact */
-      addresses: components['schemas']['ContactAddressDetails'][] | null
+      addresses: components['schemas']['ContactAddressDetails'][]
+      /** @description All phone numbers for the contact */
+      phoneNumbers: components['schemas']['ContactPhoneNumberDetails'][]
       /**
        * @description The id of the user who created the contact
        * @example JD000001
@@ -3022,10 +3086,10 @@ export interface components {
       /** Format: int64 */
       total?: number
       last?: boolean
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      /** Format: int64 */
+      totalElements?: number
       first?: boolean
       /** Format: int32 */
       size?: number

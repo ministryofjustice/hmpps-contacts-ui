@@ -100,8 +100,8 @@ export default class ContactConfirmationPage extends Page {
     return this
   }
 
-  verifyShowAddressSpecificPhoneValueAs(expected: string): ContactConfirmationPage {
-    this.addressSpecificPhoneValue().should('contain.text', expected)
+  verifyShowAddressSpecificPhoneValueAs(expected: string, phoneType: string): ContactConfirmationPage {
+    this.addressSpecificPhoneValue(phoneType).should('contain.text', expected)
     return this
   }
 
@@ -120,13 +120,8 @@ export default class ContactConfirmationPage extends Page {
     return this
   }
 
-  verifyShowMobileNumberValueAs(expected: string): ContactConfirmationPage {
-    this.mobileNumberValue().should('contain.text', expected)
-    return this
-  }
-
-  verifyShowBusinessNumberValueAs(expected: string): ContactConfirmationPage {
-    this.businessNumberValue().should('contain.text', expected)
+  verifyShowPhoneNumbersValueAs(expected: string, phoneType: string): ContactConfirmationPage {
+    this.phoneNumbersValue(phoneType).should('contain.text', expected)
     return this
   }
 
@@ -175,7 +170,8 @@ export default class ContactConfirmationPage extends Page {
 
   private addressTypeValue = (): PageElement => cy.get('[data-qa=confirm-type-value]')
 
-  private addressSpecificPhoneValue = (): PageElement => cy.get('[data-qa=confirm-specific-phone-value]')
+  private addressSpecificPhoneValue = (phoneType: string): PageElement =>
+    cy.get(`[data-qa=confirm-specific-phone-${phoneType}-value]`)
 
   private emailValue = (): PageElement => cy.get('[data-qa=confirm-mail-value]')
 
@@ -183,9 +179,7 @@ export default class ContactConfirmationPage extends Page {
 
   private fromStartDateValue = (): PageElement => cy.get('[data-qa=confirm-start-date-value]')
 
-  private mobileNumberValue = (): PageElement => cy.get('[data-qa=confirm-mobile-number-value]')
-
-  private businessNumberValue = (): PageElement => cy.get('[data-qa=confirm-business-number-value]')
+  private phoneNumbersValue = (phoneType: string): PageElement => cy.get(`[data-qa=confirm-${phoneType}-number-value]`)
 
   private emalAddressValue = (): PageElement => cy.get('[data-qa=confirm-email-addresses-value]')
 

@@ -102,10 +102,12 @@ context('Contact confirmation', () => {
       .verifyShowDeceasedDateValueAs('Not provided')
       .verifyShowAddressValueAs(`24, Acacia AvenueBuntingSouth YorkshireEngland`)
       .verifyShowAddressTypeValueAs('Home')
-      .verifyShowAddressSpecificPhoneValueAs('Not provided')
+      .verifyShowAddressSpecificPhoneValueAs('Home: 01111 777777 (+0123)', 'HOME')
       .verifyShowEmailValueAs('No')
       .verifyShowCommentsValueAs('Not provided')
       .verifyShowFromStartDateValueAs('January 2020')
+      .verifyShowPhoneNumbersValueAs('07878 111111', 'MOBILE')
+      .verifyShowPhoneNumbersValueAs('01111 777777', 'HOME')
   })
 
   it(`should navigate to next page when 'Yes, this is the right person' is selected `, () => {
