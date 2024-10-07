@@ -413,7 +413,7 @@ context('Create Contacts', () => {
   })
 
   it('Can navigate back through all pages when no DOB', () => {
-    const checkYourAnswersPage = Page.verifyOnPage(EnterNamePage) //
+    const relationshipCommentsPage = Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
       .continueTo(SelectRelationshipPage, 'Last, First')
@@ -427,10 +427,8 @@ context('Create Contacts', () => {
       .continueTo(EnterContactEstimatedDateOfBirthPage, 'Last, First')
       .selectIsOverEighteen('DO_NOT_KNOW')
       .continueTo(RelationshipCommentsPage, 'Last, First')
-      .continueTo(CreateContactCheckYourAnswersPage)
 
-    checkYourAnswersPage //
-      .backTo(RelationshipCommentsPage, 'Last, First')
+    relationshipCommentsPage //
       .backTo(EnterContactEstimatedDateOfBirthPage, 'Last, First')
       .backTo(EnterContactDateOfBirthPage, 'Last, First')
       .backTo(SelectNextOfKinPage, 'Last, First')
@@ -440,7 +438,7 @@ context('Create Contacts', () => {
   })
 
   it('Can navigate back through all pages when DOB is known', () => {
-    const checkYourAnswersPage = Page.verifyOnPage(EnterNamePage) //
+    const relationshipCommentsPage = Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
       .continueTo(SelectRelationshipPage, 'Last, First')
@@ -455,10 +453,8 @@ context('Create Contacts', () => {
       .enterMonth('06')
       .enterYear('1982')
       .continueTo(RelationshipCommentsPage, 'Last, First')
-      .continueTo(CreateContactCheckYourAnswersPage)
 
-    checkYourAnswersPage //
-      .backTo(RelationshipCommentsPage, 'Last, First')
+    relationshipCommentsPage //
       .backTo(EnterContactDateOfBirthPage, 'Last, First')
       .backTo(SelectNextOfKinPage, 'Last, First')
       .backTo(SelectEmergencyContactPage, 'Last, First')
