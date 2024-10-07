@@ -6,10 +6,10 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, flashProvider, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import ReferenceDataService from '../../../../services/referenceDataService'
-import AddContactJourney = journeys.AddContactJourney
-import { mockedReferenceData } from '../../../testutils/stubReferenceData'
+import { mockedReferenceData, STUBBED_TITLE_OPTIONS } from '../../../testutils/stubReferenceData'
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import TestData from '../../../testutils/testData'
+import AddContactJourney = journeys.AddContactJourney
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/referenceDataService')
@@ -70,6 +70,22 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('What is the contacts name?')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+  })
+
+  it('title options are ordered alphabetically', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${journeyId}`)
+
+    // Then
+    expect(response.status).toEqual(200)
+
+    const $ = cheerio.load(response.text)
+    expect($('#title :nth-child(1)').text()).toStrictEqual('')
+    expect($('#title :nth-child(2)').text()).toStrictEqual('Brother')
+    expect($(`#title :nth-child(${STUBBED_TITLE_OPTIONS.length + 1})`).text()).toStrictEqual('Sister')
   })
 
   it('should call the audit service for the page view', async () => {
