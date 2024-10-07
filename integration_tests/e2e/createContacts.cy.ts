@@ -351,10 +351,11 @@ context('Create Contacts', () => {
       .clickContinue()
 
     enterDobPage.errorSummaryItems.spread((...$lis) => {
-      expect($lis).to.have.lengthOf(3)
+      expect($lis).to.have.lengthOf(4)
       expect($lis[0]).to.contain('Enter a valid day of the month (1-31)')
       expect($lis[1]).to.contain('Enter a valid month (1-12)')
       expect($lis[2]).to.contain('Enter a valid year. Must be at least 1900')
+      expect($lis[3]).to.contain('The date of birth is invalid')
     })
   })
 
