@@ -56,13 +56,15 @@ export default class EnterNameController implements PageHandler {
     text: string
     selected?: boolean
   }> {
-    const mappedOptions = options.map((title: ReferenceCode) => {
-      return {
-        text: title.description,
-        value: title.code,
-        selected: title.code === selectedTitle,
-      }
-    })
+    const mappedOptions = options
+      .map((title: ReferenceCode) => {
+        return {
+          text: title.description,
+          value: title.code,
+          selected: title.code === selectedTitle,
+        }
+      })
+      .sort((a, b) => a.text.localeCompare(b.text))
     return [{ text: '', value: '' }, ...mappedOptions]
   }
 }

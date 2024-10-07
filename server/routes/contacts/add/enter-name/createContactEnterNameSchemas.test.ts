@@ -60,7 +60,7 @@ describe('createContactEnterNameSchema', () => {
       expect(deduplicatedFieldErrors).toStrictEqual({
         firstName: ["Contact's first name must be 35 characters or less"],
         lastName: ["Contact's last name must be 35 characters or less"],
-        middleName: ["Contact's middle name must be 35 characters or less"],
+        middleName: ["Contact's middle names must be 35 characters or less"],
       })
     })
 
@@ -104,7 +104,7 @@ describe('createContactEnterNameSchema', () => {
         expect(deduplicatedFieldErrors).toStrictEqual({
           firstName: ["Contact's first name must not contain special characters"],
           lastName: ["Contact's last name must not contain special characters"],
-          middleName: ["Contact's middle name must not contain special characters"],
+          middleName: ["Contact's middle names must not contain special characters"],
         })
       },
     )

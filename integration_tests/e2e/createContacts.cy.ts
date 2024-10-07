@@ -196,7 +196,7 @@ context('Create Contacts', () => {
 
     enterNamePage.hasFieldInError('lastName', "Contact's last name must be 35 characters or less")
     enterNamePage.hasFieldInError('firstName', "Contact's first name must be 35 characters or less")
-    enterNamePage.hasFieldInError('middleName', "Contact's middle name must be 35 characters or less")
+    enterNamePage.hasFieldInError('middleName', "Contact's middle names must be 35 characters or less")
   })
 
   it('Cannot enter a blank first name or last name', () => {

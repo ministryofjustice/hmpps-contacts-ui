@@ -56,7 +56,7 @@ describe('contactSearchSchema', () => {
       const deduplicatedFieldErrors = deduplicateFieldErrors(result)
       expect(deduplicatedFieldErrors).toStrictEqual({
         firstName: ["Contact's first name must not contain special characters"],
-        middleName: ["Contact's middle name must not contain special characters"],
+        middleName: ["Contact's middle names must not contain special characters"],
         lastName: ["Contact's last name must not contain special characters"],
       })
     })
@@ -116,7 +116,7 @@ describe('contactSearchSchema', () => {
         expect(deduplicatedFieldErrors).toStrictEqual({
           firstName: [`Contact's first name must not contain special characters`],
           lastName: [`Contact's last name must not contain special characters`],
-          middleName: [`Contact's middle name must not contain special characters`],
+          middleName: [`Contact's middle names must not contain special characters`],
         })
       },
     )
