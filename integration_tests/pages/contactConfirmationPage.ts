@@ -135,18 +135,8 @@ export default class ContactConfirmationPage extends Page {
     return this
   }
 
-  verifyShowDrivingLicenceValueAs(expected: string): ContactConfirmationPage {
-    this.drivingLicenceValue().should('contain.text', expected)
-    return this
-  }
-
-  verifyShowPNCValueAs(expected: string): ContactConfirmationPage {
-    this.pncValue().should('contain.text', expected)
-    return this
-  }
-
-  verifyShowSpokenLanguageValueAs(expected: string): ContactConfirmationPage {
-    this.spokenLanguageValue().should('contain.text', expected)
+  verifyShowIdentityNumberValueAs(expected: string, type: string): ContactConfirmationPage {
+    this.identityNumberValue(type).should('contain.text', expected)
     return this
   }
 
@@ -168,6 +158,11 @@ export default class ContactConfirmationPage extends Page {
 
   verifyShowEmailAddressesValueAsNotProvided(expected: string): ContactConfirmationPage {
     this.emailAddressesNotProvided().should('contain.text', expected)
+    return this
+  }
+
+  verifyShowIdentitiesValueAsNotProvided(expected: string): ContactConfirmationPage {
+    this.identityNumbersNotProvided().should('contain.text', expected)
     return this
   }
 
@@ -201,11 +196,7 @@ export default class ContactConfirmationPage extends Page {
 
   private passportNumberValue = (): PageElement => cy.get('[data-qa=confirm-passport-number-value]')
 
-  private drivingLicenceValue = (): PageElement => cy.get('[data-qa=confirm-driving-licence-value]')
-
-  private pncValue = (): PageElement => cy.get('[data-qa=confirm-pnc-number-value]')
-
-  private spokenLanguageValue = (): PageElement => cy.get('[data-qa=confirm-spoken-language-value]')
+  private identityNumberValue = (type: string): PageElement => cy.get(`[data-qa=confirm-${type}-value]`)
 
   private needsInterpreterValue = (): PageElement => cy.get('[data-qa=confirm-needs-interpreter-value]')
 
@@ -221,4 +212,6 @@ export default class ContactConfirmationPage extends Page {
   private phoneNumbersNotProvided = (): PageElement => cy.get(`[data-qa=phone-numbers-not-provided]`)
 
   private emailAddressesNotProvided = (): PageElement => cy.get(`[data-qa=email-addresses-not-provided]`)
+
+  private identityNumbersNotProvided = (): PageElement => cy.get(`[data-qa=identity-numbers-not-provided]`)
 }

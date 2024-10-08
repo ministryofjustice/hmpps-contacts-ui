@@ -31,7 +31,12 @@
         {{ notProvided({title: 'Email addresses', key: 'Email addresses', dataqa: 'email-addresses-not-provided' }) }}
     {% endif %}
 
-    {%- include "./identityNumbers.njk" -%}
+    {% if contact.identities.length > 0 %}
+        {%- include "./identityNumbers.njk" -%}
+    {% else %}
+        {{ notProvided({title: 'Identity numbers', key: 'Passport number', dataqa: 'identity-numbers-not-provided' }) }}
+    {% endif %}
+
     {%- include "./languageDetails.njk" -%}
 {% endmacro %}
 

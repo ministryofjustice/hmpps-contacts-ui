@@ -115,6 +115,9 @@ context('Contact confirmation', () => {
       .verifyShowPhoneNumbersValueAs('01111 777777', 'HOME')
       .verifyShowEmalAddressValueAs('mr.last@example.com')
       .verifyShowEmalAddressValueAs('mr.first@example.com')
+      .verifyShowIdentityNumberValueAs('LAST-87736799M', 'DRIVING_LIC')
+      .verifyShowIdentityNumberValueAs('425362965', 'PASSPORT')
+      .verifyShowIdentityNumberValueAs('06/614465M', 'NI_NUMBER')
   })
 
   it(`should render contact information with empity section if not available`, () => {
@@ -127,6 +130,7 @@ context('Contact confirmation', () => {
       addresses: [],
       phoneNumbers: [],
       emailAddresses: [],
+      identities: [],
     })
 
     Page.verifyOnPage(SearchContactPage) //
@@ -139,6 +143,7 @@ context('Contact confirmation', () => {
       .verifyShowAddressesValueAsNotProvided('Not provided')
       .verifyShowPhoneNumbersValueAsNotProvided('Not provided')
       .verifyShowEmailAddressesValueAsNotProvided('Not provided')
+      .verifyShowIdentitiesValueAsNotProvided('Not provided')
   })
 
   it(`should navigate to next page when 'Yes, this is the right person' is selected `, () => {
