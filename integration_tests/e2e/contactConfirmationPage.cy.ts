@@ -100,7 +100,12 @@ context('Contact confirmation', () => {
       .verifyShowNamesValueAs('Contact, Mr Existing')
       .verifyShowDOBValueAs('14 January 1990')
       .verifyShowDeceasedDateValueAs('Not provided')
-      .verifyShowAddressValueAs(`24, Acacia AvenueBuntingSouth YorkshireEngland`)
+      .verifyShowAddressValueAs('24,')
+      .verifyShowAddressValueAs('Acacia Avenue')
+      .verifyShowAddressValueAs('Bunting')
+      .verifyShowAddressValueAs('Sheffield')
+      .verifyShowAddressValueAs('South Yorkshire')
+      .verifyShowAddressValueAs('England')
       .verifyShowAddressTypeValueAs('Home')
       .verifyShowAddressSpecificPhoneValueAs('Home: 01111 777777 (+0123)', 'HOME')
       .verifyShowEmailValueAs('No')
@@ -108,6 +113,8 @@ context('Contact confirmation', () => {
       .verifyShowFromStartDateValueAs('January 2020')
       .verifyShowPhoneNumbersValueAs('07878 111111', 'MOBILE')
       .verifyShowPhoneNumbersValueAs('01111 777777', 'HOME')
+      .verifyShowEmalAddressValueAs('mr.last@example.com')
+      .verifyShowEmalAddressValueAs('mr.first@example.com')
   })
 
   it(`should render contact information with empity section if not available`, () => {
@@ -119,6 +126,7 @@ context('Contact confirmation', () => {
       dateOfBirth: '1990-01-14',
       addresses: [],
       phoneNumbers: [],
+      emailAddresses: [],
     })
 
     Page.verifyOnPage(SearchContactPage) //
@@ -130,6 +138,7 @@ context('Contact confirmation', () => {
       .verifyShowDeceasedDateValueAs('Not provided')
       .verifyShowAddressesValueAsNotProvided('Not provided')
       .verifyShowPhoneNumbersValueAsNotProvided('Not provided')
+      .verifyShowEmailAddressesValueAsNotProvided('Not provided')
   })
 
   it(`should navigate to next page when 'Yes, this is the right person' is selected `, () => {

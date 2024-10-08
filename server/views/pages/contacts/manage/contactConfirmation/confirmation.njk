@@ -25,7 +25,12 @@
         {{ notProvided({title: 'Phone numbers', key: 'Phone number', dataqa: 'phone-numbers-not-provided' }) }}
     {% endif %}
 
-    {%- include "./emailAddresses.njk" -%}
+    {% if contact.emailAddresses.length > 0 %}
+        {%- include "./emailAddresses.njk" -%}
+    {% else %}
+        {{ notProvided({title: 'Email addresses', key: 'Email addresses', dataqa: 'email-addresses-not-provided' }) }}
+    {% endif %}
+
     {%- include "./identityNumbers.njk" -%}
     {%- include "./languageDetails.njk" -%}
 {% endmacro %}

@@ -41,6 +41,43 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/sync/prisoner-contact-restriction/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns the data for a prisoner contact restriction by id
+     * @description
+     *           Requires role: ROLE_CONTACTS_MIGRATION.
+     *           Used to get the details for one prisoner contact restriction.
+     *
+     */
+    get: operations['getPrisonerContactRestrictionById']
+    /**
+     * Updates a prisoner contact restriction with new or extra detail
+     * @description
+     *           Requires role: ROLE_CONTACTS_MIGRATION.
+     *           Used to update a prisoner contact restriction.
+     *
+     */
+    put: operations['updatePrisonerContactRestriction']
+    post?: never
+    /**
+     * Deletes one prisoner contact restriction by internal ID
+     * @description
+     *           Requires role: ROLE_CONTACTS_MIGRATION.
+     *           Used to delete a prisoner contact restriction.
+     *
+     */
+    delete: operations['deletePrisonerContactRestrictionById']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/sync/contact/{contactId}': {
     parameters: {
       query?: never
@@ -210,6 +247,29 @@ export interface paths {
      *
      */
     post: operations['createPrisonerContact']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/sync/prisoner-contact-restriction': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Creates a new prisoner contact restriction
+     * @description
+     *           Requires role: ROLE_CONTACTS_MIGRATION.
+     *           Used to create a prisoner contact restriction.
+     *
+     */
+    post: operations['createPrisonerContactRestriction']
     delete?: never
     options?: never
     head?: never
@@ -1077,6 +1137,129 @@ export interface components {
       developerMessage?: string
       moreInfo?: string
     }
+    /** @description Request object to update prisoner contact restriction details */
+    UpdatePrisonerContactRestrictionRequest: {
+      /**
+       * Format: int64
+       * @description ID of the contact to which the restriction applies
+       * @example 12345
+       */
+      contactId: number
+      /**
+       * @description Type of restriction applied
+       * @example NoContact
+       */
+      restrictionType?: string | null
+      /**
+       * Format: date
+       * @description Start date of the restriction
+       * @example 2024-01-01
+       */
+      startDate?: string | null
+      /**
+       * Format: date
+       * @description Expiry date of the restriction, if applicable
+       * @example 2024-12-31
+       */
+      expiryDate?: string | null
+      /**
+       * @description Comments regarding the restriction
+       * @example Restriction applied due to safety concerns
+       */
+      comments?: string | null
+      /**
+       * @description Person who authorized the restriction
+       * @example John Doe
+       */
+      authorisedBy?: string | null
+      /**
+       * Format: date-time
+       * @description Time when the restriction was authorized
+       * @example 2024-10-01T12:00:00Z
+       */
+      authorisedTime?: string | null
+      /**
+       * @description User who last amended the restriction record
+       * @example editor
+       */
+      amendedBy?: string | null
+      /**
+       * Format: date-time
+       * @description Time when the restriction record was last amended
+       * @example 2024-10-02T15:30:00Z
+       */
+      amendedTime?: string | null
+    }
+    /** @description Response object with prisoner contact restriction details */
+    PrisonerContactRestriction: {
+      /**
+       * Format: int64
+       * @description ID of the prisoner contact restriction to which the restriction applies
+       * @example 232
+       */
+      prisonerContactRestrictionId: number
+      /**
+       * Format: int64
+       * @description ID of the contact to which the restriction applies
+       * @example 12345
+       */
+      contactId: number
+      /**
+       * @description Type of restriction applied
+       * @example NoContact
+       */
+      restrictionType?: string | null
+      /**
+       * Format: date
+       * @description Start date of the restriction
+       * @example 2024-01-01
+       */
+      startDate?: string | null
+      /**
+       * Format: date
+       * @description Expiry date of the restriction, if applicable
+       * @example 2024-12-31
+       */
+      expiryDate?: string | null
+      /**
+       * @description Comments regarding the restriction
+       * @example Restriction applied due to safety concerns
+       */
+      comments?: string | null
+      /**
+       * @description Person who authorized the restriction
+       * @example John Doe
+       */
+      authorisedBy?: string | null
+      /**
+       * Format: date-time
+       * @description Time when the restriction was authorized
+       * @example 2024-10-01T12:00:00Z
+       */
+      authorisedTime?: string | null
+      /**
+       * @description User who created the restriction record
+       * @example admin
+       */
+      createdBy?: string | null
+      /**
+       * Format: date-time
+       * @description Time when the restriction record was created
+       * @example 2024-10-01T12:00:00Z
+       */
+      createdTime?: string | null
+      /**
+       * @description User who last amended the restriction record
+       * @example editor
+       */
+      amendedBy?: string | null
+      /**
+       * Format: date-time
+       * @description Time when the restriction record was last amended
+       * @example 2024-10-02T15:30:00Z
+       */
+      amendedTime?: string | null
+    }
     /** @description Request to update a new contact  */
     UpdateContactRequest: {
       /**
@@ -1646,12 +1829,12 @@ export interface components {
       contactId: number
       /**
        * @description Type of email
-       * @example MOBILE
+       * @example WORK
        */
       emailType: string
       /**
        * @description Email address
-       * @example +1234567890
+       * @example work@example.com
        */
       emailAddress: string
       /**
@@ -1987,6 +2170,59 @@ export interface components {
        * @example HMP Belmarsh
        */
       createdAtPrison?: string | null
+    }
+    /** @description Request object to create a prisoner contact request details */
+    CreatePrisonerContactRestrictionRequest: {
+      /**
+       * Format: int64
+       * @description ID of the contact to which the restriction applies
+       * @example 12345
+       */
+      contactId: number
+      /**
+       * @description Type of restriction applied
+       * @example NoContact
+       */
+      restrictionType?: string | null
+      /**
+       * Format: date
+       * @description Start date of the restriction
+       * @example 2024-01-01
+       */
+      startDate?: string | null
+      /**
+       * Format: date
+       * @description Expiry date of the restriction, if applicable
+       * @example 2024-12-31
+       */
+      expiryDate?: string | null
+      /**
+       * @description Comments regarding the restriction
+       * @example Restriction applied due to safety concerns
+       */
+      comments?: string | null
+      /**
+       * @description Person who authorized the restriction
+       * @example John Doe
+       */
+      authorisedBy?: string | null
+      /**
+       * Format: date-time
+       * @description Time when the restriction was authorized
+       * @example 2024-10-01T12:00:00Z
+       */
+      authorisedTime?: string | null
+      /**
+       * @description User who created the restriction record
+       * @example admin
+       */
+      createdBy?: string | null
+      /**
+       * Format: date-time
+       * @description Time when the restriction record was created
+       * @example 2024-10-01T12:00:00Z
+       */
+      createdTime?: string | null
     }
     /** @description A description of the relationship if the contact should be linked to a prisoner */
     ContactRelationship: {
@@ -2525,6 +2761,61 @@ export interface components {
        */
       amendedTime?: string
     }
+    /** @description Email related to a contact */
+    ContactEmailDetails: {
+      /**
+       * Format: int64
+       * @description Unique identifier for the contact email
+       * @example 1
+       */
+      contactEmailId: number
+      /**
+       * Format: int64
+       * @description Unique identifier for the contact
+       * @example 123
+       */
+      contactId: number
+      /**
+       * @description Type of email
+       * @example WORK
+       */
+      emailType: string
+      /**
+       * @description Type of email
+       * @example Work email
+       */
+      emailTypeDescription: string
+      /**
+       * @description Email address
+       * @example work@example.com
+       */
+      emailAddress: string
+      /**
+       * @description Indicates if this is the primary Email address
+       * @example true
+       */
+      primaryEmail: boolean
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was created
+       */
+      createdTime: string
+      /**
+       * @description User who amended the entry
+       * @example admin2
+       */
+      amendedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was amended
+       */
+      amendedTime?: string
+    }
     /** @description A phone number related to a contact with descriptions of all reference data */
     ContactPhoneNumberDetails: {
       /**
@@ -2640,6 +2931,8 @@ export interface components {
       addresses: components['schemas']['ContactAddressDetails'][]
       /** @description All phone numbers for the contact */
       phoneNumbers: components['schemas']['ContactPhoneNumberDetails'][]
+      /** @description All email addresses for the contact */
+      emailAddresses: components['schemas']['ContactEmailDetails'][]
       /**
        * @description The id of the user who created the contact
        * @example JD000001
@@ -3086,10 +3379,10 @@ export interface components {
       /** Format: int64 */
       total?: number
       last?: boolean
-      /** Format: int32 */
-      totalPages?: number
       /** Format: int64 */
       totalElements?: number
+      /** Format: int32 */
+      totalPages?: number
       first?: boolean
       /** Format: int32 */
       size?: number
@@ -3303,6 +3596,165 @@ export interface operations {
         }
       }
       /** @description No prisoner contact reference with that id could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  getPrisonerContactRestrictionById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for a prisoner contact restriction. */
+        id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the prisoner contact restriction */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerContactRestriction']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No prisoner contact restriction reference with that id could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerContactRestriction']
+        }
+      }
+    }
+  }
+  updatePrisonerContactRestriction: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the prisoner contact restriction. */
+        id: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdatePrisonerContactRestrictionRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully updated prisoner contact restriction */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerContactRestriction']
+        }
+      }
+      /** @description Invalid input data */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerContactRestriction']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Prisoner contact restriction not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerContactRestriction']
+        }
+      }
+    }
+  }
+  deletePrisonerContactRestrictionById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the prisoner contact restriction. */
+        id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successfully deleted prisoner contact restriction */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No prisoner contact restriction reference with that id could be found */
       404: {
         headers: {
           [name: string]: unknown
@@ -3610,6 +4062,57 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['PrisonerContact']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  createPrisonerContactRestriction: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreatePrisonerContactRestrictionRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully created prisoner contact restriction */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerContactRestriction']
         }
       }
       /** @description The request has invalid or missing fields */

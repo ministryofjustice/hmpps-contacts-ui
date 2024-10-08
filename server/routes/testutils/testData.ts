@@ -99,7 +99,7 @@ export default class TestData {
         street: 'Acacia Avenue',
         area: 'Bunting',
         cityCode: '25343',
-        // cityDescriptionv: 'Sheffield',
+        cityDescription: 'Sheffield',
         countyCode: 'S.YORKSHIRE',
         countyDescription: 'South Yorkshire',
         postcode: 'S2 3LK',
@@ -161,6 +161,32 @@ export default class TestData {
         amendedTime: null,
       },
     ],
+    emailAddresses = [
+      {
+        contactEmailId: 1,
+        contactId: 1,
+        emailType: 'PERSONAL',
+        emailTypeDescription: 'Personal email',
+        emailAddress: 'mr.last@example.com',
+        primaryEmail: true,
+        createdBy: 'TIM',
+        createdTime: '2024-10-08T12:16:09.024803',
+        amendedBy: null,
+        amendedTime: null,
+      },
+      {
+        contactEmailId: 1,
+        contactId: 1,
+        emailType: 'PERSONAL',
+        emailTypeDescription: 'Personal email',
+        emailAddress: 'mr.first@example.com',
+        primaryEmail: true,
+        createdBy: 'TIM',
+        createdTime: '2024-10-08T12:16:09.024803',
+        amendedBy: null,
+        amendedTime: null,
+      },
+    ],
   }: Partial<GetContactResponse> = {}): GetContactResponse =>
     ({
       id,
@@ -176,5 +202,6 @@ export default class TestData {
       createdTime,
       addresses,
       phoneNumbers,
+      emailAddresses,
     }) as GetContactResponse
 }

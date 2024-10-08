@@ -166,6 +166,11 @@ export default class ContactConfirmationPage extends Page {
     return this
   }
 
+  verifyShowEmailAddressesValueAsNotProvided(expected: string): ContactConfirmationPage {
+    this.emailAddressesNotProvided().should('contain.text', expected)
+    return this
+  }
+
   private contactTab = (elementNumber: number): PageElement => cy.get(`.govuk-tabs__tab:eq(${elementNumber})`)
 
   private contactCard = (elementNumber: number): PageElement =>
@@ -214,4 +219,6 @@ export default class ContactConfirmationPage extends Page {
   private phoneAddressesNotProvided = (): PageElement => cy.get(`[data-qa=addresses-not-provided]`)
 
   private phoneNumbersNotProvided = (): PageElement => cy.get(`[data-qa=phone-numbers-not-provided]`)
+
+  private emailAddressesNotProvided = (): PageElement => cy.get(`[data-qa=email-addresses-not-provided]`)
 }
