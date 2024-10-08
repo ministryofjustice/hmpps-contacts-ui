@@ -12,8 +12,19 @@
 {% block content %}
 {% macro contactDetailsHtml() %}
     {%- include "./basicDetails.njk" -%}
-    {%- include "./addresses.njk" -%}
-    {%- include "./phone.njk" -%}
+
+    {% if contact.addresses.length > 0 %}
+        {%- include "./addresses.njk" -%}
+    {% else %}
+        {{ notProvided({title: 'Addresses', key: 'Address', dataqa: 'addresses-not-provided' }) }}
+    {% endif %}
+
+    {% if contact.phoneNumbers.length > 0 %}
+        {%- include "./phone.njk" -%}
+    {% else %}
+        {{ notProvided({title: 'Phone numbers', key: 'Phone number', dataqa: 'phone-numbers-not-provided' }) }}
+    {% endif %}
+
     {%- include "./emailAddresses.njk" -%}
     {%- include "./identityNumbers.njk" -%}
     {%- include "./languageDetails.njk" -%}

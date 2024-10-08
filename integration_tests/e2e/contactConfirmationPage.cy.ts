@@ -91,7 +91,7 @@ context('Contact confirmation', () => {
   })
 
   it(`should render contact information`, () => {
-    cy.task('stubGetContactById', TestData.contactSearchResultItem())
+    cy.task('stubGetContactById', TestData.contact())
 
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
@@ -108,6 +108,28 @@ context('Contact confirmation', () => {
       .verifyShowFromStartDateValueAs('January 2020')
       .verifyShowPhoneNumbersValueAs('07878 111111', 'MOBILE')
       .verifyShowPhoneNumbersValueAs('01111 777777', 'HOME')
+  })
+
+  it(`should render contact information with empity section if not available`, () => {
+    cy.task('stubGetContactById', {
+      id: contactId,
+      firstName: 'Existing',
+      lastName: 'Contact',
+      middleName: 'Mr',
+      dateOfBirth: '1990-01-14',
+      addresses: [],
+      phoneNumbers: [],
+    })
+
+    Page.verifyOnPage(SearchContactPage) //
+      .clickTheContactLink(contactId)
+
+    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John')
+      .verifyShowNamesValueAs('Contact, Mr Existing')
+      .verifyShowDOBValueAs('14 January 1990')
+      .verifyShowDeceasedDateValueAs('Not provided')
+      .verifyShowAddressesValueAsNotProvided('Not provided')
+      .verifyShowPhoneNumbersValueAsNotProvided('Not provided')
   })
 
   it(`should navigate to next page when 'Yes, this is the right person' is selected `, () => {
