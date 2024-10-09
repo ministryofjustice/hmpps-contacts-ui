@@ -140,6 +140,11 @@ export default class ContactConfirmationPage extends Page {
     return this
   }
 
+  verifyShowSpokenLanguageValueAs(expected: string): ContactConfirmationPage {
+    this.spokenLanguageValue().should('contain.text', expected)
+    return this
+  }
+
   verifyShowNeedsInterpreterValueAs(expected: string): ContactConfirmationPage {
     this.needsInterpreterValue().should('contain.text', expected)
     return this
@@ -197,6 +202,8 @@ export default class ContactConfirmationPage extends Page {
   private passportNumberValue = (): PageElement => cy.get('[data-qa=confirm-passport-number-value]')
 
   private identityNumberValue = (type: string): PageElement => cy.get(`[data-qa=confirm-${type}-value]`)
+
+  private spokenLanguageValue = (): PageElement => cy.get('[data-qa=confirm-spoken-language-value]')
 
   private needsInterpreterValue = (): PageElement => cy.get('[data-qa=confirm-needs-interpreter-value]')
 

@@ -11,7 +11,7 @@
             text: "Spoken language"
         },
         value: {
-            html: '<span data-qa="confirm-spoken-language-value"></span>'
+            html: '<span data-qa="confirm-spoken-language-value">' + (contact.languageDescription if contact.languageDescription else 'Not provided') + '</span>'
         }
     },
     {
@@ -19,7 +19,7 @@
             text: "Needs interpreter"
         },
         value: {
-            html: '<span data-qa="confirm-needs-interpreter-value"></span>'
+            html: '<span data-qa="confirm-needs-interpreter-value">' + ('Yes' if contact.interpreterRequired == 'true' else 'No') + '</span>'
         }
     }]
 }) }}

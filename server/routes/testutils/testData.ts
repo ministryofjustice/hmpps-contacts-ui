@@ -87,6 +87,9 @@ export default class TestData {
     deceasedDate = null,
     createdBy = 'USER1',
     createdTime = '2024-09-20T10:30:00.000000',
+    languageCode = 'ENG',
+    languageDescription = 'English',
+    interpreterRequired = false,
     addresses = [
       {
         contactAddressId: 1,
@@ -247,6 +250,9 @@ export default class TestData {
       deceasedDate,
       createdBy,
       createdTime,
+      languageCode,
+      languageDescription,
+      interpreterRequired,
       addresses,
       phoneNumbers,
       emailAddresses,

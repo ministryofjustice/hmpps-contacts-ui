@@ -118,6 +118,8 @@ context('Contact confirmation', () => {
       .verifyShowIdentityNumberValueAs('LAST-87736799M', 'DRIVING_LIC')
       .verifyShowIdentityNumberValueAs('425362965', 'PASSPORT')
       .verifyShowIdentityNumberValueAs('06/614465M', 'NI_NUMBER')
+      .verifyShowSpokenLanguageValueAs('English')
+      .verifyShowNeedsInterpreterValueAs('No')
   })
 
   it(`should render contact information with empity section if not available`, () => {
@@ -127,6 +129,9 @@ context('Contact confirmation', () => {
       lastName: 'Contact',
       middleName: 'Mr',
       dateOfBirth: '1990-01-14',
+      languageCode: null,
+      languageDescription: null,
+      interpreterRequired: false,
       addresses: [],
       phoneNumbers: [],
       emailAddresses: [],
@@ -144,6 +149,8 @@ context('Contact confirmation', () => {
       .verifyShowPhoneNumbersValueAsNotProvided('Not provided')
       .verifyShowEmailAddressesValueAsNotProvided('Not provided')
       .verifyShowIdentitiesValueAsNotProvided('Not provided')
+      .verifyShowSpokenLanguageValueAs('Not provided')
+      .verifyShowNeedsInterpreterValueAs('No')
   })
 
   it(`should navigate to next page when 'Yes, this is the right person' is selected `, () => {
