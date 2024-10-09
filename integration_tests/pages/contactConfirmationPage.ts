@@ -85,11 +85,6 @@ export default class ContactConfirmationPage extends Page {
     return this
   }
 
-  verifyShowPassportNumberValueAs(expected: string): ContactConfirmationPage {
-    this.passportNumberValue().should('contain.text', expected)
-    return this
-  }
-
   verifyShowIdentityNumberValueAs(expected: string, type: string): ContactConfirmationPage {
     this.identityNumberValue(type).should('contain.text', expected)
     return this
@@ -160,8 +155,6 @@ export default class ContactConfirmationPage extends Page {
   private phoneNumbersValue = (phoneType: string): PageElement => cy.get(`[data-qa=confirm-${phoneType}-number-value]`)
 
   private emalAddressValue = (): PageElement => cy.get('[data-qa=confirm-email-addresses-value]')
-
-  private passportNumberValue = (): PageElement => cy.get('[data-qa=confirm-passport-number-value]')
 
   private identityNumberValue = (type: string): PageElement => cy.get(`[data-qa=confirm-${type}-value]`)
 

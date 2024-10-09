@@ -26,12 +26,6 @@
             }
         %}
 
-        {% if item.mailFlag %}
-            {% set mail = 'Yes' %}
-        {% else %}
-            {% set mail = 'No' %}
-        {% endif %}
-
         {% set fromToDate %}
             {% if item.startDate %}
                 <p data-qa="confirm-start-date-value">From {{ (item.startDate | formatDate('MMMM yyyy')) }}</p>
@@ -87,7 +81,7 @@
                         text: "Mail"
                     },
                     value: {
-                        html: '<span data-qa="confirm-mail-value">' + mail + '</span>'
+                        html: '<span data-qa="confirm-mail-value">' + ('Yes' if item.mailFlag == true else 'No') + '</span>'
                     }
                 }
         ), primaryAddressRow) %}
