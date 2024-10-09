@@ -26,7 +26,7 @@ export default class ContactConfirmationController implements PageHandler {
     try {
       contact = validationErrors ? null : await this.contactsService.getContact(journey.contactId, user)
     } catch (error) {
-      logger.info(JSON.stringify(error))
+      logger.error(JSON.stringify(error))
     }
 
     return res.render('pages/contacts/manage/contactConfirmation/confirmation', {
