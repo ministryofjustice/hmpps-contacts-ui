@@ -32,6 +32,18 @@
             {% set mail = 'No' %}
         {% endif %}
 
+        {% set fromToDate %}
+            {% if item.startDate %}
+                <p data-qa="confirm-start-date-value">From {{ (item.startDate | formatDate('MMMM yyyy')) }}</p>
+            {% endif %}
+            {% if item.endDate %}
+                <p data-qa="confirm-end-date-value">To {{ (item.endDate | formatDate('MMMM yyyy')) }}</p>
+            {% endif %}
+            {% if not item.startDate and not item.endDate  %}
+                <p data-qa="from-to-date-not-provided">Not provided</p>
+            {% endif %}
+        {% endset -%}
+
         {% set primaryAddressRow = (
             primaryAddressRow.push(
                 {
@@ -99,7 +111,7 @@
                         text: "Dates"
                     },
                     value: {
-                        html: '<span data-qa="confirm-start-date-value">' + 'Not provided' + '</span>' if not item.startDate else '<span data-qa="confirm-start-date-value">From ' + (item.startDate | formatDate('MMMM yyyy')) + '</span>'
+                        html: fromToDate
                     }
                 }
         ), primaryAddressRow) %}

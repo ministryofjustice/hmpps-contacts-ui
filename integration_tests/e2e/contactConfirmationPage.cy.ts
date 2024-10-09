@@ -111,6 +111,7 @@ context('Contact confirmation', () => {
       .verifyShowEmailValueAs('No')
       .verifyShowCommentsValueAs('Not provided')
       .verifyShowFromStartDateValueAs('January 2020')
+      .verifyShowToEndDateValueAs('March 2029')
       .verifyShowPhoneNumbersValueAs('07878 111111', 'MOBILE')
       .verifyShowPhoneNumbersValueAs('01111 777777', 'HOME')
       .verifyShowEmalAddressValueAs('mr.last@example.com')
@@ -122,7 +123,38 @@ context('Contact confirmation', () => {
       .verifyShowNeedsInterpreterValueAs('No')
   })
 
-  it(`should render contact information with empity section if not available`, () => {
+  it('should render contact information with empity rows if not available', () => {
+    cy.task('stubGetContactById', {
+      id: contactId,
+      firstName: 'Existing',
+      lastName: 'Contact',
+      middleName: 'Mr',
+      dateOfBirth: '1990-01-14',
+      isDeceased: false,
+      deceasedDate: null,
+      languageCode: null,
+      languageDescription: null,
+      interpreterRequired: false,
+      addresses: [
+        {
+          ...TestData.address,
+          comments: '',
+          startDate: null,
+          endDate: null,
+        },
+      ],
+    })
+
+    Page.verifyOnPage(SearchContactPage) //
+      .clickTheContactLink(contactId)
+
+    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John')
+      .verifyShowDeceasedDateValueAs('Not provided')
+      .verifyShowCommentsValueAs('Not provided')
+      .verifyShowAddressFromToDateValueAsNotProvided('Not provided')
+  })
+
+  it('should render contact information with empity sections if not available', () => {
     cy.task('stubGetContactById', {
       id: contactId,
       firstName: 'Existing',
@@ -153,39 +185,25 @@ context('Contact confirmation', () => {
       .verifyShowNeedsInterpreterValueAs('No')
   })
 
-  it(`should navigate to next page when 'Yes, this is the right person' is selected `, () => {
-    cy.task('stubGetContactById', {
-      id: contactId,
-      firstName: 'Existing',
-      lastName: 'Contact',
-      dateOfBirth: '1990-01-14',
-    })
+  it('should navigate back to search contact when "No, this is not the right person" is selected ', () => {
+    cy.task('stubGetContactById', TestData.contact())
 
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    const contactConfirmationPage = Page.verifyOnPage(ContactConfirmationPage, 'Smith, John')
-    contactConfirmationPage.selectIsTheRightPersonYesRadio()
-    contactConfirmationPage.clickContinue()
+    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John').selectIsTheRightPersonNoRadio().clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
+    Page.verifyOnPage(SearchContactPage)
   })
 
-  it(`should navigate back to previous page when 'No, this is not the right person' is selected `, () => {
-    cy.task('stubGetContactById', {
-      id: contactId,
-      firstName: 'Existing',
-      lastName: 'Contact',
-      dateOfBirth: '1990-01-14',
-    })
+  it('should navigate to relationship screen when "Yes, this is the right person" is selected ', () => {
+    cy.task('stubGetContactById', TestData.contact())
 
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    const contactConfirmationPage = Page.verifyOnPage(ContactConfirmationPage, 'Smith, John')
-    contactConfirmationPage.selectIsTheRightPersonNoRadio()
-    contactConfirmationPage.clickContinue()
+    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John').selectIsTheRightPersonYesRadio().clickContinue()
 
-    Page.verifyOnPage(SearchContactPage) //
+    Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
   })
 })

@@ -29,7 +29,38 @@ export default class ContactConfirmationController implements PageHandler {
     } catch (error) {
       logger.info(JSON.stringify(error))
     }
-
+    // contact.addresses = [
+    //   {
+    //     contactAddressId: 2,
+    //     contactId: 1,
+    //     addressType: 'WORK',
+    //     addressTypeDescription: 'Work address',
+    //     primaryAddress: true,
+    //     flat: 'Flat 1',
+    //     property: '42',
+    //     street: 'My Work Place',
+    //     area: 'Bunting',
+    //     cityCode: '25343',
+    //     cityDescription: "Sheffield",
+    //     countyCode: "S.YORKSHIRE",
+    //     countyDescription: "South Yorkshire",
+    //     postcode: "S2 3LK",
+    //     countryCode: "ENG",
+    //     countryDescription: "England",
+    //     verified: true,
+    //     verifiedBy: "BOB",
+    //     verifiedTime: "2020-01-01T10:30:00",
+    //     mailFlag: true,
+    //     startDate: "2020-01-02",
+    //     endDate: "2029-03-04",
+    //     noFixedAddress: true,
+    //     phoneNumbers: [],
+    //     createdBy: "TIM",
+    //     createdTime: "2024-10-08T15:22:59.604791",
+    //     amendedBy: null,
+    //     amendedTime: null
+    //   }
+    // ]
     return res.render('pages/contacts/manage/contactConfirmation/confirmation', {
       contact,
       prisonerDetails,
