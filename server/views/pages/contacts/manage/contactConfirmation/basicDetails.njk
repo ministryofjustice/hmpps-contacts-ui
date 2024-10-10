@@ -1,5 +1,28 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
+{% set contactFullNameRow = [ contact.lastName + ','] %}
+
+{% if contact.title %}
+    {% set contactFullNameRow = (
+        contactFullNameRow.push(
+            (contact.title | capitalizeFirstLetter)
+    ), contactFullNameRow) %}
+{% endif %}
+
+{% if contact.middleName %}
+    {% set contactFullNameRow = (
+        contactFullNameRow.push(
+            contact.middleName
+    ), contactFullNameRow) %}
+{% endif %}
+
+{% if contact.firstName %}
+    {% set contactFullNameRow = (
+        contactFullNameRow.push(
+            contact.firstName
+    ), contactFullNameRow) %}
+{% endif %}
+
 {{ govukSummaryList({
     card: {
         title: {
@@ -11,8 +34,9 @@
             text: "Name"
         },
         value: {
-            html: '',
-            attributes: {"data-qa": "confirm-name-value"}
+            text: contactFullNameRow | join(' '),
+            classes: 'confirm-name-value'
+
         }
     },
     {
@@ -20,8 +44,8 @@
             text: "Date of birth"
         },
         value: {
-            html: formattedDateOfBirth,
-            attributes: {"data-qa": "confirm-dob-value"}
+            text:  contact.dateOfBirth | formatDate,
+            classes: 'confirm-dob-value'
         }
     },
     {
@@ -29,8 +53,8 @@
             text: "Deceased date"
         },
         value: {
-            html: '',
-            attributes: {"data-qa": "confirm-deceased-value"}
+            text: 'Not provided' if not contact.isDeceased else  contact.deceasedDate | formatDate,
+            classes: 'confirm-deceased-date-value'
         }
     }]
 }) }}

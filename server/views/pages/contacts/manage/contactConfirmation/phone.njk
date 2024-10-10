@@ -1,27 +1,29 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
+{% set phoneNumbers = [] %}
+
+{% if contact.phoneNumbers and contact.phoneNumbers.length > 0 %}
+    {% for item in contact.phoneNumbers %}
+        {% set phoneNumbers = (
+            phoneNumbers.push(
+                {
+                    key: {
+                        text: (item.phoneType | capitalizeFirstLetter)
+                    },
+                    value: { 
+                        text: item.phoneNumber,
+                        classes: 'confirm-' + item.phoneType + '-number-value'
+                    }
+                }
+        ), phoneNumbers) %}
+    {% endfor %}
+{% endif %}
+
 {{ govukSummaryList({
     card: {
         title: {
             text: "Phone numbers"
         }
     },
-    rows: [{
-        key: {
-            text: "Mobile"
-        },
-        value: {
-            html: '',
-            classes: 'confirm-mobile-number-value'
-        }
-    },
-    {
-        key: {
-            text: "Business"
-        },
-        value: {
-            html: '',
-            classes: 'confirm-business-number-value'
-        }
-    }]
+    rows: phoneNumbers
 }) }}

@@ -10,13 +10,33 @@
 {% set prisonerResultsLink = "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/list/" + journey.id %}
 
 {% block content %}
-
 {% macro contactDetailsHtml() %}
     {%- include "./basicDetails.njk" -%}
-    {%- include "./addresses.njk" -%}
-    {%- include "./phone.njk" -%}
-    {%- include "./emailAddresses.njk" -%}
-    {%- include "./identityNumbers.njk" -%}
+
+    {% if contact.addresses.length > 0 %}
+        {%- include "./addresses.njk" -%}
+    {% else %}
+        {{ notProvided({title: 'Addresses', key: 'Address', className: 'addresses-not-provided' }) }}
+    {% endif %}
+
+    {% if contact.phoneNumbers.length > 0 %}
+        {%- include "./phone.njk" -%}
+    {% else %}
+        {{ notProvided({title: 'Phone numbers', key: 'Phone number', className: 'phone-numbers-not-provided' }) }}
+    {% endif %}
+
+    {% if contact.emailAddresses.length > 0 %}
+        {%- include "./emailAddresses.njk" -%}
+    {% else %}
+        {{ notProvided({title: 'Email addresses', key: 'Email addresses', className: 'email-addresses-not-provided' }) }}
+    {% endif %}
+
+    {% if contact.identities.length > 0 %}
+        {%- include "./identityNumbers.njk" -%}
+    {% else %}
+        {{ notProvided({title: 'Identity numbers', key: 'Passport number', className: 'identity-numbers-not-provided' }) }}
+    {% endif %}
+
     {%- include "./languageDetails.njk" -%}
 {% endmacro %}
 

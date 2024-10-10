@@ -1,36 +1,29 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
+{% set identityNumbers = [] %}
+
+{% if contact.identities and contact.identities.length > 0 %}
+    {% for item in contact.identities %}
+        {% set identityNumbers = (
+            identityNumbers.push(
+                {
+                    key: {
+                        text: (item.identityTypeDescription | capitalizeFirstLetter)
+                    },
+                    value: { 
+                        html: item.identityValue + ('<p>' + item.issuingAuthority + '</p>' if item.identityType == 'PASSPORT' else ''),
+                        classes: 'confirm-' + item.identityType + '-value'
+                    }
+                }
+        ), identityNumbers) %}
+    {% endfor %}
+{% endif %}
+
 {{ govukSummaryList({
     card: {
         title: {
             text: "Identity numbers"
         }
     },
-    rows: [{
-        key: {
-            text: "Passport number"
-        },
-        value: {
-            html: '',
-            attributes: {"data-qa": "confirm-passport-numbers-value"}
-        }
-    },
-    {
-        key: {
-            text: "Driving licence"
-        },
-        value: {
-            html: '',
-            attributes: {"data-qa": "confirm-driving-licence-value"}
-        }
-    },
-    {
-        key: {
-            text: "PNC number"
-        },
-        value: {
-            html: '',
-            attributes: {"data-qa": "confirm-pnc-numbers-value"}
-        }
-    }]
+    rows: identityNumbers
 }) }}
