@@ -20,7 +20,7 @@ export const contactSearchSchema = () => async () => {
       .string({ message: LAST_NAME_REQUIRED_MESSAGE })
       .regex(NAME_REGEX, LAST_NAME_INVALID)
       .refine(val => val?.trim().length > 0, { message: LAST_NAME_REQUIRED_MESSAGE }),
-    middleName: z
+    middleNames: z
       .string()
       .regex(NAME_REGEX, MIDDLE_NAME_INVALID)
       .optional()
@@ -69,10 +69,17 @@ export const contactSearchSchema = () => async () => {
     .transform(
       (
         val,
-      ): { lastName?: string; middleName?: string; firstName: string; day?: number; month?: number; year?: number } => {
+      ): {
+        lastName?: string
+        middleNames?: string
+        firstName: string
+        day?: number
+        month?: number
+        year?: number
+      } => {
         return {
           lastName: val.lastName as string,
-          middleName: val.middleName as string,
+          middleNames: val.middleNames as string,
           firstName: val.firstName as string,
           day: val.day as number,
           month: val.month as number,

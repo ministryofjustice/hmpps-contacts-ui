@@ -42,7 +42,7 @@ context('Search contact', () => {
       },
       lastName: 'Mason',
       firstName: '',
-      middleName: '',
+      middleNames: '',
       dateOfBirth: '',
     })
 
@@ -66,7 +66,7 @@ context('Search contact', () => {
   it(`should not pass validation when last name is not entered`, () => {
     const searchContactPage = Page.verifyOnPage(SearchContactPage)
     searchContactPage.enterFirstName('Firstname')
-    searchContactPage.enterMiddleName('Middlename')
+    searchContactPage.enterMiddleNames('Middlename')
     searchContactPage.clickSearchButton()
 
     searchContactPage.hasFieldInError('lastName', ENTER_THE_CONTACTS_LAST_NAME)
@@ -75,7 +75,7 @@ context('Search contact', () => {
   it(`should not pass validation when special characters are entered`, () => {
     const searchContactPage = Page.verifyOnPage(SearchContactPage)
     searchContactPage.enterFirstName('^%&*(££')
-    searchContactPage.enterMiddleName('^%&*(££')
+    searchContactPage.enterMiddleNames('^%&*(££')
     searchContactPage.enterLastName('^%&*(££')
     searchContactPage.enterDay('^%&*(££')
     searchContactPage.enterMonth('^%&*(££')
@@ -84,7 +84,7 @@ context('Search contact', () => {
 
     searchContactPage.hasFieldInError('lastName', CONTACTS_LAST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
     searchContactPage.hasFieldInError('firstName', CONTACTS_FIRST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
-    searchContactPage.hasFieldInError('middleName', CONTACTS_MIDDLE_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
+    searchContactPage.hasFieldInError('middleNames', CONTACTS_MIDDLE_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
     searchContactPage.hasFieldInError('dob', ENTER_A_VALID_DAY_OF_THE_MONTH)
     searchContactPage.hasFieldInError('dob', ENTER_A_VALID_MONTH)
     searchContactPage.hasFieldInError('dob', ENTER_A_VALID_YEAR)
@@ -194,13 +194,13 @@ context('Search contact', () => {
       },
       lastName: 'Mason',
       firstName: 'Jones',
-      middleName: 'middle',
+      middleNames: 'middle',
       dateOfBirth: '1990-01-14',
     })
     const searchContactPage = Page.verifyOnPage(SearchContactPage)
     searchContactPage.enterFirstName('Jones')
     searchContactPage.enterLastName('Mason')
-    searchContactPage.enterMiddleName('middle')
+    searchContactPage.enterMiddleNames('middle')
     searchContactPage.enterDay('14')
     searchContactPage.enterMonth('1')
     searchContactPage.enterYear('1990')
@@ -227,13 +227,13 @@ context('Search contact', () => {
       },
       lastName: 'Mason',
       firstName: 'Jones',
-      middleName: 'middle',
+      middleNames: 'middle',
       dateOfBirth: '1990-01-01',
     })
     const searchContactPage = Page.verifyOnPage(SearchContactPage)
     searchContactPage.enterFirstName('Jones')
     searchContactPage.enterLastName('Mason')
-    searchContactPage.enterMiddleName('middle')
+    searchContactPage.enterMiddleNames('middle')
     searchContactPage.enterDay('01')
     searchContactPage.enterMonth('01')
     searchContactPage.enterYear('1990')

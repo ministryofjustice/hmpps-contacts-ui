@@ -21,7 +21,7 @@ context('Add Existing Contact', () => {
     id: contact.id,
     lastName: contact.lastName,
     firstName: contact.firstName,
-    middleName: contact.middleName,
+    middleNames: contact.middleNames,
   })
 
   beforeEach(() => {
@@ -42,7 +42,7 @@ context('Add Existing Contact', () => {
       },
       lastName: 'Contact',
       firstName: '',
-      middleName: '',
+      middleNames: '',
       dateOfBirth: '',
     })
 

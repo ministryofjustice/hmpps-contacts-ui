@@ -43,35 +43,37 @@ export default {
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: [
-          {
-            prisonerContactId: 100,
-            contactId: 200,
-            prisonerNumber: 'G9381UV',
-            surname: 'Adams',
-            forename: 'Claire',
-            middleName: 'Elizabeth',
-            dateOfBirth: new Date('1973-01-10'),
-            relationshipCode: 'code here',
-            relationshipDescription: 'Friend',
-            flat: 'Flat 1',
-            property: '',
-            street: '123 High Street',
-            area: 'Mayfair',
-            cityCode: '',
-            cityDescription: '',
-            countyCode: 'LON',
-            countyDescription: 'Greater London',
-            postCode: 'W1 1AA',
-            countryCode: 'ENG',
-            countryDescription: 'England',
-            approvedVisitor: true,
-            nextOfKin: true,
-            emergencyContact: true,
-            awareOfCharges: true,
-            comments: 'comments here',
-          },
-        ],
+        jsonBody: {
+          content: [
+            {
+              prisonerContactId: 100,
+              contactId: 200,
+              prisonerNumber: 'G9381UV',
+              lastName: 'Adams',
+              firstName: 'Claire',
+              middleNames: 'Elizabeth',
+              dateOfBirth: new Date('1973-01-10'),
+              relationshipCode: 'code here',
+              relationshipDescription: 'Friend',
+              flat: 'Flat 1',
+              property: '',
+              street: '123 High Street',
+              area: 'Mayfair',
+              cityCode: '',
+              cityDescription: '',
+              countyCode: 'LON',
+              countyDescription: 'Greater London',
+              postCode: 'W1 1AA',
+              countryCode: 'ENG',
+              countryDescription: 'England',
+              approvedVisitor: true,
+              nextOfKin: true,
+              emergencyContact: true,
+              awareOfCharges: true,
+              comments: 'comments here',
+            },
+          ],
+        },
       },
     })
   },
@@ -85,7 +87,7 @@ export default {
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: [],
+        jsonBody: { content: [] },
       },
     })
   },
@@ -138,7 +140,7 @@ export default {
       content: [],
     },
     lastName,
-    middleName,
+    middleNames,
     firstName,
     dateOfBirth,
     page = '0',
@@ -146,7 +148,7 @@ export default {
   }: {
     results: { totalPages: number; totalElements: number; content: StubContactSearchResultItem[] }
     lastName: string
-    middleName: string
+    middleNames: string
     firstName: string
     dateOfBirth: string
     page: string
@@ -163,10 +165,10 @@ export default {
           firstName: {
             equalTo: firstName,
           },
-          middleName: {
+          middleNames: {
             or: [
               {
-                equalTo: middleName,
+                equalTo: middleNames,
               },
               {
                 absent: true,

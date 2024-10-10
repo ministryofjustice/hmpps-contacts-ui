@@ -9,6 +9,7 @@ import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import ContactsService from '../../../../services/contactsService'
 import TestData from '../../../testutils/testData'
 import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
+import PrisonerContactSummaryPage = contactsApiClientTypes.PrisonerContactSummaryPage
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -64,9 +65,9 @@ describe('listContactsController', () => {
           prisonerContactId: 100,
           contactId: 200,
           prisonerNumber: 'G9381UV',
-          surname: 'Adams',
-          forename: 'Claire',
-          middleName: '',
+          lastName: 'Adams',
+          firstName: 'Claire',
+          middleNames: '',
           dateOfBirth: new Date('1973-01-10'),
           relationshipCode: 'code here',
           relationshipDescription: 'Friend',
@@ -90,7 +91,7 @@ describe('listContactsController', () => {
       ]
 
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.getPrisonerContacts.mockReturnValue(contactsList)
+      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList })
 
       const response = await request(app).get(`/prisoner/A462DZ/contacts/list/${journeyId}`)
       const $ = cheerio.load(response.text)
@@ -146,9 +147,9 @@ describe('listContactsController', () => {
           prisonerContactId: 100,
           contactId: 200,
           prisonerNumber: 'G9381UV',
-          surname: 'Adams',
-          forename: 'Claire',
-          middleName: '',
+          lastName: 'Adams',
+          firstName: 'Claire',
+          middleNames: '',
           dateOfBirth: new Date('1973-01-10'),
           relationshipCode: 'code here',
           relationshipDescription: 'Friend',
@@ -172,7 +173,7 @@ describe('listContactsController', () => {
       ]
 
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.getPrisonerContacts.mockReturnValue(contactsList)
+      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList })
 
       const response = await request(app).get(`/prisoner/A462DZ/contacts/list/${journeyId}`)
       const $ = cheerio.load(response.text)
@@ -189,7 +190,9 @@ describe('listContactsController', () => {
 
     it('should render a message that the prisoner does not have any active/inactive contacts', async () => {
       auditService.logPageView.mockResolvedValue(null)
-      const contactsList: PrisonerContactSummary = []
+      const contactsList: PrisonerContactSummaryPage = {
+        content: [],
+      }
 
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getPrisonerContacts.mockReturnValue(contactsList)
@@ -213,9 +216,9 @@ describe('listContactsController', () => {
           prisonerContactId: 100,
           contactId: 200,
           prisonerNumber: 'G9381UV',
-          surname: 'Adams',
-          forename: 'Claire',
-          middleName: '',
+          lastName: 'Adams',
+          firstName: 'Claire',
+          middleNames: '',
           dateOfBirth: undefined,
           relationshipCode: 'code here',
           relationshipDescription: 'Friend',
@@ -239,7 +242,7 @@ describe('listContactsController', () => {
       ]
 
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.getPrisonerContacts.mockReturnValue(contactsList)
+      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList })
 
       const response = await request(app).get(`/prisoner/A462DZ/contacts/list/${journeyId}`)
 
@@ -264,9 +267,9 @@ describe('listContactsController', () => {
           prisonerContactId: 100,
           contactId: 200,
           prisonerNumber: 'G9381UV',
-          surname: 'Adams',
-          forename: 'Claire',
-          middleName: '',
+          lastName: 'Adams',
+          firstName: 'Claire',
+          middleNames: '',
           dateOfBirth: new Date('1973-01-10'),
           relationshipCode: 'code here',
           relationshipDescription: 'Friend',
@@ -290,7 +293,7 @@ describe('listContactsController', () => {
       ]
 
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.getPrisonerContacts.mockReturnValue(contactsList)
+      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList })
 
       const response = await request(app).get(`/prisoner/A462DZ/contacts/list`)
       const $ = cheerio.load(response.text)

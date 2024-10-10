@@ -210,7 +210,7 @@ describe('contactsApiClient', () => {
     it('should return expected data', async () => {
       const contactSearchRequest: ContactSearchRequest = {
         lastName: 'last',
-        middleName: 'middle',
+        middleNames: 'middle',
         firstName: 'first',
         dateOfBirth: '1980-12-10T00:00:00.000Z',
       }
@@ -222,7 +222,7 @@ describe('contactsApiClient', () => {
           {
             lastName: 'last',
             firstName: 'middle',
-            middleName: 'first',
+            middleNames: 'first',
             dateOfBirth: '1980-12-10T00:00:00.000Z',
             createdBy: user.username,
             createdTime: '2024-01-01',
@@ -235,7 +235,7 @@ describe('contactsApiClient', () => {
         .query({
           lastName: contactSearchRequest.lastName,
           firstName: contactSearchRequest.firstName,
-          middleName: contactSearchRequest.middleName,
+          middleNames: contactSearchRequest.middleNames,
           dateOfBirth: contactSearchRequest.dateOfBirth,
           page: 0,
           size: 20,
@@ -255,7 +255,7 @@ describe('contactsApiClient', () => {
         id: 123456,
         lastName: 'last',
         firstName: 'middle',
-        middleName: 'first',
+        middleNames: 'first',
         dateOfBirth: '1980-12-10T00:00:00.000Z',
         createdBy: user.username,
         createdTime: '2024-01-01',

@@ -6,7 +6,7 @@ describe('contactSearchSchema', () => {
     type Form = {
       lastName: string
       firstName?: string
-      middleName?: string
+      middleNames?: string
       day?: number
       month?: number
       year?: number
@@ -14,7 +14,7 @@ describe('contactSearchSchema', () => {
     const baseForm: Form = {
       lastName: '',
       firstName: '',
-      middleName: '',
+      middleNames: '',
       day: undefined,
       month: undefined,
       year: undefined,
@@ -46,7 +46,7 @@ describe('contactSearchSchema', () => {
 
     it('should not pass validation when special characters are entered', async () => {
       // Given
-      const form = { ...baseForm, firstName: '^%@!', middleName: '^%@!', lastName: '^%@!' }
+      const form = { ...baseForm, firstName: '^%@!', middleNames: '^%@!', lastName: '^%@!' }
 
       // When
       const result = await doValidate(form)
@@ -56,7 +56,7 @@ describe('contactSearchSchema', () => {
       const deduplicatedFieldErrors = deduplicateFieldErrors(result)
       expect(deduplicatedFieldErrors).toStrictEqual({
         firstName: ["Contact's first name must not contain special characters"],
-        middleName: ["Contact's middle names must not contain special characters"],
+        middleNames: ["Contact's middle names must not contain special characters"],
         lastName: ["Contact's last name must not contain special characters"],
       })
     })
@@ -103,7 +103,7 @@ describe('contactSearchSchema', () => {
         // Given
         const form = {
           firstName: invalidName,
-          middleName: invalidName,
+          middleNames: invalidName,
           lastName: invalidName,
         }
 
@@ -116,7 +116,7 @@ describe('contactSearchSchema', () => {
         expect(deduplicatedFieldErrors).toStrictEqual({
           firstName: [`Contact's first name must not contain special characters`],
           lastName: [`Contact's last name must not contain special characters`],
-          middleName: [`Contact's middle names must not contain special characters`],
+          middleNames: [`Contact's middle names must not contain special characters`],
         })
       },
     )
@@ -127,7 +127,7 @@ describe('contactSearchSchema', () => {
         // Given
         const form = {
           firstName: validName,
-          middleName: validName,
+          middleNames: validName,
           lastName: validName,
         }
 
@@ -148,7 +148,7 @@ describe('contactSearchSchema', () => {
   describe('should validate the enter dob form', () => {
     type Form = {
       firstName: string
-      middleName?: string
+      middleNames?: string
       lastName?: string
       day?: string
       month?: string
@@ -160,9 +160,9 @@ describe('contactSearchSchema', () => {
         ['', '', 'testname', '1', '6', '1982'],
       ])(
         'dob should parse to a date correctly',
-        async (firstName: string, middleName: string, lastName: string, day: string, month: string, year: string) => {
+        async (firstName: string, middleNames: string, lastName: string, day: string, month: string, year: string) => {
           // Given
-          const form = { firstName, middleName, lastName, day, month, year }
+          const form = { firstName, middleNames, lastName, day, month, year }
 
           // When
           const result = await doValidate(form)
@@ -171,7 +171,7 @@ describe('contactSearchSchema', () => {
           expect(result.success).toStrictEqual(true)
           expect(result.data).toStrictEqual({
             firstName: '',
-            middleName: undefined,
+            middleNames: undefined,
             lastName: 'testname',
             day: 1,
             month: 6,
@@ -194,9 +194,9 @@ describe('contactSearchSchema', () => {
         ['', '', 'testname', '29', '02', '1990'], // Feb had 28 in 1990
       ])(
         'should not map dob',
-        async (firstName: string, middleName: string, lastName: string, day: string, month: string, year: string) => {
+        async (firstName: string, middleNames: string, lastName: string, day: string, month: string, year: string) => {
           // Given
-          const form = { firstName, middleName, lastName, day, month, year }
+          const form = { firstName, middleNames, lastName, day, month, year }
 
           // When
           const result = await doValidate(form)
@@ -210,9 +210,9 @@ describe('contactSearchSchema', () => {
         ['', '', 'testname', '29', '02', '1980'], // Feb had 29 in 1980
       ])(
         'should map it as a valid dob',
-        async (firstName: string, middleName: string, lastName: string, day: string, month: string, year: string) => {
+        async (firstName: string, middleNames: string, lastName: string, day: string, month: string, year: string) => {
           // Given
-          const form = { firstName, middleName, lastName, day, month, year }
+          const form = { firstName, middleNames, lastName, day, month, year }
 
           // When
           const result = await doValidate(form)

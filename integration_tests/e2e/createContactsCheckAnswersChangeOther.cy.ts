@@ -28,7 +28,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
       },
       lastName: 'FOO',
       firstName: '',
-      middleName: '',
+      middleNames: '',
       dateOfBirth: '',
     })
 
@@ -49,7 +49,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
     Page.verifyOnPage(EnterNamePage) //
       .selectTitle('MR')
       .enterLastName('Last')
-      .enterMiddleName('Middle')
+      .enterMiddleNames('Middle')
       .enterFirstName('First')
       .continueTo(SelectRelationshipPage, 'Last, First Middle')
       .selectRelationship('MOT')
@@ -81,7 +81,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
     Page.verifyOnPage(EnterNamePage) //
       .selectTitle('DR')
       .enterLastName('Last Updated')
-      .enterMiddleName('Middle Updated')
+      .enterMiddleNames('Middle Updated')
       .enterFirstName('First Updated')
       .clickContinue()
 
@@ -98,7 +98,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
         title: 'DR',
         lastName: 'Last Updated',
         firstName: 'First Updated',
-        middleName: 'Middle Updated',
+        middleNames: 'Middle Updated',
         createdBy: 'USER1',
         dateOfBirth: '1982-06-15T00:00:00.000Z',
         relationship: {
@@ -136,7 +136,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
         title: 'MR',
         lastName: 'Last',
         firstName: 'First',
-        middleName: 'Middle',
+        middleNames: 'Middle',
         createdBy: 'USER1',
         dateOfBirth: '1982-06-15T00:00:00.000Z',
         relationship: {
@@ -172,7 +172,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
         title: 'MR',
         lastName: 'Last',
         firstName: 'First',
-        middleName: 'Middle',
+        middleNames: 'Middle',
         createdBy: 'USER1',
         dateOfBirth: '1982-06-15T00:00:00.000Z',
         relationship: {
@@ -208,7 +208,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
         title: 'MR',
         lastName: 'Last',
         firstName: 'First',
-        middleName: 'Middle',
+        middleNames: 'Middle',
         createdBy: 'USER1',
         dateOfBirth: '1982-06-15T00:00:00.000Z',
         relationship: {
@@ -244,7 +244,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
         title: 'MR',
         lastName: 'Last',
         firstName: 'First',
-        middleName: 'Middle',
+        middleNames: 'Middle',
         createdBy: 'USER1',
         dateOfBirth: '1982-06-15T00:00:00.000Z',
         relationship: {

@@ -5,7 +5,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
 {% set pageTitle = applicationName + " - Enter name" %}
-{% set title = "What is the contacts name?" %}
+{% set title = "What is the contact's name?" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
@@ -39,12 +39,12 @@
                 }) }}
 
                 {{ govukInput({
-                    id: "middleName",
-                    name: "middleName",
+                    id: "middleNames",
+                    name: "middleNames",
                     label: { text: "Middle names" },
                     classes: 'govuk-!-width-one-third',
-                    errorMessage: validationErrors | findError('middleName'),
-                    value: middleName
+                    errorMessage: validationErrors | findError('middleNames'),
+                    value: middleNames
                 }) }}
 
                 {{ govukInput({

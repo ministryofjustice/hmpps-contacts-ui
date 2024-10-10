@@ -6,13 +6,13 @@ describe('createContactEnterNameSchema', () => {
     title: string
     lastName: string
     firstName: string
-    middleName: string
+    middleNames: string
   }
   const baseForm: Form = {
     title: '',
     lastName: '',
     firstName: '',
-    middleName: '',
+    middleNames: '',
   }
   describe('should validate the enter name form', () => {
     it('should require last name', async () => {
@@ -47,7 +47,7 @@ describe('createContactEnterNameSchema', () => {
       const form = {
         title: '',
         firstName: nameThatIs35Chars,
-        middleName: nameThatIs35Chars,
+        middleNames: nameThatIs35Chars,
         lastName: nameThatIs35Chars,
       }
 
@@ -60,7 +60,7 @@ describe('createContactEnterNameSchema', () => {
       expect(deduplicatedFieldErrors).toStrictEqual({
         firstName: ["Contact's first name must be 35 characters or less"],
         lastName: ["Contact's last name must be 35 characters or less"],
-        middleName: ["Contact's middle names must be 35 characters or less"],
+        middleNames: ["Contact's middle names must be 35 characters or less"],
       })
     })
 
@@ -91,7 +91,7 @@ describe('createContactEnterNameSchema', () => {
         const form = {
           title: '',
           firstName: invalidName,
-          middleName: invalidName,
+          middleNames: invalidName,
           lastName: invalidName,
         }
 
@@ -104,7 +104,7 @@ describe('createContactEnterNameSchema', () => {
         expect(deduplicatedFieldErrors).toStrictEqual({
           firstName: ["Contact's first name must not contain special characters"],
           lastName: ["Contact's last name must not contain special characters"],
-          middleName: ["Contact's middle names must not contain special characters"],
+          middleNames: ["Contact's middle names must not contain special characters"],
         })
       },
     )
@@ -116,7 +116,7 @@ describe('createContactEnterNameSchema', () => {
         const form = {
           title: '',
           firstName: validName,
-          middleName: validName,
+          middleNames: validName,
           lastName: validName,
         }
 

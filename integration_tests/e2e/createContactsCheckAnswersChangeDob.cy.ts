@@ -29,7 +29,7 @@ context('Create contact and update from check answers where we are changing the 
       },
       lastName: 'FOO',
       firstName: '',
-      middleName: '',
+      middleNames: '',
       dateOfBirth: '',
     })
 

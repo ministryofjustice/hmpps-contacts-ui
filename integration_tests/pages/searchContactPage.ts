@@ -10,8 +10,8 @@ export default class SearchContactPage extends Page {
     return this
   }
 
-  enterMiddleName(value: string): SearchContactPage {
-    this.middleNameTextBox().clear().type(value)
+  enterMiddleNames(value: string): SearchContactPage {
+    this.middleNamesTextBox().clear().type(value)
     return this
   }
 
@@ -69,7 +69,7 @@ export default class SearchContactPage extends Page {
 
   private firstNameTextBox = (): PageElement => cy.get('#firstName')
 
-  private middleNameTextBox = (): PageElement => cy.get('#middleName')
+  private middleNamesTextBox = (): PageElement => cy.get('#middleNames')
 
   private lastNameTextBox = (): PageElement => cy.get('#lastName')
 

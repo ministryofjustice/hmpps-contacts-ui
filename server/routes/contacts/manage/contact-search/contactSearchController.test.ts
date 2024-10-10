@@ -71,7 +71,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     expect(response.status).toEqual(200)
     expect($('h1.govuk-heading-l').text()).toContain('Search for a contact')
     expect($('input#firstName')).toBeDefined()
-    expect($('input#middleName')).toBeDefined()
+    expect($('input#middleNames')).toBeDefined()
     expect($('input#lastName')).toBeDefined()
     expect($('input#day')).toBeDefined()
     expect($('input#month')).toBeDefined()
@@ -99,14 +99,14 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       .type('form')
-      .send({ lastName: 'last', middleName: '', firstName: '', day: '', month: '', year: '' })
+      .send({ lastName: 'last', middleNames: '', firstName: '', day: '', month: '', year: '' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
     expect(session.addContactJourneys[journeyId].searchContact).toStrictEqual({
       contact: {
         firstName: '',
-        middleName: undefined,
+        middleNames: undefined,
         lastName: 'last',
       },
       dateOfBirth: {
@@ -121,7 +121,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       .type('form')
-      .send({ lastName: '', middleName: '', firstName: '', day: '', month: '', year: '' })
+      .send({ lastName: '', middleNames: '', firstName: '', day: '', month: '', year: '' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
@@ -132,7 +132,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       .type('form')
-      .send({ lastName: '', middleName: 'mid', firstName: 'first', day: '01', month: '12', year: '1970' })
+      .send({ lastName: '', middleNames: 'mid', firstName: 'first', day: '01', month: '12', year: '1970' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
@@ -143,7 +143,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       .type('form')
-      .send({ lastName: 'last', middleName: '', firstName: '', day: '01', month: '', year: '' })
+      .send({ lastName: 'last', middleNames: '', firstName: '', day: '01', month: '', year: '' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
@@ -154,7 +154,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       .type('form')
-      .send({ lastName: 'last', middleName: '', firstName: '', day: '01', month: '12', year: '' })
+      .send({ lastName: 'last', middleNames: '', firstName: '', day: '01', month: '12', year: '' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
@@ -168,7 +168,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .type('form')
       .send({
         lastName: '',
-        middleName: '',
+        middleNames: '',
         firstName: '',
         day: '01',
         month: '12',
@@ -184,7 +184,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       .type('form')
-      .send({ lastName: '&^^^$%%', middleName: '&^^^$%%', firstName: '&^^^$%%', day: '', month: '', year: '' })
+      .send({ lastName: '&^^^$%%', middleNames: '&^^^$%%', firstName: '&^^^$%%', day: '', month: '', year: '' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
@@ -226,7 +226,7 @@ describe('Contact seaarch results', () => {
     existingJourney = {
       ...existingJourney,
       searchContact: {
-        contact: { lastName: 'last', middleName: '', firstName: '' },
+        contact: { lastName: 'last', middleNames: '', firstName: '' },
         dateOfBirth: { day: undefined, month: undefined, year: undefined },
       },
     }
@@ -261,7 +261,7 @@ describe('Contact seaarch results', () => {
     existingJourney = {
       ...existingJourney,
       searchContact: {
-        contact: { lastName: 'last', middleName: '', firstName: '' },
+        contact: { lastName: 'last', middleNames: '', firstName: '' },
         dateOfBirth: { day: undefined, month: undefined, year: undefined },
       },
     }
@@ -297,7 +297,7 @@ describe('Contact seaarch results', () => {
     existingJourney = {
       ...existingJourney,
       searchContact: {
-        contact: { lastName: 'last', middleName: '', firstName: '' },
+        contact: { lastName: 'last', middleNames: '', firstName: '' },
         dateOfBirth: { day: undefined, month: undefined, year: undefined },
       },
     }

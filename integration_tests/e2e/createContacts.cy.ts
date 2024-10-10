@@ -29,7 +29,7 @@ context('Create Contacts', () => {
       },
       lastName: 'FOO',
       firstName: '',
-      middleName: '',
+      middleNames: '',
       dateOfBirth: '',
     })
 
@@ -113,7 +113,7 @@ context('Create Contacts', () => {
       .selectTitle('Mr')
       .enterLastName('Last')
       .enterFirstName('First')
-      .enterMiddleName('Middle')
+      .enterMiddleNames('Middle')
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Last, First Middle') //
@@ -158,7 +158,7 @@ context('Create Contacts', () => {
         title: 'MR',
         lastName: 'Last',
         firstName: 'First',
-        middleName: 'Middle',
+        middleNames: 'Middle',
         createdBy: 'USER1',
         dateOfBirth: '1982-06-15T00:00:00.000Z',
         relationship: {
@@ -191,12 +191,12 @@ context('Create Contacts', () => {
     enterNamePage //
       .enterLastName('Last'.padEnd(36))
       .enterFirstName('First'.padEnd(36))
-      .enterMiddleName('Middle'.padEnd(36))
+      .enterMiddleNames('Middle'.padEnd(36))
       .clickContinue()
 
     enterNamePage.hasFieldInError('lastName', "Contact's last name must be 35 characters or less")
     enterNamePage.hasFieldInError('firstName', "Contact's first name must be 35 characters or less")
-    enterNamePage.hasFieldInError('middleName', "Contact's middle names must be 35 characters or less")
+    enterNamePage.hasFieldInError('middleNames', "Contact's middle names must be 35 characters or less")
   })
 
   it('Cannot enter a blank first name or last name', () => {

@@ -32,7 +32,7 @@ export default class AddContactModeController implements PageHandler {
         title: existingContact.title,
         lastName: existingContact.lastName,
         firstName: existingContact.firstName,
-        middleName: existingContact.middleName,
+        middleNames: existingContact.middleNames,
       }
       if (existingContact.dateOfBirth) {
         const date = new Date(existingContact.dateOfBirth)
