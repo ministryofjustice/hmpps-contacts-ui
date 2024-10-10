@@ -22,7 +22,7 @@ declare namespace journeys {
     title?: string
     lastName: string
     firstName: string
-    middleName?: string
+    middleNames?: string
   }
 
   export interface DateOfBirth {

@@ -9,6 +9,7 @@ import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
+import PrisonerContactSummaryPage = contactsApiClientTypes.PrisonerContactSummaryPage
 
 export default class ContactsApiClient extends RestClient {
   constructor() {
@@ -43,8 +44,8 @@ export default class ContactsApiClient extends RestClient {
     prisonerNumber: string,
     activeOnly: boolean,
     user: Express.User,
-  ): Promise<PrisonerContactSummary[]> {
-    return this.get<PrisonerContactSummary[]>(
+  ): Promise<PrisonerContactSummaryPage> {
+    return this.get<PrisonerContactSummaryPage>(
       {
         path: `/prisoner/${prisonerNumber}/contact`,
         query: { active: activeOnly },
@@ -74,7 +75,7 @@ export default class ContactsApiClient extends RestClient {
         query: {
           lastName: contactSearchRequest.lastName,
           firstName: contactSearchRequest.firstName,
-          middleName: contactSearchRequest.middleName,
+          middleNames: contactSearchRequest.middleNames,
           dateOfBirth: contactSearchRequest.dateOfBirth,
           ...paginationParameters,
         },

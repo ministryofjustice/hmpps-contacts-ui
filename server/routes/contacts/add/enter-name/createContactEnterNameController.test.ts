@@ -67,7 +67,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('What is the contacts name?')
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual("What is the contact's name?")
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
   })
@@ -105,7 +105,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
 
   it('should render previously entered details if validation errors', async () => {
     // Given
-    const form = { firstName: 'first', lastName: 'last', middleName: 'middle', title: 'MR' }
+    const form = { firstName: 'first', lastName: 'last', middleNames: 'middle', title: 'MR' }
     auditService.logPageView.mockResolvedValue(null)
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
@@ -116,7 +116,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
     expect($('#firstName').val()).toStrictEqual('first')
-    expect($('#middleName').val()).toStrictEqual('middle')
+    expect($('#middleNames').val()).toStrictEqual('middle')
     expect($('#lastName').val()).toStrictEqual('last')
     expect($('#title').val()).toStrictEqual('MR')
   })
@@ -124,7 +124,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
   it('should render previously entered details if no validation errors but there are session values', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
-    existingJourney.names = { firstName: 'first', lastName: 'last', middleName: 'middle', title: 'MR' }
+    existingJourney.names = { firstName: 'first', lastName: 'last', middleNames: 'middle', title: 'MR' }
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${journeyId}`)
@@ -133,7 +133,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
     expect($('#firstName').val()).toStrictEqual('first')
-    expect($('#middleName').val()).toStrictEqual('middle')
+    expect($('#middleNames').val()).toStrictEqual('middle')
     expect($('#lastName').val()).toStrictEqual('last')
     expect($('#title').val()).toStrictEqual('MR')
   })
@@ -141,8 +141,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
   it('should render submitted options on validation error even if there is a version in the session', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
-    existingJourney.names = { firstName: 'first', lastName: 'last', middleName: 'middle', title: 'MR' }
-    const form = { firstName: 'first updated', lastName: 'last updated', middleName: 'middle updated', title: 'DR' }
+    existingJourney.names = { firstName: 'first', lastName: 'last', middleNames: 'middle', title: 'MR' }
+    const form = { firstName: 'first updated', lastName: 'last updated', middleNames: 'middle updated', title: 'DR' }
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
@@ -152,7 +152,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
     expect($('#firstName').val()).toStrictEqual('first updated')
-    expect($('#middleName').val()).toStrictEqual('middle updated')
+    expect($('#middleNames').val()).toStrictEqual('middle updated')
     expect($('#lastName').val()).toStrictEqual('last updated')
     expect($('#title').val()).toStrictEqual('DR')
   })
@@ -170,14 +170,14 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId',
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${journeyId}`)
       .type('form')
-      .send({ firstName: 'first', lastName: 'last', middleName: 'middle', title: 'Mr' })
+      .send({ firstName: 'first', lastName: 'last', middleNames: 'middle', title: 'Mr' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship/${journeyId}`)
 
     expect(session.addContactJourneys[journeyId].names).toStrictEqual({
       lastName: 'last',
       firstName: 'first',
-      middleName: 'middle',
+      middleNames: 'middle',
       title: 'Mr',
     })
   })
@@ -187,7 +187,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId',
     existingJourney.names = {
       lastName: 'last',
       firstName: 'first',
-      middleName: 'middle',
+      middleNames: 'middle',
       title: 'MR',
     }
     existingJourney.isCheckingAnswers = true
@@ -196,7 +196,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId',
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${journeyId}`)
       .type('form')
-      .send({ firstName: 'first updated', lastName: 'last updated', middleName: 'middle updated', title: 'DR' })
+      .send({ firstName: 'first updated', lastName: 'last updated', middleNames: 'middle updated', title: 'DR' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
 
@@ -204,7 +204,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId',
     expect(session.addContactJourneys[journeyId].names).toStrictEqual({
       lastName: 'last updated',
       firstName: 'first updated',
-      middleName: 'middle updated',
+      middleNames: 'middle updated',
       title: 'DR',
     })
   })

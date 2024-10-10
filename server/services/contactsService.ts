@@ -4,9 +4,9 @@ import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import Pageable = contactsApiClientTypes.Pageable
-import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
 import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
+import PrisonerContactSummaryPage = contactsApiClientTypes.PrisonerContactSummaryPage
 
 export default class ContactsService {
   constructor(private readonly contactsApiClient: ContactsApiClient) {}
@@ -35,7 +35,7 @@ export default class ContactsService {
       title: journey.names.title,
       lastName: journey.names.lastName,
       firstName: journey.names.firstName,
-      middleName: journey.names.middleName,
+      middleNames: journey.names.middleNames,
       dateOfBirth,
       estimatedIsOverEighteen: isOverEighteen,
       relationship: {
@@ -68,7 +68,7 @@ export default class ContactsService {
     prisonerNumber: string,
     active: boolean,
     user: Express.User,
-  ): Promise<PrisonerContactSummary[]> {
+  ): Promise<PrisonerContactSummaryPage> {
     return this.contactsApiClient.getPrisonerContacts(prisonerNumber, active, user)
   }
 

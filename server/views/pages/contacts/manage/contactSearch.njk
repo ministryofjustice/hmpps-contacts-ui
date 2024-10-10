@@ -38,12 +38,12 @@
             }) }}
 
             {{ govukInput({
-                id: "middleName",
-                name: "middleName",
+                id: "middleNames",
+                name: "middleNames",
                 label: { text: "Middle names" },
                 classes: 'govuk-!-width-one-third',
-                errorMessage: validationErrors | findError('middleName'),
-                value: view.middleName
+                errorMessage: validationErrors | findError('middleNames'),
+                value: view.middleNames
             }) }}
 
             {{ govukInput({

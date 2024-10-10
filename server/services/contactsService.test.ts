@@ -15,7 +15,7 @@ jest.mock('../data/contactsApiClient')
 const searchResult = TestData.contactSearchResultItem()
 const contactSearchRequest: ContactSearchRequest = {
   lastName: 'last',
-  middleName: '',
+  middleNames: '',
   firstName: 'first',
   dateOfBirth: '1980-12-10T00:00:00.000Z',
 }
@@ -50,7 +50,7 @@ describe('contactsService', () => {
           title: 'Mr',
           lastName: 'last',
           firstName: 'first',
-          middleName: 'middle',
+          middleNames: 'middle',
         },
         dateOfBirth: {
           isKnown: 'YES',
@@ -69,7 +69,7 @@ describe('contactsService', () => {
         title: 'Mr',
         lastName: 'last',
         firstName: 'first',
-        middleName: 'middle',
+        middleNames: 'middle',
         dateOfBirth: new Date('1982-06-01T00:00:00.000Z'),
         estimatedIsOverEighteen: undefined,
         createdBy: 'user1',
@@ -120,7 +120,7 @@ describe('contactsService', () => {
         title: undefined,
         lastName: 'last',
         firstName: 'first',
-        middleName: undefined,
+        middleNames: undefined,
         dateOfBirth: undefined,
         estimatedIsOverEighteen: 'DO_NOT_KNOW',
         relationship: {
@@ -174,7 +174,7 @@ describe('contactsService', () => {
         title: undefined,
         lastName: 'last',
         firstName: 'first',
-        middleName: undefined,
+        middleNames: undefined,
         dateOfBirth: undefined,
         estimatedIsOverEighteen: expected,
         relationship: {
@@ -254,7 +254,7 @@ describe('contactsService', () => {
         id: 123456,
         lastName: 'last',
         firstName: 'middle',
-        middleName: 'first',
+        middleNames: 'first',
         dateOfBirth: '1980-12-10T00:00:00.000Z',
         createdBy: user.username,
         createdTime: '2024-01-01',
@@ -289,7 +289,7 @@ describe('contactsService', () => {
           title: 'Mr',
           lastName: 'last',
           firstName: 'first',
-          middleName: 'middle',
+          middleNames: 'middle',
         },
         dateOfBirth: {
           isKnown: 'YES',

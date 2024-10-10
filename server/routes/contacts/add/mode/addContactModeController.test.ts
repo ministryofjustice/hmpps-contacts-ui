@@ -86,7 +86,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       title: 'MR',
       lastName: 'last',
       firstName: 'middle',
-      middleName: 'first',
+      middleNames: 'first',
       dateOfBirth: '1980-12-10T00:00:00.000Z',
       createdBy: user.username,
       createdTime: '2024-01-01',
@@ -111,7 +111,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       title: 'MR',
       lastName: 'last',
       firstName: 'middle',
-      middleName: 'first',
+      middleNames: 'first',
     })
     expect(existingJourney.dateOfBirth).toStrictEqual({
       isKnown: 'YES',
@@ -128,7 +128,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       title: 'MR',
       lastName: 'last',
       firstName: 'middle',
-      middleName: 'first',
+      middleNames: 'first',
       dateOfBirth: undefined,
       estimatedIsOverEighteen: 'YES',
       createdBy: user.username,
@@ -158,7 +158,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       title: 'MR',
       lastName: 'last',
       firstName: 'middle',
-      middleName: 'first',
+      middleNames: 'first',
     })
   })
 
@@ -169,7 +169,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       title: 'MR',
       lastName: 'last',
       firstName: 'middle',
-      middleName: 'first',
+      middleNames: 'first',
       dateOfBirth: undefined,
       estimatedIsOverEighteen: undefined,
       createdBy: user.username,
@@ -195,7 +195,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       title: 'MR',
       lastName: 'last',
       firstName: 'middle',
-      middleName: 'first',
+      middleNames: 'first',
     })
     expect(existingJourney.dateOfBirth).toStrictEqual({
       isKnown: 'NO',
@@ -215,7 +215,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
         title: 'MR',
         firstName: 'First',
         lastName: 'Last',
-        middleName: 'Middle',
+        middleNames: 'Middle',
       }
       existingJourney.dateOfBirth = { isKnown: 'YES', day: 25, month: 12, year: 1990 }
       existingJourney.isCheckingAnswers = true
@@ -247,7 +247,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
         title: 'MRS',
         lastName: 'Tsal',
         firstName: 'Tsrif',
-        middleName: 'Elldim',
+        middleNames: 'Elldim',
         dateOfBirth: '1980-12-10T00:00:00.000Z',
         estimatedIsOverEighteen: undefined,
         createdBy: user.username,
@@ -268,7 +268,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
         title: 'MRS',
         lastName: 'Tsal',
         firstName: 'Tsrif',
-        middleName: 'Elldim',
+        middleNames: 'Elldim',
       })
       expect(existingJourney.dateOfBirth).toStrictEqual({
         isKnown: 'YES',

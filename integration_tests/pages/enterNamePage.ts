@@ -2,7 +2,7 @@ import Page, { PageElement } from './page'
 
 export default class EnterNamePage extends Page {
   constructor() {
-    super('What is the contacts name?')
+    super("What is the contact's name?")
   }
 
   enterLastName(value: string): EnterNamePage {
@@ -15,8 +15,8 @@ export default class EnterNamePage extends Page {
     return this
   }
 
-  enterMiddleName(value: string): EnterNamePage {
-    this.middleNameTextBox().clear().type(value)
+  enterMiddleNames(value: string): EnterNamePage {
+    this.middleNamesTextBox().clear().type(value)
     return this
   }
 
@@ -29,7 +29,7 @@ export default class EnterNamePage extends Page {
 
   private firstNameTextBox = (): PageElement => cy.get('#firstName')
 
-  private middleNameTextBox = (): PageElement => cy.get('#middleName')
+  private middleNamesTextBox = (): PageElement => cy.get('#middleNames')
 
   private titleSelect = (): PageElement => cy.get('#title')
 }

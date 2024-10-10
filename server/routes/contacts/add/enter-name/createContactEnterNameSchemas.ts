@@ -32,7 +32,7 @@ export const createContactEnterNameSchemaFactory = () => async () => {
       .regex(NAME_REGEX, FIRST_NAME_INVALID)
       .refine(val => val?.trim().length > 0, { message: FIRST_NAME_REQUIRED_MESSAGE })
       .transform(val => val?.trim()),
-    middleName: z
+    middleNames: z
       .string()
       .max(35, MIDDLE_NAME_TOO_LONG_ERROR_MSG)
       .regex(NAME_REGEX, MIDDLE_NAME_INVALID)

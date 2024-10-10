@@ -32,8 +32,8 @@ export default class ListContactsController implements PageHandler {
     const inactiveContacts = await this.contactsService.getPrisonerContacts(prisonerNumber as string, false, user)
 
     res.render('pages/contacts/manage/listContacts', {
-      activeContacts,
-      inactiveContacts,
+      activeContacts: activeContacts.content,
+      inactiveContacts: inactiveContacts.content,
       journey,
       prisonerNumber,
     })

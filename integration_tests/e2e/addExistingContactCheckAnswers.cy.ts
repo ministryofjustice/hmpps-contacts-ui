@@ -21,7 +21,7 @@ context('Add Existing Contact Check Answers', () => {
     id: contact.id,
     lastName: contact.lastName,
     firstName: contact.firstName,
-    middleName: contact.middleName,
+    middleNames: contact.middleNames,
   })
 
   beforeEach(() => {
@@ -42,7 +42,7 @@ context('Add Existing Contact Check Answers', () => {
       },
       lastName: 'FOO',
       firstName: '',
-      middleName: '',
+      middleNames: '',
       dateOfBirth: '',
     })
     cy.task('stubGetContactById', {

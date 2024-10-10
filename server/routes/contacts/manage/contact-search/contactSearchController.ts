@@ -28,7 +28,7 @@ export default class ContactSearchController implements PageHandler {
       const contactSearchRequest: ContactSearchRequest = {
         lastName: journey?.searchContact?.contact.lastName,
         firstName: journey?.searchContact?.contact.firstName,
-        middleName: journey?.searchContact?.contact.middleName,
+        middleNames: journey?.searchContact?.contact.middleNames,
         dateOfBirth: formatDateForApi(journey?.searchContact?.dateOfBirth),
       }
 
@@ -44,7 +44,7 @@ export default class ContactSearchController implements PageHandler {
       prisonerDetails,
       lastName: res.locals?.formResponses?.lastName ?? journey?.searchContact?.contact.lastName,
       firstName: res.locals?.formResponses?.firstName ?? journey?.searchContact?.contact.firstName,
-      middleName: res.locals?.formResponses?.middleName ?? journey?.searchContact?.contact.middleName,
+      middleNames: res.locals?.formResponses?.middleNames ?? journey?.searchContact?.contact.middleNames,
       day: res.locals?.formResponses?.day ?? journey?.searchContact?.dateOfBirth?.day,
       month: res.locals?.formResponses?.month ?? journey?.searchContact?.dateOfBirth?.month,
       year: res.locals?.formResponses?.year ?? journey?.searchContact?.dateOfBirth?.year,
@@ -54,13 +54,13 @@ export default class ContactSearchController implements PageHandler {
   }
 
   POST = async (req: Request<{ journeyId: string }, ContactSearchSchemaType>, res: Response): Promise<void> => {
-    const { lastName, firstName, middleName, day, month, year } = req.body
+    const { lastName, firstName, middleNames, day, month, year } = req.body
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys[journeyId]
     journey.searchContact = {
       contact: {
         lastName,
-        middleName,
+        middleNames,
         firstName,
       },
       dateOfBirth: {

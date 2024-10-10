@@ -3,7 +3,7 @@ import PrisonerDetails = journeys.PrisonerDetails
 import ContactNames = journeys.ContactNames
 
 const formatName = (
-  val: { lastName: string; firstName: string; middleName?: string } | ContactNames | PrisonerDetails,
+  val: { lastName: string; firstName: string; middleNames?: string } | ContactNames | PrisonerDetails,
   opts?: { excludeMiddleNames?: boolean },
 ): string => {
   let name = `${val.lastName}, ${val.firstName}`

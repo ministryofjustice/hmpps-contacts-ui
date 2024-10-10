@@ -19,7 +19,7 @@ context('Contact confirmation', () => {
     id: contact.id,
     lastName: contact.lastName,
     firstName: contact.firstName,
-    middleName: contact.middleName,
+    middleNames: contact.middleNames,
   })
   const journeyId = uuidv4()
 
@@ -41,7 +41,7 @@ context('Contact confirmation', () => {
       },
       lastName: 'Contact',
       firstName: '',
-      middleName: '',
+      middleNames: '',
       dateOfBirth: '',
     })
 
@@ -137,7 +137,7 @@ context('Contact confirmation', () => {
       id: contactId,
       firstName: 'Existing',
       lastName: 'Contact',
-      middleName: 'Mr',
+      middleNames: 'Mr',
       dateOfBirth: '1990-01-14',
       isDeceased: false,
       deceasedDate: null,
@@ -170,7 +170,7 @@ context('Contact confirmation', () => {
       id: contactId,
       firstName: 'Existing',
       lastName: 'Contact',
-      middleName: 'Mr',
+      middleNames: 'Mr',
       dateOfBirth: '1990-01-14',
       languageCode: null,
       languageDescription: null,
