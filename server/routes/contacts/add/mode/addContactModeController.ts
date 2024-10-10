@@ -20,6 +20,11 @@ export default class AddContactModeController implements PageHandler {
 
     const journey = req.session.addContactJourneys[journeyId]
     journey.mode = mode
+    journey.isCheckingAnswers = false
+    delete journey.contactId
+    delete journey.names
+    delete journey.dateOfBirth
+    delete journey.relationship
     if (journey.mode === 'EXISTING' && contactId) {
       journey.contactId = Number(contactId)
       const existingContact = await this.contactService.getContact(journey.contactId, user)
