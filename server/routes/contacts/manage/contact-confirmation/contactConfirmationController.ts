@@ -6,7 +6,6 @@ import { navigationForAddContactJourney, nextPageForAddContactJourney } from '..
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import Contact = contactsApiClientTypes.Contact
 import { ContactsService } from '../../../../services'
-import logger from '../../../../../logger'
 
 export default class ContactConfirmationController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -20,14 +19,7 @@ export default class ContactConfirmationController implements PageHandler {
     const { journeyId } = req.params
     const { prisonerDetails, user } = res.locals
     const journey = req.session.addContactJourneys[journeyId]
-    const validationErrors = res.locals.validationErrors?.isContactConfirmed
-    let contact: Contact
-
-    try {
-      contact = validationErrors ? null : await this.contactsService.getContact(journey.contactId, user)
-    } catch (error) {
-      logger.error(JSON.stringify(error))
-    }
+    const contact: Contact = await this.contactsService.getContact(journey.contactId, user)
 
     return res.render('pages/contacts/manage/contactConfirmation/confirmation', {
       contact,
