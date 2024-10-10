@@ -202,4 +202,84 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       isOverEighteen: undefined,
     })
   })
+
+  describe('reset journeys when switching modes', () => {
+    beforeEach(() => {
+      existingJourney.relationship = {
+        type: 'MOT',
+        isEmergencyContact: 'YES',
+        isNextOfKin: 'YES',
+        comments: 'Some comments',
+      }
+      existingJourney.names = {
+        title: 'MR',
+        firstName: 'First',
+        lastName: 'Last',
+        middleName: 'Middle',
+      }
+      existingJourney.dateOfBirth = { isKnown: 'YES', day: 25, month: 12, year: 1990 }
+      existingJourney.isCheckingAnswers = true
+      existingJourney.contactId = 99999
+    })
+
+    it('should reset journey if changing mode from EXISTING to NEW', async () => {
+      existingJourney.mode = 'EXISTING'
+
+      auditService.logPageView.mockResolvedValue(null)
+
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/mode/NEW/${journeyId}`)
+
+      expect(response.status).toEqual(302)
+      expect(response.headers.location).toContain('/contacts/create/enter-name/')
+      expect(existingJourney.names).toBeUndefined()
+      expect(existingJourney.dateOfBirth).toBeUndefined()
+      expect(existingJourney.relationship).toBeUndefined()
+      expect(existingJourney.contactId).toBeUndefined()
+      expect(existingJourney.isCheckingAnswers).toStrictEqual(false)
+      expect(existingJourney.mode).toStrictEqual('NEW')
+      expect(contactsService.getContact).not.toHaveBeenCalled()
+    })
+
+    it('should reset journey if changing mode from NEW to EXISTING', async () => {
+      existingJourney.mode = 'NEW'
+      const contact: Contact = {
+        id: 123456,
+        title: 'MRS',
+        lastName: 'Tsal',
+        firstName: 'Tsrif',
+        middleName: 'Elldim',
+        dateOfBirth: '1980-12-10T00:00:00.000Z',
+        estimatedIsOverEighteen: undefined,
+        createdBy: user.username,
+        createdTime: '2024-01-01',
+      }
+      auditService.logPageView.mockResolvedValue(null)
+      contactsService.getContact.mockResolvedValue(contact)
+
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/add/mode/EXISTING/${journeyId}?contactId=123456`,
+      )
+
+      expect(response.status).toEqual(302)
+      expect(response.headers.location).toStrictEqual(
+        `/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`,
+      )
+      expect(existingJourney.names).toStrictEqual({
+        title: 'MRS',
+        lastName: 'Tsal',
+        firstName: 'Tsrif',
+        middleName: 'Elldim',
+      })
+      expect(existingJourney.dateOfBirth).toStrictEqual({
+        isKnown: 'YES',
+        year: 1980,
+        month: 12,
+        day: 10,
+      })
+      expect(existingJourney.relationship).toBeUndefined()
+      expect(existingJourney.contactId).toStrictEqual(123456)
+      expect(existingJourney.isCheckingAnswers).toStrictEqual(false)
+      expect(contactsService.getContact).toHaveBeenCalled()
+    })
+  })
 })
