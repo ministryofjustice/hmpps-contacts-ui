@@ -16,25 +16,25 @@
     {% if contact.addresses.length > 0 %}
         {%- include "./addresses.njk" -%}
     {% else %}
-        {{ notProvided({title: 'Addresses', key: 'Address', dataqa: 'addresses-not-provided' }) }}
+        {{ notProvided({title: 'Addresses', key: 'Address', className: 'addresses-not-provided' }) }}
     {% endif %}
 
     {% if contact.phoneNumbers.length > 0 %}
         {%- include "./phone.njk" -%}
     {% else %}
-        {{ notProvided({title: 'Phone numbers', key: 'Phone number', dataqa: 'phone-numbers-not-provided' }) }}
+        {{ notProvided({title: 'Phone numbers', key: 'Phone number', className: 'phone-numbers-not-provided' }) }}
     {% endif %}
 
     {% if contact.emailAddresses.length > 0 %}
         {%- include "./emailAddresses.njk" -%}
     {% else %}
-        {{ notProvided({title: 'Email addresses', key: 'Email addresses', dataqa: 'email-addresses-not-provided' }) }}
+        {{ notProvided({title: 'Email addresses', key: 'Email addresses', className: 'email-addresses-not-provided' }) }}
     {% endif %}
 
     {% if contact.identities.length > 0 %}
         {%- include "./identityNumbers.njk" -%}
     {% else %}
-        {{ notProvided({title: 'Identity numbers', key: 'Passport number', dataqa: 'identity-numbers-not-provided' }) }}
+        {{ notProvided({title: 'Identity numbers', key: 'Passport number', className: 'identity-numbers-not-provided' }) }}
     {% endif %}
 
     {%- include "./languageDetails.njk" -%}

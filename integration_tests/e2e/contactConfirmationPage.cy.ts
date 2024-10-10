@@ -148,6 +148,7 @@ context('Contact confirmation', () => {
         {
           ...TestData.address,
           comments: '',
+          phoneNumbers: [],
           startDate: null,
           endDate: null,
         },
@@ -160,6 +161,7 @@ context('Contact confirmation', () => {
     Page.verifyOnPage(ContactConfirmationPage, 'Smith, John')
       .verifyShowDeceasedDateValueAs('Not provided')
       .verifyShowCommentsValueAs('Not provided')
+      .verifyShowAddressesSpecificPhoneNumbersValueAsNotProvided('Not provided')
       .verifyShowAddressFromToDateValueAsNotProvided('Not provided')
   })
 

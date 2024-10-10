@@ -102,7 +102,12 @@ export default class ContactConfirmationPage extends Page {
 
   // Not Provided Sections
   verifyShowAddressesValueAsNotProvided(expected: string): ContactConfirmationPage {
-    this.phoneAddressesNotProvided().should('contain.text', expected)
+    this.addressesNotProvided().should('contain.text', expected)
+    return this
+  }
+
+  verifyShowAddressesSpecificPhoneNumbersValueAsNotProvided(expected: string): ContactConfirmationPage {
+    this.addressesSpecificPhoneNumbersNotProvided().should('contain.text', expected)
     return this
   }
 
@@ -131,46 +136,49 @@ export default class ContactConfirmationPage extends Page {
   private contactCard = (elementNumber: number): PageElement =>
     cy.get(`.govuk-summary-card:eq(${elementNumber}) .govuk-summary-card__title`)
 
-  private lastNameValue = (): PageElement => cy.get('[data-qa=confirm-name-value]')
+  private lastNameValue = (): PageElement => cy.get('.confirm-name-value')
 
-  private dobValue = (): PageElement => cy.get('[data-qa=confirm-dob-value]')
+  private dobValue = (): PageElement => cy.get('.confirm-dob-value')
 
-  private deceasedDateValue = (): PageElement => cy.get('[data-qa=confirm-deceased-date-value]')
+  private deceasedDateValue = (): PageElement => cy.get('.confirm-deceased-date-value')
 
-  private addressValue = (): PageElement => cy.get('[data-qa=confirm-address-value]')
+  private addressValue = (): PageElement => cy.get('.confirm-address-value')
 
-  private addressTypeValue = (): PageElement => cy.get('[data-qa=confirm-type-value]')
+  private addressTypeValue = (): PageElement => cy.get('.confirm-type-value')
 
   private addressSpecificPhoneValue = (phoneType: string): PageElement =>
     cy.get(`[data-qa=confirm-specific-phone-${phoneType}-value]`)
 
-  private emailValue = (): PageElement => cy.get('[data-qa=confirm-mail-value]')
+  private emailValue = (): PageElement => cy.get('.confirm-mail-value')
 
-  private commentsValue = (): PageElement => cy.get('[data-qa=confirm-comments-value]')
+  private commentsValue = (): PageElement => cy.get('.confirm-comments-value')
 
   private fromStartDateValue = (): PageElement => cy.get('[data-qa=confirm-start-date-value]')
 
   private toEndDateValue = (): PageElement => cy.get('[data-qa=confirm-end-date-value]')
 
-  private phoneNumbersValue = (phoneType: string): PageElement => cy.get(`[data-qa=confirm-${phoneType}-number-value]`)
+  private phoneNumbersValue = (phoneType: string): PageElement => cy.get(`.confirm-${phoneType}-number-value`)
 
-  private emalAddressValue = (): PageElement => cy.get('[data-qa=confirm-email-addresses-value]')
+  private emalAddressValue = (): PageElement => cy.get('.confirm-email-addresses-value')
 
-  private identityNumberValue = (type: string): PageElement => cy.get(`[data-qa=confirm-${type}-value]`)
+  private identityNumberValue = (type: string): PageElement => cy.get(`.confirm-${type}-value`)
 
-  private spokenLanguageValue = (): PageElement => cy.get('[data-qa=confirm-spoken-language-value]')
+  private spokenLanguageValue = (): PageElement => cy.get('.confirm-spoken-language-value')
 
-  private needsInterpreterValue = (): PageElement => cy.get('[data-qa=confirm-needs-interpreter-value]')
+  private needsInterpreterValue = (): PageElement => cy.get('.confirm-needs-interpreter-value')
 
   private checkRadio = (elementNumber: number): PageElement => cy.get('[type="radio"]').eq(elementNumber)
 
-  private phoneAddressesNotProvided = (): PageElement => cy.get(`[data-qa=addresses-not-provided]`)
+  private addressesNotProvided = (): PageElement => cy.get('.addresses-not-provided')
 
-  private phoneNumbersNotProvided = (): PageElement => cy.get(`[data-qa=phone-numbers-not-provided]`)
+  private addressesSpecificPhoneNumbersNotProvided = (): PageElement =>
+    cy.get(`.address-specific-phone-numbers-not-provided`)
 
-  private emailAddressesNotProvided = (): PageElement => cy.get(`[data-qa=email-addresses-not-provided]`)
+  private phoneNumbersNotProvided = (): PageElement => cy.get('.phone-numbers-not-provided')
 
-  private identityNumbersNotProvided = (): PageElement => cy.get(`[data-qa=identity-numbers-not-provided]`)
+  private emailAddressesNotProvided = (): PageElement => cy.get('.email-addresses-not-provided')
 
-  private addressFromToDate = (): PageElement => cy.get('[data-qa="from-to-date-not-provided"]')
+  private identityNumbersNotProvided = (): PageElement => cy.get('.identity-numbers-not-provided')
+
+  private addressFromToDate = (): PageElement => cy.get('[data-qa=from-to-date-not-provided]')
 }

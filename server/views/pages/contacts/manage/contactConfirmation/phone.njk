@@ -11,7 +11,8 @@
                         text: (item.phoneType | capitalizeFirstLetter)
                     },
                     value: { 
-                        html: '<span data-qa=confirm-' + item.phoneType + '-number-value >' + item.phoneNumber + '</span>' 
+                        text: item.phoneNumber,
+                        classes: 'confirm-' + item.phoneType + '-number-value'
                     }
                 }
         ), phoneNumbers) %}

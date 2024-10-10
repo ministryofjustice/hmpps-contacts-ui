@@ -45,7 +45,8 @@
                         text: "Address"
                     },
                     value: { 
-                        html: '<span data-qa="confirm-address-value">' + address | addressToLines + '</span>' 
+                        html: address | addressToLines,
+                        classes: 'confirm-address-value'
                     }
                 }
         ), primaryAddressRow) %}
@@ -57,7 +58,8 @@
                         text: "Type"
                     },
                     value: {
-                        html: '<span data-qa="confirm-type-value">' + (item.addressType | capitalizeFirstLetter) + '</span>'
+                        text: item.addressType | capitalizeFirstLetter,
+                        classes: 'confirm-type-value'
                     }
                 }
         ), primaryAddressRow) %}
@@ -69,7 +71,8 @@
                         text: "Address-specific phone numbers"
                     },
                     value: {
-                        html: '<span>' + 'Not provided' if not addressSpecificPhoneNumbers else addressSpecificPhoneNumbers + '</span>'
+                        html: 'Not provided' if not addressSpecificPhoneNumbers else addressSpecificPhoneNumbers,
+                        classes: 'address-specific-phone-numbers-not-provided'
                     }
                 }
         ), primaryAddressRow) %}
@@ -81,7 +84,8 @@
                         text: "Mail"
                     },
                     value: {
-                        html: '<span data-qa="confirm-mail-value">' + ('Yes' if item.mailFlag == true else 'No') + '</span>'
+                        text: 'Yes' if item.mailFlag == true else 'No',
+                        classes: 'confirm-mail-value'
                     }
                 }
         ), primaryAddressRow) %}
@@ -93,7 +97,8 @@
                         text: "Comments"
                     },
                     value: {
-                        html: '<span data-qa="confirm-comments-value">' + 'Not provided' if not item.comments else item.comments + '</span>'
+                        text: 'Not provided' if not item.comments else item.comments,
+                        classes: 'confirm-comments-value'
                     }
                 }
         ), primaryAddressRow) %}

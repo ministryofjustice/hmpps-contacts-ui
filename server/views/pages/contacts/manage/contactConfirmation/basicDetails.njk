@@ -34,7 +34,9 @@
             text: "Name"
         },
         value: {
-            html: '<span data-qa="confirm-name-value">' + contactFullNameRow | join(' ') + '</span>'
+            text: contactFullNameRow | join(' '),
+            classes: 'confirm-name-value'
+
         }
     },
     {
@@ -42,7 +44,8 @@
             text: "Date of birth"
         },
         value: {
-            html:  '<span data-qa="confirm-dob-value">' + contact.dateOfBirth | formatDate + '</span>'
+            text:  contact.dateOfBirth | formatDate,
+            classes: 'confirm-dob-value'
         }
     },
     {
@@ -50,7 +53,8 @@
             text: "Deceased date"
         },
         value: {
-            html: '<span data-qa="confirm-deceased-date-value"> Not provided' if not contact.isDeceased else  contact.deceasedDate | formatDate + '</span>'
+            text: 'Not provided' if not contact.isDeceased else  contact.deceasedDate | formatDate,
+            classes: 'confirm-deceased-date-value'
         }
     }]
 }) }}
