@@ -129,27 +129,6 @@ workflows:
               only:
                 - main
       - hmpps/deploy_env:
-          name: deploy_dev
-          env: "dev"
-          jira_update: true
-          pipeline_id: <<pipeline.id>>
-          pipeline_number: <<pipeline.number>>
-          context: hmpps-common-vars
-          filters:
-            branches:
-              only:
-                - main
-          requires:
-            - helm_lint
-            - unit_test
-            - integration_test
-            - build_docker
-          helm_timeout: 5m
-      - request-preprod-approval:
-          type: approval
-          requires:
-            - deploy_dev
-      - hmpps/deploy_env:
           name: deploy_preprod
           env: "preprod"
           jira_update: true
@@ -162,34 +141,11 @@ workflows:
           requires:
             - request-preprod-approval
           helm_timeout: 5m
-      - request-prod-approval:
-          type: approval
-          requires:
-            - deploy_preprod
-      - hmpps/deploy_env:
-          name: deploy_prod
-          env: "prod"
-          jira_update: true
-          jira_env_type: production
-          pipeline_id: <<pipeline.id>>
-          pipeline_number: <<pipeline.number>>
-          slack_notification: true
-          slack_channel_name: << pipeline.parameters.releases-slack-channel >>
-          context:
-            - hmpps-common-vars
-            - hmpps-contacts-prod
-          requires:
-            - request-prod-approval
-          helm_timeout: 5m
 
   security:
     triggers:
       - schedule:
           cron: "37 5 * * 1-5"
-          filters:
-            branches:
-              only:
-                - main
     jobs:
       - hmpps/npm_security_audit:
           slack_channel: << pipeline.parameters.alerts-slack-channel >>
@@ -209,10 +165,6 @@ workflows:
     triggers:
       - schedule:
           cron: "5 5 * * 1"
-          filters:
-            branches:
-              only:
-                - main
     jobs:
       - hmpps/veracode_policy_scan:
           slack_channel: << pipeline.parameters.alerts-slack-channel >>
