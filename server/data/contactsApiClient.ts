@@ -54,8 +54,7 @@ export default class ContactsApiClient extends RestClient {
     return this.get<PrisonerContactSummaryPage>(
       {
         path: `/prisoner/${prisonerNumber}/contact`,
-        query: { active: activeOnly },
-        ...paginationParameters,
+        query: { active: activeOnly, ...paginationParameters },
       },
       user,
     )
