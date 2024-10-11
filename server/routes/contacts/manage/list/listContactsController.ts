@@ -1,8 +1,14 @@
 import { Request, Response } from 'express'
+import config from '../../../../config'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
+import { components } from '../../../../@types/contactsApi'
+import logger from '../../../../../logger'
 import ManageContactsJourney = journeys.ManageContactsJourney
+import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
+
+type PageableObject = components['schemas']['PageableObject']
 
 export default class ListContactsController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -15,6 +21,8 @@ export default class ListContactsController implements PageHandler {
   ): Promise<void> => {
     const { user, prisonerDetails } = res.locals
     const { journeyId, prisonerNumber } = req.params
+    const page = Number(req.query.page as unknown) || 0
+    const pageSize = config.apis.contactsApi.pageSize || 10
 
     let journey: ManageContactsJourney
     if (journeyId) {
@@ -28,12 +36,26 @@ export default class ListContactsController implements PageHandler {
       }
     }
 
-    const activeContacts = await this.contactsService.getPrisonerContacts(prisonerNumber as string, true, user)
-    const inactiveContacts = await this.contactsService.getPrisonerContacts(prisonerNumber as string, false, user)
+    const activeContacts: PrisonerContactSummary = await this.contactsService.getPrisonerContacts(
+      prisonerNumber as string,
+      true,
+      user,
+      { page, size: pageSize } as PageableObject,
+    )
+
+    const inactiveContacts: PrisonerContactSummary = await this.contactsService.getPrisonerContacts(
+      prisonerNumber as string,
+      false,
+      user,
+      { page, size: pageSize } as PageableObject,
+    )
+
+    logger.info(JSON.stringify(req.query.page))
+    logger.info(JSON.stringify(activeContacts))
 
     res.render('pages/contacts/manage/listContacts', {
-      activeContacts: activeContacts.content,
-      inactiveContacts: inactiveContacts.content,
+      activeContacts,
+      inactiveContacts,
       journey,
       prisonerNumber,
     })

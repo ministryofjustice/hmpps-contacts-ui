@@ -91,7 +91,7 @@ describe('listContactsController', () => {
       ]
 
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList })
+      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList } as PrisonerContactSummaryPage)
 
       const response = await request(app).get(`/prisoner/A462DZ/contacts/list/${journeyId}`)
       const $ = cheerio.load(response.text)
@@ -173,7 +173,7 @@ describe('listContactsController', () => {
       ]
 
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList })
+      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList } as PrisonerContactSummaryPage)
 
       const response = await request(app).get(`/prisoner/A462DZ/contacts/list/${journeyId}`)
       const $ = cheerio.load(response.text)
@@ -242,7 +242,7 @@ describe('listContactsController', () => {
       ]
 
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList })
+      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList } as PrisonerContactSummaryPage)
 
       const response = await request(app).get(`/prisoner/A462DZ/contacts/list/${journeyId}`)
 
@@ -293,7 +293,7 @@ describe('listContactsController', () => {
       ]
 
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList })
+      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList } as PrisonerContactSummaryPage)
 
       const response = await request(app).get(`/prisoner/A462DZ/contacts/list`)
       const $ = cheerio.load(response.text)

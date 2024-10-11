@@ -10,7 +10,10 @@
 div.contact-list {
   border: 0;
   padding: 20px 0;
-
+  border: 0 !important;
+  p {
+    padding: 0;
+  }
   .govuk-summary-list {
     width: auto;
     .govuk-summary-list__value {

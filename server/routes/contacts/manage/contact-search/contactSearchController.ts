@@ -9,6 +9,7 @@ import config from '../../../../config'
 import { navigationForAddContactJourney } from '../../add/addContactFlowControl'
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
+import logger from '../../../../../logger'
 
 export default class ContactSearchController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -40,6 +41,7 @@ export default class ContactSearchController implements PageHandler {
             user,
           )
     }
+    logger.info(JSON.stringify(results))
     const view = {
       prisonerDetails,
       lastName: res.locals?.formResponses?.lastName ?? journey?.searchContact?.contact.lastName,

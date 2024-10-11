@@ -7,6 +7,9 @@ import Pageable = contactsApiClientTypes.Pageable
 import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
 import PrisonerContactSummaryPage = contactsApiClientTypes.PrisonerContactSummaryPage
+import { components } from '../@types/contactsApi'
+
+type PageableObject = components['schemas']['PageableObject']
 
 export default class ContactsService {
   constructor(private readonly contactsApiClient: ContactsApiClient) {}
@@ -68,8 +71,9 @@ export default class ContactsService {
     prisonerNumber: string,
     active: boolean,
     user: Express.User,
-  ): Promise<PrisonerContactSummaryPage> {
-    return this.contactsApiClient.getPrisonerContacts(prisonerNumber, active, user)
+    pagination: PageableObject,
+  ): Promise<PrisonerContactSummaryPage[]> {
+    return this.contactsApiClient.getPrisonerContacts(prisonerNumber, active, user, pagination)
   }
 
   async searchContact(
