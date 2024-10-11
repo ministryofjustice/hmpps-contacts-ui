@@ -138,8 +138,6 @@ workflows:
           context:
             - hmpps-common-vars
             - hmpps-contacts-preprod
-          requires:
-            - request-preprod-approval
           helm_timeout: 5m
 
   security:
