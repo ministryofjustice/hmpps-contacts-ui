@@ -72,7 +72,7 @@ workflows:
           pipeline_number: <<pipeline.number>>
           context:
             - hmpps-common-vars
-            - hmpps-contacts-ui-preprod
+            - hmpps-contacts-preprod
           requires:
             - build_docker
           helm_timeout: 5m
