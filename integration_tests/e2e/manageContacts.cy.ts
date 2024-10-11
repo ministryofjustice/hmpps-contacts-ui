@@ -59,6 +59,12 @@ context('Manage contacts ', () => {
     Page.verifyOnPage(SearchPrisonerPage)
     searchPrisonerPage.clickPrisonerLink()
     Page.verifyOnPage(ListContactsPage)
+      .verifyShowPaginationNavigationValueAs('Next', 'next')
+      .verifyShowPaginationPageLinkValueAs('1', 0)
+      .verifyShowPaginationPageLinkValueAs('3', 2)
+      .verifyShowPaginationPageLinkValueAs('4', 3)
+      .verifyShowPaginationPageLinkValueAs('5', 4)
+      .verifyShowPaginationNavigationValueAs('Previous', 'previous')
   })
 
   it('should show a message that no contacts match the criteria', () => {

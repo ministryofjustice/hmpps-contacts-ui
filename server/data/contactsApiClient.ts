@@ -2,7 +2,6 @@ import config from '../config'
 import RestClient from './restClient'
 import ReferenceCodeType from '../enumeration/referenceCodeType'
 import { components } from '../@types/contactsApi'
-import logger from '../../logger'
 import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
@@ -50,7 +49,7 @@ export default class ContactsApiClient extends RestClient {
     pagination?: PageableObject,
   ): Promise<PrisonerContactSummaryPage> {
     const paginationParameters = pagination ?? { page: 0, size: config.apis.contactsApi.pageSize || 10 }
-    logger.info(JSON.stringify(paginationParameters))
+
     return this.get<PrisonerContactSummaryPage>(
       {
         path: `/prisoner/${prisonerNumber}/contact`,

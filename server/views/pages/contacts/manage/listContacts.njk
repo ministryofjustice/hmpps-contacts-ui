@@ -104,7 +104,8 @@
                     {
                         number: i + 1,
                         href: "?page=" + i,
-                        current: (i === results.number)
+                        current: (i === results.number),
+                        attributes: {"data-qa": "page-" + i + "-link"}
                     }
                 ), paginationItems) %}
                 {% elif i === 1 or i === results.totalPages - 2 %}
@@ -114,10 +115,12 @@
 
         {{ govukPagination({
             previous: {
-                href: "?page=" + (results.number - 1)
+                href: "?page=" + (results.number - 1),
+                attributes: {"data-qa": "pagination-previous-link"}
             } if not results.first,
             next: {
-                href: "?page=" + (results.number + 1)
+                href: "?page=" + (results.number + 1),
+                attributes: {"data-qa": "pagination-next-link"}
             } if not results.last,
             items: paginationItems
         }) }}

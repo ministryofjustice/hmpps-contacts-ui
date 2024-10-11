@@ -4,7 +4,6 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
 import { components } from '../../../../@types/contactsApi'
-import logger from '../../../../../logger'
 import ManageContactsJourney = journeys.ManageContactsJourney
 import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
 
@@ -49,9 +48,6 @@ export default class ListContactsController implements PageHandler {
       user,
       { page, size: pageSize } as PageableObject,
     )
-
-    logger.info(JSON.stringify(req.query.page))
-    logger.info(JSON.stringify(activeContacts))
 
     res.render('pages/contacts/manage/listContacts', {
       activeContacts,
