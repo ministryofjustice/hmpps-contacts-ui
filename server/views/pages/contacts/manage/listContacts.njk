@@ -173,7 +173,7 @@
         {% if inactiveContacts.content.length > 0 %}
             {{ createTable(inactiveContacts.content) }}
             {{ createTablePagination(inactiveContacts) }}
-            {{ showingResults(activeContacts) }}
+            {{ showingResults(inactiveContacts) }}
         {% else %}
             <div class="govuk-!-static-margin-top-4">{{ prisonerDoesNotHaveAnyContactsMessage(prisonerDetails, 'inactive') }}</div>
         {% endif %}
