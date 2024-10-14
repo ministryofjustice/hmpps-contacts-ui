@@ -95,7 +95,7 @@
     </table>
 {% endmacro %}
 
-{% macro createTablePagination(results) %}
+{% macro createTablePagination(results, section) %}
     {% if results.totalPages > 1 %}
         {% set paginationItems = [] %}
         {% for i in range(0, results.totalPages) %}
@@ -103,7 +103,7 @@
                 {% set paginationItems = (paginationItems.push(
                     {
                         number: i + 1,
-                        href: "?page=" + i,
+                        href: "?page=" + i + '&tab=' + section + '#' + section,
                         current: (i === results.number),
                         attributes: {"data-qa": "page-" + i + "-link"}
                     }
@@ -115,11 +115,11 @@
 
         {{ govukPagination({
             previous: {
-                href: "?page=" + (results.number - 1),
+                href: "?page=" + (results.number - 1) + '&tab=' + section + '#' + section,
                 attributes: {"data-qa": "pagination-previous-link"}
             } if not results.first,
             next: {
-                href: "?page=" + (results.number + 1),
+                href: "?page=" + (results.number + 1) + '&tab=' + section + '#' + section,
                 attributes: {"data-qa": "pagination-next-link"}
             } if not results.last,
             items: paginationItems
@@ -150,23 +150,23 @@
         attributes: {"data-qa": "add-contact-button"}
     }) }}
 
-<div class="govuk-tabs" data-module="govuk-tabs">
+<div class="govuk-tabs contact-list" data-module="govuk-tabs">
     <ul class="govuk-tabs__list">
-      <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+      <li class="{{ 'govuk-tabs__list-item govuk-tabs__list-item--selected' if tab === 'active-contacts' else 'govuk-tabs__list-item' }}" data-tab-name="active">
         <a class="govuk-tabs__tab" href="#active-contacts">
             Active contacts
         </a>
       </li>
-      <li class="govuk-tabs__list-item">
+      <li class="{{ 'govuk-tabs__list-item govuk-tabs__list-item--selected' if tab === 'inactive-contacts' else 'govuk-tabs__list-item' }}" data-tab-name="inactive">
         <a class="govuk-tabs__tab" href="#inactive-contacts">
             Inactive contacts
         </a>
       </li>
     </ul>
-    <div class="govuk-tabs__panel contact-list" id="active-contacts">
+    <div class="govuk-tabs__panel" id="active-contacts">
         {% if activeContacts.content.length > 0 %}
             {{ createTable(activeContacts.content) }}
-            {{ createTablePagination(activeContacts) }}
+            {{ createTablePagination(activeContacts, 'active-contacts') }}
             {{ showingResults(activeContacts) }}
         {% else %}
         <div class="govuk-!-static-margin-top-4">{{ prisonerDoesNotHaveAnyContactsMessage(prisonerDetails, 'active') }}</div>
@@ -175,7 +175,7 @@
     <div class="govuk-tabs__panel govuk-tabs__panel--hidden contact-list" id="inactive-contacts">
         {% if inactiveContacts.content.length > 0 %}
             {{ createTable(inactiveContacts.content) }}
-            {{ createTablePagination(inactiveContacts) }}
+            {{ createTablePagination(inactiveContacts, 'inactive-contacts') }}
             {{ showingResults(inactiveContacts) }}
         {% else %}
             <div class="govuk-!-static-margin-top-4">{{ prisonerDoesNotHaveAnyContactsMessage(prisonerDetails, 'inactive') }}</div>
