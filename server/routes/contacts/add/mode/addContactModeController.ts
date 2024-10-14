@@ -22,6 +22,7 @@ export default class AddContactModeController implements PageHandler {
     journey.mode = mode
     journey.isCheckingAnswers = false
     delete journey.contactId
+    delete journey.existingContact
     delete journey.names
     delete journey.dateOfBirth
     delete journey.relationship
@@ -33,6 +34,10 @@ export default class AddContactModeController implements PageHandler {
         lastName: existingContact.lastName,
         firstName: existingContact.firstName,
         middleNames: existingContact.middleNames,
+      }
+      journey.existingContact = {
+        isDeceased: existingContact.isDeceased,
+        deceasedDate: existingContact.deceasedDate,
       }
       if (existingContact.dateOfBirth) {
         const date = new Date(existingContact.dateOfBirth)

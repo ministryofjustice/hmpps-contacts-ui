@@ -86,6 +86,20 @@
                         }
                     ), contactDetailsRows) %}
                 {% endif %}
+                {% if journey.existingContact.isDeceased and journey.existingContact.deceasedDate %}
+                    {% set contactDetailsRows = (contactDetailsRows.push(
+                        {
+                            key: {
+                                text: "Deceased date"
+                            },
+                            value: {
+                                html: journey.existingContact.deceasedDate | formatDate,
+                                classes: 'check-answers-deceased-value'
+                            }
+                        }
+                    ), contactDetailsRows) %}
+                {% endif %}
+
                 {{ govukSummaryList({
                     card: {
                         title: {
