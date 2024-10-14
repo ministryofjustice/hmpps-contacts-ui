@@ -6,7 +6,6 @@ import { ContactsService } from '../../../../services'
 import { components } from '../../../../@types/contactsApi'
 import ManageContactsJourney = journeys.ManageContactsJourney
 import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
-import logger from '../../../../../logger'
 
 type PageableObject = components['schemas']['PageableObject']
 
@@ -26,7 +25,6 @@ export default class ListContactsController implements PageHandler {
     const pageSize = config.apis.contactsApi.pageSize || 10
 
     let journey: ManageContactsJourney
-    logger.info(JSON.stringify(tab))
 
     if (journeyId) {
       journey = req.session.manageContactsJourneys[journeyId]
