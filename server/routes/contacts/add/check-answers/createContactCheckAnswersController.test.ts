@@ -157,6 +157,41 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     },
   )
 
+  it('should render check answers page with a deceased date', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    journey.existingContact = {
+      isDeceased: true,
+      deceasedDate: '2020-12-25',
+    }
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect(journey.isCheckingAnswers).toStrictEqual(true)
+    const $ = cheerio.load(response.text)
+    expect($('.check-answers-deceased-value').first().text().trim()).toStrictEqual('25 December 2020')
+  })
+
+  it('should not show deceased date if not present, even if flag set to true', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    journey.existingContact = {
+      isDeceased: true,
+    }
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect(journey.isCheckingAnswers).toStrictEqual(true)
+    const $ = cheerio.load(response.text)
+    expect($('.check-answers-deceased-value')).toHaveLength(0)
+  })
+
   it('should call the audit service for the page view', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
