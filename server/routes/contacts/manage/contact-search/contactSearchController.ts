@@ -40,7 +40,6 @@ export default class ContactSearchController implements PageHandler {
             user,
           )
     }
-
     const view = {
       prisonerDetails,
       lastName: res.locals?.formResponses?.lastName ?? journey?.searchContact?.contact.lastName,
