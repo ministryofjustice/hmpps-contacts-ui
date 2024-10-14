@@ -19,6 +19,12 @@
         <div class="govuk-grid-column-three-quarters">
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                {% if validationErrors %}
+                    {% set dayError = validationErrors['day'] if validationErrors['day'] else '' %}
+                    {% set monthError = validationErrors['month'] if validationErrors['month'] else '' %}
+                    {% set yearError = validationErrors['year']  if validationErrors['year'] else '' %}
+                    {% set dobError = validationErrors['dob'] if validationErrors['dob'] else '' %}
+                {% endif %}
                 {% set dobHtml %}
                     {{ govukDateInput({
                         id: "dob",
@@ -31,26 +37,32 @@
                         hint: {
                             text: "For example, 15 6 2000"
                         },
+                        errorMessage: {
+                            html: '<span class="govuk-error-message">' + dayError + '</span>
+                            <span class="govuk-error-message">' + monthError + '</span>
+                            <span class="govuk-error-message">' + yearError + '</span>
+                            <span class="govuk-error-message">' + dobError + '</span>'
+                        } if dayError or monthError or yearError or dobError,
                         items: [
                             {
                                 id: 'day',
                                 label: 'Day',
                                 name: "day",
-                                classes: 'govuk-input--width-2',
+                                classes: 'govuk-input--width-2' + (' govuk-input--error' if dayError or dobError),
                                 value: day
                             },
                             {
                                 id: 'month',
                                 label: 'Month',
                                 name: "month",
-                                classes: 'govuk-input--width-2',
+                                classes: 'govuk-input--width-2' + (' govuk-input--error' if monthError or dobError),
                                 value: month
                             },
                             {
                                 id: 'year',
                                 label: 'Year',
                                 name: "year",
-                                classes: 'govuk-input--width-4',
+                                classes: 'govuk-input--width-4' + (' govuk-input--error' if yearError or dobError),
                                 value: year
                             }
                         ]
@@ -70,7 +82,7 @@
                         },
                         {
                             value: 'NO',
-                            text: "No, I don’t know",
+                            text: "No, I don’t know it",
                             checked: isKnown === 'NO'
                         }
                     ],

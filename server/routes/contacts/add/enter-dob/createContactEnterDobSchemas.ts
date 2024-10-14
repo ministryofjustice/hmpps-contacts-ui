@@ -9,6 +9,7 @@ const MONTH_TYPE_MESSAGE = 'Enter a valid month (1-12)'
 const YEAR_TYPE_MESSAGE = 'Enter a valid year. Must be at least 1900'
 const DOB_IN_FUTURE_MESSAGE = 'The date of birth must not be in the future'
 const DOB_IS_INVALID = 'The date of birth is invalid'
+const DOB_IS_REQUIRED_MESSAGE = "Enter the contact's date of birth"
 
 export const createContactEnterDobSchema = () => async () => {
   return createSchema({
@@ -49,14 +50,18 @@ export const createContactEnterDobSchema = () => async () => {
   })
     .superRefine((val, ctx) => {
       if (val.isKnown === 'YES') {
-        if (!val.day) {
-          ctx.addIssue({ code: z.ZodIssueCode.custom, message: DAY_TYPE_MESSAGE, path: ['day'] })
-        }
-        if (!val.month) {
-          ctx.addIssue({ code: z.ZodIssueCode.custom, message: MONTH_TYPE_MESSAGE, path: ['month'] })
-        }
-        if (!val.year) {
-          ctx.addIssue({ code: z.ZodIssueCode.custom, message: YEAR_TYPE_MESSAGE, path: ['year'] })
+        if (!val.day && !val.month && !val.year) {
+          ctx.addIssue({ code: z.ZodIssueCode.custom, message: DOB_IS_REQUIRED_MESSAGE, path: ['dob'] })
+        } else {
+          if (!val.day) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: DAY_TYPE_MESSAGE, path: ['day'] })
+          }
+          if (!val.month) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: MONTH_TYPE_MESSAGE, path: ['month'] })
+          }
+          if (!val.year) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: YEAR_TYPE_MESSAGE, path: ['year'] })
+          }
         }
         if (val.day && val.month && val.year) {
           if (new Date(`${val.year}-${val.month}-${val.day}Z`) > new Date()) {
