@@ -334,8 +334,8 @@ describe('listContactsController', () => {
 
       // Then
       expect(response.status).toEqual(200)
-      expect($('[data-tab-name=active]').hasClass('govuk-tabs__list-item--selected')).toBe(true)
-      expect($('[data-tab-name=inactive]').hasClass('govuk-tabs__list-item--selected')).toBe(false)
+      expect($('[data-qa=active-list]').hasClass('govuk-tabs__list-item--selected')).toBe(true)
+      expect($('[data-qa=inactive-list]').hasClass('govuk-tabs__list-item--selected')).toBe(false)
       expect($('[data-qa=page-0-link]').text().trim()).toContain('1')
       expect($('[data-qa=page-1-link]').text().trim()).toContain('2')
       expect($('[data-qa=page-54-link]').text().trim()).toContain('55')
@@ -355,8 +355,8 @@ describe('listContactsController', () => {
 
       // Then
       expect(response.status).toEqual(200)
-      expect($('[data-tab-name=active]').hasClass('govuk-tabs__list-item--selected')).toBe(false)
-      expect($('[data-tab-name=inactive]').hasClass('govuk-tabs__list-item--selected')).toBe(true)
+      expect($('[data-qa=active-list]').hasClass('govuk-tabs__list-item--selected')).toBe(false)
+      expect($('[data-qa=inactive-list]').hasClass('govuk-tabs__list-item--selected')).toBe(true)
       expect($('[data-qa=page-0-link]').text().trim()).toContain('1')
       expect($('[data-qa=page-1-link]').text().trim()).toContain('2')
       expect($('[data-qa=page-54-link]').text().trim()).toContain('55')

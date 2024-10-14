@@ -152,12 +152,12 @@
 
 <div class="govuk-tabs contact-list" data-module="govuk-tabs">
     <ul class="govuk-tabs__list">
-      <li class="{{ 'govuk-tabs__list-item govuk-tabs__list-item--selected' if tab === 'active-contacts' else 'govuk-tabs__list-item' }}" data-tab-name="active">
+      <li class="{{ 'govuk-tabs__list-item govuk-tabs__list-item--selected' if tab === 'active-contacts' else 'govuk-tabs__list-item' }}" data-qa="active-list">
         <a class="govuk-tabs__tab" href="#active-contacts">
             Active contacts
         </a>
       </li>
-      <li class="{{ 'govuk-tabs__list-item govuk-tabs__list-item--selected' if tab === 'inactive-contacts' else 'govuk-tabs__list-item' }}" data-tab-name="inactive">
+      <li class="{{ 'govuk-tabs__list-item govuk-tabs__list-item--selected' if tab === 'inactive-contacts' else 'govuk-tabs__list-item' }}" data-qa="inactive-list">
         <a class="govuk-tabs__tab" href="#inactive-contacts">
             Inactive contacts
         </a>

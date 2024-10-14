@@ -65,6 +65,8 @@ context('Manage contacts ', () => {
       .verifyShowPaginationPageLinkValueAs('4', 3)
       .verifyShowPaginationPageLinkValueAs('5', 4)
       .verifyShowPaginationNavigationValueAs('Previous', 'previous')
+      .clickActiveSectionTabButton()
+      .clickInactiveSectionTabButton()
   })
 
   it('should show a message that no contacts match the criteria', () => {
