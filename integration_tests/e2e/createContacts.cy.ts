@@ -142,7 +142,7 @@ context('Create Contacts', () => {
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowsNameAs('Last, First Middle')
+      .verifyShowsNameAs('Last, Mr First Middle')
       .verifyShowsDateOfBirthAs('15 June 1982')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('Yes')

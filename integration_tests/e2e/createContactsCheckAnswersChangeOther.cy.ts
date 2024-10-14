@@ -65,7 +65,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
       .continueTo(RelationshipCommentsPage)
       .enterComments('Some comments about the relationship')
       .continueTo(CreateContactCheckYourAnswersPage)
-      .verifyShowsNameAs('Last, First Middle')
+      .verifyShowsNameAs('Last, Mr First Middle')
       .verifyShowsDateOfBirthAs('15 June 1982')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
@@ -75,7 +75,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
 
   it('Can change a contacts names when creating a new contact', () => {
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowsNameAs('Last, First Middle')
+      .verifyShowsNameAs('Last, Mr First Middle')
       .clickChangeNameLink()
 
     Page.verifyOnPage(EnterNamePage) //
@@ -86,7 +86,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowsNameAs('Last Updated, First Updated Middle Updated')
+      .verifyShowsNameAs('Last Updated, Dr First Updated Middle Updated')
       .continueTo(ListContactsPage)
 
     cy.verifyLastAPICall(
