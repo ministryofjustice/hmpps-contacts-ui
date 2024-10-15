@@ -47,6 +47,8 @@ beforeEach(() => {
           dateOfBirth: '1 Aug 1974',
           prisonName: 'Moorland HMP',
         },
+        activateListPage: 0,
+        inactivateListPage: 0,
       }
     },
   })
@@ -91,7 +93,7 @@ describe('listContactsController', () => {
       ]
 
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList })
+      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList } as PrisonerContactSummaryPage)
 
       const response = await request(app).get(`/prisoner/A462DZ/contacts/list/${journeyId}`)
       const $ = cheerio.load(response.text)
@@ -173,7 +175,7 @@ describe('listContactsController', () => {
       ]
 
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList })
+      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList } as PrisonerContactSummaryPage)
 
       const response = await request(app).get(`/prisoner/A462DZ/contacts/list/${journeyId}`)
       const $ = cheerio.load(response.text)
@@ -242,7 +244,7 @@ describe('listContactsController', () => {
       ]
 
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList })
+      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList } as PrisonerContactSummaryPage)
 
       const response = await request(app).get(`/prisoner/A462DZ/contacts/list/${journeyId}`)
 
@@ -255,6 +257,109 @@ describe('listContactsController', () => {
         .get(`/prisoner/A462DZ/contacts/list/${uuidv4()}`)
         .expect(302)
         .expect('Location', '/prisoner/A462DZ/contacts/list')
+    })
+  })
+
+  describe('Active/Inactive Pagination', () => {
+    const contactsList: PrisonerContactSummary = [
+      {
+        prisonerContactId: 100,
+        contactId: 200,
+        prisonerNumber: 'G9381UV',
+        lastName: 'Adams',
+        firstName: 'Claire',
+        middleNames: '',
+        dateOfBirth: new Date('1973-01-10'),
+        relationshipCode: 'code here',
+        relationshipDescription: 'Friend',
+        flat: '1',
+        property: 'Property',
+        street: '123 High Street',
+        area: 'Mayfair',
+        cityCode: 'LON',
+        cityDescription: 'London',
+        countyCode: 'LON',
+        countyDescription: 'Greater London',
+        postCode: 'W1 1AA',
+        countryCode: 'ENG',
+        countryDescription: 'England',
+        approvedVisitor: true,
+        nextOfKin: true,
+        emergencyContact: true,
+        awareOfCharges: true,
+        comments: 'comments here',
+      },
+    ]
+
+    const contactListResponse = {
+      content: contactsList,
+      pageable: {
+        pageNumber: 0,
+        pageSize: 10,
+        sort: {
+          empty: true,
+          sorted: false,
+          unsorted: true,
+        },
+        offset: 0,
+        paged: true,
+        unpaged: false,
+      },
+      last: false,
+      totalElements: 542,
+      totalPages: 55,
+      first: true,
+      size: 10,
+      number: 0,
+      sort: {
+        empty: true,
+        sorted: false,
+        unsorted: true,
+      },
+      numberOfElements: 10,
+      empty: false,
+    }
+
+    it('should render pagination for active contacts list', async () => {
+      // Given
+      auditService.logPageView.mockResolvedValue(null)
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.getPrisonerContacts.mockResolvedValue({ ...contactListResponse } as PrisonerContactSummaryPage)
+
+      // When
+      const response = await request(app).get(
+        `/prisoner/A462DZ/contacts/list/${journeyId}?page=0&tab=active-contacts#active-contacts`,
+      )
+      const $ = cheerio.load(response.text)
+
+      // Then
+      expect(response.status).toEqual(200)
+      expect($('[data-qa=active-list]').hasClass('govuk-tabs__list-item--selected')).toBe(true)
+      expect($('[data-qa=inactive-list]').hasClass('govuk-tabs__list-item--selected')).toBe(false)
+      expect($('[data-qa=page-0-link]').text().trim()).toContain('1')
+      expect($('[data-qa=page-1-link]').text().trim()).toContain('2')
+      expect($('[data-qa=page-54-link]').text().trim()).toContain('55')
+    })
+
+    it('should render pagination for inactive contacts list', async () => {
+      // Given
+      auditService.logPageView.mockResolvedValue(null)
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.getPrisonerContacts.mockResolvedValue({ ...contactListResponse } as PrisonerContactSummaryPage)
+
+      // When
+      const response = await request(app).get(
+        `/prisoner/A462DZ/contacts/list/${journeyId}?page=54&tab=inactive-contacts#inactive-contacts`,
+      )
+      const $ = cheerio.load(response.text)
+
+      // Then
+      expect(response.status).toEqual(200)
+      expect($('[data-qa=active-list]').hasClass('govuk-tabs__list-item--selected')).toBe(false)
+      expect($('[data-qa=inactive-list]').hasClass('govuk-tabs__list-item--selected')).toBe(true)
+      expect($('[data-qa=page-0-link]').text().trim()).toContain('1')
+      expect($('[data-qa=page-1-link]').text().trim()).toContain('2')
+      expect($('[data-qa=page-54-link]').text().trim()).toContain('55')
     })
   })
 
@@ -293,7 +398,7 @@ describe('listContactsController', () => {
       ]
 
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList })
+      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList } as PrisonerContactSummaryPage)
 
       const response = await request(app).get(`/prisoner/A462DZ/contacts/list`)
       const $ = cheerio.load(response.text)

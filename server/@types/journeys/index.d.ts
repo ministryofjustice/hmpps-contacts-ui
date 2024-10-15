@@ -62,6 +62,8 @@ declare namespace journeys {
       dateOfBirth?: Partial<DateOfBirth>
     }
     contactId?: number
+    activateListPage?: number
+    inactivateListPage?: number
   }
 
   export interface ReturnPoint {
