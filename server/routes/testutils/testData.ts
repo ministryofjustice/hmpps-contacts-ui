@@ -6,8 +6,9 @@ type GetContactResponse = components['schemas']['GetContactResponse']
 type ContactAddressDetails = components['schemas']['ContactAddressDetails']
 type ContactPhoneNumberDetails = components['schemas']['ContactPhoneNumberDetails']
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
+type PrisonerContactSummaryPage = components['schemas']['PrisonerContactSummaryPage']
+type PrisonerContactSummary = components['schemas']['PrisonerContactSummary']
 type ContactIdentityDetails = components['schemas']['ContactIdentityDetails']
-
 export default class TestData {
   static address: ContactAddressDetails = {
     contactAddressId: 1,
@@ -106,6 +107,37 @@ export default class TestData {
       amendedBy: null,
       amendedTime: null,
     } as ContactEmailDetails
+  }
+
+  static getPrisonerContact = () => {
+    return {
+      prisonerContactId: 31,
+      contactId: 22,
+      prisonerNumber: 'G4793VF',
+      lastName: 'Davis',
+      firstName: 'Daniel',
+      middleNames: 'M.',
+      dateOfBirth: '1990-01-23',
+      estimatedIsOverEighteen: null,
+      relationshipCode: 'FR',
+      relationshipDescription: '',
+      flat: '',
+      property: '40',
+      street: 'Acacia Avenue',
+      area: 'Bunting',
+      cityCode: '25343',
+      cityDescription: 'Sheffield',
+      countyCode: 'York',
+      countyDescription: '',
+      postCode: 'S2 3LK',
+      countryCode: 'ENG',
+      countryDescription: 'England',
+      approvedVisitor: false,
+      nextOfKin: false,
+      emergencyContact: false,
+      awareOfCharges: false,
+      comments: 'Active Comment',
+    } as PrisonerContactSummary
   }
 
   static currentIncentive = ({
@@ -234,4 +266,33 @@ export default class TestData {
       emailAddresses,
       identities,
     }) as GetContactResponse
+
+  static prisonerContactSummaryPage = ({
+    content = [this.getPrisonerContact()],
+    pageable = {
+      pageNumber: 3,
+      pageSize: 10,
+      offset: 0,
+      paged: true,
+      unpaged: false,
+    },
+    totalElements = 542,
+    totalPages = 55,
+    first = false,
+    size = 10,
+    number = 3,
+    numberOfElements = 10,
+    empty = false,
+  }: Partial<PrisonerContactSummaryPage> = {}): PrisonerContactSummaryPage =>
+    ({
+      content,
+      pageable,
+      totalElements,
+      totalPages,
+      first,
+      size,
+      number,
+      numberOfElements,
+      empty,
+    }) as PrisonerContactSummaryPage
 }

@@ -8,6 +8,7 @@
 {% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/pagination/macro.njk" import govukPagination %}
 {% from "../../../partials/address.njk" import convertAddressToLines %}
 
 {% set pageTitle = applicationName + " - List contacts" %}
@@ -94,6 +95,48 @@
     </table>
 {% endmacro %}
 
+{% macro createTablePagination(results, section) %}
+    {% if results.totalPages > 1 %}
+        {% set paginationItems = [] %}
+        {% for i in range(0, results.totalPages) %}
+            {% if i === 0 or i === (results.totalPages - 1) or (i >= results.number - 1 and i <= results.number + 1) %}
+                {% set paginationItems = (paginationItems.push(
+                    {
+                        number: i + 1,
+                        href: "?page=" + i + '&tab=' + section + '#' + section,
+                        current: (i === results.number),
+                        attributes: {"data-qa": "page-" + i + "-link"}
+                    }
+                ), paginationItems) %}
+                {% elif i === 1 or i === results.totalPages - 2 %}
+                {% set paginationItems = (paginationItems.push({ ellipsis: true }), paginationItems) %}
+            {% endif %}
+        {% endfor %}
+
+        {{ govukPagination({
+            previous: {
+                href: "?page=" + (results.number - 1) + '&tab=' + section + '#' + section,
+                attributes: {"data-qa": "pagination-previous-link"}
+            } if not results.first,
+            next: {
+                href: "?page=" + (results.number + 1) + '&tab=' + section + '#' + section,
+                attributes: {"data-qa": "pagination-next-link"}
+            } if not results.last,
+            items: paginationItems
+        }) }}
+    {% endif %}
+{% endmacro %}
+
+{% macro showingResults(results) %}
+    {% if results.totalElements > 0 %}
+        {% set resultString = 'result' if results.totalElements === 1 else 'results' %}
+        <p class="govuk-grid-column-full govuk-body govuk-!-margin-top-2">
+            Showing {{ results.totalElements }} {{ resultString }}{{ (" (page " + (results.number + 1) + " of " + results.totalPages + ")") if results.totalPages > 1 }}
+        </p>
+    {% endif %}
+{% endmacro %}
+
+
 {% macro prisonerDoesNotHaveAnyContactsMessage(prisonerDetails, contactListType) %}
     <p>{{ prisonerDetails.firstName | convertToTitleCase }} {{ prisonerDetails.lastName | convertToTitleCase }} does not have any {{ contactListType }} contacts</p>
 {% endmacro %}
@@ -107,29 +150,33 @@
         attributes: {"data-qa": "add-contact-button"}
     }) }}
 
-<div class="govuk-tabs" data-module="govuk-tabs">
+<div class="govuk-tabs contact-list" data-module="govuk-tabs">
     <ul class="govuk-tabs__list">
-      <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+      <li class="{{ 'govuk-tabs__list-item govuk-tabs__list-item--selected' if tab === 'active-contacts' else 'govuk-tabs__list-item' }}" data-qa="active-list">
         <a class="govuk-tabs__tab" href="#active-contacts">
             Active contacts
         </a>
       </li>
-      <li class="govuk-tabs__list-item">
+      <li class="{{ 'govuk-tabs__list-item govuk-tabs__list-item--selected' if tab === 'inactive-contacts' else 'govuk-tabs__list-item' }}" data-qa="inactive-list">
         <a class="govuk-tabs__tab" href="#inactive-contacts">
             Inactive contacts
         </a>
       </li>
     </ul>
-    <div class="govuk-tabs__panel contact-list" id="active-contacts">
-        {% if activeContacts.length > 0 %}
-            {{ createTable(activeContacts) }}
+    <div class="govuk-tabs__panel" id="active-contacts">
+        {% if activeContacts.content.length > 0 %}
+            {{ createTable(activeContacts.content) }}
+            {{ createTablePagination(activeContacts, 'active-contacts') }}
+            {{ showingResults(activeContacts) }}
         {% else %}
         <div class="govuk-!-static-margin-top-4">{{ prisonerDoesNotHaveAnyContactsMessage(prisonerDetails, 'active') }}</div>
         {% endif %}
     </div>
     <div class="govuk-tabs__panel govuk-tabs__panel--hidden contact-list" id="inactive-contacts">
-        {% if inactiveContacts.length > 0 %}
-            {{ createTable(inactiveContacts) }}
+        {% if inactiveContacts.content.length > 0 %}
+            {{ createTable(inactiveContacts.content) }}
+            {{ createTablePagination(inactiveContacts, 'inactive-contacts') }}
+            {{ showingResults(inactiveContacts) }}
         {% else %}
             <div class="govuk-!-static-margin-top-4">{{ prisonerDoesNotHaveAnyContactsMessage(prisonerDetails, 'inactive') }}</div>
         {% endif %}

@@ -6,7 +6,7 @@ import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import ContactsService from '../../../../services/contactsService'
 import AddContactJourney = journeys.AddContactJourney
-import Contact = contactsApiClientTypes.Contact
+import GetContactResponse = contactsApiClientTypes.GetContactResponse
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/contactsService')
@@ -81,7 +81,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
 
   it('should pass to the select relationship page if mode is EXISTING and the contact has a DOB', async () => {
     // Given
-    const contact: Contact = {
+    const contact: GetContactResponse = {
       id: 123456,
       title: 'MR',
       lastName: 'last',
@@ -123,7 +123,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
 
   it('should pass to the select relationship page if mode is EXISTING and the contact has no DOB', async () => {
     // Given
-    const contact: Contact = {
+    const contact: GetContactResponse = {
       id: 123456,
       title: 'MR',
       lastName: 'last',
@@ -162,9 +162,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
     })
   })
 
-  it('should pass to the select relationship page if mode is EXISTING and the contact has no DOB or estimated DOB', async () => {
+  it('should pass to the contact confirmation page if mode is EXISTING and the contact has no DOB or estimated DOB', async () => {
     // Given
-    const contact: Contact = {
+    const contact: GetContactResponse = {
       id: 123456,
       title: 'MR',
       lastName: 'last',
@@ -203,6 +203,42 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
     })
   })
 
+  it('should pass to the contact confirmation page if mode is EXISTING and the contact is deceased', async () => {
+    // Given
+    const contact: GetContactResponse = {
+      id: 123456,
+      title: 'MR',
+      lastName: 'last',
+      firstName: 'middle',
+      middleNames: 'first',
+      dateOfBirth: '1982-01-01',
+      isDeceased: true,
+      deceasedDate: '2020-12-25',
+      createdBy: user.username,
+      createdTime: '2024-01-01',
+    }
+
+    auditService.logPageView.mockResolvedValue(null)
+    contactsService.getContact.mockResolvedValue(contact)
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/add/mode/EXISTING/${journeyId}?contactId=123456`,
+    )
+
+    // Then
+    expect(response.status).toEqual(302)
+    expect(response.headers.location).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`,
+    )
+    expect(existingJourney.mode).toStrictEqual('EXISTING')
+    expect(contactsService.getContact).toHaveBeenCalledWith(123456, user)
+    expect(existingJourney.existingContact).toStrictEqual({
+      isDeceased: true,
+      deceasedDate: '2020-12-25',
+    })
+  })
+
   describe('reset journeys when switching modes', () => {
     beforeEach(() => {
       existingJourney.relationship = {
@@ -235,6 +271,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       expect(existingJourney.dateOfBirth).toBeUndefined()
       expect(existingJourney.relationship).toBeUndefined()
       expect(existingJourney.contactId).toBeUndefined()
+      expect(existingJourney.existingContact).toBeUndefined()
       expect(existingJourney.isCheckingAnswers).toStrictEqual(false)
       expect(existingJourney.mode).toStrictEqual('NEW')
       expect(contactsService.getContact).not.toHaveBeenCalled()
@@ -242,7 +279,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
 
     it('should reset journey if changing mode from NEW to EXISTING', async () => {
       existingJourney.mode = 'NEW'
-      const contact: Contact = {
+      const contact: GetContactResponse = {
         id: 123456,
         title: 'MRS',
         lastName: 'Tsal',
@@ -250,6 +287,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
         middleNames: 'Elldim',
         dateOfBirth: '1980-12-10T00:00:00.000Z',
         estimatedIsOverEighteen: undefined,
+        isDeceased: false,
         createdBy: user.username,
         createdTime: '2024-01-01',
       }
@@ -279,6 +317,10 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       expect(existingJourney.relationship).toBeUndefined()
       expect(existingJourney.contactId).toStrictEqual(123456)
       expect(existingJourney.isCheckingAnswers).toStrictEqual(false)
+      expect(existingJourney.existingContact).toStrictEqual({
+        isDeceased: false,
+        deceasedDate: undefined,
+      })
       expect(contactsService.getContact).toHaveBeenCalled()
     })
   })

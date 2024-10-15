@@ -16,6 +16,10 @@ declare namespace journeys {
     relationship?: PrisonerContactRelationship
     previousAnswers?: CreateContactJourneyPreviousAnswers
     contactId?: number
+    existingContact?: {
+      isDeceased?: boolean
+      deceasedDate?: string
+    }
   }
 
   export interface ContactNames {
@@ -58,6 +62,8 @@ declare namespace journeys {
       dateOfBirth?: Partial<DateOfBirth>
     }
     contactId?: number
+    activateListPage?: number
+    inactivateListPage?: number
   }
 
   export interface ReturnPoint {

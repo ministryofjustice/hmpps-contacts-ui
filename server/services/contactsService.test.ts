@@ -10,6 +10,7 @@ import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import IsOverEighteenOptions = journeys.YesNoOrDoNotKnow
 import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
+import GetContactResponse = contactsApiClientTypes.GetContactResponse
 
 jest.mock('../data/contactsApiClient')
 const searchResult = TestData.contactSearchResultItem()
@@ -250,7 +251,7 @@ describe('contactsService', () => {
 
   describe('getContact', () => {
     it('Should get the contact', async () => {
-      const expectedContact: Contact = {
+      const expectedContact: GetContactResponse = {
         id: 123456,
         lastName: 'last',
         firstName: 'middle',

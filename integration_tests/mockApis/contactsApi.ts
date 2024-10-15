@@ -2,6 +2,7 @@ import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
 import { STUBBED_RELATIONSHIP_OPTIONS, STUBBED_TITLE_OPTIONS } from '../../server/routes/testutils/stubReferenceData'
 import { components } from '../../server/@types/contactsApi'
+import TestData from '../../server/routes/testutils/testData'
 
 export type StubGetContactResponse = components['schemas']['GetContactResponse']
 export type StubContactSearchResultItem = components['schemas']['ContactSearchResultItem']
@@ -43,37 +44,7 @@ export default {
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: {
-          content: [
-            {
-              prisonerContactId: 100,
-              contactId: 200,
-              prisonerNumber: 'G9381UV',
-              lastName: 'Adams',
-              firstName: 'Claire',
-              middleNames: 'Elizabeth',
-              dateOfBirth: new Date('1973-01-10'),
-              relationshipCode: 'code here',
-              relationshipDescription: 'Friend',
-              flat: 'Flat 1',
-              property: '',
-              street: '123 High Street',
-              area: 'Mayfair',
-              cityCode: '',
-              cityDescription: '',
-              countyCode: 'LON',
-              countyDescription: 'Greater London',
-              postCode: 'W1 1AA',
-              countryCode: 'ENG',
-              countryDescription: 'England',
-              approvedVisitor: true,
-              nextOfKin: true,
-              emergencyContact: true,
-              awareOfCharges: true,
-              comments: 'comments here',
-            },
-          ],
-        },
+        jsonBody: TestData.prisonerContactSummaryPage(),
       },
     })
   },
