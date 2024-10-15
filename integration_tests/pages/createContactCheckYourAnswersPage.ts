@@ -43,6 +43,16 @@ export default class CreateContactCheckYourAnswersPage extends Page {
     return this
   }
 
+  verifyShowDeceasedDate(expected: string): CreateContactCheckYourAnswersPage {
+    this.checkAnswersDeceasedValue().should('contain.text', expected)
+    return this
+  }
+
+  verifyNoDeceasedDate(): CreateContactCheckYourAnswersPage {
+    this.checkAnswersDeceasedValue().should('not.exist')
+    return this
+  }
+
   verifyShowsEstimatedDateOfBirthAs(expected: string): CreateContactCheckYourAnswersPage {
     this.checkAnswersEstimatedDobValue().should('contain.text', expected)
     return this
@@ -86,6 +96,8 @@ export default class CreateContactCheckYourAnswersPage extends Page {
   private checkAnswersNameValue = (): PageElement => cy.get('.check-answers-name-value')
 
   private checkAnswersDobValue = (): PageElement => cy.get('.check-answers-dob-value')
+
+  private checkAnswersDeceasedValue = (): PageElement => cy.get('.check-answers-deceased-value')
 
   private checkAnswersEstimatedDobValue = (): PageElement => cy.get('.check-answers-estimated-dob-value')
 

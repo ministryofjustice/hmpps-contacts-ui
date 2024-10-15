@@ -4,8 +4,8 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { ContactsService } from '../../../../services'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { navigationForAddContactJourney } from '../addContactFlowControl'
+import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 
 export default class CreateContactCheckAnswersController implements PageHandler {
   constructor(
@@ -36,10 +36,13 @@ export default class CreateContactCheckAnswersController implements PageHandler 
       user,
     )
 
+    const formattedFullName = await this.formattedFullName(journey, user)
+
     const view = {
       journey,
       dateOfBirth,
       relationshipDescription,
+      formattedFullName,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
     }
     res.render('pages/contacts/add/checkAnswers', view)
@@ -57,5 +60,22 @@ export default class CreateContactCheckAnswersController implements PageHandler 
       await this.contactService.addContact(journey, user).then(() => delete req.session.addContactJourneys[journeyId])
     }
     res.redirect(journey.returnPoint.url)
+  }
+
+  private async formattedFullName(journey: journeys.AddContactJourney, user: Express.User) {
+    let formattedFullName = `${journey.names.lastName}, `
+    if (journey.names.title) {
+      const titleDescription = await this.referenceDataService.getReferenceDescriptionForCode(
+        ReferenceCodeType.TITLE,
+        journey.names.title,
+        user,
+      )
+      formattedFullName += `${titleDescription} `
+    }
+    formattedFullName += journey.names.firstName
+    if (journey.names.middleNames) {
+      formattedFullName += ` ${journey.names.middleNames}`
+    }
+    return formattedFullName
   }
 }

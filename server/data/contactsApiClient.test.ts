@@ -9,6 +9,7 @@ import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
+import GetContactResponse = contactsApiClientTypes.GetContactResponse
 
 jest.mock('./tokenStore/inMemoryTokenStore')
 
@@ -251,7 +252,7 @@ describe('contactsApiClient', () => {
   describe('getContact', () => {
     it('should create the request and return the response', async () => {
       // Given
-      const expectedContact: Contact = {
+      const expectedContact: GetContactResponse = {
         id: 123456,
         lastName: 'last',
         firstName: 'middle',

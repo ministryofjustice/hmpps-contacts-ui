@@ -6,10 +6,11 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import ContactsService from '../../../../services/contactsService'
-import AddContactJourney = journeys.AddContactJourney
 import ReferenceDataService from '../../../../services/referenceDataService'
 import TestData from '../../../testutils/testData'
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
+import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
+import AddContactJourney = journeys.AddContactJourney
 import ReturnPointType = journeys.ReturnPointType
 
 jest.mock('../../../../services/auditService')
@@ -46,6 +47,9 @@ beforeEach(() => {
     },
     relationship: {
       type: 'MOT',
+      isNextOfKin: 'YES',
+      isEmergencyContact: 'YES',
+      comments: 'some comments',
     },
     mode: 'NEW',
   }
@@ -64,7 +68,10 @@ beforeEach(() => {
       session.addContactJourneys[journeyId] = journey
     },
   })
-  referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mother')
+  referenceDataService.getReferenceDescriptionForCode.mockImplementation(
+    (type: ReferenceCodeType, _: string, __: Express.User) =>
+      type === ReferenceCodeType.TITLE ? Promise.resolve('Reverend') : Promise.resolve('Mother'),
+  )
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
 
@@ -90,6 +97,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
       expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Check your answers')
       expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
       expect($('.check-answers-dob-value').first().text().trim()).toStrictEqual('1 January 2024')
+      expect($('.check-answers-comments-value').first().text().trim()).toStrictEqual('some comments')
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     },
   )
@@ -110,6 +118,78 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('.check-answers-dob-value').first().text().trim()).toStrictEqual('Not provided')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+  })
+
+  it('should render check answers page without comments', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    journey.relationship.comments = undefined
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect(journey.isCheckingAnswers).toStrictEqual(true)
+    const $ = cheerio.load(response.text)
+    expect($('.check-answers-comments-value').first().text().trim()).toStrictEqual('Not provided')
+  })
+
+  it.each([
+    ['REV', 'First', 'Middle Names', 'Last', 'Last, Reverend First Middle Names'],
+    [undefined, 'First', 'Middle Names', 'Last', 'Last, First Middle Names'],
+    [undefined, 'First', undefined, 'Last', 'Last, First'],
+  ])(
+    'should render the full name with optional values and reference data',
+    async (title: string, firstName: string, middleNames: string, lastName: string, expected: string) => {
+      // Given
+      auditService.logPageView.mockResolvedValue(null)
+      journey.names = { title, firstName, middleNames, lastName }
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+      // Then
+      expect(response.status).toEqual(200)
+      expect(journey.isCheckingAnswers).toStrictEqual(true)
+      const $ = cheerio.load(response.text)
+      expect($('.check-answers-name-value').first().text().trim()).toStrictEqual(expected)
+    },
+  )
+
+  it('should render check answers page with a deceased date', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    journey.existingContact = {
+      isDeceased: true,
+      deceasedDate: '2020-12-25',
+    }
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect(journey.isCheckingAnswers).toStrictEqual(true)
+    const $ = cheerio.load(response.text)
+    expect($('.check-answers-deceased-value').first().text().trim()).toStrictEqual('25 December 2020')
+  })
+
+  it('should not show deceased date if not present, even if flag set to true', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    journey.existingContact = {
+      isDeceased: true,
+    }
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect(journey.isCheckingAnswers).toStrictEqual(true)
+    const $ = cheerio.load(response.text)
+    expect($('.check-answers-deceased-value')).toHaveLength(0)
   })
 
   it('should call the audit service for the page view', async () => {

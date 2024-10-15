@@ -26,7 +26,7 @@
                             text: "Name"
                         },
                         value: {
-                            html: journey.names | formatName,
+                            html: formattedFullName,
                             classes: 'check-answers-name-value'
                         },
                         actions: {
@@ -86,6 +86,20 @@
                         }
                     ), contactDetailsRows) %}
                 {% endif %}
+                {% if journey.existingContact.isDeceased and journey.existingContact.deceasedDate %}
+                    {% set contactDetailsRows = (contactDetailsRows.push(
+                        {
+                            key: {
+                                text: "Deceased date"
+                            },
+                            value: {
+                                html: journey.existingContact.deceasedDate | formatDate,
+                                classes: 'check-answers-deceased-value'
+                            }
+                        }
+                    ), contactDetailsRows) %}
+                {% endif %}
+
                 {{ govukSummaryList({
                     card: {
                         title: {
@@ -167,7 +181,7 @@
                                 text: "Comments"
                             },
                             value: {
-                                html: journey.relationship.comments,
+                                html: journey.relationship.comments or "Not provided",
                                 classes: 'check-answers-comments-value'
                             },
                             actions: {
@@ -184,7 +198,7 @@
                         }
                     ]
                 }) }}
-                {% set buttonLabel = "Create prisoner contact" if journey.mode === 'NEW' else "Add prisoner contact" %}
+                {% set buttonLabel = "Create prisoner contact" %}
                 <div class="govuk-button-group">
                     {{ govukButton({
                         html: buttonLabel,

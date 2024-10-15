@@ -63,6 +63,7 @@ context('Add Existing Contact', () => {
       firstName: 'Existing',
       lastName: 'Contact',
       dateOfBirth: '1990-01-14',
+      isDeceased: false,
     })
 
     Page.verifyOnPage(SearchContactPage) //
@@ -93,6 +94,7 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsNameAs('Contact, Existing')
       .verifyShowsDateOfBirthAs('14 January 1990')
+      .verifyNoDeceasedDate()
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
       .verifyShowIsNextOfKinAs('Yes')
@@ -321,5 +323,63 @@ context('Add Existing Contact', () => {
       .backTo(ContactConfirmationPage, 'Smith, John')
       .backTo(SearchContactPage)
       .verifyShowsNameAs('Contact, Existing')
+  })
+
+  it('Can add a deceased contact and show the deceased date on check answers page', () => {
+    cy.task('stubGetContactById', {
+      id: contactId,
+      firstName: 'Deceased',
+      lastName: 'Contact',
+      dateOfBirth: '1990-01-14',
+      isDeceased: true,
+      deceasedDate: '2020-12-25',
+    })
+
+    Page.verifyOnPage(SearchContactPage) //
+      .clickTheContactLink(contactId)
+
+    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John') //
+      .selectIsTheRightPersonYesRadio()
+      .clickContinue()
+
+    Page.verifyOnPage(SelectRelationshipPage, 'Contact, Deceased') //
+      .selectRelationship('MOT')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectEmergencyContactPage, 'Contact, Deceased') //
+      .selectIsEmergencyContact('NO')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectNextOfKinPage, 'Contact, Deceased') //
+      .selectIsNextOfKin('YES')
+      .clickContinue()
+
+    Page.verifyOnPage(RelationshipCommentsPage, 'Contact, Deceased') //
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowsNameAs('Contact, Deceased')
+      .verifyShowsDateOfBirthAs('14 January 1990')
+      .verifyShowDeceasedDate('25 December 2020')
+      .verifyNameIsNotChangeable()
+      .verifyDateOfBirthIsNotChangeable()
+      .verifyEstimatedDateOfBirthIsNotChangeable()
+      .continueTo(ListContactsPage)
+
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: `/contact/${contactId}/relationship`,
+      },
+      {
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipCode: 'MOT',
+          isNextOfKin: true,
+          isEmergencyContact: false,
+        },
+        createdBy: 'USER1',
+      },
+    )
   })
 })
