@@ -21,6 +21,7 @@ describe('createContactEnterDobSchema', () => {
       const deduplicatedFieldErrors = deduplicateFieldErrors(result)
       expect(deduplicatedFieldErrors).toStrictEqual({ isKnown: ['Select whether the date of birth is known'] })
     })
+
     it.each([
       ['YES', 'YES'],
       ['NO', 'NO'],
@@ -59,11 +60,10 @@ describe('createContactEnterDobSchema', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        day: ['Enter a valid day of the month (1-31)'],
-        month: ['Enter a valid month (1-12)'],
-        year: ['Enter a valid year. Must be at least 1900'],
+        dob: ["Enter the contact's date of birth"],
       })
     })
+
     it('if dob is known then require day, month and year not be empty', async () => {
       // Given
       const form = { isKnown: 'YES', day: '', month: '', year: '' }
@@ -75,9 +75,7 @@ describe('createContactEnterDobSchema', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        day: ['Enter a valid day of the month (1-31)'],
-        month: ['Enter a valid month (1-12)'],
-        year: ['Enter a valid year. Must be at least 1900'],
+        dob: ["Enter the contact's date of birth"],
       })
     })
 

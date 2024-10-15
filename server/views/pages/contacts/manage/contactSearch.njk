@@ -84,21 +84,21 @@
                         id: 'day',
                         label: 'Day',
                         name: "day",
-                        classes: 'govuk-input--width-2',
+                        classes: 'govuk-input--width-2' + (' govuk-input--error' if dayError or dobError),
                         value: view.day
                     },
                     {
                         id: 'month',
                         label: 'Month',
                         name: "month",
-                        classes: 'govuk-input--width-2',
+                        classes: 'govuk-input--width-2' + (' govuk-input--error' if monthError or dobError),
                         value: view.month
                     },
                     {
                         id: 'year',
                         label: 'Year',
                         name: "year",
-                        classes: 'govuk-input--width-4',
+                        classes: 'govuk-input--width-4' + (' govuk-input--error' if yearError or dobError),
                         value: view.year
                     }
                 ]

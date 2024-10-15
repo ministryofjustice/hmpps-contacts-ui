@@ -313,12 +313,10 @@ context('Create Contacts', () => {
 
     const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First')
     enterDobPage.selectIsKnown('YES').clickContinue()
-
+    enterDobPage.hasFieldInError('dob', "Enter the contact's date of birth")
     enterDobPage.errorSummaryItems.spread((...$lis) => {
-      expect($lis).to.have.lengthOf(3)
-      expect($lis[0]).to.contain('Enter a valid day of the month (1-31)')
-      expect($lis[1]).to.contain('Enter a valid month (1-12)')
-      expect($lis[2]).to.contain('Enter a valid year. Must be at least 1900')
+      expect($lis).to.have.lengthOf(1)
+      expect($lis[0]).to.contain("Enter the contact's date of birth")
     })
   })
 
@@ -350,6 +348,10 @@ context('Create Contacts', () => {
       .enterYear('cc')
       .clickContinue()
 
+    enterDobPage.hasFieldInError('dob', 'Enter a valid day of the month (1-31)')
+    enterDobPage.hasFieldInError('dob', 'Enter a valid month (1-12)')
+    enterDobPage.hasFieldInError('dob', 'Enter a valid year. Must be at least 1900')
+    enterDobPage.hasFieldInError('dob', 'The date of birth is invalid')
     enterDobPage.errorSummaryItems.spread((...$lis) => {
       expect($lis).to.have.lengthOf(4)
       expect($lis[0]).to.contain('Enter a valid day of the month (1-31)')
