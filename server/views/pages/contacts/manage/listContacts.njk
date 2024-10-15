@@ -73,7 +73,7 @@
             }
         %}
         <tr class="govuk-table__row">
-            <td class="govuk-table__cell"><a href='#'>{{ item.lastName }}, {{ item.firstName }}</a></td>
+            <td class="govuk-table__cell"><a href='#'>{{ item | formatName }}</a></td>
             <td class="govuk-table__cell"  data-qa="contact-{{ item.prisonerContactId }}-dob">
                 {% if item.dateOfBirth %}
                     {{ item.dateOfBirth | formatDate }}<br />
@@ -138,11 +138,11 @@
 
 
 {% macro prisonerDoesNotHaveAnyContactsMessage(prisonerDetails, contactListType) %}
-    <p>{{ prisonerDetails.firstName | convertToTitleCase }} {{ prisonerDetails.lastName | convertToTitleCase }} does not have any {{ contactListType }} contacts</p>
+    <p>{{ prisonerDetails.firstName | capitaliseName }} {{ prisonerDetails.lastName | capitaliseName }} does not have any {{ contactListType }} contacts</p>
 {% endmacro %}
 
 <span class="govuk-caption-l">Manage Contacts</span>
-<h1 class="govuk-heading-l">Contacts for {{ prisonerDetails | formatName(excludeMiddleNames = true) }}</h1>
+<h1 class="govuk-heading-l">Contacts for {{ prisonerDetails | formatName }}</h1>
 
     {{ govukButton({
         text: "Add prisoner contact",

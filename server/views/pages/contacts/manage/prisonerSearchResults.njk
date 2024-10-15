@@ -84,7 +84,7 @@
             {% for result in results.content %}
                 {% set prisonerNameHtml %}
                    <a href="/prisoner/{{ result.prisonerNumber }}/contacts/list/{{journey.id}}" class="govuk-link govuk-link--no-visited-state bapv-result-row">
-                      {{ result | formatName(excludeMiddleNames = true) }}
+                      {{ result | formatName }}
                    </a>
                 {% endset %}
 

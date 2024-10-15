@@ -168,9 +168,10 @@ context('Contact confirmation', () => {
   it('should render contact information with empity sections if not available', () => {
     cy.task('stubGetContactById', {
       id: contactId,
+      title: 'MR',
       firstName: 'Existing',
       lastName: 'Contact',
-      middleNames: 'Mr',
+      middleNames: 'Middle',
       dateOfBirth: '1990-01-14',
       languageCode: null,
       languageDescription: null,
@@ -185,7 +186,7 @@ context('Contact confirmation', () => {
       .clickTheContactLink(contactId)
 
     Page.verifyOnPage(ContactConfirmationPage, 'Smith, John')
-      .verifyShowNamesValueAs('Contact, Mr Existing')
+      .verifyShowNamesValueAs('Contact, Mr Existing Middle')
       .verifyShowDOBValueAs('14 January 1990')
       .verifyShowDeceasedDateValueAs('Not provided')
       .verifyShowAddressesValueAsNotProvided('Not provided')

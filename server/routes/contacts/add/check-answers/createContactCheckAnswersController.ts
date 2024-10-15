@@ -6,6 +6,7 @@ import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import { navigationForAddContactJourney } from '../addContactFlowControl'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
+import formatName from '../../../../utils/formatName'
 
 export default class CreateContactCheckAnswersController implements PageHandler {
   constructor(
@@ -63,19 +64,14 @@ export default class CreateContactCheckAnswersController implements PageHandler 
   }
 
   private async formattedFullName(journey: journeys.AddContactJourney, user: Express.User) {
-    let formattedFullName = `${journey.names.lastName}, `
+    let titleDescription: string
     if (journey.names.title) {
-      const titleDescription = await this.referenceDataService.getReferenceDescriptionForCode(
+      titleDescription = await this.referenceDataService.getReferenceDescriptionForCode(
         ReferenceCodeType.TITLE,
         journey.names.title,
         user,
       )
-      formattedFullName += `${titleDescription} `
     }
-    formattedFullName += journey.names.firstName
-    if (journey.names.middleNames) {
-      formattedFullName += ` ${journey.names.middleNames}`
-    }
-    return formattedFullName
+    return formatName(journey.names, { customTitle: titleDescription })
   }
 }

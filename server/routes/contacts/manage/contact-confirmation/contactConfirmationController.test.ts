@@ -6,16 +6,19 @@ import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import ContactsService from '../../../../services/contactsService'
+import ReferenceDataService from '../../../../services/referenceDataService'
 import TestData from '../../../testutils/testData'
 import AddContactJourney = journeys.AddContactJourney
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
+jest.mock('../../../../services/referenceDataService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
 const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
+const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
 
 let app: Express
 let session: Partial<SessionData>
@@ -37,6 +40,7 @@ beforeEach(() => {
       auditService,
       prisonerSearchService,
       contactsService,
+      referenceDataService,
     },
     userSupplier: () => user,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -45,6 +49,7 @@ beforeEach(() => {
       session.addContactJourneys[journeyId] = existingJourney
     },
   })
+  referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mr')
 })
 
 afterEach(() => {

@@ -1,28 +1,5 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
-
-{% set contactFullNameRow = [ contact.lastName + ','] %}
-
-{% if contact.title %}
-    {% set contactFullNameRow = (
-        contactFullNameRow.push(
-            (contact.title | capitalizeFirstLetter)
-    ), contactFullNameRow) %}
-{% endif %}
-
-{% if contact.middleNames %}
-    {% set contactFullNameRow = (
-        contactFullNameRow.push(
-            contact.middleNames
-    ), contactFullNameRow) %}
-{% endif %}
-
-{% if contact.firstName %}
-    {% set contactFullNameRow = (
-        contactFullNameRow.push(
-            contact.firstName
-    ), contactFullNameRow) %}
-{% endif %}
-
+{% set  formattedDateOfBirth %}{% if contact.dateOfBirth %}{{ contact.dateOfBirth | formatDate }}{% else %}Not provided{% endif %}{% endset %}
 {{ govukSummaryList({
     card: {
         title: {
@@ -34,9 +11,8 @@
             text: "Name"
         },
         value: {
-            text: contactFullNameRow | join(' '),
+            text: formattedFullName,
             classes: 'confirm-name-value'
-
         }
     },
     {
@@ -44,7 +20,7 @@
             text: "Date of birth"
         },
         value: {
-            text:  contact.dateOfBirth | formatDate,
+            text:  formattedDateOfBirth,
             classes: 'confirm-dob-value'
         }
     },

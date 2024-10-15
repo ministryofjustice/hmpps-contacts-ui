@@ -1,13 +1,12 @@
 import {
-  convertToTitleCase,
   formatDate,
   initialiseName,
   prisonerDatePretty,
-  properCaseFullName,
   isValidPrisonerNumber,
   extractPrisonerNumber,
   formatDateForApi,
   capitalizeFirstLetter,
+  capitaliseName,
 } from './utils'
 
 describe('convert to title case', () => {
@@ -21,8 +20,9 @@ describe('convert to title case', () => {
     ['Leading spaces', '  RobeRT', '  Robert'],
     ['Trailing spaces', 'RobeRT  ', 'Robert  '],
     ['Hyphenated', 'Robert-John SmiTH-jONes-WILSON', 'Robert-John Smith-Jones-Wilson'],
-  ])('%s convertToTitleCase(%s, %s)', (_: string, a: string, expected: string) => {
-    expect(convertToTitleCase(a)).toEqual(expected)
+    ['Otherwise punctuated', "billy-bob o'reilly jr.", "Billy-Bob O'Reilly Jr."],
+  ])('%s capitaliseName(%s, %s)', (_: string, a: string, expected: string) => {
+    expect(capitaliseName(a)).toEqual(expected)
   })
 })
 
@@ -36,20 +36,6 @@ describe('initialise name', () => {
     ['Double barrelled', 'Robert-John Smith-Jones-Wilson', 'R. Smith-Jones-Wilson'],
   ])('%s initialiseName(%s, %s)', (_: string, a: string, expected: string) => {
     expect(initialiseName(a)).toEqual(expected)
-  })
-})
-
-describe('Proper Case Full Name', () => {
-  it('shuould remove extra spaces at the end and capitalize name', () => {
-    const fullName = properCaseFullName('ALANOINE, EHSHAPETER    ')
-
-    expect(fullName).toEqual('Alanoine, Ehshapeter')
-  })
-
-  it('shuould remove extra spaces before and after and capitalize name', () => {
-    const fullName = properCaseFullName('   ALANOINE, EHSHAPETER    ')
-
-    expect(fullName).toEqual('Alanoine, Ehshapeter')
   })
 })
 
