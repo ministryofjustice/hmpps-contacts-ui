@@ -91,12 +91,15 @@ context('Contact confirmation', () => {
   })
 
   it(`should render contact information`, () => {
+    const titleHeader = 'Is this the right person to add as a contact for Smith, John?'
     cy.task('stubGetContactById', TestData.contact())
 
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
     Page.verifyOnPage(ContactConfirmationPage, 'Smith, John')
+      .verifyShowTitleHeaderValueAs(titleHeader, 'top')
+      .verifyShowTitleHeaderValueAs(titleHeader, 'bottom')
       .verifyShowsTabTitleAs('Contact details', 0)
       .verifyShowsTabTitleAs('Restrictions', 1)
       .verifyShowsTabTitleAs('Linked offenders', 2)
