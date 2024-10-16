@@ -49,7 +49,7 @@
     {% include '../../../../partials/formErrorSummary.njk' %}
 
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-l">Is this the right person to add as a contact for {{ prisonerDetails.lastName | convertToTitleCase + ", " + prisonerDetails.firstName | convertToTitleCase }}?</h1>
+        <h1 class="govuk-heading-l">Is this the right person to add as a contact for {{ prisonerDetails | formatName }}?</h1>
         <form method='POST'>
             <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
             <div class="govuk-tabs" data-module="govuk-tabs">

@@ -1,12 +1,16 @@
-import { convertToTitleCase } from './utils'
+import { capitaliseName } from './utils'
 import PrisonerDetails = journeys.PrisonerDetails
 import ContactNames = journeys.ContactNames
 
 const formatName = (
   val: { lastName: string; firstName: string; middleNames?: string } | ContactNames | PrisonerDetails,
-  opts?: { excludeMiddleNames?: boolean },
+  opts?: { excludeMiddleNames?: boolean; customTitle?: string },
 ): string => {
-  let name = `${val.lastName}, ${val.firstName}`
+  let name = `${val.lastName}, `
+  if (opts?.customTitle) {
+    name += `${opts.customTitle} `
+  }
+  name += val.firstName
   if (!opts?.excludeMiddleNames) {
     if ('middleName' in val && val.middleName) {
       name += ` ${val.middleName}`
@@ -14,7 +18,7 @@ const formatName = (
       name += ` ${val.middleNames}`
     }
   }
-  return convertToTitleCase(name)
+  return capitaliseName(name)
 }
 
 export default formatName

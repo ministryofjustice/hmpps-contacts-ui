@@ -60,7 +60,7 @@ const AddContactRoutes = (
     asyncMiddleware(contactsSearchController.POST),
   )
 
-  const contactConfirmationController = new ContactConfirmationController(contactsService)
+  const contactConfirmationController = new ContactConfirmationController(contactsService, referenceDataService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/add/confirmation/:journeyId',
     ensureInAddContactJourney(),

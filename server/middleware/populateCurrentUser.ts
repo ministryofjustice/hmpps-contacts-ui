@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express'
 import { jwtDecode } from 'jwt-decode'
 import logger from '../../logger'
-import { convertToTitleCase } from '../utils/utils'
+import { capitaliseName } from '../utils/utils'
 
 export default function populateCurrentUser(): RequestHandler {
   return async (req, res, next) => {
@@ -20,7 +20,7 @@ export default function populateCurrentUser(): RequestHandler {
         ...res.locals.user,
         userId,
         name,
-        displayName: convertToTitleCase(name),
+        displayName: capitaliseName(name),
         userRoles: roles.map(role => role.substring(role.indexOf('_') + 1)),
       }
 

@@ -6,9 +6,16 @@ import { navigationForAddContactJourney, nextPageForAddContactJourney } from '..
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import Contact = contactsApiClientTypes.Contact
 import { ContactsService } from '../../../../services'
+import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
+import formatName from '../../../../utils/formatName'
+import ReferenceDataService from '../../../../services/referenceDataService'
+import GetContactResponse = contactsApiClientTypes.GetContactResponse
 
 export default class ContactConfirmationController implements PageHandler {
-  constructor(private readonly contactsService: ContactsService) {}
+  constructor(
+    private readonly contactsService: ContactsService,
+    private readonly referenceDataService: ReferenceDataService,
+  ) {}
 
   public PAGE_NAME = Page.CONTACT_CONFIRMATION_PAGE
 
@@ -20,9 +27,11 @@ export default class ContactConfirmationController implements PageHandler {
     const { prisonerDetails, user } = res.locals
     const journey = req.session.addContactJourneys[journeyId]
     const contact: Contact = await this.contactsService.getContact(journey.contactId, user)
+    const formattedFullName = await this.formattedFullName(contact, user)
 
     return res.render('pages/contacts/manage/contactConfirmation/confirmation', {
       contact,
+      formattedFullName,
       prisonerDetails,
       journey,
       isContactConfirmed: res.locals?.formResponses?.isContactConfirmed ?? journey?.isContactConfirmed,
@@ -41,5 +50,17 @@ export default class ContactConfirmationController implements PageHandler {
     }
     journey.isContactConfirmed = undefined
     return res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/search/${journeyId}`)
+  }
+
+  private async formattedFullName(contact: GetContactResponse, user: Express.User) {
+    let titleDescription: string
+    if (contact.title) {
+      titleDescription = await this.referenceDataService.getReferenceDescriptionForCode(
+        ReferenceCodeType.TITLE,
+        contact.title,
+        user,
+      )
+    }
+    return formatName(contact, { customTitle: titleDescription })
   }
 }

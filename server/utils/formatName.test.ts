@@ -41,4 +41,24 @@ describe('formatName', () => {
   ])('should exclude middle names if requested', (names: ContactNames | Prisoner, expected: string) => {
     expect(formatName(names, { excludeMiddleNames: true })).toStrictEqual(expected)
   })
+
+  it.each([
+    [is<ContactNames>({ lastName: 'Last', firstName: 'First', middleNames: 'Middle' }), 'Last, Reverend First Middle'],
+    [
+      is<Partial<Prisoner>>({ lastName: 'Last', firstName: 'First', middleNames: 'Middle' }),
+      'Last, Reverend First Middle',
+    ],
+  ])('should be able to insert a custom title', (names: ContactNames | Prisoner, expected: string) => {
+    expect(formatName(names, { customTitle: 'Reverend' })).toStrictEqual(expected)
+  })
+
+  it.each([
+    [is<ContactNames>({ lastName: 'last', firstName: 'first', middleNames: 'middle' }), 'Last, First Middle'],
+    [
+      is<ContactNames>({ lastName: "o'postrophe", firstName: 'billy-bob', middleNames: 'middle names' }),
+      "O'Postrophe, Billy-Bob Middle Names",
+    ],
+  ])('should capitalise names correctly', (names: ContactNames, expected: string) => {
+    expect(formatName(names)).toStrictEqual(expected)
+  })
 })
