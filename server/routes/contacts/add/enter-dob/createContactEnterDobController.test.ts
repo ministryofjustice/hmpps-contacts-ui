@@ -256,6 +256,22 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
     expect(session.addContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
   })
 
+  it('should keep estimated DOB if we are checking answers and choose NO again', async () => {
+    existingJourney.isCheckingAnswers = true
+    existingJourney.dateOfBirth = { isKnown: 'NO', isOverEighteen: 'YES' }
+
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
+      .type('form')
+      .send({ isKnown: 'NO' })
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-estimated-dob/${journeyId}`)
+
+    // Then
+    const expectedDob = { isKnown: 'NO', isOverEighteen: 'YES' }
+    expect(session.addContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
+  })
+
   it('should return to enter page if there are validation errors', async () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)

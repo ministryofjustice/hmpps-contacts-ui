@@ -38,9 +38,13 @@ export default class CreateContactEnterDobController implements PageHandler {
         year: body.year,
       } as DateOfBirth
     } else {
+      const existingIsOverEighteen = journey.dateOfBirth?.isOverEighteen
       journey.dateOfBirth = {
         isKnown: 'NO',
       } as DateOfBirth
+      if (existingIsOverEighteen) {
+        journey.dateOfBirth.isOverEighteen = existingIsOverEighteen
+      }
     }
 
     res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
