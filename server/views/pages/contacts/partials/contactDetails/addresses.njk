@@ -1,0 +1,133 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro addressDetails(contact, actionItems) %}
+
+    {% set primaryAddressRow = [] %}
+    {% set addressSpecificPhoneNumbers = '' %}
+
+    {% for item in contact.addresses %}
+        {% if item.phoneNumbers and item.phoneNumbers.length > 0 %}
+            {% for val in item.phoneNumbers %}
+                {% 
+                    set addressSpecificPhoneNumbers = addressSpecificPhoneNumbers + '<p data-qa=confirm-specific-phone-' + val.phoneType + '-value>' + (val.phoneType | capitalizeFirstLetter) + ': ' + val.phoneNumber + ' ' + '(' + val.extNumber + ')</p>'
+                %}
+            {% endfor %}
+        {% endif %}
+
+        {% if item.primaryAddress === true %}
+            {% 
+                set address = { 
+                    flat: item.flat,
+                    premise: item.property,
+                    street: item.street,
+                    area: item.area,
+                    city: item.cityDescription,
+                    county: item.countyDescription,
+                    postalCode: item.postCode,
+                    country: item.countryDescription
+                }
+            %}
+
+            {% set fromToDate %}
+                {% if item.startDate %}
+                    <p data-qa="confirm-start-date-value">From {{ (item.startDate | formatDate('MMMM yyyy')) }}</p>
+                {% endif %}
+                {% if item.endDate %}
+                    <p data-qa="confirm-end-date-value">To {{ (item.endDate | formatDate('MMMM yyyy')) }}</p>
+                {% endif %}
+                {% if not item.startDate and not item.endDate  %}
+                    <p data-qa="from-to-date-not-provided">Not provided</p>
+                {% endif %}
+            {% endset -%}
+
+            {% set primaryAddressRow = (
+                primaryAddressRow.push(
+                    {
+                        key: {
+                            text: "Address"
+                        },
+                        value: { 
+                            html: address | addressToLines,
+                            classes: 'confirm-address-value'
+                        }
+                    }
+            ), primaryAddressRow) %}
+
+            {% set primaryAddressRow = (
+                primaryAddressRow.push(
+                    { 
+                        key: {
+                            text: "Type"
+                        },
+                        value: {
+                            text: item.addressType | capitalizeFirstLetter,
+                            classes: 'confirm-type-value'
+                        }
+                    }
+            ), primaryAddressRow) %}
+
+            {% set primaryAddressRow = (
+                primaryAddressRow.push(
+                    {
+                        key: {
+                            text: "Address-specific phone numbers"
+                        },
+                        value: {
+                            html: 'Not provided' if not addressSpecificPhoneNumbers else addressSpecificPhoneNumbers,
+                            classes: 'address-specific-phone-numbers-not-provided'
+                        }
+                    }
+            ), primaryAddressRow) %}
+
+            {% set primaryAddressRow = (
+                primaryAddressRow.push(
+                    {
+                        key: {
+                            text: "Mail"
+                        },
+                        value: {
+                            text: 'Yes' if item.mailFlag == true else 'No',
+                            classes: 'confirm-mail-value'
+                        }
+                    }
+            ), primaryAddressRow) %}
+
+            {% set primaryAddressRow = (
+                primaryAddressRow.push(
+                    {
+                        key: {
+                            text: "Comments"
+                        },
+                        value: {
+                            text: 'Not provided' if not item.comments else item.comments,
+                            classes: 'confirm-comments-value'
+                        }
+                    }
+            ), primaryAddressRow) %}
+
+            {% set primaryAddressRow = (
+                primaryAddressRow.push(
+                    {
+                        key: {
+                            text: "Dates"
+                        },
+                        value: {
+                            html: fromToDate
+                        }
+                    }
+            ), primaryAddressRow) %}
+        {% endif %}
+    {% endfor %}
+
+    {{ govukSummaryList({
+        card: {
+            title: {
+                text: "Addresses"
+            },
+            actions: {
+                items: actionItems
+            }
+        },
+        rows: primaryAddressRow
+    }) }}
+{% endmacro %}

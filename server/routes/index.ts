@@ -16,7 +16,7 @@ export default function routes({
   const router = Router({ mergeParams: true })
 
   router.use('', AddContactRoutes(auditService, contactsService, referenceDataService, prisonerSearchService))
-  router.use('/', ManageContactsRoutes(auditService, prisonerSearchService, contactsService))
+  router.use('/', ManageContactsRoutes(auditService, prisonerSearchService, contactsService, referenceDataService))
   router.use('/', HomeRoutes(auditService))
 
   // Special route - which gives the mini-profile nunjucks macro access to prisoner images

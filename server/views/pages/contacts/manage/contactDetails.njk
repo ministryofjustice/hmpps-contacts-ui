@@ -1,0 +1,122 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% from "../partials/addContactTabNavigation.njk" import contactTabNavigation %}
+{% from "../partials/contactDetails/notProvided.njk" import notProvided %}
+{% from "../partials/contactDetails/basic.njk" import basicDetails %}
+{% from "../partials/contactDetails/addresses.njk" import addressDetails %}
+{% from "../partials/contactDetails/phones.njk" import phoneDetails %}
+{% from "../partials/contactDetails/emailAddresses.njk" import emailAddresses %}
+{% from "../partials/contactDetails/identityNumbers.njk" import identityNumbers %}
+{% from "../partials/contactDetails/language.njk" import language %}
+{% from "../partials/contactDetails/relationship.njk" import relationship %}
+{% from "../partials/contactDetails/approval.njk" import approval %}
+{% from "../partials/contactDetails/comments.njk" import comments %}
+{% from "../partials/contactDetails/domestic.njk" import domestic %}
+
+{% block content %}
+{% macro contactDetailsHtml() %}
+    {{ basicDetails(formattedFullName, contact, [{
+          href: "#",
+          text: "Change"
+        }])
+    }}
+
+    {% if contact.relationship %}
+        {{ relationship(contact, [{
+                href: "#",
+                text: "Change"
+            }])
+        }}
+    {% else %}
+        {{ notProvided({title: 'Relationship details', key: 'Relationship to prisoner', className: 'relationship-not-provided' }) }}
+    {% endif %}
+
+    {% if contact.approval %}
+        {{ approval(contact, [{
+                href: "#",
+                text: "Change"
+            }])
+        }}
+    {% else %}
+        {{ notProvided({title: 'Approval', key: 'Approved for visits', className: 'approval-not-provided' }) }}
+    {% endif %}
+
+    {% if contact.comments %}
+        {{ comments(contact, [{
+                href: "#",
+                text: "Change"
+            }])
+        }}
+    {% else %}
+        {{ notProvided({title: 'Comments', key: 'Comments', className: 'comments-not-provided' }) }}
+    {% endif %}
+    
+    {% if contact.addresses.length > 0 %}
+        {{ addressDetails(contact, [{
+                href: "#",
+                text: "Manage"
+            }])
+        }}
+    {% else %}
+        {{ notProvided({title: 'Addresses', key: 'Addresses', className: 'addresses-not-provided' }) }}
+    {% endif %}
+
+    {% if contact.phoneNumbers.length > 0 %}
+        {{ phoneDetails(contact, [{
+                href: "#",
+                text: "Manage"
+            }])
+        }}
+    {% else %}
+        {{ notProvided({title: 'Phone numbers', key: 'Phone number', className: 'phone-numbers-not-provided' }) }}
+    {% endif %}
+
+    {% if contact.emailAddresses.length > 0 %}
+        {{ emailAddresses(contact, [{
+                href: "#",
+                text: "Manage"
+            }])
+        }}
+    {% else %}
+        {{ notProvided({title: 'Email addresses', key: 'Email addresses', className: 'email-addresses-not-provided' }) }}
+    {% endif %}
+
+    {% if contact.identities.length > 0 %}
+        {{ identityNumbers(contact, [{
+                href: "#",
+                text: "Manage"
+            }])
+        }}
+    {% else %}
+        {{ notProvided({title: 'Identity numbers', key: 'Passport number', className: 'identity-numbers-not-provided' }) }}
+    {% endif %}
+
+    {{ language(contact, [{
+            href: "#",
+            text: "Change"
+        }])
+    }}
+
+    {% if contact.domestic %}
+            {{ domestic(contact, [{
+                href: "#",
+                text: "Change"
+            }])
+        }}
+    {% else %}
+        {{ notProvided({title: 'Domestic details', key: 'Domestic status', className: 'domestic-not-provided' }) }}
+    {% endif %}
+{% endmacro %}
+<div class="govuk-grid-row govuk-!-static-margin-bottom-5">
+    <div class="govuk-grid-column-full">
+        {% include '../partials/addContactNavigation.njk' %}
+        {{ miniProfile(prisonerDetails) }}
+    </div>
+
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-l">Manage Contacts</span>
+        <h1 class="govuk-heading-l">Contact details - {{ contact.lastName | capitaliseName + ", " + contact.firstName | capitaliseName }}</h1>
+        {{ contactTabNavigation(contactDetailsHtml) }}
+    </div>
+</div>
+{% endblock %}

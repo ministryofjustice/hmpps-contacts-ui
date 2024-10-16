@@ -1,0 +1,30 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro emailAddresses(contact, actionItems) %}
+    {% set emailAddresses = '' %}
+    {% if contact.emailAddresses and contact.emailAddresses.length > 0 %}
+        {% for item in contact.emailAddresses %}
+            {% set emailAddresses = emailAddresses + '<p>' + item.emailAddress + '</p>' %}
+        {% endfor %}
+    {% endif %}
+
+    {{ govukSummaryList({
+        card: {
+            title: {
+                text: "Email addresses"
+            },
+            actions: {
+                items: actionItems
+            }
+        },
+        rows: [{
+            key: {
+                text: "Email addresses"
+            },
+            value: {
+                html: emailAddresses,
+                classes: 'confirm-email-addresses-value'
+            }
+        }]
+    }) }}
+{% endmacro %}

@@ -1,0 +1,23 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro domestic(contact, actionItems) %}
+    {{ govukSummaryList({
+        card: {
+            title: {
+                text: "Domestic details"
+            },
+            actions: {
+                items: actionItems
+            }
+        },
+        rows: [{
+            key: {
+                text: "Domestic status"
+            },
+            value: {
+                text: '',
+                classes: 'confirm-domestic-value'
+            }
+        }]
+    }) }}
+{% endmacro %}

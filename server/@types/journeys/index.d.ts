@@ -61,6 +61,7 @@ declare namespace journeys {
       contact?: Partial<ContactNames>
       dateOfBirth?: Partial<DateOfBirth>
     }
+    names?: ContactNames
     contactId?: number
     activateListPage?: number
     inactivateListPage?: number
@@ -83,5 +84,5 @@ declare namespace journeys {
   type ReturnPointType = 'MANAGE_PRISONER_CONTACTS' | 'PRISONER_CONTACTS'
   type YesOrNo = 'YES' | 'NO'
   type YesNoOrDoNotKnow = 'YES' | 'NO' | 'DO_NOT_KNOW'
-  type PrisonerJourneyParams = { prisonerNumber: string; journeyId: string }
+  type PrisonerJourneyParams = { prisonerNumber: string; journeyId: string; contactId: string }
 }

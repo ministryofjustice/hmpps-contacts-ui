@@ -1,0 +1,23 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro approval(contact, actionItems) %}
+    {{ govukSummaryList({
+        card: {
+            title: {
+                text: "Approval"
+            },
+            actions: {
+                items: actionItems
+            }
+        },
+        rows: [{
+            key: {
+                text: "Approved for visits"
+            },
+            value: {
+                text: '',
+                classes: 'confirm-approval-value'
+            }
+        }]
+    }) }}
+{% endmacro %}

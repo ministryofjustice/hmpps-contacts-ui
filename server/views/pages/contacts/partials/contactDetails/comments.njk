@@ -1,0 +1,23 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro comments(contact, actionItems) %}
+    {{ govukSummaryList({
+        card: {
+            title: {
+                text: "Comments"
+            },
+            actions: {
+                items: actionItems
+            }
+        },
+        rows: [{
+            key: {
+                text: "Comments"
+            },
+            value: {
+                text: '',
+                classes: 'confirm-comments-value'
+            }
+        }]
+    }) }}
+{% endmacro %}
