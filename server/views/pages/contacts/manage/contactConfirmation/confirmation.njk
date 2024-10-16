@@ -77,10 +77,16 @@
                 <div class="govuk-tabs__panel--no-border govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" id="restrictions"></div>
                 <div class="govuk-tabs__panel--no-border govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" id="linked-offenders"></div>
             </div>
-
-            <h2 class="govuk-heading-l" data-qa="confim-title-value-bottom">{{ isTheRightPersonTitle }}</h2>
             {{ govukRadios({
                 name: "isContactConfirmed",
+                fieldset: {
+                    legend: {
+                        text: isTheRightPersonTitle,
+                        isPageHeading: false,
+                        classes: "govuk-fieldset__legend--l"
+                    },
+                    attributes: {"data-qa": "confim-title-value-bottom"}
+                },
                 items: [
                     {
                         value: "YES",
