@@ -8,6 +8,7 @@
 
 {% set pageTitle = applicationName + " - Contact Confirmation" %}
 {% set prisonerResultsLink = "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/list/" + journey.id %}
+{% set isTheRightPersonTitle = 'Is this the right person to add as a contact for ' + (prisonerDetails | formatName)  + '?' %}
 
 {% block content %}
 {% macro contactDetailsHtml() %}
@@ -49,7 +50,7 @@
     {% include '../../../../partials/formErrorSummary.njk' %}
 
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-l">Is this the right person to add as a contact for {{ prisonerDetails | formatName }}?</h1>
+        <h1 class="govuk-heading-l" data-qa="confim-title-value-top">{{ isTheRightPersonTitle }}</h1>
         <form method='POST'>
             <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
             <div class="govuk-tabs" data-module="govuk-tabs">
@@ -76,9 +77,16 @@
                 <div class="govuk-tabs__panel--no-border govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" id="restrictions"></div>
                 <div class="govuk-tabs__panel--no-border govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" id="linked-offenders"></div>
             </div>
-
             {{ govukRadios({
                 name: "isContactConfirmed",
+                fieldset: {
+                    legend: {
+                        text: isTheRightPersonTitle,
+                        isPageHeading: false,
+                        classes: "govuk-fieldset__legend--l"
+                    },
+                    attributes: {"data-qa": "confim-title-value-bottom"}
+                },
                 items: [
                     {
                         value: "YES",
