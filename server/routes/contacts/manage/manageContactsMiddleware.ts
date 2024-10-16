@@ -1,4 +1,5 @@
 import { Request, RequestHandler } from 'express'
+import logger from '../../../../logger'
 
 const ensureInManageContactsJourney = (): RequestHandler => {
   return async (req: Request<{ journeyId: string; prisonerNumber?: string }, unknown, unknown>, res, next) => {
@@ -9,6 +10,9 @@ const ensureInManageContactsJourney = (): RequestHandler => {
     }
 
     if (!req.session.manageContactsJourneys[journeyId]) {
+      logger.warn(
+        `Manage contacts journey (${journeyId}) not found in session for user ${res.locals.user?.username}. Returning to start of journey.`,
+      )
       if (prisonerNumber) {
         return res.redirect(`/prisoner/${prisonerNumber}/contacts/list`)
       }

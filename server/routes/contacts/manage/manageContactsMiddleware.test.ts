@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { SessionData } from 'express-session'
 import ensureInManageContactsJourney from './manageContactsMiddleware'
 import resetAllMocks = jest.resetAllMocks
+import { user } from '../../testutils/appSetup'
 
 describe('manageContactsMiddleware', () => {
   describe('ensureInManageContactsJourney', () => {
@@ -17,7 +18,7 @@ describe('manageContactsMiddleware', () => {
         params: { journeyId },
         session: {} as Partial<SessionData>,
       } as unknown as Request
-      res = { redirect: jest.fn() } as unknown as Response
+      res = { redirect: jest.fn(), locals: { user } } as unknown as Response
       next = jest.fn()
     })
 
