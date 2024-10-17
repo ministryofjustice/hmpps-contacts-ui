@@ -80,8 +80,7 @@ const ManageContactsRoutes = (
   // Part 5: View one contact
   const contactDetailsController = new ContactDetailsController(contactsService, referenceDataService)
   router.get(
-    '/contacts/manage/:prisonerNumber/:contactId/:journeyId',
-    ensureInManageContactsJourney(),
+    '/contacts/manage/:prisonerNumber/:contactId',
     prisonerDetailsMiddleware(prisonerSearchService),
     logPageViewMiddleware(auditService, contactDetailsController),
     asyncMiddleware(contactDetailsController.GET),

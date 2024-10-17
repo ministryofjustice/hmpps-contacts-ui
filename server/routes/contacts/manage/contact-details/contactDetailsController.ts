@@ -20,7 +20,8 @@ export default class ContactDetailsController implements PageHandler {
   public PAGE_NAME = Page.CONTACT_DETAILS_PAGE
 
   GET = async (
-    req: Request<PrisonerJourneyParams, unknown, unknown, { contactId?: string }>,
+    // req: Request<PrisonerJourneyParams, unknown, unknown, { contactId?: string }>,
+    req: Request<PrisonerJourneyParams, { journeyId?: string; contactId?: string }, unknown>,
     res: Response,
   ): Promise<void> => {
     let journey: ManageContactsJourney
