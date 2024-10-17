@@ -1,15 +1,15 @@
-{% extends "../../../../partials/layout.njk" %}
-{% from "../../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% extends "../../../partials/layout.njk" %}
+{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "../../partials/addContactTabNavigation.njk" import contactTabNavigation %}
-{% from "../../partials/contactDetails/notProvided.njk" import notProvided %}
-{% from "../../partials/contactDetails/basic.njk" import basicDetails %}
-{% from "../../partials/contactDetails/addresses.njk" import addressDetails %}
-{% from "../../partials/contactDetails/phones.njk" import phoneDetails %}
-{% from "../../partials/contactDetails/emailAddresses.njk" import emailAddresses %}
-{% from "../../partials/contactDetails/identityNumbers.njk" import identityNumbers %}
-{% from "../../partials/contactDetails/language.njk" import language %}
+{% from "../partials/addContactTabNavigation.njk" import contactTabNavigation %}
+{% from "../partials/contactDetails/notProvided.njk" import notProvided %}
+{% from "../partials/contactDetails/basic.njk" import basicDetails %}
+{% from "../partials/contactDetails/addresses.njk" import addressDetails %}
+{% from "../partials/contactDetails/phones.njk" import phoneDetails %}
+{% from "../partials/contactDetails/emailAddresses.njk" import emailAddresses %}
+{% from "../partials/contactDetails/identityNumbers.njk" import identityNumbers %}
+{% from "../partials/contactDetails/language.njk" import language %}
 
 {% set pageTitle = applicationName + " - Contact Confirmation" %}
 {% set prisonerResultsLink = "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/list/" + journey.id %}
@@ -50,11 +50,11 @@
 
 <div class="govuk-grid-row govuk-!-static-margin-bottom-5">
     <div class="govuk-grid-column-full">
-        {% include '../../partials/addContactNavigation.njk' %}
+        {% include '../partials/addContactNavigation.njk' %}
         {{ miniProfile(prisonerDetails) }}
     </div>
 
-    {% include '../../../../partials/formErrorSummary.njk' %}
+    {% include '../../../partials/formErrorSummary.njk' %}
 
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-l" data-qa="confim-title-value-top">{{ isTheRightPersonTitle }}</h1>

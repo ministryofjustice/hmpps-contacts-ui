@@ -29,7 +29,7 @@ export default class ContactConfirmationController implements PageHandler {
     const contact: Contact = await this.contactsService.getContact(journey.contactId, user)
     const formattedFullName = await this.formattedFullName(contact, user)
 
-    return res.render('pages/contacts/manage/contactConfirmation/confirmation', {
+    return res.render('pages/contacts/manage/confirmation', {
       contact,
       formattedFullName,
       prisonerDetails,
