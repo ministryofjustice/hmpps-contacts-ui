@@ -1,6 +1,6 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% macro emailAddresses(contact, actionItems) %}
+{% macro emailAddresses(contact, cardAction) %}
     {% set emailAddresses = '' %}
     {% if contact.emailAddresses and contact.emailAddresses.length > 0 %}
         {% for item in contact.emailAddresses %}
@@ -14,7 +14,7 @@
                 text: "Email addresses"
             },
             actions: {
-                items: actionItems
+                items: cardAction
             }
         },
         rows: [{

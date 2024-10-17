@@ -1,13 +1,13 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% macro domestic(contact, actionItems) %}
+{% macro domestic(contact, cardAction) %}
     {{ govukSummaryList({
         card: {
             title: {
                 text: "Domestic details"
             },
             actions: {
-                items: actionItems
+                items: cardAction
             }
         },
         rows: [{

@@ -1,6 +1,6 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% macro phoneDetails(contact, actionItems) %}
+{% macro phoneDetails(contact, cardAction) %}
     {% set phoneNumbers = [] %}
 
     {% if contact.phoneNumbers and contact.phoneNumbers.length > 0 %}
@@ -26,7 +26,7 @@
                 text: "Phone numbers"
             },
             actions: {
-                items: actionItems
+                items: cardAction
             }
         },
         rows: phoneNumbers

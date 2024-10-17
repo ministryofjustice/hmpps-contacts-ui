@@ -1,13 +1,13 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% macro relationship(contact, actionItems) %}
+{% macro relationship(contact, cardAction) %}
     {{ govukSummaryList({
         card: {
             title: {
                 text: "Relationship details"
             },
             actions: {
-                items: actionItems
+                items: cardAction
             }
         },
         rows: [{

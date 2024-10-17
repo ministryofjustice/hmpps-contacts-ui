@@ -1,6 +1,6 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% macro addressDetails(contact, actionItems) %}
+{% macro addressDetails(contact, cardAction) %}
 
     {% set primaryAddressRow = [] %}
     {% set addressSpecificPhoneNumbers = '' %}
@@ -125,7 +125,7 @@
                 text: "Addresses"
             },
             actions: {
-                items: actionItems
+                items: cardAction
             }
         },
         rows: primaryAddressRow

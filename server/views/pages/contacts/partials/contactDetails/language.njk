@@ -1,13 +1,13 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% macro language(contact, actionItems) %}
+{% macro language(contact, cardAction) %}
     {{ govukSummaryList({
         card: {
             title: {
                 text: "Language details"
             },
             actions: {
-                items: actionItems
+                items: cardAction
             }
         },
         rows: [{
