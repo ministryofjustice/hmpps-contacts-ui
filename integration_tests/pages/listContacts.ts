@@ -44,8 +44,5 @@ export default class ListContactsPage extends Page {
 
   private inactiveSectionTab = (): PageElement => cy.get(`[data-qa=inactive-list]`)
 
-  private contactNames = (): PageElement =>
-    cy.get(
-      '#active-contacts > .govuk-table > .govuk-table__body > .govuk-table__row > :nth-child(1) > [data-qa="contact-name-link"]',
-    )
+  private contactNames = (): PageElement => cy.get('#active-contacts [data-qa="contact-name-link"]')
 }
