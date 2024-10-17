@@ -1,4 +1,3 @@
-
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% set  formattedDateOfBirth %}{% if contact.dateOfBirth %}{{ contact.dateOfBirth | formatDate }}{% else %}Not provided{% endif %}{% endset %}
 {{ govukSummaryList({
