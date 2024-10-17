@@ -1,0 +1,27 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{{ govukSummaryList({
+    card: {
+        title: {
+            text: "Language details"
+        }
+    },
+    rows: [{
+        key: {
+            text: "Spoken language"
+        },
+        value: {
+            text: contact.languageDescription if contact.languageDescription else 'Not provided',
+            classes: 'confirm-spoken-language-value'
+        }
+    },
+    {
+        key: {
+            text: "Needs interpreter"
+        },
+        value: {
+            text: 'Yes' if contact.interpreterRequired == 'true' else 'No',
+            classes: 'confirm-needs-interpreter-value'
+        }
+    }]
+}) }}

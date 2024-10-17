@@ -44,7 +44,7 @@ export default class ContactDetailsController implements PageHandler {
       logger.info(JSON.stringify(contact))
     }
 
-    return res.render('pages/contacts/manage/contactDetails', {
+    return res.render('pages/contacts/manage/contactDetails/details', {
       contact,
       prisonerDetails,
       formattedFullName,
