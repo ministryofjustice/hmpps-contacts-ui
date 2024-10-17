@@ -551,7 +551,7 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    /** Endpoint to return reference data for a provided group key */
+    /** Endpoint to return reference data for a provided group key. Sorted by display order then description by default. */
     get: operations['getReferenceDataByGroup']
     put?: never
     post?: never
@@ -973,6 +973,11 @@ export interface components {
        */
       prisonerNumber: string
       /**
+       * @description The type of the contact
+       * @example SOCIAL or OFFICIAL
+       */
+      contactType: string
+      /**
        * @description The type of relationship
        * @example Friend
        */
@@ -1046,14 +1051,6 @@ export interface components {
        */
       updatedTime: string
     }
-    ErrorResponse: {
-      /** Format: int32 */
-      status: number
-      errorCode?: string
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
-    }
     /** @description Response object with prisoner contact details */
     PrisonerContact: {
       /**
@@ -1073,6 +1070,11 @@ export interface components {
        * @example A1234BC
        */
       prisonerNumber: string
+      /**
+       * @description The type of the contact
+       * @example SOCIAL or OFFICIAL
+       */
+      contactType: string
       /**
        * @description The type of relationship
        * @example Friend
@@ -1156,6 +1158,14 @@ export interface components {
        * @example 2024-02-01T16:00:00Z
        */
       amendedTime?: string | null
+    }
+    ErrorResponse: {
+      /** Format: int32 */
+      status: number
+      errorCode?: string
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
     }
     /** @description Request object to update prisoner contact restriction details */
     UpdatePrisonerContactRestrictionRequest: {
@@ -1315,11 +1325,6 @@ export interface components {
        */
       estimatedIsOverEighteen?: 'YES' | 'NO' | 'DO_NOT_KNOW'
       /**
-       * @description The type code of the contact
-       * @example PERSON
-       */
-      contactTypeCode?: string | null
-      /**
        * @description The place of birth of the contact
        * @example London
        */
@@ -1361,10 +1366,10 @@ export interface components {
        */
       gender?: string | null
       /**
-       * @description The marital status of the contact
-       * @example Single
+       * @description The domestic status code of the contact
+       * @example S
        */
-      maritalStatus?: string | null
+      domesticStatus?: string | null
       /**
        * @description The language code of the contact
        * @example EN
@@ -1380,11 +1385,6 @@ export interface components {
        * @example false
        */
       interpreterRequired?: boolean | null
-      /**
-       * @description Additional comments about the contact
-       * @example This contact has special dietary requirements.
-       */
-      comments?: string | null
       /**
        * @description The id of the user who updated the contact
        * @example JD000001
@@ -1438,11 +1438,6 @@ export interface components {
        */
       estimatedIsOverEighteen?: 'YES' | 'NO' | 'DO_NOT_KNOW'
       /**
-       * @description The type code of the contact
-       * @example PERSON
-       */
-      contactTypeCode?: string | null
-      /**
        * @description The place of birth of the contact
        * @example London
        */
@@ -1484,10 +1479,10 @@ export interface components {
        */
       gender?: string | null
       /**
-       * @description The marital status of the contact
-       * @example Single
+       * @description The domestic status code of the contact
+       * @example S
        */
-      maritalStatus?: string | null
+      domesticStatus?: string | null
       /**
        * @description The language code of the contact
        * @example EN
@@ -1503,11 +1498,6 @@ export interface components {
        * @example false
        */
       interpreterRequired?: boolean | null
-      /**
-       * @description Additional comments about the contact
-       * @example This contact has special dietary requirements.
-       */
-      comments?: string | null
       /**
        * @description User who created the entry
        * @example admin
@@ -1901,10 +1891,7 @@ export interface components {
        * @example 123456
        */
       contactId: number
-      /**
-       * @description The type of address
-       * @example HOME
-       */
+      /** @description The type of address */
       addressType: string
       /**
        * @description True if this is the primary address otherwise false
@@ -2129,6 +2116,11 @@ export interface components {
        */
       prisonerNumber: string
       /**
+       * @description The type of the contact
+       * @example SOCIAL or OFFICIAL
+       */
+      contactType: string
+      /**
        * @description The type of relationship
        * @example Friend
        */
@@ -2318,11 +2310,6 @@ export interface components {
       estimatedIsOverEighteen?: 'YES' | 'NO' | 'DO_NOT_KNOW' | null
       relationship?: components['schemas']['ContactRelationship']
       /**
-       * @description The type code of the contact
-       * @example PERSON
-       */
-      contactTypeCode?: string | null
-      /**
        * @description The place of birth of the contact
        * @example London
        */
@@ -2364,10 +2351,10 @@ export interface components {
        */
       gender?: string | null
       /**
-       * @description The marital status of the contact
-       * @example Single
+       * @description The domestic status code of the contact
+       * @example S
        */
-      maritalStatus?: string | null
+      domesticStatus?: string | null
       /**
        * @description The language code of the contact
        * @example EN
@@ -2383,11 +2370,6 @@ export interface components {
        * @example false
        */
       interpreterRequired?: boolean | null
-      /**
-       * @description Additional comments about the contact
-       * @example This contact has special dietary requirements.
-       */
-      comments?: string | null
       /**
        * @description The id of the user creating the contact
        * @example JD000001
@@ -2560,11 +2542,8 @@ export interface components {
        * @example 123456
        */
       contactId: number
-      /**
-       * @description The type of address
-       * @example HOME
-       */
-      addressType?: string
+      /** @description The type of address */
+      addressType: string
       /**
        * @description True if this is the primary address otherwise false
        * @example true
@@ -2938,11 +2917,6 @@ export interface components {
        * @example 1980-01-01
        */
       dateOfBirth?: string | null
-      /**
-       * @description The type code of the contact
-       * @example SOCIAL or OFFICIAL
-       */
-      contactTypeCode: string
       /** @description List of Nomis Id and DPS Id for phone numbers */
       phoneNumbers: components['schemas']['IdPair'][]
       /** @description List of Nomis Id and DPS Id for addresses */
@@ -3365,6 +3339,16 @@ export interface components {
       /** @description All identities for the contact */
       identities: components['schemas']['ContactIdentityDetails'][]
       /**
+       * @description The NOMIS code for the contacts domestic status
+       * @example S
+       */
+      domesticStatusCode?: string | null
+      /**
+       * @description The description of the domestic status code
+       * @example Single
+       */
+      domesticStatusDescription?: string | null
+      /**
        * @description The id of the user who created the contact
        * @example JD000001
        */
@@ -3383,6 +3367,9 @@ export interface components {
        * @example JD000001
        */
       createdBy: string
+    }
+    Sort: {
+      sort?: string[]
     }
     /** @description Describes the details of a reference code */
     ReferenceCode: {
@@ -3407,6 +3394,12 @@ export interface components {
        * @example Mobile
        */
       description?: string
+      /**
+       * Format: int32
+       * @description The default order configured for the reference code, lowest number first.
+       * @example 5
+       */
+      displayOrder: number
     }
     /** @description Describes the details of a prisoner's contact */
     PrisonerContactSummary: {
@@ -5398,7 +5391,10 @@ export interface operations {
   }
   getReferenceDataByGroup: {
     parameters: {
-      query?: never
+      query: {
+        /** @description Sort configuration - default displayOrder, description */
+        sort: components['schemas']['Sort']
+      }
       header?: never
       path: {
         /**

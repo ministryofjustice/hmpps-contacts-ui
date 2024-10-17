@@ -1,0 +1,21 @@
+{% extends "../../../../partials/layout.njk" %}
+{% from "../../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% from "../../partials/addContactTabNavigation.njk" import contactTabNavigation %}
+
+{% block content %}
+{% macro contactDetailsHtml() %}
+    {%- include "./manageBasicDetails.njk" -%}
+{% endmacro %}
+<div class="govuk-grid-row govuk-!-static-margin-bottom-5">
+    <div class="govuk-grid-column-full">
+        {% include '../../partials/addContactNavigation.njk' %}
+        {{ miniProfile(prisonerDetails) }}
+    </div>
+
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-l">Manage Contacts</span>
+        <h1 class="govuk-heading-l">Contact details - {{ contact.lastName | capitaliseName + ", " + contact.firstName | capitaliseName }}</h1>
+        {{ contactTabNavigation(contactDetailsHtml) }}
+    </div>
+</div>
+{% endblock %}
