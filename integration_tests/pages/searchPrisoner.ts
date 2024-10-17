@@ -62,5 +62,5 @@ export default class SearchPrisonerPage extends Page {
 
   noResultMessage = (): PageElement => cy.get('[data-qa="no-result-message"]')
 
-  prisonerLink = (): PageElement => cy.get('.govuk-table__row > :nth-child(1) > .govuk-link')
+  prisonerLink = (): PageElement => cy.get('[data-qa="prisoner-name"]')
 }
