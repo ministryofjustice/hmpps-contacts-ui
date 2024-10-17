@@ -1,14 +1,11 @@
 import type { Express } from 'express'
 import request from 'supertest'
-import { SessionData } from 'express-session'
-import { v4 as uuidv4 } from 'uuid'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import ContactsService from '../../../../services/contactsService'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import TestData from '../../../testutils/testData'
-import AddContactJourney = journeys.AddContactJourney
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -21,32 +18,15 @@ const contactsService = new ContactsService(null) as jest.Mocked<ContactsService
 const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
 
 let app: Express
-let session: Partial<SessionData>
-const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
-let existingJourney: AddContactJourney
 
 beforeEach(() => {
-  existingJourney = {
-    id: journeyId,
-    lastTouched: new Date().toISOString(),
-    prisonerNumber,
-    isCheckingAnswers: false,
-    returnPoint: { type: 'MANAGE_PRISONER_CONTACTS', url: '/foo-bar' },
-    mode: 'EXISTING',
-  }
   app = appWithAllRoutes({
     services: {
       auditService,
       prisonerSearchService,
       contactsService,
       referenceDataService,
-    },
-    userSupplier: () => user,
-    sessionReceiver: (receivedSession: Partial<SessionData>) => {
-      session = receivedSession
-      session.manageContactsJourneys = {}
-      session.manageContactsJourneys[journeyId] = existingJourney
     },
   })
   referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mr')

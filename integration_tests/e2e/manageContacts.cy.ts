@@ -105,10 +105,9 @@ context('Manage contacts ', () => {
     cy.task('stubComponentsMeta')
     cy.task('stubPrisoners', { term: prisonerNumber }) // Empty search result
 
-    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton()
-
-    Page.verifyOnPage(SearchPrisonerPage).verifyShowMessageAsValue(
-      'There are no results for this name or number at HMP Hewell',
-    )
+    Page.verifyOnPage(SearchPrisonerPage)
+      .enterPrisoner(prisonerNumber)
+      .clickSearchButton()
+      .verifyShowMessageAsValue('There are no results for this name or number at HMP Hewell')
   })
 })
