@@ -5,6 +5,51 @@ export default class SearchPrisonerPage extends Page {
     super('Search for a prisoner')
   }
 
+  enterPrisoner(value: string): SearchPrisonerPage {
+    this.prisonerSearchFormField().clear().type(value)
+    return this
+  }
+
+  clickSearchButton(): SearchPrisonerPage {
+    this.prisonerSearchSearchButton().click()
+    return this
+  }
+
+  clickPrisonerLink(): SearchPrisonerPage {
+    this.prisonerLink().click()
+    return this
+  }
+
+  verifyShowMessageAsValue(expected: string): SearchPrisonerPage {
+    this.noResultMessage().should('contain.text', expected)
+    return this
+  }
+
+  verifyShowContactsCaptionAsValue(expected: string): SearchPrisonerPage {
+    this.manageContactsCaption().should('contain.text', expected)
+    return this
+  }
+
+  verifyShowContactsHeaderAsValue(expected: string): SearchPrisonerPage {
+    this.manageContactH1().should('contain.text', expected)
+    return this
+  }
+
+  verifyLabelIsVisible(): SearchPrisonerPage {
+    this.prisonerSearchFormLabel().should('be.visible')
+    return this
+  }
+
+  verifySearchFormLabelIsVisible(): SearchPrisonerPage {
+    this.prisonerSearchFormLabel().should('be.visible')
+    return this
+  }
+
+  verifySearchSearchButtonIsVisible(): SearchPrisonerPage {
+    this.prisonerSearchSearchButton().should('be.visible')
+    return this
+  }
+
   manageContactsCaption = (): PageElement => cy.get('.govuk-caption-l')
 
   manageContactH1 = (): PageElement => cy.get('.govuk-heading-l')
@@ -17,5 +62,5 @@ export default class SearchPrisonerPage extends Page {
 
   noResultMessage = (): PageElement => cy.get('[data-qa="no-result-message"]')
 
-  clickPrisonerLink = (): PageElement => cy.get('.govuk-table__row > :nth-child(1) > .govuk-link').click()
+  prisonerLink = (): PageElement => cy.get('.govuk-table__row > :nth-child(1) > .govuk-link')
 }

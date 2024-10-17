@@ -2,6 +2,7 @@ import SearchPrisonerPage from '../pages/searchPrisoner'
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
+import ManageContactDetailsPage from '../pages/manageContactDetails'
 
 context('Manage contacts ', () => {
   beforeEach(() => {
@@ -12,11 +13,11 @@ context('Manage contacts ', () => {
   })
 
   it('Start of journey prompts for search', () => {
-    const searchPrisonerPage = Page.verifyOnPage(SearchPrisonerPage)
-    searchPrisonerPage.manageContactsCaption().should('contain.text', 'Manage Contacts')
-    searchPrisonerPage.manageContactH1().should('contain.text', 'Search for a prisoner')
-    searchPrisonerPage.prisonerSearchFormLabel().should('be.visible')
-    searchPrisonerPage.prisonerSearchSearchButton().should('be.visible')
+    Page.verifyOnPage(SearchPrisonerPage)
+      .verifyShowContactsCaptionAsValue('Manage Contacts')
+      .verifyShowContactsHeaderAsValue('Search for a prisoner')
+      .verifySearchFormLabelIsVisible()
+      .verifySearchSearchButtonIsVisible()
   })
 
   it('Should show validation error for empty search term', () => {
@@ -53,11 +54,8 @@ context('Manage contacts ', () => {
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', 'A1234BC')
 
-    const searchPrisonerPage = Page.verifyOnPage(SearchPrisonerPage)
-    searchPrisonerPage.prisonerSearchFormField().clear().type(prisonerNumber)
-    searchPrisonerPage.prisonerSearchSearchButton().click()
-    Page.verifyOnPage(SearchPrisonerPage)
-    searchPrisonerPage.clickPrisonerLink()
+    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink()
+
     Page.verifyOnPage(ListContactsPage)
       .clickActiveSectionTabButton()
       .verifyShowPaginationNavigationValueAs('Next', 'next')
@@ -75,16 +73,42 @@ context('Manage contacts ', () => {
       .verifyShowPaginationPageLinkValueAs('5', 4)
   })
 
+  it(`should render manage contact details`, () => {
+    const { prisonerNumber } = TestData.prisoner()
+    cy.task('stubTitlesReferenceData')
+    cy.task('stubComponentsMeta')
+    cy.task('stubPrisoners', {
+      results: {
+        totalPages: 1,
+        totalElements: 1,
+        content: [TestData.prisoner()],
+      },
+      prisonId: 'HEI',
+      term: prisonerNumber,
+    })
+    cy.task('stubPrisonerById', TestData.prisoner())
+    cy.task('stubGetContactById', TestData.contact())
+    cy.task('stubContactList', 'A1234BC')
+
+    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink()
+
+    Page.verifyOnPage(ListContactsPage).clickContactNamesLink()
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'Mason, Jones')
+      .verifyShowNamesValueAs('Mason, Mr Jones')
+      .verifyShowDOBValueAs('14 January 1990')
+      .verifyShowDeceasedDateValueAs('Not provided')
+  })
+
   it('should show a message that no contacts match the criteria', () => {
     const { prisonerNumber } = TestData.prisoner()
     cy.task('stubComponentsMeta')
     cy.task('stubPrisoners', { term: prisonerNumber }) // Empty search result
-    const searchPrisonerPage = Page.verifyOnPage(SearchPrisonerPage)
-    searchPrisonerPage.prisonerSearchFormField().clear().type(prisonerNumber)
-    searchPrisonerPage.prisonerSearchSearchButton().click()
-    Page.verifyOnPage(SearchPrisonerPage)
-    searchPrisonerPage
-      .noResultMessage()
-      .should('contain.text', 'There are no results for this name or number at HMP Hewell')
+
+    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton()
+
+    Page.verifyOnPage(SearchPrisonerPage).verifyShowMessageAsValue(
+      'There are no results for this name or number at HMP Hewell',
+    )
   })
 })
