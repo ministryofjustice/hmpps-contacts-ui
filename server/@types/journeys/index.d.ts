@@ -61,7 +61,6 @@ declare namespace journeys {
       contact?: Partial<ContactNames>
       dateOfBirth?: Partial<DateOfBirth>
     }
-    names?: ContactNames
     contactId?: number
     activateListPage?: number
     inactivateListPage?: number
