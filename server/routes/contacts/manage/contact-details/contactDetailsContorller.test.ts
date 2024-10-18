@@ -36,7 +36,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /contacts/manage/:contactId/:journeyId', () => {
+describe('GET /contacts/manage/:contactId/', () => {
   it('should render contact details page', async () => {
     auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
