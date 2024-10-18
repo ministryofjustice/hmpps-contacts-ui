@@ -1,0 +1,67 @@
+
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% set  formattedDateOfBirth %}{% if contact.dateOfBirth %}{{ contact.dateOfBirth | formatDate }}{% else %}Not provided{% endif %}{% endset %}
+{{ govukSummaryList({
+    card: {
+        title: {
+            text: "Basic details"
+        }
+    },
+    rows: [{
+        key: {
+            text: "Name"
+        },
+        value: {
+            text: formattedFullName,
+            classes: 'manage-names-value'
+        },
+        actions: {
+            items: [
+                {
+                    href: "#",
+                    text: "Change",
+                    visuallyHiddenText: "name",
+                    classes: 'govuk-visually-hidden'
+                }
+            ]
+        }
+    },
+    {
+        key: {
+            text: "Date of birth"
+        },
+        value: {
+            text:  formattedDateOfBirth,
+            classes: 'manage-dob-value'
+        },
+        actions: {
+            items: [
+                {
+                    href: "#",
+                    text: "Change",
+                    visuallyHiddenText: "date of birth",
+                    classes: 'govuk-visually-hidden'
+                }
+            ]
+        }
+    },
+    {
+        key: {
+            text: "Deceased date"
+        },
+        value: {
+            text: 'Not provided' if not contact.isDeceased else  contact.deceasedDate | formatDate,
+            classes: 'manage-deceased-date-value'
+        },
+        actions: {
+            items: [
+                {
+                    href: "#",
+                    text: "Change",
+                    visuallyHiddenText: "deceased date",
+                    classes: 'govuk-visually-hidden'
+                }
+            ]
+        }
+    }]
+}) }}
