@@ -19,8 +19,8 @@ export default class ListContactsPage extends Page {
     return this
   }
 
-  clickContactNamesLink(): ListContactsPage {
-    this.contactNames().click()
+  clickContactNamesLink(contactId: number): ListContactsPage {
+    this.contactNames(contactId).click()
     return this
   }
 
@@ -44,5 +44,6 @@ export default class ListContactsPage extends Page {
 
   private inactiveSectionTab = (): PageElement => cy.get(`[data-qa=inactive-list]`)
 
-  private contactNames = (): PageElement => cy.get('#active-contacts [data-qa="contact-name-link"]')
+  private contactNames = (contactId: number): PageElement =>
+    cy.get(`#active-contacts [data-qa="contact-${contactId}-link"]`)
 }

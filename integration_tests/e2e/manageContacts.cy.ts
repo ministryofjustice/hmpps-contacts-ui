@@ -54,7 +54,7 @@ context('Manage contacts ', () => {
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', 'A1234BC')
 
-    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink()
+    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
 
     Page.verifyOnPage(ListContactsPage)
       .clickActiveSectionTabButton()
@@ -90,9 +90,9 @@ context('Manage contacts ', () => {
     cy.task('stubGetContactById', TestData.contact())
     cy.task('stubContactList', 'A1234BC')
 
-    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink()
+    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
 
-    Page.verifyOnPage(ListContactsPage).clickContactNamesLink()
+    Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Mason, Jones')
       .verifyShowNamesValueAs('Mason, Mr Jones')

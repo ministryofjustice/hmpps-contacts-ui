@@ -15,7 +15,7 @@
     <div class="govuk-grid-column-two-thirds">
         <span class="govuk-caption-l">Manage Contacts</span>
         <h1 class="govuk-heading-l">Contact details - {{ contact.lastName | capitaliseName + ", " + contact.firstName | capitaliseName }}</h1>
-        {{ contactTabNavigation(contactDetailsHtml) }}
+        {{ contactDetailsHtml() }}
     </div>
 </div>
 {% endblock %}

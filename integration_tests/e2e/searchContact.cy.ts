@@ -54,7 +54,7 @@ context('Search contact', () => {
     searchPrisonerPage.prisonerSearchFormField().clear().type(prisonerNumber)
     searchPrisonerPage.prisonerSearchSearchButton().click()
 
-    Page.verifyOnPage(SearchPrisonerPage).clickPrisonerLink()
+    Page.verifyOnPage(SearchPrisonerPage).clickPrisonerLink('A1234BC')
 
     Page.verifyOnPage(ListContactsPage).clickAddNewContactButton()
 

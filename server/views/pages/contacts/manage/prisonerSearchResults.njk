@@ -83,7 +83,7 @@
             {% set rows = [] %}
             {% for result in results.content %}
                 {% set prisonerNameHtml %}
-                   <a href="/prisoner/{{ result.prisonerNumber }}/contacts/list/{{journey.id}}" class="govuk-link govuk-link--no-visited-state bapv-result-row" data-qa="prisoner-name">
+                   <a href="/prisoner/{{ result.prisonerNumber }}/contacts/list/{{journey.id}}" class="govuk-link govuk-link--no-visited-state bapv-result-row" data-qa="prisoner-{{result.prisonerNumber}}-name">
                       {{ result | formatName }}
                    </a>
                 {% endset %}

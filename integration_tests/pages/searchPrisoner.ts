@@ -15,8 +15,8 @@ export default class SearchPrisonerPage extends Page {
     return this
   }
 
-  clickPrisonerLink(): SearchPrisonerPage {
-    this.prisonerLink().click()
+  clickPrisonerLink(prisonerNumber: string): SearchPrisonerPage {
+    this.prisonerLink(prisonerNumber).click()
     return this
   }
 
@@ -62,5 +62,5 @@ export default class SearchPrisonerPage extends Page {
 
   noResultMessage = (): PageElement => cy.get('[data-qa="no-result-message"]')
 
-  prisonerLink = (): PageElement => cy.get('[data-qa="prisoner-name"]')
+  prisonerLink = (prisonerNumber: string): PageElement => cy.get(`[data-qa="prisoner-${prisonerNumber}-name"]`)
 }
