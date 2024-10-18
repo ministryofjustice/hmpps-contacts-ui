@@ -66,3 +66,5 @@ export const formatDateForApi = (dateOfBirth: Partial<DateOfBirth>) => {
 export const capitalizeFirstLetter = (val: string) => {
   return val.toLowerCase().replace(/^./, val[0].toUpperCase())
 }
+
+export const formatNameAsFirstMiddleLast = (names: string) => names.split(',').reverse().join(' ').trim()

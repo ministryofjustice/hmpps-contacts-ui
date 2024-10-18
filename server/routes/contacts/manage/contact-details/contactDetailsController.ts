@@ -5,6 +5,7 @@ import { ContactsService } from '../../../../services'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import formatName from '../../../../utils/formatName'
+import { formatNameAsFirstMiddleLast } from '../../../../utils/utils'
 
 import Contact = contactsApiClientTypes.Contact
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
@@ -21,7 +22,8 @@ export default class ContactDetailsController implements PageHandler {
     const { contactId } = req.params
     const { prisonerDetails, user } = res.locals
     const contact: Contact = await this.contactsService.getContact(parseInt(contactId, 10), user)
-    const formattedFullName = await this.formattedFullName(contact, user)
+    let formattedFullName = await this.formattedFullName(contact, user)
+    formattedFullName = formatNameAsFirstMiddleLast(formattedFullName)
 
     return res.render('pages/contacts/manage/contactDetails/details', {
       contact,

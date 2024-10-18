@@ -94,8 +94,8 @@ context('Manage contacts ', () => {
 
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'Mason, Jones')
-      .verifyShowNamesValueAs('Mason, Mr Jones')
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
+      .verifyShowNamesValueAs('Mr Jones Mason')
       .verifyShowDOBValueAs('14 January 1990')
       .verifyShowDeceasedDateValueAs('Not provided')
   })
