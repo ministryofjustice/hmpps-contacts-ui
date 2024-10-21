@@ -256,40 +256,85 @@ describe('Contact seaarch results', () => {
     expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('England')
   })
 
-  it('should display pagination when totalPages greater than 1', async () => {
-    // Given
-    existingJourney = {
-      ...existingJourney,
-      searchContact: {
-        contact: { lastName: 'last', middleNames: '', firstName: '' },
-        dateOfBirth: { day: undefined, month: undefined, year: undefined },
-      },
-    }
-    auditService.logPageView.mockResolvedValue(null)
-    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+  describe('Pagination', () => {
+    it('should display pagination when total pages are more than 1', async () => {
+      // Given
+      existingJourney = {
+        ...existingJourney,
+        searchContact: {
+          contact: { lastName: 'last', middleNames: '', firstName: '' },
+          dateOfBirth: { day: undefined, month: undefined, year: undefined },
+        },
+      }
+      auditService.logPageView.mockResolvedValue(null)
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
 
-    const contactsArray = []
-    for (let i = 0; i < 15; i += 1) {
-      contactsArray.push(TestData.contactSearchResultItem({ id: i }))
-    }
+      const contactsArray = []
+      for (let i = 0; i < 15; i += 1) {
+        contactsArray.push(TestData.contactSearchResultItem({ id: i }))
+      }
 
-    results = {
-      ...results,
-      content: contactsArray,
-      totalElements: 15,
-      totalPages: 2,
-    }
-    contactsService.searchContact.mockResolvedValue(results)
+      results = {
+        ...results,
+        content: contactsArray,
+        totalElements: 15,
+        totalPages: 2,
+        first: true,
+        last: false,
+      }
+      contactsService.searchContact.mockResolvedValue(results)
 
-    // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
-    const $ = cheerio.load(response.text)
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      const $ = cheerio.load(response.text)
 
-    // Then
-    expect(response.status).toEqual(200)
-    expect($('.govuk-pagination')).toBeDefined()
-    expect($('.govuk-pagination__link').text().trim()).toContain('1')
-    expect($('.govuk-pagination__link:eq(1)').text().trim()).toStrictEqual('2')
+      // Then
+      expect(response.status).toEqual(200)
+      expect($('.govuk-pagination')).toBeDefined()
+      expect($('.moj-pagination__item--active').text().trim()).toStrictEqual('1')
+      expect($('.moj-pagination__link:eq(0)').text().trim()).toStrictEqual('2')
+      expect($('.moj-pagination__link:eq(1)').text().trim()).toContain('Next')
+    })
+
+    it('should display previous link when page selected is greater than 0', async () => {
+      // Given
+      existingJourney = {
+        ...existingJourney,
+        searchContact: {
+          contact: { lastName: 'last', middleNames: '', firstName: '' },
+          dateOfBirth: { day: undefined, month: undefined, year: undefined },
+        },
+      }
+      auditService.logPageView.mockResolvedValue(null)
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+
+      const contactsArray = []
+      for (let i = 0; i < 15; i += 1) {
+        contactsArray.push(TestData.contactSearchResultItem({ id: i }))
+      }
+
+      results = {
+        ...results,
+        content: contactsArray,
+        totalElements: 15,
+        totalPages: 2,
+        first: false,
+        last: true,
+        number: 1,
+      }
+      contactsService.searchContact.mockResolvedValue(results)
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      const $ = cheerio.load(response.text)
+
+      // Then
+      expect(response.status).toEqual(200)
+      expect($('.govuk-pagination')).toBeDefined()
+      expect($('.moj-pagination__link:eq(0)').text().trim()).toContain('Previous')
+      expect($('.moj-pagination__link:eq(1)').text().trim()).toStrictEqual('1')
+      expect($('.moj-pagination__item--active').text().trim()).toStrictEqual('2')
+    })
   })
 
   it('should display "contact not listed" link when contact searched is not included in the contact search results', async () => {

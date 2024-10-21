@@ -336,9 +336,10 @@ describe('listContactsController', () => {
       expect(response.status).toEqual(200)
       expect($('[data-qa=active-list]').hasClass('govuk-tabs__list-item--selected')).toBe(true)
       expect($('[data-qa=inactive-list]').hasClass('govuk-tabs__list-item--selected')).toBe(false)
-      expect($('[data-qa=page-0-link]').text().trim()).toContain('1')
-      expect($('[data-qa=page-1-link]').text().trim()).toContain('2')
-      expect($('[data-qa=page-54-link]').text().trim()).toContain('55')
+      expect($('.moj-pagination__item').text().trim()).toContain('1')
+      expect($('.moj-pagination__item').text().trim()).toContain('2')
+      expect($('.moj-pagination__item').text().trim()).toContain('55')
+      expect($('.moj-pagination__item').text().trim()).not.toContain('56')
     })
 
     it('should render pagination for inactive contacts list', async () => {
@@ -357,9 +358,10 @@ describe('listContactsController', () => {
       expect(response.status).toEqual(200)
       expect($('[data-qa=active-list]').hasClass('govuk-tabs__list-item--selected')).toBe(false)
       expect($('[data-qa=inactive-list]').hasClass('govuk-tabs__list-item--selected')).toBe(true)
-      expect($('[data-qa=page-0-link]').text().trim()).toContain('1')
-      expect($('[data-qa=page-1-link]').text().trim()).toContain('2')
-      expect($('[data-qa=page-54-link]').text().trim()).toContain('55')
+      expect($('.moj-pagination__item').text().trim()).toContain('1')
+      expect($('.moj-pagination__item').text().trim()).toContain('2')
+      expect($('.moj-pagination__item').text().trim()).toContain('55')
+      expect($('.moj-pagination__item').text().trim()).not.toContain('56')
     })
   })
 
