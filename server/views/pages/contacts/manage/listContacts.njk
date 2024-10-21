@@ -73,7 +73,7 @@
             }
         %}
         <tr class="govuk-table__row">
-            <td class="govuk-table__cell"><a href='#'>{{ item | formatName }}</a></td>
+            <td class="govuk-table__cell"><a href="/contacts/manage/{{prisonerNumber}}/{{item.contactId}}" data-qa="contact-{{item.contactId}}-link">{{ item | formatName }}</a></td>
             <td class="govuk-table__cell"  data-qa="contact-{{ item.prisonerContactId }}-dob">
                 {% if item.dateOfBirth %}
                     {{ item.dateOfBirth | formatDate }}<br />

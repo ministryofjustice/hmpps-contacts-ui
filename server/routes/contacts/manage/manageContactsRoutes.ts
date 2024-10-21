@@ -11,11 +11,14 @@ import ListContactsController from './list/listContactsController'
 import { ContactsService, PrisonerSearchService } from '../../../services'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import prisonerDetailsMiddleware from '../../../middleware/prisonerDetailsMiddleware'
+import ContactDetailsController from './contact-details/contactDetailsController'
+import ReferenceDataService from '../../../services/referenceDataService'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
   prisonerSearchService: PrisonerSearchService,
   contactsService: ContactsService,
+  referenceDataService: ReferenceDataService,
 ) => {
   const router = Router({ mergeParams: true })
 
@@ -75,7 +78,13 @@ const ManageContactsRoutes = (
   )
 
   // Part 5: View one contact
-  // /prisoner/contact/:contactId
+  const contactDetailsController = new ContactDetailsController(contactsService, referenceDataService)
+  router.get(
+    '/contacts/manage/:prisonerNumber/:contactId',
+    prisonerDetailsMiddleware(prisonerSearchService),
+    logPageViewMiddleware(auditService, contactDetailsController),
+    asyncMiddleware(contactDetailsController.GET),
+  )
 
   // Part 6: Manage the attribute of one contact (phones, addresses, IDs, emails, restrictions)
   // /prisoner/contact/:contactId/phone

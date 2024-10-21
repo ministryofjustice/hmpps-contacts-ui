@@ -212,7 +212,7 @@ export default class TestData {
     }) as ContactSearchResultItem
 
   static contact = ({
-    id = 1,
+    id = 22,
     title = 'MR',
     lastName = 'Mason',
     firstName = 'Jones',
@@ -245,6 +245,8 @@ export default class TestData {
       ),
       this.getContactIdentityDetails('NI_NUMBER', 'National insurance number', '06/614465M', 'UK'),
     ],
+    domesticStatusCode = 'S',
+    domesticStatusDescription = 'Single-not married/in civil partnership',
   }: Partial<GetContactResponse> = {}): GetContactResponse =>
     ({
       id,
@@ -265,6 +267,8 @@ export default class TestData {
       phoneNumbers,
       emailAddresses,
       identities,
+      domesticStatusCode,
+      domesticStatusDescription,
     }) as GetContactResponse
 
   static prisonerContactSummaryPage = ({

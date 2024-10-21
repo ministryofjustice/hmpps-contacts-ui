@@ -19,6 +19,11 @@ export default class ListContactsPage extends Page {
     return this
   }
 
+  clickContactNamesLink(contactId: number): ListContactsPage {
+    this.contactNames(contactId).click()
+    return this
+  }
+
   verifyShowPaginationNavigationValueAs(expected: string, name: string): ListContactsPage {
     this.paginationNavigationLink(name).should('contain.text', expected)
     return this
@@ -38,4 +43,7 @@ export default class ListContactsPage extends Page {
   private activeSectionTab = (): PageElement => cy.get(`[data-qa=active-list]`)
 
   private inactiveSectionTab = (): PageElement => cy.get(`[data-qa=inactive-list]`)
+
+  private contactNames = (contactId: number): PageElement =>
+    cy.get(`#active-contacts [data-qa="contact-${contactId}-link"]`)
 }

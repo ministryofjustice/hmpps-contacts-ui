@@ -7,6 +7,7 @@ import {
   formatDateForApi,
   capitalizeFirstLetter,
   capitaliseName,
+  formatNameAsFirstMiddleLast,
 } from './utils'
 
 describe('convert to title case', () => {
@@ -119,5 +120,18 @@ describe('capitalizeFirstLetter', () => {
 
     // Then
     expect(results).toEqual('Test')
+  })
+})
+
+describe('formatNameAsFirstMiddleLast', () => {
+  it('should return name formatted as title first middle and last', () => {
+    // Given
+    const val = 'Seven, Mr Pete Middle'
+
+    // When
+    const results = formatNameAsFirstMiddleLast(val)
+
+    // Then
+    expect(results).toEqual('Mr Pete Middle Seven')
   })
 })
