@@ -49,7 +49,7 @@ afterEach(() => {
 
 describe('GET /contacts/manage/prisoner-search-results', () => {
   describe('Pagination', () => {
-    it('should render the pagionation when total pages are more than 1', async () => {
+    it('should display the pagionation when total pages are more than 1', async () => {
       auditService.logPageView.mockResolvedValue(null)
 
       prisonerSearchService.searchInCaseload.mockResolvedValue({
@@ -68,7 +68,7 @@ describe('GET /contacts/manage/prisoner-search-results', () => {
       const $ = cheerio.load(response.text)
 
       expect(response.status).toEqual(200)
-      expect($('.govuk-pagination')).toBeDefined()
+      expect($('.moj-pagination')).toBeDefined()
       expect($('.moj-pagination__link:eq(0)').text().trim()).toContain('Previous')
       expect($('.moj-pagination__link:eq(1)').text().trim()).toStrictEqual('1')
       expect($('.moj-pagination__item--active').text().trim()).toStrictEqual('2')
@@ -76,7 +76,7 @@ describe('GET /contacts/manage/prisoner-search-results', () => {
       expect($('.moj-pagination__link:eq(3)').text().trim()).toContain('Next')
     })
 
-    it('should hide previous link when page selected 1', async () => {
+    it('should hide previous link when page equal or greater than 1 is selected', async () => {
       auditService.logPageView.mockResolvedValue(null)
 
       prisonerSearchService.searchInCaseload.mockResolvedValue({
@@ -95,11 +95,37 @@ describe('GET /contacts/manage/prisoner-search-results', () => {
       const $ = cheerio.load(response.text)
 
       expect(response.status).toEqual(200)
-      expect($('.govuk-pagination')).toBeDefined()
+      expect($('.moj-pagination')).toBeDefined()
       expect($('.moj-pagination__item--active').text().trim()).toStrictEqual('1')
       expect($('.moj-pagination__link:eq(0)').text().trim()).toStrictEqual('2')
       expect($('.moj-pagination__link:eq(1)').text().trim()).toStrictEqual('3')
       expect($('.moj-pagination__link:eq(2)').text().trim()).toContain('Next')
+    })
+
+    it('should hide next link when last page is selected', async () => {
+      auditService.logPageView.mockResolvedValue(null)
+
+      prisonerSearchService.searchInCaseload.mockResolvedValue({
+        totalPages: 3,
+        totalElements: 46,
+        first: false,
+        last: true,
+        size: 20,
+        number: 2,
+        content: [
+          { lastName: 'test', firstName: 'test', prisonerNumber: 'test', dateOfBirth: '2000-01-01' } as Prisoner,
+        ],
+      })
+
+      const response = await request(app).get(`/contacts/manage/prisoner-search-results/${journeyId}`)
+      const $ = cheerio.load(response.text)
+
+      expect(response.status).toEqual(200)
+      expect($('.moj-pagination')).toBeDefined()
+      expect($('.moj-pagination__link:eq(0)').text().trim()).toContain('Prev')
+      expect($('.moj-pagination__link:eq(1)').text().trim()).toStrictEqual('1')
+      expect($('.moj-pagination__link:eq(2)').text().trim()).toStrictEqual('2')
+      expect($('.moj-pagination__item--active').text().trim()).toStrictEqual('3')
     })
   })
 

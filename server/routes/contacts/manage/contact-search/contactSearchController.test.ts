@@ -257,7 +257,7 @@ describe('Contact seaarch results', () => {
   })
 
   describe('Pagination', () => {
-    it('should display pagination when total pages are more than 1', async () => {
+    it('should display the pagination when total pages are more than 1', async () => {
       // Given
       existingJourney = {
         ...existingJourney,
@@ -277,9 +277,10 @@ describe('Contact seaarch results', () => {
       results = {
         ...results,
         content: contactsArray,
-        totalElements: 15,
-        totalPages: 2,
-        first: true,
+        totalElements: 25,
+        totalPages: 3,
+        number: 1,
+        first: false,
         last: false,
       }
       contactsService.searchContact.mockResolvedValue(results)
@@ -290,13 +291,15 @@ describe('Contact seaarch results', () => {
 
       // Then
       expect(response.status).toEqual(200)
-      expect($('.govuk-pagination')).toBeDefined()
-      expect($('.moj-pagination__item--active').text().trim()).toStrictEqual('1')
-      expect($('.moj-pagination__link:eq(0)').text().trim()).toStrictEqual('2')
-      expect($('.moj-pagination__link:eq(1)').text().trim()).toContain('Next')
+      expect($('.moj-pagination')).toBeDefined()
+      expect($('.moj-pagination__link:eq(0)').text().trim()).toContain('Previous')
+      expect($('.moj-pagination__link:eq(1)').text().trim()).toStrictEqual('1')
+      expect($('.moj-pagination__item--active').text().trim()).toStrictEqual('2')
+      expect($('.moj-pagination__link:eq(2)').text().trim()).toStrictEqual('3')
+      expect($('.moj-pagination__link:eq(3)').text().trim()).toContain('Next')
     })
 
-    it('should display previous link when page selected is greater than 0', async () => {
+    it('should hide previous link when page equal or greater than 1 is selected', async () => {
       // Given
       existingJourney = {
         ...existingJourney,
@@ -316,11 +319,11 @@ describe('Contact seaarch results', () => {
       results = {
         ...results,
         content: contactsArray,
-        totalElements: 15,
-        totalPages: 2,
-        first: false,
-        last: true,
-        number: 1,
+        totalElements: 25,
+        totalPages: 3,
+        first: true,
+        last: false,
+        number: 0,
       }
       contactsService.searchContact.mockResolvedValue(results)
 
@@ -330,10 +333,52 @@ describe('Contact seaarch results', () => {
 
       // Then
       expect(response.status).toEqual(200)
-      expect($('.govuk-pagination')).toBeDefined()
-      expect($('.moj-pagination__link:eq(0)').text().trim()).toContain('Previous')
+      expect($('.moj-pagination')).toBeDefined()
+      expect($('.moj-pagination__item--active').text().trim()).toStrictEqual('1')
+      expect($('.moj-pagination__link:eq(0)').text().trim()).toStrictEqual('2')
+      expect($('.moj-pagination__link:eq(1)').text().trim()).toStrictEqual('3')
+      expect($('.moj-pagination__link:eq(2)').text().trim()).toContain('Next')
+    })
+
+    it('should hide next link when last page is selected', async () => {
+      // Given
+      existingJourney = {
+        ...existingJourney,
+        searchContact: {
+          contact: { lastName: 'last', middleNames: '', firstName: '' },
+          dateOfBirth: { day: undefined, month: undefined, year: undefined },
+        },
+      }
+      auditService.logPageView.mockResolvedValue(null)
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+
+      const contactsArray = []
+      for (let i = 0; i < 15; i += 1) {
+        contactsArray.push(TestData.contactSearchResultItem({ id: i }))
+      }
+
+      results = {
+        ...results,
+        content: contactsArray,
+        totalElements: 25,
+        totalPages: 3,
+        first: false,
+        last: true,
+        number: 2,
+      }
+      contactsService.searchContact.mockResolvedValue(results)
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      const $ = cheerio.load(response.text)
+
+      // Then
+      expect(response.status).toEqual(200)
+      expect($('.moj-pagination')).toBeDefined()
+      expect($('.moj-pagination__link:eq(0)').text().trim()).toContain('Prev')
       expect($('.moj-pagination__link:eq(1)').text().trim()).toStrictEqual('1')
-      expect($('.moj-pagination__item--active').text().trim()).toStrictEqual('2')
+      expect($('.moj-pagination__link:eq(2)').text().trim()).toStrictEqual('2')
+      expect($('.moj-pagination__item--active').text().trim()).toStrictEqual('3')
     })
   })
 
