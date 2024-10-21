@@ -1,0 +1,43 @@
+{% from "moj/components/pagination/macro.njk" import mojPagination %}
+
+{% macro addPagination(results, section) %}
+    {% if results.totalPages > 1 %}
+        {% set paginationItems = [] %}
+        {% for i in range(0, results.totalPages) %}
+            {% if i === 0 or i === (results.totalPages - 1) or (i >= results.number - 1 and i <= results.number + 1) %}
+                {% set paginationItems = (paginationItems.push(
+                    {
+                        text: i + 1,
+                        selected: true if i === results.number else false,
+                        href: ("?page=" + i + '&tab=' + section + '#' + section) if section else "?page=" + i
+                    }
+                ), paginationItems) %}
+                {% elif i === 1 or i === results.totalPages - 2 %}
+                {% set paginationItems = (paginationItems.push({ type: 'dots' }), paginationItems) %}
+            {% endif %}
+        {% endfor %}
+        
+        {% set to = (results.number * results.size) + results.size %}
+        {% if (results.number * results.size + results.size) > results.totalElements %}
+            {% set to = results.totalElements %} 
+        {% endif %}
+
+        {{ mojPagination({
+            previous: {
+                text: 'Previous',
+                href: ("?page=" + (results.number - 1) + '&tab=' + section + '#' + section) if section else "?page=" + (results.number - 1)
+            } if not results.first,
+            next: {
+                text: 'Next',
+                href: ("?page=" + (results.number + 1) + '&tab=' + section + '#' + section) if section else "?page=" + (results.number + 1)
+            } if not results.last,
+            items: paginationItems,
+            results: {
+                count: results.totalElements,
+                from: results.number * results.size + 1,
+                to: to,
+                text: 'results'
+            }
+        }) }}
+    {% endif %}
+{% endmacro %}
