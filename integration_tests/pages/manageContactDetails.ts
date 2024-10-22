@@ -20,9 +20,16 @@ export default class ManageContactDetailsPage extends Page {
     return this
   }
 
+  verifyShowisOverEighteenValueAs(expected: string): ManageContactDetailsPage {
+    this.isOverEighteenValue().should('contain.text', expected)
+    return this
+  }
+
   private namesValue = (): PageElement => cy.get('.manage-names-value')
 
   private dobValue = (): PageElement => cy.get('.manage-dob-value')
 
   private deceasedValue = (): PageElement => cy.get('.manage-deceased-date-value')
+
+  private isOverEighteenValue = (): PageElement => cy.get('.manage-is-over-eighteen-value')
 }

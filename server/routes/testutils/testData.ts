@@ -218,7 +218,7 @@ export default class TestData {
     firstName = 'Jones',
     middleNames = null,
     dateOfBirth = '1990-01-14',
-    estimatedIsOverEighteen = null,
+    estimatedIsOverEighteen = 'YES',
     isDeceased = false,
     deceasedDate = null,
     createdBy = 'USER1',

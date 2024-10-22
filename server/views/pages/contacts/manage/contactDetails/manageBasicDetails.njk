@@ -1,13 +1,9 @@
 
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% set  formattedDateOfBirth %}{% if contact.dateOfBirth %}{{ contact.dateOfBirth | formatDate }}{% else %}Not provided{% endif %}{% endset %}
-{{ govukSummaryList({
-    card: {
-        title: {
-            text: "Contact details"
-        }
-    },
-    rows: [{
+{% set  estimatedIsOverEighteen %}{% if contact.estimatedIsOverEighteen == 'YES' %}{{ 'Yes' }}{% elseif contact.estimatedIsOverEighteen == 'NO' %}{{ 'No' }}{% else %}{{ 'I don’t know' }}{% endif %}{% endset %}
+
+{% set contactDetailsRows = [{
         key: {
             text: "Name"
         },
@@ -44,24 +40,62 @@
                 }
             ]
         }
-    },
-    {
-        key: {
-            text: "Deceased date"
-        },
-        value: {
-            text: 'Not provided' if not contact.isDeceased else  contact.deceasedDate | formatDate,
-            classes: 'manage-deceased-date-value'
-        },
-        actions: {
-            items: [
-                {
-                    href: "#",
-                    text: "Change",
-                    visuallyHiddenText: "deceased date",
-                    classes: 'govuk-visually-hidden'
-                }
-            ]
-        }
     }]
+%}
+
+{% if contact.dateOfBirth == null %}
+    {% set contactDetailsRows = (contactDetailsRows.push(
+        {
+            key: {
+                text: "Is contact over 18?"
+            },
+            value: {
+                text:  estimatedIsOverEighteen,
+                classes: 'manage-is-over-eighteen-value'
+            },
+            actions: {
+                items: [
+                    {
+                        href: "#",
+                        text: "Change",
+                        visuallyHiddenText: "is contact over 18?",
+                        classes: 'govuk-visually-hidden'
+                    }
+                ]
+            }
+        }
+    ), contactDetailsRows) %}
+{% endif %}
+
+{% if contact.deceasedDate != null %}
+    {% set contactDetailsRows = (contactDetailsRows.push(
+        {
+            key: {
+                text: "Deceased date"
+            },
+            value: {
+                text: contact.deceasedDate | formatDate,
+                classes: 'manage-deceased-date-value'
+            },
+            actions: {
+                items: [
+                    {
+                        href: "#",
+                        text: "Change",
+                        visuallyHiddenText: "deceased date",
+                        classes: 'govuk-visually-hidden'
+                    }
+                ]
+            }
+        }
+    ), contactDetailsRows) %}
+{% endif %}
+
+{{ govukSummaryList({
+    card: {
+        title: {
+            text: "Contact details"
+        }
+    },
+    rows: contactDetailsRows
 }) }}

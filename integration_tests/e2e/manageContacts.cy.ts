@@ -94,10 +94,42 @@ context('Manage contacts ', () => {
 
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
+    Page.verifyOnPage(ManageContactDetailsPage, 'Mr Jones Mason')
       .verifyShowNamesValueAs('Mr Jones Mason')
       .verifyShowDOBValueAs('14 January 1990')
-      .verifyShowDeceasedDateValueAs('Not provided')
+  })
+
+  it(`should render isOverEighteen value when dob is not provided and deceased date when available`, () => {
+    const { prisonerNumber } = TestData.prisoner()
+    const contact = {
+      ...TestData.contact(),
+      dateOfBirth: null,
+      estimatedIsOverEighteen: 'YES',
+      deceasedDate: '2020-11-22',
+    }
+    cy.task('stubTitlesReferenceData')
+    cy.task('stubComponentsMeta')
+    cy.task('stubPrisoners', {
+      results: {
+        totalPages: 1,
+        totalElements: 1,
+        content: [TestData.prisoner()],
+      },
+      prisonId: 'HEI',
+      term: prisonerNumber,
+    })
+    cy.task('stubPrisonerById', TestData.prisoner())
+    cy.task('stubGetContactById', contact)
+    cy.task('stubContactList', 'A1234BC')
+
+    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
+
+    Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'Mr Jones Mason')
+      .verifyShowNamesValueAs('Mr Jones Mason')
+      .verifyShowisOverEighteenValueAs('Yes')
+      .verifyShowDeceasedDateValueAs('22 November 2020')
   })
 
   it('should show a message that no contacts match the criteria', () => {
