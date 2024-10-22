@@ -94,7 +94,7 @@ context('Manage contacts ', () => {
 
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'Mr Jones Mason')
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
       .verifyShowNamesValueAs('Mr Jones Mason')
       .verifyShowDOBValueAs('14 January 1990')
   })
@@ -126,7 +126,7 @@ context('Manage contacts ', () => {
 
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'Mr Jones Mason')
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
       .verifyShowNamesValueAs('Mr Jones Mason')
       .verifyShowisOverEighteenValueAs('Yes')
       .verifyShowDeceasedDateValueAs('22 November 2020')
