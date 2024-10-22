@@ -53,8 +53,8 @@ describe('GET /contacts/manage/prisoner-search-results', () => {
       auditService.logPageView.mockResolvedValue(null)
 
       prisonerSearchService.searchInCaseload.mockResolvedValue({
-        totalPages: 3,
-        totalElements: 46,
+        totalPages: 5,
+        totalElements: 86,
         first: false,
         last: false,
         size: 20,
@@ -73,15 +73,17 @@ describe('GET /contacts/manage/prisoner-search-results', () => {
       expect($('.moj-pagination__link:eq(1)').text().trim()).toStrictEqual('1')
       expect($('.moj-pagination__item--active').text().trim()).toStrictEqual('2')
       expect($('.moj-pagination__link:eq(2)').text().trim()).toStrictEqual('3')
-      expect($('.moj-pagination__link:eq(3)').text().trim()).toContain('Next')
+      expect($('.moj-pagination__item--dots').text().trim()).toStrictEqual('…')
+      expect($('.moj-pagination__link:eq(3)').text().trim()).toStrictEqual('5')
+      expect($('.moj-pagination__link:eq(4)').text().trim()).toContain('Next')
     })
 
     it('should hide previous link when page equal or greater than 1 is selected', async () => {
       auditService.logPageView.mockResolvedValue(null)
 
       prisonerSearchService.searchInCaseload.mockResolvedValue({
-        totalPages: 3,
-        totalElements: 46,
+        totalPages: 5,
+        totalElements: 86,
         first: true,
         last: false,
         size: 20,
@@ -98,7 +100,8 @@ describe('GET /contacts/manage/prisoner-search-results', () => {
       expect($('.moj-pagination')).toBeDefined()
       expect($('.moj-pagination__item--active').text().trim()).toStrictEqual('1')
       expect($('.moj-pagination__link:eq(0)').text().trim()).toStrictEqual('2')
-      expect($('.moj-pagination__link:eq(1)').text().trim()).toStrictEqual('3')
+      expect($('.moj-pagination__item--dots').text().trim()).toStrictEqual('…')
+      expect($('.moj-pagination__link:eq(1)').text().trim()).toStrictEqual('5')
       expect($('.moj-pagination__link:eq(2)').text().trim()).toContain('Next')
     })
 
@@ -106,12 +109,12 @@ describe('GET /contacts/manage/prisoner-search-results', () => {
       auditService.logPageView.mockResolvedValue(null)
 
       prisonerSearchService.searchInCaseload.mockResolvedValue({
-        totalPages: 3,
-        totalElements: 46,
+        totalPages: 5,
+        totalElements: 86,
         first: false,
         last: true,
         size: 20,
-        number: 2,
+        number: 1,
         content: [
           { lastName: 'test', firstName: 'test', prisonerNumber: 'test', dateOfBirth: '2000-01-01' } as Prisoner,
         ],
@@ -124,8 +127,10 @@ describe('GET /contacts/manage/prisoner-search-results', () => {
       expect($('.moj-pagination')).toBeDefined()
       expect($('.moj-pagination__link:eq(0)').text().trim()).toContain('Prev')
       expect($('.moj-pagination__link:eq(1)').text().trim()).toStrictEqual('1')
-      expect($('.moj-pagination__link:eq(2)').text().trim()).toStrictEqual('2')
-      expect($('.moj-pagination__item--active').text().trim()).toStrictEqual('3')
+      expect($('.moj-pagination__item--active').text().trim()).toStrictEqual('2')
+      expect($('.moj-pagination__link:eq(2)').text().trim()).toStrictEqual('3')
+      expect($('.moj-pagination__item--dots').text().trim()).toStrictEqual('…')
+      expect($('.moj-pagination__link:eq(3)').text().trim()).toStrictEqual('5')
     })
   })
 

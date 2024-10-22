@@ -339,6 +339,7 @@ describe('listContactsController', () => {
         expect($('[data-qa=inactive-list]').hasClass('govuk-tabs__list-item--selected')).toBe(false)
         expect($('.moj-pagination__item').text().trim()).toContain('1')
         expect($('.moj-pagination__item').text().trim()).toContain('2')
+        expect($('.moj-pagination__item--dots').text().trim()).toContain('…')
         expect($('.moj-pagination__item').text().trim()).toContain('55')
         expect($('.moj-pagination__item').text().trim()).not.toContain('56')
       })
@@ -349,9 +350,9 @@ describe('listContactsController', () => {
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         const actviveResponseList = {
           ...contactListResponse,
-          numberOfElements: 25,
-          totalElements: 25,
-          totalPages: 3,
+          numberOfElements: 50,
+          totalElements: 5,
+          totalPages: 5,
           first: true,
           last: false,
           number: 0,
@@ -371,7 +372,8 @@ describe('listContactsController', () => {
         expect($('.moj-pagination')).toBeDefined()
         expect($('#active-contacts .moj-pagination__item--active').text().trim()).toStrictEqual('1')
         expect($('#active-contacts .moj-pagination__link:eq(0)').text().trim()).toStrictEqual('2')
-        expect($('#active-contacts .moj-pagination__link:eq(1)').text().trim()).toStrictEqual('3')
+        expect($('#active-contacts .moj-pagination__item--dots').text().trim()).toStrictEqual('…')
+        expect($('#active-contacts .moj-pagination__link:eq(1)').text().trim()).toStrictEqual('5')
         expect($('#active-contacts .moj-pagination__link:eq(2)').text().trim()).toContain('Next')
       })
 
@@ -381,12 +383,12 @@ describe('listContactsController', () => {
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         const actviveResponseList = {
           ...contactListResponse,
-          numberOfElements: 25,
-          totalElements: 25,
-          totalPages: 3,
+          numberOfElements: 50,
+          totalElements: 50,
+          totalPages: 5,
           first: false,
           last: true,
-          number: 2,
+          number: 1,
         }
         contactsService.getPrisonerContacts.mockResolvedValue({ ...actviveResponseList } as PrisonerContactSummaryPage)
 
@@ -403,8 +405,10 @@ describe('listContactsController', () => {
         expect($('.moj-pagination')).toBeDefined()
         expect($('#active-contacts .moj-pagination__link:eq(0)').text().trim()).toContain('Prev')
         expect($('#active-contacts .moj-pagination__link:eq(1)').text().trim()).toStrictEqual('1')
-        expect($('#active-contacts .moj-pagination__link:eq(2)').text().trim()).toStrictEqual('2')
-        expect($('#active-contacts .moj-pagination__item--active').text().trim()).toStrictEqual('3')
+        expect($('#active-contacts .moj-pagination__item--active').text().trim()).toStrictEqual('2')
+        expect($('#active-contacts .moj-pagination__link:eq(2)').text().trim()).toStrictEqual('3')
+        expect($('#active-contacts .moj-pagination__item--dots').text().trim()).toStrictEqual('…')
+        expect($('#active-contacts .moj-pagination__link:eq(3)').text().trim()).toStrictEqual('5')
       })
     })
 
@@ -427,6 +431,7 @@ describe('listContactsController', () => {
         expect($('[data-qa=inactive-list]').hasClass('govuk-tabs__list-item--selected')).toBe(true)
         expect($('.moj-pagination__item').text().trim()).toContain('1')
         expect($('.moj-pagination__item').text().trim()).toContain('2')
+        expect($('.moj-pagination__item--dots').text().trim()).toContain('…')
         expect($('.moj-pagination__item').text().trim()).toContain('55')
         expect($('.moj-pagination__item').text().trim()).not.toContain('56')
       })
@@ -437,9 +442,9 @@ describe('listContactsController', () => {
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         const inactviveResponseList = {
           ...contactListResponse,
-          numberOfElements: 25,
-          totalElements: 25,
-          totalPages: 3,
+          numberOfElements: 50,
+          totalElements: 50,
+          totalPages: 5,
           first: true,
           last: false,
           number: 0,
@@ -461,7 +466,8 @@ describe('listContactsController', () => {
         expect($('.moj-pagination')).toBeDefined()
         expect($('#inactive-contacts .moj-pagination__item--active').text().trim()).toStrictEqual('1')
         expect($('#inactive-contacts .moj-pagination__link:eq(0)').text().trim()).toStrictEqual('2')
-        expect($('#inactive-contacts .moj-pagination__link:eq(1)').text().trim()).toStrictEqual('3')
+        expect($('#inactive-contacts .moj-pagination__item--dots').text().trim()).toStrictEqual('…')
+        expect($('#inactive-contacts .moj-pagination__link:eq(1)').text().trim()).toStrictEqual('5')
         expect($('#inactive-contacts .moj-pagination__link:eq(2)').text().trim()).toContain('Next')
       })
 
@@ -471,12 +477,12 @@ describe('listContactsController', () => {
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         const inactviveResponseList = {
           ...contactListResponse,
-          numberOfElements: 25,
-          totalElements: 25,
-          totalPages: 3,
+          numberOfElements: 50,
+          totalElements: 50,
+          totalPages: 5,
           first: false,
           last: true,
-          number: 2,
+          number: 1,
         }
         contactsService.getPrisonerContacts.mockResolvedValue({
           ...inactviveResponseList,
@@ -493,10 +499,12 @@ describe('listContactsController', () => {
         expect($('[data-qa=active-list]').hasClass('govuk-tabs__list-item--selected')).toBe(false)
         expect($('[data-qa=inactive-list]').hasClass('govuk-tabs__list-item--selected')).toBe(true)
         expect($('.moj-pagination')).toBeDefined()
-        expect($('#active-contacts .moj-pagination__link:eq(0)').text().trim()).toContain('Prev')
-        expect($('#active-contacts .moj-pagination__link:eq(1)').text().trim()).toStrictEqual('1')
-        expect($('#active-contacts .moj-pagination__link:eq(2)').text().trim()).toStrictEqual('2')
-        expect($('#active-contacts .moj-pagination__item--active').text().trim()).toStrictEqual('3')
+        expect($('#inactive-contacts .moj-pagination__link:eq(0)').text().trim()).toContain('Prev')
+        expect($('#inactive-contacts .moj-pagination__link:eq(1)').text().trim()).toStrictEqual('1')
+        expect($('#inactive-contacts .moj-pagination__item--active').text().trim()).toStrictEqual('2')
+        expect($('#inactive-contacts .moj-pagination__link:eq(2)').text().trim()).toStrictEqual('3')
+        expect($('#inactive-contacts .moj-pagination__item--dots').text().trim()).toStrictEqual('…')
+        expect($('#inactive-contacts .moj-pagination__link:eq(3)').text().trim()).toStrictEqual('5')
       })
     })
   })

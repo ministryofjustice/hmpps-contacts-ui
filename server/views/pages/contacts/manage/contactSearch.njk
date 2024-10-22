@@ -116,10 +116,6 @@
     </div>
 
     {% if results.totalElements > 0 %}
-        {% set resultString = 'result' if results.totalElements === 1 else 'results' %}
-        <p class="govuk-grid-column-full govuk-body govuk-!-margin-top-2">
-            Showing {{ results.totalElements }} {{ resultString }}{{ (" (page " + (results.number + 1) + " of " + results.totalPages + ")") if results.totalPages > 1 }}
-        </p>
         <div class="govuk-grid-column-full govuk-!-padding-left-3 govuk-!-padding-right-3 contact-list" id="contact-search-results">
             {% set rows = [] %}
             {% for result in results.content %}

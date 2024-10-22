@@ -277,8 +277,8 @@ describe('Contact seaarch results', () => {
       results = {
         ...results,
         content: contactsArray,
-        totalElements: 25,
-        totalPages: 3,
+        totalElements: 50,
+        totalPages: 5,
         number: 1,
         first: false,
         last: false,
@@ -296,7 +296,9 @@ describe('Contact seaarch results', () => {
       expect($('.moj-pagination__link:eq(1)').text().trim()).toStrictEqual('1')
       expect($('.moj-pagination__item--active').text().trim()).toStrictEqual('2')
       expect($('.moj-pagination__link:eq(2)').text().trim()).toStrictEqual('3')
-      expect($('.moj-pagination__link:eq(3)').text().trim()).toContain('Next')
+      expect($('.moj-pagination__item--dots').text().trim()).toStrictEqual('…')
+      expect($('.moj-pagination__link:eq(3)').text().trim()).toStrictEqual('5')
+      expect($('.moj-pagination__link:eq(4)').text().trim()).toContain('Next')
     })
 
     it('should hide previous link when page equal or greater than 1 is selected', async () => {
@@ -319,8 +321,8 @@ describe('Contact seaarch results', () => {
       results = {
         ...results,
         content: contactsArray,
-        totalElements: 25,
-        totalPages: 3,
+        totalElements: 50,
+        totalPages: 5,
         first: true,
         last: false,
         number: 0,
@@ -336,7 +338,8 @@ describe('Contact seaarch results', () => {
       expect($('.moj-pagination')).toBeDefined()
       expect($('.moj-pagination__item--active').text().trim()).toStrictEqual('1')
       expect($('.moj-pagination__link:eq(0)').text().trim()).toStrictEqual('2')
-      expect($('.moj-pagination__link:eq(1)').text().trim()).toStrictEqual('3')
+      expect($('.moj-pagination__item--dots').text().trim()).toStrictEqual('…')
+      expect($('.moj-pagination__link:eq(1)').text().trim()).toStrictEqual('5')
       expect($('.moj-pagination__link:eq(2)').text().trim()).toContain('Next')
     })
 
@@ -360,11 +363,11 @@ describe('Contact seaarch results', () => {
       results = {
         ...results,
         content: contactsArray,
-        totalElements: 25,
-        totalPages: 3,
+        totalElements: 50,
+        totalPages: 5,
         first: false,
         last: true,
-        number: 2,
+        number: 1,
       }
       contactsService.searchContact.mockResolvedValue(results)
 
@@ -377,8 +380,10 @@ describe('Contact seaarch results', () => {
       expect($('.moj-pagination')).toBeDefined()
       expect($('.moj-pagination__link:eq(0)').text().trim()).toContain('Prev')
       expect($('.moj-pagination__link:eq(1)').text().trim()).toStrictEqual('1')
-      expect($('.moj-pagination__link:eq(2)').text().trim()).toStrictEqual('2')
-      expect($('.moj-pagination__item--active').text().trim()).toStrictEqual('3')
+      expect($('.moj-pagination__item--active').text().trim()).toStrictEqual('2')
+      expect($('.moj-pagination__link:eq(2)').text().trim()).toStrictEqual('3')
+      expect($('.moj-pagination__item--dots').text().trim()).toStrictEqual('…')
+      expect($('.moj-pagination__link:eq(3)').text().trim()).toStrictEqual('5')
     })
   })
 
