@@ -4,12 +4,11 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
-{% from "moj/components/pagination/macro.njk" import mojPagination %}
-{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
-{% from "govuk/components/pagination/macro.njk" import govukPagination %}
+{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
 {% from "../../../partials/address.njk" import convertAddressToLines %}
+{% from "../partials/addPagination.njk" import addPagination %}
 
 {% set pageTitle = applicationName + " - List contacts" %}
 {% set title = "List contacts" %}
@@ -95,48 +94,6 @@
     </table>
 {% endmacro %}
 
-{% macro createTablePagination(results, section) %}
-    {% if results.totalPages > 1 %}
-        {% set paginationItems = [] %}
-        {% for i in range(0, results.totalPages) %}
-            {% if i === 0 or i === (results.totalPages - 1) or (i >= results.number - 1 and i <= results.number + 1) %}
-                {% set paginationItems = (paginationItems.push(
-                    {
-                        number: i + 1,
-                        href: "?page=" + i + '&tab=' + section + '#' + section,
-                        current: (i === results.number),
-                        attributes: {"data-qa": "page-" + i + "-link"}
-                    }
-                ), paginationItems) %}
-                {% elif i === 1 or i === results.totalPages - 2 %}
-                {% set paginationItems = (paginationItems.push({ ellipsis: true }), paginationItems) %}
-            {% endif %}
-        {% endfor %}
-
-        {{ govukPagination({
-            previous: {
-                href: "?page=" + (results.number - 1) + '&tab=' + section + '#' + section,
-                attributes: {"data-qa": "pagination-previous-link"}
-            } if not results.first,
-            next: {
-                href: "?page=" + (results.number + 1) + '&tab=' + section + '#' + section,
-                attributes: {"data-qa": "pagination-next-link"}
-            } if not results.last,
-            items: paginationItems
-        }) }}
-    {% endif %}
-{% endmacro %}
-
-{% macro showingResults(results) %}
-    {% if results.totalElements > 0 %}
-        {% set resultString = 'result' if results.totalElements === 1 else 'results' %}
-        <p class="govuk-grid-column-full govuk-body govuk-!-margin-top-2">
-            Showing {{ results.totalElements }} {{ resultString }}{{ (" (page " + (results.number + 1) + " of " + results.totalPages + ")") if results.totalPages > 1 }}
-        </p>
-    {% endif %}
-{% endmacro %}
-
-
 {% macro prisonerDoesNotHaveAnyContactsMessage(prisonerDetails, contactListType) %}
     <p>{{ prisonerDetails.firstName | capitaliseName }} {{ prisonerDetails.lastName | capitaliseName }} does not have any {{ contactListType }} contacts</p>
 {% endmacro %}
@@ -166,8 +123,7 @@
     <div class="govuk-tabs__panel" id="active-contacts">
         {% if activeContacts.content.length > 0 %}
             {{ createTable(activeContacts.content) }}
-            {{ createTablePagination(activeContacts, 'active-contacts') }}
-            {{ showingResults(activeContacts) }}
+            {{ addPagination(activeContacts, 'active-contacts') }}
         {% else %}
         <div class="govuk-!-static-margin-top-4">{{ prisonerDoesNotHaveAnyContactsMessage(prisonerDetails, 'active') }}</div>
         {% endif %}
@@ -175,8 +131,7 @@
     <div class="govuk-tabs__panel govuk-tabs__panel--hidden contact-list" id="inactive-contacts">
         {% if inactiveContacts.content.length > 0 %}
             {{ createTable(inactiveContacts.content) }}
-            {{ createTablePagination(inactiveContacts, 'inactive-contacts') }}
-            {{ showingResults(inactiveContacts) }}
+            {{ addPagination(inactiveContacts, 'inactive-contacts') }}
         {% else %}
             <div class="govuk-!-static-margin-top-4">{{ prisonerDoesNotHaveAnyContactsMessage(prisonerDetails, 'inactive') }}</div>
         {% endif %}
