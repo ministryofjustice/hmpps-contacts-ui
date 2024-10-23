@@ -49,7 +49,7 @@ afterEach(() => {
 
 describe('GET /contacts/manage/prisoner-search-results', () => {
   describe('Pagination', () => {
-    it('should display the pagionation when total pages are more than 1', async () => {
+    it('should display the pagination when total pages are more than 1', async () => {
       auditService.logPageView.mockResolvedValue(null)
 
       prisonerSearchService.searchInCaseload.mockResolvedValue({

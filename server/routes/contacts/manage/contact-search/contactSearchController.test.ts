@@ -257,8 +257,8 @@ describe('Contact seaarch results', () => {
   })
 
   describe('Pagination', () => {
-    it('should display the pagination when total pages are more than 1', async () => {
-      // Given
+    const contactsArray: Array<Record<string, unknown>> = []
+    beforeEach(() => {
       existingJourney = {
         ...existingJourney,
         searchContact: {
@@ -266,14 +266,16 @@ describe('Contact seaarch results', () => {
           dateOfBirth: { day: undefined, month: undefined, year: undefined },
         },
       }
+
       auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
 
-      const contactsArray = []
       for (let i = 0; i < 15; i += 1) {
         contactsArray.push(TestData.contactSearchResultItem({ id: i }))
       }
-
+    })
+    it('should display the pagination when total pages are more than 1', async () => {
+      // Given
       results = {
         ...results,
         content: contactsArray,
@@ -303,21 +305,6 @@ describe('Contact seaarch results', () => {
 
     it('should hide previous link when page equal or greater than 1 is selected', async () => {
       // Given
-      existingJourney = {
-        ...existingJourney,
-        searchContact: {
-          contact: { lastName: 'last', middleNames: '', firstName: '' },
-          dateOfBirth: { day: undefined, month: undefined, year: undefined },
-        },
-      }
-      auditService.logPageView.mockResolvedValue(null)
-      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-
-      const contactsArray = []
-      for (let i = 0; i < 15; i += 1) {
-        contactsArray.push(TestData.contactSearchResultItem({ id: i }))
-      }
-
       results = {
         ...results,
         content: contactsArray,
@@ -345,21 +332,6 @@ describe('Contact seaarch results', () => {
 
     it('should hide next link when last page is selected', async () => {
       // Given
-      existingJourney = {
-        ...existingJourney,
-        searchContact: {
-          contact: { lastName: 'last', middleNames: '', firstName: '' },
-          dateOfBirth: { day: undefined, month: undefined, year: undefined },
-        },
-      }
-      auditService.logPageView.mockResolvedValue(null)
-      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-
-      const contactsArray = []
-      for (let i = 0; i < 15; i += 1) {
-        contactsArray.push(TestData.contactSearchResultItem({ id: i }))
-      }
-
       results = {
         ...results,
         content: contactsArray,
