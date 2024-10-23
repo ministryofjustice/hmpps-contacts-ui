@@ -1,7 +1,12 @@
 
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% set  formattedDateOfBirth %}{% if contact.dateOfBirth %}{{ contact.dateOfBirth | formatDate }}{% else %}Not provided{% endif %}{% endset %}
-{% set  estimatedIsOverEighteen %}{% if contact.estimatedIsOverEighteen == 'YES' %}{{ 'Yes' }}{% elseif contact.estimatedIsOverEighteen == 'NO' %}{{ 'No' }}{% else %}{{ 'I don’t know' }}{% endif %}{% endset %}
+{% set  estimatedIsOverEighteen %}
+    {% if contact.estimatedIsOverEighteen == 'YES' %}{{ 'Yes' }}
+    {% elseif contact.estimatedIsOverEighteen == 'NO' %}{{ 'No' }}
+    {% elseif contact.estimatedIsOverEighteen == 'DO_NOT_KNOW' %}{{ 'I don’t know' }}
+    {% else %}{{ 'Not provided' }}
+{% endif %}{% endset %}
 
 {% set contactDetailsRows = [{
         key: {
