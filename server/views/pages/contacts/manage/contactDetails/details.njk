@@ -1,8 +1,16 @@
 {% extends "../../../../partials/layout.njk" %}
 {% from "../../../../partials/miniProfile/macro.njk" import miniProfile %}
 {% from "../../partials/addContactTabNavigation.njk" import contactTabNavigation %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% block content %}
+
+{{ govukBackLink({
+    text: "Back",
+    href: '/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/list',
+    attributes: {"data-qa": "back-link"}
+}) }}
+
 {% macro contactDetailsHtml() %}
     {%- include "./manageBasicDetails.njk" -%}
 {% endmacro %}
@@ -14,7 +22,7 @@
 
     <div class="govuk-grid-column-two-thirds">
         <span class="govuk-caption-l">Manage Contacts</span>
-        <h1 class="govuk-heading-l">Contact details - {{ contact.firstName | capitaliseName + " " + contact.lastName | capitaliseName }}</h1>
+        <h1 class="govuk-heading-l">Contact details - {{ contact | reverseFormatName }}</h1>
         {{ contactDetailsHtml() }}
     </div>
 </div>
