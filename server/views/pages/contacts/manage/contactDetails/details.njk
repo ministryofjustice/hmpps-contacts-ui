@@ -22,7 +22,7 @@
 
     <div class="govuk-grid-column-two-thirds">
         <span class="govuk-caption-l">Manage Contacts</span>
-        <h1 class="govuk-heading-l">Contact details - {{ contact.firstName | capitaliseName + " " + ((contact.middleNames | capitaliseName) + " " if contact.middleNames else '') + contact.lastName | capitaliseName }}</h1>
+        <h1 class="govuk-heading-l">Contact details - {{ contact | reverseFormatName }}</h1>
         {{ contactDetailsHtml() }}
     </div>
 </div>
