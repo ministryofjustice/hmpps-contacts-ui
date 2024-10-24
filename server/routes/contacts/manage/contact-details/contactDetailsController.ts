@@ -4,8 +4,7 @@ import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
-import formatName from '../../../../utils/formatName'
-import { formatNameAsFirstMiddleLast } from '../../../../utils/utils'
+import { reverseFormatName } from '../../../../utils/formatName'
 
 import Contact = contactsApiClientTypes.Contact
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
@@ -22,8 +21,7 @@ export default class ContactDetailsController implements PageHandler {
     const { contactId } = req.params
     const { prisonerDetails, user } = res.locals
     const contact: Contact = await this.contactsService.getContact(parseInt(contactId, 10), user)
-    let formattedFullName = await this.formattedFullName(contact, user)
-    formattedFullName = formatNameAsFirstMiddleLast(formattedFullName)
+    const formattedFullName = await this.formattedFullName(contact, user)
 
     return res.render('pages/contacts/manage/contactDetails/details', {
       contact,
@@ -41,6 +39,6 @@ export default class ContactDetailsController implements PageHandler {
         user,
       )
     }
-    return formatName(contact, { customTitle: titleDescription })
+    return reverseFormatName(contact, { customTitle: titleDescription })
   }
 }

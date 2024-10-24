@@ -1,6 +1,6 @@
 import ContactNames = journeys.ContactNames
 import PrisonerDetails = journeys.PrisonerDetails
-import formatName from './formatName'
+import formatName, { reverseFormatName } from './formatName'
 import { Prisoner } from '../data/prisonerOffenderSearchTypes'
 
 describe('formatName', () => {
@@ -60,5 +60,65 @@ describe('formatName', () => {
     ],
   ])('should capitalise names correctly', (names: ContactNames, expected: string) => {
     expect(formatName(names)).toStrictEqual(expected)
+  })
+})
+
+describe('reverseFormatName', () => {
+  const is: <T>(value: T) => T = value => value
+
+  it.each([
+    [is<ContactNames>({ firstName: 'First', lastName: 'Last' }), 'First Last'],
+    [is<ContactNames>({ firstName: 'First', middleNames: 'Middle', lastName: 'Last' }), 'First Middle Last'],
+    [is<ContactNames>({ firstName: 'first', middleNames: 'middle', lastName: 'last' }), 'First Middle Last'],
+    [is<ContactNames>({ firstName: 'FIRST', middleNames: 'MIDDLE', lastName: 'LAST' }), 'First Middle Last'],
+  ])('should format journey ContactNames', (names: ContactNames, expected: string) => {
+    expect(reverseFormatName(names)).toStrictEqual(expected)
+  })
+
+  it.each([
+    [is<Partial<PrisonerDetails>>({ firstName: 'First', lastName: 'Last' }), 'First Last'],
+    [is<Partial<PrisonerDetails>>({ firstName: 'first', lastName: 'last' }), 'First Last'],
+    [is<Partial<PrisonerDetails>>({ firstName: 'FIRST', lastName: 'LAST' }), 'First Last'],
+  ])('should format journey PrisonerDetails', (names: PrisonerDetails, expected: string) => {
+    expect(reverseFormatName(names)).toStrictEqual(expected)
+  })
+
+  it.each([
+    [is<Partial<Prisoner>>({ firstName: 'First', lastName: 'Last' }), 'First Last'],
+    [
+      is<Partial<Prisoner>>({ firstName: 'First', middleNames: 'Middle Names', lastName: 'Last' }),
+      'First Middle Names Last',
+    ],
+    [is<Partial<Prisoner>>({ firstName: 'first', lastName: 'last' }), 'First Last'],
+    [is<Partial<Prisoner>>({ firstName: 'FIRST', lastName: 'LAST' }), 'First Last'],
+  ])('should format search Prisoner', (names: Prisoner, expected: string) => {
+    expect(reverseFormatName(names)).toStrictEqual(expected)
+  })
+
+  it.each([
+    [is<ContactNames>({ firstName: 'First', middleNames: 'Middle', lastName: 'Last' }), 'First Last'],
+    [is<Partial<Prisoner>>({ firstName: 'First', middleNames: 'Middle Names', lastName: 'Last' }), 'First Last'],
+  ])('should exclude middle names if requested', (names: ContactNames | Prisoner, expected: string) => {
+    expect(reverseFormatName(names, { excludeMiddleNames: true })).toStrictEqual(expected)
+  })
+
+  it.each([
+    [is<ContactNames>({ firstName: 'First', middleNames: 'Middle', lastName: 'Last' }), 'Reverend First Middle Last'],
+    [
+      is<Partial<Prisoner>>({ firstName: 'First', middleNames: 'Middle', lastName: 'Last' }),
+      'Reverend First Middle Last',
+    ],
+  ])('should be able to insert a custom title', (names: ContactNames | Prisoner, expected: string) => {
+    expect(reverseFormatName(names, { customTitle: 'Reverend' })).toStrictEqual(expected)
+  })
+
+  it.each([
+    [is<ContactNames>({ firstName: 'first', middleNames: 'middle', lastName: 'last' }), 'First Middle Last'],
+    [
+      is<ContactNames>({ firstName: 'billy-bob', middleNames: 'middle names', lastName: "o'postrophe" }),
+      "Billy-Bob Middle Names O'Postrophe",
+    ],
+  ])('should capitalise names correctly', (names: ContactNames, expected: string) => {
+    expect(reverseFormatName(names)).toStrictEqual(expected)
   })
 })
