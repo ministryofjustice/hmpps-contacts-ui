@@ -13,7 +13,9 @@ import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultI
 import PrisonerContactSummaryPage = contactsApiClientTypes.PrisonerContactSummaryPage
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
 
+type Language = components['schemas']['Language']
 type PageableObject = components['schemas']['PageableObject']
+
 export default class ContactsApiClient extends RestClient {
   constructor() {
     super('Contacts API client', config.apis.contactsApi)
@@ -92,5 +94,14 @@ export default class ContactsApiClient extends RestClient {
 
   async getContact(contactId: number, user: Express.User): Promise<GetContactResponse> {
     return this.get<GetContactResponse>({ path: `/contact/${contactId}` }, user)
+  }
+
+  async getLanguageReference(user: Express.User): Promise<Language> {
+    return this.get<Contact>(
+      {
+        path: `/language-reference`,
+      },
+      user,
+    )
   }
 }

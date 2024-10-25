@@ -10,6 +10,7 @@ import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultI
 import PrisonerContactSummaryPage = contactsApiClientTypes.PrisonerContactSummaryPage
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
 
+type Language = components['schemas']['Language']
 type PageableObject = components['schemas']['PageableObject']
 export default class ContactsService {
   constructor(private readonly contactsApiClient: ContactsApiClient) {}
@@ -86,5 +87,9 @@ export default class ContactsService {
 
   async getContact(contactId: number, user: Express.User): Promise<GetContactResponse> {
     return this.contactsApiClient.getContact(contactId, user)
+  }
+
+  async getLanguageReference(user: Express.User): Promise<Language> {
+    return this.contactsApiClient.getLanguageReference(user)
   }
 }
