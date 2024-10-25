@@ -1,0 +1,47 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{{ govukSummaryList({
+    card: {
+        title: {
+            text: "Language details"
+        }
+    },
+    rows: [{
+        key: {
+            text: "Spoken language"
+        },
+        value: {
+            text: contact.languageDescription if contact.languageDescription else 'Not provided',
+            classes: 'manage-spoken-language-value'
+        },
+        actions: {
+            items: [
+                {
+                    href: "/contacts/manage/" + prisonerDetails.prisonerNumber + "/" + contact.id + "/language",
+                    text: "Change",
+                    visuallyHiddenText: "spoken language",
+                    attributes: {"data-qa": "change-spoken-language-link"}
+                }
+            ]
+        }
+    },
+    {
+        key: {
+            text: "Needs interpreter"
+        },
+        value: {
+            text: 'Yes' if contact.interpreterRequired == 'true' else 'No',
+            classes: 'manage-needs-interpreter-value'
+        },
+        actions: {
+            items: [
+                {
+                    href: "#",
+                    text: "Change",
+                    visuallyHiddenText: "needs interpreter",
+                    classes: 'govuk-visually-hidden'
+                }
+            ]
+        }
+    }]
+}) }}
