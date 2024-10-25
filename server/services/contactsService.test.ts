@@ -14,6 +14,7 @@ import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultI
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
 
 type Language = components['schemas']['Language']
+type UpdateContactRequest = components['schemas']['UpdateContactRequest']
 
 jest.mock('../data/contactsApiClient')
 const searchResult = TestData.contactSearchResultItem()
@@ -441,6 +442,44 @@ describe('contactsService', () => {
     it('Propagates errors', async () => {
       apiClient.getLanguageReferenceById.mockRejectedValue(new Error('some error'))
       await expect(apiClient.getLanguageReferenceById(23, user)).rejects.toEqual(new Error('some error'))
+    })
+  })
+
+  describe('updateContactById', () => {
+    const request: UpdateContactRequest = {
+      title: 'MR',
+      lastName: 'Timberlake',
+      firstName: 'Justin',
+      middleName: 'Timmy',
+      dateOfBirth: '',
+      estimatedIsOverEighteen: 'YES',
+      placeOfBirth: '',
+      active: true,
+      suspended: false,
+      staffFlag: false,
+      deceasedFlag: false,
+      deceasedDate: '',
+      coronerNumber: '',
+      gender: '',
+      domesticStatus: '',
+      languageCode: 'ENG',
+      nationalityCode: '',
+      interpreterRequired: false,
+      updatedBy: '',
+      updatedTime: '',
+    }
+    it('Should get the language reference', async () => {
+      apiClient.updateContactById.mockResolvedValue(TestData.contact())
+
+      const contact = await service.updateContactById(23, request, user)
+
+      expect(contact).toStrictEqual(TestData.contact())
+      expect(apiClient.updateContactById).toHaveBeenCalledWith(23, request, user)
+    })
+
+    it('Propagates errors', async () => {
+      apiClient.updateContactById.mockRejectedValue(new Error('some error'))
+      await expect(apiClient.updateContactById(23, request, user)).rejects.toEqual(new Error('some error'))
     })
   })
 })

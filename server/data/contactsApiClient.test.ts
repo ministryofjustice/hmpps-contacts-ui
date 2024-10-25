@@ -12,6 +12,7 @@ import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelation
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
 
+type UpdateContactRequest = components['schemas']['UpdateContactRequest']
 type Language = components['schemas']['Language']
 
 jest.mock('./tokenStore/inMemoryTokenStore')
@@ -395,6 +396,42 @@ describe('contactsApiClient', () => {
         expect(e.status).toEqual(errorCode)
         expect(e.data).toEqual(expectedErrorBody)
       }
+    })
+  })
+
+  describe('updateContactById', () => {
+    it('should create the request and return the response', async () => {
+      // Given
+      const request: UpdateContactRequest = {
+        title: 'MR',
+        lastName: 'Timberlake',
+        firstName: 'Justin',
+        middleName: 'Timmy',
+        dateOfBirth: '',
+        estimatedIsOverEighteen: 'YES',
+        placeOfBirth: '',
+        active: true,
+        suspended: false,
+        staffFlag: false,
+        deceasedFlag: false,
+        deceasedDate: '',
+        coronerNumber: '',
+        gender: '',
+        domesticStatus: '',
+        languageCode: 'ENG',
+        nationalityCode: '',
+        interpreterRequired: false,
+        updatedBy: '',
+        updatedTime: '',
+      }
+
+      fakeContactsApi.patch('/contact/23', request).matchHeader('authorization', `Bearer systemToken`).reply(201)
+
+      // When
+      await contactsApiClient.updateContactById(23, request, user)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
     })
   })
 })
