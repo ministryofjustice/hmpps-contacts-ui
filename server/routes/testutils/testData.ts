@@ -4,11 +4,12 @@ import { components } from '../../@types/contactsApi'
 type ContactSearchResultItem = components['schemas']['ContactSearchResultItem']
 type GetContactResponse = components['schemas']['GetContactResponse']
 type ContactAddressDetails = components['schemas']['ContactAddressDetails']
-type ContactPhoneNumberDetails = components['schemas']['ContactPhoneNumberDetails']
+type ContactPhoneDetails = components['schemas']['ContactPhoneDetails']
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 type PrisonerContactSummaryPage = components['schemas']['PrisonerContactSummaryPage']
 type PrisonerContactSummary = components['schemas']['PrisonerContactSummary']
 type ContactIdentityDetails = components['schemas']['ContactIdentityDetails']
+type Language = components['schemas']['Language']
 export default class TestData {
   static address: ContactAddressDetails = {
     contactAddressId: 1,
@@ -42,7 +43,6 @@ export default class TestData {
         phoneTypeDescription: 'Home phone',
         phoneNumber: '01111 777777',
         extNumber: '+0123',
-        primaryPhone: false,
         createdBy: 'JAMES',
         createdTime: '2024-10-04T15:35:23.101675v',
         amendedBy: null,
@@ -86,12 +86,11 @@ export default class TestData {
       phoneTypeDescription,
       phoneNumber,
       extNumber: null,
-      primaryPhone: true,
       createdBy: 'TIM',
       createdTime: '2024-10-04T15:35:23.101675',
       amendedBy: null,
       amendedTime: null,
-    } as ContactPhoneNumberDetails
+    } as ContactPhoneDetails
   }
 
   static getContactEmailDetails = (emailType: string, emailTypeDescription: string, emailAddress: string) => {
@@ -299,4 +298,23 @@ export default class TestData {
       numberOfElements,
       empty,
     }) as PrisonerContactSummaryPage
+
+  static languages = ({
+    languageId = 1,
+    nomisCode = 'ALB',
+    nomisDescription = 'Albanian',
+    isoAlpha2 = 'sq',
+    isoAlpha3 = 'alb',
+    isoLanguageDesc = 'Albanian',
+    displaySequence = 2,
+  }: Partial<Language> = {}): Language =>
+    ({
+      languageId,
+      nomisCode,
+      nomisDescription,
+      isoAlpha2,
+      isoAlpha3,
+      isoLanguageDesc,
+      displaySequence,
+    }) as Language
 }

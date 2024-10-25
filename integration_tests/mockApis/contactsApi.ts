@@ -164,4 +164,18 @@ export default {
       },
     })
   },
+
+  stubGetLanguages: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/language-reference`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: TestData.languages(),
+      },
+    })
+  },
 }

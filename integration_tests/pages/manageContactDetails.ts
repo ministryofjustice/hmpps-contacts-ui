@@ -25,6 +25,21 @@ export default class ManageContactDetailsPage extends Page {
     return this
   }
 
+  verifyShowSpokenLanguageValueAs(expected: string): ManageContactDetailsPage {
+    this.spokenLanguageValue().should('contain.text', expected)
+    return this
+  }
+
+  verifyShowNeedsInterpreterValueAs(expected: string): ManageContactDetailsPage {
+    this.needsInterpreterValue().should('contain.text', expected)
+    return this
+  }
+
+  clickChangeSpokenLanguageLik(): ManageContactDetailsPage {
+    this.spokenLanguageLink().click()
+    return this
+  }
+
   private namesValue = (): PageElement => cy.get('.manage-names-value')
 
   private dobValue = (): PageElement => cy.get('.manage-dob-value')
@@ -32,4 +47,10 @@ export default class ManageContactDetailsPage extends Page {
   private deceasedValue = (): PageElement => cy.get('.manage-deceased-date-value')
 
   private isOverEighteenValue = (): PageElement => cy.get('.manage-is-over-eighteen-value')
+
+  private spokenLanguageValue = (): PageElement => cy.get('.manage-spoken-language-value')
+
+  private needsInterpreterValue = (): PageElement => cy.get('.manage-needs-interpreter-value')
+
+  private spokenLanguageLink = (): PageElement => cy.get('[data-qa=change-spoken-language-link]')
 }

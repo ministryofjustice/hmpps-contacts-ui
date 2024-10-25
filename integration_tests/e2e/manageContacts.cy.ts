@@ -100,6 +100,8 @@ context('Manage contacts ', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
       .verifyShowNamesValueAs('Mr Jones Mason')
       .verifyShowDOBValueAs('14 January 1990')
+      .verifyShowSpokenLanguageValueAs('English')
+      .verifyShowNeedsInterpreterValueAs('No')
   })
 
   it(`should render isOverEighteen value when dob is not provided and deceased date when available`, () => {
