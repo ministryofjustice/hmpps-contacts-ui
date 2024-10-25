@@ -418,4 +418,29 @@ describe('contactsService', () => {
       await expect(apiClient.getLanguageReference(user)).rejects.toEqual(new Error('some error'))
     })
   })
+
+  describe('getLanguageReferenceId', () => {
+    it('Should get the language reference', async () => {
+      const expectedLanguage: Language = {
+        languageId: 23,
+        nomisCode: 'ENG',
+        nomisDescription: 'English',
+        isoAlpha2: 'en',
+        isoAlpha3: 'eng',
+        isoLanguageDesc: 'English',
+        displaySequence: 1,
+      }
+      apiClient.getLanguageReferenceById.mockResolvedValue(expectedLanguage)
+
+      const contact = await service.getLanguageReferenceById(23, user)
+
+      expect(contact).toStrictEqual(expectedLanguage)
+      expect(apiClient.getLanguageReferenceById).toHaveBeenCalledWith(23, user)
+    })
+
+    it('Propagates errors', async () => {
+      apiClient.getLanguageReferenceById.mockRejectedValue(new Error('some error'))
+      await expect(apiClient.getLanguageReferenceById(23, user)).rejects.toEqual(new Error('some error'))
+    })
+  })
 })

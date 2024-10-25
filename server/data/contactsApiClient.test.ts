@@ -348,4 +348,53 @@ describe('contactsApiClient', () => {
       }
     })
   })
+
+  describe('getLanguageReferenceById', () => {
+    it('should create the request and return the response', async () => {
+      // Given
+      const expectedLanguages: Language = {
+        languageId: 23,
+        nomisCode: 'ENG',
+        nomisDescription: 'English',
+        isoAlpha2: 'en',
+        isoAlpha3: 'eng',
+        isoLanguageDesc: 'English',
+        displaySequence: 1,
+      }
+
+      fakeContactsApi
+        .get('/language-reference/23')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, expectedLanguages)
+
+      // When
+      const languages = await contactsApiClient.getLanguageReferenceById(23, user)
+
+      // Then
+      expect(languages).toEqual(expectedLanguages)
+    })
+
+    it.each([401, 403])('should propagate errors', async (errorCode: number) => {
+      // Given
+      const expectedErrorBody = {
+        status: errorCode,
+        userMessage: 'Some error',
+        developerMessage: 'Some error',
+      }
+
+      fakeContactsApi
+        .get('/language-reference/23')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(errorCode, expectedErrorBody)
+
+      // When
+      try {
+        await contactsApiClient.getLanguageReferenceById(23, user)
+      } catch (e) {
+        // Then
+        expect(e.status).toEqual(errorCode)
+        expect(e.data).toEqual(expectedErrorBody)
+      }
+    })
+  })
 })

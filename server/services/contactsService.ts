@@ -92,4 +92,8 @@ export default class ContactsService {
   async getLanguageReference(user: Express.User): Promise<Language> {
     return this.contactsApiClient.getLanguageReference(user)
   }
+
+  async getLanguageReferenceById(id: number, user: Express.User): Promise<Language> {
+    return this.contactsApiClient.getLanguageReferenceById(id, user)
+  }
 }

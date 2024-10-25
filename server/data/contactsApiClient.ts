@@ -104,4 +104,13 @@ export default class ContactsApiClient extends RestClient {
       user,
     )
   }
+
+  async getLanguageReferenceById(id: number, user: Express.User): Promise<Language> {
+    return this.get<Contact>(
+      {
+        path: `/language-reference/${id}`,
+      },
+      user,
+    )
+  }
 }
