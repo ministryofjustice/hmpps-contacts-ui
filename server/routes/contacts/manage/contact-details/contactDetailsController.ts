@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { v4 as uuidv4 } from 'uuid'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
@@ -8,6 +9,7 @@ import { reverseFormatName } from '../../../../utils/formatName'
 
 import Contact = contactsApiClientTypes.Contact
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
+import ManageContactsJourney = journeys.ManageContactsJourney
 
 export default class ContactDetailsController implements PageHandler {
   constructor(
@@ -18,12 +20,16 @@ export default class ContactDetailsController implements PageHandler {
   public PAGE_NAME = Page.CONTACT_DETAILS_PAGE
 
   GET = async (req: Request<{ contactId?: string }, unknown, unknown>, res: Response): Promise<void> => {
+    const journey: ManageContactsJourney = { id: uuidv4(), lastTouched: new Date().toISOString() }
+    req.session.manageContactsJourneys[journey.id] = journey
+
     const { contactId } = req.params
     const { prisonerDetails, user } = res.locals
     const contact: Contact = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const formattedFullName = await this.formattedFullName(contact, user)
 
     return res.render('pages/contacts/manage/contactDetails/details', {
+      journey,
       contact,
       prisonerDetails,
       formattedFullName,

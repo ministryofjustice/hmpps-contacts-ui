@@ -1,11 +1,14 @@
 import type { Express } from 'express'
 import request from 'supertest'
+import { SessionData } from 'express-session'
+import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import ContactsService from '../../../../services/contactsService'
 import TestData from '../../../testutils/testData'
+import ManageContactsJourney = journeys.ManageContactsJourney
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -16,10 +19,29 @@ const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<Pri
 const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
 
 let app: Express
+let session: Partial<SessionData>
+const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 const contactId = '10'
+let existingJourney: ManageContactsJourney
 
 beforeEach(() => {
+  existingJourney = {
+    id: journeyId,
+    lastTouched: new Date().toISOString(),
+    prisoner: {
+      prisonerNumber: 'G4793VF',
+      lastName: 'Timothy',
+      firstName: 'Jack',
+      dateOfBirth: '',
+      prisonName: '',
+      cellLocation: '',
+    },
+    contactId: 23,
+    activateListPage: undefined,
+    inactivateListPage: undefined,
+    spokeLanguage: 'ENG',
+  }
   app = appWithAllRoutes({
     services: {
       auditService,
@@ -27,6 +49,11 @@ beforeEach(() => {
       contactsService,
     },
     userSupplier: () => user,
+    sessionReceiver: (receivedSession: Partial<SessionData>) => {
+      session = receivedSession
+      session.manageContactsJourneys = {}
+      session.manageContactsJourneys[journeyId] = existingJourney
+    },
   })
 })
 
@@ -44,7 +71,7 @@ describe('GET /contacts/manage/:prisonerNumber/:contactId/language', () => {
     contactsService.getLanguageReference.mockResolvedValue(TestData.languages())
 
     // When
-    const response = await request(app).get(`/contacts/manage/${prisonerNumber}/${contactId}/language`)
+    const response = await request(app).get(`/contacts/manage/${prisonerNumber}/${contactId}/language/${journeyId}`)
     const $ = cheerio.load(response.text)
 
     // Then

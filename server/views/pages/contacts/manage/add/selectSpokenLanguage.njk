@@ -23,7 +23,12 @@
         <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
         <form method='POST'>
              <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-             {% set languages = [] %}
+             {% set languages = [{
+                value: '',
+                text: 'Select',
+                selected: true
+             }] %}
+
              {% for item in language %}
                 {% set languages = (languages.push(
                     {

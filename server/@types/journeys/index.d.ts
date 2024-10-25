@@ -64,6 +64,7 @@ declare namespace journeys {
     contactId?: number
     activateListPage?: number
     inactivateListPage?: number
+    spokeLanguage?: string
   }
 
   export interface ReturnPoint {

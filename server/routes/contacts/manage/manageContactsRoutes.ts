@@ -90,16 +90,18 @@ const ManageContactsRoutes = (
   // Part 6: Manage the attribute of one contact (phones, addresses, IDs, emails, restrictions)
   const spokenLanguageController = new SpokenLanguageController(contactsService)
   router.get(
-    '/contacts/manage/:prisonerNumber/:contactId/language',
+    '/contacts/manage/:prisonerNumber/:contactId/language/:journeyId',
+    ensureInManageContactsJourney(),
     prisonerDetailsMiddleware(prisonerSearchService),
     logPageViewMiddleware(auditService, spokenLanguageController),
     asyncMiddleware(spokenLanguageController.GET),
   )
 
-  // /prisoner/contact/:contactId/phone
-  // /prisoner/contact/:contactId/email
-  // /prisoner/contact/:contactId/address
-  // /prisoner/contact/:contactId/restriction
+  router.post(
+    '/contacts/manage/:prisonerNumber/:contactId/language/:journeyId',
+    ensureInManageContactsJourney(),
+    asyncMiddleware(spokenLanguageController.POST),
+  )
 
   return router
 }
