@@ -3,6 +3,7 @@ import ContactsApiClient from '../data/contactsApiClient'
 import ContactsService from './contactsService'
 import { PaginationRequest } from '../data/prisonerOffenderSearchTypes'
 import TestData from '../routes/testutils/testData'
+import { components } from '../@types/contactsApi'
 import AddContactJourney = journeys.AddContactJourney
 import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
@@ -11,6 +12,8 @@ import IsOverEighteenOptions = journeys.YesNoOrDoNotKnow
 import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
+
+type Language = components['schemas']['Language']
 
 jest.mock('../data/contactsApiClient')
 const searchResult = TestData.contactSearchResultItem()
@@ -388,6 +391,31 @@ describe('contactsService', () => {
           user,
         ),
       ).rejects.toBeInstanceOf(BadRequest)
+    })
+  })
+
+  describe('getLanguageReference', () => {
+    it('Should get the language reference', async () => {
+      const expectedLanguage: Language = {
+        languageId: 23,
+        nomisCode: 'ENG',
+        nomisDescription: 'English',
+        isoAlpha2: 'en',
+        isoAlpha3: 'eng',
+        isoLanguageDesc: 'English',
+        displaySequence: 1,
+      }
+      apiClient.getLanguageReference.mockResolvedValue(expectedLanguage)
+
+      const contact = await service.getLanguageReference(user)
+
+      expect(contact).toStrictEqual(expectedLanguage)
+      expect(apiClient.getLanguageReference).toHaveBeenCalledWith(user)
+    })
+
+    it('Propagates errors', async () => {
+      apiClient.getLanguageReference.mockRejectedValue(new Error('some error'))
+      await expect(apiClient.getLanguageReference(user)).rejects.toEqual(new Error('some error'))
     })
   })
 })
