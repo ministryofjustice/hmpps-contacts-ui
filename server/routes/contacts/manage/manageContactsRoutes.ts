@@ -13,6 +13,7 @@ import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import prisonerDetailsMiddleware from '../../../middleware/prisonerDetailsMiddleware'
 import ContactDetailsController from './contact-details/contactDetailsController'
 import ReferenceDataService from '../../../services/referenceDataService'
+import SpokenLanguageController from './spoken-language/spokenLanguageController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -87,6 +88,14 @@ const ManageContactsRoutes = (
   )
 
   // Part 6: Manage the attribute of one contact (phones, addresses, IDs, emails, restrictions)
+  const spokenLanguageController = new SpokenLanguageController(contactsService)
+  router.get(
+    '/contacts/manage/:prisonerNumber/:contactId/language',
+    prisonerDetailsMiddleware(prisonerSearchService),
+    logPageViewMiddleware(auditService, spokenLanguageController),
+    asyncMiddleware(spokenLanguageController.GET),
+  )
+
   // /prisoner/contact/:contactId/phone
   // /prisoner/contact/:contactId/email
   // /prisoner/contact/:contactId/address
