@@ -1395,7 +1395,7 @@ export interface components {
        * @description Whether the contact is a staff member
        * @example false
        */
-      staffFlag?: boolean | null
+      staffFlag: boolean
       /**
        * @description Whether the contact is deceased
        * @example false
@@ -1508,7 +1508,7 @@ export interface components {
        * @description Whether the contact is a staff member
        * @example false
        */
-      staffFlag?: boolean | null
+      staffFlag: boolean
       /**
        * @description Whether the contact is deceased
        * @example false
@@ -2458,7 +2458,7 @@ export interface components {
        * @description Whether the contact is a staff member
        * @example false
        */
-      staffFlag?: boolean | null
+      staffFlag: boolean
       /**
        * @description Whether the contact is deceased
        * @example false
@@ -3466,29 +3466,33 @@ export interface components {
        */
       createdBy: string
     }
-    /**
-     * @description Whether an interpreter is required
-     * @example false
-     */
-    JsonNullableBoolean: {
-      present?: boolean
-    } | null
-    /**
-     * @description The language code of the contact
-     * @example EN
-     */
-    JsonNullableString: {
-      present?: boolean
-    } | null
     /** @description Request to patch a new contact  */
     PatchContactRequest: {
-      interpreterRequired: components['schemas']['JsonNullableBoolean']
-      languageCode: components['schemas']['JsonNullableString']
+      /**
+       * @description Whether the contact is a staff member
+       * @example false
+       */
+      staffFlag?: boolean | null
+      /**
+       * @description The domestic status code of the contact
+       * @example S
+       */
+      domesticStatus?: string | null
+      /**
+       * @description Whether an interpreter is required
+       * @example false
+       */
+      interpreterRequired?: boolean | null
+      /**
+       * @description The language code of the contact
+       * @example EN
+       */
+      languageCode?: string | null
       /**
        * @description The id of the user who updated the contact
        * @example JD000001
        */
-      updatedBy: string | null
+      updatedBy?: string | null
     } | null
     /** @description The details of a updated contact as an individual */
     PatchContactResponse: {
@@ -3549,7 +3553,7 @@ export interface components {
        * @description Whether the contact is a staff member
        * @example false
        */
-      staffFlag?: boolean | null
+      staffFlag: boolean
       /**
        * @description Whether the contact is deceased
        * @example false
@@ -3813,12 +3817,12 @@ export interface components {
       /** Format: int64 */
       offset?: number
       sort?: components['schemas']['SortObject'][]
-      /** Format: int32 */
-      pageSize?: number
+      unpaged?: boolean
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
-      unpaged?: boolean
+      /** Format: int32 */
+      pageSize?: number
     }
     PrisonerContactSummaryPage: {
       content?: components['schemas']['PrisonerContactSummary'][]
@@ -3826,16 +3830,16 @@ export interface components {
       /** Format: int64 */
       total?: number
       last?: boolean
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      /** Format: int64 */
+      totalElements?: number
+      first?: boolean
       /** Format: int32 */
       size?: number
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject'][]
-      first?: boolean
       /** Format: int32 */
       numberOfElements?: number
       empty?: boolean
@@ -4110,16 +4114,16 @@ export interface components {
       /** Format: int64 */
       total?: number
       last?: boolean
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      /** Format: int64 */
+      totalElements?: number
+      first?: boolean
       /** Format: int32 */
       size?: number
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject'][]
-      first?: boolean
       /** Format: int32 */
       numberOfElements?: number
       empty?: boolean
