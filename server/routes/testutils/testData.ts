@@ -78,7 +78,11 @@ export default class TestData {
     } as ContactIdentityDetails
   }
 
-  static getContactPhoneNumberDetails = (phoneType: string, phoneTypeDescription: string, phoneNumber: string) => {
+  static getContactPhoneNumberDetails = (
+    phoneType: string,
+    phoneTypeDescription: string,
+    phoneNumber: string,
+  ): ContactPhoneNumberDetails => {
     return {
       contactPhoneId: 1,
       contactId: 1,
