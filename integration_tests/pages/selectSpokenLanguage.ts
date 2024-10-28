@@ -10,19 +10,12 @@ export default class SelectSpokenLanguagePage extends Page {
     return this
   }
 
-  clickSaveAndContinue(): SelectSpokenLanguagePage {
-    this.saveAndContinueButton().click()
-    return this
-  }
-
   clickSaveAndCancel(): SelectSpokenLanguagePage {
     this.cancelButton().click()
     return this
   }
 
-  private spokenLanguageSelect = (): PageElement => cy.get('#spoken-language')
-
-  private saveAndContinueButton = (): PageElement => cy.get('[data-qa=save-continue-button]')
+  private spokenLanguageSelect = (): PageElement => cy.get('#languageCode')
 
   private cancelButton = (): PageElement => cy.get('[data-qa=cancel-button]')
 }

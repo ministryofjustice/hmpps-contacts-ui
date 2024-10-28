@@ -33,6 +33,46 @@ const STUBBED_RELATIONSHIP_OPTIONS: StubReferenceData[] = [
   { code: 'ILP', description: 'In Loco Parentes', groupCode: 'RELATIONSHIP' },
 ]
 
+type StubLanguageData = {
+  languageId: number
+  nomisCode: string
+  nomisDescription: string
+  isoAlpha2: string
+  isoAlpha3: string
+  isoLanguageDesc: string
+  displaySequence: number
+}
+
+const STUBBED_LANGUAGE_OPTIONS: StubLanguageData[] = [
+  {
+    languageId: 1,
+    nomisCode: 'ALB',
+    nomisDescription: 'Albanian',
+    isoAlpha2: 'sq',
+    isoAlpha3: 'alb',
+    isoLanguageDesc: 'Albanian',
+    displaySequence: 2,
+  },
+  {
+    languageId: 2,
+    nomisCode: 'AMH',
+    nomisDescription: 'Amharic',
+    isoAlpha2: 'am',
+    isoAlpha3: 'amh',
+    isoLanguageDesc: 'Amharic',
+    displaySequence: 99,
+  },
+  {
+    languageId: 3,
+    nomisCode: 'ARA',
+    nomisDescription: 'Arabic',
+    isoAlpha2: 'ar',
+    isoAlpha3: 'ara',
+    isoLanguageDesc: 'Arabic',
+    displaySequence: 2,
+  },
+]
+
 const mockedReferenceData = (type: ReferenceCodeType, _: HmppsUser): Promise<StubReferenceData[]> => {
   if (type === ReferenceCodeType.TITLE) {
     return Promise.resolve(STUBBED_TITLE_OPTIONS)
@@ -43,4 +83,4 @@ const mockedReferenceData = (type: ReferenceCodeType, _: HmppsUser): Promise<Stu
   return Promise.reject(new Error(`You haven't set up the stubbed reference data for ${type} yet`))
 }
 
-export { mockedReferenceData, STUBBED_TITLE_OPTIONS, STUBBED_RELATIONSHIP_OPTIONS }
+export { mockedReferenceData, STUBBED_TITLE_OPTIONS, STUBBED_RELATIONSHIP_OPTIONS, STUBBED_LANGUAGE_OPTIONS }

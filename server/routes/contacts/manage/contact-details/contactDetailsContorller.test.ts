@@ -69,6 +69,7 @@ describe('GET /contacts/manage/:contactId/:journeyId', () => {
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.searchContact.mockResolvedValue(TestData.contact())
     contactsService.getContact.mockResolvedValue(TestData.contact())
+    contactsService.updateContactById.mockResolvedValue(TestData.contact())
 
     // When
     const response = await request(app).get(`/contacts/manage/${prisonerNumber}/1/${journeyId}`)

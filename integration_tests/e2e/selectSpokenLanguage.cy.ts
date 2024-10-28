@@ -51,6 +51,8 @@ context('Select Spoken Language', () => {
 
     Page.verifyOnPage(ManageContactDetailsPage).clickChangeSpokenLanguageLik()
 
-    Page.verifyOnPage(SelectSpokenLanguagePage, 'Jones Mason')
+    Page.verifyOnPage(SelectSpokenLanguagePage, 'Jones Mason').selectSpokenLanguage('Arabic').clickContinue()
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
   })
 })

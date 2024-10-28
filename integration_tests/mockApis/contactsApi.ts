@@ -1,6 +1,10 @@
 import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
-import { STUBBED_RELATIONSHIP_OPTIONS, STUBBED_TITLE_OPTIONS } from '../../server/routes/testutils/stubReferenceData'
+import {
+  STUBBED_LANGUAGE_OPTIONS,
+  STUBBED_RELATIONSHIP_OPTIONS,
+  STUBBED_TITLE_OPTIONS,
+} from '../../server/routes/testutils/stubReferenceData'
 import { components } from '../../server/@types/contactsApi'
 import TestData from '../../server/routes/testutils/testData'
 
@@ -174,7 +178,7 @@ export default {
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: TestData.languages(),
+        jsonBody: STUBBED_LANGUAGE_OPTIONS, // TestData.languages(),
       },
     })
   },

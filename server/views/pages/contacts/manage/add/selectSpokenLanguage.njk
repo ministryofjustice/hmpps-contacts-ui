@@ -12,7 +12,7 @@
 
 {{ govukBackLink({
     text: "Back",
-    href: '/contacts/manage/' + prisonerDetails.prisonerNumber + '/' + contact.id,
+    href: '/contacts/manage/' + prisonerDetails.prisonerNumber + '/' + contact.id + '/' + journey.id,
     attributes: {"data-qa": "back-link"}
 }) }}
 
@@ -49,9 +49,9 @@
                     html: "Save and Continue",
                     type: "submit",
                     classes: 'govuk-!-margin-top-6',
-                    attributes: {"data-qa": "save-continue-button"}
+                    attributes: {"data-qa": "continue-button"}
                 }) }}
-                <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="/contacts/manage/{{ prisonerDetails.prisonerNumber }}/{{ contact.id }}" data-qa="cancel-button">Cancel</a>
+                <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="/contacts/manage/{{prisonerDetails.prisonerNumber}}/{{contact.id}}/{{journey.id}}" data-qa="cancel-button">Cancel</a>
             </div>
         </form>
      </div>

@@ -3,6 +3,7 @@ import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
+import SelectSpokenLanguagePage from '../pages/selectSpokenLanguage'
 
 context('Manage contacts ', () => {
   beforeEach(() => {
@@ -92,6 +93,7 @@ context('Manage contacts ', () => {
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetContactById', TestData.contact())
     cy.task('stubContactList', 'A1234BC')
+    cy.task('stubGetLanguages')
 
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
 
@@ -101,7 +103,9 @@ context('Manage contacts ', () => {
       .verifyShowNamesValueAs('Mr Jones Mason')
       .verifyShowDOBValueAs('14 January 1990')
       .verifyShowSpokenLanguageValueAs('English')
-      .verifyShowNeedsInterpreterValueAs('No')
+      .clickChangeSpokenLanguageLik()
+
+    Page.verifyOnPage(SelectSpokenLanguagePage, 'Jones Mason')
   })
 
   it(`should render isOverEighteen value when dob is not provided and deceased date when available`, () => {
