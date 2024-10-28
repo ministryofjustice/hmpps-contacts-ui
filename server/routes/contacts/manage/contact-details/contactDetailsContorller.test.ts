@@ -1,5 +1,6 @@
 import type { Express } from 'express'
 import request from 'supertest'
+import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
@@ -51,6 +52,43 @@ describe('GET /contacts/manage/:contactId/', () => {
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CONTACT_DETAILS_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+    })
+  })
+  describe('phone numbers', () => {
+    it('should render phone numbers', async () => {
+      auditService.logPageView.mockResolvedValue(null)
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.getContact.mockResolvedValue(
+        TestData.contact({
+          phoneNumbers: [
+            TestData.getContactPhoneNumberDetails('MOB', 'Mobile phone', '07878 111111'),
+            TestData.getContactPhoneNumberDetails('HOME', 'Home phone', '01111 777777'),
+          ],
+        }),
+      )
+
+      // When
+      const response = await request(app).get(`/contacts/manage/${prisonerNumber}/1`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect(response.status).toEqual(200)
+      expect($('.phone-number-value-1').text().trim()).toStrictEqual('07878 111111')
+      expect($('.phone-number-value-2').text().trim()).toStrictEqual('01111 777777')
+    })
+
+    it('should render not provided if no phone numbers', async () => {
+      auditService.logPageView.mockResolvedValue(null)
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.getContact.mockResolvedValue(TestData.contact({ phoneNumbers: [] }))
+
+      // When
+      const response = await request(app).get(`/contacts/manage/${prisonerNumber}/1`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect(response.status).toEqual(200)
+      expect($('.phone-numbers-not-provide-value').text().trim()).toStrictEqual('Not provided')
     })
   })
 })
