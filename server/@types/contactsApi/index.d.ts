@@ -300,6 +300,34 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/contact/{contactId}/phone/{contactPhoneId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get a phone number
+     * @description Gets a contacts phone number by id
+     */
+    get: operations['get']
+    /**
+     * Update contact phone number
+     * @description Updates an existing contact phone by id
+     */
+    put: operations['update']
+    post?: never
+    /**
+     * Delete contact phone number
+     * @description Deletes an existing contact phone by id
+     */
+    delete: operations['delete']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/sync/prisoner-contact': {
     parameters: {
       query?: never
@@ -542,6 +570,50 @@ export interface paths {
     options?: never
     head?: never
     patch?: never
+    trace?: never
+  }
+  '/contact/{contactId}/phone': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create new contact phone number
+     * @description Creates a new phone number for the specified contact
+     */
+    post: operations['create']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/contact/{contactId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get contact
+     * @description Gets a contact by their id
+     */
+    get: operations['getContact']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    /**
+     * Update a contact
+     * @description Update a contact
+     */
+    patch: operations['patchContact']
     trace?: never
   }
   '/reference-codes/group/{groupCode}': {
@@ -855,26 +927,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/contact/{contactId}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get contact
-     * @description Gets a contact by their id
-     */
-    get: operations['getContact']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/contact/search': {
     parameters: {
       query?: never
@@ -1051,6 +1103,14 @@ export interface components {
        */
       updatedTime: string
     }
+    ErrorResponse: {
+      /** Format: int32 */
+      status: number
+      errorCode?: string
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
+    }
     /** @description Response object with prisoner contact details */
     PrisonerContact: {
       /**
@@ -1158,14 +1218,6 @@ export interface components {
        * @example 2024-02-01T16:00:00Z
        */
       amendedTime?: string | null
-    }
-    ErrorResponse: {
-      /** Format: int32 */
-      status: number
-      errorCode?: string
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
     }
     /** @description Request object to update prisoner contact restriction details */
     UpdatePrisonerContactRestrictionRequest: {
@@ -1343,7 +1395,7 @@ export interface components {
        * @description Whether the contact is a staff member
        * @example false
        */
-      staffFlag?: boolean | null
+      staffFlag: boolean
       /**
        * @description Whether the contact is deceased
        * @example false
@@ -1456,7 +1508,7 @@ export interface components {
        * @description Whether the contact is a staff member
        * @example false
        */
-      staffFlag?: boolean | null
+      staffFlag: boolean
       /**
        * @description Whether the contact is deceased
        * @example false
@@ -1618,8 +1670,8 @@ export interface components {
        */
       amendedTime?: string
     }
-    /** @description Request to update a new contact phone number */
-    UpdateContactPhoneRequest: {
+    /** @description Request to update a new contact phone number for sync API */
+    SyncUpdateContactPhoneRequest: {
       /**
        * Format: int64
        * @description Unique identifier for the contact
@@ -1628,7 +1680,7 @@ export interface components {
       contactId: number
       /**
        * @description Type of phone
-       * @example MOBILE
+       * @example MOB
        */
       phoneType: string
       /**
@@ -1642,11 +1694,6 @@ export interface components {
        */
       extNumber?: string
       /**
-       * @description Indicates if this is the primary phone number
-       * @example true
-       */
-      primaryPhone: boolean
-      /**
        * @description The id of the user who updated the contact phone
        * @example JD000001
        */
@@ -1658,8 +1705,8 @@ export interface components {
        */
       updatedTime: string
     }
-    /** @description Phone related to a contact */
-    ContactPhone: {
+    /** @description Phone related to a contact for sync API */
+    SyncContactPhone: {
       /**
        * Format: int64
        * @description Unique identifier for the contact phone
@@ -1674,7 +1721,7 @@ export interface components {
       contactId: number
       /**
        * @description Type of phone
-       * @example MOBILE
+       * @example MOB
        */
       phoneType: string
       /**
@@ -1687,11 +1734,6 @@ export interface components {
        * @example 123
        */
       extNumber?: string
-      /**
-       * @description Indicates if this is the primary phone number
-       * @example true
-       */
-      primaryPhone: boolean
       /**
        * @description User who created the entry
        * @example admin
@@ -1966,6 +2008,11 @@ export interface components {
        */
       noFixedAddress?: boolean
       /**
+       * @description Any additional information or comments about the address
+       * @example Some additional information
+       */
+      comments?: string | null
+      /**
        * @description The id of the user who updated the address
        * @example JD000001
        */
@@ -2080,6 +2127,11 @@ export interface components {
        */
       noFixedAddress: boolean
       /**
+       * @description Any additional information or comments about the address
+       * @example Some additional information
+       */
+      comments?: string | null
+      /**
        * @description The id of the user who created the contact
        * @example JD000001
        */
@@ -2099,6 +2151,84 @@ export interface components {
        * Format: date-time
        * @description The timestamp of when the contact address was last amended
        * @example 2024-01-01T00:00:00Z
+       */
+      amendedTime?: string
+    }
+    /** @description Request to update an existing phone number */
+    UpdatePhoneRequest: {
+      /**
+       * @description Type of phone
+       * @example MOB
+       */
+      phoneType: string
+      /**
+       * @description Phone number
+       * @example +1234567890
+       */
+      phoneNumber: string
+      /**
+       * @description Extension number
+       * @example 123
+       */
+      extNumber?: string | null
+      /**
+       * @description User who updated the entry
+       * @example admin
+       */
+      amendedBy: string
+    }
+    /** @description A phone number related to a contact with descriptions of all reference data */
+    ContactPhoneDetails: {
+      /**
+       * Format: int64
+       * @description Unique identifier for the contact phone
+       * @example 1
+       */
+      contactPhoneId: number
+      /**
+       * Format: int64
+       * @description Unique identifier for the contact
+       * @example 123
+       */
+      contactId: number
+      /**
+       * @description Type of phone
+       * @example MOB
+       */
+      phoneType: string
+      /**
+       * @description Description of the type of phone
+       * @example Mobile
+       */
+      phoneTypeDescription: string
+      /**
+       * @description Phone number
+       * @example +1234567890
+       */
+      phoneNumber: string
+      /**
+       * @description Extension number
+       * @example 123
+       */
+      extNumber?: string
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was created
+       */
+      createdTime: string
+      /**
+       * @description User who amended the entry
+       * @example admin2
+       */
+      amendedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was amended
        */
       amendedTime?: string
     }
@@ -2328,7 +2458,7 @@ export interface components {
        * @description Whether the contact is a staff member
        * @example false
        */
-      staffFlag?: boolean | null
+      staffFlag: boolean
       /**
        * @description Whether the contact is deceased
        * @example false
@@ -2424,8 +2554,8 @@ export interface components {
        */
       createdTime: string
     }
-    /** @description Request to create a new contact phone number */
-    CreateContactPhoneRequest: {
+    /** @description Request to create a new contact phone number for sync API */
+    SyncCreateContactPhoneRequest: {
       /**
        * Format: int64
        * @description Unique identifier for the contact
@@ -2434,7 +2564,7 @@ export interface components {
       contactId: number
       /**
        * @description Type of phone
-       * @example MOBILE
+       * @example MOB
        */
       phoneType: string
       /**
@@ -2447,11 +2577,6 @@ export interface components {
        * @example 123
        */
       extNumber?: string
-      /**
-       * @description Indicates if this is the primary phone number
-       * @example true
-       */
-      primaryPhone: boolean
       /**
        * @description User who created the entry
        * @example admin
@@ -2616,6 +2741,11 @@ export interface components {
        * @example false
        */
       noFixedAddress?: boolean
+      /**
+       * @description Any additional information or comments about the address
+       * @example Some additional information
+       */
+      comments?: string | null
       /**
        * @description The id of the user who created the contact
        * @example JD000001
@@ -2950,12 +3080,12 @@ export interface components {
        * @description The type of address
        * @example HOME
        */
-      addressType?: string
+      addressType?: string | null
       /**
        * @description The description of the address type
        * @example HOME
        */
-      addressTypeDescription?: string
+      addressTypeDescription?: string | null
       /**
        * @description True if this is the primary address otherwise false
        * @example true
@@ -3025,7 +3155,7 @@ export interface components {
        * @description Which username ran the postcode lookup check
        * @example NJKG44D
        */
-      verifiedBy?: string
+      verifiedBy?: string | null
       /**
        * Format: date-time
        * @description The timestamp of when the postcode lookup was done
@@ -3042,20 +3172,25 @@ export interface components {
        * @description The start date when this address is to be considered active from
        * @example 2024-01-01
        */
-      startDate?: string
+      startDate?: string | null
       /**
        * Format: date
        * @description The end date when this address is to be considered no longer active
        * @example 2024-01-01
        */
-      endDate?: string
+      endDate?: string | null
       /**
        * @description Flag to indicate whether this address indicates no fixed address
        * @example false
        */
       noFixedAddress: boolean
+      /**
+       * @description Any additional information or comments about the address
+       * @example Some additional information
+       */
+      comments?: string | null
       /** @description Phone numbers that are related to this address */
-      phoneNumbers: components['schemas']['ContactPhoneNumberDetails'][]
+      phoneNumbers: components['schemas']['ContactPhoneDetails'][]
       /**
        * @description The id of the user who created the contact
        * @example JD000001
@@ -3071,13 +3206,13 @@ export interface components {
        * @description The id of the user who last amended the contact address
        * @example JD000001
        */
-      amendedBy?: string
+      amendedBy?: string | null
       /**
        * Format: date-time
        * @description The timestamp of when the contact address was last amended
        * @example 2024-01-01T00:00:00Z
        */
-      amendedTime?: string
+      amendedTime?: string | null
     }
     /** @description Email related to a contact */
     ContactEmailDetails: {
@@ -3204,66 +3339,6 @@ export interface components {
        */
       amendedTime?: string
     }
-    /** @description A phone number related to a contact with descriptions of all reference data */
-    ContactPhoneNumberDetails: {
-      /**
-       * Format: int64
-       * @description Unique identifier for the contact phone
-       * @example 1
-       */
-      contactPhoneId: number
-      /**
-       * Format: int64
-       * @description Unique identifier for the contact
-       * @example 123
-       */
-      contactId: number
-      /**
-       * @description Type of phone
-       * @example MOBILE
-       */
-      phoneType: string
-      /**
-       * @description Description of the type of phone
-       * @example Mobile phone
-       */
-      phoneTypeDescription: string
-      /**
-       * @description Phone number
-       * @example +1234567890
-       */
-      phoneNumber: string
-      /**
-       * @description Extension number
-       * @example 123
-       */
-      extNumber?: string
-      /**
-       * @description Indicates if this is the primary phone number
-       * @example true
-       */
-      primaryPhone: boolean
-      /**
-       * @description User who created the entry
-       * @example admin
-       */
-      createdBy: string
-      /**
-       * Format: date-time
-       * @description Timestamp when the entry was created
-       */
-      createdTime: string
-      /**
-       * @description User who amended the entry
-       * @example admin2
-       */
-      amendedBy?: string
-      /**
-       * Format: date-time
-       * @description Timestamp when the entry was amended
-       */
-      amendedTime?: string
-    }
     /** @description The details of a contact as an individual */
     GetContactResponse: {
       /**
@@ -3333,7 +3408,7 @@ export interface components {
       /** @description All addresses for the contact */
       addresses: components['schemas']['ContactAddressDetails'][]
       /** @description All phone numbers for the contact */
-      phoneNumbers: components['schemas']['ContactPhoneNumberDetails'][]
+      phoneNumbers: components['schemas']['ContactPhoneDetails'][]
       /** @description All email addresses for the contact */
       emailAddresses: components['schemas']['ContactEmailDetails'][]
       /** @description All identities for the contact */
@@ -3368,6 +3443,179 @@ export interface components {
        */
       createdBy: string
     }
+    /** @description Request to create a new phone number */
+    CreatePhoneRequest: {
+      /**
+       * @description Type of phone
+       * @example MOB
+       */
+      phoneType: string
+      /**
+       * @description Phone number
+       * @example +1234567890
+       */
+      phoneNumber: string
+      /**
+       * @description Extension number
+       * @example 123
+       */
+      extNumber?: string | null
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+    }
+    /** @description Request to patch a new contact  */
+    PatchContactRequest: {
+      /**
+       * @description Whether the contact is a staff member
+       * @example false
+       */
+      staffFlag: boolean | null
+      /**
+       * @description The domestic status code of the contact
+       * @example S
+       */
+      domesticStatus: string | null
+      /**
+       * @description Whether an interpreter is required
+       * @example false
+       */
+      interpreterRequired: boolean | null
+      /**
+       * @description The language code of the contact
+       * @example EN
+       */
+      languageCode: string | null
+      /**
+       * @description The id of the user who updated the contact
+       * @example JD000001
+       */
+      updatedBy: string | null
+    } | null
+    /** @description The details of a updated contact as an individual */
+    PatchContactResponse: {
+      /**
+       * Format: int64
+       * @description The id of the contact
+       * @example 123456
+       */
+      id: number
+      /**
+       * @description The title of the contact, if any
+       * @example Mr
+       */
+      title?: string | null
+      /**
+       * @description The last name of the contact
+       * @example Doe
+       */
+      lastName: string
+      /**
+       * @description The first name of the contact
+       * @example John
+       */
+      firstName: string
+      /**
+       * @description The middle name of the contact, if any
+       * @example William
+       */
+      middleNames?: string | null
+      /**
+       * Format: date
+       * @description The date of birth of the contact, if known
+       * @example 1980-01-01
+       */
+      dateOfBirth?: string | null
+      /**
+       * @description Whether the contact is over 18, based on their date of birth if it is known
+       * @example YES
+       * @enum {string}
+       */
+      estimatedIsOverEighteen?: 'YES' | 'NO' | 'DO_NOT_KNOW'
+      /**
+       * @description The place of birth of the contact
+       * @example London
+       */
+      placeOfBirth?: string | null
+      /**
+       * @description Whether the contact is active
+       * @example true
+       */
+      active?: boolean | null
+      /**
+       * @description Whether the contact is suspended
+       * @example false
+       */
+      suspended?: boolean | null
+      /**
+       * @description Whether the contact is a staff member
+       * @example false
+       */
+      staffFlag: boolean
+      /**
+       * @description Whether the contact is deceased
+       * @example false
+       */
+      deceasedFlag?: boolean | null
+      /**
+       * Format: date
+       * @description The date the contact was deceased, if applicable
+       * @example 2023-05-01
+       */
+      deceasedDate?: string | null
+      /**
+       * @description The coroner's number, if applicable
+       * @example CRN12345
+       */
+      coronerNumber?: string | null
+      /**
+       * @description The gender of the contact
+       * @example Male
+       */
+      gender?: string | null
+      /**
+       * @description The domestic status code of the contact
+       * @example S
+       */
+      domesticStatus?: string | null
+      /**
+       * @description The language code of the contact
+       * @example EN
+       */
+      languageCode?: string | null
+      /**
+       * @description The nationality code of the contact
+       * @example GB
+       */
+      nationalityCode?: string | null
+      /**
+       * @description Whether an interpreter is required
+       * @example false
+       */
+      interpreterRequired?: boolean | null
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was created
+       */
+      createdTime: string
+      /**
+       * @description User who amended the entry
+       * @example admin2
+       */
+      amendedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was amended
+       */
+      amendedTime?: string
+    }
     Sort: {
       sort?: string[]
     }
@@ -3386,14 +3634,14 @@ export interface components {
       groupCode: string
       /**
        * @description The code for this reference data
-       * @example MOBILE
+       * @example MOB
        */
       code: string
       /**
        * @description A fuller description of the reference code
        * @example Mobile
        */
-      description?: string
+      description: string
       /**
        * Format: int32
        * @description The default order configured for the reference code, lowest number first.
@@ -3512,6 +3760,26 @@ export interface components {
        * @example England
        */
       countryDescription: string
+      /**
+       * @description Type of the latest phone number
+       * @example MOB
+       */
+      phoneType?: string | null
+      /**
+       * @description Description of the type of the latest phone number
+       * @example Mobile
+       */
+      phoneTypeDescription?: string | null
+      /**
+       * @description The latest phone number, if there are any
+       * @example +1234567890
+       */
+      phoneNumber?: string | null
+      /**
+       * @description The extension number of the latest phone number
+       * @example 123
+       */
+      extNumber?: string | null
       /**
        * @description Indicates whether the contact is an approved visitor
        * @example true
@@ -3834,6 +4102,11 @@ export interface components {
        * @example false
        */
       noFixedAddress?: boolean | null
+      /**
+       * @description Any additional information or comments about the address
+       * @example Some additional information
+       */
+      comments?: string | null
     }
     ContactSearchResultItemPage: {
       content?: components['schemas']['ContactSearchResultItem'][]
@@ -4489,7 +4762,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactPhone']
+          'application/json': components['schemas']['SyncContactPhone']
         }
       }
       /** @description No contact reference with that id could be found */
@@ -4498,7 +4771,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactPhone']
+          'application/json': components['schemas']['SyncContactPhone']
         }
       }
     }
@@ -4515,7 +4788,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateContactPhoneRequest']
+        'application/json': components['schemas']['SyncUpdateContactPhoneRequest']
       }
     }
     responses: {
@@ -4525,7 +4798,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactPhone']
+          'application/json': components['schemas']['SyncContactPhone']
         }
       }
       /** @description Invalid input data */
@@ -4534,7 +4807,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactPhone']
+          'application/json': components['schemas']['SyncContactPhone']
         }
       }
       /** @description Contact phone not found */
@@ -4543,7 +4816,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactPhone']
+          'application/json': components['schemas']['SyncContactPhone']
         }
       }
     }
@@ -4891,6 +5164,193 @@ export interface operations {
       }
     }
   }
+  get: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+        /**
+         * @description The id of the contact phone
+         * @example 987654
+         */
+        contactPhoneId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the phone successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ContactPhoneDetails']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the the contact or phone this request is for */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+        /**
+         * @description The id of the contact phone
+         * @example 987654
+         */
+        contactPhoneId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdatePhoneRequest']
+      }
+    }
+    responses: {
+      /** @description Updated the contact phone successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ContactPhoneDetails']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the the contact or phone by their ids */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+        /**
+         * @description The id of the contact phone
+         * @example 987654
+         */
+        contactPhoneId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Deleted the contact phone successfully */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ContactPhoneDetails']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the the contact or phone by their ids */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   createPrisonerContact: {
     parameters: {
       query?: never
@@ -5086,7 +5546,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateContactPhoneRequest']
+        'application/json': components['schemas']['SyncCreateContactPhoneRequest']
       }
     }
     responses: {
@@ -5096,7 +5556,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactPhone']
+          'application/json': components['schemas']['SyncContactPhone']
         }
       }
       /** @description The request has invalid or missing fields */
@@ -5379,6 +5839,191 @@ export interface operations {
         }
       }
       /** @description Could not find the prisoner or contact that this relationship relates to */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  create: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreatePhoneRequest']
+      }
+    }
+    responses: {
+      /** @description Created the contact phone successfully */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ContactPhoneDetails']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the the contact this phone is for */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getContact: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the contact */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['GetContactResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No contact with that id could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': Record<string, never>
+        }
+      }
+    }
+  }
+  patchContact: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PatchContactRequest']
+      }
+    }
+    responses: {
+      /** @description The contact was updated. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PatchContactResponse']
+        }
+      }
+      /** @description Invalid request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No contact with that id could be found */
       404: {
         headers: {
           [name: string]: unknown
@@ -6138,59 +6783,6 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['Country']
-        }
-      }
-    }
-  }
-  getContact: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /**
-         * @description The id of the contact
-         * @example 123456
-         */
-        contactId: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Found the contact */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['GetContactResponse']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description No contact with that id could be found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': Record<string, never>
         }
       }
     }

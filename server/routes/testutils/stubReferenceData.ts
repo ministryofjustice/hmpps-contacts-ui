@@ -32,6 +32,10 @@ const STUBBED_RELATIONSHIP_OPTIONS: StubReferenceData[] = [
   { code: 'NONE', description: 'None', groupCode: 'RELATIONSHIP' },
   { code: 'ILP', description: 'In Loco Parentes', groupCode: 'RELATIONSHIP' },
 ]
+const STUBBED_PHONE_TYPE_OPTIONS: StubReferenceData[] = [
+  { code: 'MOB', description: 'Mobile phone', groupCode: 'PHONE_TYPE' },
+  { code: 'HOME', description: 'Home phone', groupCode: 'PHONE_TYPE' },
+]
 
 const mockedReferenceData = (type: ReferenceCodeType, _: HmppsUser): Promise<StubReferenceData[]> => {
   if (type === ReferenceCodeType.TITLE) {
@@ -40,7 +44,10 @@ const mockedReferenceData = (type: ReferenceCodeType, _: HmppsUser): Promise<Stu
   if (type === ReferenceCodeType.RELATIONSHIP) {
     return Promise.resolve(STUBBED_RELATIONSHIP_OPTIONS)
   }
+  if (type === ReferenceCodeType.PHONE_TYPE) {
+    return Promise.resolve(STUBBED_PHONE_TYPE_OPTIONS)
+  }
   return Promise.reject(new Error(`You haven't set up the stubbed reference data for ${type} yet`))
 }
 
-export { mockedReferenceData, STUBBED_TITLE_OPTIONS, STUBBED_RELATIONSHIP_OPTIONS }
+export { mockedReferenceData, STUBBED_TITLE_OPTIONS, STUBBED_RELATIONSHIP_OPTIONS, STUBBED_PHONE_TYPE_OPTIONS }

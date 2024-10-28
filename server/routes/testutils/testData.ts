@@ -4,7 +4,7 @@ import { components } from '../../@types/contactsApi'
 type ContactSearchResultItem = components['schemas']['ContactSearchResultItem']
 type GetContactResponse = components['schemas']['GetContactResponse']
 type ContactAddressDetails = components['schemas']['ContactAddressDetails']
-type ContactPhoneNumberDetails = components['schemas']['ContactPhoneNumberDetails']
+type ContactPhoneNumberDetails = components['schemas']['ContactPhoneDetails']
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 type PrisonerContactSummaryPage = components['schemas']['PrisonerContactSummaryPage']
 type PrisonerContactSummary = components['schemas']['PrisonerContactSummary']
@@ -42,7 +42,6 @@ export default class TestData {
         phoneTypeDescription: 'Home phone',
         phoneNumber: '01111 777777',
         extNumber: '+0123',
-        primaryPhone: false,
         createdBy: 'JAMES',
         createdTime: '2024-10-04T15:35:23.101675v',
         amendedBy: null,

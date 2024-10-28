@@ -9,6 +9,7 @@ import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelation
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
 import PrisonerContactSummaryPage = contactsApiClientTypes.PrisonerContactSummaryPage
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
+import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
 
 type PageableObject = components['schemas']['PageableObject']
 export default class ContactsService {
@@ -86,5 +87,21 @@ export default class ContactsService {
 
   async getContact(contactId: number, user: Express.User): Promise<GetContactResponse> {
     return this.contactsApiClient.getContact(contactId, user)
+  }
+
+  async createContactPhone(
+    contactId: number,
+    user: Express.User,
+    type: string,
+    phoneNumber: string,
+    extension?: string,
+  ) {
+    const request: CreatePhoneRequest = {
+      phoneType: type,
+      phoneNumber,
+      extNumber: extension,
+      createdBy: user.username,
+    }
+    return this.contactsApiClient.createContactPhone(contactId, request, user)
   }
 }

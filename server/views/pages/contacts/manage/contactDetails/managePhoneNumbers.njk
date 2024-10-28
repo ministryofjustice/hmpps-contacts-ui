@@ -37,6 +37,15 @@
     card: {
         title: {
             text: "Phone numbers"
+        },
+        actions: {
+            items: [
+                {
+                    href: "/contacts/manage/" + prisonerDetails.prisonerNumber + "/" + contact.id + "/phone/create",
+                    text: "Add phone number",
+                    attributes: {"data-qa": "add-phone-number"}
+                }
+            ]
         }
     },
     rows: phoneNumbers
