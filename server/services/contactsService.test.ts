@@ -11,6 +11,7 @@ import IsOverEighteenOptions = journeys.YesNoOrDoNotKnow
 import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
+import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
 
 jest.mock('../data/contactsApiClient')
 const searchResult = TestData.contactSearchResultItem()
@@ -388,6 +389,56 @@ describe('contactsService', () => {
           user,
         ),
       ).rejects.toBeInstanceOf(BadRequest)
+    })
+  })
+
+  describe('createContactPhone', () => {
+    it('should create a contact phone with all fields', async () => {
+      // Given
+      const expectedCreated: Contact = {
+        id: 999,
+      }
+      apiClient.createContactPhone.mockResolvedValue(expectedCreated)
+      const expectedRequest: CreatePhoneRequest = {
+        phoneType: 'MOB',
+        phoneNumber: '0123456789',
+        extNumber: '000',
+        createdBy: 'user1',
+      }
+
+      // When
+      const created = await service.createContactPhone(99, user, 'MOB', '0123456789', '000')
+
+      // Then
+      expect(created).toStrictEqual(expectedCreated)
+      expect(apiClient.createContactPhone).toHaveBeenCalledWith(99, expectedRequest, user)
+    })
+
+    it('should create a contact phone with only required fields', async () => {
+      // Given
+      const expectedCreated: Contact = {
+        id: 999,
+      }
+      apiClient.createContactPhone.mockResolvedValue(expectedCreated)
+      const expectedRequest: CreatePhoneRequest = {
+        phoneType: 'MOB',
+        phoneNumber: '0123456789',
+        createdBy: 'user1',
+      }
+
+      // When
+      const created = await service.createContactPhone(99, user, 'MOB', '0123456789', undefined)
+
+      // Then
+      expect(created).toStrictEqual(expectedCreated)
+      expect(apiClient.createContactPhone).toHaveBeenCalledWith(99, expectedRequest, user)
+    })
+
+    it('should handle a bad request', async () => {
+      apiClient.createContactPhone.mockRejectedValue(createError.BadRequest())
+      await expect(service.createContactPhone(99, user, 'MOB', '0123456789', undefined)).rejects.toBeInstanceOf(
+        BadRequest,
+      )
     })
   })
 })

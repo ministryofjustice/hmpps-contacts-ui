@@ -13,6 +13,8 @@ import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import prisonerDetailsMiddleware from '../../../middleware/prisonerDetailsMiddleware'
 import ContactDetailsController from './contact-details/contactDetailsController'
 import ReferenceDataService from '../../../services/referenceDataService'
+import ManageContactAddPhoneController from './phone/add/manageContactAddPhoneController'
+import { phoneNumberSchemaFactory } from './phone/phoneSchemas'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -87,10 +89,18 @@ const ManageContactsRoutes = (
   )
 
   // Part 6: Manage the attribute of one contact (phones, addresses, IDs, emails, restrictions)
-  // /prisoner/contact/:contactId/phone
-  // /prisoner/contact/:contactId/email
-  // /prisoner/contact/:contactId/address
-  // /prisoner/contact/:contactId/restriction
+  const manageContactAddPhoneController = new ManageContactAddPhoneController(contactsService, referenceDataService)
+  router.get(
+    '/contacts/manage/:prisonerNumber/:contactId/phone/create',
+    prisonerDetailsMiddleware(prisonerSearchService),
+    logPageViewMiddleware(auditService, manageContactAddPhoneController),
+    asyncMiddleware(manageContactAddPhoneController.GET),
+  )
+  router.post(
+    '/contacts/manage/:prisonerNumber/:contactId/phone/create',
+    validate(phoneNumberSchemaFactory()),
+    asyncMiddleware(manageContactAddPhoneController.POST),
+  )
 
   return router
 }

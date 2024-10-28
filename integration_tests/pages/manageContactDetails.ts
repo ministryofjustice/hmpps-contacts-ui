@@ -25,6 +25,10 @@ export default class ManageContactDetailsPage extends Page {
     return this
   }
 
+  clickAddPhoneNumberLink() {
+    this.addPhoneNumberLink().click()
+  }
+
   private namesValue = (): PageElement => cy.get('.manage-names-value')
 
   private dobValue = (): PageElement => cy.get('.manage-dob-value')
@@ -32,4 +36,6 @@ export default class ManageContactDetailsPage extends Page {
   private deceasedValue = (): PageElement => cy.get('.manage-deceased-date-value')
 
   private isOverEighteenValue = (): PageElement => cy.get('.manage-is-over-eighteen-value')
+
+  private addPhoneNumberLink = (): PageElement => cy.get('[data-qa="add-phone-number"]')
 }
