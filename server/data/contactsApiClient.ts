@@ -13,7 +13,7 @@ import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultI
 import PrisonerContactSummaryPage = contactsApiClientTypes.PrisonerContactSummaryPage
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
 
-type UpdateContactRequest = components['schemas']['UpdateContactRequest']
+type PatchContactRequest = components['schemas']['PatchContactRequest']
 type Language = components['schemas']['Language']
 type PageableObject = components['schemas']['PageableObject']
 
@@ -106,17 +106,8 @@ export default class ContactsApiClient extends RestClient {
     )
   }
 
-  async getLanguageReferenceById(id: number, user: Express.User): Promise<Language> {
-    return this.get<Language>(
-      {
-        path: `/language-reference/${id}`,
-      },
-      user,
-    )
-  }
-
-  async updateContactById(contactId: number, request: UpdateContactRequest, user: Express.User): Promise<Contact> {
-    return this.patch<UpdateContactRequest>(
+  async updateContactById(contactId: number, request: PatchContactRequest, user: Express.User): Promise<Contact> {
+    return this.patch<PatchContactRequest>(
       {
         path: `/contact/${contactId}`,
         data: request,
