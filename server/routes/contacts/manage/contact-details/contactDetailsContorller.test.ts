@@ -41,7 +41,7 @@ beforeEach(() => {
     contactId: 23,
     activateListPage: undefined,
     inactivateListPage: undefined,
-    spokeLanguage: 'ENG',
+    languageCode: 'ENG',
   }
   app = appWithAllRoutes({
     services: {
@@ -63,7 +63,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /contacts/manage/:contactId/', () => {
+describe('GET /contacts/manage/:contactId/:journeyId', () => {
   it('should render contact details page', async () => {
     auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
@@ -71,7 +71,7 @@ describe('GET /contacts/manage/:contactId/', () => {
     contactsService.getContact.mockResolvedValue(TestData.contact())
 
     // When
-    const response = await request(app).get(`/contacts/manage/${prisonerNumber}/1`)
+    const response = await request(app).get(`/contacts/manage/${prisonerNumber}/1/${journeyId}`)
 
     // Then
     expect(response.status).toEqual(200)
