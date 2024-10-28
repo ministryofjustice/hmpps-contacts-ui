@@ -4,7 +4,6 @@ import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
 import { components } from '../../../../@types/contactsApi'
 import Contact = contactsApiClientTypes.Contact
-import logger from '../../../../../logger'
 
 type Language = components['schemas']['Language']
 export default class SpokenLanguageController implements PageHandler {
@@ -17,11 +16,9 @@ export default class SpokenLanguageController implements PageHandler {
     const journey = req.session.manageContactsJourneys[journeyId]
     const { contactId } = req.params
     const { prisonerDetails, user } = res.locals
+
     const contact: Contact = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const language: Language = await this.contactsService.getLanguageReference(user)
-
-    logger.info(JSON.stringify(contact))
-    logger.info(JSON.stringify(journey))
 
     return res.render('pages/contacts/manage/add/selectSpokenLanguage', {
       journey,
@@ -35,13 +32,10 @@ export default class SpokenLanguageController implements PageHandler {
     req: Request<{ journeyId: string; contactId: string; prisonerNumber: string }>,
     res: Response,
   ): Promise<void> => {
-    logger.info(JSON.stringify(req.body))
-    logger.info(JSON.stringify(req.query))
     const { journeyId, contactId, prisonerNumber } = req.params
     const journey = req.session.manageContactsJourneys[journeyId]
-    journey.spokeLanguage = req.body['spoken-language']
-    logger.info(JSON.stringify(journey))
+    journey.languageCode = req.body.languageCode
 
-    res.redirect(`/contacts/manage/${prisonerNumber}/${contactId}`)
+    res.redirect(`/contacts/manage/${prisonerNumber}/${contactId}/${journeyId}`)
   }
 }

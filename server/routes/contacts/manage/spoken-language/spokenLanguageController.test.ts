@@ -40,7 +40,7 @@ beforeEach(() => {
     contactId: 23,
     activateListPage: undefined,
     inactivateListPage: undefined,
-    spokeLanguage: 'ENG',
+    languageCode: 'ENG',
   }
   app = appWithAllRoutes({
     services: {
@@ -61,7 +61,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /contacts/manage/:prisonerNumber/:contactId/language', () => {
+describe('GET /contacts/manage/:prisonerNumber/:contactId/language/:journeyId', () => {
   it('should render manage spoken language page', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
@@ -76,10 +76,23 @@ describe('GET /contacts/manage/:prisonerNumber/:contactId/language', () => {
 
     // Then
     expect(response.status).toEqual(200)
-    expect($('#spoken-language').has('option')).toBeDefined()
+    expect($('#languageCode').has('option')).toBeDefined()
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_SPOKEN_LANGUAGE_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })
+  })
+})
+
+describe('POST /contacts/manage/:prisonerNumber/:contactId/language/:journeyId', () => {
+  it('should update contact when last language code is provided', async () => {
+    await request(app)
+      .post(`/contacts/manage/${prisonerNumber}/${contactId}/language/${journeyId}`)
+      .type('form')
+      .send({ languageCode: 'ENG' })
+      .expect(302)
+      .expect('Location', `/contacts/manage/${prisonerNumber}/${contactId}/${journeyId}`)
+
+    expect(session.manageContactsJourneys[journeyId].languageCode).toStrictEqual('ENG')
   })
 })

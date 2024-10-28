@@ -12,7 +12,7 @@
         },
         value: {
             text: contact.languageDescription if contact.languageDescription else 'Not provided',
-            classes: 'manage-spoken-language-value'
+            classes: 'manage-language-code-value'
         },
         actions: {
             items: [
@@ -20,7 +20,7 @@
                     href: "/contacts/manage/" + prisonerDetails.prisonerNumber + "/" + contact.id + "/language/" + journey.id,
                     text: "Change",
                     visuallyHiddenText: "spoken language",
-                    attributes: {"data-qa": "change-spoken-language-link"}
+                    attributes: {"data-qa": "manage-language-code-value"}
                 }
             ]
         }

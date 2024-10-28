@@ -48,9 +48,9 @@ export default class ManageContactDetailsPage extends Page {
 
   private isOverEighteenValue = (): PageElement => cy.get('.manage-is-over-eighteen-value')
 
-  private spokenLanguageValue = (): PageElement => cy.get('.manage-spoken-language-value')
+  private spokenLanguageValue = (): PageElement => cy.get('.manage-language-code-value')
 
   private needsInterpreterValue = (): PageElement => cy.get('.manage-needs-interpreter-value')
 
-  private spokenLanguageLink = (): PageElement => cy.get('[data-qa=change-spoken-language-link]')
+  private spokenLanguageLink = (): PageElement => cy.get('[data-qa=manage-language-code-value]')
 }
