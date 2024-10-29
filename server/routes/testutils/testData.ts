@@ -5,6 +5,7 @@ type ContactSearchResultItem = components['schemas']['ContactSearchResultItem']
 type GetContactResponse = components['schemas']['GetContactResponse']
 type ContactAddressDetails = components['schemas']['ContactAddressDetails']
 type ContactPhoneDetails = components['schemas']['ContactPhoneDetails']
+type ContactPhoneNumberDetails = components['schemas']['ContactPhoneDetails']
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 type PrisonerContactSummaryPage = components['schemas']['PrisonerContactSummaryPage']
 type PrisonerContactSummary = components['schemas']['PrisonerContactSummary']
@@ -78,7 +79,11 @@ export default class TestData {
     } as ContactIdentityDetails
   }
 
-  static getContactPhoneNumberDetails = (phoneType: string, phoneTypeDescription: string, phoneNumber: string) => {
+  static getContactPhoneNumberDetails = (
+    phoneType: string,
+    phoneTypeDescription: string,
+    phoneNumber: string,
+  ): ContactPhoneNumberDetails => {
     return {
       contactPhoneId: 1,
       contactId: 1,

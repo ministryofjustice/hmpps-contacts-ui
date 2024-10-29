@@ -11,6 +11,8 @@ import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
+import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
+import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 type Language = components['schemas']['Language']
@@ -293,6 +295,63 @@ describe('contactsApiClient', () => {
       // When
       try {
         await contactsApiClient.getContact(123456, user)
+      } catch (e) {
+        // Then
+        expect(e.status).toEqual(errorCode)
+        expect(e.data).toEqual(expectedErrorBody)
+      }
+    })
+  })
+
+  describe('createContactPhone', () => {
+    it('should create the contact and return the response', async () => {
+      // Given
+      const expectedContactPhoneDetails: ContactPhoneDetails = {
+        id: 1,
+        phoneType: 'MOB',
+        phoneNumber: '0123456789',
+        createdBy: 'user1',
+        createdTime: new Date().toISOString(),
+      }
+      const request: CreatePhoneRequest = {
+        type: 'MOB',
+        phoneNumber: '0123456789',
+        createdBy: 'user1',
+      }
+
+      fakeContactsApi
+        .post('/contact/99/phone', request)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(201, expectedContactPhoneDetails)
+
+      // When
+      const createdContact = await contactsApiClient.createContactPhone(99, request, user)
+
+      // Then
+      expect(createdContact).toEqual(expectedContactPhoneDetails)
+    })
+
+    it.each([400, 401, 403, 500])('should propagate errors creating contact phone', async (errorCode: number) => {
+      // Given
+      const request: CreatePhoneRequest = {
+        type: 'MOB',
+        phoneNumber: '0123456789',
+        createdBy: 'user1',
+      }
+      const expectedErrorBody = {
+        status: errorCode,
+        userMessage: 'Some error',
+        developerMessage: 'Some error',
+      }
+
+      fakeContactsApi
+        .post('/contact/99/phone', request)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(errorCode, expectedErrorBody)
+
+      // When
+      try {
+        await contactsApiClient.createContactPhone(99, request, user)
       } catch (e) {
         // Then
         expect(e.status).toEqual(errorCode)

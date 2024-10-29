@@ -25,6 +25,7 @@
         <span class="govuk-caption-l">Manage Contacts</span>
         <h1 class="govuk-heading-l">Contact details - {{ contact | reverseFormatName }}</h1>
         {{ contactDetailsHtml() }}
+        {%- include "./managePhoneNumbers.njk" -%}
     </div>
 </div>
 {% endblock %}

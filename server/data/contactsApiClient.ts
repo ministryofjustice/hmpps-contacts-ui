@@ -12,6 +12,8 @@ import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelation
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
 import PrisonerContactSummaryPage = contactsApiClientTypes.PrisonerContactSummaryPage
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
+import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
+import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 type Language = components['schemas']['Language']
@@ -95,6 +97,20 @@ export default class ContactsApiClient extends RestClient {
 
   async getContact(contactId: number, user: Express.User): Promise<GetContactResponse> {
     return this.get<GetContactResponse>({ path: `/contact/${contactId}` }, user)
+  }
+
+  async createContactPhone(
+    contactId: number,
+    request: CreatePhoneRequest,
+    user: Express.User,
+  ): Promise<ContactPhoneDetails> {
+    return this.post<ContactPhoneDetails>(
+      {
+        path: `/contact/${contactId}/phone`,
+        data: request,
+      },
+      user,
+    )
   }
 
   async getLanguageReference(user: Express.User): Promise<Language> {

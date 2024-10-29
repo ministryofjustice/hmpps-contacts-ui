@@ -40,6 +40,10 @@ export default class ManageContactDetailsPage extends Page {
     return this
   }
 
+  clickAddPhoneNumberLink() {
+    this.addPhoneNumberLink().click()
+  }
+
   private namesValue = (): PageElement => cy.get('.manage-names-value')
 
   private dobValue = (): PageElement => cy.get('.manage-dob-value')
@@ -53,4 +57,6 @@ export default class ManageContactDetailsPage extends Page {
   private needsInterpreterValue = (): PageElement => cy.get('.manage-needs-interpreter-value')
 
   private spokenLanguageLink = (): PageElement => cy.get('[data-qa=manage-language-code-value]')
+
+  private addPhoneNumberLink = (): PageElement => cy.get('[data-qa="add-phone-number"]')
 }

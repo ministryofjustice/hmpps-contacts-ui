@@ -2,6 +2,7 @@ import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
 import {
   STUBBED_LANGUAGE_OPTIONS,
+  STUBBED_PHONE_TYPE_OPTIONS,
   STUBBED_RELATIONSHIP_OPTIONS,
   STUBBED_TITLE_OPTIONS,
 } from '../../server/routes/testutils/stubReferenceData'
@@ -9,6 +10,7 @@ import { components } from '../../server/@types/contactsApi'
 import TestData from '../../server/routes/testutils/testData'
 
 export type StubGetContactResponse = components['schemas']['GetContactResponse']
+export type StubPhoneDetails = components['schemas']['ContactPhoneDetails']
 export type StubContactSearchResultItem = components['schemas']['ContactSearchResultItem']
 
 export default {
@@ -107,7 +109,19 @@ export default {
       },
     })
   },
-
+  stubPhoneTypeReferenceData: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/reference-codes/group/PHONE_TYPE',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: STUBBED_PHONE_TYPE_OPTIONS,
+      },
+    })
+  },
   stubContactSearch: ({
     results = {
       totalPages: 0,
@@ -179,6 +193,26 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: STUBBED_LANGUAGE_OPTIONS, // TestData.languages(),
+      },
+    })
+  },
+
+  stubCreateContactPhone: ({
+    contactId,
+    created,
+  }: {
+    contactId: number
+    created: StubPhoneDetails
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPath: `/contact/${contactId}/phone`,
+      },
+      response: {
+        status: 201,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: created,
       },
     })
   },
