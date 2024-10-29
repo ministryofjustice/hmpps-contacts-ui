@@ -71,7 +71,7 @@ describe('GET /contacts/manage/:prisonerNumber/:contactId/language/:journeyId', 
     contactsService.getLanguageReference.mockResolvedValue(TestData.languages())
 
     // When
-    const response = await request(app).get(`/contacts/manage/${prisonerNumber}/${contactId}/language/${journeyId}`)
+    const response = await request(app).get(`/contacts/manage/${prisonerNumber}/${contactId}/language`)
     const $ = cheerio.load(response.text)
 
     // Then
@@ -87,11 +87,11 @@ describe('GET /contacts/manage/:prisonerNumber/:contactId/language/:journeyId', 
 describe('POST /contacts/manage/:prisonerNumber/:contactId/language/:journeyId', () => {
   it('should update contact when last language code is provided', async () => {
     await request(app)
-      .post(`/contacts/manage/${prisonerNumber}/${contactId}/language/${journeyId}`)
+      .post(`/contacts/manage/${prisonerNumber}/${contactId}/language`)
       .type('form')
       .send({ languageCode: 'ENG' })
       .expect(302)
-      .expect('Location', `/contacts/manage/${prisonerNumber}/${contactId}/${journeyId}`)
+      .expect('Location', `/contacts/manage/${prisonerNumber}/${contactId}`)
 
     expect(session.manageContactsJourneys[journeyId].languageCode).toStrictEqual('ENG')
   })

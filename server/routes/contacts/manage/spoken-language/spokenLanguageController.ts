@@ -5,15 +5,14 @@ import { ContactsService } from '../../../../services'
 import { components } from '../../../../@types/contactsApi'
 import Contact = contactsApiClientTypes.Contact
 
+type PatchContactRequest = components['schemas']['PatchContactRequest']
 type Language = components['schemas']['Language']
 export default class SpokenLanguageController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
 
   public PAGE_NAME = Page.MANAGE_SPOKEN_LANGUAGE_PAGE
 
-  GET = async (req: Request<{ journeyId: string; contactId?: string }>, res: Response): Promise<void> => {
-    const { journeyId } = req.params
-    const journey = req.session.manageContactsJourneys[journeyId]
+  GET = async (req: Request<{ contactId?: string }>, res: Response): Promise<void> => {
     const { contactId } = req.params
     const { prisonerDetails, user } = res.locals
 
@@ -21,21 +20,22 @@ export default class SpokenLanguageController implements PageHandler {
     const language: Language = await this.contactsService.getLanguageReference(user)
 
     return res.render('pages/contacts/manage/add/selectSpokenLanguage', {
-      journey,
       contact,
       language,
       prisonerDetails,
     })
   }
 
-  POST = async (
-    req: Request<{ journeyId: string; contactId: string; prisonerNumber: string }>,
-    res: Response,
-  ): Promise<void> => {
-    const { journeyId, contactId, prisonerNumber } = req.params
-    const journey = req.session.manageContactsJourneys[journeyId]
-    journey.languageCode = req.body.languageCode
+  POST = async (req: Request<{ contactId: string; prisonerNumber: string }>, res: Response): Promise<void> => {
+    const { user } = res.locals
+    const { contactId, prisonerNumber } = req.params
+    const request: PatchContactRequest = {
+      languageCode: req.body.languageCode,
+      updatedBy: user.userId,
+    }
 
-    res.redirect(`/contacts/manage/${prisonerNumber}/${contactId}/${journeyId}`)
+    await this.contactsService.updateContactById(parseInt(contactId, 10), request, user)
+
+    res.redirect(`/contacts/manage/${prisonerNumber}/${contactId}`)
   }
 }

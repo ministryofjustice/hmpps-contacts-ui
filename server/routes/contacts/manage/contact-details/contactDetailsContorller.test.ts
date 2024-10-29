@@ -73,7 +73,7 @@ describe('GET /contacts/manage/:contactId/:journeyId', () => {
     contactsService.updateContactById.mockResolvedValue(TestData.contact())
 
     // When
-    const response = await request(app).get(`/contacts/manage/${prisonerNumber}/1/${journeyId}`)
+    const response = await request(app).get(`/contacts/manage/${prisonerNumber}/1`)
 
     // Then
     expect(response.status).toEqual(200)
@@ -96,7 +96,7 @@ describe('GET /contacts/manage/:contactId/:journeyId', () => {
       )
 
       // When
-      const response = await request(app).get(`/contacts/manage/${prisonerNumber}/1/${journeyId}`)
+      const response = await request(app).get(`/contacts/manage/${prisonerNumber}/1`)
 
       // Then
       const $ = cheerio.load(response.text)
@@ -111,7 +111,7 @@ describe('GET /contacts/manage/:contactId/:journeyId', () => {
       contactsService.getContact.mockResolvedValue(TestData.contact({ phoneNumbers: [] }))
 
       // When
-      const response = await request(app).get(`/contacts/manage/${prisonerNumber}/1/${journeyId}`)
+      const response = await request(app).get(`/contacts/manage/${prisonerNumber}/1`)
 
       // Then
       const $ = cheerio.load(response.text)
