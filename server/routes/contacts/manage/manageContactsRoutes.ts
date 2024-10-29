@@ -13,7 +13,7 @@ import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import prisonerDetailsMiddleware from '../../../middleware/prisonerDetailsMiddleware'
 import ContactDetailsController from './contact-details/contactDetailsController'
 import ReferenceDataService from '../../../services/referenceDataService'
-import SpokenLanguageController from './spoken-language/spokenLanguageController'
+import ManageSpokenLanguageController from './spoken-language/manageSpokenLanguageController'
 import ManageContactAddPhoneController from './phone/add/manageContactAddPhoneController'
 import { phoneNumberSchemaFactory } from './phone/phoneSchemas'
 
@@ -83,22 +83,24 @@ const ManageContactsRoutes = (
   // Part 5: View one contact
   const contactDetailsController = new ContactDetailsController(contactsService, referenceDataService)
   router.get(
-    '/contacts/manage/:prisonerNumber/:contactId',
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId',
     prisonerDetailsMiddleware(prisonerSearchService),
     logPageViewMiddleware(auditService, contactDetailsController),
     asyncMiddleware(contactDetailsController.GET),
   )
 
   // Part 6: Manage the attribute of one contact (phones, addresses, IDs, emails, restrictions)
-  const spokenLanguageController = new SpokenLanguageController(contactsService)
+  const spokenLanguageController = new ManageSpokenLanguageController(contactsService)
   router.get(
-    '/contacts/manage/:prisonerNumber/:contactId/language',
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/language',
     prisonerDetailsMiddleware(prisonerSearchService),
     logPageViewMiddleware(auditService, spokenLanguageController),
     asyncMiddleware(spokenLanguageController.GET),
   )
-
-  router.post('/contacts/manage/:prisonerNumber/:contactId/language', asyncMiddleware(spokenLanguageController.POST))
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/language',
+    asyncMiddleware(spokenLanguageController.POST),
+  )
 
   const manageContactAddPhoneController = new ManageContactAddPhoneController(contactsService, referenceDataService)
   router.get(

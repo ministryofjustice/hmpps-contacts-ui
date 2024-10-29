@@ -42,13 +42,9 @@ context('Select Spoken Language', () => {
     cy.task('stubUpdateSpokenLanguage', { contactId, request })
 
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
-
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
-
     Page.verifyOnPage(ManageContactDetailsPage).clickChangeSpokenLanguageLik()
-
     Page.verifyOnPage(SelectSpokenLanguagePage, 'Jones Mason').selectSpokenLanguage('Arabic').clickContinue()
-
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
 
     cy.verifyLastAPICall(

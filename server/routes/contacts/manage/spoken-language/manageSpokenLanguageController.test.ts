@@ -1,14 +1,11 @@
 import type { Express } from 'express'
 import request from 'supertest'
-import { SessionData } from 'express-session'
-import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import ContactsService from '../../../../services/contactsService'
 import TestData from '../../../testutils/testData'
-import ManageContactsJourney = journeys.ManageContactsJourney
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -19,29 +16,10 @@ const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<Pri
 const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
 
 let app: Express
-let session: Partial<SessionData>
-const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 const contactId = '10'
-let existingJourney: ManageContactsJourney
 
 beforeEach(() => {
-  existingJourney = {
-    id: journeyId,
-    lastTouched: new Date().toISOString(),
-    prisoner: {
-      prisonerNumber: 'G4793VF',
-      lastName: 'Timothy',
-      firstName: 'Jack',
-      dateOfBirth: '',
-      prisonName: '',
-      cellLocation: '',
-    },
-    contactId: 23,
-    activateListPage: undefined,
-    inactivateListPage: undefined,
-    languageCode: 'ENG',
-  }
   app = appWithAllRoutes({
     services: {
       auditService,
@@ -49,11 +27,6 @@ beforeEach(() => {
       contactsService,
     },
     userSupplier: () => user,
-    sessionReceiver: (receivedSession: Partial<SessionData>) => {
-      session = receivedSession
-      session.manageContactsJourneys = {}
-      session.manageContactsJourneys[journeyId] = existingJourney
-    },
   })
 })
 
@@ -61,7 +34,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /contacts/manage/:prisonerNumber/:contactId/language/:journeyId', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/language', () => {
   it('should render manage spoken language page', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
@@ -71,7 +44,7 @@ describe('GET /contacts/manage/:prisonerNumber/:contactId/language/:journeyId', 
     contactsService.getLanguageReference.mockResolvedValue(TestData.languages())
 
     // When
-    const response = await request(app).get(`/contacts/manage/${prisonerNumber}/${contactId}/language`)
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/language`)
     const $ = cheerio.load(response.text)
 
     // Then
@@ -84,15 +57,15 @@ describe('GET /contacts/manage/:prisonerNumber/:contactId/language/:journeyId', 
   })
 })
 
-describe('POST /contacts/manage/:prisonerNumber/:contactId/language/:journeyId', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/language', () => {
   it('should update contact when last language code is provided', async () => {
     await request(app)
-      .post(`/contacts/manage/${prisonerNumber}/${contactId}/language`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/language`)
       .type('form')
       .send({ languageCode: 'ENG' })
       .expect(302)
-      .expect('Location', `/contacts/manage/${prisonerNumber}/${contactId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
 
-    expect(session.manageContactsJourneys[journeyId].languageCode).toStrictEqual('ENG')
+    expect(contactsService.updateContactById).toHaveBeenCalledWith(10, { languageCode: 'ENG', updatedBy: 'id' }, user)
   })
 })

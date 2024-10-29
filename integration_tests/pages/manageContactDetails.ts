@@ -30,11 +30,6 @@ export default class ManageContactDetailsPage extends Page {
     return this
   }
 
-  verifyShowNeedsInterpreterValueAs(expected: string): ManageContactDetailsPage {
-    this.needsInterpreterValue().should('contain.text', expected)
-    return this
-  }
-
   clickChangeSpokenLanguageLik(): ManageContactDetailsPage {
     this.spokenLanguageLink().click()
     return this
@@ -53,8 +48,6 @@ export default class ManageContactDetailsPage extends Page {
   private isOverEighteenValue = (): PageElement => cy.get('.manage-is-over-eighteen-value')
 
   private spokenLanguageValue = (): PageElement => cy.get('.manage-language-code-value')
-
-  private needsInterpreterValue = (): PageElement => cy.get('.manage-needs-interpreter-value')
 
   private spokenLanguageLink = (): PageElement => cy.get('[data-qa=manage-language-code-value]')
 

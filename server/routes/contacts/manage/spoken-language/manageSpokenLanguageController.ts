@@ -7,7 +7,7 @@ import Contact = contactsApiClientTypes.Contact
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 type Language = components['schemas']['Language']
-export default class SpokenLanguageController implements PageHandler {
+export default class ManageSpokenLanguageController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
 
   public PAGE_NAME = Page.MANAGE_SPOKEN_LANGUAGE_PAGE
@@ -19,7 +19,7 @@ export default class SpokenLanguageController implements PageHandler {
     const contact: Contact = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const language: Language = await this.contactsService.getLanguageReference(user)
 
-    return res.render('pages/contacts/manage/add/selectSpokenLanguage', {
+    return res.render('pages/contacts/manage/addSelectSpokenLanguage', {
       contact,
       language,
       prisonerDetails,
@@ -36,6 +36,6 @@ export default class SpokenLanguageController implements PageHandler {
 
     await this.contactsService.updateContactById(parseInt(contactId, 10), request, user)
 
-    res.redirect(`/contacts/manage/${prisonerNumber}/${contactId}`)
+    res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
   }
 }

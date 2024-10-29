@@ -24,7 +24,6 @@ export default class ContactDetailsController implements PageHandler {
     const formattedFullName = await this.formattedFullName(contact, user)
 
     return res.render('pages/contacts/manage/contactDetails/details', {
-      // journey,
       contact,
       prisonerDetails,
       formattedFullName,

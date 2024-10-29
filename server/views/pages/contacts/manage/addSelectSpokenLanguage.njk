@@ -1,8 +1,8 @@
-{% extends "../../../../partials/layout.njk" %}
+{% extends "../../../partials/layout.njk" %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "../../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% set pageTitle = applicationName + " - Enter spoken language" %}
@@ -12,7 +12,7 @@
 
 {{ govukBackLink({
     text: "Back",
-    href: '/contacts/manage/' + prisonerDetails.prisonerNumber + '/' + contact.id + '/' + journey.id,
+    href: '/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/manage/' + contact.id,
     attributes: {"data-qa": "back-link"}
 }) }}
 
@@ -51,7 +51,7 @@
                     classes: 'govuk-!-margin-top-6',
                     attributes: {"data-qa": "continue-button"}
                 }) }}
-                <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="/contacts/manage/{{prisonerDetails.prisonerNumber}}/{{contact.id}}" data-qa="cancel-button">Cancel</a>
+                <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="/prisoner/{{prisonerDetails.prisonerNumber}}/contacts/manage/{{contact.id}}" data-qa="cancel-button">Cancel</a>
             </div>
         </form>
      </div>
