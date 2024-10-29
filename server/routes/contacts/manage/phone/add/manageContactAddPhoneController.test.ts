@@ -134,7 +134,7 @@ describe('POST /contacts/manage/:prisonerNumber/:contactId/phone/create', () => 
       .type('form')
       .send({ type: 'MOB', phoneNumber: '123456789', extension: '000' })
       .expect(302)
-      .expect('Location', `/contacts/manage/${prisonerNumber}/${contactId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
 
     expect(contactsService.createContactPhone).toHaveBeenCalledWith(contactId, user, 'MOB', '123456789', '000')
   })
@@ -145,7 +145,7 @@ describe('POST /contacts/manage/:prisonerNumber/:contactId/phone/create', () => 
       .type('form')
       .send({ type: 'MOB', phoneNumber: '123456789', extension: '' })
       .expect(302)
-      .expect('Location', `/contacts/manage/${prisonerNumber}/${contactId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
 
     expect(contactsService.createContactPhone).toHaveBeenCalledWith(contactId, user, 'MOB', '123456789', undefined)
   })
