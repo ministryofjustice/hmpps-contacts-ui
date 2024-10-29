@@ -475,6 +475,7 @@ describe('contactsService', () => {
   describe('updateContactById', () => {
     const request: PatchContactRequest = {
       languageCode: 'ENG',
+      updatedBy: 'user1',
     }
     it('Should get the language reference', async () => {
       apiClient.updateContactById.mockResolvedValue(TestData.contact())
