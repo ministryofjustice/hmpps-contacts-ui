@@ -25,6 +25,16 @@ export default class ManageContactDetailsPage extends Page {
     return this
   }
 
+  verifyShowSpokenLanguageValueAs(expected: string): ManageContactDetailsPage {
+    this.spokenLanguageValue().should('contain.text', expected)
+    return this
+  }
+
+  clickChangeSpokenLanguageLik(): ManageContactDetailsPage {
+    this.spokenLanguageLink().click()
+    return this
+  }
+
   clickAddPhoneNumberLink() {
     this.addPhoneNumberLink().click()
   }
@@ -36,6 +46,10 @@ export default class ManageContactDetailsPage extends Page {
   private deceasedValue = (): PageElement => cy.get('.manage-deceased-date-value')
 
   private isOverEighteenValue = (): PageElement => cy.get('.manage-is-over-eighteen-value')
+
+  private spokenLanguageValue = (): PageElement => cy.get('.manage-language-code-value')
+
+  private spokenLanguageLink = (): PageElement => cy.get('[data-qa=manage-language-code-value]')
 
   private addPhoneNumberLink = (): PageElement => cy.get('[data-qa="add-phone-number"]')
 }

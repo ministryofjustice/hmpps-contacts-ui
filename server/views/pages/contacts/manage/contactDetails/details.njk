@@ -7,13 +7,10 @@
 
 {{ govukBackLink({
     text: "Back",
-    href: '/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/list',
+    href: '/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/list/',
     attributes: {"data-qa": "back-link"}
 }) }}
 
-{% macro contactDetailsHtml() %}
-    {%- include "./manageBasicDetails.njk" -%}
-{% endmacro %}
 <div class="govuk-grid-row govuk-!-static-margin-bottom-5">
     <div class="govuk-grid-column-full">
         {% include '../../partials/addContactNavigation.njk' %}
@@ -23,8 +20,9 @@
     <div class="govuk-grid-column-two-thirds">
         <span class="govuk-caption-l">Manage Contacts</span>
         <h1 class="govuk-heading-l">Contact details - {{ contact | reverseFormatName }}</h1>
-        {{ contactDetailsHtml() }}
+        {%- include "./manageBasicDetails.njk" -%}
         {%- include "./managePhoneNumbers.njk" -%}
+        {%- include "./language.njk" -%}
     </div>
 </div>
 {% endblock %}

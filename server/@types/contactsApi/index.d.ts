@@ -1395,7 +1395,7 @@ export interface components {
        * @description Whether the contact is a staff member
        * @example false
        */
-      staffFlag: boolean
+      isStaff: boolean
       /**
        * @description Whether the contact is deceased
        * @example false
@@ -1448,6 +1448,7 @@ export interface components {
        * @example 2024-01-01T00:00:00Z
        */
       updatedTime: string
+      staff?: boolean
     }
     /** @description The details of a contact as an individual */
     Contact: {
@@ -1508,7 +1509,7 @@ export interface components {
        * @description Whether the contact is a staff member
        * @example false
        */
-      staffFlag: boolean
+      isStaff: boolean
       /**
        * @description Whether the contact is deceased
        * @example false
@@ -1570,6 +1571,7 @@ export interface components {
        * @description Timestamp when the entry was amended
        */
       amendedTime?: string
+      staff?: boolean
     }
     /** @description Request to update a contact restriction  */
     UpdateContactRestrictionRequest: {
@@ -2458,7 +2460,7 @@ export interface components {
        * @description Whether the contact is a staff member
        * @example false
        */
-      staffFlag: boolean
+      isStaff: boolean
       /**
        * @description Whether the contact is deceased
        * @example false
@@ -2511,6 +2513,7 @@ export interface components {
        * @example 2024-01-01T00:00:00Z
        */
       createdTime: string
+      staff?: boolean
     }
     /** @description Request to create a new contact restriction  */
     CreateContactRestrictionRequest: {
@@ -3380,6 +3383,11 @@ export interface components {
        */
       estimatedIsOverEighteen?: 'YES' | 'NO' | 'DO_NOT_KNOW'
       /**
+       * @description Whether the contact is a staff member
+       * @example false
+       */
+      isStaff: boolean
+      /**
        * @description The date the contact deceased, if known
        * @example false
        */
@@ -3434,6 +3442,7 @@ export interface components {
        * @example 2024-01-01T00:00:00Z
        */
       createdTime: string
+      staff?: boolean
     }
     AddContactRelationshipRequest: {
       relationship: components['schemas']['ContactRelationship']
@@ -3466,34 +3475,38 @@ export interface components {
        */
       createdBy: string
     }
+    JsonNullableBoolean: {
+      present?: boolean
+    }
     /** @description Request to patch a new contact  */
     PatchContactRequest: {
       /**
        * @description Whether the contact is a staff member
        * @example false
        */
-      staffFlag: boolean | null
+      isStaff?: boolean
       /**
        * @description The domestic status code of the contact
        * @example S
        */
-      domesticStatus: string | null
+      domesticStatus?: string | null
       /**
        * @description Whether an interpreter is required
        * @example false
        */
-      interpreterRequired: boolean | null
+      interpreterRequired?: boolean
       /**
        * @description The language code of the contact
        * @example EN
        */
-      languageCode: string | null
+      languageCode?: string | null
       /**
        * @description The id of the user who updated the contact
        * @example JD000001
        */
-      updatedBy: string | null
-    } | null
+      updatedBy: string
+      staff?: components['schemas']['JsonNullableBoolean']
+    }
     /** @description The details of a updated contact as an individual */
     PatchContactResponse: {
       /**
@@ -3553,7 +3566,7 @@ export interface components {
        * @description Whether the contact is a staff member
        * @example false
        */
-      staffFlag: boolean
+      isStaff: boolean
       /**
        * @description Whether the contact is deceased
        * @example false
@@ -3615,6 +3628,7 @@ export interface components {
        * @description Timestamp when the entry was amended
        */
       amendedTime?: string
+      staff?: boolean
     }
     Sort: {
       sort?: string[]

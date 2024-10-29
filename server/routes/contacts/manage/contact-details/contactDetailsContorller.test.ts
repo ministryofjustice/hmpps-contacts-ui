@@ -37,15 +37,16 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /contacts/manage/:contactId/', () => {
+describe('GET /contacts/manage/:contactId', () => {
   it('should render contact details page', async () => {
     auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.searchContact.mockResolvedValue(TestData.contact())
     contactsService.getContact.mockResolvedValue(TestData.contact())
+    contactsService.updateContactById.mockResolvedValue(TestData.contact())
 
     // When
-    const response = await request(app).get(`/contacts/manage/${prisonerNumber}/1`)
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1`)
 
     // Then
     expect(response.status).toEqual(200)
@@ -68,7 +69,7 @@ describe('GET /contacts/manage/:contactId/', () => {
       )
 
       // When
-      const response = await request(app).get(`/contacts/manage/${prisonerNumber}/1`)
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1`)
 
       // Then
       const $ = cheerio.load(response.text)
@@ -83,7 +84,7 @@ describe('GET /contacts/manage/:contactId/', () => {
       contactsService.getContact.mockResolvedValue(TestData.contact({ phoneNumbers: [] }))
 
       // When
-      const response = await request(app).get(`/contacts/manage/${prisonerNumber}/1`)
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1`)
 
       // Then
       const $ = cheerio.load(response.text)

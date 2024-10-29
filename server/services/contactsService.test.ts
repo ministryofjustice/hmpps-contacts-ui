@@ -3,6 +3,7 @@ import ContactsApiClient from '../data/contactsApiClient'
 import ContactsService from './contactsService'
 import { PaginationRequest } from '../data/prisonerOffenderSearchTypes'
 import TestData from '../routes/testutils/testData'
+import { components } from '../@types/contactsApi'
 import AddContactJourney = journeys.AddContactJourney
 import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
@@ -12,6 +13,9 @@ import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelation
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
 import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
+
+type Language = components['schemas']['Language']
+type PatchContactRequest = components['schemas']['PatchContactRequest']
 
 jest.mock('../data/contactsApiClient')
 const searchResult = TestData.contactSearchResultItem()
@@ -274,6 +278,7 @@ describe('contactsService', () => {
       await expect(apiClient.getContact(123456, user)).rejects.toEqual(new Error('some error'))
     })
   })
+
   describe('addContact', () => {
     it('should add a contact relationship from the journey dto with all fields', async () => {
       // Given
@@ -439,6 +444,56 @@ describe('contactsService', () => {
       await expect(service.createContactPhone(99, user, 'MOB', '0123456789', undefined)).rejects.toBeInstanceOf(
         BadRequest,
       )
+    })
+  })
+
+  describe('getLanguageReference', () => {
+    it('Should get the language reference', async () => {
+      // Given
+      const expectedLanguage: Language = {
+        languageId: 23,
+        nomisCode: 'ENG',
+        nomisDescription: 'English',
+        isoAlpha2: 'en',
+        isoAlpha3: 'eng',
+        isoLanguageDesc: 'English',
+        displaySequence: 1,
+      }
+
+      // When
+      apiClient.getLanguageReference.mockResolvedValue(expectedLanguage)
+      const contact = await service.getLanguageReference(user)
+
+      // Then
+      expect(contact).toStrictEqual(expectedLanguage)
+      expect(apiClient.getLanguageReference).toHaveBeenCalledWith(user)
+    })
+
+    it('Propagates errors', async () => {
+      apiClient.getLanguageReference.mockRejectedValue(new Error('some error'))
+      await expect(apiClient.getLanguageReference(user)).rejects.toEqual(new Error('some error'))
+    })
+  })
+
+  describe('updateContactById', () => {
+    // Given
+    const request: PatchContactRequest = {
+      languageCode: 'ENG',
+      updatedBy: 'user1',
+    }
+    it('Should update the language reference', async () => {
+      // When
+      apiClient.updateContactById.mockResolvedValue(TestData.contact())
+      const contact = await service.updateContactById(23, request, user)
+
+      // Then
+      expect(contact).toStrictEqual(TestData.contact())
+      expect(apiClient.updateContactById).toHaveBeenCalledWith(23, request, user)
+    })
+
+    it('Propagates errors', async () => {
+      apiClient.updateContactById.mockRejectedValue(new Error('some error'))
+      await expect(apiClient.updateContactById(23, request, user)).rejects.toEqual(new Error('some error'))
     })
   })
 })

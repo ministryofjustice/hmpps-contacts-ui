@@ -1,6 +1,7 @@
 import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
 import {
+  STUBBED_LANGUAGE_OPTIONS,
   STUBBED_PHONE_TYPE_OPTIONS,
   STUBBED_RELATIONSHIP_OPTIONS,
   STUBBED_TITLE_OPTIONS,
@@ -11,6 +12,7 @@ import TestData from '../../server/routes/testutils/testData'
 export type StubGetContactResponse = components['schemas']['GetContactResponse']
 export type StubPhoneDetails = components['schemas']['ContactPhoneDetails']
 export type StubContactSearchResultItem = components['schemas']['ContactSearchResultItem']
+export type PatchContactRequest = components['schemas']['PatchContactRequest']
 
 export default {
   stubCreateContact: (createdContact: StubGetContactResponse): SuperAgentRequest => {
@@ -181,6 +183,41 @@ export default {
       },
     })
   },
+
+  stubGetLanguages: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/language-reference`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: STUBBED_LANGUAGE_OPTIONS,
+      },
+    })
+  },
+
+  stubUpdateSpokenLanguage: ({
+    contactId,
+    request,
+  }: {
+    contactId: number
+    request: PatchContactRequest
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PATCH',
+        urlPath: `/contact/${contactId}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: request,
+      },
+    })
+  },
+
   stubCreateContactPhone: ({
     contactId,
     created,

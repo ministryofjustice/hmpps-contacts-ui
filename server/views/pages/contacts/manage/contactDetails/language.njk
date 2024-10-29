@@ -1,0 +1,28 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{{ govukSummaryList({
+    card: {
+        title: {
+            text: "Language details"
+        }
+    },
+    rows: [{
+        key: {
+            text: "Spoken language"
+        },
+        value: {
+            text: contact.languageDescription or 'Not provided',
+            classes: 'manage-language-code-value'
+        },
+        actions: {
+            items: [
+                {
+                    href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/language",
+                    text: "Change",
+                    visuallyHiddenText: "spoken language",
+                    attributes: {"data-qa": "manage-language-code-value"}
+                }
+            ]
+        }
+    }]
+}) }}

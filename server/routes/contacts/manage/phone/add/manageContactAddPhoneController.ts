@@ -41,7 +41,7 @@ export default class ManageContactAddPhoneController implements PageHandler {
     const { prisonerNumber, contactId } = req.params
     const { phoneNumber, type, extension } = req.body
     await this.contactsService.createContactPhone(parseInt(contactId, 10), user, type, phoneNumber, extension)
-    res.redirect(`/contacts/manage/${prisonerNumber}/${contactId}`)
+    res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
   }
 
   private getSelectedOptions(

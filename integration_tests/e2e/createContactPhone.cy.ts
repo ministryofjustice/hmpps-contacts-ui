@@ -28,7 +28,7 @@ context('Create Contacts', () => {
 
     cy.signIn()
     const { prisonerNumber } = TestData.prisoner()
-    cy.visit(`/contacts/manage/${prisonerNumber}/${contactId}`)
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
   })

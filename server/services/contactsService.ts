@@ -11,6 +11,8 @@ import PrisonerContactSummaryPage = contactsApiClientTypes.PrisonerContactSummar
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
 import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
 
+type PatchContactRequest = components['schemas']['PatchContactRequest']
+type Language = components['schemas']['Language']
 type PageableObject = components['schemas']['PageableObject']
 export default class ContactsService {
   constructor(private readonly contactsApiClient: ContactsApiClient) {}
@@ -103,5 +105,13 @@ export default class ContactsService {
       createdBy: user.username,
     }
     return this.contactsApiClient.createContactPhone(contactId, request, user)
+  }
+
+  async getLanguageReference(user: Express.User): Promise<Language> {
+    return this.contactsApiClient.getLanguageReference(user)
+  }
+
+  async updateContactById(contactId: number, request: PatchContactRequest, user: Express.User): Promise<Contact> {
+    return this.contactsApiClient.updateContactById(contactId, request, user)
   }
 }

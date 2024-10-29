@@ -3,6 +3,7 @@ import config from '../config'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import ContactsApiClient from './contactsApiClient'
 import ReferenceCodeType from '../enumeration/referenceCodeType'
+import { components } from '../@types/contactsApi'
 import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
@@ -12,6 +13,9 @@ import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultI
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
 import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
 import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
+
+type PatchContactRequest = components['schemas']['PatchContactRequest']
+type Language = components['schemas']['Language']
 
 jest.mock('./tokenStore/inMemoryTokenStore')
 
@@ -353,6 +357,73 @@ describe('contactsApiClient', () => {
         expect(e.status).toEqual(errorCode)
         expect(e.data).toEqual(expectedErrorBody)
       }
+    })
+  })
+
+  describe('getLanguageReference', () => {
+    it('should create the request and return the response', async () => {
+      // Given
+      const expectedLanguages: Language = {
+        languageId: 23,
+        nomisCode: 'ENG',
+        nomisDescription: 'English',
+        isoAlpha2: 'en',
+        isoAlpha3: 'eng',
+        isoLanguageDesc: 'English',
+        displaySequence: 1,
+      }
+
+      fakeContactsApi
+        .get('/language-reference')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, expectedLanguages)
+
+      // When
+      const languages = await contactsApiClient.getLanguageReference(user)
+
+      // Then
+      expect(languages).toEqual(expectedLanguages)
+    })
+
+    it.each([401, 403])('should propagate errors', async (errorCode: number) => {
+      // Given
+      const expectedErrorBody = {
+        status: errorCode,
+        userMessage: 'Some error',
+        developerMessage: 'Some error',
+      }
+
+      fakeContactsApi
+        .get('/language-reference')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(errorCode, expectedErrorBody)
+
+      // When
+      try {
+        await contactsApiClient.getLanguageReference(user)
+      } catch (e) {
+        // Then
+        expect(e.status).toEqual(errorCode)
+        expect(e.data).toEqual(expectedErrorBody)
+      }
+    })
+  })
+
+  describe('updateContactById', () => {
+    it('should return the response for a valid request', async () => {
+      // Given
+      const request: PatchContactRequest = {
+        languageCode: 'ENG',
+        updatedBy: 'user1',
+      }
+
+      fakeContactsApi.patch('/contact/23', request).matchHeader('authorization', `Bearer systemToken`).reply(201)
+
+      // When
+      await contactsApiClient.updateContactById(23, request, user)
+
+      // Then
+      expect(nock.isDone()).toBe(true)
     })
   })
 })

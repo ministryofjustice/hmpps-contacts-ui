@@ -15,7 +15,10 @@ import GetContactResponse = contactsApiClientTypes.GetContactResponse
 import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
 import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
 
+type PatchContactRequest = components['schemas']['PatchContactRequest']
+type Language = components['schemas']['Language']
 type PageableObject = components['schemas']['PageableObject']
+
 export default class ContactsApiClient extends RestClient {
   constructor() {
     super('Contacts API client', config.apis.contactsApi)
@@ -104,6 +107,25 @@ export default class ContactsApiClient extends RestClient {
     return this.post<ContactPhoneDetails>(
       {
         path: `/contact/${contactId}/phone`,
+        data: request,
+      },
+      user,
+    )
+  }
+
+  async getLanguageReference(user: Express.User): Promise<Language> {
+    return this.get<Language>(
+      {
+        path: `/language-reference`,
+      },
+      user,
+    )
+  }
+
+  async updateContactById(contactId: number, request: PatchContactRequest, user: Express.User): Promise<Contact> {
+    return this.patch<PatchContactRequest>(
+      {
+        path: `/contact/${contactId}`,
         data: request,
       },
       user,
