@@ -12,6 +12,7 @@ import TestData from '../../server/routes/testutils/testData'
 export type StubGetContactResponse = components['schemas']['GetContactResponse']
 export type StubPhoneDetails = components['schemas']['ContactPhoneDetails']
 export type StubContactSearchResultItem = components['schemas']['ContactSearchResultItem']
+export type PatchContactRequest = components['schemas']['PatchContactRequest']
 
 export default {
   stubCreateContact: (createdContact: StubGetContactResponse): SuperAgentRequest => {
@@ -192,7 +193,27 @@ export default {
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: STUBBED_LANGUAGE_OPTIONS, // TestData.languages(),
+        jsonBody: STUBBED_LANGUAGE_OPTIONS,
+      },
+    })
+  },
+
+  stubUpdateSpokenLanguage: ({
+    contactId,
+    request,
+  }: {
+    contactId: number
+    request: PatchContactRequest
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PATCH',
+        urlPath: `/contact/${contactId}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: request,
       },
     })
   },
