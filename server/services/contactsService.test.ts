@@ -481,7 +481,7 @@ describe('contactsService', () => {
       languageCode: 'ENG',
       updatedBy: 'user1',
     }
-    it('Should get the language reference', async () => {
+    it('Should update the language reference', async () => {
       // When
       apiClient.updateContactById.mockResolvedValue(TestData.contact())
       const contact = await service.updateContactById(23, request, user)

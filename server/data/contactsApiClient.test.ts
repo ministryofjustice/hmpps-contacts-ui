@@ -410,7 +410,7 @@ describe('contactsApiClient', () => {
   })
 
   describe('updateContactById', () => {
-    it('should create the request and return the response', async () => {
+    it('should return the response for a valid request', async () => {
       // Given
       const request: PatchContactRequest = {
         languageCode: 'ENG',
