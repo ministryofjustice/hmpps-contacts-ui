@@ -58,7 +58,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/language', ()
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/language', () => {
-  it('should update contact when last language code is provided', async () => {
+  it('should update contact when language code is provided', async () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/language`)
       .type('form')
@@ -67,5 +67,16 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/language', (
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
 
     expect(contactsService.updateContactById).toHaveBeenCalledWith(10, { languageCode: 'ENG', updatedBy: 'id' }, user)
+  })
+
+  it('should not call service to pupdate contact when language code is not provided', async () => {
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/language`)
+      .type('form')
+      .send({ languageCode: '' })
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+
+    expect(contactsService.updateContactById).not.toHaveBeenCalledWith(10, { languageCode: '', updatedBy: 'id' }, user)
   })
 })

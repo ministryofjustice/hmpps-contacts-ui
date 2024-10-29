@@ -29,12 +29,14 @@ export default class ManageSpokenLanguageController implements PageHandler {
   POST = async (req: Request<{ contactId: string; prisonerNumber: string }>, res: Response): Promise<void> => {
     const { user } = res.locals
     const { contactId, prisonerNumber } = req.params
-    const request: PatchContactRequest = {
-      languageCode: req.body.languageCode,
-      updatedBy: user.userId,
-    }
+    if (req.body.languageCode !== '') {
+      const request: PatchContactRequest = {
+        languageCode: req.body.languageCode,
+        updatedBy: user.userId,
+      }
 
-    await this.contactsService.updateContactById(parseInt(contactId, 10), request, user)
+      await this.contactsService.updateContactById(parseInt(contactId, 10), request, user)
+    }
 
     res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
   }
