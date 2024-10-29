@@ -22,27 +22,27 @@ const contactsService = new ContactsService(null) as jest.Mocked<ContactsService
 const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
 
 let app: Express
-let session: Partial<SessionData>
+// let session: Partial<SessionData>
 const prisonerNumber = 'A1234BC'
-const journeyId: string = uuidv4()
-let existingJourney: ManageContactsJourney
+// const journeyId: string = uuidv4()
+// let existingJourney: ManageContactsJourney
 
 beforeEach(() => {
-  existingJourney = {
-    id: journeyId,
-    lastTouched: new Date().toISOString(),
-    prisoner: {
-      prisonerNumber: 'G4793VF',
-      lastName: 'Timothy',
-      firstName: 'Jack',
-      dateOfBirth: '',
-      prisonName: '',
-      cellLocation: '',
-    },
-    contactId: 23,
-    activateListPage: undefined,
-    inactivateListPage: undefined,
-  }
+  // existingJourney = {
+  //   id: journeyId,
+  //   lastTouched: new Date().toISOString(),
+  //   prisoner: {
+  //     prisonerNumber: 'G4793VF',
+  //     lastName: 'Timothy',
+  //     firstName: 'Jack',
+  //     dateOfBirth: '',
+  //     prisonName: '',
+  //     cellLocation: '',
+  //   },
+  //   contactId: 23,
+  //   activateListPage: undefined,
+  //   inactivateListPage: undefined,
+  // }
   app = appWithAllRoutes({
     services: {
       auditService,
@@ -50,11 +50,11 @@ beforeEach(() => {
       contactsService,
       referenceDataService,
     },
-    sessionReceiver: (receivedSession: Partial<SessionData>) => {
-      session = receivedSession
-      session.manageContactsJourneys = {}
-      session.manageContactsJourneys[journeyId] = existingJourney
-    },
+    // sessionReceiver: (receivedSession: Partial<SessionData>) => {
+    //   session = receivedSession
+    //   session.manageContactsJourneys = {}
+    //   session.manageContactsJourneys[journeyId] = existingJourney
+    // },
   })
   referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mr')
 })

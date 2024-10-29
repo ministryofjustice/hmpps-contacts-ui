@@ -449,6 +449,7 @@ describe('contactsService', () => {
 
   describe('getLanguageReference', () => {
     it('Should get the language reference', async () => {
+      // Given
       const expectedLanguage: Language = {
         languageId: 23,
         nomisCode: 'ENG',
@@ -458,10 +459,12 @@ describe('contactsService', () => {
         isoLanguageDesc: 'English',
         displaySequence: 1,
       }
-      apiClient.getLanguageReference.mockResolvedValue(expectedLanguage)
 
+      // When
+      apiClient.getLanguageReference.mockResolvedValue(expectedLanguage)
       const contact = await service.getLanguageReference(user)
 
+      // Then
       expect(contact).toStrictEqual(expectedLanguage)
       expect(apiClient.getLanguageReference).toHaveBeenCalledWith(user)
     })
@@ -473,15 +476,17 @@ describe('contactsService', () => {
   })
 
   describe('updateContactById', () => {
+    // Given
     const request: PatchContactRequest = {
       languageCode: 'ENG',
       updatedBy: 'user1',
     }
     it('Should get the language reference', async () => {
+      // When
       apiClient.updateContactById.mockResolvedValue(TestData.contact())
-
       const contact = await service.updateContactById(23, request, user)
 
+      // Then
       expect(contact).toStrictEqual(TestData.contact())
       expect(apiClient.updateContactById).toHaveBeenCalledWith(23, request, user)
     })
