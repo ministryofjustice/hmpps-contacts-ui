@@ -19,7 +19,7 @@ export default class ManageSpokenLanguageController implements PageHandler {
     const contact: Contact = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const language: Language = await this.contactsService.getLanguageReference(user)
 
-    return res.render('pages/contacts/manage/addSelectSpokenLanguage', {
+    return res.render('pages/contacts/manage/contactDetails/manageSpokenLanguage.njk', {
       contact,
       language,
       prisonerDetails,
