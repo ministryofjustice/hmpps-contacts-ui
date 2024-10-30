@@ -14,6 +14,12 @@ const getLastAPICallMatching = async (matching: string | object): Promise<unknow
   return JSON.parse(last.body)
 }
 
+const getAPICallCountMatching = async (matching: string | object): Promise<number> => {
+  const wiremockApiResponse: Response = await superagent.post(`${url}/requests/find`).send(matching)
+  const responses = (wiremockApiResponse.body || '[]').requests
+  return responses.length
+}
+
 const resetStubs = (): Promise<Array<Response>> =>
   Promise.all([superagent.delete(`${url}/mappings`), superagent.delete(`${url}/requests`)])
 
@@ -59,4 +65,14 @@ const stubDelete = (urlPattern, jsonBody?) =>
     },
   })
 
-export { stubFor, getMatchingRequests, resetStubs, stubGet, stubPost, stubPut, stubDelete, getLastAPICallMatching }
+export {
+  stubFor,
+  getMatchingRequests,
+  resetStubs,
+  stubGet,
+  stubPost,
+  stubPut,
+  stubDelete,
+  getLastAPICallMatching,
+  getAPICallCountMatching,
+}

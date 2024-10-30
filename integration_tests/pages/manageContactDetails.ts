@@ -43,6 +43,10 @@ export default class ManageContactDetailsPage extends Page {
     this.editPhoneNumberLink(id).click()
   }
 
+  clickDeletePhoneNumberLink(id: number) {
+    this.deletePhoneNumberLink(id).click()
+  }
+
   private namesValue = (): PageElement => cy.get('.manage-names-value')
 
   private dobValue = (): PageElement => cy.get('.manage-dob-value')
@@ -58,4 +62,6 @@ export default class ManageContactDetailsPage extends Page {
   private addPhoneNumberLink = (): PageElement => cy.get('[data-qa="add-phone-number"]')
 
   private editPhoneNumberLink = (id: number): PageElement => cy.get(`[data-qa="edit-phone-number-${id}"]`)
+
+  private deletePhoneNumberLink = (id: number): PageElement => cy.get(`[data-qa="delete-phone-number-${id}"]`)
 }

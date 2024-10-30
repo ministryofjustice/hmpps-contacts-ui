@@ -1,4 +1,4 @@
-import { getLastAPICallMatching } from '../mockApis/wiremock'
+import { getAPICallCountMatching, getLastAPICallMatching } from '../mockApis/wiremock'
 
 Cypress.Commands.add('signIn', (options = { failOnStatusCode: true }) => {
   cy.request('/')
@@ -7,6 +7,10 @@ Cypress.Commands.add('signIn', (options = { failOnStatusCode: true }) => {
 
 Cypress.Commands.add('verifyLastAPICall', (matching: string | object, expected: object) => {
   return cy.wrap(getLastAPICallMatching(matching)).should('eql', expected)
+})
+
+Cypress.Commands.add('verifyAPIWasCalled', (matching: string | object, expected: number) => {
+  return cy.wrap(getAPICallCountMatching(matching)).should('eq', expected)
 })
 
 // ensure .should('eql', thing) displays the full diff

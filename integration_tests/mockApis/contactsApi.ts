@@ -258,4 +258,22 @@ export default {
       },
     })
   },
+  stubDeleteContactPhone: ({
+    contactId,
+    contactPhoneId,
+  }: {
+    contactId: number
+    contactPhoneId: number
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'DELETE',
+        urlPath: `/contact/${contactId}/phone/${contactPhoneId}`,
+      },
+      response: {
+        status: 204,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      },
+    })
+  },
 }

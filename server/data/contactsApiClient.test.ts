@@ -420,6 +420,40 @@ describe('contactsApiClient', () => {
     })
   })
 
+  describe('deleteContactPhone', () => {
+    it('should delete the contact', async () => {
+      // Given
+
+      fakeContactsApi.delete('/contact/99/phone/77').matchHeader('authorization', `Bearer systemToken`).reply(204)
+
+      // When
+      await contactsApiClient.deleteContactPhone(99, 77, user)
+    })
+
+    it.each([400, 401, 403])('should propagate errors deleting contact phone %s', async (errorCode: number) => {
+      // Given
+      const expectedErrorBody = {
+        status: errorCode,
+        userMessage: 'Some error',
+        developerMessage: 'Some error',
+      }
+
+      fakeContactsApi
+        .delete('/contact/99/phone/77')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(errorCode, expectedErrorBody)
+
+      // When
+      try {
+        await contactsApiClient.deleteContactPhone(99, 77, user)
+      } catch (e) {
+        // Then
+        expect(e.status).toEqual(errorCode)
+        expect(e.data).toEqual(expectedErrorBody)
+      }
+    })
+  })
+
   describe('getLanguageReference', () => {
     it('should create the request and return the response', async () => {
       // Given
