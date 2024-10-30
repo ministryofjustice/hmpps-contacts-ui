@@ -17,6 +17,7 @@ import ManageSpokenLanguageController from './spoken-language/manageSpokenLangua
 import ManageContactAddPhoneController from './phone/add/manageContactAddPhoneController'
 import { phoneNumberSchemaFactory } from './phone/phoneSchemas'
 import ManageContactEditPhoneController from './phone/edit/manageContactEditPhoneController'
+import ManageDomesticStatusController from './domestic-status/manageDomesticStatusController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -127,6 +128,18 @@ const ManageContactsRoutes = (
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/edit',
     validate(phoneNumberSchemaFactory()),
     asyncMiddleware(manageContactEditPhoneController.POST),
+  )
+
+  const manageDomesticStatusController = new ManageDomesticStatusController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/domestic-status',
+    prisonerDetailsMiddleware(prisonerSearchService),
+    logPageViewMiddleware(auditService, manageDomesticStatusController),
+    asyncMiddleware(manageDomesticStatusController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/domestic-status',
+    asyncMiddleware(manageDomesticStatusController.POST),
   )
 
   return router
