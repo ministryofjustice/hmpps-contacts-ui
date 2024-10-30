@@ -83,14 +83,16 @@ export default class TestData {
     phoneType: string,
     phoneTypeDescription: string,
     phoneNumber: string,
+    contactPhoneId: number = 1,
+    extNumber: string = null,
   ): ContactPhoneNumberDetails => {
     return {
-      contactPhoneId: 1,
+      contactPhoneId,
       contactId: 1,
       phoneType,
       phoneTypeDescription,
       phoneNumber,
-      extNumber: null,
+      extNumber,
       createdBy: 'TIM',
       createdTime: '2024-10-04T15:35:23.101675',
       amendedBy: null,

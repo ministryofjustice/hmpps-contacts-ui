@@ -10,6 +10,7 @@ import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultI
 import PrisonerContactSummaryPage = contactsApiClientTypes.PrisonerContactSummaryPage
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
 import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
+import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 type Language = components['schemas']['Language']
@@ -105,6 +106,23 @@ export default class ContactsService {
       createdBy: user.username,
     }
     return this.contactsApiClient.createContactPhone(contactId, request, user)
+  }
+
+  async updateContactPhone(
+    contactId: number,
+    contactPhoneId: number,
+    user: Express.User,
+    type: string,
+    phoneNumber: string,
+    extension?: string,
+  ) {
+    const request: UpdatePhoneRequest = {
+      phoneType: type,
+      phoneNumber,
+      extNumber: extension,
+      amendedBy: user.username,
+    }
+    return this.contactsApiClient.updateContactPhone(contactId, contactPhoneId, request, user)
   }
 
   async getLanguageReference(user: Express.User): Promise<Language> {

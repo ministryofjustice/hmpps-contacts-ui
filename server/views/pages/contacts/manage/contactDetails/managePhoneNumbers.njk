@@ -12,7 +12,17 @@
                     },
                     value: {
                         text: item.phoneNumber,
-                        classes: 'phone-number-value-' + loop.index
+                        classes: 'phone-number-value-' + item.contactPhoneId
+                    },
+                    actions: {
+                        items: [
+                            {
+                                href: "/contacts/manage/" + prisonerDetails.prisonerNumber + "/" + contact.id + "/phone/" + item.contactPhoneId + "/edit",
+                                text: "Edit",
+                                visuallyHiddenText: " phone number",
+                                attributes: {"data-qa": "edit-phone-number-" + item.contactPhoneId}
+                            }
+                        ]
                     }
                 }
             ), phoneNumbers) %}

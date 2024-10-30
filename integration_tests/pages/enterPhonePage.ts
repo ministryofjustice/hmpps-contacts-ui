@@ -5,8 +5,18 @@ export default class EnterPhonePage extends Page {
     super(`What is the phone number for ${name}?`)
   }
 
+  hasPhoneNumber(value: string): EnterPhonePage {
+    this.phoneNumberTextBox().should('have.value', value)
+    return this
+  }
+
   enterPhoneNumber(value: string): EnterPhonePage {
     this.phoneNumberTextBox().clear().type(value)
+    return this
+  }
+
+  clearPhoneNumber(): EnterPhonePage {
+    this.phoneNumberTextBox().clear()
     return this
   }
 
@@ -15,8 +25,23 @@ export default class EnterPhonePage extends Page {
     return this
   }
 
+  hasType(value: string): EnterPhonePage {
+    this.typeSelect().should('have.value', value)
+    return this
+  }
+
   enterExtension(value: string): EnterPhonePage {
     this.extensionTextBox().clear().type(value)
+    return this
+  }
+
+  hasExtension(value: string): EnterPhonePage {
+    this.extensionTextBox().should('have.value', value)
+    return this
+  }
+
+  clearExtension(): EnterPhonePage {
+    this.extensionTextBox().clear()
     return this
   }
 

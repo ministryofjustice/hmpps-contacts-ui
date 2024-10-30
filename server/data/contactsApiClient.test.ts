@@ -13,6 +13,7 @@ import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultI
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
 import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
 import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
+import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 type Language = components['schemas']['Language']
@@ -352,6 +353,65 @@ describe('contactsApiClient', () => {
       // When
       try {
         await contactsApiClient.createContactPhone(99, request, user)
+      } catch (e) {
+        // Then
+        expect(e.status).toEqual(errorCode)
+        expect(e.data).toEqual(expectedErrorBody)
+      }
+    })
+  })
+
+  describe('updateContactPhone', () => {
+    it('should update the contact and return the response', async () => {
+      // Given
+      const expectedContactPhoneDetails: ContactPhoneDetails = {
+        id: 1,
+        phoneType: 'MOB',
+        phoneNumber: '0123456789',
+        createdBy: 'user1',
+        createdTime: new Date().toISOString(),
+        amendedBy: 'user1',
+        amendedTime: new Date().toISOString(),
+      }
+      const request: UpdatePhoneRequest = {
+        type: 'MOB',
+        phoneNumber: '0123456789',
+        amendedByBy: 'user1',
+      }
+
+      fakeContactsApi
+        .put('/contact/99/phone/77', request)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, expectedContactPhoneDetails)
+
+      // When
+      const updated = await contactsApiClient.updateContactPhone(99, 77, request, user)
+
+      // Then
+      expect(updated).toEqual(expectedContactPhoneDetails)
+    })
+
+    it.each([400, 401, 403, 500])('should propagate errors updating contact phone', async (errorCode: number) => {
+      // Given
+      const request: UpdatePhoneRequest = {
+        type: 'MOB',
+        phoneNumber: '0123456789',
+        amendedByBy: 'user1',
+      }
+      const expectedErrorBody = {
+        status: errorCode,
+        userMessage: 'Some error',
+        developerMessage: 'Some error',
+      }
+
+      fakeContactsApi
+        .put('/contact/99/phone/77', request)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(errorCode, expectedErrorBody)
+
+      // When
+      try {
+        await contactsApiClient.updateContactPhone(99, 77, request, user)
       } catch (e) {
         // Then
         expect(e.status).toEqual(errorCode)
