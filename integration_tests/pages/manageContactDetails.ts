@@ -35,6 +35,15 @@ export default class ManageContactDetailsPage extends Page {
     return this
   }
 
+  verifyShowNeedsInterpreterValueAs(expected: string): ManageContactDetailsPage {
+    this.needsInterpreterValue().should('contain.text', expected)
+    return this
+  }
+
+  clickAddInterpreterLink() {
+    this.addInterpreterLink().click()
+  }
+
   clickAddPhoneNumberLink() {
     this.addPhoneNumberLink().click()
   }
@@ -53,7 +62,11 @@ export default class ManageContactDetailsPage extends Page {
 
   private spokenLanguageValue = (): PageElement => cy.get('.manage-language-code-value')
 
-  private spokenLanguageLink = (): PageElement => cy.get('[data-qa=manage-language-code-value]')
+  private needsInterpreterValue = (): PageElement => cy.get('.manage-interpreter-needs-value')
+
+  private spokenLanguageLink = (): PageElement => cy.get('[data-qa=add-language]')
+
+  private addInterpreterLink = (): PageElement => cy.get('[data-qa="add-interpreter"]')
 
   private addPhoneNumberLink = (): PageElement => cy.get('[data-qa="add-phone-number"]')
 
