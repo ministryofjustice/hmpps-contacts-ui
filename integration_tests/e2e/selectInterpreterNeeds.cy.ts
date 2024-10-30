@@ -46,7 +46,7 @@ context('Select Interpreter Needs', () => {
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
     Page.verifyOnPage(ManageContactDetailsPage).clickAddInterpreterLink()
     Page.verifyOnPage(SelectInterpreterNeedsPage, 'Jones Mason').selectIsInterpreterNeeded('YES').clickContinue()
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').verifyShowNeedsInterpreterValueAs('Yes')
 
     cy.verifyLastAPICall(
       {
@@ -71,7 +71,7 @@ context('Select Interpreter Needs', () => {
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
     Page.verifyOnPage(ManageContactDetailsPage).clickAddInterpreterLink()
     Page.verifyOnPage(SelectInterpreterNeedsPage, 'Jones Mason').selectIsInterpreterNeeded('NO').clickContinue()
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').verifyShowNeedsInterpreterValueAs('No')
 
     cy.verifyLastAPICall(
       {
