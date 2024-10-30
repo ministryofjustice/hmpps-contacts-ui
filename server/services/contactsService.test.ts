@@ -13,6 +13,7 @@ import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelation
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
 import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
+import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
 
 type Language = components['schemas']['Language']
 type PatchContactRequest = components['schemas']['PatchContactRequest']
@@ -447,6 +448,55 @@ describe('contactsService', () => {
     })
   })
 
+  describe('updateContactPhone', () => {
+    it('should update a contact phone with all fields', async () => {
+      // Given
+      const expected: Contact = {
+        id: 999,
+      }
+      apiClient.updateContactPhone.mockResolvedValue(expected)
+      const expectedRequest: UpdatePhoneRequest = {
+        phoneType: 'MOB',
+        phoneNumber: '0123456789',
+        extNumber: '000',
+        amendedBy: 'user1',
+      }
+
+      // When
+      const updated = await service.updateContactPhone(99, 77, user, 'MOB', '0123456789', '000')
+
+      // Then
+      expect(updated).toStrictEqual(expected)
+      expect(apiClient.updateContactPhone).toHaveBeenCalledWith(99, 77, expectedRequest, user)
+    })
+
+    it('should update a contact phone with only required fields', async () => {
+      // Given
+      const expected: Contact = {
+        id: 999,
+      }
+      apiClient.updateContactPhone.mockResolvedValue(expected)
+      const expectedRequest: CreatePhoneRequest = {
+        phoneType: 'MOB',
+        phoneNumber: '0123456789',
+        amendedBy: 'user1',
+      }
+
+      // When
+      const updated = await service.updateContactPhone(99, 77, user, 'MOB', '0123456789', undefined)
+
+      // Then
+      expect(updated).toStrictEqual(expected)
+      expect(apiClient.updateContactPhone).toHaveBeenCalledWith(99, 77, expectedRequest, user)
+    })
+
+    it('should handle a bad request', async () => {
+      apiClient.updateContactPhone.mockRejectedValue(createError.BadRequest())
+      await expect(service.updateContactPhone(99, 77, user, 'MOB', '0123456789', undefined)).rejects.toBeInstanceOf(
+        BadRequest,
+      )
+    })
+  })
   describe('getLanguageReference', () => {
     it('Should get the language reference', async () => {
       // Given

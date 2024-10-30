@@ -237,4 +237,25 @@ export default {
       },
     })
   },
+  stubUpdateContactPhone: ({
+    contactId,
+    contactPhoneId,
+    updated,
+  }: {
+    contactId: number
+    contactPhoneId: number
+    updated: StubPhoneDetails
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PUT',
+        urlPath: `/contact/${contactId}/phone/${contactPhoneId}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: updated,
+      },
+    })
+  },
 }

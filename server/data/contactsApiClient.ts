@@ -14,6 +14,7 @@ import PrisonerContactSummaryPage = contactsApiClientTypes.PrisonerContactSummar
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
 import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
 import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
+import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 type Language = components['schemas']['Language']
@@ -107,6 +108,21 @@ export default class ContactsApiClient extends RestClient {
     return this.post<ContactPhoneDetails>(
       {
         path: `/contact/${contactId}/phone`,
+        data: request,
+      },
+      user,
+    )
+  }
+
+  async updateContactPhone(
+    contactId: number,
+    contactPhoneId: number,
+    request: UpdatePhoneRequest,
+    user: Express.User,
+  ): Promise<ContactPhoneDetails> {
+    return this.put<ContactPhoneDetails>(
+      {
+        path: `/contact/${contactId}/phone/${contactPhoneId}`,
         data: request,
       },
       user,
