@@ -62,8 +62,8 @@ describe('GET /contacts/manage/:contactId', () => {
       contactsService.getContact.mockResolvedValue(
         TestData.contact({
           phoneNumbers: [
-            TestData.getContactPhoneNumberDetails('MOB', 'Mobile phone', '07878 111111'),
-            TestData.getContactPhoneNumberDetails('HOME', 'Home phone', '01111 777777'),
+            TestData.getContactPhoneNumberDetails('MOB', 'Mobile phone', '07878 111111', 1),
+            TestData.getContactPhoneNumberDetails('HOME', 'Home phone', '01111 777777', 2),
           ],
         }),
       )
