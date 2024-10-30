@@ -75,14 +75,14 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /contacts/manage/:prisonerNumber/:contactId/phone/:contactPhoneId/edit', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/edit', () => {
   it('should render edit phone page with navigation back to manage contact and all field populated', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
-    const response = await request(app).get(`/contacts/manage/${prisonerNumber}/${contactId}/phone/123/edit`)
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/123/edit`)
 
     // Then
     expect(response.status).toEqual(200)
@@ -108,7 +108,7 @@ describe('GET /contacts/manage/:prisonerNumber/:contactId/phone/:contactPhoneId/
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
-    const response = await request(app).get(`/contacts/manage/${prisonerNumber}/${contactId}/phone/123/edit`)
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/123/edit`)
 
     // Then
     expect(response.status).toEqual(200)
@@ -131,7 +131,7 @@ describe('GET /contacts/manage/:prisonerNumber/:contactId/phone/:contactPhoneId/
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
-    const response = await request(app).get(`/contacts/manage/${prisonerNumber}/${contactId}/phone/999/edit`)
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/999/edit`)
 
     // Then
     expect(response.status).toEqual(200)
@@ -147,17 +147,17 @@ describe('GET /contacts/manage/:prisonerNumber/:contactId/phone/:contactPhoneId/
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
-    const response = await request(app).get(`/contacts/manage/${prisonerNumber}/${contactId}/phone/555/edit`)
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/555/edit`)
 
     // Then
     expect(response.status).toEqual(500)
   })
 })
 
-describe('POST /contacts/manage/:prisonerNumber/:contactId/phone/:contactPhoneId/edit', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/edit', () => {
   it('should edit phone with extension and pass to manage contact details page if there are no validation errors', async () => {
     await request(app)
-      .post(`/contacts/manage/${prisonerNumber}/${contactId}/phone/999/edit`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/999/edit`)
       .type('form')
       .send({ type: 'MOB', phoneNumber: '123456789', extension: '000' })
       .expect(302)
@@ -168,7 +168,7 @@ describe('POST /contacts/manage/:prisonerNumber/:contactId/phone/:contactPhoneId
 
   it('should edit phone without extension and pass to manage contact details page if there are no validation errors', async () => {
     await request(app)
-      .post(`/contacts/manage/${prisonerNumber}/${contactId}/phone/999/edit`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/999/edit`)
       .type('form')
       .send({ type: 'MOB', phoneNumber: '123456789', extension: '' })
       .expect(302)
@@ -179,11 +179,11 @@ describe('POST /contacts/manage/:prisonerNumber/:contactId/phone/:contactPhoneId
 
   it('should return to input page with details kept if there are validation errors', async () => {
     await request(app)
-      .post(`/contacts/manage/${prisonerNumber}/${contactId}/phone/999/edit`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/999/edit`)
       .type('form')
       .send({ type: '' })
       .expect(302)
-      .expect('Location', `/contacts/manage/${prisonerNumber}/${contactId}/phone/999/edit`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/999/edit`)
     expect(contactsService.updateContactPhone).not.toHaveBeenCalled()
   })
 })

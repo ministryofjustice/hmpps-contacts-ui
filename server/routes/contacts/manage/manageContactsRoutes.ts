@@ -105,26 +105,26 @@ const ManageContactsRoutes = (
 
   const manageContactAddPhoneController = new ManageContactAddPhoneController(contactsService, referenceDataService)
   router.get(
-    '/contacts/manage/:prisonerNumber/:contactId/phone/create',
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/create',
     prisonerDetailsMiddleware(prisonerSearchService),
     logPageViewMiddleware(auditService, manageContactAddPhoneController),
     asyncMiddleware(manageContactAddPhoneController.GET),
   )
   router.post(
-    '/contacts/manage/:prisonerNumber/:contactId/phone/create',
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/create',
     validate(phoneNumberSchemaFactory()),
     asyncMiddleware(manageContactAddPhoneController.POST),
   )
 
   const manageContactEditPhoneController = new ManageContactEditPhoneController(contactsService, referenceDataService)
   router.get(
-    '/contacts/manage/:prisonerNumber/:contactId/phone/:contactPhoneId/edit',
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/edit',
     prisonerDetailsMiddleware(prisonerSearchService),
     logPageViewMiddleware(auditService, manageContactEditPhoneController),
     asyncMiddleware(manageContactEditPhoneController.GET),
   )
   router.post(
-    '/contacts/manage/:prisonerNumber/:contactId/phone/:contactPhoneId/edit',
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/edit',
     validate(phoneNumberSchemaFactory()),
     asyncMiddleware(manageContactEditPhoneController.POST),
   )

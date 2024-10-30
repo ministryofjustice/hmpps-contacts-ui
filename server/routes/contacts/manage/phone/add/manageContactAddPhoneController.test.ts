@@ -71,14 +71,14 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /contacts/manage/:prisonerNumber/:contactId/phone/create', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/create', () => {
   it('should render create phone page with navigation back to manage contact', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
-    const response = await request(app).get(`/contacts/manage/${prisonerNumber}/${contactId}/phone/create`)
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/create`)
 
     // Then
     expect(response.status).toEqual(200)
@@ -98,7 +98,7 @@ describe('GET /contacts/manage/:prisonerNumber/:contactId/phone/create', () => {
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
-    const response = await request(app).get(`/contacts/manage/${prisonerNumber}/${contactId}/phone/create`)
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/create`)
 
     // Then
     expect(response.status).toEqual(200)
@@ -116,7 +116,7 @@ describe('GET /contacts/manage/:prisonerNumber/:contactId/phone/create', () => {
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
-    const response = await request(app).get(`/contacts/manage/${prisonerNumber}/${contactId}/phone/create`)
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/create`)
 
     // Then
     expect(response.status).toEqual(200)
@@ -127,10 +127,10 @@ describe('GET /contacts/manage/:prisonerNumber/:contactId/phone/create', () => {
   })
 })
 
-describe('POST /contacts/manage/:prisonerNumber/:contactId/phone/create', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/create', () => {
   it('should create phone with extension and pass to manage contact details page if there are no validation errors', async () => {
     await request(app)
-      .post(`/contacts/manage/${prisonerNumber}/${contactId}/phone/create`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/create`)
       .type('form')
       .send({ type: 'MOB', phoneNumber: '123456789', extension: '000' })
       .expect(302)
@@ -141,7 +141,7 @@ describe('POST /contacts/manage/:prisonerNumber/:contactId/phone/create', () => 
 
   it('should create phone without extension  and pass to manage contact details page if there are no validation errors', async () => {
     await request(app)
-      .post(`/contacts/manage/${prisonerNumber}/${contactId}/phone/create`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/create`)
       .type('form')
       .send({ type: 'MOB', phoneNumber: '123456789', extension: '' })
       .expect(302)
@@ -152,11 +152,11 @@ describe('POST /contacts/manage/:prisonerNumber/:contactId/phone/create', () => 
 
   it('should return to input page with details kept if there are validation errors', async () => {
     await request(app)
-      .post(`/contacts/manage/${prisonerNumber}/${contactId}/phone/create`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/create`)
       .type('form')
       .send({ type: '' })
       .expect(302)
-      .expect('Location', `/contacts/manage/${prisonerNumber}/${contactId}/phone/create`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/create`)
     expect(contactsService.createContactPhone).not.toHaveBeenCalled()
   })
 })
