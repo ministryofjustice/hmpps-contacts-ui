@@ -16,6 +16,7 @@ import ReferenceDataService from '../../../services/referenceDataService'
 import ManageSpokenLanguageController from './spoken-language/manageSpokenLanguageController'
 import ManageContactAddPhoneController from './phone/add/manageContactAddPhoneController'
 import { phoneNumberSchemaFactory } from './phone/phoneSchemas'
+import ManageInterpreterController from './interpreter/manageInterpreterController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -100,6 +101,18 @@ const ManageContactsRoutes = (
   router.post(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/language',
     asyncMiddleware(spokenLanguageController.POST),
+  )
+
+  const manageInterpreterController = new ManageInterpreterController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/interpreter',
+    prisonerDetailsMiddleware(prisonerSearchService),
+    logPageViewMiddleware(auditService, manageInterpreterController),
+    asyncMiddleware(manageInterpreterController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/interpreter',
+    asyncMiddleware(manageInterpreterController.POST),
   )
 
   const manageContactAddPhoneController = new ManageContactAddPhoneController(contactsService, referenceDataService)
