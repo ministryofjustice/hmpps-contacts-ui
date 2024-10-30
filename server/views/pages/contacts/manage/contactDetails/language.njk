@@ -20,7 +20,26 @@
                     href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/language",
                     text: "Change",
                     visuallyHiddenText: "spoken language",
-                    attributes: {"data-qa": "manage-language-code-value"}
+                    attributes: {"data-qa": "add-language"}
+                }
+            ]
+        }
+    },
+    {
+        key: {
+            text: "Needs interpreter"
+        },
+        value: {
+            text: 'Yes' if contact.interpreterRequired === true else 'No',
+            classes: 'manage-interpreter-needs-value'
+        },
+        actions: {
+            items: [
+                {
+                    href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/interpreter",
+                    text: "Change",
+                    visuallyHiddenText: "needs interpreter",
+                    attributes: {"data-qa": "add-interpreter"}
                 }
             ]
         }

@@ -2,11 +2,12 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "../../../../partials/miniProfile/macro.njk" import miniProfile %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
-{% set pageTitle = applicationName + " - Enter spoken language" %}
-{% set title = "What is the spoken language of " + contact | reverseFormatName + "?" %}
+{% set pageTitle = applicationName + " - Select if interpreter is needed" %}
+{% set title = "Does " + contact | reverseFormatName + " need an interpreter?" %}
 
 {% block content %}
 
@@ -22,28 +23,25 @@
         <span class="govuk-caption-l">Contacts</span>
         <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
         <form method='POST'>
-             <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-             {% set languages = [{
-                value: '',
-                text: 'Select',
-                selected: true
-             }] %}
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+            
+            {{ govukRadios({
+                    name: "interpreterRequired",
+                    items: [
+                        {
+                            value: "YES",
+                            text: 'YES' | formatYesNo,
+                            checked: contact.interpreterRequired === true
+                        },
+                        {
+                            value: "NO",
+                            text: 'NO' | formatYesNo,
+                            checked: contact.interpreterRequired === false
+                        }
+                    ]
+                })
+            }}
 
-             {% for item in language %}
-                {% set languages = (languages.push(
-                    {
-                        value: item.nomisCode,
-                        text: item.nomisDescription,
-                        selected: true if contact.languageCode == item.nomisCode else false
-                    }
-                ), languages) %}
-             {% endfor %}
-
-             {{ govukSelect({
-                id: "languageCode",
-                name: "languageCode",
-                items: languages
-            }) }}
             <div class="govuk-button-group">
                 {{ govukButton({
                     html: "Save and Continue",
