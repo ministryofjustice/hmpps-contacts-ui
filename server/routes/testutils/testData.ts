@@ -85,6 +85,7 @@ export default class TestData {
     phoneNumber: string,
     contactPhoneId: number = 1,
     extNumber: string = null,
+    createdTime: string = '2024-10-04T15:35:23.101675',
   ): ContactPhoneNumberDetails => {
     return {
       contactPhoneId,
@@ -94,7 +95,7 @@ export default class TestData {
       phoneNumber,
       extNumber,
       createdBy: 'TIM',
-      createdTime: '2024-10-04T15:35:23.101675',
+      createdTime,
       amendedBy: null,
       amendedTime: null,
     } as ContactPhoneDetails
