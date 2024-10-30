@@ -62,7 +62,7 @@ export default class ManageContactDetailsPage extends Page {
 
   private spokenLanguageValue = (): PageElement => cy.get('.manage-language-code-value')
 
-  private needsInterpreterValue = (): PageElement => cy.get('.manage-needs-interpreter-value')
+  private needsInterpreterValue = (): PageElement => cy.get('.manage-interpreter-needs-value')
 
   private spokenLanguageLink = (): PageElement => cy.get('[data-qa=add-language]')
 
