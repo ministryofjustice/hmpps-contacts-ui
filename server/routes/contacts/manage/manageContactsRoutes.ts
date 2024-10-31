@@ -143,7 +143,7 @@ const ManageContactsRoutes = (
     asyncMiddleware(manageContactEditPhoneController.POST),
   )
 
-  const manageDomesticStatusController = new ManageDomesticStatusController(contactsService)
+  const manageDomesticStatusController = new ManageDomesticStatusController(contactsService, referenceDataService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/domestic-status',
     prisonerDetailsMiddleware(prisonerSearchService),

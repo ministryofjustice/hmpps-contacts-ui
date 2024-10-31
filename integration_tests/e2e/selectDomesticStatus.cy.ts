@@ -4,11 +4,11 @@ import ListContactsPage from '../pages/listContacts'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import Page from '../pages/page'
 import SearchPrisonerPage from '../pages/searchPrisoner'
-import SelectSpokenLanguagePage from '../pages/selectSpokenLanguagePage'
+import SelectDomesticStatusPage from '../pages/selectDomesticStatusPage'
 
 export type PatchContactRequest = components['schemas']['PatchContactRequest']
 
-context('Select Spoken Language', () => {
+context('Select Domestic Status', () => {
   const contactId = 22
   beforeEach(() => {
     const { prisonerNumber } = TestData.prisoner()
@@ -31,20 +31,22 @@ context('Select Spoken Language', () => {
     cy.visit('/contacts/manage/prisoner-search/start')
   })
 
-  it(`should render manage contact details spoken language`, () => {
+  it(`should render manage contact details domestic status`, () => {
     const request: PatchContactRequest = {
-      languageCode: 'ARA',
+      domesticStatus: 'S',
       updatedBy: 'USER1',
     }
     const { prisonerNumber } = TestData.prisoner()
     cy.task('stubTitlesReferenceData')
-    cy.task('stubGetLanguages')
-    cy.task('stubUpdateSpokenLanguage', { contactId, request })
+    cy.task('stubGetDomesticStatuses')
+    cy.task('stubUpdateDomesticStatus', { contactId, request })
 
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
-    Page.verifyOnPage(ManageContactDetailsPage).clickChangeSpokenLanguageLik()
-    Page.verifyOnPage(SelectSpokenLanguagePage, 'Jones Mason').selectSpokenLanguage('Arabic').clickContinue()
+    Page.verifyOnPage(ManageContactDetailsPage).clickChangeDomesticStatusLink()
+    Page.verifyOnPage(SelectDomesticStatusPage, 'Jones Mason')
+      .selectDomesticStatus('Single-not married/in civil partnership')
+      .clickContinue()
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
 
     cy.verifyLastAPICall(
@@ -53,7 +55,7 @@ context('Select Spoken Language', () => {
         urlPath: `/contact/${contactId}`,
       },
       {
-        languageCode: 'ARA',
+        domesticStatus: 'S',
       },
     )
   })

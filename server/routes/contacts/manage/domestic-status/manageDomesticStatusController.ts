@@ -4,11 +4,16 @@ import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
 import { components } from '../../../../@types/contactsApi'
 import Contact = contactsApiClientTypes.Contact
+import ReferenceDataService from '../../../../services/referenceDataService'
+import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 
 export default class ManageDomesticStatusController implements PageHandler {
-  constructor(private readonly contactsService: ContactsService) {}
+  constructor(
+    private readonly contactsService: ContactsService,
+    private readonly referenceDataService: ReferenceDataService,
+  ) {}
 
   public PAGE_NAME = Page.MANAGE_DOMESTIC_STATUS_PAGE
 
@@ -16,15 +21,8 @@ export default class ManageDomesticStatusController implements PageHandler {
     const { contactId } = req.params
     const { prisonerDetails, user } = res.locals
     const contact: Contact = await this.contactsService.getContact(parseInt(contactId, 10), user)
-    const domesticStatuses = [
-      { domesticStatusCode: 'S', domesticStatusDescription: 'Married or in civil partnership' },
-      { domesticStatusCode: 'C', domesticStatusDescription: 'Co-habiting (living with partner)' },
-      { domesticStatusCode: 'M', domesticStatusDescription: 'Married or in civil partnership' },
-      { domesticStatusCode: 'D', domesticStatusDescription: 'Divorced or dissolved' },
-      { domesticStatusCode: 'P', domesticStatusDescription: 'Separated-not living with legal partnership' },
-      { domesticStatusCode: 'W', domesticStatusDescription: 'Widowed' },
-      { domesticStatusCode: 'N', domesticStatusDescription: 'Prefer not to say' },
-    ]
+    const domesticStatuses = await this.referenceDataService.getReferenceData(ReferenceCodeType.DOMESTIC_STS, user)
+
     return res.render('pages/contacts/manage/contactDetails/manageDomesticStatus', {
       contact,
       prisonerDetails,

@@ -32,9 +32,9 @@
              {% for item in domesticStatuses %}
                 {% set domesticStatusOptions = (domesticStatusOptions.push(
                     {
-                        value: item.domesticStatusCode,
-                        text: item.domesticStatusDescription,
-                        selected: true if contact.domesticStatusCode == item.domesticStatusCode else false
+                        value: item.code,
+                        text: item.description,
+                        selected: true if contact.domesticStatusCode == item.code else false
                     }
                 ), domesticStatusOptions) %}
              {% endfor %}

@@ -40,6 +40,11 @@ export default class ManageContactDetailsPage extends Page {
     return this
   }
 
+  verifyDomesticStatusValueAs(expected: string): ManageContactDetailsPage {
+    this.domesticStatusValue().should('contain.text', expected)
+    return this
+  }
+
   clickAddInterpreterLink() {
     this.addInterpreterLink().click()
   }
@@ -50,6 +55,10 @@ export default class ManageContactDetailsPage extends Page {
 
   clickEditPhoneNumberLink(id: number) {
     this.editPhoneNumberLink(id).click()
+  }
+
+  clickChangeDomesticStatusLink() {
+    this.selectDomesticStatusLink().click()
   }
 
   private namesValue = (): PageElement => cy.get('.manage-names-value')
@@ -71,4 +80,8 @@ export default class ManageContactDetailsPage extends Page {
   private addPhoneNumberLink = (): PageElement => cy.get('[data-qa="add-phone-number"]')
 
   private editPhoneNumberLink = (id: number): PageElement => cy.get(`[data-qa="edit-phone-number-${id}"]`)
+
+  private domesticStatusValue = (): PageElement => cy.get('.manage-domestic-status-value')
+
+  private selectDomesticStatusLink = (): PageElement => cy.get('[data-qa="select-domestic-status"]')
 }

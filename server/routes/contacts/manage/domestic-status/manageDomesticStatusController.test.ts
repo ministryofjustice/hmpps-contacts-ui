@@ -4,15 +4,19 @@ import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import ContactsService from '../../../../services/contactsService'
+import ReferenceDataService from '../../../../services/referenceDataService'
 import TestData from '../../../testutils/testData'
+import { mockedReferenceData } from '../../../testutils/stubReferenceData'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
+jest.mock('../../../../services/referenceDataService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
 const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
+const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
 
 let app: Express
 const prisonerNumber = 'A1234BC'
@@ -24,9 +28,11 @@ beforeEach(() => {
       auditService,
       prisonerSearchService,
       contactsService,
+      referenceDataService,
     },
     userSupplier: () => user,
   })
+  referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
 })
 
 afterEach(() => {
