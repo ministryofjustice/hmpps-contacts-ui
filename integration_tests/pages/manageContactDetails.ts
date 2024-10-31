@@ -30,7 +30,7 @@ export default class ManageContactDetailsPage extends Page {
     return this
   }
 
-  clickChangeSpokenLanguageLik(): ManageContactDetailsPage {
+  clickChangeSpokenLanguageLink(): ManageContactDetailsPage {
     this.spokenLanguageLink().click()
     return this
   }
@@ -42,6 +42,15 @@ export default class ManageContactDetailsPage extends Page {
 
   clickAddInterpreterLink() {
     this.addInterpreterLink().click()
+  }
+
+  verifyShowStaffStatusValueAs(expected: string): ManageContactDetailsPage {
+    this.staffStatusValue().should('contain.text', expected)
+    return this
+  }
+
+  clickChangeStaffStatusLink() {
+    this.changeStaffStatusLink().click()
   }
 
   clickAddPhoneNumberLink() {
@@ -71,6 +80,10 @@ export default class ManageContactDetailsPage extends Page {
   private spokenLanguageLink = (): PageElement => cy.get('[data-qa=add-language]')
 
   private addInterpreterLink = (): PageElement => cy.get('[data-qa="add-interpreter"]')
+
+  private staffStatusValue = (): PageElement => cy.get('.manage-staff-status')
+
+  private changeStaffStatusLink = (): PageElement => cy.get('[data-qa=manage-staff-status-link]')
 
   private addPhoneNumberLink = (): PageElement => cy.get('[data-qa="add-phone-number"]')
 

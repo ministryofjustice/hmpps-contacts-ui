@@ -4,11 +4,11 @@ import ListContactsPage from '../pages/listContacts'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import Page from '../pages/page'
 import SearchPrisonerPage from '../pages/searchPrisoner'
-import SelectSpokenLanguagePage from '../pages/selectSpokenLanguage'
+import SelectStaffStatusPage from '../pages/selectStaffStatus'
 
 export type PatchContactRequest = components['schemas']['PatchContactRequest']
 
-context('Select Spoken Language', () => {
+context('Select Staff Status', () => {
   const contactId = 22
   beforeEach(() => {
     const { prisonerNumber } = TestData.prisoner()
@@ -31,21 +31,23 @@ context('Select Spoken Language', () => {
     cy.visit('/contacts/manage/prisoner-search/start')
   })
 
-  it(`should render manage contact details spoken language`, () => {
+  it(`should render manage contact details staff status`, () => {
     const request: PatchContactRequest = {
-      languageCode: 'ARA',
+      isStaff: true,
       updatedBy: 'USER1',
     }
     const { prisonerNumber } = TestData.prisoner()
     cy.task('stubTitlesReferenceData')
-    cy.task('stubGetLanguages')
     cy.task('stubPatchContactById', { contactId, request })
 
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
-    Page.verifyOnPage(ManageContactDetailsPage).clickChangeSpokenLanguageLink()
-    Page.verifyOnPage(SelectSpokenLanguagePage, 'Jones Mason').selectSpokenLanguage('Arabic').clickContinue()
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
+      .verifyShowStaffStatusValueAs('No')
+      .clickChangeStaffStatusLink()
+    Page.verifyOnPage(SelectStaffStatusPage, 'Jones Mason').selectStaffStatus().clickContinue()
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').clickChangeStaffStatusLink()
+    Page.verifyOnPage(SelectStaffStatusPage, 'Jones Mason').selectStaffStatus().clickCancel()
 
     cy.verifyLastAPICall(
       {
@@ -53,7 +55,7 @@ context('Select Spoken Language', () => {
         urlPath: `/contact/${contactId}`,
       },
       {
-        languageCode: 'ARA',
+        isStaff: 'true',
       },
     )
   })

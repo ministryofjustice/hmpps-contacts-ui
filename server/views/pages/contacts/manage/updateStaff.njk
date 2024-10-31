@@ -1,0 +1,56 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName + " - Staff status" %}
+{% set title = "Is " + (contact | reverseFormatName) + " a member of staff?" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+
+    {{ govukBackLink({
+        text: "Back",
+        href: '/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/manage/' + contact.id,
+        attributes: {"data-qa": "back-link"}
+    }) }}
+    {{ miniProfile(prisonerDetails) }}
+    <span class="govuk-caption-l">Contacts</span>
+    <h1 class="govuk-heading-l">{{ title }}</h1>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+                {{ govukRadios({
+                    name: "isStaff",
+                    items: [
+                        {
+                            value: true,
+                            text: "Yes",
+                            checked: contact.isStaff === true
+                        },
+                        {
+                            value: false,
+                            text: "No",
+                            checked: contact.isStaff === false
+                        }
+                    ]
+                }) }}
+
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        html: "Save and continue",
+                        type: "submit",
+                        classes: 'govuk-!-margin-top-6',
+                        attributes: {"data-qa": "continue-button"}
+                    }) }}
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{'/contacts/manage/'+ prisonerDetails.prisonerNumber +'/'+ contact.id }}" data-qa="cancel-button">Cancel</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

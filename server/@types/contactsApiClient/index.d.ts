@@ -14,4 +14,6 @@ declare namespace contactsApiClientTypes {
   export type CreatePhoneRequest = components['schemas']['CreatePhoneRequest']
   export type UpdatePhoneRequest = components['schemas']['UpdatePhoneRequest']
   export type ContactPhoneDetails = components['schemas']['ContactPhoneDetails']
+  export type PatchContactRequest = components['schemas']['PatchContactRequest']
+  export type PatchContactResponse = components['schemas']['PatchContactResponse']
 }

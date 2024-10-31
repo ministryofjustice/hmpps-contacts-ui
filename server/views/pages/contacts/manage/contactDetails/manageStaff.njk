@@ -1,0 +1,30 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set phoneNumbers = [] %}
+
+{{ govukSummaryList({
+    card: {
+        title: {
+            text: "Staff details"
+        }
+    },
+    rows: [{
+        key: {
+            text: "Staff?"
+        },
+        value: {
+            text:  'Yes' if contact.isStaff else 'No',
+            classes: 'manage-staff-status'
+        },
+        actions: {
+            items: [
+                {
+                    href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/staff",
+                    text: "Change",
+                    visuallyHiddenText: "staff",
+                    attributes: {"data-qa": "manage-staff-status-link"}
+                }
+            ]
+        }
+    }]
+}) }}

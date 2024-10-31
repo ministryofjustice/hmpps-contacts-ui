@@ -198,7 +198,7 @@ export default {
     })
   },
 
-  stubUpdateSpokenLanguage: ({
+  stubPatchContactById: ({
     contactId,
     request,
   }: {

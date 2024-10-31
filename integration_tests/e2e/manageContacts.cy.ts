@@ -103,7 +103,8 @@ context('Manage contacts ', () => {
       .verifyShowNamesValueAs('Mr Jones Mason')
       .verifyShowDOBValueAs('14 January 1990')
       .verifyShowSpokenLanguageValueAs('English')
-      .clickChangeSpokenLanguageLik()
+      .verifyShowStaffStatusValueAs('No')
+      .clickChangeSpokenLanguageLink()
 
     Page.verifyOnPage(SelectSpokenLanguagePage, 'Jones Mason')
   })
