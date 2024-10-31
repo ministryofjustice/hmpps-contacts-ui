@@ -47,7 +47,9 @@ context('Select Domestic Status', () => {
     Page.verifyOnPage(SelectDomesticStatusPage, 'Jones Mason')
       .selectDomesticStatus('Single-not married/in civil partnership')
       .clickContinue()
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').verifyDomesticStatusValueAs(
+      'Single-not married/in civil partnership',
+    )
 
     cy.verifyLastAPICall(
       {
