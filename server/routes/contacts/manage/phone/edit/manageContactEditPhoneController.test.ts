@@ -1,7 +1,5 @@
 import type { Express } from 'express'
 import request from 'supertest'
-import { SessionData } from 'express-session'
-import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, flashProvider, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
@@ -10,7 +8,6 @@ import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import PrisonerSearchService from '../../../../../services/prisonerSearchService'
 import ContactService from '../../../../../services/contactsService'
 import TestData from '../../../../testutils/testData'
-import AddContactJourney = journeys.AddContactJourney
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
 
 jest.mock('../../../../../services/auditService')
@@ -24,11 +21,8 @@ const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<Pri
 const contactsService = new ContactService(null) as jest.Mocked<ContactService>
 
 let app: Express
-let session: Partial<SessionData>
-const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 const contactId = 987654
-let existingJourney: AddContactJourney
 const contact: GetContactResponse = {
   id: contactId,
   title: '',
@@ -45,14 +39,6 @@ const contact: GetContactResponse = {
 }
 
 beforeEach(() => {
-  existingJourney = {
-    id: journeyId,
-    lastTouched: new Date().toISOString(),
-    prisonerNumber,
-    isCheckingAnswers: false,
-    returnPoint: { type: 'MANAGE_PRISONER_CONTACTS', url: '/foo-bar' },
-    mode: 'NEW',
-  }
   app = appWithAllRoutes({
     services: {
       auditService,
@@ -61,11 +47,6 @@ beforeEach(() => {
       contactsService,
     },
     userSupplier: () => user,
-    sessionReceiver: (receivedSession: Partial<SessionData>) => {
-      session = receivedSession
-      session.addContactJourneys = {}
-      session.addContactJourneys[journeyId] = existingJourney
-    },
   })
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))

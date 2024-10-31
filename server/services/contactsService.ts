@@ -125,6 +125,10 @@ export default class ContactsService {
     return this.contactsApiClient.updateContactPhone(contactId, contactPhoneId, request, user)
   }
 
+  async deleteContactPhone(contactId: number, contactPhoneId: number, user: Express.User) {
+    return this.contactsApiClient.deleteContactPhone(contactId, contactPhoneId, user)
+  }
+
   async getLanguageReference(user: Express.User): Promise<Language> {
     return this.contactsApiClient.getLanguageReference(user)
   }

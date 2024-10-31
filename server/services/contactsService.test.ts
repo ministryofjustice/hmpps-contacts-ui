@@ -546,4 +546,21 @@ describe('contactsService', () => {
       await expect(apiClient.updateContactById(23, request, user)).rejects.toEqual(new Error('some error'))
     })
   })
+
+  describe('deleteContactPhone', () => {
+    // Given
+    it('should delete the contact phone', async () => {
+      // When
+      apiClient.deleteContactPhone.mockResolvedValue()
+      await service.deleteContactPhone(23, 77, user)
+
+      // Then
+      expect(apiClient.deleteContactPhone).toHaveBeenCalledWith(23, 77, user)
+    })
+
+    it('Propagates errors', async () => {
+      apiClient.deleteContactPhone.mockRejectedValue(new Error('some error'))
+      await expect(apiClient.deleteContactPhone(23, 77, user)).rejects.toEqual(new Error('some error'))
+    })
+  })
 })

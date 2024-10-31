@@ -129,6 +129,15 @@ export default class ContactsApiClient extends RestClient {
     )
   }
 
+  async deleteContactPhone(contactId: number, contactPhoneId: number, user: Express.User): Promise<void> {
+    return this.delete(
+      {
+        path: `/contact/${contactId}/phone/${contactPhoneId}`,
+      },
+      user,
+    )
+  }
+
   async getLanguageReference(user: Express.User): Promise<Language> {
     return this.get<Language>(
       {
