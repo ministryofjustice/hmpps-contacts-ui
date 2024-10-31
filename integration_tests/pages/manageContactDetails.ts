@@ -61,6 +61,10 @@ export default class ManageContactDetailsPage extends Page {
     this.selectDomesticStatusLink().click()
   }
 
+  clickDeletePhoneNumberLink(id: number) {
+    this.deletePhoneNumberLink(id).click()
+  }
+
   private namesValue = (): PageElement => cy.get('.manage-names-value')
 
   private dobValue = (): PageElement => cy.get('.manage-dob-value')
@@ -84,4 +88,6 @@ export default class ManageContactDetailsPage extends Page {
   private domesticStatusValue = (): PageElement => cy.get('.manage-domestic-status-value')
 
   private selectDomesticStatusLink = (): PageElement => cy.get('[data-qa="select-domestic-status"]')
+
+  private deletePhoneNumberLink = (id: number): PageElement => cy.get(`[data-qa="delete-phone-number-${id}"]`)
 }

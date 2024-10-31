@@ -20,7 +20,15 @@
                                 href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/phone/" + item.contactPhoneId + "/edit",
                                 text: "Edit",
                                 visuallyHiddenText: " phone number",
-                                attributes: {"data-qa": "edit-phone-number-" + item.contactPhoneId}
+                                attributes: {"data-qa": "edit-phone-number-" + item.contactPhoneId},
+                                classes: "govuk-link--no-visited-state"
+                            },
+                            {
+                                href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/phone/" + item.contactPhoneId + "/delete",
+                                text: "Delete",
+                                visuallyHiddenText: " phone number",
+                                attributes: {"data-qa": "delete-phone-number-" + item.contactPhoneId},
+                                classes: "govuk-link--no-visited-state"
                             }
                         ]
                     }
@@ -53,7 +61,8 @@
                 {
                     href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/phone/create",
                     text: "Add phone number",
-                    attributes: {"data-qa": "add-phone-number"}
+                    attributes: {"data-qa": "add-phone-number"},
+                    classes: "govuk-link--no-visited-state"
                 }
             ]
         }
