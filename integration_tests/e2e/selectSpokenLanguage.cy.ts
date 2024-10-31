@@ -39,7 +39,7 @@ context('Select Spoken Language', () => {
     const { prisonerNumber } = TestData.prisoner()
     cy.task('stubTitlesReferenceData')
     cy.task('stubGetLanguages')
-    cy.task('stubUpdateSpokenLanguage', { contactId, request })
+    cy.task('stubPatchContactById', { contactId, request })
 
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)

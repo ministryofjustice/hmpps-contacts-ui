@@ -39,7 +39,7 @@ context('Select Interpreter Needs', () => {
       interpreterRequired: true,
       updatedBy: 'USER1',
     }
-    cy.task('stubUpdateSpokenLanguage', { contactId, request })
+    cy.task('stubPatchContactById', { contactId, request })
     cy.task('stubGetContactById', TestData.contact({ interpreterRequired: true }))
 
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
@@ -64,7 +64,7 @@ context('Select Interpreter Needs', () => {
       interpreterRequired: false,
       updatedBy: 'USER1',
     }
-    cy.task('stubUpdateSpokenLanguage', { contactId, request })
+    cy.task('stubPatchContactById', { contactId, request })
     cy.task('stubGetContactById', TestData.contact({ interpreterRequired: false }))
 
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')

@@ -199,7 +199,7 @@ export default {
     })
   },
 
-  stubUpdateSpokenLanguage: ({
+  stubPatchContactById: ({
     contactId,
     request,
   }: {
@@ -229,26 +229,6 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: STUBBED_DOMESTIC_STATUS_OPTIONS,
-      },
-    })
-  },
-
-  stubUpdateDomesticStatus: ({
-    contactId,
-    request,
-  }: {
-    contactId: number
-    request: PatchContactRequest
-  }): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'PATCH',
-        urlPath: `/contact/${contactId}`,
-      },
-      response: {
-        status: 200,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: request,
       },
     })
   },
