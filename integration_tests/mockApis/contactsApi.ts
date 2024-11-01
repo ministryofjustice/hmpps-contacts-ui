@@ -1,6 +1,7 @@
 import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
 import {
+  STUBBED_DOMESTIC_STATUS_OPTIONS,
   STUBBED_LANGUAGE_OPTIONS,
   STUBBED_PHONE_TYPE_OPTIONS,
   STUBBED_RELATIONSHIP_OPTIONS,
@@ -218,6 +219,20 @@ export default {
     })
   },
 
+  stubGetDomesticStatuses: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/reference-codes/group/DOMESTIC_STS',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: STUBBED_DOMESTIC_STATUS_OPTIONS,
+      },
+    })
+  },
+
   stubCreateContactPhone: ({
     contactId,
     created,
@@ -237,6 +252,7 @@ export default {
       },
     })
   },
+
   stubUpdateContactPhone: ({
     contactId,
     contactPhoneId,

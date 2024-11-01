@@ -3,7 +3,7 @@ import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
-import SelectSpokenLanguagePage from '../pages/selectSpokenLanguage'
+import SelectSpokenLanguagePage from '../pages/selectSpokenLanguagePage'
 
 context('Manage contacts ', () => {
   beforeEach(() => {

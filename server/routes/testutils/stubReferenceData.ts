@@ -77,6 +77,66 @@ const STUBBED_LANGUAGE_OPTIONS: StubLanguageData[] = [
   },
 ]
 
+type StubDomesticStatusData = {
+  referenceCodeId: number
+  groupCode: string
+  code: string
+  description: string
+  displayOrder: number
+}
+
+const STUBBED_DOMESTIC_STATUS_OPTIONS: StubDomesticStatusData[] = [
+  {
+    referenceCodeId: 3,
+    groupCode: 'DOMESTIC_STS',
+    code: 'S',
+    description: 'Single-not married/in civil partnership',
+    displayOrder: 1,
+  },
+  {
+    referenceCodeId: 4,
+    groupCode: 'DOMESTIC_STS',
+    code: 'C',
+    description: 'Co-habiting (living with partner)',
+    displayOrder: 2,
+  },
+  {
+    referenceCodeId: 5,
+    groupCode: 'DOMESTIC_STS',
+    code: 'M',
+    description: 'Married or in civil partnership',
+    displayOrder: 3,
+  },
+  {
+    referenceCodeId: 6,
+    groupCode: 'DOMESTIC_STS',
+    code: 'D',
+    description: 'Divorced or dissolved',
+    displayOrder: 4,
+  },
+  {
+    referenceCodeId: 7,
+    groupCode: 'DOMESTIC_STS',
+    code: 'P',
+    description: 'Separated-not living with legal partner',
+    displayOrder: 5,
+  },
+  {
+    referenceCodeId: 8,
+    groupCode: 'DOMESTIC_STS',
+    code: 'W',
+    description: 'Widowed',
+    displayOrder: 6,
+  },
+  {
+    referenceCodeId: 9,
+    groupCode: 'DOMESTIC_STS',
+    code: 'N',
+    description: 'Prefer not to say',
+    displayOrder: 7,
+  },
+]
+
 const mockedReferenceData = (type: ReferenceCodeType, _: HmppsUser): Promise<StubReferenceData[]> => {
   if (type === ReferenceCodeType.TITLE) {
     return Promise.resolve(STUBBED_TITLE_OPTIONS)
@@ -87,6 +147,9 @@ const mockedReferenceData = (type: ReferenceCodeType, _: HmppsUser): Promise<Stu
   if (type === ReferenceCodeType.PHONE_TYPE) {
     return Promise.resolve(STUBBED_PHONE_TYPE_OPTIONS)
   }
+  if (type === ReferenceCodeType.DOMESTIC_STS) {
+    return Promise.resolve(STUBBED_DOMESTIC_STATUS_OPTIONS)
+  }
   return Promise.reject(new Error(`You haven't set up the stubbed reference data for ${type} yet`))
 }
 
@@ -96,4 +159,5 @@ export {
   STUBBED_RELATIONSHIP_OPTIONS,
   STUBBED_LANGUAGE_OPTIONS,
   STUBBED_PHONE_TYPE_OPTIONS,
+  STUBBED_DOMESTIC_STATUS_OPTIONS,
 }

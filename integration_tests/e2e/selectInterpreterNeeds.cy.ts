@@ -4,7 +4,7 @@ import ListContactsPage from '../pages/listContacts'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import Page from '../pages/page'
 import SearchPrisonerPage from '../pages/searchPrisoner'
-import SelectInterpreterNeedsPage from '../pages/selectInterpreterNeeds'
+import SelectInterpreterNeedsPage from '../pages/selectInterpreterNeedsPage'
 
 export type PatchContactRequest = components['schemas']['PatchContactRequest']
 
