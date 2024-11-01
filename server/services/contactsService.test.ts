@@ -13,10 +13,10 @@ import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelation
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
 import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
+import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
 import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
 
 type Language = components['schemas']['Language']
-type PatchContactRequest = components['schemas']['PatchContactRequest']
 
 jest.mock('../data/contactsApiClient')
 const searchResult = TestData.contactSearchResultItem()
@@ -533,11 +533,11 @@ describe('contactsService', () => {
     }
     it('Should update the language reference', async () => {
       // When
-      apiClient.updateContactById.mockResolvedValue(TestData.contact())
+      apiClient.updateContactById.mockResolvedValue(TestData.patchContact())
       const contact = await service.updateContactById(23, request, user)
 
       // Then
-      expect(contact).toStrictEqual(TestData.contact())
+      expect(contact).toStrictEqual(TestData.patchContact())
       expect(apiClient.updateContactById).toHaveBeenCalledWith(23, request, user)
     })
 

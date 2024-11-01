@@ -15,6 +15,7 @@ import ContactDetailsController from './contact-details/contactDetailsController
 import ReferenceDataService from '../../../services/referenceDataService'
 import ManageSpokenLanguageController from './spoken-language/manageSpokenLanguageController'
 import ManageContactAddPhoneController from './phone/add/manageContactAddPhoneController'
+import ManageContactStaffController from './staff/manageContactStaffController'
 import { phoneNumberSchemaFactory } from './phone/phoneSchemas'
 import ManageInterpreterController from './interpreter/manageInterpreterController'
 import ManageContactEditPhoneController from './phone/edit/manageContactEditPhoneController'
@@ -118,6 +119,18 @@ const ManageContactsRoutes = (
     asyncMiddleware(manageInterpreterController.POST),
   )
 
+  const manageContactStaffController = new ManageContactStaffController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/staff',
+    prisonerDetailsMiddleware(prisonerSearchService),
+    logPageViewMiddleware(auditService, manageContactStaffController),
+    asyncMiddleware(manageContactStaffController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/staff',
+    asyncMiddleware(manageContactStaffController.POST),
+  )
+
   const manageContactAddPhoneController = new ManageContactAddPhoneController(contactsService, referenceDataService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/create',
@@ -163,7 +176,6 @@ const ManageContactsRoutes = (
     logPageViewMiddleware(auditService, manageContactDeletePhoneController),
     asyncMiddleware(manageContactDeletePhoneController.GET),
   )
-
   return router
 }
 
