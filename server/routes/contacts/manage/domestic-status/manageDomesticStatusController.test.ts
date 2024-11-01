@@ -54,6 +54,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/domestic-stat
     ['P', 'Separated-not living with legal partner'],
     ['S', 'Single-not married/in civil partnership'],
     ['W', 'Widowed'],
+    ['', ''],
   ])('should render manage domestic status page with status selected', async (code: string, expected: string) => {
     // Given
     contactsService.getContact.mockResolvedValue(TestData.contact({ domesticStatusCode: code }))
