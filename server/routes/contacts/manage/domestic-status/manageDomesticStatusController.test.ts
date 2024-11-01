@@ -46,28 +46,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/domestic-stat
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
   })
 
-  test.each([
-    ['YES', { isStaff: true }],
-    ['NO', { isStaff: false }],
-  ])('should render manage staff page when isStaff is %p', async (isStaff, expectedResponse) => {
-    // Given
-    auditService.logPageView.mockResolvedValue(null)
-    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-    contactsService.getContact.mockResolvedValue(TestData.contact(expectedResponse))
-
-    // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/staff`)
-    const $ = cheerio.load(response.text)
-
-    // Then
-    expect(response.status).toEqual(200)
-    expect($('input[type=radio]:checked').val()).toStrictEqual(isStaff)
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_UPDATE_STAFF_PAGE, {
-      who: user.username,
-      correlationId: expect.any(String),
-    })
-  })
-
   it.each([
     ['C', 'Co-habiting (living with partner)'],
     ['D', 'Divorced or dissolved'],
