@@ -1,4 +1,5 @@
 import type { Express } from 'express'
+import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
@@ -40,21 +41,126 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/domestic-status', () => {
-  it('should render manage domestic status page', async () => {
-    // Given
+  beforeEach(() => {
     auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-    contactsService.getContact.mockResolvedValue(TestData.contact())
+  })
+  it('should render manage domestic status page with status S selected', async () => {
+    // Given
+    contactsService.getContact.mockResolvedValue(TestData.contact({ domesticStatusCode: 'S' }))
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/domestic-status`)
+    const $ = cheerio.load(response.text)
 
     // Then
     expect(response.status).toEqual(200)
+    expect($('[data-qa=status-S-option]').attr('selected', 'selected').text()).toStrictEqual(
+      'Single-not married/in civil partnership',
+    )
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_DOMESTIC_STATUS_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })
+  })
+
+  it('should render manage domestic status page with status C selected', async () => {
+    // Given
+    contactsService.getContact.mockResolvedValue(TestData.contact({ domesticStatusCode: 'C' }))
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/domestic-status`)
+    const $ = cheerio.load(response.text)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect($('[data-qa=status-C-option]').attr('selected', 'selected').text()).toStrictEqual(
+      'Co-habiting (living with partner)',
+    )
+  })
+
+  it('should render manage domestic status page with status M selected', async () => {
+    // Given
+    contactsService.getContact.mockResolvedValue(TestData.contact({ domesticStatusCode: 'M' }))
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/domestic-status`)
+    const $ = cheerio.load(response.text)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect($('[data-qa=status-M-option]').attr('selected', 'selected').text()).toStrictEqual(
+      'Married or in civil partnership',
+    )
+  })
+
+  it('should render manage domestic status page with status N selected', async () => {
+    // Given
+    contactsService.getContact.mockResolvedValue(TestData.contact({ domesticStatusCode: 'N' }))
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/domestic-status`)
+    const $ = cheerio.load(response.text)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect($('[data-qa=status-N-option]').attr('selected', 'selected').text()).toStrictEqual('Prefer not to say')
+  })
+
+  it('should render manage domestic status page with status P selected', async () => {
+    // Given
+    contactsService.getContact.mockResolvedValue(TestData.contact({ domesticStatusCode: 'P' }))
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/domestic-status`)
+    const $ = cheerio.load(response.text)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect($('[data-qa=status-P-option]').attr('selected', 'selected').text()).toStrictEqual(
+      'Separated-not living with legal partner',
+    )
+  })
+
+  it('should render manage domestic status page with status S selected', async () => {
+    // Given
+    contactsService.getContact.mockResolvedValue(TestData.contact({ domesticStatusCode: 'S' }))
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/domestic-status`)
+    const $ = cheerio.load(response.text)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect($('[data-qa=status-S-option]').attr('selected', 'selected').text()).toStrictEqual(
+      'Single-not married/in civil partnership',
+    )
+  })
+
+  it('should render manage domestic status page with status W selected', async () => {
+    // Given
+    contactsService.getContact.mockResolvedValue(TestData.contact({ domesticStatusCode: 'W' }))
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/domestic-status`)
+    const $ = cheerio.load(response.text)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect($('[data-qa=status-W-option]').attr('selected', 'selected').text()).toStrictEqual('Widowed')
+  })
+
+  it('should render manage domestic status page with status W selected', async () => {
+    // Given
+    contactsService.getContact.mockResolvedValue(TestData.contact({ domesticStatusCode: null }))
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/domestic-status`)
+    const $ = cheerio.load(response.text)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect($('option:eq(0)').attr('selected', 'selected').text()).toStrictEqual('')
   })
 })
 
