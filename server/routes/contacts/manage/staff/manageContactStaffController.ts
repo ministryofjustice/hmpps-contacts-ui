@@ -23,9 +23,8 @@ export default class ManageContactStaffController implements PageHandler {
   POST = async (req: Request<{ prisonerNumber: string; contactId: string }>, res: Response): Promise<void> => {
     const { user } = res.locals
     const { prisonerNumber, contactId } = req.params
-    const { isStaff } = req.body
     const request: PatchContactRequest = {
-      isStaff,
+      isStaff: req.body.isStaff === 'YES',
       updatedBy: user.userId,
     }
     await this.contactsService.updateContactById(parseInt(contactId, 10), request, user)

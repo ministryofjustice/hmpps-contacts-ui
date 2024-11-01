@@ -55,7 +55,7 @@ context('Select Staff Status', () => {
         urlPath: `/contact/${contactId}`,
       },
       {
-        isStaff: 'true',
+        isStaff: true,
       },
     )
   })

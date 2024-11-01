@@ -36,8 +36,8 @@ afterEach(() => {
 
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/staff', () => {
   test.each([
-    ['true', { isStaff: true }],
-    ['false', { isStaff: false }],
+    ['YES', { isStaff: true }],
+    ['NO', { isStaff: false }],
   ])('should render manage staff page when isStaff is %p', async (isStaff, expectedResponse) => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
@@ -61,8 +61,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/staff', () =>
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/staff', () => {
   describe('update contact with staff status', () => {
     test.each([
-      ['true', { isStaff: 'true', updatedBy: 'id' }],
-      ['false', { isStaff: 'false', updatedBy: 'id' }],
+      ['YES', { isStaff: true, updatedBy: 'id' }],
+      ['NO', { isStaff: false, updatedBy: 'id' }],
     ])('should update contact when isStaff is %p', async (isStaff, expectedPayload) => {
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/staff`)
