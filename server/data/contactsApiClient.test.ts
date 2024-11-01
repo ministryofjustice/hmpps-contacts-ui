@@ -14,6 +14,7 @@ import GetContactResponse = contactsApiClientTypes.GetContactResponse
 import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
 import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
 import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
+import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 type Language = components['schemas']['Language']
@@ -511,13 +512,22 @@ describe('contactsApiClient', () => {
         updatedBy: 'user1',
       }
 
-      fakeContactsApi.patch('/contact/23', request).matchHeader('authorization', `Bearer systemToken`).reply(201)
+      const expectedContact: PatchContactResponse = {
+        languageCode: 'ENG',
+        updatedBy: 'user1',
+      }
+
+      fakeContactsApi
+        .patch('/contact/23', request)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(201, expectedContact)
 
       // When
-      await contactsApiClient.updateContactById(23, request, user)
+      const updatedContact = await contactsApiClient.updateContactById(23, request, user)
 
       // Then
       expect(nock.isDone()).toBe(true)
+      expect(updatedContact).toEqual(expectedContact)
     })
   })
 })

@@ -10,6 +10,7 @@ type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 type PrisonerContactSummaryPage = components['schemas']['PrisonerContactSummaryPage']
 type PrisonerContactSummary = components['schemas']['PrisonerContactSummary']
 type ContactIdentityDetails = components['schemas']['ContactIdentityDetails']
+type PatchContactResponse = components['schemas']['PatchContactResponse']
 type Language = components['schemas']['Language']
 export default class TestData {
   static address: ContactAddressDetails = {
@@ -226,6 +227,7 @@ export default class TestData {
     middleNames = null,
     dateOfBirth = '1990-01-14',
     estimatedIsOverEighteen = 'YES',
+    isStaff = false,
     isDeceased = false,
     deceasedDate = null,
     createdBy = 'USER1',
@@ -263,6 +265,7 @@ export default class TestData {
       middleNames,
       dateOfBirth,
       estimatedIsOverEighteen,
+      isStaff,
       isDeceased,
       deceasedDate,
       createdBy,
@@ -325,4 +328,55 @@ export default class TestData {
       isoLanguageDesc,
       displaySequence,
     }) as Language
+
+  static patchContact = ({
+    id = 22,
+    title = 'MR',
+    lastName = 'Mason',
+    firstName = 'Jones',
+    middleNames = null,
+    dateOfBirth = '1990-01-14',
+    estimatedIsOverEighteen = 'YES',
+    placeOfBirth = 'London',
+    active = true,
+    suspended = false,
+    isStaff = false,
+    deceasedFlag = false,
+    coronerNumber = null,
+    gender = 'Male',
+    domesticStatus = 'Single',
+    deceasedDate = null,
+    languageCode = 'ENG',
+    nationalityCode = 'GB',
+    interpreterRequired = false,
+    createdBy = 'USER1',
+    createdTime = '2024-09-20T10:30:00.000000',
+    amendedBy = 'USER2',
+    amendedTime = '2024-09-21T10:30:00.000000',
+  }: Partial<PatchContactResponse> = {}): PatchContactResponse =>
+    ({
+      id,
+      title,
+      lastName,
+      firstName,
+      middleNames,
+      dateOfBirth,
+      estimatedIsOverEighteen,
+      placeOfBirth,
+      active,
+      suspended,
+      isStaff,
+      deceasedFlag,
+      deceasedDate,
+      coronerNumber,
+      gender,
+      domesticStatus,
+      languageCode,
+      nationalityCode,
+      interpreterRequired,
+      createdBy,
+      createdTime,
+      amendedBy,
+      amendedTime,
+    }) as PatchContactResponse
 }

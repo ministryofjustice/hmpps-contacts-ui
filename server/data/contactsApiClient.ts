@@ -14,9 +14,10 @@ import PrisonerContactSummaryPage = contactsApiClientTypes.PrisonerContactSummar
 import GetContactResponse = contactsApiClientTypes.GetContactResponse
 import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
 import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
+import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
+import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
 import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
 
-type PatchContactRequest = components['schemas']['PatchContactRequest']
 type Language = components['schemas']['Language']
 type PageableObject = components['schemas']['PageableObject']
 
@@ -147,7 +148,11 @@ export default class ContactsApiClient extends RestClient {
     )
   }
 
-  async updateContactById(contactId: number, request: PatchContactRequest, user: Express.User): Promise<Contact> {
+  async updateContactById(
+    contactId: number,
+    request: PatchContactRequest,
+    user: Express.User,
+  ): Promise<PatchContactResponse> {
     return this.patch<PatchContactRequest>(
       {
         path: `/contact/${contactId}`,
