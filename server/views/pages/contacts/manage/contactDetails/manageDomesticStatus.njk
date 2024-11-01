@@ -23,22 +23,6 @@
         <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
         <form method='POST'>
              <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-             {% set domesticStatusOptions = [{
-                value: '',
-                text: 'Select',
-                selected: true
-             }] %}
-
-             {% for item in domesticStatuses %}
-                {% set domesticStatusOptions = (domesticStatusOptions.push(
-                    {
-                        value: item.code,
-                        text: item.description,
-                        selected: true if contact.domesticStatusCode == item.code else false
-                    }
-                ), domesticStatusOptions) %}
-             {% endfor %}
-
              {{ govukSelect({
                 id: "domesticStatusCode",
                 name: "domesticStatusCode",

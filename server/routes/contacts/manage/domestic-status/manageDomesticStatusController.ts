@@ -3,9 +3,10 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
 import { components } from '../../../../@types/contactsApi'
-import Contact = contactsApiClientTypes.Contact
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
+import Contact = contactsApiClientTypes.Contact
+import ReferenceCode = contactsApiClientTypes.ReferenceCode
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 
@@ -21,12 +22,14 @@ export default class ManageDomesticStatusController implements PageHandler {
     const { contactId } = req.params
     const { prisonerDetails, user } = res.locals
     const contact: Contact = await this.contactsService.getContact(parseInt(contactId, 10), user)
-    const domesticStatuses = await this.referenceDataService.getReferenceData(ReferenceCodeType.DOMESTIC_STS, user)
 
+    const domesticStatusOptions = await this.referenceDataService
+      .getReferenceData(ReferenceCodeType.DOMESTIC_STS, user)
+      .then(val => this.getSelectedDomesticStatusOptions(val, contact.domesticStatusCode))
     return res.render('pages/contacts/manage/contactDetails/manageDomesticStatus', {
       contact,
       prisonerDetails,
-      domesticStatuses,
+      domesticStatusOptions,
     })
   }
 
@@ -41,5 +44,25 @@ export default class ManageDomesticStatusController implements PageHandler {
     await this.contactsService.updateContactById(parseInt(contactId, 10), request, user)
 
     res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+  }
+
+  private getSelectedDomesticStatusOptions(
+    options: ReferenceCode[],
+    selected?: string,
+  ): Array<{
+    value: string
+    text: string
+    selected?: boolean
+  }> {
+    const mappedOptions = options
+      .map((status: ReferenceCode) => {
+        return {
+          text: status.description,
+          value: status.code,
+          selected: status.code === selected,
+        }
+      })
+      .sort((a, b) => a.text.localeCompare(b.text))
+    return [{ text: '', value: '' }, ...mappedOptions]
   }
 }
