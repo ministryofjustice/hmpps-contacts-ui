@@ -25,6 +25,11 @@ export default class ManageContactDetailsPage extends Page {
     return this
   }
 
+  verifyShowIdentityNumberValueAs(expected: string, type: string): ManageContactDetailsPage {
+    this.identityNumberValue(type).should('contain.text', expected)
+    return this
+  }
+
   verifyShowSpokenLanguageValueAs(expected: string): ManageContactDetailsPage {
     this.spokenLanguageValue().should('contain.text', expected)
     return this
@@ -81,6 +86,8 @@ export default class ManageContactDetailsPage extends Page {
   private deceasedValue = (): PageElement => cy.get('.manage-deceased-date-value')
 
   private isOverEighteenValue = (): PageElement => cy.get('.manage-is-over-eighteen-value')
+
+  private identityNumberValue = (type: string): PageElement => cy.get(`.confirm-${type}-value`)
 
   private spokenLanguageValue = (): PageElement => cy.get('.manage-language-code-value')
 

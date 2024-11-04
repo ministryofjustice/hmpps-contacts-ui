@@ -103,6 +103,9 @@ context('Manage contacts ', () => {
       .verifyShowNamesValueAs('Mr Jones Mason')
       .verifyShowDOBValueAs('14 January 1990')
       .verifyShowSpokenLanguageValueAs('English')
+      .verifyShowIdentityNumberValueAs('LAST-87736799M', 'DRIVING_LIC')
+      .verifyShowIdentityNumberValueAs('425362965', 'PASSPORT')
+      .verifyShowIdentityNumberValueAs('06/614465M', 'NI_NUMBER')
       .verifyShowStaffStatusValueAs('No')
       .clickChangeSpokenLanguageLink()
 

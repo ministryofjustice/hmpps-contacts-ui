@@ -112,4 +112,39 @@ describe('GET /contacts/manage/:contactId', () => {
       expect($('.phone-numbers-not-provide-value').text().trim()).toStrictEqual('Not provided')
     })
   })
+
+  describe('identity numbers', () => {
+    it('should render identity numbers', async () => {
+      auditService.logPageView.mockResolvedValue(null)
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.getContact.mockResolvedValue(TestData.contact())
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect(response.status).toEqual(200)
+
+      expect($('.confirm-DRIVING_LIC-value').text().trim()).toStrictEqual('LAST-87736799M')
+      expect($('.confirm-PASSPORT-value').text().trim()).toStrictEqual(
+        '425362965Issuing authorithy - UK passport office',
+      )
+      expect($('.confirm-NI_NUMBER-value').text().trim()).toStrictEqual('06/614465M')
+    })
+
+    it('should render not provided if no identity numbers', async () => {
+      auditService.logPageView.mockResolvedValue(null)
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.getContact.mockResolvedValue(TestData.contact({ identities: [] }))
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect(response.status).toEqual(200)
+      expect($('.identity-numbers-not-provide-value').text().trim()).toStrictEqual('Not provided')
+    })
+  })
 })

@@ -1,0 +1,43 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set identityNumbers = [] %}
+
+{% if contact.identities and contact.identities.length > 0 %}
+    {% for item in contact.identities %}
+        {% set identityNumbers = (
+            identityNumbers.push(
+                {
+                    key: {
+                        text: (item.identityTypeDescription | capitalizeFirstLetter)
+                    },
+                    value: {
+                        html: item.identityValue + ('<p>' + item.issuingAuthority + '</p>' if item.identityType == 'PASSPORT' else ''),
+                        classes: 'confirm-' + item.identityType + '-value'
+                    }
+                }
+        ), identityNumbers) %}
+    {% endfor %}
+{% else %}
+    {% set identityNumbers = (
+        identityNumbers.push(
+            {
+                key: {
+                    text: 'Identity numbers'
+                },
+                value: {
+                    text: 'Not provided',
+                    classes: 'identity-numbers-not-provide-value'
+                }
+            }
+        ), identityNumbers) %}
+
+{% endif %}
+
+{{ govukSummaryList({
+    card: {
+        title: {
+            text: "Identity numbers"
+        }
+    },
+    rows: identityNumbers
+}) }}
