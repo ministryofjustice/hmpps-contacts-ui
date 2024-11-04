@@ -143,7 +143,7 @@ export default class TestData {
       approvedVisitor: false,
       nextOfKin: false,
       emergencyContact: false,
-      awareOfCharges: false,
+      currentTerm: true,
       comments: 'Active Comment',
     } as PrisonerContactSummary
   }

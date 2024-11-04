@@ -328,6 +328,34 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/contact/{contactId}/identity/{contactIdentityId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get an identity
+     * @description Gets a contacts identity by id
+     */
+    get: operations['get_1']
+    /**
+     * Update contact identity
+     * @description Updates an existing contact identity by id
+     */
+    put: operations['update_1']
+    post?: never
+    /**
+     * Delete contact identity
+     * @description Deletes an existing contact identity by id
+     */
+    delete: operations['delete_1']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/sync/prisoner-contact': {
     parameters: {
       query?: never
@@ -586,6 +614,26 @@ export interface paths {
      * @description Creates a new phone number for the specified contact
      */
     post: operations['create']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/contact/{contactId}/identity': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create new contact identity
+     * @description Creates a new identity for the specified contact
+     */
+    post: operations['create_1']
     delete?: never
     options?: never
     head?: never
@@ -1053,22 +1101,17 @@ export interface components {
        * @description Indicates if the prisoner contact is active
        * @example true
        */
-      active?: boolean | null
+      active: boolean
       /**
        * @description Indicates if the prisoner contact is an approved visitor
-       * @example true
+       * @example false
        */
-      approvedVisitor?: boolean | null
+      approvedVisitor: boolean
       /**
-       * @description Indicates if the prisoner contact is aware of charges
+       * @description Indicates if this relationship applies to the latest booking
        * @example true
        */
-      awareOfCharges?: boolean | null
-      /**
-       * @description Indicates if the prisoner contact can be contacted
-       * @example true
-       */
-      canBeContacted?: boolean | null
+      currentTerm: boolean
       /**
        * @description The user who approved the prisoner contact
        * @example officer123
@@ -1136,7 +1179,7 @@ export interface components {
        */
       contactType: string
       /**
-       * @description The type of relationship
+       * @description The relationship code from reference data
        * @example Friend
        */
       relationshipType: string
@@ -1159,22 +1202,17 @@ export interface components {
        * @description Indicates if the prisoner contact is active
        * @example true
        */
-      active?: boolean | null
+      active: boolean
       /**
        * @description Indicates if the prisoner contact is an approved visitor
        * @example true
        */
-      approvedVisitor?: boolean | null
+      approvedVisitor: boolean
       /**
-       * @description Indicates if the prisoner contact is aware of charges
+       * @description Indicates if this relationship applies to the latest booking
        * @example true
        */
-      awareOfCharges?: boolean | null
-      /**
-       * @description Indicates if the prisoner contact can be contacted
-       * @example true
-       */
-      canBeContacted?: boolean | null
+      currentTerm: boolean
       /**
        * @description The user who approved the prisoner contact
        * @example officer123
@@ -1250,6 +1288,11 @@ export interface components {
        */
       comments?: string | null
       /**
+       * @description The username who entered the restriction
+       * @example X999X
+       */
+      staffUsername: string
+      /**
        * @description Person who authorized the restriction
        * @example John Doe
        */
@@ -1308,6 +1351,11 @@ export interface components {
        * @example Restriction applied due to safety concerns
        */
       comments?: string | null
+      /**
+       * @description Entered staff username
+       * @example N/A
+       */
+      staffUsername?: string
       /**
        * @description Person who authorized the restriction
        * @example John Doe
@@ -1396,6 +1444,11 @@ export interface components {
        * @example false
        */
       isStaff: boolean
+      /**
+       * @description Whether the contact is a remitter
+       * @example false
+       */
+      remitter: boolean
       /**
        * @description Whether the contact is deceased
        * @example false
@@ -1511,6 +1564,11 @@ export interface components {
        */
       isStaff: boolean
       /**
+       * @description Whether the contact is a remitter
+       * @example false
+       */
+      remitter: boolean
+      /**
        * @description Whether the contact is deceased
        * @example false
        */
@@ -1604,6 +1662,11 @@ export interface components {
        */
       comments?: string
       /**
+       * @description The username who entered the restriction
+       * @example X999X
+       */
+      staffUsername: string
+      /**
        * @description The id of the user who updated the contact restriction
        * @example JD000001
        */
@@ -1651,6 +1714,11 @@ export interface components {
        * @example N/A
        */
       comments?: string
+      /**
+       * @description Entered staff username
+       * @example N/A
+       */
+      staffUsername?: string
       /**
        * @description User who created the entry
        * @example admin
@@ -2234,6 +2302,84 @@ export interface components {
        */
       amendedTime?: string
     }
+    /** @description Request to update an existing contact identity */
+    UpdateIdentityRequest: {
+      /**
+       * @description Type of identity
+       * @example DL
+       */
+      identityType: string
+      /**
+       * @description The identity value such as driving licence number
+       * @example DL123456789
+       */
+      identityValue: string
+      /**
+       * @description The authority who issued the identity
+       * @example DVLA
+       */
+      issuingAuthority?: string | null
+      /**
+       * @description User who updated the entry
+       * @example admin
+       */
+      amendedBy: string
+    }
+    /** @description Identity related to a contact */
+    ContactIdentityDetails: {
+      /**
+       * Format: int64
+       * @description Unique identifier for the contact identity
+       * @example 1
+       */
+      contactIdentityId: number
+      /**
+       * Format: int64
+       * @description Unique identifier for the contact
+       * @example 123
+       */
+      contactId: number
+      /**
+       * @description Type of identity
+       * @example PASSPORT
+       */
+      identityType?: string | null
+      /**
+       * @description Description of the type of identity
+       * @example Passport number
+       */
+      identityTypeDescription?: string | null
+      /**
+       * @description Identity
+       * @example GB123456789
+       */
+      identityValue?: string | null
+      /**
+       * @description The authority who issued the identity
+       * @example UK Passport Office
+       */
+      issuingAuthority?: string | null
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was created
+       */
+      createdTime: string
+      /**
+       * @description User who amended the entry
+       * @example admin2
+       */
+      amendedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was amended
+       */
+      amendedTime?: string
+    }
     /** @description Request object to create a prisoner contact details */
     CreatePrisonerContactRequest: {
       /**
@@ -2289,19 +2435,14 @@ export interface components {
       active?: boolean | null
       /**
        * @description Indicates if the prisoner contact is an approved visitor
-       * @example true
+       * @example false
        */
       approvedVisitor?: boolean | null
       /**
-       * @description Indicates if the prisoner contact is aware of charges
+       * @description Indicates if this relationship is current and applies to the latest booking
        * @example true
        */
-      awareOfCharges?: boolean | null
-      /**
-       * @description Indicates if the prisoner contact can be contacted
-       * @example true
-       */
-      canBeContacted?: boolean | null
+      currentTerm?: boolean | null
       /**
        * @description The user who approved the prisoner contact
        * @example officer123
@@ -2355,6 +2496,11 @@ export interface components {
        * @example Restriction applied due to safety concerns
        */
       comments?: string | null
+      /**
+       * @description Staff username who entered the restriction
+       * @example X999X
+       */
+      staffUsername: string
       /**
        * @description Person who authorized the restriction
        * @example John Doe
@@ -2462,6 +2608,11 @@ export interface components {
        */
       isStaff: boolean
       /**
+       * @description Whether the contact is a remitter
+       * @example false
+       */
+      remitter: boolean
+      /**
        * @description Whether the contact is deceased
        * @example false
        */
@@ -2545,6 +2696,11 @@ export interface components {
        * @example N/A
        */
       comments?: string
+      /**
+       * @description Staff username who entered the restriction
+       * @example X999A
+       */
+      staffUsername: string
       /**
        * @description User who created the entry
        * @example admin
@@ -2761,16 +2917,33 @@ export interface components {
        */
       createdTime: string
     }
-    /**
-     * @description Coded value for proof of ID type
-     * @example XXX
-     */
+    /** @description Coded value for this restriction type */
     CodedValue: {
-      /** @description A code representation a NOMIS reference data item */
+      /**
+       * @description A coded value from NOMIS reference data
+       * @example CODE
+       */
       code: string
-      /** @description The text description for this coded value in NOMIS */
+      /**
+       * @description The description for this coded value in NOMIS
+       * @example Description
+       */
       description: string
     }
+    /** @description The corporate organisation this person works for */
+    Corporate: {
+      /**
+       * Format: int64
+       * @description The corporate ID in NOMIS
+       * @example 123
+       */
+      id: number
+      /**
+       * @description The name of the corporate organisation
+       * @example West Midlands Police
+       */
+      name: string
+    } | null
     /** @description Addresses */
     MigrateAddress: {
       /**
@@ -2779,7 +2952,7 @@ export interface components {
        * @example 123
        */
       addressId: number
-      type: components['schemas']['CodedValue']
+      type?: components['schemas']['CodedValue']
       /**
        * @description Flat number or identifier
        * @example 1B
@@ -2847,45 +3020,13 @@ export interface components {
       endDate?: string | null
       /** @description A list of phone numbers which are linked to this address */
       phoneNumbers: components['schemas']['MigratePhoneNumber'][]
-    } | null
-    /** @description Auditing information */
-    MigrateAuditInfo: {
-      /**
-       * Format: date-time
-       * @description The data and time the record was created
-       */
-      createDateTime?: string | null
-      /** @description The username who created the row */
-      createUsername?: string | null
-      /** @description The display name of the user who created the row */
-      createDisplayName?: string | null
-      /** @description The username who last modified the row */
-      modifyUserId?: string | null
-      /** @description The display name of the user who last modified the row */
-      modifyDisplayName?: string | null
-      /**
-       * Format: date-time
-       * @description The date and time the record was last amended
-       */
-      modifyDateTime?: string | null
-      /**
-       * Format: date-time
-       * @description The date and time of the audit record
-       */
-      auditTimestamp?: string | null
-      /** @description The audit username */
-      auditUserId?: string | null
-      /** @description The audit module name */
-      auditModuleName?: string | null
-      /** @description The audit client id */
-      auditClientUserId?: string | null
-      /** @description The audit client IP address */
-      auditClientIpAddress?: string | null
-      /** @description The audit client workstation */
-      auditClientWorkstationName?: string | null
-      /** @description Audit additional info */
-      auditAdditionalInfo?: string | null
-    } | null
+      /** Format: date-time */
+      createDateTime?: string
+      createUsername?: string
+      /** Format: date-time */
+      modifyDateTime?: string
+      modifyUsername?: string
+    }
     /** @description Request to migrate a contact and all of its sub-elements from NOMIS into this service */
     MigrateContactRequest: {
       /**
@@ -2894,17 +3035,16 @@ export interface components {
        * @example 1233323
        */
       personId: number
-      title?: components['schemas']['CodedValue']
-      /**
-       * @description The last name of the contact
-       * @example Doe
-       */
-      lastName: string
       /**
        * @description The first name of the contact
        * @example John
        */
       firstName: string
+      /**
+       * @description The last name of the contact
+       * @example Doe
+       */
+      lastName: string
       /**
        * @description The middle name of the contact, if any
        * @example William
@@ -2917,6 +3057,7 @@ export interface components {
        */
       dateOfBirth?: string | null
       gender?: components['schemas']['CodedValue']
+      title?: components['schemas']['CodedValue']
       language?: components['schemas']['CodedValue']
       /** @description Interpreter required */
       interpreterRequired: boolean | null
@@ -2926,21 +3067,30 @@ export interface components {
        * @description The date this persons was marked as deceased
        */
       deceasedDate?: string | null
-      /** @description This person is a remitter of funds to one or more prisoners */
-      remitter: boolean
       /** @description This person is staff */
       staff: boolean
-      /** @description Retain photo and fingerprint images for this person */
-      keepBiometrics: boolean
-      audit?: components['schemas']['MigrateAuditInfo']
+      /** @description This person is a remitter */
+      remitter: boolean
       /** @description Telephone numbers */
-      phoneNumbers: components['schemas']['MigratePhoneNumber'][] | null
+      phoneNumbers: components['schemas']['MigratePhoneNumber'][]
       /** @description Addresses */
-      addresses: components['schemas']['MigrateAddress'][] | null
+      addresses: components['schemas']['MigrateAddress'][]
       /** @description Email addresses */
-      emailAddresses: components['schemas']['MigrateEmailAddress'][] | null
+      emailAddresses: components['schemas']['MigrateEmailAddress'][]
+      /** @description Employments for official contacts only */
+      employments: components['schemas']['MigrateEmployment'][]
       /** @description Proofs of identity */
-      identifiers: components['schemas']['MigrateIdentifier'][] | null
+      identifiers: components['schemas']['MigrateIdentifier'][]
+      /** @description The relationships with prisoners including specific restrictions for each */
+      contacts: components['schemas']['MigrateRelationship'][]
+      /** @description The restrictions which apply to this person only */
+      restrictions: components['schemas']['MigrateRestriction'][]
+      /** Format: date-time */
+      createDateTime?: string
+      createUsername?: string
+      /** Format: date-time */
+      modifyDateTime?: string
+      modifyUsername?: string
     }
     /** @description Email addresses */
     MigrateEmailAddress: {
@@ -2954,8 +3104,35 @@ export interface components {
        * @description Email address
        * @example sender@a.com
        */
-      email: string | null
-    } | null
+      email: string
+      /** Format: date-time */
+      createDateTime?: string
+      createUsername?: string
+      /** Format: date-time */
+      modifyDateTime?: string
+      modifyUsername?: string
+    }
+    /** @description Employments for official contacts only */
+    MigrateEmployment: {
+      /**
+       * Format: int64
+       * @description Unique sequence ID in NOMIS for this employment
+       * @example 123
+       */
+      sequence: number
+      corporate?: components['schemas']['Corporate']
+      /**
+       * @description Comments relating to this restriction
+       * @example true
+       */
+      active: boolean
+      /** Format: date-time */
+      createDateTime?: string
+      createUsername?: string
+      /** Format: date-time */
+      modifyDateTime?: string
+      modifyUsername?: string
+    }
     /** @description Proofs of identity */
     MigrateIdentifier: {
       /**
@@ -2969,13 +3146,19 @@ export interface components {
        * @description The identifying information e.g. driving licence number
        * @example KJ 45544 JFKJK
        */
-      identifier?: string
+      identifier: string
       /**
        * @description The issuing authority for this identifier
        * @example DVLA
        */
-      issuedAuthority?: string
-    } | null
+      issuedAuthority?: string | null
+      /** Format: date-time */
+      createDateTime?: string
+      createUsername?: string
+      /** Format: date-time */
+      modifyDateTime?: string
+      modifyUsername?: string
+    }
     /** @description A list of phone numbers which are linked to this address */
     MigratePhoneNumber: {
       /**
@@ -2995,8 +3178,162 @@ export interface components {
        */
       extension: string | null
       type: components['schemas']['CodedValue']
+      /** Format: date-time */
+      createDateTime?: string
+      createUsername?: string
+      /** Format: date-time */
+      modifyDateTime?: string
+      modifyUsername?: string
     }
-    /** @description List of Nomis Id and DPS Id for prisoner contact restrictions */
+    /** @description The restrictions for this prisoner contact relationship */
+    MigratePrisonerContactRestriction: {
+      /**
+       * Format: int64
+       * @description The ID in NOMIS
+       * @example 123
+       */
+      id: number
+      restrictionType: components['schemas']['CodedValue']
+      /**
+       * @description Comment on this restriction
+       * @example Comment on restriction
+       */
+      comment?: string | null
+      /**
+       * Format: date
+       * @description The date that this restriction took effect
+       * @example 2024-03-01
+       */
+      startDate: string
+      /**
+       * Format: date
+       * @description The date that this restriction expires
+       * @example 2024-03-01
+       */
+      expiryDate?: string
+      /**
+       * @description The username of the person who entered the restriction (may be different to the createdBy audit field)
+       * @example X998XX
+       */
+      staffUsername: string
+      /** Format: date-time */
+      createDateTime?: string
+      createUsername?: string
+      /** Format: date-time */
+      modifyDateTime?: string
+      modifyUsername?: string
+    }
+    /** @description The relationships with prisoners including specific restrictions for each */
+    MigrateRelationship: {
+      /**
+       * Format: int64
+       * @description The ID in NOMIS
+       * @example 123
+       */
+      id: number
+      contactType: components['schemas']['CodedValue']
+      relationshipType: components['schemas']['CodedValue']
+      /**
+       * @description True if this relationship applies to the latest or current term in prison, false if a previous term
+       * @example true
+       */
+      currentTerm: boolean
+      /**
+       * @description The relationship is active
+       * @example true
+       */
+      active: boolean
+      /**
+       * Format: date
+       * @description The date that this relationship expired
+       * @example 2024-03-01
+       */
+      expiryDate?: string | null
+      /**
+       * @description Approved visitor
+       * @example true
+       */
+      approvedVisitor: boolean
+      /**
+       * @description Next of kin
+       * @example true
+       */
+      nextOfKin: boolean
+      /**
+       * @description Emergency contact
+       * @example true
+       */
+      emergencyContact: boolean
+      /**
+       * @description Comment on this relationship
+       * @example This is an optional comment
+       */
+      comment?: string | null
+      /**
+       * @description The prisoner number (NOMS ID) related
+       * @example A1234AA
+       */
+      prisonerNumber: string
+      /** @description The restrictions for this prisoner contact relationship */
+      restrictions: components['schemas']['MigratePrisonerContactRestriction'][]
+      /** Format: date-time */
+      createDateTime?: string
+      createUsername?: string
+      /** Format: date-time */
+      modifyDateTime?: string
+      modifyUsername?: string
+    }
+    /** @description The restrictions which apply to this person only */
+    MigrateRestriction: {
+      /**
+       * Format: int64
+       * @description Unique ID in NOMIS for this restriction
+       * @example 123
+       */
+      id: number
+      type: components['schemas']['CodedValue']
+      /**
+       * @description Comments relating to this restriction
+       * @example A comment
+       */
+      comment?: string | null
+      /**
+       * Format: date
+       * @description The date that this restriction is effective from
+       * @example 2024-01-01
+       */
+      effectiveDate: string
+      /**
+       * Format: date
+       * @description The date that this restriction expires and stops being enforced
+       * @example 2024-03-01
+       */
+      expiryDate?: string | null
+      /**
+       * @description The username of the person who entered the restriction (may be different to the createdBy audit field)
+       * @example X998XX
+       */
+      staffUsername: string
+      /** Format: date-time */
+      createDateTime?: string
+      createUsername?: string
+      /** Format: date-time */
+      modifyDateTime?: string
+      modifyUsername?: string
+    }
+    /** @description List of Nomis and DPS IDs for addresses and address-specific phone numbers */
+    AddressAndPhones: {
+      address: components['schemas']['IdPair']
+      /** @description The pairs of IDs in NOMIS and DPS for address-specific phone numbers */
+      phones: components['schemas']['IdPair'][]
+    }
+    /** @description List of Nomis and DPS IDs for relationships and relationship-specific restrictions */
+    ContactsAndRestrictions: {
+      relationship: components['schemas']['IdPair']
+      /** @description The pairs of IDs in NOMIS and DPS for relationship-specific restrictions */
+      restrictions: components['schemas']['IdPair'][]
+    }
+    /** @description List of Nomis and DPS IDs for employments (official contact types only) */
     IdPair: {
       /**
        * @description The category of information returned
@@ -3008,10 +3345,12 @@ export interface components {
         | 'PHONE'
         | 'EMAIL'
         | 'ADDRESS'
+        | 'ADDRESS_PHONE'
         | 'IDENTITY'
         | 'RESTRICTION'
         | 'PRISONER_CONTACT'
         | 'PRISONER_CONTACT_RESTRICTION'
+        | 'EMPLOYMENT'
       /**
        * Format: int64
        * @description The unique ID for this piece of data provided in the request
@@ -3024,21 +3363,10 @@ export interface components {
        * @example 1234
        */
       dpsId: number
-    }
-    /** @description The migration response for a contact and all of its sub-elements */
+    } | null
+    /** @description The migration response for a contact/person and all of its sub-entities */
     MigrateContactResponse: {
-      /**
-       * Format: int64
-       * @description The original ID of the person in NOMIS
-       * @example 123456
-       */
-      nomisPersonId: number
-      /**
-       * Format: int64
-       * @description The new ID of this contact in the DPS contacts service
-       * @example 123456
-       */
-      dpsContactId: number
+      contact: components['schemas']['IdPair']
       /**
        * @description The last name of the contact created
        * @example Doe
@@ -3050,20 +3378,20 @@ export interface components {
        * @example 1980-01-01
        */
       dateOfBirth?: string | null
-      /** @description List of Nomis Id and DPS Id for phone numbers */
+      /** @description List of Nomis and DPS IDs for person phone numbers */
       phoneNumbers: components['schemas']['IdPair'][]
-      /** @description List of Nomis Id and DPS Id for addresses */
-      addresses: components['schemas']['IdPair'][]
-      /** @description List of Nomis Id and DPS Id for email addresses */
+      /** @description List of Nomis and DPS IDs for addresses and address-specific phone numbers */
+      addresses: components['schemas']['AddressAndPhones'][]
+      /** @description List of Nomis and DPS IDs for person email addresses */
       emailAddresses: components['schemas']['IdPair'][]
-      /** @description List of Nomis Id and DPS Id for proofs of identity */
+      /** @description List of Nomis and DPS IDs for person proofs of identity */
       identities: components['schemas']['IdPair'][]
-      /** @description List of Nomis Id and DPS Id for restrictions */
+      /** @description List of Nomis and DPS IDs for person restrictions (visitor restrictions) */
       restrictions: components['schemas']['IdPair'][]
-      /** @description List of Nomis Id and DPS Id for prisoner contacts */
-      prisonerContacts: components['schemas']['IdPair'][]
-      /** @description List of Nomis Id and DPS Id for prisoner contact restrictions */
-      prisonerContactRestrictions: components['schemas']['IdPair'][]
+      /** @description List of Nomis and DPS IDs for relationships and relationship-specific restrictions */
+      relationships: components['schemas']['ContactsAndRestrictions'][]
+      /** @description List of Nomis and DPS IDs for employments (official contact types only) */
+      employments?: components['schemas']['IdPair'][] | null
     }
     /** @description An address related to a contact with descriptions of all reference data */
     ContactAddressDetails: {
@@ -3272,76 +3600,6 @@ export interface components {
        */
       amendedTime?: string
     }
-    /** @description Identity related to a contact */
-    ContactIdentityDetails: {
-      /**
-       * Format: int64
-       * @description Unique identifier for the contact identity
-       * @example 1
-       */
-      contactIdentityId: number
-      /**
-       * Format: int64
-       * @description Unique identifier for the contact
-       * @example 123
-       */
-      contactId: number
-      /**
-       * @description Type of identity
-       * @example PASSPORT
-       */
-      identityType?: string | null
-      /**
-       * @description Description of the type of identity
-       * @example Passport number
-       */
-      identityTypeDescription?: string | null
-      /**
-       * @description Identity
-       * @example GB123456789
-       */
-      identityValue?: string | null
-      /**
-       * @description The authority who issued the identity
-       * @example UK Passport Office
-       */
-      issuingAuthority?: string | null
-      /**
-       * @description Whether the identity has been verified
-       * @example false
-       */
-      verified: boolean
-      /**
-       * @description The user id of the user who verified the identity
-       * @example USER1
-       */
-      verifiedBy?: string | null
-      /**
-       * Format: date-time
-       * @description Timestamp when the identity was verified
-       */
-      verifiedTime?: string | null
-      /**
-       * @description User who created the entry
-       * @example admin
-       */
-      createdBy: string
-      /**
-       * Format: date-time
-       * @description Timestamp when the entry was created
-       */
-      createdTime: string
-      /**
-       * @description User who amended the entry
-       * @example admin2
-       */
-      amendedBy?: string
-      /**
-       * Format: date-time
-       * @description Timestamp when the entry was amended
-       */
-      amendedTime?: string
-    }
     /** @description The details of a contact as an individual */
     GetContactResponse: {
       /**
@@ -3469,6 +3727,29 @@ export interface components {
        * @example 123
        */
       extNumber?: string | null
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+    }
+    /** @description Request to create a new contact identity */
+    CreateIdentityRequest: {
+      /**
+       * @description Type of identity
+       * @example DL
+       */
+      identityType: string
+      /**
+       * @description The identity value such as driving licence number
+       * @example DL123456789
+       */
+      identityValue: string
+      /**
+       * @description The authority who issued the identity
+       * @example DVLA
+       */
+      issuingAuthority?: string | null
       /**
        * @description User who created the entry
        * @example admin
@@ -3810,10 +4091,10 @@ export interface components {
        */
       emergencyContact: boolean
       /**
-       * @description Is this contact aware of the prisoner's charges?
+       * @description Is this relationship active for the current booking?
        * @example true
        */
-      awareOfCharges: boolean
+      currentTerm: boolean
       /**
        * @description Any additional comments
        * @example Close family friend
@@ -3831,11 +4112,11 @@ export interface components {
       /** Format: int64 */
       offset?: number
       sort?: components['schemas']['SortObject'][]
-      /** Format: int32 */
-      pageSize?: number
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
+      /** Format: int32 */
+      pageSize?: number
       unpaged?: boolean
     }
     PrisonerContactSummaryPage: {
@@ -3848,12 +4129,12 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
-      first?: boolean
-      /** Format: int32 */
-      size?: number
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject'][]
+      first?: boolean
+      /** Format: int32 */
+      size?: number
       /** Format: int32 */
       numberOfElements?: number
       empty?: boolean
@@ -4132,12 +4413,12 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
-      first?: boolean
-      /** Format: int32 */
-      size?: number
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject'][]
+      first?: boolean
+      /** Format: int32 */
+      size?: number
       /** Format: int32 */
       numberOfElements?: number
       empty?: boolean
@@ -5365,6 +5646,193 @@ export interface operations {
       }
     }
   }
+  get_1: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+        /**
+         * @description The id of the contact identity
+         * @example 987654
+         */
+        contactIdentityId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the identity successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ContactIdentityDetails']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the the contact or identity this request is for */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update_1: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+        /**
+         * @description The id of the contact identity
+         * @example 987654
+         */
+        contactIdentityId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateIdentityRequest']
+      }
+    }
+    responses: {
+      /** @description Updated the contact identity successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ContactIdentityDetails']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the the contact or identity by their ids */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete_1: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+        /**
+         * @description The id of the contact identity
+         * @example 987654
+         */
+        contactIdentityId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Deleted the contact identity successfully */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ContactIdentityDetails']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the the contact or identity by their ids */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   createPrisonerContact: {
     parameters: {
       query?: never
@@ -5919,6 +6387,72 @@ export interface operations {
         }
       }
       /** @description Could not find the the contact this phone is for */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  create_1: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateIdentityRequest']
+      }
+    }
+    responses: {
+      /** @description Created the contact identity successfully */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ContactIdentityDetails']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the the contact this identity is for */
       404: {
         headers: {
           [name: string]: unknown
