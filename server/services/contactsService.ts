@@ -13,6 +13,8 @@ import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
 import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
 import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
 import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
+import CreateIdentityRequest = contactsApiClientTypes.CreateIdentityRequest
+import UpdateIdentityRequest = contactsApiClientTypes.UpdateIdentityRequest
 
 type Language = components['schemas']['Language']
 type PageableObject = components['schemas']['PageableObject']
@@ -132,6 +134,43 @@ export default class ContactsService {
 
   async getLanguageReference(user: Express.User): Promise<Language> {
     return this.contactsApiClient.getLanguageReference(user)
+  }
+
+  async createContactIdentity(
+    contactId: number,
+    user: Express.User,
+    identityType: string,
+    identityValue: string,
+    issuingAuthority?: string,
+  ) {
+    const request: CreateIdentityRequest = {
+      identityType,
+      identityValue,
+      issuingAuthority,
+      createdBy: user.username,
+    }
+    return this.contactsApiClient.createContactIdentity(contactId, request, user)
+  }
+
+  async updateContactIdentity(
+    contactId: number,
+    contactIdentityId: number,
+    user: Express.User,
+    identityType: string,
+    identityValue: string,
+    issuingAuthority?: string,
+  ) {
+    const request: UpdateIdentityRequest = {
+      identityType,
+      identityValue,
+      issuingAuthority,
+      amendedBy: user.username,
+    }
+    return this.contactsApiClient.updateContactIdentity(contactId, contactIdentityId, request, user)
+  }
+
+  async deleteContactIdentity(contactId: number, contactIdentityId: number, user: Express.User) {
+    return this.contactsApiClient.deleteContactIdentity(contactId, contactIdentityId, user)
   }
 
   async updateContactById(

@@ -15,6 +15,9 @@ import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
 import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
 import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
 import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
+import ContactIdentityDetails = contactsApiClientTypes.ContactIdentityDetails
+import UpdateIdentityRequest = contactsApiClientTypes.UpdateIdentityRequest
+import CreateIdentityRequest = contactsApiClientTypes.CreateIdentityRequest
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 type Language = components['schemas']['Language']
@@ -528,6 +531,163 @@ describe('contactsApiClient', () => {
       // Then
       expect(nock.isDone()).toBe(true)
       expect(updatedContact).toEqual(expectedContact)
+    })
+  })
+
+  describe('Identity', () => {
+    describe('createContactIdentity', () => {
+      it('should create the contact identity and return the response', async () => {
+        // Given
+        const expectedContactIdentityDetails: ContactIdentityDetails = {
+          id: 1,
+          identityType: 'PASSPORT',
+          identityNumber: '0123456789',
+          issuingAuthority: 'UK',
+          createdBy: 'user1',
+          createdTime: new Date().toISOString(),
+        }
+        const request: CreateIdentityRequest = {
+          type: 'PASSPORT',
+          identityNumber: '0123456789',
+          issuingAuthority: 'UK',
+          createdBy: 'user1',
+        }
+
+        fakeContactsApi
+          .post('/contact/99/identity', request)
+          .matchHeader('authorization', `Bearer systemToken`)
+          .reply(201, expectedContactIdentityDetails)
+
+        // When
+        const createdContact = await contactsApiClient.createContactIdentity(99, request, user)
+
+        // Then
+        expect(createdContact).toEqual(expectedContactIdentityDetails)
+      })
+
+      it.each([400, 401, 403, 500])('should propagate errors creating contact identity', async (errorCode: number) => {
+        // Given
+        const request: CreateIdentityRequest = {
+          type: 'PASSPORT',
+          identityNumber: '0123456789',
+          issuingAuthority: 'UK',
+          createdBy: 'user1',
+        }
+        const expectedErrorBody = {
+          status: errorCode,
+          userMessage: 'Some error',
+          developerMessage: 'Some error',
+        }
+
+        fakeContactsApi
+          .post('/contact/99/identity', request)
+          .matchHeader('authorization', `Bearer systemToken`)
+          .reply(errorCode, expectedErrorBody)
+
+        // When
+        try {
+          await contactsApiClient.createContactIdentity(99, request, user)
+        } catch (e) {
+          // Then
+          expect(e.status).toEqual(errorCode)
+          expect(e.data).toEqual(expectedErrorBody)
+        }
+      })
+    })
+
+    describe('updateContactIdentity', () => {
+      it('should update the contact identity and return the response', async () => {
+        // Given
+        const expectedContactIdentityDetails: ContactIdentityDetails = {
+          id: 1,
+          identityType: 'PASSPORT',
+          identityNumber: '0123456789',
+          issuingAuthority: 'UK',
+          createdBy: 'user1',
+          createdTime: new Date().toISOString(),
+          amendedBy: 'user1',
+          amendedTime: new Date().toISOString(),
+        }
+        const request: UpdateIdentityRequest = {
+          type: 'PASSPORT',
+          identityNumber: '0123456789',
+          amendedByBy: 'user1',
+        }
+
+        fakeContactsApi
+          .put('/contact/99/identity/77', request)
+          .matchHeader('authorization', `Bearer systemToken`)
+          .reply(200, expectedContactIdentityDetails)
+
+        // When
+        const updated = await contactsApiClient.updateContactIdentity(99, 77, request, user)
+
+        // Then
+        expect(updated).toEqual(expectedContactIdentityDetails)
+      })
+
+      it.each([400, 401, 403, 500])('should propagate errors updating contact identity', async (errorCode: number) => {
+        // Given
+        const request: UpdateIdentityRequest = {
+          type: 'PASSPORT',
+          identityNumber: '0123456789',
+          issuingAuthority: 'UK',
+          amendedByBy: 'user1',
+        }
+        const expectedErrorBody = {
+          status: errorCode,
+          userMessage: 'Some error',
+          developerMessage: 'Some error',
+        }
+
+        fakeContactsApi
+          .put('/contact/99/identity/77', request)
+          .matchHeader('authorization', `Bearer systemToken`)
+          .reply(errorCode, expectedErrorBody)
+
+        // When
+        try {
+          await contactsApiClient.updateContactIdentity(99, 77, request, user)
+        } catch (e) {
+          // Then
+          expect(e.status).toEqual(errorCode)
+          expect(e.data).toEqual(expectedErrorBody)
+        }
+      })
+    })
+
+    describe('deleteContactIdentity', () => {
+      it('should delete the contact', async () => {
+        // Given
+
+        fakeContactsApi.delete('/contact/99/identity/77').matchHeader('authorization', `Bearer systemToken`).reply(204)
+
+        // When
+        await contactsApiClient.deleteContactIdentity(99, 77, user)
+      })
+
+      it.each([400, 401, 403])('should propagate errors deleting contact identity %s', async (errorCode: number) => {
+        // Given
+        const expectedErrorBody = {
+          status: errorCode,
+          userMessage: 'Some error',
+          developerMessage: 'Some error',
+        }
+
+        fakeContactsApi
+          .delete('/contact/99/identity/77')
+          .matchHeader('authorization', `Bearer systemToken`)
+          .reply(errorCode, expectedErrorBody)
+
+        // When
+        try {
+          await contactsApiClient.deleteContactIdentity(99, 77, user)
+        } catch (e) {
+          // Then
+          expect(e.status).toEqual(errorCode)
+          expect(e.data).toEqual(expectedErrorBody)
+        }
+      })
     })
   })
 })

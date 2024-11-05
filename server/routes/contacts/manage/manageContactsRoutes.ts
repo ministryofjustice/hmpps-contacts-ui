@@ -21,6 +21,10 @@ import ManageInterpreterController from './interpreter/manageInterpreterControll
 import ManageContactEditPhoneController from './phone/edit/manageContactEditPhoneController'
 import ManageDomesticStatusController from './domestic-status/manageDomesticStatusController'
 import ManageContactDeletePhoneController from './phone/delete/manageContactDeletePhoneController'
+import { identitySchemaFactory } from './identities/IdentitySchemas'
+import ManageContactAddIdentityController from './identities/add/manageContactAddIdentityController'
+import ManageContactEditIdentityController from './identities/edit/manageContactEditIdentityController'
+import ManageContactDeleteIdentityController from './identities/delete/manageContactDeleteIdentityController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -155,6 +159,46 @@ const ManageContactsRoutes = (
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/edit',
     validate(phoneNumberSchemaFactory()),
     asyncMiddleware(manageContactEditPhoneController.POST),
+  )
+
+  const manageContactAddIdentityController = new ManageContactAddIdentityController(
+    contactsService,
+    referenceDataService,
+  )
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/identity/create',
+    prisonerDetailsMiddleware(prisonerSearchService),
+    logPageViewMiddleware(auditService, manageContactAddIdentityController),
+    asyncMiddleware(manageContactAddIdentityController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/identity/create',
+    validate(identitySchemaFactory()),
+    asyncMiddleware(manageContactAddIdentityController.POST),
+  )
+
+  const manageContactEditIdentityController = new ManageContactEditIdentityController(
+    contactsService,
+    referenceDataService,
+  )
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:contactIdentityId/edit',
+    prisonerDetailsMiddleware(prisonerSearchService),
+    logPageViewMiddleware(auditService, manageContactEditIdentityController),
+    asyncMiddleware(manageContactEditIdentityController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:contactIdentityId/edit',
+    validate(identitySchemaFactory()),
+    asyncMiddleware(manageContactEditIdentityController.POST),
+  )
+
+  const manageContactDeleteIdentityController = new ManageContactDeleteIdentityController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:contactIdentityId/delete',
+    prisonerDetailsMiddleware(prisonerSearchService),
+    logPageViewMiddleware(auditService, manageContactDeleteIdentityController),
+    asyncMiddleware(manageContactDeleteIdentityController.GET),
   )
 
   const manageDomesticStatusController = new ManageDomesticStatusController(contactsService, referenceDataService)

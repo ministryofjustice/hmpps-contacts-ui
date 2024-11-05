@@ -62,9 +62,10 @@ export default class TestData {
     identityTypeDescription: string,
     identityValue: string,
     issuingAuthority: string,
+    contactIdentityId: number = 1,
   ) => {
     return {
-      contactIdentityId: 1,
+      contactIdentityId,
       contactId: 1,
       identityType,
       identityTypeDescription,
