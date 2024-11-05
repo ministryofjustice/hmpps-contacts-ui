@@ -110,4 +110,22 @@ export default class ManageContactDetailsPage extends Page {
   private selectDomesticStatusLink = (): PageElement => cy.get('[data-qa="select-domestic-status"]')
 
   private deletePhoneNumberLink = (id: number): PageElement => cy.get(`[data-qa="delete-phone-number-${id}"]`)
+
+  clickAddIdentityLink() {
+    this.addIdentityLink().click()
+  }
+
+  clickEditIdentityLink(id: number) {
+    this.editIdentityLink(id).click()
+  }
+
+  clickDeleteIdentityLink(id: number) {
+    this.deleteIdentityLink(id).click()
+  }
+
+  private addIdentityLink = (): PageElement => cy.get('[data-qa="add-identity-number"]')
+
+  private editIdentityLink = (id: number): PageElement => cy.get(`[data-qa="edit-identity-number-${id}"]`)
+
+  private deleteIdentityLink = (id: number): PageElement => cy.get(`[data-qa="delete-identity-number-${id}"]`)
 }

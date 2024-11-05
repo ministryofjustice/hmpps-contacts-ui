@@ -1,0 +1,71 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = applicationName + " - Create Identity number" %}
+{% set title = "What is the identity number for " + (contact | reverseFormatName) + "?" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+
+    {{ govukBackLink({
+        text: "Back",
+        href: '/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/manage/' + contact.id,
+        attributes: {"data-qa": "back-link"}
+    }) }}
+    {{ miniProfile(prisonerDetails) }}
+    {% include '../../../partials/formErrorSummary.njk' %}
+    <span class="govuk-caption-l">Contacts</span>
+    <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+                {{ govukInput({
+                    id: "identity",
+                    name: "identity",
+                    label: { text: "Identity number" },
+                    classes: 'govuk-!-width-one-third',
+                    errorMessage: validationErrors | findError('identity'),
+                    value: identity
+                }) }}
+
+                {{ govukSelect({
+                    id: "type",
+                    name: "type",
+                    label: {
+                        text: "Type"
+                    },
+                    items: typeOptions,
+                    errorMessage: validationErrors | findError('type')
+                }) }}
+
+
+                {{ govukInput({
+                    id: "issuingAuthority",
+                    name: "issuingAuthority",
+                    label: { text: "Issuing authority" },
+                    classes: 'govuk-!-width-one-third',
+                    errorMessage: validationErrors | findError('issuingAuthority'),
+                    value: issuingAuthority
+                }) }}
+
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        html: "Save and continue",
+                        type: "submit",
+                        classes: 'govuk-!-margin-top-6',
+                        attributes: {"data-qa": "continue-button"}
+                    }) }}
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ '/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/manage/' + contact.id }}" data-qa="cancel-button">Cancel</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

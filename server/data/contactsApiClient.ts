@@ -17,6 +17,9 @@ import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
 import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
 import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
 import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
+import CreateIdentityRequest = contactsApiClientTypes.CreateIdentityRequest
+import UpdateIdentityRequest = contactsApiClientTypes.UpdateIdentityRequest
+import ContactIdentityDetails = contactsApiClientTypes.ContactIdentityDetails
 
 type Language = components['schemas']['Language']
 type PageableObject = components['schemas']['PageableObject']
@@ -134,6 +137,44 @@ export default class ContactsApiClient extends RestClient {
     return this.delete(
       {
         path: `/contact/${contactId}/phone/${contactPhoneId}`,
+      },
+      user,
+    )
+  }
+
+  async createContactIdentity(
+    contactId: number,
+    request: CreateIdentityRequest,
+    user: Express.User,
+  ): Promise<ContactIdentityDetails> {
+    return this.post<ContactIdentityDetails>(
+      {
+        path: `/contact/${contactId}/identity`,
+        data: request,
+      },
+      user,
+    )
+  }
+
+  async updateContactIdentity(
+    contactId: number,
+    contactIdentityId: number,
+    request: UpdateIdentityRequest,
+    user: Express.User,
+  ): Promise<ContactIdentityDetails> {
+    return this.put<ContactIdentityDetails>(
+      {
+        path: `/contact/${contactId}/identity/${contactIdentityId}`,
+        data: request,
+      },
+      user,
+    )
+  }
+
+  async deleteContactIdentity(contactId: number, contactIdentityId: number, user: Express.User): Promise<void> {
+    return this.delete(
+      {
+        path: `/contact/${contactId}/identity/${contactIdentityId}`,
       },
       user,
     )

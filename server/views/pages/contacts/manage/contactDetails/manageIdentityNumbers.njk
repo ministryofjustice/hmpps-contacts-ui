@@ -13,6 +13,24 @@
                     value: {
                         html: item.identityValue + ('<p>' + item.issuingAuthority + '</p>' if item.identityType == 'PASSPORT' else ''),
                         classes: 'confirm-' + item.identityType + '-value'
+                    },
+                    actions: {
+                        items: [
+                            {
+                                href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/identity/" + item.contactIdentityId + "/edit",
+                                text: "Edit",
+                                visuallyHiddenText: "identity number",
+                                attributes: {"data-qa": "edit-identity-number-" + item.contactIdentityId},
+                                classes: "govuk-link--no-visited-state"
+                            },
+                            {
+                                href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/identity/" + item.contactIdentityId + "/delete",
+                                text: "Delete",
+                                visuallyHiddenText: "identity number",
+                                attributes: {"data-qa": "delete-identity-number-" + item.contactIdentityId},
+                                classes: "govuk-link--no-visited-state"
+                            }
+                        ]
                     }
                 }
         ), identityNumbers) %}
@@ -37,6 +55,16 @@
     card: {
         title: {
             text: "Identity numbers"
+        },
+        actions: {
+            items: [
+                {
+                    href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/identity/create",
+                    text: "Add identity number",
+                    attributes: {"data-qa": "add-identity-number"},
+                    classes: "govuk-link--no-visited-state"
+                }
+            ]
         }
     },
     rows: identityNumbers

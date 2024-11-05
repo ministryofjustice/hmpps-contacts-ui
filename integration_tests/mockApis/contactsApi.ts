@@ -5,6 +5,7 @@ import {
   STUBBED_LANGUAGE_OPTIONS,
   STUBBED_PHONE_TYPE_OPTIONS,
   STUBBED_RELATIONSHIP_OPTIONS,
+  STUBBED_IDENTITY_OPTIONS,
   STUBBED_TITLE_OPTIONS,
 } from '../../server/routes/testutils/stubReferenceData'
 import { components } from '../../server/@types/contactsApi'
@@ -12,6 +13,7 @@ import TestData from '../../server/routes/testutils/testData'
 
 export type StubGetContactResponse = components['schemas']['GetContactResponse']
 export type StubPhoneDetails = components['schemas']['ContactPhoneDetails']
+export type StubIdentityDetails = components['schemas']['ContactIdentityDetails']
 export type StubContactSearchResultItem = components['schemas']['ContactSearchResultItem']
 export type PatchContactRequest = components['schemas']['PatchContactRequest']
 
@@ -121,6 +123,19 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: STUBBED_PHONE_TYPE_OPTIONS,
+      },
+    })
+  },
+  stubIdentityTypeReferenceData: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/reference-codes/group/ID_TYPE',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: STUBBED_IDENTITY_OPTIONS,
       },
     })
   },
@@ -249,6 +264,64 @@ export default {
         status: 201,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: created,
+      },
+    })
+  },
+  stubCreateContactIdentity: ({
+    contactId,
+    created,
+  }: {
+    contactId: number
+    created: StubIdentityDetails
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPath: `/contact/${contactId}/identity`,
+      },
+      response: {
+        status: 201,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: created,
+      },
+    })
+  },
+  stubUpdateContactIdentity: ({
+    contactId,
+    contactIdentityId,
+    updated,
+  }: {
+    contactId: number
+    contactIdentityId: number
+    updated: StubIdentityDetails
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PUT',
+        urlPath: `/contact/${contactId}/identity/${contactIdentityId}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: updated,
+      },
+    })
+  },
+  stubDeleteContactIdentity: ({
+    contactId,
+    contactIdentityId,
+  }: {
+    contactId: number
+    contactIdentityId: number
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'DELETE',
+        urlPath: `/contact/${contactId}/identity/${contactIdentityId}`,
+      },
+      response: {
+        status: 204,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
       },
     })
   },

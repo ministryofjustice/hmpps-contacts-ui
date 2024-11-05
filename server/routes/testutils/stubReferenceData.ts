@@ -36,6 +36,11 @@ const STUBBED_PHONE_TYPE_OPTIONS: StubReferenceData[] = [
   { code: 'MOB', description: 'Mobile phone', groupCode: 'PHONE_TYPE' },
   { code: 'HOME', description: 'Home phone', groupCode: 'PHONE_TYPE' },
 ]
+const STUBBED_IDENTITY_OPTIONS: StubReferenceData[] = [
+  { code: 'DRIVING_LIC', description: 'Driving licence', groupCode: 'ID_TYPE' },
+  { code: 'PASSPORT', description: 'Passport number', groupCode: 'ID_TYPE' },
+  { code: 'NI_NUMBER', description: 'National insurance number', groupCode: 'ID_TYPE' },
+]
 
 type StubLanguageData = {
   languageId: number
@@ -150,6 +155,9 @@ const mockedReferenceData = (type: ReferenceCodeType, _: HmppsUser): Promise<Stu
   if (type === ReferenceCodeType.DOMESTIC_STS) {
     return Promise.resolve(STUBBED_DOMESTIC_STATUS_OPTIONS)
   }
+  if (type === ReferenceCodeType.ID_TYPE) {
+    return Promise.resolve(STUBBED_IDENTITY_OPTIONS)
+  }
   return Promise.reject(new Error(`You haven't set up the stubbed reference data for ${type} yet`))
 }
 
@@ -157,6 +165,7 @@ export {
   mockedReferenceData,
   STUBBED_TITLE_OPTIONS,
   STUBBED_RELATIONSHIP_OPTIONS,
+  STUBBED_IDENTITY_OPTIONS,
   STUBBED_LANGUAGE_OPTIONS,
   STUBBED_PHONE_TYPE_OPTIONS,
   STUBBED_DOMESTIC_STATUS_OPTIONS,
