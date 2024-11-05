@@ -87,8 +87,8 @@ describe('listContactsController', () => {
           approvedVisitor: true,
           nextOfKin: true,
           emergencyContact: true,
-          awareOfCharges: true,
           comments: 'comments here',
+          currentTerm: true,
         },
       ]
 
@@ -169,7 +169,7 @@ describe('listContactsController', () => {
           approvedVisitor: false,
           nextOfKin: false,
           emergencyContact: false,
-          awareOfCharges: true,
+          currentTerm: true,
           comments: 'comments here',
         },
       ]
@@ -238,7 +238,7 @@ describe('listContactsController', () => {
           approvedVisitor: false,
           nextOfKin: false,
           emergencyContact: false,
-          awareOfCharges: true,
+          currentTerm: true,
           comments: 'comments here',
         },
       ]
@@ -286,7 +286,7 @@ describe('listContactsController', () => {
         approvedVisitor: true,
         nextOfKin: true,
         emergencyContact: true,
-        awareOfCharges: true,
+        currentTerm: true,
         comments: 'comments here',
       },
     ]
@@ -538,7 +538,7 @@ describe('listContactsController', () => {
           approvedVisitor: true,
           nextOfKin: true,
           emergencyContact: true,
-          awareOfCharges: true,
+          currentTerm: true,
           comments: 'comments here',
         },
       ]
