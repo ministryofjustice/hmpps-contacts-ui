@@ -540,14 +540,14 @@ describe('contactsApiClient', () => {
         // Given
         const expectedContactIdentityDetails: ContactIdentityDetails = {
           id: 1,
-          identityType: 'PASSPORT',
+          identityType: 'PASS',
           identityNumber: '0123456789',
           issuingAuthority: 'UK',
           createdBy: 'user1',
           createdTime: new Date().toISOString(),
         }
         const request: CreateIdentityRequest = {
-          type: 'PASSPORT',
+          type: 'PASS',
           identityNumber: '0123456789',
           issuingAuthority: 'UK',
           createdBy: 'user1',
@@ -568,7 +568,7 @@ describe('contactsApiClient', () => {
       it.each([400, 401, 403, 500])('should propagate errors creating contact identity', async (errorCode: number) => {
         // Given
         const request: CreateIdentityRequest = {
-          type: 'PASSPORT',
+          type: 'PASS',
           identityNumber: '0123456789',
           issuingAuthority: 'UK',
           createdBy: 'user1',
@@ -600,7 +600,7 @@ describe('contactsApiClient', () => {
         // Given
         const expectedContactIdentityDetails: ContactIdentityDetails = {
           id: 1,
-          identityType: 'PASSPORT',
+          identityType: 'PASS',
           identityNumber: '0123456789',
           issuingAuthority: 'UK',
           createdBy: 'user1',
@@ -609,7 +609,7 @@ describe('contactsApiClient', () => {
           amendedTime: new Date().toISOString(),
         }
         const request: UpdateIdentityRequest = {
-          type: 'PASSPORT',
+          type: 'PASS',
           identityNumber: '0123456789',
           amendedByBy: 'user1',
         }
@@ -629,7 +629,7 @@ describe('contactsApiClient', () => {
       it.each([400, 401, 403, 500])('should propagate errors updating contact identity', async (errorCode: number) => {
         // Given
         const request: UpdateIdentityRequest = {
-          type: 'PASSPORT',
+          type: 'PASS',
           identityNumber: '0123456789',
           issuingAuthority: 'UK',
           amendedByBy: 'user1',

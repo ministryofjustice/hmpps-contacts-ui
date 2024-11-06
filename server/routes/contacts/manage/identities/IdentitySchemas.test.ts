@@ -28,7 +28,7 @@ describe('identitySchemaFactory', () => {
 
     it('should require identity number', async () => {
       // Given
-      const form = { ...baseForm, type: 'PASSPORT' }
+      const form = { ...baseForm, type: 'PASS' }
 
       // When
       const result = await doValidate(form)
@@ -42,7 +42,7 @@ describe('identitySchemaFactory', () => {
     it('identity number should be limited to 20 chars', async () => {
       // Given
       const form = {
-        type: 'PASSPORT',
+        type: 'PASS',
         identity: ''.padEnd(21, '1'),
         issuingAuthority: '',
       }
@@ -61,7 +61,7 @@ describe('identitySchemaFactory', () => {
     it('issuing authority should be limited to 40 chars', async () => {
       // Given
       const form = {
-        type: 'PASSPORT',
+        type: 'PASS',
         identity: 'LAST-87736799M',
         issuingAuthority: ''.padEnd(41, '1'),
       }
