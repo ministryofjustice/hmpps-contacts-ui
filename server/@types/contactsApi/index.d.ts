@@ -4131,10 +4131,10 @@ export interface components {
       sort?: components['schemas']['SortObject'][]
       /** Format: int32 */
       pageSize?: number
-      unpaged?: boolean
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
+      unpaged?: boolean
     }
     PrisonerContactSummaryPage: {
       content?: components['schemas']['PrisonerContactSummary'][]
@@ -4146,12 +4146,12 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      first?: boolean
       /** Format: int32 */
       size?: number
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject'][]
-      first?: boolean
       /** Format: int32 */
       numberOfElements?: number
       empty?: boolean
@@ -4430,12 +4430,12 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      first?: boolean
       /** Format: int32 */
       size?: number
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject'][]
-      first?: boolean
       /** Format: int32 */
       numberOfElements?: number
       empty?: boolean

@@ -73,7 +73,6 @@ export default class TestData {
       identityTypeIsActive,
       identityValue,
       issuingAuthority,
-      identityTypeIsActive,
       verified: true,
       verifiedBy: 'JAMES',
       verifiedTime: '2024-10-08T15:22:59.604791',
