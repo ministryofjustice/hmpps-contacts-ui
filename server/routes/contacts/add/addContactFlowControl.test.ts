@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import {
-  AddContactNavigation,
+  Navigation,
   BreadcrumbType,
   navigationForAddContactJourney,
   nextPageForAddContactJourney,
@@ -59,7 +59,7 @@ describe('addContactFlowControl', () => {
             isCheckingAnswers: false,
             dateOfBirth,
           }
-          const expected: AddContactNavigation = {
+          const expected: Navigation = {
             backLink: expectedBackUrl,
             breadcrumbs: undefined,
           }
@@ -210,7 +210,7 @@ describe('addContactFlowControl', () => {
           mode: 'EXISTING',
           isCheckingAnswers: false,
         }
-        const expected: AddContactNavigation = {
+        const expected: Navigation = {
           backLink: expectedBackUrl,
           breadcrumbs: undefined,
         }
@@ -291,7 +291,7 @@ describe('addContactFlowControl', () => {
         mode: undefined,
         isCheckingAnswers: false,
       }
-      const expected: AddContactNavigation = {
+      const expected: Navigation = {
         backLink: undefined,
         breadcrumbs,
       }

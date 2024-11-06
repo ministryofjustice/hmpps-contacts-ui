@@ -1,7 +1,7 @@
 import AddContactJourney = journeys.AddContactJourney
 import { Page } from '../../../services/auditService'
 
-interface AddContactNavigation {
+interface Navigation {
   backLink?: string
   breadcrumbs?: BreadcrumbType[]
 }
@@ -171,7 +171,7 @@ function checkAnswersOr(other: JourneyUrlProvider): JourneyUrlProvider {
   return journey => (journey.isCheckingAnswers ? PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey) : other(journey))
 }
 
-function navigationForAddContactJourney(currentPage: Page, journey: journeys.AddContactJourney): AddContactNavigation {
+function navigationForAddContactJourney(currentPage: Page, journey: journeys.AddContactJourney): Navigation {
   const spec = findSpec(journey, currentPage)
   if (spec) {
     return {
@@ -202,4 +202,4 @@ function findSpec(journey: journeys.AddContactJourney, currentPage: Page) {
   return spec
 }
 
-export { navigationForAddContactJourney, nextPageForAddContactJourney, AddContactNavigation, BreadcrumbType }
+export { navigationForAddContactJourney, nextPageForAddContactJourney, Navigation, BreadcrumbType }

@@ -38,10 +38,10 @@
         actions: {
             items: [
                 {
-                    href: "#",
+                    href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/update-dob/start",
                     text: "Change",
-                    visuallyHiddenText: "date of birth",
-                    classes: 'govuk-visually-hidden'
+                    visuallyHiddenText: " date of birth",
+                    attributes: {"data-qa": "change-dob-" + contact.id}
                 }
             ]
         }

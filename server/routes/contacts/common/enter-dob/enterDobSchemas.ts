@@ -11,7 +11,7 @@ const DOB_IN_FUTURE_MESSAGE = 'The date of birth must not be in the future'
 const DOB_IS_INVALID = 'The date of birth is invalid'
 const DOB_IS_REQUIRED_MESSAGE = "Enter the contact's date of birth"
 
-export const createContactEnterDobSchema = () => async () => {
+export const enterDobSchema = () => async () => {
   return createSchema({
     isKnown: z.string({ message: SELECT_IS_DOB_KNOWN_MESSAGE }),
     day: z.union(
@@ -89,6 +89,4 @@ export const createContactEnterDobSchema = () => async () => {
     })
 }
 
-export type CreateContactEnterDobSchemaType = z.infer<
-  Awaited<ReturnType<ReturnType<typeof createContactEnterDobSchema>>>
->
+export type EnterDobSchemaType = z.infer<Awaited<ReturnType<ReturnType<typeof enterDobSchema>>>>

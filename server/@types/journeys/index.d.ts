@@ -80,7 +80,17 @@ declare namespace journeys {
     cellLocation?: string
   }
 
-  type ReturnPointType = 'MANAGE_PRISONER_CONTACTS' | 'PRISONER_CONTACTS'
+  export interface UpdateDateOfBirthJourney {
+    id: string
+    lastTouched: string
+    returnPoint: ReturnPoint
+    prisonerNumber: string
+    contactId: number
+    names: ContactNames
+    dateOfBirth?: DateOfBirth
+  }
+
+  type ReturnPointType = 'MANAGE_PRISONER_CONTACTS' | 'PRISONER_CONTACTS' | 'MANAGE_CONTACT'
   type YesOrNo = 'YES' | 'NO'
   type YesNoOrDoNotKnow = 'YES' | 'NO' | 'DO_NOT_KNOW'
   type PrisonerJourneyParams = { prisonerNumber: string; journeyId: string }
