@@ -15,7 +15,7 @@ export type StubGetContactResponse = components['schemas']['GetContactResponse']
 export type StubPhoneDetails = components['schemas']['ContactPhoneDetails']
 export type StubIdentityDetails = components['schemas']['ContactIdentityDetails']
 export type StubContactSearchResultItem = components['schemas']['ContactSearchResultItem']
-export type PatchContactRequest = components['schemas']['PatchContactRequest']
+export type StubPatchContactResponse = components['schemas']['PatchContactResponse']
 
 export default {
   stubCreateContact: (createdContact: StubGetContactResponse): SuperAgentRequest => {
@@ -216,10 +216,10 @@ export default {
 
   stubPatchContactById: ({
     contactId,
-    request,
+    response,
   }: {
     contactId: number
-    request: PatchContactRequest
+    response: StubPatchContactResponse
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -229,7 +229,7 @@ export default {
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: request,
+        jsonBody: response,
       },
     })
   },

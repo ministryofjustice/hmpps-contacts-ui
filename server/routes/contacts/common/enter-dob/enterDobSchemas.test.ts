@@ -1,5 +1,5 @@
 import { deduplicateFieldErrors } from '../../../../middleware/validationMiddleware'
-import { createContactEnterDobSchema } from './createContactEnterDobSchemas'
+import { enterDobSchema } from './enterDobSchemas'
 
 describe('createContactEnterDobSchema', () => {
   type Form = {
@@ -281,7 +281,7 @@ describe('createContactEnterDobSchema', () => {
     })
 
     const doValidate = async (form: Form) => {
-      const schema = await createContactEnterDobSchema()()
+      const schema = await enterDobSchema()()
       return schema.safeParse(form)
     }
   })

@@ -24,4 +24,26 @@ const ensureInManageContactsJourney = (): RequestHandler => {
   }
 }
 
-export default ensureInManageContactsJourney
+const ensureInUpdateDateOfBirthJourney = (): RequestHandler => {
+  return async (
+    req: Request<{ prisonerNumber: string; journeyId: string; contactId: string }, unknown, unknown>,
+    res,
+    next,
+  ) => {
+    const { journeyId, prisonerNumber, contactId } = req.params
+    if (!req.session.updateDateOfBirthJourneys) {
+      req.session.updateDateOfBirthJourneys = {}
+    }
+    if (!req.session.updateDateOfBirthJourneys[journeyId]) {
+      logger.warn(
+        `Update date of birth journey (${journeyId}) not found in session for user ${res.locals.user?.username}. Returning to start of journey.`,
+      )
+      return res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-dob/start`)
+    }
+    req.session.updateDateOfBirthJourneys[journeyId].lastTouched = new Date().toISOString()
+
+    return next()
+  }
+}
+
+export { ensureInManageContactsJourney, ensureInUpdateDateOfBirthJourney }

@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { validate } from '../../../middleware/validationMiddleware'
 import AuditService from '../../../services/auditService'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
-import ensureInManageContactsJourney from './manageContactsMiddleware'
+import { ensureInManageContactsJourney, ensureInUpdateDateOfBirthJourney } from './manageContactsMiddleware'
 import StartManageContactsJourneyController from './start/startManageContactsJourneyController'
 import PrisonerSearchController from './prisoner-search/prisonerSearchController'
 import PrisonerSearchResultsController from './prisoner-search/prisonerSearchResultsController'
@@ -25,6 +25,12 @@ import { identitySchemaFactory } from './identities/IdentitySchemas'
 import ManageContactAddIdentityController from './identities/add/manageContactAddIdentityController'
 import ManageContactEditIdentityController from './identities/edit/manageContactEditIdentityController'
 import ManageContactDeleteIdentityController from './identities/delete/manageContactDeleteIdentityController'
+import { enterDobSchema } from '../common/enter-dob/enterDobSchemas'
+import StartUpdateDateOfBirthJourneyController from './update-dob/start/startUpdateDateOfBirthJourneyController'
+import ManageContactEnterDobController from './update-dob/enter-dob/manageContactEnterDobController'
+import UpdateDateOfBirthEnterEstimatedDobController from './update-dob/enter-estimated-dob/updateDateOfBirthEnterEstimatedDobController'
+import CompleteUpdateDateOfBirthJourneyController from './update-dob/complete/completeUpdateDateOfBirthJourneyController'
+import { enterEstimatedDobSchema } from '../common/enter-estimated-dob/enterEstimatedDobSchemas'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -220,6 +226,52 @@ const ManageContactsRoutes = (
     logPageViewMiddleware(auditService, manageContactDeletePhoneController),
     asyncMiddleware(manageContactDeletePhoneController.GET),
   )
+
+  const startUpdateDobJourneyController = new StartUpdateDateOfBirthJourneyController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob/start',
+    logPageViewMiddleware(auditService, startUpdateDobJourneyController),
+    asyncMiddleware(startUpdateDobJourneyController.GET),
+  )
+
+  const manageContactUpdateDateOfBirthController = new ManageContactEnterDobController()
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob/enter-dob/:journeyId',
+    ensureInUpdateDateOfBirthJourney(),
+    prisonerDetailsMiddleware(prisonerSearchService),
+    logPageViewMiddleware(auditService, manageContactUpdateDateOfBirthController),
+    asyncMiddleware(manageContactUpdateDateOfBirthController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob/enter-dob/:journeyId',
+    ensureInUpdateDateOfBirthJourney(),
+    validate(enterDobSchema()),
+    asyncMiddleware(manageContactUpdateDateOfBirthController.POST),
+  )
+
+  const updateDateOfBirthEnterEstimatedDobController = new UpdateDateOfBirthEnterEstimatedDobController()
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob/enter-estimated-dob/:journeyId',
+    ensureInUpdateDateOfBirthJourney(),
+    prisonerDetailsMiddleware(prisonerSearchService),
+    logPageViewMiddleware(auditService, updateDateOfBirthEnterEstimatedDobController),
+    asyncMiddleware(updateDateOfBirthEnterEstimatedDobController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob/enter-estimated-dob/:journeyId',
+    ensureInUpdateDateOfBirthJourney(),
+    validate(enterEstimatedDobSchema()),
+    asyncMiddleware(updateDateOfBirthEnterEstimatedDobController.POST),
+  )
+
+  const completeUpdateDobJourneyController = new CompleteUpdateDateOfBirthJourneyController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob/complete/:journeyId',
+    ensureInUpdateDateOfBirthJourney(),
+    logPageViewMiddleware(auditService, completeUpdateDobJourneyController),
+    asyncMiddleware(completeUpdateDobJourneyController.GET),
+  )
+
   return router
 }
 

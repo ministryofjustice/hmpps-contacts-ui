@@ -5,6 +5,7 @@ export declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
   import AddContactJourney = journeys.AddContactJourney
   import ManageContactsJourney = journeys.ManageContactsJourney
+  import UpdateDateOfBirthJourney = journeys.UpdateDateOfBirthJourney
 
   interface SessionData {
     returnTo: string
@@ -14,6 +15,7 @@ export declare module 'express-session' {
     search: string
     addContactJourneys: Record<string, AddContactJourney>
     manageContactsJourneys: Record<string, ManageContactsJourney>
+    updateDateOfBirthJourneys: Record<string, UpdateDateOfBirthJourney>
   }
 }
 export declare global {

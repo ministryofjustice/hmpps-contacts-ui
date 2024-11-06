@@ -5,14 +5,12 @@ import EnterNameController from './enter-name/createContactEnterNameController'
 import { validate } from '../../../middleware/validationMiddleware'
 import { createContactEnterNameSchemaFactory } from './enter-name/createContactEnterNameSchemas'
 import CreateContactEnterDobController from './enter-dob/createContactEnterDobController'
-import { createContactEnterDobSchema } from './enter-dob/createContactEnterDobSchemas'
 import StartAddContactJourneyController from './start/startAddContactJourneyController'
 import ensureInAddContactJourney from './addContactMiddleware'
 import { ContactsService, PrisonerSearchService } from '../../../services'
 import CreateContactCheckAnswersController from './check-answers/createContactCheckAnswersController'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import CreateContactEnterEstimatedDobController from './enter-estimated-dob/createContactEnterEstimatedDobController'
-import { createContactEnterEstimatedDobSchema } from './enter-estimated-dob/createContactEnterEstimatedDobSchemas'
 import ReferenceDataService from '../../../services/referenceDataService'
 import SelectRelationshipController from './relationship/selectRelationshipController'
 import { selectRelationshipSchemaFactory } from './relationship/selectRelationshipSchemas'
@@ -28,6 +26,8 @@ import { contactSearchSchema } from '../manage/contact-search/contactSearchSchem
 import { selectToConfirmContactSchema } from '../manage/contact-confirmation/contactConfirmationSchema'
 import AddContactModeController from './mode/addContactModeController'
 import ContactConfirmationController from '../manage/contact-confirmation/contactConfirmationController'
+import { enterDobSchema } from '../common/enter-dob/enterDobSchemas'
+import { enterEstimatedDobSchema } from '../common/enter-estimated-dob/enterEstimatedDobSchemas'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -155,7 +155,7 @@ const AddContactRoutes = (
   router.post(
     '/prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId',
     ensureInAddContactJourney(),
-    validate(createContactEnterDobSchema()),
+    validate(enterDobSchema()),
     asyncMiddleware(enterDobController.POST),
   )
 
@@ -170,7 +170,7 @@ const AddContactRoutes = (
   router.post(
     '/prisoner/:prisonerNumber/contacts/create/enter-estimated-dob/:journeyId',
     ensureInAddContactJourney(),
-    validate(createContactEnterEstimatedDobSchema()),
+    validate(enterEstimatedDobSchema()),
     asyncMiddleware(enterEstimatedDobController.POST),
   )
 

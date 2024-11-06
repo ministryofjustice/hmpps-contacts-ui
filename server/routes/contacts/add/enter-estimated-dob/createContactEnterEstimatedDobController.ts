@@ -1,9 +1,9 @@
 import { Request, Response } from 'express'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
-import { CreateContactEnterEstimatedDobSchemas } from './createContactEnterEstimatedDobSchemas'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
+import { EnterEstimatedDobSchemas } from '../../common/enter-estimated-dob/enterEstimatedDobSchemas'
 
 export default class CreateContactEnterEstimatedDobController implements PageHandler {
   public PAGE_NAME = Page.CREATE_CONTACT_ESTIMATED_DOB_PAGE
@@ -15,12 +15,13 @@ export default class CreateContactEnterEstimatedDobController implements PageHan
       journey,
       isOverEighteen: res.locals?.formResponses?.isOverEighteen ?? journey?.dateOfBirth?.isOverEighteen,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      continueButtonLabel: 'Continue',
     }
-    res.render('pages/contacts/add/enterEstimatedDob', view)
+    res.render('pages/contacts/common/enterEstimatedDob', view)
   }
 
   POST = async (
-    req: Request<PrisonerJourneyParams, unknown, CreateContactEnterEstimatedDobSchemas>,
+    req: Request<PrisonerJourneyParams, unknown, EnterEstimatedDobSchemas>,
     res: Response,
   ): Promise<void> => {
     const { journeyId } = req.params

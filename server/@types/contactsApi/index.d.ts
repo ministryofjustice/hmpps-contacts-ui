@@ -1835,7 +1835,7 @@ export interface components {
       contactId: number
       /**
        * @description Type of identity
-       * @example DRIVING_LICENCE
+       * @example DL
        */
       identityType: string
       /**
@@ -1876,7 +1876,7 @@ export interface components {
       contactId: number
       /**
        * @description Type of identity
-       * @example DRIVING_LICENCE
+       * @example DL
        */
       identityType: string
       /**
@@ -2341,7 +2341,7 @@ export interface components {
       contactId: number
       /**
        * @description Type of identity
-       * @example PASSPORT
+       * @example PASS
        */
       identityType?: string | null
       /**
@@ -2349,6 +2349,11 @@ export interface components {
        * @example Passport number
        */
       identityTypeDescription?: string | null
+      /**
+       * @description Whether this type of identity is still active. If not active, the identity cannot be updated.
+       * @example true
+       */
+      identityTypeIsActive: boolean
       /**
        * @description Identity
        * @example GB123456789
@@ -2758,7 +2763,7 @@ export interface components {
       contactId: number
       /**
        * @description Type of identity
-       * @example DRIVING_LICENCE
+       * @example DL
        */
       identityType: string
       /**
@@ -3173,10 +3178,10 @@ export interface components {
        */
       number: string
       /**
-       * @description Extension number
+       * @description Extension number (optional)
        * @example 100
        */
-      extension: string | null
+      extension?: string | null
       type: components['schemas']['CodedValue']
       /** Format: date-time */
       createDateTime?: string
@@ -3756,9 +3761,6 @@ export interface components {
        */
       createdBy: string
     }
-    JsonNullableBoolean: {
-      present?: boolean
-    }
     /** @description Request to patch a new contact  */
     PatchContactRequest: {
       /**
@@ -3782,11 +3784,21 @@ export interface components {
        */
       languageCode?: string | null
       /**
+       * Format: yyyy-MM-dd
+       * @description The date of birth of the contact, if known
+       * @example 1980-01-01
+       */
+      dateOfBirth?: string | null
+      /**
+       * @description If the date of birth is not known, this indicates whether they are believed to be over 18 or not
+       * @example YES
+       */
+      estimatedIsOverEighteen?: string | null
+      /**
        * @description The id of the user who updated the contact
        * @example JD000001
        */
       updatedBy: string
-      staff?: components['schemas']['JsonNullableBoolean']
     }
     /** @description The details of a updated contact as an individual */
     PatchContactResponse: {
@@ -3943,6 +3955,11 @@ export interface components {
        * @example 5
        */
       displayOrder: number
+      /**
+       * @description Whether the reference code is still in use. Old reference codes are maintained for compatability with legacy data.
+       * @example true
+       */
+      isActive: boolean
     }
     /** @description Describes the details of a prisoner's contact */
     PrisonerContactSummary: {
@@ -4112,12 +4129,12 @@ export interface components {
       /** Format: int64 */
       offset?: number
       sort?: components['schemas']['SortObject'][]
-      paged?: boolean
-      /** Format: int32 */
-      pageNumber?: number
       /** Format: int32 */
       pageSize?: number
       unpaged?: boolean
+      paged?: boolean
+      /** Format: int32 */
+      pageNumber?: number
     }
     PrisonerContactSummaryPage: {
       content?: components['schemas']['PrisonerContactSummary'][]
@@ -4130,11 +4147,11 @@ export interface components {
       /** Format: int32 */
       totalPages?: number
       /** Format: int32 */
+      size?: number
+      /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject'][]
       first?: boolean
-      /** Format: int32 */
-      size?: number
       /** Format: int32 */
       numberOfElements?: number
       empty?: boolean
@@ -4414,11 +4431,11 @@ export interface components {
       /** Format: int32 */
       totalPages?: number
       /** Format: int32 */
+      size?: number
+      /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject'][]
       first?: boolean
-      /** Format: int32 */
-      size?: number
       /** Format: int32 */
       numberOfElements?: number
       empty?: boolean
@@ -6587,6 +6604,8 @@ export interface operations {
       query: {
         /** @description Sort configuration - default displayOrder, description */
         sort: components['schemas']['Sort']
+        /** @description Whether to only return active codes or not, defaults to true */
+        activeOnly?: boolean
       }
       header?: never
       path: {

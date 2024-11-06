@@ -63,12 +63,14 @@ export default class TestData {
     identityValue: string,
     issuingAuthority: string,
     contactIdentityId: number = 1,
+    identityTypeIsActive: boolean = true,
   ) => {
     return {
       contactIdentityId,
       contactId: 1,
       identityType,
       identityTypeDescription,
+      identityTypeIsActive,
       identityValue,
       issuingAuthority,
       verified: true,
