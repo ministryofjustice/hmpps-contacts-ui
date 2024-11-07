@@ -67,7 +67,7 @@ describe('GET /contacts/manage/:contactId', () => {
               'Mobile phone',
               '07878 111111',
               1,
-              '012',
+              null,
               '2024-10-04T09:30:00.000000',
             ),
             TestData.getContactPhoneNumberDetails(
@@ -90,11 +90,11 @@ describe('GET /contacts/manage/:contactId', () => {
       expect(response.status).toEqual(200)
 
       expect($('.phone-number-value-1').text().trim()).toStrictEqual('07878 111111')
-      expect($('.phone-number-value-2').text().trim()).toStrictEqual('01111 777777')
+      expect($('.phone-number-value-2').text().trim()).toStrictEqual('01111 777777 (321)')
 
       const phoneNumbers = $('.phone-number-value').toArray()
       expect(phoneNumbers).toHaveLength(2)
-      expect($(phoneNumbers[0]).text().trim()).toStrictEqual('01111 777777')
+      expect($(phoneNumbers[0]).text().trim()).toStrictEqual('01111 777777 (321)')
       expect($(phoneNumbers[1]).text().trim()).toStrictEqual('07878 111111')
     })
 
