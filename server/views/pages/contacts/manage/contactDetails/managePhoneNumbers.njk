@@ -11,7 +11,7 @@
                         text: item.phoneTypeDescription
                     },
                     value: {
-                        text: item.phoneNumber,
+                        text: item.phoneNumber + (" (" + item.extNumber + ")" if item.extNumber) ,
                         classes: 'phone-number-value phone-number-value-' + item.contactPhoneId
                     },
                     actions: {

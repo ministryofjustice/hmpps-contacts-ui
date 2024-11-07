@@ -115,6 +115,29 @@ describe('phoneNumberSchemaFactory', () => {
       })
     })
 
+    it('should present errors in field order', async () => {
+      // Given
+      const form = {
+        type: '',
+        phoneNumber: '',
+        extension: ''.padEnd(8, '1'),
+      }
+
+      // When
+      const result = await doValidate(form)
+
+      // Then
+      expect(result.success).toStrictEqual(false)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+      expect(JSON.stringify(deduplicatedFieldErrors)).toBe(
+        JSON.stringify({
+          phoneNumber: ['Enter a phone number'],
+          type: ['Select the type of phone number'],
+          extension: ['Extension should be 7 characters or fewer'],
+        }),
+      )
+    })
+
     const doValidate = async (form: Form) => {
       const schema = await phoneNumberSchemaFactory()()
       return schema.safeParse(form)
