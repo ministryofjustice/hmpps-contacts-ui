@@ -171,7 +171,8 @@ context('Change Contact Date Of Birth', () => {
 
     const updated: StubPatchContactResponse = {
       ...contact,
-      dateOfBirth: '2000-12-25',
+      dateOfBirth: null,
+      estimatedIsOverEighteen: 'NO',
     }
     cy.task('stubPatchContactById', { contactId, updated })
 
@@ -217,7 +218,8 @@ context('Change Contact Date Of Birth', () => {
 
     const updated: StubPatchContactResponse = {
       ...contact,
-      dateOfBirth: '2000-12-25',
+      dateOfBirth: null,
+      estimatedIsOverEighteen: 'DO_NOT_KNOW',
     }
     cy.task('stubPatchContactById', { contactId, updated })
 
@@ -263,12 +265,6 @@ context('Change Contact Date Of Birth', () => {
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
 
-    const updated: StubPatchContactResponse = {
-      ...contact,
-      dateOfBirth: '2000-12-25',
-    }
-    cy.task('stubPatchContactById', { contactId, updated })
-
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeDateOfBirthLink(contactId)
 
@@ -291,12 +287,6 @@ context('Change Contact Date Of Birth', () => {
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
-
-    const updated: StubPatchContactResponse = {
-      ...contact,
-      dateOfBirth: '2000-12-25',
-    }
-    cy.task('stubPatchContactById', { contactId, updated })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeDateOfBirthLink(contactId)
@@ -323,12 +313,6 @@ context('Change Contact Date Of Birth', () => {
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
-
-    const updated: StubPatchContactResponse = {
-      ...contact,
-      dateOfBirth: '2000-12-25',
-    }
-    cy.task('stubPatchContactById', { contactId, updated })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeDateOfBirthLink(contactId)
@@ -367,12 +351,6 @@ context('Change Contact Date Of Birth', () => {
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
-
-    const updated: StubPatchContactResponse = {
-      ...contact,
-      dateOfBirth: '2000-12-25',
-    }
-    cy.task('stubPatchContactById', { contactId, updated })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeDateOfBirthLink(contactId)
