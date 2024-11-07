@@ -12,15 +12,16 @@ context('Edit Contact Identitys', () => {
     firstName: 'First',
     middleNames: 'Middle Names',
     identities: [
-      TestData.getContactIdentityDetails('DRIVING_LIC', 'Driving licence', 'LAST-8773671M', 'UK', 1),
+      TestData.getContactIdentityDetails('DL', 'Driving licence', 'LAST-8773671M', 'UK', 1, true),
       TestData.getContactIdentityDetails(
-        'PASSPORT',
+        'PASS',
         'Passport number',
         '425362965',
         'Issuing authorithy - UK passport office',
         2,
+        true,
       ),
-      TestData.getContactIdentityDetails('NI_NUMBER', 'National insurance number', '06/614465M', 'UK', 3),
+      TestData.getContactIdentityDetails('NINO', 'National insurance number', '06/614465M', 'UK', 3, true),
     ],
   })
 
@@ -45,7 +46,7 @@ context('Edit Contact Identitys', () => {
       contactIdentityId: 1,
       contactId,
       identityValue: '425362965',
-      identityType: 'PASSPORT',
+      identityType: 'PASS',
       identityTypeIsActive: true,
       issuingAuthority: 'UK',
       createdBy: 'USER1',
@@ -61,8 +62,8 @@ context('Edit Contact Identitys', () => {
     Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') // without issuing authority
       .hasIdentity('LAST-8773671M')
       .enterIdentity('123434')
-      .hasType('DRIVING_LIC')
-      .selectType('NI_NUMBER')
+      .hasType('DL')
+      .selectType('NINO')
       .hasIssuingAuthority('UK')
       .clearIssuingAuthority()
       .clickContinue()
@@ -74,7 +75,7 @@ context('Edit Contact Identitys', () => {
         method: 'PUT',
         urlPath: `/contact/${contactId}/identity/1`,
       },
-      { identityType: 'NI_NUMBER', identityValue: '123434', amendedBy: 'USER1' },
+      { identityType: 'NINO', identityValue: '123434', amendedBy: 'USER1' },
     )
   })
 
@@ -82,7 +83,7 @@ context('Edit Contact Identitys', () => {
     const updated: StubIdentityDetails = {
       contactIdentityId: 1,
       contactId,
-      identityType: 'PASSPORT',
+      identityType: 'PASS',
       identityTypeIsActive: true,
       identityValue: '1233445',
       issuingAuthority: 'UK',
@@ -101,8 +102,8 @@ context('Edit Contact Identitys', () => {
       .enterIdentity('987654321')
       .hasIssuingAuthority('UK')
       .enterIssuingAuthority('USA')
-      .hasType('DRIVING_LIC')
-      .selectType('NI_NUMBER')
+      .hasType('DL')
+      .selectType('NINO')
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
@@ -112,7 +113,7 @@ context('Edit Contact Identitys', () => {
         method: 'PUT',
         urlPath: `/contact/${contactId}/identity/1`,
       },
-      { identityType: 'NI_NUMBER', identityValue: '987654321', issuingAuthority: 'USA', amendedBy: 'USER1' },
+      { identityType: 'NINO', identityValue: '987654321', issuingAuthority: 'USA', amendedBy: 'USER1' },
     )
   })
 
@@ -152,7 +153,7 @@ context('Edit Contact Identitys', () => {
       .clickEditIdentityLink(1)
 
     const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
-      .selectType('PASSPORT')
+      .selectType('PASS')
       .enterIdentity('0123')
       .enterIssuingAuthority(''.padEnd(41, '0'))
 

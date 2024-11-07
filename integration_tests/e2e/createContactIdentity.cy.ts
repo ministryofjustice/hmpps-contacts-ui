@@ -12,15 +12,16 @@ context('Create Contact Identity', () => {
     firstName: 'First',
     middleNames: 'Middle Names',
     identities: [
-      TestData.getContactIdentityDetails('DRIVING_LIC', 'Driving licence', 'LAST-87736799M', 'UK', 1),
+      TestData.getContactIdentityDetails('DL', 'Driving licence', 'LAST-87736799M', 'UK', 1, true),
       TestData.getContactIdentityDetails(
-        'PASSPORT',
+        'PASS',
         'Passport number',
         '425362965',
         'Issuing authorithy - UK passport office',
         2,
+        true,
       ),
-      TestData.getContactIdentityDetails('NI_NUMBER', 'National insurance number', '06/614465M', 'UK', 3),
+      TestData.getContactIdentityDetails('NINO', 'National insurance number', '06/614465M', 'UK', 3, true),
     ],
   })
 
@@ -44,7 +45,7 @@ context('Create Contact Identity', () => {
     const created: StubIdentityDetails = {
       contactIdentityId: 1,
       contactId,
-      identityType: 'PASSPORT',
+      identityType: 'PASS',
       identityTypeIsActive: true,
       identityValue: '425362965',
       createdBy: 'USER1',
@@ -56,7 +57,7 @@ context('Create Contact Identity', () => {
 
     Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
       .enterIdentity('425362965')
-      .selectType('PASSPORT')
+      .selectType('PASS')
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
@@ -67,7 +68,7 @@ context('Create Contact Identity', () => {
         urlPath: `/contact/${contactId}/identity`,
       },
       {
-        identityType: 'PASSPORT',
+        identityType: 'PASS',
         identityValue: '425362965',
         createdBy: 'USER1',
       },
@@ -78,8 +79,7 @@ context('Create Contact Identity', () => {
     const created: StubIdentityDetails = {
       contactIdentityId: 1,
       contactId,
-      identityType: 'PASSPORT',
-      identityTypeDescription: 'Home identity',
+      identityType: 'PASS',
       identityTypeIsActive: true,
       identityValue: '425362965',
       issuingAuthority: '000',
@@ -93,7 +93,7 @@ context('Create Contact Identity', () => {
     Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
       .enterIdentity('425362965')
       .enterIssuingAuthority('000')
-      .selectType('NI_NUMBER')
+      .selectType('NINO')
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
@@ -103,7 +103,7 @@ context('Create Contact Identity', () => {
         method: 'POST',
         urlPath: `/contact/${contactId}/identity`,
       },
-      { identityType: 'NI_NUMBER', identityValue: '425362965', issuingAuthority: '000', createdBy: 'USER1' },
+      { identityType: 'NINO', identityValue: '425362965', issuingAuthority: '000', createdBy: 'USER1' },
     )
   })
 
@@ -120,7 +120,7 @@ context('Create Contact Identity', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickAddIdentityLink()
 
     const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
-      .selectType('NI_NUMBER')
+      .selectType('NINO')
     enterIdentityPage.clickContinue()
     enterIdentityPage.hasFieldInError('identity', 'Enter the identity number')
   })
@@ -129,7 +129,7 @@ context('Create Contact Identity', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickAddIdentityLink()
 
     const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
-      .selectType('NI_NUMBER')
+      .selectType('NINO')
       .enterIdentity(''.padEnd(21, '0'))
     enterIdentityPage.clickContinue()
     enterIdentityPage.hasFieldInError('identity', 'Identity number should be 20 characters or fewer')
@@ -139,7 +139,7 @@ context('Create Contact Identity', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickAddIdentityLink()
 
     const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
-      .selectType('NI_NUMBER')
+      .selectType('NINO')
       .enterIdentity('0123')
       .enterIssuingAuthority(''.padEnd(41, '0'))
 

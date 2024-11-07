@@ -29,15 +29,16 @@ const contact: GetContactResponse = {
   firstName: 'first',
   middleNames: 'middle',
   identities: [
-    TestData.getContactIdentityDetails('DRIVING_LIC', 'Driving licence', 'LAST-87736799M', 'UK', 1),
+    TestData.getContactIdentityDetails('DL', 'Driving licence', 'LAST-87736799M', 'UK', 1, true),
     TestData.getContactIdentityDetails(
-      'PASSPORT',
+      'PASS',
       'Passport number',
       '425362965',
       'Issuing authorithy - UK passport office',
       2,
+      true,
     ),
-    TestData.getContactIdentityDetails('NI_NUMBER', 'National insurance number', '06/614465M', 'UK', 3),
+    TestData.getContactIdentityDetails('NINO', 'National insurance number', '06/614465M', 'UK', 3, true),
   ],
   createdBy: user.username,
   createdTime: '2024-01-01',
@@ -81,7 +82,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:con
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/manage/987654')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('#identity').val()).toStrictEqual('LAST-87736799M')
-    expect($('#type').val()).toStrictEqual('DRIVING_LIC')
+    expect($('#type').val()).toStrictEqual('DL')
     expect($('#issuingAuthority').val()).toStrictEqual('UK')
   })
 
@@ -89,7 +90,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:con
     // Given
     auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
-    const form = { identity: '425362965', type: 'PASSPORT', issuingAuthority: 'UK' }
+    const form = { identity: '425362965', type: 'PASS', issuingAuthority: 'UK' }
     auditService.logPageView.mockResolvedValue(null)
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
@@ -107,7 +108,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:con
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/manage/987654')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('#identity').val()).toStrictEqual('425362965')
-    expect($('#type').val()).toStrictEqual('PASSPORT')
+    expect($('#type').val()).toStrictEqual('PASS')
     expect($('#issuingAuthority').val()).toStrictEqual('UK')
   })
 

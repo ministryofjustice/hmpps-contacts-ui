@@ -10,15 +10,16 @@ context('Delete Contact Identity', () => {
     firstName: 'First',
     middleNames: 'Middle Names',
     identities: [
-      TestData.getContactIdentityDetails('DRIVING_LIC', 'Driving licence', 'LAST-87736799M', 'UK', 1),
+      TestData.getContactIdentityDetails('DL', 'Driving licence', 'LAST-87736799M', 'UK', 1, true),
       TestData.getContactIdentityDetails(
-        'PASSPORT',
+        'PASS',
         'Passport number',
         '425362965',
         'Issuing authorithy - UK passport office',
         2,
+        true,
       ),
-      TestData.getContactIdentityDetails('NI_NUMBER', 'National insurance number', '06/614465M', 'UK', 3),
+      TestData.getContactIdentityDetails('NINO', 'National insurance number', '06/614465M', 'UK', 3, true),
     ],
   })
 

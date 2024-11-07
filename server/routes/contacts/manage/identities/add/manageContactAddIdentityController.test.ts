@@ -88,7 +88,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/crea
 
   it('should render previously entered details if validation errors', async () => {
     // Given
-    const form = { type: 'DRIVING_LIC', identity: '123456789', issuingAuthority: '000' }
+    const form = { type: 'DL', identity: '123456789', issuingAuthority: '000' }
     auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
@@ -99,7 +99,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/crea
     // Then
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
-    expect($('#type').val()).toStrictEqual('DRIVING_LIC')
+    expect($('#type').val()).toStrictEqual('DL')
     expect($('#identity').val()).toStrictEqual('123456789')
     expect($('#issuingAuthority').val()).toStrictEqual('000')
   })
@@ -110,34 +110,22 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/cre
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/create`)
       .type('form')
-      .send({ type: 'DRIVING_LIC', identity: '123456789', issuingAuthority: '000' })
+      .send({ type: 'DL', identity: '123456789', issuingAuthority: '000' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
 
-    expect(contactsService.createContactIdentity).toHaveBeenCalledWith(
-      contactId,
-      user,
-      'DRIVING_LIC',
-      '123456789',
-      '000',
-    )
+    expect(contactsService.createContactIdentity).toHaveBeenCalledWith(contactId, user, 'DL', '123456789', '000')
   })
 
   it('should create Identity Number without issuing authority  and pass to manage contact details page if there are no validation errors', async () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/create`)
       .type('form')
-      .send({ type: 'DRIVING_LIC', identity: '123456789', issuingAuthority: '' })
+      .send({ type: 'DL', identity: '123456789', issuingAuthority: '' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
 
-    expect(contactsService.createContactIdentity).toHaveBeenCalledWith(
-      contactId,
-      user,
-      'DRIVING_LIC',
-      '123456789',
-      undefined,
-    )
+    expect(contactsService.createContactIdentity).toHaveBeenCalledWith(contactId, user, 'DL', '123456789', undefined)
   })
 
   it('should return to input page with details kept if there are validation errors', async () => {

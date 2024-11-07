@@ -37,9 +37,9 @@ const STUBBED_PHONE_TYPE_OPTIONS: StubReferenceData[] = [
   { code: 'HOME', description: 'Home phone', groupCode: 'PHONE_TYPE' },
 ]
 const STUBBED_IDENTITY_OPTIONS: StubReferenceData[] = [
-  { code: 'DRIVING_LIC', description: 'Driving licence', groupCode: 'ID_TYPE' },
-  { code: 'PASSPORT', description: 'Passport number', groupCode: 'ID_TYPE' },
-  { code: 'NI_NUMBER', description: 'National insurance number', groupCode: 'ID_TYPE' },
+  { code: 'DL', description: 'Driving licence', groupCode: 'ID_TYPE' },
+  { code: 'PASS', description: 'Passport number', groupCode: 'ID_TYPE' },
+  { code: 'NINO', description: 'National insurance number', groupCode: 'ID_TYPE' },
 ]
 
 type StubLanguageData = {

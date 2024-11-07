@@ -126,11 +126,32 @@ describe('GET /contacts/manage/:contactId', () => {
       const $ = cheerio.load(response.text)
       expect(response.status).toEqual(200)
 
-      expect($('.confirm-DRIVING_LIC-value').text().trim()).toStrictEqual('LAST-87736799M')
-      expect($('.confirm-PASSPORT-value').text().trim()).toStrictEqual(
-        '425362965Issuing authorithy - UK passport office',
+      expect($('.confirm-DL-value').text().trim()).toStrictEqual('LAST-87736799M')
+      expect($('.confirm-PASS-value').text().trim()).toStrictEqual('425362965Issuing authorithy - UK passport office')
+      expect($('.confirm-NINO-value').text().trim()).toStrictEqual('06/614465M')
+    })
+
+    it('should render identity numbers edit link only for active identity types ', async () => {
+      auditService.logPageView.mockResolvedValue(null)
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      const contact = TestData.contact()
+      contact.identities[0].identityTypeIsActive = false
+      contactsService.getContact.mockResolvedValue(contact)
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect(response.status).toEqual(200)
+
+      expect($('a[data-qa="edit-identity-number-1"]').length).toStrictEqual(0) // Edit button is not preset
+      expect($('a[data-qa="edit-identity-number-2"]').text().trim()).toStrictEqual(
+        'Edit identity number (Identity numbers)',
       )
-      expect($('.confirm-NI_NUMBER-value').text().trim()).toStrictEqual('06/614465M')
+      expect($('a[data-qa="edit-identity-number-3"]').text().trim()).toStrictEqual(
+        'Edit identity number (Identity numbers)',
+      )
     })
 
     it('should render not provided if no identity numbers', async () => {
