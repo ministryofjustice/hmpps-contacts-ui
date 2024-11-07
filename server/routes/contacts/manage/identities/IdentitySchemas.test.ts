@@ -77,6 +77,29 @@ describe('identitySchemaFactory', () => {
       })
     })
 
+    it('should present errors in field order', async () => {
+      // Given
+      const form = {
+        identity: '',
+        type: '',
+        issuingAuthority: ''.padEnd(41, '1'),
+      }
+
+      // When
+      const result = await doValidate(form)
+
+      // Then
+      expect(result.success).toStrictEqual(false)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+      expect(JSON.stringify(deduplicatedFieldErrors)).toBe(
+        JSON.stringify({
+          identity: ['Enter the identity number'],
+          type: ['Select the type of identity number'],
+          issuingAuthority: ['Issuing authority should be 40 characters or fewer'],
+        }),
+      )
+    })
+
     const doValidate = async (form: Form) => {
       const schema = await identitySchemaFactory()()
       return schema.safeParse(form)
