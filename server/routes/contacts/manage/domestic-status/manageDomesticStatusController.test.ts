@@ -7,7 +7,7 @@ import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import ContactsService from '../../../../services/contactsService'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import TestData from '../../../testutils/testData'
-import { mockedReferenceData } from '../../../testutils/stubReferenceData'
+import { mockedReferenceData, STUBBED_DOMESTIC_STATUS_OPTIONS } from '../../../testutils/stubReferenceData'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -66,6 +66,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/domestic-stat
     // Then
     expect(response.status).toEqual(200)
     expect($(`[data-qa=status-${code}-option]`).attr('selected', 'selected').text()).toStrictEqual(expected)
+
+    expect($('#domesticStatusCode :nth-child(1)').text()).toStrictEqual('')
+    expect($('#domesticStatusCode :nth-child(2)').text()).toStrictEqual('Single-not married/in civil partnership')
+    expect($(`#domesticStatusCode :nth-child(${STUBBED_DOMESTIC_STATUS_OPTIONS.length + 1})`).text()).toStrictEqual(
+      'Prefer not to say',
+    )
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_DOMESTIC_STATUS_PAGE, {
       who: user.username,
       correlationId: expect.any(String),

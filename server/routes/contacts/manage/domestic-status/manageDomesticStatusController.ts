@@ -54,16 +54,14 @@ export default class ManageDomesticStatusController implements PageHandler {
     text: string
     selected?: boolean
   }> {
-    const mappedOptions = options
-      .map((status: ReferenceCode) => {
-        return {
-          text: status.description,
-          value: status.code,
-          selected: status.code === selected,
-          attributes: { 'data-qa': `status-${status.code}-option` },
-        }
-      })
-      .sort((a, b) => a.text.localeCompare(b.text))
+    const mappedOptions = options.map((status: ReferenceCode) => {
+      return {
+        text: status.description,
+        value: status.code,
+        selected: status.code === selected,
+        attributes: { 'data-qa': `status-${status.code}-option` },
+      }
+    })
     return [{ text: '', value: '' }, ...mappedOptions]
   }
 }
