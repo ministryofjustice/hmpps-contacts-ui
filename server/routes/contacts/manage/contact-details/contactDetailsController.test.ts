@@ -127,7 +127,7 @@ describe('GET /contacts/manage/:contactId', () => {
       expect(response.status).toEqual(200)
 
       expect($('.confirm-DL-value').text().trim()).toStrictEqual('LAST-87736799M')
-      expect($('.confirm-PASS-value').text().trim()).toStrictEqual('425362965Issuing authorithy - UK passport office')
+      expect($('.confirm-PASS-value').text().trim()).toStrictEqual('425362965Issuing authority - UK passport office')
       expect($('.confirm-NINO-value').text().trim()).toStrictEqual('06/614465M')
     })
 
