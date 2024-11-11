@@ -7,7 +7,7 @@ import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import { reverseFormatName } from '../../../../utils/formatName'
 
 import Contact = contactsApiClientTypes.Contact
-import GetContactResponse = contactsApiClientTypes.GetContactResponse
+import ContactDetails = contactsApiClientTypes.ContactDetails
 
 export default class ContactDetailsController implements PageHandler {
   constructor(
@@ -30,7 +30,7 @@ export default class ContactDetailsController implements PageHandler {
     })
   }
 
-  private async formattedFullName(contact: GetContactResponse, user: Express.User) {
+  private async formattedFullName(contact: ContactDetails, user: Express.User) {
     let titleDescription: string
     if (contact.title) {
       titleDescription = await this.referenceDataService.getReferenceDescriptionForCode(

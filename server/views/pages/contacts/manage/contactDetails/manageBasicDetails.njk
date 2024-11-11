@@ -19,10 +19,11 @@
         actions: {
             items: [
                 {
-                    href: "#",
+                    href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/name",
                     text: "Change",
-                    visuallyHiddenText: "name",
-                    classes: 'govuk-visually-hidden'
+                    visuallyHiddenText: " name",
+                    attributes: {"data-qa": "change-name-link"},
+                    classes: "govuk-link--no-visited-state"
                 }
             ]
         }

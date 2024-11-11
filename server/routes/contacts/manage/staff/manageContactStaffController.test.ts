@@ -38,12 +38,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/staff', () =>
     ['YES', { isStaff: true }],
     ['NO', { isStaff: false }],
   ])('should render manage staff page when isStaff is %p', async (isStaff, expectedResponse) => {
-    const getContactResponse = TestData.contact(expectedResponse)
-    const contactId = getContactResponse.id
+    const ContactDetails = TestData.contact(expectedResponse)
+    const contactId = ContactDetails.id
     // Given
     auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-    contactsService.getContact.mockResolvedValue(getContactResponse)
+    contactsService.getContact.mockResolvedValue(ContactDetails)
 
     // When
 

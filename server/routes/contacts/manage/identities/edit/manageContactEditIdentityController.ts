@@ -7,7 +7,7 @@ import { IdentitySchemaType } from '../IdentitySchemas'
 import { ContactsService } from '../../../../../services'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import ContactIdentityDetails = contactsApiClientTypes.ContactIdentityDetails
-import GetContactResponse = contactsApiClientTypes.GetContactResponse
+import ContactDetails = contactsApiClientTypes.ContactDetails
 
 export default class ManageContactEditIdentityController implements PageHandler {
   constructor(
@@ -23,7 +23,7 @@ export default class ManageContactEditIdentityController implements PageHandler 
   ): Promise<void> => {
     const { user } = res.locals
     const { contactId, contactIdentityId } = req.params
-    const contact: GetContactResponse = await this.contactsService.getContact(parseInt(contactId, 10), user)
+    const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const identity: ContactIdentityDetails = contact.identities.find(
       (aIdentityNumber: ContactIdentityDetails) =>
         aIdentityNumber.contactIdentityId === parseInt(contactIdentityId, 10),

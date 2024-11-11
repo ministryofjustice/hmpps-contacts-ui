@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
-import { CreateContactEnterNameSchemaType } from './createContactEnterNameSchemas'
+import { FullNameSchemaType } from '../../common/name/nameSchemas'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
@@ -26,8 +26,10 @@ export default class EnterNameController implements PageHandler {
       firstName: res.locals?.formResponses?.firstName ?? journey?.names?.firstName,
       middleNames: res.locals?.formResponses?.middleNames ?? journey?.names?.middleNames,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      restrictedEditing: false,
+      continueButtonLabel: 'Continue',
     }
-    res.render('pages/contacts/add/enterName', viewModel)
+    res.render('pages/contacts/common/enterName', viewModel)
   }
 
   POST = async (
@@ -37,7 +39,7 @@ export default class EnterNameController implements PageHandler {
         prisonerNumber: string
       },
       unknown,
-      CreateContactEnterNameSchemaType
+      FullNameSchemaType
     >,
     res: Response,
   ): Promise<void> => {

@@ -8,7 +8,7 @@ import Pageable = contactsApiClientTypes.Pageable
 import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
 import PrisonerContactSummaryPage = contactsApiClientTypes.PrisonerContactSummaryPage
-import GetContactResponse = contactsApiClientTypes.GetContactResponse
+import ContactDetails = contactsApiClientTypes.ContactDetails
 import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
 import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
 import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
@@ -91,7 +91,7 @@ export default class ContactsService {
     return this.contactsApiClient.searchContact(contactSearchRequest, user, pagination)
   }
 
-  async getContact(contactId: number, user: Express.User): Promise<GetContactResponse> {
+  async getContact(contactId: number, user: Express.User): Promise<ContactDetails> {
     return this.contactsApiClient.getContact(contactId, user)
   }
 

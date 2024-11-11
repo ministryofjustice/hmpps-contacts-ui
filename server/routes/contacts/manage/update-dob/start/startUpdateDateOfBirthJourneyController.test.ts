@@ -8,7 +8,7 @@ import ContactsService from '../../../../../services/contactsService'
 import TestData from '../../../../testutils/testData'
 import ManageContactsJourney = journeys.ManageContactsJourney
 import UpdateDateOfBirthJourney = journeys.UpdateDateOfBirthJourney
-import GetContactResponse = contactsApiClientTypes.GetContactResponse
+import ContactDetails = contactsApiClientTypes.ContactDetails
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/contactsService')
@@ -61,7 +61,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob/st
     ],
   ])(
     'should create the journey and go to update dob, enter dob page %s',
-    async (_: string, contact: GetContactResponse, expectedDob) => {
+    async (_: string, contact: ContactDetails, expectedDob) => {
       auditService.logPageView.mockResolvedValue(null)
       contactsService.getContact.mockResolvedValue(contact)
       const response = await request(app).get('/prisoner/A1234BC/contacts/manage/987/update-dob/start')

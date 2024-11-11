@@ -10,7 +10,7 @@ import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
-import GetContactResponse = contactsApiClientTypes.GetContactResponse
+import ContactDetails = contactsApiClientTypes.ContactDetails
 import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
 import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
 import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
@@ -263,7 +263,7 @@ describe('contactsApiClient', () => {
   describe('getContact', () => {
     it('should create the request and return the response', async () => {
       // Given
-      const expectedContact: GetContactResponse = {
+      const expectedContact: ContactDetails = {
         id: 123456,
         lastName: 'last',
         firstName: 'middle',
