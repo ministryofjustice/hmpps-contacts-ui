@@ -76,7 +76,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/EXISTING/confirmation/:journeyI
       correlationId: expect.any(String),
     })
     const $ = cheerio.load(response.text)
-    expect($('.confirm-PASS-value').text().trim()).toStrictEqual('425362965Issuing authority- UK passport office')
+    expect($('.confirm-PASS-value').text().trim()).toStrictEqual('425362965Issuing authority - UK passport office')
   })
 })
 

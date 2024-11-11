@@ -11,7 +11,7 @@
                         text: (item.identityTypeDescription | capitalizeFirstLetter)
                     },
                     value: { 
-                        html: item.identityValue + ('<p>Issuing authority- ' + item.issuingAuthority + '</p>' if item.identityType == 'PASS' else ''),
+                        html: item.identityValue + ('<p>Issuing authority - ' + item.issuingAuthority + '</p>' if item.identityType == 'PASS' else ''),
                         classes: 'confirm-' + item.identityType + '-value'
                     }
                 }
