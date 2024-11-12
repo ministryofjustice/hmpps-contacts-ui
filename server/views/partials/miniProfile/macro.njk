@@ -1,6 +1,6 @@
 {#
  Parameters:
-    miniProfile = a components.PrisonerDetails entity. Can be populated by prisonerDetailsMiddleware() middleware.
+    miniProfile = a components.PrisonerDetails entity. Can be populated by populatePrisonerDetailsIfInCaseload() middleware.
 #}
 {% macro miniProfile(prisonerDetails) %}
     {%- include "./template.njk" -%}
