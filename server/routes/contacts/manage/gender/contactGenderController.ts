@@ -7,6 +7,7 @@ import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import Contact = contactsApiClientTypes.Contact
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
+import { capitalizeFirstLetter } from '../../../../utils/utils'
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 
@@ -57,7 +58,7 @@ export default class ManageGenderController implements PageHandler {
   }> {
     const mappedOptions = options.map((gender: ReferenceCode) => {
       return {
-        text: gender.description,
+        text: capitalizeFirstLetter(gender.description),
         value: gender.code,
         checked: gender.code === selected,
       }
