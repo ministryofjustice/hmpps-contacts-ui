@@ -29,6 +29,25 @@
     },
     {
         key: {
+            text: "Gender"
+        },
+        value: {
+            text: (contact.genderDescription | capitalizeFirstLetter) if contact.genderDescription else 'Not provided',
+            classes: 'manage-gender-value'
+        },
+        actions: {
+            items: [
+                {
+                    href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/gender",
+                    text: "Change",
+                    visuallyHiddenText: "gender",
+                    attributes: {"data-qa": "select-gender"}
+                }
+            ]
+        }
+    },
+    {
+        key: {
             text: "Date of birth"
         },
         value: {
