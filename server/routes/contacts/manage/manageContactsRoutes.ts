@@ -32,6 +32,7 @@ import UpdateDateOfBirthEnterEstimatedDobController from './update-dob/enter-est
 import CompleteUpdateDateOfBirthJourneyController from './update-dob/complete/completeUpdateDateOfBirthJourneyController'
 import { enterEstimatedDobSchema } from '../common/enter-estimated-dob/enterEstimatedDobSchemas'
 import UpdateEstimatedDobController from './update-estimated-dob/updateEstimatedDobController'
+import ManageGenderController from './gender/contactGenderController'
 import UpdateNameController from './name/updateNameController'
 import { restrictedEditingNameSchema } from '../common/name/nameSchemas'
 
@@ -286,6 +287,18 @@ const ManageContactsRoutes = (
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-estimated-dob',
     validate(enterEstimatedDobSchema()),
     asyncMiddleware(updateEstimatedDobController.POST),
+  )
+
+  const manageGenderController = new ManageGenderController(contactsService, referenceDataService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/gender',
+    prisonerDetailsMiddleware(prisonerSearchService),
+    logPageViewMiddleware(auditService, manageGenderController),
+    asyncMiddleware(manageGenderController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/gender',
+    asyncMiddleware(manageGenderController.POST),
   )
 
   const updateNameController = new UpdateNameController(referenceDataService, contactsService)
