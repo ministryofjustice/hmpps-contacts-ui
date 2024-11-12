@@ -10,6 +10,11 @@ export default class ManageContactDetailsPage extends Page {
     return this
   }
 
+  verifyGenderValueAs(expected: string): ManageContactDetailsPage {
+    this.genderValue().should('contain.text', expected)
+    return this
+  }
+
   verifyShowDOBValueAs(expected: string): ManageContactDetailsPage {
     this.dobValue().should('contain.text', expected)
     return this
@@ -48,6 +53,10 @@ export default class ManageContactDetailsPage extends Page {
   verifyDomesticStatusValueAs(expected: string): ManageContactDetailsPage {
     this.domesticStatusValue().should('contain.text', expected)
     return this
+  }
+
+  clickChangeGenderLink() {
+    this.selectGenderLink().click()
   }
 
   clickAddInterpreterLink() {
@@ -89,6 +98,8 @@ export default class ManageContactDetailsPage extends Page {
 
   private namesValue = (): PageElement => cy.get('.manage-names-value')
 
+  private genderValue = (): PageElement => cy.get('.manage-gender-value')
+
   private dobValue = (): PageElement => cy.get('.manage-dob-value')
 
   private deceasedValue = (): PageElement => cy.get('.manage-deceased-date-value')
@@ -122,6 +133,8 @@ export default class ManageContactDetailsPage extends Page {
   private selectDomesticStatusLink = (): PageElement => cy.get('[data-qa="select-domestic-status"]')
 
   private deletePhoneNumberLink = (id: number): PageElement => cy.get(`[data-qa="delete-phone-number-${id}"]`)
+
+  private selectGenderLink = (): PageElement => cy.get('[data-qa="select-gender"]')
 
   clickAddIdentityLink() {
     this.addIdentityLink().click()
