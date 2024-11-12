@@ -2,7 +2,7 @@ import { CurrentIncentive, Prisoner } from '../../data/prisonerOffenderSearchTyp
 import { components } from '../../@types/contactsApi'
 
 type ContactSearchResultItem = components['schemas']['ContactSearchResultItem']
-type GetContactResponse = components['schemas']['GetContactResponse']
+type StubContactDetails = components['schemas']['ContactDetails']
 type ContactAddressDetails = components['schemas']['ContactAddressDetails']
 type ContactPhoneDetails = components['schemas']['ContactPhoneDetails']
 type ContactPhoneNumberDetails = components['schemas']['ContactPhoneDetails']
@@ -260,7 +260,9 @@ export default class TestData {
     ],
     domesticStatusCode = 'S',
     domesticStatusDescription = 'Single-not married/in civil partnership',
-  }: Partial<GetContactResponse> = {}): GetContactResponse =>
+    gender = 'M',
+    genderDescription = 'Male',
+  }: Partial<StubContactDetails> = {}): StubContactDetails =>
     ({
       id,
       title,
@@ -283,7 +285,9 @@ export default class TestData {
       identities,
       domesticStatusCode,
       domesticStatusDescription,
-    }) as GetContactResponse
+      gender,
+      genderDescription,
+    }) as StubContactDetails
 
   static prisonerContactSummaryPage = ({
     content = [this.getPrisonerContact()],

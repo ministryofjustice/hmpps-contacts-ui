@@ -7,18 +7,19 @@ import {
   STUBBED_RELATIONSHIP_OPTIONS,
   STUBBED_IDENTITY_OPTIONS,
   STUBBED_TITLE_OPTIONS,
+  STUBBED_GENDER_OPTIONS,
 } from '../../server/routes/testutils/stubReferenceData'
 import { components } from '../../server/@types/contactsApi'
 import TestData from '../../server/routes/testutils/testData'
 
-export type StubGetContactResponse = components['schemas']['GetContactResponse']
+export type ContactDetails = components['schemas']['ContactDetails']
 export type StubPhoneDetails = components['schemas']['ContactPhoneDetails']
 export type StubIdentityDetails = components['schemas']['ContactIdentityDetails']
 export type StubContactSearchResultItem = components['schemas']['ContactSearchResultItem']
 export type StubPatchContactResponse = components['schemas']['PatchContactResponse']
 
 export default {
-  stubCreateContact: (createdContact: StubGetContactResponse): SuperAgentRequest => {
+  stubCreateContact: (createdContact: ContactDetails): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'POST',
@@ -244,6 +245,20 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: STUBBED_DOMESTIC_STATUS_OPTIONS,
+      },
+    })
+  },
+
+  stubGetGenders: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/reference-codes/group/GENDER',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: STUBBED_GENDER_OPTIONS,
       },
     })
   },

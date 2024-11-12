@@ -142,6 +142,50 @@ const STUBBED_DOMESTIC_STATUS_OPTIONS: StubDomesticStatusData[] = [
   },
 ]
 
+type StubGenderData = {
+  referenceCodeId: number
+  groupCode: string
+  code: string
+  description: string
+  displayOrder: number
+  isActive: boolean
+}
+
+const STUBBED_GENDER_OPTIONS: StubGenderData[] = [
+  {
+    referenceCodeId: 125,
+    groupCode: 'GENDER',
+    code: 'M',
+    description: 'Male',
+    displayOrder: 1,
+    isActive: true,
+  },
+  {
+    referenceCodeId: 126,
+    groupCode: 'GENDER',
+    code: 'F',
+    description: 'Female',
+    displayOrder: 2,
+    isActive: true,
+  },
+  {
+    referenceCodeId: 127,
+    groupCode: 'GENDER',
+    code: 'NK',
+    description: 'Not Known / Not Recorded',
+    displayOrder: 3,
+    isActive: true,
+  },
+  {
+    referenceCodeId: 128,
+    groupCode: 'GENDER',
+    code: 'NS',
+    description: 'Not Specified (Indeterminate)',
+    displayOrder: 4,
+    isActive: true,
+  },
+]
+
 const mockedReferenceData = (type: ReferenceCodeType, _: HmppsUser): Promise<StubReferenceData[]> => {
   if (type === ReferenceCodeType.TITLE) {
     return Promise.resolve(STUBBED_TITLE_OPTIONS)
@@ -158,6 +202,10 @@ const mockedReferenceData = (type: ReferenceCodeType, _: HmppsUser): Promise<Stu
   if (type === ReferenceCodeType.ID_TYPE) {
     return Promise.resolve(STUBBED_IDENTITY_OPTIONS)
   }
+  if (type === ReferenceCodeType.GENDER) {
+    return Promise.resolve(STUBBED_GENDER_OPTIONS)
+  }
+
   return Promise.reject(new Error(`You haven't set up the stubbed reference data for ${type} yet`))
 }
 
@@ -169,4 +217,5 @@ export {
   STUBBED_LANGUAGE_OPTIONS,
   STUBBED_PHONE_TYPE_OPTIONS,
   STUBBED_DOMESTIC_STATUS_OPTIONS,
+  STUBBED_GENDER_OPTIONS,
 }
