@@ -57,4 +57,22 @@ export default {
       },
     })
   },
+  stubPrisonerByIdReturnsError: ({
+    prisonerNumber = 'A1234BC',
+    httpStatusCode = 404,
+  }: {
+    prisonerNumber: string
+    httpStatusCode: number
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/prisoner/${prisonerNumber}`,
+      },
+      response: {
+        status: httpStatusCode,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      },
+    })
+  },
 }

@@ -10,7 +10,7 @@ const populatePrisonerDetailsIfInCaseload = (prisonerSearchService: PrisonerSear
     const { user } = res.locals
     const prisoner = await prisonerSearchService.getByPrisonerNumber(prisonerNumber, user)
     if (!req.session.prisonId || req.session.prisonId !== prisoner.prisonId) {
-      return res.render('pages/notInCaseloadError')
+      return res.render('pages/errors/notFound')
     }
     res.locals.prisonerDetails = toPrisonerDetails(prisoner)
     return next()

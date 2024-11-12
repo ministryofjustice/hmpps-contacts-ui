@@ -18,7 +18,9 @@ export default function createErrorHandler(production: boolean) {
     res.locals.stack = production ? null : error.stack
 
     res.status(error.status || 500)
-
-    return res.render('pages/error')
+    if (error.status === 404) {
+      return res.render('pages/errors/notFound')
+    }
+    return res.render('pages/errors/sorry')
   }
 }

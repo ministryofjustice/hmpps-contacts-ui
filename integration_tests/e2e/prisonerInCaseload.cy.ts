@@ -1,6 +1,6 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
-import PrisonerNotInCaseloadPage from '../pages/prisonerNotInCaseloadPage'
+import PageNotFoundPage from '../pages/pageNotFoundPage'
 
 context('Ensure Prisoner Is In Caseload', () => {
   const prisonerNumber = 'A1234BC'
@@ -9,7 +9,6 @@ context('Ensure Prisoner Is In Caseload', () => {
     cy.task('reset')
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.signIn()
-    cy.visit('/contacts/manage/prisoner-search/start')
     const prisoner = TestData.prisoner({
       prisonerNumber,
       prisonId: 'NOT HEI',
@@ -30,12 +29,12 @@ context('Ensure Prisoner Is In Caseload', () => {
   it('Manage contacts page not accessible if prisoner not in caseload', () => {
     cy.visit(`/prisoner/${prisonerNumber}/contacts/list`)
 
-    Page.verifyOnPage(PrisonerNotInCaseloadPage)
+    Page.verifyOnPage(PageNotFoundPage)
   })
 
   it('Manage contacts page not accessible if prisoner not in caseload', () => {
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
 
-    Page.verifyOnPage(PrisonerNotInCaseloadPage)
+    Page.verifyOnPage(PageNotFoundPage)
   })
 })
