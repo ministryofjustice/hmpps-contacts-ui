@@ -14,7 +14,7 @@ import CreateContactEnterEstimatedDobController from './enter-estimated-dob/crea
 import ReferenceDataService from '../../../services/referenceDataService'
 import SelectRelationshipController from './relationship/selectRelationshipController'
 import { selectRelationshipSchemaFactory } from './relationship/selectRelationshipSchemas'
-import prisonerDetailsMiddleware from '../../../middleware/prisonerDetailsMiddleware'
+import populatePrisonerDetailsIfInCaseload from '../../../middleware/populatePrisonerDetailsIfInCaseload'
 import EmergencyContactController from './emergency-contact/emergencyContactController'
 import { selectEmergencyContactSchema } from './emergency-contact/emergencyContactSchemas'
 import { selectNextOfKinSchema } from './next-of-kin/nextOfKinSchemas'
@@ -48,7 +48,7 @@ const AddContactRoutes = (
   router.get(
     '/prisoner/:prisonerNumber/contacts/search/:journeyId',
     ensureInAddContactJourney(),
-    prisonerDetailsMiddleware(prisonerSearchService),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService),
     logPageViewMiddleware(auditService, contactsSearchController),
     asyncMiddleware(contactsSearchController.GET),
   )
@@ -64,7 +64,7 @@ const AddContactRoutes = (
   router.get(
     '/prisoner/:prisonerNumber/contacts/add/confirmation/:journeyId',
     ensureInAddContactJourney(),
-    prisonerDetailsMiddleware(prisonerSearchService),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService),
     logPageViewMiddleware(auditService, contactConfirmationController),
     asyncMiddleware(contactConfirmationController.GET),
   )
@@ -88,7 +88,7 @@ const AddContactRoutes = (
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId',
     ensureInAddContactJourney(),
-    prisonerDetailsMiddleware(prisonerSearchService),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService),
     logPageViewMiddleware(auditService, enterNameController),
     asyncMiddleware(enterNameController.GET),
   )
@@ -103,7 +103,7 @@ const AddContactRoutes = (
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/select-relationship/:journeyId',
     ensureInAddContactJourney(),
-    prisonerDetailsMiddleware(prisonerSearchService),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService),
     logPageViewMiddleware(auditService, selectRelationshipController),
     asyncMiddleware(selectRelationshipController.GET),
   )
@@ -118,7 +118,7 @@ const AddContactRoutes = (
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/select-emergency-contact/:journeyId',
     ensureInAddContactJourney(),
-    prisonerDetailsMiddleware(prisonerSearchService),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService),
     logPageViewMiddleware(auditService, selectEmergencyContact),
     asyncMiddleware(selectEmergencyContact.GET),
   )
@@ -133,7 +133,7 @@ const AddContactRoutes = (
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/select-next-of-kin/:journeyId',
     ensureInAddContactJourney(),
-    prisonerDetailsMiddleware(prisonerSearchService),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService),
     logPageViewMiddleware(auditService, selectNextOfKinController),
     asyncMiddleware(selectNextOfKinController.GET),
   )
@@ -148,7 +148,7 @@ const AddContactRoutes = (
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId',
     ensureInAddContactJourney(),
-    prisonerDetailsMiddleware(prisonerSearchService),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService),
     logPageViewMiddleware(auditService, enterDobController),
     asyncMiddleware(enterDobController.GET),
   )
@@ -163,7 +163,7 @@ const AddContactRoutes = (
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/enter-estimated-dob/:journeyId',
     ensureInAddContactJourney(),
-    prisonerDetailsMiddleware(prisonerSearchService),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService),
     logPageViewMiddleware(auditService, enterEstimatedDobController),
     asyncMiddleware(enterEstimatedDobController.GET),
   )
@@ -178,7 +178,7 @@ const AddContactRoutes = (
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/enter-relationship-comments/:journeyId',
     ensureInAddContactJourney(),
-    prisonerDetailsMiddleware(prisonerSearchService),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService),
     logPageViewMiddleware(auditService, enterRelationshipCommentsController),
     asyncMiddleware(enterRelationshipCommentsController.GET),
   )
@@ -193,7 +193,7 @@ const AddContactRoutes = (
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId',
     ensureInAddContactJourney(),
-    prisonerDetailsMiddleware(prisonerSearchService),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService),
     logPageViewMiddleware(auditService, checkAnswersController),
     asyncMiddleware(checkAnswersController.GET),
   )

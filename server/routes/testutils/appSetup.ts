@@ -52,6 +52,8 @@ function appSetup(
       ...res.locals,
       user: { ...req.user } as HmppsUser,
     }
+    req.session.prisonId = 'HEI'
+    req.session.prisonName = 'Hewell'
     next()
   })
   app.use((req, res, next) => {

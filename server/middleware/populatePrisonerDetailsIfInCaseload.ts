@@ -4,11 +4,14 @@ import { Prisoner } from '../data/prisonerOffenderSearchTypes'
 import asyncMiddleware from './asyncMiddleware'
 import PrisonerDetails = journeys.PrisonerDetails
 
-const prisonerDetailsMiddleware = (prisonerSearchService: PrisonerSearchService): RequestHandler => {
+const populatePrisonerDetailsIfInCaseload = (prisonerSearchService: PrisonerSearchService): RequestHandler => {
   return asyncMiddleware(async (req: Request<{ prisonerNumber: string }>, res, next) => {
     const { prisonerNumber } = req.params
     const { user } = res.locals
     const prisoner = await prisonerSearchService.getByPrisonerNumber(prisonerNumber, user)
+    if (!req.session.prisonId || req.session.prisonId !== prisoner.prisonId) {
+      return res.render('pages/errors/notFound')
+    }
     res.locals.prisonerDetails = toPrisonerDetails(prisoner)
     return next()
   })
@@ -25,4 +28,4 @@ const prisonerDetailsMiddleware = (prisonerSearchService: PrisonerSearchService)
   }
 }
 
-export default prisonerDetailsMiddleware
+export default populatePrisonerDetailsIfInCaseload
