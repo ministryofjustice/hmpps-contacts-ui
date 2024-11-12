@@ -34,7 +34,7 @@ context('Select Gender', () => {
 
     Page.verifyOnPage(ManageContactDetailsPage).clickChangeGenderLink()
     Page.verifyOnPage(SelectGenderPage, 'Jones Mason').selectGender('M').clickContinue()
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').verifyGenderValueAs('Male')
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').verifyGenderValueAs('Not provided')
 
     cy.verifyLastAPICall(
       {
@@ -43,6 +43,29 @@ context('Select Gender', () => {
       },
       {
         gender: 'M',
+      },
+    )
+  })
+
+  it(`should display 'Not provided' when gender not selected`, () => {
+    const request: PatchContactRequest = {
+      gender: null,
+      updatedBy: 'USER1',
+    }
+    cy.task('stubGetGenders')
+    cy.task('stubPatchContactById', { contactId, request })
+
+    Page.verifyOnPage(ManageContactDetailsPage).clickChangeGenderLink()
+    Page.verifyOnPage(SelectGenderPage, 'Jones Mason').clickContinue()
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').verifyGenderValueAs('Not provided')
+
+    cy.verifyLastAPICall(
+      {
+        method: 'PATCH',
+        urlPath: `/contact/${contactId}`,
+      },
+      {
+        gender: null,
       },
     )
   })

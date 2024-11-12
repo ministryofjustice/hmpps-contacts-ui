@@ -82,15 +82,12 @@ const STUBBED_LANGUAGE_OPTIONS: StubLanguageData[] = [
   },
 ]
 
-type StubDomesticStatusData = {
+type StubStatusData = {
   referenceCodeId: number
-  groupCode: string
-  code: string
-  description: string
   displayOrder: number
 }
 
-const STUBBED_DOMESTIC_STATUS_OPTIONS: StubDomesticStatusData[] = [
+const STUBBED_DOMESTIC_STATUS_OPTIONS: StubReferenceData[] & StubStatusData[] = [
   {
     referenceCodeId: 3,
     groupCode: 'DOMESTIC_STS',
@@ -142,16 +139,7 @@ const STUBBED_DOMESTIC_STATUS_OPTIONS: StubDomesticStatusData[] = [
   },
 ]
 
-type StubGenderData = {
-  referenceCodeId: number
-  groupCode: string
-  code: string
-  description: string
-  displayOrder: number
-  isActive: boolean
-}
-
-const STUBBED_GENDER_OPTIONS: StubGenderData[] = [
+const STUBBED_GENDER_OPTIONS: StubReferenceData[] & StubStatusData[] = [
   {
     referenceCodeId: 125,
     groupCode: 'GENDER',
