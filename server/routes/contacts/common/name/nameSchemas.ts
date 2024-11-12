@@ -14,7 +14,7 @@ const MIDDLE_NAME_INVALID = "Contact's middle names must not contain special cha
 
 const NAME_REGEX = /^[a-zA-Z\s,.'-]*$/
 
-export const createContactEnterNameSchemaFactory = () => async () => {
+export const fullNameSchema = () => async () => {
   return createSchema({
     title: z
       .string()
@@ -41,6 +41,25 @@ export const createContactEnterNameSchemaFactory = () => async () => {
   })
 }
 
-export type CreateContactEnterNameSchemaType = z.infer<
-  Awaited<ReturnType<ReturnType<typeof createContactEnterNameSchemaFactory>>>
+export const restrictedEditingNameSchema = () => async () => {
+  return createSchema({
+    title: z
+      .string()
+      .optional()
+      .transform(val => (val?.trim().length > 0 ? val.trim() : undefined))
+      .transform(val => val?.trim()),
+    lastName: z.string().optional(),
+    firstName: z.string().optional(),
+    middleNames: z
+      .string()
+      .max(35, MIDDLE_NAME_TOO_LONG_ERROR_MSG)
+      .regex(NAME_REGEX, MIDDLE_NAME_INVALID)
+      .optional()
+      .transform(val => (val?.trim().length > 0 ? val.trim() : undefined)),
+  })
+}
+
+export type FullNameSchemaType = z.infer<Awaited<ReturnType<ReturnType<typeof fullNameSchema>>>>
+export type RestrictedEditingNameSchemaType = z.infer<
+  Awaited<ReturnType<ReturnType<typeof restrictedEditingNameSchema>>>
 >

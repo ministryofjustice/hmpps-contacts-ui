@@ -356,6 +356,34 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/contact/{contactId}/email/{contactEmailId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get an email
+     * @description Gets a contacts email by id
+     */
+    get: operations['get_2']
+    /**
+     * Update contact email
+     * @description Updates an existing contact email by id
+     */
+    put: operations['update_2']
+    post?: never
+    /**
+     * Delete contact email
+     * @description Deletes an existing contact email by id
+     */
+    delete: operations['delete_2']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/sync/prisoner-contact': {
     parameters: {
       query?: never
@@ -634,6 +662,26 @@ export interface paths {
      * @description Creates a new identity for the specified contact
      */
     post: operations['create_1']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/contact/{contactId}/email': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create new contact email
+     * @description Creates a new email for the specified contact
+     */
+    post: operations['create_2']
     delete?: never
     options?: never
     head?: never
@@ -1073,8 +1121,12 @@ export interface components {
        */
       prisonerNumber: string
       /**
-       * @description The type of the contact
-       * @example SOCIAL or OFFICIAL
+       * @description
+       *           Coded value indicating either a social or official contact (mandatory).
+       *           This is a coded value from the group code CONTACT_TYPE in reference data.
+       *           Known values are (S) Social/Family or (O) official.
+       *
+       * @example S
        */
       contactType: string
       /**
@@ -1146,14 +1198,6 @@ export interface components {
        */
       updatedTime: string
     }
-    ErrorResponse: {
-      /** Format: int32 */
-      status: number
-      errorCode?: string
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
-    }
     /** @description Response object with prisoner contact details */
     PrisonerContact: {
       /**
@@ -1174,8 +1218,12 @@ export interface components {
        */
       prisonerNumber: string
       /**
-       * @description The type of the contact
-       * @example SOCIAL or OFFICIAL
+       * @description
+       *           Coded value indicating either a social or official contact (mandatory).
+       *           This is a coded value (from the group code CONTACT_TYPE in reference data).
+       *           Known values are (S) Social/Family or (O) official.
+       *
+       * @example S
        */
       contactType: string
       /**
@@ -1257,6 +1305,14 @@ export interface components {
        */
       amendedTime?: string | null
     }
+    ErrorResponse: {
+      /** Format: int32 */
+      status: number
+      errorCode?: string
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
+    }
     /** @description Request object to update prisoner contact restriction details */
     UpdatePrisonerContactRestrictionRequest: {
       /**
@@ -1330,8 +1386,12 @@ export interface components {
        */
       contactId: number
       /**
-       * @description Type of restriction applied
-       * @example NoContact
+       * @description
+       *         The coded type of restriction that applies to this relationship.
+       *         This is a coded value from the group RESTRICTION in reference codes.
+       *         Example values include ACC, BAN, CHILD, CLOSED, RESTRICTED, DIHCON, NONCON.
+       *
+       * @example NONCON
        */
       restrictionType?: string | null
       /**
@@ -1393,8 +1453,12 @@ export interface components {
     /** @description Request to update a new contact  */
     UpdateContactRequest: {
       /**
-       * @description The title of the contact, if any
-       * @example Mr
+       * @description
+       *         The title code for the contact.
+       *         This is a coded value (from the group code TITLE in reference data).
+       *         Known values are MR, MRS, MISS, DR, MS, REV, SIR, BR, SR.
+       *
+       * @example MR
        */
       title?: string | null
       /**
@@ -1466,8 +1530,12 @@ export interface components {
        */
       coronerNumber?: string | null
       /**
-       * @description The gender of the contact
-       * @example Male
+       * @description
+       *         The gender code for the contact.
+       *         This is a coded value (from the group code GENDER in reference data).
+       *         Known values are (M) Male, (F) Female, (NK) Not Known, (NS) Not Specified.
+       *
+       * @example M
        */
       gender?: string | null
       /**
@@ -1512,8 +1580,12 @@ export interface components {
        */
       id: number
       /**
-       * @description The title of the contact, if any
-       * @example Mr
+       * @description
+       *         The title code for the contact.
+       *         This is a coded value (from the group code TITLE in reference data).
+       *         Known values are MR, MRS, MISS, DR, MS, REV, SIR, BR, SR.
+       *
+       * @example MR
        */
       title?: string | null
       /**
@@ -1585,8 +1657,12 @@ export interface components {
        */
       coronerNumber?: string | null
       /**
-       * @description The gender of the contact
-       * @example Male
+       * @description
+       *         The gender code for the contact.
+       *         This is a coded value (from the group code GENDER in reference data).
+       *         Known values are (M) Male, (F) Female, (NK) Not Known, (NS) Not Specified.
+       *
+       * @example M
        */
       gender?: string | null
       /**
@@ -1910,8 +1986,8 @@ export interface components {
        */
       amendedTime?: string
     }
-    /** @description Request to update a new contact email address */
-    UpdateContactEmailRequest: {
+    /** @description Request to update a contact email address by sync with NOMIS */
+    SyncUpdateContactEmailRequest: {
       /**
        * Format: int64
        * @description Unique identifier for the contact
@@ -1919,20 +1995,10 @@ export interface components {
        */
       contactId: number
       /**
-       * @description Type of email
-       * @example MOBILE
-       */
-      emailType: string
-      /**
        * @description Email address
-       * @example +1234567890
+       * @example test@example.com
        */
       emailAddress: string
-      /**
-       * @description Indicates if this is the primary email address
-       * @example true
-       */
-      primaryEmail: boolean
       /**
        * @description The id of the user who updated the contact email
        * @example JD000001
@@ -1946,7 +2012,7 @@ export interface components {
       updatedTime: string
     }
     /** @description Email related to a contact */
-    ContactEmail: {
+    SyncContactEmail: {
       /**
        * Format: int64
        * @description Unique identifier for the contact email
@@ -1960,20 +2026,10 @@ export interface components {
        */
       contactId: number
       /**
-       * @description Type of email
-       * @example WORK
-       */
-      emailType: string
-      /**
        * @description Email address
-       * @example work@example.com
+       * @example test@example.com
        */
       emailAddress: string
-      /**
-       * @description Indicates if this is the primary Email address
-       * @example true
-       */
-      primaryEmail: boolean
       /**
        * @description User who created the entry
        * @example admin
@@ -2003,7 +2059,14 @@ export interface components {
        * @example 123456
        */
       contactId: number
-      /** @description The type of address */
+      /**
+       * @description
+       *         The type of address.
+       *         This is a coded value (from the group code ADDRESS_TYPE in reference data).
+       *         The known values are HOME, WORK or BUS (business address).
+       *
+       * @example HOME
+       */
       addressType: string
       /**
        * @description True if this is the primary address otherwise false
@@ -2109,10 +2172,14 @@ export interface components {
        */
       contactId: number
       /**
-       * @description The type of address
+       * @description
+       *         The type of address.
+       *         This is a coded value (from the group code ADDRESS_TYPE in reference data).
+       *         The known values are HOME, WORK or BUS (business address).
+       *
        * @example HOME
        */
-      addressType?: string
+      addressType?: string | null
       /**
        * @description True if this is the primary address otherwise false
        * @example true
@@ -2385,6 +2452,59 @@ export interface components {
        */
       amendedTime?: string
     }
+    /** @description Request to update an email address */
+    UpdateEmailRequest: {
+      /**
+       * @description Email address
+       * @example test@example.com
+       */
+      emailAddress: string
+      /**
+       * @description User who updated the entry
+       * @example admin
+       */
+      amendedBy: string
+    }
+    /** @description Email related to a contact */
+    ContactEmailDetails: {
+      /**
+       * Format: int64
+       * @description Unique identifier for the contact email
+       * @example 1
+       */
+      contactEmailId: number
+      /**
+       * Format: int64
+       * @description Unique identifier for the contact
+       * @example 123
+       */
+      contactId: number
+      /**
+       * @description Email address
+       * @example test@example.com
+       */
+      emailAddress: string
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was created
+       */
+      createdTime: string
+      /**
+       * @description User who amended the entry
+       * @example admin2
+       */
+      amendedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was amended
+       */
+      amendedTime?: string
+    }
     /** @description Request object to create a prisoner contact details */
     CreatePrisonerContactRequest: {
       /**
@@ -2399,8 +2519,12 @@ export interface components {
        */
       prisonerNumber: string
       /**
-       * @description The type of the contact
-       * @example SOCIAL or OFFICIAL
+       * @description
+       *           Coded value indicating either a social or official contact (mandatory).
+       *           This is a coded value (from the group code CONTACT_TYPE in reference data).
+       *           Known values are (S) Social/Family or (O) official.
+       *
+       * @example S
        */
       contactType: string
       /**
@@ -2560,8 +2684,12 @@ export interface components {
     /** @description Request to create a new contact */
     CreateContactRequest: {
       /**
-       * @description The title of the contact, if any
-       * @example Mr
+       * @description
+       *           The title code for the contact.
+       *           This is a coded value (from the group code TITLE in reference data).
+       *           Known values are MR, MRS, MISS, DR, MS, REV, SIR, BR, SR.
+       *
+       * @example MR
        */
       title?: string | null
       /**
@@ -2634,8 +2762,12 @@ export interface components {
        */
       coronerNumber?: string | null
       /**
-       * @description The gender of the contact
-       * @example Male
+       * @description
+       *         The gender code for the contact.
+       *         This is a coded value (from the group code GENDER in reference data).
+       *         Known values are (M) Male, (F) Female, (NK) Not Known, (NS) Not Specified.
+       *
+       * @example M
        */
       gender?: string | null
       /**
@@ -2788,8 +2920,8 @@ export interface components {
        */
       createdTime: string
     }
-    /** @description Request to create a new contact email address */
-    CreateContactEmailRequest: {
+    /** @description Request to create a new contact email address by sync with NOMIS */
+    SyncCreateContactEmailRequest: {
       /**
        * Format: int64
        * @description Unique identifier for the contact
@@ -2797,20 +2929,10 @@ export interface components {
        */
       contactId: number
       /**
-       * @description Type of email
-       * @example MOBILE
-       */
-      emailType: string
-      /**
        * @description Email address
-       * @example +1234567890
+       * @example test@example.com
        */
       emailAddress: string
-      /**
-       * @description Indicates if this is the primary email address
-       * @example true
-       */
-      primaryEmail: boolean
       /**
        * @description User who created the entry
        * @example admin
@@ -2831,7 +2953,14 @@ export interface components {
        * @example 123456
        */
       contactId: number
-      /** @description The type of address */
+      /**
+       * @description
+       *           The type of address.
+       *           This is a coded value (from the group code ADDRESS_TYPE in reference data).
+       *           The known values are HOME, WORK or BUS (business address).
+       *
+       * @example HOME
+       */
       addressType: string
       /**
        * @description True if this is the primary address otherwise false
@@ -2860,7 +2989,7 @@ export interface components {
       area?: string | null
       /**
        * @description City code - from NOMIS
-       * @example BIRM
+       * @example 13232
        */
       cityCode?: string | null
       /**
@@ -3107,7 +3236,7 @@ export interface components {
       emailAddressId: number
       /**
        * @description Email address
-       * @example sender@a.com
+       * @example test@example.com
        */
       email: string
       /** Format: date-time */
@@ -3413,7 +3542,11 @@ export interface components {
        */
       contactId: number
       /**
-       * @description The type of address
+       * @description
+       *           The type of address (optional).
+       *           This is a coded value (from the group code ADDRESS_TYPE in reference data).
+       *           The known values are HOME, WORK or BUS (business address).
+       *
        * @example HOME
        */
       addressType?: string | null
@@ -3550,63 +3683,8 @@ export interface components {
        */
       amendedTime?: string | null
     }
-    /** @description Email related to a contact */
-    ContactEmailDetails: {
-      /**
-       * Format: int64
-       * @description Unique identifier for the contact email
-       * @example 1
-       */
-      contactEmailId: number
-      /**
-       * Format: int64
-       * @description Unique identifier for the contact
-       * @example 123
-       */
-      contactId: number
-      /**
-       * @description Type of email
-       * @example WORK
-       */
-      emailType: string
-      /**
-       * @description Type of email
-       * @example Work email
-       */
-      emailTypeDescription: string
-      /**
-       * @description Email address
-       * @example work@example.com
-       */
-      emailAddress: string
-      /**
-       * @description Indicates if this is the primary Email address
-       * @example true
-       */
-      primaryEmail: boolean
-      /**
-       * @description User who created the entry
-       * @example admin
-       */
-      createdBy: string
-      /**
-       * Format: date-time
-       * @description Timestamp when the entry was created
-       */
-      createdTime: string
-      /**
-       * @description User who amended the entry
-       * @example admin2
-       */
-      amendedBy?: string
-      /**
-       * Format: date-time
-       * @description Timestamp when the entry was amended
-       */
-      amendedTime?: string
-    }
     /** @description The details of a contact as an individual */
-    GetContactResponse: {
+    ContactDetails: {
       /**
        * Format: int64
        * @description The id of the contact
@@ -3614,8 +3692,12 @@ export interface components {
        */
       id: number
       /**
-       * @description The title of the contact, if any
-       * @example Mr
+       * @description
+       *           The title code for the contact.
+       *           This is a coded value (from the group code TITLE in reference data).
+       *           Known values are MR, MRS, MISS, DR, MS, REV, SIR, BR, SR.
+       *
+       * @example MR
        */
       title?: string | null
       /**
@@ -3694,6 +3776,10 @@ export interface components {
        * @example Single
        */
       domesticStatusDescription?: string | null
+      /** @description The NOMIS code for the contacts gender. See reference data with group code 'GENDER' */
+      gender?: string | null
+      /** @description The description of gender code. See reference data with group code 'GENDER' */
+      genderDescription?: string | null
       /**
        * @description The id of the user who created the contact
        * @example JD000001
@@ -3761,7 +3847,20 @@ export interface components {
        */
       createdBy: string
     }
-    /** @description Request to patch a new contact  */
+    /** @description Request to create a new email address */
+    CreateEmailRequest: {
+      /**
+       * @description Email address
+       * @example test@example.com
+       */
+      emailAddress: string
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+    }
+    /** @description Request to patch a new contact. firstName and lastName are not updatable so are intentionally missing from this request. */
     PatchContactRequest: {
       /**
        * @description Whether the contact is a staff member
@@ -3795,6 +3894,25 @@ export interface components {
        */
       estimatedIsOverEighteen?: string | null
       /**
+       * @description The title code for the contact, if any
+       * @example MR
+       */
+      title?: string | null
+      /**
+       * @description The middle names of the contact, if any
+       * @example William
+       */
+      middleNames?: string | null
+      /**
+       * @description
+       *         The optional gender code for the contact.
+       *         This is a coded value (from the group code GENDER in reference data).
+       *         Known values are (M) Male, (F) Female, (NK) Not Known, (NS) Not Specified.
+       *
+       * @example M
+       */
+      gender?: string | null
+      /**
        * @description The id of the user who updated the contact
        * @example JD000001
        */
@@ -3809,8 +3927,12 @@ export interface components {
        */
       id: number
       /**
-       * @description The title of the contact, if any
-       * @example Mr
+       * @description
+       *         The title code for the contact.
+       *         This is a coded value (from the group code TITLE in reference data).
+       *         Known values are MR, MRS, MISS, DR, MS, REV, SIR, BR, SR.
+       *
+       * @example MR
        */
       title?: string | null
       /**
@@ -3877,8 +3999,12 @@ export interface components {
        */
       coronerNumber?: string | null
       /**
-       * @description The gender of the contact
-       * @example Male
+       * @description
+       *         The gender code for the contact.
+       *         This is a coded value (from the group code GENDER in reference data).
+       *         Known values are (M) Male, (F) Female, (NK) Not Known, (NS) Not Specified.
+       *
+       * @example M
        */
       gender?: string | null
       /**
@@ -5284,7 +5410,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactEmail']
+          'application/json': components['schemas']['SyncContactEmail']
         }
       }
       /** @description No contact email reference with that id could be found */
@@ -5293,7 +5419,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactEmail']
+          'application/json': components['schemas']['SyncContactEmail']
         }
       }
     }
@@ -5310,7 +5436,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateContactEmailRequest']
+        'application/json': components['schemas']['SyncUpdateContactEmailRequest']
       }
     }
     responses: {
@@ -5320,7 +5446,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactEmail']
+          'application/json': components['schemas']['SyncContactEmail']
         }
       }
       /** @description Invalid input data */
@@ -5329,7 +5455,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactEmail']
+          'application/json': components['schemas']['SyncContactEmail']
         }
       }
       /** @description Contact email not found */
@@ -5338,7 +5464,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactEmail']
+          'application/json': components['schemas']['SyncContactEmail']
         }
       }
     }
@@ -5850,6 +5976,193 @@ export interface operations {
       }
     }
   }
+  get_2: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+        /**
+         * @description The id of the contact email
+         * @example 987654
+         */
+        contactEmailId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the email successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ContactEmailDetails']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the the contact or email this request is for */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  update_2: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+        /**
+         * @description The id of the contact email
+         * @example 987654
+         */
+        contactEmailId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateEmailRequest']
+      }
+    }
+    responses: {
+      /** @description Updated the contact email successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ContactEmailDetails']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the the contact or email by their ids */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  delete_2: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+        /**
+         * @description The id of the contact email
+         * @example 987654
+         */
+        contactEmailId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Deleted the contact email successfully */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ContactEmailDetails']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the the contact or email by their ids */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   createPrisonerContact: {
     parameters: {
       query?: never
@@ -6111,7 +6424,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateContactEmailRequest']
+        'application/json': components['schemas']['SyncCreateContactEmailRequest']
       }
     }
     responses: {
@@ -6121,7 +6434,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactEmail']
+          'application/json': components['schemas']['SyncContactEmail']
         }
       }
       /** @description The request has invalid or missing fields */
@@ -6243,7 +6556,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetContactResponse']
+          'application/json': components['schemas']['ContactDetails']
         }
       }
       /** @description The request has invalid or missing fields */
@@ -6480,6 +6793,72 @@ export interface operations {
       }
     }
   }
+  create_2: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateEmailRequest']
+      }
+    }
+    responses: {
+      /** @description Created the contact email successfully */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ContactEmailDetails']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the the contact this email is for */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getContact: {
     parameters: {
       query?: never
@@ -6501,7 +6880,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetContactResponse']
+          'application/json': components['schemas']['ContactDetails']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */

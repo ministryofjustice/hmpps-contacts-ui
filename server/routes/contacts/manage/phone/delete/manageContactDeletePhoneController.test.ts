@@ -7,7 +7,7 @@ import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import PrisonerSearchService from '../../../../../services/prisonerSearchService'
 import ContactService from '../../../../../services/contactsService'
 import TestData from '../../../../testutils/testData'
-import GetContactResponse = contactsApiClientTypes.GetContactResponse
+import ContactDetails = contactsApiClientTypes.ContactDetails
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/referenceDataService')
@@ -22,7 +22,7 @@ const contactsService = new ContactService(null) as jest.Mocked<ContactService>
 let app: Express
 const prisonerNumber = 'A1234BC'
 const contactId = 987654
-const contact: GetContactResponse = {
+const contact: ContactDetails = {
   id: contactId,
   title: '',
   lastName: 'last',

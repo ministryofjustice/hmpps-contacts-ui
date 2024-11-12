@@ -87,6 +87,10 @@ export default class ManageContactDetailsPage extends Page {
     this.changeEstimatedDateOfBirthLink(id).click()
   }
 
+  clickChangeNameLink() {
+    this.changeNameLink().click()
+  }
+
   private namesValue = (): PageElement => cy.get('.manage-names-value')
 
   private dobValue = (): PageElement => cy.get('.manage-dob-value')
@@ -116,6 +120,8 @@ export default class ManageContactDetailsPage extends Page {
   private changeDateOfBirthLink = (id: number): PageElement => cy.get(`[data-qa="change-dob-${id}"]`)
 
   private changeEstimatedDateOfBirthLink = (id: number): PageElement => cy.get(`[data-qa="change-estimated-dob-${id}"]`)
+
+  private changeNameLink = (): PageElement => cy.get(`[data-qa="change-name-link"]`)
 
   private domesticStatusValue = (): PageElement => cy.get('.manage-domestic-status-value')
 

@@ -11,14 +11,14 @@ import {
 import { components } from '../../server/@types/contactsApi'
 import TestData from '../../server/routes/testutils/testData'
 
-export type StubGetContactResponse = components['schemas']['GetContactResponse']
+export type StubContactDetails = components['schemas']['ContactDetails']
 export type StubPhoneDetails = components['schemas']['ContactPhoneDetails']
 export type StubIdentityDetails = components['schemas']['ContactIdentityDetails']
 export type StubContactSearchResultItem = components['schemas']['ContactSearchResultItem']
 export type StubPatchContactResponse = components['schemas']['PatchContactResponse']
 
 export default {
-  stubCreateContact: (createdContact: StubGetContactResponse): SuperAgentRequest => {
+  stubCreateContact: (createdContact: StubContactDetails): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'POST',

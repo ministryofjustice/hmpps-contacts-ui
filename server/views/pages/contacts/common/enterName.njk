@@ -35,7 +35,8 @@
                     label: { text: "First name" },
                     classes: 'govuk-!-width-one-third',
                     errorMessage: validationErrors | findError('firstName'),
-                    value: firstName
+                    value: firstName,
+                    disabled: restrictedEditing
                 }) }}
 
                 {{ govukInput({
@@ -53,12 +54,13 @@
                     label: { text: "Last name" },
                     classes: 'govuk-!-width-one-third',
                     errorMessage: validationErrors | findError('lastName'),
-                    value: lastName
+                    value: lastName,
+                    disabled: restrictedEditing
                 }) }}
 
                 <div class="govuk-button-group">
                     {{ govukButton({
-                        html: "Continue",
+                        html: continueButtonLabel,
                         type: "submit",
                         classes: 'govuk-!-margin-top-6',
                         attributes: {"data-qa": "continue-button"}

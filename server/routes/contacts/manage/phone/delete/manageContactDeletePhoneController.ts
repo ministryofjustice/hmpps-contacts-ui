@@ -3,7 +3,7 @@ import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { ContactsService } from '../../../../../services'
 import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
-import GetContactResponse = contactsApiClientTypes.GetContactResponse
+import ContactDetails = contactsApiClientTypes.ContactDetails
 
 export default class ManageContactDeletePhoneController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -18,7 +18,7 @@ export default class ManageContactDeletePhoneController implements PageHandler {
     const { prisonerNumber, contactId, contactPhoneId } = req.params
     const contactIdNumber = parseInt(contactId, 10)
     const contactPhoneIdNumber = parseInt(contactPhoneId, 10)
-    const contact: GetContactResponse = await this.contactsService.getContact(contactIdNumber, user)
+    const contact: ContactDetails = await this.contactsService.getContact(contactIdNumber, user)
     const phone: ContactPhoneDetails = contact.phoneNumbers.find(
       (aPhone: ContactPhoneDetails) => aPhone.contactPhoneId === contactPhoneIdNumber,
     )

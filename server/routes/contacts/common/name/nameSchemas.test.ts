@@ -1,4 +1,4 @@
-import { createContactEnterNameSchemaFactory } from './createContactEnterNameSchemas'
+import { fullNameSchema } from './nameSchemas'
 import { deduplicateFieldErrors } from '../../../../middleware/validationMiddleware'
 
 describe('createContactEnterNameSchema', () => {
@@ -129,7 +129,7 @@ describe('createContactEnterNameSchema', () => {
     )
 
     const doValidate = async (form: Form) => {
-      const schema = await createContactEnterNameSchemaFactory()()
+      const schema = await fullNameSchema()()
       return schema.safeParse(form)
     }
   })

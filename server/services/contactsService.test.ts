@@ -11,7 +11,7 @@ import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import IsOverEighteenOptions = journeys.YesNoOrDoNotKnow
 import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
-import GetContactResponse = contactsApiClientTypes.GetContactResponse
+import ContactDetails = contactsApiClientTypes.ContactDetails
 import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
 import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
 import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
@@ -257,7 +257,7 @@ describe('contactsService', () => {
 
   describe('getContact', () => {
     it('Should get the contact', async () => {
-      const expectedContact: GetContactResponse = {
+      const expectedContact: ContactDetails = {
         id: 123456,
         lastName: 'last',
         firstName: 'middle',
