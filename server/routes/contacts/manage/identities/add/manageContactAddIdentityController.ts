@@ -6,7 +6,7 @@ import ReferenceDataService from '../../../../../services/referenceDataService'
 import { IdentitySchemaType } from '../IdentitySchemas'
 import { ContactsService } from '../../../../../services'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
-import GetContactResponse = contactsApiClientTypes.GetContactResponse
+import ContactDetails = contactsApiClientTypes.ContactDetails
 
 export default class ManageContactAddIdentityController implements PageHandler {
   constructor(
@@ -19,7 +19,7 @@ export default class ManageContactAddIdentityController implements PageHandler {
   GET = async (req: Request<{ prisonerNumber: string; contactId: string }>, res: Response): Promise<void> => {
     const { user } = res.locals
     const { contactId } = req.params
-    const contact: GetContactResponse = await this.contactsService.getContact(parseInt(contactId, 10), user)
+    const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const typeOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.ID_TYPE, user)
       .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.type))

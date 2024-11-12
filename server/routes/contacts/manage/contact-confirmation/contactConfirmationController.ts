@@ -9,7 +9,7 @@ import { ContactsService } from '../../../../services'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import formatName from '../../../../utils/formatName'
 import ReferenceDataService from '../../../../services/referenceDataService'
-import GetContactResponse = contactsApiClientTypes.GetContactResponse
+import ContactDetails = contactsApiClientTypes.ContactDetails
 
 export default class ContactConfirmationController implements PageHandler {
   constructor(
@@ -52,7 +52,7 @@ export default class ContactConfirmationController implements PageHandler {
     return res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/search/${journeyId}`)
   }
 
-  private async formattedFullName(contact: GetContactResponse, user: Express.User) {
+  private async formattedFullName(contact: ContactDetails, user: Express.User) {
     let titleDescription: string
     if (contact.title) {
       titleDescription = await this.referenceDataService.getReferenceDescriptionForCode(

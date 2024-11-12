@@ -3,7 +3,7 @@ import AuditService from '../../../services/auditService'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import EnterNameController from './enter-name/createContactEnterNameController'
 import { validate } from '../../../middleware/validationMiddleware'
-import { createContactEnterNameSchemaFactory } from './enter-name/createContactEnterNameSchemas'
+import { fullNameSchema } from '../common/name/nameSchemas'
 import CreateContactEnterDobController from './enter-dob/createContactEnterDobController'
 import StartAddContactJourneyController from './start/startAddContactJourneyController'
 import ensureInAddContactJourney from './addContactMiddleware'
@@ -95,7 +95,7 @@ const AddContactRoutes = (
   router.post(
     '/prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId',
     ensureInAddContactJourney(),
-    validate(createContactEnterNameSchemaFactory()),
+    validate(fullNameSchema()),
     asyncMiddleware(enterNameController.POST),
   )
 

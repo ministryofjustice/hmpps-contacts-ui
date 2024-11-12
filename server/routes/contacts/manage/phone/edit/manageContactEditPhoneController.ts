@@ -7,7 +7,7 @@ import { PhoneNumberSchemaType } from '../phoneSchemas'
 import { ContactsService } from '../../../../../services'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
-import GetContactResponse = contactsApiClientTypes.GetContactResponse
+import ContactDetails = contactsApiClientTypes.ContactDetails
 
 export default class ManageContactEditPhoneController implements PageHandler {
   constructor(
@@ -23,7 +23,7 @@ export default class ManageContactEditPhoneController implements PageHandler {
   ): Promise<void> => {
     const { user } = res.locals
     const { contactId, contactPhoneId } = req.params
-    const contact: GetContactResponse = await this.contactsService.getContact(parseInt(contactId, 10), user)
+    const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const phone: ContactPhoneDetails = contact.phoneNumbers.find(
       (aPhone: ContactPhoneDetails) => aPhone.contactPhoneId === parseInt(contactPhoneId, 10),
     )

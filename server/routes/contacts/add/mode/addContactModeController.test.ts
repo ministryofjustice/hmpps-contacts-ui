@@ -6,7 +6,7 @@ import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import ContactsService from '../../../../services/contactsService'
 import AddContactJourney = journeys.AddContactJourney
-import GetContactResponse = contactsApiClientTypes.GetContactResponse
+import ContactDetails = contactsApiClientTypes.ContactDetails
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/contactsService')
@@ -81,7 +81,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
 
   it('should pass to the select relationship page if mode is EXISTING and the contact has a DOB', async () => {
     // Given
-    const contact: GetContactResponse = {
+    const contact: ContactDetails = {
       id: 123456,
       title: 'MR',
       lastName: 'last',
@@ -123,7 +123,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
 
   it('should pass to the select relationship page if mode is EXISTING and the contact has no DOB', async () => {
     // Given
-    const contact: GetContactResponse = {
+    const contact: ContactDetails = {
       id: 123456,
       title: 'MR',
       lastName: 'last',
@@ -164,7 +164,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
 
   it('should pass to the contact confirmation page if mode is EXISTING and the contact has no DOB or estimated DOB', async () => {
     // Given
-    const contact: GetContactResponse = {
+    const contact: ContactDetails = {
       id: 123456,
       title: 'MR',
       lastName: 'last',
@@ -205,7 +205,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
 
   it('should pass to the contact confirmation page if mode is EXISTING and the contact is deceased', async () => {
     // Given
-    const contact: GetContactResponse = {
+    const contact: ContactDetails = {
       id: 123456,
       title: 'MR',
       lastName: 'last',
@@ -279,7 +279,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
 
     it('should reset journey if changing mode from NEW to EXISTING', async () => {
       existingJourney.mode = 'NEW'
-      const contact: GetContactResponse = {
+      const contact: ContactDetails = {
         id: 123456,
         title: 'MRS',
         lastName: 'Tsal',

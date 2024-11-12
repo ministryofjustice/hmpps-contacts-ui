@@ -2,7 +2,7 @@ import { CurrentIncentive, Prisoner } from '../../data/prisonerOffenderSearchTyp
 import { components } from '../../@types/contactsApi'
 
 type ContactSearchResultItem = components['schemas']['ContactSearchResultItem']
-type StubContactDetails = components['schemas']['ContactDetails']
+type ContactDetails = components['schemas']['ContactDetails']
 type ContactAddressDetails = components['schemas']['ContactAddressDetails']
 type ContactPhoneDetails = components['schemas']['ContactPhoneDetails']
 type ContactPhoneNumberDetails = components['schemas']['ContactPhoneDetails']
@@ -249,20 +249,12 @@ export default class TestData {
     ],
     identities = [
       this.getContactIdentityDetails('DL', 'Driving licence', 'LAST-87736799M', 'UK', 1),
-      this.getContactIdentityDetails(
-        'PASS',
-        'Passport number',
-        '425362965',
-        'Issuing authorithy - UK passport office',
-        2,
-      ),
+      this.getContactIdentityDetails('PASS', 'Passport number', '425362965', 'UK passport office', 2),
       this.getContactIdentityDetails('NINO', 'National insurance number', '06/614465M', 'UK', 3),
     ],
     domesticStatusCode = 'S',
     domesticStatusDescription = 'Single-not married/in civil partnership',
-    gender = 'M',
-    genderDescription = 'Male',
-  }: Partial<StubContactDetails> = {}): StubContactDetails =>
+  }: Partial<ContactDetails> = {}): ContactDetails =>
     ({
       id,
       title,
@@ -285,9 +277,7 @@ export default class TestData {
       identities,
       domesticStatusCode,
       domesticStatusDescription,
-      gender,
-      genderDescription,
-    }) as StubContactDetails
+    }) as ContactDetails
 
   static prisonerContactSummaryPage = ({
     content = [this.getPrisonerContact()],
