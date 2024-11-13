@@ -34,3 +34,7 @@ div.contact-list {
 .float-right {
   float: right;
 }
+
+.email-addresses-card {
+  .govuk-summary-list__row { border-bottom: 0 }
+}

@@ -8,6 +8,7 @@ import { reverseFormatName } from '../../../../utils/formatName'
 
 import Contact = contactsApiClientTypes.Contact
 import ContactDetails = contactsApiClientTypes.ContactDetails
+import logger from '../../../../../logger'
 
 export default class ContactDetailsController implements PageHandler {
   constructor(
@@ -22,7 +23,8 @@ export default class ContactDetailsController implements PageHandler {
     const { prisonerDetails, user } = res.locals
     const contact: Contact = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const formattedFullName = await this.formattedFullName(contact, user)
-
+    logger.info(JSON.stringify(contact))
+    // contact.emailAddresses = []
     return res.render('pages/contacts/manage/contactDetails/details', {
       contact,
       prisonerDetails,

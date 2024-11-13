@@ -1,0 +1,68 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set emailAddresses = [] %}
+
+{% if contact.emailAddresses and contact.emailAddresses.length > 0 %}
+    {% for item in contact.emailAddresses %}
+        {% set actions = [] %}
+
+        {% set actions = actions.concat([{
+            href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/email/" + item.contactEmailId + "/edit",
+            text: "Edit",
+            visuallyHiddenText: "email address",
+            attributes: {"data-qa": "edit-email-address-" + item.contactEmailId},
+            classes: "govuk-link--no-visited-state"
+        }]) %}
+
+        {% set actions = actions.concat([{
+            href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/email/" + item.contactEmailId + "/delete",
+            text: "Delete",
+            visuallyHiddenText: "email address",
+            attributes: {"data-qa": "delete-email-address-" + item.contactEmailId},
+            classes: "govuk-link--no-visited-state"
+        }]) %}
+
+        {% set emailAddresses = emailAddresses.concat([{
+            key: {
+                text: 'Email addresses' if loop.index0 == 0 else ''
+            },
+            value: {
+                html: '<p>' + item.emailAddress + '</p>',
+                classes: 'confirm-email-' + item.contactEmailId + '-value'
+            },
+            actions: {
+                items: actions
+            }
+        }]) %}
+    {% endfor %}
+{% else %}
+    {% set emailAddresses = emailAddresses.concat([{
+        key: {
+            text: 'Email addresses'
+        },
+        value: {
+            text: 'Not provided',
+            classes: 'email-addresses-not-provide-value'
+        }
+    }]) %}
+{% endif %}
+
+{{ govukSummaryList({
+    card: {
+        title: {
+            text: "Email addresses"
+        },
+        classes: 'email-addresses-card',
+        actions: {
+            items: [
+                {
+                    href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/email/create",
+                    text: "Add email address",
+                    attributes: {"data-qa": "add-email-address"},
+                    classes: "govuk-link--no-visited-state"
+                }
+            ]
+        }
+    },
+    rows: emailAddresses
+}) }}
