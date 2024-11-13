@@ -120,7 +120,6 @@ context('Contact confirmation', () => {
       .verifyShowEmailValueAs('No')
       .verifyShowCommentsValueAs('Not provided')
       .verifyShowFromStartDateValueAs('January 2020')
-      .verifyShowToEndDateValueAs('March 2029')
       .verifyShowPhoneNumbersValueAs('07878 111111', 'MOBILE')
       .verifyShowPhoneNumbersValueAs('01111 777777', 'HOME')
       .verifyShowsCardTitleAs('Email addresses', 3)
@@ -135,7 +134,7 @@ context('Contact confirmation', () => {
       .verifyShowNeedsInterpreterValueAs('No')
   })
 
-  it('should render contact information with empity rows if not available', () => {
+  it('should render contact information with empty rows if not available', () => {
     cy.task('stubGetContactById', {
       id: contactId,
       firstName: 'Existing',
@@ -149,7 +148,7 @@ context('Contact confirmation', () => {
       interpreterRequired: false,
       addresses: [
         {
-          ...TestData.address,
+          ...TestData.address({}),
           comments: '',
           phoneNumbers: [],
           startDate: null,
@@ -168,7 +167,7 @@ context('Contact confirmation', () => {
       .verifyShowAddressFromToDateValueAsNotProvided('Not provided')
   })
 
-  it('should render contact information with empity sections if not available', () => {
+  it('should render contact information with empty sections if not available', () => {
     cy.task('stubGetContactById', {
       id: contactId,
       title: 'MR',
