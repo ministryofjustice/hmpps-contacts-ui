@@ -186,7 +186,7 @@ describe('GET /contacts/manage/:contactId', () => {
       expect($('.confirm-email-2-value').text().trim()).toStrictEqual('mr.first@example.com')
     })
 
-    it('should render not provided if no phone numbers', async () => {
+    it('should render not provided if no email addresses', async () => {
       auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(TestData.contact({ emailAddresses: [] }))
