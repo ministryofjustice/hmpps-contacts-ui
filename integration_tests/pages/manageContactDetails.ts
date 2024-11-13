@@ -55,6 +55,11 @@ export default class ManageContactDetailsPage extends Page {
     return this
   }
 
+  verifyEmailValueAs(expected: string, id: number): ManageContactDetailsPage {
+    this.emailValue(id).should('contain.text', expected)
+    return this
+  }
+
   clickChangeGenderLink() {
     this.selectGenderLink().click()
   }
@@ -159,4 +164,6 @@ export default class ManageContactDetailsPage extends Page {
   private editIdentityLink = (id: number): PageElement => cy.get(`[data-qa="edit-identity-number-${id}"]`)
 
   private deleteIdentityLink = (id: number): PageElement => cy.get(`[data-qa="delete-identity-number-${id}"]`)
+
+  private emailValue = (id: number): PageElement => cy.get(`.confirm-email-${id}-value`)
 }

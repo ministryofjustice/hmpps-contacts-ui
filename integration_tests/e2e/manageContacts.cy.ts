@@ -106,6 +106,8 @@ context('Manage contacts ', () => {
       .verifyShowIdentityNumberValueAs('LAST-87736799M', 'DL')
       .verifyShowIdentityNumberValueAs('425362965', 'PASS')
       .verifyShowIdentityNumberValueAs('06/614465M', 'NINO')
+      .verifyEmailValueAs('mr.last@example.com', 1)
+      .verifyEmailValueAs('mr.first@example.com', 2)
       .verifyShowStaffStatusValueAs('No')
       .clickChangeSpokenLanguageLink()
 
