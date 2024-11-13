@@ -14,7 +14,7 @@
 {% macro contactDetailsHtml() %}
     {%- include "./basicDetails.njk" -%}
 
-    {% if contact.addresses.length > 0 %}
+    {% if mostRelevantAddress %}
         {%- include "./addresses.njk" -%}
     {% else %}
         {{ notProvided({title: 'Addresses', key: 'Address', className: 'addresses-not-provided' }) }}

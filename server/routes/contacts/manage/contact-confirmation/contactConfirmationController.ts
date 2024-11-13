@@ -3,13 +3,13 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import { IsContactConfirmedSchema } from './contactConfirmationSchema'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../../add/addContactFlowControl'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
-import Contact = contactsApiClientTypes.Contact
 import { ContactsService } from '../../../../services'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import formatName from '../../../../utils/formatName'
 import ReferenceDataService from '../../../../services/referenceDataService'
+import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import ContactDetails = contactsApiClientTypes.ContactDetails
+import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 
 export default class ContactConfirmationController implements PageHandler {
   constructor(
@@ -26,14 +26,17 @@ export default class ContactConfirmationController implements PageHandler {
     const { journeyId } = req.params
     const { prisonerDetails, user } = res.locals
     const journey = req.session.addContactJourneys[journeyId]
-    const contact: Contact = await this.contactsService.getContact(journey.contactId, user)
+    const contact: ContactDetails = await this.contactsService.getContact(journey.contactId, user)
     const formattedFullName = await this.formattedFullName(contact, user)
-
+    const mostRelevantAddress = this.findMostRelevantAddress(contact)
+    const mostRelevantAddressLabel = this.getLabelForAddress(mostRelevantAddress)
     return res.render('pages/contacts/manage/contactConfirmation/confirmation', {
       contact,
       formattedFullName,
       prisonerDetails,
       journey,
+      mostRelevantAddress,
+      mostRelevantAddressLabel,
       isContactConfirmed: res.locals?.formResponses?.isContactConfirmed ?? journey?.isContactConfirmed,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
     })
@@ -62,5 +65,40 @@ export default class ContactConfirmationController implements PageHandler {
       )
     }
     return formatName(contact, { customTitle: titleDescription })
+  }
+
+  private findMostRelevantAddress(contact: contactsApiClientTypes.ContactDetails) {
+    const currentAddresses = contact.addresses?.filter((address: ContactAddressDetails) => !address.endDate)
+    let mostRelevantAddress: ContactAddressDetails = currentAddresses?.find(
+      (address: ContactAddressDetails) => address.primaryAddress,
+    )
+    if (!mostRelevantAddress) {
+      mostRelevantAddress = currentAddresses?.find((address: ContactAddressDetails) => address.mailFlag)
+    }
+    if (!mostRelevantAddress) {
+      mostRelevantAddress = currentAddresses?.reduce((seed: ContactAddressDetails, item: ContactAddressDetails) => {
+        return (seed && seed.startDate > item.startDate) || !item.startDate ? seed : item
+      }, null)
+    }
+    if (!mostRelevantAddress) {
+      mostRelevantAddress = currentAddresses?.reduce((seed: ContactAddressDetails, item: ContactAddressDetails) => {
+        return seed && seed.createdTime > item.createdTime ? seed : item
+      }, null)
+    }
+    return mostRelevantAddress
+  }
+
+  private getLabelForAddress(mostRelevantAddress: contactsApiClientTypes.ContactAddressDetails) {
+    let mostRelevantAddressLabel
+    if (mostRelevantAddress?.primaryAddress) {
+      if (mostRelevantAddress?.mailFlag) {
+        mostRelevantAddressLabel = 'Primary and mail'
+      } else {
+        mostRelevantAddressLabel = 'Primary'
+      }
+    } else if (mostRelevantAddress?.mailFlag) {
+      mostRelevantAddressLabel = 'Mail'
+    }
+    return mostRelevantAddressLabel
   }
 }

@@ -26,7 +26,22 @@ let session: Partial<SessionData>
 const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 let existingJourney: AddContactJourney
-
+const blankAddress = TestData.address({
+  flat: '',
+  property: '',
+  street: '',
+  area: '',
+  cityCode: '',
+  cityDescription: '',
+  countyCode: '',
+  countyDescription: '',
+  countryCode: '',
+  countryDescription: '',
+  primaryAddress: false,
+  mailFlag: false,
+  startDate: null,
+  endDate: null,
+})
 beforeEach(() => {
   existingJourney = {
     id: journeyId,
@@ -77,6 +92,205 @@ describe('GET /prisoner/:prisonerNumber/contacts/EXISTING/confirmation/:journeyI
     })
     const $ = cheerio.load(response.text)
     expect($('.confirm-PASS-value').text().trim()).toStrictEqual('425362965Issuing authority - UK passport office')
+  })
+
+  it('should show the primary address if there is one', async () => {
+    // Given
+    const contact = TestData.contact({
+      addresses: [
+        { ...blankAddress, property: 'primary', primaryAddress: true, mailFlag: false },
+        { ...blankAddress, property: 'secondary', primaryAddress: false, mailFlag: true },
+      ],
+    })
+
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.getContact.mockResolvedValue(contact)
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect($('.confirm-address-value').text().trim()).toStrictEqual('primary')
+    expect($('.most-relevant-address-label').text().trim()).toStrictEqual('Primary')
+  })
+
+  it('should label as primary and mail', async () => {
+    // Given
+    const contact = TestData.contact({
+      addresses: [{ ...blankAddress, property: 'primary', primaryAddress: true, mailFlag: true }],
+    })
+
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.getContact.mockResolvedValue(contact)
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect($('.confirm-address-value').text().trim()).toStrictEqual('primary')
+    expect($('.most-relevant-address-label').text().trim()).toStrictEqual('Primary and mail')
+  })
+
+  it('should use mail address if no primary', async () => {
+    // Given
+    const contact = TestData.contact({
+      addresses: [
+        { ...blankAddress, property: 'nothing', primaryAddress: false, mailFlag: false },
+        { ...blankAddress, property: 'mail', primaryAddress: false, mailFlag: true },
+      ],
+    })
+
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.getContact.mockResolvedValue(contact)
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect($('.confirm-address-value').text().trim()).toStrictEqual('mail')
+    expect($('.most-relevant-address-label').text().trim()).toStrictEqual('Mail')
+  })
+
+  it('should use latest start date if no primary or mail', async () => {
+    // Given
+    const contact = TestData.contact({
+      addresses: [
+        {
+          ...blankAddress,
+          property: 'earliest start date',
+          primaryAddress: false,
+          mailFlag: false,
+          startDate: '2020-01-01',
+        },
+        { ...blankAddress, property: 'no start date', primaryAddress: false, mailFlag: false, startDate: null },
+        {
+          ...blankAddress,
+          property: 'latest start date',
+          primaryAddress: false,
+          mailFlag: false,
+          startDate: '2024-01-01',
+        },
+      ],
+    })
+
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.getContact.mockResolvedValue(contact)
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect($('.confirm-address-value').text().trim()).toStrictEqual('latest start date')
+    expect($('.most-relevant-address-label').text().trim()).toStrictEqual('')
+  })
+
+  it('should use latest created if no primary, mail or start date', async () => {
+    // Given
+    const contact = TestData.contact({
+      addresses: [
+        {
+          ...blankAddress,
+          property: 'earliest created date',
+          primaryAddress: false,
+          mailFlag: false,
+          startDate: null,
+          createdTime: '2020-01-01',
+        },
+        {
+          ...blankAddress,
+          property: 'latest created date',
+          primaryAddress: false,
+          mailFlag: false,
+          startDate: null,
+          createdTime: '2024-01-01',
+        },
+      ],
+    })
+
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.getContact.mockResolvedValue(contact)
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect($('.confirm-address-value').text().trim()).toStrictEqual('latest created date')
+    expect($('.most-relevant-address-label').text().trim()).toStrictEqual('')
+  })
+
+  it('should not show if has an end date even if primary', async () => {
+    // Given
+    const contact = TestData.contact({
+      addresses: [
+        {
+          ...blankAddress,
+          property: 'would be this one if no end date',
+          primaryAddress: true,
+          mailFlag: true,
+          startDate: '2000-01-01',
+          endDate: '2020-01-01',
+        },
+        {
+          ...blankAddress,
+          property: 'no end date',
+          primaryAddress: false,
+          mailFlag: false,
+          startDate: null,
+          createdTime: '2024-01-01',
+        },
+      ],
+    })
+
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.getContact.mockResolvedValue(contact)
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect($('.confirm-address-value').text().trim()).toStrictEqual('no end date')
+    expect($('.most-relevant-address-label').text().trim()).toStrictEqual('')
+  })
+
+  it('should show not provided if no relevant addresses', async () => {
+    // Given
+    const contact = TestData.contact({
+      addresses: [
+        {
+          ...blankAddress,
+          property: 'would be this one if no end date',
+          primaryAddress: true,
+          mailFlag: true,
+          startDate: '2000-01-01',
+          endDate: '2020-01-01',
+        },
+      ],
+    })
+
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.getContact.mockResolvedValue(contact)
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect($('.confirm-address-value').text().trim()).toStrictEqual('')
+    expect($('.most-relevant-address-label').text().trim()).toStrictEqual('')
+    expect($('.addresses-not-provided').text().trim()).toStrictEqual('Not provided')
   })
 })
 

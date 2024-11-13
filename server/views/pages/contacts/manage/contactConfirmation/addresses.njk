@@ -1,71 +1,83 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% set primaryAddressRow = [] %}
+{% set mostRelevantAddressRow = [] %}
 {% set addressSpecificPhoneNumbers = '' %}
 
-{% for item in contact.addresses %}
-    {% if item.phoneNumbers and item.phoneNumbers.length > 0 %}
-        {% for val in item.phoneNumbers %}
+{% if mostRelevantAddress %}
+    {% if mostRelevantAddress.phoneNumbers and mostRelevantAddress.phoneNumbers.length > 0 %}
+        {% for val in mostRelevantAddress.phoneNumbers %}
             {% 
                 set addressSpecificPhoneNumbers = addressSpecificPhoneNumbers + '<p data-qa=confirm-specific-phone-' + val.phoneType + '-value>' + (val.phoneType | capitalizeFirstLetter) + ': ' + val.phoneNumber + ' ' + '(' + val.extNumber + ')</p>'
             %}
         {% endfor %}
     {% endif %}
 
-    {% if item.primaryAddress === true %}
-        {% 
+        {%
             set address = { 
-                flat: item.flat,
-                premise: item.property,
-                street: item.street,
-                area: item.area,
-                city: item.cityDescription,
-                county: item.countyDescription,
-                postalCode: item.postCode,
-                country: item.countryDescription
+                flat: mostRelevantAddress.flat,
+                premise: mostRelevantAddress.property,
+                street: mostRelevantAddress.street,
+                area: mostRelevantAddress.area,
+                city: mostRelevantAddress.cityDescription,
+                county: mostRelevantAddress.countyDescription,
+                postalCode: mostRelevantAddress.postCode,
+                country: mostRelevantAddress.countryDescription
             }
         %}
 
         {% set fromToDate %}
-            {% if item.startDate %}
-                <p data-qa="confirm-start-date-value">From {{ (item.startDate | formatDate('MMMM yyyy')) }}</p>
+            {% if mostRelevantAddress.startDate %}
+                <p data-qa="confirm-start-date-value">From {{ (mostRelevantAddress.startDate | formatDate('MMMM yyyy')) }}</p>
             {% endif %}
-            {% if item.endDate %}
-                <p data-qa="confirm-end-date-value">To {{ (item.endDate | formatDate('MMMM yyyy')) }}</p>
+            {% if mostRelevantAddress.endDate %}
+                <p data-qa="confirm-end-date-value">To {{ (mostRelevantAddress.endDate | formatDate('MMMM yyyy')) }}</p>
             {% endif %}
-            {% if not item.startDate and not item.endDate  %}
+            {% if not mostRelevantAddress.startDate and not mostRelevantAddress.endDate  %}
                 <p data-qa="from-to-date-not-provided">Not provided</p>
             {% endif %}
         {% endset -%}
 
-        {% set primaryAddressRow = (
-            primaryAddressRow.push(
+        {% if mostRelevantAddressLabel %}
+            {% set mostRelevantAddressRow = (
+                mostRelevantAddressRow.push(
+                    {
+                        key: {
+                            text: mostRelevantAddressLabel,
+                            classes: 'govuk-!-font-weight-regular most-relevant-address-label'
+                        },
+                        classes: 'govuk-summary-list__row--no-border'
+                    }
+            ), mostRelevantAddressRow) %}
+        {% endif %}
+
+        {% set mostRelevantAddressRow = (
+            mostRelevantAddressRow.push(
                 {
                     key: {
                         text: "Address"
                     },
-                    value: { 
+                    value: {
                         html: address | addressToLines,
                         classes: 'confirm-address-value'
                     }
                 }
-        ), primaryAddressRow) %}
+        ), mostRelevantAddressRow) %}
 
-        {% set primaryAddressRow = (
-            primaryAddressRow.push(
+        {% set mostRelevantAddressRow = (
+            mostRelevantAddressRow.push(
                 { 
                     key: {
                         text: "Type"
                     },
                     value: {
-                        text: item.addressType | capitalizeFirstLetter,
+                        text: mostRelevantAddress.addressType | capitalizeFirstLetter,
                         classes: 'confirm-type-value'
                     }
                 }
-        ), primaryAddressRow) %}
+        ), mostRelevantAddressRow) %}
 
-        {% set primaryAddressRow = (
-            primaryAddressRow.push(
+        {% set mostRelevantAddressRow = (
+            mostRelevantAddressRow.push(
                 {
                     key: {
                         text: "Address-specific phone numbers"
@@ -75,36 +87,36 @@
                         classes: 'address-specific-phone-numbers-not-provided'
                     }
                 }
-        ), primaryAddressRow) %}
+        ), mostRelevantAddressRow) %}
 
-        {% set primaryAddressRow = (
-            primaryAddressRow.push(
+        {% set mostRelevantAddressRow = (
+            mostRelevantAddressRow.push(
                 {
                     key: {
                         text: "Mail"
                     },
                     value: {
-                        text: 'Yes' if item.mailFlag == true else 'No',
+                        text: 'Yes' if mostRelevantAddress.mailFlag == true else 'No',
                         classes: 'confirm-mail-value'
                     }
                 }
-        ), primaryAddressRow) %}
+        ), mostRelevantAddressRow) %}
 
-        {% set primaryAddressRow = (
-            primaryAddressRow.push(
+        {% set mostRelevantAddressRow = (
+            mostRelevantAddressRow.push(
                 {
                     key: {
                         text: "Comments"
                     },
                     value: {
-                        text: 'Not provided' if not item.comments else item.comments,
+                        text: 'Not provided' if not mostRelevantAddress.comments else mostRelevantAddress.comments,
                         classes: 'confirm-comments-value'
                     }
                 }
-        ), primaryAddressRow) %}
+        ), mostRelevantAddressRow) %}
 
-        {% set primaryAddressRow = (
-            primaryAddressRow.push(
+        {% set mostRelevantAddressRow = (
+            mostRelevantAddressRow.push(
                 {
                     key: {
                         text: "Dates"
@@ -113,9 +125,8 @@
                         html: fromToDate
                     }
                 }
-        ), primaryAddressRow) %}
-    {% endif %}
-{% endfor %}
+        ), mostRelevantAddressRow) %}
+{% endif %}
 
 {{ govukSummaryList({
     card: {
@@ -131,5 +142,5 @@
             ]
         }
     },
-    rows: primaryAddressRow
+    rows: mostRelevantAddressRow
 }) }}
