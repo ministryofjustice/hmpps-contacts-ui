@@ -168,4 +168,36 @@ describe('GET /contacts/manage/:contactId', () => {
       expect($('.identity-numbers-not-provide-value').text().trim()).toStrictEqual('Not provided')
     })
   })
+
+  describe('Email addresses', () => {
+    it('should render email addresses', async () => {
+      auditService.logPageView.mockResolvedValue(null)
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.getContact.mockResolvedValue(TestData.contact())
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect(response.status).toEqual(200)
+
+      expect($('.confirm-email-1-value').text().trim()).toStrictEqual('mr.last@example.com')
+      expect($('.confirm-email-2-value').text().trim()).toStrictEqual('mr.first@example.com')
+    })
+
+    it('should render not provided if no phone numbers', async () => {
+      auditService.logPageView.mockResolvedValue(null)
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.getContact.mockResolvedValue(TestData.contact({ emailAddresses: [] }))
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect(response.status).toEqual(200)
+      expect($('.email-addresses-not-provide-value').text().trim()).toStrictEqual('Not provided')
+    })
+  })
 })
