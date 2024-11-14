@@ -144,12 +144,14 @@ const ManageContactsRoutes = (
   const manageContactStaffController = new ManageContactStaffController(contactsService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/staff',
+    prepareStandaloneManageContactJourney(),
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, manageContactStaffController),
     asyncMiddleware(manageContactStaffController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/staff',
+    prepareStandaloneManageContactJourney(),
     asyncMiddleware(manageContactStaffController.POST),
   )
 
@@ -240,12 +242,14 @@ const ManageContactsRoutes = (
   const manageDomesticStatusController = new ManageDomesticStatusController(contactsService, referenceDataService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/domestic-status',
+    prepareStandaloneManageContactJourney(),
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, manageDomesticStatusController),
     asyncMiddleware(manageDomesticStatusController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/domestic-status',
+    prepareStandaloneManageContactJourney(),
     asyncMiddleware(manageDomesticStatusController.POST),
   )
 
