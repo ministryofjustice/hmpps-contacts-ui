@@ -8,7 +8,6 @@ import { reverseFormatName } from '../../../../utils/formatName'
 
 import Contact = contactsApiClientTypes.Contact
 import ContactDetails = contactsApiClientTypes.ContactDetails
-import { capitalizeFirstLetter } from '../../../../utils/utils'
 
 export default class ContactDetailsController implements PageHandler {
   constructor(
@@ -23,13 +22,11 @@ export default class ContactDetailsController implements PageHandler {
     const { prisonerDetails, user } = res.locals
     const contact: Contact = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const formattedFullName = await this.formattedFullName(contact, user)
-    const formattedGender = await this.formattedGender(contact, user)
 
     return res.render('pages/contacts/manage/contactDetails/details', {
       contact,
       prisonerDetails,
       formattedFullName,
-      formattedGender,
     })
   }
 
@@ -43,17 +40,5 @@ export default class ContactDetailsController implements PageHandler {
       )
     }
     return reverseFormatName(contact, { customTitle: titleDescription })
-  }
-
-  private async formattedGender(contact: ContactDetails, user: Express.User) {
-    let genderDescription: string
-    if (contact.genderDescription) {
-      genderDescription = await this.referenceDataService.getReferenceDescriptionForCode(
-        ReferenceCodeType.GENDER,
-        contact.gender,
-        user,
-      )
-    }
-    return capitalizeFirstLetter(genderDescription)
   }
 }

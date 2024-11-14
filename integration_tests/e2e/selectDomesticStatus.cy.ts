@@ -16,7 +16,6 @@ context('Select Domestic Status', () => {
     cy.task('stubTitlesReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetContactById', TestData.contact())
-    cy.task('stubGetGenders')
 
     cy.signIn()
     const { prisonerNumber } = TestData.prisoner()

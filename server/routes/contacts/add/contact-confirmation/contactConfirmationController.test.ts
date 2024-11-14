@@ -318,7 +318,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/EXISTING/confirmation/:journeyI
       correlationId: expect.any(String),
     })
     const $ = cheerio.load(response.text)
-    expect($('.confirm-gender-value').text().trim()).toStrictEqual(capitalizeFirstLetter(genderDescription))
+    expect($('.confirm-gender-value').text().trim()).toStrictEqual(genderDescription)
   })
 
   it('should show "not provided" for gender if question was not answered', async () => {

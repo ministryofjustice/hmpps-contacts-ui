@@ -221,7 +221,7 @@ describe('GET /contacts/manage/:contactId', () => {
       // Then
       const $ = cheerio.load(response.text)
       expect(response.status).toEqual(200)
-      expect($('.manage-gender-value').text().trim()).toStrictEqual(capitalizeFirstLetter(genderDescription))
+      expect($('.manage-gender-value').text().trim()).toStrictEqual(genderDescription)
     })
 
     it('should show "not provided" for gender if question was not answered', async () => {

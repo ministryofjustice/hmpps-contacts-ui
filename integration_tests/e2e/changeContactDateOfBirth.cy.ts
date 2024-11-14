@@ -15,7 +15,6 @@ context('Change Contact Date Of Birth', () => {
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.task('stubTitlesReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
-    cy.task('stubGetGenders')
     cy.signIn()
   })
 
