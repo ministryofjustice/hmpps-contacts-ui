@@ -88,7 +88,15 @@ context('Select Interpreter Needs', () => {
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
     Page.verifyOnPage(ManageContactDetailsPage).clickAddInterpreterLink()
-    Page.verifyOnPage(SelectInterpreterNeedsPage, 'Jones Mason').clickCancel()
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
+    Page.verifyOnPage(SelectInterpreterNeedsPage, 'Jones Mason') //
+      .cancelTo(ManageContactDetailsPage, 'Jones Mason')
+  })
+
+  it(`should return to manage contact when back is clicked`, () => {
+    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
+    Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
+    Page.verifyOnPage(ManageContactDetailsPage).clickAddInterpreterLink()
+    Page.verifyOnPage(SelectInterpreterNeedsPage, 'Jones Mason') //
+      .backTo(ManageContactDetailsPage, 'Jones Mason')
   })
 })

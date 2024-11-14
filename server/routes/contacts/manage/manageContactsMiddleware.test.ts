@@ -101,7 +101,7 @@ describe('manageContactsMiddleware', () => {
         lastTouched: lastTouchedBeforeCall.toISOString(),
         contactId: 99,
         prisonerNumber: 'A1324BC',
-        returnPoint: { type: 'MANAGE_CONTACT', url: '/foo' },
+        returnPoint: { url: '/foo' },
         names: {
           lastName: 'Bar',
           firstName: 'Foo',

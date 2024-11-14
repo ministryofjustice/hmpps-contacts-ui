@@ -52,7 +52,7 @@ describe('contactsService', () => {
         lastTouched: new Date().toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
+        returnPoint: { url: '/foo-bar' },
         names: {
           title: 'Mr',
           lastName: 'last',
@@ -108,7 +108,7 @@ describe('contactsService', () => {
         lastTouched: new Date().toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
+        returnPoint: { url: '/foo-bar' },
         names: {
           lastName: 'last',
           firstName: 'first',
@@ -162,7 +162,7 @@ describe('contactsService', () => {
         lastTouched: new Date().toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
+        returnPoint: { url: '/foo-bar' },
         names: {
           lastName: 'last',
           firstName: 'first',
@@ -210,7 +210,7 @@ describe('contactsService', () => {
             lastTouched: new Date().toISOString(),
             prisonerNumber,
             isCheckingAnswers: false,
-            returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
+            returnPoint: { url: '/foo-bar' },
             names: { firstName: 'first', lastName: 'last' },
             dateOfBirth: { isKnown: 'NO' },
             relationship: { type: 'MOT', isEmergencyContact: 'YES', isNextOfKin: 'NO' },
@@ -292,7 +292,7 @@ describe('contactsService', () => {
         lastTouched: new Date().toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
+        returnPoint: { url: '/foo-bar' },
         names: {
           title: 'Mr',
           lastName: 'last',
@@ -343,7 +343,7 @@ describe('contactsService', () => {
         lastTouched: new Date().toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
+        returnPoint: { url: '/foo-bar' },
         names: {
           lastName: 'last',
           firstName: 'first',
@@ -386,7 +386,7 @@ describe('contactsService', () => {
             lastTouched: new Date().toISOString(),
             prisonerNumber,
             isCheckingAnswers: false,
-            returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
+            returnPoint: { url: '/foo-bar' },
             names: { firstName: 'first', lastName: 'last' },
             dateOfBirth: { isKnown: 'NO' },
             relationship: { type: 'MOT', isEmergencyContact: 'YES', isNextOfKin: 'NO' },

@@ -153,4 +153,20 @@ context('Edit Contact Identitys', () => {
     enterIdentityPage.clickContinue()
     enterIdentityPage.hasFieldInError('issuingAuthority', 'Issuing authority should be 40 characters or fewer')
   })
+
+  it('Back link goes to manage contacts', () => {
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditIdentityLink(1)
+
+    Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
+      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
+  })
+
+  it('Cancel goes to manage contacts', () => {
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditIdentityLink(1)
+
+    Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
+      .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
+  })
 })

@@ -57,4 +57,28 @@ context('Select Spoken Language', () => {
       },
     )
   })
+
+  it(`Back link goes to manage contacts`, () => {
+    const { prisonerNumber } = TestData.prisoner()
+    cy.task('stubTitlesReferenceData')
+    cy.task('stubGetLanguages')
+
+    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
+    Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
+    Page.verifyOnPage(ManageContactDetailsPage).clickChangeSpokenLanguageLink()
+    Page.verifyOnPage(SelectSpokenLanguagePage, 'Jones Mason') //
+      .backTo(ManageContactDetailsPage, 'Jones Mason')
+  })
+
+  it(`Cancel goes to manage contacts`, () => {
+    const { prisonerNumber } = TestData.prisoner()
+    cy.task('stubTitlesReferenceData')
+    cy.task('stubGetLanguages')
+
+    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
+    Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
+    Page.verifyOnPage(ManageContactDetailsPage).clickChangeSpokenLanguageLink()
+    Page.verifyOnPage(SelectSpokenLanguagePage, 'Jones Mason') //
+      .cancelTo(ManageContactDetailsPage, 'Jones Mason')
+  })
 })

@@ -60,37 +60,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
     const expectedReturnPoint: ReturnPoint = {
-      type: 'PRISONER_CONTACTS',
       url: `/prisoner/${prisonerNumber}/contacts/list`,
     }
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/start`)
-
-    // Then
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_START_PAGE, {
-      who: user.username,
-      correlationId: expect.any(String),
-    })
-    expect(response.status).toEqual(302)
-    expect(response.headers.location).toContain('/contacts/search/')
-    const journey = Object.values(session.addContactJourneys)[0]
-    expect(journey.returnPoint).toStrictEqual(expectedReturnPoint)
-  })
-
-  it('should set the return point to manage contacts if the journey parameters are specified', async () => {
-    // Given
-    const returnJourneyId = uuidv4()
-    auditService.logPageView.mockResolvedValue(null)
-    const expectedReturnPoint: ReturnPoint = {
-      type: 'MANAGE_PRISONER_CONTACTS',
-      url: `/prisoner/${prisonerNumber}/contacts/list/${returnJourneyId}`,
-    }
-
-    // When
-    const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/create/start?returnJourneyType=MANAGE_PRISONER_CONTACTS&returnJourneyId=${returnJourneyId}`,
-    )
 
     // Then
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_START_PAGE, {
@@ -111,7 +85,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
         id: uuidv4(),
         lastTouched: new Date().toISOString(),
         isCheckingAnswers: false,
-        returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
+        returnPoint: { url: '/foo-bar' },
         prisonerNumber,
         names: {
           lastName: 'foo',
@@ -146,35 +120,35 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
         lastTouched: new Date(2024, 1, 1, 11, 30).toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
+        returnPoint: { url: '/foo-bar' },
       },
       {
         id: 'middle-aged',
         lastTouched: new Date(2024, 1, 1, 12, 30).toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
+        returnPoint: { url: '/foo-bar' },
       },
       {
         id: 'youngest',
         lastTouched: new Date(2024, 1, 1, 14, 30).toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
+        returnPoint: { url: '/foo-bar' },
       },
       {
         id: 'oldest',
         lastTouched: new Date(2024, 1, 1, 10, 30).toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
+        returnPoint: { url: '/foo-bar' },
       },
       {
         id: 'young',
         lastTouched: new Date(2024, 1, 1, 13, 30).toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { type: 'PRISONER_CONTACTS', url: '/foo-bar' },
+        returnPoint: { url: '/foo-bar' },
       },
     ]
 

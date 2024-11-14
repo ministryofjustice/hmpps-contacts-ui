@@ -28,7 +28,7 @@ beforeEach(() => {
     lastTouched: new Date().toISOString(),
     contactId,
     prisonerNumber,
-    returnPoint: { type: 'MANAGE_CONTACT', url: '/foo-bar' },
+    returnPoint: { url: '/foo-bar' },
     names: {
       lastName: 'last',
       firstName: 'first',

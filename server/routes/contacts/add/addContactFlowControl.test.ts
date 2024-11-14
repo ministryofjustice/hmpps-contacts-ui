@@ -52,7 +52,6 @@ describe('addContactFlowControl', () => {
             lastTouched: new Date().toISOString(),
             prisonerNumber: 'A1234BC',
             returnPoint: {
-              type: 'PRISONER_CONTACTS',
               url: '/foo',
             },
             mode: 'NEW',
@@ -120,7 +119,6 @@ describe('addContactFlowControl', () => {
             lastTouched: new Date().toISOString(),
             prisonerNumber: 'A1234BC',
             returnPoint: {
-              type: 'PRISONER_CONTACTS',
               url: '/foo',
             },
             isCheckingAnswers: false,
@@ -148,7 +146,6 @@ describe('addContactFlowControl', () => {
           lastTouched: new Date().toISOString(),
           prisonerNumber: 'A1234BC',
           returnPoint: {
-            type: 'PRISONER_CONTACTS',
             url: '/foo',
           },
           dateOfBirth: {
@@ -170,7 +167,6 @@ describe('addContactFlowControl', () => {
           lastTouched: new Date().toISOString(),
           prisonerNumber: 'A1234BC',
           returnPoint: {
-            type: 'PRISONER_CONTACTS',
             url: '/foo',
           },
           isCheckingAnswers: true,
@@ -204,7 +200,6 @@ describe('addContactFlowControl', () => {
           lastTouched: new Date().toISOString(),
           prisonerNumber: 'A1234BC',
           returnPoint: {
-            type: 'PRISONER_CONTACTS',
             url: '/foo',
           },
           mode: 'EXISTING',
@@ -237,7 +232,6 @@ describe('addContactFlowControl', () => {
           lastTouched: new Date().toISOString(),
           prisonerNumber: 'A1234BC',
           returnPoint: {
-            type: 'PRISONER_CONTACTS',
             url: '/foo',
           },
           mode: 'EXISTING',
@@ -260,7 +254,6 @@ describe('addContactFlowControl', () => {
           lastTouched: new Date().toISOString(),
           prisonerNumber: 'A1234BC',
           returnPoint: {
-            type: 'PRISONER_CONTACTS',
             url: '/foo',
           },
           mode: 'EXISTING',
@@ -285,7 +278,6 @@ describe('addContactFlowControl', () => {
         lastTouched: new Date().toISOString(),
         prisonerNumber: 'A1234BC',
         returnPoint: {
-          type: 'PRISONER_CONTACTS',
           url: '/foo',
         },
         mode: undefined,
@@ -310,7 +302,6 @@ describe('addContactFlowControl', () => {
         lastTouched: new Date().toISOString(),
         prisonerNumber: 'A1234BC',
         returnPoint: {
-          type: 'PRISONER_CONTACTS',
           url: '/foo',
         },
         mode: undefined,

@@ -160,4 +160,20 @@ context('Edit Contact Phones', () => {
     enterPhonePage.clickContinue()
     enterPhonePage.hasFieldInError('extension', 'Extension should be 7 characters or fewer')
   })
+
+  it('Back link goes to manage contact', () => {
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditPhoneNumberLink(77)
+
+    Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
+      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
+  })
+
+  it('Cancel goes to manage contact', () => {
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditPhoneNumberLink(77)
+
+    Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
+      .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
+  })
 })
