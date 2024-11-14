@@ -90,7 +90,7 @@ declare namespace journeys {
     dateOfBirth?: DateOfBirth
   }
 
-  type ReturnPointType = 'MANAGE_PRISONER_CONTACTS' | 'PRISONER_CONTACTS' | 'MANAGE_CONTACT'
+  type ReturnPointType = 'MANAGE_PRISONER_CONTACTS' | 'PRISONER_CONTACTS' | 'MANAGE_CONTACT_RELATIONSHIP'
   type YesOrNo = 'YES' | 'NO'
   type YesNoOrDoNotKnow = 'YES' | 'NO' | 'DO_NOT_KNOW'
   type PrisonerJourneyParams = { prisonerNumber: string; journeyId: string }
