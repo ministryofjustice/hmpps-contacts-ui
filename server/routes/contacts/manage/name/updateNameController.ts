@@ -34,7 +34,7 @@ export default class UpdateNameController implements PageHandler {
       .then(val => this.getSelectedTitleOptions(val, res.locals?.formResponses?.title ?? contact.title))
 
     const manageContactUrl = `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`
-    const returnPoint: ReturnPoint = { type: 'MANAGE_CONTACT_RELATIONSHIP', url: manageContactUrl }
+    const returnPoint: ReturnPoint = { url: manageContactUrl }
     const navigation: Navigation = {
       backLink: manageContactUrl,
     }

@@ -35,7 +35,7 @@ export default class UpdateEstimatedDobController implements PageHandler {
       firstName: contact.firstName,
       middleNames: contact.middleNames,
     }
-    const returnPoint: ReturnPoint = { type: 'MANAGE_CONTACT_RELATIONSHIP', url: manageContactUrl }
+    const returnPoint: ReturnPoint = { url: manageContactUrl }
     const navigation: Navigation = { backLink: manageContactUrl }
     const view = {
       journey: { names, returnPoint },
