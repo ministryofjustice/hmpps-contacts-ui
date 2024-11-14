@@ -10,6 +10,7 @@ import ContactsService from '../../../../services/contactsService'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import TestData from '../../../testutils/testData'
 import AddContactJourney = journeys.AddContactJourney
+import { capitalizeFirstLetter } from '../../../../utils/utils'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -293,12 +294,17 @@ describe('GET /prisoner/:prisonerNumber/contacts/EXISTING/confirmation/:journeyI
     expect($('.addresses-not-provided').text().trim()).toStrictEqual('Not provided')
   })
 
-  it('should show gender if question was answered', async () => {
+  it.each([
+    ['M', 'Male'],
+    ['F', 'Female'],
+    ['NK', 'Not Known / Not Recorded'],
+    ['NS', 'Specified (Indeterminate)'],
+  ])('should show gender if question was answered', async (gender: string, genderDescription: string) => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-    contactsService.searchContact.mockResolvedValue(TestData.contact())
-    contactsService.getContact.mockResolvedValue(TestData.contact({ gender: 'M', genderDescription: 'Male' }))
+    contactsService.searchContact.mockResolvedValue(TestData.contact({ gender, genderDescription }))
+    contactsService.getContact.mockResolvedValue(TestData.contact({ gender, genderDescription }))
     existingJourney.mode = 'EXISTING'
 
     // When
@@ -311,7 +317,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/EXISTING/confirmation/:journeyI
       correlationId: expect.any(String),
     })
     const $ = cheerio.load(response.text)
-    expect($('.confirm-gender-value').text().trim()).toStrictEqual('Male')
+    expect($('.confirm-gender-value').text().trim()).toStrictEqual(capitalizeFirstLetter(genderDescription))
   })
 
   it('should show "not provided" for gender if question was not answered', async () => {

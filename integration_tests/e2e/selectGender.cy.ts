@@ -34,7 +34,7 @@ context('Select Gender', () => {
 
     Page.verifyOnPage(ManageContactDetailsPage).clickChangeGenderLink()
     Page.verifyOnPage(SelectGenderPage, 'Jones Mason').selectGender('M').clickContinue()
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').verifyGenderValueAs('Not provided')
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').verifyGenderValueAs('Male')
 
     cy.verifyLastAPICall(
       {
@@ -54,6 +54,7 @@ context('Select Gender', () => {
     }
     cy.task('stubGetGenders')
     cy.task('stubPatchContactById', { contactId, request })
+    cy.task('stubGetContactById', TestData.contact({ gender: null, genderDescription: null }))
 
     Page.verifyOnPage(ManageContactDetailsPage).clickChangeGenderLink()
     Page.verifyOnPage(SelectGenderPage, 'Jones Mason').clickContinue()

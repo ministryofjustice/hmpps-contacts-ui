@@ -20,7 +20,7 @@
             text: "Gender"
         },
         value: {
-            text: contact.genderDescription if contact.genderDescription else 'Not provided',
+            text: (contact.genderDescription | capitalizeFirstLetter) if contact.genderDescription else 'Not provided',
             classes: 'confirm-gender-value'
         }
     },
