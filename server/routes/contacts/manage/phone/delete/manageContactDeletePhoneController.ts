@@ -4,7 +4,6 @@ import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { ContactsService } from '../../../../../services'
 import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
 import ContactDetails = contactsApiClientTypes.ContactDetails
-import StandaloneManageContactJourney = journeys.StandaloneManageContactJourney
 
 export default class ManageContactDeletePhoneController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}

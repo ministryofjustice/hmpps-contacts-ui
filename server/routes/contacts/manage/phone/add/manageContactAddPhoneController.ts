@@ -7,7 +7,6 @@ import { PhoneNumberSchemaType } from '../phoneSchemas'
 import { ContactsService } from '../../../../../services'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import ContactDetails = contactsApiClientTypes.ContactDetails
-import StandaloneManageContactJourney = journeys.StandaloneManageContactJourney
 
 export default class ManageContactAddPhoneController implements PageHandler {
   constructor(

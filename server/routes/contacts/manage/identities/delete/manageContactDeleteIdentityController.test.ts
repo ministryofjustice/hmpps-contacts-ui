@@ -64,9 +64,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:con
 
     // When
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/1/delete`)
+      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/1/delete?returnUrl=/foo-bar`)
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+      .expect('Location', '/foo-bar')
 
     // Then
     expect(contactsService.deleteContactIdentity).toHaveBeenCalledWith(contactId, 1, user)
@@ -79,9 +79,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:con
 
     // When
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/1/delete`)
+      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/1/delete?returnUrl=/foo-bar`)
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+      .expect('Location', '/foo-bar')
 
     // Then
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_DELETE_IDENTITY_PAGE, {
@@ -97,7 +97,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:con
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/555/delete`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/555/delete?returnUrl=/foo-bar`,
     )
 
     // Then

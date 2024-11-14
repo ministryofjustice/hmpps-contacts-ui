@@ -8,7 +8,6 @@ import { ContactsService } from '../../../../../services'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
 import ContactDetails = contactsApiClientTypes.ContactDetails
-import StandaloneManageContactJourney = journeys.StandaloneManageContactJourney
 
 export default class ManageContactEditPhoneController implements PageHandler {
   constructor(
