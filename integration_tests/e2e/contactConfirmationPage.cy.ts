@@ -105,6 +105,7 @@ context('Contact confirmation', () => {
       .verifyShowsTabTitleAs('Linked offenders', 2)
       .verifyShowsCardTitleAs('Basic details', 0)
       .verifyShowNamesValueAs('Contact, Mr Existing')
+      .verifyShowGenderValueAs('Male')
       .verifyShowDOBValueAs('14 January 1990')
       .verifyShowDeceasedDateValueAs('Not provided')
       .verifyShowsCardTitleAs('Addresses', 1)

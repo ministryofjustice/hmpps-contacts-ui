@@ -292,6 +292,48 @@ describe('GET /prisoner/:prisonerNumber/contacts/EXISTING/confirmation/:journeyI
     expect($('.most-relevant-address-label').text().trim()).toStrictEqual('')
     expect($('.addresses-not-provided').text().trim()).toStrictEqual('Not provided')
   })
+
+  it('should show gender if question was answered', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.searchContact.mockResolvedValue(TestData.contact())
+    contactsService.getContact.mockResolvedValue(TestData.contact({ gender: 'M', genderDescription: 'Male' }))
+    existingJourney.mode = 'EXISTING'
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.CONTACT_CONFIRMATION_PAGE, {
+      who: user.username,
+      correlationId: expect.any(String),
+    })
+    const $ = cheerio.load(response.text)
+    expect($('.confirm-gender-value').text().trim()).toStrictEqual('Male')
+  })
+
+  it('should show not provide for gender if question was not answered', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.searchContact.mockResolvedValue(TestData.contact())
+    contactsService.getContact.mockResolvedValue(TestData.contact({ gender: null, genderDescription: null }))
+    existingJourney.mode = 'EXISTING'
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.CONTACT_CONFIRMATION_PAGE, {
+      who: user.username,
+      correlationId: expect.any(String),
+    })
+    const $ = cheerio.load(response.text)
+    expect($('.confirm-gender-value').text().trim()).toStrictEqual('Not provided')
+  })
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/add/confirmation/:journeyId?contactId=', () => {
