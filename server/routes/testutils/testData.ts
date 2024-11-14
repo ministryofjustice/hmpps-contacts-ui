@@ -284,9 +284,9 @@ export default class TestData {
       this.getContactEmailDetails('PERSONAL', 'Personal email', 'mr.first@example.com', 2),
     ],
     identities = [
-      this.getContactIdentityDetails('DL', 'Driving licence', 'LAST-87736799M', 'UK', 1),
+      this.getContactIdentityDetails('DL', 'Driving licence', 'LAST-87736799M', null, 1),
       this.getContactIdentityDetails('PASS', 'Passport number', '425362965', 'UK passport office', 2),
-      this.getContactIdentityDetails('NINO', 'National insurance number', '06/614465M', 'UK', 3),
+      this.getContactIdentityDetails('NINO', 'National insurance number', '06/614465M', null, 3),
     ],
     domesticStatusCode = 'S',
     domesticStatusDescription = 'Single-not married/in civil partnership',
