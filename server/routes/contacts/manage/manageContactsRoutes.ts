@@ -116,24 +116,28 @@ const ManageContactsRoutes = (
   const spokenLanguageController = new ManageSpokenLanguageController(contactsService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/language',
+    prepareStandaloneManageContactJourney(),
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, spokenLanguageController),
     asyncMiddleware(spokenLanguageController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/language',
+    prepareStandaloneManageContactJourney(),
     asyncMiddleware(spokenLanguageController.POST),
   )
 
   const manageInterpreterController = new ManageInterpreterController(contactsService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/interpreter',
+    prepareStandaloneManageContactJourney(),
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, manageInterpreterController),
     asyncMiddleware(manageInterpreterController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/interpreter',
+    prepareStandaloneManageContactJourney(),
     asyncMiddleware(manageInterpreterController.POST),
   )
 
