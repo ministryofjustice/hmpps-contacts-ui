@@ -10,7 +10,6 @@ import ReferenceDataService from '../../../../services/referenceDataService'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
-import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import { capitalizeFirstLetter } from '../../../../utils/utils'
 
 export default class ContactConfirmationController implements PageHandler {
@@ -117,23 +116,5 @@ export default class ContactConfirmationController implements PageHandler {
       mostRelevantAddressLabel = 'Mail'
     }
     return mostRelevantAddressLabel
-  }
-
-  private getSelectedGenderOptions(
-    options: ReferenceCode[],
-    selected?: string,
-  ): Array<{
-    text: string
-    value: string
-    checked?: boolean
-  }> {
-    const mappedOptions = options.map((gender: ReferenceCode) => {
-      return {
-        text: gender.description,
-        value: gender.code,
-        checked: gender.code === selected,
-      }
-    })
-    return mappedOptions
   }
 }

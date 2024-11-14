@@ -93,6 +93,7 @@ context('Contact confirmation', () => {
   it(`should render contact information`, () => {
     const titleHeader = 'Is this the right person to add as a contact for Smith, John?'
     cy.task('stubGetContactById', TestData.contact())
+    cy.task('stubGetGenders')
 
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
@@ -135,7 +136,7 @@ context('Contact confirmation', () => {
       .verifyShowNeedsInterpreterValueAs('No')
   })
 
-  it('should render contact information with empty rows if not available', () => {
+  it('should render contact information with empity rows if not available', () => {
     cy.task('stubGetContactById', {
       id: contactId,
       firstName: 'Existing',
@@ -168,7 +169,7 @@ context('Contact confirmation', () => {
       .verifyShowAddressFromToDateValueAsNotProvided('Not provided')
   })
 
-  it('should render contact information with empty sections if not available', () => {
+  it('should render contact information with empity sections if not available', () => {
     cy.task('stubGetContactById', {
       id: contactId,
       title: 'MR',
@@ -202,6 +203,7 @@ context('Contact confirmation', () => {
 
   it('should navigate back to search contact when "No, this is not the right person" is selected ', () => {
     cy.task('stubGetContactById', TestData.contact())
+    cy.task('stubGetGenders')
 
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
@@ -213,6 +215,7 @@ context('Contact confirmation', () => {
 
   it('should navigate to relationship screen when "Yes, this is the right person" is selected ', () => {
     cy.task('stubGetContactById', TestData.contact())
+    cy.task('stubGetGenders')
 
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
