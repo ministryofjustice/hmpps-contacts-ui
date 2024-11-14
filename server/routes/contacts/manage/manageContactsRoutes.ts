@@ -152,12 +152,14 @@ const ManageContactsRoutes = (
   const manageContactAddPhoneController = new ManageContactAddPhoneController(contactsService, referenceDataService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/create',
+    prepareStandaloneManageContactJourney(),
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, manageContactAddPhoneController),
     asyncMiddleware(manageContactAddPhoneController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/create',
+    prepareStandaloneManageContactJourney(),
     validate(phoneNumberSchemaFactory()),
     asyncMiddleware(manageContactAddPhoneController.POST),
   )
@@ -165,14 +167,25 @@ const ManageContactsRoutes = (
   const manageContactEditPhoneController = new ManageContactEditPhoneController(contactsService, referenceDataService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/edit',
+    prepareStandaloneManageContactJourney(),
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, manageContactEditPhoneController),
     asyncMiddleware(manageContactEditPhoneController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/edit',
+    prepareStandaloneManageContactJourney(),
     validate(phoneNumberSchemaFactory()),
     asyncMiddleware(manageContactEditPhoneController.POST),
+  )
+
+  const manageContactDeletePhoneController = new ManageContactDeletePhoneController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/delete',
+    prepareStandaloneManageContactJourney(),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    logPageViewMiddleware(auditService, manageContactDeletePhoneController),
+    asyncMiddleware(manageContactDeletePhoneController.GET),
   )
 
   const manageContactAddIdentityController = new ManageContactAddIdentityController(
@@ -225,14 +238,6 @@ const ManageContactsRoutes = (
   router.post(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/domestic-status',
     asyncMiddleware(manageDomesticStatusController.POST),
-  )
-
-  const manageContactDeletePhoneController = new ManageContactDeletePhoneController(contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/delete',
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, manageContactDeletePhoneController),
-    asyncMiddleware(manageContactDeletePhoneController.GET),
   )
 
   const startUpdateDobJourneyController = new StartUpdateDateOfBirthJourneyController(contactsService)

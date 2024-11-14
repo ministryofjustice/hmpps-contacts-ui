@@ -17,14 +17,14 @@
                     actions: {
                         items: [
                             {
-                                href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/phone/" + item.contactPhoneId + "/edit",
+                                href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/phone/" + item.contactPhoneId + "/edit?returnUrl=" + manageContactRelationshipUrl,
                                 text: "Edit",
                                 visuallyHiddenText: " phone number",
                                 attributes: {"data-qa": "edit-phone-number-" + item.contactPhoneId},
                                 classes: "govuk-link--no-visited-state"
                             },
                             {
-                                href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/phone/" + item.contactPhoneId + "/delete",
+                                href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/phone/" + item.contactPhoneId + "/delete?returnUrl=" + manageContactRelationshipUrl,
                                 text: "Delete",
                                 visuallyHiddenText: " phone number",
                                 attributes: {"data-qa": "delete-phone-number-" + item.contactPhoneId},
@@ -59,7 +59,7 @@
         actions: {
             items: [
                 {
-                    href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/phone/create",
+                    href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/phone/create?returnUrl=" + manageContactRelationshipUrl,
                     text: "Add phone number",
                     attributes: {"data-qa": "add-phone-number"},
                     classes: "govuk-link--no-visited-state"

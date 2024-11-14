@@ -7,6 +7,7 @@ import { PhoneNumberSchemaType } from '../phoneSchemas'
 import { ContactsService } from '../../../../../services'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import ContactDetails = contactsApiClientTypes.ContactDetails
+import StandaloneManageContactJourney = journeys.StandaloneManageContactJourney
 
 export default class ManageContactAddPhoneController implements PageHandler {
   constructor(
@@ -38,10 +39,11 @@ export default class ManageContactAddPhoneController implements PageHandler {
     res: Response,
   ): Promise<void> => {
     const { user } = res.locals
-    const { prisonerNumber, contactId } = req.params
+    const { journey } = res.locals
+    const { contactId } = req.params
     const { phoneNumber, type, extension } = req.body
     await this.contactsService.createContactPhone(parseInt(contactId, 10), user, type, phoneNumber, extension)
-    res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    res.redirect(journey.returnPoint.url)
   }
 
   private getSelectedOptions(

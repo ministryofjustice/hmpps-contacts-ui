@@ -63,9 +63,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contac
 
     // When
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/123/delete`)
+      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/123/delete?returnUrl=/foo-bar`)
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+      .expect('Location', '/foo-bar')
 
     // Then
     expect(contactsService.deleteContactPhone).toHaveBeenCalledWith(contactId, 123, user)
@@ -78,9 +78,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contac
 
     // When
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/999/delete`)
+      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/999/delete?returnUrl=/foo-bar`)
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+      .expect('Location', '/foo-bar')
 
     // Then
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_DELETE_PHONE_PAGE, {
@@ -95,7 +95,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contac
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/555/delete`)
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/555/delete?returnUrl=/foo-bar`,
+    )
 
     // Then
     expect(response.status).toEqual(500)
