@@ -39,6 +39,10 @@ export default abstract class Page {
     this.backLink().click()
   }
 
+  clickCancelLink() {
+    this.cancelLink().click()
+  }
+
   /* eslint-disable @typescript-eslint/no-explicit-any */
   continueTo<T>(constructor: new (...args: any) => T, ...args: any): T {
     this.clickContinue()
@@ -51,7 +55,15 @@ export default abstract class Page {
     return new constructor(args)
   }
 
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  cancelTo<T>(constructor: new (...args: any) => T, ...args: any): T {
+    this.clickCancelLink()
+    return new constructor(args)
+  }
+
   private continueButton = (): PageElement => cy.get('[data-qa=continue-button]')
 
   private backLink = (): PageElement => cy.get('[data-qa=back-link]')
+
+  private cancelLink = (): PageElement => cy.get('[data-qa=cancel-button]')
 }

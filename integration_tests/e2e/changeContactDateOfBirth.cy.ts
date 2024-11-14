@@ -364,4 +364,96 @@ context('Change Contact Date Of Birth', () => {
 
     estimatedDobPage.hasFieldInError('isOverEighteen', 'Select whether the contact is over 18')
   })
+
+  it('Back link goes back to DOB from estimated DOB', () => {
+    const contact = TestData.contact({
+      id: contactId,
+      lastName: 'Last',
+      firstName: 'First',
+      middleNames: 'Middle Names',
+      dateOfBirth: null,
+      estimatedIsOverEighteen: null,
+    })
+    cy.task('stubGetContactById', contact)
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickChangeDateOfBirthLink(contactId)
+
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First Middle Names') //
+      .selectIsKnown('NO')
+      .clickContinue()
+
+    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'Last, First Middle Names') //
+      .backTo(EnterContactDateOfBirthPage, 'Last, First Middle Names')
+  })
+
+  it('Cancel goes back to manage contacts from estimated DOB', () => {
+    const contact = TestData.contact({
+      id: contactId,
+      lastName: 'Last',
+      firstName: 'First',
+      middleNames: 'Middle Names',
+      dateOfBirth: null,
+      estimatedIsOverEighteen: null,
+    })
+    cy.task('stubGetContactById', contact)
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickChangeDateOfBirthLink(contactId)
+
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First Middle Names') //
+      .selectIsKnown('NO')
+      .clickContinue()
+
+    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'Last, First Middle Names') //
+      .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
+  })
+
+  it('Back link goes back manage contacts from DOB', () => {
+    const contact = TestData.contact({
+      id: contactId,
+      lastName: 'Last',
+      firstName: 'First',
+      middleNames: 'Middle Names',
+      dateOfBirth: null,
+      estimatedIsOverEighteen: null,
+    })
+    cy.task('stubGetContactById', contact)
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickChangeDateOfBirthLink(contactId)
+
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First Middle Names') //
+      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
+  })
+
+  it('Cancel goes back to manage contacts from DOB', () => {
+    const contact = TestData.contact({
+      id: contactId,
+      lastName: 'Last',
+      firstName: 'First',
+      middleNames: 'Middle Names',
+      dateOfBirth: null,
+      estimatedIsOverEighteen: null,
+    })
+    cy.task('stubGetContactById', contact)
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickChangeDateOfBirthLink(contactId)
+
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First Middle Names') //
+      .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
+  })
 })

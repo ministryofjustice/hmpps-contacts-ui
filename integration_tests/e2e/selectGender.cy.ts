@@ -69,4 +69,20 @@ context('Select Gender', () => {
       },
     )
   })
+
+  it(`Back link goes back to manage contact`, () => {
+    cy.task('stubGetGenders')
+
+    Page.verifyOnPage(ManageContactDetailsPage).clickChangeGenderLink()
+    Page.verifyOnPage(SelectGenderPage, 'Jones Mason') //
+      .backTo(ManageContactDetailsPage, 'Jones Mason')
+  })
+
+  it(`Cancel goes back to manage contact`, () => {
+    cy.task('stubGetGenders')
+
+    Page.verifyOnPage(ManageContactDetailsPage).clickChangeGenderLink()
+    Page.verifyOnPage(SelectGenderPage, 'Jones Mason') //
+      .cancelTo(ManageContactDetailsPage, 'Jones Mason')
+  })
 })
