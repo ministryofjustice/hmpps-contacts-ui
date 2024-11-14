@@ -91,7 +91,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/EXISTING/confirmation/:journeyI
       correlationId: expect.any(String),
     })
     const $ = cheerio.load(response.text)
+    expect($('.confirm-DL-value').text().trim()).toStrictEqual('LAST-87736799M')
     expect($('.confirm-PASS-value').text().trim()).toStrictEqual('425362965Issuing authority - UK passport office')
+    expect($('.confirm-NINO-value').text().trim()).toStrictEqual('06/614465M')
   })
 
   it('should show the primary address if there is one', async () => {
