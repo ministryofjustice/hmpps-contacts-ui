@@ -25,6 +25,7 @@ context('Edit Contact Phones', () => {
     cy.task('stubTitlesReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetContactById', contact)
+    cy.task('stubGetGenders')
 
     cy.signIn()
     const { prisonerNumber } = TestData.prisoner()
