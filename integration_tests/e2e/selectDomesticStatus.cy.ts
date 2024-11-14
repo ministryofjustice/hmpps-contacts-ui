@@ -51,4 +51,22 @@ context('Select Domestic Status', () => {
       },
     )
   })
+
+  it(`Back link goes to manage contacts`, () => {
+    cy.task('stubTitlesReferenceData')
+    cy.task('stubGetDomesticStatuses')
+
+    Page.verifyOnPage(ManageContactDetailsPage).clickChangeDomesticStatusLink()
+    Page.verifyOnPage(SelectDomesticStatusPage, 'Jones Mason') //
+      .backTo(ManageContactDetailsPage, 'Jones Mason')
+  })
+
+  it(`Cancel goes to manage contacts`, () => {
+    cy.task('stubTitlesReferenceData')
+    cy.task('stubGetDomesticStatuses')
+
+    Page.verifyOnPage(ManageContactDetailsPage).clickChangeDomesticStatusLink()
+    Page.verifyOnPage(SelectDomesticStatusPage, 'Jones Mason') //
+      .cancelTo(ManageContactDetailsPage, 'Jones Mason')
+  })
 })

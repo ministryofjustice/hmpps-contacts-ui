@@ -59,4 +59,30 @@ context('Select Staff Status', () => {
       },
     )
   })
+
+  it(`Back link goes to manage contacts`, () => {
+    const { prisonerNumber } = TestData.prisoner()
+    cy.task('stubTitlesReferenceData')
+
+    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
+    Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
+      .verifyShowStaffStatusValueAs('No')
+      .clickChangeStaffStatusLink()
+    Page.verifyOnPage(SelectStaffStatusPage, 'Jones Mason') //
+      .backTo(ManageContactDetailsPage, 'Jones Mason')
+  })
+
+  it(`Cancel goes to manage contacts`, () => {
+    const { prisonerNumber } = TestData.prisoner()
+    cy.task('stubTitlesReferenceData')
+
+    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
+    Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
+      .verifyShowStaffStatusValueAs('No')
+      .clickChangeStaffStatusLink()
+    Page.verifyOnPage(SelectStaffStatusPage, 'Jones Mason') //
+      .cancelTo(ManageContactDetailsPage, 'Jones Mason')
+  })
 })

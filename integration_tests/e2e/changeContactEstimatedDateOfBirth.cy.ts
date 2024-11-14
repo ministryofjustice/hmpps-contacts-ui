@@ -120,4 +120,42 @@ context('Change Contact Estimated Date Of Birth', () => {
     estimatedDobPage.isEmptyForm().clickContinue()
     estimatedDobPage.hasFieldInError('isOverEighteen', 'Select whether the contact is over 18')
   })
+
+  it('Back link goes to manage contact', () => {
+    const contact = TestData.contact({
+      id: contactId,
+      lastName: 'Last',
+      firstName: 'First',
+      middleNames: 'Middle Names',
+      dateOfBirth: null,
+      estimatedIsOverEighteen: null,
+    })
+    cy.task('stubGetContactById', contact)
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickChangeEstimatedDateOfBirthLink(contactId)
+
+    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'Last, First Middle Names') //
+      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
+  })
+
+  it('Cancel link goes to manage contact', () => {
+    const contact = TestData.contact({
+      id: contactId,
+      lastName: 'Last',
+      firstName: 'First',
+      middleNames: 'Middle Names',
+      dateOfBirth: null,
+      estimatedIsOverEighteen: null,
+    })
+    cy.task('stubGetContactById', contact)
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickChangeEstimatedDateOfBirthLink(contactId)
+
+    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'Last, First Middle Names') //
+      .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
+  })
 })

@@ -6,7 +6,7 @@ import { ContactsService } from '../../../../services'
 import { PaginationRequest } from '../../../../data/prisonerOffenderSearchTypes'
 import { formatDateForApi } from '../../../../utils/utils'
 import config from '../../../../config'
-import { navigationForAddContactJourney } from '../../add/addContactFlowControl'
+import { navigationForAddContactJourney } from '../addContactFlowControl'
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
 

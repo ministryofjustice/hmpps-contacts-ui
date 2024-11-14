@@ -134,4 +134,44 @@ context('Change Contact Name', () => {
     const enterNamePage = Page.verifyOnPage(EnterNamePage, 'Last, First Middle Names')
     enterNamePage.hasFieldInError('middleNames', "Contact's middle names must be 35 characters or less")
   })
+
+  it('Back link goes back to manage contact', () => {
+    const contact = TestData.contact({
+      id: contactId,
+      lastName: 'Last',
+      firstName: 'First',
+      middleNames: 'Middle Names',
+      title: 'MR',
+      dateOfBirth: null,
+      estimatedIsOverEighteen: 'YES',
+    })
+    cy.task('stubGetContactById', contact)
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickChangeNameLink()
+
+    Page.verifyOnPage(EnterNamePage, 'Last, First Middle Names') //
+      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
+  })
+
+  it('Cancel goes back to manage contact', () => {
+    const contact = TestData.contact({
+      id: contactId,
+      lastName: 'Last',
+      firstName: 'First',
+      middleNames: 'Middle Names',
+      title: 'MR',
+      dateOfBirth: null,
+      estimatedIsOverEighteen: 'YES',
+    })
+    cy.task('stubGetContactById', contact)
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickChangeNameLink()
+
+    Page.verifyOnPage(EnterNamePage, 'Last, First Middle Names') //
+      .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
+  })
 })

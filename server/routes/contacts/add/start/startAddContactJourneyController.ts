@@ -4,7 +4,6 @@ import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { nextPageForAddContactJourney } from '../addContactFlowControl'
 import AddContactJourney = journeys.AddContactJourney
-import ReturnPointType = journeys.ReturnPointType
 import ReturnPoint = journeys.ReturnPoint
 
 export default class StartAddContactJourneyController implements PageHandler {
@@ -12,29 +11,9 @@ export default class StartAddContactJourneyController implements PageHandler {
 
   private MAX_JOURNEYS = 5
 
-  GET = async (
-    req: Request<
-      { prisonerNumber: string },
-      unknown,
-      unknown,
-      {
-        returnJourneyType?: ReturnPointType
-        returnJourneyId?: string
-      }
-    >,
-    res: Response,
-  ): Promise<void> => {
-    const { returnJourneyType, returnJourneyId } = req.query
+  GET = async (req: Request<{ prisonerNumber: string }>, res: Response): Promise<void> => {
     const { prisonerNumber } = req.params
-    let returnPoint: ReturnPoint
-    if (returnJourneyType === 'MANAGE_PRISONER_CONTACTS') {
-      returnPoint = {
-        type: 'MANAGE_PRISONER_CONTACTS',
-        url: `/prisoner/${prisonerNumber}/contacts/list/${returnJourneyId}`,
-      }
-    } else {
-      returnPoint = { type: 'PRISONER_CONTACTS', url: `/prisoner/${prisonerNumber}/contacts/list` }
-    }
+    const returnPoint: ReturnPoint = { url: `/prisoner/${prisonerNumber}/contacts/list` }
     const journey: AddContactJourney = {
       id: uuidv4(),
       lastTouched: new Date().toISOString(),

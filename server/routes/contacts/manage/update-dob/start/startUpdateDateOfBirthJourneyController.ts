@@ -42,7 +42,6 @@ export default class StartUpdateDateOfBirthJourneyController implements PageHand
       contactId: Number(contactId),
       lastTouched: new Date().toISOString(),
       returnPoint: {
-        type: 'MANAGE_CONTACT',
         url: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`,
       },
       names: {

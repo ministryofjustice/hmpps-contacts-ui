@@ -49,7 +49,7 @@ beforeEach(() => {
     lastTouched: new Date().toISOString(),
     prisonerNumber,
     isCheckingAnswers: false,
-    returnPoint: { type: 'MANAGE_PRISONER_CONTACTS', url: '/foo-bar' },
+    returnPoint: { url: '/foo-bar' },
     mode: 'EXISTING',
   }
   app = appWithAllRoutes({
