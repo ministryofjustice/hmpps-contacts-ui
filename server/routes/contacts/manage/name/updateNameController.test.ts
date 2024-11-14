@@ -50,15 +50,17 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/name', () => 
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/name`)
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/name?returnUrl=/foo-bar`,
+    )
 
     // Then
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual("What is the contact's name?")
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/manage/99')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/manage/99')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
   })
 
@@ -69,7 +71,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/name', () => 
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/name`)
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/name?returnUrl=/foo-bar`,
+    )
 
     // Then
     expect(response.status).toEqual(200)
@@ -87,7 +91,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/name', () => 
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/name`)
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/name?returnUrl=/foo-bar`,
+    )
 
     // Then
     expect(response.status).toEqual(200)
@@ -112,7 +118,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/name', () => 
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/name`)
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/name?returnUrl=/foo-bar`,
+    )
 
     // Then
     expect(response.status).toEqual(200)
@@ -134,7 +142,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/name', () => 
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/name`)
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/name?returnUrl=/foo-bar`,
+    )
 
     // Then
     expect(response.status).toEqual(200)
@@ -149,11 +159,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/name', () => 
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/name', () => {
   it('should pass to success page if there are no validation errors', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/name`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/name?returnUrl=/foo-bar`)
       .type('form')
       .send({ middleNames: 'mid', title: 'DR' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+      .expect('Location', '/foo-bar')
 
     const expectedRequest: PatchContactRequest = {
       title: 'DR',
@@ -166,10 +176,10 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/name', () =>
 
   it('should return to enter page with details kept if there are validation errors', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/name`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/name?returnUrl=/foo-bar`)
       .type('form')
       .send({ middleNames: ''.padEnd(36, 'X') })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/name`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/name?returnUrl=/foo-bar`)
   })
 })

@@ -7,7 +7,6 @@ import ReferenceDataService from '../../../../services/referenceDataService'
 import { Navigation } from '../../add/addContactFlowControl'
 import { ContactsService } from '../../../../services'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
-import ReturnPoint = journeys.ReturnPoint
 import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
 
 export default class UpdateNameController implements PageHandler {
@@ -25,21 +24,20 @@ export default class UpdateNameController implements PageHandler {
     }>,
     res: Response,
   ): Promise<void> => {
-    const { prisonerNumber, contactId } = req.params
+    const { contactId } = req.params
     const { user } = res.locals
+    const { journey } = res.locals
     const contact = await this.contactService.getContact(Number(contactId), user)
 
     const titleOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.TITLE, user)
       .then(val => this.getSelectedTitleOptions(val, res.locals?.formResponses?.title ?? contact.title))
 
-    const manageContactUrl = `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`
-    const returnPoint: ReturnPoint = { url: manageContactUrl }
     const navigation: Navigation = {
-      backLink: manageContactUrl,
+      backLink: journey.returnPoint.url,
     }
     const viewModel = {
-      journey: { returnPoint },
+      journey,
       titleOptions,
       lastName: res.locals?.formResponses?.lastName ?? contact.lastName,
       firstName: res.locals?.formResponses?.firstName ?? contact.firstName,
@@ -63,7 +61,8 @@ export default class UpdateNameController implements PageHandler {
     res: Response,
   ): Promise<void> => {
     const { user } = res.locals
-    const { prisonerNumber, contactId } = req.params
+    const { journey } = res.locals
+    const { contactId } = req.params
     const { title, middleNames } = req.body
     const request: PatchContactRequest = {
       title: title || null,
@@ -71,7 +70,7 @@ export default class UpdateNameController implements PageHandler {
       updatedBy: user.username,
     }
     await this.contactService.updateContactById(Number(contactId), request, user)
-    res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    res.redirect(journey.returnPoint.url)
   }
 
   private getSelectedTitleOptions(

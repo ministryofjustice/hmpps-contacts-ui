@@ -2,7 +2,11 @@ import { Router } from 'express'
 import { validate } from '../../../middleware/validationMiddleware'
 import AuditService from '../../../services/auditService'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
-import { ensureInManageContactsJourney, ensureInUpdateDateOfBirthJourney } from './manageContactsMiddleware'
+import {
+  ensureInManageContactsJourney,
+  ensureInUpdateDateOfBirthJourney,
+  prepareStandaloneManageContactJourney,
+} from './manageContactsMiddleware'
 import StartManageContactsJourneyController from './start/startManageContactsJourneyController'
 import PrisonerSearchController from './prisoner-search/prisonerSearchController'
 import PrisonerSearchResultsController from './prisoner-search/prisonerSearchResultsController'
@@ -279,12 +283,14 @@ const ManageContactsRoutes = (
   const updateEstimatedDobController = new UpdateEstimatedDobController(contactsService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-estimated-dob',
+    prepareStandaloneManageContactJourney(),
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, updateEstimatedDobController),
     asyncMiddleware(updateEstimatedDobController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-estimated-dob',
+    prepareStandaloneManageContactJourney(),
     validate(enterEstimatedDobSchema()),
     asyncMiddleware(updateEstimatedDobController.POST),
   )
@@ -292,24 +298,28 @@ const ManageContactsRoutes = (
   const manageGenderController = new ManageGenderController(contactsService, referenceDataService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/gender',
+    prepareStandaloneManageContactJourney(),
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, manageGenderController),
     asyncMiddleware(manageGenderController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/gender',
+    prepareStandaloneManageContactJourney(),
     asyncMiddleware(manageGenderController.POST),
   )
 
   const updateNameController = new UpdateNameController(referenceDataService, contactsService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/name',
+    prepareStandaloneManageContactJourney(),
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, updateNameController),
     asyncMiddleware(updateNameController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/name',
+    prepareStandaloneManageContactJourney(),
     validate(restrictedEditingNameSchema()),
     asyncMiddleware(updateNameController.POST),
   )

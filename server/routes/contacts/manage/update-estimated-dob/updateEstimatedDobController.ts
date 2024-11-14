@@ -6,7 +6,6 @@ import { EnterEstimatedDobSchemas } from '../../common/enter-estimated-dob/enter
 import { Navigation } from '../../add/addContactFlowControl'
 import { ContactsService } from '../../../../services'
 import ContactNames = journeys.ContactNames
-import ReturnPoint = journeys.ReturnPoint
 import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
 
 export default class UpdateEstimatedDobController implements PageHandler {
@@ -25,20 +24,20 @@ export default class UpdateEstimatedDobController implements PageHandler {
     >,
     res: Response,
   ): Promise<void> => {
-    const { prisonerNumber, contactId } = req.params
+    const { contactId } = req.params
     const { user } = res.locals
+    const { journey } = res.locals
+
     const contact = await this.contactService.getContact(Number(contactId), user)
-    const manageContactUrl = `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`
     const names: ContactNames = {
       title: contact.title,
       lastName: contact.lastName,
       firstName: contact.firstName,
       middleNames: contact.middleNames,
     }
-    const returnPoint: ReturnPoint = { url: manageContactUrl }
-    const navigation: Navigation = { backLink: manageContactUrl }
+    const navigation: Navigation = { backLink: journey.returnPoint.url }
     const view = {
-      journey: { names, returnPoint },
+      journey: { ...journey, names },
       isOverEighteen: res.locals?.formResponses?.isOverEighteen ?? contact.estimatedIsOverEighteen,
       navigation,
       continueButtonLabel: 'Confirm and save',
@@ -57,8 +56,9 @@ export default class UpdateEstimatedDobController implements PageHandler {
     >,
     res: Response,
   ): Promise<void> => {
-    const { prisonerNumber, contactId } = req.params
+    const { contactId } = req.params
     const { user } = res.locals
+    const { journey } = res.locals
 
     const { body } = req
     let isOverEighteen
@@ -80,6 +80,6 @@ export default class UpdateEstimatedDobController implements PageHandler {
       updatedBy: user.username,
     }
     await this.contactService.updateContactById(Number(contactId), request, user)
-    res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    res.redirect(journey.returnPoint.url)
   }
 }

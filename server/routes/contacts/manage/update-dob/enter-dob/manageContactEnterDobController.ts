@@ -13,7 +13,7 @@ export default class ManageContactEnterDobController implements PageHandler {
     const { journeyId } = req.params
     const journey = req.session.updateDateOfBirthJourneys[journeyId]
     const navigation: Navigation = {
-      backLink: `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}`,
+      backLink: journey.returnPoint.url,
     }
     const view = {
       journey,

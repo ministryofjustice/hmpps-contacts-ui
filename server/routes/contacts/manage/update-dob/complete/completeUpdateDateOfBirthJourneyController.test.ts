@@ -71,7 +71,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob/co
     await request(app)
       .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-dob/complete/${journeyId}`)
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+      .expect('Location', '/foo-bar')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.UPDATE_CONTACT_DOB_COMPLETE_PAGE, {
       who: user.username,
@@ -98,7 +98,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob/co
       await request(app)
         .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-dob/complete/${journeyId}`)
         .expect(302)
-        .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+        .expect('Location', '/foo-bar')
 
       expect(auditService.logPageView).toHaveBeenCalledWith(Page.UPDATE_CONTACT_DOB_COMPLETE_PAGE, {
         who: user.username,

@@ -5,9 +5,9 @@ import { ContactsService } from '../../../../services'
 import { components } from '../../../../@types/contactsApi'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
+import { capitalizeFirstLetter } from '../../../../utils/utils'
 import Contact = contactsApiClientTypes.Contact
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
-import { capitalizeFirstLetter } from '../../../../utils/utils'
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 
@@ -37,7 +37,8 @@ export default class ManageGenderController implements PageHandler {
 
   POST = async (req: Request<{ contactId: string; prisonerNumber: string }>, res: Response): Promise<void> => {
     const { user } = res.locals
-    const { contactId, prisonerNumber } = req.params
+    const { journey } = res.locals
+    const { contactId } = req.params
     const request: PatchContactRequest = {
       gender: req.body.gender || null,
       updatedBy: user.userId,
@@ -45,7 +46,7 @@ export default class ManageGenderController implements PageHandler {
 
     await this.contactsService.updateContactById(parseInt(contactId, 10), request, user)
 
-    res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    res.redirect(journey.returnPoint.url)
   }
 
   private getSelectedGenderOptions(

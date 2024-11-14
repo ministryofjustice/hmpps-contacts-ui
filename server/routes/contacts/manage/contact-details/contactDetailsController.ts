@@ -17,8 +17,11 @@ export default class ContactDetailsController implements PageHandler {
 
   public PAGE_NAME = Page.CONTACT_DETAILS_PAGE
 
-  GET = async (req: Request<{ contactId?: string }, unknown, unknown>, res: Response): Promise<void> => {
-    const { contactId } = req.params
+  GET = async (
+    req: Request<{ prisonerNumber: string; contactId?: string }, unknown, unknown>,
+    res: Response,
+  ): Promise<void> => {
+    const { prisonerNumber, contactId } = req.params
     const { prisonerDetails, user } = res.locals
     const contact: Contact = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const formattedFullName = await this.formattedFullName(contact, user)
@@ -27,6 +30,7 @@ export default class ContactDetailsController implements PageHandler {
       contact,
       prisonerDetails,
       formattedFullName,
+      manageContactRelationshipUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`,
     })
   }
 
