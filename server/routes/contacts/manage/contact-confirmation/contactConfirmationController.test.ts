@@ -305,6 +305,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/EXISTING/confirmation/:journeyI
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.searchContact.mockResolvedValue(TestData.contact({ gender, genderDescription }))
     contactsService.getContact.mockResolvedValue(TestData.contact({ gender, genderDescription }))
+    referenceDataService.getReferenceDescriptionForCode.mockResolvedValue(genderDescription)
     existingJourney.mode = 'EXISTING'
 
     // When
@@ -326,6 +327,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/EXISTING/confirmation/:journeyI
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.searchContact.mockResolvedValue(TestData.contact())
     contactsService.getContact.mockResolvedValue(TestData.contact({ gender: null, genderDescription: null }))
+    referenceDataService.getReferenceDescriptionForCode.mockResolvedValue(null)
     existingJourney.mode = 'EXISTING'
 
     // When

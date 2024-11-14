@@ -10,6 +10,8 @@ import ReferenceDataService from '../../../../services/referenceDataService'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
+import ReferenceCode = contactsApiClientTypes.ReferenceCode
+import { capitalizeFirstLetter } from '../../../../utils/utils'
 
 export default class ContactConfirmationController implements PageHandler {
   constructor(
@@ -28,11 +30,14 @@ export default class ContactConfirmationController implements PageHandler {
     const journey = req.session.addContactJourneys[journeyId]
     const contact: ContactDetails = await this.contactsService.getContact(journey.contactId, user)
     const formattedFullName = await this.formattedFullName(contact, user)
+    const formattedGender = await this.formattedGender(contact, user)
     const mostRelevantAddress = this.findMostRelevantAddress(contact)
     const mostRelevantAddressLabel = this.getLabelForAddress(mostRelevantAddress)
+
     return res.render('pages/contacts/manage/contactConfirmation/confirmation', {
       contact,
       formattedFullName,
+      formattedGender,
       prisonerDetails,
       journey,
       mostRelevantAddress,
@@ -53,6 +58,18 @@ export default class ContactConfirmationController implements PageHandler {
     }
     journey.isContactConfirmed = undefined
     return res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/search/${journeyId}`)
+  }
+
+  private async formattedGender(contact: ContactDetails, user: Express.User) {
+    let genderDescription: string
+    if (contact.genderDescription) {
+      genderDescription = await this.referenceDataService.getReferenceDescriptionForCode(
+        ReferenceCodeType.GENDER,
+        contact.gender,
+        user,
+      )
+    }
+    return capitalizeFirstLetter(genderDescription)
   }
 
   private async formattedFullName(contact: ContactDetails, user: Express.User) {
@@ -100,5 +117,23 @@ export default class ContactConfirmationController implements PageHandler {
       mostRelevantAddressLabel = 'Mail'
     }
     return mostRelevantAddressLabel
+  }
+
+  private getSelectedGenderOptions(
+    options: ReferenceCode[],
+    selected?: string,
+  ): Array<{
+    text: string
+    value: string
+    checked?: boolean
+  }> {
+    const mappedOptions = options.map((gender: ReferenceCode) => {
+      return {
+        text: gender.description,
+        value: gender.code,
+        checked: gender.code === selected,
+      }
+    })
+    return mappedOptions
   }
 }
