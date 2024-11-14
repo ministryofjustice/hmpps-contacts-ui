@@ -33,7 +33,7 @@
             text: "Gender"
         },
         value: {
-            text: (contact.genderDescription | capitalizeFirstLetter) if contact.genderDescription else 'Not provided',
+            text: formattedGender if formattedGender else 'Not provided',
             classes: 'manage-gender-value'
         },
         actions: {
