@@ -203,7 +203,6 @@ context('Contact confirmation', () => {
 
   it('should navigate back to search contact when "No, this is not the right person" is selected ', () => {
     cy.task('stubGetContactById', TestData.contact())
-    cy.task('stubGetGenders')
 
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
@@ -215,7 +214,6 @@ context('Contact confirmation', () => {
 
   it('should navigate to relationship screen when "Yes, this is the right person" is selected ', () => {
     cy.task('stubGetContactById', TestData.contact())
-    cy.task('stubGetGenders')
 
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)

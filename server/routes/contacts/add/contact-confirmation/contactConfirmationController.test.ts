@@ -10,7 +10,6 @@ import ContactsService from '../../../../services/contactsService'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import TestData from '../../../testutils/testData'
 import AddContactJourney = journeys.AddContactJourney
-import { capitalizeFirstLetter } from '../../../../utils/utils'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
