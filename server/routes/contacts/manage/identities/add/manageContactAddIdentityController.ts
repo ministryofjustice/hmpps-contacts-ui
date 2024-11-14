@@ -38,10 +38,11 @@ export default class ManageContactAddIdentityController implements PageHandler {
     res: Response,
   ): Promise<void> => {
     const { user } = res.locals
-    const { prisonerNumber, contactId } = req.params
+    const { journey } = res.locals
+    const { contactId } = req.params
     const { identity, type, issuingAuthority } = req.body
     await this.contactsService.createContactIdentity(parseInt(contactId, 10), user, type, identity, issuingAuthority)
-    res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    res.redirect(journey.returnPoint.url)
   }
 
   private getSelectedOptions(

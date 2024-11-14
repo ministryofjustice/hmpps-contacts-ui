@@ -25,7 +25,8 @@ export default class ManageInterpreterController implements PageHandler {
 
   POST = async (req: Request<{ contactId: string; prisonerNumber: string }>, res: Response): Promise<void> => {
     const { user } = res.locals
-    const { contactId, prisonerNumber } = req.params
+    const { journey } = res.locals
+    const { contactId } = req.params
     const request: PatchContactRequest = {
       interpreterRequired: req.body.interpreterRequired === 'YES',
       updatedBy: user.userId,
@@ -33,6 +34,6 @@ export default class ManageInterpreterController implements PageHandler {
 
     await this.contactsService.updateContactById(parseInt(contactId, 10), request, user)
 
-    res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    res.redirect(journey.returnPoint.url)
   }
 }

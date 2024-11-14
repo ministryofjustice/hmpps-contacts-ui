@@ -14,9 +14,17 @@ export default class StartUpdateDateOfBirthJourneyController implements PageHand
 
   private MAX_JOURNEYS = 5
 
-  GET = async (req: Request<{ prisonerNumber: string; contactId: string }>, res: Response): Promise<void> => {
+  GET = async (
+    req: Request<{ prisonerNumber: string; contactId: string }, unknown, unknown, { returnUrl: string }>,
+    res: Response,
+  ): Promise<void> => {
     const { prisonerNumber, contactId } = req.params
     const { user } = res.locals
+    const { returnUrl } = req.query
+    if (!returnUrl) {
+      throw new Error(`Couldn't find return URL for update dob journey`)
+    }
+
     const existingContact = await this.contactService.getContact(Number(contactId), user)
     let dateOfBirth: DateOfBirth
     if (existingContact.dateOfBirth) {
@@ -42,7 +50,7 @@ export default class StartUpdateDateOfBirthJourneyController implements PageHand
       contactId: Number(contactId),
       lastTouched: new Date().toISOString(),
       returnPoint: {
-        url: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`,
+        url: returnUrl,
       },
       names: {
         title: existingContact.title,

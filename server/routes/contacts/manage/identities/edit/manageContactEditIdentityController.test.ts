@@ -62,7 +62,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:con
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/1/edit`)
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/1/edit?returnUrl=/foo-bar`,
+    )
 
     // Then
     expect(response.status).toEqual(200)
@@ -71,8 +73,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:con
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'What is the identity number for First Middle Last?',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/manage/987654')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/manage/987654')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('#identity').val()).toStrictEqual('LAST-87736799M')
     expect($('#type').val()).toStrictEqual('DL')
@@ -88,7 +90,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:con
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/1/edit`)
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/1/edit?returnUrl=/foo-bar`,
+    )
 
     // Then
     expect(response.status).toEqual(200)
@@ -97,8 +101,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:con
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'What is the identity number for First Middle Last?',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/manage/987654')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/manage/987654')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('#identity').val()).toStrictEqual('425362965')
     expect($('#type').val()).toStrictEqual('PASS')
@@ -111,7 +115,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:con
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/1/edit`)
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/1/edit?returnUrl=/foo-bar`,
+    )
 
     // Then
     expect(response.status).toEqual(200)
@@ -128,7 +134,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:con
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/555/edit`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/555/edit?returnUrl=/foo-bar`,
     )
 
     // Then
@@ -139,22 +145,22 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:con
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:contactIdentityId/edit', () => {
   it('should edit identity number with issuing authority and pass to manage contact details page if there are no validation errors', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/999/edit`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/999/edit?returnUrl=/foo-bar`)
       .type('form')
       .send({ type: 'MOB', identity: '123456789', issuingAuthority: '000' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+      .expect('Location', '/foo-bar')
 
     expect(contactsService.updateContactIdentity).toHaveBeenCalledWith(contactId, 999, user, 'MOB', '123456789', '000')
   })
 
   it('should edit identity number without issuing authority and pass to manage contact details page if there are no validation errors', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/999/edit`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/999/edit?returnUrl=/foo-bar`)
       .type('form')
       .send({ type: 'MOB', identity: '123456789', issuingAuthority: '' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+      .expect('Location', '/foo-bar')
 
     expect(contactsService.updateContactIdentity).toHaveBeenCalledWith(
       contactId,
@@ -168,11 +174,14 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:co
 
   it('should return to input page with details kept if there are validation errors', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/999/edit`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/999/edit?returnUrl=/foo-bar`)
       .type('form')
       .send({ type: '' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/999/edit`)
+      .expect(
+        'Location',
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/999/edit?returnUrl=/foo-bar`,
+      )
     expect(contactsService.updateContactIdentity).not.toHaveBeenCalled()
   })
 })

@@ -47,18 +47,16 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/staff', () =>
 
     // When
 
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/staff`)
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/staff?returnUrl=/foo-bar`,
+    )
     const $ = cheerio.load(response.text)
 
     // Then
     expect(response.status).toEqual(200)
     expect($('input[type=radio]:checked').val()).toStrictEqual(isStaff)
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`,
-    )
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`,
-    )
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_UPDATE_STAFF_PAGE, {
       who: user.username,
@@ -75,11 +73,11 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/staff', () =
       ['NO', { isStaff: false, updatedBy: 'id' }],
     ])('should update contact when isStaff is %p', async (isStaff, expectedPayload) => {
       await request(app)
-        .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/staff`)
+        .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/staff?returnUrl=/foo-bar`)
         .type('form')
         .send({ isStaff })
         .expect(302)
-        .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+        .expect('Location', '/foo-bar')
 
       expect(contactsService.updateContactById).toHaveBeenCalledWith(10, expectedPayload, user)
     })

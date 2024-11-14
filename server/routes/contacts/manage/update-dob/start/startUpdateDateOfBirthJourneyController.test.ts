@@ -64,7 +64,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob/st
     async (_: string, contact: ContactDetails, expectedDob) => {
       auditService.logPageView.mockResolvedValue(null)
       contactsService.getContact.mockResolvedValue(contact)
-      const response = await request(app).get('/prisoner/A1234BC/contacts/manage/987/update-dob/start')
+      const response = await request(app).get(
+        '/prisoner/A1234BC/contacts/manage/987/update-dob/start?returnUrl=/foo-bar',
+      )
 
       expect(auditService.logPageView).toHaveBeenCalledWith(Page.UPDATE_CONTACT_DOB_START_PAGE, {
         who: user.username,
@@ -97,7 +99,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob/st
       },
     ]
 
-    const response = await request(app).get('/prisoner/A1234BC/contacts/manage/987/update-dob/start')
+    const response = await request(app).get('/prisoner/A1234BC/contacts/manage/987/update-dob/start?returnUrl=/foo-bar')
 
     // Get the redirect location from the response headers
     const { location } = response.headers
@@ -128,7 +130,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob/st
       },
     ]
 
-    const response = await request(app).get('/prisoner/A1234BC/contacts/manage/987/update-dob/start')
+    const response = await request(app).get('/prisoner/A1234BC/contacts/manage/987/update-dob/start?returnUrl=/foo-bar')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.UPDATE_CONTACT_DOB_START_PAGE, {
       who: user.username,
@@ -149,7 +151,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob/st
       { id: 'young', lastTouched: new Date(2024, 1, 1, 13, 30).toISOString() },
     ]
 
-    const response = await request(app).get('/prisoner/A1234BC/contacts/manage/987/update-dob/start')
+    const response = await request(app).get('/prisoner/A1234BC/contacts/manage/987/update-dob/start?returnUrl=/foo-bar')
     const { location } = response.headers
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.UPDATE_CONTACT_DOB_START_PAGE, {

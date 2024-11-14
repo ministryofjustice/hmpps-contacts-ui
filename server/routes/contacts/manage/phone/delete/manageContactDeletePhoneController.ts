@@ -15,7 +15,8 @@ export default class ManageContactDeletePhoneController implements PageHandler {
     res: Response,
   ): Promise<void> => {
     const { user } = res.locals
-    const { prisonerNumber, contactId, contactPhoneId } = req.params
+    const { journey } = res.locals
+    const { contactId, contactPhoneId } = req.params
     const contactIdNumber = parseInt(contactId, 10)
     const contactPhoneIdNumber = parseInt(contactPhoneId, 10)
     const contact: ContactDetails = await this.contactsService.getContact(contactIdNumber, user)
@@ -29,6 +30,6 @@ export default class ManageContactDeletePhoneController implements PageHandler {
     }
 
     await this.contactsService.deleteContactPhone(contactIdNumber, contactPhoneIdNumber, user)
-    res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    res.redirect(journey.returnPoint.url)
   }
 }

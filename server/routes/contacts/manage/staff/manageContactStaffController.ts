@@ -21,13 +21,13 @@ export default class ManageContactStaffController implements PageHandler {
   }
 
   POST = async (req: Request<{ prisonerNumber: string; contactId: string }>, res: Response): Promise<void> => {
-    const { user } = res.locals
-    const { prisonerNumber, contactId } = req.params
+    const { user, journey } = res.locals
+    const { contactId } = req.params
     const request: PatchContactRequest = {
       isStaff: req.body.isStaff === 'YES',
       updatedBy: user.userId,
     }
     await this.contactsService.updateContactById(parseInt(contactId, 10), request, user)
-    res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    res.redirect(journey.returnPoint.url)
   }
 }

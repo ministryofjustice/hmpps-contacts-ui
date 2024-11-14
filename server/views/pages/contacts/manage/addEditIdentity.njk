@@ -13,7 +13,7 @@
 
     {{ govukBackLink({
         text: "Back",
-        href: '/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/manage/' + contact.id,
+        href: journey.returnPoint.url,
         attributes: {"data-qa": "back-link"}
     }) }}
     {{ miniProfile(prisonerDetails) }}
@@ -61,7 +61,7 @@
                         classes: 'govuk-!-margin-top-6',
                         attributes: {"data-qa": "continue-button"}
                     }) }}
-                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ '/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/manage/' + contact.id }}" data-qa="cancel-button">Cancel</a>
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ journey.returnPoint.url }}" data-qa="cancel-button">Cancel</a>
                 </div>
             </form>
 

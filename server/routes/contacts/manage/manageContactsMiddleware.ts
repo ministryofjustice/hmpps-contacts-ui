@@ -1,5 +1,6 @@
-import { Request, RequestHandler } from 'express'
+import { Request, RequestHandler, Response } from 'express'
 import logger from '../../../../logger'
+import StandaloneManageContactJourney = journeys.StandaloneManageContactJourney
 
 const ensureInManageContactsJourney = (): RequestHandler => {
   return async (req: Request<{ journeyId: string; prisonerNumber?: string }, unknown, unknown>, res, next) => {
@@ -46,4 +47,23 @@ const ensureInUpdateDateOfBirthJourney = (): RequestHandler => {
   }
 }
 
-export { ensureInManageContactsJourney, ensureInUpdateDateOfBirthJourney }
+const prepareStandaloneManageContactJourney = (): RequestHandler => {
+  return async (
+    req: Request<unknown, unknown, unknown, { returnUrl?: string }>,
+    res: Response<unknown, { journey: StandaloneManageContactJourney }>,
+    next,
+  ) => {
+    const { returnUrl } = req.query
+    if (!returnUrl) {
+      throw new Error(`Couldn't find return URL for standalone journey`)
+    }
+    res.locals.journey = {
+      returnPoint: {
+        url: returnUrl,
+      },
+    }
+    return next()
+  }
+}
+
+export { ensureInManageContactsJourney, ensureInUpdateDateOfBirthJourney, prepareStandaloneManageContactJourney }

@@ -39,6 +39,6 @@ export default class CompleteUpdateDateOfBirthJourneyController implements PageH
       updatedBy: user.username,
     }
     await this.contactService.updateContactById(journey.contactId, request, user)
-    res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}`)
+    res.redirect(journey.returnPoint.url)
   }
 }

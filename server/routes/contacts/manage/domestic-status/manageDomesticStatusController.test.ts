@@ -60,7 +60,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/domestic-stat
     contactsService.getContact.mockResolvedValue(TestData.contact({ domesticStatusCode: code }))
 
     // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/domestic-status`)
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/domestic-status?returnUrl=/foo-bar`,
+    )
     const $ = cheerio.load(response.text)
 
     // Then
@@ -76,17 +78,20 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/domestic-stat
       who: user.username,
       correlationId: expect.any(String),
     })
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
   })
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/domestic-status', () => {
   it('should update contact when domestic status is selected', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/domestic-status`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/domestic-status?returnUrl=/foo-bar`)
       .type('form')
       .send({ domesticStatusCode: 'S' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+      .expect('Location', '/foo-bar')
 
     expect(contactsService.updateContactById).toHaveBeenCalledWith(10, { domesticStatus: 'S', updatedBy: 'id' }, user)
   })
