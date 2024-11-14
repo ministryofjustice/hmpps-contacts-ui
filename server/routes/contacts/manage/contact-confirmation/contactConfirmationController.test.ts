@@ -314,7 +314,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/EXISTING/confirmation/:journeyI
     expect($('.confirm-gender-value').text().trim()).toStrictEqual('Male')
   })
 
-  it('should show not provide for gender if question was not answered', async () => {
+  it('should show "not provided" for gender if question was not answered', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
