@@ -56,7 +56,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/gender', () =
     contactsService.getContact.mockResolvedValue(TestData.contact({ gender, genderDescription }))
 
     // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/gender`)
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/gender?returnUrl=/foo-bar`,
+    )
     const $ = cheerio.load(response.text)
 
     // Then
@@ -66,17 +68,20 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/gender', () =
       who: user.username,
       correlationId: expect.any(String),
     })
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
   })
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/gender', () => {
   it('should update contact when gender is selected', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/gender`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/gender?returnUrl=/foo-bar`)
       .type('form')
       .send({ gender: 'M' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+      .expect('Location', '/foo-bar')
 
     expect(contactsService.updateContactById).toHaveBeenCalledWith(10, { gender: 'M', updatedBy: 'id' }, user)
   })

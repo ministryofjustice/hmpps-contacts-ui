@@ -17,6 +17,7 @@ export type StubPhoneDetails = components['schemas']['ContactPhoneDetails']
 export type StubIdentityDetails = components['schemas']['ContactIdentityDetails']
 export type StubContactSearchResultItem = components['schemas']['ContactSearchResultItem']
 export type StubPatchContactResponse = components['schemas']['PatchContactResponse']
+export type StubPrisonerContactRelationshipDetails = components['schemas']['PrisonerContactRelationshipDetails']
 
 export default {
   stubCreateContact: (createdContact: StubContactDetails): SuperAgentRequest => {
@@ -84,6 +85,23 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: contact,
+      },
+    })
+  },
+
+  stubGetPrisonerContactRelationshipById: (params: {
+    id: number
+    response: StubPrisonerContactRelationshipDetails
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/prisoner-contact/relationship/${params.id}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: params.response,
       },
     })
   },

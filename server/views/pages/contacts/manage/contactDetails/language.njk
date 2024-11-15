@@ -17,10 +17,11 @@
         actions: {
             items: [
                 {
-                    href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/language",
+                    href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/language?returnUrl=" + manageContactRelationshipUrl,
                     text: "Change",
                     visuallyHiddenText: "spoken language",
-                    attributes: {"data-qa": "add-language"}
+                    attributes: {"data-qa": "add-language"},
+                    classes: 'govuk-link--no-visited-state'
                 }
             ]
         }
@@ -36,10 +37,11 @@
         actions: {
             items: [
                 {
-                    href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/interpreter",
+                    href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/interpreter?returnUrl=" + manageContactRelationshipUrl,
                     text: "Change",
                     visuallyHiddenText: "needs interpreter",
-                    attributes: {"data-qa": "add-interpreter"}
+                    attributes: {"data-qa": "add-interpreter"},
+                    classes: 'govuk-link--no-visited-state'
                 }
             ]
         }

@@ -6,6 +6,7 @@ import { StubPhoneDetails } from '../mockApis/contactsApi'
 
 context('Create Contact Phones', () => {
   const contactId = 654321
+  const prisonerContactId = 987654
   const contact = TestData.contact({
     id: contactId,
     lastName: 'Last',
@@ -25,10 +26,14 @@ context('Create Contact Phones', () => {
     cy.task('stubTitlesReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetContactById', contact)
+    cy.task('stubGetPrisonerContactRelationshipById', {
+      id: prisonerContactId,
+      response: TestData.prisonerContactRelationship(),
+    })
 
     cy.signIn()
     const { prisonerNumber } = TestData.prisoner()
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
   })

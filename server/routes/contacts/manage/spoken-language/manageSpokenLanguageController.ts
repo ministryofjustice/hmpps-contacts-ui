@@ -19,7 +19,7 @@ export default class ManageSpokenLanguageController implements PageHandler {
     const contact: Contact = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const language: Language = await this.contactsService.getLanguageReference(user)
 
-    return res.render('pages/contacts/manage/contactDetails/manageSpokenLanguage.njk', {
+    return res.render('pages/contacts/manage/contactDetails/manageSpokenLanguage', {
       contact,
       language,
       prisonerDetails,
@@ -28,13 +28,14 @@ export default class ManageSpokenLanguageController implements PageHandler {
 
   POST = async (req: Request<{ contactId: string; prisonerNumber: string }>, res: Response): Promise<void> => {
     const { user } = res.locals
-    const { contactId, prisonerNumber } = req.params
+    const { journey } = res.locals
+    const { contactId } = req.params
     const request: PatchContactRequest = {
       languageCode: req.body.languageCode !== '' ? req.body.languageCode : null,
       updatedBy: user.userId,
     }
     await this.contactsService.updateContactById(parseInt(contactId, 10), request, user)
 
-    res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    res.redirect(journey.returnPoint.url)
   }
 }

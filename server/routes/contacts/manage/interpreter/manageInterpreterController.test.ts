@@ -1,5 +1,6 @@
 import type { Express } from 'express'
 import request from 'supertest'
+import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
@@ -41,7 +42,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/interpreter',
     contactsService.getContact.mockResolvedValue(TestData.contact())
 
     // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/interpreter`)
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/interpreter?returnUrl=/foo-bar`,
+    )
 
     // Then
     expect(response.status).toEqual(200)
@@ -49,17 +52,21 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/interpreter',
       who: user.username,
       correlationId: expect.any(String),
     })
+    const $ = cheerio.load(response.text)
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
   })
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/interpreter', () => {
   it('should update contact when interpreter is true', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/interpreter`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/interpreter?returnUrl=/foo-bar`)
       .type('form')
       .send({ interpreterRequired: 'YES' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+      .expect('Location', '/foo-bar')
 
     expect(contactsService.updateContactById).toHaveBeenCalledWith(
       10,
@@ -70,11 +77,11 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/interpreter'
 
   it('should update contact when interpreter is false', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/interpreter`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/interpreter?returnUrl=/foo-bar`)
       .type('form')
       .send({ interpreterRequired: 'NO' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+      .expect('Location', '/foo-bar')
 
     expect(contactsService.updateContactById).toHaveBeenCalledWith(
       10,

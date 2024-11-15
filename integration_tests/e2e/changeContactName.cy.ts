@@ -6,6 +6,7 @@ import EnterNamePage from '../pages/enterNamePage'
 
 context('Change Contact Name', () => {
   const contactId = 654321
+  const prisonerContactId = 987654
   const { prisonerNumber } = TestData.prisoner()
 
   beforeEach(() => {
@@ -28,7 +29,11 @@ context('Change Contact Name', () => {
       estimatedIsOverEighteen: 'YES',
     })
     cy.task('stubGetContactById', contact)
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    cy.task('stubGetPrisonerContactRelationshipById', {
+      id: prisonerContactId,
+      response: TestData.prisonerContactRelationship(),
+    })
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     const updated: StubPatchContactResponse = {
       ...contact,
@@ -75,7 +80,11 @@ context('Change Contact Name', () => {
       estimatedIsOverEighteen: 'YES',
     })
     cy.task('stubGetContactById', contact)
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    cy.task('stubGetPrisonerContactRelationshipById', {
+      id: prisonerContactId,
+      response: TestData.prisonerContactRelationship(),
+    })
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     const updated: StubPatchContactResponse = {
       ...contact,
@@ -122,7 +131,11 @@ context('Change Contact Name', () => {
       estimatedIsOverEighteen: 'YES',
     })
     cy.task('stubGetContactById', contact)
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    cy.task('stubGetPrisonerContactRelationshipById', {
+      id: prisonerContactId,
+      response: TestData.prisonerContactRelationship(),
+    })
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeNameLink()
@@ -146,7 +159,11 @@ context('Change Contact Name', () => {
       estimatedIsOverEighteen: 'YES',
     })
     cy.task('stubGetContactById', contact)
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    cy.task('stubGetPrisonerContactRelationshipById', {
+      id: prisonerContactId,
+      response: TestData.prisonerContactRelationship(),
+    })
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeNameLink()
@@ -166,7 +183,11 @@ context('Change Contact Name', () => {
       estimatedIsOverEighteen: 'YES',
     })
     cy.task('stubGetContactById', contact)
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    cy.task('stubGetPrisonerContactRelationshipById', {
+      id: prisonerContactId,
+      response: TestData.prisonerContactRelationship(),
+    })
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeNameLink()

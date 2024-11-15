@@ -56,7 +56,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/crea
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/create`)
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/create?returnUrl=/foo-bar`,
+    )
 
     // Then
     expect(response.status).toEqual(200)
@@ -65,8 +67,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/crea
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'What is the identity number for First Middle Last?',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/manage/987654')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/manage/987654')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
   })
 
@@ -76,7 +78,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/crea
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/create`)
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/create?returnUrl=/foo-bar`,
+    )
 
     // Then
     expect(response.status).toEqual(200)
@@ -94,7 +98,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/crea
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/create`)
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/create?returnUrl=/foo-bar`,
+    )
 
     // Then
     expect(response.status).toEqual(200)
@@ -108,33 +114,33 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/crea
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/create', () => {
   it('should create Identity Number with issuing authority and pass to manage contact details page if there are no validation errors', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/create`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/create?returnUrl=/foo-bar`)
       .type('form')
       .send({ type: 'DL', identity: '123456789', issuingAuthority: '000' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+      .expect('Location', '/foo-bar')
 
     expect(contactsService.createContactIdentity).toHaveBeenCalledWith(contactId, user, 'DL', '123456789', '000')
   })
 
   it('should create Identity Number without issuing authority  and pass to manage contact details page if there are no validation errors', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/create`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/create?returnUrl=/foo-bar`)
       .type('form')
       .send({ type: 'DL', identity: '123456789', issuingAuthority: '' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+      .expect('Location', '/foo-bar')
 
     expect(contactsService.createContactIdentity).toHaveBeenCalledWith(contactId, user, 'DL', '123456789', undefined)
   })
 
   it('should return to input page with details kept if there are validation errors', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/create`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/create?returnUrl=/foo-bar`)
       .type('form')
       .send({ type: '' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/create`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/create?returnUrl=/foo-bar`)
     expect(contactsService.createContactIdentity).not.toHaveBeenCalled()
   })
 })

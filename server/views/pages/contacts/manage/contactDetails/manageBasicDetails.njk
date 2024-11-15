@@ -19,7 +19,7 @@
         actions: {
             items: [
                 {
-                    href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/name",
+                    href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/name?returnUrl=" + manageContactRelationshipUrl,
                     text: "Change",
                     visuallyHiddenText: " name",
                     attributes: {"data-qa": "change-name-link"},
@@ -39,10 +39,11 @@
         actions: {
             items: [
                 {
-                    href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/gender",
+                    href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/gender?returnUrl=" + manageContactRelationshipUrl,
                     text: "Change",
                     visuallyHiddenText: "gender",
-                    attributes: {"data-qa": "select-gender"}
+                    attributes: {"data-qa": "select-gender"},
+                    classes: 'govuk-link--no-visited-state'
                 }
             ]
         }
@@ -58,7 +59,7 @@
         actions: {
             items: [
                 {
-                    href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/update-dob/start",
+                    href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/update-dob/start?returnUrl=" + manageContactRelationshipUrl,
                     text: "Change",
                     visuallyHiddenText: " date of birth",
                     attributes: {"data-qa": "change-dob-" + contact.id},
@@ -82,7 +83,7 @@
             actions: {
                 items: [
                     {
-                        href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/update-estimated-dob",
+                        href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/update-estimated-dob?returnUrl=" + manageContactRelationshipUrl,
                         text: "Change",
                         visuallyHiddenText: " is contact over 18?",
                         attributes: {"data-qa": "change-estimated-dob-" + contact.id},

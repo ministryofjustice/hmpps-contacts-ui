@@ -89,6 +89,10 @@ declare namespace journeys {
     dateOfBirth?: DateOfBirth
   }
 
+  export interface StandaloneManageContactJourney {
+    returnPoint: ReturnPoint
+  }
+
   type YesOrNo = 'YES' | 'NO'
   type YesNoOrDoNotKnow = 'YES' | 'NO' | 'DO_NOT_KNOW'
   type PrisonerJourneyParams = { prisonerNumber: string; journeyId: string }

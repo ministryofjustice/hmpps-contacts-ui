@@ -52,7 +52,8 @@ export default class ManageContactEditIdentityController implements PageHandler 
     res: Response,
   ): Promise<void> => {
     const { user } = res.locals
-    const { prisonerNumber, contactId, contactIdentityId } = req.params
+    const { journey } = res.locals
+    const { contactId, contactIdentityId } = req.params
     const { identity, type, issuingAuthority } = req.body
     await this.contactsService.updateContactIdentity(
       parseInt(contactId, 10),
@@ -62,7 +63,7 @@ export default class ManageContactEditIdentityController implements PageHandler 
       identity,
       issuingAuthority,
     )
-    res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    res.redirect(journey.returnPoint.url)
   }
 
   private getSelectedOptions(

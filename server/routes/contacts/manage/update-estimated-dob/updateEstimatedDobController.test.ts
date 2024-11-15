@@ -37,7 +37,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/update-estimated-dob', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/update-estimated-dob?returnUrl=/foo-bar', () => {
   it('should render enter estimated dob page', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
@@ -51,7 +51,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/update-estima
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-estimated-dob`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-estimated-dob?returnUrl=/foo-bar`,
     )
 
     // Then
@@ -62,12 +62,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/update-estima
       'Is Last, First Middle Names over 18 years old?',
     )
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`,
-    )
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`,
-    )
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
   })
 
@@ -89,7 +85,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/update-estima
 
       // When
       const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-estimated-dob`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-estimated-dob?returnUrl=/foo-bar`,
       )
 
       // Then
@@ -111,7 +107,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/update-estima
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-estimated-dob`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-estimated-dob?returnUrl=/foo-bar`,
     )
 
     // Then
@@ -123,7 +119,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/update-estima
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/update-estimated-dob', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/update-estimated-dob?returnUrl=/foo-bar', () => {
   it.each([
     ['YES', 'YES'],
     ['NO', 'NO'],
@@ -132,11 +128,11 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/update-estim
     'should pass patch the contact and return to manage contacts if there are no validation errors (%s)',
     async (formValue: string, expected: string) => {
       await request(app)
-        .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-estimated-dob`)
+        .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-estimated-dob?returnUrl=/foo-bar`)
         .type('form')
         .send({ isOverEighteen: formValue })
         .expect(302)
-        .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+        .expect('Location', '/foo-bar')
 
       const expectedRequest: PatchContactRequest = {
         estimatedIsOverEighteen: expected,
@@ -148,10 +144,13 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/update-estim
 
   it('should return to enter page if there are validation errors', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-estimated-dob`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-estimated-dob?returnUrl=/foo-bar`)
       .type('form')
       .send({})
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-estimated-dob`)
+      .expect(
+        'Location',
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-estimated-dob?returnUrl=/foo-bar`,
+      )
   })
 })

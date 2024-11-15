@@ -1,0 +1,59 @@
+
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set relationshipDetailsRows = [{
+        key: {
+            text: "Relationship to prisoner"
+        },
+        value: {
+            text: prisonerContactRelationship.relationshipDescription,
+            classes: 'relationship-value'
+        }
+    },
+    {
+        key: {
+            text: "Emergency contact"
+        },
+        value: {
+            text: prisonerContactRelationship.emergencyContact | formatYesNo,
+            classes: 'emergency-contact-value'
+        }
+    },
+    {
+        key: {
+            text: "Next of kin"
+        },
+        value: {
+            text: prisonerContactRelationship.nextOfKin | formatYesNo,
+            classes: 'next-of-kin-value'
+        }
+    },
+    {
+        key: {
+            text: "Is the relationship active?"
+        },
+        value: {
+            text: prisonerContactRelationship.isRelationshipActive | formatYesNo,
+            classes: 'relationship-active-value'
+        }
+    },
+    {
+        key: {
+            text: "Comments"
+        },
+        value: {
+            text: prisonerContactRelationship.comments | default('Not provided', true),
+            classes: 'relationship-comments-value'
+        }
+    }
+]
+%}
+
+{{ govukSummaryList({
+    card: {
+        title: {
+            text: "Relationship details"
+        }
+    },
+    rows: relationshipDetailsRows
+}) }}

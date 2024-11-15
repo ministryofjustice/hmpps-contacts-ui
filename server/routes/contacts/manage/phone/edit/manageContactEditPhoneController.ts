@@ -51,7 +51,8 @@ export default class ManageContactEditPhoneController implements PageHandler {
     res: Response,
   ): Promise<void> => {
     const { user } = res.locals
-    const { prisonerNumber, contactId, contactPhoneId } = req.params
+    const { journey } = res.locals
+    const { contactId, contactPhoneId } = req.params
     const { phoneNumber, type, extension } = req.body
     await this.contactsService.updateContactPhone(
       parseInt(contactId, 10),
@@ -61,7 +62,7 @@ export default class ManageContactEditPhoneController implements PageHandler {
       phoneNumber,
       extension,
     )
-    res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    res.redirect(journey.returnPoint.url)
   }
 
   private getSelectedOptions(

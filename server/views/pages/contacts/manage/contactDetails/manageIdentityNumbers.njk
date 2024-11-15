@@ -8,7 +8,7 @@
 
         {% if item.identityTypeIsActive == true %}
             {% set actions = actions.concat([{
-                href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/identity/" + item.contactIdentityId + "/edit",
+                href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/identity/" + item.contactIdentityId + "/edit?returnUrl=" + manageContactRelationshipUrl,
                 text: "Edit",
                 visuallyHiddenText: "identity number",
                 attributes: {"data-qa": "edit-identity-number-" + item.contactIdentityId},
@@ -17,7 +17,7 @@
         {% endif %}
 
         {% set actions = actions.concat([{
-            href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/identity/" + item.contactIdentityId + "/delete",
+            href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/identity/" + item.contactIdentityId + "/delete?returnUrl=" + manageContactRelationshipUrl,
             text: "Delete",
             visuallyHiddenText: "identity number",
             attributes: {"data-qa": "delete-identity-number-" + item.contactIdentityId},
@@ -29,7 +29,7 @@
                 text: (item.identityTypeDescription)
             },
             value: {
-                html: item.identityValue + ('<p>Issuing authority - ' + item.issuingAuthority + '</p>' if item.identityType == 'PASS' else ''),
+                html: item.identityValue + ('<p>Issuing authority - ' + item.issuingAuthority + '</p>' if item.issuingAuthority else ''),
                 classes: 'confirm-' + item.identityType + '-value'
             },
             actions: {
@@ -57,7 +57,7 @@
         actions: {
             items: [
                 {
-                    href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/identity/create",
+                    href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/identity/create?returnUrl=" + manageContactRelationshipUrl,
                     text: "Add identity number",
                     attributes: {"data-qa": "add-identity-number"},
                     classes: "govuk-link--no-visited-state"

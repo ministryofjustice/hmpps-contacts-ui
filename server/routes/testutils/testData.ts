@@ -11,6 +11,7 @@ type PrisonerContactSummaryPage = components['schemas']['PrisonerContactSummaryP
 type PrisonerContactSummary = components['schemas']['PrisonerContactSummary']
 type ContactIdentityDetails = components['schemas']['ContactIdentityDetails']
 type PatchContactResponse = components['schemas']['PatchContactResponse']
+type PrisonerContactRelationshipDetails = components['schemas']['PrisonerContactRelationshipDetails']
 type Language = components['schemas']['Language']
 export default class TestData {
   static address = ({
@@ -284,9 +285,9 @@ export default class TestData {
       this.getContactEmailDetails('PERSONAL', 'Personal email', 'mr.first@example.com', 2),
     ],
     identities = [
-      this.getContactIdentityDetails('DL', 'Driving licence', 'LAST-87736799M', 'UK', 1),
+      this.getContactIdentityDetails('DL', 'Driving licence', 'LAST-87736799M', null, 1),
       this.getContactIdentityDetails('PASS', 'Passport number', '425362965', 'UK passport office', 2),
-      this.getContactIdentityDetails('NINO', 'National insurance number', '06/614465M', 'UK', 3),
+      this.getContactIdentityDetails('NINO', 'National insurance number', '06/614465M', null, 3),
     ],
     gender = 'M',
     genderDescription = 'Male',
@@ -318,6 +319,23 @@ export default class TestData {
       domesticStatusCode,
       domesticStatusDescription,
     }) as ContactDetails
+
+  static prisonerContactRelationship = ({
+    relationshipCode = 'FRI',
+    relationshipDescription = 'Friend',
+    emergencyContact = false,
+    nextOfKin = true,
+    isRelationshipActive = true,
+    comments = 'Some comments',
+  }: Partial<PrisonerContactRelationshipDetails> = {}): PrisonerContactRelationshipDetails =>
+    ({
+      relationshipCode,
+      relationshipDescription,
+      emergencyContact,
+      nextOfKin,
+      isRelationshipActive,
+      comments,
+    }) as PrisonerContactRelationshipDetails
 
   static prisonerContactSummaryPage = ({
     content = [this.getPrisonerContact()],
@@ -375,17 +393,12 @@ export default class TestData {
     middleNames = null,
     dateOfBirth = '1990-01-14',
     estimatedIsOverEighteen = 'YES',
-    placeOfBirth = 'London',
-    active = true,
-    suspended = false,
     isStaff = false,
     deceasedFlag = false,
-    coronerNumber = null,
     gender = 'Male',
     domesticStatus = 'Single',
     deceasedDate = null,
     languageCode = 'ENG',
-    nationalityCode = 'GB',
     interpreterRequired = false,
     createdBy = 'USER1',
     createdTime = '2024-09-20T10:30:00.000000',
@@ -400,17 +413,12 @@ export default class TestData {
       middleNames,
       dateOfBirth,
       estimatedIsOverEighteen,
-      placeOfBirth,
-      active,
-      suspended,
       isStaff,
       deceasedFlag,
       deceasedDate,
-      coronerNumber,
       gender,
       domesticStatus,
       languageCode,
-      nationalityCode,
       interpreterRequired,
       createdBy,
       createdTime,

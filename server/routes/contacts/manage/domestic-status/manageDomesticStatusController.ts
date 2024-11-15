@@ -34,8 +34,8 @@ export default class ManageDomesticStatusController implements PageHandler {
   }
 
   POST = async (req: Request<{ contactId: string; prisonerNumber: string }>, res: Response): Promise<void> => {
-    const { user } = res.locals
-    const { contactId, prisonerNumber } = req.params
+    const { user, journey } = res.locals
+    const { contactId } = req.params
     const request: PatchContactRequest = {
       domesticStatus: req.body.domesticStatusCode || null,
       updatedBy: user.userId,
@@ -43,7 +43,7 @@ export default class ManageDomesticStatusController implements PageHandler {
 
     await this.contactsService.updateContactById(parseInt(contactId, 10), request, user)
 
-    res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    res.redirect(journey.returnPoint.url)
   }
 
   private getSelectedDomesticStatusOptions(

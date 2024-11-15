@@ -17,10 +17,11 @@
         actions: {
             items: [
                 {
-                    href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/domestic-status",
+                    href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/domestic-status?returnUrl=" + manageContactRelationshipUrl,
                     text: "Change",
                     visuallyHiddenText: "domestic status",
-                    attributes: {"data-qa": "select-domestic-status"}
+                    attributes: {"data-qa": "select-domestic-status"},
+                    classes: 'govuk-link--no-visited-state'
                 }
             ]
         }
