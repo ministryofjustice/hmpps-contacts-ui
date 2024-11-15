@@ -3,10 +3,10 @@ import { emailSchemaFactory } from './emailSchemas'
 
 describe('emailSchemaFactory', () => {
   type Form = {
-    email: string
+    emailAddress: string
   }
   const baseForm: Form = {
-    email: '',
+    emailAddress: '',
   }
   describe('should validate a identity number form', () => {
     const EMAIL_REQUIRED_ERROR_MESSAGE = `Enter the contact's email address`
@@ -15,7 +15,7 @@ describe('emailSchemaFactory', () => {
 
     it('should require email', async () => {
       // Given
-      const form = { ...baseForm, email: '' }
+      const form = { ...baseForm, emailAddress: '' }
 
       // When
       const result = await doValidate(form)
@@ -24,7 +24,7 @@ describe('emailSchemaFactory', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        email: [EMAIL_FORMAT_ERROR_MESSAGE, EMAIL_REQUIRED_ERROR_MESSAGE],
+        emailAddress: [EMAIL_FORMAT_ERROR_MESSAGE, EMAIL_REQUIRED_ERROR_MESSAGE],
       })
     })
 
@@ -42,9 +42,9 @@ describe('emailSchemaFactory', () => {
         `LoOremipsumdolorsitametconsecteturadipiscingelitCurabiturposuereimperdietmollisFusceidfinibusvelit@DonecposueretellusetjustocommodointemporipsumvariusNullaplacerattemporvolutpatIndignissimveliteujustoLoremipsumdolorsitametconsecteturacer.com`,
         EMAIL_NUMBER_OF_CHARACTERS_LIMIT_ERROR_MESSAGE,
       ],
-    ])('should require a valid email', async (email: string, erroMessage: string) => {
+    ])('should require a valid email', async (emailAddress: string, erroMessage: string) => {
       // Given
-      const form = { ...baseForm, email }
+      const form = { ...baseForm, emailAddress }
 
       // When
       const result = await doValidate(form)
@@ -52,7 +52,7 @@ describe('emailSchemaFactory', () => {
       // Then
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result)
-      expect(deduplicatedFieldErrors).toStrictEqual({ email: [erroMessage] })
+      expect(deduplicatedFieldErrors).toStrictEqual({ emailAddress: [erroMessage] })
     })
 
     const doValidate = async (form: Form) => {

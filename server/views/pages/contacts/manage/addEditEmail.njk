@@ -26,11 +26,11 @@
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
                 {{ govukInput({
-                    id: "email",
-                    name: "email",
+                    id: "emailAddress",
+                    name: "emailAddress",
                     classes: 'govuk-!-width-one-third',
-                    errorMessage: validationErrors | findError('email'),
-                    value: email
+                    errorMessage: validationErrors | findError('emailAddress'),
+                    value: emailAddress
                 }) }}
 
                 <div class="govuk-button-group">
@@ -40,7 +40,6 @@
                         classes: 'govuk-!-margin-top-6',
                         attributes: {"data-qa": "continue-button"}
                     }) }}
-                    <!-- <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ '/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/manage/' + contact.id }}" data-qa="cancel-button">Cancel</a> -->
                     <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ journey.returnPoint.url }}" data-qa="cancel-button">Cancel</a>
                 </div>
             </form>

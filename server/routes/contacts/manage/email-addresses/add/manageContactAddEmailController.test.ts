@@ -1,6 +1,8 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
+import { use } from 'passport'
+import { components } from '../../../../../@types/contactsApi'
 import { appWithAllRoutes, flashProvider, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
 import ReferenceDataService from '../../../../../services/referenceDataService'
@@ -9,6 +11,10 @@ import PrisonerSearchService from '../../../../../services/prisonerSearchService
 import ContactService from '../../../../../services/contactsService'
 import TestData from '../../../../testutils/testData'
 import ContactDetails = contactsApiClientTypes.ContactDetails
+
+type CreateEmailRequest = components['schemas']['CreateEmailRequest']
+type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
+type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/referenceDataService')
@@ -23,7 +29,6 @@ const contactsService = new ContactService(null) as jest.Mocked<ContactService>
 let app: Express
 const prisonerNumber = 'A1234BC'
 const contactId = 987654
-const contactEmailId = 1
 const contact: ContactDetails = {
   id: contactId,
   title: '',
@@ -96,7 +101,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contac
 
   it('should render previously entered details if validation errors', async () => {
     // Given
-    const form = { email: 'MOB' }
+    const form = { emailAddress: 'name@' }
     auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
@@ -109,40 +114,34 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contac
     // Then
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
-    expect($('#email').val()).toStrictEqual('MOB')
+    expect($('#emailAddress').val()).toStrictEqual('name@')
   })
 })
 
-// describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/create', () => {
-//   it('should create phone with extension and pass to manage contact details page if there are no validation errors', async () => {
-//     await request(app)
-//       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/create`)
-//       .type('form')
-//       .send({ type: 'MOB', phoneNumber: '123456789', extension: '000' })
-//       .expect(302)
-//       .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/create', () => {
+  it('should create email and pass to manage contact details page if there are no validation errors', async () => {
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/create?returnUrl=/foo-bar`)
+      .type('form')
+      .send({ emailAddress: 'test@example.com' })
+      .expect(302)
+      .expect('Location', `/foo-bar`)
 
-//     expect(contactsService.createContactPhone).toHaveBeenCalledWith(contactId, user, 'MOB', '123456789', '000')
-//   })
+    const requestBody: CreateEmailRequest = {
+      emailAddress: 'test@example.com',
+      createdBy: user.name,
+    }
 
-//   it('should create phone without extension  and pass to manage contact details page if there are no validation errors', async () => {
-//     await request(app)
-//       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/create`)
-//       .type('form')
-//       .send({ type: 'MOB', phoneNumber: '123456789', extension: '' })
-//       .expect(302)
-//       .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    expect(contactsService.createContactEmail).toHaveBeenCalledWith(contactId, requestBody, user)
+  })
 
-//     expect(contactsService.createContactPhone).toHaveBeenCalledWith(contactId, user, 'MOB', '123456789', undefined)
-//   })
-
-//   it('should return to input page with details kept if there are validation errors', async () => {
-//     await request(app)
-//       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/create`)
-//       .type('form')
-//       .send({ type: '' })
-//       .expect(302)
-//       .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/create`)
-//     expect(contactsService.createContactPhone).not.toHaveBeenCalled()
-//   })
-// })
+  it('should return to input page with details kept if there are validation errors', async () => {
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/create?returnUrl=/foo-bar`)
+      .type('form')
+      .send({ emailAddress: '' })
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/create?returnUrl=/foo-bar`)
+    expect(contactsService.createContactEmail).not.toHaveBeenCalled()
+  })
+})

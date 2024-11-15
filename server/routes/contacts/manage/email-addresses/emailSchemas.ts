@@ -7,7 +7,7 @@ const EMAIL_FORMAT_ERROR_MESSAGE = `Enter an email address in the correct format
 
 export const emailSchemaFactory = () => async () => {
   return createSchema({
-    email: z
+    emailAddress: z
       .string({ message: EMAIL_REQUIRED_ERROR_MESSAGE })
       // .min(1, {message: EMAIL_REQUIRED_ERROR_MESSAGE})
       .email({ message: EMAIL_FORMAT_ERROR_MESSAGE })
