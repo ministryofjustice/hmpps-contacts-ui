@@ -328,7 +328,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
         const changeLink = $(`[data-qa="change-${fieldKey}-link"]`)
         expect(changeLink.text().trim()).toBe(expectedHintText)
-        expect(changeLink.attr('href')).toBe(`2/${expectedChangeLink}`)
+        expect(changeLink.attr('href')).toBe(
+          `2/${expectedChangeLink}?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/2`,
+        )
       }
     })
   })
