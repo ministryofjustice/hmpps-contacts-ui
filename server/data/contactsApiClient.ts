@@ -20,6 +20,7 @@ import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
 import CreateIdentityRequest = contactsApiClientTypes.CreateIdentityRequest
 import UpdateIdentityRequest = contactsApiClientTypes.UpdateIdentityRequest
 import ContactIdentityDetails = contactsApiClientTypes.ContactIdentityDetails
+import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 
 type Language = components['schemas']['Language']
 type PageableObject = components['schemas']['PageableObject']
@@ -102,6 +103,16 @@ export default class ContactsApiClient extends RestClient {
 
   async getContact(contactId: number, user: Express.User): Promise<ContactDetails> {
     return this.get<ContactDetails>({ path: `/contact/${contactId}` }, user)
+  }
+
+  async getPrisonerContactRelationship(
+    prisonerContactId: number,
+    user: Express.User,
+  ): Promise<PrisonerContactRelationshipDetails> {
+    return this.get<PrisonerContactRelationshipDetails>(
+      { path: `/prisoner-contact/relationship/${prisonerContactId}` },
+      user,
+    )
   }
 
   async createContactPhone(

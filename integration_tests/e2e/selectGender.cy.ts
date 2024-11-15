@@ -8,6 +8,7 @@ export type PatchContactRequest = components['schemas']['PatchContactRequest']
 
 context('Select Gender', () => {
   const contactId = 22
+  const prisonerContactId = 987654
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
@@ -16,10 +17,14 @@ context('Select Gender', () => {
     cy.task('stubTitlesReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetContactById', TestData.contact())
+    cy.task('stubGetPrisonerContactRelationshipById', {
+      id: prisonerContactId,
+      response: TestData.prisonerContactRelationship(),
+    })
 
     cy.signIn()
     const { prisonerNumber } = TestData.prisoner()
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
   })

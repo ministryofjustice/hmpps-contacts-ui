@@ -18,6 +18,7 @@ import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
 import ContactIdentityDetails = contactsApiClientTypes.ContactIdentityDetails
 import UpdateIdentityRequest = contactsApiClientTypes.UpdateIdentityRequest
 import CreateIdentityRequest = contactsApiClientTypes.CreateIdentityRequest
+import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 type Language = components['schemas']['Language']
@@ -300,6 +301,53 @@ describe('contactsApiClient', () => {
       // When
       try {
         await contactsApiClient.getContact(123456, user)
+      } catch (e) {
+        // Then
+        expect(e.status).toEqual(errorCode)
+        expect(e.data).toEqual(expectedErrorBody)
+      }
+    })
+  })
+
+  describe('getPrisonerContactRelationship', () => {
+    it('should get the prisoner contact relationship', async () => {
+      // Given
+      const expected: PrisonerContactRelationshipDetails = {
+        relationshipCode: 'FRI',
+        relationshipDescription: 'Friend',
+        emergencyContact: false,
+        nextOfKin: true,
+        isRelationshipActive: true,
+        comments: 'Some comments',
+      }
+      fakeContactsApi
+        .get('/prisoner-contact/relationship/123456')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, expected)
+
+      // When
+      const contact = await contactsApiClient.getPrisonerContactRelationship(123456, user)
+
+      // Then
+      expect(contact).toEqual(expected)
+    })
+
+    it.each([401, 403])('should propagate errors', async (errorCode: number) => {
+      // Given
+      const expectedErrorBody = {
+        status: errorCode,
+        userMessage: 'Some error',
+        developerMessage: 'Some error',
+      }
+
+      fakeContactsApi
+        .get('/prisoner-contact/relationship/123456')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(errorCode, expectedErrorBody)
+
+      // When
+      try {
+        await contactsApiClient.getPrisonerContactRelationship(123456, user)
       } catch (e) {
         // Then
         expect(e.status).toEqual(errorCode)

@@ -6,6 +6,7 @@ import EnterContactEstimatedDateOfBirthPage from '../pages/enterContactEstimated
 
 context('Change Contact Estimated Date Of Birth', () => {
   const contactId = 654321
+  const prisonerContactId = 987654
   const { prisonerNumber } = TestData.prisoner()
 
   beforeEach(() => {
@@ -27,7 +28,11 @@ context('Change Contact Estimated Date Of Birth', () => {
       estimatedIsOverEighteen: 'YES',
     })
     cy.task('stubGetContactById', contact)
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    cy.task('stubGetPrisonerContactRelationshipById', {
+      id: prisonerContactId,
+      response: TestData.prisonerContactRelationship(),
+    })
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
 
@@ -69,7 +74,11 @@ context('Change Contact Estimated Date Of Birth', () => {
       estimatedIsOverEighteen: null,
     })
     cy.task('stubGetContactById', contact)
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    cy.task('stubGetPrisonerContactRelationshipById', {
+      id: prisonerContactId,
+      response: TestData.prisonerContactRelationship(),
+    })
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
 
@@ -111,7 +120,11 @@ context('Change Contact Estimated Date Of Birth', () => {
       estimatedIsOverEighteen: null,
     })
     cy.task('stubGetContactById', contact)
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    cy.task('stubGetPrisonerContactRelationshipById', {
+      id: prisonerContactId,
+      response: TestData.prisonerContactRelationship(),
+    })
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeEstimatedDateOfBirthLink(contactId)
@@ -131,7 +144,11 @@ context('Change Contact Estimated Date Of Birth', () => {
       estimatedIsOverEighteen: null,
     })
     cy.task('stubGetContactById', contact)
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    cy.task('stubGetPrisonerContactRelationshipById', {
+      id: prisonerContactId,
+      response: TestData.prisonerContactRelationship(),
+    })
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeEstimatedDateOfBirthLink(contactId)
@@ -150,7 +167,11 @@ context('Change Contact Estimated Date Of Birth', () => {
       estimatedIsOverEighteen: null,
     })
     cy.task('stubGetContactById', contact)
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    cy.task('stubGetPrisonerContactRelationshipById', {
+      id: prisonerContactId,
+      response: TestData.prisonerContactRelationship(),
+    })
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeEstimatedDateOfBirthLink(contactId)

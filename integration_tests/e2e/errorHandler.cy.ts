@@ -20,14 +20,14 @@ context('Ensure Prisoner Is In Caseload', () => {
 
   it('Should show not found page if root cause is 400', () => {
     cy.task('stubPrisonerByIdReturnsError', { prisonerNumber, httpStatusCode: 400 })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`, { failOnStatusCode: false })
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/99`, { failOnStatusCode: false })
 
     Page.verifyOnPage(SorryPage)
   })
 
   it('Should show not found page if root cause is 500', () => {
     cy.task('stubPrisonerByIdReturnsError', { prisonerNumber, httpStatusCode: 500 })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`, { failOnStatusCode: false })
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/99`, { failOnStatusCode: false })
 
     Page.verifyOnPage(SorryPage)
   })

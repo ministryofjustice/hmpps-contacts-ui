@@ -5,6 +5,8 @@ import PageNotFoundPage from '../pages/pageNotFoundPage'
 context('Ensure Prisoner Is In Caseload', () => {
   const prisonerNumber = 'A1234BC'
   const contactId = 99
+  const prisonerContactId = 987654
+
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn', { roles: ['PRISON'] })
@@ -24,6 +26,10 @@ context('Ensure Prisoner Is In Caseload', () => {
       estimatedIsOverEighteen: null,
     })
     cy.task('stubGetContactById', contact)
+    cy.task('stubGetPrisonerContactRelationshipById', {
+      id: prisonerContactId,
+      response: TestData.prisonerContactRelationship(),
+    })
   })
 
   it('Manage contacts page not accessible if prisoner not in caseload', () => {
@@ -33,7 +39,7 @@ context('Ensure Prisoner Is In Caseload', () => {
   })
 
   it('Manage contacts page not accessible if prisoner not in caseload', () => {
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/99`)
 
     Page.verifyOnPage(PageNotFoundPage)
   })

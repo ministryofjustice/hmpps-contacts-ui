@@ -15,6 +15,7 @@ import ContactDetails = contactsApiClientTypes.ContactDetails
 import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
 import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
 import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
+import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 
 type Language = components['schemas']['Language']
 
@@ -277,6 +278,30 @@ describe('contactsService', () => {
     it('Propagates errors', async () => {
       apiClient.getContact.mockRejectedValue(new Error('some error'))
       await expect(apiClient.getContact(123456, user)).rejects.toEqual(new Error('some error'))
+    })
+  })
+
+  describe('getPrisonerContactRelationship', () => {
+    it('should get the prisoner contact relationship', async () => {
+      const expected: PrisonerContactRelationshipDetails = {
+        relationshipCode: 'FRI',
+        relationshipDescription: 'Friend',
+        emergencyContact: false,
+        nextOfKin: true,
+        isRelationshipActive: true,
+        comments: 'Some comments',
+      }
+      apiClient.getPrisonerContactRelationship.mockResolvedValue(expected)
+
+      const contact = await service.getPrisonerContactRelationship(123456, user)
+
+      expect(contact).toStrictEqual(expected)
+      expect(apiClient.getPrisonerContactRelationship).toHaveBeenCalledWith(123456, user)
+    })
+
+    it('Propagates errors', async () => {
+      apiClient.getPrisonerContactRelationship.mockRejectedValue(new Error('some error'))
+      await expect(apiClient.getPrisonerContactRelationship(123456, user)).rejects.toEqual(new Error('some error'))
     })
   })
 

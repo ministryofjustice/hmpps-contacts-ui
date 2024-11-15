@@ -4,6 +4,7 @@ declare namespace contactsApiClientTypes {
   export type CreateContactRequest = components['schemas']['CreateContactRequest']
   export type Contact = components['schemas']['Contact']
   export type ContactDetails = components['schemas']['ContactDetails']
+  export type PrisonerContactRelationshipDetails = components['schemas']['PrisonerContactRelationshipDetails']
   export type ContactAddressDetails = components['schemas']['ContactAddressDetails']
   export type PrisonerContactSummary = components['schemas']['PrisonerContactSummary']
   export type PrisonerContactSummaryPage = components['schemas']['PrisonerContactSummaryPage']
