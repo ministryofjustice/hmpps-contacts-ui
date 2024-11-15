@@ -347,11 +347,13 @@ const ManageContactsRoutes = (
   router.get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/emergency-contact',
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    prepareStandaloneManageContactJourney(),
     logPageViewMiddleware(auditService, manageEmergencyContactStatusController),
     asyncMiddleware(manageEmergencyContactStatusController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/emergency-contact',
+    prepareStandaloneManageContactJourney(),
     asyncMiddleware(manageEmergencyContactStatusController.POST),
   )
 

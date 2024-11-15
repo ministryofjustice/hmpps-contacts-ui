@@ -218,9 +218,9 @@ export default class ContactsApiClient extends RestClient {
   async updateContactRelationshipById(
     contactId: number,
     prisonerContactId: number,
-    request: contactsApiClientTypes.UpdateRelationshipRequest,
+    request: UpdateRelationshipRequest,
     user: Express.User,
-  ): Promise<contactsApiClientTypes.PatchContactResponse> {
+  ): Promise<PatchContactResponse> {
     return this.patch<UpdateRelationshipRequest>(
       {
         path: `/contact/${contactId}/relationship/${prisonerContactId}`,

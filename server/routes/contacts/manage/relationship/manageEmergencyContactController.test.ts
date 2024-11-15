@@ -45,16 +45,15 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/emergency-contact`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/emergency-contact?returnUrl=/foo-bar`,
     )
 
     // Then
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').text().trim()).toBe('Is Jones Mason an emergency contact for the prisoner?')
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-      '/prisoner/A1234BC/contacts/manage/22/relationship/1',
-    )
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Save and Continue')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_EDIT_EMERGENCY_STATUS_PAGE, {
@@ -71,7 +70,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   ])('should update emergency contact status to %s when %s is selected', async (expected: boolean, input: string) => {
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/emergency-contact`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/emergency-contact?returnUrl=/foo-bar`,
       )
       .type('form')
       .send({ emergencyContactStatus: input })
