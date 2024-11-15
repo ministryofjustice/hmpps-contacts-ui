@@ -24,7 +24,9 @@ import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerConta
 
 type Language = components['schemas']['Language']
 type PageableObject = components['schemas']['PageableObject']
-
+type CreateEmailRequest = components['schemas']['CreateEmailRequest']
+type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
+type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 export default class ContactsApiClient extends RestClient {
   constructor() {
     super('Contacts API client', config.apis.contactsApi)
@@ -208,6 +210,35 @@ export default class ContactsApiClient extends RestClient {
     return this.patch<PatchContactRequest>(
       {
         path: `/contact/${contactId}`,
+        data: request,
+      },
+      user,
+    )
+  }
+
+  async createContactEmail(
+    contactId: number,
+    request: CreateEmailRequest,
+    user: Express.User,
+  ): Promise<ContactEmailDetails> {
+    return this.post<ContactEmailDetails>(
+      {
+        path: `/contact/${contactId}/email`,
+        data: request,
+      },
+      user,
+    )
+  }
+
+  async updateContactEmail(
+    contactId: number,
+    contactEmailId: number,
+    request: UpdateEmailRequest,
+    user: Express.User,
+  ): Promise<ContactEmailDetails> {
+    return this.put<ContactEmailDetails>(
+      {
+        path: `/contact/${contactId}/email/${contactEmailId}`,
         data: request,
       },
       user,
