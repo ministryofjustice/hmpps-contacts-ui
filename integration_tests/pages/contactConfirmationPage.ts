@@ -105,6 +105,11 @@ export default class ContactConfirmationPage extends Page {
     return this
   }
 
+  verifyShowGenderValueAs(expected: string): ContactConfirmationPage {
+    this.genderValue().should('contain.text', expected)
+    return this
+  }
+
   // Not Provided Sections
   verifyShowAddressesValueAsNotProvided(expected: string): ContactConfirmationPage {
     this.addressesNotProvided().should('contain.text', expected)
@@ -188,4 +193,6 @@ export default class ContactConfirmationPage extends Page {
   private addressFromToDate = (): PageElement => cy.get('[data-qa=from-to-date-not-provided]')
 
   private titleHeader = (position: string): PageElement => cy.get(`[data-qa=confim-title-value-${position}]`)
+
+  private genderValue = (): PageElement => cy.get('.confirm-gender-value')
 }

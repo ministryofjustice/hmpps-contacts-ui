@@ -269,4 +269,43 @@ describe('GET /contacts/manage/:contactId', () => {
       expect($('.relationship-comments-value').text().trim()).toStrictEqual('Not provided')
     })
   })
+
+  describe('Gender', () => {
+    it.each([
+      ['M', 'Male'],
+      ['F', 'Female'],
+      ['NK', 'Not Known / Not Recorded'],
+      ['NS', 'Specified (Indeterminate)'],
+    ])('should show gender if question was answered', async (gender: string, genderDescription: string) => {
+      // Given
+      auditService.logPageView.mockResolvedValue(null)
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.getContact.mockResolvedValue(TestData.contact({ gender, genderDescription }))
+      referenceDataService.getReferenceDescriptionForCode.mockResolvedValue(genderDescription)
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect(response.status).toEqual(200)
+      expect($('.manage-gender-value').text().trim()).toStrictEqual(genderDescription)
+    })
+
+    it('should show "not provided" for gender if question was not answered', async () => {
+      // Given
+      auditService.logPageView.mockResolvedValue(null)
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.getContact.mockResolvedValue(TestData.contact({ gender: null, genderDescription: null }))
+      referenceDataService.getReferenceDescriptionForCode.mockResolvedValue(null)
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect(response.status).toEqual(200)
+      expect($('.manage-gender-value').text().trim()).toStrictEqual('Not provided')
+    })
+  })
 })

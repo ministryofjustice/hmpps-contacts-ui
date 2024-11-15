@@ -289,6 +289,8 @@ export default class TestData {
       this.getContactIdentityDetails('PASS', 'Passport number', '425362965', 'UK passport office', 2),
       this.getContactIdentityDetails('NINO', 'National insurance number', '06/614465M', null, 3),
     ],
+    gender = 'M',
+    genderDescription = 'Male',
     domesticStatusCode = 'S',
     domesticStatusDescription = 'Single-not married/in civil partnership',
   }: Partial<ContactDetails> = {}): ContactDetails =>
@@ -312,6 +314,8 @@ export default class TestData {
       phoneNumbers,
       emailAddresses,
       identities,
+      gender,
+      genderDescription,
       domesticStatusCode,
       domesticStatusDescription,
     }) as ContactDetails

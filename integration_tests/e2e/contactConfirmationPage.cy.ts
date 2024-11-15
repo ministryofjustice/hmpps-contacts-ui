@@ -93,6 +93,7 @@ context('Contact confirmation', () => {
   it(`should render contact information`, () => {
     const titleHeader = 'Is this the right person to add as a contact for Smith, John?'
     cy.task('stubGetContactById', TestData.contact())
+    cy.task('stubGetGenders')
 
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
@@ -105,6 +106,7 @@ context('Contact confirmation', () => {
       .verifyShowsTabTitleAs('Linked offenders', 2)
       .verifyShowsCardTitleAs('Basic details', 0)
       .verifyShowNamesValueAs('Contact, Mr Existing')
+      .verifyShowGenderValueAs('Male')
       .verifyShowDOBValueAs('14 January 1990')
       .verifyShowDeceasedDateValueAs('Not provided')
       .verifyShowsCardTitleAs('Addresses', 1)
@@ -134,7 +136,7 @@ context('Contact confirmation', () => {
       .verifyShowNeedsInterpreterValueAs('No')
   })
 
-  it('should render contact information with empty rows if not available', () => {
+  it('should render contact information with empity rows if not available', () => {
     cy.task('stubGetContactById', {
       id: contactId,
       firstName: 'Existing',
@@ -167,7 +169,7 @@ context('Contact confirmation', () => {
       .verifyShowAddressFromToDateValueAsNotProvided('Not provided')
   })
 
-  it('should render contact information with empty sections if not available', () => {
+  it('should render contact information with empity sections if not available', () => {
     cy.task('stubGetContactById', {
       id: contactId,
       title: 'MR',
