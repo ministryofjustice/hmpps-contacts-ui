@@ -7,7 +7,6 @@ import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import ContactsService from '../../../../services/contactsService'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import TestData from '../../../testutils/testData'
-import { capitalizeFirstLetter } from '../../../../utils/utils'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -237,7 +236,7 @@ describe('GET /contacts/manage/:contactId', () => {
       // Then
       const $ = cheerio.load(response.text)
       expect(response.status).toEqual(200)
-      expect($('.manage-gender-value').text().trim()).toStrictEqual(capitalizeFirstLetter('Not provided'))
+      expect($('.manage-gender-value').text().trim()).toStrictEqual('Not provided')
     })
   })
 })
