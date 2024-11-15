@@ -30,7 +30,6 @@ export default class ContactConfirmationController implements PageHandler {
     const formattedFullName = await this.formattedFullName(contact, user)
     const mostRelevantAddress = this.findMostRelevantAddress(contact)
     const mostRelevantAddressLabel = this.getLabelForAddress(mostRelevantAddress)
-
     return res.render('pages/contacts/manage/contactConfirmation/confirmation', {
       contact,
       formattedFullName,
