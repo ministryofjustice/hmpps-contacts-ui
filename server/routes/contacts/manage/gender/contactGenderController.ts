@@ -58,7 +58,7 @@ export default class ManageGenderController implements PageHandler {
   }> {
     const mappedOptions = options.map((gender: ReferenceCode) => {
       return {
-        text: capitalizeFirstLetter(gender.description),
+        text: gender.description,
         value: gender.code,
         checked: gender.code === selected,
       }
