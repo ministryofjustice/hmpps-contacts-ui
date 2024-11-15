@@ -5,7 +5,6 @@ import { ContactsService } from '../../../../services'
 import { components } from '../../../../@types/contactsApi'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
-import { capitalizeFirstLetter } from '../../../../utils/utils'
 import Contact = contactsApiClientTypes.Contact
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 
