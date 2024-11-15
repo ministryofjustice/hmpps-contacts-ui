@@ -8,6 +8,7 @@ import { reverseFormatName } from '../../../../utils/formatName'
 
 import Contact = contactsApiClientTypes.Contact
 import ContactDetails = contactsApiClientTypes.ContactDetails
+import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 
 export default class ContactDetailsController implements PageHandler {
   constructor(
@@ -18,19 +19,21 @@ export default class ContactDetailsController implements PageHandler {
   public PAGE_NAME = Page.CONTACT_DETAILS_PAGE
 
   GET = async (
-    req: Request<{ prisonerNumber: string; contactId?: string }, unknown, unknown>,
+    req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId?: string }, unknown, unknown>,
     res: Response,
   ): Promise<void> => {
-    const { prisonerNumber, contactId } = req.params
-    const { prisonerDetails, user } = res.locals
-    const contact: Contact = await this.contactsService.getContact(parseInt(contactId, 10), user)
+    const { prisonerNumber, contactId, prisonerContactId } = req.params
+    const { user } = res.locals
+    const contact: Contact = await this.contactsService.getContact(Number(contactId), user)
+    const prisonerContactRelationship: PrisonerContactRelationshipDetails =
+      await this.contactsService.getPrisonerContactRelationship(Number(prisonerContactId), user)
     const formattedFullName = await this.formattedFullName(contact, user)
 
     return res.render('pages/contacts/manage/contactDetails/details', {
       contact,
-      prisonerDetails,
+      prisonerContactRelationship,
       formattedFullName,
-      manageContactRelationshipUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}`,
+      manageContactRelationshipUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
     })
   }
 

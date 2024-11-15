@@ -4,6 +4,7 @@ import ManageContactDetailsPage from '../pages/manageContactDetails'
 
 context('Delete Contact Identity', () => {
   const contactId = 654321
+  const prisonerContactId = 987654
   const contact = TestData.contact({
     id: contactId,
     lastName: 'Last',
@@ -24,10 +25,14 @@ context('Delete Contact Identity', () => {
     cy.task('stubTitlesReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetContactById', contact)
+    cy.task('stubGetPrisonerContactRelationshipById', {
+      id: prisonerContactId,
+      response: TestData.prisonerContactRelationship(),
+    })
 
     cy.signIn()
     const { prisonerNumber } = TestData.prisoner()
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}`)
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
   })

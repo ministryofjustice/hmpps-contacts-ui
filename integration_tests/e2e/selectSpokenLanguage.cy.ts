@@ -10,6 +10,7 @@ export type PatchContactRequest = components['schemas']['PatchContactRequest']
 
 context('Select Spoken Language', () => {
   const contactId = 22
+  const prisonerContactId = 31
   beforeEach(() => {
     const { prisonerNumber } = TestData.prisoner()
     cy.task('reset')
@@ -27,6 +28,10 @@ context('Select Spoken Language', () => {
     })
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetContactById', TestData.contact())
+    cy.task('stubGetPrisonerContactRelationshipById', {
+      id: prisonerContactId,
+      response: TestData.prisonerContactRelationship(),
+    })
     cy.task('stubContactList', 'A1234BC')
     cy.visit('/contacts/manage/prisoner-search/start')
   })

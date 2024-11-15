@@ -11,6 +11,7 @@ type PrisonerContactSummaryPage = components['schemas']['PrisonerContactSummaryP
 type PrisonerContactSummary = components['schemas']['PrisonerContactSummary']
 type ContactIdentityDetails = components['schemas']['ContactIdentityDetails']
 type PatchContactResponse = components['schemas']['PatchContactResponse']
+type PrisonerContactRelationshipDetails = components['schemas']['PrisonerContactRelationshipDetails']
 type Language = components['schemas']['Language']
 export default class TestData {
   static address = ({
@@ -314,6 +315,23 @@ export default class TestData {
       domesticStatusCode,
       domesticStatusDescription,
     }) as ContactDetails
+
+  static prisonerContactRelationship = ({
+    relationshipCode = 'FRI',
+    relationshipDescription = 'Friend',
+    emergencyContact = false,
+    nextOfKin = true,
+    isRelationshipActive = true,
+    comments = 'Some comments',
+  }: Partial<PrisonerContactRelationshipDetails> = {}): PrisonerContactRelationshipDetails =>
+    ({
+      relationshipCode,
+      relationshipDescription,
+      emergencyContact,
+      nextOfKin,
+      isRelationshipActive,
+      comments,
+    }) as PrisonerContactRelationshipDetails
 
   static prisonerContactSummaryPage = ({
     content = [this.getPrisonerContact()],

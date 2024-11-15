@@ -43,10 +43,10 @@ describe('GET /contacts/manage/:contactId', () => {
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.searchContact.mockResolvedValue(TestData.contact())
     contactsService.getContact.mockResolvedValue(TestData.contact())
-    contactsService.updateContactById.mockResolvedValue(TestData.contact())
+    contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
 
     // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1`)
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
 
     // Then
     expect(response.status).toEqual(200)
@@ -54,6 +54,8 @@ describe('GET /contacts/manage/:contactId', () => {
       who: user.username,
       correlationId: expect.any(String),
     })
+    expect(contactsService.getContact).toHaveBeenCalledWith(1, user)
+    expect(contactsService.getPrisonerContactRelationship).toHaveBeenCalledWith(99, user)
   })
   describe('phone numbers', () => {
     it('should render phone numbers in reverse created date order', async () => {
@@ -81,9 +83,10 @@ describe('GET /contacts/manage/:contactId', () => {
           ],
         }),
       )
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
 
       // When
-      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1`)
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
 
       // Then
       const $ = cheerio.load(response.text)
@@ -102,9 +105,10 @@ describe('GET /contacts/manage/:contactId', () => {
       auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(TestData.contact({ phoneNumbers: [] }))
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
 
       // When
-      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1`)
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
 
       // Then
       const $ = cheerio.load(response.text)
@@ -118,9 +122,10 @@ describe('GET /contacts/manage/:contactId', () => {
       auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(TestData.contact())
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
 
       // When
-      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1`)
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
 
       // Then
       const $ = cheerio.load(response.text)
@@ -137,9 +142,10 @@ describe('GET /contacts/manage/:contactId', () => {
       const contact = TestData.contact()
       contact.identities[0].identityTypeIsActive = false
       contactsService.getContact.mockResolvedValue(contact)
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
 
       // When
-      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1`)
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
 
       // Then
       const $ = cheerio.load(response.text)
@@ -158,9 +164,10 @@ describe('GET /contacts/manage/:contactId', () => {
       auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(TestData.contact({ identities: [] }))
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
 
       // When
-      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1`)
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
 
       // Then
       const $ = cheerio.load(response.text)
@@ -174,9 +181,10 @@ describe('GET /contacts/manage/:contactId', () => {
       auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(TestData.contact())
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
 
       // When
-      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1`)
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
 
       // Then
       const $ = cheerio.load(response.text)
@@ -190,14 +198,75 @@ describe('GET /contacts/manage/:contactId', () => {
       auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(TestData.contact({ emailAddresses: [] }))
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
 
       // When
-      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1`)
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
 
       // Then
       const $ = cheerio.load(response.text)
       expect(response.status).toEqual(200)
       expect($('.email-addresses-not-provide-value').text().trim()).toStrictEqual('Not provided')
+    })
+  })
+
+  describe('Relationship', () => {
+    it('should render all fields', async () => {
+      auditService.logPageView.mockResolvedValue(null)
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.getContact.mockResolvedValue(TestData.contact())
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(
+        TestData.prisonerContactRelationship({
+          relationshipCode: 'FRI',
+          relationshipDescription: 'Friend',
+          emergencyContact: true,
+          nextOfKin: false,
+          isRelationshipActive: true,
+          comments: 'Some comments',
+        }),
+      )
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect(response.status).toEqual(200)
+
+      expect($('.relationship-value').text().trim()).toStrictEqual('Friend')
+      expect($('.emergency-contact-value').text().trim()).toStrictEqual('Yes')
+      expect($('.next-of-kin-value').text().trim()).toStrictEqual('No')
+      expect($('.relationship-active-value').text().trim()).toStrictEqual('Yes')
+      expect($('.relationship-comments-value').text().trim()).toStrictEqual('Some comments')
+    })
+
+    it('should render not provided if no comments', async () => {
+      auditService.logPageView.mockResolvedValue(null)
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.getContact.mockResolvedValue(TestData.contact())
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(
+        TestData.prisonerContactRelationship({
+          relationshipCode: 'FRI',
+          relationshipDescription: 'Friend',
+          emergencyContact: false,
+          nextOfKin: true,
+          isRelationshipActive: false,
+          comments: null,
+        }),
+      )
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect(response.status).toEqual(200)
+
+      expect($('.relationship-value').text().trim()).toStrictEqual('Friend')
+      expect($('.emergency-contact-value').text().trim()).toStrictEqual('No')
+      expect($('.next-of-kin-value').text().trim()).toStrictEqual('Yes')
+      expect($('.relationship-active-value').text().trim()).toStrictEqual('No')
+      expect($('.relationship-comments-value').text().trim()).toStrictEqual('Not provided')
     })
   })
 })

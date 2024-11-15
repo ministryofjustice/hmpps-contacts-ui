@@ -15,6 +15,7 @@ import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
 import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
 import CreateIdentityRequest = contactsApiClientTypes.CreateIdentityRequest
 import UpdateIdentityRequest = contactsApiClientTypes.UpdateIdentityRequest
+import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 
 type Language = components['schemas']['Language']
 type PageableObject = components['schemas']['PageableObject']
@@ -93,6 +94,13 @@ export default class ContactsService {
 
   async getContact(contactId: number, user: Express.User): Promise<ContactDetails> {
     return this.contactsApiClient.getContact(contactId, user)
+  }
+
+  async getPrisonerContactRelationship(
+    prisonerContactId: number,
+    user: Express.User,
+  ): Promise<PrisonerContactRelationshipDetails> {
+    return this.contactsApiClient.getPrisonerContactRelationship(prisonerContactId, user)
   }
 
   async createContactPhone(

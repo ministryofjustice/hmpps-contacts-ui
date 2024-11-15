@@ -4325,6 +4325,39 @@ export interface components {
       property?: string
       ignoreCase?: boolean
     }
+    /** @description Describes the prisoner contact relationship */
+    PrisonerContactRelationshipDetails: {
+      /**
+       * @description The relationship code between the prisoner and the contact
+       * @example FRI
+       */
+      relationshipCode: string
+      /**
+       * @description The description of the relationship
+       * @example Friend
+       */
+      relationshipDescription: string
+      /**
+       * @description Is this contact the prisoner's emergency contact?
+       * @example true
+       */
+      emergencyContact: boolean
+      /**
+       * @description Is this contact the prisoner's next of kin?
+       * @example false
+       */
+      nextOfKin: boolean
+      /**
+       * @description Is this prisoner's contact relationship active?
+       * @example true
+       */
+      isRelationshipActive: boolean
+      /**
+       * @description Any additional comments
+       * @example Close family friend
+       */
+      comments?: string | null
+    }
     /** @description Language reference entity */
     Language: {
       /**
@@ -7284,7 +7317,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PrisonerContactSummaryPage']
+          'application/json': components['schemas']['PrisonerContactRelationshipDetails']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */

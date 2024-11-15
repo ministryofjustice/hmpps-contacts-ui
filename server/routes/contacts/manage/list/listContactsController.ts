@@ -5,7 +5,7 @@ import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
 import { components } from '../../../../@types/contactsApi'
 import ManageContactsJourney = journeys.ManageContactsJourney
-import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
+import PrisonerContactSummaryPage = contactsApiClientTypes.PrisonerContactSummaryPage
 
 type PageableObject = components['schemas']['PageableObject']
 
@@ -43,14 +43,14 @@ export default class ListContactsController implements PageHandler {
       }
     }
 
-    const activeContacts: PrisonerContactSummary = await this.contactsService.getPrisonerContacts(
+    const activeContacts: PrisonerContactSummaryPage[] = await this.contactsService.getPrisonerContacts(
       prisonerNumber as string,
       true,
       user,
       { page: journey ? journey.activateListPage : page, size: pageSize } as PageableObject,
     )
 
-    const inactiveContacts: PrisonerContactSummary = await this.contactsService.getPrisonerContacts(
+    const inactiveContacts: PrisonerContactSummaryPage[] = await this.contactsService.getPrisonerContacts(
       prisonerNumber as string,
       false,
       user,

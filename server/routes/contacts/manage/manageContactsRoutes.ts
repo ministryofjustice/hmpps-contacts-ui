@@ -106,7 +106,7 @@ const ManageContactsRoutes = (
   // Part 5: View one contact
   const contactDetailsController = new ContactDetailsController(contactsService, referenceDataService)
   router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId',
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId',
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, contactDetailsController),
     asyncMiddleware(contactDetailsController.GET),
