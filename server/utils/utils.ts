@@ -64,5 +64,5 @@ export const formatDateForApi = (dateOfBirth: Partial<DateOfBirth>) => {
 }
 
 export const capitalizeFirstLetter = (val: string) => {
-  return isBlank(val) ? '' : val.toLowerCase().replace(/^./, val[0].toUpperCase())
+  return val.toLowerCase().replace(/^./, val[0].toUpperCase())
 }
