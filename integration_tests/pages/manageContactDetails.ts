@@ -77,6 +77,10 @@ export default class ManageContactDetailsPage extends Page {
     this.changeStaffStatusLink().click()
   }
 
+  clickEditEmergencyContactLink() {
+    this.editEmergencyContactLink().click()
+  }
+
   clickAddPhoneNumberLink() {
     this.addPhoneNumberLink().click()
   }
@@ -133,6 +137,8 @@ export default class ManageContactDetailsPage extends Page {
 
   private editPhoneNumberLink = (id: number): PageElement => cy.get(`[data-qa="edit-phone-number-${id}"]`)
 
+  private editEmergencyContactLink = (): PageElement => cy.get(`[data-qa="change-emergency-contact-link"]`)
+
   private changeDateOfBirthLink = (id: number): PageElement => cy.get(`[data-qa="change-dob-${id}"]`)
 
   private changeEstimatedDateOfBirthLink = (id: number): PageElement => cy.get(`[data-qa="change-estimated-dob-${id}"]`)
@@ -166,4 +172,10 @@ export default class ManageContactDetailsPage extends Page {
   private deleteIdentityLink = (id: number): PageElement => cy.get(`[data-qa="delete-identity-number-${id}"]`)
 
   private emailValue = (id: number): PageElement => cy.get(`.confirm-email-${id}-value`)
+
+  verifyShowIsEmergencyContactAs(expected: string) {
+    this.checkAnswersEmergencyContactValue().should('contain.text', expected)
+  }
+
+  private checkAnswersEmergencyContactValue = (): PageElement => cy.get('.emergency-contact-value')
 }

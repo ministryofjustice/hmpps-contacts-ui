@@ -16,10 +16,21 @@
         },
         value: {
             text: prisonerContactRelationship.emergencyContact | formatYesNo,
-            classes: 'emergency-contact-value'
-        }
-    },
-    {
+                 classes: 'emergency-contact-value'
+             },
+             actions: {
+                 items: [
+                     {
+                         href: prisonerContactId +"/emergency-contact",
+                         text: "Change",
+                         visuallyHiddenText: "whether contact is an emergency contact",
+                         attributes: {"data-qa": "change-emergency-contact-link"},
+                         classes: "govuk-link--no-visited-state"
+                     }
+                 ]
+             }
+         },
+         {
         key: {
             text: "Next of kin"
         },

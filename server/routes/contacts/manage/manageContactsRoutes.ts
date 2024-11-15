@@ -39,6 +39,7 @@ import UpdateEstimatedDobController from './update-estimated-dob/updateEstimated
 import ManageGenderController from './gender/contactGenderController'
 import UpdateNameController from './name/updateNameController'
 import { restrictedEditingNameSchema } from '../common/name/nameSchemas'
+import ManageEmergencyContactController from './relationship/manageEmergencyContactController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -340,6 +341,18 @@ const ManageContactsRoutes = (
     prepareStandaloneManageContactJourney(),
     validate(restrictedEditingNameSchema()),
     asyncMiddleware(updateNameController.POST),
+  )
+
+  const manageEmergencyContactStatusController = new ManageEmergencyContactController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/emergency-contact',
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    logPageViewMiddleware(auditService, manageEmergencyContactStatusController),
+    asyncMiddleware(manageEmergencyContactStatusController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/emergency-contact',
+    asyncMiddleware(manageEmergencyContactStatusController.POST),
   )
 
   return router

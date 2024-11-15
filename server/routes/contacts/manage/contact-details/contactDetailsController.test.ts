@@ -37,7 +37,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /contacts/manage/:contactId', () => {
+describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () => {
   it('should render contact details page', async () => {
     auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
@@ -267,6 +267,69 @@ describe('GET /contacts/manage/:contactId', () => {
       expect($('.next-of-kin-value').text().trim()).toStrictEqual('Yes')
       expect($('.relationship-active-value').text().trim()).toStrictEqual('No')
       expect($('.relationship-comments-value').text().trim()).toStrictEqual('Not provided')
+    })
+
+    describe('should render fields with correct information', () => {
+      describe.each([
+        {
+          fieldName: 'an emergency contact',
+          fieldKey: 'emergency-contact',
+          fieldHiddenText: 'Change whether contact is an emergency contact (Relationship details)',
+          mockResponse: { emergencyContact: true },
+          expectedValue: 'Yes',
+          expectedChangeLink: 'emergency-contact',
+        },
+        {
+          fieldName: 'an emergency contact',
+          fieldKey: 'emergency-contact',
+          fieldHiddenText: 'Change whether contact is an emergency contact (Relationship details)',
+          mockResponse: { emergencyContact: false },
+          expectedValue: 'No',
+          expectedChangeLink: 'emergency-contact',
+        },
+      ])(
+        'Relationship details - %s1',
+        ({ fieldName, fieldKey, fieldHiddenText, mockResponse, expectedValue, expectedChangeLink }) => {
+          it(`should render ${fieldName}`, async () => {
+            setupMocks(mockResponse)
+
+            const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2`)
+
+            expect(response.status).toBe(200)
+            checkPageResponse(response.text, fieldKey, expectedValue, fieldHiddenText, expectedChangeLink)
+          })
+        },
+      )
+
+      interface MockResponse {
+        relationshipDescription?: string
+        emergencyContact?: boolean
+        nextOfKin?: boolean
+        isRelationshipActive?: boolean
+        comments?: string
+      }
+
+      const setupMocks = (mockResponse: MockResponse) => {
+        auditService.logPageView.mockResolvedValue(null)
+        prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+        contactsService.getContact.mockResolvedValue(TestData.contact())
+        contactsService.getPrisonerContactRelationship.mockResolvedValue(mockResponse)
+      }
+      const checkPageResponse = (
+        response: string,
+        fieldKey: string,
+        expectedValue: string,
+        expectedHintText: string,
+        expectedChangeLink: string,
+      ) => {
+        const $ = cheerio.load(response)
+        const selectedAnswer = $(`.${fieldKey}-value`)
+        expect(selectedAnswer.text().trim()).toBe(expectedValue)
+
+        const changeLink = $(`[data-qa="change-${fieldKey}-link"]`)
+        expect(changeLink.text().trim()).toBe(expectedHintText)
+        expect(changeLink.attr('href')).toBe(`2/${expectedChangeLink}`)
+      }
     })
   })
 
