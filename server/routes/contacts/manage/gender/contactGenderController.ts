@@ -7,7 +7,6 @@ import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import Contact = contactsApiClientTypes.Contact
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
-import { capitalizeFirstLetter } from '../../../../utils/utils'
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 
