@@ -39,6 +39,8 @@ import UpdateEstimatedDobController from './update-estimated-dob/updateEstimated
 import ManageGenderController from './gender/contactGenderController'
 import UpdateNameController from './name/updateNameController'
 import { restrictedEditingNameSchema } from '../common/name/nameSchemas'
+import ManageContactAddEmailController from './email-addresses/add/manageContactAddEmailController'
+import { emailSchemaFactory } from './email-addresses/emailSchemas'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -340,6 +342,21 @@ const ManageContactsRoutes = (
     prepareStandaloneManageContactJourney(),
     validate(restrictedEditingNameSchema()),
     asyncMiddleware(updateNameController.POST),
+  )
+
+  const manageContactAddEmailController = new ManageContactAddEmailController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/create', // :contactEmailId
+    prepareStandaloneManageContactJourney(),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    logPageViewMiddleware(auditService, manageContactAddEmailController),
+    asyncMiddleware(manageContactAddEmailController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/create', // :contactEmailId
+    prepareStandaloneManageContactJourney(),
+    validate(emailSchemaFactory()),
+    asyncMiddleware(manageContactAddEmailController.POST),
   )
 
   return router

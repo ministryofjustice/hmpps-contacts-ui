@@ -7,7 +7,7 @@
         {% set actions = [] %}
 
         {% set actions = actions.concat([{
-            href: "#",
+            href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/email/" + item.contactEmailId + "/edit",
             text: "Edit",
             visuallyHiddenText: "email address",
             attributes: {"data-qa": "edit-email-address-" + item.contactEmailId},
@@ -15,7 +15,7 @@
         }]) %}
 
         {% set actions = actions.concat([{
-            href: "#",
+            href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/email/" + item.contactEmailId + "/delete",
             text: "Delete",
             visuallyHiddenText: "email address",
             attributes: {"data-qa": "delete-email-address-" + item.contactEmailId},
@@ -56,7 +56,7 @@
         actions: {
             items: [
                 {
-                    href: "#",
+                    href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/email/create?returnUrl=" + manageContactRelationshipUrl,
                     text: "Add email address",
                     attributes: {"data-qa": "add-email-address"},
                     classes: "govuk-link--no-visited-state"
