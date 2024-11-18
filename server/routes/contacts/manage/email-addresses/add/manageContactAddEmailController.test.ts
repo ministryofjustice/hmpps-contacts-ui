@@ -55,7 +55,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-xdescribe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/create', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/manage/email/create', () => {
   it('should render create email page with navigation back to manage contact', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
@@ -115,7 +115,7 @@ xdescribe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/create
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/email/create', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/manage/email/create', () => {
   it('should create email and pass to manage contact details page if there are no validation errors', async () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/create?returnUrl=/foo-bar`)

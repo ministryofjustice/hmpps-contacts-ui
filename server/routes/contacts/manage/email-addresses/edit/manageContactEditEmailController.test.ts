@@ -60,7 +60,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-xdescribe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/edit', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/edit', () => {
   it('should render edit email page with navigation back to manage contact and all field populated', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
