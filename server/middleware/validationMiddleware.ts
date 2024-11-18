@@ -6,6 +6,7 @@ export type fieldErrors = {
   [field: string | number | symbol]: string[] | undefined
 }
 export const buildErrorSummaryList = (array: fieldErrors) => {
+  console.log(array)
   if (!array) return null
   return Object.entries(array).map(([field, error]) => ({
     text: error?.[0],

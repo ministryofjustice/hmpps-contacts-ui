@@ -25,7 +25,7 @@ describe('emailSchemaFactory', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        emailAddress: [EMAIL_FORMAT_ERROR_MESSAGE, EMAIL_REQUIRED_ERROR_MESSAGE],
+        emailAddress: [EMAIL_REQUIRED_ERROR_MESSAGE, EMAIL_FORMAT_ERROR_MESSAGE],
       })
     })
 

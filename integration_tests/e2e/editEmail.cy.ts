@@ -50,6 +50,13 @@ context('Edit Email Address', () => {
     )
   })
 
+  it(`should require email address`, () => {
+    Page.verifyOnPage(ManageContactDetailsPage).clickAddEmailLink()
+    const enterEmailPage = Page.verifyOnPage(EnterEmailPage, 'Jones Mason')
+    enterEmailPage.clickContinue()
+    enterEmailPage.hasFieldInError('emailAddress', `Enter the contact's email address`)
+  })
+
   it(`should require email address in the correct format`, () => {
     Page.verifyOnPage(ManageContactDetailsPage).clickEditEmailLink(contactEmailId)
     const enterEmailPage = Page.verifyOnPage(EnterEmailPage, 'Jones Mason')

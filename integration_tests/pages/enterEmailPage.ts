@@ -10,7 +10,7 @@ export default class EnterEmailPage extends Page {
     return this
   }
 
-  enterEmail(value: string): EnterEmailPage {
+  enterEmail(value: string | ''): EnterEmailPage {
     this.emailTextBox().clear().type(value)
     return this
   }
