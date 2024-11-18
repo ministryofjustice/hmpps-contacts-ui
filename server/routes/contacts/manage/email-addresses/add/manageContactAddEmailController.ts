@@ -5,10 +5,8 @@ import { EmailSchemaType } from '../emailSchemas'
 import { ContactsService } from '../../../../../services'
 import { components } from '../../../../../@types/contactsApi'
 import ContactDetails = contactsApiClientTypes.ContactDetails
-import logger from '../../../../../../logger'
 
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
-
 export default class ManageContactAddEmailController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
 
@@ -22,7 +20,6 @@ export default class ManageContactAddEmailController implements PageHandler {
       emailAddress: res.locals?.formResponses?.emailAddress,
       contact,
     }
-    logger.info(JSON.stringify(res.locals?.validationErrors))
     res.render('pages/contacts/manage/addEditEmail', viewModel)
   }
 

@@ -5,7 +5,6 @@ import { EmailSchemaType } from '../emailSchemas'
 import { ContactsService } from '../../../../../services'
 import { components } from '../../../../../@types/contactsApi'
 import ContactDetails = contactsApiClientTypes.ContactDetails
-import logger from '../../../../../../logger'
 
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
@@ -22,7 +21,6 @@ export default class ManageContactEditEmailController implements PageHandler {
     const { user } = res.locals
     const { contactId, contactEmailId } = req.params
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
-    logger.info(JSON.stringify(contact))
     const email: ContactEmailDetails = contact.emailAddresses.find(
       (emailAddress: ContactEmailDetails) => emailAddress.contactEmailId === parseInt(contactEmailId, 10),
     )
@@ -46,7 +44,6 @@ export default class ManageContactEditEmailController implements PageHandler {
     const { journey } = res.locals
     const { contactId, contactEmailId } = req.params
     const { emailAddress } = req.body
-    logger.info(JSON.stringify(emailAddress))
     const request: UpdateEmailRequest = {
       emailAddress,
       amendedBy: user.name,
