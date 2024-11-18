@@ -247,6 +247,11 @@ const ManageContactsRoutes = (
     logPageViewMiddleware(auditService, manageContactDeleteIdentityController),
     asyncMiddleware(manageContactDeleteIdentityController.GET),
   )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:contactIdentityId/delete',
+    prepareStandaloneManageContactJourney(),
+    asyncMiddleware(manageContactDeleteIdentityController.POST),
+  )
 
   const manageDomesticStatusController = new ManageDomesticStatusController(contactsService, referenceDataService)
   router.get(

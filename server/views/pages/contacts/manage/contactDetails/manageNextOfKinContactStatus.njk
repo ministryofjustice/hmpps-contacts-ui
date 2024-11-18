@@ -7,7 +7,7 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% set pageTitle = applicationName + " - Update next of kin" %}
-{% set title = "Is " + contact | reverseFormatName + " next of kin for the prisoner?" %}
+{% set title = "Is " + contact | formatNameFirstNameFirst + " next of kin for the prisoner?" %}
 
 {% block content %}
 
