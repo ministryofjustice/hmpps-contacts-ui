@@ -35,7 +35,11 @@ context('Edit Email Address', () => {
     }
     cy.task('stubUpdateContactEmail', { contactId, contactEmailId, updated })
     Page.verifyOnPage(ManageContactDetailsPage).clickEditEmailLink(contactEmailId)
-    Page.verifyOnPage(EnterEmailPage, 'Jones Mason').enterEmail('test@example.com').clickContinue()
+    Page.verifyOnPage(EnterEmailPage, 'Jones Mason')
+      .hasEmail('mr.last@example.com')
+      .clearEmail()
+      .enterEmail('test@example.com')
+      .clickContinue()
     Page.verifyOnPage(ManageContactDetailsPage)
 
     cy.verifyLastAPICall(
