@@ -25,7 +25,7 @@ export default class ManageContactStaffController implements PageHandler {
     const { contactId } = req.params
     const request: PatchContactRequest = {
       isStaff: req.body.isStaff === 'YES',
-      updatedBy: user.userId,
+      updatedBy: user.username,
     }
     await this.contactsService.updateContactById(parseInt(contactId, 10), request, user)
     res.redirect(journey.returnPoint.url)

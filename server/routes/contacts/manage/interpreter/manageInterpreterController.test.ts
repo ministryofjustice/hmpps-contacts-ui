@@ -70,7 +70,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/interpreter'
 
     expect(contactsService.updateContactById).toHaveBeenCalledWith(
       10,
-      { interpreterRequired: true, updatedBy: 'id' },
+      { interpreterRequired: true, updatedBy: 'user1' },
       user,
     )
   })
@@ -85,7 +85,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/interpreter'
 
     expect(contactsService.updateContactById).toHaveBeenCalledWith(
       10,
-      { interpreterRequired: false, updatedBy: 'id' },
+      { interpreterRequired: false, updatedBy: 'user1' },
       user,
     )
   })

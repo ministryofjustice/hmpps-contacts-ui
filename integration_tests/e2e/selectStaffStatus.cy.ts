@@ -61,6 +61,7 @@ context('Select Staff Status', () => {
       },
       {
         isStaff: true,
+        updatedBy: 'USER1',
       },
     )
   })

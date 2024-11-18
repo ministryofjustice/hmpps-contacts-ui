@@ -83,6 +83,6 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/gender', () 
       .expect(302)
       .expect('Location', '/foo-bar')
 
-    expect(contactsService.updateContactById).toHaveBeenCalledWith(10, { gender: 'M', updatedBy: 'id' }, user)
+    expect(contactsService.updateContactById).toHaveBeenCalledWith(10, { gender: 'M', updatedBy: 'user1' }, user)
   })
 })

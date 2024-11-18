@@ -38,7 +38,7 @@ export default class ManageDomesticStatusController implements PageHandler {
     const { contactId } = req.params
     const request: PatchContactRequest = {
       domesticStatus: req.body.domesticStatusCode || null,
-      updatedBy: user.userId,
+      updatedBy: user.username,
     }
 
     await this.contactsService.updateContactById(parseInt(contactId, 10), request, user)

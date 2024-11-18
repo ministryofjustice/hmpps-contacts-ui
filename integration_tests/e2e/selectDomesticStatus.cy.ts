@@ -53,6 +53,7 @@ context('Select Domestic Status', () => {
       },
       {
         domesticStatus: 'S',
+        updatedBy: 'USER1',
       },
     )
   })
