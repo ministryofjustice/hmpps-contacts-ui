@@ -21,4 +21,5 @@ declare namespace contactsApiClientTypes {
   export type ContactIdentityDetails = components['schemas']['ContactIdentityDetails']
   export type PatchContactRequest = components['schemas']['PatchContactRequest']
   export type PatchContactResponse = components['schemas']['PatchContactResponse']
+  export type UpdateRelationshipRequest = components['schemas']['UpdateRelationshipRequest']
 }

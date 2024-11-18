@@ -168,7 +168,7 @@ export default class TestData {
       dateOfBirth: '1990-01-23',
       estimatedIsOverEighteen: null,
       relationshipCode: 'FR',
-      relationshipDescription: '',
+      relationshipDescription: 'Father',
       flat: '',
       property: '40',
       street: 'Acacia Avenue',

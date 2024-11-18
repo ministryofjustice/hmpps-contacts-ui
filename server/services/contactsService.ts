@@ -188,4 +188,13 @@ export default class ContactsService {
   ): Promise<PatchContactResponse> {
     return this.contactsApiClient.updateContactById(contactId, request, user)
   }
+
+  async updateContactRelationshipById(
+    contactId: number,
+    prisonerContactId: number,
+    request: contactsApiClientTypes.UpdateRelationshipRequest,
+    user: Express.User,
+  ): Promise<contactsApiClientTypes.PatchContactResponse> {
+    return this.contactsApiClient.updateContactRelationshipById(contactId, prisonerContactId, request, user)
+  }
 }
