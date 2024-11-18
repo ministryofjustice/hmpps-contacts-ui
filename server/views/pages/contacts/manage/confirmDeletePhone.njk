@@ -1,0 +1,79 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set pageTitle = applicationName + " - Delete contact phone number" %}
+{% set title = "Are you sure you want to delete this phone number?" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+
+    {{ govukBackLink({
+        text: "Back",
+        href: journey.returnPoint.url,
+        attributes: {"data-qa": "back-link"}
+    }) }}
+    {{ miniProfile(prisonerDetails) }}
+    <span class="govuk-caption-l">Contacts</span>
+    <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                {{ govukSummaryList({
+                    rows: [
+                        {
+                            key: {
+                                text: "Phone number"
+                            },
+                            value: {
+                                html: phone.phoneNumber,
+                                classes: 'phone-number-value'
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Type"
+                            },
+                            value: {
+                                html: phone.phoneTypeDescription,
+                                classes: 'type-value'
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Extension"
+                            },
+                            value: {
+                                html: phone.extNumber if phone.extNumber else 'Not provided',
+                                classes: 'extension-value'
+                            }
+                        }
+                    ]
+                }) }}
+
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        html: "Yes, delete",
+                        type: "submit",
+                        classes: 'govuk-!-margin-top-6 govuk-button--warning',
+                        attributes: {"data-qa": "continue-button"}
+                    }) }}
+                    {{ govukButton({
+                        html: "No, do not delete",
+                        type: "button",
+                        classes: 'govuk-!-margin-top-6 govuk-button--secondary',
+                        attributes: {"data-qa": "cancel-button"},
+                        href: journey.returnPoint.url
+                    }) }}
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

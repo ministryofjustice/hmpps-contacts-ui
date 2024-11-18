@@ -15,10 +15,9 @@ export default class ManageContactDeletePhoneController implements PageHandler {
     res: Response,
   ): Promise<void> => {
     const { user } = res.locals
-    const { journey } = res.locals
     const { contactId, contactPhoneId } = req.params
-    const contactIdNumber = parseInt(contactId, 10)
-    const contactPhoneIdNumber = parseInt(contactPhoneId, 10)
+    const contactIdNumber = Number(contactId)
+    const contactPhoneIdNumber = Number(contactPhoneId)
     const contact: ContactDetails = await this.contactsService.getContact(contactIdNumber, user)
     const phone: ContactPhoneDetails = contact.phoneNumbers.find(
       (aPhone: ContactPhoneDetails) => aPhone.contactPhoneId === contactPhoneIdNumber,
@@ -28,6 +27,19 @@ export default class ManageContactDeletePhoneController implements PageHandler {
         `Couldn't find phone with id ${contactPhoneId} for contact ${contactId}. URL probably entered manually.`,
       )
     }
+
+    res.render('pages/contacts/manage/confirmDeletePhone', { phone })
+  }
+
+  POST = async (
+    req: Request<{ prisonerNumber: string; contactId: string; contactPhoneId: string }>,
+    res: Response,
+  ): Promise<void> => {
+    const { user } = res.locals
+    const { journey } = res.locals
+    const { contactId, contactPhoneId } = req.params
+    const contactIdNumber = Number(contactId)
+    const contactPhoneIdNumber = Number(contactPhoneId)
 
     await this.contactsService.deleteContactPhone(contactIdNumber, contactPhoneIdNumber, user)
     res.redirect(journey.returnPoint.url)
