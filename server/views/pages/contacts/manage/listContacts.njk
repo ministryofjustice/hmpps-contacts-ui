@@ -99,7 +99,7 @@
 {% endmacro %}
 
 <span class="govuk-caption-l">Manage Contacts</span>
-<h1 class="govuk-heading-l">Contacts for {{ prisonerDetails | formatNameLastNameFirst }}</h1>
+<h1 class="govuk-heading-l">Contacts for {{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }}</h1>
 
     {{ govukButton({
         text: "Add prisoner contact",

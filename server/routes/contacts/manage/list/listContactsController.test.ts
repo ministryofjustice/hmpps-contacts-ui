@@ -92,14 +92,19 @@ describe('listContactsController', () => {
         },
       ]
 
-      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(
+        TestData.prisoner({
+          firstName: 'First',
+          lastName: 'Last',
+        }),
+      )
       contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList } as PrisonerContactSummaryPage)
 
       const response = await request(app).get(`/prisoner/A462DZ/contacts/list/${journeyId}`)
       const $ = cheerio.load(response.text)
 
       // Prisoner
-      expect($('[data-qa="mini-profile-person-profile-link"]').text()).toStrictEqual('Smith, John')
+      expect($('[data-qa="mini-profile-person-profile-link"]').text()).toStrictEqual('Last, First')
       expect($('[data-qa="mini-profile-prisoner-number"]').text()).toStrictEqual('A1234BC')
       expect($('[data-qa="mini-profile-dob"]').text()).toStrictEqual('2 April 1975')
       expect($('[data-qa="mini-profile-prison-name"]').text()).toStrictEqual('HMP Hewell')
@@ -109,7 +114,7 @@ describe('listContactsController', () => {
       expect($('.govuk-button').text()).toContain('Add prisoner contact')
 
       // Contact List Table
-      expect($('.govuk-heading-l').text()).toStrictEqual('Contacts for Smith, John')
+      expect($('.govuk-heading-l').text()).toStrictEqual('Contacts for First Last')
       expect($('.govuk-table__header').eq(0).text()).toStrictEqual('Name')
       expect($('.govuk-table__header').eq(1).text()).toStrictEqual('Date of birth')
 
@@ -560,7 +565,7 @@ describe('listContactsController', () => {
       expect($('.govuk-button').text()).toContain('Add prisoner contact')
 
       // Contact List Table
-      expect($('.govuk-heading-l').text()).toStrictEqual('Contacts for Smith, John')
+      expect($('.govuk-heading-l').text()).toStrictEqual('Contacts for John Smith')
       expect($('.govuk-table__header').eq(0).text()).toStrictEqual('Name')
       expect($('.govuk-table__header').eq(1).text()).toStrictEqual('Date of birth')
 

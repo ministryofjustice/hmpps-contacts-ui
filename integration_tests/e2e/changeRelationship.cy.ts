@@ -54,7 +54,7 @@ context('Change Relationship', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeRelationshipLink()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Last, First Middle Names') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last') //
       .hasRelationshipSelected('OTHER')
       .selectRelationship('MOT')
       .clickContinue()
@@ -85,12 +85,12 @@ context('Change Relationship', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeRelationshipLink()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Last, First Middle Names') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last') //
       .hasRelationshipSelected('OTHER')
       .selectRelationship('')
       .clickContinue()
 
-    const enterNamePage = Page.verifyOnPage(SelectRelationshipPage, 'Last, First Middle Names')
+    const enterNamePage = Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last')
     enterNamePage.hasFieldInError('relationship', "Enter the contact's relationship to the prisoner")
   })
 
@@ -104,7 +104,7 @@ context('Change Relationship', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeRelationshipLink()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Last, First Middle Names') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last') //
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
@@ -118,7 +118,7 @@ context('Change Relationship', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeRelationshipLink()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Last, First Middle Names') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 })
