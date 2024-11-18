@@ -79,7 +79,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     expect(contactsService.updateContactRelationshipById).toHaveBeenCalledWith(
       10,
       1,
-      { isEmergencyContact: expected, updatedBy: 'id' },
+      { isEmergencyContact: expected, updatedBy: 'user1' },
       user,
     )
   })

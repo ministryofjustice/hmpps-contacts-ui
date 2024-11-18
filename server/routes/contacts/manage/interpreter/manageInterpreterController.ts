@@ -29,7 +29,7 @@ export default class ManageInterpreterController implements PageHandler {
     const { contactId } = req.params
     const request: PatchContactRequest = {
       interpreterRequired: req.body.interpreterRequired === 'YES',
-      updatedBy: user.userId,
+      updatedBy: user.username,
     }
 
     await this.contactsService.updateContactById(parseInt(contactId, 10), request, user)

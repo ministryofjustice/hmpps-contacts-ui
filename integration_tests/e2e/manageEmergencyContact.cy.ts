@@ -51,7 +51,7 @@ context('Manage contact update emergency contact', () => {
         method: 'PATCH',
         urlPath: `/contact/${contactId}/relationship/${prisonerContactId}`,
       },
-      { isEmergencyContact: false },
+      { isEmergencyContact: false, updatedBy: 'USER1' },
     )
   })
 

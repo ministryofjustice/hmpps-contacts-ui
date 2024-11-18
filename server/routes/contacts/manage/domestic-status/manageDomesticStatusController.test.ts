@@ -93,6 +93,10 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/domestic-sta
       .expect(302)
       .expect('Location', '/foo-bar')
 
-    expect(contactsService.updateContactById).toHaveBeenCalledWith(10, { domesticStatus: 'S', updatedBy: 'id' }, user)
+    expect(contactsService.updateContactById).toHaveBeenCalledWith(
+      10,
+      { domesticStatus: 'S', updatedBy: 'user1' },
+      user,
+    )
   })
 })
