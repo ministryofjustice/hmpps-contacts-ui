@@ -54,7 +54,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('[data-qa=main-heading]').text().trim()).toBe('Is Jones Mason next of kin for the prisoner?')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Save and Continue')
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_EDIT_NEXT_OF_KIN_STATUS_PAGE, {
       who: user.username,
