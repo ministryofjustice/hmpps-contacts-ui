@@ -47,10 +47,21 @@
         },
         value: {
             text: prisonerContactRelationship.nextOfKin | formatYesNo,
-            classes: 'next-of-kin-value'
-        }
-    },
-    {
+                 classes: 'next-of-kin-value'
+             },
+             actions: {
+                 items: [
+                     {
+                         href: prisonerContactId +"/next-of-kin?returnUrl=" + manageContactRelationshipUrl,
+                         text: "Change",
+                         visuallyHiddenText: "whether contact is next of kin",
+                         attributes: {"data-qa": "change-next-of-kin-link"},
+                         classes: "govuk-link--no-visited-state"
+                     }
+                 ]
+             }
+         },
+         {
         key: {
             text: "Is the relationship active?"
         },
