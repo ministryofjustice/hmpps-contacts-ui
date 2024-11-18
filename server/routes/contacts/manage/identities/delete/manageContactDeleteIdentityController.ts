@@ -15,7 +15,6 @@ export default class ManageContactDeleteIdentityController implements PageHandle
     res: Response,
   ): Promise<void> => {
     const { user } = res.locals
-    const { journey } = res.locals
     const { contactId, contactIdentityId } = req.params
     const contactIdNumber = parseInt(contactId, 10)
     const contactIdentityNumber = parseInt(contactIdentityId, 10)
@@ -28,6 +27,19 @@ export default class ManageContactDeleteIdentityController implements PageHandle
         `Couldn't find identity number with id ${contactIdentityId} for contact ${contactId}. URL probably entered manually.`,
       )
     }
+
+    res.render('pages/contacts/manage/confirmDeleteIdentity', { identityNumber })
+  }
+
+  POST = async (
+    req: Request<{ prisonerNumber: string; contactId: string; contactIdentityId: string }>,
+    res: Response,
+  ): Promise<void> => {
+    const { user } = res.locals
+    const { journey } = res.locals
+    const { contactId, contactIdentityId } = req.params
+    const contactIdNumber = Number(contactId)
+    const contactIdentityNumber = Number(contactIdentityId)
 
     await this.contactsService.deleteContactIdentity(contactIdNumber, contactIdentityNumber, user)
     res.redirect(journey.returnPoint.url)

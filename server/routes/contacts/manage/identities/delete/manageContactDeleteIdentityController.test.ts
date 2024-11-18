@@ -1,5 +1,6 @@
 import type { Express } from 'express'
 import request from 'supertest'
+import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
 import ReferenceDataService from '../../../../../services/referenceDataService'
@@ -57,21 +58,6 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:contactIdentityId/delete', () => {
-  it('should delete contact and redirect back to manage contact', async () => {
-    // Given
-    auditService.logPageView.mockResolvedValue(null)
-    contactsService.getContact.mockResolvedValue(contact)
-
-    // When
-    await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/1/delete?returnUrl=/foo-bar`)
-      .expect(302)
-      .expect('Location', '/foo-bar')
-
-    // Then
-    expect(contactsService.deleteContactIdentity).toHaveBeenCalledWith(contactId, 1, user)
-  })
-
   it('should call the audit service for the page view', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
@@ -80,14 +66,36 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:con
     // When
     await request(app)
       .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/1/delete?returnUrl=/foo-bar`)
-      .expect(302)
-      .expect('Location', '/foo-bar')
+      .expect(200)
 
     // Then
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_DELETE_IDENTITY_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })
+  })
+
+  it('should render the confirm delete page', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    contactsService.getContact.mockResolvedValue(contact)
+
+    // When
+    const response = await request(app)
+      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/1/delete?returnUrl=/foo-bar`)
+      .expect(200)
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
+      'Are you sure you want to delete this identity number?',
+    )
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('.identity-number-value').text().trim()).toStrictEqual('LAST-87736799M')
+    expect($('.issuing-authority-value').text().trim()).toStrictEqual('UK')
+    expect($('.type-value').text().trim()).toStrictEqual('Driving licence')
   })
 
   it('should raise an error if the contact identity number is missing', async () => {
@@ -102,5 +110,22 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:con
 
     // Then
     expect(response.status).toEqual(500)
+  })
+})
+
+describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:contactIdentityId/delete', () => {
+  it('should delete contact and redirect back to manage contact', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    contactsService.getContact.mockResolvedValue(contact)
+
+    // When
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/1/delete?returnUrl=/foo-bar`)
+      .expect(302)
+      .expect('Location', '/foo-bar')
+
+    // Then
+    expect(contactsService.deleteContactIdentity).toHaveBeenCalledWith(contactId, 1, user)
   })
 })
