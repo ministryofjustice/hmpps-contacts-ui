@@ -29,13 +29,13 @@ context('Create Email Address', () => {
 
   it(`should pass validation and create email and address`, () => {
     const created: CreateEmailRequest = {
-      emailAddress: 'test@example.com',
+      emailAddress: 'mr.last@example.com',
       createdBy: 'john smith',
     }
     cy.task('stubCreateContactEmail', { contactId, created })
     Page.verifyOnPage(ManageContactDetailsPage).clickAddEmailLink()
     Page.verifyOnPage(EnterEmailPage, 'Jones Mason').enterEmail('test@email.com').clickContinue()
-    Page.verifyOnPage(ManageContactDetailsPage)
+    Page.verifyOnPage(ManageContactDetailsPage).verifyEmailValueAs('mr.last@example.com', 1)
 
     cy.verifyLastAPICall(
       {

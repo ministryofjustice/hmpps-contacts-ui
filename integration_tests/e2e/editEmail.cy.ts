@@ -30,7 +30,7 @@ context('Edit Email Address', () => {
 
   it('Can edit a contact email', () => {
     const updated: UpdateEmailRequest = {
-      emailAddress: 'test@example.com',
+      emailAddress: 'mr.last@example.com',
       amendedBy: 'john smith',
     }
     cy.task('stubUpdateContactEmail', { contactId, contactEmailId, updated })
@@ -38,9 +38,9 @@ context('Edit Email Address', () => {
     Page.verifyOnPage(EnterEmailPage, 'Jones Mason')
       .hasEmail('mr.last@example.com')
       .clearEmail()
-      .enterEmail('test@example.com')
+      .enterEmail('mr.last@example.com')
       .clickContinue()
-    Page.verifyOnPage(ManageContactDetailsPage)
+    Page.verifyOnPage(ManageContactDetailsPage).verifyEmailValueAs('mr.last@example.com', 1)
 
     cy.verifyLastAPICall(
       {
@@ -48,7 +48,7 @@ context('Edit Email Address', () => {
         urlPath: `/contact/${contactId}/email/1`,
       },
       {
-        emailAddress: 'test@example.com',
+        emailAddress: 'mr.last@example.com',
         amendedBy: 'john smith',
       },
     )
