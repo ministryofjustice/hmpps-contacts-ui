@@ -12,7 +12,7 @@ type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 export default class ManageContactEditEmailController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
 
-  public PAGE_NAME = Page.MANAGE_CONTACT_EDIT_PHONE_PAGE
+  public PAGE_NAME = Page.MANAGE_CONTACT_EDIT_EMAIL_ADDRESSES_PAGE
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; contactEmailId: string }>,

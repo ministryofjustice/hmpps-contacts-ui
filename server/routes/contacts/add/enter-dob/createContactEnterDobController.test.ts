@@ -30,6 +30,7 @@ beforeEach(() => {
     returnPoint: { url: '/foo-bar' },
     names: {
       lastName: 'last',
+      middleNames: 'middle',
       firstName: 'first',
     },
     mode: 'NEW',
@@ -65,7 +66,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId', (
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual("Do you know Last, First's date of birth?")
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
+      "Do you know First Middle Last's date of birth?",
+    )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
   })

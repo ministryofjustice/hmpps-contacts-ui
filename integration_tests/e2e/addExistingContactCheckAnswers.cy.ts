@@ -65,17 +65,17 @@ context('Add Existing Contact Check Answers', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John') //
+    Page.verifyOnPage(ContactConfirmationPage, 'John Smith') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
+    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact') //
       .selectRelationship('MOT')
-      .continueTo(SelectEmergencyContactPage, 'Contact, Existing') //
+      .continueTo(SelectEmergencyContactPage, 'Existing Contact') //
       .selectIsEmergencyContact('NO')
-      .continueTo(SelectNextOfKinPage, 'Contact, Existing') //
+      .continueTo(SelectNextOfKinPage, 'Existing Contact') //
       .selectIsNextOfKin('YES')
-      .continueTo(RelationshipCommentsPage, 'Contact, Existing') //
+      .continueTo(RelationshipCommentsPage, 'Existing Contact') //
       .enterComments('Some comments about the relationship')
       .continueTo(CreateContactCheckYourAnswersPage) //
       .verifyShowsNameAs('Contact, Existing')
@@ -90,14 +90,12 @@ context('Add Existing Contact Check Answers', () => {
   })
 
   it('Can change the relationship from check answers', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'Contact, Existing') //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'Existing Contact') //
       .verifyShowRelationshipAs('Mother')
       .clickChangeRelationshipLink()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
-      .hasSelectedRelationshipHint("Contact, Existing is the prisoner's mother.")
+    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact') //
       .selectRelationship('FA')
-      .hasSelectedRelationshipHint("Contact, Existing is the prisoner's father.")
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
@@ -123,11 +121,11 @@ context('Add Existing Contact Check Answers', () => {
   })
 
   it('Can change emergency contact from check answers', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'Contact, Existing') //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'Existing Contact') //
       .verifyShowIsEmergencyContactAs('No')
       .clickChangeEmergencyContactLink()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'Contact, Existing') //
+    Page.verifyOnPage(SelectEmergencyContactPage, 'Existing Contact') //
       .selectIsEmergencyContact('YES')
       .clickContinue()
 
@@ -154,11 +152,11 @@ context('Add Existing Contact Check Answers', () => {
   })
 
   it('Can change next of kin from check answers', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'Contact, Existing') //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'Existing Contact') //
       .verifyShowIsNextOfKinAs('Yes')
       .clickChangeNextOfKinLink()
 
-    Page.verifyOnPage(SelectNextOfKinPage, 'Contact, Existing') //
+    Page.verifyOnPage(SelectNextOfKinPage, 'Existing Contact') //
       .selectIsNextOfKin('NO')
       .clickContinue()
 
@@ -185,11 +183,11 @@ context('Add Existing Contact Check Answers', () => {
   })
 
   it('Can change relationship comments from check answers', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'Contact, Existing') //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'Existing Contact') //
       .verifyShowCommentsAs('Some comments about the relationship')
       .clickChangeCommentsLink()
 
-    Page.verifyOnPage(RelationshipCommentsPage, 'Contact, Existing') //
+    Page.verifyOnPage(RelationshipCommentsPage, 'Existing Contact') //
       .enterComments('Some updated comments')
       .clickContinue()
 

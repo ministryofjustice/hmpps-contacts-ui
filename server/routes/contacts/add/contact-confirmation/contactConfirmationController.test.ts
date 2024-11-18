@@ -91,6 +91,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/EXISTING/confirmation/:journeyI
       correlationId: expect.any(String),
     })
     const $ = cheerio.load(response.text)
+
+    expect($('.govuk-heading-l').text()).toStrictEqual('Is this the right person to add as a contact for John Smith?')
     expect($('.confirm-DL-value').text().trim()).toStrictEqual('LAST-87736799M')
     expect($('.confirm-PASS-value').text().trim()).toStrictEqual('425362965Issuing authority - UK passport office')
     expect($('.confirm-NINO-value').text().trim()).toStrictEqual('06/614465M')

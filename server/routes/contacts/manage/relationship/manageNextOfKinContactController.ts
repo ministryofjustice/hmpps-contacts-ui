@@ -5,10 +5,10 @@ import { ContactsService } from '../../../../services'
 import Contact = contactsApiClientTypes.Contact
 import UpdateRelationshipRequest = contactsApiClientTypes.UpdateRelationshipRequest
 
-export default class ManageEmergencyContactController implements PageHandler {
+export default class ManageNextOfKinContactController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
 
-  public PAGE_NAME = Page.MANAGE_CONTACT_EDIT_EMERGENCY_STATUS_PAGE
+  public PAGE_NAME = Page.MANAGE_CONTACT_EDIT_NEXT_OF_KIN_STATUS_PAGE
 
   GET = async (req: Request<{ contactId?: string; prisonerContactId?: string }>, res: Response): Promise<void> => {
     const { contactId, prisonerContactId } = req.params
@@ -17,7 +17,7 @@ export default class ManageEmergencyContactController implements PageHandler {
     const contact: Contact = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const relationship = await this.contactsService.getPrisonerContactRelationship(Number(prisonerContactId), user)
 
-    return res.render('pages/contacts/manage/contactDetails/manageEmergencyContactStatus', {
+    return res.render('pages/contacts/manage/contactDetails/manageNextOfKinContactStatus', {
       contact,
       prisonerContactId,
       relationship,
@@ -32,7 +32,7 @@ export default class ManageEmergencyContactController implements PageHandler {
     const { user } = res.locals
     const { contactId, prisonerNumber, prisonerContactId } = req.params
     const request: UpdateRelationshipRequest = {
-      isEmergencyContact: req.body.emergencyContactStatus === 'YES',
+      isNextOfKin: req.body.nextOfKinStatus === 'YES',
       updatedBy: user.username,
     }
 

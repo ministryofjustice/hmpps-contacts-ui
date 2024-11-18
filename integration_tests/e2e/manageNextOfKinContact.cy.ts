@@ -1,9 +1,9 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
-import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
+import SelectNextOfKinContactPage from '../pages/selectNextOfKinPage'
 
-context('Manage contact update emergency contact', () => {
+context('Manage contact update next of kin contact', () => {
   const contactId = 654321
   const prisonerContactId = 987654
   const contact = TestData.contact({
@@ -24,10 +24,11 @@ context('Manage contact update emergency contact', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship(),
     })
+
     cy.task('stubUpdateContactRelationshipById', {
       contactId,
       prisonerContactId,
-      response: { isEmergencyContact: false },
+      response: { isNextOfKin: false },
     })
 
     cy.signIn()
@@ -37,35 +38,35 @@ context('Manage contact update emergency contact', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
-  it('Can update a emergency contact', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickEditEmergencyContactLink()
+  it('Can update next of kin', () => {
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickEditNextOfKinContactLink()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'First Middle Names Last') //
-      .selectIsEmergencyContact('NO')
+    Page.verifyOnPage(SelectNextOfKinContactPage, 'First Middle Names Last') //
+      .selectIsNextOfKin('NO')
       .clickContinue()
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').verifyShowIsEmergencyContactAs('No')
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').verifyShowIsNextOfKinContactAs('Yes')
 
     cy.verifyLastAPICall(
       {
         method: 'PATCH',
         urlPath: `/contact/${contactId}/relationship/${prisonerContactId}`,
       },
-      { isEmergencyContact: false, updatedBy: 'USER1' },
+      { isNextOfKin: false, updatedBy: 'USER1' },
     )
   })
 
   it(`Back link goes to manage contacts`, () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickEditEmergencyContactLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickEditNextOfKinContactLink()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'First Middle Names Last') //
+    Page.verifyOnPage(SelectNextOfKinContactPage, 'First Middle Names Last') //
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
   it(`Cancel goes to manage contacts`, () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickEditEmergencyContactLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickEditNextOfKinContactLink()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'First Middle Names Last') //
+    Page.verifyOnPage(SelectNextOfKinContactPage, 'First Middle Names Last') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 })

@@ -45,7 +45,7 @@ context('Change Contact Estimated Date Of Birth', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeEstimatedDateOfBirthLink(contactId)
 
-    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'Last, First Middle Names') //
+    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'First Middle Names Last') //
       .hasIsOverEighteen('YES')
       .selectIsOverEighteen('NO')
       .clickContinue()
@@ -91,7 +91,7 @@ context('Change Contact Estimated Date Of Birth', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeEstimatedDateOfBirthLink(contactId)
 
-    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'Last, First Middle Names') //
+    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'First Middle Names Last') //
       .isEmptyForm()
       .selectIsOverEighteen('DO_NOT_KNOW')
       .clickContinue()
@@ -129,7 +129,7 @@ context('Change Contact Estimated Date Of Birth', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeEstimatedDateOfBirthLink(contactId)
 
-    const estimatedDobPage = Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'Last, First Middle Names')
+    const estimatedDobPage = Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'First Middle Names Last')
     estimatedDobPage.isEmptyForm().clickContinue()
     estimatedDobPage.hasFieldInError('isOverEighteen', 'Select whether the contact is over 18')
   })
@@ -153,7 +153,7 @@ context('Change Contact Estimated Date Of Birth', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeEstimatedDateOfBirthLink(contactId)
 
-    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'Last, First Middle Names') //
+    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'First Middle Names Last') //
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
@@ -176,7 +176,7 @@ context('Change Contact Estimated Date Of Birth', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeEstimatedDateOfBirthLink(contactId)
 
-    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'Last, First Middle Names') //
+    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'First Middle Names Last') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 })

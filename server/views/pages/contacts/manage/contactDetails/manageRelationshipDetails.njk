@@ -8,6 +8,17 @@
         value: {
             text: prisonerContactRelationship.relationshipDescription,
             classes: 'relationship-value'
+        },
+        actions: {
+            items: [
+                {
+                    href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + prisonerContactId + "/update-relationship?returnUrl=" + manageContactRelationshipUrl,
+                    text: "Change",
+                    visuallyHiddenText: " relationship",
+                    attributes: {"data-qa": "change-relationship-link"},
+                    classes: "govuk-link--no-visited-state"
+                }
+            ]
         }
     },
     {
@@ -36,10 +47,21 @@
         },
         value: {
             text: prisonerContactRelationship.nextOfKin | formatYesNo,
-            classes: 'next-of-kin-value'
-        }
-    },
-    {
+                 classes: 'next-of-kin-value'
+             },
+             actions: {
+                 items: [
+                     {
+                         href: prisonerContactId +"/next-of-kin?returnUrl=" + manageContactRelationshipUrl,
+                         text: "Change",
+                         visuallyHiddenText: "whether contact is next of kin",
+                         attributes: {"data-qa": "change-next-of-kin-link"},
+                         classes: "govuk-link--no-visited-state"
+                     }
+                 ]
+             }
+         },
+         {
         key: {
             text: "Is the relationship active?"
         },

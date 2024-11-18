@@ -32,7 +32,7 @@ beforeEach(() => {
     prisonerNumber,
     isCheckingAnswers: false,
     returnPoint: { url: '/foo-bar' },
-    names: { firstName: 'First', lastName: 'Last' },
+    names: { firstName: 'First', middleNames: 'Middle', lastName: 'Last' },
     mode: 'NEW',
   }
   app = appWithAllRoutes({
@@ -74,7 +74,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship', ()
 
       const $ = cheerio.load(response.text)
       expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-        'How is Last, First related to the prisoner?',
+        'How is First Middle Last related to the prisoner?',
       )
       expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)

@@ -40,7 +40,7 @@ export default class ManageGenderController implements PageHandler {
     const { contactId } = req.params
     const request: PatchContactRequest = {
       gender: req.body.gender || null,
-      updatedBy: user.userId,
+      updatedBy: user.username,
     }
 
     await this.contactsService.updateContactById(parseInt(contactId, 10), request, user)

@@ -69,8 +69,8 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/staff', () =
   const contactId = '10'
   describe('update contact with staff status', () => {
     test.each([
-      ['YES', { isStaff: true, updatedBy: 'id' }],
-      ['NO', { isStaff: false, updatedBy: 'id' }],
+      ['YES', { isStaff: true, updatedBy: 'user1' }],
+      ['NO', { isStaff: false, updatedBy: 'user1' }],
     ])('should update contact when isStaff is %p', async (isStaff, expectedPayload) => {
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/staff?returnUrl=/foo-bar`)

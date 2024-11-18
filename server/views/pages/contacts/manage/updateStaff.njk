@@ -5,7 +5,7 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% set pageTitle = applicationName + " - Staff status" %}
-{% set title = "Is " + (contact | reverseFormatName) + " a member of staff?" %}
+{% set title = "Is " + (contact | formatNameFirstNameFirst) + " a member of staff?" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}

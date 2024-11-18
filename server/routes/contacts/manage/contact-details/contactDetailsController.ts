@@ -4,7 +4,7 @@ import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
-import { reverseFormatName } from '../../../../utils/formatName'
+import { formatNameFirstNameFirst } from '../../../../utils/formatName'
 
 import Contact = contactsApiClientTypes.Contact
 import ContactDetails = contactsApiClientTypes.ContactDetails
@@ -47,6 +47,6 @@ export default class ContactDetailsController implements PageHandler {
         user,
       )
     }
-    return reverseFormatName(contact, { customTitle: titleDescription })
+    return formatNameFirstNameFirst(contact, { customTitle: titleDescription })
   }
 }

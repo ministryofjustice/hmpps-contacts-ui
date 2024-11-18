@@ -17,6 +17,7 @@ const contactsService = new ContactsService(null) as jest.Mocked<ContactsService
 
 let app: Express
 const prisonerNumber = 'A1234BC'
+const prisonerContactId = '1'
 const contactId = '10'
 
 beforeEach(() => {
@@ -34,58 +35,51 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/interpreter', () => {
-  it('should render manage interpreter page', async () => {
+describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/next-of-kin', () => {
+  it('should render manage next of kin status page', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
-    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.getContact.mockResolvedValue(TestData.contact())
+    contactsService.getPrisonerContactRelationship.mockResolvedValue({ nextOfKin: true })
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/interpreter?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/next-of-kin?returnUrl=/foo-bar`,
     )
 
     // Then
     expect(response.status).toEqual(200)
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_INTERPRETER_PAGE, {
+    const $ = cheerio.load(response.text)
+    expect($('[data-qa=main-heading]').text().trim()).toBe('Is Jones Mason next of kin for the prisoner?')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_EDIT_NEXT_OF_KIN_STATUS_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })
-    const $ = cheerio.load(response.text)
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/interpreter', () => {
-  it('should update contact when interpreter is true', async () => {
+describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/next-of-kin`, () => {
+  it.each([
+    [true, 'YES'],
+    [false, 'NO'],
+  ])('should update next of kin status to %s when %s is selected', async (expected: boolean, input: string) => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/interpreter?returnUrl=/foo-bar`)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/next-of-kin?returnUrl=/foo-bar`,
+      )
       .type('form')
-      .send({ interpreterRequired: 'YES' })
+      .send({ nextOfKinStatus: input })
       .expect(302)
-      .expect('Location', '/foo-bar')
-
-    expect(contactsService.updateContactById).toHaveBeenCalledWith(
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/1`)
+    expect(contactsService.updateContactRelationshipById).toHaveBeenCalledWith(
       10,
-      { interpreterRequired: true, updatedBy: 'user1' },
-      user,
-    )
-  })
-
-  it('should update contact when interpreter is false', async () => {
-    await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/interpreter?returnUrl=/foo-bar`)
-      .type('form')
-      .send({ interpreterRequired: 'NO' })
-      .expect(302)
-      .expect('Location', '/foo-bar')
-
-    expect(contactsService.updateContactById).toHaveBeenCalledWith(
-      10,
-      { interpreterRequired: false, updatedBy: 'user1' },
+      1,
+      { isNextOfKin: expected, updatedBy: 'user1' },
       user,
     )
   })

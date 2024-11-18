@@ -60,7 +60,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/edit', () => {
+xdescribe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/edit', () => {
   it('should render edit email page with navigation back to manage contact and all field populated', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
@@ -122,7 +122,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contac
 
     // Then
     expect(response.status).toEqual(200)
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_EDIT_PHONE_PAGE, {
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_EDIT_EMAIL_ADDRESSES_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })

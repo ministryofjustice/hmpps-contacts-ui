@@ -6,7 +6,7 @@ import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import { navigationForAddContactJourney } from '../addContactFlowControl'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
-import formatName from '../../../../utils/formatName'
+import { formatNameLastNameFirst } from '../../../../utils/formatName'
 
 export default class CreateContactCheckAnswersController implements PageHandler {
   constructor(
@@ -72,6 +72,6 @@ export default class CreateContactCheckAnswersController implements PageHandler 
         user,
       )
     }
-    return formatName(journey.names, { customTitle: titleDescription })
+    return formatNameLastNameFirst(journey.names, { customTitle: titleDescription })
   }
 }

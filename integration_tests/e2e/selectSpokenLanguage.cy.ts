@@ -59,6 +59,7 @@ context('Select Spoken Language', () => {
       },
       {
         languageCode: 'ARA',
+        updatedBy: 'USER1',
       },
     )
   })

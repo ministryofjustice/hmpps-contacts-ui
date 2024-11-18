@@ -287,6 +287,22 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           expectedValue: 'No',
           expectedChangeLink: 'emergency-contact',
         },
+        {
+          fieldName: 'next of kin',
+          fieldKey: 'next-of-kin',
+          fieldHiddenText: 'Change whether contact is next of kin (Relationship details)',
+          mockResponse: { nextOfKin: true },
+          expectedValue: 'Yes',
+          expectedChangeLink: 'next-of-kin',
+        },
+        {
+          fieldName: 'next of kin',
+          fieldKey: 'next-of-kin',
+          fieldHiddenText: 'Change whether contact is next of kin (Relationship details)',
+          mockResponse: { nextOfKin: false },
+          expectedValue: 'No',
+          expectedChangeLink: 'next-of-kin',
+        },
       ])(
         'Relationship details - %s1',
         ({ fieldName, fieldKey, fieldHiddenText, mockResponse, expectedValue, expectedChangeLink }) => {

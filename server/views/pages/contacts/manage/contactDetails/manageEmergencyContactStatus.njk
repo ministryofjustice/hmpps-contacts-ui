@@ -7,7 +7,7 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% set pageTitle = applicationName + " - Update emergency contact" %}
-{% set title = "Is " + contact | reverseFormatName + " an emergency contact for the prisoner?" %}
+{% set title = "Is " + contact | formatNameFirstNameFirst + " an emergency contact for the prisoner?" %}
 
 {% block content %}
 
@@ -44,7 +44,7 @@
 
             <div class="govuk-button-group">
                 {{ govukButton({
-                    html: "Save and Continue",
+                    html: "Confirm and save",
                     type: "submit",
                     classes: 'govuk-!-margin-top-6',
                     attributes: {"data-qa": "continue-button"}

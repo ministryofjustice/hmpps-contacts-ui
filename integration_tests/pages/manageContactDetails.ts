@@ -81,6 +81,10 @@ export default class ManageContactDetailsPage extends Page {
     this.editEmergencyContactLink().click()
   }
 
+  clickEditNextOfKinContactLink() {
+    this.editNextOfKinContactLink().click()
+  }
+
   clickAddPhoneNumberLink() {
     this.addPhoneNumberLink().click()
   }
@@ -107,6 +111,10 @@ export default class ManageContactDetailsPage extends Page {
 
   clickChangeNameLink() {
     this.changeNameLink().click()
+  }
+
+  clickChangeRelationshipLink() {
+    this.changeRelationshipLink().click()
   }
 
   private namesValue = (): PageElement => cy.get('.manage-names-value')
@@ -139,11 +147,15 @@ export default class ManageContactDetailsPage extends Page {
 
   private editEmergencyContactLink = (): PageElement => cy.get(`[data-qa="change-emergency-contact-link"]`)
 
+  private editNextOfKinContactLink = (): PageElement => cy.get(`[data-qa="change-next-of-kin-link"]`)
+
   private changeDateOfBirthLink = (id: number): PageElement => cy.get(`[data-qa="change-dob-${id}"]`)
 
   private changeEstimatedDateOfBirthLink = (id: number): PageElement => cy.get(`[data-qa="change-estimated-dob-${id}"]`)
 
   private changeNameLink = (): PageElement => cy.get(`[data-qa="change-name-link"]`)
+
+  private changeRelationshipLink = (): PageElement => cy.get(`[data-qa="change-relationship-link"]`)
 
   private domesticStatusValue = (): PageElement => cy.get('.manage-domestic-status-value')
 
@@ -196,4 +208,10 @@ export default class ManageContactDetailsPage extends Page {
   }
 
   private checkAnswersEmergencyContactValue = (): PageElement => cy.get('.emergency-contact-value')
+
+  verifyShowIsNextOfKinContactAs(expected: string) {
+    this.checkAnswersNextOfKinValue().should('contain.text', expected)
+  }
+
+  private checkAnswersNextOfKinValue = (): PageElement => cy.get('.next-of-kin-value')
 }

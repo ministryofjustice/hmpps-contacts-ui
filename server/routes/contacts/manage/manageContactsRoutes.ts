@@ -40,9 +40,12 @@ import ManageGenderController from './gender/contactGenderController'
 import UpdateNameController from './name/updateNameController'
 import { restrictedEditingNameSchema } from '../common/name/nameSchemas'
 import ManageContactAddEmailController from './email-addresses/add/manageContactAddEmailController'
+import ManageContactEditEmailController from './email-addresses/edit/manageContactEditEmailController'
 import { emailSchemaFactory } from './email-addresses/emailSchemas'
 import ManageEmergencyContactController from './relationship/manageEmergencyContactController'
-import ManageContactEditEmailController from './email-addresses/edit/manageContactEditEmailController'
+import ManageContactRelationshipController from './relationship/manageContactRelationshipController'
+import { selectRelationshipSchemaFactory } from '../common/relationship/selectRelationshipSchemas'
+import ManageNextOfKinContactController from './relationship/manageNextOfKinContactController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -197,6 +200,11 @@ const ManageContactsRoutes = (
     logPageViewMiddleware(auditService, manageContactDeletePhoneController),
     asyncMiddleware(manageContactDeletePhoneController.GET),
   )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/delete',
+    prepareStandaloneManageContactJourney(),
+    asyncMiddleware(manageContactDeletePhoneController.POST),
+  )
 
   const manageContactAddIdentityController = new ManageContactAddIdentityController(
     contactsService,
@@ -241,6 +249,11 @@ const ManageContactsRoutes = (
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, manageContactDeleteIdentityController),
     asyncMiddleware(manageContactDeleteIdentityController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:contactIdentityId/delete',
+    prepareStandaloneManageContactJourney(),
+    asyncMiddleware(manageContactDeleteIdentityController.POST),
   )
 
   const manageDomesticStatusController = new ManageDomesticStatusController(contactsService, referenceDataService)
@@ -358,6 +371,35 @@ const ManageContactsRoutes = (
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/emergency-contact',
     prepareStandaloneManageContactJourney(),
     asyncMiddleware(manageEmergencyContactStatusController.POST),
+  )
+
+  const updateRelationshipController = new ManageContactRelationshipController(contactsService, referenceDataService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-relationship',
+    prepareStandaloneManageContactJourney(),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    logPageViewMiddleware(auditService, updateRelationshipController),
+    asyncMiddleware(updateRelationshipController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-relationship',
+    prepareStandaloneManageContactJourney(),
+    validate(selectRelationshipSchemaFactory()),
+    asyncMiddleware(updateRelationshipController.POST),
+  )
+
+  const manageNextOfKinContactController = new ManageNextOfKinContactController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/next-of-kin',
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    prepareStandaloneManageContactJourney(),
+    logPageViewMiddleware(auditService, manageNextOfKinContactController),
+    asyncMiddleware(manageNextOfKinContactController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/next-of-kin',
+    prepareStandaloneManageContactJourney(),
+    asyncMiddleware(manageNextOfKinContactController.POST),
   )
 
   const manageContactAddEmailController = new ManageContactAddEmailController(contactsService)

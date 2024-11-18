@@ -51,13 +51,13 @@ context('Create contact and update from check answers excluding DOB changes', ()
       .enterLastName('Last')
       .enterMiddleNames('Middle')
       .enterFirstName('First')
-      .continueTo(SelectRelationshipPage, 'Last, First Middle')
+      .continueTo(SelectRelationshipPage, 'First Middle Last')
       .selectRelationship('MOT')
-      .continueTo(SelectEmergencyContactPage, 'Last, First Middle')
+      .continueTo(SelectEmergencyContactPage, 'First Middle Last')
       .selectIsEmergencyContact('NO')
-      .continueTo(SelectNextOfKinPage, 'Last, First Middle')
+      .continueTo(SelectNextOfKinPage, 'First Middle Last')
       .selectIsNextOfKin('NO')
-      .continueTo(EnterContactDateOfBirthPage, 'Last, First Middle')
+      .continueTo(EnterContactDateOfBirthPage, 'First Middle Last')
       .selectIsKnown('YES')
       .enterDay('15')
       .enterMonth('06')
@@ -117,10 +117,8 @@ context('Create contact and update from check answers excluding DOB changes', ()
       .verifyShowRelationshipAs('Mother')
       .clickChangeRelationshipLink()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Last, First Middle') //
-      .hasSelectedRelationshipHint("Last, First Middle is the prisoner's mother.")
+    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Last') //
       .selectRelationship('FA')
-      .hasSelectedRelationshipHint("Last, First Middle is the prisoner's father.")
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
@@ -155,7 +153,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
       .verifyShowIsEmergencyContactAs('No')
       .clickChangeEmergencyContactLink()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'Last, First Middle') //
+    Page.verifyOnPage(SelectEmergencyContactPage, 'First Middle Last') //
       .selectIsEmergencyContact('YES')
       .clickContinue()
 
@@ -191,7 +189,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
       .verifyShowIsNextOfKinAs('No')
       .clickChangeNextOfKinLink()
 
-    Page.verifyOnPage(SelectNextOfKinPage, 'Last, First Middle') //
+    Page.verifyOnPage(SelectNextOfKinPage, 'First Middle Last') //
       .selectIsNextOfKin('YES')
       .clickContinue()
 
@@ -227,7 +225,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
       .verifyShowCommentsAs('Some comments about the relationship')
       .clickChangeCommentsLink()
 
-    Page.verifyOnPage(RelationshipCommentsPage, 'Last, First Middle') //
+    Page.verifyOnPage(RelationshipCommentsPage, 'First Middle Last') //
       .enterComments('Some new comments I entered')
       .clickContinue()
 

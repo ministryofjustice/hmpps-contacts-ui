@@ -2,11 +2,12 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "../../../../partials/miniProfile/macro.njk" import miniProfile %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
-{% set pageTitle = applicationName + " - Enter domestic status" %}
-{% set title = "What is the domestic status of " + contact | formatNameFirstNameFirst + "?" %}
+{% set pageTitle = applicationName + " - Update next of kin" %}
+{% set title = "Is " + contact | formatNameFirstNameFirst + " next of kin for the prisoner?" %}
 
 {% block content %}
 
@@ -22,12 +23,25 @@
         <span class="govuk-caption-l">Contacts</span>
         <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
         <form method='POST'>
-             <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-             {{ govukSelect({
-                id: "domesticStatusCode",
-                name: "domesticStatusCode",
-                items: domesticStatusOptions
-            }) }}
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+            
+            {{ govukRadios({
+                    name: "nextOfKinStatus",
+                    items: [
+                        {
+                            value: "YES",
+                            text: 'YES' | formatYesNo,
+                            checked: relationship.nextOfKin === true
+                        },
+                        {
+                            value: "NO",
+                            text: 'NO' | formatYesNo,
+                            checked: relationship.nextOfKin === false
+                        }
+                    ]
+                })
+            }}
+
             <div class="govuk-button-group">
                 {{ govukButton({
                     html: "Confirm and save",

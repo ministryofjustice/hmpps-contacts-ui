@@ -30,6 +30,7 @@ beforeEach(() => {
     returnPoint: { url: '/foo-bar' },
     names: {
       lastName: 'last',
+      middleNames: 'Middle',
       firstName: 'first',
     },
     dateOfBirth: {
@@ -80,7 +81,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-relationship-comme
 
       const $ = cheerio.load(response.text)
       expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-        'Add additional information about the relationship between the prisoner and Last, First',
+        'Add additional information about the relationship between the prisoner and First Middle Last',
       )
       expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)

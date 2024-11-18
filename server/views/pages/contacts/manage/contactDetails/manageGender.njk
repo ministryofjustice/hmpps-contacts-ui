@@ -6,7 +6,7 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% set pageTitle = applicationName + " - Enter gender" %}
-{% set title = "What is " + contact | reverseFormatName + "'s gender? (optional)" %}
+{% set title = "What is " + contact | formatNameFirstNameFirst + "'s gender? (optional)" %}
 
 {% block content %}
 

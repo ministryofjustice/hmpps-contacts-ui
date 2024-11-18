@@ -45,7 +45,7 @@ context('Change Contact Name', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeNameLink()
 
-    Page.verifyOnPage(EnterNamePage, 'Last, First Middle Names') //
+    Page.verifyOnPage(EnterNamePage, 'First Middle Names Last') //
       .hasLastName('Last')
       .hasFirstName('First')
       .hasMiddleNames('Middle Names')
@@ -96,7 +96,7 @@ context('Change Contact Name', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeNameLink()
 
-    Page.verifyOnPage(EnterNamePage, 'Last, First Middle Names') //
+    Page.verifyOnPage(EnterNamePage, 'First Middle Names Last') //
       .hasLastName('Last')
       .hasFirstName('First')
       .hasMiddleNames('Middle Names')
@@ -140,11 +140,11 @@ context('Change Contact Name', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeNameLink()
 
-    Page.verifyOnPage(EnterNamePage, 'Last, First Middle Names') //
+    Page.verifyOnPage(EnterNamePage, 'First Middle Names Last') //
       .enterMiddleNames(''.padEnd(36, 'X'))
       .clickContinue()
 
-    const enterNamePage = Page.verifyOnPage(EnterNamePage, 'Last, First Middle Names')
+    const enterNamePage = Page.verifyOnPage(EnterNamePage, 'First Middle Names Last')
     enterNamePage.hasFieldInError('middleNames', "Contact's middle names must be 35 characters or less")
   })
 
@@ -168,7 +168,7 @@ context('Change Contact Name', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeNameLink()
 
-    Page.verifyOnPage(EnterNamePage, 'Last, First Middle Names') //
+    Page.verifyOnPage(EnterNamePage, 'First Middle Names Last') //
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
@@ -192,7 +192,7 @@ context('Change Contact Name', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeNameLink()
 
-    Page.verifyOnPage(EnterNamePage, 'Last, First Middle Names') //
+    Page.verifyOnPage(EnterNamePage, 'First Middle Names Last') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 })

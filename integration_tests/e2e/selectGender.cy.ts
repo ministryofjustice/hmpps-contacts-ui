@@ -48,6 +48,7 @@ context('Select Gender', () => {
       },
       {
         gender: 'M',
+        updatedBy: 'USER1',
       },
     )
   })
@@ -71,6 +72,7 @@ context('Select Gender', () => {
       },
       {
         gender: null,
+        updatedBy: 'USER1',
       },
     )
   })

@@ -60,6 +60,7 @@ context('Select Interpreter Needs', () => {
       },
       {
         interpreterRequired: true,
+        updatedBy: 'USER1',
       },
     )
   })
@@ -85,6 +86,7 @@ context('Select Interpreter Needs', () => {
       },
       {
         interpreterRequired: false,
+        updatedBy: 'USER1',
       },
     )
   })
