@@ -33,7 +33,7 @@ export default class ManageNextOfKinContactController implements PageHandler {
     const { contactId, prisonerNumber, prisonerContactId } = req.params
     const request: UpdateRelationshipRequest = {
       isNextOfKin: req.body.nextOfKinStatus === 'YES',
-      updatedBy: user.userId,
+      updatedBy: user.username,
     }
 
     await this.contactsService.updateContactRelationshipById(

@@ -52,7 +52,7 @@ context('Manage contact update next of kin contact', () => {
         method: 'PATCH',
         urlPath: `/contact/${contactId}/relationship/${prisonerContactId}`,
       },
-      { isNextOfKin: false },
+      { isNextOfKin: false, updatedBy: 'USER1' },
     )
   })
 
