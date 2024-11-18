@@ -3,12 +3,10 @@ import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { EmailSchemaType } from '../emailSchemas'
 import { ContactsService } from '../../../../../services'
-import ContactDetails = contactsApiClientTypes.ContactDetails
 import { components } from '../../../../../@types/contactsApi'
+import ContactDetails = contactsApiClientTypes.ContactDetails
 
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
-// type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
-// type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 
 export default class ManageContactAddEmailController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}

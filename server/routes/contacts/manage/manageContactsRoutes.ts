@@ -42,6 +42,7 @@ import { restrictedEditingNameSchema } from '../common/name/nameSchemas'
 import ManageContactAddEmailController from './email-addresses/add/manageContactAddEmailController'
 import { emailSchemaFactory } from './email-addresses/emailSchemas'
 import ManageEmergencyContactController from './relationship/manageEmergencyContactController'
+import ManageContactEditEmailController from './email-addresses/edit/manageContactEditEmailController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -372,6 +373,21 @@ const ManageContactsRoutes = (
     prepareStandaloneManageContactJourney(),
     validate(emailSchemaFactory()),
     asyncMiddleware(manageContactAddEmailController.POST),
+  )
+
+  const manageContactEditEmailController = new ManageContactEditEmailController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/edit',
+    prepareStandaloneManageContactJourney(),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    logPageViewMiddleware(auditService, manageContactEditEmailController),
+    asyncMiddleware(manageContactEditEmailController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/edit',
+    prepareStandaloneManageContactJourney(),
+    validate(emailSchemaFactory()),
+    asyncMiddleware(manageContactEditEmailController.POST),
   )
 
   return router

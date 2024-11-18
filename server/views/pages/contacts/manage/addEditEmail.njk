@@ -21,14 +21,14 @@
     <span class="govuk-caption-l">Contacts</span>
     <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-three-quarters">
+        <div class="govuk-grid-column-one-half">
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
                 {{ govukInput({
                     id: "emailAddress",
                     name: "emailAddress",
-                    classes: 'govuk-!-width-one-third',
+                    classes: 'govuk-!-width-two-third',
                     errorMessage: validationErrors | findError('emailAddress'),
                     value: emailAddress
                 }) }}

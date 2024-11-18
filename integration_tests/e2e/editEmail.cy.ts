@@ -2,10 +2,11 @@ import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import Page from '../pages/page'
 import EnterEmailPage from '../pages/enterEmailPage'
-import { CreateEmailRequest } from '../mockApis/contactsApi'
+import { UpdateEmailRequest } from '../mockApis/contactsApi'
 
-context('Create Email Address', () => {
+context('Edit Email Address', () => {
   const contactId = 22
+  const contactEmailId = 1
   const prisonerContactId = 987654
   beforeEach(() => {
     cy.task('reset')
@@ -27,30 +28,30 @@ context('Create Email Address', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
   })
 
-  it(`should pass validation and create email and address`, () => {
-    const created: CreateEmailRequest = {
+  it('Can edit a contact email', () => {
+    const updated: UpdateEmailRequest = {
       emailAddress: 'test@example.com',
-      createdBy: 'john smith',
+      amendedBy: 'john smith',
     }
-    cy.task('stubCreateContactEmail', { contactId, created })
-    Page.verifyOnPage(ManageContactDetailsPage).clickAddEmailLink()
-    Page.verifyOnPage(EnterEmailPage, 'Jones Mason').enterEmail('test@email.com').clickContinue()
+    cy.task('stubUpdateContactEmail', { contactId, contactEmailId, updated })
+    Page.verifyOnPage(ManageContactDetailsPage).clickEditEmailLink(contactEmailId)
+    Page.verifyOnPage(EnterEmailPage, 'Jones Mason').enterEmail('test@example.com').clickContinue()
     Page.verifyOnPage(ManageContactDetailsPage)
 
     cy.verifyLastAPICall(
       {
-        method: 'POST',
-        urlPath: `/contact/${contactId}/email`,
+        method: 'PUT',
+        urlPath: `/contact/${contactId}/email/1`,
       },
       {
-        emailAddress: 'test@email.com',
-        createdBy: 'john smith',
+        emailAddress: 'test@example.com',
+        amendedBy: 'john smith',
       },
     )
   })
 
   it(`should require email address in the correct format`, () => {
-    Page.verifyOnPage(ManageContactDetailsPage).clickAddEmailLink()
+    Page.verifyOnPage(ManageContactDetailsPage).clickEditEmailLink(contactEmailId)
     const enterEmailPage = Page.verifyOnPage(EnterEmailPage, 'Jones Mason')
     enterEmailPage.enterEmail('name@')
     enterEmailPage.clickContinue()
@@ -62,7 +63,7 @@ context('Create Email Address', () => {
 
   it(`should require email address with 240 characters or fewer`, () => {
     const invalidEmail = 'name@example'.padEnd(241, '0').concat('.com')
-    Page.verifyOnPage(ManageContactDetailsPage).clickAddEmailLink()
+    Page.verifyOnPage(ManageContactDetailsPage).clickEditEmailLink(contactEmailId)
     const enterEmailPage = Page.verifyOnPage(EnterEmailPage, 'Jones Mason')
     enterEmailPage.enterEmail(invalidEmail).clickContinue()
     enterEmailPage.hasFieldInError('emailAddress', `The contact's email address should be 240 characters or fewer`)

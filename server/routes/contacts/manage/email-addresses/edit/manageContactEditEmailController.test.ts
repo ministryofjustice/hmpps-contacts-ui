@@ -4,22 +4,18 @@ import * as cheerio from 'cheerio'
 import { components } from '../../../../../@types/contactsApi'
 import { appWithAllRoutes, flashProvider, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
-import ReferenceDataService from '../../../../../services/referenceDataService'
-import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import PrisonerSearchService from '../../../../../services/prisonerSearchService'
 import ContactService from '../../../../../services/contactsService'
 import TestData from '../../../../testutils/testData'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 
-type CreateEmailRequest = components['schemas']['CreateEmailRequest']
+type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 
 jest.mock('../../../../../services/auditService')
-jest.mock('../../../../../services/referenceDataService')
 jest.mock('../../../../../services/prisonerSearchService')
 jest.mock('../../../../../services/contactsService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
 const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
 const contactsService = new ContactService(null) as jest.Mocked<ContactService>
 
@@ -33,6 +29,17 @@ const contact: ContactDetails = {
   firstName: 'first',
   middleNames: 'middle',
   dateOfBirth: '1980-12-10T00:00:00.000Z',
+  emailAddresses: [
+    {
+      contactEmailId: 6,
+      contactId: 20000000,
+      emailAddress: 'mr.first@example.com',
+      createdBy: user.username,
+      createdTime: '2024-11-15T20:00:34.498693',
+      amendedBy: user.username,
+      amendedTime: '2024-11-18T11:17:15.722593',
+    },
+  ],
   createdBy: user.username,
   createdTime: '2024-01-01',
 }
@@ -41,13 +48,11 @@ beforeEach(() => {
   app = appWithAllRoutes({
     services: {
       auditService,
-      referenceDataService,
       prisonerSearchService,
       contactsService,
     },
     userSupplier: () => user,
   })
-  referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
 
@@ -55,15 +60,15 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/create', () => {
-  it('should render create email page with navigation back to manage contact', async () => {
+describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/edit', () => {
+  it('should render edit email page with navigation back to manage contact and all field populated', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/create?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/6/edit?returnUrl=/foo-bar`,
     )
 
     // Then
@@ -76,6 +81,33 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contac
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('#emailAddress').val()).toStrictEqual('mr.first@example.com')
+  })
+
+  it('should render edited answers instead of original if there is a validation error', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    contactsService.getContact.mockResolvedValue(contact)
+    const form = { emailAddress: 'name@' }
+    auditService.logPageView.mockResolvedValue(null)
+    flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/6/edit?returnUrl=/foo-bar`,
+    )
+
+    // Then
+    expect(response.status).toEqual(200)
+
+    const $ = cheerio.load(response.text)
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
+      'What is the email address for First Middle Last?',
+    )
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('#emailAddress').val()).toStrictEqual('name@')
   })
 
   it('should call the audit service for the page view', async () => {
@@ -85,60 +117,55 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contac
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/create?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/6/edit?returnUrl=/foo-bar`,
     )
 
     // Then
     expect(response.status).toEqual(200)
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_ADD_EMAIL_ADDRESSES_PAGE, {
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_EDIT_PHONE_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })
   })
 
-  it('should render previously entered details if validation errors', async () => {
+  it('should raise an error if the contact email is missing', async () => {
     // Given
-    const form = { emailAddress: 'name@' }
     auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
-    flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/create?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/600/edit?returnUrl=/foo-bar`,
     )
 
     // Then
-    expect(response.status).toEqual(200)
-    const $ = cheerio.load(response.text)
-    expect($('#emailAddress').val()).toStrictEqual('name@')
+    expect(response.status).toEqual(500)
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/create', () => {
-  it('should create email and pass to manage contact details page if there are no validation errors', async () => {
+describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/edit', () => {
+  it('should edit mail and pass to manage contact details page if there are no validation errors', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/create?returnUrl=/foo-bar`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/6/edit?returnUrl=/foo-bar`)
       .type('form')
       .send({ emailAddress: 'test@example.com' })
       .expect(302)
-      .expect('Location', `/foo-bar`)
+      .expect('Location', '/foo-bar')
 
-    const requestBody: CreateEmailRequest = {
+    const requestBody: UpdateEmailRequest = {
       emailAddress: 'test@example.com',
-      createdBy: user.name,
+      amendedBy: 'FIRST LAST',
     }
-
-    expect(contactsService.createContactEmail).toHaveBeenCalledWith(contactId, requestBody, user)
+    expect(contactsService.updateContactEmail).toHaveBeenCalledWith(contactId, 6, requestBody, user)
   })
 
   it('should return to input page with details kept if there are validation errors', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/create?returnUrl=/foo-bar`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/6/edit?returnUrl=/foo-bar`)
       .type('form')
       .send({ emailAddress: '' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/create?returnUrl=/foo-bar`)
-    expect(contactsService.createContactEmail).not.toHaveBeenCalled()
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/6/edit?returnUrl=/foo-bar`)
+    expect(contactsService.updateContactEmail).not.toHaveBeenCalled()
   })
 })

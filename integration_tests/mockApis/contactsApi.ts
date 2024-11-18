@@ -443,4 +443,26 @@ export default {
       },
     })
   },
+
+  stubUpdateContactEmail: ({
+    contactId,
+    contactEmailId,
+    updated,
+  }: {
+    contactId: number
+    contactEmailId: number
+    updated: UpdateEmailRequest
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PUT',
+        urlPath: `/contact/${contactId}/email/${contactEmailId}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: updated,
+      },
+    })
+  },
 }

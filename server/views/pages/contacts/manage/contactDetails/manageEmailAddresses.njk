@@ -7,7 +7,7 @@
         {% set actions = [] %}
 
         {% set actions = actions.concat([{
-            href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/email/" + item.contactEmailId + "/edit",
+            href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/email/" + item.contactEmailId + "/edit?returnUrl=" + manageContactRelationshipUrl,
             text: "Edit",
             visuallyHiddenText: "email address",
             attributes: {"data-qa": "edit-email-address-" + item.contactEmailId},
@@ -15,7 +15,7 @@
         }]) %}
 
         {% set actions = actions.concat([{
-            href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/email/" + item.contactEmailId + "/delete",
+            href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/email/" + item.contactEmailId + "/delete?returnUrl=" + manageContactRelationshipUrl,
             text: "Delete",
             visuallyHiddenText: "email address",
             attributes: {"data-qa": "delete-email-address-" + item.contactEmailId},
