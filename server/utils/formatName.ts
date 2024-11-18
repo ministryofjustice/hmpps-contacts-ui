@@ -2,7 +2,7 @@ import { capitaliseName } from './utils'
 import PrisonerDetails = journeys.PrisonerDetails
 import ContactNames = journeys.ContactNames
 
-const formatName = (
+const formatNameLastNameFirst = (
   val: { lastName: string; firstName: string; middleNames?: string } | ContactNames | PrisonerDetails,
   opts?: { excludeMiddleNames?: boolean; customTitle?: string },
 ): string => {
@@ -21,7 +21,7 @@ const formatName = (
   return capitaliseName(name)
 }
 
-export const reverseFormatName = (
+const formatNameFirstNameFirst = (
   val: { lastName: string; firstName: string; middleNames?: string } | ContactNames | PrisonerDetails,
   opts?: { excludeMiddleNames?: boolean; customTitle?: string },
 ): string => {
@@ -46,4 +46,4 @@ export const reverseFormatName = (
   return capitaliseName(name)
 }
 
-export default formatName
+export { formatNameLastNameFirst, formatNameFirstNameFirst }

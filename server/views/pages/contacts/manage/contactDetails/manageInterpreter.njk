@@ -7,7 +7,7 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% set pageTitle = applicationName + " - Select if interpreter is needed" %}
-{% set title = "Does " + contact | reverseFormatName + " need an interpreter?" %}
+{% set title = "Does " + contact | formatNameFirstNameFirst + " need an interpreter?" %}
 
 {% block content %}
 

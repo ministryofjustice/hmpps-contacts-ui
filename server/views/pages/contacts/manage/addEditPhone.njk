@@ -6,7 +6,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% set pageTitle = applicationName + " - Create contact phone number" %}
-{% set title = "What is the phone number for " + (contact | reverseFormatName) + "?" %}
+{% set title = "What is the phone number for " + (contact | formatNameFirstNameFirst) + "?" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}

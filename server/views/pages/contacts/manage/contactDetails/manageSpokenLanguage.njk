@@ -6,7 +6,7 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% set pageTitle = applicationName + " - Enter spoken language" %}
-{% set title = "What is the spoken language of " + contact | reverseFormatName + "?" %}
+{% set title = "What is the spoken language of " + contact | formatNameFirstNameFirst + "?" %}
 
 {% block content %}
 

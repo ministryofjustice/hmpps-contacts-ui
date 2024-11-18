@@ -72,7 +72,7 @@
             }
         %}
         <tr class="govuk-table__row">
-            <td class="govuk-table__cell"><a href="/prisoner/{{prisonerNumber}}/contacts/manage/{{item.contactId}}/relationship/{{ item.prisonerContactId }}" data-qa="contact-{{item.contactId}}-link">{{ item | formatName }}</a></td>
+            <td class="govuk-table__cell"><a href="/prisoner/{{prisonerNumber}}/contacts/manage/{{item.contactId}}/relationship/{{ item.prisonerContactId }}" data-qa="contact-{{item.contactId}}-link">{{ item | formatNameLastNameFirst }}</a></td>
             <td class="govuk-table__cell"  data-qa="contact-{{ item.prisonerContactId }}-dob">
                 {% if item.dateOfBirth %}
                     {{ item.dateOfBirth | formatDate }}<br />
@@ -99,7 +99,7 @@
 {% endmacro %}
 
 <span class="govuk-caption-l">Manage Contacts</span>
-<h1 class="govuk-heading-l">Contacts for {{ prisonerDetails | formatName }}</h1>
+<h1 class="govuk-heading-l">Contacts for {{ prisonerDetails | formatNameLastNameFirst }}</h1>
 
     {{ govukButton({
         text: "Add prisoner contact",

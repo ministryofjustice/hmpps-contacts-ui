@@ -5,7 +5,7 @@
 {% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
 
 {% set pageTitle = applicationName + " - Select emergency contact" %}
-{% set title = "Is " + journey.names | formatName + " an emergency contact for the prisoner?" %}
+{% set title = "Is " + journey.names | formatNameLastNameFirst + " an emergency contact for the prisoner?" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
