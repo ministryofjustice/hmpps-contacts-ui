@@ -1,5 +1,6 @@
 import type { Express } from 'express'
 import request from 'supertest'
+import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
 import ReferenceDataService from '../../../../../services/referenceDataService'
@@ -54,23 +55,7 @@ beforeEach(() => {
 afterEach(() => {
   jest.resetAllMocks()
 })
-
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/delete', () => {
-  it('should delete contact and redirect back to manage contact', async () => {
-    // Given
-    auditService.logPageView.mockResolvedValue(null)
-    contactsService.getContact.mockResolvedValue(contact)
-
-    // When
-    await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/123/delete?returnUrl=/foo-bar`)
-      .expect(302)
-      .expect('Location', '/foo-bar')
-
-    // Then
-    expect(contactsService.deleteContactPhone).toHaveBeenCalledWith(contactId, 123, user)
-  })
-
   it('should call the audit service for the page view', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
@@ -79,8 +64,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contac
     // When
     await request(app)
       .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/999/delete?returnUrl=/foo-bar`)
-      .expect(302)
-      .expect('Location', '/foo-bar')
+      .expect(200)
 
     // Then
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_DELETE_PHONE_PAGE, {
@@ -89,6 +73,51 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contac
     })
   })
 
+  it('should render the phone details with ext number', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    contactsService.getContact.mockResolvedValue(contact)
+
+    // When
+    const response = await request(app)
+      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/123/delete?returnUrl=/foo-bar`)
+      .expect(200)
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
+      'Are you sure you want to delete this phone number?',
+    )
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('.phone-number-value').text().trim()).toStrictEqual('07878 111111')
+    expect($('.extension-value').text().trim()).toStrictEqual('123')
+    expect($('.type-value').text().trim()).toStrictEqual('Mobile phone')
+  })
+
+  it('should render the phone details without ext number', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    contactsService.getContact.mockResolvedValue(contact)
+
+    // When
+    const response = await request(app)
+      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/999/delete?returnUrl=/foo-bar`)
+      .expect(200)
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
+      'Are you sure you want to delete this phone number?',
+    )
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('.phone-number-value').text().trim()).toStrictEqual('01111 777777')
+    expect($('.extension-value').text().trim()).toStrictEqual('Not provided')
+    expect($('.type-value').text().trim()).toStrictEqual('Home phone')
+  })
   it('should raise an error if the contact phone is missing', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
@@ -101,5 +130,22 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contac
 
     // Then
     expect(response.status).toEqual(500)
+  })
+})
+
+describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/delete', () => {
+  it('should delete contact and redirect back to manage contact', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    contactsService.getContact.mockResolvedValue(contact)
+
+    // When
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/123/delete?returnUrl=/foo-bar`)
+      .expect(302)
+      .expect('Location', '/foo-bar')
+
+    // Then
+    expect(contactsService.deleteContactPhone).toHaveBeenCalledWith(contactId, 123, user)
   })
 })
