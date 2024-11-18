@@ -45,7 +45,7 @@ context('Change Contact Date Of Birth', () => {
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickChangeDateOfBirthLink(contactId)
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First Middle Names') //
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last') //
       .hasIsKnown('YES')
       .hasDay('15')
       .hasMonth('6')
@@ -96,7 +96,7 @@ context('Change Contact Date Of Birth', () => {
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickChangeDateOfBirthLink(contactId)
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First Middle Names') //
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last') //
       .isEmptyForm()
       .selectIsKnown('YES')
       .enterDay('25')
@@ -145,7 +145,7 @@ context('Change Contact Date Of Birth', () => {
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickChangeDateOfBirthLink(contactId)
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First Middle Names') //
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last') //
       .hasIsKnown('NO')
       .selectIsKnown('YES')
       .enterDay('25')
@@ -195,11 +195,11 @@ context('Change Contact Date Of Birth', () => {
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickChangeDateOfBirthLink(contactId)
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First Middle Names') //
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last') //
       .hasIsKnown('NO')
       .clickContinue()
 
-    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'Last, First Middle Names') //
+    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'First Middle Names Last') //
       .hasIsOverEighteen('YES')
       .selectIsOverEighteen('NO')
       .clickContinue()
@@ -247,12 +247,12 @@ context('Change Contact Date Of Birth', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeDateOfBirthLink(contactId)
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First Middle Names') //
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last') //
       .isEmptyForm()
       .selectIsKnown('NO')
       .clickContinue()
 
-    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'Last, First Middle Names') //
+    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'First Middle Names Last') //
       .isEmptyForm()
       .selectIsOverEighteen('DO_NOT_KNOW')
       .clickContinue()
@@ -293,7 +293,7 @@ context('Change Contact Date Of Birth', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeDateOfBirthLink(contactId)
 
-    const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First Middle Names')
+    const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last')
     enterDobPage.clickContinue()
 
     enterDobPage.hasFieldInError('isKnown', 'Select whether the date of birth is known')
@@ -320,7 +320,7 @@ context('Change Contact Date Of Birth', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeDateOfBirthLink(contactId)
 
-    const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First Middle Names')
+    const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last')
     enterDobPage.selectIsKnown('YES').clickContinue()
     enterDobPage.hasFieldInError('dob', "Enter the contact's date of birth")
     enterDobPage.errorSummaryItems.spread((...$lis) => {
@@ -350,7 +350,7 @@ context('Change Contact Date Of Birth', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeDateOfBirthLink(contactId)
 
-    const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First Middle Names')
+    const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last')
     enterDobPage
       .selectIsKnown('YES') //
       .enterDay('aa')
@@ -392,11 +392,11 @@ context('Change Contact Date Of Birth', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeDateOfBirthLink(contactId)
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First Middle Names') //
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last') //
       .selectIsKnown('NO')
       .clickContinue()
 
-    const estimatedDobPage = Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'Last, First Middle Names')
+    const estimatedDobPage = Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'First Middle Names Last')
     estimatedDobPage.clickContinue()
 
     estimatedDobPage.hasFieldInError('isOverEighteen', 'Select whether the contact is over 18')
@@ -423,12 +423,12 @@ context('Change Contact Date Of Birth', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeDateOfBirthLink(contactId)
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First Middle Names') //
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last') //
       .selectIsKnown('NO')
       .clickContinue()
 
-    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'Last, First Middle Names') //
-      .backTo(EnterContactDateOfBirthPage, 'Last, First Middle Names')
+    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'First Middle Names Last') //
+      .backTo(EnterContactDateOfBirthPage, 'First Middle Names Last')
   })
 
   it('Cancel goes back to manage contacts from estimated DOB', () => {
@@ -452,11 +452,11 @@ context('Change Contact Date Of Birth', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeDateOfBirthLink(contactId)
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First Middle Names') //
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last') //
       .selectIsKnown('NO')
       .clickContinue()
 
-    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'Last, First Middle Names') //
+    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'First Middle Names Last') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
@@ -481,7 +481,7 @@ context('Change Contact Date Of Birth', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeDateOfBirthLink(contactId)
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First Middle Names') //
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last') //
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
@@ -507,7 +507,7 @@ context('Change Contact Date Of Birth', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeDateOfBirthLink(contactId)
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First Middle Names') //
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 })

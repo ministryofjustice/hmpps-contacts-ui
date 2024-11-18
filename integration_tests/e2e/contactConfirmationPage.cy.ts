@@ -64,7 +64,7 @@ context('Contact confirmation', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John') //
+    Page.verifyOnPage(ContactConfirmationPage, 'John Smith') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
   })
@@ -80,7 +80,7 @@ context('Contact confirmation', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    const contactConfirmationPage = Page.verifyOnPage(ContactConfirmationPage, 'Smith, John')
+    const contactConfirmationPage = Page.verifyOnPage(ContactConfirmationPage, 'John Smith')
     contactConfirmationPage.clickContinue()
 
     contactConfirmationPage.hasFieldInError('isContactConfirmed', SELECT_IS_THE_RIGHT_PERSON_MESSAGE)
@@ -91,14 +91,14 @@ context('Contact confirmation', () => {
   })
 
   it(`should render contact information`, () => {
-    const titleHeader = 'Is this the right person to add as a contact for Smith, John?'
+    const titleHeader = 'Is this the right person to add as a contact for John Smith?'
     cy.task('stubGetContactById', TestData.contact())
     cy.task('stubGetGenders')
 
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John')
+    Page.verifyOnPage(ContactConfirmationPage, 'John Smith')
       .verifyShowTitleHeaderValueAs(titleHeader, 'top')
       .verifyShowTitleHeaderValueAs(titleHeader, 'bottom')
       .verifyShowsTabTitleAs('Contact details', 0)
@@ -162,7 +162,7 @@ context('Contact confirmation', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John')
+    Page.verifyOnPage(ContactConfirmationPage, 'John Smith')
       .verifyShowDeceasedDateValueAs('Not provided')
       .verifyShowCommentsValueAs('Not provided')
       .verifyShowAddressesSpecificPhoneNumbersValueAsNotProvided('Not provided')
@@ -189,7 +189,7 @@ context('Contact confirmation', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John')
+    Page.verifyOnPage(ContactConfirmationPage, 'John Smith')
       .verifyShowNamesValueAs('Contact, Mr Existing Middle')
       .verifyShowDOBValueAs('14 January 1990')
       .verifyShowDeceasedDateValueAs('Not provided')
@@ -207,7 +207,7 @@ context('Contact confirmation', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John').selectIsTheRightPersonNoRadio().clickContinue()
+    Page.verifyOnPage(ContactConfirmationPage, 'John Smith').selectIsTheRightPersonNoRadio().clickContinue()
 
     Page.verifyOnPage(SearchContactPage)
   })
@@ -218,8 +218,8 @@ context('Contact confirmation', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John').selectIsTheRightPersonYesRadio().clickContinue()
+    Page.verifyOnPage(ContactConfirmationPage, 'John Smith').selectIsTheRightPersonYesRadio().clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
+    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact') //
   })
 })

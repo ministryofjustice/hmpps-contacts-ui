@@ -30,6 +30,7 @@ beforeEach(() => {
     returnPoint: { url: '/foo-bar' },
     names: {
       lastName: 'last',
+      middleNames: 'middle',
       firstName: 'first',
     },
     relationship: {
@@ -75,7 +76,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-next-of-kin/:jour
 
       const $ = cheerio.load(response.text)
       expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-        'Is Last, First next of kin for the prisoner?',
+        'Is First Middle Last next of kin for the prisoner?',
       )
       expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)

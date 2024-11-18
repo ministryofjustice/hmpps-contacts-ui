@@ -6,7 +6,7 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% set pageTitle = applicationName + " - Enter domestic status" %}
-{% set title = "What is the domestic status of " + contact | reverseFormatName + "?" %}
+{% set title = "What is the domestic status of " + contact | formatNameFirstNameFirst + "?" %}
 
 {% block content %}
 

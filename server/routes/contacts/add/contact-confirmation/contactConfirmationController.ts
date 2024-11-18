@@ -5,7 +5,7 @@ import { IsContactConfirmedSchema } from './contactConfirmationSchema'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
 import { ContactsService } from '../../../../services'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
-import formatName from '../../../../utils/formatName'
+import { formatNameLastNameFirst } from '../../../../utils/formatName'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import ContactDetails = contactsApiClientTypes.ContactDetails
@@ -64,7 +64,7 @@ export default class ContactConfirmationController implements PageHandler {
         user,
       )
     }
-    return formatName(contact, { customTitle: titleDescription })
+    return formatNameLastNameFirst(contact, { customTitle: titleDescription })
   }
 
   private findMostRelevantAddress(contact: contactsApiClientTypes.ContactDetails) {

@@ -59,7 +59,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/update-estima
 
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Is Last, First Middle Names over 18 years old?',
+      'Is First Middle Names Last over 18 years old?',
     )
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')

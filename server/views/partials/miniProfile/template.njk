@@ -1,5 +1,5 @@
 <div class="mini-profile govuk-!-margin-top-7" data-qa="mini-profile">
-    {% set formattedName =  prisonerDetails | formatName(excludeMiddleNames = true) %}
+    {% set formattedName =  prisonerDetails | formatNameLastNameFirst(excludeMiddleNames = true) %}
     <div class="mini-profile-inner">
         <div class="mini-profile-left">
             <img class="mini-profile-person-img" src="/prisoner-image/{{ prisonerDetails.prisonerNumber}}" alt="Image of {{ formattedName }}" loading="lazy" data-qa="mini-profile-person-img">

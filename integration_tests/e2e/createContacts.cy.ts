@@ -55,27 +55,27 @@ context('Create Contacts', () => {
       .enterFirstName('First')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Last, First') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Last') //
       .selectRelationship('MOT')
       .clickContinue()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'Last, First') //
+    Page.verifyOnPage(SelectEmergencyContactPage, 'First Last') //
       .selectIsEmergencyContact('NO')
       .clickContinue()
 
-    Page.verifyOnPage(SelectNextOfKinPage, 'Last, First') //
+    Page.verifyOnPage(SelectNextOfKinPage, 'First Last') //
       .selectIsNextOfKin('YES')
       .clickContinue()
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First') //
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Last') //
       .selectIsKnown('NO')
       .clickContinue()
 
-    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'Last, First') //
+    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'First Last') //
       .selectIsOverEighteen('DO_NOT_KNOW')
       .clickContinue()
 
-    Page.verifyOnPage(RelationshipCommentsPage, 'Last, First').clickContinue()
+    Page.verifyOnPage(RelationshipCommentsPage, 'First Last').clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsNameAs('Last, First')
@@ -114,26 +114,26 @@ context('Create Contacts', () => {
       .enterMiddleNames('Middle')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Last, First Middle') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Last') //
       .selectRelationship('MOT')
       .clickContinue()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'Last, First Middle') //
+    Page.verifyOnPage(SelectEmergencyContactPage, 'First Middle Last') //
       .selectIsEmergencyContact('YES')
       .clickContinue()
 
-    Page.verifyOnPage(SelectNextOfKinPage, 'Last, First Middle') //
+    Page.verifyOnPage(SelectNextOfKinPage, 'First Middle Last') //
       .selectIsNextOfKin('NO')
       .clickContinue()
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First Middle') //
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Last') //
       .selectIsKnown('YES')
       .enterDay('15')
       .enterMonth('06')
       .enterYear('1982')
       .clickContinue()
 
-    Page.verifyOnPage(RelationshipCommentsPage, 'Last, First') //
+    Page.verifyOnPage(RelationshipCommentsPage, 'First Middle Last') //
       .enterComments('Some comments about this relationship')
       .clickContinue()
 
@@ -212,7 +212,7 @@ context('Create Contacts', () => {
       .enterFirstName('First')
       .clickContinue()
 
-    const selectRelationshipPage = Page.verifyOnPage(SelectRelationshipPage, 'Last, First')
+    const selectRelationshipPage = Page.verifyOnPage(SelectRelationshipPage, 'First Last')
     selectRelationshipPage.clickContinue()
 
     selectRelationshipPage.hasFieldInError('relationship', "Enter the contact's relationship to the prisoner")
@@ -224,11 +224,11 @@ context('Create Contacts', () => {
       .enterFirstName('First')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Last, First') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Last') //
       .selectRelationship('MOT')
       .clickContinue()
 
-    const selectEmergencyContactPage = Page.verifyOnPage(SelectEmergencyContactPage, 'Last, First')
+    const selectEmergencyContactPage = Page.verifyOnPage(SelectEmergencyContactPage, 'First Last')
     selectEmergencyContactPage.clickContinue()
 
     selectEmergencyContactPage.hasFieldInError(
@@ -243,15 +243,15 @@ context('Create Contacts', () => {
       .enterFirstName('First')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Last, First') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Last') //
       .selectRelationship('MOT')
       .clickContinue()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'Last, First') //
+    Page.verifyOnPage(SelectEmergencyContactPage, 'First Last') //
       .selectIsEmergencyContact('NO')
       .clickContinue()
 
-    const selectNextOfKinPage = Page.verifyOnPage(SelectNextOfKinPage, 'Last, First')
+    const selectNextOfKinPage = Page.verifyOnPage(SelectNextOfKinPage, 'First Last')
     selectNextOfKinPage.clickContinue()
 
     selectNextOfKinPage.hasFieldInError('isNextOfKin', 'Select whether the contact is next of kin for the prisoner')
@@ -263,19 +263,19 @@ context('Create Contacts', () => {
       .enterFirstName('First')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Last, First') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Last') //
       .selectRelationship('MOT')
       .clickContinue()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'Last, First') //
+    Page.verifyOnPage(SelectEmergencyContactPage, 'First Last') //
       .selectIsEmergencyContact('NO')
       .clickContinue()
 
-    Page.verifyOnPage(SelectNextOfKinPage, 'Last, First') //
+    Page.verifyOnPage(SelectNextOfKinPage, 'First Last') //
       .selectIsNextOfKin('NO')
       .clickContinue()
 
-    const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First')
+    const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Last')
     enterDobPage.clickContinue()
 
     enterDobPage.hasFieldInError('isKnown', 'Select whether the date of birth is known')
@@ -287,19 +287,19 @@ context('Create Contacts', () => {
       .enterFirstName('First')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Last, First') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Last') //
       .selectRelationship('MOT')
       .clickContinue()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'Last, First') //
+    Page.verifyOnPage(SelectEmergencyContactPage, 'First Last') //
       .selectIsEmergencyContact('NO')
       .clickContinue()
 
-    Page.verifyOnPage(SelectNextOfKinPage, 'Last, First') //
+    Page.verifyOnPage(SelectNextOfKinPage, 'First Last') //
       .selectIsNextOfKin('NO')
       .clickContinue()
 
-    const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First')
+    const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Last')
     enterDobPage.selectIsKnown('YES').clickContinue()
     enterDobPage.hasFieldInError('dob', "Enter the contact's date of birth")
     enterDobPage.errorSummaryItems.spread((...$lis) => {
@@ -314,19 +314,19 @@ context('Create Contacts', () => {
       .enterFirstName('First')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Last, First') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Last') //
       .selectRelationship('MOT')
       .clickContinue()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'Last, First') //
+    Page.verifyOnPage(SelectEmergencyContactPage, 'First Last') //
       .selectIsEmergencyContact('NO')
       .clickContinue()
 
-    Page.verifyOnPage(SelectNextOfKinPage, 'Last, First') //
+    Page.verifyOnPage(SelectNextOfKinPage, 'First Last') //
       .selectIsNextOfKin('NO')
       .clickContinue()
 
-    const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First')
+    const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Last')
     enterDobPage
       .selectIsKnown('YES') //
       .enterDay('aa')
@@ -353,23 +353,23 @@ context('Create Contacts', () => {
       .enterFirstName('First')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Last, First') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Last') //
       .selectRelationship('MOT')
       .clickContinue()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'Last, First') //
+    Page.verifyOnPage(SelectEmergencyContactPage, 'First Last') //
       .selectIsEmergencyContact('NO')
       .clickContinue()
 
-    Page.verifyOnPage(SelectNextOfKinPage, 'Last, First') //
+    Page.verifyOnPage(SelectNextOfKinPage, 'First Last') //
       .selectIsNextOfKin('NO')
       .clickContinue()
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First') //
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Last') //
       .selectIsKnown('NO')
       .clickContinue()
 
-    const estimatedDobPage = Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'Last, First')
+    const estimatedDobPage = Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'First Last')
     estimatedDobPage.clickContinue()
 
     estimatedDobPage.hasFieldInError('isOverEighteen', 'Select whether the contact is over 18')
@@ -379,21 +379,21 @@ context('Create Contacts', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
-      .continueTo(SelectRelationshipPage, 'Last, First') //
+      .continueTo(SelectRelationshipPage, 'First Last') //
       .selectRelationship('MOT')
-      .continueTo(SelectEmergencyContactPage, 'Last, First') //
+      .continueTo(SelectEmergencyContactPage, 'First Last') //
       .selectIsEmergencyContact('NO')
-      .continueTo(SelectNextOfKinPage, 'Last, First') //
+      .continueTo(SelectNextOfKinPage, 'First Last') //
       .selectIsNextOfKin('YES')
-      .continueTo(EnterContactDateOfBirthPage, 'Last, First') //
+      .continueTo(EnterContactDateOfBirthPage, 'First Last') //
       .selectIsKnown('NO')
-      .continueTo(EnterContactEstimatedDateOfBirthPage, 'Last, First') //
+      .continueTo(EnterContactEstimatedDateOfBirthPage, 'First Last') //
       .selectIsOverEighteen('DO_NOT_KNOW')
       .clickContinue()
 
-    const commentsPage = Page.verifyOnPage(RelationshipCommentsPage, 'Last, First') //
+    const commentsPage = Page.verifyOnPage(RelationshipCommentsPage, 'First Last') //
       .enterComments(''.padEnd(241))
-      .continueTo(RelationshipCommentsPage, 'Last, First')
+      .continueTo(RelationshipCommentsPage, 'First Last')
 
     commentsPage.hasFieldInError('comments', 'Additional information must be 240 characters or less')
   })
@@ -402,24 +402,24 @@ context('Create Contacts', () => {
     const relationshipCommentsPage = Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
-      .continueTo(SelectRelationshipPage, 'Last, First')
+      .continueTo(SelectRelationshipPage, 'First Last')
       .selectRelationship('MOT')
-      .continueTo(SelectEmergencyContactPage, 'Last, First')
+      .continueTo(SelectEmergencyContactPage, 'First Last')
       .selectIsEmergencyContact('NO')
-      .continueTo(SelectNextOfKinPage, 'Last, First')
+      .continueTo(SelectNextOfKinPage, 'First Last')
       .selectIsNextOfKin('YES')
-      .continueTo(EnterContactDateOfBirthPage, 'Last, First')
+      .continueTo(EnterContactDateOfBirthPage, 'First Last')
       .selectIsKnown('NO')
-      .continueTo(EnterContactEstimatedDateOfBirthPage, 'Last, First')
+      .continueTo(EnterContactEstimatedDateOfBirthPage, 'First Last')
       .selectIsOverEighteen('DO_NOT_KNOW')
-      .continueTo(RelationshipCommentsPage, 'Last, First')
+      .continueTo(RelationshipCommentsPage, 'First Last')
 
     relationshipCommentsPage //
-      .backTo(EnterContactEstimatedDateOfBirthPage, 'Last, First')
-      .backTo(EnterContactDateOfBirthPage, 'Last, First')
-      .backTo(SelectNextOfKinPage, 'Last, First')
-      .backTo(SelectEmergencyContactPage, 'Last, First')
-      .backTo(SelectRelationshipPage, 'Last, First')
+      .backTo(EnterContactEstimatedDateOfBirthPage, 'First Last')
+      .backTo(EnterContactDateOfBirthPage, 'First Last')
+      .backTo(SelectNextOfKinPage, 'First Last')
+      .backTo(SelectEmergencyContactPage, 'First Last')
+      .backTo(SelectRelationshipPage, 'First Last')
       .backTo(EnterNamePage)
   })
 
@@ -427,24 +427,24 @@ context('Create Contacts', () => {
     const relationshipCommentsPage = Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
-      .continueTo(SelectRelationshipPage, 'Last, First')
+      .continueTo(SelectRelationshipPage, 'First Last')
       .selectRelationship('MOT')
-      .continueTo(SelectEmergencyContactPage, 'Last, First')
+      .continueTo(SelectEmergencyContactPage, 'First Last')
       .selectIsEmergencyContact('NO')
-      .continueTo(SelectNextOfKinPage, 'Last, First')
+      .continueTo(SelectNextOfKinPage, 'First Last')
       .selectIsNextOfKin('YES')
-      .continueTo(EnterContactDateOfBirthPage, 'Last, First')
+      .continueTo(EnterContactDateOfBirthPage, 'First Last')
       .selectIsKnown('YES')
       .enterDay('15')
       .enterMonth('06')
       .enterYear('1982')
-      .continueTo(RelationshipCommentsPage, 'Last, First')
+      .continueTo(RelationshipCommentsPage, 'First Last')
 
     relationshipCommentsPage //
-      .backTo(EnterContactDateOfBirthPage, 'Last, First')
-      .backTo(SelectNextOfKinPage, 'Last, First')
-      .backTo(SelectEmergencyContactPage, 'Last, First')
-      .backTo(SelectRelationshipPage, 'Last, First')
+      .backTo(EnterContactDateOfBirthPage, 'First Last')
+      .backTo(SelectNextOfKinPage, 'First Last')
+      .backTo(SelectEmergencyContactPage, 'First Last')
+      .backTo(SelectRelationshipPage, 'First Last')
       .backTo(EnterNamePage)
       .backTo(SearchContactPage)
   })

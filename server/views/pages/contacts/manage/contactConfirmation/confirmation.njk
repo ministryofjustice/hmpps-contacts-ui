@@ -8,7 +8,7 @@
 
 {% set pageTitle = applicationName + " - Contact Confirmation" %}
 {% set prisonerResultsLink = "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/list/" + journey.id %}
-{% set isTheRightPersonTitle = 'Is this the right person to add as a contact for ' + (prisonerDetails | formatName)  + '?' %}
+{% set isTheRightPersonTitle = 'Is this the right person to add as a contact for ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + '?' %}
 
 {% block content %}
 {% macro contactDetailsHtml() %}

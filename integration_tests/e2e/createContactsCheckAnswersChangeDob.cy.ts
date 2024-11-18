@@ -51,30 +51,30 @@ context('Create contact and update from check answers where we are changing the 
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
-      .continueTo(SelectRelationshipPage, 'Last, First')
+      .continueTo(SelectRelationshipPage, 'First Last')
       .selectRelationship('MOT')
-      .continueTo(SelectEmergencyContactPage, 'Last, First')
+      .continueTo(SelectEmergencyContactPage, 'First Last')
       .selectIsEmergencyContact('NO')
-      .continueTo(SelectNextOfKinPage, 'Last, First')
+      .continueTo(SelectNextOfKinPage, 'First Last')
       .selectIsNextOfKin('NO')
-      .continueTo(EnterContactDateOfBirthPage, 'Last, First')
+      .continueTo(EnterContactDateOfBirthPage, 'First Last')
   })
 
   it('Can change a contacts dob from known to a different known dob', () => {
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First') //
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Last') //
       .selectIsKnown('YES')
       .enterDay('15')
       .enterMonth('06')
       .enterYear('1982')
       .clickContinue()
 
-    Page.verifyOnPage(RelationshipCommentsPage, 'Last, First').clickContinue()
+    Page.verifyOnPage(RelationshipCommentsPage, 'First Last').clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsDateOfBirthAs('15 June 1982')
       .clickChangeDateOfBirthLink()
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First') //
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Last') //
       .enterDay('16')
       .enterMonth('07')
       .enterYear('1983')
@@ -105,24 +105,24 @@ context('Create contact and update from check answers where we are changing the 
   })
 
   it('Can change a contacts dob from known to unknown', () => {
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First') //
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Last') //
       .selectIsKnown('YES')
       .enterDay('15')
       .enterMonth('06')
       .enterYear('1982')
       .clickContinue()
 
-    Page.verifyOnPage(RelationshipCommentsPage, 'Last, First').clickContinue()
+    Page.verifyOnPage(RelationshipCommentsPage, 'First Last').clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsDateOfBirthAs('15 June 1982')
       .clickChangeDateOfBirthLink()
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First') //
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Last') //
       .selectIsKnown('NO')
       .clickContinue()
 
-    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'Last, First') //
+    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'First Last') //
       .selectIsOverEighteen('DO_NOT_KNOW')
       .clickContinue()
 
@@ -152,22 +152,22 @@ context('Create contact and update from check answers where we are changing the 
   })
 
   it('Can change a contacts dob from unknown to known', () => {
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First') //
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Last') //
       .selectIsKnown('NO')
       .clickContinue()
 
-    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'Last, First') //
+    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'First Last') //
       .selectIsOverEighteen('YES')
       .clickContinue()
 
-    Page.verifyOnPage(RelationshipCommentsPage, 'Last, First').clickContinue()
+    Page.verifyOnPage(RelationshipCommentsPage, 'First Last').clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsDateOfBirthAs('Not provided')
       .verifyShowsEstimatedDateOfBirthAs('Yes')
       .clickChangeDateOfBirthLink()
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First') //
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Last') //
       .selectIsKnown('YES')
       .enterDay('15')
       .enterMonth('06')
@@ -199,22 +199,22 @@ context('Create contact and update from check answers where we are changing the 
   })
 
   it('Can change a contacts estimated dob', () => {
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'Last, First') //
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Last') //
       .selectIsKnown('NO')
       .clickContinue()
 
-    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'Last, First') //
+    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'First Last') //
       .selectIsOverEighteen('DO_NOT_KNOW')
       .clickContinue()
 
-    Page.verifyOnPage(RelationshipCommentsPage, 'Last, First').clickContinue()
+    Page.verifyOnPage(RelationshipCommentsPage, 'First Last').clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsDateOfBirthAs('Not provided')
       .verifyShowsEstimatedDateOfBirthAs("I don't know")
       .clickChangeEstimatedDateOfBirthLink()
 
-    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'Last, First') //
+    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'First Last') //
       .selectIsOverEighteen('YES')
       .clickContinue()
 

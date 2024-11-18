@@ -39,7 +39,13 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
   it('should render manage emergency contact status page', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
-    contactsService.getContact.mockResolvedValue(TestData.contact())
+    contactsService.getContact.mockResolvedValue(
+      TestData.contact({
+        firstName: 'First',
+        middleNames: 'Middle',
+        lastName: 'Last',
+      }),
+    )
     contactsService.getPrisonerContactRelationship.mockResolvedValue({ emergencyContact: true })
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
 
@@ -51,7 +57,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').text().trim()).toBe('Is Jones Mason an emergency contact for the prisoner?')
+    expect($('[data-qa=main-heading]').text().trim()).toBe(
+      'Is First Middle Last an emergency contact for the prisoner?',
+    )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')

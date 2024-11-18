@@ -69,23 +69,23 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John') //
+    Page.verifyOnPage(ContactConfirmationPage, 'John Smith') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
+    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact') //
       .selectRelationship('MOT')
       .clickContinue()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'Contact, Existing') //
+    Page.verifyOnPage(SelectEmergencyContactPage, 'Existing Contact') //
       .selectIsEmergencyContact('NO')
       .clickContinue()
 
-    Page.verifyOnPage(SelectNextOfKinPage, 'Contact, Existing') //
+    Page.verifyOnPage(SelectNextOfKinPage, 'Existing Contact') //
       .selectIsNextOfKin('YES')
       .clickContinue()
 
-    Page.verifyOnPage(RelationshipCommentsPage, 'Contact, Existing') //
+    Page.verifyOnPage(RelationshipCommentsPage, 'Existing Contact') //
       .enterComments('Some comments about the relationship')
       .clickContinue()
 
@@ -131,23 +131,23 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John') //
+    Page.verifyOnPage(ContactConfirmationPage, 'John Smith') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
+    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact') //
       .selectRelationship('MOT')
       .clickContinue()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'Contact, Existing') //
+    Page.verifyOnPage(SelectEmergencyContactPage, 'Existing Contact') //
       .selectIsEmergencyContact('YES')
       .clickContinue()
 
-    Page.verifyOnPage(SelectNextOfKinPage, 'Contact, Existing') //
+    Page.verifyOnPage(SelectNextOfKinPage, 'Existing Contact') //
       .selectIsNextOfKin('NO')
       .clickContinue()
 
-    Page.verifyOnPage(RelationshipCommentsPage, 'Contact, Existing') //
+    Page.verifyOnPage(RelationshipCommentsPage, 'Existing Contact') //
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
@@ -190,15 +190,15 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John') //
+    Page.verifyOnPage(ContactConfirmationPage, 'John Smith') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
+    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact') //
       .selectRelationship('MOT')
       .clickContinue()
 
-    const selectEmergencyContactPage = Page.verifyOnPage(SelectEmergencyContactPage, 'Contact, Existing')
+    const selectEmergencyContactPage = Page.verifyOnPage(SelectEmergencyContactPage, 'Existing Contact')
     selectEmergencyContactPage.clickContinue()
     selectEmergencyContactPage.hasFieldInError(
       'isEmergencyContact',
@@ -217,11 +217,11 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John') //
+    Page.verifyOnPage(ContactConfirmationPage, 'John Smith') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
-    const selectRelationshipPage = Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing')
+    const selectRelationshipPage = Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact')
     selectRelationshipPage.clickContinue()
 
     selectRelationshipPage.hasFieldInError('relationship', "Enter the contact's relationship to the prisoner")
@@ -238,19 +238,19 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John') //
+    Page.verifyOnPage(ContactConfirmationPage, 'John Smith') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
+    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact') //
       .selectRelationship('MOT')
       .clickContinue()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'Contact, Existing') //
+    Page.verifyOnPage(SelectEmergencyContactPage, 'Existing Contact') //
       .selectIsEmergencyContact('YES')
       .clickContinue()
 
-    const selectNextOfKinPage = Page.verifyOnPage(SelectNextOfKinPage, 'Contact, Existing')
+    const selectNextOfKinPage = Page.verifyOnPage(SelectNextOfKinPage, 'Existing Contact')
     selectNextOfKinPage.clickContinue()
     selectNextOfKinPage.hasFieldInError('isNextOfKin', 'Select whether the contact is next of kin for the prisoner')
   })
@@ -266,21 +266,21 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John') //
+    Page.verifyOnPage(ContactConfirmationPage, 'John Smith') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
+    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact') //
       .selectRelationship('MOT')
-      .continueTo(SelectEmergencyContactPage, 'Contact, Existing') //
+      .continueTo(SelectEmergencyContactPage, 'Existing Contact') //
       .selectIsEmergencyContact('NO')
-      .continueTo(SelectNextOfKinPage, 'Contact, Existing') //
+      .continueTo(SelectNextOfKinPage, 'Existing Contact') //
       .selectIsNextOfKin('YES')
-      .continueTo(RelationshipCommentsPage, 'Contact, Existing') //
-      .backTo(SelectNextOfKinPage, 'Contact, Existing')
-      .backTo(SelectEmergencyContactPage, 'Contact, Existing')
-      .backTo(SelectRelationshipPage, 'Contact, Existing')
-      .backTo(ContactConfirmationPage, 'Smith, John')
+      .continueTo(RelationshipCommentsPage, 'Existing Contact') //
+      .backTo(SelectNextOfKinPage, 'Existing Contact')
+      .backTo(SelectEmergencyContactPage, 'Existing Contact')
+      .backTo(SelectRelationshipPage, 'Existing Contact')
+      .backTo(ContactConfirmationPage, 'John Smith')
       .backTo(SearchContactPage)
       .verifyShowsNameAs('Contact, Existing')
   })
@@ -298,23 +298,23 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John') //
+    Page.verifyOnPage(ContactConfirmationPage, 'John Smith') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Contact, Deceased') //
+    Page.verifyOnPage(SelectRelationshipPage, 'Deceased Contact') //
       .selectRelationship('MOT')
       .clickContinue()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'Contact, Deceased') //
+    Page.verifyOnPage(SelectEmergencyContactPage, 'Deceased Contact') //
       .selectIsEmergencyContact('NO')
       .clickContinue()
 
-    Page.verifyOnPage(SelectNextOfKinPage, 'Contact, Deceased') //
+    Page.verifyOnPage(SelectNextOfKinPage, 'Deceased Contact') //
       .selectIsNextOfKin('YES')
       .clickContinue()
 
-    Page.verifyOnPage(RelationshipCommentsPage, 'Contact, Deceased') //
+    Page.verifyOnPage(RelationshipCommentsPage, 'Deceased Contact') //
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
