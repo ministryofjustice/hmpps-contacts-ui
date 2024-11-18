@@ -7,8 +7,8 @@ import ContactDetails = contactsApiClientTypes.ContactDetails
 import { components } from '../../../../../@types/contactsApi'
 
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
-type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
-type ContactEmailDetails = components['schemas']['ContactEmailDetails']
+// type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
+// type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 
 export default class ManageContactAddEmailController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}

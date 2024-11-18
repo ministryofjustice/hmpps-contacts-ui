@@ -159,6 +159,18 @@ export default class ManageContactDetailsPage extends Page {
     this.deleteIdentityLink(id).click()
   }
 
+  clickAddEmailLink() {
+    this.addEmailLink().click()
+  }
+
+  clickEditEmailLink(id: number) {
+    this.editEmailLink(id).click()
+  }
+
+  clickDeleteEmailLink(id: number) {
+    this.deleteEmailLink(id).click()
+  }
+
   private addIdentityLink = (): PageElement => cy.get('[data-qa="add-identity-number"]')
 
   private editIdentityLink = (id: number): PageElement => cy.get(`[data-qa="edit-identity-number-${id}"]`)
@@ -166,4 +178,10 @@ export default class ManageContactDetailsPage extends Page {
   private deleteIdentityLink = (id: number): PageElement => cy.get(`[data-qa="delete-identity-number-${id}"]`)
 
   private emailValue = (id: number): PageElement => cy.get(`.confirm-email-${id}-value`)
+
+  private addEmailLink = (): PageElement => cy.get('[data-qa="add-email-address"]')
+
+  private editEmailLink = (id: number): PageElement => cy.get(`[data-qa="edit-email-address-${id}"]`)
+
+  private deleteEmailLink = (id: number): PageElement => cy.get(`[data-qa="delete-email-address-${id}"]`)
 }

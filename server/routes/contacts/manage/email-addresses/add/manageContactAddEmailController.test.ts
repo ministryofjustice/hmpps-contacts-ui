@@ -1,7 +1,6 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { use } from 'passport'
 import { components } from '../../../../../@types/contactsApi'
 import { appWithAllRoutes, flashProvider, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
@@ -13,8 +12,8 @@ import TestData from '../../../../testutils/testData'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
-type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
-type ContactEmailDetails = components['schemas']['ContactEmailDetails']
+// type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
+// type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/referenceDataService')
