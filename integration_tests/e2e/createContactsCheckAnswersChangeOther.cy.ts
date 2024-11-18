@@ -118,9 +118,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
       .clickChangeRelationshipLink()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Last, First Middle') //
-      .hasSelectedRelationshipHint("Last, First Middle is the prisoner's mother.")
       .selectRelationship('FA')
-      .hasSelectedRelationshipHint("Last, First Middle is the prisoner's father.")
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //

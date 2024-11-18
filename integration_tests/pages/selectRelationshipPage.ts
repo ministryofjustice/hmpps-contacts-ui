@@ -5,22 +5,15 @@ export default class SelectRelationshipPage extends Page {
     super(`How is ${name} related to the prisoner?`)
   }
 
+  hasRelationshipSelected(value: string): SelectRelationshipPage {
+    this.relationshipSelect().should('have.value', value)
+    return this
+  }
+
   selectRelationship(value: string): SelectRelationshipPage {
     this.relationshipSelect().select(value)
     return this
   }
 
-  hasSelectedRelationshipHint(value: string): SelectRelationshipPage {
-    this.selectedRelationshipHint().should('contain.text', value)
-    return this
-  }
-
-  hasNoRelationshipHint(): SelectRelationshipPage {
-    this.selectedRelationshipHint().should('contain.html', '&nbsp;')
-    return this
-  }
-
   private relationshipSelect = (): PageElement => cy.get('#relationship')
-
-  private selectedRelationshipHint = (): PageElement => cy.get('#selected-relationship-hint')
 }

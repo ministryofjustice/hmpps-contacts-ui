@@ -40,6 +40,8 @@ import ManageGenderController from './gender/contactGenderController'
 import UpdateNameController from './name/updateNameController'
 import { restrictedEditingNameSchema } from '../common/name/nameSchemas'
 import ManageEmergencyContactController from './relationship/manageEmergencyContactController'
+import ManageContactRelationshipController from './relationship/manageContactRelationshipController'
+import { selectRelationshipSchemaFactory } from '../common/relationship/selectRelationshipSchemas'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -355,6 +357,21 @@ const ManageContactsRoutes = (
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/emergency-contact',
     prepareStandaloneManageContactJourney(),
     asyncMiddleware(manageEmergencyContactStatusController.POST),
+  )
+
+  const updateRelationshipController = new ManageContactRelationshipController(contactsService, referenceDataService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-relationship',
+    prepareStandaloneManageContactJourney(),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    logPageViewMiddleware(auditService, updateRelationshipController),
+    asyncMiddleware(updateRelationshipController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-relationship',
+    prepareStandaloneManageContactJourney(),
+    validate(selectRelationshipSchemaFactory()),
+    asyncMiddleware(updateRelationshipController.POST),
   )
 
   return router

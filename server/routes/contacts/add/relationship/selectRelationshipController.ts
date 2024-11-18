@@ -3,7 +3,7 @@ import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../services/referenceDataService'
-import { SelectRelationshipSchema } from './selectRelationshipSchemas'
+import { SelectRelationshipSchema } from '../../common/relationship/selectRelationshipSchemas'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
@@ -30,7 +30,7 @@ export default class SelectRelationshipController implements PageHandler {
       relationshipOptions,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
     }
-    res.render('pages/contacts/add/selectRelationship', viewModel)
+    res.render('pages/contacts/common/selectRelationship', viewModel)
   }
 
   POST = async (

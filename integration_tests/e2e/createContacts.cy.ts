@@ -56,9 +56,7 @@ context('Create Contacts', () => {
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Last, First') //
-      .hasNoRelationshipHint()
       .selectRelationship('MOT')
-      .hasSelectedRelationshipHint("Last, First is the prisoner's mother.")
       .clickContinue()
 
     Page.verifyOnPage(SelectEmergencyContactPage, 'Last, First') //
@@ -117,9 +115,7 @@ context('Create Contacts', () => {
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Last, First Middle') //
-      .hasNoRelationshipHint()
       .selectRelationship('MOT')
-      .hasSelectedRelationshipHint("Last, First Middle is the prisoner's mother.")
       .clickContinue()
 
     Page.verifyOnPage(SelectEmergencyContactPage, 'Last, First Middle') //
@@ -229,9 +225,7 @@ context('Create Contacts', () => {
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Last, First') //
-      .hasNoRelationshipHint()
       .selectRelationship('MOT')
-      .hasSelectedRelationshipHint("Last, First is the prisoner's mother.")
       .clickContinue()
 
     const selectEmergencyContactPage = Page.verifyOnPage(SelectEmergencyContactPage, 'Last, First')
@@ -250,9 +244,7 @@ context('Create Contacts', () => {
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Last, First') //
-      .hasNoRelationshipHint()
       .selectRelationship('MOT')
-      .hasSelectedRelationshipHint("Last, First is the prisoner's mother.")
       .clickContinue()
 
     Page.verifyOnPage(SelectEmergencyContactPage, 'Last, First') //
@@ -272,9 +264,7 @@ context('Create Contacts', () => {
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Last, First') //
-      .hasNoRelationshipHint()
       .selectRelationship('MOT')
-      .hasSelectedRelationshipHint("Last, First is the prisoner's mother.")
       .clickContinue()
 
     Page.verifyOnPage(SelectEmergencyContactPage, 'Last, First') //
@@ -298,9 +288,7 @@ context('Create Contacts', () => {
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Last, First') //
-      .hasNoRelationshipHint()
       .selectRelationship('MOT')
-      .hasSelectedRelationshipHint("Last, First is the prisoner's mother.")
       .clickContinue()
 
     Page.verifyOnPage(SelectEmergencyContactPage, 'Last, First') //
@@ -327,9 +315,7 @@ context('Create Contacts', () => {
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Last, First') //
-      .hasNoRelationshipHint()
       .selectRelationship('MOT')
-      .hasSelectedRelationshipHint("Last, First is the prisoner's mother.")
       .clickContinue()
 
     Page.verifyOnPage(SelectEmergencyContactPage, 'Last, First') //
@@ -368,9 +354,7 @@ context('Create Contacts', () => {
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Last, First') //
-      .hasNoRelationshipHint()
       .selectRelationship('MOT')
-      .hasSelectedRelationshipHint("Last, First is the prisoner's mother.")
       .clickContinue()
 
     Page.verifyOnPage(SelectEmergencyContactPage, 'Last, First') //

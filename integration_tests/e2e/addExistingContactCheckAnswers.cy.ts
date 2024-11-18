@@ -95,9 +95,7 @@ context('Add Existing Contact Check Answers', () => {
       .clickChangeRelationshipLink()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
-      .hasSelectedRelationshipHint("Contact, Existing is the prisoner's mother.")
       .selectRelationship('FA')
-      .hasSelectedRelationshipHint("Contact, Existing is the prisoner's father.")
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
