@@ -6,8 +6,8 @@
 {% from "../../../../partials/miniProfile/macro.njk" import miniProfile %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
-{% set pageTitle = applicationName + " - Update emergency contact" %}
-{% set title = "Is " + contact | reverseFormatName + " an emergency contact for the prisoner?" %}
+{% set pageTitle = applicationName + " - Update next of kin" %}
+{% set title = "Is " + contact | reverseFormatName + " next of kin for the prisoner?" %}
 
 {% block content %}
 
@@ -26,17 +26,17 @@
             <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
             
             {{ govukRadios({
-                    name: "emergencyContactStatus",
+                    name: "nextOfKinStatus",
                     items: [
                         {
                             value: "YES",
                             text: 'YES' | formatYesNo,
-                            checked: relationship.emergencyContact === true
+                            checked: relationship.nextOfKin === true
                         },
                         {
                             value: "NO",
                             text: 'NO' | formatYesNo,
-                            checked: relationship.emergencyContact === false
+                            checked: relationship.nextOfKin === false
                         }
                     ]
                 })

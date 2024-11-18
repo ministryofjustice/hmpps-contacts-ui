@@ -42,6 +42,7 @@ import { restrictedEditingNameSchema } from '../common/name/nameSchemas'
 import ManageEmergencyContactController from './relationship/manageEmergencyContactController'
 import ManageContactRelationshipController from './relationship/manageContactRelationshipController'
 import { selectRelationshipSchemaFactory } from '../common/relationship/selectRelationshipSchemas'
+import ManageNextOfKinContactController from './relationship/manageNextOfKinContactController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -372,6 +373,20 @@ const ManageContactsRoutes = (
     prepareStandaloneManageContactJourney(),
     validate(selectRelationshipSchemaFactory()),
     asyncMiddleware(updateRelationshipController.POST),
+  )
+
+  const manageNextOfKinContactController = new ManageNextOfKinContactController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/next-of-kin',
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    prepareStandaloneManageContactJourney(),
+    logPageViewMiddleware(auditService, manageNextOfKinContactController),
+    asyncMiddleware(manageNextOfKinContactController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/next-of-kin',
+    prepareStandaloneManageContactJourney(),
+    asyncMiddleware(manageNextOfKinContactController.POST),
   )
 
   return router
