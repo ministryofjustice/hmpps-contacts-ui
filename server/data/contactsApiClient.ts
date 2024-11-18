@@ -20,6 +20,7 @@ import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
 import CreateIdentityRequest = contactsApiClientTypes.CreateIdentityRequest
 import UpdateIdentityRequest = contactsApiClientTypes.UpdateIdentityRequest
 import ContactIdentityDetails = contactsApiClientTypes.ContactIdentityDetails
+import UpdateRelationshipRequest = contactsApiClientTypes.UpdateRelationshipRequest
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 
 type Language = components['schemas']['Language']
@@ -210,6 +211,21 @@ export default class ContactsApiClient extends RestClient {
     return this.patch<PatchContactRequest>(
       {
         path: `/contact/${contactId}`,
+        data: request,
+      },
+      user,
+    )
+  }
+
+  async updateContactRelationshipById(
+    contactId: number,
+    prisonerContactId: number,
+    request: UpdateRelationshipRequest,
+    user: Express.User,
+  ): Promise<PatchContactResponse> {
+    return this.patch<UpdateRelationshipRequest>(
+      {
+        path: `/contact/${contactId}/relationship/${prisonerContactId}`,
         data: request,
       },
       user,

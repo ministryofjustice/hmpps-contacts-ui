@@ -41,6 +41,7 @@ import UpdateNameController from './name/updateNameController'
 import { restrictedEditingNameSchema } from '../common/name/nameSchemas'
 import ManageContactAddEmailController from './email-addresses/add/manageContactAddEmailController'
 import { emailSchemaFactory } from './email-addresses/emailSchemas'
+import ManageEmergencyContactController from './relationship/manageEmergencyContactController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -344,16 +345,30 @@ const ManageContactsRoutes = (
     asyncMiddleware(updateNameController.POST),
   )
 
+  const manageEmergencyContactStatusController = new ManageEmergencyContactController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/emergency-contact',
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    prepareStandaloneManageContactJourney(),
+    logPageViewMiddleware(auditService, manageEmergencyContactStatusController),
+    asyncMiddleware(manageEmergencyContactStatusController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/emergency-contact',
+    prepareStandaloneManageContactJourney(),
+    asyncMiddleware(manageEmergencyContactStatusController.POST),
+  )
+
   const manageContactAddEmailController = new ManageContactAddEmailController(contactsService)
   router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/create', // :contactEmailId
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/create',
     prepareStandaloneManageContactJourney(),
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, manageContactAddEmailController),
     asyncMiddleware(manageContactAddEmailController.GET),
   )
   router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/create', // :contactEmailId
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/create',
     prepareStandaloneManageContactJourney(),
     validate(emailSchemaFactory()),
     asyncMiddleware(manageContactAddEmailController.POST),

@@ -256,6 +256,28 @@ export default {
     })
   },
 
+  stubUpdateContactRelationshipById: ({
+    contactId,
+    prisonerContactId,
+    response,
+  }: {
+    contactId: number
+    prisonerContactId: number
+    response: StubPatchContactResponse
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PATCH',
+        urlPath: `/contact/${contactId}/relationship/${prisonerContactId}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: response,
+      },
+    })
+  },
+
   stubGetDomesticStatuses: (): SuperAgentRequest => {
     return stubFor({
       request: {

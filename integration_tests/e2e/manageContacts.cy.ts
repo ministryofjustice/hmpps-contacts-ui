@@ -79,6 +79,7 @@ context('Manage contacts ', () => {
 
   it(`should render manage contact details`, () => {
     const { prisonerNumber } = TestData.prisoner()
+    cy.task('stubGetGenders')
     cy.task('stubTitlesReferenceData')
     cy.task('stubComponentsMeta')
     cy.task('stubPrisoners', {
@@ -123,6 +124,7 @@ context('Manage contacts ', () => {
       estimatedIsOverEighteen: 'YES',
       deceasedDate: '2020-11-22',
     }
+    cy.task('stubGetGenders')
     cy.task('stubTitlesReferenceData')
     cy.task('stubComponentsMeta')
     cy.task('stubPrisoners', {

@@ -31,6 +31,7 @@ export default class ContactDetailsController implements PageHandler {
 
     return res.render('pages/contacts/manage/contactDetails/details', {
       contact,
+      prisonerContactId,
       prisonerContactRelationship,
       formattedFullName,
       manageContactRelationshipUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,

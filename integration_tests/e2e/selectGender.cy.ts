@@ -17,6 +17,7 @@ context('Select Gender', () => {
     cy.task('stubTitlesReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetContactById', TestData.contact())
+    cy.task('stubGetGenders')
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship(),
@@ -34,12 +35,11 @@ context('Select Gender', () => {
       gender: 'M',
       updatedBy: 'USER1',
     }
-    cy.task('stubGetGenders')
     cy.task('stubPatchContactById', { contactId, request })
 
     Page.verifyOnPage(ManageContactDetailsPage).clickChangeGenderLink()
     Page.verifyOnPage(SelectGenderPage, 'Jones Mason').selectGender('M').clickContinue()
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').verifyGenderValueAs('Not provided')
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').verifyGenderValueAs('Male')
 
     cy.verifyLastAPICall(
       {
@@ -57,8 +57,8 @@ context('Select Gender', () => {
       gender: null,
       updatedBy: 'USER1',
     }
-    cy.task('stubGetGenders')
     cy.task('stubPatchContactById', { contactId, request })
+    cy.task('stubGetContactById', TestData.contact({ gender: null, genderDescription: null }))
 
     Page.verifyOnPage(ManageContactDetailsPage).clickChangeGenderLink()
     Page.verifyOnPage(SelectGenderPage, 'Jones Mason').clickContinue()
@@ -76,16 +76,12 @@ context('Select Gender', () => {
   })
 
   it(`Back link goes back to manage contact`, () => {
-    cy.task('stubGetGenders')
-
     Page.verifyOnPage(ManageContactDetailsPage).clickChangeGenderLink()
     Page.verifyOnPage(SelectGenderPage, 'Jones Mason') //
       .backTo(ManageContactDetailsPage, 'Jones Mason')
   })
 
   it(`Cancel goes back to manage contact`, () => {
-    cy.task('stubGetGenders')
-
     Page.verifyOnPage(ManageContactDetailsPage).clickChangeGenderLink()
     Page.verifyOnPage(SelectGenderPage, 'Jones Mason') //
       .cancelTo(ManageContactDetailsPage, 'Jones Mason')
