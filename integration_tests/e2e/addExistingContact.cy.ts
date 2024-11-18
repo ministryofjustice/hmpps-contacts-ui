@@ -74,9 +74,7 @@ context('Add Existing Contact', () => {
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
-      .hasNoRelationshipHint()
       .selectRelationship('MOT')
-      .hasSelectedRelationshipHint("Contact, Existing is the prisoner's mother.")
       .clickContinue()
 
     Page.verifyOnPage(SelectEmergencyContactPage, 'Contact, Existing') //
@@ -138,9 +136,7 @@ context('Add Existing Contact', () => {
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
-      .hasNoRelationshipHint()
       .selectRelationship('MOT')
-      .hasSelectedRelationshipHint("Contact, Existing is the prisoner's mother.")
       .clickContinue()
 
     Page.verifyOnPage(SelectEmergencyContactPage, 'Contact, Existing') //
@@ -199,9 +195,7 @@ context('Add Existing Contact', () => {
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
-      .hasNoRelationshipHint()
       .selectRelationship('MOT')
-      .hasSelectedRelationshipHint("Contact, Existing is the prisoner's mother.")
       .clickContinue()
 
     const selectEmergencyContactPage = Page.verifyOnPage(SelectEmergencyContactPage, 'Contact, Existing')
@@ -249,9 +243,7 @@ context('Add Existing Contact', () => {
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
-      .hasNoRelationshipHint()
       .selectRelationship('MOT')
-      .hasSelectedRelationshipHint("Contact, Existing is the prisoner's mother.")
       .clickContinue()
 
     Page.verifyOnPage(SelectEmergencyContactPage, 'Contact, Existing') //
@@ -261,37 +253,6 @@ context('Add Existing Contact', () => {
     const selectNextOfKinPage = Page.verifyOnPage(SelectNextOfKinPage, 'Contact, Existing')
     selectNextOfKinPage.clickContinue()
     selectNextOfKinPage.hasFieldInError('isNextOfKin', 'Select whether the contact is next of kin for the prisoner')
-  })
-
-  it('Relationship hint is hidden for None, Social - Other and In Loco Parentes', () => {
-    cy.task('stubGetContactById', {
-      id: contactId,
-      firstName: 'Existing',
-      lastName: 'Contact',
-      dateOfBirth: '1990-01-14',
-    })
-
-    Page.verifyOnPage(SearchContactPage) //
-      .clickTheContactLink(contactId)
-
-    Page.verifyOnPage(ContactConfirmationPage, 'Smith, John') //
-      .selectIsTheRightPersonYesRadio()
-      .clickContinue()
-
-    Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
-      .hasNoRelationshipHint()
-      .selectRelationship('MOT')
-      .hasSelectedRelationshipHint("Contact, Existing is the prisoner's mother.")
-      .selectRelationship('NONE')
-      .hasNoRelationshipHint()
-      .selectRelationship('MOT')
-      .hasSelectedRelationshipHint("Contact, Existing is the prisoner's mother.")
-      .selectRelationship('OTHER')
-      .hasNoRelationshipHint()
-      .selectRelationship('MOT')
-      .hasSelectedRelationshipHint("Contact, Existing is the prisoner's mother.")
-      .selectRelationship('ILP')
-      .hasNoRelationshipHint()
   })
 
   it('Can navigate all the way back to search from relationship comments', () => {
@@ -310,7 +271,6 @@ context('Add Existing Contact', () => {
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Contact, Existing') //
-      .hasNoRelationshipHint()
       .selectRelationship('MOT')
       .continueTo(SelectEmergencyContactPage, 'Contact, Existing') //
       .selectIsEmergencyContact('NO')
