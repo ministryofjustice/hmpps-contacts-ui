@@ -1,7 +1,6 @@
 import ContactsApiClient from '../data/contactsApiClient'
 import { components } from '../@types/contactsApi'
 import AddContactJourney = journeys.AddContactJourney
-import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import Pageable = contactsApiClientTypes.Pageable
@@ -16,6 +15,7 @@ import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
 import CreateIdentityRequest = contactsApiClientTypes.CreateIdentityRequest
 import UpdateIdentityRequest = contactsApiClientTypes.UpdateIdentityRequest
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
+import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
 
 type Language = components['schemas']['Language']
 type PageableObject = components['schemas']['PageableObject']
@@ -26,7 +26,7 @@ type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 export default class ContactsService {
   constructor(private readonly contactsApiClient: ContactsApiClient) {}
 
-  async createContact(journey: AddContactJourney, user: Express.User): Promise<Contact> {
+  async createContact(journey: AddContactJourney, user: Express.User): Promise<ContactCreationResult> {
     let dateOfBirth: Date
     let isOverEighteen
     if (journey.dateOfBirth.isKnown === 'YES') {
@@ -65,7 +65,7 @@ export default class ContactsService {
     return this.contactsApiClient.createContact(request, user)
   }
 
-  async addContact(journey: AddContactJourney, user: Express.User): Promise<Contact> {
+  async addContact(journey: AddContactJourney, user: Express.User): Promise<PrisonerContactRelationshipDetails> {
     const request: AddContactRelationshipRequest = {
       relationship: {
         prisonerNumber: journey.prisonerNumber,

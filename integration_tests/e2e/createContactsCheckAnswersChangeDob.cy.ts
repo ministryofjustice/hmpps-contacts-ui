@@ -10,6 +10,7 @@ import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
 import ListContactsPage from '../pages/listContacts'
 import SearchContactPage from '../pages/searchContactPage'
+import CreateContactSuccessPage from '../pages/createContactSuccessPage'
 
 context('Create contact and update from check answers where we are changing the DOB', () => {
   beforeEach(() => {
@@ -20,7 +21,22 @@ context('Create contact and update from check answers where we are changing the 
     cy.task('stubRelationshipReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', TestData.prisoner().prisonerNumber)
-    cy.task('stubCreateContact', { id: 132456 })
+    cy.task('stubCreateContact', {
+      createdContact: { id: 123456 },
+      createdRelationship: { prisonerContactId: 654321 },
+    })
+    cy.task(
+      'stubGetContactById',
+      TestData.contact({
+        id: 123456,
+        lastName: 'Last',
+        firstName: 'First',
+      }),
+    )
+    cy.task('stubGetPrisonerContactRelationshipById', {
+      id: 654321,
+      response: TestData.prisonerContactRelationship(),
+    })
     cy.task('stubContactSearch', {
       results: {
         totalPages: 0,
@@ -82,7 +98,7 @@ context('Create contact and update from check answers where we are changing the 
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsDateOfBirthAs('16 July 1983')
-      .continueTo(ListContactsPage)
+      .continueTo(CreateContactSuccessPage)
 
     cy.verifyLastAPICall(
       {
@@ -129,7 +145,7 @@ context('Create contact and update from check answers where we are changing the 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsDateOfBirthAs('Not provided')
       .verifyShowsEstimatedDateOfBirthAs("I don't know")
-      .continueTo(ListContactsPage)
+      .continueTo(CreateContactSuccessPage)
 
     cy.verifyLastAPICall(
       {
@@ -176,7 +192,7 @@ context('Create contact and update from check answers where we are changing the 
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsDateOfBirthAs('15 June 1982')
-      .continueTo(ListContactsPage)
+      .continueTo(CreateContactSuccessPage)
 
     cy.verifyLastAPICall(
       {
@@ -221,7 +237,7 @@ context('Create contact and update from check answers where we are changing the 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsDateOfBirthAs('Not provided')
       .verifyShowsEstimatedDateOfBirthAs('Yes')
-      .continueTo(ListContactsPage)
+      .continueTo(CreateContactSuccessPage)
 
     cy.verifyLastAPICall(
       {

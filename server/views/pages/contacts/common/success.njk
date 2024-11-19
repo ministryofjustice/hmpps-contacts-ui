@@ -1,0 +1,36 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
+
+{% set pageTitle = applicationName + " - Success" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+{% include '../partials/addContactNavigation.njk' %}
+{{ miniProfile(prisonerDetails) }}
+<span class="govuk-caption-l">Contacts</span>
+ <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {{ govukPanel({
+                titleText: successMessage,
+                attributes: {"data-qa": "success-message"},
+                html: (
+                    '<div><strong>Prisoner: </strong><span data-qa="prisoner-name">' + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) + '</span></div>' +
+                    '<div><strong>Contact: </strong><span data-qa="contact-name">' + journey.names | formatNameFirstNameFirst + '</span></div>'
+                )
+            }) }}
+            <div>
+                <a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/manage/{{ contactId }}/relationship/{{ prisonerContactId }}" class="govuk-body govuk-link--no-visited-state" data-qa="go-to-contact-info-link">
+                    View {{ journey.names | formatNameFirstNameFirst }}’s contact information
+                </a>
+            </div>
+            <div class="govuk-!-margin-top-4">
+                <a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/list" class="govuk-body govuk-link--no-visited-state" data-qa="go-to-contacts-list-link">
+                    Go to {{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }}’s contacts list
+                </a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -9,6 +9,7 @@ import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
 import ListContactsPage from '../pages/listContacts'
 import SearchContactPage from '../pages/searchContactPage'
+import CreateContactSuccessPage from '../pages/createContactSuccessPage'
 
 context('Create contact and update from check answers excluding DOB changes', () => {
   beforeEach(() => {
@@ -19,7 +20,22 @@ context('Create contact and update from check answers excluding DOB changes', ()
     cy.task('stubRelationshipReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', TestData.prisoner().prisonerNumber)
-    cy.task('stubCreateContact', { id: 132456 })
+    cy.task('stubCreateContact', {
+      createdContact: { id: 123456 },
+      createdRelationship: { prisonerContactId: 654321 },
+    })
+    cy.task(
+      'stubGetContactById',
+      TestData.contact({
+        id: 123456,
+        lastName: 'Last',
+        firstName: 'First',
+      }),
+    )
+    cy.task('stubGetPrisonerContactRelationshipById', {
+      id: 654321,
+      response: TestData.prisonerContactRelationship(),
+    })
     cy.task('stubContactSearch', {
       results: {
         totalPages: 0,
@@ -87,7 +103,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsNameAs('Last Updated, Dr First Updated Middle Updated')
-      .continueTo(ListContactsPage)
+      .continueTo(CreateContactSuccessPage)
 
     cy.verifyLastAPICall(
       {
@@ -123,7 +139,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowRelationshipAs('Father')
-      .continueTo(ListContactsPage)
+      .continueTo(CreateContactSuccessPage)
 
     cy.verifyLastAPICall(
       {
@@ -159,7 +175,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowIsEmergencyContactAs('Yes')
-      .continueTo(ListContactsPage)
+      .continueTo(CreateContactSuccessPage)
 
     cy.verifyLastAPICall(
       {
@@ -195,7 +211,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowIsNextOfKinAs('Yes')
-      .continueTo(ListContactsPage)
+      .continueTo(CreateContactSuccessPage)
 
     cy.verifyLastAPICall(
       {
@@ -231,7 +247,7 @@ context('Create contact and update from check answers excluding DOB changes', ()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowCommentsAs('Some new comments I entered')
-      .continueTo(ListContactsPage)
+      .continueTo(CreateContactSuccessPage)
 
     cy.verifyLastAPICall(
       {

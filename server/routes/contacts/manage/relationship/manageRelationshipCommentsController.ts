@@ -2,9 +2,9 @@ import { Request, Response } from 'express'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
-import Contact = contactsApiClientTypes.Contact
 import UpdateRelationshipRequest = contactsApiClientTypes.UpdateRelationshipRequest
 import { Navigation } from '../../add/addContactFlowControl'
+import ContactDetails = contactsApiClientTypes.ContactDetails
 
 export default class ManageRelationshipCommentsController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -16,7 +16,7 @@ export default class ManageRelationshipCommentsController implements PageHandler
     const { prisonerDetails, user, journey } = res.locals
     const navigation: Navigation = { backLink: journey.returnPoint.url }
 
-    const contact: Contact = await this.contactsService.getContact(parseInt(contactId, 10), user)
+    const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
 
     journey.names = {
       title: contact.title,

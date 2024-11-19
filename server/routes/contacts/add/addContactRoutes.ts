@@ -28,6 +28,7 @@ import AddContactModeController from './mode/addContactModeController'
 import ContactConfirmationController from './contact-confirmation/contactConfirmationController'
 import { enterDobSchema } from '../common/enter-dob/enterDobSchemas'
 import { enterEstimatedDobSchema } from '../common/enter-estimated-dob/enterEstimatedDobSchemas'
+import SuccessfullyAddedContactController from './success/successfullyAddedContactController'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -203,6 +204,13 @@ const AddContactRoutes = (
     asyncMiddleware(checkAnswersController.POST),
   )
 
+  const successfullyAddedContactController = new SuccessfullyAddedContactController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contact/:mode/:contactId/:prisonerContactId/success',
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    logPageViewMiddleware(auditService, successfullyAddedContactController),
+    asyncMiddleware(successfullyAddedContactController.GET),
+  )
   return router
 }
 

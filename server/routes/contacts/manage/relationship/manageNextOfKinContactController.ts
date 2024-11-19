@@ -2,8 +2,8 @@ import { Request, Response } from 'express'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
-import Contact = contactsApiClientTypes.Contact
 import UpdateRelationshipRequest = contactsApiClientTypes.UpdateRelationshipRequest
+import ContactDetails = contactsApiClientTypes.ContactDetails
 
 export default class ManageNextOfKinContactController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -14,7 +14,7 @@ export default class ManageNextOfKinContactController implements PageHandler {
     const { contactId, prisonerContactId } = req.params
     const { prisonerDetails, user } = res.locals
 
-    const contact: Contact = await this.contactsService.getContact(parseInt(contactId, 10), user)
+    const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const relationship = await this.contactsService.getPrisonerContactRelationship(Number(prisonerContactId), user)
 
     return res.render('pages/contacts/manage/contactDetails/manageNextOfKinContactStatus', {
