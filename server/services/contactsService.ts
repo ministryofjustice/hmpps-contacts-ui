@@ -19,6 +19,10 @@ import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerConta
 
 type Language = components['schemas']['Language']
 type PageableObject = components['schemas']['PageableObject']
+type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
+type CreateEmailRequest = components['schemas']['CreateEmailRequest']
+type ContactEmailDetails = components['schemas']['ContactEmailDetails']
+
 export default class ContactsService {
   constructor(private readonly contactsApiClient: ContactsApiClient) {}
 
@@ -196,6 +200,23 @@ export default class ContactsService {
     user: Express.User,
   ): Promise<contactsApiClientTypes.PatchContactResponse> {
     return this.contactsApiClient.updateContactRelationshipById(contactId, prisonerContactId, request, user)
+  }
+
+  async createContactEmail(
+    contactId: number,
+    request: CreateEmailRequest,
+    user: Express.User,
+  ): Promise<ContactEmailDetails> {
+    return this.contactsApiClient.createContactEmail(contactId, request, user)
+  }
+
+  async updateContactEmail(
+    contactId: number,
+    contactEmailId: number,
+    request: UpdateEmailRequest,
+    user: Express.User,
+  ): Promise<ContactEmailDetails> {
+    return this.contactsApiClient.updateContactEmail(contactId, contactEmailId, request, user)
   }
 
   async deleteContactEmail(contactId: number, contactEmailId: number, user: Express.User) {

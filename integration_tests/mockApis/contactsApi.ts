@@ -18,6 +18,9 @@ export type StubIdentityDetails = components['schemas']['ContactIdentityDetails'
 export type StubContactSearchResultItem = components['schemas']['ContactSearchResultItem']
 export type StubPatchContactResponse = components['schemas']['PatchContactResponse']
 export type StubPrisonerContactRelationshipDetails = components['schemas']['PrisonerContactRelationshipDetails']
+export type CreateEmailRequest = components['schemas']['CreateEmailRequest']
+export type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
+export type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 
 export default {
   stubCreateContact: (createdContact: StubContactDetails): SuperAgentRequest => {
@@ -420,6 +423,49 @@ export default {
       },
     })
   },
+
+  stubCreateContactEmail: ({
+    contactId,
+    created,
+  }: {
+    contactId: number
+    created: CreateEmailRequest
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPath: `/contact/${contactId}/email`,
+      },
+      response: {
+        status: 201,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: created,
+      },
+    })
+  },
+
+  stubUpdateContactEmail: ({
+    contactId,
+    contactEmailId,
+    updated,
+  }: {
+    contactId: number
+    contactEmailId: number
+    updated: UpdateEmailRequest
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PUT',
+        urlPath: `/contact/${contactId}/email/${contactEmailId}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: updated,
+      },
+    })
+  },
+
   stubDeleteContactEmail: ({
     contactId,
     contactEmailId,

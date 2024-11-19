@@ -39,6 +39,9 @@ import UpdateEstimatedDobController from './update-estimated-dob/updateEstimated
 import ManageGenderController from './gender/contactGenderController'
 import UpdateNameController from './name/updateNameController'
 import { restrictedEditingNameSchema } from '../common/name/nameSchemas'
+import ManageContactAddEmailController from './email/add/manageContactAddEmailController'
+import ManageContactEditEmailController from './email/edit/manageContactEditEmailController'
+import { emailSchemaFactory } from './email/emailSchemas'
 import ManageEmergencyContactController from './relationship/manageEmergencyContactController'
 import ManageContactRelationshipController from './relationship/manageContactRelationshipController'
 import { selectRelationshipSchemaFactory } from '../common/relationship/selectRelationshipSchemas'
@@ -398,6 +401,36 @@ const ManageContactsRoutes = (
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/next-of-kin',
     prepareStandaloneManageContactJourney(),
     asyncMiddleware(manageNextOfKinContactController.POST),
+  )
+
+  const manageContactAddEmailController = new ManageContactAddEmailController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/create',
+    prepareStandaloneManageContactJourney(),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    logPageViewMiddleware(auditService, manageContactAddEmailController),
+    asyncMiddleware(manageContactAddEmailController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/create',
+    prepareStandaloneManageContactJourney(),
+    validate(emailSchemaFactory()),
+    asyncMiddleware(manageContactAddEmailController.POST),
+  )
+
+  const manageContactEditEmailController = new ManageContactEditEmailController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/edit',
+    prepareStandaloneManageContactJourney(),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    logPageViewMiddleware(auditService, manageContactEditEmailController),
+    asyncMiddleware(manageContactEditEmailController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/edit',
+    prepareStandaloneManageContactJourney(),
+    validate(emailSchemaFactory()),
+    asyncMiddleware(manageContactEditEmailController.POST),
   )
 
   const manageContactDeleteEmailController = new ManageContactDeleteEmailController(contactsService)

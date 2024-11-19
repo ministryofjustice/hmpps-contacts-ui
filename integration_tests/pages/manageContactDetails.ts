@@ -121,6 +121,14 @@ export default class ManageContactDetailsPage extends Page {
     this.changeRelationshipLink().click()
   }
 
+  clickAddEmailLink() {
+    this.addEmailLink().click()
+  }
+
+  clickEditEmailLink(id: number) {
+    this.editEmailLink(id).click()
+  }
+
   private namesValue = (): PageElement => cy.get('.manage-names-value')
 
   private genderValue = (): PageElement => cy.get('.manage-gender-value')
@@ -190,6 +198,10 @@ export default class ManageContactDetailsPage extends Page {
   private deleteIdentityLink = (id: number): PageElement => cy.get(`[data-qa="delete-identity-number-${id}"]`)
 
   private emailValue = (id: number): PageElement => cy.get(`.confirm-email-${id}-value`)
+
+  private addEmailLink = (): PageElement => cy.get('[data-qa="add-email-address"]')
+
+  private editEmailLink = (id: number): PageElement => cy.get(`[data-qa="edit-email-address-${id}"]`)
 
   verifyShowIsEmergencyContactAs(expected: string) {
     this.checkAnswersEmergencyContactValue().should('contain.text', expected)

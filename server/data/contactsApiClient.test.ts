@@ -22,6 +22,9 @@ import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerConta
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 type Language = components['schemas']['Language']
+type CreateEmailRequest = components['schemas']['CreateEmailRequest']
+type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
+type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 
 jest.mock('./tokenStore/inMemoryTokenStore')
 
@@ -738,6 +741,125 @@ describe('contactsApiClient', () => {
       })
     })
   })
+
+  describe('Email Address', () => {
+    describe('createContactIdentity', () => {
+      it('should create the contact email and return the response', async () => {
+        // Given
+        const expectedContactEmailDetails: ContactEmailDetails = {
+          contactEmailId: 1,
+          contactId: 1,
+          emailAddress: 'test@example.com',
+          createdBy: 'user1',
+          createdTime: new Date().toISOString(),
+          amendedBy: new Date().toISOString(),
+          amendedTime: new Date().toISOString(),
+        }
+
+        const request: CreateEmailRequest = {
+          emailAddress: 'test@example.com',
+          createdBy: 'user1',
+        }
+
+        fakeContactsApi
+          .post('/contact/99/email', request)
+          .matchHeader('authorization', `Bearer systemToken`)
+          .reply(201, expectedContactEmailDetails)
+
+        // When
+        const createdContact = await contactsApiClient.createContactEmail(99, request, user)
+
+        // Then
+        expect(createdContact).toEqual(expectedContactEmailDetails)
+      })
+
+      it.each([400, 401, 403, 500])('should propagate errors creating contact identity', async (errorCode: number) => {
+        // Given
+        const request: CreateEmailRequest = {
+          emailAddress: 'test@example.com',
+          createdBy: 'user1',
+        }
+        const expectedErrorBody = {
+          status: errorCode,
+          userMessage: 'Some error',
+          developerMessage: 'Some error',
+        }
+
+        fakeContactsApi
+          .post('/contact/99/email', request)
+          .matchHeader('authorization', `Bearer systemToken`)
+          .reply(errorCode, expectedErrorBody)
+
+        // When
+        try {
+          await contactsApiClient.createContactEmail(99, request, user)
+        } catch (e) {
+          // Then
+          expect(e.status).toEqual(errorCode)
+          expect(e.data).toEqual(expectedErrorBody)
+        }
+      })
+    })
+
+    describe('updateContactEmail', () => {
+      it('should update the contact email and return the response', async () => {
+        // Given
+        const expectedContactEmailDetails: ContactEmailDetails = {
+          contactEmailId: 1,
+          contactId: 1,
+          emailAddress: 'test@example.com',
+          createdBy: 'user1',
+          createdTime: new Date().toISOString(),
+          amendedBy: new Date().toISOString(),
+          amendedTime: new Date().toISOString(),
+        }
+
+        const request: UpdateEmailRequest = {
+          emailAddress: 'test@example.com',
+          amendedBy: 'user1',
+        }
+
+        fakeContactsApi
+          .put('/contact/99/email/1', request)
+          .matchHeader('authorization', `Bearer systemToken`)
+          .reply(200, expectedContactEmailDetails)
+
+        // When
+        const updated = await contactsApiClient.updateContactEmail(99, 1, request, user)
+
+        // Then
+        expect(updated).toEqual(expectedContactEmailDetails)
+      })
+
+      it.each([400, 401, 403, 500])('should propagate errors updating contact identity', async (errorCode: number) => {
+        // Given
+        const request: UpdateEmailRequest = {
+          emailAddress: 'test@example.com',
+          amendedBy: 'user1',
+        }
+        const expectedErrorBody = {
+          status: errorCode,
+          userMessage: 'Some error',
+          developerMessage: 'Some error',
+        }
+
+        fakeContactsApi
+          .put('/contact/99/email/1', request)
+          .matchHeader('authorization', `Bearer systemToken`)
+          .reply(errorCode, expectedErrorBody)
+
+        // When
+        try {
+          await contactsApiClient.updateContactEmail(99, 1, request, user)
+        } catch (e) {
+          // Then
+          expect(e.status).toEqual(errorCode)
+          expect(e.data).toEqual(expectedErrorBody)
+        }
+      })
+    })
+  })
+
   describe('deleteContactEmail', () => {
     it('should delete the contact email', async () => {
       // Given

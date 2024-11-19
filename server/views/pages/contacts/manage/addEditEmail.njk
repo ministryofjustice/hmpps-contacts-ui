@@ -1,0 +1,50 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = applicationName + " - Create contact email" %}
+{% set title = "What is the email address for " + (contact | formatNameFirstNameFirst) + "?" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+
+    {{ govukBackLink({
+        text: "Back",
+        href: journey.returnPoint.url,
+        attributes: {"data-qa": "back-link"}
+    }) }}
+    {{ miniProfile(prisonerDetails) }}
+    {% include '../../../partials/formErrorSummary.njk' %}
+    <span class="govuk-caption-l">Contacts</span>
+    <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-half">
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+                {{ govukInput({
+                    id: "emailAddress",
+                    name: "emailAddress",
+                    classes: 'govuk-!-width-two-third',
+                    errorMessage: validationErrors | findError('emailAddress'),
+                    value: emailAddress
+                }) }}
+
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        html: "Confirm and save",
+                        type: "submit",
+                        classes: 'govuk-!-margin-top-6',
+                        attributes: {"data-qa": "continue-button"}
+                    }) }}
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ journey.returnPoint.url }}" data-qa="cancel-button">Cancel</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

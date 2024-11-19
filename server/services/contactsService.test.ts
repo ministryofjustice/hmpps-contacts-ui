@@ -18,6 +18,9 @@ import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 
 type Language = components['schemas']['Language']
+type CreateEmailRequest = components['schemas']['CreateEmailRequest']
+type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
+type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 
 jest.mock('../data/contactsApiClient')
 const searchResult = TestData.contactSearchResultItem()
@@ -586,6 +589,73 @@ describe('contactsService', () => {
     it('Propagates errors', async () => {
       apiClient.deleteContactPhone.mockRejectedValue(new Error('some error'))
       await expect(apiClient.deleteContactPhone(23, 77, user)).rejects.toEqual(new Error('some error'))
+    })
+  })
+
+  describe('createContactEmail', () => {
+    const expectedRequest: CreateEmailRequest = {
+      emailAddress: 'test@example.com',
+      createdBy: 'user1',
+    }
+
+    it('should create a contact email with all fields', async () => {
+      // Given
+      const expectedCreated: ContactEmailDetails = {
+        contactEmailId: 1,
+        contactId: 1,
+        emailAddress: 'test@example.com',
+        createdBy: 'user1',
+        createdTime: new Date().toISOString(),
+        amendedBy: new Date().toISOString(),
+        amendedTime: new Date().toISOString(),
+      }
+      apiClient.createContactEmail.mockResolvedValue(expectedCreated)
+
+      // When
+      const created = await service.createContactEmail(99, expectedRequest, user)
+
+      // Then
+      expect(created).toStrictEqual(expectedCreated)
+      expect(apiClient.createContactEmail).toHaveBeenCalledWith(99, expectedRequest, user)
+    })
+
+    it('should handle a bad request', async () => {
+      apiClient.createContactEmail.mockRejectedValue(createError.BadRequest())
+      await expect(service.createContactEmail(99, expectedRequest, user)).rejects.toBeInstanceOf(BadRequest)
+    })
+  })
+
+  describe('updateContactEmail', () => {
+    const expected: ContactEmailDetails = {
+      contactEmailId: 1,
+      contactId: 1,
+      emailAddress: 'test@example.com',
+      createdBy: 'user1',
+      createdTime: new Date().toISOString(),
+      amendedBy: new Date().toISOString(),
+      amendedTime: new Date().toISOString(),
+    }
+
+    const request: UpdateEmailRequest = {
+      emailAddress: 'test@example.com',
+      amendedBy: 'user1',
+    }
+
+    it('should update a contact email', async () => {
+      // Given
+      apiClient.updateContactEmail.mockResolvedValue(expected)
+
+      // When
+      const updated = await service.updateContactEmail(99, 1, request, user)
+
+      // Then
+      expect(updated).toStrictEqual(expected)
+      expect(apiClient.updateContactEmail).toHaveBeenCalledWith(99, 1, request, user)
+    })
+
+    it('should handle a bad request', async () => {
+      apiClient.updateContactEmail.mockRejectedValue(createError.BadRequest())
+      await expect(service.updateContactEmail(99, 1, request, user)).rejects.toBeInstanceOf(BadRequest)
     })
   })
 
