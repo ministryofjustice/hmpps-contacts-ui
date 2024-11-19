@@ -8,6 +8,8 @@ import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
 import SearchContactPage from '../pages/searchContactPage'
 import ContactConfirmationPage from '../pages/contactConfirmationPage'
+import AddContactSuccessPage from '../pages/addContactSuccessPage'
+import ManageContactDetailsPage from '../pages/manageContactDetails'
 
 context('Add Existing Contact', () => {
   const { prisonerNumber } = TestData.prisoner()
@@ -33,7 +35,11 @@ context('Add Existing Contact', () => {
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', prisonerNumber)
     cy.task('stubGetContactById', contact)
-    cy.task('stubAddContactRelationship', contactId)
+    cy.task('stubGetPrisonerContactRelationshipById', {
+      id: 654321,
+      response: TestData.prisonerContactRelationship(),
+    })
+    cy.task('stubAddContactRelationship', { contactId, createdPrisonerContactId: 654321 })
     cy.task('stubContactSearch', {
       results: {
         totalPages: 1,
@@ -100,7 +106,12 @@ context('Add Existing Contact', () => {
       .verifyNameIsNotChangeable()
       .verifyDateOfBirthIsNotChangeable()
       .verifyEstimatedDateOfBirthIsNotChangeable()
-      .continueTo(ListContactsPage)
+      .clickContinue()
+
+    Page.verifyOnPage(AddContactSuccessPage) //
+      .clickContactInfoLink()
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'Existing Contact')
 
     cy.verifyLastAPICall(
       {
@@ -160,7 +171,12 @@ context('Add Existing Contact', () => {
       .verifyNameIsNotChangeable()
       .verifyDateOfBirthIsNotChangeable()
       .verifyEstimatedDateOfBirthIsNotChangeable()
-      .continueTo(ListContactsPage)
+      .clickContinue()
+
+    Page.verifyOnPage(AddContactSuccessPage) //
+      .clickContactListLink()
+
+    Page.verifyOnPage(ListContactsPage)
 
     cy.verifyLastAPICall(
       {
@@ -324,7 +340,7 @@ context('Add Existing Contact', () => {
       .verifyNameIsNotChangeable()
       .verifyDateOfBirthIsNotChangeable()
       .verifyEstimatedDateOfBirthIsNotChangeable()
-      .continueTo(ListContactsPage)
+      .continueTo(AddContactSuccessPage)
 
     cy.verifyLastAPICall(
       {

@@ -5,8 +5,8 @@ import { ContactsService } from '../../../../services'
 import { components } from '../../../../@types/contactsApi'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
-import Contact = contactsApiClientTypes.Contact
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
+import ContactDetails = contactsApiClientTypes.ContactDetails
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 
@@ -21,7 +21,7 @@ export default class ManageDomesticStatusController implements PageHandler {
   GET = async (req: Request<{ contactId?: string }>, res: Response): Promise<void> => {
     const { contactId } = req.params
     const { prisonerDetails, user } = res.locals
-    const contact: Contact = await this.contactsService.getContact(parseInt(contactId, 10), user)
+    const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
 
     const domesticStatusOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.DOMESTIC_STS, user)

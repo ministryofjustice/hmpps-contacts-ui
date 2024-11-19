@@ -10,6 +10,8 @@ import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
 import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
 import SearchContactPage from '../pages/searchContactPage'
+import ManageContactDetailsPage from '../pages/manageContactDetails'
+import CreateContactSuccessPage from '../pages/createContactSuccessPage'
 
 context('Create Contacts', () => {
   beforeEach(() => {
@@ -20,7 +22,22 @@ context('Create Contacts', () => {
     cy.task('stubRelationshipReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', TestData.prisoner().prisonerNumber)
-    cy.task('stubCreateContact', { id: 132456 })
+    cy.task('stubCreateContact', {
+      createdContact: { id: 123456 },
+      createdRelationship: { prisonerContactId: 654321 },
+    })
+    cy.task(
+      'stubGetContactById',
+      TestData.contact({
+        id: 123456,
+        lastName: 'Last',
+        firstName: 'First',
+      }),
+    )
+    cy.task('stubGetPrisonerContactRelationshipById', {
+      id: 654321,
+      response: TestData.prisonerContactRelationship(),
+    })
     cy.task('stubContactSearch', {
       results: {
         totalPages: 0,
@@ -84,7 +101,12 @@ context('Create Contacts', () => {
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
       .verifyShowIsNextOfKinAs('Yes')
-      .continueTo(ListContactsPage)
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactSuccessPage) //
+      .clickContactInfoLink()
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Last')
 
     cy.verifyLastAPICall(
       {
@@ -143,7 +165,12 @@ context('Create Contacts', () => {
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('Yes')
       .verifyShowIsNextOfKinAs('No')
-      .continueTo(ListContactsPage)
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactSuccessPage) //
+      .clickContactListLink()
+
+    Page.verifyOnPage(ListContactsPage)
 
     cy.verifyLastAPICall(
       {

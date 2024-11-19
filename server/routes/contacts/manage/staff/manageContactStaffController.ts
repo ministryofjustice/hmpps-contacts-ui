@@ -2,8 +2,8 @@ import { Request, Response } from 'express'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { ContactsService } from '../../../../services'
-import Contact = contactsApiClientTypes.Contact
 import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
+import ContactDetails = contactsApiClientTypes.ContactDetails
 
 export default class ManageContactStaffController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -13,7 +13,7 @@ export default class ManageContactStaffController implements PageHandler {
   GET = async (req: Request<{ prisonerNumber: string; contactId: string }>, res: Response): Promise<void> => {
     const { user } = res.locals
     const { contactId } = req.params
-    const contact: Contact = await this.contactsService.getContact(parseInt(contactId, 10), user)
+    const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const viewModel = {
       contact,
     }

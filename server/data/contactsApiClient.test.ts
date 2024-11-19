@@ -4,7 +4,6 @@ import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import ContactsApiClient from './contactsApiClient'
 import ReferenceCodeType from '../enumeration/referenceCodeType'
 import { components } from '../@types/contactsApi'
-import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
@@ -19,6 +18,7 @@ import ContactIdentityDetails = contactsApiClientTypes.ContactIdentityDetails
 import UpdateIdentityRequest = contactsApiClientTypes.UpdateIdentityRequest
 import CreateIdentityRequest = contactsApiClientTypes.CreateIdentityRequest
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
+import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 type Language = components['schemas']['Language']
@@ -53,12 +53,14 @@ describe('contactsApiClient', () => {
   describe('createContact', () => {
     it('should create the request and return the response', async () => {
       // Given
-      const expectedContact: Contact = {
-        id: 1,
-        lastName: 'last',
-        firstName: 'first',
-        createdBy: 'user1',
-        createdTime: new Date().toISOString(),
+      const expectedContact: ContactCreationResult = {
+        createdContact: {
+          id: 1,
+          lastName: 'last',
+          firstName: 'first',
+          createdBy: 'user1',
+          createdTime: new Date().toISOString(),
+        },
       }
       const request: CreateContactRequest = {
         lastName: 'last',
@@ -110,6 +112,9 @@ describe('contactsApiClient', () => {
   describe('addContactRelationship', () => {
     it('should create the request and return the response', async () => {
       // Given
+      const expected: PrisonerContactRelationshipDetails = {
+        prisonerContactId: 123456,
+      }
       const request: AddContactRelationshipRequest = {
         relationship: {
           prisonerNumber: 'A1234BC',
@@ -124,12 +129,13 @@ describe('contactsApiClient', () => {
       fakeContactsApi
         .post('/contact/123456/relationship', request)
         .matchHeader('authorization', `Bearer systemToken`)
-        .reply(201)
+        .reply(201, expected)
 
       // When
-      await contactsApiClient.addContactRelationship(123456, request, user)
+      const result = await contactsApiClient.addContactRelationship(123456, request, user)
 
       // Then
+      expect(result).toStrictEqual(expected)
       expect(nock.isDone()).toBe(true)
     })
 

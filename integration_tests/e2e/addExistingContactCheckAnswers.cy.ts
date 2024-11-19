@@ -8,6 +8,7 @@ import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
 import SearchContactPage from '../pages/searchContactPage'
 import ContactConfirmationPage from '../pages/contactConfirmationPage'
+import AddContactSuccessPage from '../pages/addContactSuccessPage'
 
 context('Add Existing Contact Check Answers', () => {
   const { prisonerNumber } = TestData.prisoner()
@@ -33,7 +34,7 @@ context('Add Existing Contact Check Answers', () => {
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', prisonerNumber)
     cy.task('stubGetContactById', contact)
-    cy.task('stubAddContactRelationship', contactId)
+    cy.task('stubAddContactRelationship', { contactId, createdPrisonerContactId: 654321 })
     cy.task('stubContactSearch', {
       results: {
         totalPages: 1,
@@ -100,7 +101,7 @@ context('Add Existing Contact Check Answers', () => {
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowRelationshipAs('Father')
-      .continueTo(ListContactsPage)
+      .continueTo(AddContactSuccessPage)
 
     cy.verifyLastAPICall(
       {
@@ -131,7 +132,7 @@ context('Add Existing Contact Check Answers', () => {
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowIsEmergencyContactAs('Yes')
-      .continueTo(ListContactsPage)
+      .continueTo(AddContactSuccessPage)
 
     cy.verifyLastAPICall(
       {
@@ -162,7 +163,7 @@ context('Add Existing Contact Check Answers', () => {
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowIsNextOfKinAs('No')
-      .continueTo(ListContactsPage)
+      .continueTo(AddContactSuccessPage)
 
     cy.verifyLastAPICall(
       {
@@ -193,7 +194,7 @@ context('Add Existing Contact Check Answers', () => {
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowCommentsAs('Some updated comments')
-      .continueTo(ListContactsPage)
+      .continueTo(AddContactSuccessPage)
 
     cy.verifyLastAPICall(
       {

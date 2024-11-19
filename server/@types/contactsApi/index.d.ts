@@ -1235,14 +1235,6 @@ export interface components {
        */
       updatedTime: string
     }
-    ErrorResponse: {
-      /** Format: int32 */
-      status: number
-      errorCode?: string
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
-    }
     /** @description Response object with prisoner contact details */
     PrisonerContact: {
       /**
@@ -1349,6 +1341,14 @@ export interface components {
        * @example 2024-02-01T16:00:00Z
        */
       amendedTime?: string | null
+    }
+    ErrorResponse: {
+      /** Format: int32 */
+      status: number
+      errorCode?: string
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
     }
     /** @description Request object to update prisoner contact restriction details */
     UpdatePrisonerContactRestrictionRequest: {
@@ -3696,6 +3696,11 @@ export interface components {
        */
       amendedTime?: string | null
     }
+    /** @description The result of creating a contact and optionally a new relationship to a prisoner */
+    ContactCreationResult: {
+      createdContact: components['schemas']['ContactDetails']
+      createdRelationship?: components['schemas']['PrisonerContactRelationshipDetails']
+    }
     /** @description The details of a contact as an individual */
     ContactDetails: {
       /**
@@ -3805,6 +3810,45 @@ export interface components {
        */
       createdTime: string
       staff?: boolean
+    }
+    /** @description Describes the prisoner contact relationship */
+    PrisonerContactRelationshipDetails: {
+      /**
+       * Format: int64
+       * @description The unique identifier for the prisoner contact
+       * @example 123456
+       */
+      prisonerContactId: number
+      /**
+       * @description The relationship code between the prisoner and the contact
+       * @example FRI
+       */
+      relationshipCode: string
+      /**
+       * @description The description of the relationship
+       * @example Friend
+       */
+      relationshipDescription: string
+      /**
+       * @description Is this contact the prisoner's emergency contact?
+       * @example true
+       */
+      emergencyContact: boolean
+      /**
+       * @description Is this contact the prisoner's next of kin?
+       * @example false
+       */
+      nextOfKin: boolean
+      /**
+       * @description Is this prisoner's contact relationship active?
+       * @example true
+       */
+      isRelationshipActive: boolean
+      /**
+       * @description Any additional comments
+       * @example Close family friend
+       */
+      comments?: string | null
     }
     AddContactRelationshipRequest: {
       relationship: components['schemas']['ContactRelationship']
@@ -4324,39 +4368,6 @@ export interface components {
       ascending?: boolean
       property?: string
       ignoreCase?: boolean
-    }
-    /** @description Describes the prisoner contact relationship */
-    PrisonerContactRelationshipDetails: {
-      /**
-       * @description The relationship code between the prisoner and the contact
-       * @example FRI
-       */
-      relationshipCode: string
-      /**
-       * @description The description of the relationship
-       * @example Friend
-       */
-      relationshipDescription: string
-      /**
-       * @description Is this contact the prisoner's emergency contact?
-       * @example true
-       */
-      emergencyContact: boolean
-      /**
-       * @description Is this contact the prisoner's next of kin?
-       * @example false
-       */
-      nextOfKin: boolean
-      /**
-       * @description Is this prisoner's contact relationship active?
-       * @example true
-       */
-      isRelationshipActive: boolean
-      /**
-       * @description Any additional comments
-       * @example Close family friend
-       */
-      comments?: string | null
     }
     /** @description Language reference entity */
     Language: {
@@ -6643,7 +6654,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactDetails']
+          'application/json': components['schemas']['ContactCreationResult']
         }
       }
       /** @description The request has invalid or missing fields */
@@ -6708,7 +6719,9 @@ export interface operations {
         headers: {
           [name: string]: unknown
         }
-        content?: never
+        content: {
+          'application/json': components['schemas']['PrisonerContactRelationshipDetails']
+        }
       }
       /** @description The request has invalid or missing fields */
       400: {

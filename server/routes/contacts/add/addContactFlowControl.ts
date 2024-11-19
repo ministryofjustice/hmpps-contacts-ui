@@ -21,6 +21,7 @@ type CreateContactPages =
   | Page.CREATE_CONTACT_ESTIMATED_DOB_PAGE
   | Page.ENTER_RELATIONSHIP_COMMENTS
   | Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE
+  | Page.SUCCESSFULLY_ADDED_CONTACT_PAGE
 type ExistingContactPages =
   | Page.CREATE_CONTACT_START_PAGE
   | Page.CONTACT_SEARCH_PAGE
@@ -31,6 +32,7 @@ type ExistingContactPages =
   | Page.SELECT_NEXT_OF_KIN
   | Page.ENTER_RELATIONSHIP_COMMENTS
   | Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE
+  | Page.SUCCESSFULLY_ADDED_CONTACT_PAGE
 type AllAddContactPages = PreModePages | CreateContactPages | ExistingContactPages
 type JourneyUrlProvider = (journey: journeys.AddContactJourney) => string | undefined
 type Spec = { previousUrl: JourneyUrlProvider; nextUrl: JourneyUrlProvider }
@@ -72,6 +74,11 @@ const PAGES: Record<AllAddContactPages, { url: JourneyUrlProvider; breadcrumbs?:
   },
   [Page.CONTACT_CONFIRMATION_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/add/confirmation/${journey.id}`,
+  },
+  [Page.SUCCESSFULLY_ADDED_CONTACT_PAGE]: {
+    url: journey =>
+      `/prisoner/${journey.prisonerNumber}/contact/${journey.mode}/${journey.contactId}/${journey.prisonerContactId}/success`,
+    breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'],
   },
 }
 
@@ -130,6 +137,10 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   },
   [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE]: {
     previousUrl: _ => undefined,
+    nextUrl: PAGES.SUCCESSFULLY_ADDED_CONTACT_PAGE.url,
+  },
+  [Page.SUCCESSFULLY_ADDED_CONTACT_PAGE]: {
+    previousUrl: _ => undefined,
     nextUrl: _ => undefined,
   },
 }
@@ -162,6 +173,10 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
     nextUrl: checkAnswersOr(PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url),
   },
   [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE]: {
+    previousUrl: _ => undefined,
+    nextUrl: PAGES.SUCCESSFULLY_ADDED_CONTACT_PAGE.url,
+  },
+  [Page.SUCCESSFULLY_ADDED_CONTACT_PAGE]: {
     previousUrl: _ => undefined,
     nextUrl: _ => undefined,
   },

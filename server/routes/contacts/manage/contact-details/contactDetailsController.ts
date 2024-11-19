@@ -5,8 +5,6 @@ import { ContactsService } from '../../../../services'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import { formatNameFirstNameFirst } from '../../../../utils/formatName'
-
-import Contact = contactsApiClientTypes.Contact
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 
@@ -24,7 +22,7 @@ export default class ContactDetailsController implements PageHandler {
   ): Promise<void> => {
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const { user } = res.locals
-    const contact: Contact = await this.contactsService.getContact(Number(contactId), user)
+    const contact: ContactDetails = await this.contactsService.getContact(Number(contactId), user)
     const prisonerContactRelationship: PrisonerContactRelationshipDetails =
       await this.contactsService.getPrisonerContactRelationship(Number(prisonerContactId), user)
     const formattedFullName = await this.formattedFullName(contact, user)

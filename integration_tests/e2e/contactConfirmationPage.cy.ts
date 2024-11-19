@@ -32,7 +32,6 @@ context('Contact confirmation', () => {
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', prisonerNumber)
     cy.task('stubGetContactById', contact)
-    cy.task('stubAddContactRelationship', contactId)
     cy.task('stubContactSearch', {
       results: {
         totalPages: 1,
