@@ -859,4 +859,38 @@ describe('contactsApiClient', () => {
       })
     })
   })
+
+  describe('deleteContactEmail', () => {
+    it('should delete the contact email', async () => {
+      // Given
+
+      fakeContactsApi.delete('/contact/99/email/77').matchHeader('authorization', `Bearer systemToken`).reply(204)
+
+      // When
+      await contactsApiClient.deleteContactEmail(99, 77, user)
+    })
+
+    it.each([400, 401, 403])('should propagate errors deleting contact email %s', async (errorCode: number) => {
+      // Given
+      const expectedErrorBody = {
+        status: errorCode,
+        userMessage: 'Some error',
+        developerMessage: 'Some error',
+      }
+
+      fakeContactsApi
+        .delete('/contact/99/email/77')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(errorCode, expectedErrorBody)
+
+      // When
+      try {
+        await contactsApiClient.deleteContactEmail(99, 77, user)
+      } catch (e) {
+        // Then
+        expect(e.status).toEqual(errorCode)
+        expect(e.data).toEqual(expectedErrorBody)
+      }
+    })
+  })
 })

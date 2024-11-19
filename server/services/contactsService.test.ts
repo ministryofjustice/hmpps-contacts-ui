@@ -658,4 +658,21 @@ describe('contactsService', () => {
       await expect(service.updateContactEmail(99, 1, request, user)).rejects.toBeInstanceOf(BadRequest)
     })
   })
+
+  describe('deleteContactEmail', () => {
+    // Given
+    it('should delete the contact email', async () => {
+      // When
+      apiClient.deleteContactEmail.mockResolvedValue()
+      await service.deleteContactEmail(23, 77, user)
+
+      // Then
+      expect(apiClient.deleteContactEmail).toHaveBeenCalledWith(23, 77, user)
+    })
+
+    it('Propagates errors', async () => {
+      apiClient.deleteContactEmail.mockRejectedValue(new Error('some error'))
+      await expect(apiClient.deleteContactEmail(23, 77, user)).rejects.toEqual(new Error('some error'))
+    })
+  })
 })

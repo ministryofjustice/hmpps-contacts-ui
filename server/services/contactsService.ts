@@ -218,4 +218,8 @@ export default class ContactsService {
   ): Promise<ContactEmailDetails> {
     return this.contactsApiClient.updateContactEmail(contactId, contactEmailId, request, user)
   }
+
+  async deleteContactEmail(contactId: number, contactEmailId: number, user: Express.User) {
+    return this.contactsApiClient.deleteContactEmail(contactId, contactEmailId, user)
+  }
 }

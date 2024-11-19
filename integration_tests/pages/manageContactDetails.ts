@@ -101,6 +101,10 @@ export default class ManageContactDetailsPage extends Page {
     this.deletePhoneNumberLink(id).click()
   }
 
+  clickDeleteEmailLink(id: number) {
+    this.deleteEmailLink(id).click()
+  }
+
   clickChangeDateOfBirthLink(id: number) {
     this.changeDateOfBirthLink(id).click()
   }
@@ -170,6 +174,8 @@ export default class ManageContactDetailsPage extends Page {
   private selectDomesticStatusLink = (): PageElement => cy.get('[data-qa="select-domestic-status"]')
 
   private deletePhoneNumberLink = (id: number): PageElement => cy.get(`[data-qa="delete-phone-number-${id}"]`)
+
+  private deleteEmailLink = (id: number): PageElement => cy.get(`[data-qa="delete-email-address-${id}"]`)
 
   private selectGenderLink = (): PageElement => cy.get('[data-qa="select-gender"]')
 
