@@ -43,6 +43,7 @@ import ManageEmergencyContactController from './relationship/manageEmergencyCont
 import ManageContactRelationshipController from './relationship/manageContactRelationshipController'
 import { selectRelationshipSchemaFactory } from '../common/relationship/selectRelationshipSchemas'
 import ManageNextOfKinContactController from './relationship/manageNextOfKinContactController'
+import ManageContactDeleteEmailController from './email/delete/manageContactDeleteEmailController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -399,6 +400,19 @@ const ManageContactsRoutes = (
     asyncMiddleware(manageNextOfKinContactController.POST),
   )
 
+  const manageContactDeleteEmailController = new ManageContactDeleteEmailController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/delete',
+    prepareStandaloneManageContactJourney(),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    logPageViewMiddleware(auditService, manageContactDeleteEmailController),
+    asyncMiddleware(manageContactDeleteEmailController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/delete',
+    prepareStandaloneManageContactJourney(),
+    asyncMiddleware(manageContactDeleteEmailController.POST),
+  )
   return router
 }
 

@@ -15,9 +15,9 @@
         }]) %}
 
         {% set actions = actions.concat([{
-            href: "#",
+            href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/email/" + item.contactEmailId + "/delete?returnUrl=" + manageContactRelationshipUrl,
             text: "Delete",
-            visuallyHiddenText: "email address",
+            visuallyHiddenText: " email address",
             attributes: {"data-qa": "delete-email-address-" + item.contactEmailId},
             classes: "govuk-link--no-visited-state"
         }]) %}

@@ -420,4 +420,22 @@ export default {
       },
     })
   },
+  stubDeleteContactEmail: ({
+    contactId,
+    contactEmailId,
+  }: {
+    contactId: number
+    contactEmailId: number
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'DELETE',
+        urlPath: `/contact/${contactId}/email/${contactEmailId}`,
+      },
+      response: {
+        status: 204,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      },
+    })
+  },
 }

@@ -197,4 +197,8 @@ export default class ContactsService {
   ): Promise<contactsApiClientTypes.PatchContactResponse> {
     return this.contactsApiClient.updateContactRelationshipById(contactId, prisonerContactId, request, user)
   }
+
+  async deleteContactEmail(contactId: number, contactEmailId: number, user: Express.User) {
+    return this.contactsApiClient.deleteContactEmail(contactId, contactEmailId, user)
+  }
 }
