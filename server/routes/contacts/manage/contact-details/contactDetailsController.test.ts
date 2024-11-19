@@ -303,6 +303,14 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           expectedValue: 'No',
           expectedChangeLink: 'next-of-kin',
         },
+        {
+          fieldName: 'additional information for a contact',
+          fieldKey: 'relationship-comments',
+          fieldHiddenText: 'Change additional information about the relationship  (Relationship details)',
+          mockResponse: { comments: 'my comments' },
+          expectedValue: 'my comments',
+          expectedChangeLink: 'relationship-comments',
+        },
       ])(
         'Relationship details - %s1',
         ({ fieldName, fieldKey, fieldHiddenText, mockResponse, expectedValue, expectedChangeLink }) => {
