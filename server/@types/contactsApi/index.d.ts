@@ -4304,10 +4304,10 @@ export interface components {
       /** Format: int64 */
       total?: number
       last?: boolean
-      /** Format: int32 */
-      totalPages?: number
       /** Format: int64 */
       totalElements?: number
+      /** Format: int32 */
+      totalPages?: number
       first?: boolean
       /** Format: int32 */
       size?: number
@@ -4621,10 +4621,10 @@ export interface components {
       /** Format: int64 */
       total?: number
       last?: boolean
-      /** Format: int32 */
-      totalPages?: number
       /** Format: int64 */
       totalElements?: number
+      /** Format: int32 */
+      totalPages?: number
       first?: boolean
       /** Format: int32 */
       size?: number
