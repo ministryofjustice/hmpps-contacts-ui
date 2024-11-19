@@ -137,19 +137,11 @@ export default class TestData {
     } as ContactPhoneDetails
   }
 
-  static getContactEmailDetails = (
-    emailType: string,
-    emailTypeDescription: string,
-    emailAddress: string,
-    contactEmailId: number,
-  ) => {
+  static getContactEmailDetails = (emailAddress: string, contactEmailId: number) => {
     return {
       contactEmailId,
       contactId: 1,
-      emailType,
-      emailTypeDescription,
       emailAddress,
-      primaryEmail: true,
       createdBy: 'TIM',
       createdTime: '2024-10-08T12:16:09.024803',
       amendedBy: null,
@@ -281,8 +273,8 @@ export default class TestData {
       this.getContactPhoneNumberDetails('HOME', 'Home phone', '01111 777777'),
     ],
     emailAddresses = [
-      this.getContactEmailDetails('PERSONAL', 'Personal email', 'mr.last@example.com', 1),
-      this.getContactEmailDetails('PERSONAL', 'Personal email', 'mr.first@example.com', 2),
+      this.getContactEmailDetails('mr.last@example.com', 1),
+      this.getContactEmailDetails('mr.first@example.com', 2),
     ],
     identities = [
       this.getContactIdentityDetails('DL', 'Driving licence', 'LAST-87736799M', null, 1),
