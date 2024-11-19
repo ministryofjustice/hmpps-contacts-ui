@@ -49,7 +49,6 @@ export default class SuccessfullyAddedContactController implements PageHandler {
         breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'],
       },
     }
-    // delete req.session.addContactJourneys[journeyId]
     res.render('pages/contacts/common/success', view)
   }
 }
