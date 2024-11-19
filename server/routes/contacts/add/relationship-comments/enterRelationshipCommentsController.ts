@@ -12,7 +12,6 @@ export default class EnterRelationshipCommentsController implements PageHandler 
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys[journeyId]
     const view = {
-      contact: journey.names,
       journey,
       continueButtonLabel: 'Continue',
       comments: res.locals?.formResponses?.comments ?? journey?.relationship?.comments,

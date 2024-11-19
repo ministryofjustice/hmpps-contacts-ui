@@ -17,9 +17,17 @@ export default class ManageRelationshipCommentsController implements PageHandler
     const navigation: Navigation = { backLink: journey.returnPoint.url }
 
     const contact: Contact = await this.contactsService.getContact(parseInt(contactId, 10), user)
+
+    journey.names = {
+      title: contact.title,
+      lastName: contact.lastName,
+      firstName: contact.firstName,
+      middleNames: contact.middleNames,
+    }
+
     const relationship = await this.contactsService.getPrisonerContactRelationship(Number(prisonerContactId), user)
     return res.render('pages/contacts/common/enterRelationshipComments', {
-      contact,
+      journey,
       prisonerContactId,
       navigation,
       prisonerDetails,
