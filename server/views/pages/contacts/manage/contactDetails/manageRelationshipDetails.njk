@@ -77,8 +77,19 @@
         value: {
             text: prisonerContactRelationship.comments | default('Not provided', true),
             classes: 'relationship-comments-value'
-        }
-    }
+         },
+         actions: {
+             items: [
+                 {
+                     href: prisonerContactId +"/relationship-comments?returnUrl=" + manageContactRelationshipUrl,
+                     text: "Change",
+                     visuallyHiddenText: "additional information about the relationship ",
+                     attributes: {"data-qa": "change-relationship-comments-link"},
+                     classes: "govuk-link--no-visited-state"
+                 }
+             ]
+         }
+     }
 ]
 %}
 

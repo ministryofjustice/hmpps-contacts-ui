@@ -85,6 +85,10 @@ export default class ManageContactDetailsPage extends Page {
     this.editNextOfKinContactLink().click()
   }
 
+  clickEditRelationshipCommentsLink() {
+    this.editRelationshipCommentsLink().click()
+  }
+
   clickAddPhoneNumberLink() {
     this.addPhoneNumberLink().click()
   }
@@ -161,6 +165,8 @@ export default class ManageContactDetailsPage extends Page {
 
   private editNextOfKinContactLink = (): PageElement => cy.get(`[data-qa="change-next-of-kin-link"]`)
 
+  private editRelationshipCommentsLink = (): PageElement => cy.get(`[data-qa="change-relationship-comments-link"]`)
+
   private changeDateOfBirthLink = (id: number): PageElement => cy.get(`[data-qa="change-dob-${id}"]`)
 
   private changeEstimatedDateOfBirthLink = (id: number): PageElement => cy.get(`[data-qa="change-estimated-dob-${id}"]`)
@@ -214,4 +220,10 @@ export default class ManageContactDetailsPage extends Page {
   }
 
   private checkAnswersNextOfKinValue = (): PageElement => cy.get('.next-of-kin-value')
+
+  verifyShowIsRelationshipCommentsAs(expected: string) {
+    this.checkAnswersRelationshipCommentsValue().should('contain.text', expected)
+  }
+
+  private checkAnswersRelationshipCommentsValue = (): PageElement => cy.get('.relationship-comments-value')
 }

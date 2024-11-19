@@ -13,10 +13,11 @@ export default class EnterRelationshipCommentsController implements PageHandler 
     const journey = req.session.addContactJourneys[journeyId]
     const view = {
       journey,
+      continueButtonLabel: 'Continue',
       comments: res.locals?.formResponses?.comments ?? journey?.relationship?.comments,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
     }
-    res.render('pages/contacts/add/enterRelationshipComments', view)
+    res.render('pages/contacts/common/enterRelationshipComments', view)
   }
 
   POST = async (

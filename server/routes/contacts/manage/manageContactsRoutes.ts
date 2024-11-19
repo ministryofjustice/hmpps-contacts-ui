@@ -38,6 +38,7 @@ import { enterEstimatedDobSchema } from '../common/enter-estimated-dob/enterEsti
 import UpdateEstimatedDobController from './update-estimated-dob/updateEstimatedDobController'
 import ManageGenderController from './gender/contactGenderController'
 import UpdateNameController from './name/updateNameController'
+import ManageRelationshipCommentsController from './relationship/manageRelationshipCommentsController'
 import { restrictedEditingNameSchema } from '../common/name/nameSchemas'
 import ManageContactAddEmailController from './email/add/manageContactAddEmailController'
 import ManageContactEditEmailController from './email/edit/manageContactEditEmailController'
@@ -47,6 +48,7 @@ import ManageContactRelationshipController from './relationship/manageContactRel
 import { selectRelationshipSchemaFactory } from '../common/relationship/selectRelationshipSchemas'
 import ManageNextOfKinContactController from './relationship/manageNextOfKinContactController'
 import ManageContactDeleteEmailController from './email/delete/manageContactDeleteEmailController'
+import { enterRelationshipCommentsSchema } from '../add/relationship-comments/enterRelationshipCommentsSchemas'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -446,6 +448,22 @@ const ManageContactsRoutes = (
     prepareStandaloneManageContactJourney(),
     asyncMiddleware(manageContactDeleteEmailController.POST),
   )
+
+  const manageRelationshipCommentsController = new ManageRelationshipCommentsController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/relationship-comments',
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    prepareStandaloneManageContactJourney(),
+    logPageViewMiddleware(auditService, manageRelationshipCommentsController),
+    asyncMiddleware(manageRelationshipCommentsController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/relationship-comments',
+    prepareStandaloneManageContactJourney(),
+    validate(enterRelationshipCommentsSchema()),
+    asyncMiddleware(manageRelationshipCommentsController.POST),
+  )
+
   return router
 }
 
