@@ -84,7 +84,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contac
     expect($('#emailAddress').val()).toStrictEqual('mr.first@example.com')
   })
 
-  it('should render edited answers instead of original if there is a validation error', async () => {
+  it('should render edited answer instead of original if there is a validation error', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
