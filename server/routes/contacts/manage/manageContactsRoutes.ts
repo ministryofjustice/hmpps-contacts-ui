@@ -99,14 +99,6 @@ const ManageContactsRoutes = (
   // Part 4: List contacts for a prisoner
   const listContactsController = new ListContactsController(contactsService)
   router.get(
-    '/prisoner/:prisonerNumber/contacts/list/:journeyId',
-    ensureInManageContactsJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, listContactsController),
-    asyncMiddleware(listContactsController.GET),
-  )
-  // Direct entry to prisoner contact page
-  router.get(
     '/prisoner/:prisonerNumber/contacts/list',
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, listContactsController),

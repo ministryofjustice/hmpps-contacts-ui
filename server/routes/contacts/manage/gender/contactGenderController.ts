@@ -5,8 +5,9 @@ import { ContactsService } from '../../../../services'
 import { components } from '../../../../@types/contactsApi'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
-import Contact = contactsApiClientTypes.Contact
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
+import ContactDetails = contactsApiClientTypes.ContactDetails
+import { Navigation } from '../../common/navigation'
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 
@@ -20,17 +21,17 @@ export default class ManageGenderController implements PageHandler {
 
   GET = async (req: Request<{ contactId?: string }>, res: Response): Promise<void> => {
     const { contactId } = req.params
-    const { prisonerDetails, user } = res.locals
-    const contact: Contact = await this.contactsService.getContact(parseInt(contactId, 10), user)
+    const { user, journey } = res.locals
+    const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
 
     const genderOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.GENDER, user)
       .then(val => this.getSelectedGenderOptions(val, contact.gender))
-
+    const navigation: Navigation = { backLink: journey.returnPoint.url }
     return res.render('pages/contacts/manage/contactDetails/manageGender', {
       contact,
-      prisonerDetails,
       genderOptions,
+      navigation,
     })
   }
 

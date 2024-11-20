@@ -11,6 +11,8 @@ import TestData from '../../../testutils/testData'
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import AddContactJourney = journeys.AddContactJourney
+import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
+import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/contactsService')
@@ -213,13 +215,19 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
 })
+
 describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId', () => {
-  it('should create the contact and pass to return url', async () => {
+  it('should create the contact and pass to success page', async () => {
     // Given
-    contactsService.createContact.mockResolvedValue(null)
-    journey.returnPoint = {
-      url: '/some-prisoner-contact-page',
+    const created: ContactCreationResult = {
+      createdContact: {
+        id: 123456,
+      },
+      createdRelationship: {
+        prisonerContactId: 654321,
+      },
     }
+    contactsService.createContact.mockResolvedValue(created)
     journey.mode = 'NEW'
 
     // When
@@ -227,19 +235,19 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
       .post(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
       .type('form')
       .expect(302)
-      .expect('Location', '/some-prisoner-contact-page')
+      .expect('Location', '/prisoner/A1234BC/contact/NEW/123456/654321/success')
 
     // Then
     expect(contactsService.createContact).toHaveBeenCalledWith(journey, user)
     expect(session.addContactJourneys[journeyId]).toBeUndefined()
   })
 
-  it('should add the contact relationship and pass to return url', async () => {
+  it('should add the contact relationship and pass to success page', async () => {
     // Given
-    contactsService.addContact.mockResolvedValue(null)
-    journey.returnPoint = {
-      url: '/some-prisoner-contact-page',
+    const created: PrisonerContactRelationshipDetails = {
+      prisonerContactId: 654321,
     }
+    contactsService.addContact.mockResolvedValue(created)
     journey.mode = 'EXISTING'
     journey.contactId = 123456
 
@@ -248,7 +256,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
       .post(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
       .type('form')
       .expect(302)
-      .expect('Location', '/some-prisoner-contact-page')
+      .expect('Location', '/prisoner/A1234BC/contact/EXISTING/123456/654321/success')
 
     // Then
     expect(contactsService.addContact).toHaveBeenCalledWith(journey, user)

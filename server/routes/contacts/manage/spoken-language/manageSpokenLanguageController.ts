@@ -3,7 +3,8 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
 import { components } from '../../../../@types/contactsApi'
-import Contact = contactsApiClientTypes.Contact
+import ContactDetails = contactsApiClientTypes.ContactDetails
+import { Navigation } from '../../common/navigation'
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 type Language = components['schemas']['Language']
@@ -14,15 +15,15 @@ export default class ManageSpokenLanguageController implements PageHandler {
 
   GET = async (req: Request<{ contactId?: string }>, res: Response): Promise<void> => {
     const { contactId } = req.params
-    const { prisonerDetails, user } = res.locals
+    const { user, journey } = res.locals
 
-    const contact: Contact = await this.contactsService.getContact(parseInt(contactId, 10), user)
+    const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const language: Language = await this.contactsService.getLanguageReference(user)
-
+    const navigation: Navigation = { backLink: journey.returnPoint.url }
     return res.render('pages/contacts/manage/contactDetails/manageSpokenLanguage', {
       contact,
       language,
-      prisonerDetails,
+      navigation,
     })
   }
 

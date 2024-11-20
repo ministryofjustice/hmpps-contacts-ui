@@ -12,7 +12,7 @@ import {
 import { components } from '../../server/@types/contactsApi'
 import TestData from '../../server/routes/testutils/testData'
 
-export type StubContactDetails = components['schemas']['ContactDetails']
+export type StubContactCreationResult = components['schemas']['ContactCreationResult']
 export type StubPhoneDetails = components['schemas']['ContactPhoneDetails']
 export type StubIdentityDetails = components['schemas']['ContactIdentityDetails']
 export type StubContactSearchResultItem = components['schemas']['ContactSearchResultItem']
@@ -23,7 +23,7 @@ export type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 export type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 
 export default {
-  stubCreateContact: (createdContact: StubContactDetails): SuperAgentRequest => {
+  stubCreateContact: (result: StubContactCreationResult): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'POST',
@@ -32,20 +32,23 @@ export default {
       response: {
         status: 201,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: createdContact,
+        jsonBody: result,
       },
     })
   },
 
-  stubAddContactRelationship: (contactId: number): SuperAgentRequest => {
+  stubAddContactRelationship: (params: { contactId: number; createdPrisonerContactId: number }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'POST',
-        urlPath: `/contact/${contactId}/relationship`,
+        urlPath: `/contact/${params.contactId}/relationship`,
       },
       response: {
         status: 201,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          prisonerContactId: params.createdPrisonerContactId,
+        },
       },
     })
   },

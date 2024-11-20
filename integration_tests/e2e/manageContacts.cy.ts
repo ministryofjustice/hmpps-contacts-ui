@@ -15,7 +15,7 @@ context('Manage contacts ', () => {
 
   it('Start of journey prompts for search', () => {
     Page.verifyOnPage(SearchPrisonerPage)
-      .verifyShowContactsCaptionAsValue('Manage Contacts')
+      .verifyShowContactsCaptionAsValue('Contacts')
       .verifyShowContactsHeaderAsValue('Search for a prisoner')
       .verifySearchFormLabelIsVisible()
       .verifySearchSearchButtonIsVisible()

@@ -58,7 +58,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 describe('listContactsController', () => {
-  describe('GET /prisoner/:prisonerNumber/contacts/list/:journeyId', () => {
+  describe('GET /prisoner/:prisonerNumber/contacts/list', () => {
     it('should render the contacts list for a prisoner', async () => {
       const classes = '#active-contacts > .govuk-table > .govuk-table__body > .govuk-table__row >'
       auditService.logPageView.mockResolvedValue(null)
@@ -100,7 +100,7 @@ describe('listContactsController', () => {
       )
       contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList } as PrisonerContactSummaryPage)
 
-      const response = await request(app).get(`/prisoner/A462DZ/contacts/list/${journeyId}`)
+      const response = await request(app).get(`/prisoner/A462DZ/contacts/list`)
       const $ = cheerio.load(response.text)
 
       // Prisoner
@@ -182,7 +182,7 @@ describe('listContactsController', () => {
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList } as PrisonerContactSummaryPage)
 
-      const response = await request(app).get(`/prisoner/A462DZ/contacts/list/${journeyId}`)
+      const response = await request(app).get(`/prisoner/A462DZ/contacts/list`)
       const $ = cheerio.load(response.text)
 
       expect($(`${classes} :nth-child(5)`).text()).toContain('No')
@@ -204,7 +204,7 @@ describe('listContactsController', () => {
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getPrisonerContacts.mockReturnValue(contactsList)
 
-      const response = await request(app).get(`/prisoner/A462DZ/contacts/list/${journeyId}`)
+      const response = await request(app).get(`/prisoner/A462DZ/contacts/list`)
       const $ = cheerio.load(response.text)
 
       expect($('#active-contacts > div > p').text()).toStrictEqual('John Smith does not have any active contacts')
@@ -251,17 +251,10 @@ describe('listContactsController', () => {
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList } as PrisonerContactSummaryPage)
 
-      const response = await request(app).get(`/prisoner/A462DZ/contacts/list/${journeyId}`)
+      const response = await request(app).get(`/prisoner/A462DZ/contacts/list`)
 
       const $ = cheerio.load(response.text)
       expect($('[data-qa=contact-100-dob]').text()).toContain('Not provided')
-    })
-
-    it('should return to prisoner contact list without a journey if the journey ID is not recognised in the session', async () => {
-      await request(app)
-        .get(`/prisoner/A462DZ/contacts/list/${uuidv4()}`)
-        .expect(302)
-        .expect('Location', '/prisoner/A462DZ/contacts/list')
     })
   })
 
@@ -334,7 +327,7 @@ describe('listContactsController', () => {
 
         // When
         const response = await request(app).get(
-          `/prisoner/A462DZ/contacts/list/${journeyId}?page=0&tab=active-contacts#active-contacts`,
+          `/prisoner/A462DZ/contacts/list?page=0&tab=active-contacts#active-contacts`,
         )
         const $ = cheerio.load(response.text)
 
@@ -366,7 +359,7 @@ describe('listContactsController', () => {
 
         // When
         const response = await request(app).get(
-          `/prisoner/A462DZ/contacts/list/${journeyId}?page=0&tab=active-contacts#active-contacts`,
+          `/prisoner/A462DZ/contacts/list?page=0&tab=active-contacts#active-contacts`,
         )
         const $ = cheerio.load(response.text)
 
@@ -399,7 +392,7 @@ describe('listContactsController', () => {
 
         // When
         const response = await request(app).get(
-          `/prisoner/A462DZ/contacts/list/${journeyId}?page=0&tab=active-contacts#active-contacts`,
+          `/prisoner/A462DZ/contacts/list?page=0&tab=active-contacts#active-contacts`,
         )
         const $ = cheerio.load(response.text)
 
@@ -426,7 +419,7 @@ describe('listContactsController', () => {
 
         // When
         const response = await request(app).get(
-          `/prisoner/A462DZ/contacts/list/${journeyId}?page=54&tab=inactive-contacts#inactive-contacts`,
+          `/prisoner/A462DZ/contacts/list?page=54&tab=inactive-contacts#inactive-contacts`,
         )
         const $ = cheerio.load(response.text)
 
@@ -460,7 +453,7 @@ describe('listContactsController', () => {
 
         // When
         const response = await request(app).get(
-          `/prisoner/A462DZ/contacts/list/${journeyId}?page=54&tab=inactive-contacts#inactive-contacts`,
+          `/prisoner/A462DZ/contacts/list?page=54&tab=inactive-contacts#inactive-contacts`,
         )
         const $ = cheerio.load(response.text)
 
@@ -495,7 +488,7 @@ describe('listContactsController', () => {
 
         // When
         const response = await request(app).get(
-          `/prisoner/A462DZ/contacts/list/${journeyId}?page=54&tab=inactive-contacts#inactive-contacts`,
+          `/prisoner/A462DZ/contacts/list?page=54&tab=inactive-contacts#inactive-contacts`,
         )
         const $ = cheerio.load(response.text)
 

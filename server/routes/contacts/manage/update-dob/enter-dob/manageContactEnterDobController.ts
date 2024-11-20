@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { EnterDobSchemaType } from '../../../common/enter-dob/enterDobSchemas'
-import { Navigation } from '../../../add/addContactFlowControl'
+import { Navigation } from '../../../common/navigation'
 import DateOfBirth = journeys.DateOfBirth
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 

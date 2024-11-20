@@ -4,9 +4,11 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { ContactsService } from '../../../../services'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
-import { navigationForAddContactJourney } from '../addContactFlowControl'
+import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { formatNameLastNameFirst } from '../../../../utils/formatName'
+import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
+import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 
 export default class CreateContactCheckAnswersController implements PageHandler {
   constructor(
@@ -56,11 +58,20 @@ export default class CreateContactCheckAnswersController implements PageHandler 
     if (journey.mode === 'NEW') {
       await this.contactService
         .createContact(journey, user)
+        .then((createdContact: ContactCreationResult) => {
+          journey.contactId = createdContact.createdContact.id
+          journey.prisonerContactId = createdContact.createdRelationship.prisonerContactId
+        })
         .then(() => delete req.session.addContactJourneys[journeyId])
     } else if (journey.mode === 'EXISTING') {
-      await this.contactService.addContact(journey, user).then(() => delete req.session.addContactJourneys[journeyId])
+      await this.contactService
+        .addContact(journey, user)
+        .then((createdContact: PrisonerContactRelationshipDetails) => {
+          journey.prisonerContactId = createdContact.prisonerContactId
+        })
+        .then(() => delete req.session.addContactJourneys[journeyId])
     }
-    res.redirect(journey.returnPoint.url)
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
   }
 
   private async formattedFullName(journey: journeys.AddContactJourney, user: Express.User) {

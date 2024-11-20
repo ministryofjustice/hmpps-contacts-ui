@@ -1,5 +1,4 @@
 {% extends "../../../partials/layout.njk" %}
-{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
@@ -13,15 +12,13 @@
 {% set title = "Search for a contact" %}
 {% set mainClasses = "app-container govuk-body" %}
 
-{% set prisonerResultsLink = "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/list/" + journey.id %}
-
 {% block content %}
-{% include '../partials/addContactNavigation.njk' %}
+{% include '../../../partials/navigation.njk' %}
 
 {{ miniProfile(prisonerDetails) }}
 
 {% include '../../../partials/formErrorSummary.njk' %}
-<span class="govuk-caption-l">Manage Contacts</span>
+<span class="govuk-caption-l">Contacts</span>
 <h1 class="govuk-heading-l">{{ title }}</h1>
  <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
@@ -169,7 +166,7 @@
     {% endif %}
      {% if results %}
          <div class="govuk-grid-column-full govuk-!-margin-top-4">
-             <a  href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/add/mode/NEW/{{ journey.id }}" class="govuk-body" data-qa="contact-not-listed-link" id="contact-not-listed-link">
+             <a  href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/add/mode/NEW/{{ journey.id }}" class="govuk-body govuk-link--no-visited-state" data-qa="contact-not-listed-link" id="contact-not-listed-link">
                  The contact is not listed
              </a>
          </div>

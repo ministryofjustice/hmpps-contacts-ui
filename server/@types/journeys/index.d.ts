@@ -16,6 +16,7 @@ declare namespace journeys {
     relationship?: PrisonerContactRelationship
     previousAnswers?: CreateContactJourneyPreviousAnswers
     contactId?: number
+    prisonerContactId?: number
     existingContact?: {
       isDeceased?: boolean
       deceasedDate?: string

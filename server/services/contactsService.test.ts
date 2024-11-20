@@ -5,7 +5,6 @@ import { PaginationRequest } from '../data/prisonerOffenderSearchTypes'
 import TestData from '../routes/testutils/testData'
 import { components } from '../@types/contactsApi'
 import AddContactJourney = journeys.AddContactJourney
-import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import IsOverEighteenOptions = journeys.YesNoOrDoNotKnow
@@ -16,6 +15,8 @@ import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
 import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
 import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
+import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
+import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
 
 type Language = components['schemas']['Language']
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
@@ -47,8 +48,13 @@ describe('contactsService', () => {
   describe('createContact', () => {
     it('should create a contact from the journey dto with all fields', async () => {
       // Given
-      const expectedCreated: Contact = {
-        id: 2136718213,
+      const expectedCreated: ContactCreationResult = {
+        createdContact: {
+          id: 2136718213,
+        },
+        createdRelationship: {
+          prisonerContactId: 987654,
+        },
       }
       apiClient.createContact.mockResolvedValue(expectedCreated)
       const journey: AddContactJourney = {
@@ -103,8 +109,13 @@ describe('contactsService', () => {
 
     it('should create a contact from the journey dto with only optional fields', async () => {
       // Given
-      const expectedCreated: Contact = {
-        id: 2136718213,
+      const expectedCreated: ContactCreationResult = {
+        createdContact: {
+          id: 2136718213,
+        },
+        createdRelationship: {
+          prisonerContactId: 987654,
+        },
       }
       apiClient.createContact.mockResolvedValue(expectedCreated)
       const journey: AddContactJourney = {
@@ -157,8 +168,10 @@ describe('contactsService', () => {
       ['DO_NOT_KNOW', 'DO_NOT_KNOW'],
     ])('should map isOverEighteen if dob is not known', async (input: IsOverEighteenOptions, expected: string) => {
       // Given
-      const expectedCreated: Contact = {
-        id: 2136718213,
+      const expectedCreated: ContactCreationResult = {
+        createdContact: {
+          id: 2136718213,
+        },
       }
       apiClient.createContact.mockResolvedValue(expectedCreated)
       const journey: AddContactJourney = {
@@ -311,8 +324,8 @@ describe('contactsService', () => {
   describe('addContact', () => {
     it('should add a contact relationship from the journey dto with all fields', async () => {
       // Given
-      const expectedCreated: Contact = {
-        id: 2136718213,
+      const expectedCreated: PrisonerContactRelationshipDetails = {
+        prisonerContactId: 987654,
       }
       apiClient.addContactRelationship.mockResolvedValue(expectedCreated)
       const journey: AddContactJourney = {
@@ -362,8 +375,8 @@ describe('contactsService', () => {
 
     it('should add a contact relationship from the journey dto with only optional fields', async () => {
       // Given
-      const expectedCreated: Contact = {
-        id: 2136718213,
+      const expectedCreated: PrisonerContactRelationshipDetails = {
+        prisonerContactId: 987654,
       }
       apiClient.addContactRelationship.mockResolvedValue(expectedCreated)
       const journey: AddContactJourney = {
@@ -429,8 +442,8 @@ describe('contactsService', () => {
   describe('createContactPhone', () => {
     it('should create a contact phone with all fields', async () => {
       // Given
-      const expectedCreated: Contact = {
-        id: 999,
+      const expectedCreated: ContactPhoneDetails = {
+        contactPhoneId: 999,
       }
       apiClient.createContactPhone.mockResolvedValue(expectedCreated)
       const expectedRequest: CreatePhoneRequest = {
@@ -450,8 +463,8 @@ describe('contactsService', () => {
 
     it('should create a contact phone with only required fields', async () => {
       // Given
-      const expectedCreated: Contact = {
-        id: 999,
+      const expectedCreated: ContactPhoneDetails = {
+        contactPhoneId: 999,
       }
       apiClient.createContactPhone.mockResolvedValue(expectedCreated)
       const expectedRequest: CreatePhoneRequest = {
@@ -479,8 +492,8 @@ describe('contactsService', () => {
   describe('updateContactPhone', () => {
     it('should update a contact phone with all fields', async () => {
       // Given
-      const expected: Contact = {
-        id: 999,
+      const expected: ContactPhoneDetails = {
+        contactPhoneId: 999,
       }
       apiClient.updateContactPhone.mockResolvedValue(expected)
       const expectedRequest: UpdatePhoneRequest = {
@@ -500,7 +513,7 @@ describe('contactsService', () => {
 
     it('should update a contact phone with only required fields', async () => {
       // Given
-      const expected: Contact = {
+      const expected: ContactPhoneDetails = {
         id: 999,
       }
       apiClient.updateContactPhone.mockResolvedValue(expected)

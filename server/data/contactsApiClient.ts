@@ -2,7 +2,6 @@ import config from '../config'
 import RestClient from './restClient'
 import ReferenceCodeType from '../enumeration/referenceCodeType'
 import { components } from '../@types/contactsApi'
-import Contact = contactsApiClientTypes.Contact
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import Pageable = contactsApiClientTypes.Pageable
@@ -22,6 +21,7 @@ import UpdateIdentityRequest = contactsApiClientTypes.UpdateIdentityRequest
 import ContactIdentityDetails = contactsApiClientTypes.ContactIdentityDetails
 import UpdateRelationshipRequest = contactsApiClientTypes.UpdateRelationshipRequest
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
+import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
 
 type Language = components['schemas']['Language']
 type PageableObject = components['schemas']['PageableObject']
@@ -33,8 +33,8 @@ export default class ContactsApiClient extends RestClient {
     super('Contacts API client', config.apis.contactsApi)
   }
 
-  async createContact(request: CreateContactRequest, user: Express.User): Promise<Contact> {
-    return this.post<Contact>(
+  async createContact(request: CreateContactRequest, user: Express.User): Promise<ContactCreationResult> {
+    return this.post<ContactCreationResult>(
       {
         path: `/contact`,
         data: request,
@@ -47,8 +47,8 @@ export default class ContactsApiClient extends RestClient {
     contactId: number,
     request: AddContactRelationshipRequest,
     user: Express.User,
-  ): Promise<void> {
-    return this.post(
+  ): Promise<PrisonerContactRelationshipDetails> {
+    return this.post<PrisonerContactRelationshipDetails>(
       {
         path: `/contact/${contactId}/relationship`,
         data: request,

@@ -7,6 +7,7 @@ import { PhoneNumberSchemaType } from '../phoneSchemas'
 import { ContactsService } from '../../../../../services'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import ContactDetails = contactsApiClientTypes.ContactDetails
+import { Navigation } from '../../../common/navigation'
 
 export default class ManageContactAddPhoneController implements PageHandler {
   constructor(
@@ -17,18 +18,20 @@ export default class ManageContactAddPhoneController implements PageHandler {
   public PAGE_NAME = Page.MANAGE_CONTACT_ADD_PHONE_PAGE
 
   GET = async (req: Request<{ prisonerNumber: string; contactId: string }>, res: Response): Promise<void> => {
-    const { user } = res.locals
+    const { user, journey } = res.locals
     const { contactId } = req.params
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const typeOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.PHONE_TYPE, user)
       .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.type))
+    const navigation: Navigation = { backLink: journey.returnPoint.url }
     const viewModel = {
       typeOptions,
       phoneNumber: res.locals?.formResponses?.phoneNumber,
       type: res.locals?.formResponses?.type,
       extension: res.locals?.formResponses?.extension,
       contact,
+      navigation,
     }
     res.render('pages/contacts/manage/addEditPhone', viewModel)
   }

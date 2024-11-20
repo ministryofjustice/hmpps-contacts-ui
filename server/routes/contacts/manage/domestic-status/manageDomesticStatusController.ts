@@ -5,8 +5,9 @@ import { ContactsService } from '../../../../services'
 import { components } from '../../../../@types/contactsApi'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
-import Contact = contactsApiClientTypes.Contact
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
+import ContactDetails = contactsApiClientTypes.ContactDetails
+import { Navigation } from '../../common/navigation'
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 
@@ -20,16 +21,18 @@ export default class ManageDomesticStatusController implements PageHandler {
 
   GET = async (req: Request<{ contactId?: string }>, res: Response): Promise<void> => {
     const { contactId } = req.params
-    const { prisonerDetails, user } = res.locals
-    const contact: Contact = await this.contactsService.getContact(parseInt(contactId, 10), user)
+    const { prisonerDetails, user, journey } = res.locals
+    const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
 
     const domesticStatusOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.DOMESTIC_STS, user)
       .then(val => this.getSelectedDomesticStatusOptions(val, contact.domesticStatusCode))
+    const navigation: Navigation = { backLink: journey.returnPoint.url }
     return res.render('pages/contacts/manage/contactDetails/manageDomesticStatus', {
       contact,
       prisonerDetails,
       domesticStatusOptions,
+      navigation,
     })
   }
 

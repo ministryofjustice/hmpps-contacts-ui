@@ -1,13 +1,9 @@
 import { v4 as uuidv4 } from 'uuid'
-import {
-  Navigation,
-  BreadcrumbType,
-  navigationForAddContactJourney,
-  nextPageForAddContactJourney,
-} from './addContactFlowControl'
+import { navigationForAddContactJourney, nextPageForAddContactJourney } from './addContactFlowControl'
 import { Page } from '../../../services/auditService'
 import AddContactJourney = journeys.AddContactJourney
 import DateOfBirth = journeys.DateOfBirth
+import { BreadcrumbType, Navigation } from '../common/navigation'
 
 describe('addContactFlowControl', () => {
   describe('add new contact', () => {
@@ -111,6 +107,8 @@ describe('addContactFlowControl', () => {
         ],
         [Page.ENTER_RELATIONSHIP_COMMENTS, knownDob, `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`],
         [Page.ENTER_RELATIONSHIP_COMMENTS, unknownDob, `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`],
+        [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, knownDob, `/prisoner/A1234BC/contact/NEW/123456/654321/success`],
+        [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, unknownDob, `/prisoner/A1234BC/contact/NEW/123456/654321/success`],
       ])(
         'Should go to next page if not checking answers: from %s with dob %s to %s',
         (page: Page, dateOfBirth?: DateOfBirth, expectedNextUrl?: string) => {
@@ -124,6 +122,8 @@ describe('addContactFlowControl', () => {
             isCheckingAnswers: false,
             dateOfBirth,
             mode: 'NEW',
+            contactId: 123456,
+            prisonerContactId: 654321,
           }
 
           const nav = nextPageForAddContactJourney(page, journey)
@@ -226,6 +226,7 @@ describe('addContactFlowControl', () => {
         [Page.SELECT_EMERGENCY_CONTACT, `/prisoner/A1234BC/contacts/create/select-next-of-kin/${journeyId}`],
         [Page.SELECT_NEXT_OF_KIN, `/prisoner/A1234BC/contacts/create/enter-relationship-comments/${journeyId}`],
         [Page.ENTER_RELATIONSHIP_COMMENTS, `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`],
+        [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, `/prisoner/A1234BC/contact/EXISTING/123456/654321/success`],
       ])('Should go to next page if not checking answers: from %s to %s', (page: Page, expectedNextUrl?: string) => {
         const journey: AddContactJourney = {
           id: journeyId,
@@ -236,6 +237,8 @@ describe('addContactFlowControl', () => {
           },
           mode: 'EXISTING',
           isCheckingAnswers: false,
+          contactId: 123456,
+          prisonerContactId: 654321,
         }
 
         const nav = nextPageForAddContactJourney(page, journey)

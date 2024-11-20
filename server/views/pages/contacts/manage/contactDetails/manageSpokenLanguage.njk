@@ -3,19 +3,13 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "../../../../partials/miniProfile/macro.njk" import miniProfile %}
-{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% set pageTitle = applicationName + " - Enter spoken language" %}
 {% set title = "What is the spoken language of " + contact | formatNameFirstNameFirst + "?" %}
 
 {% block content %}
 
-{{ govukBackLink({
-    text: "Back",
-    href: journey.returnPoint.url,
-    attributes: {"data-qa": "back-link"}
-}) }}
-
+{% include '../../../../partials/navigation.njk' %}
 {{ miniProfile(prisonerDetails) }}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-half">
