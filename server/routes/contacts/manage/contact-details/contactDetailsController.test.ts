@@ -397,4 +397,87 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect($('.manage-gender-value').text().trim()).toStrictEqual('Not provided')
     })
   })
+
+  describe('Addresses', () => {
+    it.each([
+      ['Primary and mail', true, true],
+      ['Primary', true, false],
+      ['Mail', false, true],
+    ])(
+      'should show primary address flag on addresses summary card if question was answered',
+      async (flagLabel: string, primaryAddress: boolean, mailFlag: boolean) => {
+        // Given
+        auditService.logPageView.mockResolvedValue(null)
+        prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+        const contact = TestData.contact()
+        contact.addresses[0].primaryAddress = primaryAddress
+        contact.addresses[0].mailFlag = mailFlag
+        contactsService.getContact.mockResolvedValue(contact)
+
+        // When
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+        // Then
+        const $ = cheerio.load(response.text)
+        expect(response.status).toEqual(200)
+        expect($('.most-relevant-address-label').text().trim()).toStrictEqual(flagLabel)
+      },
+    )
+  })
+
+  it('should show address if question was answered', async () => {
+    // Given
+    const confirmAddressValueClass = '.confirm-address-value'
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.getContact.mockResolvedValue(TestData.contact())
+    referenceDataService.getReferenceDescriptionForCode.mockResolvedValue(null)
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect(response.status).toEqual(200)
+    expect($(confirmAddressValueClass).text().trim()).toContain('24,')
+    expect($(confirmAddressValueClass).text().trim()).toContain('Acacia Avenue')
+    expect($(confirmAddressValueClass).text().trim()).toContain('Bunting')
+    expect($(confirmAddressValueClass).text().trim()).toContain('Sheffield')
+    expect($(confirmAddressValueClass).text().trim()).toContain('South Yorkshire')
+    expect($(confirmAddressValueClass).text().trim()).toContain('England')
+  })
+
+  it('should show "No fixed address" for address flagged as NFA', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    const contact = TestData.contact()
+    contact.addresses[0].noFixedAddress = true
+    contactsService.getContact.mockResolvedValue(contact)
+    referenceDataService.getReferenceDescriptionForCode.mockResolvedValue(null)
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect(response.status).toEqual(200)
+    expect($('.confirm-address-value').text().trim()).toStrictEqual('No fixed address, Sheffield, England')
+  })
+
+  it('should show "not provided" for address if question was not answered', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.getContact.mockResolvedValue(TestData.contact({ addresses: null }))
+    referenceDataService.getReferenceDescriptionForCode.mockResolvedValue(null)
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect(response.status).toEqual(200)
+    expect($('.addresses-not-provided').text().trim()).toStrictEqual('Not provided')
+  })
 })
