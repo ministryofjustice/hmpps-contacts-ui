@@ -1,5 +1,4 @@
 {% extends "../../../partials/layout.njk" %}
-{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
 {% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
 
@@ -7,7 +6,7 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-{% include '../partials/addContactNavigation.njk' %}
+{% include '../../../partials/navigation.njk' %}
 {{ miniProfile(prisonerDetails) }}
 <span class="govuk-caption-l">Contacts</span>
  <div class="govuk-grid-row">

@@ -1,5 +1,4 @@
 {% extends "../../../partials/layout.njk" %}
-{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
@@ -13,10 +12,8 @@
 {% set title = "Search for a contact" %}
 {% set mainClasses = "app-container govuk-body" %}
 
-{% set prisonerResultsLink = "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/list/" + journey.id %}
-
 {% block content %}
-{% include '../partials/addContactNavigation.njk' %}
+{% include '../../../partials/navigation.njk' %}
 
 {{ miniProfile(prisonerDetails) }}
 

@@ -1,12 +1,6 @@
 import AddContactJourney = journeys.AddContactJourney
 import { Page } from '../../../services/auditService'
-
-interface Navigation {
-  backLink?: string
-  breadcrumbs?: BreadcrumbType[]
-}
-
-type BreadcrumbType = 'DPS_HOME' | 'DPS_PROFILE' | 'PRISONER_CONTACTS'
+import { BreadcrumbType, Navigation } from '../common/navigation'
 
 type PreModePages = Page.CREATE_CONTACT_START_PAGE | Page.CONTACT_SEARCH_PAGE
 type CreateContactPages =
@@ -217,4 +211,4 @@ function findSpec(journey: journeys.AddContactJourney, currentPage: Page) {
   return spec
 }
 
-export { navigationForAddContactJourney, nextPageForAddContactJourney, Navigation, BreadcrumbType }
+export { navigationForAddContactJourney, nextPageForAddContactJourney }

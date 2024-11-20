@@ -1,22 +1,11 @@
 {% extends "../../../../partials/layout.njk" %}
 {% from "../../../../partials/miniProfile/macro.njk" import miniProfile %}
 {% from "../../partials/addContactTabNavigation.njk" import contactTabNavigation %}
-{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% block content %}
-
-{{ govukBackLink({
-    text: "Back",
-    href: '/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/list/',
-    attributes: {"data-qa": "back-link"}
-}) }}
-
+{% include '../../../../partials/navigation.njk' %}
+{{ miniProfile(prisonerDetails) }}
 <div class="govuk-grid-row govuk-!-static-margin-bottom-5">
-    <div class="govuk-grid-column-full">
-        {% include '../../partials/addContactNavigation.njk' %}
-        {{ miniProfile(prisonerDetails) }}
-    </div>
-
     <div class="govuk-grid-column-two-thirds">
         <span class="govuk-caption-l">Contacts</span>
         <h1 class="govuk-heading-l">Contact details - {{ contact | formatNameFirstNameFirst }}</h1>

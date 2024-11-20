@@ -7,6 +7,7 @@ import { IdentitySchemaType } from '../IdentitySchemas'
 import { ContactsService } from '../../../../../services'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import ContactDetails = contactsApiClientTypes.ContactDetails
+import { Navigation } from '../../../common/navigation'
 
 export default class ManageContactAddIdentityController implements PageHandler {
   constructor(
@@ -17,18 +18,20 @@ export default class ManageContactAddIdentityController implements PageHandler {
   public PAGE_NAME = Page.MANAGE_CONTACT_ADD_IDENTITY_PAGE
 
   GET = async (req: Request<{ prisonerNumber: string; contactId: string }>, res: Response): Promise<void> => {
-    const { user } = res.locals
+    const { user, journey } = res.locals
     const { contactId } = req.params
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const typeOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.ID_TYPE, user)
       .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.type))
+    const navigation: Navigation = { backLink: journey.returnPoint.url }
     const viewModel = {
       typeOptions,
       identity: res.locals?.formResponses?.identity,
       type: res.locals?.formResponses?.type,
       issuingAuthority: res.locals?.formResponses?.issuingAuthority,
       contact,
+      navigation,
     }
     res.render('pages/contacts/manage/addEditIdentity', viewModel)
   }

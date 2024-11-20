@@ -4,6 +4,7 @@ import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { ContactsService } from '../../../../../services'
 import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
 import ContactDetails = contactsApiClientTypes.ContactDetails
+import { Navigation } from '../../../common/navigation'
 
 export default class ManageContactDeletePhoneController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -14,7 +15,7 @@ export default class ManageContactDeletePhoneController implements PageHandler {
     req: Request<{ prisonerNumber: string; contactId: string; contactPhoneId: string }>,
     res: Response,
   ): Promise<void> => {
-    const { user } = res.locals
+    const { user, journey } = res.locals
     const { contactId, contactPhoneId } = req.params
     const contactIdNumber = Number(contactId)
     const contactPhoneIdNumber = Number(contactPhoneId)
@@ -27,8 +28,8 @@ export default class ManageContactDeletePhoneController implements PageHandler {
         `Couldn't find phone with id ${contactPhoneId} for contact ${contactId}. URL probably entered manually.`,
       )
     }
-
-    res.render('pages/contacts/manage/confirmDeletePhone', { phone })
+    const navigation: Navigation = { backLink: journey.returnPoint.url }
+    res.render('pages/contacts/manage/confirmDeletePhone', { phone, navigation })
   }
 
   POST = async (

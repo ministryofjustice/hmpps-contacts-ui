@@ -4,6 +4,7 @@ import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
 import UpdateRelationshipRequest = contactsApiClientTypes.UpdateRelationshipRequest
 import ContactDetails = contactsApiClientTypes.ContactDetails
+import { Navigation } from '../../common/navigation'
 
 export default class ManageEmergencyContactController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -12,16 +13,16 @@ export default class ManageEmergencyContactController implements PageHandler {
 
   GET = async (req: Request<{ contactId?: string; prisonerContactId?: string }>, res: Response): Promise<void> => {
     const { contactId, prisonerContactId } = req.params
-    const { prisonerDetails, user } = res.locals
+    const { user, journey } = res.locals
 
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const relationship = await this.contactsService.getPrisonerContactRelationship(Number(prisonerContactId), user)
-
+    const navigation: Navigation = { backLink: journey.returnPoint.url }
     return res.render('pages/contacts/manage/contactDetails/manageEmergencyContactStatus', {
       contact,
       prisonerContactId,
       relationship,
-      prisonerDetails,
+      navigation,
     })
   }
 

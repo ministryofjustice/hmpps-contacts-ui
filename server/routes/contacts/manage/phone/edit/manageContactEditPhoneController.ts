@@ -8,6 +8,7 @@ import { ContactsService } from '../../../../../services'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
 import ContactDetails = contactsApiClientTypes.ContactDetails
+import { Navigation } from '../../../common/navigation'
 
 export default class ManageContactEditPhoneController implements PageHandler {
   constructor(
@@ -21,7 +22,7 @@ export default class ManageContactEditPhoneController implements PageHandler {
     req: Request<{ prisonerNumber: string; contactId: string; contactPhoneId: string }>,
     res: Response,
   ): Promise<void> => {
-    const { user } = res.locals
+    const { user, journey } = res.locals
     const { contactId, contactPhoneId } = req.params
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const phone: ContactPhoneDetails = contact.phoneNumbers.find(
@@ -36,12 +37,14 @@ export default class ManageContactEditPhoneController implements PageHandler {
     const typeOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.PHONE_TYPE, user)
       .then(val => this.getSelectedOptions(val, currentType))
+    const navigation: Navigation = { backLink: journey.returnPoint.url }
     const viewModel = {
       typeOptions,
       phoneNumber: res.locals?.formResponses?.phoneNumber ?? phone.phoneNumber,
       type: currentType,
       extension: res.locals?.formResponses?.extension ?? phone.extNumber,
       contact,
+      navigation,
     }
     res.render('pages/contacts/manage/addEditPhone', viewModel)
   }
