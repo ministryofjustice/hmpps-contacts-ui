@@ -431,7 +431,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
     auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.getContact.mockResolvedValue(TestData.contact())
-    referenceDataService.getReferenceDescriptionForCode.mockResolvedValue(null)
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
@@ -454,7 +453,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
     const contact = TestData.contact()
     contact.addresses[0].noFixedAddress = true
     contactsService.getContact.mockResolvedValue(contact)
-    referenceDataService.getReferenceDescriptionForCode.mockResolvedValue(null)
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
@@ -470,7 +468,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
     auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.getContact.mockResolvedValue(TestData.contact({ addresses: null }))
-    referenceDataService.getReferenceDescriptionForCode.mockResolvedValue(null)
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
