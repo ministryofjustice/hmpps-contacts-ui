@@ -49,6 +49,7 @@ import { selectRelationshipSchemaFactory } from '../common/relationship/selectRe
 import ManageNextOfKinContactController from './relationship/manageNextOfKinContactController'
 import ManageContactDeleteEmailController from './email/delete/manageContactDeleteEmailController'
 import { enterRelationshipCommentsSchema } from '../add/relationship-comments/enterRelationshipCommentsSchemas'
+import ManageAddressesController from './addresses/manageAddressesController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -381,6 +382,21 @@ const ManageContactsRoutes = (
     prepareStandaloneManageContactJourney(),
     validate(selectRelationshipSchemaFactory()),
     asyncMiddleware(updateRelationshipController.POST),
+  )
+
+  const manageAddressesController = new ManageAddressesController(contactsService, referenceDataService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/view-addresses',
+    prepareStandaloneManageContactJourney(),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    logPageViewMiddleware(auditService, manageAddressesController),
+    asyncMiddleware(manageAddressesController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/view-addresses',
+    prepareStandaloneManageContactJourney(),
+    validate(selectRelationshipSchemaFactory()),
+    asyncMiddleware(manageAddressesController.POST),
   )
 
   const manageNextOfKinContactController = new ManageNextOfKinContactController(contactsService)
