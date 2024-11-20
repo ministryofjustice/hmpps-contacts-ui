@@ -5,6 +5,7 @@ import { EmailSchemaType } from '../emailSchemas'
 import { ContactsService } from '../../../../../services'
 import { components } from '../../../../../@types/contactsApi'
 import ContactDetails = contactsApiClientTypes.ContactDetails
+import { Navigation } from '../../../common/navigation'
 
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
@@ -18,7 +19,7 @@ export default class ManageContactEditEmailController implements PageHandler {
     req: Request<{ prisonerNumber: string; contactId: string; contactEmailId: string }>,
     res: Response,
   ): Promise<void> => {
-    const { user } = res.locals
+    const { user, journey } = res.locals
     const { contactId, contactEmailId } = req.params
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const email: ContactEmailDetails = contact.emailAddresses.find(
@@ -29,9 +30,11 @@ export default class ManageContactEditEmailController implements PageHandler {
         `Couldn't find email with id ${contactEmailId} for contact ${contactId}. URL probably entered manually.`,
       )
     }
+    const navigation: Navigation = { backLink: journey.returnPoint.url }
     const viewModel = {
       emailAddress: res.locals?.formResponses?.emailAddress ?? email.emailAddress,
       contact,
+      navigation,
     }
     res.render('pages/contacts/manage/addEditEmail', viewModel)
   }

@@ -5,6 +5,7 @@ import { EmailSchemaType } from '../emailSchemas'
 import { ContactsService } from '../../../../../services'
 import { components } from '../../../../../@types/contactsApi'
 import ContactDetails = contactsApiClientTypes.ContactDetails
+import { Navigation } from '../../../common/navigation'
 
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
 export default class ManageContactAddEmailController implements PageHandler {
@@ -13,12 +14,14 @@ export default class ManageContactAddEmailController implements PageHandler {
   public PAGE_NAME = Page.MANAGE_CONTACT_ADD_EMAIL_ADDRESSES_PAGE
 
   GET = async (req: Request<{ prisonerNumber: string; contactId: string }>, res: Response): Promise<void> => {
-    const { user } = res.locals
+    const { user, journey } = res.locals
     const { contactId } = req.params
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
+    const navigation: Navigation = { backLink: journey.returnPoint.url }
     const viewModel = {
       emailAddress: res.locals?.formResponses?.emailAddress,
       contact,
+      navigation,
     }
     res.render('pages/contacts/manage/addEditEmail', viewModel)
   }

@@ -4,19 +4,13 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "../../../../partials/miniProfile/macro.njk" import miniProfile %}
-{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% set pageTitle = applicationName + " - Select if interpreter is needed" %}
 {% set title = "Does " + contact | formatNameFirstNameFirst + " need an interpreter?" %}
 
 {% block content %}
 
-{{ govukBackLink({
-    text: "Back",
-    href: journey.returnPoint.url,
-    attributes: {"data-qa": "back-link"}
-}) }}
-
+{% include '../../../../partials/navigation.njk' %}
 {{ miniProfile(prisonerDetails) }}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-half">

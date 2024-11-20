@@ -1,5 +1,4 @@
 {% extends "../../../partials/layout.njk" %}
-{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 {% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
@@ -9,7 +8,7 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-{% include '../partials/addContactNavigation.njk' %}
+{% include '../../../partials/navigation.njk' %}
 {{ miniProfile(prisonerDetails) }}
 {% include '../../../partials/formErrorSummary.njk' %}
 <span class="govuk-caption-l">Contacts</span>

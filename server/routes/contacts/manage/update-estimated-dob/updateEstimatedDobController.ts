@@ -3,10 +3,10 @@ import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 
 import { EnterEstimatedDobSchemas } from '../../common/enter-estimated-dob/enterEstimatedDobSchemas'
-import { Navigation } from '../../add/addContactFlowControl'
 import { ContactsService } from '../../../../services'
 import ContactNames = journeys.ContactNames
 import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
+import { Navigation } from '../../common/navigation'
 
 export default class UpdateEstimatedDobController implements PageHandler {
   constructor(private readonly contactService: ContactsService) {}

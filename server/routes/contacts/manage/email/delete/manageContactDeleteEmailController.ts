@@ -4,6 +4,7 @@ import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { ContactsService } from '../../../../../services'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import ContactEmailDetails = contactsApiClientTypes.ContactEmailDetails
+import { Navigation } from '../../../common/navigation'
 
 export default class ManageContactDeleteEmailController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -14,7 +15,7 @@ export default class ManageContactDeleteEmailController implements PageHandler {
     req: Request<{ prisonerNumber: string; contactId: string; contactEmailId: string }>,
     res: Response,
   ): Promise<void> => {
-    const { user } = res.locals
+    const { user, journey } = res.locals
     const { contactId, contactEmailId } = req.params
     const contactIdNumber = Number(contactId)
     const contactEmailIdNumber = Number(contactEmailId)
@@ -27,8 +28,8 @@ export default class ManageContactDeleteEmailController implements PageHandler {
         `Couldn't find email with id ${contactEmailId} for contact ${contactId}. URL probably entered manually.`,
       )
     }
-
-    res.render('pages/contacts/manage/confirmDeleteEmail', { email })
+    const navigation: Navigation = { backLink: journey.returnPoint.url }
+    res.render('pages/contacts/manage/confirmDeleteEmail', { email, navigation })
   }
 
   POST = async (

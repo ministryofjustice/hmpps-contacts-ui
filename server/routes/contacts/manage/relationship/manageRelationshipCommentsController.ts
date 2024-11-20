@@ -3,8 +3,8 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
 import UpdateRelationshipRequest = contactsApiClientTypes.UpdateRelationshipRequest
-import { Navigation } from '../../add/addContactFlowControl'
 import ContactDetails = contactsApiClientTypes.ContactDetails
+import { Navigation } from '../../common/navigation'
 
 export default class ManageRelationshipCommentsController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}

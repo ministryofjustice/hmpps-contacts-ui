@@ -4,10 +4,10 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { RestrictedEditingNameSchemaType } from '../../common/name/nameSchemas'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../services/referenceDataService'
-import { Navigation } from '../../add/addContactFlowControl'
 import { ContactsService } from '../../../../services'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
+import { Navigation } from '../../common/navigation'
 
 export default class UpdateNameController implements PageHandler {
   constructor(

@@ -7,6 +7,7 @@ import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import { formatNameFirstNameFirst } from '../../../../utils/formatName'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
+import { Navigation } from '../../common/navigation'
 
 export default class ContactDetailsController implements PageHandler {
   constructor(
@@ -26,13 +27,14 @@ export default class ContactDetailsController implements PageHandler {
     const prisonerContactRelationship: PrisonerContactRelationshipDetails =
       await this.contactsService.getPrisonerContactRelationship(Number(prisonerContactId), user)
     const formattedFullName = await this.formattedFullName(contact, user)
-
+    const navigation: Navigation = { breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'] }
     return res.render('pages/contacts/manage/contactDetails/details', {
       contact,
       prisonerContactId,
       prisonerContactRelationship,
       formattedFullName,
       manageContactRelationshipUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+      navigation,
     })
   }
 

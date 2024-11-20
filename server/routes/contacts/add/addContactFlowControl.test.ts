@@ -1,13 +1,9 @@
 import { v4 as uuidv4 } from 'uuid'
-import {
-  Navigation,
-  BreadcrumbType,
-  navigationForAddContactJourney,
-  nextPageForAddContactJourney,
-} from './addContactFlowControl'
+import { navigationForAddContactJourney, nextPageForAddContactJourney } from './addContactFlowControl'
 import { Page } from '../../../services/auditService'
 import AddContactJourney = journeys.AddContactJourney
 import DateOfBirth = journeys.DateOfBirth
+import { BreadcrumbType, Navigation } from '../common/navigation'
 
 describe('addContactFlowControl', () => {
   describe('add new contact', () => {

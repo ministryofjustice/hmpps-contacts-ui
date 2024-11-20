@@ -5,7 +5,7 @@ import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import { ContactsService } from '../../../../services'
 import { SelectRelationshipSchema } from '../../common/relationship/selectRelationshipSchemas'
-import { Navigation } from '../../add/addContactFlowControl'
+import { Navigation } from '../../common/navigation'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails

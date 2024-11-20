@@ -1,9 +1,9 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 {% if navigation.breadcrumbs %}
     <div class="govuk-grid-row govuk-!-static-margin-bottom-5" data-qa="breadcrumbs">
         <div class="govuk-grid-column-full">
-            {% set breadcrumbs = []
-            %}
+            {% set breadcrumbs = [] %}
 
             {% for breadcrumb in navigation.breadcrumbs %}
                 {% if breadcrumb === 'DPS_HOME' %}

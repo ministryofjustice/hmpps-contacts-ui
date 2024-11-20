@@ -4,7 +4,7 @@ import { PageHandler } from '../../../../../interfaces/pageHandler'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 
 import { EnterEstimatedDobSchemas } from '../../../common/enter-estimated-dob/enterEstimatedDobSchemas'
-import { Navigation } from '../../../add/addContactFlowControl'
+import { Navigation } from '../../../common/navigation'
 
 export default class UpdateDateOfBirthEnterEstimatedDobController implements PageHandler {
   public PAGE_NAME = Page.UPDATE_CONTACT_DOB_ESTIMATED_DOB_PAGE
