@@ -33,10 +33,32 @@ export default class ContactDetailsController implements PageHandler {
     const formattedFullName = await this.formattedFullName(contact, user)
     const navigation: Navigation = { breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'] }
 
+    const manageContactUrl = `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`
+    const manageContactReturnUrl = `${manageContactUrl}/view-addresses?returnUrl=${encodeURIComponent(manageContactUrl)}`
+
+    let primaryAddress
+    if (mostRelevantAddress) {
+      primaryAddress = [
+        {
+          mostRelevantAddressLabel,
+          addresses: mostRelevantAddress,
+          cardLabel: 'Addresses',
+          cardActions: [
+            {
+              href: manageContactReturnUrl,
+              text: 'View all addresses',
+              attributes: { 'data-qa': 'view-all-addresses' },
+              classes: 'govuk-link--no-visited-state',
+            },
+          ],
+          changeLink: 'false',
+        },
+      ]
+    }
+
     return res.render('pages/contacts/manage/contactDetails/details', {
       contact,
-      mostRelevantAddress,
-      mostRelevantAddressLabel,
+      primaryAddress,
       prisonerContactId,
       prisonerContactRelationship,
       formattedFullName,

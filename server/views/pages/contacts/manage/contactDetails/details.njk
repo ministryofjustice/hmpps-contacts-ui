@@ -14,20 +14,9 @@
         <h1 class="govuk-heading-l">Contact details - {{ contact | formatNameFirstNameFirst }}</h1>
         {%- include "./manageBasicDetails.njk" -%}
         {%- include "./manageRelationshipDetails.njk" -%}
-        {% if mostRelevantAddress %}
-            {{ addressDetails({
-                mostRelevantAddressLabel: mostRelevantAddressLabel,
-                addresses: [mostRelevantAddress],
-                cardLabel: 'Addresses',
-                cardActions: [
-                {
-                    href: '',
-                    text: "View all addresses",
-                    attributes: {"data-qa": "view-all-addresses"},
-                    classes: "govuk-link--no-visited-state"
-                }],
-                changeLink: false
-            }) }}
+
+        {% if primaryAddress %}
+            {{ addressDetails(primaryAddress)}}
         {% else %}
             {{ notProvided({title: 'Addresses', key: 'Address', className: 'addresses-not-provided' }) }}
         {% endif %}

@@ -1,21 +1,21 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% for addressItem in params.addresses %}
-
+{% for addressPram in params %}
+    {% set addressItem = addressPram.addresses %}
     {% set addressRow = [] %}
     {% set addressSpecificPhoneNumbers = '' %}
 
     {% if addressItem %}
         {% if addressItem.phoneNumbers and addressItem.phoneNumbers.length > 0 %}
             {% for val in addressItem.phoneNumbers %}
-                {% 
+                {%
                     set addressSpecificPhoneNumbers = addressSpecificPhoneNumbers + '<p data-qa=confirm-specific-phone-' + val.phoneType + '-value>' + (val.phoneType | capitalizeFirstLetter) + ': ' + val.phoneNumber + ' ' + '(' + val.extNumber + ')</p>'
                 %}
             {% endfor %}
         {% endif %}
 
         {%
-            set address = { 
+            set address = {
                 flat: addressItem.flat,
                 premise: addressItem.property,
                 street: addressItem.street,
@@ -43,12 +43,12 @@
             {% endif %}
         {% endset -%}
 
-        {% if params.mostRelevantAddressLabel %}
+        {% if addressPram.mostRelevantAddressLabel %}
             {% set addressRow = (
                 addressRow.push(
                     {
                         key: {
-                            text: params.mostRelevantAddressLabel,
+                            text: addressPram.mostRelevantAddressLabel,
                             classes: 'govuk-!-font-weight-regular most-relevant-address-label'
                         },
                         classes: 'govuk-summary-list__row--no-border'
@@ -82,18 +82,21 @@
                 }
         ), addressRow) %}
 
-        {% set addressRow = (
-            addressRow.push(
-                {
-                    key: {
-                        text: "Comments"
-                    },
-                    value: {
-                        text: 'Not provided' if not addressItem.comments else addressItem.comments,
-                        classes: 'confirm-comments-value'
+
+         {% if addressItem.comments %}
+            {% set addressRow = (
+                addressRow.push(
+                    {
+                        key: {
+                            text: "Comments"
+                        },
+                        value: {
+                            text: addressItem.comments,
+                            classes: 'confirm-comments-value'
+                        }
                     }
-                }
-        ), addressRow) %}
+            ), addressRow) %}
+        {% endif %}
 
         {% set addressRow = (
             addressRow.push(
@@ -111,10 +114,10 @@
     {{ govukSummaryList({
         card: {
             title: {
-                text: params.cardLabel if params.cardLabel else addressItem.addressTypeDescription | capitalizeFirstLetter
+                text: addressPram.cardLabel if addressPram.cardLabel else addressItem.addressTypeDescription | capitalizeFirstLetter
             },
             actions: {
-                items: params.cardActions
+                items: addressPram.cardActions
             }
         },
         rows: addressRow

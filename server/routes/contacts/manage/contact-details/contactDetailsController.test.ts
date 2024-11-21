@@ -404,7 +404,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       ['Primary', true, false],
       ['Mail', false, true],
     ])(
-      'should show primary address flag on addresses summary card if question was answered',
+      'should show relevant primary address flag as %s',
       async (flagLabel: string, primaryAddress: boolean, mailFlag: boolean) => {
         // Given
         auditService.logPageView.mockResolvedValue(null)
@@ -420,14 +420,18 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         // Then
         const $ = cheerio.load(response.text)
         expect(response.status).toEqual(200)
+        const addressCard = $('[data-qa=view-all-addresses]')
+        expect(addressCard.first().text().trim()).toStrictEqual('View all addresses (Addresses)')
+        expect(addressCard.first().attr('href')).toStrictEqual(
+          '/prisoner/A1234BC/contacts/manage/1/relationship/99/view-addresses?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99',
+        )
         expect($('.most-relevant-address-label').text().trim()).toStrictEqual(flagLabel)
       },
     )
   })
 
-  it('should show address if question was answered', async () => {
+  it('should show primary address details', async () => {
     // Given
-    const confirmAddressValueClass = '.confirm-address-value'
     auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.getContact.mockResolvedValue(TestData.contact())
@@ -438,12 +442,11 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
     // Then
     const $ = cheerio.load(response.text)
     expect(response.status).toEqual(200)
-    expect($(confirmAddressValueClass).text().trim()).toContain('24,')
-    expect($(confirmAddressValueClass).text().trim()).toContain('Acacia Avenue')
-    expect($(confirmAddressValueClass).text().trim()).toContain('Bunting')
-    expect($(confirmAddressValueClass).text().trim()).toContain('Sheffield')
-    expect($(confirmAddressValueClass).text().trim()).toContain('South Yorkshire')
-    expect($(confirmAddressValueClass).text().trim()).toContain('England')
+
+    const confirmAddressValueClass = '.confirm-address-value'
+    expect($(confirmAddressValueClass).text().trim()).toStrictEqual(
+      '24, Acacia AvenueBuntingSheffieldSouth YorkshireEngland',
+    )
   })
 
   it('should show "No fixed address" for address flagged as NFA', async () => {
@@ -476,5 +479,22 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
     const $ = cheerio.load(response.text)
     expect(response.status).toEqual(200)
     expect($('.addresses-not-provided').text().trim()).toStrictEqual('Not provided')
+  })
+
+  it('should not show comments when theres no comments', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    const contact = TestData.contact()
+    contact.addresses[0].comments = undefined
+    contactsService.getContact.mockResolvedValue(contact)
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect(response.status).toEqual(200)
+    expect($('.confirm-comments-value').text().trim()).toStrictEqual('')
   })
 })
