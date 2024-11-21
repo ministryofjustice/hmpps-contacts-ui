@@ -106,9 +106,10 @@ context('Add Existing Contact Check Answers', () => {
     cy.verifyLastAPICall(
       {
         method: 'POST',
-        urlPath: `/contact/${contactId}/relationship`,
+        urlPath: '/prisoner-contact',
       },
       {
+        contactId,
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipCode: 'FA',
@@ -137,9 +138,10 @@ context('Add Existing Contact Check Answers', () => {
     cy.verifyLastAPICall(
       {
         method: 'POST',
-        urlPath: `/contact/${contactId}/relationship`,
+        urlPath: '/prisoner-contact',
       },
       {
+        contactId,
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipCode: 'MOT',
@@ -168,9 +170,10 @@ context('Add Existing Contact Check Answers', () => {
     cy.verifyLastAPICall(
       {
         method: 'POST',
-        urlPath: `/contact/${contactId}/relationship`,
+        urlPath: '/prisoner-contact',
       },
       {
+        contactId,
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipCode: 'MOT',
@@ -199,9 +202,10 @@ context('Add Existing Contact Check Answers', () => {
     cy.verifyLastAPICall(
       {
         method: 'POST',
-        urlPath: `/contact/${contactId}/relationship`,
+        urlPath: '/prisoner-contact',
       },
       {
+        contactId,
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipCode: 'MOT',

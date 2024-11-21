@@ -568,6 +568,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/prisoner-contact': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Add a new prisoner contact relationship
+     * @description Creates a new relationship between the contact and a prisoner.
+     */
+    post: operations['addContactRelationship']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/migrate/contact': {
     parameters: {
       query?: never
@@ -602,26 +622,6 @@ export interface paths {
      * @description Creates a new contact that is not yet associated with any prisoner.
      */
     post: operations['createContact']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/contact/{contactId}/relationship': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /**
-     * Add a new contact relationship
-     * @description Creates a new relationship between the contact and a prisoner.
-     */
-    post: operations['addContactRelationship']
     delete?: never
     options?: never
     head?: never
@@ -688,6 +688,27 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/prisoner-contact/{prisonerContactId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Endpoint to get a prisoner contact relationship by relationship id */
+    get: operations['getPrisonerContactById']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    /**
+     * Update prisoner contact relationship
+     * @description Update the relationship between the contact and a prisoner.
+     */
+    patch: operations['patchContactRelationship']
+    trace?: never
+  }
   '/contact/{contactId}': {
     parameters: {
       query?: never
@@ -710,26 +731,6 @@ export interface paths {
      * @description Update a contact
      */
     patch: operations['patchContact']
-    trace?: never
-  }
-  '/contact/{contactId}/relationship/{prisonerContactId}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    /**
-     * Update prisoner contact relationship
-     * @description Update the relationship between the contact and a prisoner.
-     */
-    patch: operations['patchContactRelationship']
     trace?: never
   }
   '/reference-codes/group/{groupCode}': {
@@ -775,23 +776,6 @@ export interface paths {
     }
     /** Endpoint to fetch all contacts for a specific prisoner by prisoner number and active status */
     get: operations['getAllContacts']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/prisoner-contact/relationship/{prisonerContactId}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Endpoint to get a prisoner contact relationship by relationship id */
-    get: operations['getPrisonerContactById']
     put?: never
     post?: never
     delete?: never
@@ -1235,14 +1219,6 @@ export interface components {
        */
       updatedTime: string
     }
-    ErrorResponse: {
-      /** Format: int32 */
-      status: number
-      errorCode?: string
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
-    }
     /** @description Response object with prisoner contact details */
     SyncPrisonerContact: {
       /**
@@ -1349,6 +1325,14 @@ export interface components {
        * @example 2024-02-01T16:00:00Z
        */
       updatedTime?: string | null
+    }
+    ErrorResponse: {
+      /** Format: int32 */
+      status: number
+      errorCode?: string
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
     }
     /** @description Request object to update prisoner contact restriction details */
     SyncUpdatePrisonerContactRestrictionRequest: {
@@ -3019,6 +3003,70 @@ export interface components {
        */
       createdTime: string
     }
+    AddContactRelationshipRequest: {
+      /**
+       * Format: int64
+       * @description The id of the contact this relationship is for
+       * @example 123456
+       */
+      contactId: number
+      relationship: components['schemas']['ContactRelationship']
+      /**
+       * @description The id of the user creating the contact
+       * @example JD000001
+       */
+      createdBy: string
+    }
+    /** @description Describes the prisoner contact relationship */
+    PrisonerContactRelationshipDetails: {
+      /**
+       * Format: int64
+       * @description The unique identifier for the prisoner contact
+       * @example 123456
+       */
+      prisonerContactId: number
+      /**
+       * Format: int64
+       * @description The unique identifier for the contact
+       * @example 654321
+       */
+      contactId: number
+      /**
+       * @description Prisoner number (NOMS ID)
+       * @example A1234BC
+       */
+      prisonerNumber: string
+      /**
+       * @description The relationship code between the prisoner and the contact
+       * @example FRI
+       */
+      relationshipCode: string
+      /**
+       * @description The description of the relationship
+       * @example Friend
+       */
+      relationshipDescription: string
+      /**
+       * @description Is this contact the prisoner's emergency contact?
+       * @example true
+       */
+      emergencyContact: boolean
+      /**
+       * @description Is this contact the prisoner's next of kin?
+       * @example false
+       */
+      nextOfKin: boolean
+      /**
+       * @description Is this prisoner's contact relationship active?
+       * @example true
+       */
+      isRelationshipActive: boolean
+      /**
+       * @description Any additional comments
+       * @example Close family friend
+       */
+      comments?: string | null
+    }
     /** @description Coded value for this restriction type */
     CodedValue: {
       /**
@@ -3811,53 +3859,6 @@ export interface components {
       createdTime: string
       staff?: boolean
     }
-    /** @description Describes the prisoner contact relationship */
-    PrisonerContactRelationshipDetails: {
-      /**
-       * Format: int64
-       * @description The unique identifier for the prisoner contact
-       * @example 123456
-       */
-      prisonerContactId: number
-      /**
-       * @description The relationship code between the prisoner and the contact
-       * @example FRI
-       */
-      relationshipCode: string
-      /**
-       * @description The description of the relationship
-       * @example Friend
-       */
-      relationshipDescription: string
-      /**
-       * @description Is this contact the prisoner's emergency contact?
-       * @example true
-       */
-      emergencyContact: boolean
-      /**
-       * @description Is this contact the prisoner's next of kin?
-       * @example false
-       */
-      nextOfKin: boolean
-      /**
-       * @description Is this prisoner's contact relationship active?
-       * @example true
-       */
-      isRelationshipActive: boolean
-      /**
-       * @description Any additional comments
-       * @example Close family friend
-       */
-      comments?: string | null
-    }
-    AddContactRelationshipRequest: {
-      relationship: components['schemas']['ContactRelationship']
-      /**
-       * @description The id of the user creating the contact
-       * @example JD000001
-       */
-      createdBy: string
-    }
     /** @description Request to create a new phone number */
     CreatePhoneRequest: {
       /**
@@ -3916,6 +3917,39 @@ export interface components {
        * @example admin
        */
       createdBy: string
+    }
+    /** @description Request to update an existing relationship details */
+    UpdateRelationshipRequest: {
+      /**
+       * @description The relationship code between the prisoner and the contact
+       * @example FRI
+       */
+      relationshipCode?: string
+      /**
+       * @description Whether they are the emergency contact for the prisoner
+       * @example boolean
+       */
+      isEmergencyContact?: string
+      /**
+       * @description Whether they are the next of kin for the prisoner
+       * @example true
+       */
+      isNextOfKin?: boolean
+      /**
+       * @description Whether the relationship is active
+       * @example true
+       */
+      isRelationshipActive?: boolean
+      /**
+       * @description Comments about the contacts relationship with the prisoner
+       * @example Some additional information
+       */
+      comments?: string | null
+      /**
+       * @description The id of the user who updated the contact
+       * @example JD000001
+       */
+      updatedBy: string
     }
     /** @description Request to patch a new contact. firstName and lastName are not updatable so are intentionally missing from this request. */
     PatchContactRequest: {
@@ -4080,39 +4114,6 @@ export interface components {
        */
       updatedTime?: string
       staff?: boolean
-    }
-    /** @description Request to update an existing relationship details */
-    UpdateRelationshipRequest: {
-      /**
-       * @description The relationship code between the prisoner and the contact
-       * @example FRI
-       */
-      relationshipCode?: string
-      /**
-       * @description Whether they are the emergency contact for the prisoner
-       * @example boolean
-       */
-      isEmergencyContact?: string
-      /**
-       * @description Whether they are the next of kin for the prisoner
-       * @example true
-       */
-      isNextOfKin?: boolean
-      /**
-       * @description Whether the relationship is active
-       * @example true
-       */
-      isRelationshipActive?: boolean
-      /**
-       * @description Comments about the contacts relationship with the prisoner
-       * @example Some additional information
-       */
-      comments?: string | null
-      /**
-       * @description The id of the user who updated the contact
-       * @example JD000001
-       */
-      updatedBy: string
     }
     Sort: {
       sort?: string[]
@@ -4335,11 +4336,11 @@ export interface components {
       /** Format: int64 */
       offset?: number
       sort?: components['schemas']['SortObject'][]
-      /** Format: int32 */
-      pageSize?: number
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
+      /** Format: int32 */
+      pageSize?: number
       unpaged?: boolean
     }
     PrisonerContactSummaryPage: {
@@ -4348,10 +4349,10 @@ export interface components {
       /** Format: int64 */
       total?: number
       last?: boolean
-      /** Format: int32 */
-      totalPages?: number
       /** Format: int64 */
       totalElements?: number
+      /** Format: int32 */
+      totalPages?: number
       first?: boolean
       /** Format: int32 */
       size?: number
@@ -4632,10 +4633,10 @@ export interface components {
       /** Format: int64 */
       total?: number
       last?: boolean
-      /** Format: int32 */
-      totalPages?: number
       /** Format: int64 */
       totalElements?: number
+      /** Format: int32 */
+      totalPages?: number
       first?: boolean
       /** Format: int32 */
       size?: number
@@ -6570,6 +6571,66 @@ export interface operations {
       }
     }
   }
+  addContactRelationship: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AddContactRelationshipRequest']
+      }
+    }
+    responses: {
+      /** @description Created the relationship successfully */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerContactRelationshipDetails']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the prisoner or contact that this relationship relates to */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   migrateContact: {
     parameters: {
       query?: never
@@ -6685,72 +6746,6 @@ export interface operations {
         }
       }
       /** @description Could not find the prisoner that this contact has a relationship to */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  addContactRelationship: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /**
-         * @description The id of the contact
-         * @example 123456
-         */
-        contactId: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['AddContactRelationshipRequest']
-      }
-    }
-    responses: {
-      /** @description Created the relationship successfully */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['PrisonerContactRelationshipDetails']
-        }
-      }
-      /** @description The request has invalid or missing fields */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Could not find the prisoner or contact that this relationship relates to */
       404: {
         headers: {
           [name: string]: unknown
@@ -6959,6 +6954,134 @@ export interface operations {
       }
     }
   }
+  getPrisonerContactById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the prisoner contact relationship to be returned
+         * @example 1L
+         */
+        prisonerContactId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Prisoner Contact relationship */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerContactRelationshipDetails']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The Prisoner contact relationship was not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  patchContactRelationship: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the prisoner contact
+         * @example 123456
+         */
+        prisonerContactId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateRelationshipRequest']
+      }
+    }
+    responses: {
+      /** @description Created */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': Record<string, never>
+        }
+      }
+      /** @description Updated the relationship successfully */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': Record<string, never>
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the prisoner contact that this relationship relates to */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getContact: {
     parameters: {
       query?: never
@@ -7068,86 +7191,6 @@ export interface operations {
         }
       }
       /** @description No contact with that id could be found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  patchContactRelationship: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /**
-         * @description The id of the contact
-         * @example 123456
-         */
-        contactId: number
-        /**
-         * @description The id of the prisoner contact
-         * @example 123456
-         */
-        prisonerContactId: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateRelationshipRequest']
-      }
-    }
-    responses: {
-      /** @description Created */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': Record<string, never>
-        }
-      }
-      /** @description Updated the relationship successfully */
-      204: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': Record<string, never>
-        }
-      }
-      /** @description The request has invalid or missing fields */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Could not find the prisoner contact that this relationship relates to */
       404: {
         headers: {
           [name: string]: unknown
@@ -7299,59 +7342,6 @@ export interface operations {
         }
       }
       /** @description The Prisoner was not found. */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  getPrisonerContactById: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /**
-         * @description The id of the prisoner contact relationship to be returned
-         * @example 1L
-         */
-        prisonerContactId: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Prisoner Contact relationship */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['PrisonerContactRelationshipDetails']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description The Prisoner contact relationship was not found. */
       404: {
         headers: {
           [name: string]: unknown

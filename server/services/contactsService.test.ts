@@ -355,6 +355,7 @@ describe('contactsService', () => {
         contactId: 123456,
       }
       const expectedRequest: AddContactRelationshipRequest = {
+        contactId: 123456,
         relationship: {
           prisonerNumber,
           relationshipCode: 'MOT',
@@ -370,7 +371,7 @@ describe('contactsService', () => {
 
       // Then
       expect(created).toStrictEqual(expectedCreated)
-      expect(apiClient.addContactRelationship).toHaveBeenCalledWith(123456, expectedRequest, user)
+      expect(apiClient.addContactRelationship).toHaveBeenCalledWith(expectedRequest, user)
     })
 
     it('should add a contact relationship from the journey dto with only optional fields', async () => {
@@ -401,6 +402,7 @@ describe('contactsService', () => {
         contactId: 123456,
       }
       const expectedRequest: AddContactRelationshipRequest = {
+        contactId: 123456,
         relationship: {
           prisonerNumber,
           relationshipCode: 'MOT',
@@ -415,7 +417,7 @@ describe('contactsService', () => {
 
       // Then
       expect(created).toStrictEqual(expectedCreated)
-      expect(apiClient.addContactRelationship).toHaveBeenCalledWith(123456, expectedRequest, user)
+      expect(apiClient.addContactRelationship).toHaveBeenCalledWith(expectedRequest, user)
     })
 
     it('should handle a bad request', async () => {

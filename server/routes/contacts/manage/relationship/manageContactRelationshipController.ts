@@ -69,18 +69,13 @@ export default class ManageContactRelationshipController implements PageHandler 
   ): Promise<void> => {
     const { user } = res.locals
     const { journey } = res.locals
-    const { contactId, prisonerContactId } = req.params
+    const { prisonerContactId } = req.params
     const { relationship } = req.body
     const request: UpdateRelationshipRequest = {
       relationshipCode: relationship,
       updatedBy: user.username,
     }
-    await this.contactsService.updateContactRelationshipById(
-      Number(contactId),
-      Number(prisonerContactId),
-      request,
-      user,
-    )
+    await this.contactsService.updateContactRelationshipById(Number(prisonerContactId), request, user)
     res.redirect(journey.returnPoint.url)
   }
 

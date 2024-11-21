@@ -25,7 +25,6 @@ context('Manage contact update comments for a contact', () => {
       response: TestData.prisonerContactRelationship(),
     })
     cy.task('stubUpdateContactRelationshipById', {
-      contactId,
       prisonerContactId,
       response: { comments: 'my comments' },
     })
@@ -51,7 +50,7 @@ context('Manage contact update comments for a contact', () => {
     cy.verifyLastAPICall(
       {
         method: 'PATCH',
-        urlPath: `/contact/${contactId}/relationship/${prisonerContactId}`,
+        urlPath: `/prisoner-contact/${prisonerContactId}`,
       },
       { comments: 'my comments', updatedBy: 'USER1' },
     )
