@@ -135,7 +135,7 @@ export default class ContactsService {
       phoneType: type,
       phoneNumber,
       extNumber: extension,
-      amendedBy: user.username,
+      updatedBy: user.username,
     }
     return this.contactsApiClient.updateContactPhone(contactId, contactPhoneId, request, user)
   }
@@ -176,7 +176,7 @@ export default class ContactsService {
       identityType,
       identityValue,
       issuingAuthority,
-      amendedBy: user.username,
+      updatedBy: user.username,
     }
     return this.contactsApiClient.updateContactIdentity(contactId, contactIdentityId, request, user)
   }

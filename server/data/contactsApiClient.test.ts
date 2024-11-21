@@ -431,13 +431,13 @@ describe('contactsApiClient', () => {
         phoneNumber: '0123456789',
         createdBy: 'user1',
         createdTime: new Date().toISOString(),
-        amendedBy: 'user1',
-        amendedTime: new Date().toISOString(),
+        updatedBy: 'user1',
+        updatedTime: new Date().toISOString(),
       }
       const request: UpdatePhoneRequest = {
         type: 'MOB',
         phoneNumber: '0123456789',
-        amendedByBy: 'user1',
+        updatedBy: 'user1',
       }
 
       fakeContactsApi
@@ -457,7 +457,7 @@ describe('contactsApiClient', () => {
       const request: UpdatePhoneRequest = {
         type: 'MOB',
         phoneNumber: '0123456789',
-        amendedByBy: 'user1',
+        updatedBy: 'user1',
       }
       const expectedErrorBody = {
         status: errorCode,
@@ -662,13 +662,13 @@ describe('contactsApiClient', () => {
           issuingAuthority: 'UK',
           createdBy: 'user1',
           createdTime: new Date().toISOString(),
-          amendedBy: 'user1',
-          amendedTime: new Date().toISOString(),
+          updatedBy: 'user1',
+          updatedTime: new Date().toISOString(),
         }
         const request: UpdateIdentityRequest = {
           type: 'PASS',
           identityNumber: '0123456789',
-          amendedByBy: 'user1',
+          updatedBy: 'user1',
         }
 
         fakeContactsApi
@@ -689,7 +689,7 @@ describe('contactsApiClient', () => {
           type: 'PASS',
           identityNumber: '0123456789',
           issuingAuthority: 'UK',
-          amendedByBy: 'user1',
+          updatedBy: 'user1',
         }
         const expectedErrorBody = {
           status: errorCode,
@@ -758,8 +758,8 @@ describe('contactsApiClient', () => {
           emailAddress: 'test@example.com',
           createdBy: 'user1',
           createdTime: new Date().toISOString(),
-          amendedBy: new Date().toISOString(),
-          amendedTime: new Date().toISOString(),
+          updatedBy: new Date().toISOString(),
+          updatedTime: new Date().toISOString(),
         }
 
         const request: CreateEmailRequest = {
@@ -816,13 +816,13 @@ describe('contactsApiClient', () => {
           emailAddress: 'test@example.com',
           createdBy: 'user1',
           createdTime: new Date().toISOString(),
-          amendedBy: new Date().toISOString(),
-          amendedTime: new Date().toISOString(),
+          updatedBy: new Date().toISOString(),
+          updatedTime: new Date().toISOString(),
         }
 
         const request: UpdateEmailRequest = {
           emailAddress: 'test@example.com',
-          amendedBy: 'user1',
+          updatedBy: 'user1',
         }
 
         fakeContactsApi
@@ -841,7 +841,7 @@ describe('contactsApiClient', () => {
         // Given
         const request: UpdateEmailRequest = {
           emailAddress: 'test@example.com',
-          amendedBy: 'user1',
+          updatedBy: 'user1',
         }
         const expectedErrorBody = {
           status: errorCode,

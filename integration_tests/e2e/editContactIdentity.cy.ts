@@ -49,8 +49,8 @@ context('Edit Contact Identities', () => {
       issuingAuthority: 'UK',
       createdBy: 'USER1',
       createdTime: new Date().toISOString(),
-      amendedBy: 'USER1',
-      amendedTime: new Date().toISOString(),
+      updatedBy: 'USER1',
+      updatedTime: new Date().toISOString(),
     }
     cy.task('stubUpdateContactIdentity', { contactId, contactIdentityId: 1, updated })
 
@@ -73,7 +73,7 @@ context('Edit Contact Identities', () => {
         method: 'PUT',
         urlPath: `/contact/${contactId}/identity/1`,
       },
-      { identityType: 'NINO', identityValue: '123434', amendedBy: 'USER1' },
+      { identityType: 'NINO', identityValue: '123434', updatedBy: 'USER1' },
     )
   })
 
@@ -87,8 +87,8 @@ context('Edit Contact Identities', () => {
       issuingAuthority: 'UK',
       createdBy: 'USER1',
       createdTime: new Date().toISOString(),
-      amendedBy: 'USER1',
-      amendedTime: new Date().toISOString(),
+      updatedBy: 'USER1',
+      updatedTime: new Date().toISOString(),
     }
     cy.task('stubUpdateContactIdentity', { contactId, contactIdentityId: 1, updated })
 
@@ -111,7 +111,7 @@ context('Edit Contact Identities', () => {
         method: 'PUT',
         urlPath: `/contact/${contactId}/identity/1`,
       },
-      { identityType: 'NINO', identityValue: '987654321', issuingAuthority: 'USA', amendedBy: 'USER1' },
+      { identityType: 'NINO', identityValue: '987654321', issuingAuthority: 'USA', updatedBy: 'USER1' },
     )
   })
 
