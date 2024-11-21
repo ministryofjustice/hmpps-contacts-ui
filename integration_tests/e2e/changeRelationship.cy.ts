@@ -46,7 +46,6 @@ context('Change Relationship', () => {
     }
 
     cy.task('stubUpdateContactRelationshipById', {
-      contactId,
       prisonerContactId,
       response: updated,
     })
@@ -64,7 +63,7 @@ context('Change Relationship', () => {
     cy.verifyLastAPICall(
       {
         method: 'PATCH',
-        urlPath: `/contact/${contactId}/relationship/${prisonerContactId}`,
+        urlPath: `/prisoner-contact/${prisonerContactId}`,
       },
       {
         relationshipCode: 'MOT',

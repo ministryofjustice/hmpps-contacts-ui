@@ -116,6 +116,7 @@ describe('contactsApiClient', () => {
         prisonerContactId: 123456,
       }
       const request: AddContactRelationshipRequest = {
+        contactId: 123456,
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipCode: 'MOT',
@@ -127,12 +128,12 @@ describe('contactsApiClient', () => {
       }
 
       fakeContactsApi
-        .post('/contact/123456/relationship', request)
+        .post('/prisoner-contact', request)
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(201, expected)
 
       // When
-      const result = await contactsApiClient.addContactRelationship(123456, request, user)
+      const result = await contactsApiClient.addContactRelationship(request, user)
 
       // Then
       expect(result).toStrictEqual(expected)
@@ -142,6 +143,7 @@ describe('contactsApiClient', () => {
     it.each([400, 401, 403, 500])('should propagate errors', async (errorCode: number) => {
       // Given
       const request: AddContactRelationshipRequest = {
+        contactId: 123456,
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipCode: 'MOT',
@@ -158,13 +160,13 @@ describe('contactsApiClient', () => {
       }
 
       fakeContactsApi
-        .post('/contact/123456/relationship', request)
+        .post('/prisoner-contact', request)
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(errorCode, expectedErrorBody)
 
       // When
       try {
-        await contactsApiClient.addContactRelationship(123456, request, user)
+        await contactsApiClient.addContactRelationship(request, user)
       } catch (e) {
         // Then
         expect(e.status).toEqual(errorCode)
@@ -330,7 +332,7 @@ describe('contactsApiClient', () => {
         comments: 'Some comments',
       }
       fakeContactsApi
-        .get('/prisoner-contact/relationship/123456')
+        .get('/prisoner-contact/123456')
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, expected)
 
@@ -350,7 +352,7 @@ describe('contactsApiClient', () => {
       }
 
       fakeContactsApi
-        .get('/prisoner-contact/relationship/123456')
+        .get('/prisoner-contact/123456')
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(errorCode, expectedErrorBody)
 

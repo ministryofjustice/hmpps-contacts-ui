@@ -116,9 +116,10 @@ context('Add Existing Contact', () => {
     cy.verifyLastAPICall(
       {
         method: 'POST',
-        urlPath: `/contact/${contactId}/relationship`,
+        urlPath: `/prisoner-contact`,
       },
       {
+        contactId,
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipCode: 'MOT',
@@ -181,9 +182,10 @@ context('Add Existing Contact', () => {
     cy.verifyLastAPICall(
       {
         method: 'POST',
-        urlPath: `/contact/${contactId}/relationship`,
+        urlPath: `/prisoner-contact`,
       },
       {
+        contactId,
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipCode: 'MOT',
@@ -345,9 +347,10 @@ context('Add Existing Contact', () => {
     cy.verifyLastAPICall(
       {
         method: 'POST',
-        urlPath: `/contact/${contactId}/relationship`,
+        urlPath: `/prisoner-contact`,
       },
       {
+        contactId,
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipCode: 'MOT',

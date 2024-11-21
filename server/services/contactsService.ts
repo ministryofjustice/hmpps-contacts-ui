@@ -67,6 +67,7 @@ export default class ContactsService {
 
   async addContact(journey: AddContactJourney, user: Express.User): Promise<PrisonerContactRelationshipDetails> {
     const request: AddContactRelationshipRequest = {
+      contactId: journey.contactId,
       relationship: {
         prisonerNumber: journey.prisonerNumber,
         relationshipCode: journey.relationship.type,
@@ -76,7 +77,7 @@ export default class ContactsService {
       },
       createdBy: user.username,
     }
-    return this.contactsApiClient.addContactRelationship(journey.contactId, request, user)
+    return this.contactsApiClient.addContactRelationship(request, user)
   }
 
   async getPrisonerContacts(
@@ -194,12 +195,11 @@ export default class ContactsService {
   }
 
   async updateContactRelationshipById(
-    contactId: number,
     prisonerContactId: number,
     request: contactsApiClientTypes.UpdateRelationshipRequest,
     user: Express.User,
   ): Promise<contactsApiClientTypes.PatchContactResponse> {
-    return this.contactsApiClient.updateContactRelationshipById(contactId, prisonerContactId, request, user)
+    return this.contactsApiClient.updateContactRelationshipById(prisonerContactId, request, user)
   }
 
   async createContactEmail(
