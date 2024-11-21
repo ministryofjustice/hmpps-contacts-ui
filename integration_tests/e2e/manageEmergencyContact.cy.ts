@@ -25,7 +25,6 @@ context('Manage contact update emergency contact', () => {
       response: TestData.prisonerContactRelationship(),
     })
     cy.task('stubUpdateContactRelationshipById', {
-      contactId,
       prisonerContactId,
       response: { isEmergencyContact: false },
     })
@@ -49,7 +48,7 @@ context('Manage contact update emergency contact', () => {
     cy.verifyLastAPICall(
       {
         method: 'PATCH',
-        urlPath: `/contact/${contactId}/relationship/${prisonerContactId}`,
+        urlPath: `/prisoner-contact/${prisonerContactId}`,
       },
       { isEmergencyContact: false, updatedBy: 'USER1' },
     )

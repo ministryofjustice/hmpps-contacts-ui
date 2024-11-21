@@ -116,12 +116,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       relationshipCode: 'MOT',
       updatedBy: 'user1',
     }
-    expect(contactsService.updateContactRelationshipById).toHaveBeenCalledWith(
-      contactId,
-      prisonerContactId,
-      expected,
-      user,
-    )
+    expect(contactsService.updateContactRelationshipById).toHaveBeenCalledWith(prisonerContactId, expected, user)
   })
 
   it('should return to input page with details kept if there are validation errors', async () => {

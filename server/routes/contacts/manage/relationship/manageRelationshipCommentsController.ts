@@ -40,20 +40,15 @@ export default class ManageRelationshipCommentsController implements PageHandler
     req: Request<{ contactId: string; prisonerNumber: string; prisonerContactId: string }>,
     res: Response,
   ): Promise<void> => {
-    const { user } = res.locals
-    const { contactId, prisonerNumber, prisonerContactId } = req.params
+    const { user, journey } = res.locals
+    const { prisonerContactId } = req.params
     const request: UpdateRelationshipRequest = {
       comments: req.body.comments,
       updatedBy: user.username,
     }
 
-    await this.contactsService.updateContactRelationshipById(
-      parseInt(contactId, 10),
-      Number(prisonerContactId),
-      request,
-      user,
-    )
+    await this.contactsService.updateContactRelationshipById(Number(prisonerContactId), request, user)
 
-    res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    res.redirect(journey.returnPoint.url)
   }
 }

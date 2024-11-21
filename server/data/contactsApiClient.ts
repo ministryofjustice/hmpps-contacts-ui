@@ -44,13 +44,12 @@ export default class ContactsApiClient extends RestClient {
   }
 
   async addContactRelationship(
-    contactId: number,
     request: AddContactRelationshipRequest,
     user: Express.User,
   ): Promise<PrisonerContactRelationshipDetails> {
     return this.post<PrisonerContactRelationshipDetails>(
       {
-        path: `/contact/${contactId}/relationship`,
+        path: `/prisoner-contact`,
         data: request,
       },
       user,
@@ -112,10 +111,7 @@ export default class ContactsApiClient extends RestClient {
     prisonerContactId: number,
     user: Express.User,
   ): Promise<PrisonerContactRelationshipDetails> {
-    return this.get<PrisonerContactRelationshipDetails>(
-      { path: `/prisoner-contact/relationship/${prisonerContactId}` },
-      user,
-    )
+    return this.get<PrisonerContactRelationshipDetails>({ path: `/prisoner-contact/${prisonerContactId}` }, user)
   }
 
   async createContactPhone(
@@ -218,14 +214,13 @@ export default class ContactsApiClient extends RestClient {
   }
 
   async updateContactRelationshipById(
-    contactId: number,
     prisonerContactId: number,
     request: UpdateRelationshipRequest,
     user: Express.User,
   ): Promise<PatchContactResponse> {
     return this.patch<UpdateRelationshipRequest>(
       {
-        path: `/contact/${contactId}/relationship/${prisonerContactId}`,
+        path: `/prisoner-contact/${prisonerContactId}`,
         data: request,
       },
       user,

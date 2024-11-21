@@ -26,7 +26,6 @@ context('Manage contact update next of kin contact', () => {
     })
 
     cy.task('stubUpdateContactRelationshipById', {
-      contactId,
       prisonerContactId,
       response: { isNextOfKin: false },
     })
@@ -50,7 +49,7 @@ context('Manage contact update next of kin contact', () => {
     cy.verifyLastAPICall(
       {
         method: 'PATCH',
-        urlPath: `/contact/${contactId}/relationship/${prisonerContactId}`,
+        urlPath: `/prisoner-contact/${prisonerContactId}`,
       },
       { isNextOfKin: false, updatedBy: 'USER1' },
     )

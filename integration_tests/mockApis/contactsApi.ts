@@ -41,13 +41,14 @@ export default {
     return stubFor({
       request: {
         method: 'POST',
-        urlPath: `/contact/${params.contactId}/relationship`,
+        urlPath: `/prisoner-contact`,
       },
       response: {
         status: 201,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
           prisonerContactId: params.createdPrisonerContactId,
+          contactId: params.contactId,
         },
       },
     })
@@ -102,7 +103,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPath: `/prisoner-contact/relationship/${params.id}`,
+        urlPath: `/prisoner-contact/${params.id}`,
       },
       response: {
         status: 200,
@@ -260,18 +261,16 @@ export default {
   },
 
   stubUpdateContactRelationshipById: ({
-    contactId,
     prisonerContactId,
     response,
   }: {
-    contactId: number
     prisonerContactId: number
     response: StubPatchContactResponse
   }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'PATCH',
-        urlPath: `/contact/${contactId}/relationship/${prisonerContactId}`,
+        urlPath: `/prisoner-contact/${prisonerContactId}`,
       },
       response: {
         status: 200,

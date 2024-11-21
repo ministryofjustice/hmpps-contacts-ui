@@ -116,6 +116,7 @@ describe('contactsApiClient', () => {
         prisonerContactId: 123456,
       }
       const request: AddContactRelationshipRequest = {
+        contactId: 123456,
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipCode: 'MOT',
@@ -127,12 +128,12 @@ describe('contactsApiClient', () => {
       }
 
       fakeContactsApi
-        .post('/contact/123456/relationship', request)
+        .post('/prisoner-contact', request)
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(201, expected)
 
       // When
-      const result = await contactsApiClient.addContactRelationship(123456, request, user)
+      const result = await contactsApiClient.addContactRelationship(request, user)
 
       // Then
       expect(result).toStrictEqual(expected)
@@ -142,6 +143,7 @@ describe('contactsApiClient', () => {
     it.each([400, 401, 403, 500])('should propagate errors', async (errorCode: number) => {
       // Given
       const request: AddContactRelationshipRequest = {
+        contactId: 123456,
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipCode: 'MOT',
@@ -158,13 +160,13 @@ describe('contactsApiClient', () => {
       }
 
       fakeContactsApi
-        .post('/contact/123456/relationship', request)
+        .post('/prisoner-contact', request)
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(errorCode, expectedErrorBody)
 
       // When
       try {
-        await contactsApiClient.addContactRelationship(123456, request, user)
+        await contactsApiClient.addContactRelationship(request, user)
       } catch (e) {
         // Then
         expect(e.status).toEqual(errorCode)
@@ -330,7 +332,7 @@ describe('contactsApiClient', () => {
         comments: 'Some comments',
       }
       fakeContactsApi
-        .get('/prisoner-contact/relationship/123456')
+        .get('/prisoner-contact/123456')
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, expected)
 
@@ -350,7 +352,7 @@ describe('contactsApiClient', () => {
       }
 
       fakeContactsApi
-        .get('/prisoner-contact/relationship/123456')
+        .get('/prisoner-contact/123456')
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(errorCode, expectedErrorBody)
 
@@ -431,13 +433,13 @@ describe('contactsApiClient', () => {
         phoneNumber: '0123456789',
         createdBy: 'user1',
         createdTime: new Date().toISOString(),
-        amendedBy: 'user1',
-        amendedTime: new Date().toISOString(),
+        updatedBy: 'user1',
+        updatedTime: new Date().toISOString(),
       }
       const request: UpdatePhoneRequest = {
         type: 'MOB',
         phoneNumber: '0123456789',
-        amendedByBy: 'user1',
+        updatedBy: 'user1',
       }
 
       fakeContactsApi
@@ -457,7 +459,7 @@ describe('contactsApiClient', () => {
       const request: UpdatePhoneRequest = {
         type: 'MOB',
         phoneNumber: '0123456789',
-        amendedByBy: 'user1',
+        updatedBy: 'user1',
       }
       const expectedErrorBody = {
         status: errorCode,
@@ -662,13 +664,13 @@ describe('contactsApiClient', () => {
           issuingAuthority: 'UK',
           createdBy: 'user1',
           createdTime: new Date().toISOString(),
-          amendedBy: 'user1',
-          amendedTime: new Date().toISOString(),
+          updatedBy: 'user1',
+          updatedTime: new Date().toISOString(),
         }
         const request: UpdateIdentityRequest = {
           type: 'PASS',
           identityNumber: '0123456789',
-          amendedByBy: 'user1',
+          updatedBy: 'user1',
         }
 
         fakeContactsApi
@@ -689,7 +691,7 @@ describe('contactsApiClient', () => {
           type: 'PASS',
           identityNumber: '0123456789',
           issuingAuthority: 'UK',
-          amendedByBy: 'user1',
+          updatedBy: 'user1',
         }
         const expectedErrorBody = {
           status: errorCode,
@@ -758,8 +760,8 @@ describe('contactsApiClient', () => {
           emailAddress: 'test@example.com',
           createdBy: 'user1',
           createdTime: new Date().toISOString(),
-          amendedBy: new Date().toISOString(),
-          amendedTime: new Date().toISOString(),
+          updatedBy: new Date().toISOString(),
+          updatedTime: new Date().toISOString(),
         }
 
         const request: CreateEmailRequest = {
@@ -816,13 +818,13 @@ describe('contactsApiClient', () => {
           emailAddress: 'test@example.com',
           createdBy: 'user1',
           createdTime: new Date().toISOString(),
-          amendedBy: new Date().toISOString(),
-          amendedTime: new Date().toISOString(),
+          updatedBy: new Date().toISOString(),
+          updatedTime: new Date().toISOString(),
         }
 
         const request: UpdateEmailRequest = {
           emailAddress: 'test@example.com',
-          amendedBy: 'user1',
+          updatedBy: 'user1',
         }
 
         fakeContactsApi
@@ -841,7 +843,7 @@ describe('contactsApiClient', () => {
         // Given
         const request: UpdateEmailRequest = {
           emailAddress: 'test@example.com',
-          amendedBy: 'user1',
+          updatedBy: 'user1',
         }
         const expectedErrorBody = {
           status: errorCode,

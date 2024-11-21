@@ -75,9 +75,8 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .type('form')
       .send({ nextOfKinStatus: input })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/1`)
+      .expect('Location', '/foo-bar')
     expect(contactsService.updateContactRelationshipById).toHaveBeenCalledWith(
-      10,
       1,
       { isNextOfKin: expected, updatedBy: 'user1' },
       user,

@@ -47,8 +47,8 @@ context('Edit Contact Phones', () => {
       phoneNumber: '999 888',
       createdBy: 'USER1',
       createdTime: new Date().toISOString(),
-      amendedBy: 'USER1',
-      amendedTime: new Date().toISOString(),
+      updatedBy: 'USER1',
+      updatedTime: new Date().toISOString(),
     }
     cy.task('stubUpdateContactPhone', { contactId, contactPhoneId: 99, updated })
 
@@ -74,7 +74,7 @@ context('Edit Contact Phones', () => {
       {
         phoneType: 'HOME',
         phoneNumber: '999 888',
-        amendedBy: 'USER1',
+        updatedBy: 'USER1',
       },
     )
   })
@@ -89,8 +89,8 @@ context('Edit Contact Phones', () => {
       extNumber: '000',
       createdBy: 'USER1',
       createdTime: new Date().toISOString(),
-      amendedBy: 'USER1',
-      amendedTime: new Date().toISOString(),
+      updatedBy: 'USER1',
+      updatedTime: new Date().toISOString(),
     }
     cy.task('stubUpdateContactPhone', { contactId, contactPhoneId: 77, updated })
 
@@ -117,7 +117,7 @@ context('Edit Contact Phones', () => {
         phoneType: 'MOB',
         phoneNumber: '987654321',
         extNumber: '000',
-        amendedBy: 'USER1',
+        updatedBy: 'USER1',
       },
     )
   })

@@ -36,8 +36,8 @@ const contact: ContactDetails = {
       emailAddress: 'mr.first@example.com',
       createdBy: user.username,
       createdTime: '2024-11-15T20:00:34.498693',
-      amendedBy: user.username,
-      amendedTime: '2024-11-18T11:17:15.722593',
+      updatedBy: user.username,
+      updatedTime: '2024-11-18T11:17:15.722593',
     },
   ],
   createdBy: user.username,
@@ -154,7 +154,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:conta
 
     const requestBody: UpdateEmailRequest = {
       emailAddress: 'test@example.com',
-      amendedBy: 'FIRST LAST',
+      updatedBy: 'FIRST LAST',
     }
     expect(contactsService.updateContactEmail).toHaveBeenCalledWith(contactId, 6, requestBody, user)
   })
