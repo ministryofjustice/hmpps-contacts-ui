@@ -45,7 +45,7 @@ describe('findMostRelevantAddress', () => {
       postcode: 'BD9 5AJ',
       primaryAddress: true,
       property: '189',
-      startDate: '2022-01-02',
+      startDate: '2012-01-02',
       street: 'Lilycroft Rd',
       verified: false,
       verifiedBy: null,
@@ -81,6 +81,7 @@ describe('findMostRelevantAddress', () => {
     contact.addresses[1].primaryAddress = null
     contact.addresses[0].mailFlag = null
     contact.addresses[1].mailFlag = null
+    contact.addresses[1].startDate = '2023-01-02'
 
     // When
     const mostRelevantAddress = findMostRelevantAddress(contact)
@@ -97,12 +98,13 @@ describe('findMostRelevantAddress', () => {
     contact.addresses[1].mailFlag = null
     contact.addresses[0].startDate = null
     contact.addresses[1].startDate = null
+    contact.addresses[1].createdTime = '2024-11-04T0 =3 =44.512401'
 
     // When
     const mostRelevantAddress = findMostRelevantAddress(contact)
 
     // Then
-    expect(mostRelevantAddress).toEqual(contact.addresses[0])
+    expect(mostRelevantAddress).toEqual(contact.addresses[1])
   })
 })
 
