@@ -48,14 +48,14 @@ export default class TestData {
         extNumber: '+0123',
         createdBy: 'JAMES',
         createdTime: '2024-10-04T15:35:23.101675v',
-        amendedBy: null,
-        amendedTime: null,
+        updatedBy: null,
+        updatedTime: null,
       },
     ],
     createdBy = 'TIM',
     createdTime = '2024-10-04T0 =3 =44.512401',
-    amendedBy = null,
-    amendedTime = null,
+    updatedBy = null,
+    updatedTime = null,
   }) => {
     return {
       contactAddressId,
@@ -84,8 +84,8 @@ export default class TestData {
       phoneNumbers,
       createdBy,
       createdTime,
-      amendedBy,
-      amendedTime,
+      updatedBy,
+      updatedTime,
     } as ContactAddressDetails
   }
 
@@ -110,8 +110,8 @@ export default class TestData {
       verifiedTime: '2024-10-08T15:22:59.604791',
       createdBy: 'TIM',
       createdTime: '2024-10-08T15:22:59.604791',
-      amendedBy: '',
-      amendedTime: '',
+      updatedBy: '',
+      updatedTime: '',
     } as ContactIdentityDetails
   }
 
@@ -132,8 +132,8 @@ export default class TestData {
       extNumber,
       createdBy: 'TIM',
       createdTime,
-      amendedBy: null,
-      amendedTime: null,
+      updatedBy: null,
+      updatedTime: null,
     } as ContactPhoneDetails
   }
 
@@ -144,8 +144,8 @@ export default class TestData {
       emailAddress,
       createdBy: 'TIM',
       createdTime: '2024-10-08T12:16:09.024803',
-      amendedBy: null,
-      amendedTime: null,
+      updatedBy: null,
+      updatedTime: null,
     } as ContactEmailDetails
   }
 
@@ -394,8 +394,8 @@ export default class TestData {
     interpreterRequired = false,
     createdBy = 'USER1',
     createdTime = '2024-09-20T10:30:00.000000',
-    amendedBy = 'USER2',
-    amendedTime = '2024-09-21T10:30:00.000000',
+    updatedBy = 'USER2',
+    updatedTime = '2024-09-21T10:30:00.000000',
   }: Partial<PatchContactResponse> = {}): PatchContactResponse =>
     ({
       id,
@@ -414,7 +414,7 @@ export default class TestData {
       interpreterRequired,
       createdBy,
       createdTime,
-      amendedBy,
-      amendedTime,
+      updatedBy,
+      updatedTime,
     }) as PatchContactResponse
 }

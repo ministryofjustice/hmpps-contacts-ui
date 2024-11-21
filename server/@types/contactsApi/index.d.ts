@@ -18,7 +18,7 @@ export interface paths {
      *           Used to get the details for one prisoner contact.
      *
      */
-    get: operations['getPrisonerContactById']
+    get: operations['syncGetPrisonerContactById']
     /**
      * Updates a prisoner contact with new or extra detail
      * @description
@@ -26,7 +26,7 @@ export interface paths {
      *           Used to update a prisoner contact.
      *
      */
-    put: operations['updatePrisonerContact']
+    put: operations['syncUpdatePrisonerContact']
     post?: never
     /**
      * Deletes one prisoner contact by internal ID
@@ -35,13 +35,13 @@ export interface paths {
      *           Used to delete a prisoner contact.
      *
      */
-    delete: operations['deletePrisonerContactById']
+    delete: operations['syncDeletePrisonerContactById']
     options?: never
     head?: never
     patch?: never
     trace?: never
   }
-  '/sync/prisoner-contact-restriction/{id}': {
+  '/sync/prisoner-contact-restriction/{prisonerContactRestrictionId}': {
     parameters: {
       query?: never
       header?: never
@@ -55,7 +55,7 @@ export interface paths {
      *           Used to get the details for one prisoner contact restriction.
      *
      */
-    get: operations['getPrisonerContactRestrictionById']
+    get: operations['syncGetPrisonerContactRestrictionById']
     /**
      * Updates a prisoner contact restriction with new or extra detail
      * @description
@@ -63,7 +63,7 @@ export interface paths {
      *           Used to update a prisoner contact restriction.
      *
      */
-    put: operations['updatePrisonerContactRestriction']
+    put: operations['syncUpdatePrisonerContactRestriction']
     post?: never
     /**
      * Deletes one prisoner contact restriction by internal ID
@@ -72,7 +72,7 @@ export interface paths {
      *           Used to delete a prisoner contact restriction.
      *
      */
-    delete: operations['deletePrisonerContactRestrictionById']
+    delete: operations['syncDeletePrisonerContactRestrictionById']
     options?: never
     head?: never
     patch?: never
@@ -92,7 +92,7 @@ export interface paths {
      *           Used to get the details for one contact.
      *
      */
-    get: operations['getContactById']
+    get: operations['syncGetContactById']
     /**
      * Updates a contact with new or extra detail
      * @description
@@ -100,7 +100,7 @@ export interface paths {
      *           Used to update a contact.
      *
      */
-    put: operations['updateContact']
+    put: operations['syncUpdateContact']
     post?: never
     /**
      * Deletes one contact by internal ID
@@ -109,7 +109,7 @@ export interface paths {
      *           Used to delete a contact.
      *
      */
-    delete: operations['deleteContactById']
+    delete: operations['syncDeleteContactById']
     options?: never
     head?: never
     patch?: never
@@ -129,7 +129,7 @@ export interface paths {
      *           Used to get the details for one contact restriction.
      *
      */
-    get: operations['getContactRestrictionById']
+    get: operations['syncGetContactRestrictionById']
     /**
      * Updates a contact restriction with new or extra detail
      * @description
@@ -137,7 +137,7 @@ export interface paths {
      *           Used to update a contact restriction.
      *
      */
-    put: operations['updateContactRestriction']
+    put: operations['syncUpdateContactRestriction']
     post?: never
     /**
      * Deletes one contact restriction by internal ID
@@ -146,7 +146,7 @@ export interface paths {
      *           Used to delete a contact restriction.
      *
      */
-    delete: operations['deleteContactRestrictionById']
+    delete: operations['syncDeleteContactRestrictionById']
     options?: never
     head?: never
     patch?: never
@@ -166,15 +166,15 @@ export interface paths {
      *           Used to get the details for one contact phone.
      *
      */
-    get: operations['getContactPhoneById']
+    get: operations['syncGetContactPhoneById']
     /**
-     * Updates a contact phone with new or extra detail
+     * Updates a phone number for a contact
      * @description
      *           Requires role: ROLE_CONTACTS_MIGRATION.
-     *           Used to update a contact phone.
+     *           Used to update a contact's phone number.
      *
      */
-    put: operations['updateContactPhone']
+    put: operations['syncUpdateContactPhone']
     post?: never
     /**
      * Deletes one contact phone by internal ID
@@ -183,7 +183,7 @@ export interface paths {
      *           Used to delete a contact phone.
      *
      */
-    delete: operations['deleteContactPhoneById']
+    delete: operations['syncDeleteContactPhoneById']
     options?: never
     head?: never
     patch?: never
@@ -203,7 +203,7 @@ export interface paths {
      *           Used to get the details for one contact identity.
      *
      */
-    get: operations['getContactIdentityById']
+    get: operations['syncGetContactIdentityById']
     /**
      * Updates a contact identity with new or extra detail
      * @description
@@ -211,7 +211,7 @@ export interface paths {
      *           Used to update a contact identity.
      *
      */
-    put: operations['updateContactIdentity']
+    put: operations['syncUpdateContactIdentity']
     post?: never
     /**
      * Deletes one contact identity by internal ID
@@ -220,7 +220,7 @@ export interface paths {
      *           Used to delete a contact identity.
      *
      */
-    delete: operations['deleteContactIdentityById']
+    delete: operations['syncDeleteContactIdentityById']
     options?: never
     head?: never
     patch?: never
@@ -240,7 +240,7 @@ export interface paths {
      *           Used to get the details for one contact email.
      *
      */
-    get: operations['getContactEmailById']
+    get: operations['syncGetContactEmailById']
     /**
      * Updates a contact email with new or extra detail
      * @description
@@ -248,7 +248,7 @@ export interface paths {
      *           Used to update a contact email.
      *
      */
-    put: operations['updateContactEmail']
+    put: operations['syncUpdateContactEmail']
     post?: never
     /**
      * Deletes one contact email by internal ID
@@ -257,7 +257,7 @@ export interface paths {
      *           Used to delete a contact email.
      *
      */
-    delete: operations['deleteContactEmailById']
+    delete: operations['syncDeleteContactEmailById']
     options?: never
     head?: never
     patch?: never
@@ -277,7 +277,7 @@ export interface paths {
      *           Used to get the details for one contact address.
      *
      */
-    get: operations['getContactAddressById']
+    get: operations['syncGetContactAddressById']
     /**
      * Updates a contact address with new or extra detail
      * @description
@@ -285,16 +285,16 @@ export interface paths {
      *           Used to update a contact address.
      *
      */
-    put: operations['updateContactAddress']
+    put: operations['syncUpdateContactAddress']
     post?: never
     /**
-     * Deletes one contact address by internal ID
+     * Deletes a contact address by internal ID
      * @description
      *           Requires role: ROLE_CONTACTS_MIGRATION.
      *           Used to delete a contact address.
      *
      */
-    delete: operations['deleteContactAddressById']
+    delete: operations['syncDeleteContactAddressById']
     options?: never
     head?: never
     patch?: never
@@ -311,18 +311,18 @@ export interface paths {
      * Get a phone number
      * @description Gets a contacts phone number by id
      */
-    get: operations['get']
+    get: operations['getPhone']
     /**
      * Update contact phone number
      * @description Updates an existing contact phone by id
      */
-    put: operations['update']
+    put: operations['updatePhone']
     post?: never
     /**
      * Delete contact phone number
      * @description Deletes an existing contact phone by id
      */
-    delete: operations['delete']
+    delete: operations['deletePhone']
     options?: never
     head?: never
     patch?: never
@@ -339,18 +339,18 @@ export interface paths {
      * Get an identity
      * @description Gets a contacts identity by id
      */
-    get: operations['get_1']
+    get: operations['getIdentityNumber']
     /**
      * Update contact identity
      * @description Updates an existing contact identity by id
      */
-    put: operations['update_1']
+    put: operations['updateIdentityNumber']
     post?: never
     /**
      * Delete contact identity
      * @description Deletes an existing contact identity by id
      */
-    delete: operations['delete_1']
+    delete: operations['deleteIdentityNumber']
     options?: never
     head?: never
     patch?: never
@@ -367,18 +367,18 @@ export interface paths {
      * Get an email
      * @description Gets a contacts email by id
      */
-    get: operations['get_2']
+    get: operations['getEmailAddress']
     /**
      * Update contact email
      * @description Updates an existing contact email by id
      */
-    put: operations['update_2']
+    put: operations['updateEmailAddress']
     post?: never
     /**
      * Delete contact email
      * @description Deletes an existing contact email by id
      */
-    delete: operations['delete_2']
+    delete: operations['deleteEmailAddress']
     options?: never
     head?: never
     patch?: never
@@ -400,7 +400,7 @@ export interface paths {
      *           Used to create a prisoner contact.
      *
      */
-    post: operations['createPrisonerContact']
+    post: operations['syncCreatePrisonerContact']
     delete?: never
     options?: never
     head?: never
@@ -423,7 +423,7 @@ export interface paths {
      *           Used to create a prisoner contact restriction.
      *
      */
-    post: operations['createPrisonerContactRestriction']
+    post: operations['syncCreatePrisonerContactRestriction']
     delete?: never
     options?: never
     head?: never
@@ -446,7 +446,7 @@ export interface paths {
      *           Used to create a contact and associate it with a contact.
      *
      */
-    post: operations['createContact']
+    post: operations['syncCreateContact']
     delete?: never
     options?: never
     head?: never
@@ -469,7 +469,7 @@ export interface paths {
      *           Used to create a contact restriction and associate it with a contact.
      *
      */
-    post: operations['createContactRestriction']
+    post: operations['syncCreateContactRestriction']
     delete?: never
     options?: never
     head?: never
@@ -492,7 +492,7 @@ export interface paths {
      *           Used to create a contact phone and associate it with a contact.
      *
      */
-    post: operations['createContactPhone']
+    post: operations['syncCreateContactPhone']
     delete?: never
     options?: never
     head?: never
@@ -515,7 +515,7 @@ export interface paths {
      *           Used to create a contact identity and associate it with a contact.
      *
      */
-    post: operations['createContactIdentity']
+    post: operations['syncCreateContactIdentity']
     delete?: never
     options?: never
     head?: never
@@ -538,7 +538,7 @@ export interface paths {
      *           Used to create a contact email and associate it with a contact.
      *
      */
-    post: operations['createContactEmail']
+    post: operations['syncCreateContactEmail']
     delete?: never
     options?: never
     head?: never
@@ -561,7 +561,7 @@ export interface paths {
      *           Used to create a contact address and associate it with a contact.
      *
      */
-    post: operations['createContactAddress']
+    post: operations['syncCreateContactAddress']
     delete?: never
     options?: never
     head?: never
@@ -601,7 +601,7 @@ export interface paths {
      * Create a new contact
      * @description Creates a new contact that is not yet associated with any prisoner.
      */
-    post: operations['createContact_1']
+    post: operations['createContact']
     delete?: never
     options?: never
     head?: never
@@ -641,7 +641,7 @@ export interface paths {
      * Create new contact phone number
      * @description Creates a new phone number for the specified contact
      */
-    post: operations['create']
+    post: operations['createPhone']
     delete?: never
     options?: never
     head?: never
@@ -661,7 +661,7 @@ export interface paths {
      * Create new contact identity
      * @description Creates a new identity for the specified contact
      */
-    post: operations['create_1']
+    post: operations['createIdentityNumber']
     delete?: never
     options?: never
     head?: never
@@ -681,7 +681,7 @@ export interface paths {
      * Create new contact email
      * @description Creates a new email for the specified contact
      */
-    post: operations['create_2']
+    post: operations['createEmailAddress']
     delete?: never
     options?: never
     head?: never
@@ -791,7 +791,7 @@ export interface paths {
       cookie?: never
     }
     /** Endpoint to get a prisoner contact relationship by relationship id */
-    get: operations['getPrisonerContactById_1']
+    get: operations['getPrisonerContactById']
     put?: never
     post?: never
     delete?: never
@@ -811,7 +811,7 @@ export interface paths {
      * Get language reference
      * @description Gets all language references
      */
-    get: operations['getAllCountries']
+    get: operations['getAllLanguages']
     put?: never
     post?: never
     delete?: never
@@ -911,7 +911,7 @@ export interface paths {
      * Get county reference
      * @description Gets all county references
      */
-    get: operations['getAllCountries_1']
+    get: operations['getAllCounties']
     put?: never
     post?: never
     delete?: never
@@ -971,7 +971,7 @@ export interface paths {
      * Get country reference
      * @description Gets all country references
      */
-    get: operations['getAllCountries_2']
+    get: operations['getAllCountries']
     put?: never
     post?: never
     delete?: never
@@ -1091,7 +1091,7 @@ export interface paths {
      * Get city reference
      * @description Gets all city references
      */
-    get: operations['getAllCountries_3']
+    get: operations['getAllCities']
     put?: never
     post?: never
     delete?: never
@@ -1145,7 +1145,7 @@ export type webhooks = Record<string, never>
 export interface components {
   schemas: {
     /** @description Request object to update prisoner contact details */
-    UpdatePrisonerContactRequest: {
+    SyncUpdatePrisonerContactRequest: {
       /**
        * Format: int64
        * @description The ID of the prisoner contact
@@ -1224,10 +1224,10 @@ export interface components {
        */
       createdAtPrison?: string | null
       /**
-       * @description The user who last amended the prisoner contact
+       * @description The user who last updated the prisoner contact
        * @example adminUser
        */
-      amendedBy?: string | null
+      updatedBy?: string | null
       /**
        * Format: date-time
        * @description The timestamp of when the prisoner contact was changed
@@ -1235,8 +1235,16 @@ export interface components {
        */
       updatedTime: string
     }
+    ErrorResponse: {
+      /** Format: int32 */
+      status: number
+      errorCode?: string
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
+    }
     /** @description Response object with prisoner contact details */
-    PrisonerContact: {
+    SyncPrisonerContact: {
       /**
        * Format: int64
        * @description The id of the contact
@@ -1331,27 +1339,19 @@ export interface components {
        */
       createdTime: string
       /**
-       * @description The user who last amended the prisoner contact
+       * @description The user who last updated the prisoner contact
        * @example adminUser
        */
-      amendedBy?: string | null
+      updatedBy?: string | null
       /**
        * Format: date-time
-       * @description The timestamp when the prisoner contact was last amended
+       * @description The timestamp when the prisoner contact was last updated
        * @example 2024-02-01T16:00:00Z
        */
-      amendedTime?: string | null
-    }
-    ErrorResponse: {
-      /** Format: int32 */
-      status: number
-      errorCode?: string
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
+      updatedTime?: string | null
     }
     /** @description Request object to update prisoner contact restriction details */
-    UpdatePrisonerContactRestrictionRequest: {
+    SyncUpdatePrisonerContactRestrictionRequest: {
       /**
        * Format: int64
        * @description ID of the contact to which the restriction applies
@@ -1397,19 +1397,19 @@ export interface components {
        */
       authorisedTime?: string | null
       /**
-       * @description User who last amended the restriction record
+       * @description User who last updated the restriction record
        * @example editor
        */
-      amendedBy?: string | null
+      updatedBy?: string | null
       /**
        * Format: date-time
-       * @description Time when the restriction record was last amended
+       * @description Time when the restriction record was last updated
        * @example 2024-10-02T15:30:00Z
        */
-      amendedTime?: string | null
+      updatedTime?: string | null
     }
     /** @description Response object with prisoner contact restriction details */
-    PrisonerContactRestriction: {
+    SyncPrisonerContactRestriction: {
       /**
        * Format: int64
        * @description ID of the prisoner contact restriction to which the restriction applies
@@ -1476,19 +1476,19 @@ export interface components {
        */
       createdTime?: string | null
       /**
-       * @description User who last amended the restriction record
+       * @description User who last updated the restriction record
        * @example editor
        */
-      amendedBy?: string | null
+      updatedBy?: string | null
       /**
        * Format: date-time
-       * @description Time when the restriction record was last amended
+       * @description Time when the restriction record was last updated
        * @example 2024-10-02T15:30:00Z
        */
-      amendedTime?: string | null
+      updatedTime?: string | null
     }
     /** @description Request to update a new contact  */
-    UpdateContactRequest: {
+    SyncUpdateContactRequest: {
       /**
        * @description
        *         The title code for the contact.
@@ -1584,7 +1584,7 @@ export interface components {
       staff?: boolean
     }
     /** @description The details of a contact as an individual */
-    Contact: {
+    SyncContact: {
       /**
        * Format: int64
        * @description The id of the contact
@@ -1683,19 +1683,19 @@ export interface components {
        */
       createdTime: string
       /**
-       * @description User who amended the entry
+       * @description User who updated the entry
        * @example admin2
        */
-      amendedBy?: string
+      updatedBy?: string
       /**
        * Format: date-time
-       * @description Timestamp when the entry was amended
+       * @description Timestamp when the entry was updated
        */
-      amendedTime?: string
+      updatedTime?: string
       staff?: boolean
     }
     /** @description Request to update a contact restriction  */
-    UpdateContactRestrictionRequest: {
+    SyncUpdateContactRestrictionRequest: {
       /**
        * Format: int64
        * @description Unique identifier for the contact
@@ -1742,7 +1742,7 @@ export interface components {
       updatedTime: string
     }
     /** @description Restriction related to a contact */
-    ContactRestriction: {
+    SyncContactRestriction: {
       /**
        * Format: int64
        * @description Unique identifier for the contact restriction
@@ -1793,15 +1793,15 @@ export interface components {
        */
       createdTime: string
       /**
-       * @description User who amended the entry
+       * @description User who updated the entry
        * @example admin2
        */
-      amendedBy?: string
+      updatedBy?: string
       /**
        * Format: date-time
-       * @description Timestamp when the entry was amended
+       * @description Timestamp when the entry was updated
        */
-      amendedTime?: string
+      updatedTime?: string
     }
     /** @description Request to update a new contact phone number for sync API */
     SyncUpdateContactPhoneRequest: {
@@ -1878,18 +1878,18 @@ export interface components {
        */
       createdTime: string
       /**
-       * @description User who amended the entry
+       * @description User who updated the entry
        * @example admin2
        */
-      amendedBy?: string
+      updatedBy?: string
       /**
        * Format: date-time
-       * @description Timestamp when the entry was amended
+       * @description Timestamp when the entry was updated
        */
-      amendedTime?: string
+      updatedTime?: string
     }
     /** @description Request to update a new contact identity  */
-    UpdateContactIdentityRequest: {
+    SyncUpdateContactIdentityRequest: {
       /**
        * Format: int64
        * @description Unique identifier for the contact
@@ -1924,7 +1924,7 @@ export interface components {
       updatedTime: string
     }
     /** @description Identity related to a contact */
-    ContactIdentity: {
+    SyncContactIdentity: {
       /**
        * Format: int64
        * @description Unique identifier for the contact identity
@@ -1963,15 +1963,15 @@ export interface components {
        */
       createdTime: string
       /**
-       * @description User who amended the entry
+       * @description User who updated the entry
        * @example admin2
        */
-      amendedBy?: string
+      updatedBy?: string
       /**
        * Format: date-time
-       * @description Timestamp when the entry was amended
+       * @description Timestamp when the entry was updated
        */
-      amendedTime?: string
+      updatedTime?: string
     }
     /** @description Request to update a contact email address by sync with NOMIS */
     SyncUpdateContactEmailRequest: {
@@ -2028,18 +2028,18 @@ export interface components {
        */
       createdTime: string
       /**
-       * @description User who amended the entry
+       * @description User who updated the entry
        * @example admin2
        */
-      amendedBy?: string
+      updatedBy?: string
       /**
        * Format: date-time
-       * @description Timestamp when the entry was amended
+       * @description Timestamp when the entry was updated
        */
-      amendedTime?: string
+      updatedTime?: string
     }
     /** @description Request to update a contact address */
-    UpdateContactAddressRequest: {
+    SyncUpdateContactAddressRequest: {
       /**
        * Format: int64
        * @description The id of the contact linked to this address
@@ -2145,7 +2145,7 @@ export interface components {
       updatedTime: string
     }
     /** @description An address related to a contact */
-    ContactAddress: {
+    SyncContactAddress: {
       /**
        * Format: int64
        * @description The id of the contact address
@@ -2267,16 +2267,16 @@ export interface components {
        */
       createdTime: string
       /**
-       * @description The id of the user who last amended the contact address
+       * @description The id of the user who last updated the contact address
        * @example JD000001
        */
-      amendedBy?: string
+      updatedBy?: string
       /**
        * Format: date-time
-       * @description The timestamp of when the contact address was last amended
+       * @description The timestamp of when the contact address was last updated
        * @example 2024-01-01T00:00:00Z
        */
-      amendedTime?: string
+      updatedTime?: string
     }
     /** @description Request to update an existing phone number */
     UpdatePhoneRequest: {
@@ -2299,7 +2299,7 @@ export interface components {
        * @description User who updated the entry
        * @example admin
        */
-      amendedBy: string
+      updatedBy: string
     }
     /** @description A phone number related to a contact with descriptions of all reference data */
     ContactPhoneDetails: {
@@ -2346,15 +2346,15 @@ export interface components {
        */
       createdTime: string
       /**
-       * @description User who amended the entry
+       * @description User who updated the entry
        * @example admin2
        */
-      amendedBy?: string
+      updatedBy?: string
       /**
        * Format: date-time
-       * @description Timestamp when the entry was amended
+       * @description Timestamp when the entry was updated
        */
-      amendedTime?: string
+      updatedTime?: string
     }
     /** @description Request to update an existing contact identity */
     UpdateIdentityRequest: {
@@ -2377,7 +2377,7 @@ export interface components {
        * @description User who updated the entry
        * @example admin
        */
-      amendedBy: string
+      updatedBy: string
     }
     /** @description Identity related to a contact */
     ContactIdentityDetails: {
@@ -2429,15 +2429,15 @@ export interface components {
        */
       createdTime: string
       /**
-       * @description User who amended the entry
+       * @description User who updated the entry
        * @example admin2
        */
-      amendedBy?: string
+      updatedBy?: string
       /**
        * Format: date-time
-       * @description Timestamp when the entry was amended
+       * @description Timestamp when the entry was updated
        */
-      amendedTime?: string
+      updatedTime?: string
     }
     /** @description Request to update an email address */
     UpdateEmailRequest: {
@@ -2450,7 +2450,7 @@ export interface components {
        * @description User who updated the entry
        * @example admin
        */
-      amendedBy: string
+      updatedBy: string
     }
     /** @description Email related to a contact */
     ContactEmailDetails: {
@@ -2482,18 +2482,18 @@ export interface components {
        */
       createdTime: string
       /**
-       * @description User who amended the entry
+       * @description User who updated the entry
        * @example admin2
        */
-      amendedBy?: string
+      updatedBy?: string
       /**
        * Format: date-time
-       * @description Timestamp when the entry was amended
+       * @description Timestamp when the entry was updated
        */
-      amendedTime?: string
+      updatedTime?: string
     }
     /** @description Request object to create a prisoner contact details */
-    CreatePrisonerContactRequest: {
+    SyncCreatePrisonerContactRequest: {
       /**
        * Format: int64
        * @description The ID of the prisoner contact
@@ -2583,7 +2583,7 @@ export interface components {
       createdAtPrison?: string | null
     }
     /** @description Request object to create a prisoner contact request details */
-    CreatePrisonerContactRestrictionRequest: {
+    SyncCreatePrisonerContactRestrictionRequest: {
       /**
        * Format: int64
        * @description ID of the contact to which the restriction applies
@@ -2772,7 +2772,7 @@ export interface components {
       staff?: boolean
     }
     /** @description Request to create a new contact restriction  */
-    CreateContactRestrictionRequest: {
+    SyncCreateContactRestrictionRequest: {
       /**
        * Format: int64
        * @description Unique identifier for the contact
@@ -2854,7 +2854,7 @@ export interface components {
       createdTime: string
     }
     /** @description Request to create a new contact identity  */
-    CreateContactIdentityRequest: {
+    SyncCreateContactIdentityRequest: {
       /**
        * Format: int64
        * @description Unique identifier for the contact
@@ -2914,7 +2914,7 @@ export interface components {
       createdTime: string
     }
     /** @description Request to create a new contact address */
-    CreateContactAddressRequest: {
+    SyncCreateContactAddressRequest: {
       /**
        * Format: int64
        * @description The id of the contact this address is linked with
@@ -3685,16 +3685,16 @@ export interface components {
        */
       createdTime: string
       /**
-       * @description The id of the user who last amended the contact address
+       * @description The id of the user who last updated the contact address
        * @example JD000001
        */
-      amendedBy?: string | null
+      updatedBy?: string | null
       /**
        * Format: date-time
-       * @description The timestamp of when the contact address was last amended
+       * @description The timestamp of when the contact address was last updated
        * @example 2024-01-01T00:00:00Z
        */
-      amendedTime?: string | null
+      updatedTime?: string | null
     }
     /** @description The result of creating a contact and optionally a new relationship to a prisoner */
     ContactCreationResult: {
@@ -4070,15 +4070,15 @@ export interface components {
        */
       createdTime: string
       /**
-       * @description User who amended the entry
+       * @description User who updated the entry
        * @example admin2
        */
-      amendedBy?: string
+      updatedBy?: string
       /**
        * Format: date-time
-       * @description Timestamp when the entry was amended
+       * @description Timestamp when the entry was updated
        */
-      amendedTime?: string
+      updatedTime?: string
       staff?: boolean
     }
     /** @description Request to update an existing relationship details */
@@ -4348,10 +4348,10 @@ export interface components {
       /** Format: int64 */
       total?: number
       last?: boolean
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      /** Format: int64 */
+      totalElements?: number
       first?: boolean
       /** Format: int32 */
       size?: number
@@ -4632,10 +4632,10 @@ export interface components {
       /** Format: int64 */
       total?: number
       last?: boolean
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      /** Format: int64 */
+      totalElements?: number
       first?: boolean
       /** Format: int32 */
       size?: number
@@ -4680,7 +4680,7 @@ export interface components {
 }
 export type $defs = Record<string, never>
 export interface operations {
-  getPrisonerContactById: {
+  syncGetPrisonerContactById: {
     parameters: {
       query?: never
       header?: never
@@ -4698,7 +4698,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PrisonerContact']
+          'application/json': components['schemas']['SyncPrisonerContact']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -4725,12 +4725,12 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PrisonerContact']
+          'application/json': components['schemas']['SyncPrisonerContact']
         }
       }
     }
   }
-  updatePrisonerContact: {
+  syncUpdatePrisonerContact: {
     parameters: {
       query?: never
       header?: never
@@ -4742,7 +4742,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdatePrisonerContactRequest']
+        'application/json': components['schemas']['SyncUpdatePrisonerContactRequest']
       }
     }
     responses: {
@@ -4752,7 +4752,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PrisonerContact']
+          'application/json': components['schemas']['SyncPrisonerContact']
         }
       }
       /** @description Invalid input data */
@@ -4761,7 +4761,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PrisonerContact']
+          'application/json': components['schemas']['SyncPrisonerContact']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -4788,12 +4788,12 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PrisonerContact']
+          'application/json': components['schemas']['SyncPrisonerContact']
         }
       }
     }
   }
-  deletePrisonerContactById: {
+  syncDeletePrisonerContactById: {
     parameters: {
       query?: never
       header?: never
@@ -4839,13 +4839,13 @@ export interface operations {
       }
     }
   }
-  getPrisonerContactRestrictionById: {
+  syncGetPrisonerContactRestrictionById: {
     parameters: {
       query?: never
       header?: never
       path: {
         /** @description The internal ID for a prisoner contact restriction. */
-        id: number
+        prisonerContactRestrictionId: number
       }
       cookie?: never
     }
@@ -4857,7 +4857,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PrisonerContactRestriction']
+          'application/json': components['schemas']['SyncPrisonerContactRestriction']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -4884,24 +4884,24 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PrisonerContactRestriction']
+          'application/json': components['schemas']['SyncPrisonerContactRestriction']
         }
       }
     }
   }
-  updatePrisonerContactRestriction: {
+  syncUpdatePrisonerContactRestriction: {
     parameters: {
       query?: never
       header?: never
       path: {
         /** @description The internal ID for the prisoner contact restriction. */
-        id: number
+        prisonerContactRestrictionId: number
       }
       cookie?: never
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdatePrisonerContactRestrictionRequest']
+        'application/json': components['schemas']['SyncUpdatePrisonerContactRestrictionRequest']
       }
     }
     responses: {
@@ -4911,7 +4911,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PrisonerContactRestriction']
+          'application/json': components['schemas']['SyncPrisonerContactRestriction']
         }
       }
       /** @description Invalid input data */
@@ -4920,7 +4920,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PrisonerContactRestriction']
+          'application/json': components['schemas']['SyncPrisonerContactRestriction']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -4947,18 +4947,18 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PrisonerContactRestriction']
+          'application/json': components['schemas']['SyncPrisonerContactRestriction']
         }
       }
     }
   }
-  deletePrisonerContactRestrictionById: {
+  syncDeletePrisonerContactRestrictionById: {
     parameters: {
       query?: never
       header?: never
       path: {
         /** @description The internal ID for the prisoner contact restriction. */
-        id: number
+        prisonerContactRestrictionId: number
       }
       cookie?: never
     }
@@ -4998,7 +4998,7 @@ export interface operations {
       }
     }
   }
-  getContactById: {
+  syncGetContactById: {
     parameters: {
       query?: never
       header?: never
@@ -5016,7 +5016,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Contact']
+          'application/json': components['schemas']['SyncContact']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -5043,12 +5043,12 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Contact']
+          'application/json': components['schemas']['SyncContact']
         }
       }
     }
   }
-  updateContact: {
+  syncUpdateContact: {
     parameters: {
       query?: never
       header?: never
@@ -5060,7 +5060,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateContactRequest']
+        'application/json': components['schemas']['SyncUpdateContactRequest']
       }
     }
     responses: {
@@ -5070,7 +5070,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Contact']
+          'application/json': components['schemas']['SyncContact']
         }
       }
       /** @description Invalid input data */
@@ -5079,7 +5079,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Contact']
+          'application/json': components['schemas']['SyncContact']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -5106,12 +5106,12 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Contact']
+          'application/json': components['schemas']['SyncContact']
         }
       }
     }
   }
-  deleteContactById: {
+  syncDeleteContactById: {
     parameters: {
       query?: never
       header?: never
@@ -5157,7 +5157,7 @@ export interface operations {
       }
     }
   }
-  getContactRestrictionById: {
+  syncGetContactRestrictionById: {
     parameters: {
       query?: never
       header?: never
@@ -5175,7 +5175,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactRestriction']
+          'application/json': components['schemas']['SyncContactRestriction']
         }
       }
       /** @description No contact restriction reference with that id could be found */
@@ -5184,12 +5184,12 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactRestriction']
+          'application/json': components['schemas']['SyncContactRestriction']
         }
       }
     }
   }
-  updateContactRestriction: {
+  syncUpdateContactRestriction: {
     parameters: {
       query?: never
       header?: never
@@ -5201,7 +5201,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateContactRestrictionRequest']
+        'application/json': components['schemas']['SyncUpdateContactRestrictionRequest']
       }
     }
     responses: {
@@ -5211,7 +5211,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactRestriction']
+          'application/json': components['schemas']['SyncContactRestriction']
         }
       }
       /** @description Invalid input data */
@@ -5220,7 +5220,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactRestriction']
+          'application/json': components['schemas']['SyncContactRestriction']
         }
       }
       /** @description Contact restriction not found */
@@ -5229,12 +5229,12 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactRestriction']
+          'application/json': components['schemas']['SyncContactRestriction']
         }
       }
     }
   }
-  deleteContactRestrictionById: {
+  syncDeleteContactRestrictionById: {
     parameters: {
       query?: never
       header?: never
@@ -5262,7 +5262,7 @@ export interface operations {
       }
     }
   }
-  getContactPhoneById: {
+  syncGetContactPhoneById: {
     parameters: {
       query?: never
       header?: never
@@ -5294,7 +5294,7 @@ export interface operations {
       }
     }
   }
-  updateContactPhone: {
+  syncUpdateContactPhone: {
     parameters: {
       query?: never
       header?: never
@@ -5339,7 +5339,7 @@ export interface operations {
       }
     }
   }
-  deleteContactPhoneById: {
+  syncDeleteContactPhoneById: {
     parameters: {
       query?: never
       header?: never
@@ -5367,7 +5367,7 @@ export interface operations {
       }
     }
   }
-  getContactIdentityById: {
+  syncGetContactIdentityById: {
     parameters: {
       query?: never
       header?: never
@@ -5385,7 +5385,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactIdentity']
+          'application/json': components['schemas']['SyncContactIdentity']
         }
       }
       /** @description No contact identity with that id could be found */
@@ -5394,12 +5394,12 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactIdentity']
+          'application/json': components['schemas']['SyncContactIdentity']
         }
       }
     }
   }
-  updateContactIdentity: {
+  syncUpdateContactIdentity: {
     parameters: {
       query?: never
       header?: never
@@ -5411,7 +5411,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateContactIdentityRequest']
+        'application/json': components['schemas']['SyncUpdateContactIdentityRequest']
       }
     }
     responses: {
@@ -5421,7 +5421,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactIdentity']
+          'application/json': components['schemas']['SyncContactIdentity']
         }
       }
       /** @description Invalid input data */
@@ -5430,7 +5430,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactIdentity']
+          'application/json': components['schemas']['SyncContactIdentity']
         }
       }
       /** @description Contact identity not found */
@@ -5439,12 +5439,12 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactIdentity']
+          'application/json': components['schemas']['SyncContactIdentity']
         }
       }
     }
   }
-  deleteContactIdentityById: {
+  syncDeleteContactIdentityById: {
     parameters: {
       query?: never
       header?: never
@@ -5472,7 +5472,7 @@ export interface operations {
       }
     }
   }
-  getContactEmailById: {
+  syncGetContactEmailById: {
     parameters: {
       query?: never
       header?: never
@@ -5504,7 +5504,7 @@ export interface operations {
       }
     }
   }
-  updateContactEmail: {
+  syncUpdateContactEmail: {
     parameters: {
       query?: never
       header?: never
@@ -5549,7 +5549,7 @@ export interface operations {
       }
     }
   }
-  deleteContactEmailById: {
+  syncDeleteContactEmailById: {
     parameters: {
       query?: never
       header?: never
@@ -5577,7 +5577,7 @@ export interface operations {
       }
     }
   }
-  getContactAddressById: {
+  syncGetContactAddressById: {
     parameters: {
       query?: never
       header?: never
@@ -5595,7 +5595,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactAddress']
+          'application/json': components['schemas']['SyncContactAddress']
         }
       }
       /** @description No contact address reference with that id could be found */
@@ -5604,12 +5604,12 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactAddress']
+          'application/json': components['schemas']['SyncContactAddress']
         }
       }
     }
   }
-  updateContactAddress: {
+  syncUpdateContactAddress: {
     parameters: {
       query?: never
       header?: never
@@ -5621,7 +5621,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateContactAddressRequest']
+        'application/json': components['schemas']['SyncUpdateContactAddressRequest']
       }
     }
     responses: {
@@ -5631,7 +5631,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactAddress']
+          'application/json': components['schemas']['SyncContactAddress']
         }
       }
       /** @description Invalid input data */
@@ -5640,7 +5640,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactAddress']
+          'application/json': components['schemas']['SyncContactAddress']
         }
       }
       /** @description Contact address not found */
@@ -5649,12 +5649,12 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactAddress']
+          'application/json': components['schemas']['SyncContactAddress']
         }
       }
     }
   }
-  deleteContactAddressById: {
+  syncDeleteContactAddressById: {
     parameters: {
       query?: never
       header?: never
@@ -5682,7 +5682,7 @@ export interface operations {
       }
     }
   }
-  get: {
+  getPhone: {
     parameters: {
       query?: never
       header?: never
@@ -5740,7 +5740,7 @@ export interface operations {
       }
     }
   }
-  update: {
+  updatePhone: {
     parameters: {
       query?: never
       header?: never
@@ -5811,7 +5811,7 @@ export interface operations {
       }
     }
   }
-  delete: {
+  deletePhone: {
     parameters: {
       query?: never
       header?: never
@@ -5869,7 +5869,7 @@ export interface operations {
       }
     }
   }
-  get_1: {
+  getIdentityNumber: {
     parameters: {
       query?: never
       header?: never
@@ -5927,7 +5927,7 @@ export interface operations {
       }
     }
   }
-  update_1: {
+  updateIdentityNumber: {
     parameters: {
       query?: never
       header?: never
@@ -5998,7 +5998,7 @@ export interface operations {
       }
     }
   }
-  delete_1: {
+  deleteIdentityNumber: {
     parameters: {
       query?: never
       header?: never
@@ -6056,7 +6056,7 @@ export interface operations {
       }
     }
   }
-  get_2: {
+  getEmailAddress: {
     parameters: {
       query?: never
       header?: never
@@ -6114,7 +6114,7 @@ export interface operations {
       }
     }
   }
-  update_2: {
+  updateEmailAddress: {
     parameters: {
       query?: never
       header?: never
@@ -6185,7 +6185,7 @@ export interface operations {
       }
     }
   }
-  delete_2: {
+  deleteEmailAddress: {
     parameters: {
       query?: never
       header?: never
@@ -6243,7 +6243,7 @@ export interface operations {
       }
     }
   }
-  createPrisonerContact: {
+  syncCreatePrisonerContact: {
     parameters: {
       query?: never
       header?: never
@@ -6252,7 +6252,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreatePrisonerContactRequest']
+        'application/json': components['schemas']['SyncCreatePrisonerContactRequest']
       }
     }
     responses: {
@@ -6262,7 +6262,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PrisonerContact']
+          'application/json': components['schemas']['SyncPrisonerContact']
         }
       }
       /** @description The request has invalid or missing fields */
@@ -6294,7 +6294,7 @@ export interface operations {
       }
     }
   }
-  createPrisonerContactRestriction: {
+  syncCreatePrisonerContactRestriction: {
     parameters: {
       query?: never
       header?: never
@@ -6303,7 +6303,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreatePrisonerContactRestrictionRequest']
+        'application/json': components['schemas']['SyncCreatePrisonerContactRestrictionRequest']
       }
     }
     responses: {
@@ -6313,7 +6313,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PrisonerContactRestriction']
+          'application/json': components['schemas']['SyncPrisonerContactRestriction']
         }
       }
       /** @description The request has invalid or missing fields */
@@ -6345,7 +6345,7 @@ export interface operations {
       }
     }
   }
-  createContact: {
+  syncCreateContact: {
     parameters: {
       query?: never
       header?: never
@@ -6364,7 +6364,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Contact']
+          'application/json': components['schemas']['SyncContact']
         }
       }
       /** @description The request has invalid or missing fields */
@@ -6405,7 +6405,7 @@ export interface operations {
       }
     }
   }
-  createContactRestriction: {
+  syncCreateContactRestriction: {
     parameters: {
       query?: never
       header?: never
@@ -6414,7 +6414,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateContactRestrictionRequest']
+        'application/json': components['schemas']['SyncCreateContactRestrictionRequest']
       }
     }
     responses: {
@@ -6424,7 +6424,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactRestriction']
+          'application/json': components['schemas']['SyncContactRestriction']
         }
       }
       /** @description The request has invalid or missing fields */
@@ -6438,7 +6438,7 @@ export interface operations {
       }
     }
   }
-  createContactPhone: {
+  syncCreateContactPhone: {
     parameters: {
       query?: never
       header?: never
@@ -6471,7 +6471,7 @@ export interface operations {
       }
     }
   }
-  createContactIdentity: {
+  syncCreateContactIdentity: {
     parameters: {
       query?: never
       header?: never
@@ -6480,7 +6480,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateContactIdentityRequest']
+        'application/json': components['schemas']['SyncCreateContactIdentityRequest']
       }
     }
     responses: {
@@ -6490,7 +6490,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactIdentity']
+          'application/json': components['schemas']['SyncContactIdentity']
         }
       }
       /** @description The request has invalid or missing fields */
@@ -6504,7 +6504,7 @@ export interface operations {
       }
     }
   }
-  createContactEmail: {
+  syncCreateContactEmail: {
     parameters: {
       query?: never
       header?: never
@@ -6537,7 +6537,7 @@ export interface operations {
       }
     }
   }
-  createContactAddress: {
+  syncCreateContactAddress: {
     parameters: {
       query?: never
       header?: never
@@ -6546,7 +6546,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateContactAddressRequest']
+        'application/json': components['schemas']['SyncCreateContactAddressRequest']
       }
     }
     responses: {
@@ -6556,7 +6556,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactAddress']
+          'application/json': components['schemas']['SyncContactAddress']
         }
       }
       /** @description The request has invalid or missing fields */
@@ -6630,7 +6630,7 @@ export interface operations {
       }
     }
   }
-  createContact_1: {
+  createContact: {
     parameters: {
       query?: never
       header?: never
@@ -6761,7 +6761,7 @@ export interface operations {
       }
     }
   }
-  create: {
+  createPhone: {
     parameters: {
       query?: never
       header?: never
@@ -6827,7 +6827,7 @@ export interface operations {
       }
     }
   }
-  create_1: {
+  createIdentityNumber: {
     parameters: {
       query?: never
       header?: never
@@ -6893,7 +6893,7 @@ export interface operations {
       }
     }
   }
-  create_2: {
+  createEmailAddress: {
     parameters: {
       query?: never
       header?: never
@@ -7309,7 +7309,7 @@ export interface operations {
       }
     }
   }
-  getPrisonerContactById_1: {
+  getPrisonerContactById: {
     parameters: {
       query?: never
       header?: never
@@ -7362,7 +7362,7 @@ export interface operations {
       }
     }
   }
-  getAllCountries: {
+  getAllLanguages: {
     parameters: {
       query?: never
       header?: never
@@ -7596,7 +7596,7 @@ export interface operations {
       }
     }
   }
-  getAllCountries_1: {
+  getAllCounties: {
     parameters: {
       query?: never
       header?: never
@@ -7732,7 +7732,7 @@ export interface operations {
       }
     }
   }
-  getAllCountries_2: {
+  getAllCountries: {
     parameters: {
       query?: never
       header?: never
@@ -8018,7 +8018,7 @@ export interface operations {
       }
     }
   }
-  getAllCountries_3: {
+  getAllCities: {
     parameters: {
       query?: never
       header?: never

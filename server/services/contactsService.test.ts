@@ -500,7 +500,7 @@ describe('contactsService', () => {
         phoneType: 'MOB',
         phoneNumber: '0123456789',
         extNumber: '000',
-        amendedBy: 'user1',
+        updatedBy: 'user1',
       }
 
       // When
@@ -520,7 +520,7 @@ describe('contactsService', () => {
       const expectedRequest: CreatePhoneRequest = {
         phoneType: 'MOB',
         phoneNumber: '0123456789',
-        amendedBy: 'user1',
+        updatedBy: 'user1',
       }
 
       // When
@@ -619,8 +619,8 @@ describe('contactsService', () => {
         emailAddress: 'test@example.com',
         createdBy: 'user1',
         createdTime: new Date().toISOString(),
-        amendedBy: new Date().toISOString(),
-        amendedTime: new Date().toISOString(),
+        updatedBy: new Date().toISOString(),
+        updatedTime: new Date().toISOString(),
       }
       apiClient.createContactEmail.mockResolvedValue(expectedCreated)
 
@@ -645,13 +645,13 @@ describe('contactsService', () => {
       emailAddress: 'test@example.com',
       createdBy: 'user1',
       createdTime: new Date().toISOString(),
-      amendedBy: new Date().toISOString(),
-      amendedTime: new Date().toISOString(),
+      updatedBy: new Date().toISOString(),
+      updatedTime: new Date().toISOString(),
     }
 
     const request: UpdateEmailRequest = {
       emailAddress: 'test@example.com',
-      amendedBy: 'user1',
+      updatedBy: 'user1',
     }
 
     it('should update a contact email', async () => {

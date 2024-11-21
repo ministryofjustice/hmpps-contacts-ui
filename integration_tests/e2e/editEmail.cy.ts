@@ -31,7 +31,7 @@ context('Edit Email Address', () => {
   it('Can edit a contact email', () => {
     const updated: UpdateEmailRequest = {
       emailAddress: 'mr.last@example.com',
-      amendedBy: 'john smith',
+      updatedBy: 'john smith',
     }
     cy.task('stubUpdateContactEmail', { contactId, contactEmailId, updated })
     Page.verifyOnPage(ManageContactDetailsPage).clickEditEmailLink(contactEmailId)
@@ -49,7 +49,7 @@ context('Edit Email Address', () => {
       },
       {
         emailAddress: 'mr.last@example.com',
-        amendedBy: 'john smith',
+        updatedBy: 'john smith',
       },
     )
   })

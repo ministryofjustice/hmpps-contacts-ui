@@ -49,7 +49,7 @@ export default class ManageContactEditEmailController implements PageHandler {
     const { emailAddress } = req.body
     const request: UpdateEmailRequest = {
       emailAddress,
-      amendedBy: user.name,
+      updatedBy: user.name,
     }
     await this.contactsService.updateContactEmail(parseInt(contactId, 10), parseInt(contactEmailId, 10), request, user)
     res.redirect(journey.returnPoint.url)
