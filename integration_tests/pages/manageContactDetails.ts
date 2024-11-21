@@ -73,6 +73,16 @@ export default class ManageContactDetailsPage extends Page {
     return this
   }
 
+  verifyShowMostRelevantAddressLabelValueAs(expected: string): ManageContactDetailsPage {
+    this.mostRelevantAddressLabel().should('contain.text', expected)
+    return this
+  }
+
+  verifyShowConfirmAddressValueAs(expected: string): ManageContactDetailsPage {
+    this.confirmAddressValue().should('contain.text', expected)
+    return this
+  }
+
   clickChangeStaffStatusLink() {
     this.changeStaffStatusLink().click()
   }
@@ -208,6 +218,10 @@ export default class ManageContactDetailsPage extends Page {
   private addEmailLink = (): PageElement => cy.get('[data-qa="add-email-address"]')
 
   private editEmailLink = (id: number): PageElement => cy.get(`[data-qa="edit-email-address-${id}"]`)
+
+  private mostRelevantAddressLabel = (): PageElement => cy.get(`.most-relevant-address-label`)
+
+  private confirmAddressValue = (): PageElement => cy.get(`.confirm-address-value`)
 
   verifyShowIsEmergencyContactAs(expected: string) {
     this.checkAnswersEmergencyContactValue().should('contain.text', expected)
