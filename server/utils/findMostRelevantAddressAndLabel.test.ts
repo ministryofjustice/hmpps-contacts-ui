@@ -11,8 +11,8 @@ describe('findMostRelevantAddress', () => {
     contact.addresses.push({
       addressType: 'HOME',
       addressTypeDescription: 'Home address',
-      amendedBy: null,
-      amendedTime: null,
+      updatedBy: null,
+      updatedTime: null,
       area: 'Bunting',
       cityCode: '25344',
       cityDescription: 'Bradford',
@@ -30,8 +30,8 @@ describe('findMostRelevantAddress', () => {
       noFixedAddress: false,
       phoneNumbers: [
         {
-          amendedBy: null,
-          amendedTime: null,
+          updatedBy: null,
+          updatedTime: null,
           contactId: 1,
           contactPhoneId: 2,
           createdBy: 'JAMES',
