@@ -106,7 +106,7 @@ describe('findMostRelevantAddress', () => {
   })
 })
 
-describe('Addresses', () => {
+describe('getLabelForAddress', () => {
   it.each([
     ['Primary and mail', true, true],
     ['Primary', true, false],
