@@ -1,0 +1,131 @@
+import TestData from '../routes/testutils/testData'
+import { findMostRelevantAddress, getLabelForAddress } from './findMostRelevantAddressAndLabel'
+import { components } from '../@types/contactsApi'
+
+type ContactDetails = components['schemas']['ContactDetails']
+
+describe('findMostRelevantAddress', () => {
+  let contact: ContactDetails
+  beforeEach(() => {
+    contact = TestData.contact()
+    contact.addresses.push({
+      addressType: 'HOME',
+      addressTypeDescription: 'Home address',
+      updatedBy: null,
+      updatedTime: null,
+      area: 'Bunting',
+      cityCode: '25344',
+      cityDescription: 'Bradford',
+      contactAddressId: 2,
+      contactId: 1,
+      countryCode: 'ENG',
+      countryDescription: 'England',
+      countyCode: 'W.YORKSHIRE',
+      countyDescription: 'West Yorkshire',
+      createdBy: 'TIM',
+      createdTime: '2014-12-04T0 =3 =44.512401',
+      endDate: null,
+      flat: '',
+      mailFlag: false,
+      noFixedAddress: false,
+      phoneNumbers: [
+        {
+          updatedBy: null,
+          updatedTime: null,
+          contactId: 1,
+          contactPhoneId: 2,
+          createdBy: 'JAMES',
+          createdTime: '2024-12-04T15:35:23.101675v',
+          extNumber: '+0123',
+          phoneNumber: '01111 777777',
+          phoneType: 'HOME',
+          phoneTypeDescription: 'Home phone',
+        },
+      ],
+      postcode: 'BD9 5AJ',
+      primaryAddress: true,
+      property: '189',
+      startDate: '2012-01-02',
+      street: 'Lilycroft Rd',
+      verified: false,
+      verifiedBy: null,
+      verifiedTime: null,
+    })
+  })
+
+  it('should find most relevant address based on primaryAddress value', () => {
+    // When
+    const mostRelevantAddress = findMostRelevantAddress(contact)
+
+    // Then
+    expect(mostRelevantAddress).toEqual(contact.addresses[0])
+  })
+
+  it('should find most relevant address based on mailFlag value', () => {
+    // Given
+    contact.addresses[0].primaryAddress = null
+    contact.addresses[1].primaryAddress = null
+    contact.addresses[0].mailFlag = null
+    contact.addresses[1].mailFlag = true
+
+    // When
+    const mostRelevantAddress = findMostRelevantAddress(contact)
+
+    // Then
+    expect(mostRelevantAddress).toEqual(contact.addresses[1])
+  })
+
+  it('should find most relevant address based on startDate value', () => {
+    // Given
+    contact.addresses[0].primaryAddress = null
+    contact.addresses[1].primaryAddress = null
+    contact.addresses[0].mailFlag = null
+    contact.addresses[1].mailFlag = null
+    contact.addresses[1].startDate = '2023-01-02'
+
+    // When
+    const mostRelevantAddress = findMostRelevantAddress(contact)
+
+    // Then
+    expect(mostRelevantAddress).toEqual(contact.addresses[1])
+  })
+
+  it('should find most relevant address based on createdTime value', () => {
+    // Given
+    contact.addresses[0].primaryAddress = null
+    contact.addresses[1].primaryAddress = null
+    contact.addresses[0].mailFlag = null
+    contact.addresses[1].mailFlag = null
+    contact.addresses[0].startDate = null
+    contact.addresses[1].startDate = null
+    contact.addresses[1].createdTime = '2024-11-04T0 =3 =44.512401'
+
+    // When
+    const mostRelevantAddress = findMostRelevantAddress(contact)
+
+    // Then
+    expect(mostRelevantAddress).toEqual(contact.addresses[1])
+  })
+})
+
+describe('getLabelForAddress', () => {
+  it.each([
+    ['Primary and mail', true, true],
+    ['Primary', true, false],
+    ['Mail', false, true],
+  ])(
+    'should return primary address flag labe',
+    async (flagLabel: string, primaryAddress: boolean, mailFlag: boolean) => {
+      // Given
+      const contact = TestData.contact()
+      contact.addresses[0].primaryAddress = primaryAddress
+      contact.addresses[0].mailFlag = mailFlag
+
+      // When
+      const mostRelevantAddressLabel = getLabelForAddress(contact.addresses[0])
+
+      // Then
+      expect(mostRelevantAddressLabel).toEqual(flagLabel)
+    },
+  )
+})

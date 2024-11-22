@@ -5,9 +5,11 @@ import { ContactsService } from '../../../../services'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import { formatNameFirstNameFirst } from '../../../../utils/formatName'
+import { findMostRelevantAddress, getLabelForAddress } from '../../../../utils/findMostRelevantAddressAndLabel'
+import { Navigation } from '../../common/navigation'
+
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
-import { Navigation } from '../../common/navigation'
 
 export default class ContactDetailsController implements PageHandler {
   constructor(
@@ -24,12 +26,39 @@ export default class ContactDetailsController implements PageHandler {
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const { user } = res.locals
     const contact: ContactDetails = await this.contactsService.getContact(Number(contactId), user)
+    const mostRelevantAddress = findMostRelevantAddress(contact)
+    const mostRelevantAddressLabel = getLabelForAddress(mostRelevantAddress)
     const prisonerContactRelationship: PrisonerContactRelationshipDetails =
       await this.contactsService.getPrisonerContactRelationship(Number(prisonerContactId), user)
     const formattedFullName = await this.formattedFullName(contact, user)
     const navigation: Navigation = { breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'] }
+
+    const manageContactUrl = `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`
+    const manageContactReturnUrl = `${manageContactUrl}/view-addresses?returnUrl=${encodeURIComponent(manageContactUrl)}`
+
+    let primaryAddress
+    if (mostRelevantAddress) {
+      primaryAddress = [
+        {
+          mostRelevantAddressLabel,
+          addresses: mostRelevantAddress,
+          cardLabel: 'Addresses',
+          cardActions: [
+            {
+              href: manageContactReturnUrl,
+              text: 'View all addresses',
+              attributes: { 'data-qa': 'view-all-addresses' },
+              classes: 'govuk-link--no-visited-state',
+            },
+          ],
+          changeLink: 'false',
+        },
+      ]
+    }
+
     return res.render('pages/contacts/manage/contactDetails/details', {
       contact,
+      primaryAddress,
       prisonerContactId,
       prisonerContactRelationship,
       formattedFullName,

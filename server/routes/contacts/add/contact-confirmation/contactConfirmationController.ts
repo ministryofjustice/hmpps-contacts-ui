@@ -9,7 +9,7 @@ import { formatNameLastNameFirst } from '../../../../utils/formatName'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import ContactDetails = contactsApiClientTypes.ContactDetails
-import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
+import { findMostRelevantAddress, getLabelForAddress } from '../../../../utils/findMostRelevantAddressAndLabel'
 
 export default class ContactConfirmationController implements PageHandler {
   constructor(
@@ -28,8 +28,8 @@ export default class ContactConfirmationController implements PageHandler {
     const journey = req.session.addContactJourneys[journeyId]
     const contact: ContactDetails = await this.contactsService.getContact(journey.contactId, user)
     const formattedFullName = await this.formattedFullName(contact, user)
-    const mostRelevantAddress = this.findMostRelevantAddress(contact)
-    const mostRelevantAddressLabel = this.getLabelForAddress(mostRelevantAddress)
+    const mostRelevantAddress = findMostRelevantAddress(contact)
+    const mostRelevantAddressLabel = getLabelForAddress(mostRelevantAddress)
     return res.render('pages/contacts/manage/contactConfirmation/confirmation', {
       contact,
       formattedFullName,
@@ -65,40 +65,5 @@ export default class ContactConfirmationController implements PageHandler {
       )
     }
     return formatNameLastNameFirst(contact, { customTitle: titleDescription })
-  }
-
-  private findMostRelevantAddress(contact: contactsApiClientTypes.ContactDetails) {
-    const currentAddresses = contact.addresses?.filter((address: ContactAddressDetails) => !address.endDate)
-    let mostRelevantAddress: ContactAddressDetails = currentAddresses?.find(
-      (address: ContactAddressDetails) => address.primaryAddress,
-    )
-    if (!mostRelevantAddress) {
-      mostRelevantAddress = currentAddresses?.find((address: ContactAddressDetails) => address.mailFlag)
-    }
-    if (!mostRelevantAddress) {
-      mostRelevantAddress = currentAddresses?.reduce((seed: ContactAddressDetails, item: ContactAddressDetails) => {
-        return (seed && seed.startDate > item.startDate) || !item.startDate ? seed : item
-      }, null)
-    }
-    if (!mostRelevantAddress) {
-      mostRelevantAddress = currentAddresses?.reduce((seed: ContactAddressDetails, item: ContactAddressDetails) => {
-        return seed && seed.createdTime > item.createdTime ? seed : item
-      }, null)
-    }
-    return mostRelevantAddress
-  }
-
-  private getLabelForAddress(mostRelevantAddress: contactsApiClientTypes.ContactAddressDetails) {
-    let mostRelevantAddressLabel
-    if (mostRelevantAddress?.primaryAddress) {
-      if (mostRelevantAddress?.mailFlag) {
-        mostRelevantAddressLabel = 'Primary and mail'
-      } else {
-        mostRelevantAddressLabel = 'Primary'
-      }
-    } else if (mostRelevantAddress?.mailFlag) {
-      mostRelevantAddressLabel = 'Mail'
-    }
-    return mostRelevantAddressLabel
   }
 }

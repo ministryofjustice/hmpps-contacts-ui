@@ -1,0 +1,126 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% for addressPram in params %}
+    {% set addressItem = addressPram.addresses %}
+    {% set addressRow = [] %}
+    {% set addressSpecificPhoneNumbers = '' %}
+
+    {% if addressItem %}
+        {% if addressItem.phoneNumbers and addressItem.phoneNumbers.length > 0 %}
+            {% for val in addressItem.phoneNumbers %}
+                {%
+                    set addressSpecificPhoneNumbers = addressSpecificPhoneNumbers + '<p data-qa=confirm-specific-phone-' + val.phoneType + '-value>' + (val.phoneType | capitalizeFirstLetter) + ': ' + val.phoneNumber + ' ' + '(' + val.extNumber + ')</p>'
+                %}
+            {% endfor %}
+        {% endif %}
+
+        {%
+            set address = {
+                flat: addressItem.flat,
+                premise: addressItem.property,
+                street: addressItem.street,
+                area: addressItem.area,
+                city: addressItem.cityDescription,
+                county: addressItem.countyDescription,
+                postalCode: addressItem.postCode,
+                country: addressItem.countryDescription
+            }
+        %}
+
+        {% if addressItem.noFixedAddress %}
+            {% set noFixedAddress = 'No fixed address, ' + addressItem.cityDescription + ', ' + addressItem.countryDescription %}
+        {% endif %}
+
+        {% set fromToDate %}
+            {% if addressItem.startDate %}
+                <p data-qa="confirm-start-date-value">From {{ (addressItem.startDate | formatDate('MMMM yyyy')) }}</p>
+            {% endif %}
+            {% if addressItem.endDate %}
+                <p data-qa="confirm-end-date-value">To {{ (addressItem.endDate | formatDate('MMMM yyyy')) }}</p>
+            {% endif %}
+            {% if not addressItem.startDate and not addressItem.endDate  %}
+                <p data-qa="from-to-date-not-provided">Not provided</p>
+            {% endif %}
+        {% endset -%}
+
+        {% if addressPram.mostRelevantAddressLabel %}
+            {% set addressRow = (
+                addressRow.push(
+                    {
+                        key: {
+                            text: addressPram.mostRelevantAddressLabel,
+                            classes: 'govuk-!-font-weight-regular most-relevant-address-label'
+                        },
+                        classes: 'govuk-summary-list__row--no-border'
+                    }
+            ), addressRow) %}
+        {% endif %}
+
+        {% set addressRow = (
+            addressRow.push(
+                {
+                    key: {
+                        text: "Address"
+                    },
+                    value: {
+                        html: (address | addressToLines) if not addressItem.noFixedAddress else noFixedAddress,
+                        classes: 'confirm-address-value'
+                    }
+                }
+        ), addressRow) %}
+
+        {% set addressRow = (
+            addressRow.push(
+                {
+                    key: {
+                        text: "Address phone"
+                    },
+                    value: {
+                        html: 'Not provided' if not addressSpecificPhoneNumbers else addressSpecificPhoneNumbers,
+                        classes: 'address-specific-phone-numbers-not-provided'
+                    }
+                }
+        ), addressRow) %}
+
+
+         {% if addressItem.comments %}
+            {% set addressRow = (
+                addressRow.push(
+                    {
+                        key: {
+                            text: "Comments"
+                        },
+                        value: {
+                            text: addressItem.comments,
+                            classes: 'confirm-comments-value'
+                        }
+                    }
+            ), addressRow) %}
+        {% endif %}
+
+        {% set addressRow = (
+            addressRow.push(
+                {
+                    key: {
+                        text: "Dates"
+                    },
+                    value: {
+                        html: fromToDate
+                    }
+                }
+        ), addressRow) %}
+    {% endif %}
+
+    {{ govukSummaryList({
+        card: {
+            title: {
+                text: addressPram.cardLabel if addressPram.cardLabel else addressItem.addressTypeDescription | capitalizeFirstLetter
+            },
+            actions: {
+                items: addressPram.cardActions
+            }
+        },
+        rows: addressRow
+    }) }}
+
+{% endfor %}

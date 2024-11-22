@@ -1,6 +1,9 @@
 {% extends "../../../../partials/layout.njk" %}
 {% from "../../../../partials/miniProfile/macro.njk" import miniProfile %}
 {% from "../../partials/addContactTabNavigation.njk" import contactTabNavigation %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "../../common/addressesMacro.njk" import addressDetails %}
+{% from "../../common/notProvided.njk" import notProvided %}
 
 {% block content %}
 {% include '../../../../partials/navigation.njk' %}
@@ -11,6 +14,12 @@
         <h1 class="govuk-heading-l">Contact details - {{ contact | formatNameFirstNameFirst }}</h1>
         {%- include "./manageBasicDetails.njk" -%}
         {%- include "./manageRelationshipDetails.njk" -%}
+
+        {% if primaryAddress %}
+            {{ addressDetails(primaryAddress)}}
+        {% else %}
+            {{ notProvided({title: 'Addresses', key: 'Address', className: 'addresses-not-provided' }) }}
+        {% endif %}
         {%- include "./managePhoneNumbers.njk" -%}
         {%- include "./manageEmailAddresses.njk" -%}
         {%- include "./manageIdentityNumbers.njk" -%}
