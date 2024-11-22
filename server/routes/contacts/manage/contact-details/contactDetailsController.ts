@@ -41,7 +41,7 @@ export default class ContactDetailsController implements PageHandler {
       primaryAddress = [
         {
           mostRelevantAddressLabel,
-          addresses: mostRelevantAddress,
+          address: mostRelevantAddress,
           cardLabel: 'Addresses',
           cardActions: [
             {

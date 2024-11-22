@@ -99,6 +99,10 @@ export default class ManageContactDetailsPage extends Page {
     this.editRelationshipCommentsLink().click()
   }
 
+  clickViewAllAddressesLink() {
+    this.viewAllAddressesLink().click()
+  }
+
   clickAddPhoneNumberLink() {
     this.addPhoneNumberLink().click()
   }
@@ -176,6 +180,8 @@ export default class ManageContactDetailsPage extends Page {
   private editNextOfKinContactLink = (): PageElement => cy.get(`[data-qa="change-next-of-kin-link"]`)
 
   private editRelationshipCommentsLink = (): PageElement => cy.get(`[data-qa="change-relationship-comments-link"]`)
+
+  private viewAllAddressesLink = (): PageElement => cy.get(`[data-qa="view-all-addresses"]`)
 
   private changeDateOfBirthLink = (id: number): PageElement => cy.get(`[data-qa="change-dob-${id}"]`)
 
