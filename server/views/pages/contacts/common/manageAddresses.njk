@@ -11,16 +11,16 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-{% include '../partials/addContactNavigation.njk' %}
-{{ miniProfile(prisonerDetails) }}
+    {% include '../../../partials/navigation.njk' %}
+    {{ miniProfile(prisonerDetails) }}
 {% include '../../../partials/formErrorSummary.njk' %}
 <span class="govuk-caption-l">Manage Contacts</span>
 <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
  <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
 
-        {% if contact.addresses %}
-            {{ addressDetails([contact.addresses[0]]) }}
+        {% if addresses %}
+            {{ addressDetails(addresses) }}
         {% else %}
             {{ notProvided({title: 'Addresses', key: 'Address', className: 'addresses-not-provided' }) }}
         {% endif %}

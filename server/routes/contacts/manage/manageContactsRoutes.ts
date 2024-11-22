@@ -384,19 +384,13 @@ const ManageContactsRoutes = (
     asyncMiddleware(updateRelationshipController.POST),
   )
 
-  const manageAddressesController = new ManageAddressesController(contactsService, referenceDataService)
+  const manageAddressesController = new ManageAddressesController(contactsService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/view-addresses',
     prepareStandaloneManageContactJourney(),
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, manageAddressesController),
     asyncMiddleware(manageAddressesController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/view-addresses',
-    prepareStandaloneManageContactJourney(),
-    validate(selectRelationshipSchemaFactory()),
-    asyncMiddleware(manageAddressesController.POST),
   )
 
   const manageNextOfKinContactController = new ManageNextOfKinContactController(contactsService)

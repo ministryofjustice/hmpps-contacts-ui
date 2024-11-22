@@ -2,14 +2,12 @@ import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
+import AuditService from '../../../../services/auditService'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import { mockedReferenceData } from '../../../testutils/stubReferenceData'
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import ContactService from '../../../../services/contactsService'
 import TestData from '../../../testutils/testData'
-import ContactDetails = contactsApiClientTypes.ContactDetails
-import UpdateRelationshipRequest = contactsApiClientTypes.UpdateRelationshipRequest
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/referenceDataService')
@@ -23,21 +21,8 @@ const contactsService = new ContactService(null) as jest.Mocked<ContactService>
 
 let app: Express
 const prisonerNumber = 'A1234BC'
-const contactId = 987654
-const prisonerContactId = 456789
-const contact: ContactDetails = {
-  id: contactId,
-  title: '',
-  lastName: 'last',
-  firstName: 'first',
-  middleNames: 'middle',
-  dateOfBirth: '1980-12-10T00:00:00.000Z',
-  createdBy: user.username,
-  createdTime: '2024-01-01',
-}
-const relationship = TestData.prisonerContactRelationship({
-  relationshipCode: 'OTHER',
-})
+const defaultAddress = TestData.address({})
+
 beforeEach(() => {
   app = appWithAllRoutes({
     services: {
@@ -56,86 +41,246 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-relationship', () => {
-  it('should render edit relationship page with navigation back to manage contact and all field populated', async () => {
+describe('Addresses', () => {
+  it('should show primary address', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    const contact = TestData.contact()
     contactsService.getContact.mockResolvedValue(contact)
-    contactsService.getPrisonerContactRelationship.mockResolvedValue(relationship)
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/update-relationship?returnUrl=/foo-bar`,
+      `/prisoner/G7941GL/contacts/manage/20000011/relationship/52/view-addresses?returnUrl=/foo-ba`,
     )
 
     // Then
-    expect(response.status).toEqual(200)
-
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'How is First Middle Last related to the prisoner?',
+    expect(response.status).toEqual(200)
+    expect($('.most-relevant-address-label').text().trim()).toStrictEqual('Primary')
+    expect($('.confirm-address-value').text().trim()).toStrictEqual(
+      '24, Acacia AvenueBuntingSheffieldSouth YorkshireEngland',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-    expect($('#relationship').val()).toStrictEqual('OTHER')
+    expect($('.address-specific-phone-numbers-not-provided').text().trim()).toStrictEqual('Home: 01111 777777 (+0123)')
+    expect($('[data-qa=confirm-start-date-value]').first().text().trim()).toStrictEqual('From January 2020')
   })
 
-  it('should call the audit service for the page view', async () => {
+  it('should show no addresses when there are no addresses', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    const contact = TestData.contact()
+    contact.addresses = []
+
     contactsService.getContact.mockResolvedValue(contact)
-    contactsService.getPrisonerContactRelationship.mockResolvedValue(relationship)
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/update-relationship?returnUrl=/foo-bar`,
+      `/prisoner/G7941GL/contacts/manage/20000011/relationship/52/view-addresses?returnUrl=/foo-ba`,
     )
 
     // Then
+    const $ = cheerio.load(response.text)
     expect(response.status).toEqual(200)
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_UPDATE_RELATIONSHIP_PAGE, {
-      who: user.username,
-      correlationId: expect.any(String),
-    })
+    expect($('[data-qa="main-heading"]').text().trim()).toStrictEqual('Addresses for Jones Mason')
+    expect($('.govuk-summary-card__title').text().trim()).toStrictEqual('')
+    expect($('.confirm-address-value').text().trim()).toStrictEqual('')
   })
-})
 
-describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-relationship', () => {
-  it('should update relationship and pass to return url if there are no validation errors', async () => {
-    await request(app)
-      .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/update-relationship?returnUrl=/foo-bar`,
-      )
-      .type('form')
-      .send({ relationship: 'MOT' })
-      .expect(302)
-      .expect('Location', '/foo-bar')
+  it('should show all addresses when there are multiple addresses', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    const contact = TestData.contact()
 
-    const expected: UpdateRelationshipRequest = {
-      relationshipCode: 'MOT',
-      updatedBy: 'user1',
+    function getAddress(flat: string = 'Flat 1') {
+      const homeAddress = defaultAddress
+      homeAddress.flat = flat
+      return homeAddress
     }
-    expect(contactsService.updateContactRelationshipById).toHaveBeenCalledWith(
-      contactId,
-      prisonerContactId,
-      expected,
-      user,
+
+    contact.addresses = [
+      {
+        ...getAddress('no 1'),
+        addressType: 'HOME',
+        addressTypeDescription: 'Home address',
+        primaryAddress: true,
+        mailFlag: false,
+        comments: 'Home comment',
+      },
+      {
+        ...getAddress('no 2'),
+        addressType: 'WORK',
+        addressTypeDescription: 'Work address',
+        primaryAddress: false,
+        mailFlag: true,
+        comments: 'Work comment',
+      },
+      {
+        ...getAddress('no 3'),
+        addressType: 'BUS',
+        addressTypeDescription: 'Business address',
+        primaryAddress: false,
+        mailFlag: false,
+        comments: 'Business comment',
+      },
+    ]
+
+    contactsService.getContact.mockResolvedValue(contact)
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/G7941GL/contacts/manage/20000011/relationship/52/view-addresses?returnUrl=/foo-ba`,
     )
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect(response.status).toEqual(200)
+    expect($('[data-qa="main-heading"]').text().trim()).toStrictEqual('Addresses for Jones Mason')
+
+    const cardTitles = $('.govuk-summary-card__title')
+    expect(cardTitles.length).toStrictEqual(3)
+    expect(cardTitles.eq(0).text().trim()).toStrictEqual('Home address')
+    expect(cardTitles.eq(1).text().trim()).toStrictEqual('Work address')
+    expect(cardTitles.eq(2).text().trim()).toStrictEqual('Business address')
+
+    const addressLines = $('.confirm-address-value')
+    expect(addressLines.eq(0).text()).toContain('Flat no 1, 24, Acacia AvenueBuntingSheffieldSouth YorkshireEngland')
+    expect(addressLines.eq(1).text()).toContain('Flat no 2, 24, Acacia AvenueBuntingSheffieldSouth YorkshireEngland')
+    expect(addressLines.eq(2).text()).toContain('Flat no 3, 24, Acacia AvenueBuntingSheffieldSouth YorkshireEngland')
+
+    const mostRelevantLabel = $('.most-relevant-address-label')
+    expect(mostRelevantLabel.length).toStrictEqual(2)
+    expect(mostRelevantLabel.eq(0).text()).toContain('Primary')
+    expect(mostRelevantLabel.eq(1).text()).toContain('Mail')
+
+    const addressPhones = $('[data-qa=confirm-specific-phone-HOME-value]')
+    expect(addressPhones.length).toStrictEqual(3)
+    expect(addressPhones.eq(0).text()).toContain('Home: 01111 777777 (+0123)')
+    expect(addressPhones.eq(1).text()).toContain('Home: 01111 777777 (+0123)')
+    expect(addressPhones.eq(2).text()).toContain('Home: 01111 777777 (+0123)')
+
+    const comments = $('.confirm-comments-value')
+    expect(comments.length).toStrictEqual(3)
+    expect(comments.eq(0).text()).toContain('Home comment')
+    expect(comments.eq(1).text()).toContain('Work comment')
+    expect(comments.eq(2).text()).toContain('Business comment')
+
+    const startDates = $('[data-qa=confirm-start-date-value]')
+    expect(startDates.length).toStrictEqual(3)
+    expect(startDates.eq(0).text()).toContain('From January 2020')
+    expect(startDates.eq(1).text()).toContain('From January 2020')
+    expect(startDates.eq(2).text()).toContain('From January 2020')
   })
 
-  it('should return to input page with details kept if there are validation errors', async () => {
-    await request(app)
-      .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/update-relationship?returnUrl=/foo-bar`,
-      )
-      .type('form')
-      .send({})
-      .expect(302)
-      .expect(
-        'Location',
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/update-relationship?returnUrl=/foo-bar`,
-      )
-    expect(contactsService.updateContactRelationshipById).not.toHaveBeenCalled()
+  it('should show start date ', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    const contact = TestData.contact()
+    contact.addresses = [{ ...defaultAddress, startDate: '2020-01-01' }]
+
+    contactsService.getContact.mockResolvedValue(contact)
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/G7941GL/contacts/manage/20000011/relationship/52/view-addresses?returnUrl=/foo-ba`,
+    )
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect(response.status).toEqual(200)
+    expect($('[data-qa="main-heading"]').text().trim()).toStrictEqual('Addresses for Jones Mason')
+
+    const startDates = $('[data-qa=confirm-start-date-value]')
+    expect(startDates.length).toStrictEqual(1)
+    expect(startDates.eq(0).text()).toContain('From January 2020')
+  })
+
+  it('should show end date ', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    const contact = TestData.contact()
+    contact.addresses = [{ ...defaultAddress, endDate: '2022-02-02' }]
+
+    contactsService.getContact.mockResolvedValue(contact)
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/G7941GL/contacts/manage/20000011/relationship/52/view-addresses?returnUrl=/foo-ba`,
+    )
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect(response.status).toEqual(200)
+    expect($('[data-qa="main-heading"]').text().trim()).toStrictEqual('Addresses for Jones Mason')
+
+    const startDates = $('[data-qa=confirm-end-date-value]')
+    expect(startDates.length).toStrictEqual(1)
+    expect(startDates.eq(0).text()).toContain('To February 2022')
+  })
+
+  it('should show end date not provided', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    const contact = TestData.contact()
+    contact.addresses = [{ ...defaultAddress, startDate: '', endDate: '' }]
+
+    contactsService.getContact.mockResolvedValue(contact)
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/G7941GL/contacts/manage/20000011/relationship/52/view-addresses?returnUrl=/foo-ba`,
+    )
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect(response.status).toEqual(200)
+    expect($('[data-qa="main-heading"]').text().trim()).toStrictEqual('Addresses for Jones Mason')
+    expect($('[data-qa="from-to-date-not-provided"]').text().trim()).toStrictEqual('Not provided')
+  })
+
+  it('should show no fixed address', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    const contact = TestData.contact()
+    contact.addresses = [{ ...defaultAddress, noFixedAddress: true }]
+
+    contactsService.getContact.mockResolvedValue(contact)
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/G7941GL/contacts/manage/20000011/relationship/52/view-addresses?returnUrl=/foo-ba`,
+    )
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect(response.status).toEqual(200)
+    expect($('[data-qa="main-heading"]').text().trim()).toStrictEqual('Addresses for Jones Mason')
+    expect($('.confirm-address-value').text().trim()).toContain('No fixed address')
+  })
+
+  it('should show expired next to address card title', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    const contact = TestData.contact()
+    contact.addresses = [{ ...defaultAddress, addressTypeDescription: 'Home address', endDate: '2024-01-01' }]
+
+    contactsService.getContact.mockResolvedValue(contact)
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/G7941GL/contacts/manage/20000011/relationship/52/view-addresses?returnUrl=/foo-ba`,
+    )
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect(response.status).toEqual(200)
+    expect($('[data-qa="main-heading"]').text().trim()).toStrictEqual('Addresses for Jones Mason')
+    expect($('.govuk-summary-card__title').text().trim()).toContain('Expired Home address')
   })
 })
