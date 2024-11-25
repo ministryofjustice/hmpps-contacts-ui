@@ -2,7 +2,7 @@
 
 {% set emailAddresses = '' %}
 {% if contact.emailAddresses and contact.emailAddresses.length > 0 %}
-    {% for item in contact.emailAddresses %}
+    {% for item in contact.emailAddresses  | sort(attribute = 'emailAddress')%}
         {% set emailAddresses = emailAddresses + '<p>' + item.emailAddress + '</p>' %}
     {% endfor %}
 {% endif %}
