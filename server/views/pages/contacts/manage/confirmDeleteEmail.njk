@@ -36,14 +36,16 @@
                         html: "Yes, delete",
                         type: "submit",
                         classes: 'govuk-!-margin-top-6 govuk-button--warning',
-                        attributes: {"data-qa": "continue-button"}
+                        attributes: {"data-qa": "continue-button"},
+                        preventDoubleClick: true
                     }) }}
                     {{ govukButton({
                         html: "No, do not delete",
                         type: "button",
                         classes: 'govuk-!-margin-top-6 govuk-button--secondary',
                         attributes: {"data-qa": "cancel-button"},
-                        href: journey.returnPoint.url
+                        href: journey.returnPoint.url,
+                        preventDoubleClick: true
                     }) }}
                 </div>
             </form>
