@@ -143,7 +143,15 @@ describe('GET /contacts/manage/prisoner-search-results', () => {
       first: true,
       last: true,
       size: 1,
-      content: [{ lastName: 'test', firstName: 'test', prisonerNumber: 'test', dateOfBirth: '2000-01-01' } as Prisoner],
+      content: [
+        {
+          lastName: 'Last',
+          firstName: 'First',
+          middleNames: 'Middle Names',
+          prisonerNumber: 'A1234BC',
+          dateOfBirth: '2000-01-01',
+        } as Prisoner,
+      ],
     })
 
     const response = await request(app).get(`/contacts/manage/prisoner-search-results/${journeyId}`)
@@ -151,13 +159,14 @@ describe('GET /contacts/manage/prisoner-search-results', () => {
     logger.info(`Response = ${JSON.stringify(response)}`)
 
     expect(response.status).toEqual(200)
-    expect(response.text).toContain('search')
+    const $ = cheerio.load(response.text)
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Search for a prisoner')
+    expect($('[data-qa=prisoner-A1234BC-name]').text().trim()).toStrictEqual('Last, First')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.PRISONER_SEARCH_RESULTS_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })
-
     expect(prisonerSearchService.searchInCaseload).toHaveBeenCalledWith(
       'test',
       'HEI',
