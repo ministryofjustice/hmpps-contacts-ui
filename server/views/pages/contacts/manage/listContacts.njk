@@ -78,7 +78,8 @@
     {{ govukButton({
         text: "Add prisoner contact",
         href: "/prisoner/" + prisonerNumber + "/contacts/create/start",
-        attributes: {"data-qa": "add-contact-button"}
+        attributes: {"data-qa": "add-contact-button"},
+        preventDoubleClick: true
     }) }}
 
 <div class="govuk-tabs contact-list" data-module="govuk-tabs">

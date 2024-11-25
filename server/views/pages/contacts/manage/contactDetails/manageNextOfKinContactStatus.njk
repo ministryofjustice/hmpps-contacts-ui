@@ -42,7 +42,8 @@
                     html: "Confirm and save",
                     type: "submit",
                     classes: 'govuk-!-margin-top-6',
-                    attributes: {"data-qa": "continue-button"}
+                    attributes: {"data-qa": "continue-button"},
+                    preventDoubleClick: true
                 }) }}
                 <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ journey.returnPoint.url }}" data-qa="cancel-button">Cancel</a>
             </div>
