@@ -208,6 +208,26 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect(response.status).toEqual(200)
       expect($('.email-addresses-not-provide-value').text().trim()).toStrictEqual('Not provided')
     })
+
+    it('should sort email addresses in alphabetic order', async () => {
+      auditService.logPageView.mockResolvedValue(null)
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      const contactDetails = TestData.contact()
+      contactDetails.emailAddresses = [
+        TestData.getContactEmailDetails('bravo@example.com', 1),
+        TestData.getContactEmailDetails('alpha@example.com', 2),
+      ]
+      contactsService.getContact.mockResolvedValue(contactDetails)
+
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+      const $ = cheerio.load(response.text)
+      expect(response.status).toEqual(200)
+      const emailAddresses = $('.confirm-email-value').toArray()
+      expect(emailAddresses).toHaveLength(2)
+      expect($(emailAddresses[0]).text().trim()).toStrictEqual('alpha@example.com')
+      expect($(emailAddresses[1]).text().trim()).toStrictEqual('bravo@example.com')
+    })
   })
 
   describe('Relationship', () => {

@@ -3,7 +3,7 @@
 {% set emailAddresses = [] %}
 
 {% if contact.emailAddresses and contact.emailAddresses.length > 0 %}
-    {% for item in contact.emailAddresses %}
+    {% for item in contact.emailAddresses | sort(attribute = 'emailAddress')%}
         {% set actions = [] %}
 
         {% set actions = actions.concat([{
@@ -28,7 +28,7 @@
             },
             value: {
                 html: '<p>' + item.emailAddress + '</p>',
-                classes: 'confirm-email-' + item.contactEmailId + '-value'
+                classes: 'confirm-email-value confirm-email-' + item.contactEmailId + '-value'
             },
             actions: {
                 items: actions
