@@ -18,7 +18,6 @@ import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerConta
 import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
 import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
 
-type Language = components['schemas']['Language']
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
@@ -538,33 +537,6 @@ describe('contactsService', () => {
       await expect(service.updateContactPhone(99, 77, user, 'MOB', '0123456789', undefined)).rejects.toBeInstanceOf(
         BadRequest,
       )
-    })
-  })
-  describe('getLanguageReference', () => {
-    it('Should get the language reference', async () => {
-      // Given
-      const expectedLanguage: Language = {
-        languageId: 23,
-        nomisCode: 'ENG',
-        nomisDescription: 'English',
-        isoAlpha2: 'en',
-        isoAlpha3: 'eng',
-        isoLanguageDesc: 'English',
-        displaySequence: 1,
-      }
-
-      // When
-      apiClient.getLanguageReference.mockResolvedValue(expectedLanguage)
-      const contact = await service.getLanguageReference(user)
-
-      // Then
-      expect(contact).toStrictEqual(expectedLanguage)
-      expect(apiClient.getLanguageReference).toHaveBeenCalledWith(user)
-    })
-
-    it('Propagates errors', async () => {
-      apiClient.getLanguageReference.mockRejectedValue(new Error('some error'))
-      await expect(apiClient.getLanguageReference(user)).rejects.toEqual(new Error('some error'))
     })
   })
 

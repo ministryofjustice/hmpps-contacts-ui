@@ -23,7 +23,6 @@ import UpdateRelationshipRequest = contactsApiClientTypes.UpdateRelationshipRequ
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
 
-type Language = components['schemas']['Language']
 type PageableObject = components['schemas']['PageableObject']
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
@@ -185,15 +184,6 @@ export default class ContactsApiClient extends RestClient {
     return this.delete(
       {
         path: `/contact/${contactId}/identity/${contactIdentityId}`,
-      },
-      user,
-    )
-  }
-
-  async getLanguageReference(user: Express.User): Promise<Language> {
-    return this.get<Language>(
-      {
-        path: `/language-reference`,
       },
       user,
     )

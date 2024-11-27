@@ -21,7 +21,6 @@ import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerConta
 import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
-type Language = components['schemas']['Language']
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
@@ -509,55 +508,6 @@ describe('contactsApiClient', () => {
       // When
       try {
         await contactsApiClient.deleteContactPhone(99, 77, user)
-      } catch (e) {
-        // Then
-        expect(e.status).toEqual(errorCode)
-        expect(e.data).toEqual(expectedErrorBody)
-      }
-    })
-  })
-
-  describe('getLanguageReference', () => {
-    it('should create the request and return the response', async () => {
-      // Given
-      const expectedLanguages: Language = {
-        languageId: 23,
-        nomisCode: 'ENG',
-        nomisDescription: 'English',
-        isoAlpha2: 'en',
-        isoAlpha3: 'eng',
-        isoLanguageDesc: 'English',
-        displaySequence: 1,
-      }
-
-      fakeContactsApi
-        .get('/language-reference')
-        .matchHeader('authorization', `Bearer systemToken`)
-        .reply(200, expectedLanguages)
-
-      // When
-      const languages = await contactsApiClient.getLanguageReference(user)
-
-      // Then
-      expect(languages).toEqual(expectedLanguages)
-    })
-
-    it.each([401, 403])('should propagate errors', async (errorCode: number) => {
-      // Given
-      const expectedErrorBody = {
-        status: errorCode,
-        userMessage: 'Some error',
-        developerMessage: 'Some error',
-      }
-
-      fakeContactsApi
-        .get('/language-reference')
-        .matchHeader('authorization', `Bearer systemToken`)
-        .reply(errorCode, expectedErrorBody)
-
-      // When
-      try {
-        await contactsApiClient.getLanguageReference(user)
       } catch (e) {
         // Then
         expect(e.status).toEqual(errorCode)

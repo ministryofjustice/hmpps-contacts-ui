@@ -116,7 +116,7 @@ const ManageContactsRoutes = (
   )
 
   // Part 6: Manage the attribute of one contact (phones, addresses, IDs, emails, restrictions)
-  const spokenLanguageController = new ManageSpokenLanguageController(contactsService)
+  const spokenLanguageController = new ManageSpokenLanguageController(contactsService, referenceDataService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/language',
     prepareStandaloneManageContactJourney(),

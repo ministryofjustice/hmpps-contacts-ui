@@ -95,7 +95,7 @@ context('Manage contacts ', () => {
     cy.task('stubGetContactById', TestData.contact())
     cy.task('stubGetPrisonerContactRelationshipById', { id: 31, response: TestData.prisonerContactRelationship() })
     cy.task('stubContactList', 'A1234BC')
-    cy.task('stubGetLanguages')
+    cy.task('stubLanguagesReferenceData')
 
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
 

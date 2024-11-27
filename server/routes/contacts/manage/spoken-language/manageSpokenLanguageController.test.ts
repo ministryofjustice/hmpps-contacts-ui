@@ -5,13 +5,17 @@ import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import ContactsService from '../../../../services/contactsService'
+import ReferenceDataService from '../../../../services/referenceDataService'
 import TestData from '../../../testutils/testData'
+import { mockedReferenceData } from '../../../testutils/stubReferenceData'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
+jest.mock('../../../../services/referenceDataService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
+const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
 const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
 const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
 
@@ -25,6 +29,7 @@ beforeEach(() => {
       auditService,
       prisonerSearchService,
       contactsService,
+      referenceDataService,
     },
     userSupplier: () => user,
   })
@@ -41,7 +46,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/language', ()
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.searchContact.mockResolvedValue(TestData.contact())
     contactsService.getContact.mockResolvedValue(TestData.contact())
-    contactsService.getLanguageReference.mockResolvedValue(TestData.languages())
+    referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
 
     // When
     const response = await request(app).get(
@@ -51,7 +56,18 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/language', ()
 
     // Then
     expect(response.status).toEqual(200)
-    expect($('#languageCode').has('option')).toBeDefined()
+    const options = $('#languageCode option')
+
+    expect(options.length).toBe(4)
+    expect(options.eq(0).text()).toBe('Select')
+    expect(options.eq(0).attr('value')).toBe('')
+    expect(options.eq(1).text()).toBe('Albanian')
+    expect(options.eq(1).attr('value')).toBe('ALB')
+    expect(options.eq(2).text()).toBe('Amharic')
+    expect(options.eq(2).attr('value')).toBe('AMH')
+    expect(options.eq(3).text()).toBe('Arabic')
+    expect(options.eq(3).attr('value')).toBe('ARA')
+
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_SPOKEN_LANGUAGE_PAGE, {
       who: user.username,
       correlationId: expect.any(String),

@@ -28,7 +28,7 @@ context('Select Interpreter Needs', () => {
       term: prisonerNumber,
     })
     cy.task('stubTitlesReferenceData')
-    cy.task('stubGetLanguages')
+    cy.task('stubLanguagesReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetContactById', TestData.contact())
     cy.task('stubGetPrisonerContactRelationshipById', {
