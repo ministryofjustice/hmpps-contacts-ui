@@ -5,5 +5,6 @@ enum ReferenceCodeType {
   'DOMESTIC_STS' = 'DOMESTIC_STS',
   'ID_TYPE' = 'ID_TYPE',
   'GENDER' = 'GENDER',
+  'LANGUAGE' = 'LANGUAGE',
 }
 export default ReferenceCodeType

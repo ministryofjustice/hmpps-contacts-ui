@@ -23,12 +23,12 @@
                 selected: true
              }] %}
 
-             {% for item in language %}
+             {% for item in spokenLanguages %}
                 {% set languages = (languages.push(
                     {
-                        value: item.nomisCode,
-                        text: item.nomisDescription,
-                        selected: true if contact.languageCode == item.nomisCode else false
+                        value: item.code,
+                        text: item.description,
+                        selected: true if contact.languageCode == item.code else false
                     }
                 ), languages) %}
              {% endfor %}

@@ -226,11 +226,11 @@ export default {
     })
   },
 
-  stubGetLanguages: (): SuperAgentRequest => {
+  stubLanguagesReferenceData: (): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
-        urlPath: `/language-reference`,
+        urlPath: '/reference-codes/group/LANGUAGE',
       },
       response: {
         status: 200,

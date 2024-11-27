@@ -33,6 +33,7 @@ context('Select Spoken Language', () => {
       response: TestData.prisonerContactRelationship(),
     })
     cy.task('stubContactList', 'A1234BC')
+    cy.task('stubLanguagesReferenceData')
     cy.visit('/contacts/manage/prisoner-search/start')
   })
 
@@ -43,7 +44,6 @@ context('Select Spoken Language', () => {
     }
     const { prisonerNumber } = TestData.prisoner()
     cy.task('stubTitlesReferenceData')
-    cy.task('stubGetLanguages')
     cy.task('stubPatchContactById', { contactId, request })
 
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
@@ -67,7 +67,6 @@ context('Select Spoken Language', () => {
   it(`Back link goes to manage contacts`, () => {
     const { prisonerNumber } = TestData.prisoner()
     cy.task('stubTitlesReferenceData')
-    cy.task('stubGetLanguages')
 
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
@@ -79,7 +78,6 @@ context('Select Spoken Language', () => {
   it(`Cancel goes to manage contacts`, () => {
     const { prisonerNumber } = TestData.prisoner()
     cy.task('stubTitlesReferenceData')
-    cy.task('stubGetLanguages')
 
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)

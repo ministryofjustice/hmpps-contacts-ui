@@ -42,43 +42,21 @@ const STUBBED_IDENTITY_OPTIONS: StubReferenceData[] = [
   { code: 'NINO', description: 'National insurance number', groupCode: 'ID_TYPE' },
 ]
 
-type StubLanguageData = {
-  languageId: number
-  nomisCode: string
-  nomisDescription: string
-  isoAlpha2: string
-  isoAlpha3: string
-  isoLanguageDesc: string
-  displaySequence: number
-}
-
-const STUBBED_LANGUAGE_OPTIONS: StubLanguageData[] = [
+const STUBBED_LANGUAGE_OPTIONS: StubReferenceData[] = [
   {
-    languageId: 1,
-    nomisCode: 'ALB',
-    nomisDescription: 'Albanian',
-    isoAlpha2: 'sq',
-    isoAlpha3: 'alb',
-    isoLanguageDesc: 'Albanian',
-    displaySequence: 2,
+    code: 'ALB',
+    description: 'Albanian',
+    groupCode: 'LANGUAGE',
   },
   {
-    languageId: 2,
-    nomisCode: 'AMH',
-    nomisDescription: 'Amharic',
-    isoAlpha2: 'am',
-    isoAlpha3: 'amh',
-    isoLanguageDesc: 'Amharic',
-    displaySequence: 99,
+    code: 'AMH',
+    description: 'Amharic',
+    groupCode: 'LANGUAGE',
   },
   {
-    languageId: 3,
-    nomisCode: 'ARA',
-    nomisDescription: 'Arabic',
-    isoAlpha2: 'ar',
-    isoAlpha3: 'ara',
-    isoLanguageDesc: 'Arabic',
-    displaySequence: 2,
+    code: 'ARA',
+    description: 'Arabic',
+    groupCode: 'LANGUAGE',
   },
 ]
 
@@ -192,6 +170,9 @@ const mockedReferenceData = (type: ReferenceCodeType, _: HmppsUser): Promise<Stu
   }
   if (type === ReferenceCodeType.GENDER) {
     return Promise.resolve(STUBBED_GENDER_OPTIONS)
+  }
+  if (type === ReferenceCodeType.LANGUAGE) {
+    return Promise.resolve(STUBBED_LANGUAGE_OPTIONS)
   }
 
   return Promise.reject(new Error(`You haven't set up the stubbed reference data for ${type} yet`))
