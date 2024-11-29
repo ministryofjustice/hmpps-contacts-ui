@@ -22,6 +22,10 @@ import ContactIdentityDetails = contactsApiClientTypes.ContactIdentityDetails
 import UpdateRelationshipRequest = contactsApiClientTypes.UpdateRelationshipRequest
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
+import CreateContactRestrictionRequest = contactsApiClientTypes.CreateContactRestrictionRequest
+import ContactRestrictionDetails = contactsApiClientTypes.ContactRestrictionDetails
+import CreatePrisonerContactRestrictionRequest = contactsApiClientTypes.CreatePrisonerContactRestrictionRequest
+import PrisonerContactRestrictionDetails = contactsApiClientTypes.PrisonerContactRestrictionDetails
 
 type PageableObject = components['schemas']['PageableObject']
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
@@ -250,6 +254,34 @@ export default class ContactsApiClient extends RestClient {
     return this.delete(
       {
         path: `/contact/${contactId}/email/${contactEmailId}`,
+      },
+      user,
+    )
+  }
+
+  async createContactGlobalRestriction(
+    contactId: number,
+    request: CreateContactRestrictionRequest,
+    user: Express.User,
+  ): Promise<ContactRestrictionDetails> {
+    return this.post<ContactRestrictionDetails>(
+      {
+        path: `/contact/${contactId}/restriction`,
+        data: request,
+      },
+      user,
+    )
+  }
+
+  async createPrisonerContactRestriction(
+    prisonerContactId: number,
+    request: CreatePrisonerContactRestrictionRequest,
+    user: Express.User,
+  ): Promise<PrisonerContactRestrictionDetails> {
+    return this.post<PrisonerContactRestrictionDetails>(
+      {
+        path: `/prisoner-contact/${prisonerContactId}/restriction`,
+        data: request,
       },
       user,
     )

@@ -1,0 +1,85 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
+{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
+
+{% if journey.restrictionClass === 'PRISONER_CONTACT' %}
+    {% set title = "Add a new prisoner-contact restriction" %}
+{% else %}
+    {% set title = "Add a new global restriction for " + journey.contactNames | formatNameFirstNameFirst %}
+{% endif %}
+{% set pageTitle = applicationName + " - " + title %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+
+{% include '../../../partials/navigation.njk' %}
+{{ miniProfile(prisonerDetails) }}
+{% include '../../../partials/formErrorSummary.njk' %}
+ <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-caption-l">Manage contact restrictions</span>
+            <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+            {% if journey.restrictionClass === 'PRISONER_CONTACT' %}
+            <p><b>Prisoner:</b> <span data-qa="prisoner-name-and-id">{{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }} ({{ prisonerDetails.prisonerNumber }})</span></p>
+            {% endif %}
+            <p><b>Contact:</b> <span data-qa="contact-name-and-id">{{ journey.contactNames | formatNameFirstNameFirst }} ({{ journey.contactId }})</span></p>
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+                {{ govukSelect({
+                    id: "type",
+                    name: "type",
+                    label: { text: "Restriction type", classes: "govuk-label--m" },
+                    items: typeOptions,
+                    errorMessage: validationErrors | findError('type')
+                }) }}
+
+                {{ mojDatePicker({
+                    id: "startDate",
+                    name: "startDate",
+                    label: { text: "Set a start date for the restriction", classes: "govuk-label--m" },
+                    hint: { text: "For example, 24/9/2024." },
+                    errorMessage: validationErrors | findError('startDate'),
+                    value: startDate
+                }) }}
+
+                {{ mojDatePicker({
+                    id: "expiryDate",
+                    name: "expiryDate",
+                    label: { text: "Set an expiry date for the restriction (optional)", classes: "govuk-label--m" },
+                    hint: { text: "For example, 24/9/2025." },
+                    errorMessage: validationErrors | findError('expiryDate'),
+                    value: expiryDate
+                }) }}
+
+                {{ govukCharacterCount({
+                    id: "comments",
+                    name: "comments",
+                    label: { text: "Comment on the restriction (optional)", classes: "govuk-label--m" },
+                    classes: "govuk-!-width-three-quarters",
+                    errorMessage: validationErrors | findError('comments'),
+                    value: comments,
+                    maxlength: maxCommentLength
+                }) }}
+
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        html: continueButtonLabel,
+                        type: "submit",
+                        classes: 'govuk-!-margin-top-6',
+                        attributes: {"data-qa": "continue-button"},
+                        preventDoubleClick: true
+                    }) }}
+                    {% if navigation.cancelButton %}
+                        <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ journey.returnPoint.url }}" data-qa="cancel-button">Cancel</a>
+                    {% endif %}
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

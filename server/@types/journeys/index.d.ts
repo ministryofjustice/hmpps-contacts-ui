@@ -90,6 +90,25 @@ declare namespace journeys {
     dateOfBirth?: DateOfBirth
   }
 
+  export interface AddRestrictionJourney {
+    id: string
+    lastTouched: string
+    contactId: number
+    prisonerContactId?: number
+    prisonerNumber?: string
+    returnPoint: ReturnPoint
+    restrictionClass: RestrictionClass
+    contactNames: ContactNames
+    restriction?: Restriction
+  }
+
+  export interface Restriction {
+    type: string
+    startDate?: string
+    expiryDate?: string
+    comments?: string
+  }
+
   export interface StandaloneManageContactJourney {
     returnPoint: ReturnPoint
   }
@@ -97,4 +116,5 @@ declare namespace journeys {
   type YesOrNo = 'YES' | 'NO'
   type YesNoOrDoNotKnow = 'YES' | 'NO' | 'DO_NOT_KNOW'
   type PrisonerJourneyParams = { prisonerNumber: string; journeyId: string }
+  type RestrictionClass = 'CONTACT_GLOBAL' | 'PRISONER_CONTACT'
 }

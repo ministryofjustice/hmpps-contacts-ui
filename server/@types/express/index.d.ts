@@ -6,6 +6,7 @@ export declare module 'express-session' {
   import AddContactJourney = journeys.AddContactJourney
   import ManageContactsJourney = journeys.ManageContactsJourney
   import UpdateDateOfBirthJourney = journeys.UpdateDateOfBirthJourney
+  import AddRestrictionJourney = journeys.AddRestrictionJourney
 
   interface SessionData {
     returnTo: string
@@ -16,6 +17,7 @@ export declare module 'express-session' {
     addContactJourneys: Record<string, AddContactJourney>
     manageContactsJourneys: Record<string, ManageContactsJourney>
     updateDateOfBirthJourneys: Record<string, UpdateDateOfBirthJourney>
+    addRestrictionJourneys: Record<string, AddRestrictionJourney>
   }
 }
 export declare global {
