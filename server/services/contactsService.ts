@@ -16,6 +16,7 @@ import CreateIdentityRequest = contactsApiClientTypes.CreateIdentityRequest
 import UpdateIdentityRequest = contactsApiClientTypes.UpdateIdentityRequest
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
+import ContactRestrictionDetails = contactsApiClientTypes.ContactRestrictionDetails
 
 type PageableObject = components['schemas']['PageableObject']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
@@ -216,5 +217,9 @@ export default class ContactsService {
 
   async deleteContactEmail(contactId: number, contactEmailId: number, user: Express.User) {
     return this.contactsApiClient.deleteContactEmail(contactId, contactEmailId, user)
+  }
+
+  async getGlobalContactRestrictions(contactId: number, user: Express.User): Promise<ContactRestrictionDetails[]> {
+    return this.contactsApiClient.getGlobalContactRestrictions(contactId, user)
   }
 }

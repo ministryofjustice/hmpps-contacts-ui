@@ -24,6 +24,7 @@ context('Add Existing Contact Check Answers', () => {
     firstName: contact.firstName,
     middleNames: contact.middleNames,
   })
+  const globalRestriction = TestData.getContactRestrictionDetails({ contactId: contact.id })
 
   beforeEach(() => {
     cy.task('reset')
@@ -35,6 +36,7 @@ context('Add Existing Contact Check Answers', () => {
     cy.task('stubContactList', prisonerNumber)
     cy.task('stubGetContactById', contact)
     cy.task('stubAddContactRelationship', { contactId, createdPrisonerContactId: 654321 })
+    cy.task('stubGetGlobalRestrictions', [globalRestriction])
     cy.task('stubContactSearch', {
       results: {
         totalPages: 1,

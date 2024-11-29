@@ -286,4 +286,8 @@ export default class ContactsApiClient extends RestClient {
       user,
     )
   }
+
+  async getGlobalContactRestrictions(contactId: number, user: Express.User): Promise<ContactRestrictionDetails[]> {
+    return this.get<ContactRestrictionDetails[]>({ path: `/contact/${contactId}/restriction` }, user)
+  }
 }

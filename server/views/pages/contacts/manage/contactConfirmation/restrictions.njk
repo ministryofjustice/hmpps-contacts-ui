@@ -1,0 +1,56 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro restrictionCard(restrictions, contact) %}
+
+   <h1 class="govuk-heading-l" data-qa="confirm-contact-restriction-title">Global restrictions for contact {{ (contact.firstName + " " + contact.lastName) | capitaliseName }}</h1>
+
+    {% for restriction in restrictions %}
+
+            {{ govukSummaryList({
+                card: {
+                    title: {
+                        text: restriction.restrictionTypeDescription
+                    },
+                    classes: 'restriction-' + restriction.contactRestrictionId + '-card restrictions-cards-titles'
+                },
+                rows: [{
+                    key: {
+                         text: "Start date"
+                    },
+                    value: {
+                        text: restriction.startDate | formatDate,
+                        classes: 'view-start-date-' + restriction.contactRestrictionId + '-value'
+                    }
+                },
+                {
+                    key: {
+                        text: "Expiry date"
+                    },
+                    value: {
+                        text: restriction.expiryDate | formatDate if restriction.expiryDate else 'Not entered',
+                        classes: 'view-expiry-date-' + restriction.contactRestrictionId + '-value'
+                    }
+                },
+                {
+                    key: {
+                        text: "Entered by"
+                    },
+                    value: {
+                        text:  restriction.createdBy,
+                        classes: 'view-entered-by-' + restriction.contactRestrictionId + '-value'
+                    }
+                },
+                {
+                    key: {
+                        text: "Comment"
+                    },
+                    value: {
+                        text: restriction.comments if restriction.comments else 'Not entered',
+                        classes: 'view-comment-' + restriction.contactRestrictionId + '-value'
+                    }
+                }]
+            }) }}
+    {% endfor %}
+
+
+{% endmacro %}
