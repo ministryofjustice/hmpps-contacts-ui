@@ -1,0 +1,128 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% set restrictionClassName = "prisoner-contact" if journey.restrictionClass === 'PRISONER_CONTACT' else "global" %}
+{% set title = "Check your answers before saving the new " + restrictionClassName + " restriction" %}
+{% set pageTitle = applicationName + " - " + title %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+
+{% include '../../../partials/navigation.njk' %}
+{{ miniProfile(prisonerDetails) }}
+{% include '../../../partials/formErrorSummary.njk' %}
+ <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-caption-l">Manage contact restrictions</span>
+            <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+            {% if journey.restrictionClass === 'PRISONER_CONTACT' %}
+            <p><b>Prisoner:</b> <span data-qa="prisoner-name-and-id">{{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }} ({{ prisonerDetails.prisonerNumber }})</span></p>
+            {% endif %}
+            <p><b>Contact:</b> <span data-qa="contact-name-and-id">{{ journey.contactNames | formatNameFirstNameFirst }} ({{ journey.contactId }})</span></p>
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                {% set  formattedExpiryDate %}{% if expiryDate %}{{ expiryDate | formatDate }}{% else %}Not provided{% endif %}{% endset %}
+                {{ govukSummaryList({
+                    rows: [
+                        {
+                            key: {
+                                text: "Restriction type"
+                            },
+                            value: {
+                                html: restrictionDescription,
+                                classes: 'check-answers-type-value'
+                            },
+                            actions: {
+                                items: [
+                                    {
+                                        href: changeUrl,
+                                        text: "Change",
+                                        visuallyHiddenText: " restriction type",
+                                        attributes: {"data-qa": "change-type-link"},
+                                        classes: "govuk-link--no-visited-state"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Start date"
+                            },
+                            value: {
+                                html: startDate | formatDate,
+                                classes: 'check-answers-start-date-value'
+                            },
+                            actions: {
+                                items: [
+                                    {
+                                        href: changeUrl,
+                                        text: "Change",
+                                        visuallyHiddenText: " start date",
+                                        attributes: {"data-qa": "change-start-date-link"},
+                                        classes: "govuk-link--no-visited-state"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Expiry date"
+                            },
+                            value: {
+                                html: formattedExpiryDate,
+                                classes: 'check-answers-expiry-date-value'
+                            },
+                            actions: {
+                                items: [
+                                    {
+                                        href: changeUrl,
+                                        text: "Change",
+                                        visuallyHiddenText: " expiry date",
+                                        attributes: {"data-qa": "change-expiry-date-link"},
+                                        classes: "govuk-link--no-visited-state"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Comments"
+                            },
+                            value: {
+                                html: journey.restriction.comments or 'Not provided',
+                                classes: 'check-answers-comments-value'
+                            },
+                            actions: {
+                                items: [
+                                    {
+                                        href: changeUrl,
+                                        text: "Change",
+                                        visuallyHiddenText: " comments",
+                                        attributes: {"data-qa": "change-comments-link"},
+                                        classes: "govuk-link--no-visited-state"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }) }}
+
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        html: "Confirm and save",
+                        type: "submit",
+                        classes: 'govuk-!-margin-top-6',
+                        attributes: {"data-qa": "continue-button"},
+                        preventDoubleClick: true
+                    }) }}
+                    {% if navigation.cancelButton %}
+                        <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ journey.returnPoint.url }}" data-qa="cancel-button">Cancel</a>
+                    {% endif %}
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

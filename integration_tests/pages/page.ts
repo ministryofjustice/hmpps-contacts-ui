@@ -3,7 +3,7 @@ export type PageElement = Cypress.Chainable<JQuery>
 export default abstract class Page {
   /* eslint-disable @typescript-eslint/no-explicit-any */
   static verifyOnPage<T>(constructor: new (...args: any) => T, ...args: any): T {
-    return new constructor(args)
+    return new constructor(...args)
   }
 
   protected constructor(private readonly title: string) {
@@ -46,19 +46,19 @@ export default abstract class Page {
   /* eslint-disable @typescript-eslint/no-explicit-any */
   continueTo<T>(constructor: new (...args: any) => T, ...args: any): T {
     this.clickContinue()
-    return new constructor(args)
+    return new constructor(...args)
   }
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
   backTo<T>(constructor: new (...args: any) => T, ...args: any): T {
     this.clickBackLink()
-    return new constructor(args)
+    return new constructor(...args)
   }
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
   cancelTo<T>(constructor: new (...args: any) => T, ...args: any): T {
     this.clickCancelLink()
-    return new constructor(args)
+    return new constructor(...args)
   }
 
   private continueButton = (): PageElement => cy.get('[data-qa=continue-button]')

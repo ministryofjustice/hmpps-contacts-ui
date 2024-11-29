@@ -59,6 +59,53 @@ const STUBBED_LANGUAGE_OPTIONS: StubReferenceData[] = [
     groupCode: 'LANGUAGE',
   },
 ]
+const STUBBED_RESTRICTION_OPTIONS: StubReferenceData[] = [
+  {
+    code: 'ACC',
+    description: 'Access Requirements',
+    groupCode: 'RESTRICTION',
+  },
+  {
+    code: 'BAN',
+    description: 'Banned',
+    groupCode: 'RESTRICTION',
+  },
+  {
+    code: 'CCTV',
+    description: 'CCTV',
+    groupCode: 'RESTRICTION',
+  },
+  {
+    code: 'CHILD',
+    description: 'Child Visitors to be Vetted',
+    groupCode: 'RESTRICTION',
+  },
+  {
+    code: 'CLOSED',
+    description: 'Closed',
+    groupCode: 'RESTRICTION',
+  },
+  {
+    code: 'DIHCON',
+    description: 'Disability Health Concerns',
+    groupCode: 'RESTRICTION',
+  },
+  {
+    code: 'NONCON',
+    description: 'Non-Contact Visit',
+    groupCode: 'RESTRICTION',
+  },
+  {
+    code: 'PREINF',
+    description: 'Previous Info',
+    groupCode: 'RESTRICTION',
+  },
+  {
+    code: 'RESTRICTED',
+    description: 'Restricted',
+    groupCode: 'RESTRICTION',
+  },
+]
 
 type StubStatusData = {
   referenceCodeId: number
@@ -174,6 +221,9 @@ const mockedReferenceData = (type: ReferenceCodeType, _: HmppsUser): Promise<Stu
   if (type === ReferenceCodeType.LANGUAGE) {
     return Promise.resolve(STUBBED_LANGUAGE_OPTIONS)
   }
+  if (type === ReferenceCodeType.RESTRICTION) {
+    return Promise.resolve(STUBBED_RESTRICTION_OPTIONS)
+  }
 
   return Promise.reject(new Error(`You haven't set up the stubbed reference data for ${type} yet`))
 }
@@ -187,4 +237,5 @@ export {
   STUBBED_PHONE_TYPE_OPTIONS,
   STUBBED_DOMESTIC_STATUS_OPTIONS,
   STUBBED_GENDER_OPTIONS,
+  STUBBED_RESTRICTION_OPTIONS,
 }

@@ -54,6 +54,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     expect($('[data-qa=breadcrumbs] a').eq(0).attr('href')).toStrictEqual('http://localhost:3001')
     expect($('[data-qa=breadcrumbs] a').eq(1).attr('href')).toStrictEqual('http://localhost:3001/prisoner/A1234BC')
     expect($('[data-qa=breadcrumbs] a').eq(2).attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/list')
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Contacts')
   })
 
   it('should call the audit service for the page view', async () => {

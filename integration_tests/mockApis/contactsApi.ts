@@ -8,12 +8,15 @@ import {
   STUBBED_IDENTITY_OPTIONS,
   STUBBED_TITLE_OPTIONS,
   STUBBED_GENDER_OPTIONS,
+  STUBBED_RESTRICTION_OPTIONS,
 } from '../../server/routes/testutils/stubReferenceData'
 import { components } from '../../server/@types/contactsApi'
 import TestData from '../../server/routes/testutils/testData'
 
 export type StubContactCreationResult = components['schemas']['ContactCreationResult']
 export type StubPhoneDetails = components['schemas']['ContactPhoneDetails']
+export type StubContactRestrictionDetails = components['schemas']['ContactRestrictionDetails']
+export type StubPrisonerContactRestrictionDetails = components['schemas']['PrisonerContactRestrictionDetails']
 export type StubIdentityDetails = components['schemas']['ContactIdentityDetails']
 export type StubContactSearchResultItem = components['schemas']['ContactSearchResultItem']
 export type StubPatchContactResponse = components['schemas']['PatchContactResponse']
@@ -307,7 +310,19 @@ export default {
       },
     })
   },
-
+  stubRestrictionTypeReferenceData: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/reference-codes/group/RESTRICTION',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: STUBBED_RESTRICTION_OPTIONS,
+      },
+    })
+  },
   stubCreateContactPhone: ({
     contactId,
     created,
@@ -483,6 +498,44 @@ export default {
       response: {
         status: 204,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      },
+    })
+  },
+  stubCreateContactRestriction: ({
+    contactId,
+    created,
+  }: {
+    contactId: number
+    created: StubContactRestrictionDetails
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPath: `/contact/${contactId}/restriction`,
+      },
+      response: {
+        status: 201,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: created,
+      },
+    })
+  },
+  stubCreatePrisonerContactRestriction: ({
+    prisonerContactId,
+    created,
+  }: {
+    prisonerContactId: number
+    created: StubPrisonerContactRestrictionDetails
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPath: `/prisoner-contact/${prisonerContactId}/restriction`,
+      },
+      response: {
+        status: 201,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: created,
       },
     })
   },
