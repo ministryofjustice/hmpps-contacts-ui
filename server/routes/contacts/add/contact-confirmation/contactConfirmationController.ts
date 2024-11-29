@@ -68,7 +68,7 @@ export default class ContactConfirmationController implements PageHandler {
       if (expiry < now) {
         return {
           ...item,
-          restrictionTypeDescription: `${item.restrictionTypeDescription} (Expired)`,
+          restrictionTypeDescription: `${item.restrictionTypeDescription} (expired)`,
         }
       }
 

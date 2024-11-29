@@ -433,7 +433,7 @@ describe('Restrictions', () => {
 
         const cardTitle = $('.govuk-summary-card.restriction-1-card .govuk-summary-card__title').text().trim()
 
-        expect(cardTitle).toStrictEqual('Child Visitors to be Vetted (Expired)')
+        expect(cardTitle).toStrictEqual('Child Visitors to be Vetted (expired)')
         expect($('.view-start-date-1-value').text().trim()).toStrictEqual('1 January 2024')
         expect($('.view-expiry-date-1-value').text().trim()).toStrictEqual('1 August 2024')
         expect($('.view-entered-by-1-value').text().trim()).toStrictEqual('USER1')
