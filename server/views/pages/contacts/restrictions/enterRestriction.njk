@@ -8,7 +8,7 @@
 {% if journey.restrictionClass === 'PRISONER_CONTACT' %}
     {% set title = "Add a new prisoner-contact restriction" %}
 {% else %}
-    {% set title = "Add a new global restriction for " + journey.contactNames | formatNameFirstNameFirst %}
+    {% set title = "Add a new global restriction for " + journey.contactNames | formatNameFirstNameFirst(excludeMiddleNames = true) %}
 {% endif %}
 {% set pageTitle = applicationName + " - " + title %}
 {% set mainClasses = "app-container govuk-body" %}
@@ -23,9 +23,12 @@
             <span class="govuk-caption-l">Manage contact restrictions</span>
             <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
             {% if journey.restrictionClass === 'PRISONER_CONTACT' %}
-            <p><b>Prisoner:</b> <span data-qa="prisoner-name-and-id">{{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }} ({{ prisonerDetails.prisonerNumber }})</span></p>
+            <p>
+                <b>Prisoner:</b> <span data-qa="prisoner-name-and-id">{{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }} ({{ prisonerDetails.prisonerNumber }})</span>
+                <br/>
+                <b>Contact:</b> <span data-qa="contact-name-and-id">{{ journey.contactNames | formatNameFirstNameFirst }} ({{ journey.contactId }})</span>
+            </p>
             {% endif %}
-            <p><b>Contact:</b> <span data-qa="contact-name-and-id">{{ journey.contactNames | formatNameFirstNameFirst }} ({{ journey.contactId }})</span></p>
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 

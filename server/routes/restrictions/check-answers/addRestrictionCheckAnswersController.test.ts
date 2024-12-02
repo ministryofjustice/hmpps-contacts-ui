@@ -171,6 +171,16 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     expect($('.check-answers-start-date-value').text().trim()).toStrictEqual('1 February 2024')
     expect($('.check-answers-expiry-date-value').text().trim()).toStrictEqual('2 March 2025')
     expect($('.check-answers-comments-value').text().trim()).toStrictEqual('Some comments')
+
+    const expectedBaseChangeLink = `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/PRISONER_CONTACT/enter-restriction/${journeyId}`
+    expect($('[data-qa=change-type-link]').first().attr('href')).toStrictEqual(`${expectedBaseChangeLink}#type`)
+    expect($('[data-qa=change-start-date-link]').first().attr('href')).toStrictEqual(
+      `${expectedBaseChangeLink}#startDate`,
+    )
+    expect($('[data-qa=change-expiry-date-link]').first().attr('href')).toStrictEqual(
+      `${expectedBaseChangeLink}#expiryDate`,
+    )
+    expect($('[data-qa=change-comments-link]').first().attr('href')).toStrictEqual(`${expectedBaseChangeLink}#comments`)
   })
 
   it('should render enter restriction page for estate wide with all details', async () => {
@@ -202,10 +212,21 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     expect($('[data-qa=contact-name-and-id]').first().text().trim()).toStrictEqual('Bar Foo (123)')
     expect($('[data-qa=back-link]')).toHaveLength(0)
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+
     expect($('.check-answers-type-value').text().trim()).toStrictEqual('Banned')
     expect($('.check-answers-start-date-value').text().trim()).toStrictEqual('1 February 2024')
     expect($('.check-answers-expiry-date-value').text().trim()).toStrictEqual('2 March 2025')
     expect($('.check-answers-comments-value').text().trim()).toStrictEqual('Some comments')
+
+    const expectedBaseChangeLink = `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/CONTACT_GLOBAL/enter-restriction/${journeyId}`
+    expect($('[data-qa=change-type-link]').first().attr('href')).toStrictEqual(`${expectedBaseChangeLink}#type`)
+    expect($('[data-qa=change-start-date-link]').first().attr('href')).toStrictEqual(
+      `${expectedBaseChangeLink}#startDate`,
+    )
+    expect($('[data-qa=change-expiry-date-link]').first().attr('href')).toStrictEqual(
+      `${expectedBaseChangeLink}#expiryDate`,
+    )
+    expect($('[data-qa=change-comments-link]').first().attr('href')).toStrictEqual(`${expectedBaseChangeLink}#comments`)
   })
 
   it('should call the audit service for the page view', async () => {
@@ -244,7 +265,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
 describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/check-answers/:journeyId', () => {
   it.each([['PRISONER_CONTACT'], ['CONTACT_GLOBAL']])(
-    'should pass to check answers page if there are no validation errors',
+    'should pass to success page and remove from session',
     async (restrictionClass: RestrictionClass) => {
       existingJourney.restrictionClass = restrictionClass
       restrictionsService.createRestriction.mockResolvedValue({})
@@ -262,6 +283,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
         )
 
       expect(restrictionsService.createRestriction).toHaveBeenCalledWith(existingJourney, user)
+      expect(session.addRestrictionJourneys[journeyId]).toBeUndefined()
     },
   )
 
