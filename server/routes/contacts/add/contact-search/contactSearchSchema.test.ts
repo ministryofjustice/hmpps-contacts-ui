@@ -84,7 +84,13 @@ describe('contactSearchSchema', () => {
       const date = new Date(Date.now())
       date.setDate(date.getDate() + 1)
 
-      const form = { ...baseForm, lastName: 'testname', day: 1, month: 12, year: date.getFullYear() }
+      const form = {
+        ...baseForm,
+        lastName: 'testname',
+        day: date.getDate(),
+        month: date.getMonth() + 1,
+        year: date.getFullYear(),
+      }
 
       // When
       const result = await doValidate(form)
