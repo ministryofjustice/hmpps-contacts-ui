@@ -12,6 +12,7 @@ type PrisonerContactSummary = components['schemas']['PrisonerContactSummary']
 type ContactIdentityDetails = components['schemas']['ContactIdentityDetails']
 type PatchContactResponse = components['schemas']['PatchContactResponse']
 type PrisonerContactRelationshipDetails = components['schemas']['PrisonerContactRelationshipDetails']
+type ContactRestrictionDetails = components['schemas']['ContactRestrictionDetails']
 export default class TestData {
   static address = ({
     contactAddressId = 1,
@@ -397,4 +398,28 @@ export default class TestData {
       updatedBy,
       updatedTime,
     }) as PatchContactResponse
+
+  static getContactRestrictionDetails = ({
+    contactRestrictionId = 1,
+    contactId = 22,
+    restrictionType = 'CHILD',
+    startDate = '2024-01-01',
+    expiryDate = '2050-08-01',
+    createdTime = '2024-09-20T10:30:00.000000',
+    restrictionTypeDescription = 'Child Visitors to be Vetted',
+    comments = 'Keep an eye',
+  }: Partial<ContactRestrictionDetails> = {}): ContactRestrictionDetails =>
+    ({
+      contactRestrictionId,
+      contactId,
+      restrictionType,
+      restrictionTypeDescription,
+      startDate,
+      expiryDate,
+      comments,
+      createdBy: 'USER1',
+      createdTime,
+      updatedBy: 'USER2',
+      updatedTime: '2024-09-21T10:30:00.000000',
+    }) as ContactRestrictionDetails
 }

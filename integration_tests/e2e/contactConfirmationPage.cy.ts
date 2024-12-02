@@ -23,6 +23,8 @@ context('Contact confirmation', () => {
   })
   const journeyId = uuidv4()
 
+  const globalRestriction = TestData.getContactRestrictionDetails({ contactId: contact.id })
+
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
@@ -32,6 +34,8 @@ context('Contact confirmation', () => {
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', prisonerNumber)
     cy.task('stubGetContactById', contact)
+    cy.task('stubGetGlobalRestrictions', [globalRestriction])
+
     cy.task('stubContactSearch', {
       results: {
         totalPages: 1,
@@ -64,6 +68,24 @@ context('Contact confirmation', () => {
       .clickTheContactLink(contactId)
 
     Page.verifyOnPage(ContactConfirmationPage, 'John Smith') //
+      .selectIsTheRightPersonYesRadio()
+      .clickContinue()
+  })
+
+  it('should render contact confirmation page with restrictions on restrictions tab', () => {
+    cy.task('stubGetContactById', {
+      id: contactId,
+      firstName: 'Existing',
+      lastName: 'Contact',
+      dateOfBirth: '1990-01-14',
+    })
+
+    Page.verifyOnPage(SearchContactPage) //
+      .clickTheContactLink(contactId)
+
+    Page.verifyOnPage(ContactConfirmationPage, 'John Smith') //
+      .clickRestrictionsTab()
+      .checkRestrictionsDetails()
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
   })

@@ -3,6 +3,7 @@
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "./restrictions.njk" import restrictionCard %}
 {% from "../../common/notProvided.njk" import notProvided %}
 
 
@@ -60,8 +61,8 @@
                         </a>
                     </li>
                     <li class="govuk-tabs__list-item">
-                        <a class="govuk-tabs__tab" href="#restrictions">
-                            Restrictions
+                        <a class="govuk-tabs__tab restrictions-tab-title" href="#restrictions">
+                            Restrictions({{ globalRestrictions.length }})
                         </a>
                     </li>
                     <li class="govuk-tabs__list-item">
@@ -73,7 +74,15 @@
                 <div class="govuk-tabs__panel--no-border govuk-!-static-padding-top-7" id="contact-details">
                     {{ contactDetailsHtml() }}
                 </div>
-                <div class="govuk-tabs__panel--no-border govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" id="restrictions"></div>
+                <div class="govuk-tabs__panel govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" data-qa="restrictions-result-message" id="restrictions">
+
+                    {% if globalRestrictions.length >0 %}
+                        {{ restrictionCard(globalRestrictions, contact) }}
+                    {% else %}
+                        No global restrictions recorded.
+                    {% endif %}
+
+                </div>
                 <div class="govuk-tabs__panel--no-border govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" id="linked-offenders"></div>
             </div>
             {{ govukRadios({

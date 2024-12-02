@@ -23,7 +23,7 @@ export type StubPatchContactResponse = components['schemas']['PatchContactRespon
 export type StubPrisonerContactRelationshipDetails = components['schemas']['PrisonerContactRelationshipDetails']
 export type CreateEmailRequest = components['schemas']['CreateEmailRequest']
 export type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
-export type ContactEmailDetails = components['schemas']['ContactEmailDetails']
+export type ContactRestrictionDetails = components['schemas']['ContactRestrictionDetails']
 
 export default {
   stubCreateContact: (result: StubContactCreationResult): SuperAgentRequest => {
@@ -95,6 +95,20 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: contact,
+      },
+    })
+  },
+
+  stubGetGlobalRestrictions: (globalRestrictions: ContactRestrictionDetails[]): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/contact/${globalRestrictions[0].contactId}/restriction`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: globalRestrictions,
       },
     })
   },
