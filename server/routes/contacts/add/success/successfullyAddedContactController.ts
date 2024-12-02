@@ -45,6 +45,7 @@ export default class SuccessfullyAddedContactController implements PageHandler {
       successMessage,
       contactId,
       prisonerContactId,
+      showPrisonerNameInSuccessPanel: true,
       navigation: {
         breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'],
       },

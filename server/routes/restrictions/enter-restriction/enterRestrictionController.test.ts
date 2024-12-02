@@ -103,7 +103,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Add a new global restriction for Bar Foo')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=prisoner-name-and-id]')).toHaveLength(0)
-    expect($('[data-qa=contact-name-and-id]').first().text().trim()).toStrictEqual('Bar Foo (123)')
+    expect($('[data-qa=contact-name-and-id]')).toHaveLength(0)
     expect($('[data-qa=cancel-button]')).toHaveLength(0)
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
   })

@@ -31,12 +31,15 @@ export default class SuccessfullyAddedRestrictionController implements PageHandl
       middleNames: contact.middleNames,
     }
     let successMessage
+    let showPrisonerNameInSuccessPanel
     switch (restrictionClass) {
       case 'CONTACT_GLOBAL':
         successMessage = 'New global restriction recorded'
+        showPrisonerNameInSuccessPanel = false
         break
       case 'PRISONER_CONTACT':
         successMessage = 'New prisoner-contact restriction recorded'
+        showPrisonerNameInSuccessPanel = true
         break
       default:
         break
@@ -46,6 +49,7 @@ export default class SuccessfullyAddedRestrictionController implements PageHandl
       successMessage,
       contactId,
       prisonerContactId,
+      showPrisonerNameInSuccessPanel,
       navigation: {
         breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'],
       },

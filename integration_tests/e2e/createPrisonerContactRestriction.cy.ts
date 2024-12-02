@@ -47,7 +47,7 @@ context('Create Prisoner Contact Restriction', () => {
     }
     cy.task('stubCreatePrisonerContactRestriction', { prisonerContactId, created })
 
-    Page.verifyOnPage(EnterRestrictionPage, 'First Middle Names Last', 'PRISONER_CONTACT') //
+    Page.verifyOnPage(EnterRestrictionPage, 'First Last', 'PRISONER_CONTACT') //
       .selectType('CCTV')
       .enterStartDate('15/06/1982')
       .clickContinue()
@@ -81,7 +81,7 @@ context('Create Prisoner Contact Restriction', () => {
     }
     cy.task('stubCreatePrisonerContactRestriction', { prisonerContactId, created })
 
-    Page.verifyOnPage(EnterRestrictionPage, 'First Middle Names Last', 'PRISONER_CONTACT') //
+    Page.verifyOnPage(EnterRestrictionPage, 'First Last', 'PRISONER_CONTACT') //
       .selectType('CCTV')
       .enterStartDate('15/06/1982')
       .enterExpiryDate('25/12/2025')
@@ -118,7 +118,7 @@ context('Create Prisoner Contact Restriction', () => {
     }
     cy.task('stubCreatePrisonerContactRestriction', { prisonerContactId, created })
 
-    Page.verifyOnPage(EnterRestrictionPage, 'First Middle Names Last', 'PRISONER_CONTACT') //
+    Page.verifyOnPage(EnterRestrictionPage, 'First Last', 'PRISONER_CONTACT') //
       .selectType('CCTV')
       .enterStartDate('15/06/1982')
       .enterExpiryDate('25/12/2025')
@@ -132,27 +132,27 @@ context('Create Prisoner Contact Restriction', () => {
       .verifyShowCommentsAs('Some comments')
       .clickChangeTypeLink()
 
-    Page.verifyOnPage(EnterRestrictionPage, 'First Middle Names Last', 'PRISONER_CONTACT') //
+    Page.verifyOnPage(EnterRestrictionPage, 'First Last', 'PRISONER_CONTACT') //
       .selectType('BAN')
       .continueTo(CreateRestrictionCheckYourAnswersPage, 'PRISONER_CONTACT')
       .verifyShowsTypeAs('Banned')
       .clickChangeStartDateLink()
 
-    Page.verifyOnPage(EnterRestrictionPage, 'First Middle Names Last', 'PRISONER_CONTACT') //
+    Page.verifyOnPage(EnterRestrictionPage, 'First Last', 'PRISONER_CONTACT') //
       .clearStartDate()
       .enterStartDate('28/02/2024')
       .continueTo(CreateRestrictionCheckYourAnswersPage, 'PRISONER_CONTACT')
       .verifyShowsStartDateAs('28 February 2024')
       .clickChangeExpiryDateLink()
 
-    Page.verifyOnPage(EnterRestrictionPage, 'First Middle Names Last', 'PRISONER_CONTACT') //
+    Page.verifyOnPage(EnterRestrictionPage, 'First Last', 'PRISONER_CONTACT') //
       .clearExpiryDate()
       .enterExpiryDate('15/06/2025')
       .continueTo(CreateRestrictionCheckYourAnswersPage, 'PRISONER_CONTACT')
       .verifyShowExpiryDateAs('15 June 2025')
       .clickChangeCommentsLink()
 
-    Page.verifyOnPage(EnterRestrictionPage, 'First Middle Names Last', 'PRISONER_CONTACT') //
+    Page.verifyOnPage(EnterRestrictionPage, 'First Last', 'PRISONER_CONTACT') //
       .clearComments()
       .enterComments('Different comments')
       .continueTo(CreateRestrictionCheckYourAnswersPage, 'PRISONER_CONTACT')
@@ -177,7 +177,7 @@ context('Create Prisoner Contact Restriction', () => {
   })
 
   it('Type and start date are required', () => {
-    const enterRestrictionPage = Page.verifyOnPage(EnterRestrictionPage, 'First Middle Names Last', 'PRISONER_CONTACT')
+    const enterRestrictionPage = Page.verifyOnPage(EnterRestrictionPage, 'First Last', 'PRISONER_CONTACT')
     enterRestrictionPage.clickContinue()
 
     enterRestrictionPage.hasFieldInError('type', 'Select the restriction type')
@@ -185,7 +185,7 @@ context('Create Prisoner Contact Restriction', () => {
   })
 
   it('Errors are in field order', () => {
-    const enterRestrictionPage = Page.verifyOnPage(EnterRestrictionPage, 'First Middle Names Last', 'PRISONER_CONTACT')
+    const enterRestrictionPage = Page.verifyOnPage(EnterRestrictionPage, 'First Last', 'PRISONER_CONTACT')
     enterRestrictionPage //
       .enterStartDate('foo')
       .enterExpiryDate('bar')

@@ -35,11 +35,10 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/success', () => {
-  it.each([
-    ['CONTACT_GLOBAL', 'New global restriction recorded'],
-    ['PRISONER_CONTACT', 'New prisoner-contact restriction recorded'],
-  ])('should render success for restriction class %s', async (restrictionClass: RestrictionClass, message: string) => {
+  it('should render success for restriction class PRISONER_CONTACT', async () => {
     // Given
+    const restrictionClass: RestrictionClass = 'PRISONER_CONTACT'
+    const message: string = 'New prisoner-contact restriction recorded'
     auditService.logPageView.mockResolvedValue(null)
     const contactDetails = TestData.contact()
     contactsService.getContact.mockResolvedValue(contactDetails)
@@ -53,6 +52,37 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     const $ = cheerio.load(response.text)
     expect($('.govuk-panel__title').text().trim()).toStrictEqual(message)
     expect($('[data-qa=prisoner-name]').text().trim()).toContain('John Smith')
+    expect($('[data-qa=contact-name]').text().trim()).toContain('Jones Mason')
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(1)
+    expect($('[data-qa=breadcrumbs] a').eq(0).attr('href')).toStrictEqual('http://localhost:3001')
+    expect($('[data-qa=breadcrumbs] a').eq(1).attr('href')).toStrictEqual('http://localhost:3001/prisoner/A1234BC')
+    expect($('[data-qa=breadcrumbs] a').eq(2).attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/list')
+    expect($('[data-qa=go-to-contact-info-link]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/22/relationship/123456',
+    )
+    expect($('[data-qa=go-to-contacts-list-link]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/list',
+    )
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Manage contact restrictions')
+  })
+
+  it('should render success for restriction class CONTACT_GLOBAL', async () => {
+    // Given
+    const restrictionClass: RestrictionClass = 'CONTACT_GLOBAL'
+    const message: string = 'New global restriction recorded'
+    auditService.logPageView.mockResolvedValue(null)
+    const contactDetails = TestData.contact()
+    contactsService.getContact.mockResolvedValue(contactDetails)
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/${contactDetails.id}/relationship/123456/restriction/add/${restrictionClass}/success`,
+    )
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect($('.govuk-panel__title').text().trim()).toStrictEqual(message)
+    expect($('[data-qa=prisoner-name]')).toHaveLength(0)
     expect($('[data-qa=contact-name]').text().trim()).toContain('Jones Mason')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(1)
     expect($('[data-qa=breadcrumbs] a').eq(0).attr('href')).toStrictEqual('http://localhost:3001')

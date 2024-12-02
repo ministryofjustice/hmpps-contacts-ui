@@ -72,7 +72,9 @@ export default class AddRestrictionCheckAnswersController implements PageHandler
     const { journeyId, prisonerNumber, contactId, prisonerContactId, restrictionClass } = req.params
     const { user } = res.locals
     const journey = req.session.addRestrictionJourneys[journeyId]
-    await this.restrictionsService.createRestriction(journey, user)
+    await this.restrictionsService
+      .createRestriction(journey, user)
+      .then(_ => delete req.session.addRestrictionJourneys[journeyId])
     res.redirect(
       `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/success`,
     )

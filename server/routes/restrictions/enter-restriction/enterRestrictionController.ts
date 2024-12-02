@@ -74,15 +74,13 @@ export default class EnterRestrictionController implements PageHandler {
     text: string
     selected?: boolean
   }> {
-    const mappedOptions = options
-      .map((title: ReferenceCode) => {
-        return {
-          text: title.description,
-          value: title.code,
-          selected: title.code === selectedOption,
-        }
-      })
-      .sort((a, b) => a.text.localeCompare(b.text))
+    const mappedOptions = options.map((referenceCode: ReferenceCode) => {
+      return {
+        text: referenceCode.description,
+        value: referenceCode.code,
+        selected: referenceCode.code === selectedOption,
+      }
+    })
     return [{ text: 'Select restriction type', value: '' }, ...mappedOptions]
   }
 }

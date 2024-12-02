@@ -47,7 +47,7 @@ context('Create Contact Global Restriction', () => {
     }
     cy.task('stubCreateContactRestriction', { contactId, created })
 
-    Page.verifyOnPage(EnterRestrictionPage, 'First Middle Names Last', 'CONTACT_GLOBAL') //
+    Page.verifyOnPage(EnterRestrictionPage, 'First Last', 'CONTACT_GLOBAL') //
       .selectType('CCTV')
       .enterStartDate('15/06/1982')
       .clickContinue()
@@ -81,7 +81,7 @@ context('Create Contact Global Restriction', () => {
     }
     cy.task('stubCreateContactRestriction', { contactId, created })
 
-    Page.verifyOnPage(EnterRestrictionPage, 'First Middle Names Last', 'CONTACT_GLOBAL') //
+    Page.verifyOnPage(EnterRestrictionPage, 'First Last', 'CONTACT_GLOBAL') //
       .selectType('CCTV')
       .enterStartDate('15/06/1982')
       .enterExpiryDate('25/12/2025')
@@ -118,7 +118,7 @@ context('Create Contact Global Restriction', () => {
     }
     cy.task('stubCreateContactRestriction', { contactId, created })
 
-    Page.verifyOnPage(EnterRestrictionPage, 'First Middle Names Last', 'CONTACT_GLOBAL') //
+    Page.verifyOnPage(EnterRestrictionPage, 'First Last', 'CONTACT_GLOBAL') //
       .selectType('CCTV')
       .enterStartDate('15/06/1982')
       .enterExpiryDate('25/12/2025')
@@ -132,27 +132,27 @@ context('Create Contact Global Restriction', () => {
       .verifyShowCommentsAs('Some comments')
       .clickChangeTypeLink()
 
-    Page.verifyOnPage(EnterRestrictionPage, 'First Middle Names Last', 'CONTACT_GLOBAL') //
+    Page.verifyOnPage(EnterRestrictionPage, 'First Last', 'CONTACT_GLOBAL') //
       .selectType('BAN')
       .continueTo(CreateRestrictionCheckYourAnswersPage, 'CONTACT_GLOBAL')
       .verifyShowsTypeAs('Banned')
       .clickChangeStartDateLink()
 
-    Page.verifyOnPage(EnterRestrictionPage, 'First Middle Names Last', 'CONTACT_GLOBAL') //
+    Page.verifyOnPage(EnterRestrictionPage, 'First Last', 'CONTACT_GLOBAL') //
       .clearStartDate()
       .enterStartDate('28/02/2024')
       .continueTo(CreateRestrictionCheckYourAnswersPage, 'CONTACT_GLOBAL')
       .verifyShowsStartDateAs('28 February 2024')
       .clickChangeExpiryDateLink()
 
-    Page.verifyOnPage(EnterRestrictionPage, 'First Middle Names Last', 'CONTACT_GLOBAL') //
+    Page.verifyOnPage(EnterRestrictionPage, 'First Last', 'CONTACT_GLOBAL') //
       .clearExpiryDate()
       .enterExpiryDate('15/06/2025')
       .continueTo(CreateRestrictionCheckYourAnswersPage, 'CONTACT_GLOBAL')
       .verifyShowExpiryDateAs('15 June 2025')
       .clickChangeCommentsLink()
 
-    Page.verifyOnPage(EnterRestrictionPage, 'First Middle Names Last', 'CONTACT_GLOBAL') //
+    Page.verifyOnPage(EnterRestrictionPage, 'First Last', 'CONTACT_GLOBAL') //
       .clearComments()
       .enterComments('Different comments')
       .continueTo(CreateRestrictionCheckYourAnswersPage, 'CONTACT_GLOBAL')
@@ -177,7 +177,7 @@ context('Create Contact Global Restriction', () => {
   })
 
   it('Type and start date are required', () => {
-    const enterRestrictionPage = Page.verifyOnPage(EnterRestrictionPage, 'First Middle Names Last', 'CONTACT_GLOBAL')
+    const enterRestrictionPage = Page.verifyOnPage(EnterRestrictionPage, 'First Last', 'CONTACT_GLOBAL')
     enterRestrictionPage.clickContinue()
 
     enterRestrictionPage.hasFieldInError('type', 'Select the restriction type')
@@ -185,7 +185,7 @@ context('Create Contact Global Restriction', () => {
   })
 
   it('Errors are in field order', () => {
-    const enterRestrictionPage = Page.verifyOnPage(EnterRestrictionPage, 'First Middle Names Last', 'CONTACT_GLOBAL')
+    const enterRestrictionPage = Page.verifyOnPage(EnterRestrictionPage, 'First Last', 'CONTACT_GLOBAL')
     enterRestrictionPage //
       .enterStartDate('foo')
       .enterExpiryDate('bar')
