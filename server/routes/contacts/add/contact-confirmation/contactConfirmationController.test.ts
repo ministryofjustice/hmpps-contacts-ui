@@ -468,8 +468,8 @@ describe('Restrictions', () => {
         // Then
         const $ = cheerio.load(response.text)
 
-        expect($('.view-expiry-date-1-value').text().trim()).toStrictEqual('Not entered')
-        expect($('.view-comment-1-value').text().trim()).toStrictEqual('Not entered')
+        expect($('.view-expiry-date-1-value').text().trim()).toStrictEqual('Not provided')
+        expect($('.view-comment-1-value').text().trim()).toStrictEqual('Not provided')
       })
 
       it('should sort restrictions based on startDate, with the most recent at the top. where multiple restrictions with the same date, sorted them by createdTime', async () => {

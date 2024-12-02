@@ -27,7 +27,7 @@
                         text: "Expiry date"
                     },
                     value: {
-                        text: restriction.expiryDate | formatDate if restriction.expiryDate else 'Not entered',
+                        text: restriction.expiryDate | formatDate if restriction.expiryDate else 'Not provided',
                         classes: 'view-expiry-date-' + restriction.contactRestrictionId + '-value'
                     }
                 },
@@ -45,7 +45,7 @@
                         text: "Comment"
                     },
                     value: {
-                        text: restriction.comments if restriction.comments else 'Not entered',
+                        text: restriction.comments if restriction.comments else 'Not provided',
                         classes: 'view-comment-' + restriction.contactRestrictionId + '-value'
                     }
                 }]
