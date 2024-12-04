@@ -1,12 +1,8 @@
 import Page, { PageElement } from './page'
 
 export default class EnterRestrictionPage extends Page {
-  constructor(name: string, restrictionClass: 'CONTACT_GLOBAL' | 'PRISONER_CONTACT') {
-    super(
-      restrictionClass === 'CONTACT_GLOBAL'
-        ? `Add a new global restriction for ${name}`
-        : `Add a new prisoner-contact restriction`,
-    )
+  constructor(title: string) {
+    super(title)
   }
 
   selectType(value: string): EnterRestrictionPage {

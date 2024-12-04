@@ -2,15 +2,17 @@ import createError, { BadRequest } from 'http-errors'
 import { v4 as uuidv4 } from 'uuid'
 import ContactsApiClient from '../data/contactsApiClient'
 import RestrictionsService from './restrictionsService'
+import { RestrictionSchemaType } from '../routes/restrictions/schema/restrictionSchema'
 import AddRestrictionJourney = journeys.AddRestrictionJourney
 import ContactRestrictionDetails = contactsApiClientTypes.ContactRestrictionDetails
 import CreateContactRestrictionRequest = contactsApiClientTypes.CreateContactRestrictionRequest
 import PrisonerContactRestrictionDetails = contactsApiClientTypes.PrisonerContactRestrictionDetails
 import CreatePrisonerContactRestrictionRequest = contactsApiClientTypes.CreatePrisonerContactRestrictionRequest
+import UpdateContactRestrictionRequest = contactsApiClientTypes.UpdateContactRestrictionRequest
 
 jest.mock('../data/contactsApiClient')
 
-describe('referenceDataService', () => {
+describe('restrictionsService', () => {
   const user = { token: 'userToken', username: 'user1' } as Express.User
   let apiClient: jest.Mocked<ContactsApiClient>
   let service: RestrictionsService
@@ -134,6 +136,166 @@ describe('referenceDataService', () => {
       journey.restrictionClass = 'PRISONER_CONTACT'
       journey.restriction = { type: 'BAN', startDate: '1/2/2009' }
       await expect(service.createRestriction(journey, user)).rejects.toBeInstanceOf(BadRequest)
+    })
+  })
+
+  describe('updateContactGlobalRestriction', () => {
+    const contactId = 999
+    const restrictionId = 555
+    it('should update global restriction with minimal details', async () => {
+      // Given
+      const expectedResponse: ContactRestrictionDetails = { contactRestrictionId: 999 }
+      const form: RestrictionSchemaType = {
+        type: 'BAN',
+        startDate: '1/2/1999',
+        expiryDate: undefined,
+        comments: undefined,
+      }
+      apiClient.updateContactGlobalRestriction.mockResolvedValue(expectedResponse)
+
+      // When
+      const updated = await service.updateContactGlobalRestriction(contactId, restrictionId, form, user)
+
+      // Then
+      const expectedRequest: UpdateContactRestrictionRequest = {
+        restrictionType: 'BAN',
+        startDate: '1999-02-01',
+        expiryDate: undefined,
+        comments: undefined,
+        updatedBy: 'user1',
+      }
+      expect(updated).toStrictEqual(expectedResponse)
+      expect(apiClient.updateContactGlobalRestriction).toHaveBeenCalledWith(
+        contactId,
+        restrictionId,
+        expectedRequest,
+        user,
+      )
+    })
+
+    it('should update global restriction with full details', async () => {
+      // Given
+      const expectedResponse: ContactRestrictionDetails = { contactRestrictionId: 999 }
+      const form: RestrictionSchemaType = {
+        type: 'BAN',
+        startDate: '1/2/1999',
+        expiryDate: '2/3/2099',
+        comments: 'Comments',
+      }
+      apiClient.updateContactGlobalRestriction.mockResolvedValue(expectedResponse)
+
+      // When
+      const updated = await service.updateContactGlobalRestriction(contactId, restrictionId, form, user)
+
+      // Then
+      const expectedRequest: UpdateContactRestrictionRequest = {
+        restrictionType: 'BAN',
+        startDate: '1999-02-01',
+        expiryDate: '2099-03-02',
+        comments: 'Comments',
+        updatedBy: 'user1',
+      }
+      expect(updated).toStrictEqual(expectedResponse)
+      expect(apiClient.updateContactGlobalRestriction).toHaveBeenCalledWith(
+        contactId,
+        restrictionId,
+        expectedRequest,
+        user,
+      )
+    })
+
+    it('should handle a bad request updating global restriction', async () => {
+      const form: RestrictionSchemaType = {
+        type: 'BAN',
+        startDate: '1/2/1999',
+        expiryDate: undefined,
+        comments: undefined,
+      }
+
+      apiClient.updateContactGlobalRestriction.mockRejectedValue(createError.BadRequest())
+      await expect(service.updateContactGlobalRestriction(contactId, restrictionId, form, user)).rejects.toBeInstanceOf(
+        BadRequest,
+      )
+    })
+  })
+
+  describe('updatePrisonerContactRestriction', () => {
+    const contactId = 999
+    const restrictionId = 555
+    it('should update prisoner restriction with minimal details', async () => {
+      // Given
+      const expectedResponse: PrisonerContactRestrictionDetails = { prisonerContactRestrictionId: restrictionId }
+      const form: RestrictionSchemaType = {
+        type: 'BAN',
+        startDate: '1/2/1999',
+        expiryDate: undefined,
+        comments: undefined,
+      }
+      apiClient.updatePrisonerContactRestriction.mockResolvedValue(expectedResponse)
+
+      // When
+      const updated = await service.updatePrisonerContactRestriction(contactId, restrictionId, form, user)
+
+      // Then
+      const expectedRequest: UpdateContactRestrictionRequest = {
+        restrictionType: 'BAN',
+        startDate: '1999-02-01',
+        expiryDate: undefined,
+        comments: undefined,
+        updatedBy: 'user1',
+      }
+      expect(updated).toStrictEqual(expectedResponse)
+      expect(apiClient.updatePrisonerContactRestriction).toHaveBeenCalledWith(
+        contactId,
+        restrictionId,
+        expectedRequest,
+        user,
+      )
+    })
+
+    it('should update prisoner-contact restriction with full details', async () => {
+      // Given
+      const expectedResponse: PrisonerContactRestrictionDetails = { prisonerContactRestrictionId: restrictionId }
+      const form: RestrictionSchemaType = {
+        type: 'BAN',
+        startDate: '1/2/1999',
+        expiryDate: '2/3/2099',
+        comments: 'Comments',
+      }
+      apiClient.updatePrisonerContactRestriction.mockResolvedValue(expectedResponse)
+
+      // When
+      const updated = await service.updatePrisonerContactRestriction(contactId, restrictionId, form, user)
+
+      // Then
+      const expectedRequest: UpdateContactRestrictionRequest = {
+        restrictionType: 'BAN',
+        startDate: '1999-02-01',
+        expiryDate: '2099-03-02',
+        comments: 'Comments',
+        updatedBy: 'user1',
+      }
+      expect(updated).toStrictEqual(expectedResponse)
+      expect(apiClient.updatePrisonerContactRestriction).toHaveBeenCalledWith(
+        contactId,
+        restrictionId,
+        expectedRequest,
+        user,
+      )
+    })
+
+    it('should handle a bad request creating global restriction', async () => {
+      const form: RestrictionSchemaType = {
+        type: 'BAN',
+        startDate: '1/2/1999',
+        expiryDate: undefined,
+        comments: undefined,
+      }
+
+      apiClient.updatePrisonerContactRestriction.mockRejectedValue(createError.BadRequest())
+      await expect(
+        service.updatePrisonerContactRestriction(contactId, restrictionId, form, user),
+      ).rejects.toBeInstanceOf(BadRequest)
     })
   })
 })

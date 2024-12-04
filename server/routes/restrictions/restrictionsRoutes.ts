@@ -8,12 +8,14 @@ import StartAddRestrictionJourneyController from './start-add/startAddRestrictio
 import asyncMiddleware from '../../middleware/asyncMiddleware'
 import populatePrisonerDetailsIfInCaseload from '../../middleware/populatePrisonerDetailsIfInCaseload'
 import { validate } from '../../middleware/validationMiddleware'
-import EnterRestrictionController from './enter-restriction/enterRestrictionController'
+import EnterNewRestrictionController from './enter-restriction/enterNewRestrictionController'
 import ensureInAddRestrictionJourney from './addRestrictionMiddleware'
 import { restrictionSchema } from './schema/restrictionSchema'
 import AddRestrictionCheckAnswersController from './check-answers/addRestrictionCheckAnswersController'
 import RestrictionsService from '../../services/restrictionsService'
 import SuccessfullyAddedRestrictionController from './success/successfullyAddedRestrictionController'
+import { prepareStandaloneManageContactJourney } from '../contacts/manage/manageContactsMiddleware'
+import UpdateRestrictionController from './update-restriction/updateRestrictionController'
 
 const RestrictionsRoutes = (
   auditService: AuditService,
@@ -31,7 +33,7 @@ const RestrictionsRoutes = (
     asyncMiddleware(startController.GET),
   )
 
-  const enterRestrictionController = new EnterRestrictionController(referenceDataService)
+  const enterRestrictionController = new EnterNewRestrictionController(referenceDataService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/enter-restriction/:journeyId',
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
@@ -66,6 +68,25 @@ const RestrictionsRoutes = (
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, successController),
     asyncMiddleware(successController.GET),
+  )
+
+  const updateRestrictionController = new UpdateRestrictionController(
+    contactsService,
+    restrictionsService,
+    referenceDataService,
+  )
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/update/:restrictionClass/enter-restriction/:restrictionId',
+    prepareStandaloneManageContactJourney(),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    logPageViewMiddleware(auditService, updateRestrictionController),
+    asyncMiddleware(updateRestrictionController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/update/:restrictionClass/enter-restriction/:restrictionId',
+    prepareStandaloneManageContactJourney(),
+    validate(restrictionSchema()),
+    asyncMiddleware(updateRestrictionController.POST),
   )
   return router
 }

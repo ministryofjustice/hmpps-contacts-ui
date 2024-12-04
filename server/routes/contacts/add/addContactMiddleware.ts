@@ -1,9 +1,9 @@
-import { Request, RequestHandler } from 'express'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
+import { RequestHandler } from 'express'
 import logger from '../../../../logger'
+import asyncMiddleware from '../../../middleware/asyncMiddleware'
 
 const ensureInAddContactJourney = (): RequestHandler => {
-  return async (req: Request<PrisonerJourneyParams, unknown, unknown>, res, next) => {
+  return asyncMiddleware(async (req, res, next) => {
     const { journeyId, prisonerNumber } = req.params
     if (!req.session.addContactJourneys) {
       req.session.addContactJourneys = {}
@@ -17,7 +17,7 @@ const ensureInAddContactJourney = (): RequestHandler => {
     req.session.addContactJourneys[journeyId].lastTouched = new Date().toISOString()
 
     return next()
-  }
+  })
 }
 
 export default ensureInAddContactJourney

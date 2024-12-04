@@ -1,23 +1,9 @@
-import { Request, RequestHandler } from 'express'
+import { RequestHandler } from 'express'
 import logger from '../../../logger'
-import RestrictionClass = journeys.RestrictionClass
+import asyncMiddleware from '../../middleware/asyncMiddleware'
 
 const ensureInAddRestrictionJourney = (): RequestHandler => {
-  return async (
-    req: Request<
-      {
-        prisonerNumber: string
-        contactId: string
-        prisonerContactId: string
-        restrictionClass: RestrictionClass
-        journeyId: string
-      },
-      unknown,
-      unknown
-    >,
-    res,
-    next,
-  ) => {
+  return asyncMiddleware(async (req, res, next) => {
     const { journeyId, prisonerNumber, contactId, prisonerContactId, restrictionClass } = req.params
     if (!req.session.addRestrictionJourneys) {
       req.session.addRestrictionJourneys = {}
@@ -33,7 +19,7 @@ const ensureInAddRestrictionJourney = (): RequestHandler => {
     req.session.addRestrictionJourneys[journeyId].lastTouched = new Date().toISOString()
 
     return next()
-  }
+  })
 }
 
 export default ensureInAddRestrictionJourney
