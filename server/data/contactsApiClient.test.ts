@@ -23,6 +23,8 @@ import CreateContactRestrictionRequest = contactsApiClientTypes.CreateContactRes
 import ContactRestrictionDetails = contactsApiClientTypes.ContactRestrictionDetails
 import CreatePrisonerContactRestrictionRequest = contactsApiClientTypes.CreatePrisonerContactRestrictionRequest
 import PrisonerContactRestrictionDetails = contactsApiClientTypes.PrisonerContactRestrictionDetails
+import UpdateContactRestrictionRequest = contactsApiClientTypes.UpdateContactRestrictionRequest
+import UpdatePrisonerContactRestrictionRequest = contactsApiClientTypes.UpdatePrisonerContactRestrictionRequest
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
@@ -953,6 +955,112 @@ describe('contactsApiClient', () => {
         // When
         try {
           await contactsApiClient.createPrisonerContactRestriction(99, request, user)
+        } catch (e) {
+          // Then
+          expect(e.status).toEqual(errorCode)
+          expect(e.data).toEqual(expectedErrorBody)
+        }
+      },
+    )
+  })
+
+  describe('updateContactGlobalRestriction', () => {
+    it('should update the contact restriction', async () => {
+      // Given
+      const request: UpdateContactRestrictionRequest = {
+        restrictionType: 'BAN',
+        startDate: '2020-01-01',
+      }
+      const expected: ContactRestrictionDetails = {
+        contactRestrictionId: 123456,
+        contactId: 99,
+      }
+      fakeContactsApi
+        .put('/contact/99/restriction/123456', request)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(201, expected)
+
+      // When
+      const created = await contactsApiClient.updateContactGlobalRestriction(99, 123456, request, user)
+
+      // Then
+      expect(created).toEqual(expected)
+    })
+
+    it.each([400, 401, 403])('should propagate errors creating the restriction %s', async (errorCode: number) => {
+      // Given
+      const request: UpdateContactRestrictionRequest = {
+        restrictionType: 'BAN',
+        startDate: '2020-01-01',
+      }
+      const expectedErrorBody = {
+        status: errorCode,
+        userMessage: 'Some error',
+        developerMessage: 'Some error',
+      }
+
+      fakeContactsApi
+        .put('/contact/99/restriction/123456')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(errorCode, expectedErrorBody)
+
+      // When
+      try {
+        await contactsApiClient.updateContactGlobalRestriction(99, 123456, request, user)
+      } catch (e) {
+        // Then
+        expect(e.status).toEqual(errorCode)
+        expect(e.data).toEqual(expectedErrorBody)
+      }
+    })
+  })
+
+  describe('updatePrisonerContactRestriction', () => {
+    it('should create the prisoner contact restriction', async () => {
+      // Given
+      const request: UpdatePrisonerContactRestrictionRequest = {
+        restrictionType: 'BAN',
+        startDate: '2020-01-01',
+      }
+      const expected: PrisonerContactRestrictionDetails = {
+        prisonerContactRestrictionId: 123456,
+        prisonerContactId: 66,
+        contactId: 99,
+      }
+      fakeContactsApi
+        .put('/prisoner-contact/66/restriction/123456', request)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(201, expected)
+
+      // When
+      const created = await contactsApiClient.updatePrisonerContactRestriction(66, 123456, request, user)
+
+      // Then
+      expect(created).toEqual(expected)
+    })
+
+    it.each([400, 401, 403])(
+      'should propagate errors creating the prisoner contact restriction %s',
+      async (errorCode: number) => {
+        // Given
+        const request: UpdatePrisonerContactRestrictionRequest = {
+          restrictionType: 'BAN',
+          startDate: '2020-01-01',
+        }
+        const expectedErrorBody = {
+          status: errorCode,
+          userMessage: 'Some error',
+          developerMessage: 'Some error',
+        }
+
+        fakeContactsApi
+          .put('/prisoner-contact/99/restriction/123456')
+          .matchHeader('authorization', `Bearer systemToken`)
+          .reply(errorCode, expectedErrorBody)
+
+        // When
+        try {
+          await contactsApiClient.updatePrisonerContactRestriction(99, 123456, request, user)
         } catch (e) {
           // Then
           expect(e.status).toEqual(errorCode)

@@ -7,8 +7,9 @@ import { Navigation } from '../../contacts/common/navigation'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import RestrictionClass = journeys.RestrictionClass
 import { maxLengthForRestrictionClass, RestrictionSchemaType } from '../schema/restrictionSchema'
+import { formatNameFirstNameFirst } from '../../../utils/formatName'
 
-export default class EnterRestrictionController implements PageHandler {
+export default class EnterNewRestrictionController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
   public PAGE_NAME = Page.ENTER_RESTRICTION_PAGE
@@ -29,9 +30,18 @@ export default class EnterRestrictionController implements PageHandler {
     const navigation: Navigation = {
       backLink: journey.returnPoint.url,
     }
+    let title
+    if (restrictionClass === 'PRISONER_CONTACT') {
+      title = 'Add a new prisoner-contact restriction'
+    } else {
+      title = `Add a new global restriction for ${formatNameFirstNameFirst(journey.contactNames, {
+        excludeMiddleNames: true,
+      })}`
+    }
     const viewModel = {
       journey,
       typeOptions,
+      title,
       type: res.locals?.formResponses?.type ?? journey?.restriction?.type,
       startDate: res.locals?.formResponses?.startDate ?? journey?.restriction?.startDate,
       expiryDate: res.locals?.formResponses?.expiryDate ?? journey?.restriction?.expiryDate,

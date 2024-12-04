@@ -61,9 +61,16 @@ export default abstract class Page {
     return new constructor(...args)
   }
 
+  hasSuccessBanner(expected: string) {
+    this.successBanner().should('contain.text', expected)
+    return this
+  }
+
   private continueButton = (): PageElement => cy.get('[data-qa=continue-button]')
 
   private backLink = (): PageElement => cy.get('[data-qa=back-link]')
 
   private cancelLink = (): PageElement => cy.get('[data-qa=cancel-button]')
+
+  private successBanner = (): PageElement => cy.get('.govuk-notification-banner__heading')
 }

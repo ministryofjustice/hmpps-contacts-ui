@@ -27,4 +27,7 @@ declare namespace contactsApiClientTypes {
   export type CreateContactRestrictionRequest = components['schemas']['CreateContactRestrictionRequest']
   export type PrisonerContactRestrictionDetails = components['schemas']['PrisonerContactRestrictionDetails']
   export type CreatePrisonerContactRestrictionRequest = components['schemas']['CreatePrisonerContactRestrictionRequest']
+  export type UpdatePrisonerContactRestrictionRequest = components['schemas']['UpdatePrisonerContactRestrictionRequest']
+  export type UpdateContactRestrictionRequest = components['schemas']['UpdateContactRestrictionRequest']
+  export type PrisonerContactRestrictionsResponse = components['schemas']['PrisonerContactRestrictionsResponse']
 }

@@ -26,6 +26,9 @@ import CreateContactRestrictionRequest = contactsApiClientTypes.CreateContactRes
 import ContactRestrictionDetails = contactsApiClientTypes.ContactRestrictionDetails
 import CreatePrisonerContactRestrictionRequest = contactsApiClientTypes.CreatePrisonerContactRestrictionRequest
 import PrisonerContactRestrictionDetails = contactsApiClientTypes.PrisonerContactRestrictionDetails
+import UpdatePrisonerContactRestrictionRequest = contactsApiClientTypes.UpdatePrisonerContactRestrictionRequest
+import UpdateContactRestrictionRequest = contactsApiClientTypes.UpdateContactRestrictionRequest
+import PrisonerContactRestrictionsResponse = contactsApiClientTypes.PrisonerContactRestrictionsResponse
 
 type PageableObject = components['schemas']['PageableObject']
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
@@ -273,6 +276,21 @@ export default class ContactsApiClient extends RestClient {
     )
   }
 
+  async updateContactGlobalRestriction(
+    contactId: number,
+    contactRestrictionId: number,
+    request: UpdateContactRestrictionRequest,
+    user: Express.User,
+  ): Promise<ContactRestrictionDetails> {
+    return this.put<ContactRestrictionDetails>(
+      {
+        path: `/contact/${contactId}/restriction/${contactRestrictionId}`,
+        data: request,
+      },
+      user,
+    )
+  }
+
   async createPrisonerContactRestriction(
     prisonerContactId: number,
     request: CreatePrisonerContactRestrictionRequest,
@@ -287,7 +305,32 @@ export default class ContactsApiClient extends RestClient {
     )
   }
 
+  async updatePrisonerContactRestriction(
+    prisonerContactId: number,
+    prisonerContactRestrictionId: number,
+    request: UpdatePrisonerContactRestrictionRequest,
+    user: Express.User,
+  ): Promise<PrisonerContactRestrictionDetails> {
+    return this.put<PrisonerContactRestrictionDetails>(
+      {
+        path: `/prisoner-contact/${prisonerContactId}/restriction/${prisonerContactRestrictionId}`,
+        data: request,
+      },
+      user,
+    )
+  }
+
   async getGlobalContactRestrictions(contactId: number, user: Express.User): Promise<ContactRestrictionDetails[]> {
     return this.get<ContactRestrictionDetails[]>({ path: `/contact/${contactId}/restriction` }, user)
+  }
+
+  async getPrisonerContactRestrictions(
+    prisonerContactId: number,
+    user: Express.User,
+  ): Promise<PrisonerContactRestrictionsResponse> {
+    return this.get<PrisonerContactRestrictionsResponse>(
+      { path: `/prisoner-contact/${prisonerContactId}/restriction` },
+      user,
+    )
   }
 }

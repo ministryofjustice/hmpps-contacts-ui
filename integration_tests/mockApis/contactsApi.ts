@@ -21,6 +21,7 @@ export type StubIdentityDetails = components['schemas']['ContactIdentityDetails'
 export type StubContactSearchResultItem = components['schemas']['ContactSearchResultItem']
 export type StubPatchContactResponse = components['schemas']['PatchContactResponse']
 export type StubPrisonerContactRelationshipDetails = components['schemas']['PrisonerContactRelationshipDetails']
+export type StubPrisonerContactRestrictionsResponse = components['schemas']['PrisonerContactRestrictionsResponse']
 export type CreateEmailRequest = components['schemas']['CreateEmailRequest']
 export type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 export type ContactRestrictionDetails = components['schemas']['ContactRestrictionDetails']
@@ -109,6 +110,23 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: globalRestrictions,
+      },
+    })
+  },
+
+  stubGetPrisonerContactRestrictions: (params: {
+    prisonerContactId: number
+    response: StubPrisonerContactRestrictionsResponse
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/prisoner-contact/${params.prisonerContactId}/restriction`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: params.response,
       },
     })
   },
@@ -534,6 +552,27 @@ export default {
       },
     })
   },
+  stubUpdateContactRestriction: ({
+    contactId,
+    updated,
+    restrictionId,
+  }: {
+    contactId: number
+    restrictionId: number
+    updated: StubContactRestrictionDetails
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PUT',
+        urlPath: `/contact/${contactId}/restriction/${restrictionId}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: updated,
+      },
+    })
+  },
   stubCreatePrisonerContactRestriction: ({
     prisonerContactId,
     created,
@@ -550,6 +589,27 @@ export default {
         status: 201,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: created,
+      },
+    })
+  },
+  stubUpdatePrisonerContactRestriction: ({
+    prisonerContactId,
+    updated,
+    restrictionId,
+  }: {
+    prisonerContactId: number
+    restrictionId: number
+    updated: StubPrisonerContactRestrictionDetails
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PUT',
+        urlPath: `/prisoner-contact/${prisonerContactId}/restriction/${restrictionId}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: updated,
       },
     })
   },

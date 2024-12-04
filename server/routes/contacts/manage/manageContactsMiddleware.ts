@@ -1,9 +1,9 @@
-import { Request, RequestHandler, Response } from 'express'
+import { RequestHandler } from 'express'
 import logger from '../../../../logger'
-import StandaloneManageContactJourney = journeys.StandaloneManageContactJourney
+import asyncMiddleware from '../../../middleware/asyncMiddleware'
 
 const ensureInManageContactsJourney = (): RequestHandler => {
-  return async (req: Request<{ journeyId: string; prisonerNumber?: string }, unknown, unknown>, res, next) => {
+  return asyncMiddleware(async (req, res, next) => {
     const { journeyId, prisonerNumber } = req.params
 
     if (!req.session.manageContactsJourneys) {
@@ -22,15 +22,11 @@ const ensureInManageContactsJourney = (): RequestHandler => {
 
     req.session.manageContactsJourneys[journeyId].lastTouched = new Date().toISOString()
     return next()
-  }
+  })
 }
 
 const ensureInUpdateDateOfBirthJourney = (): RequestHandler => {
-  return async (
-    req: Request<{ prisonerNumber: string; journeyId: string; contactId: string }, unknown, unknown>,
-    res,
-    next,
-  ) => {
+  return asyncMiddleware(async (req, res, next) => {
     const { journeyId, prisonerNumber, contactId } = req.params
     if (!req.session.updateDateOfBirthJourneys) {
       req.session.updateDateOfBirthJourneys = {}
@@ -44,15 +40,11 @@ const ensureInUpdateDateOfBirthJourney = (): RequestHandler => {
     req.session.updateDateOfBirthJourneys[journeyId].lastTouched = new Date().toISOString()
 
     return next()
-  }
+  })
 }
 
 const prepareStandaloneManageContactJourney = (): RequestHandler => {
-  return async (
-    req: Request<unknown, unknown, unknown, { returnUrl?: string }>,
-    res: Response<unknown, { journey: StandaloneManageContactJourney }>,
-    next,
-  ) => {
+  return asyncMiddleware(async (req, res, next) => {
     const { returnUrl } = req.query
     if (!returnUrl) {
       throw new Error(`Couldn't find return URL for standalone journey`)
@@ -63,7 +55,7 @@ const prepareStandaloneManageContactJourney = (): RequestHandler => {
       },
     }
     return next()
-  }
+  })
 }
 
 export { ensureInManageContactsJourney, ensureInUpdateDateOfBirthJourney, prepareStandaloneManageContactJourney }

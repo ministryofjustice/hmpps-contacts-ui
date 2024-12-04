@@ -5,11 +5,6 @@
 {% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
 {% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
 
-{% if journey.restrictionClass === 'PRISONER_CONTACT' %}
-    {% set title = "Add a new prisoner-contact restriction" %}
-{% else %}
-    {% set title = "Add a new global restriction for " + journey.contactNames | formatNameFirstNameFirst(excludeMiddleNames = true) %}
-{% endif %}
 {% set pageTitle = applicationName + " - " + title %}
 {% set mainClasses = "app-container govuk-body" %}
 
