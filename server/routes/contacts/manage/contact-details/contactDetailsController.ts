@@ -34,7 +34,7 @@ export default class ContactDetailsController implements PageHandler {
     const navigation: Navigation = { breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'] }
 
     const manageContactUrl = `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`
-    const manageContactReturnUrl = `${manageContactUrl}/view-addresses?returnUrl=${encodeURIComponent(manageContactUrl)}`
+    const manageContactReturnUrl = `${manageContactUrl}/view-addresses`
 
     let primaryAddress
     if (mostRelevantAddress) {

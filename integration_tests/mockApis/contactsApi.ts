@@ -9,6 +9,7 @@ import {
   STUBBED_TITLE_OPTIONS,
   STUBBED_GENDER_OPTIONS,
   STUBBED_RESTRICTION_OPTIONS,
+  STUBBED_ADDRESS_TYPE_OPTIONS,
 } from '../../server/routes/testutils/stubReferenceData'
 import { components } from '../../server/@types/contactsApi'
 import TestData from '../../server/routes/testutils/testData'
@@ -197,6 +198,19 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: STUBBED_IDENTITY_OPTIONS,
+      },
+    })
+  },
+  stubAddressTypeReferenceData: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/reference-codes/group/ADDRESS_TYPE',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: STUBBED_ADDRESS_TYPE_OPTIONS,
       },
     })
   },

@@ -109,6 +109,19 @@ declare namespace journeys {
     comments?: string
   }
 
+  export interface AddressJourney {
+    id: string
+    lastTouched: string
+    contactId: number
+    prisonerNumber?: string
+    contactAddressId?: number
+    returnPoint: ReturnPoint
+    contactNames: ContactNames
+    addressType?: string
+    addressLines?: string[]
+    addressMetadata?: string[]
+  }
+
   export interface StandaloneManageContactJourney {
     returnPoint: ReturnPoint
   }

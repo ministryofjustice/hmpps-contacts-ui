@@ -16,6 +16,15 @@
 {% include '../../../partials/formErrorSummary.njk' %}
 <span class="govuk-caption-l">Manage Contacts</span>
 <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+    <div class="govuk-button-group">
+        {{ govukButton({
+            html: "Add address",
+            type: "button",
+            attributes: {"data-qa": "add-address-button"},
+            href: '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/address/add/start?returnUrl=/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/relationship/' + prisonerContactId + '/view-addresses',
+            preventDoubleClick: true
+        }) }}
+    </div>
  <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
 

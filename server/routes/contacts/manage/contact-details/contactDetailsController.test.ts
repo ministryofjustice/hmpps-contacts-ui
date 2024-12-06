@@ -443,7 +443,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         const addressCard = $('[data-qa=view-all-addresses]')
         expect(addressCard.first().text().trim()).toStrictEqual('View all addresses (Addresses)')
         expect(addressCard.first().attr('href')).toStrictEqual(
-          '/prisoner/A1234BC/contacts/manage/1/relationship/99/view-addresses?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99',
+          '/prisoner/A1234BC/contacts/manage/1/relationship/99/view-addresses',
         )
         expect($('.most-relevant-address-label').text().trim()).toStrictEqual(flagLabel)
       },

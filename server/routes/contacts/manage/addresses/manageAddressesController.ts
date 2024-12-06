@@ -19,7 +19,7 @@ export default class ManageAddressesController implements PageHandler {
     res: Response,
   ): Promise<void> => {
     const { user } = res.locals
-    const { contactId } = req.params
+    const { prisonerNumber, contactId, prisonerContactId } = req.params
     const contact: ContactDetails = await this.contactsService.getContact(Number(contactId), user)
 
     const sortedAddresses = sortContactAddresses(contact.addresses)
@@ -30,7 +30,6 @@ export default class ManageAddressesController implements PageHandler {
       mostRelevantAddressLabel: getLabelForAddress(address),
     }))
 
-    const { journey } = res.locals
     const names: ContactNames = {
       title: contact.title,
       lastName: contact.lastName,
@@ -38,12 +37,17 @@ export default class ManageAddressesController implements PageHandler {
       middleNames: contact.middleNames,
     }
 
-    const navigation: Navigation = { backLink: journey.returnPoint.url }
+    const navigation: Navigation = {
+      backLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    }
     const viewModel = {
-      journey: { ...journey, names },
+      journey: { names },
       navigation,
       contact,
       addresses,
+      prisonerNumber,
+      contactId,
+      prisonerContactId,
     }
     res.render('pages/contacts/common/manageAddresses', viewModel)
   }
