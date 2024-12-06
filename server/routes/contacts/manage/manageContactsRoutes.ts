@@ -50,6 +50,10 @@ import ManageNextOfKinContactController from './relationship/manageNextOfKinCont
 import ManageContactDeleteEmailController from './email/delete/manageContactDeleteEmailController'
 import { enterRelationshipCommentsSchema } from '../add/relationship-comments/enterRelationshipCommentsSchemas'
 import ManageAddressesController from './addresses/manageAddressesController'
+import StartAddressJourneyController from './addresses/start/startAddressJourneyController'
+import AddressTypeController from './addresses/address-type/addressTypeController'
+import ensureInAddressJourney from './addresses/addressesMiddleware'
+import { addressTypeSchema } from './addresses/address-type/addressTypeSchemas'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -387,7 +391,6 @@ const ManageContactsRoutes = (
   const manageAddressesController = new ManageAddressesController(contactsService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/view-addresses',
-    prepareStandaloneManageContactJourney(),
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, manageAddressesController),
     asyncMiddleware(manageAddressesController.GET),
@@ -464,6 +467,29 @@ const ManageContactsRoutes = (
     prepareStandaloneManageContactJourney(),
     validate(enterRelationshipCommentsSchema()),
     asyncMiddleware(manageRelationshipCommentsController.POST),
+  )
+
+  // Addresses
+  const startAddressJourneyController = new StartAddressJourneyController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/start',
+    logPageViewMiddleware(auditService, startAddressJourneyController),
+    asyncMiddleware(startAddressJourneyController.GET),
+  )
+
+  const addressTypeController = new AddressTypeController(referenceDataService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/select-type/:journeyId',
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    ensureInAddressJourney(),
+    logPageViewMiddleware(auditService, addressTypeController),
+    asyncMiddleware(addressTypeController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/select-type/:journeyId',
+    ensureInAddressJourney(),
+    validate(addressTypeSchema()),
+    asyncMiddleware(addressTypeController.POST),
   )
 
   return router

@@ -7,5 +7,6 @@ enum ReferenceCodeType {
   'GENDER' = 'GENDER',
   'LANGUAGE' = 'LANGUAGE',
   'RESTRICTION' = 'RESTRICTION',
+  'ADDRESS_TYPE' = 'ADDRESS_TYPE',
 }
 export default ReferenceCodeType

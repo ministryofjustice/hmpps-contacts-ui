@@ -107,6 +107,24 @@ const STUBBED_RESTRICTION_OPTIONS: StubReferenceData[] = [
   },
 ]
 
+const STUBBED_ADDRESS_TYPE_OPTIONS: StubReferenceData[] = [
+  {
+    code: 'HOME',
+    description: 'Home address',
+    groupCode: 'ADDRESS_TYPE',
+  },
+  {
+    code: 'WORK',
+    description: 'Work address',
+    groupCode: 'ADDRESS_TYPE',
+  },
+  {
+    code: 'BUS',
+    description: 'Business address',
+    groupCode: 'ADDRESS_TYPE',
+  },
+]
+
 type StubStatusData = {
   referenceCodeId: number
   displayOrder: number
@@ -224,6 +242,9 @@ const mockedReferenceData = (type: ReferenceCodeType, _: HmppsUser): Promise<Stu
   if (type === ReferenceCodeType.RESTRICTION) {
     return Promise.resolve(STUBBED_RESTRICTION_OPTIONS)
   }
+  if (type === ReferenceCodeType.ADDRESS_TYPE) {
+    return Promise.resolve(STUBBED_ADDRESS_TYPE_OPTIONS)
+  }
 
   return Promise.reject(new Error(`You haven't set up the stubbed reference data for ${type} yet`))
 }
@@ -238,4 +259,5 @@ export {
   STUBBED_DOMESTIC_STATUS_OPTIONS,
   STUBBED_GENDER_OPTIONS,
   STUBBED_RESTRICTION_OPTIONS,
+  STUBBED_ADDRESS_TYPE_OPTIONS,
 }
