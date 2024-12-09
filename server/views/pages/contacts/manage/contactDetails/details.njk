@@ -3,16 +3,11 @@
 {% from "../../partials/addContactTabNavigation.njk" import contactTabNavigation %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "../../common/addressesMacro.njk" import addressDetails %}
+{% from "../../restrictions/manageRestrictions.njk" import restrictionCard %}
 {% from "../../common/notProvided.njk" import notProvided %}
-
+{% from "govuk/components/button/macro.njk" import govukButton %}
 {% block content %}
-{% include '../../../../partials/navigation.njk' %}
-{% include '../../../../partials/successNotificationBanner.njk' %}
-{{ miniProfile(prisonerDetails) }}
-<div class="govuk-grid-row govuk-!-static-margin-bottom-5">
-    <div class="govuk-grid-column-two-thirds">
-        <span class="govuk-caption-l">Contacts</span>
-        <h1 class="govuk-heading-l">Contact details - {{ contact | formatNameFirstNameFirst }}</h1>
+ {% macro contactDetailsHtml() %}
         {%- include "./manageBasicDetails.njk" -%}
         {%- include "./manageRelationshipDetails.njk" -%}
 
@@ -27,6 +22,71 @@
         {%- include "./language.njk" -%}
         {%- include "./domesticStatus.njk" -%}
         {%- include "./manageStaff.njk" -%}
+{% endmacro %}
+{% include '../../../../partials/navigation.njk' %}
+{% include '../../../../partials/successNotificationBanner.njk' %}
+{{ miniProfile(prisonerDetails) }}
+<div class="govuk-grid-row govuk-!-static-margin-bottom-5">
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-l">Contacts</span>
+        <h1 class="govuk-heading-l">Contact details - {{ contact | formatNameFirstNameFirst }}</h1>
+             <div class="govuk-tabs" data-module="govuk-tabs">
+                <ul class="govuk-tabs__list">
+                    <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+                        <a class="govuk-tabs__tab" href="#contact-details">
+                            Contact details
+                        </a>
+                    </li>
+                    <li class="govuk-tabs__list-item">
+                        <a class="govuk-tabs__tab restrictions-tab-title" href="#restrictions">
+                            Restrictions({{ globalRestrictions.length + prisonerContactRestrictions.length }})
+                        </a>
+                    </li>
+                    <li class="govuk-tabs__list-item">
+                        <a class="govuk-tabs__tab" href="#linked-offenders">
+                            Linked offenders
+                        </a>
+                    </li>
+                </ul>
+                <div class="govuk-tabs__panel--no-border govuk-!-static-padding-top-7" id="contact-details">
+                    {{ contactDetailsHtml() }}
+                </div>
+                <div class="govuk-tabs__panel govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" data-qa="restrictions-result-message" id="restrictions">
+
+                    {% set heading = 'Prisoner-contact restrictions between prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' and contact ' + ((contact.firstName + " " + contact.lastName) | capitaliseName ) %}
+                    <h1 class="govuk-heading-l" data-qa="confirm-prisoner-contact-restriction-title">{{ heading }}</h1>
+                    {% if prisonerContactRestrictions.length >0 %}
+                        {{ restrictionCard(prisonerContactRestrictions, contact) }}
+                    {% else %}
+                        <p class="govuk-body no_prisoner_contact_restriction_card__description">No prisoner-contact restrictions recorded.</p>
+                    {% endif %}
+                    {{ govukButton({
+                        text: "Add prisoner-contact restriction",
+                        href: "/prisoner/" + prisonerNumber + "/contacts/" + contactId + "/relationship/" + prisonerContactId+ "/restriction/add/PRISONER_CONTACT/start",
+                        classes: 'govuk-!-margin-top-6 govuk-button--secondary',
+                        attributes: {"data-qa": "add-prisoner-contact-restriction-button"},
+                        preventDoubleClick: true
+                    }) }}
+
+                <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+                    {% set heading = 'Global restrictions for contact ' + ((contact.firstName + " " + contact.lastName) | capitaliseName ) %}
+                    <h1 class="govuk-heading-l global-restriction-title" data-qa="confirm-global-restriction-title">{{ heading }}</h1>
+                    {% if globalRestrictions.length >0 %}
+                        {{ restrictionCard(globalRestrictions, contact) }}
+                    {% else %}
+
+                        <p class="govuk-body no_global_restrictions_card__description">No global restrictions recorded.</p>
+                    {% endif %}
+                      {{ govukButton({
+                            text: "Add global restriction",
+                            href: "/prisoner/" + prisonerNumber + "/contacts/" + contactId + "/relationship/" + prisonerContactId+ "/restriction/add/CONTACT_GLOBAL/start",
+                            classes: 'govuk-!-margin-top-6 govuk-button--secondary',
+                            attributes: {"data-qa": "add-global-restriction-button"},
+                            preventDoubleClick: true
+                        }) }}
+                </div>
+                <div class="govuk-tabs__panel--no-border govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" id="linked-offenders"></div>
+             </div>
     </div>
 </div>
 {% endblock %}

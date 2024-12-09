@@ -28,7 +28,13 @@ context('Manage contact update emergency contact', () => {
       prisonerContactId,
       response: { isEmergencyContact: false },
     })
-
+    cy.task('stubGetPrisonerContactRestrictions', {
+      prisonerContactId,
+      response: {
+        prisonerContactRestrictions: [],
+        contactGlobalRestrictions: [],
+      },
+    })
     cy.signIn()
     const { prisonerNumber } = TestData.prisoner()
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)

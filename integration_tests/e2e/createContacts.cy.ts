@@ -14,6 +14,9 @@ import ManageContactDetailsPage from '../pages/manageContactDetails'
 import CreateContactSuccessPage from '../pages/createContactSuccessPage'
 
 context('Create Contacts', () => {
+  const contactId = 654321
+  const prisonerContactId = 987654
+
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
@@ -23,19 +26,19 @@ context('Create Contacts', () => {
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', TestData.prisoner().prisonerNumber)
     cy.task('stubCreateContact', {
-      createdContact: { id: 123456 },
-      createdRelationship: { prisonerContactId: 654321 },
+      createdContact: { id: contactId },
+      createdRelationship: { prisonerContactId },
     })
     cy.task(
       'stubGetContactById',
       TestData.contact({
-        id: 123456,
+        id: contactId,
         lastName: 'Last',
         firstName: 'First',
       }),
     )
     cy.task('stubGetPrisonerContactRelationshipById', {
-      id: 654321,
+      id: prisonerContactId,
       response: TestData.prisonerContactRelationship(),
     })
     cy.task('stubContactSearch', {
@@ -48,6 +51,13 @@ context('Create Contacts', () => {
       firstName: '',
       middleNames: '',
       dateOfBirth: '',
+    })
+    cy.task('stubGetPrisonerContactRestrictions', {
+      prisonerContactId,
+      response: {
+        prisonerContactRestrictions: [],
+        contactGlobalRestrictions: [],
+      },
     })
 
     cy.signIn()

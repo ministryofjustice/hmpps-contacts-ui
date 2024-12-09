@@ -39,6 +39,14 @@ context('Update Contact Global Restriction', () => {
       response: TestData.prisonerContactRelationship(),
     })
     cy.task('stubGetGlobalRestrictions', [globalRestriction])
+    cy.task('stubGetPrisonerContactRestrictions', {
+      prisonerContactId,
+      response: {
+        prisonerContactRestrictions: [],
+        contactGlobalRestrictions: [],
+      },
+    })
+
     cy.signIn()
 
     // TODO visit here from the prisoner contact page instead of directly

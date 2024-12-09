@@ -56,12 +56,14 @@ import ensureInAddressJourney from './addresses/addressesMiddleware'
 import { addressTypeSchema } from './addresses/address-type/addressTypeSchemas'
 import EnterAddressController from './addresses/enter-address/enterAddressController'
 import { addressLinesSchema } from './addresses/enter-address/addressLinesSchemas'
+import RestrictionsService from '../../../services/restrictionsService'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
   prisonerSearchService: PrisonerSearchService,
   contactsService: ContactsService,
   referenceDataService: ReferenceDataService,
+  restrictionsService: RestrictionsService,
 ) => {
   const router = Router({ mergeParams: true })
 
@@ -113,7 +115,11 @@ const ManageContactsRoutes = (
   )
 
   // Part 5: View one contact
-  const contactDetailsController = new ContactDetailsController(contactsService, referenceDataService)
+  const contactDetailsController = new ContactDetailsController(
+    contactsService,
+    referenceDataService,
+    restrictionsService,
+  )
   router.get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId',
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),

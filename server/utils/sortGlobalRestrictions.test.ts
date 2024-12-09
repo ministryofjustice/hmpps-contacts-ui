@@ -1,5 +1,5 @@
 import ContactRestrictionDetails = contactsApiClientTypes.ContactRestrictionDetails
-import sortGlobalRestrictions from './sortGlobalRstrictions'
+import sortRestrictions from './sortGlobalRstrictions'
 
 describe('sortGlobalRestrictions', () => {
   it('should sort by startDate descending', () => {
@@ -15,7 +15,7 @@ describe('sortGlobalRestrictions', () => {
       { startDate: '2023-12-15', createdTime: '2024-08-01T09:00:00.000000' },
     ]
 
-    const result = sortGlobalRestrictions(input)
+    const result = sortRestrictions(input)
     expect(result).toEqual(expected)
   })
 
@@ -30,20 +30,20 @@ describe('sortGlobalRestrictions', () => {
       { startDate: '2024-01-01', createdTime: '2024-09-20T10:30:00.000000' },
     ]
 
-    const result = sortGlobalRestrictions(input)
+    const result = sortRestrictions(input)
     expect(result).toEqual(expected)
   })
 
   it('should handle an empty array', () => {
     const input: ContactRestrictionDetails[] = []
-    const result = sortGlobalRestrictions(input)
+    const result = sortRestrictions(input)
     expect(result).toEqual([])
   })
 
   it('should handle an array with one element', () => {
     const input: ContactRestrictionDetails[] = [{ startDate: '2024-01-01', createdTime: '2024-09-20T10:30:00.000000' }]
 
-    const result = sortGlobalRestrictions(input)
+    const result = sortRestrictions(input)
     expect(result).toEqual(input)
   })
 
@@ -62,7 +62,7 @@ describe('sortGlobalRestrictions', () => {
       { startDate: '2023-12-15', createdTime: '2024-08-01T09:00:00.000000' },
     ]
 
-    const result = sortGlobalRestrictions(input)
+    const result = sortRestrictions(input)
     expect(result).toEqual(expected)
   })
 })

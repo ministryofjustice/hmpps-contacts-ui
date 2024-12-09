@@ -29,6 +29,13 @@ context('Manage contact update next of kin contact', () => {
       prisonerContactId,
       response: { isNextOfKin: false },
     })
+    cy.task('stubGetPrisonerContactRestrictions', {
+      prisonerContactId,
+      response: {
+        prisonerContactRestrictions: [],
+        contactGlobalRestrictions: [],
+      },
+    })
 
     cy.signIn()
     const { prisonerNumber } = TestData.prisoner()

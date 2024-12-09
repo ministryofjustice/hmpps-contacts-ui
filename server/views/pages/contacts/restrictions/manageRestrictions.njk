@@ -2,14 +2,23 @@
 
 {% macro restrictionCard(restrictions, contact) %}
 
-   <h1 class="govuk-heading-l" data-qa="confirm-contact-restriction-title">Global restrictions for contact {{ (contact.firstName + " " + contact.lastName) | capitaliseName }}</h1>
-
     {% for restriction in restrictions %}
 
             {{ govukSummaryList({
                 card: {
                     title: {
                         text: restriction.restrictionTypeDescription
+                    },
+                    actions: {
+                        items: [
+                            {
+                                href: restriction.manageRestrictionUrl,
+                                text: "Manage",
+                                visuallyHiddenText: "restrictions",
+                                attributes: {"data-qa": "manage-restriction-link-" + restriction.contactRestrictionId},
+                                classes: 'govuk-link--no-visited-state'
+                            }
+                        ]
                     },
                     classes: 'restriction-' + restriction.contactRestrictionId + '-card restrictions-cards-titles'
                 },
