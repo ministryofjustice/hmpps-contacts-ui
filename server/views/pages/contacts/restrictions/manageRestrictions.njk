@@ -5,8 +5,6 @@
     {% for restriction in restrictions %}
 
     {% set restrictionId = restriction.contactRestrictionId or restriction.prisonerContactRestrictionId %}
-      Restriction ID: {{ restrictionId }}
-
             {{ govukSummaryList({
                 card: {
                     title: {
