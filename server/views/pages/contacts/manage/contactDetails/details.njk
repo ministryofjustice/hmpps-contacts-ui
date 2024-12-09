@@ -54,7 +54,8 @@
                 <div class="govuk-tabs__panel govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" data-qa="restrictions-result-message" id="restrictions">
 
                     {% set heading = 'Prisoner-contact restrictions between prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' and contact ' + ((contact.firstName + " " + contact.lastName) | capitaliseName ) %}
-                    <h1 class="govuk-heading-l" data-qa="confirm-prisoner-contact-restriction-title">{{ heading }}</h1>
+                    <h1 class="govuk-heading-l" data-qa="manage-restriction-title">Restrictions</h1>
+                    <h2 class="govuk-heading-m" data-qa="confirm-prisoner-contact-restriction-title">{{ heading }}</h2>
                     {% if prisonerContactRestrictions.length >0 %}
                         {{ restrictionCard(prisonerContactRestrictions, contact, prisonerNumber, prisonerContactId, 'PRISONER_CONTACT' ) }}
                     {% else %}

@@ -563,6 +563,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect(response.status).toEqual(200)
 
       expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions(2)')
+      expect($('[data-qa="manage-restriction-title"]').text().trim()).toStrictEqual('Restrictions')
       const prisonerContactCardTitleText = $('.govuk-summary-card.restriction-1-card .govuk-summary-card__title')
         .text()
         .trim()
