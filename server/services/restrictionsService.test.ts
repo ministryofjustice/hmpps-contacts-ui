@@ -9,6 +9,7 @@ import CreateContactRestrictionRequest = contactsApiClientTypes.CreateContactRes
 import PrisonerContactRestrictionDetails = contactsApiClientTypes.PrisonerContactRestrictionDetails
 import CreatePrisonerContactRestrictionRequest = contactsApiClientTypes.CreatePrisonerContactRestrictionRequest
 import UpdateContactRestrictionRequest = contactsApiClientTypes.UpdateContactRestrictionRequest
+import ContactDetails = contactsApiClientTypes.ContactDetails
 
 jest.mock('../data/contactsApiClient')
 
@@ -296,6 +297,106 @@ describe('restrictionsService', () => {
       await expect(
         service.updatePrisonerContactRestriction(contactId, restrictionId, form, user),
       ).rejects.toBeInstanceOf(BadRequest)
+    })
+  })
+
+  describe('getGlobalRestrictionsEnriched', () => {
+    it('should fetch and process contact restrictions correctly', async () => {
+      // Arrange
+      const contactId = 123456
+
+      const expectedContact: ContactDetails = {
+        id: contactId,
+        lastName: 'last',
+        firstName: 'middle',
+        middleNames: 'first',
+        dateOfBirth: '1980-12-10T00:00:00.000Z',
+        createdBy: user.username,
+        createdTime: '2024-01-01',
+      }
+
+      const expectedResponse: ContactRestrictionDetails[] = [
+        {
+          restrictionTypeDescription: 'No Contact',
+          expiryDate: '2053-12-31',
+        },
+        {
+          restrictionTypeDescription: 'Limited Contact',
+          expiryDate: '2022-01-01',
+        },
+      ]
+
+      apiClient.getGlobalContactRestrictions.mockResolvedValue(expectedResponse)
+
+      // Act
+      const result = await service.getGlobalRestrictionsEnriched(expectedContact, user)
+
+      // Assert
+      expect(apiClient.getGlobalContactRestrictions).toHaveBeenCalledWith(contactId, user)
+
+      expect(result).toEqual([
+        {
+          restrictionTypeDescription: 'No Contact',
+          expiryDate: '2053-12-31',
+        },
+        {
+          restrictionTypeDescription: 'Limited Contact (expired)',
+          expiryDate: '2022-01-01',
+        },
+      ])
+    })
+  })
+
+  describe('getPrisonerContactRestrictions', () => {
+    it('should fetch and process prisoner contact restrictions correctly', async () => {
+      // Arrange
+      const prisonerContactId = 123
+
+      const mockRestrictionsResponse = {
+        prisonerContactRestrictions: [
+          {
+            restrictionTypeDescription: 'No Contact',
+            expiryDate: '2053-12-31',
+          },
+          {
+            restrictionTypeDescription: 'Limited Contact',
+            expiryDate: '2022-01-01',
+          },
+        ],
+        contactGlobalRestrictions: [
+          {
+            restrictionTypeDescription: 'Estate Wide Ban',
+            expiryDate: '2054-01-01',
+          },
+        ],
+      }
+
+      apiClient.getPrisonerContactRestrictions.mockResolvedValue(mockRestrictionsResponse)
+
+      // Act
+      const result = await service.getPrisonerContactRestrictions(prisonerContactId, user)
+
+      // Assert
+      expect(apiClient.getPrisonerContactRestrictions).toHaveBeenCalledWith(prisonerContactId, user)
+
+      expect(result).toEqual({
+        prisonerContactRestrictions: [
+          {
+            restrictionTypeDescription: 'No Contact',
+            expiryDate: '2053-12-31',
+          },
+          {
+            restrictionTypeDescription: 'Limited Contact (expired)',
+            expiryDate: '2022-01-01',
+          },
+        ],
+        contactGlobalRestrictions: [
+          {
+            restrictionTypeDescription: 'Estate Wide Ban',
+            expiryDate: '2054-01-01',
+          },
+        ],
+      })
     })
   })
 })

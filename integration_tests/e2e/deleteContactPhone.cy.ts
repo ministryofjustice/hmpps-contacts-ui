@@ -29,7 +29,13 @@ context('Delete Contact Phones', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship(),
     })
-
+    cy.task('stubGetPrisonerContactRestrictions', {
+      prisonerContactId,
+      response: {
+        prisonerContactRestrictions: [],
+        contactGlobalRestrictions: [],
+      },
+    })
     cy.signIn()
     const { prisonerNumber } = TestData.prisoner()
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)

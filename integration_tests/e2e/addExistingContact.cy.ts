@@ -14,6 +14,7 @@ import ManageContactDetailsPage from '../pages/manageContactDetails'
 context('Add Existing Contact', () => {
   const { prisonerNumber } = TestData.prisoner()
   const contactId = 654321
+  const prisonerContactId = 987654
   const contact = TestData.contact({
     id: contactId,
     lastName: 'Contact',
@@ -39,10 +40,17 @@ context('Add Existing Contact', () => {
     cy.task('stubGetContactById', contact)
     cy.task('stubGetGlobalRestrictions', [globalRestriction])
     cy.task('stubGetPrisonerContactRelationshipById', {
-      id: 654321,
+      id: prisonerContactId,
       response: TestData.prisonerContactRelationship(),
     })
-    cy.task('stubAddContactRelationship', { contactId, createdPrisonerContactId: 654321 })
+    cy.task('stubGetPrisonerContactRestrictions', {
+      prisonerContactId,
+      response: {
+        prisonerContactRestrictions: [],
+        contactGlobalRestrictions: [],
+      },
+    })
+    cy.task('stubAddContactRelationship', { contactId, createdPrisonerContactId: prisonerContactId })
     cy.task('stubContactSearch', {
       results: {
         totalPages: 1,

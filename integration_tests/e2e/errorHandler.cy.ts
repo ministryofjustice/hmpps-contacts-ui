@@ -5,9 +5,17 @@ import SorryPage from '../pages/sorryPage'
 context('Ensure Prisoner Is In Caseload', () => {
   const prisonerNumber = 'A1234BC'
   const contactId = 99
+  const prisonerContactId = 299
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn', { roles: ['PRISON'] })
+    cy.task('stubGetPrisonerContactRestrictions', {
+      prisonerContactId,
+      response: {
+        prisonerContactRestrictions: [],
+        contactGlobalRestrictions: [],
+      },
+    })
     cy.signIn()
   })
 
