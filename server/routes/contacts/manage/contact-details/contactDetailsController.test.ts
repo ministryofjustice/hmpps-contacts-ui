@@ -538,7 +538,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
     })
     it('should render restrictions tab with global and prisoner-contact restrictions', async () => {
       restrictionsService.getPrisonerContactRestrictions.mockResolvedValue({
-        prisonerContactRestrictions: [TestData.getContactRestrictionDetails()],
+        prisonerContactRestrictions: [TestData.getPrisonerContactRestrictionDetails()],
         contactGlobalRestrictions: [
           TestData.getContactRestrictionDetails({
             contactRestrictionId: 2,
@@ -597,7 +597,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         prisonerContactRestrictions: [],
         contactGlobalRestrictions: [
           TestData.getContactRestrictionDetails({
-            restrictionTypeDescription: 'Child Visitors to be Vetted (expired)',
+            restrictionTypeDescription: 'Child Visitors to be Vetted',
             expiryDate: '2024-08-01',
           }),
         ],
@@ -625,8 +625,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       restrictionsService.getPrisonerContactRestrictions.mockResolvedValue({
         contactGlobalRestrictions: [],
         prisonerContactRestrictions: [
-          TestData.getContactRestrictionDetails({
-            restrictionTypeDescription: 'Child Visitors to be Vetted (expired)',
+          TestData.getPrisonerContactRestrictionDetails({
+            restrictionTypeDescription: 'Child Visitors to be Vetted',
             expiryDate: '2024-08-01',
           }),
         ],
@@ -678,7 +678,11 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           TestData.getContactRestrictionDetails({ contactRestrictionId: 1, expiryDate: '', comments: '' }),
         ],
         prisonerContactRestrictions: [
-          TestData.getContactRestrictionDetails({ contactRestrictionId: 2, expiryDate: '', comments: '' }),
+          TestData.getPrisonerContactRestrictionDetails({
+            prisonerContactRestrictionId: 2,
+            expiryDate: '',
+            comments: '',
+          }),
         ],
       })
 
@@ -702,7 +706,11 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           TestData.getContactRestrictionDetails({ contactRestrictionId: 1, expiryDate: '', comments: '' }),
         ],
         prisonerContactRestrictions: [
-          TestData.getContactRestrictionDetails({ contactRestrictionId: 2, expiryDate: '', comments: '' }),
+          TestData.getPrisonerContactRestrictionDetails({
+            prisonerContactRestrictionId: 2,
+            expiryDate: '',
+            comments: '',
+          }),
         ],
       })
 
@@ -728,7 +736,11 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           TestData.getContactRestrictionDetails({ contactRestrictionId: 1, expiryDate: '', comments: '' }),
         ],
         prisonerContactRestrictions: [
-          TestData.getContactRestrictionDetails({ contactRestrictionId: 2, expiryDate: '', comments: '' }),
+          TestData.getPrisonerContactRestrictionDetails({
+            prisonerContactRestrictionId: 2,
+            expiryDate: '',
+            comments: '',
+          }),
         ],
       })
 
@@ -738,12 +750,12 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       // Then
       const $ = cheerio.load(response.text)
 
-      expect($('[data-qa=manage-restriction-link-1]').first().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/1/relationship/99/restriction/update/CONTACT_GLOBAL/enter-restriction/1?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99',
+      expect($('[data-qa=manage-CONTACT_GLOBAL-restriction-link-1]').first().attr('href')).toStrictEqual(
+        '/prisoner/A1234BC/contacts/22/relationship/99/restriction/update/CONTACT_GLOBAL/enter-restriction/1?returnUrl=/prisoner/A1234BC/contacts/manage/22/relationship/99',
       )
 
-      expect($('[data-qa=manage-restriction-link-2]').first().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/1/relationship/99/restriction/update/PRISONER_CONTACT/enter-restriction/2?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99',
+      expect($('[data-qa=manage-PRISONER_CONTACT-restriction-link-2]').first().attr('href')).toStrictEqual(
+        '/prisoner/A1234BC/contacts/22/relationship/99/restriction/update/PRISONER_CONTACT/enter-restriction/2?returnUrl=/prisoner/A1234BC/contacts/manage/22/relationship/99',
       )
     })
   })

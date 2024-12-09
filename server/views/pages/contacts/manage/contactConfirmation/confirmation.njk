@@ -79,7 +79,7 @@
                     {% if globalRestrictions.length >0 %}
                         {% set heading = 'Global restrictions for contact ' + ((contact.firstName + " " + contact.lastName) | capitaliseName ) %}
                         <h1 class="govuk-heading-l" data-qa="confirm-global-restriction-title">{{heading}}</h1>
-                        {{ restrictionCard(globalRestrictions, contact) }}
+                        {{ restrictionCard(globalRestrictions, contact, prisonerNumber, prisonerContactId, 'NONE') }}
                     {% else %}
                         No global restrictions recorded.
                     {% endif %}

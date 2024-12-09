@@ -425,7 +425,7 @@ describe('Restrictions', () => {
         // Given
         restrictionsService.getGlobalRestrictionsEnriched.mockResolvedValue([
           TestData.getContactRestrictionDetails({
-            restrictionTypeDescription: 'Child Visitors to be Vetted (expired)',
+            restrictionTypeDescription: 'Child Visitors to be Vetted',
             expiryDate: '2024-08-01',
           }),
         ])
@@ -477,6 +477,21 @@ describe('Restrictions', () => {
 
         expect($('.view-expiry-date-1-value').text().trim()).toStrictEqual('Not provided')
         expect($('.view-comment-1-value').text().trim()).toStrictEqual('Not provided')
+      })
+
+      it('should not show manage restrictions link', async () => {
+        // Given
+        restrictionsService.getGlobalRestrictionsEnriched.mockResolvedValue([
+          TestData.getContactRestrictionDetails({ expiryDate: '', comments: '' }),
+        ])
+
+        // When
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
+
+        // Then
+        const $ = cheerio.load(response.text)
+
+        expect($('[data-qa=manage-restriction-link]').length).toBe(0)
       })
 
       it('should sort restrictions based on startDate, with the most recent at the top. where multiple restrictions with the same date, sorted them by createdTime', async () => {
