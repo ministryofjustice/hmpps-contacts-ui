@@ -3,6 +3,7 @@ import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import ViewAllAddressesPage from '../pages/viewAllAddressesPage'
 import SelectAddressTypePage from '../pages/selectAddressTypePage'
+import EnterAddressPage from '../pages/enterAddressPage'
 
 context('Add Address', () => {
   const contactId = 654321
@@ -20,6 +21,9 @@ context('Add Address', () => {
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.task('stubTitlesReferenceData')
     cy.task('stubAddressTypeReferenceData')
+    cy.task('stubCityReferenceData')
+    cy.task('stubCountyReferenceData')
+    cy.task('stubCountryReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
@@ -42,8 +46,19 @@ context('Add Address', () => {
     Page.verifyOnPage(SelectAddressTypePage, 'First Middle Names Last') //
       .isEmptyForm()
       .selectAddressType('HOME')
+      .clickContinue()
 
-    // TODO next pages
+    Page.verifyOnPage(EnterAddressPage, 'home address', 'First Middle Names Last') //
+      .clickNoFixedAddress()
+      .enterFlat('Flat 1')
+      .enterPremises('The Block')
+      .enterStreet('My Street')
+      .enterLocality('Downtown')
+      .selectTown('Exeter')
+      .selectCounty('Devon')
+      .selectCountry('England')
+
+    // TODO meta data and CYA pages
   })
 
   it(`Back link goes to manage contacts`, () => {

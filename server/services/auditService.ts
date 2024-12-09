@@ -58,6 +58,7 @@ export enum Page {
   // Address
   ADDRESS_START_PAGE = 'ADDRESS_START_PAGE',
   SELECT_ADDRESS_TYPE_PAGE = 'SELECT_ADDRESS_TYPE_PAGE',
+  ENTER_ADDRESS_PAGE = 'ENTER_ADDRESS_PAGE',
 }
 
 export interface PageViewEventDetails {

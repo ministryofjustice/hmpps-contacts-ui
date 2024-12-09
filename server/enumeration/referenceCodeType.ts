@@ -8,5 +8,8 @@ enum ReferenceCodeType {
   'LANGUAGE' = 'LANGUAGE',
   'RESTRICTION' = 'RESTRICTION',
   'ADDRESS_TYPE' = 'ADDRESS_TYPE',
+  'CITY' = 'CITY',
+  'COUNTY' = 'COUNTY',
+  'COUNTRY' = 'COUNTRY',
 }
 export default ReferenceCodeType
