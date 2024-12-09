@@ -11,7 +11,6 @@ import { Navigation } from '../../common/navigation'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 import RestrictionsService from '../../../../services/restrictionsService'
-import ContactRestrictionDetails = contactsApiClientTypes.ContactRestrictionDetails
 
 export default class ContactDetailsController implements PageHandler {
   constructor(
@@ -66,20 +65,8 @@ export default class ContactDetailsController implements PageHandler {
 
     return res.render('pages/contacts/manage/contactDetails/details', {
       contact,
-      globalRestrictions: this.enrichContactRestrictions(
-        prisonerContactRestrictionsEnriched.contactGlobalRestrictions,
-        prisonerNumber,
-        contactId,
-        prisonerContactId,
-        `CONTACT_GLOBAL`,
-      ),
-      prisonerContactRestrictions: this.enrichContactRestrictions(
-        prisonerContactRestrictionsEnriched.prisonerContactRestrictions,
-        prisonerNumber,
-        contactId,
-        prisonerContactId,
-        `PRISONER_CONTACT`,
-      ),
+      globalRestrictions: prisonerContactRestrictionsEnriched.contactGlobalRestrictions,
+      prisonerContactRestrictions: prisonerContactRestrictionsEnriched.prisonerContactRestrictions,
       primaryAddress,
       prisonerNumber,
       contactId,
@@ -101,37 +88,5 @@ export default class ContactDetailsController implements PageHandler {
       )
     }
     return formatNameFirstNameFirst(contact, { customTitle: titleDescription })
-  }
-
-  private enrichContactRestrictions(
-    restrictions: ContactRestrictionDetails[],
-    prisonerNumber: string,
-    contactId: string,
-    prisonerContactId: string,
-    restrictionType: string = `PRISONER_CONTACT`,
-  ): ContactRestrictionDetails[] {
-    return restrictions.map(restriction => {
-      const manageRestrictionUrl = this.generateManagePrisonerRestrictionUrl(
-        prisonerNumber,
-        contactId,
-        prisonerContactId,
-        restriction.contactRestrictionId,
-        restrictionType,
-      )
-      return {
-        ...restriction,
-        manageRestrictionUrl,
-      }
-    })
-  }
-
-  private generateManagePrisonerRestrictionUrl(
-    prisonerNumber: string,
-    contactId: string,
-    prisonerContactId: string,
-    restrictionId: number,
-    restrictionType: string = `PRISONER_CONTACT`,
-  ): string {
-    return `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/${restrictionType}/enter-restriction/${restrictionId}?returnUrl=/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`
   }
 }

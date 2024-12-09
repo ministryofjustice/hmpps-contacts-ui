@@ -340,7 +340,7 @@ describe('restrictionsService', () => {
           expiryDate: '2053-12-31',
         },
         {
-          restrictionTypeDescription: 'Limited Contact (expired)',
+          restrictionTypeDescription: 'Limited Contact',
           expiryDate: '2022-01-01',
         },
       ])
@@ -386,7 +386,7 @@ describe('restrictionsService', () => {
             expiryDate: '2053-12-31',
           },
           {
-            restrictionTypeDescription: 'Limited Contact (expired)',
+            restrictionTypeDescription: 'Limited Contact',
             expiryDate: '2022-01-01',
           },
         ],

@@ -37,7 +37,7 @@ context('Manage contacts restrictions', () => {
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId: 31,
       response: {
-        prisonerContactRestrictions: [TestData.getContactRestrictionDetails({ contactId: contact.id })],
+        prisonerContactRestrictions: [TestData.getPrisonerContactRestrictionDetails({ contactId: contact.id })],
         contactGlobalRestrictions: [TestData.getContactRestrictionDetails()],
       },
     })
@@ -61,7 +61,7 @@ context('Manage contacts restrictions', () => {
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId: 31,
       response: {
-        prisonerContactRestrictions: [TestData.getContactRestrictionDetails({ contactId: contact.id })],
+        prisonerContactRestrictions: [TestData.getPrisonerContactRestrictionDetails({ contactId: contact.id })],
         contactGlobalRestrictions: [TestData.getContactRestrictionDetails()],
       },
     })
@@ -82,7 +82,7 @@ context('Manage contacts restrictions', () => {
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId: 31,
       response: {
-        prisonerContactRestrictions: [TestData.getContactRestrictionDetails({ contactId: contact.id })],
+        prisonerContactRestrictions: [TestData.getPrisonerContactRestrictionDetails({ contactId: contact.id })],
         contactGlobalRestrictions: [TestData.getContactRestrictionDetails()],
       },
     })
@@ -112,7 +112,7 @@ context('Manage contacts restrictions', () => {
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId: 31,
       response: {
-        prisonerContactRestrictions: [TestData.getContactRestrictionDetails({ contactId: contact.id })],
+        prisonerContactRestrictions: [TestData.getPrisonerContactRestrictionDetails({ contactId: contact.id })],
         contactGlobalRestrictions: [TestData.getContactRestrictionDetails()],
       },
     })
@@ -146,7 +146,7 @@ context('Manage contacts restrictions', () => {
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId: 31,
       response: {
-        prisonerContactRestrictions: [TestData.getContactRestrictionDetails({ contactId: contact.id })],
+        prisonerContactRestrictions: [TestData.getPrisonerContactRestrictionDetails({ contactId: contact.id })],
         contactGlobalRestrictions: [TestData.getContactRestrictionDetails()],
       },
     })

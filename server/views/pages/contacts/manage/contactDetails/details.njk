@@ -56,7 +56,7 @@
                     {% set heading = 'Prisoner-contact restrictions between prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' and contact ' + ((contact.firstName + " " + contact.lastName) | capitaliseName ) %}
                     <h1 class="govuk-heading-l" data-qa="confirm-prisoner-contact-restriction-title">{{ heading }}</h1>
                     {% if prisonerContactRestrictions.length >0 %}
-                        {{ restrictionCard(prisonerContactRestrictions, contact) }}
+                        {{ restrictionCard(prisonerContactRestrictions, contact, prisonerNumber, prisonerContactId, 'PRISONER_CONTACT' ) }}
                     {% else %}
                         <p class="govuk-body no_prisoner_contact_restriction_card__description">No prisoner-contact restrictions recorded.</p>
                     {% endif %}
@@ -72,7 +72,7 @@
                     {% set heading = 'Global restrictions for contact ' + ((contact.firstName + " " + contact.lastName) | capitaliseName ) %}
                     <h1 class="govuk-heading-l global-restriction-title" data-qa="confirm-global-restriction-title">{{ heading }}</h1>
                     {% if globalRestrictions.length >0 %}
-                        {{ restrictionCard(globalRestrictions, contact) }}
+                        {{ restrictionCard(globalRestrictions, contact, prisonerNumber, prisonerContactId, 'CONTACT_GLOBAL' ) }}
                     {% else %}
 
                         <p class="govuk-body no_global_restrictions_card__description">No global restrictions recorded.</p>

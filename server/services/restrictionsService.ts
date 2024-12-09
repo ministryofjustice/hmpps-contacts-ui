@@ -86,12 +86,7 @@ export default class RestrictionsService {
     contact: ContactDetails,
     user: Express.User,
   ): Promise<ContactRestrictionDetails[]> {
-    const globalRestrictions: ContactRestrictionDetails[] = await this.contactsApiClient.getGlobalContactRestrictions(
-      contact.id,
-      user,
-    )
-
-    return this.enrichRestrictionTitle(globalRestrictions)
+    return this.contactsApiClient.getGlobalContactRestrictions(contact.id, user)
   }
 
   async getPrisonerContactRestrictions(
@@ -102,28 +97,8 @@ export default class RestrictionsService {
       await this.contactsApiClient.getPrisonerContactRestrictions(prisonerContactId, user)
 
     return {
-      prisonerContactRestrictions: sortRestrictions(
-        this.enrichRestrictionTitle(restrictionsResponse.prisonerContactRestrictions),
-      ),
-      contactGlobalRestrictions: sortRestrictions(
-        this.enrichRestrictionTitle(restrictionsResponse.contactGlobalRestrictions),
-      ),
+      prisonerContactRestrictions: sortRestrictions(restrictionsResponse.prisonerContactRestrictions),
+      contactGlobalRestrictions: sortRestrictions(restrictionsResponse.contactGlobalRestrictions),
     }
-  }
-
-  private enrichRestrictionTitle(globalRestrictions: ContactRestrictionDetails[]): ContactRestrictionDetails {
-    return globalRestrictions.map(item => {
-      const expiry = new Date(item.expiryDate)
-      const now = new Date()
-
-      if (expiry < now) {
-        return {
-          ...item,
-          restrictionTypeDescription: `${item.restrictionTypeDescription} (expired)`,
-        }
-      }
-
-      return item
-    })
   }
 }

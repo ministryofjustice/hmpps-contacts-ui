@@ -239,15 +239,10 @@ export default class ManageContactDetailsPage extends Page {
 
   private getAddGlobalRestriction = (): PageElement => cy.get('[data-qa="add-global-restriction-button"]')
 
-  private getManageGlobalRestriction = (): PageElement =>
-    cy.get(
-      ':nth-child(2) > .govuk-summary-card__title-wrapper > .govuk-summary-card__actions > [data-qa="manage-staff-status-link-1"]',
-    )
+  private getManageGlobalRestriction = (): PageElement => cy.get('[data-qa="manage-CONTACT_GLOBAL-restriction-link-1"]')
 
   private getManagePrisonerContactRestriction = (): PageElement =>
-    cy.get(
-      ':nth-child(6) > .govuk-summary-card__title-wrapper > .govuk-summary-card__actions > [data-qa="manage-staff-status-link-1"]',
-    )
+    cy.get('[data-qa="manage-PRISONER_CONTACT-restriction-link-1"]')
 
   private getRestrictionCard = (): PageElement =>
     cy.get(
