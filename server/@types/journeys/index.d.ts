@@ -118,8 +118,20 @@ declare namespace journeys {
     returnPoint: ReturnPoint
     contactNames: ContactNames
     addressType?: string
-    addressLines?: string[]
+    addressLines?: AddressLines
     addressMetadata?: string[]
+  }
+
+  export interface AddressLines {
+    noFixedAddress: boolean
+    flat?: string
+    premises?: string
+    street?: string
+    locality?: string
+    town?: string
+    county?: string
+    postcode?: string
+    country: string
   }
 
   export interface StandaloneManageContactJourney {

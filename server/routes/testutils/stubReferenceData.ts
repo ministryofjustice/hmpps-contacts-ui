@@ -217,6 +217,65 @@ const STUBBED_GENDER_OPTIONS: StubReferenceData[] & StubStatusData[] = [
   },
 ]
 
+const STUBBED_CITY_OPTIONS: StubReferenceData[] = [
+  {
+    code: '7375',
+    description: 'Exeter',
+    groupCode: 'CITY',
+  },
+  {
+    code: '7521',
+    description: 'Ilfracombe',
+    groupCode: 'CITY',
+  },
+  {
+    code: '25343',
+    description: 'Sheffield',
+    groupCode: 'CITY',
+  },
+]
+
+const STUBBED_COUNTY_OPTIONS: StubReferenceData[] = [
+  {
+    code: 'DEVON',
+    description: 'Devon',
+    groupCode: 'COUNTY',
+  },
+  {
+    code: 'S.YORKSHIRE',
+    description: ' South Yorkshire',
+    groupCode: 'COUNTY',
+  },
+  {
+    code: 'W.SUSSEX',
+    description: ' West Sussex',
+    groupCode: 'COUNTY',
+  },
+]
+
+const STUBBED_COUNTRY_OPTIONS: StubReferenceData[] = [
+  {
+    code: 'ENG',
+    description: 'England',
+    groupCode: 'COUNTRY',
+  },
+  {
+    code: 'WALES',
+    description: 'Wales',
+    groupCode: 'COUNTRY',
+  },
+  {
+    code: 'SCOT',
+    description: 'Scotland',
+    groupCode: 'COUNTRY',
+  },
+  {
+    code: 'NI',
+    description: 'Northern Ireland',
+    groupCode: 'COUNTRY',
+  },
+]
+
 const mockedReferenceData = (type: ReferenceCodeType, _: HmppsUser): Promise<StubReferenceData[]> => {
   if (type === ReferenceCodeType.TITLE) {
     return Promise.resolve(STUBBED_TITLE_OPTIONS)
@@ -245,6 +304,15 @@ const mockedReferenceData = (type: ReferenceCodeType, _: HmppsUser): Promise<Stu
   if (type === ReferenceCodeType.ADDRESS_TYPE) {
     return Promise.resolve(STUBBED_ADDRESS_TYPE_OPTIONS)
   }
+  if (type === ReferenceCodeType.CITY) {
+    return Promise.resolve(STUBBED_CITY_OPTIONS)
+  }
+  if (type === ReferenceCodeType.COUNTY) {
+    return Promise.resolve(STUBBED_COUNTY_OPTIONS)
+  }
+  if (type === ReferenceCodeType.COUNTRY) {
+    return Promise.resolve(STUBBED_COUNTRY_OPTIONS)
+  }
 
   return Promise.reject(new Error(`You haven't set up the stubbed reference data for ${type} yet`))
 }
@@ -260,4 +328,7 @@ export {
   STUBBED_GENDER_OPTIONS,
   STUBBED_RESTRICTION_OPTIONS,
   STUBBED_ADDRESS_TYPE_OPTIONS,
+  STUBBED_CITY_OPTIONS,
+  STUBBED_COUNTY_OPTIONS,
+  STUBBED_COUNTRY_OPTIONS,
 }

@@ -54,6 +54,8 @@ import StartAddressJourneyController from './addresses/start/startAddressJourney
 import AddressTypeController from './addresses/address-type/addressTypeController'
 import ensureInAddressJourney from './addresses/addressesMiddleware'
 import { addressTypeSchema } from './addresses/address-type/addressTypeSchemas'
+import EnterAddressController from './addresses/enter-address/enterAddressController'
+import { addressLinesSchema } from './addresses/enter-address/addressLinesSchemas'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -490,6 +492,21 @@ const ManageContactsRoutes = (
     ensureInAddressJourney(),
     validate(addressTypeSchema()),
     asyncMiddleware(addressTypeController.POST),
+  )
+
+  const enterAddressController = new EnterAddressController(referenceDataService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/enter-address/:journeyId',
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    ensureInAddressJourney(),
+    logPageViewMiddleware(auditService, enterAddressController),
+    asyncMiddleware(enterAddressController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/enter-address/:journeyId',
+    ensureInAddressJourney(),
+    validate(addressLinesSchema()),
+    asyncMiddleware(enterAddressController.POST),
   )
 
   return router
