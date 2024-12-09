@@ -17,8 +17,20 @@ export default function routes({
 }: Services): Router {
   const router = Router({ mergeParams: true })
 
-  router.use('', AddContactRoutes(auditService, contactsService, referenceDataService, prisonerSearchService))
-  router.use('/', ManageContactsRoutes(auditService, prisonerSearchService, contactsService, referenceDataService))
+  router.use(
+    '',
+    AddContactRoutes(auditService, contactsService, referenceDataService, prisonerSearchService, restrictionsService),
+  )
+  router.use(
+    '/',
+    ManageContactsRoutes(
+      auditService,
+      prisonerSearchService,
+      contactsService,
+      referenceDataService,
+      restrictionsService,
+    ),
+  )
   router.use(
     '/',
     RestrictionsRoutes(auditService, contactsService, referenceDataService, prisonerSearchService, restrictionsService),

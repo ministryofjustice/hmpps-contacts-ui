@@ -10,6 +10,7 @@ import { buildErrorSummaryList, findError } from '../middleware/validationMiddle
 import addressToLines from './addressToLines'
 import formatYesNo from './formatYesNo'
 import { formatNameLastNameFirst, formatNameFirstNameFirst } from './formatName'
+import formatRestrictionCardTitle from './formatRestrictionCardTitle'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -66,5 +67,6 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('formatYesNo', formatYesNo)
   njkEnv.addFilter('formatNameLastNameFirst', formatNameLastNameFirst)
   njkEnv.addFilter('formatNameFirstNameFirst', formatNameFirstNameFirst)
+  njkEnv.addFilter('formatRestrictionCardTitle', formatRestrictionCardTitle)
   njkEnv.addFilter('capitalizeFirstLetter', capitalizeFirstLetter)
 }

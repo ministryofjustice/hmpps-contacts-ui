@@ -35,6 +35,13 @@ context('Select Interpreter Needs', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship(),
     })
+    cy.task('stubGetPrisonerContactRestrictions', {
+      prisonerContactId,
+      response: {
+        prisonerContactRestrictions: [],
+        contactGlobalRestrictions: [],
+      },
+    })
     cy.task('stubContactList', 'A1234BC')
     cy.visit('/contacts/manage/prisoner-search/start')
   })

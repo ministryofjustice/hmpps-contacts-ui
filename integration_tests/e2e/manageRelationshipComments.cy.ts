@@ -28,6 +28,13 @@ context('Manage contact update comments for a contact', () => {
       prisonerContactId,
       response: { comments: 'my comments' },
     })
+    cy.task('stubGetPrisonerContactRestrictions', {
+      prisonerContactId,
+      response: {
+        prisonerContactRestrictions: [],
+        contactGlobalRestrictions: [],
+      },
+    })
 
     cy.signIn()
     const { prisonerNumber } = TestData.prisoner()

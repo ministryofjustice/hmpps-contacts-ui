@@ -7,7 +7,7 @@ import { fullNameSchema } from '../common/name/nameSchemas'
 import CreateContactEnterDobController from './enter-dob/createContactEnterDobController'
 import StartAddContactJourneyController from './start/startAddContactJourneyController'
 import ensureInAddContactJourney from './addContactMiddleware'
-import { ContactsService, PrisonerSearchService } from '../../../services'
+import { ContactsService, PrisonerSearchService, RestrictionsService } from '../../../services'
 import CreateContactCheckAnswersController from './check-answers/createContactCheckAnswersController'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import CreateContactEnterEstimatedDobController from './enter-estimated-dob/createContactEnterEstimatedDobController'
@@ -35,6 +35,7 @@ const AddContactRoutes = (
   contactsService: ContactsService,
   referenceDataService: ReferenceDataService,
   prisonerSearchService: PrisonerSearchService,
+  restrictionsService: RestrictionsService,
 ) => {
   const router = Router({ mergeParams: true })
 
@@ -61,7 +62,11 @@ const AddContactRoutes = (
     asyncMiddleware(contactsSearchController.POST),
   )
 
-  const contactConfirmationController = new ContactConfirmationController(contactsService, referenceDataService)
+  const contactConfirmationController = new ContactConfirmationController(
+    contactsService,
+    referenceDataService,
+    restrictionsService,
+  )
   router.get(
     '/prisoner/:prisonerNumber/contacts/add/confirmation/:journeyId',
     ensureInAddContactJourney(),

@@ -337,7 +337,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/prisoner-contact/{prisonerContactId}/restrictions/{prisonerContactRestrictionId}': {
+  '/prisoner-contact/{prisonerContactId}/restriction/{prisonerContactRestrictionId}': {
     parameters: {
       query?: never
       header?: never
@@ -350,6 +350,26 @@ export interface paths {
      * @description Updates a prisoner contact restriction for the specified prisoner contact relationship and restriction ids
      */
     put: operations['updatePrisonerContactRestriction']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/contact/{contactId}/restriction/{contactRestrictionId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Update global restriction for a contact
+     * @description Updates a global (estate-wide) restriction for the specified contact and restriction id
+     */
+    put: operations['updateContactGlobalRestriction']
     post?: never
     delete?: never
     options?: never
@@ -413,26 +433,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/contact/{contactId}/estate-wide-restrictions/{contactRestrictionId}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    /**
-     * Update estate-wide restriction
-     * @description Updates an estate-wide restriction for the specified contact and restriction id
-     */
-    put: operations['updateEstateWideRestriction']
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/contact/{contactId}/email/{contactEmailId}': {
     parameters: {
       query?: never
@@ -456,6 +456,34 @@ export interface paths {
      * @description Deletes an existing contact email by id
      */
     delete: operations['deleteEmailAddress']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/contact/{contactId}/address/{contactAddressId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get a contact address
+     * @description Get a contact address by its ID
+     */
+    get: operations['getContactAddress']
+    /**
+     * Update a contact address
+     * @description Updates an existing contact address by its ID
+     */
+    put: operations['updateContactAddress']
+    post?: never
+    /**
+     * Delete contact address
+     * @description Deletes a contact address by its ID
+     */
+    delete: operations['deleteContactAddress']
     options?: never
     head?: never
     patch?: never
@@ -688,7 +716,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/prisoner-contact/{prisonerContactId}/restrictions': {
+  '/prisoner-contact/{prisonerContactId}/restriction': {
     parameters: {
       query?: never
       header?: never
@@ -700,7 +728,7 @@ export interface paths {
      * @description
      *           Get the restrictions that apply for this relationship.
      *
-     *           This includes prisoner-contact restrictions for this specific relationship only and any estate-wide restrictions for the contact.
+     *           This includes prisoner-contact restrictions for this specific relationship only and any global (estate-wide) restrictions for the contact.
      *
      *           If the prisoner and contact have multiple relationships, the prisoner-contact restrictions for the other relationships will not be returned.
      *
@@ -758,6 +786,34 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/contact/{contactId}/restriction': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get a contacts global restrictions
+     * @description
+     *           Get a contacts global restrictions only. Global restrictions apply to all of a contacts relationships and are known as estate-wide restrictions in NOMIS.
+     *
+     *           Additional restrictions between the contact and specific prisoners may also apply.
+     *
+     */
+    get: operations['getContactGlobalRestrictions']
+    put?: never
+    /**
+     * Create new global restriction
+     * @description Creates a new global (estate-wide) restriction for the specified contact
+     */
+    post: operations['createContactGlobalRestriction']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/contact/{contactId}/phone': {
     parameters: {
       query?: never
@@ -798,34 +854,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/contact/{contactId}/estate-wide-restrictions': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get a contacts estate-wide restrictions
-     * @description
-     *           Get a contacts estate-wide restrictions only. Estate-wide restrictions apply to all of a contacts relationships.
-     *
-     *           Additional restrictions between the contact and specific prisoners may also apply.
-     *
-     */
-    get: operations['getEstateWideContactRestrictions']
-    put?: never
-    /**
-     * Create new estate-wide restriction
-     * @description Creates a new estate-wide restriction for the specified contact
-     */
-    post: operations['createEstateWideRestriction']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/contact/{contactId}/email': {
     parameters: {
       query?: never
@@ -840,6 +868,26 @@ export interface paths {
      * @description Creates a new email for the specified contact
      */
     post: operations['createEmailAddress']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/contact/{contactId}/address': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create new contact address
+     * @description Creates a new address for the specified contact
+     */
+    post: operations['createContactAddress']
     delete?: never
     options?: never
     head?: never
@@ -1377,14 +1425,6 @@ export interface components {
        */
       updatedTime: string
     }
-    ErrorResponse: {
-      /** Format: int32 */
-      status: number
-      errorCode?: string
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
-    }
     /** @description Response object with prisoner contact details */
     SyncPrisonerContact: {
       /**
@@ -1491,6 +1531,14 @@ export interface components {
        * @example 2024-02-01T16:00:00Z
        */
       updatedTime?: string | null
+    }
+    ErrorResponse: {
+      /** Format: int32 */
+      status: number
+      errorCode?: string
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
     }
     /** @description Request object to update te  prisoner contact restriction details */
     SyncUpdatePrisonerContactRestrictionRequest: {
@@ -2565,6 +2613,126 @@ export interface components {
        */
       comments?: string
       /**
+       * @description The username of either the person who created the restriction or the last person to update it if it has been modified.
+       * @example admin
+       */
+      enteredByUsername: string
+      /**
+       * @description The display name of either the person who created the restriction or the last person to update it if it has been modified.
+       * @example John Smith
+       */
+      enteredByDisplayName: string
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was created
+       */
+      createdTime: string
+      /**
+       * @description User who updated the entry
+       * @example admin2
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was updated
+       */
+      updatedTime?: string
+    }
+    /** @description Request to update an existing global restriction on a contact, a.k.a an estate-wide restriction */
+    UpdateContactRestrictionRequest: {
+      /**
+       * @description
+       *         The coded type of restriction that applies to this contact.
+       *         This is a coded value from the group RESTRICTION in reference codes.
+       *         Example values include ACC, BAN, CHILD, CLOSED, RESTRICTED, DIHCON, NONCON.
+       *
+       * @example BAN
+       */
+      restrictionType: string
+      /**
+       * Format: date
+       * @description Restriction start date
+       * @example 2024-01-01
+       */
+      startDate: string
+      /**
+       * Format: date
+       * @description Restriction end date
+       * @example 2024-01-01
+       */
+      expiryDate?: string | null
+      /**
+       * @description Comments for the restriction
+       * @example N/A
+       */
+      comments?: string | null
+      /**
+       * @description User who updated the entry
+       * @example admin
+       */
+      updatedBy: string
+    }
+    /** @description Global restriction related to a contact, a.k.a estate-wide restrictions */
+    ContactRestrictionDetails: {
+      /**
+       * Format: int64
+       * @description Unique identifier for the contact restriction
+       * @example 1
+       */
+      contactRestrictionId: number
+      /**
+       * Format: int64
+       * @description Unique identifier for the contact
+       * @example 123
+       */
+      contactId: number
+      /**
+       * @description
+       *         The coded type of restriction that applies to this contact.
+       *         This is a coded value from the group RESTRICTION in reference codes.
+       *         Example values include ACC, BAN, CHILD, CLOSED, RESTRICTED, DIHCON, NONCON.
+       *
+       * @example BAN
+       */
+      restrictionType: string
+      /**
+       * @description The description of restrictionType
+       * @example Banned
+       */
+      restrictionTypeDescription: string
+      /**
+       * Format: date
+       * @description Restriction created date
+       * @example 2024-01-01
+       */
+      startDate?: string
+      /**
+       * Format: date
+       * @description Restriction end date
+       * @example 2024-01-01
+       */
+      expiryDate?: string
+      /**
+       * @description Comments for the restriction
+       * @example N/A
+       */
+      comments?: string
+      /**
+       * @description The username of either the person who created the restriction or the last person to update it if it has been modified.
+       * @example admin
+       */
+      enteredByUsername: string
+      /**
+       * @description The display name of either the person who created the restriction or the last person to update it if it has been modified.
+       * @example John Smith
+       */
+      enteredByDisplayName: string
+      /**
        * @description User who created the entry
        * @example admin
        */
@@ -2746,106 +2914,6 @@ export interface components {
        */
       updatedTime?: string
     }
-    /** @description Request to update an existing restriction on a contact, a.k.a an estate-wide restriction */
-    UpdateContactRestrictionRequest: {
-      /**
-       * @description
-       *         The coded type of restriction that applies to this contact.
-       *         This is a coded value from the group RESTRICTION in reference codes.
-       *         Example values include ACC, BAN, CHILD, CLOSED, RESTRICTED, DIHCON, NONCON.
-       *
-       * @example BAN
-       */
-      restrictionType: string
-      /**
-       * Format: date
-       * @description Restriction start date
-       * @example 2024-01-01
-       */
-      startDate: string
-      /**
-       * Format: date
-       * @description Restriction end date
-       * @example 2024-01-01
-       */
-      expiryDate?: string | null
-      /**
-       * @description Comments for the restriction
-       * @example N/A
-       */
-      comments?: string | null
-      /**
-       * @description User who updated the entry
-       * @example admin
-       */
-      updatedBy: string
-    }
-    /** @description Restriction related to a contact, a.k.a estate-wide restrictions */
-    ContactRestrictionDetails: {
-      /**
-       * Format: int64
-       * @description Unique identifier for the contact restriction
-       * @example 1
-       */
-      contactRestrictionId: number
-      /**
-       * Format: int64
-       * @description Unique identifier for the contact
-       * @example 123
-       */
-      contactId: number
-      /**
-       * @description
-       *         The coded type of restriction that applies to this contact.
-       *         This is a coded value from the group RESTRICTION in reference codes.
-       *         Example values include ACC, BAN, CHILD, CLOSED, RESTRICTED, DIHCON, NONCON.
-       *
-       * @example BAN
-       */
-      restrictionType: string
-      /**
-       * @description The description of restrictionType
-       * @example Banned
-       */
-      restrictionTypeDescription: string
-      /**
-       * Format: date
-       * @description Restriction created date
-       * @example 2024-01-01
-       */
-      startDate?: string
-      /**
-       * Format: date
-       * @description Restriction end date
-       * @example 2024-01-01
-       */
-      expiryDate?: string
-      /**
-       * @description Comments for the restriction
-       * @example N/A
-       */
-      comments?: string
-      /**
-       * @description User who created the entry
-       * @example admin
-       */
-      createdBy: string
-      /**
-       * Format: date-time
-       * @description Timestamp when the entry was created
-       */
-      createdTime: string
-      /**
-       * @description User who updated the entry
-       * @example admin2
-       */
-      updatedBy?: string
-      /**
-       * Format: date-time
-       * @description Timestamp when the entry was updated
-       */
-      updatedTime?: string
-    }
     /** @description Request to update an email address */
     UpdateEmailRequest: {
       /**
@@ -2898,6 +2966,234 @@ export interface components {
        * @description Timestamp when the entry was updated
        */
       updatedTime?: string
+    }
+    /** @description Request to update a contact address */
+    UpdateContactAddressRequest: {
+      /**
+       * @description
+       *         The type of address.
+       *         This is a coded value (from the group code ADDRESS_TYPE in reference data).
+       *         The known values are HOME, WORK or BUS (business address).
+       *
+       * @example HOME
+       */
+      addressType: string
+      /**
+       * @description True if this is the primary address otherwise false
+       * @example true
+       */
+      primaryAddress: boolean
+      /**
+       * @description Flat number or name
+       * @example Flat 2B
+       */
+      flat?: string | null
+      /**
+       * @description Building or house number or name
+       * @example Mansion House
+       */
+      property?: string | null
+      /**
+       * @description Street or road name
+       * @example Acacia Avenue
+       */
+      street?: string | null
+      /**
+       * @description Area
+       * @example Morton Heights
+       */
+      area?: string | null
+      /**
+       * @description City code - from NOMIS reference data
+       * @example BIRM
+       */
+      cityCode?: string | null
+      /**
+       * @description County code - from NOMIS reference data
+       * @example WMIDS
+       */
+      countyCode?: string | null
+      /**
+       * @description Postcode
+       * @example S13 4FH
+       */
+      postcode?: string | null
+      /**
+       * @description Country code - from NOMIS reference data
+       * @example UK
+       */
+      countryCode?: string | null
+      /**
+       * @description Whether the address has been verified by postcode lookup
+       * @example false
+       */
+      verified: boolean
+      /**
+       * @description Whether the address can be used for mailing
+       * @example false
+       */
+      mailFlag?: boolean
+      /**
+       * Format: date
+       * @description The start date when this address can be considered active from
+       * @example 2023-01-12
+       */
+      startDate?: string
+      /**
+       * Format: date
+       * @description The end date when this address can be considered active until
+       * @example 2023-01-12
+       */
+      endDate?: string
+      /**
+       * @description Flag to indicate this address should be considered as no fixed address
+       * @example false
+       */
+      noFixedAddress?: boolean
+      /**
+       * @description Any additional information or comments about the address
+       * @example Some additional information
+       */
+      comments?: string | null
+      /**
+       * @description The id of the user who updated the address
+       * @example JD000001
+       */
+      updatedBy: string
+    }
+    /** @description A contact address response */
+    ContactAddressResponse: {
+      /**
+       * Format: int64
+       * @description The id of the contact address
+       * @example 123456
+       */
+      contactAddressId: number
+      /**
+       * Format: int64
+       * @description The id of the contact
+       * @example 123456
+       */
+      contactId: number
+      /**
+       * @description
+       *           The type of address (optional).
+       *           This is a coded value (from the group code ADDRESS_TYPE in reference data).
+       *           The known values are HOME, WORK or BUS (business address).
+       *
+       * @example HOME
+       */
+      addressType?: string | null
+      /**
+       * @description True if this is the primary address otherwise false
+       * @example true
+       */
+      primaryAddress: boolean
+      /**
+       * @description Flat number or name
+       * @example Flat 2B
+       */
+      flat?: string | null
+      /**
+       * @description Building or house number or name
+       * @example Mansion House
+       */
+      property?: string | null
+      /**
+       * @description Street or road name
+       * @example Acacia Avenue
+       */
+      street?: string | null
+      /**
+       * @description Area
+       * @example Morton Heights
+       */
+      area?: string | null
+      /**
+       * @description City code
+       * @example 25343
+       */
+      cityCode?: string | null
+      /**
+       * @description County code
+       * @example S.YORKSHIRE
+       */
+      countyCode?: string | null
+      /**
+       * @description Postcode
+       * @example S13 4FH
+       */
+      postcode?: string | null
+      /**
+       * @description Country code
+       * @example ENG
+       */
+      countryCode?: string | null
+      /**
+       * @description Whether the address has been verified by postcode lookup
+       * @example false
+       */
+      verified: boolean
+      /**
+       * @description Which username ran the postcode lookup check
+       * @example NJKG44D
+       */
+      verifiedBy?: string | null
+      /**
+       * Format: date-time
+       * @description The timestamp of when the postcode lookup was done
+       * @example 2024-01-01T00:00:00Z
+       */
+      verifiedTime?: string
+      /**
+       * @description Flag to indicate whether mail is allowed to be sent to this address
+       * @example false
+       */
+      mailFlag: boolean
+      /**
+       * Format: date
+       * @description The start date when this address is to be considered active from
+       * @example 2024-01-01
+       */
+      startDate?: string | null
+      /**
+       * Format: date
+       * @description The end date when this address is to be considered no longer active
+       * @example 2024-01-01
+       */
+      endDate?: string | null
+      /**
+       * @description Flag to indicate whether this address indicates no fixed address
+       * @example false
+       */
+      noFixedAddress: boolean
+      /**
+       * @description Any additional information or comments about the address
+       * @example Some additional information
+       */
+      comments?: string | null
+      /**
+       * @description The id of the user who created the contact
+       * @example JD000001
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description The timestamp of when the contact was created
+       * @example 2024-01-01T00:00:00Z
+       */
+      createdTime: string
+      /**
+       * @description The id of the user who last updated the contact address
+       * @example JD000001
+       */
+      updatedBy?: string | null
+      /**
+       * Format: date-time
+       * @description The timestamp of when the contact address was last updated
+       * @example 2024-01-01T00:00:00Z
+       */
+      updatedTime?: string | null
     }
     /** @description Request object to create a prisoner contact details */
     SyncCreatePrisonerContactRequest: {
@@ -4320,6 +4616,40 @@ export interface components {
       createdTime: string
       staff?: boolean
     }
+    /** @description Request to create a new global restriction on a contact, a.k.a an estate-wide restriction */
+    CreateContactRestrictionRequest: {
+      /**
+       * @description
+       *         The coded type of restriction that applies to this contact.
+       *         This is a coded value from the group RESTRICTION in reference codes.
+       *         Example values include ACC, BAN, CHILD, CLOSED, RESTRICTED, DIHCON, NONCON.
+       *
+       * @example BAN
+       */
+      restrictionType: string
+      /**
+       * Format: date
+       * @description Restriction start date
+       * @example 2024-01-01
+       */
+      startDate: string
+      /**
+       * Format: date
+       * @description Restriction end date
+       * @example 2024-01-01
+       */
+      expiryDate?: string | null
+      /**
+       * @description Comments for the restriction
+       * @example N/A
+       */
+      comments?: string | null
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+    }
     /** @description Request to create a new phone number */
     CreatePhoneRequest: {
       /**
@@ -4366,40 +4696,6 @@ export interface components {
        */
       createdBy: string
     }
-    /** @description Request to create a new restriction on a contact, a.k.a an estate-wide restriction */
-    CreateContactRestrictionRequest: {
-      /**
-       * @description
-       *         The coded type of restriction that applies to this contact.
-       *         This is a coded value from the group RESTRICTION in reference codes.
-       *         Example values include ACC, BAN, CHILD, CLOSED, RESTRICTED, DIHCON, NONCON.
-       *
-       * @example BAN
-       */
-      restrictionType: string
-      /**
-       * Format: date
-       * @description Restriction start date
-       * @example 2024-01-01
-       */
-      startDate: string
-      /**
-       * Format: date
-       * @description Restriction end date
-       * @example 2024-01-01
-       */
-      expiryDate?: string | null
-      /**
-       * @description Comments for the restriction
-       * @example N/A
-       */
-      comments?: string | null
-      /**
-       * @description User who created the entry
-       * @example admin
-       */
-      createdBy: string
-    }
     /** @description Request to create a new email address */
     CreateEmailRequest: {
       /**
@@ -4410,6 +4706,100 @@ export interface components {
       /**
        * @description User who created the entry
        * @example admin
+       */
+      createdBy: string
+    }
+    /** @description Request to create a new contact address */
+    CreateContactAddressRequest: {
+      /**
+       * @description
+       *           The type of address.
+       *           This is a coded value (from the group code ADDRESS_TYPE in reference data).
+       *           The known values are HOME, WORK or BUS (business address).
+       *
+       * @example HOME
+       */
+      addressType: string
+      /**
+       * @description True if this is the primary address otherwise false
+       * @example true
+       */
+      primaryAddress: boolean
+      /**
+       * @description Flat number or name
+       * @example Flat 2B
+       */
+      flat?: string | null
+      /**
+       * @description Building or house number or name
+       * @example Mansion House
+       */
+      property?: string | null
+      /**
+       * @description Street or road name
+       * @example Acacia Avenue
+       */
+      street?: string | null
+      /**
+       * @description Area
+       * @example Morton Heights
+       */
+      area?: string | null
+      /**
+       * @description City code - from NOMIS
+       * @example 13232
+       */
+      cityCode?: string | null
+      /**
+       * @description County code - from NOMIS
+       * @example WMIDS
+       */
+      countyCode?: string | null
+      /**
+       * @description Postcode
+       * @example S13 4FH
+       */
+      postcode?: string | null
+      /**
+       * @description Country code - from NOMIS
+       * @example UK
+       */
+      countryCode?: string | null
+      /**
+       * @description Whether the address has been verified by postcode lookup
+       * @example false
+       */
+      verified?: boolean
+      /**
+       * @description Whether the address can be used for mailing
+       * @example false
+       */
+      mailFlag?: boolean
+      /**
+       * Format: date
+       * @description The start date when this address can be considered active from
+       * @example 2023-01-12
+       */
+      startDate?: string
+      /**
+       * Format: date
+       * @description The end date when this address can be considered active until
+       * @example 2023-01-12
+       */
+      endDate?: string
+      /**
+       * @description Flag to indicate this address should be considered as no fixed address
+       * @example false
+       */
+      noFixedAddress?: boolean
+      /**
+       * @description Any additional information or comments about the address
+       * @example Some additional information
+       */
+      comments?: string | null
+      /**
+       * @description The id of the user who created the contact
+       * @example JD000001
        */
       createdBy: string
     }
@@ -4832,10 +5222,10 @@ export interface components {
       offset?: number
       sort?: components['schemas']['SortObject'][]
       /** Format: int32 */
-      pageSize?: number
+      pageNumber?: number
       paged?: boolean
       /** Format: int32 */
-      pageNumber?: number
+      pageSize?: number
       unpaged?: boolean
     }
     PrisonerContactSummaryPage: {
@@ -4869,8 +5259,8 @@ export interface components {
     PrisonerContactRestrictionsResponse: {
       /** @description Relationship specific restrictions */
       prisonerContactRestrictions: components['schemas']['PrisonerContactRestrictionDetails'][]
-      /** @description Estate wide restrictions for the contact */
-      contactEstateWideRestrictions: components['schemas']['ContactRestrictionDetails'][]
+      /** @description Global (estate-wide) restrictions for the contact */
+      contactGlobalRestrictions: components['schemas']['ContactRestrictionDetails'][]
     }
     /** @description Language reference entity */
     Language: {
@@ -6393,6 +6783,77 @@ export interface operations {
       }
     }
   }
+  updateContactGlobalRestriction: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+        /**
+         * @description The id of the global restriction
+         * @example 123456
+         */
+        contactRestrictionId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateContactRestrictionRequest']
+      }
+    }
+    responses: {
+      /** @description Updated the global restriction successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ContactRestrictionDetails']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the the contact or global restriction */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getPhone: {
     parameters: {
       query?: never
@@ -6767,77 +7228,6 @@ export interface operations {
       }
     }
   }
-  updateEstateWideRestriction: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /**
-         * @description The id of the contact
-         * @example 123456
-         */
-        contactId: number
-        /**
-         * @description The id of the estate-wide restriction
-         * @example 123456
-         */
-        contactRestrictionId: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateContactRestrictionRequest']
-      }
-    }
-    responses: {
-      /** @description Updated the estate-wide restriction successfully */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ContactRestrictionDetails']
-        }
-      }
-      /** @description The request has invalid or missing fields */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Could not find the the contact or estate-wide restriction */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
   getEmailAddress: {
     parameters: {
       query?: never
@@ -7015,6 +7405,193 @@ export interface operations {
         }
       }
       /** @description Could not find the the contact or email by their ids */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getContactAddress: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The contact ID
+         * @example 123456
+         */
+        contactId: number
+        /**
+         * @description The contact address ID
+         * @example 122
+         */
+        contactAddressId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the address successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ContactAddressResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the the contact or address by their IDs */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  updateContactAddress: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The contact ID
+         * @example 123456
+         */
+        contactId: number
+        /**
+         * @description The contact address ID
+         * @example 1233
+         */
+        contactAddressId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateContactAddressRequest']
+      }
+    }
+    responses: {
+      /** @description Updated the contact address successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ContactAddressResponse']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the the contact or address by ID */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  deleteContactAddress: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The contact ID
+         * @example 123
+         */
+        contactId: number
+        /**
+         * @description The contact address ID
+         * @example 456
+         */
+        contactAddressId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Deleted the contact address successfully */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ContactAddressResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the the contact or address by the provided IDs */
       404: {
         headers: {
           [name: string]: unknown
@@ -7698,6 +8275,125 @@ export interface operations {
       }
     }
   }
+  getContactGlobalRestrictions: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the contact and their restrictions */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ContactRestrictionDetails'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No contact with that id could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  createContactGlobalRestriction: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateContactRestrictionRequest']
+      }
+    }
+    responses: {
+      /** @description Created the global restriction successfully */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ContactRestrictionDetails']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the the contact this global restriction is for */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   createPhone: {
     parameters: {
       query?: never
@@ -7830,125 +8526,6 @@ export interface operations {
       }
     }
   }
-  getEstateWideContactRestrictions: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /**
-         * @description The id of the contact
-         * @example 123456
-         */
-        contactId: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Found the contact and their restrictions */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ContactRestrictionDetails'][]
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description No contact with that id could be found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  createEstateWideRestriction: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /**
-         * @description The id of the contact
-         * @example 123456
-         */
-        contactId: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateContactRestrictionRequest']
-      }
-    }
-    responses: {
-      /** @description Created the estate-wide restriction successfully */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ContactRestrictionDetails']
-        }
-      }
-      /** @description The request has invalid or missing fields */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Could not find the the contact this estate-wide restriction is for */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
   createEmailAddress: {
     parameters: {
       query?: never
@@ -8005,6 +8582,72 @@ export interface operations {
         }
       }
       /** @description Could not find the the contact this email is for */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  createContactAddress: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateContactAddressRequest']
+      }
+    }
+    responses: {
+      /** @description Created the contact address successfully */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ContactAddressResponse']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the the email address */
       404: {
         headers: {
           [name: string]: unknown

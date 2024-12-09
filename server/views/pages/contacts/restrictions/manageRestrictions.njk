@@ -1,0 +1,66 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro restrictionCard(restrictions, contact, prisonerNumber, prisonerContactId, restrictionClass ) %}
+
+    {% for restriction in restrictions %}
+
+    {% set restrictionId = restriction.contactRestrictionId or restriction.prisonerContactRestrictionId %}
+            {{ govukSummaryList({
+                card: {
+                    title: {
+                        text: restriction.expiryDate | formatRestrictionCardTitle(restriction.restrictionTypeDescription)
+                    },
+                    actions: {
+                        items: [
+                            {
+                                href: "/prisoner/" +  prisonerNumber + "/contacts/" +  contact.id + "/relationship/" +  prisonerContactId + "/restriction/update/" +  restrictionClass + "/enter-restriction/" +  restrictionId + "?returnUrl=/prisoner/" +  prisonerNumber + "/contacts/manage/" +  contact.id + "/relationship/" +  prisonerContactId ,
+                                text: "Manage",
+                                visuallyHiddenText: "restrictions",
+                                attributes: {"data-qa": "manage-"+ restrictionClass +"-restriction-link-" + restrictionId},
+                                classes: 'govuk-link--no-visited-state'
+                            }
+                        ] if restrictionClass != 'NONE'
+                    },
+                    classes: 'restriction-' + restrictionId + '-card restrictions-cards-titles'
+                },
+                rows: [{
+                    key: {
+                         text: "Start date"
+                    },
+                    value: {
+                        text: restriction.startDate | formatDate,
+                        classes: 'view-start-date-' + restrictionId + '-value'
+                    }
+                },
+                {
+                    key: {
+                        text: "Expiry date"
+                    },
+                    value: {
+                        text: restriction.expiryDate | formatDate if restriction.expiryDate else 'Not provided',
+                        classes: 'view-expiry-date-' + restrictionId + '-value'
+                    }
+                },
+                {
+                    key: {
+                        text: "Entered by"
+                    },
+                    value: {
+                        text:  restriction.createdBy,
+                        classes: 'view-entered-by-' + restrictionId + '-value'
+                    }
+                },
+                {
+                    key: {
+                        text: "Comment"
+                    },
+                    value: {
+                        text: restriction.comments if restriction.comments else 'Not provided',
+                        classes: 'view-comment-' + restrictionId + '-value'
+                    }
+                }]
+            }) }}
+    {% endfor %}
+
+
+{% endmacro %}

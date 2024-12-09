@@ -1,6 +1,7 @@
 import { formatISO, parse } from 'date-fns'
 import ContactsApiClient from '../data/contactsApiClient'
 import { RestrictionSchemaType } from '../routes/restrictions/schema/restrictionSchema'
+import sortRestrictions from '../utils/sortGlobalRstrictions'
 import AddRestrictionJourney = journeys.AddRestrictionJourney
 import PrisonerContactRestrictionDetails = contactsApiClientTypes.PrisonerContactRestrictionDetails
 import CreatePrisonerContactRestrictionRequest = contactsApiClientTypes.CreatePrisonerContactRestrictionRequest
@@ -8,6 +9,8 @@ import CreateContactRestrictionRequest = contactsApiClientTypes.CreateContactRes
 import ContactRestrictionDetails = contactsApiClientTypes.ContactRestrictionDetails
 import UpdateContactRestrictionRequest = contactsApiClientTypes.UpdateContactRestrictionRequest
 import UpdatePrisonerContactRestrictionRequest = contactsApiClientTypes.UpdatePrisonerContactRestrictionRequest
+import ContactDetails = contactsApiClientTypes.ContactDetails
+import PrisonerContactRestrictionsResponse = contactsApiClientTypes.PrisonerContactRestrictionsResponse
 
 export default class RestrictionsService {
   constructor(private readonly contactsApiClient: ContactsApiClient) {}
@@ -77,5 +80,25 @@ export default class RestrictionsService {
       request,
       user,
     )
+  }
+
+  async getGlobalRestrictionsEnriched(
+    contact: ContactDetails,
+    user: Express.User,
+  ): Promise<ContactRestrictionDetails[]> {
+    return this.contactsApiClient.getGlobalContactRestrictions(contact.id, user)
+  }
+
+  async getPrisonerContactRestrictions(
+    prisonerContactId: number,
+    user: Express.User,
+  ): Promise<PrisonerContactRestrictionsResponse> {
+    const restrictionsResponse: PrisonerContactRestrictionsResponse =
+      await this.contactsApiClient.getPrisonerContactRestrictions(prisonerContactId, user)
+
+    return {
+      prisonerContactRestrictions: sortRestrictions(restrictionsResponse.prisonerContactRestrictions),
+      contactGlobalRestrictions: sortRestrictions(restrictionsResponse.contactGlobalRestrictions),
+    }
   }
 }

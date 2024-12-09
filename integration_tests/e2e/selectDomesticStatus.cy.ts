@@ -21,6 +21,13 @@ context('Select Domestic Status', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship(),
     })
+    cy.task('stubGetPrisonerContactRestrictions', {
+      prisonerContactId,
+      response: {
+        prisonerContactRestrictions: [],
+        contactGlobalRestrictions: [],
+      },
+    })
 
     cy.signIn()
     const { prisonerNumber } = TestData.prisoner()
