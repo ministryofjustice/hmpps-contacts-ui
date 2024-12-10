@@ -40,7 +40,10 @@ context('Update Prisoner Contact Restriction', () => {
     })
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId,
-      response: { prisonerContactRestrictions: [prisonerContactRestriction] },
+      response: {
+        prisonerContactRestrictions: [prisonerContactRestriction],
+        contactGlobalRestrictions: [],
+      },
     })
     cy.signIn()
 

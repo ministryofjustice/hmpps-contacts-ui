@@ -10,11 +10,13 @@ import { Navigation } from '../../common/navigation'
 
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
+import RestrictionsService from '../../../../services/restrictionsService'
 
 export default class ContactDetailsController implements PageHandler {
   constructor(
     private readonly contactsService: ContactsService,
     private readonly referenceDataService: ReferenceDataService,
+    private readonly restrictionsService: RestrictionsService,
   ) {}
 
   public PAGE_NAME = Page.CONTACT_DETAILS_PAGE
@@ -56,9 +58,18 @@ export default class ContactDetailsController implements PageHandler {
       ]
     }
 
+    const prisonerContactRestrictionsEnriched = await this.restrictionsService.getPrisonerContactRestrictions(
+      Number(prisonerContactId),
+      user,
+    )
+
     return res.render('pages/contacts/manage/contactDetails/details', {
       contact,
+      globalRestrictions: prisonerContactRestrictionsEnriched.contactGlobalRestrictions,
+      prisonerContactRestrictions: prisonerContactRestrictionsEnriched.prisonerContactRestrictions,
       primaryAddress,
+      prisonerNumber,
+      contactId,
       prisonerContactId,
       prisonerContactRelationship,
       formattedFullName,

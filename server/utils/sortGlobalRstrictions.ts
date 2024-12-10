@@ -1,7 +1,7 @@
 import ContactRestrictionDetails = contactsApiClientTypes.ContactRestrictionDetails
 
-function sortGlobalRestrictions(globalRestrictions: ContactRestrictionDetails[]): ContactRestrictionDetails[] {
-  return globalRestrictions.sort((a, b) => {
+function sortRestrictions(restrictions: ContactRestrictionDetails[]): ContactRestrictionDetails[] {
+  return restrictions.sort((a, b) => {
     const startDateComparison = new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
     if (startDateComparison !== 0) {
       return startDateComparison
@@ -10,4 +10,4 @@ function sortGlobalRestrictions(globalRestrictions: ContactRestrictionDetails[])
   })
 }
 
-export default sortGlobalRestrictions
+export default sortRestrictions

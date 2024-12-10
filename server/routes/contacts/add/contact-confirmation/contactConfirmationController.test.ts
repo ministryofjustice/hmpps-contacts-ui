@@ -10,16 +10,19 @@ import ContactsService from '../../../../services/contactsService'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import TestData from '../../../testutils/testData'
 import AddContactJourney = journeys.AddContactJourney
+import RestrictionsService from '../../../../services/restrictionsService'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
 jest.mock('../../../../services/referenceDataService')
+jest.mock('../../../../services/restrictionsService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
 const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
 const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
+const restrictionsService = new RestrictionsService(null) as jest.Mocked<RestrictionsService>
 
 let app: Express
 let session: Partial<SessionData>
@@ -57,6 +60,7 @@ beforeEach(() => {
       prisonerSearchService,
       contactsService,
       referenceDataService,
+      restrictionsService,
     },
     userSupplier: () => user,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -66,7 +70,7 @@ beforeEach(() => {
     },
   })
   referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mr')
-  contactsService.getGlobalContactRestrictions.mockResolvedValue([])
+  restrictionsService.getGlobalRestrictionsEnriched.mockResolvedValue([])
 })
 
 afterEach(() => {
@@ -386,7 +390,7 @@ describe('Restrictions', () => {
     describe('GET /prisoner/:prisonerNumber/contacts/add/confirmation/:journeyId?#restrictions', () => {
       it('should render restrictions tab', async () => {
         // Given
-        contactsService.getGlobalContactRestrictions.mockResolvedValue([TestData.getContactRestrictionDetails()])
+        restrictionsService.getGlobalRestrictionsEnriched.mockResolvedValue([TestData.getContactRestrictionDetails()])
 
         // When
         const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
@@ -403,7 +407,7 @@ describe('Restrictions', () => {
           'Is this the right person to add as a contact for John Smith?',
         )
 
-        expect($('[data-qa="confirm-contact-restriction-title"]').text()).toStrictEqual(
+        expect($('[data-qa="confirm-global-restriction-title"]').text()).toStrictEqual(
           'Global restrictions for contact Jones Mason',
         )
 
@@ -419,8 +423,11 @@ describe('Restrictions', () => {
 
       it('should render restrictions tab with expired restrictions', async () => {
         // Given
-        contactsService.getGlobalContactRestrictions.mockResolvedValue([
-          TestData.getContactRestrictionDetails({ expiryDate: '2024-08-01' }),
+        restrictionsService.getGlobalRestrictionsEnriched.mockResolvedValue([
+          TestData.getContactRestrictionDetails({
+            restrictionTypeDescription: 'Child Visitors to be Vetted',
+            expiryDate: '2024-08-01',
+          }),
         ])
 
         // When
@@ -442,7 +449,7 @@ describe('Restrictions', () => {
 
       it('should render restrictions tab with no restrictions message', async () => {
         // Given
-        contactsService.getGlobalContactRestrictions.mockResolvedValue([])
+        restrictionsService.getGlobalRestrictionsEnriched.mockResolvedValue([])
 
         // When
         const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
@@ -458,7 +465,7 @@ describe('Restrictions', () => {
 
       it('should show not entered text for expiry date and comments when not available', async () => {
         // Given
-        contactsService.getGlobalContactRestrictions.mockResolvedValue([
+        restrictionsService.getGlobalRestrictionsEnriched.mockResolvedValue([
           TestData.getContactRestrictionDetails({ expiryDate: '', comments: '' }),
         ])
 
@@ -472,9 +479,24 @@ describe('Restrictions', () => {
         expect($('.view-comment-1-value').text().trim()).toStrictEqual('Not provided')
       })
 
+      it('should not show manage restrictions link', async () => {
+        // Given
+        restrictionsService.getGlobalRestrictionsEnriched.mockResolvedValue([
+          TestData.getContactRestrictionDetails({ expiryDate: '', comments: '' }),
+        ])
+
+        // When
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
+
+        // Then
+        const $ = cheerio.load(response.text)
+
+        expect($('[data-qa=manage-restriction-link]').length).toBe(0)
+      })
+
       it('should sort restrictions based on startDate, with the most recent at the top. where multiple restrictions with the same date, sorted them by createdTime', async () => {
         // Given
-        contactsService.getGlobalContactRestrictions.mockResolvedValue([
+        restrictionsService.getGlobalRestrictionsEnriched.mockResolvedValue([
           TestData.getContactRestrictionDetails({
             startDate: '2024-01-02',
             createdTime: '2024-08-01T09:00:00.000000',

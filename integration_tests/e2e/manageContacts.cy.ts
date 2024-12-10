@@ -94,6 +94,13 @@ context('Manage contacts ', () => {
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetContactById', TestData.contact())
     cy.task('stubGetPrisonerContactRelationshipById', { id: 31, response: TestData.prisonerContactRelationship() })
+    cy.task('stubGetPrisonerContactRestrictions', {
+      prisonerContactId: 31,
+      response: {
+        prisonerContactRestrictions: [],
+        contactGlobalRestrictions: [],
+      },
+    })
     cy.task('stubContactList', 'A1234BC')
     cy.task('stubLanguagesReferenceData')
 
@@ -145,6 +152,13 @@ context('Manage contacts ', () => {
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', { id: 31, response: TestData.prisonerContactRelationship() })
+    cy.task('stubGetPrisonerContactRestrictions', {
+      prisonerContactId: 31,
+      response: {
+        prisonerContactRestrictions: [],
+        contactGlobalRestrictions: [],
+      },
+    })
     cy.task('stubContactList', 'A1234BC')
 
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
