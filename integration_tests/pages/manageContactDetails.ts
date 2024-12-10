@@ -95,6 +95,10 @@ export default class ManageContactDetailsPage extends Page {
     this.editNextOfKinContactLink().click()
   }
 
+  clickEditRelationshipStatusLink() {
+    this.editRelationshipStatusLink().click()
+  }
+
   clickEditRelationshipCommentsLink() {
     this.editRelationshipCommentsLink().click()
   }
@@ -293,6 +297,8 @@ export default class ManageContactDetailsPage extends Page {
 
   private editNextOfKinContactLink = (): PageElement => cy.get(`[data-qa="change-next-of-kin-link"]`)
 
+  private editRelationshipStatusLink = (): PageElement => cy.get('[data-qa="change-relationship-status-link"]')
+
   private editRelationshipCommentsLink = (): PageElement => cy.get(`[data-qa="change-relationship-comments-link"]`)
 
   private viewAllAddressesLink = (): PageElement => cy.get(`[data-qa="view-all-addresses"]`)
@@ -353,7 +359,13 @@ export default class ManageContactDetailsPage extends Page {
     this.checkAnswersNextOfKinValue().should('contain.text', expected)
   }
 
+  verifyShowIsRelationshipActiveAs(expected: string) {
+    this.checkRelationshipStatusValue().should('contain.text', expected)
+  }
+
   private checkAnswersNextOfKinValue = (): PageElement => cy.get('.next-of-kin-value')
+
+  private checkRelationshipStatusValue = (): PageElement => cy.get('.relationship-active-value')
 
   verifyShowIsRelationshipCommentsAs(expected: string) {
     this.checkAnswersRelationshipCommentsValue().should('contain.text', expected)

@@ -68,6 +68,17 @@
         value: {
             text: prisonerContactRelationship.isRelationshipActive | formatYesNo,
             classes: 'relationship-active-value'
+        },
+        actions: {
+            items: [
+                {
+                    href: prisonerContactId +"/relationship-status?returnUrl=" + manageContactRelationshipUrl,
+                    text: "Change",
+                    visuallyHiddenText: "whether relationship is active",
+                    attributes: {"data-qa": "change-relationship-active-link"},
+                    classes: "govuk-link--no-visited-state"
+                }
+            ]
         }
     },
     {

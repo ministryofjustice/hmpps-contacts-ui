@@ -59,6 +59,7 @@ import { addressLinesSchema } from './addresses/enter-address/addressLinesSchema
 import AddressMetadataController from './addresses/address-metadata/addressMetadataController'
 import { addressMetadataSchema } from './addresses/address-metadata/addressMetadataSchemas'
 import RestrictionsService from '../../../services/restrictionsService'
+import ManageRelationshipStatusController from './relationship/manageRelationshipStatusController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -418,6 +419,20 @@ const ManageContactsRoutes = (
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/next-of-kin',
     prepareStandaloneManageContactJourney(),
     asyncMiddleware(manageNextOfKinContactController.POST),
+  )
+
+  const manageRelationshipStatusController = new ManageRelationshipStatusController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/relationship-status',
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    prepareStandaloneManageContactJourney(),
+    logPageViewMiddleware(auditService, manageRelationshipStatusController),
+    asyncMiddleware(manageRelationshipStatusController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/relationship-status',
+    prepareStandaloneManageContactJourney(),
+    asyncMiddleware(manageRelationshipStatusController.POST),
   )
 
   const manageContactAddEmailController = new ManageContactAddEmailController(contactsService)
