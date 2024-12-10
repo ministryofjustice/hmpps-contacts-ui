@@ -56,6 +56,8 @@ import ensureInAddressJourney from './addresses/addressesMiddleware'
 import { addressTypeSchema } from './addresses/address-type/addressTypeSchemas'
 import EnterAddressController from './addresses/enter-address/enterAddressController'
 import { addressLinesSchema } from './addresses/enter-address/addressLinesSchemas'
+import AddressMetadataController from './addresses/address-metadata/addressMetadataController'
+import { addressMetadataSchema } from './addresses/address-metadata/addressMetadataSchemas'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -507,6 +509,21 @@ const ManageContactsRoutes = (
     ensureInAddressJourney(),
     validate(addressLinesSchema()),
     asyncMiddleware(enterAddressController.POST),
+  )
+
+  const addressMetadataController = new AddressMetadataController(referenceDataService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/address-metadata/:journeyId',
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    ensureInAddressJourney(),
+    logPageViewMiddleware(auditService, addressMetadataController),
+    asyncMiddleware(addressMetadataController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/address-metadata/:journeyId',
+    ensureInAddressJourney(),
+    validate(addressMetadataSchema()),
+    asyncMiddleware(addressMetadataController.POST),
   )
 
   return router

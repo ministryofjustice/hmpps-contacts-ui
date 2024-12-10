@@ -4,6 +4,7 @@ import ManageContactDetailsPage from '../pages/manageContactDetails'
 import ViewAllAddressesPage from '../pages/viewAllAddressesPage'
 import SelectAddressTypePage from '../pages/selectAddressTypePage'
 import EnterAddressPage from '../pages/enterAddressPage'
+import EnterAddressMetadataPage from '../pages/enterAddressMetadataPage'
 
 context('Add Address', () => {
   const contactId = 654321
@@ -57,8 +58,18 @@ context('Add Address', () => {
       .selectTown('Exeter')
       .selectCounty('Devon')
       .selectCountry('England')
+      .clickContinue()
 
-    // TODO meta data and CYA pages
+    Page.verifyOnPage(EnterAddressMetadataPage, 'home address', 'First Middle Names Last') //
+      .enterFromMonth('09')
+      .enterFromYear('2009')
+      .enterToMonth('10')
+      .enterToYear('2010')
+      .selectPrimaryAddress('Yes')
+      .selectMailAddress('No')
+      .enterComments('Something about the address')
+
+    // TODO CYA page
   })
 
   it(`Back link goes to manage contacts`, () => {

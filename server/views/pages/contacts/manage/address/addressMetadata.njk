@@ -1,0 +1,171 @@
+{% extends "../../../../partials/layout.njk" %}
+{% from "../../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set title = "Provide further details about the " + typeLabel + " for " + (journey.contactNames | formatNameFirstNameFirst) + "" %}
+{% set pageTitle = applicationName + title %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+
+    {% include '../../../../partials/navigation.njk' %}
+    {{ miniProfile(prisonerDetails) }}
+    {% include '../../../../partials/formErrorSummary.njk' %}
+    <span class="govuk-caption-l">Contacts</span>
+    <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+                {% if validationErrors %}
+                    {% set fromMonthError = validationErrors['fromMonth'] if validationErrors['fromMonth'] else '' %}
+                    {% set fromYearError = validationErrors['fromYear']  if validationErrors['fromYear'] else '' %}
+                    {% set fromDateError = validationErrors['fromDate'] if validationErrors['fromDate'] else '' %}
+                    {% set toMonthError = validationErrors['toMonth'] if validationErrors['toMonth'] else '' %}
+                    {% set toYearError = validationErrors['toYear']  if validationErrors['toYear'] else '' %}
+                    {% set toDateError = validationErrors['toDate'] if validationErrors['toDate'] else '' %}
+                {% endif %}
+
+                {{ govukDateInput({
+                    id: "fromDate",
+                    name: "fromDate",
+                    fieldset: {
+                        legend: {
+                            text: "From date"
+                        }
+                    },
+                    hint: {
+                        text: "For example, 12 2019"
+                    },
+                    errorMessage: {
+                        html: '<span class="govuk-error-message">' + fromMonthError + '</span>
+                            <span class="govuk-error-message">' + fromYearError + '</span>
+                            <span class="govuk-error-message">' + fromDateError + '</span>'
+                    } if fromMonthError or fromYearError or fromDateError,
+                    items: [
+                        {
+                            id: 'fromMonth',
+                            label: 'Month',
+                            name: "fromMonth",
+                            classes: 'govuk-input--width-2' + (' govuk-input--error' if fromMonthError or fromDateError),
+                            value: fromMonth
+                        },
+                        {
+                            id: 'fromYear',
+                            label: 'Year',
+                            name: "fromYear",
+                            classes: 'govuk-input--width-4' + (' govuk-input--error' if fromYearError or fromDateError),
+                            value: fromYear
+                        }
+                    ]
+                }) }}
+
+                {{ govukDateInput({
+                    id: "toDate",
+                    name: "toDate",
+                    fieldset: {
+                        legend: {
+                            text: "To date (optional)"
+                        }
+                    },
+                    errorMessage: {
+                        html: '<span class="govuk-error-message">' + toMonthError + '</span>
+                            <span class="govuk-error-message">' + toYearError + '</span>
+                            <span class="govuk-error-message">' + toDateError + '</span>'
+                    } if toMonthError or toYearError or toDateError,
+                    items: [
+                        {
+                            id: 'toMonth',
+                            label: 'Month',
+                            name: "toMonth",
+                            classes: 'govuk-input--width-2' + (' govuk-input--error' if toMonthError or toDateError),
+                            value: toMonth
+                        },
+                        {
+                            id: 'toYear',
+                            label: 'Year',
+                            name: "toYear",
+                            classes: 'govuk-input--width-4' + (' govuk-input--error' if toYearError or toDateError),
+                            value: toYear
+                        }
+                    ]
+                }) }}
+
+                {{ govukRadios({
+                    classes: "govuk-radios--inline",
+                    name: "primaryAddress",
+                    fieldset: {
+                        legend: {
+                            text: "Is this the contact's primary address?"
+                        }
+                    },
+                    items: [
+                        {
+                            value: "YES",
+                            text: "Yes",
+                            id: "primaryAddressYes",
+                            checked: primaryAddress === 'YES'
+                        },
+                        {
+                            value: "NO",
+                            text: "No",
+                            id: "primaryAddressNo",
+                            checked: primaryAddress === 'NO'
+                        }
+                    ]
+                }) }}
+
+                {{ govukRadios({
+                    classes: "govuk-radios--inline",
+                    name: "mailAddress",
+                    fieldset: {
+                        legend: {
+                            text: "Is this the contact's primary address?"
+                        }
+                    },
+                    items: [
+                        {
+                            value: "YES",
+                            text: "Yes",
+                            id: "mailAddressYes",
+                            checked: mailAddress === 'YES'
+                        },
+                        {
+                            value: "NO",
+                            text: "No",
+                            id: "mailAddressNo",
+                            checked: mailAddress === 'NO'
+                        }
+                    ]
+                }) }}
+
+                {{ govukCharacterCount({
+                    id: "comments",
+                    name: "comments",
+                    label: { text: "Comments (optional)" },
+                    classes: "govuk-!-width-three-quarters",
+                    errorMessage: validationErrors | findError('comments'),
+                    value: comments,
+                    maxlength: 240
+                }) }}
+
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        html: "Continue",
+                        type: "submit",
+                        classes: 'govuk-!-margin-top-6',
+                        attributes: {"data-qa": "continue-button"},
+                        preventDoubleClick: true
+                    }) }}
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ journey.returnPoint.url }}" data-qa="cancel-button">Cancel</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}
