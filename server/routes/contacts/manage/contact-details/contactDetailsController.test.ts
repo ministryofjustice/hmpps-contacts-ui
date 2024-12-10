@@ -333,6 +333,22 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
             expectedChangeLink: 'next-of-kin',
           },
           {
+            fieldName: 'relationship active',
+            fieldKey: 'relationship-active',
+            fieldHiddenText: 'Change whether relationship is active (Relationship details)',
+            mockResponse: { isRelationshipActive: true },
+            expectedValue: 'Yes',
+            expectedChangeLink: 'relationship-status',
+          },
+          {
+            fieldName: 'relationship active',
+            fieldKey: 'relationship-active',
+            fieldHiddenText: 'Change whether relationship is active (Relationship details)',
+            mockResponse: { isRelationshipActive: false },
+            expectedValue: 'No',
+            expectedChangeLink: 'relationship-status',
+          },
+          {
             fieldName: 'additional information for a contact',
             fieldKey: 'relationship-comments',
             fieldHiddenText: 'Change additional information about the relationship  (Relationship details)',
