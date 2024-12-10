@@ -193,17 +193,17 @@ export default class ManageContactDetailsPage extends Page {
   }
 
   private checkPrisonerContactRestrictionCardRowTitles() {
-    this.getRestrictionCardColumnTitleByRaw(2, 1).should('contain.text', 'Start date')
-    this.getRestrictionCardColumnTitleByRaw(2, 2).should('contain.text', 'Expiry date')
-    this.getRestrictionCardColumnTitleByRaw(2, 3).should('contain.text', 'Entered by')
-    this.getRestrictionCardColumnTitleByRaw(2, 4).should('contain.text', 'Comment')
+    this.getRestrictionCardColumnTitleByRaw(3, 1).should('contain.text', 'Start date')
+    this.getRestrictionCardColumnTitleByRaw(3, 2).should('contain.text', 'Expiry date')
+    this.getRestrictionCardColumnTitleByRaw(3, 3).should('contain.text', 'Entered by')
+    this.getRestrictionCardColumnTitleByRaw(3, 4).should('contain.text', 'Comment')
   }
 
   private checkPrisonerContactRestrictionCardRowValues() {
-    this.getRestrictionCardColumnValueByRaw(2, 1).should('contain.text', '1 January 2024')
-    this.getRestrictionCardColumnValueByRaw(2, 2).should('contain.text', '1 August 2050')
-    this.getRestrictionCardColumnValueByRaw(2, 3).should('contain.text', 'USER1')
-    this.getRestrictionCardColumnValueByRaw(2, 4).should('contain.text', 'Keep an eye')
+    this.getRestrictionCardColumnValueByRaw(3, 1).should('contain.text', '1 January 2024')
+    this.getRestrictionCardColumnValueByRaw(3, 2).should('contain.text', '1 August 2050')
+    this.getRestrictionCardColumnValueByRaw(3, 3).should('contain.text', 'USER1')
+    this.getRestrictionCardColumnValueByRaw(3, 4).should('contain.text', 'Keep an eye')
   }
 
   checkGlobalRestrictionsDetails() {
@@ -214,23 +214,23 @@ export default class ManageContactDetailsPage extends Page {
   }
 
   private checkGlobalRestrictionCardRowValues() {
-    this.getRestrictionCardColumnValueByRaw(6, 1).should('contain.text', '1 January 2024')
-    this.getRestrictionCardColumnValueByRaw(6, 2).should('contain.text', '1 August 2050')
-    this.getRestrictionCardColumnValueByRaw(6, 3).should('contain.text', 'USER1')
-    this.getRestrictionCardColumnValueByRaw(6, 4).should('contain.text', 'Keep an eye')
+    this.getRestrictionCardColumnValueByRaw(7, 1).should('contain.text', '1 January 2024')
+    this.getRestrictionCardColumnValueByRaw(7, 2).should('contain.text', '1 August 2050')
+    this.getRestrictionCardColumnValueByRaw(7, 3).should('contain.text', 'USER1')
+    this.getRestrictionCardColumnValueByRaw(7, 4).should('contain.text', 'Keep an eye')
   }
 
   private checkGlobalRestrictionCardRowTitles() {
-    this.getRestrictionCardColumnTitleByRaw(6, 1).should('contain.text', 'Start date')
-    this.getRestrictionCardColumnTitleByRaw(6, 2).should('contain.text', 'Expiry date')
-    this.getRestrictionCardColumnTitleByRaw(6, 3).should('contain.text', 'Entered by')
-    this.getRestrictionCardColumnTitleByRaw(6, 4).should('contain.text', 'Comment')
+    this.getRestrictionCardColumnTitleByRaw(7, 1).should('contain.text', 'Start date')
+    this.getRestrictionCardColumnTitleByRaw(7, 2).should('contain.text', 'Expiry date')
+    this.getRestrictionCardColumnTitleByRaw(7, 3).should('contain.text', 'Entered by')
+    this.getRestrictionCardColumnTitleByRaw(7, 4).should('contain.text', 'Comment')
   }
 
   private getPrisonerContactRestrictionsCardTitle = (): PageElement =>
-    cy.get('[data-qa="restrictions-result-message"] > :nth-child(1)')
+    cy.get('[data-qa="confirm-prisoner-contact-restriction-title"]')
 
-  private getGlobalRestrictionsCardTitle = (): PageElement => cy.get('.global-restriction-title')
+  private getGlobalRestrictionsCardTitle = (): PageElement => cy.get('[data-qa="confirm-global-restriction-title"]')
 
   private getRestrictionsTab = (): PageElement => cy.get('#tab_restrictions')
 

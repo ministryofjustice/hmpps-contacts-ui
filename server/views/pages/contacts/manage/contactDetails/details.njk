@@ -71,7 +71,7 @@
 
                 <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
                     {% set heading = 'Global restrictions for contact ' + ((contact.firstName + " " + contact.lastName) | capitaliseName ) %}
-                    <h1 class="govuk-heading-l global-restriction-title" data-qa="confirm-global-restriction-title">{{ heading }}</h1>
+                    <h2 class="govuk-heading-m" data-qa="confirm-global-restriction-title">{{ heading }}</h1>
                     {% if globalRestrictions.length >0 %}
                         {{ restrictionCard(globalRestrictions, contact, prisonerNumber, prisonerContactId, 'CONTACT_GLOBAL' ) }}
                     {% else %}
