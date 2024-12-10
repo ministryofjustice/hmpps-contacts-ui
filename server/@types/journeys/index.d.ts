@@ -119,7 +119,7 @@ declare namespace journeys {
     contactNames: ContactNames
     addressType?: string
     addressLines?: AddressLines
-    addressMetadata?: string[]
+    addressMetadata?: AddressMetadata
   }
 
   export interface AddressLines {
@@ -132,6 +132,16 @@ declare namespace journeys {
     county?: string
     postcode?: string
     country: string
+  }
+
+  export interface AddressMetadata {
+    fromMonth: string
+    fromYear: string
+    toMonth?: string
+    toYear?: string
+    primaryAddress?: YesOrNo
+    mailAddress?: YesOrNo
+    comments?: string
   }
 
   export interface StandaloneManageContactJourney {
