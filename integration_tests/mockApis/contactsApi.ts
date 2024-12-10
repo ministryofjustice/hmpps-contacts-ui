@@ -29,6 +29,7 @@ export type StubPrisonerContactRestrictionsResponse = components['schemas']['Pri
 export type CreateEmailRequest = components['schemas']['CreateEmailRequest']
 export type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 export type ContactRestrictionDetails = components['schemas']['ContactRestrictionDetails']
+export type StubContactAddressDetails = components['schemas']['ContactAddressDetails']
 
 export default {
   stubCreateContact: (result: StubContactCreationResult): SuperAgentRequest => {
@@ -666,6 +667,25 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: updated,
+      },
+    })
+  },
+  stubCreateContactAddress: ({
+    contactId,
+    created,
+  }: {
+    contactId: number
+    created: StubContactAddressDetails
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPath: `/contact/${contactId}/address`,
+      },
+      response: {
+        status: 201,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: created,
       },
     })
   },

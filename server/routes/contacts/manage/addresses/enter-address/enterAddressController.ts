@@ -89,7 +89,9 @@ export default class EnterAddressController implements PageHandler {
       country: form.country,
     }
     res.redirect(
-      `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/address-metadata/${journeyId}`,
+      journey.isCheckingAnswers
+        ? `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/check-answers/${journeyId}`
+        : `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/address-metadata/${journeyId}`,
     )
   }
 

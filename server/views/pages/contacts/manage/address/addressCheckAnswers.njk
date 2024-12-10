@@ -1,0 +1,212 @@
+{% extends "../../../../partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "../../../../partials/miniProfile/macro.njk" import miniProfile %}
+
+{% set title = "Check your answers before saving the new " + typeLabel + " for " + (journey.contactNames | formatNameFirstNameFirst) %}
+{% set pageTitle = applicationName  + " - " + title %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+{% include '../../../../partials/navigation.njk' %}
+{{ miniProfile(prisonerDetails) }}
+{% include '../../../../partials/formErrorSummary.njk' %}
+<span class="govuk-caption-l">Contacts</span>
+ <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                {% set baseChangeUrl = "/prisoner/" + journey.prisonerNumber + "/contacts/manage/" + journey.contactId + "/address" %}
+                {{ govukSummaryList({
+                    card: {
+                        title: {
+                            text: addressTypeDescription or "Address"
+                        }
+                    },
+                    rows: [
+                        {
+                            key: {
+                                text: "Address type"
+                            },
+                            value: {
+                                html: addressTypeDescription or 'Not provided',
+                                classes: 'check-answers-type-value'
+                            },
+                            actions: {
+                                items: [
+                                    {
+                                        href: baseChangeUrl + "/select-type/"  + journey.id,
+                                        text: "Change",
+                                        visuallyHiddenText: " address type",
+                                        attributes: {"data-qa": "change-type-link"},
+                                        classes: "govuk-link--no-visited-state"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Address"
+                            },
+                            value: {
+                                html: formattedAddress | addressToLines,
+                                classes: 'check-answers-address-value'
+                            },
+                            actions: {
+                                items: [
+                                    {
+                                        href: baseChangeUrl + "/enter-address/"  + journey.id,
+                                        text: "Change",
+                                        visuallyHiddenText: " address",
+                                        attributes: {"data-qa": "change-address-link"},
+                                        classes: "govuk-link--no-visited-state"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            key: {
+                                text: "No fixed address"
+                            },
+                            value: {
+                                html: journey.addressLines.noFixedAddress | formatYesNo,
+                                classes: 'check-answers-nfa-value'
+                            },
+                            actions: {
+                                items: [
+                                    {
+                                        href: baseChangeUrl + "/enter-address/"  + journey.id,
+                                        text: "Change",
+                                        visuallyHiddenText: " no fixed address",
+                                        attributes: {"data-qa": "change-nfa-link"},
+                                        classes: "govuk-link--no-visited-state"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            key: {
+                                text: "From date"
+                            },
+                            value: {
+                                html: formattedFromDate,
+                                classes: 'check-answers-from-date-value'
+                            },
+                            actions: {
+                                items: [
+                                    {
+                                        href: baseChangeUrl + "/address-metadata/"  + journey.id,
+                                        text: "Change",
+                                        visuallyHiddenText: " from date",
+                                        attributes: {"data-qa": "change-from-date-link"},
+                                        classes: "govuk-link--no-visited-state"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            key: {
+                                text: "To date"
+                            },
+                            value: {
+                                html: formattedToDate or 'Not provided',
+                                classes: 'check-answers-to-date-value'
+                            },
+                            actions: {
+                                items: [
+                                    {
+                                        href: baseChangeUrl + "/address-metadata/"  + journey.id,
+                                        text: "Change",
+                                        visuallyHiddenText: " to date",
+                                        attributes: {"data-qa": "change-to-date-link"},
+                                        classes: "govuk-link--no-visited-state"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Primary address"
+                            },
+                            value: {
+                                html: journey.addressMetadata.primaryAddress | formatYesNo or 'Not provided',
+                                classes: 'check-answers-primary-value'
+                            },
+                            actions: {
+                                items: [
+                                    {
+                                        href: baseChangeUrl + "/address-metadata/"  + journey.id,
+                                        text: "Change",
+                                        visuallyHiddenText: " primary address",
+                                        attributes: {"data-qa": "change-primary-link"},
+                                        classes: "govuk-link--no-visited-state"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Mail address"
+                            },
+                            value: {
+                            html: journey.addressMetadata.mailAddress | formatYesNo or 'Not provided',
+                                classes: 'check-answers-mail-value'
+                            },
+                            actions: {
+                                items: [
+                                    {
+                                        href: baseChangeUrl + "/address-metadata/"  + journey.id,
+                                        text: "Change",
+                                        visuallyHiddenText: " mail address",
+                                        attributes: {"data-qa": "change-mail-link"},
+                                        classes: "govuk-link--no-visited-state"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Comments"
+                            },
+                            value: {
+                            html: journey.addressMetadata.comments or 'Not provided',
+                                classes: 'check-answers-comments-value'
+                            },
+                            actions: {
+                                items: [
+                                    {
+                                        href: baseChangeUrl + "/address-metadata/"  + journey.id,
+                                        text: "Change",
+                                        visuallyHiddenText: " comments",
+                                        attributes: {"data-qa": "change-comments-link"},
+                                        classes: "govuk-link--no-visited-state"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }) }}
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        html: "Create contact address",
+                        type: "submit",
+                        classes: 'govuk-!-margin-top-6',
+                        attributes: {"data-qa": "continue-button"},
+                        preventDoubleClick: true
+                    }) }}
+                    {{ govukButton({
+                        html: "Cancel",
+                        type: "button",
+                        classes: 'govuk-!-margin-top-6 govuk-button--secondary',
+                        attributes: {"data-qa": "cancel-button"},
+                        href: journey.returnPoint.url,
+                        preventDoubleClick: true
+                    }) }}
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

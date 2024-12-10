@@ -120,6 +120,7 @@ declare namespace journeys {
     addressType?: string
     addressLines?: AddressLines
     addressMetadata?: AddressMetadata
+    isCheckingAnswers: boolean
   }
 
   export interface AddressLines {

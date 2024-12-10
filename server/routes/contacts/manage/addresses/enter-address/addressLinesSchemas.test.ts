@@ -3,7 +3,7 @@ import { addressLinesSchema } from './addressLinesSchemas'
 
 describe('addressLinesSchemas', () => {
   type Form = {
-    noFixedAddress?: boolean
+    noFixedAddress?: string
     flat?: string
     premises?: string
     street?: string
@@ -99,6 +99,35 @@ describe('addressLinesSchemas', () => {
 
       // Then
       expect(result.success).toStrictEqual(true)
+    })
+
+    it('optional fields are undefined', async () => {
+      // When
+      const result = await doValidate({
+        noFixedAddress: '',
+        flat: '',
+        premises: '',
+        street: '',
+        locality: '',
+        town: '',
+        county: '',
+        postcode: '',
+        country: 'ENG',
+      })
+
+      // Then
+      expect(result.success).toStrictEqual(true)
+      expect(result.data).toStrictEqual({
+        noFixedAddress: undefined,
+        flat: undefined,
+        premises: undefined,
+        street: undefined,
+        locality: undefined,
+        town: undefined,
+        county: undefined,
+        postcode: undefined,
+        country: 'ENG',
+      })
     })
 
     const doValidate = async (form: Form) => {

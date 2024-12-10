@@ -29,6 +29,8 @@ import PrisonerContactRestrictionDetails = contactsApiClientTypes.PrisonerContac
 import UpdatePrisonerContactRestrictionRequest = contactsApiClientTypes.UpdatePrisonerContactRestrictionRequest
 import UpdateContactRestrictionRequest = contactsApiClientTypes.UpdateContactRestrictionRequest
 import PrisonerContactRestrictionsResponse = contactsApiClientTypes.PrisonerContactRestrictionsResponse
+import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
+import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 
 type PageableObject = components['schemas']['PageableObject']
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
@@ -330,6 +332,20 @@ export default class ContactsApiClient extends RestClient {
   ): Promise<PrisonerContactRestrictionsResponse> {
     return this.get<PrisonerContactRestrictionsResponse>(
       { path: `/prisoner-contact/${prisonerContactId}/restriction` },
+      user,
+    )
+  }
+
+  async createContactAddress(
+    contactId: number,
+    request: CreateContactAddressRequest,
+    user: Express.User,
+  ): Promise<ContactIdentityDetails> {
+    return this.post<ContactAddressDetails>(
+      {
+        path: `/contact/${contactId}/address`,
+        data: request,
+      },
       user,
     )
   }

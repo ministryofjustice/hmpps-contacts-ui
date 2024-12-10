@@ -52,7 +52,9 @@ export default class AddressTypeController implements PageHandler {
     const { addressType } = req.body
     journey.addressType = addressType
     res.redirect(
-      `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/enter-address/${journeyId}`,
+      journey.isCheckingAnswers
+        ? `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/check-answers/${journeyId}`
+        : `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/enter-address/${journeyId}`,
     )
   }
 

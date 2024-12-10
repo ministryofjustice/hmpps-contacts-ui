@@ -45,6 +45,7 @@ export default class StartAddressJourneyController implements PageHandler {
       prisonerNumber,
       contactId: Number(contactId),
       contactAddressId: Number(contactAddressId),
+      isCheckingAnswers: false,
       contactNames,
     }
     if (!req.session.addressJourneys) {

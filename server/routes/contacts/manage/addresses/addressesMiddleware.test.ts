@@ -29,6 +29,7 @@ describe('ensureInAddressJourney', () => {
       contactId: 99,
       prisonerNumber: 'A1324BC',
       returnPoint: { url: '/foo' },
+      isCheckingAnswers: false,
       contactNames: {
         lastName: 'Bar',
         firstName: 'Foo',

@@ -68,7 +68,11 @@ export const addressMetadataSchema = () => async () => {
       .transform(val => val.toString()),
     primaryAddress: z.string().optional(),
     mailAddress: z.string().optional(),
-    comments: z.string().max(30, COMMENTS_TOO_LONG_ERROR_MESSAGE).optional(),
+    comments: z
+      .string()
+      .max(240, COMMENTS_TOO_LONG_ERROR_MESSAGE)
+      .optional()
+      .transform(val => (val?.trim().length > 0 ? val.trim() : undefined)),
   }).superRefine((val, ctx) => {
     if (val.fromMonth && !val.fromYear) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, message: START_YEAR_REQUIRED_MESSAGE, path: ['fromYear'] })

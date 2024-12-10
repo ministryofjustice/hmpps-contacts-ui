@@ -35,6 +35,7 @@ beforeEach(() => {
     prisonerNumber,
     contactId,
     returnPoint: { url: '/foo-bar' },
+    isCheckingAnswers: false,
     contactNames: {
       lastName: 'last',
       middleNames: 'middle',
@@ -268,6 +269,33 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/ente
         country: 'ENG',
       }
       expect(session.addressJourneys[journeyId].addressLines).toStrictEqual(expected)
+    },
+  )
+
+  it.each([
+    [false, `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/address-metadata/${journeyId}`],
+    [true, `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/check-answers/${journeyId}`],
+  ])(
+    'should pass to next page and based on checking answsers or not',
+    async (isCheckingAnswers: boolean, expectedRedirect: string) => {
+      existingJourney.isCheckingAnswers = isCheckingAnswers
+
+      await request(app)
+        .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/enter-address/${journeyId}`)
+        .type('form')
+        .send({
+          noFixedAddress: 'YES',
+          flat: 'My Flat',
+          premises: 'My Premises',
+          street: 'My Street',
+          locality: 'My Locality',
+          town: '7375',
+          county: 'DEVON',
+          postcode: 'My Postcode',
+          country: 'ENG',
+        })
+        .expect(302)
+        .expect('Location', expectedRedirect)
     },
   )
 

@@ -70,7 +70,7 @@ export default class AddressMetadataController implements PageHandler {
       comments: form.comments,
     }
     res.redirect(
-      `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/address-metadata/${journeyId}`,
+      `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/check-answers/${journeyId}`,
     )
   }
 }

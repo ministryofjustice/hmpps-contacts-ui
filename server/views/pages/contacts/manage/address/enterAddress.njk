@@ -6,7 +6,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% set title = "What is the " + typeLabel + " for " + (journey.contactNames | formatNameFirstNameFirst) + "?" %}
-{% set pageTitle = applicationName + title %}
+{% set pageTitle = applicationName  + " - " + title %}
 {% set mainClasses = "app-container govuk-body" %}
 {% block meta %}
     <meta name="autocompleteElements" content="town"/>
@@ -19,9 +19,9 @@
     {{ miniProfile(prisonerDetails) }}
     {% include '../../../../partials/formErrorSummary.njk' %}
     <span class="govuk-caption-l">Contacts</span>
-    <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-three-quarters">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
                 {{ govukCheckboxes({

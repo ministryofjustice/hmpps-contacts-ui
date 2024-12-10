@@ -117,5 +117,5 @@ export default class EnterAddressMetadataPage extends Page {
 
   private primaryAddressRadio = (value: 'Yes' | 'No'): PageElement => cy.get(`#primaryAddress${value}`)
 
-  private mailAddressRadio = (value: 'Yes' | 'No'): PageElement => cy.get(`#primaryAddress${value}`)
+  private mailAddressRadio = (value: 'Yes' | 'No'): PageElement => cy.get(`#mailAddress${value}`)
 }
