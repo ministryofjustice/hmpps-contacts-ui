@@ -10,14 +10,43 @@ const POSTCODE_TOO_LONG_ERROR_MSG = 'Postcode must be 12 characters or less'
 
 export const addressLinesSchema = () => async () => {
   return createSchema({
-    noFixedAddress: z.string().optional(),
-    flat: z.string().max(30, FLAT_TOO_LONG_ERROR_MSG).optional(),
-    premises: z.string().max(50, PREMISES_TOO_LONG_ERROR_MSG).optional(),
-    street: z.string().max(160, STREET_TOO_LONG_ERROR_MSG).optional(),
-    locality: z.string().max(70, LOCALITY_TOO_LONG_ERROR_MSG).optional(),
-    town: z.string().optional(),
-    county: z.string().optional(),
-    postcode: z.string().max(12, POSTCODE_TOO_LONG_ERROR_MSG).optional(),
+    noFixedAddress: z
+      .string()
+      .optional()
+      .transform(val => (val?.trim().length > 0 ? val.trim() : undefined)),
+    flat: z
+      .string()
+      .max(30, FLAT_TOO_LONG_ERROR_MSG)
+      .optional()
+      .transform(val => (val?.trim().length > 0 ? val.trim() : undefined)),
+    premises: z
+      .string()
+      .max(50, PREMISES_TOO_LONG_ERROR_MSG)
+      .optional()
+      .transform(val => (val?.trim().length > 0 ? val.trim() : undefined)),
+    street: z
+      .string()
+      .max(160, STREET_TOO_LONG_ERROR_MSG)
+      .optional()
+      .transform(val => (val?.trim().length > 0 ? val.trim() : undefined)),
+    locality: z
+      .string()
+      .max(70, LOCALITY_TOO_LONG_ERROR_MSG)
+      .optional()
+      .transform(val => (val?.trim().length > 0 ? val.trim() : undefined)),
+    town: z
+      .string()
+      .optional()
+      .transform(val => (val?.trim().length > 0 ? val.trim() : undefined)),
+    county: z
+      .string()
+      .optional()
+      .transform(val => (val?.trim().length > 0 ? val.trim() : undefined)),
+    postcode: z
+      .string()
+      .max(12, POSTCODE_TOO_LONG_ERROR_MSG)
+      .optional()
+      .transform(val => (val?.trim().length > 0 ? val.trim() : undefined)),
     country: z
       .string({ message: COUNTRY_REQUIRED_MESSAGE })
       .refine(val => val?.trim().length > 0, { message: COUNTRY_REQUIRED_MESSAGE }),

@@ -33,6 +33,7 @@ beforeEach(() => {
     prisonerNumber,
     contactId,
     returnPoint: { url: '/foo-bar' },
+    isCheckingAnswers: false,
     contactNames: {
       lastName: 'last',
       middleNames: 'middle',
@@ -129,21 +130,28 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/selec
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/select-type/:journeyId', () => {
-  it('should pass to next page and set type in session if there are no validation errors', async () => {
-    // Given
-    existingJourney.addressType = undefined
+  it.each([
+    [false, `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/enter-address/${journeyId}`],
+    [true, `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/check-answers/${journeyId}`],
+  ])(
+    'should pass to next page and set type in session if there are no validation errors (%s, %s)',
+    async (isCheckingAnswers: boolean, expectedUrl: string) => {
+      // Given
+      existingJourney.addressType = undefined
+      existingJourney.isCheckingAnswers = isCheckingAnswers
 
-    // When
-    await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/select-type/${journeyId}`)
-      .type('form')
-      .send({ addressType: 'HOME' })
-      .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/enter-address/${journeyId}`)
+      // When
+      await request(app)
+        .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/select-type/${journeyId}`)
+        .type('form')
+        .send({ addressType: 'HOME' })
+        .expect(302)
+        .expect('Location', expectedUrl)
 
-    // Then
-    expect(session.addressJourneys[journeyId].addressType).toStrictEqual('HOME')
-  })
+      // Then
+      expect(session.addressJourneys[journeyId].addressType).toStrictEqual('HOME')
+    },
+  )
 
   it('should return to enter page if there are validation errors', async () => {
     await request(app)

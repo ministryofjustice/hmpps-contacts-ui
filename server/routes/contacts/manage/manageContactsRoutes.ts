@@ -58,6 +58,7 @@ import EnterAddressController from './addresses/enter-address/enterAddressContro
 import { addressLinesSchema } from './addresses/enter-address/addressLinesSchemas'
 import AddressMetadataController from './addresses/address-metadata/addressMetadataController'
 import { addressMetadataSchema } from './addresses/address-metadata/addressMetadataSchemas'
+import AddressCheckAnswersController from './addresses/address-check-answers/addressCheckAnswersController'
 import RestrictionsService from '../../../services/restrictionsService'
 import ManageRelationshipStatusController from './relationship/manageRelationshipStatusController'
 
@@ -545,6 +546,20 @@ const ManageContactsRoutes = (
     ensureInAddressJourney(),
     validate(addressMetadataSchema()),
     asyncMiddleware(addressMetadataController.POST),
+  )
+
+  const addressCheckAnswersController = new AddressCheckAnswersController(referenceDataService, contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/check-answers/:journeyId',
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    ensureInAddressJourney(),
+    logPageViewMiddleware(auditService, addressCheckAnswersController),
+    asyncMiddleware(addressCheckAnswersController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/check-answers/:journeyId',
+    ensureInAddressJourney(),
+    asyncMiddleware(addressCheckAnswersController.POST),
   )
 
   return router

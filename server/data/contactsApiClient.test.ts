@@ -25,6 +25,8 @@ import CreatePrisonerContactRestrictionRequest = contactsApiClientTypes.CreatePr
 import PrisonerContactRestrictionDetails = contactsApiClientTypes.PrisonerContactRestrictionDetails
 import UpdateContactRestrictionRequest = contactsApiClientTypes.UpdateContactRestrictionRequest
 import UpdatePrisonerContactRestrictionRequest = contactsApiClientTypes.UpdatePrisonerContactRestrictionRequest
+import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
+import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
@@ -1016,7 +1018,7 @@ describe('contactsApiClient', () => {
   })
 
   describe('updatePrisonerContactRestriction', () => {
-    it('should create the prisoner contact restriction', async () => {
+    it('should update the prisoner contact restriction', async () => {
       // Given
       const request: UpdatePrisonerContactRestrictionRequest = {
         restrictionType: 'BAN',
@@ -1068,5 +1070,57 @@ describe('contactsApiClient', () => {
         }
       },
     )
+  })
+
+  describe('createContactAddress', () => {
+    it('should create the contact address', async () => {
+      // Given
+      const request: CreateContactAddressRequest = {
+        addressType: 'HOME',
+        countryCode: 'ENG',
+        startDate: '2020-01-01',
+      }
+      const expected: ContactAddressDetails = {
+        contactAddressId: 123456,
+      }
+      fakeContactsApi
+        .post('/contact/99/address', request)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(201, expected)
+
+      // When
+      const created = await contactsApiClient.createContactAddress(99, request, user)
+
+      // Then
+      expect(created).toEqual(expected)
+    })
+
+    it.each([400, 401, 403])('should propagate errors creating the contact address %s', async (errorCode: number) => {
+      // Given
+      const request: CreateContactAddressRequest = {
+        addressType: 'HOME',
+        countryCode: 'ENG',
+        startDate: '2020-01-01',
+      }
+      const expectedErrorBody = {
+        status: errorCode,
+        userMessage: 'Some error',
+        developerMessage: 'Some error',
+      }
+
+      fakeContactsApi
+        .post('/contact/99/address')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(errorCode, expectedErrorBody)
+
+      // When
+      try {
+        await contactsApiClient.createContactAddress(99, request, user)
+      } catch (e) {
+        // Then
+        expect(e.status).toEqual(errorCode)
+        expect(e.data).toEqual(expectedErrorBody)
+      }
+    })
   })
 })

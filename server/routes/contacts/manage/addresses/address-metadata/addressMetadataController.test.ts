@@ -36,6 +36,7 @@ beforeEach(() => {
     prisonerNumber,
     contactId,
     returnPoint: { url: '/foo-bar' },
+    isCheckingAnswers: false,
     contactNames: {
       lastName: 'last',
       middleNames: 'middle',
@@ -238,7 +239,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addr
         .expect(302)
         .expect(
           'Location',
-          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/address-metadata/${journeyId}`,
+          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/check-answers/${journeyId}`,
         )
 
       // Then

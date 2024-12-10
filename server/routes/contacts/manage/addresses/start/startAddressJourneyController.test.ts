@@ -5,7 +5,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { appWithAllRoutes, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
 import ContactsService from '../../../../../services/contactsService'
-import AddRestrictionJourney = journeys.AddRestrictionJourney
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import AddressJourney = journeys.AddressJourney
 
@@ -42,7 +41,7 @@ beforeEach(() => {
       session = receivedSession
       if (preExistingJourneysToAddToSession) {
         session.addressJourneys = {}
-        preExistingJourneysToAddToSession.forEach((journey: AddRestrictionJourney) => {
+        preExistingJourneysToAddToSession.forEach((journey: AddressJourney) => {
           session.addressJourneys[journey.id] = journey
         })
       }
@@ -90,6 +89,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/s
         returnPoint: { url: '/foo-bar' },
         prisonerNumber,
         contactId,
+        isCheckingAnswers: false,
         contactNames: {
           lastName: 'foo',
           firstName: 'bar',
@@ -121,6 +121,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/s
         lastTouched: new Date(2024, 1, 1, 11, 30).toISOString(),
         prisonerNumber,
         contactId,
+        isCheckingAnswers: false,
         contactNames: {
           lastName: 'foo',
           firstName: 'bar',
@@ -132,6 +133,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/s
         lastTouched: new Date(2024, 1, 1, 12, 30).toISOString(),
         prisonerNumber,
         contactId,
+        isCheckingAnswers: false,
         contactNames: {
           lastName: 'foo',
           firstName: 'bar',
@@ -143,6 +145,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/s
         lastTouched: new Date(2024, 1, 1, 14, 30).toISOString(),
         prisonerNumber,
         contactId,
+        isCheckingAnswers: false,
         contactNames: {
           lastName: 'foo',
           firstName: 'bar',
@@ -154,6 +157,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/s
         lastTouched: new Date(2024, 1, 1, 10, 30).toISOString(),
         prisonerNumber,
         contactId,
+        isCheckingAnswers: false,
         contactNames: {
           lastName: 'foo',
           firstName: 'bar',
@@ -165,6 +169,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/s
         lastTouched: new Date(2024, 1, 1, 13, 30).toISOString(),
         prisonerNumber,
         contactId,
+        isCheckingAnswers: false,
         contactNames: {
           lastName: 'foo',
           firstName: 'bar',

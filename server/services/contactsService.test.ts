@@ -17,6 +17,9 @@ import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
 import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
+import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
+import AddressJourney = journeys.AddressJourney
+import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
 
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
@@ -660,6 +663,141 @@ describe('contactsService', () => {
     it('Propagates errors', async () => {
       apiClient.deleteContactEmail.mockRejectedValue(new Error('some error'))
       await expect(apiClient.deleteContactEmail(23, 77, user)).rejects.toEqual(new Error('some error'))
+    })
+  })
+
+  describe('createContactAddress', () => {
+    it('should create a contact address from the journey dto with all fields', async () => {
+      // Given
+      const expectedCreated: ContactAddressDetails = {
+        contactAddressId: 123456,
+      }
+      apiClient.createContactAddress.mockResolvedValue(expectedCreated)
+      const journey: AddressJourney = {
+        id: '1',
+        lastTouched: new Date().toISOString(),
+        prisonerNumber,
+        contactId: 999,
+        isCheckingAnswers: false,
+        returnPoint: { url: '/foo-bar' },
+        contactNames: { firstName: 'first', lastName: 'last' },
+        addressType: 'WORK',
+        addressLines: {
+          noFixedAddress: true,
+          flat: '1a',
+          premises: 'My block',
+          street: 'A street',
+          locality: 'Downtown',
+          town: '1234',
+          county: 'DEVON',
+          postcode: 'PC1 D3',
+          country: 'ENG',
+        },
+        addressMetadata: {
+          fromMonth: '2',
+          fromYear: '2001',
+          toMonth: '12',
+          toYear: '2012',
+          primaryAddress: 'YES',
+          mailAddress: 'YES',
+          comments: 'My comments will be super useful',
+        },
+      }
+
+      const expectedRequest: CreateContactAddressRequest = {
+        addressType: 'WORK',
+        flat: '1a',
+        property: 'My block',
+        street: 'A street',
+        area: 'Downtown',
+        cityCode: '1234',
+        countyCode: 'DEVON',
+        postcode: 'PC1 D3',
+        countryCode: 'ENG',
+        verified: false,
+        primaryAddress: true,
+        mailFlag: true,
+        startDate: new Date('2001-02-01Z'),
+        endDate: new Date('2012-12-01Z'),
+        noFixedAddress: true,
+        comments: 'My comments will be super useful',
+        createdBy: user.username,
+      }
+
+      // When
+      const created = await service.createContactAddress(journey, user)
+
+      // Then
+      expect(created).toStrictEqual(expectedCreated)
+      expect(apiClient.createContactAddress).toHaveBeenCalledWith(999, expectedRequest, user)
+    })
+
+    it('should create a contact address from the journey dto with only optional fields', async () => {
+      // Given
+      const expectedCreated: ContactAddressDetails = {
+        contactAddressId: 123456,
+      }
+      apiClient.createContactAddress.mockResolvedValue(expectedCreated)
+      const journey: AddressJourney = {
+        id: '1',
+        lastTouched: new Date().toISOString(),
+        prisonerNumber,
+        contactId: 999,
+        isCheckingAnswers: false,
+        returnPoint: { url: '/foo-bar' },
+        contactNames: { firstName: 'first', lastName: 'last' },
+        addressType: 'DO_NOT_KNOW',
+        addressLines: { noFixedAddress: false, country: 'ENG' },
+        addressMetadata: { fromMonth: '2', fromYear: '2000' },
+      }
+
+      const expectedRequest: CreateContactAddressRequest = {
+        addressType: undefined,
+        flat: undefined,
+        property: undefined,
+        street: undefined,
+        area: undefined,
+        cityCode: undefined,
+        countyCode: undefined,
+        postcode: undefined,
+        countryCode: 'ENG',
+        verified: false,
+        primaryAddress: false,
+        mailFlag: false,
+        startDate: new Date('2000-02-01Z'),
+        endDate: undefined,
+        noFixedAddress: false,
+        comments: undefined,
+        createdBy: user.username,
+      }
+
+      // When
+      const created = await service.createContactAddress(journey, user)
+
+      // Then
+      expect(created).toStrictEqual(expectedCreated)
+      expect(apiClient.createContactAddress).toHaveBeenCalledWith(999, expectedRequest, user)
+    })
+
+    it('should handle a bad request', async () => {
+      apiClient.createContactAddress.mockRejectedValue(createError.BadRequest())
+      await expect(
+        service.createContactAddress(
+          {
+            id: '1',
+            lastTouched: new Date().toISOString(),
+            prisonerNumber,
+            contactId: 999,
+            isCheckingAnswers: false,
+            returnPoint: { url: '/foo-bar' },
+            contactNames: { firstName: 'first', lastName: 'last' },
+            addressType: 'DO_NOT_KNOW',
+            addressLines: { noFixedAddress: false, country: 'ENG' },
+            addressMetadata: { fromMonth: '01', fromYear: '2000' },
+          },
+          user,
+        ),
+      ).rejects.toBeInstanceOf(BadRequest)
     })
   })
 })
