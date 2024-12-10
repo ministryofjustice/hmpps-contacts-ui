@@ -297,7 +297,7 @@ export default class ManageContactDetailsPage extends Page {
 
   private editNextOfKinContactLink = (): PageElement => cy.get(`[data-qa="change-next-of-kin-link"]`)
 
-  private editRelationshipStatusLink = (): PageElement => cy.get('[data-qa="change-relationship-status-link"]')
+  private editRelationshipStatusLink = (): PageElement => cy.get('[data-qa="change-relationship-active-link"]')
 
   private editRelationshipCommentsLink = (): PageElement => cy.get(`[data-qa="change-relationship-comments-link"]`)
 

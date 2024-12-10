@@ -33,7 +33,7 @@ export default class ManageRelationshipStatusController implements PageHandler {
     const { user, journey } = res.locals
     const { prisonerContactId } = req.params
     const request: UpdateRelationshipRequest = {
-      isRelationshipActive: req.body.isRelationshipActive === 'YES',
+      isRelationshipActive: req.body.relationshipStatus === 'YES',
       updatedBy: user.username,
     }
 

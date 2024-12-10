@@ -77,7 +77,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
           `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/relationship-status?returnUrl=/foo-bar`,
         )
         .type('form')
-        .send({ isRelationshipActive: input })
+        .send({ relationshipStatus: input })
         .expect(302)
         .expect('Location', '/foo-bar')
       expect(contactsService.updateContactRelationshipById).toHaveBeenCalledWith(
