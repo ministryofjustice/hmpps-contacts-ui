@@ -1,7 +1,7 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% for addressPram in params %}
-    {% set addressItem = addressPram.address %}
+{% for addressParam in params %}
+    {% set addressItem = addressParam.address %}
     {% set addressRow = [] %}
     {% set addressSpecificPhoneNumbers = '' %}
 
@@ -43,12 +43,12 @@
             {% endif %}
         {% endset -%}
 
-        {% if addressPram.mostRelevantAddressLabel %}
+        {% if addressParam.mostRelevantAddressLabel %}
             {% set addressRow = (
                 addressRow.push(
                     {
                         key: {
-                            text: addressPram.mostRelevantAddressLabel,
+                            text: addressParam.mostRelevantAddressLabel,
                             classes: 'govuk-!-font-weight-regular most-relevant-address-label'
                         },
                         classes: 'govuk-summary-list__row--no-border'
@@ -114,10 +114,10 @@
     {{ govukSummaryList({
         card: {
             title: {
-                text: addressPram.cardLabel if addressPram.cardLabel else addressItem.addressTypeDescription | capitalizeFirstLetter
+                text: addressParam.cardTitle
             },
             actions: {
-                items: addressPram.cardActions
+                items: addressParam.cardActions
             }
         },
         rows: addressRow

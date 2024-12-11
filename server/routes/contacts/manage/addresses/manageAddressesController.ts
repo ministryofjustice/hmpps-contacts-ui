@@ -26,7 +26,7 @@ export default class ManageAddressesController implements PageHandler {
 
     const addresses = sortedAddresses.map((address: ContactAddressDetails) => ({
       address,
-      cardLabel: this.getExpiredAddressTitle(address.endDate, address.addressTypeDescription),
+      cardTitle: this.getExpiredAddressTitle(address.endDate, address.addressTypeDescription ?? 'Address'),
       mostRelevantAddressLabel: getLabelForAddress(address),
     }))
 
@@ -53,7 +53,7 @@ export default class ManageAddressesController implements PageHandler {
   }
 
   private getExpiredAddressTitle(endDate: string, addressTypeDescription: string): string {
-    return this.isExpired(endDate) ? `Expired ${addressTypeDescription}` : addressTypeDescription
+    return this.isExpired(endDate) ? `Expired ${addressTypeDescription?.toLowerCase()}` : addressTypeDescription
   }
 
   private isExpired(endDate: string): boolean {
