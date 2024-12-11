@@ -281,6 +281,29 @@ describe('Addresses', () => {
     const $ = cheerio.load(response.text)
     expect(response.status).toEqual(200)
     expect($('[data-qa="main-heading"]').text().trim()).toStrictEqual('Addresses for Jones Mason')
-    expect($('.govuk-summary-card__title').text().trim()).toContain('Expired Home address')
+    expect($('.govuk-summary-card__title').text().trim()).toContain('Expired home address')
+  })
+
+  it('should show expired next to address card title if no address type', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    const contact = TestData.contact()
+    contact.addresses = [
+      { ...defaultAddress, addressType: undefined, addressTypeDescription: undefined, endDate: '2024-01-01' },
+    ]
+
+    contactsService.getContact.mockResolvedValue(contact)
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/G7941GL/contacts/manage/20000011/relationship/52/view-addresses?returnUrl=/foo-ba`,
+    )
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect(response.status).toEqual(200)
+    expect($('[data-qa="main-heading"]').text().trim()).toStrictEqual('Addresses for Jones Mason')
+    expect($('.govuk-summary-card__title').text().trim()).toContain('Expired address')
   })
 })

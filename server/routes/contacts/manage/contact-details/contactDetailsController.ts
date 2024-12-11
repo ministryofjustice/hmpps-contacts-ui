@@ -35,29 +35,6 @@ export default class ContactDetailsController implements PageHandler {
     const formattedFullName = await this.formattedFullName(contact, user)
     const navigation: Navigation = { breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'] }
 
-    const manageContactUrl = `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`
-    const manageContactReturnUrl = `${manageContactUrl}/view-addresses`
-
-    let primaryAddress
-    if (mostRelevantAddress) {
-      primaryAddress = [
-        {
-          mostRelevantAddressLabel,
-          address: mostRelevantAddress,
-          cardLabel: 'Addresses',
-          cardActions: [
-            {
-              href: manageContactReturnUrl,
-              text: 'View all addresses',
-              attributes: { 'data-qa': 'view-all-addresses' },
-              classes: 'govuk-link--no-visited-state',
-            },
-          ],
-          changeLink: 'false',
-        },
-      ]
-    }
-
     const prisonerContactRestrictionsEnriched = await this.restrictionsService.getPrisonerContactRestrictions(
       Number(prisonerContactId),
       user,
@@ -67,7 +44,8 @@ export default class ContactDetailsController implements PageHandler {
       contact,
       globalRestrictions: prisonerContactRestrictionsEnriched.contactGlobalRestrictions,
       prisonerContactRestrictions: prisonerContactRestrictionsEnriched.prisonerContactRestrictions,
-      primaryAddress,
+      mostRelevantAddress,
+      mostRelevantAddressLabel,
       prisonerNumber,
       contactId,
       prisonerContactId,

@@ -11,8 +11,25 @@
         {%- include "./manageBasicDetails.njk" -%}
         {%- include "./manageRelationshipDetails.njk" -%}
 
-        {% if primaryAddress %}
-            {{ addressDetails(primaryAddress)}}
+        {% if mostRelevantAddress %}
+            {{ addressDetails(
+                [
+                    {
+                        mostRelevantAddressLabel: mostRelevantAddressLabel,
+                        address: mostRelevantAddress,
+                        cardTitle: 'Addresses',
+                        cardActions: [
+                            {
+                                href: manageContactRelationshipUrl + '/view-addresses',
+                                text: 'View all addresses',
+                                attributes: { 'data-qa': 'view-all-addresses' },
+                                classes: 'govuk-link--no-visited-state'
+                            }
+                        ],
+                        changeLink: 'false'
+                    }
+                ]
+            )}}
         {% else %}
             {{ notProvided({title: 'Addresses', key: 'Address', className: 'addresses-not-provided' }) }}
         {% endif %}
