@@ -10,6 +10,7 @@
  {% macro contactDetailsHtml() %}
         {%- include "./manageBasicDetails.njk" -%}
         {%- include "./manageRelationshipDetails.njk" -%}
+        {%- include "./manageApprovedToVisit.njk" -%}
 
         {% if mostRelevantAddress %}
             {{ addressDetails(

@@ -404,6 +404,43 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       })
     })
 
+    describe('Approved visitor', () => {
+      it.each([
+        [true, 'Yes'],
+        [false, 'No'],
+      ])('should render approved visitor card', async (isApprovedVisitor: boolean, expectedStatus: string) => {
+        auditService.logPageView.mockResolvedValue(null)
+        prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+        contactsService.getContact.mockResolvedValue(TestData.contact())
+        contactsService.getPrisonerContactRelationship.mockResolvedValue(
+          TestData.prisonerContactRelationship({
+            relationshipCode: 'FRI',
+            relationshipDescription: 'Friend',
+            emergencyContact: true,
+            nextOfKin: false,
+            isRelationshipActive: true,
+            isApprovedVisitor,
+            comments: 'Some comments',
+          }),
+        )
+
+        // When
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+        // Then
+        const $ = cheerio.load(response.text)
+        expect(response.status).toEqual(200)
+
+        expect($('.manage-approved-to-visit-status').text().trim()).toStrictEqual(expectedStatus)
+        const title = $('[data-qa=manage-approved-to-visit-status-link]')
+        expect(title.text().trim()).toStrictEqual('Change approved to visit (Approval to visit prisoner?)')
+        expect(title.first().attr('href')).toStrictEqual(
+          '/prisoner/A1234BC/contacts/manage/22/relationship/99/approved-to-visit?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99',
+        )
+        expect($('.approved-visitor-cards-title').text().trim()).toContain('Approval to visit prisoner?')
+      })
+    })
+
     describe('Gender', () => {
       it.each([
         ['M', 'Male'],

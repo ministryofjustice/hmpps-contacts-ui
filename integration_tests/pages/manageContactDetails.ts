@@ -95,6 +95,10 @@ export default class ManageContactDetailsPage extends Page {
     this.editNextOfKinContactLink().click()
   }
 
+  clickEditApprovedVisitorLink() {
+    this.editApprovedVisitorLink().click()
+  }
+
   clickEditRelationshipStatusLink() {
     this.editRelationshipStatusLink().click()
   }
@@ -297,6 +301,8 @@ export default class ManageContactDetailsPage extends Page {
 
   private editNextOfKinContactLink = (): PageElement => cy.get(`[data-qa="change-next-of-kin-link"]`)
 
+  private editApprovedVisitorLink = (): PageElement => cy.get('[data-qa="manage-approved-to-visit-status-link"]')
+
   private editRelationshipStatusLink = (): PageElement => cy.get('[data-qa="change-relationship-active-link"]')
 
   private editRelationshipCommentsLink = (): PageElement => cy.get(`[data-qa="change-relationship-comments-link"]`)
@@ -359,11 +365,17 @@ export default class ManageContactDetailsPage extends Page {
     this.checkAnswersNextOfKinValue().should('contain.text', expected)
   }
 
+  verifyShowIsApprovedVisitorAs(expected: string) {
+    this.checkApprovedVisitorValue().should('contain.text', expected)
+  }
+
   verifyShowIsRelationshipActiveAs(expected: string) {
     this.checkRelationshipStatusValue().should('contain.text', expected)
   }
 
   private checkAnswersNextOfKinValue = (): PageElement => cy.get('.next-of-kin-value')
+
+  private checkApprovedVisitorValue = (): PageElement => cy.get('.next-of-kin-value')
 
   private checkRelationshipStatusValue = (): PageElement => cy.get('.relationship-active-value')
 
