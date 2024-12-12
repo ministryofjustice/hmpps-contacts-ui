@@ -418,7 +418,7 @@ describe('Restrictions', () => {
         expect(titleText).toStrictEqual('Child Visitors to be Vetted')
         expect($('.view-start-date-1-value').text().trim()).toStrictEqual('1 January 2024')
         expect($('.view-expiry-date-1-value').text().trim()).toStrictEqual('1 August 2050')
-        expect($('.view-entered-by-1-value').text().trim()).toStrictEqual('USER1')
+        expect($('.view-entered-by-1-value').text().trim()).toStrictEqual('User One')
         expect($('.view-comment-1-value').text().trim()).toStrictEqual('Keep an eye')
       })
 
@@ -427,6 +427,7 @@ describe('Restrictions', () => {
         restrictionsService.getGlobalRestrictionsEnriched.mockResolvedValue([
           TestData.getContactRestrictionDetails({
             restrictionTypeDescription: 'Child Visitors to be Vetted',
+            enteredByDisplayName: 'User One',
             expiryDate: '2024-08-01',
           }),
         ])
@@ -444,7 +445,7 @@ describe('Restrictions', () => {
         expect(cardTitle).toStrictEqual('Child Visitors to be Vetted (expired)')
         expect($('.view-start-date-1-value').text().trim()).toStrictEqual('1 January 2024')
         expect($('.view-expiry-date-1-value').text().trim()).toStrictEqual('1 August 2024')
-        expect($('.view-entered-by-1-value').text().trim()).toStrictEqual('USER1')
+        expect($('.view-entered-by-1-value').text().trim()).toStrictEqual('User One')
         expect($('.view-comment-1-value').text().trim()).toStrictEqual('Keep an eye')
       })
 
