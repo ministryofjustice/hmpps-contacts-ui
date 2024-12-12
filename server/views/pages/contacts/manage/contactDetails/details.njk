@@ -31,7 +31,19 @@
                 ]
             )}}
         {% else %}
-            {{ notProvided({title: 'Addresses', key: 'Address', className: 'addresses-not-provided' }) }}
+            {{ notProvided({
+                title: 'Addresses',
+                key: 'Address',
+                className: 'addresses-not-provided',
+                actions: [
+                    {
+                        href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contactId + "/address/add/start?returnUrl=" + manageContactRelationshipUrl + '/view-addresses' ,
+                        text: 'Add address',
+                        attributes: { 'data-qa': 'add-new-addresses-link' },
+                        classes: 'govuk-link--no-visited-state'
+                    }
+                ]
+            }) }}
         {% endif %}
         {%- include "./managePhoneNumbers.njk" -%}
         {%- include "./manageEmailAddresses.njk" -%}
@@ -70,7 +82,7 @@
                 </div>
                 <div class="govuk-tabs__panel govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" data-qa="restrictions-result-message" id="restrictions">
 
-                    {% set heading = 'Prisoner-contact restrictions between prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' and contact ' + ((contact.firstName + " " + contact.lastName) | capitaliseName ) %}
+                    {% set heading = 'Prisoner-contact restrictions between prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' and contact ' + (contact | formatNameFirstNameFirst(excludeMiddleNames = true)) %}
                     <h1 class="govuk-heading-l" data-qa="manage-restriction-title">Restrictions</h1>
                     <h2 class="govuk-heading-m" data-qa="confirm-prisoner-contact-restriction-title">{{ heading }}</h2>
                     {% if prisonerContactRestrictions.length >0 %}

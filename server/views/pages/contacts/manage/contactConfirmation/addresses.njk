@@ -20,7 +20,7 @@
                 area: mostRelevantAddress.area,
                 city: mostRelevantAddress.cityDescription,
                 county: mostRelevantAddress.countyDescription,
-                postalCode: mostRelevantAddress.postCode,
+                postalCode: mostRelevantAddress.postcode,
                 country: mostRelevantAddress.countryDescription
             }
         %}
@@ -70,7 +70,7 @@
                         text: "Type"
                     },
                     value: {
-                        text: mostRelevantAddress.addressType | capitalizeFirstLetter,
+                        text: mostRelevantAddress.addressTypeDescription or 'Address',
                         classes: 'confirm-type-value'
                     }
                 }
@@ -132,14 +132,6 @@
     card: {
         title: {
             text: "Addresses"
-        },
-        actions: {
-            items: [
-              {
-                href: "#",
-                text: "View all addresses"
-              }
-            ]
         }
     },
     rows: mostRelevantAddressRow
