@@ -12,6 +12,8 @@ export default class EnterAddressController implements PageHandler {
 
   public PAGE_NAME = Page.ENTER_ADDRESS_PAGE
 
+  private DEFAULT_COUNTRY = 'ENG'
+
   GET = async (
     req: Request<{
       journeyId: string
@@ -38,9 +40,10 @@ export default class EnterAddressController implements PageHandler {
       .getReferenceData(ReferenceCodeType.COUNTY, user)
       .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.county ?? journey.addressLines?.county))
 
+    const selectedCountry = res.locals?.formResponses?.country ?? journey.addressLines?.country ?? this.DEFAULT_COUNTRY
     const countryOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.COUNTRY, user)
-      .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.country ?? journey.addressLines?.country))
+      .then(val => this.getSelectedOptions(val, selectedCountry))
 
     const noFixedAddress =
       res.locals?.formResponses?.noFixedAddress ?? (journey.addressLines?.noFixedAddress ? 'YES' : 'NO')

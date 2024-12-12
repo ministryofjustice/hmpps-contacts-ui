@@ -32,12 +32,19 @@ export default class AddressMetadataController implements PageHandler {
     const navigation: Navigation = {
       backLink: `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/enter-address/${journeyId}`,
     }
+    let fromMonth = res.locals?.formResponses?.fromMonth ?? journey.addressMetadata?.fromMonth
+    let fromYear = res.locals?.formResponses?.fromYear ?? journey.addressMetadata?.fromYear
+    if (!res.locals.formResponses && !fromMonth && !fromYear) {
+      const today = new Date()
+      fromMonth = today.getMonth() + 1
+      fromYear = today.getFullYear()
+    }
     const viewModel = {
       journey,
       navigation,
       typeLabel,
-      fromMonth: res.locals?.formResponses?.fromMonth ?? journey.addressMetadata?.fromMonth,
-      fromYear: res.locals?.formResponses?.fromYear ?? journey.addressMetadata?.fromYear,
+      fromMonth,
+      fromYear,
       toMonth: res.locals?.formResponses?.toMonth ?? journey.addressMetadata?.toMonth,
       toYear: res.locals?.formResponses?.toYear ?? journey.addressMetadata?.toYear,
       primaryAddress: res.locals?.formResponses?.primaryAddress ?? journey.addressMetadata?.primaryAddress,

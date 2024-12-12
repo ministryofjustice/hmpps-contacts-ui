@@ -206,6 +206,44 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addre
     },
   )
 
+  it('should default from date on initial page load', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/address-metadata/${journeyId}`,
+    )
+
+    // Then
+    expect(response.status).toEqual(200)
+    const $ = cheerio.load(response.text)
+    const today = new Date()
+    expect($('#fromMonth').val()).toStrictEqual((today.getMonth() + 1).toString())
+    expect($('#fromYear').val()).toStrictEqual(today.getFullYear().toString())
+  })
+
+  it('should not default from date if form was submitted with empty values', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    const form = {
+      fromMonth: '',
+      fromYear: '',
+    }
+    flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/address-metadata/${journeyId}`,
+    )
+
+    // Then
+    expect(response.status).toEqual(200)
+    const $ = cheerio.load(response.text)
+    expect($('#fromMonth').val()).toStrictEqual('')
+    expect($('#fromYear').val()).toStrictEqual('')
+  })
+
   it('should render not found no journey in session', async () => {
     await request(app)
       .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/address-metadata/${uuidv4()}`)
