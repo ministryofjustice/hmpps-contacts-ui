@@ -100,6 +100,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/enter
       expect(response.status).toEqual(200)
 
       const $ = cheerio.load(response.text)
+      expect($('#country').val()).toStrictEqual('ENG')
       expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(expectedTitle)
       expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
@@ -140,7 +141,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/enter
         town: '7375',
         county: 'DEVON',
         postcode: 'My Postcode',
-        country: 'ENG',
+        country: 'SCOT',
       }
 
       // When
@@ -158,7 +159,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/enter
       expect($('#town').val()).toStrictEqual('7375')
       expect($('#county').val()).toStrictEqual('DEVON')
       expect($('#postcode').val()).toStrictEqual('My Postcode')
-      expect($('#country').val()).toStrictEqual('ENG')
+      expect($('#country').val()).toStrictEqual('SCOT')
       expect($('input[type=checkbox]:checked').val()).toStrictEqual(expectedChecked)
     },
   )
@@ -192,7 +193,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/enter
         town: '7375',
         county: 'DEVON',
         postcode: 'My Postcode',
-        country: 'ENG',
+        country: 'SCOT',
       }
 
       // When
