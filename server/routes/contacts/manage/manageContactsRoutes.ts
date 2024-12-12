@@ -60,6 +60,7 @@ import AddressMetadataController from './addresses/address-metadata/addressMetad
 import { addressMetadataSchema } from './addresses/address-metadata/addressMetadataSchemas'
 import AddressCheckAnswersController from './addresses/address-check-answers/addressCheckAnswersController'
 import RestrictionsService from '../../../services/restrictionsService'
+import ManageApprovedToVisitController from './approved-to-visit/manageApprovedToVisitController'
 import ManageRelationshipStatusController from './relationship/manageRelationshipStatusController'
 
 const ManageContactsRoutes = (
@@ -158,6 +159,20 @@ const ManageContactsRoutes = (
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/interpreter',
     prepareStandaloneManageContactJourney(),
     asyncMiddleware(manageInterpreterController.POST),
+  )
+
+  const manageApprovedToVisitController = new ManageApprovedToVisitController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/approved-to-visit',
+    prepareStandaloneManageContactJourney(),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    logPageViewMiddleware(auditService, manageApprovedToVisitController),
+    asyncMiddleware(manageApprovedToVisitController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/approved-to-visit',
+    prepareStandaloneManageContactJourney(),
+    asyncMiddleware(manageApprovedToVisitController.POST),
   )
 
   const manageContactStaffController = new ManageContactStaffController(contactsService)

@@ -3790,6 +3790,11 @@ export interface components {
        */
       nextOfKin: boolean
       /**
+       * @description Is this a approved visitor for the prisoner?
+       * @example true
+       */
+      isApprovedVisitor: boolean
+      /**
        * @description Is this prisoner's contact relationship active?
        * @example true
        */
@@ -4815,6 +4820,11 @@ export interface components {
        * @example boolean
        */
       isEmergencyContact?: string
+      /**
+       * @description Whether they are approved to visit the prisoner
+       * @example true
+       */
+      isApprovedVisitor?: boolean
       /**
        * @description Whether they are the next of kin for the prisoner
        * @example true

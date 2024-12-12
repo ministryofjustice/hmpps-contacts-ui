@@ -319,6 +319,7 @@ export default class TestData {
     emergencyContact = false,
     nextOfKin = true,
     isRelationshipActive = true,
+    isApprovedVisitor = true,
     comments = 'Some comments',
   }: Partial<PrisonerContactRelationshipDetails> = {}): PrisonerContactRelationshipDetails =>
     ({
@@ -327,6 +328,7 @@ export default class TestData {
       emergencyContact,
       nextOfKin,
       isRelationshipActive,
+      isApprovedVisitor,
       comments,
     }) as PrisonerContactRelationshipDetails
 
