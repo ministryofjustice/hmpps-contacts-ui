@@ -490,7 +490,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
       const confirmAddressValueClass = '.confirm-address-value'
       expect($(confirmAddressValueClass).text().trim()).toStrictEqual(
-        '24, Acacia AvenueBuntingSheffieldSouth YorkshireEngland',
+        '24, Acacia AvenueBuntingSheffieldSouth YorkshireS2 3LKEngland',
       )
     })
 
@@ -524,6 +524,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       const $ = cheerio.load(response.text)
       expect(response.status).toEqual(200)
       expect($('.addresses-not-provided').text().trim()).toStrictEqual('Not provided')
+      expect($('[data-qa=add-new-addresses-link]').first().attr('href')).toStrictEqual(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/address/add/start?returnUrl=/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/view-addresses`,
+      )
     })
 
     it('should not show comments when theres no comments', async () => {

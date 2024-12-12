@@ -59,7 +59,7 @@ describe('Addresses', () => {
     expect(response.status).toEqual(200)
     expect($('.most-relevant-address-label').text().trim()).toStrictEqual('Primary')
     expect($('.confirm-address-value').text().trim()).toStrictEqual(
-      '24, Acacia AvenueBuntingSheffieldSouth YorkshireEngland',
+      '24, Acacia AvenueBuntingSheffieldSouth YorkshireS2 3LKEngland',
     )
     expect($('.address-specific-phone-numbers-not-provided').text().trim()).toStrictEqual('Home: 01111 777777 (+0123)')
     expect($('[data-qa=confirm-start-date-value]').first().text().trim()).toStrictEqual('From January 2020')
@@ -145,9 +145,15 @@ describe('Addresses', () => {
     expect(cardTitles.eq(2).text().trim()).toStrictEqual('Business address')
 
     const addressLines = $('.confirm-address-value')
-    expect(addressLines.eq(0).text()).toContain('Flat no 1, 24, Acacia AvenueBuntingSheffieldSouth YorkshireEngland')
-    expect(addressLines.eq(1).text()).toContain('Flat no 2, 24, Acacia AvenueBuntingSheffieldSouth YorkshireEngland')
-    expect(addressLines.eq(2).text()).toContain('Flat no 3, 24, Acacia AvenueBuntingSheffieldSouth YorkshireEngland')
+    expect(addressLines.eq(0).text()).toContain(
+      'Flat no 1, 24, Acacia AvenueBuntingSheffieldSouth YorkshireS2 3LKEngland',
+    )
+    expect(addressLines.eq(1).text()).toContain(
+      'Flat no 2, 24, Acacia AvenueBuntingSheffieldSouth YorkshireS2 3LKEngland',
+    )
+    expect(addressLines.eq(2).text()).toContain(
+      'Flat no 3, 24, Acacia AvenueBuntingSheffieldSouth YorkshireS2 3LKEngland',
+    )
 
     const mostRelevantLabel = $('.most-relevant-address-label')
     expect(mostRelevantLabel.length).toStrictEqual(2)

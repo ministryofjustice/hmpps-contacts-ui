@@ -40,6 +40,7 @@ const blankAddress = TestData.address({
   countyDescription: '',
   countryCode: '',
   countryDescription: '',
+  postcode: '',
   primaryAddress: false,
   mailFlag: false,
   startDate: null,
