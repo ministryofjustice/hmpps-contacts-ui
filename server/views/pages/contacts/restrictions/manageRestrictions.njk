@@ -46,7 +46,7 @@
                         text: "Entered by"
                     },
                     value: {
-                        text:  restriction.createdBy,
+                        text:  restriction.enteredByDisplayName or restriction.enteredByUsername,
                         classes: 'view-entered-by-' + restrictionId + '-value'
                     }
                 },

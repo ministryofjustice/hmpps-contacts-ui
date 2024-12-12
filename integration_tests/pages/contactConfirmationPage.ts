@@ -155,7 +155,7 @@ export default class ContactConfirmationPage extends Page {
 
     this.getRestrictionCardColumnValueByRaw(1).should('contain.text', '1 January 2024')
     this.getRestrictionCardColumnValueByRaw(2).should('contain.text', '1 August 2050')
-    this.getRestrictionCardColumnValueByRaw(3).should('contain.text', 'USER1')
+    this.getRestrictionCardColumnValueByRaw(3).should('contain.text', 'User One')
     this.getRestrictionCardColumnValueByRaw(4).should('contain.text', 'Keep an eye')
     return this
   }
