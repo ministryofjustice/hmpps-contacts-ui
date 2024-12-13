@@ -1,6 +1,9 @@
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 
-export function findMostRelevantAddress(contact: contactsApiClientTypes.ContactDetails) {
+export function findMostRelevantAddress(
+  contact: contactsApiClientTypes.ContactDetails,
+  fallbackToExpired: boolean = false,
+) {
   const currentAddresses = contact.addresses?.filter((address: ContactAddressDetails) => !address.endDate)
   let mostRelevantAddress: ContactAddressDetails = currentAddresses?.find(
     (address: ContactAddressDetails) => address.primaryAddress,
@@ -13,9 +16,9 @@ export function findMostRelevantAddress(contact: contactsApiClientTypes.ContactD
       return (seed && seed.startDate > item.startDate) || !item.startDate ? seed : item
     }, null)
   }
-  if (!mostRelevantAddress) {
-    mostRelevantAddress = currentAddresses?.reduce((seed: ContactAddressDetails, item: ContactAddressDetails) => {
-      return seed && seed.createdTime > item.createdTime ? seed : item
+  if (!mostRelevantAddress && fallbackToExpired) {
+    mostRelevantAddress = contact.addresses?.reduce((seed: ContactAddressDetails, item: ContactAddressDetails) => {
+      return seed && seed.startDate > item.startDate ? seed : item
     }, null)
   }
   return mostRelevantAddress

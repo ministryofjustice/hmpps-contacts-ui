@@ -27,6 +27,7 @@ import UpdateContactRestrictionRequest = contactsApiClientTypes.UpdateContactRes
 import UpdatePrisonerContactRestrictionRequest = contactsApiClientTypes.UpdatePrisonerContactRestrictionRequest
 import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
+import UpdateContactAddressRequest = contactsApiClientTypes.UpdateContactAddressRequest
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
@@ -1116,6 +1117,58 @@ describe('contactsApiClient', () => {
       // When
       try {
         await contactsApiClient.createContactAddress(99, request, user)
+      } catch (e) {
+        // Then
+        expect(e.status).toEqual(errorCode)
+        expect(e.data).toEqual(expectedErrorBody)
+      }
+    })
+  })
+
+  describe('updateContactAddress', () => {
+    it('should update the contact address', async () => {
+      // Given
+      const request: UpdateContactAddressRequest = {
+        addressType: 'HOME',
+        countryCode: 'ENG',
+        startDate: '2020-01-01',
+      }
+      const expected: ContactAddressDetails = {
+        contactAddressId: 123456,
+      }
+      fakeContactsApi
+        .put('/contact/99/address/123456', request)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(201, expected)
+
+      // When
+      const created = await contactsApiClient.updateContactAddress(99, 123456, request, user)
+
+      // Then
+      expect(created).toEqual(expected)
+    })
+
+    it.each([400, 401, 403])('should propagate errors updating the contact address %s', async (errorCode: number) => {
+      // Given
+      const request: UpdateContactAddressRequest = {
+        addressType: 'HOME',
+        countryCode: 'ENG',
+        startDate: '2020-01-01',
+      }
+      const expectedErrorBody = {
+        status: errorCode,
+        userMessage: 'Some error',
+        developerMessage: 'Some error',
+      }
+
+      fakeContactsApi
+        .put('/contact/99/address/123456')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(errorCode, expectedErrorBody)
+
+      // When
+      try {
+        await contactsApiClient.updateContactAddress(99, 123456, request, user)
       } catch (e) {
         // Then
         expect(e.status).toEqual(errorCode)

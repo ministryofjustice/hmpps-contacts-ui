@@ -90,21 +90,40 @@ describe('findMostRelevantAddress', () => {
     expect(mostRelevantAddress).toEqual(contact.addresses[1])
   })
 
-  it('should find most relevant address based on createdTime value', () => {
+  it('should not fallback to expired unless requested', () => {
     // Given
     contact.addresses[0].primaryAddress = null
     contact.addresses[1].primaryAddress = null
     contact.addresses[0].mailFlag = null
     contact.addresses[1].mailFlag = null
-    contact.addresses[0].startDate = null
-    contact.addresses[1].startDate = null
-    contact.addresses[1].createdTime = '2024-11-04T0 =3 =44.512401'
+    contact.addresses[0].startDate = '2023-01-02'
+    contact.addresses[1].startDate = '2023-01-01'
+    contact.addresses[0].endDate = '2025-01-02'
+    contact.addresses[1].endDate = '2025-01-01'
 
     // When
-    const mostRelevantAddress = findMostRelevantAddress(contact)
+    const mostRelevantAddress = findMostRelevantAddress(contact, false)
 
     // Then
-    expect(mostRelevantAddress).toEqual(contact.addresses[1])
+    expect(mostRelevantAddress).toBeNull()
+  })
+
+  it('should fallback to expired if requested', () => {
+    // Given
+    contact.addresses[0].primaryAddress = null
+    contact.addresses[1].primaryAddress = null
+    contact.addresses[0].mailFlag = null
+    contact.addresses[1].mailFlag = null
+    contact.addresses[0].startDate = '2023-01-02'
+    contact.addresses[1].startDate = '2023-01-01'
+    contact.addresses[0].endDate = '2025-01-02'
+    contact.addresses[1].endDate = '2025-01-01'
+
+    // When
+    const mostRelevantAddress = findMostRelevantAddress(contact, true)
+
+    // Then
+    expect(mostRelevantAddress).toStrictEqual(contact.addresses[0])
   })
 })
 

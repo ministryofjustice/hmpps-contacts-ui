@@ -207,7 +207,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
     )
     expect(flashProvider).toHaveBeenCalledWith(
       'successNotificationBanner',
-      'You’ve updated a prisoner-contact restriction',
+      "You've updated a prisoner-contact restriction",
     )
   })
 
@@ -233,7 +233,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
       form,
       user,
     )
-    expect(flashProvider).toHaveBeenCalledWith('successNotificationBanner', 'You’ve updated a global restriction')
+    expect(flashProvider).toHaveBeenCalledWith('successNotificationBanner', "You've updated a global restriction")
   })
 
   it.each([['PRISONER_CONTACT'], ['CONTACT_GLOBAL']])(

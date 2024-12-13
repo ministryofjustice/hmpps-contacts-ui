@@ -116,11 +116,12 @@ declare namespace journeys {
     prisonerNumber?: string
     contactAddressId?: number
     returnPoint: ReturnPoint
+    isCheckingAnswers: boolean
+    mode: 'ADD' | 'EDIT'
     contactNames: ContactNames
     addressType?: string
     addressLines?: AddressLines
     addressMetadata?: AddressMetadata
-    isCheckingAnswers: boolean
   }
 
   export interface AddressLines {

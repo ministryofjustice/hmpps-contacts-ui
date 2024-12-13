@@ -243,12 +243,12 @@ const STUBBED_COUNTY_OPTIONS: StubReferenceData[] = [
   },
   {
     code: 'S.YORKSHIRE',
-    description: ' South Yorkshire',
+    description: 'South Yorkshire',
     groupCode: 'COUNTY',
   },
   {
     code: 'W.SUSSEX',
-    description: ' West Sussex',
+    description: 'West Sussex',
     groupCode: 'COUNTY',
   },
 ]

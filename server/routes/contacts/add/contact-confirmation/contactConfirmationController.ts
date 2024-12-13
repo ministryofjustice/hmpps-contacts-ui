@@ -33,7 +33,7 @@ export default class ContactConfirmationController implements PageHandler {
     const globalRestrictions = sortRestrictions(globalRestrictionsEnriched)
 
     const formattedFullName = await this.formattedFullName(contact, user)
-    const mostRelevantAddress = findMostRelevantAddress(contact)
+    const mostRelevantAddress = findMostRelevantAddress(contact, false)
     const mostRelevantAddressLabel = getLabelForAddress(mostRelevantAddress)
     return res.render('pages/contacts/manage/contactConfirmation/confirmation', {
       contact,

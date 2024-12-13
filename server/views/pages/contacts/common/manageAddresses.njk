@@ -13,15 +13,17 @@
 {% block content %}
     {% include '../../../partials/navigation.njk' %}
     {{ miniProfile(prisonerDetails) }}
-{% include '../../../partials/formErrorSummary.njk' %}
+    {% include '../../../partials/formErrorSummary.njk' %}
+    {% include '../../../partials/successNotificationBanner.njk' %}
 <span class="govuk-caption-l">Manage Contacts</span>
 <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+    {% set returnUrl = '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/relationship/' + prisonerContactId + '/view-addresses' %}
     <div class="govuk-button-group">
         {{ govukButton({
             html: "Add address",
             type: "button",
             attributes: {"data-qa": "add-address-button"},
-            href: '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/address/add/start?returnUrl=/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/relationship/' + prisonerContactId + '/view-addresses',
+            href: '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/address/add/start?returnUrl=' + returnUrl,
             preventDoubleClick: true
         }) }}
     </div>
@@ -29,7 +31,12 @@
         <div class="govuk-grid-column-three-quarters">
 
         {% if addresses %}
-            {{ addressDetails(addresses) }}
+            {{ addressDetails({
+                returnUrl: returnUrl,
+                prisonerNumber: prisonerNumber,
+                contactId: contactId,
+                addresses: addresses
+            } ) }}
         {% else %}
             {{ notProvided({title: 'Addresses', key: 'Address', className: 'addresses-not-provided' }) }}
         {% endif %}

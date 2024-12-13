@@ -1,11 +1,16 @@
 import { Request, Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
+import { NotFound } from 'http-errors'
+import { parseISO } from 'date-fns'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import ContactsService from '../../../../../services/contactsService'
 import ReturnPoint = journeys.ReturnPoint
 import ContactNames = journeys.ContactNames
 import AddressJourney = journeys.AddressJourney
+import AddressLines = journeys.AddressLines
+import AddressMetadata = journeys.AddressMetadata
+import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 
 export default class StartAddressJourneyController implements PageHandler {
   constructor(private readonly contactService: ContactsService) {}
@@ -38,15 +43,56 @@ export default class StartAddressJourneyController implements PageHandler {
       firstName: contact.firstName,
       middleNames: contact.middleNames,
     }
+    const mode = contactAddressId ? 'EDIT' : 'ADD'
+    const contactAddressIdNumber = Number(contactAddressId)
+    let addressType: string
+    let addressLines: AddressLines
+    let addressMetadata: AddressMetadata
+    if (mode === 'EDIT') {
+      const existingAddress = contact.addresses.find(
+        (address: ContactAddressDetails) => address.contactAddressId === contactAddressIdNumber,
+      )
+      if (!existingAddress) {
+        throw new NotFound()
+      }
+      addressType = existingAddress.addressType ?? 'DO_NOT_KNOW'
+      addressLines = {
+        noFixedAddress: existingAddress.noFixedAddress,
+        flat: existingAddress.flat,
+        premises: existingAddress.property,
+        street: existingAddress.street,
+        locality: existingAddress.area,
+        town: existingAddress.cityCode,
+        county: existingAddress.countyCode,
+        postcode: existingAddress.postcode,
+        country: existingAddress.countryCode,
+      }
+      const fromDate = parseISO(existingAddress.startDate)
+      const toDate = existingAddress.endDate ? parseISO(existingAddress.endDate) : undefined
+
+      addressMetadata = {
+        fromMonth: (fromDate.getMonth() + 1).toString(),
+        fromYear: fromDate.getFullYear().toString(),
+        toMonth: toDate ? (toDate.getMonth() + 1).toString() : undefined,
+        toYear: toDate?.getFullYear()?.toString(),
+        primaryAddress: existingAddress.primaryAddress ? 'YES' : 'NO',
+        mailAddress: existingAddress.mailFlag ? 'YES' : 'NO',
+        comments: existingAddress.comments,
+      }
+    }
     const journey: AddressJourney = {
       id: uuidv4(),
       lastTouched: new Date().toISOString(),
       returnPoint,
       prisonerNumber,
       contactId: Number(contactId),
-      contactAddressId: Number(contactAddressId),
+      contactAddressId: contactAddressIdNumber,
       isCheckingAnswers: false,
+      mode,
       contactNames,
+      addressType,
+      addressLines,
+      addressMetadata,
     }
     if (!req.session.addressJourneys) {
       req.session.addressJourneys = {}

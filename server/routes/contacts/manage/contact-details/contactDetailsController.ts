@@ -28,7 +28,7 @@ export default class ContactDetailsController implements PageHandler {
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const { user } = res.locals
     const contact: ContactDetails = await this.contactsService.getContact(Number(contactId), user)
-    const mostRelevantAddress = findMostRelevantAddress(contact)
+    const mostRelevantAddress = findMostRelevantAddress(contact, true)
     const mostRelevantAddressLabel = getLabelForAddress(mostRelevantAddress)
     const prisonerContactRelationship: PrisonerContactRelationshipDetails =
       await this.contactsService.getPrisonerContactRelationship(Number(prisonerContactId), user)

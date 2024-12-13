@@ -20,6 +20,7 @@ import ContactRestrictionDetails = contactsApiClientTypes.ContactRestrictionDeta
 import PrisonerContactRestrictionsResponse = contactsApiClientTypes.PrisonerContactRestrictionsResponse
 import AddressJourney = journeys.AddressJourney
 import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
+import UpdateContactAddressRequest = contactsApiClientTypes.UpdateContactAddressRequest
 
 type PageableObject = components['schemas']['PageableObject']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
@@ -257,5 +258,31 @@ export default class ContactsService {
       createdBy: user.username,
     }
     return this.contactsApiClient.createContactAddress(journey.contactId, request, user)
+  }
+
+  async updateContactAddress(journey: AddressJourney, user: Express.User) {
+    const request: UpdateContactAddressRequest = {
+      addressType: journey.addressType === 'DO_NOT_KNOW' ? undefined : journey.addressType,
+      flat: journey.addressLines.flat,
+      property: journey.addressLines.premises,
+      street: journey.addressLines.street,
+      area: journey.addressLines.locality,
+      cityCode: journey.addressLines.town,
+      countyCode: journey.addressLines.county,
+      postcode: journey.addressLines.postcode,
+      countryCode: journey.addressLines.country,
+      verified: false,
+      primaryAddress: journey.addressMetadata.primaryAddress === 'YES',
+      mailFlag: journey.addressMetadata.mailAddress === 'YES',
+      startDate: new Date(`${journey.addressMetadata.fromYear}-${journey.addressMetadata.fromMonth}-01Z`),
+      endDate:
+        journey.addressMetadata.toMonth && journey.addressMetadata.toYear
+          ? new Date(`${journey.addressMetadata.toYear}-${journey.addressMetadata.toMonth}-01Z`)
+          : undefined,
+      noFixedAddress: journey.addressLines.noFixedAddress,
+      comments: journey.addressMetadata.comments,
+      updatedBy: user.username,
+    }
+    return this.contactsApiClient.updateContactAddress(journey.contactId, journey.contactAddressId, request, user)
   }
 }

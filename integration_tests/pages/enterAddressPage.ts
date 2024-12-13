@@ -79,6 +79,11 @@ export default class EnterAddressPage extends Page {
     return this
   }
 
+  clearTown(): EnterAddressPage {
+    this.townSelect().clear()
+    return this
+  }
+
   selectTown(value: string): EnterAddressPage {
     this.townSelect().type(value)
     return this
@@ -86,6 +91,11 @@ export default class EnterAddressPage extends Page {
 
   hasCounty(value: string): EnterAddressPage {
     this.countySelect().should('have.value', value)
+    return this
+  }
+
+  clearCounty(): EnterAddressPage {
+    this.countySelect().clear()
     return this
   }
 

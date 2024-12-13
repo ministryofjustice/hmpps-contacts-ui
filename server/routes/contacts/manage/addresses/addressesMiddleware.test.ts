@@ -30,6 +30,7 @@ describe('ensureInAddressJourney', () => {
       prisonerNumber: 'A1324BC',
       returnPoint: { url: '/foo' },
       isCheckingAnswers: false,
+      mode: 'ADD',
       contactNames: {
         lastName: 'Bar',
         firstName: 'Foo',
