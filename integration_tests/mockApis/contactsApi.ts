@@ -689,4 +689,25 @@ export default {
       },
     })
   },
+  stubUpdateContactAddress: ({
+    contactId,
+    contactAddressId,
+    updated,
+  }: {
+    contactId: number
+    contactAddressId: number
+    updated: StubContactAddressDetails
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PUT',
+        urlPath: `/contact/${contactId}/address/${contactAddressId}`,
+      },
+      response: {
+        status: 201,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: updated,
+      },
+    })
+  },
 }

@@ -36,6 +36,7 @@ beforeEach(() => {
     contactId,
     returnPoint: { url: '/foo-bar' },
     isCheckingAnswers: false,
+    mode: 'ADD',
     contactNames: {
       lastName: 'last',
       middleNames: 'middle',

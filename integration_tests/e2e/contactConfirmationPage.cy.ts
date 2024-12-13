@@ -141,7 +141,7 @@ context('Contact confirmation', () => {
       .verifyShowsCardTitleAs('Phone numbers', 2)
       .verifyShowAddressSpecificPhoneValueAs('Home: 01111 777777 (+0123)', 'HOME')
       .verifyShowEmailValueAs('No')
-      .verifyShowCommentsValueAs('Not provided')
+      .verifyShowCommentsValueAs('Some comments')
       .verifyShowFromStartDateValueAs('January 2020')
       .verifyShowPhoneNumbersValueAs('07878 111111', 'MOBILE')
       .verifyShowPhoneNumbersValueAs('01111 777777', 'HOME')

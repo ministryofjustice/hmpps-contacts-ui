@@ -1,9 +1,17 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% for addressParam in params %}
+{% for addressParam in params.addresses %}
     {% set addressItem = addressParam.address %}
     {% set addressRow = [] %}
     {% set addressSpecificPhoneNumbers = '' %}
+
+    {% set addressChangeAction = {
+        href: '/prisoner/' + params.prisonerNumber + '/contacts/manage/' + params.contactId + '/address/edit/' + addressParam.address.contactAddressId + '/start?returnUrl=' + params.returnUrl,
+        text: "Change",
+        visuallyHiddenText: " address",
+        attributes: { 'data-qa': 'change-address-' + addressParam.address.contactAddressId },
+        classes: 'govuk-link--no-visited-state'
+    } %}
 
     {% if addressItem %}
         {% if addressItem.phoneNumbers and addressItem.phoneNumbers.length > 0 %}
@@ -65,7 +73,8 @@
                     value: {
                         html: (address | addressToLines) if not addressItem.noFixedAddress else noFixedAddress,
                         classes: 'confirm-address-value'
-                    }
+                    },
+                    actions: { items:  [addressChangeAction] }
                 }
         ), addressRow) %}
 
@@ -93,7 +102,8 @@
                         value: {
                             text: addressItem.comments,
                             classes: 'confirm-comments-value'
-                        }
+                        },
+                        actions: { items:  [addressChangeAction] }
                     }
             ), addressRow) %}
         {% endif %}
@@ -106,7 +116,8 @@
                     },
                     value: {
                         html: fromToDate
-                    }
+                    },
+                    actions: { items:  [addressChangeAction] }
                 }
         ), addressRow) %}
     {% endif %}

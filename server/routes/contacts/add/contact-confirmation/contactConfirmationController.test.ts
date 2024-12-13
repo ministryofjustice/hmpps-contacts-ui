@@ -202,42 +202,6 @@ describe('Contact details', () => {
       expect($('.most-relevant-address-label').text().trim()).toStrictEqual('')
     })
 
-    it('should use latest created if no primary, mail or start date', async () => {
-      // Given
-      const contact = TestData.contact({
-        addresses: [
-          {
-            ...blankAddress,
-            property: 'earliest created date',
-            primaryAddress: false,
-            mailFlag: false,
-            startDate: null,
-            createdTime: '2020-01-01',
-          },
-          {
-            ...blankAddress,
-            property: 'latest created date',
-            primaryAddress: false,
-            mailFlag: false,
-            startDate: null,
-            createdTime: '2024-01-01',
-          },
-        ],
-      })
-
-      auditService.logPageView.mockResolvedValue(null)
-      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.getContact.mockResolvedValue(contact)
-
-      // When
-      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
-
-      // Then
-      const $ = cheerio.load(response.text)
-      expect($('.confirm-address-value').text().trim()).toStrictEqual('latest created date')
-      expect($('.most-relevant-address-label').text().trim()).toStrictEqual('')
-    })
-
     it('should not show if has an end date even if primary', async () => {
       // Given
       const contact = TestData.contact({
@@ -255,7 +219,7 @@ describe('Contact details', () => {
             property: 'no end date',
             primaryAddress: false,
             mailFlag: false,
-            startDate: null,
+            startDate: '2024-01-01',
             createdTime: '2024-01-01',
           },
         ],

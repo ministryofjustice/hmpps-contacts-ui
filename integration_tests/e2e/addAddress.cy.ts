@@ -255,7 +255,7 @@ context('Add Address', () => {
       .selectCountry('Scotland')
       .continueTo(AddressCheckYourAnswersPage, 'work address', 'First Middle Names Last')
       .verifyShowsAddressAs(
-        'Flat 2B, Another Block, Another Street<br>Uptown<br>Sheffield<br> South Yorkshire<br>POBOX1<br>Scotland',
+        'Flat 2B, Another Block, Another Street<br>Uptown<br>Sheffield<br>South Yorkshire<br>POBOX1<br>Scotland',
       )
       .clickChangeNoFixedAddressLink()
 

@@ -512,8 +512,15 @@ const ManageContactsRoutes = (
 
   // Addresses
   const startAddressJourneyController = new StartAddressJourneyController(contactsService)
+  // Add
   router.get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/start',
+    logPageViewMiddleware(auditService, startAddressJourneyController),
+    asyncMiddleware(startAddressJourneyController.GET),
+  )
+  // Edit
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/edit/:contactAddressId/start',
     logPageViewMiddleware(auditService, startAddressJourneyController),
     asyncMiddleware(startAddressJourneyController.GET),
   )
@@ -548,7 +555,7 @@ const ManageContactsRoutes = (
     asyncMiddleware(enterAddressController.POST),
   )
 
-  const addressMetadataController = new AddressMetadataController(referenceDataService)
+  const addressMetadataController = new AddressMetadataController(referenceDataService, contactsService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/address-metadata/:journeyId',
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),

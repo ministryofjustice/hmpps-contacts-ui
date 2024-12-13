@@ -31,6 +31,7 @@ import UpdateContactRestrictionRequest = contactsApiClientTypes.UpdateContactRes
 import PrisonerContactRestrictionsResponse = contactsApiClientTypes.PrisonerContactRestrictionsResponse
 import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
+import UpdateContactAddressRequest = contactsApiClientTypes.UpdateContactAddressRequest
 
 type PageableObject = components['schemas']['PageableObject']
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
@@ -344,6 +345,21 @@ export default class ContactsApiClient extends RestClient {
     return this.post<ContactAddressDetails>(
       {
         path: `/contact/${contactId}/address`,
+        data: request,
+      },
+      user,
+    )
+  }
+
+  async updateContactAddress(
+    contactId: number,
+    contactAddressId: number,
+    request: UpdateContactAddressRequest,
+    user: Express.User,
+  ): Promise<ContactIdentityDetails> {
+    return this.put<ContactAddressDetails>(
+      {
+        path: `/contact/${contactId}/address/${contactAddressId}`,
         data: request,
       },
       user,

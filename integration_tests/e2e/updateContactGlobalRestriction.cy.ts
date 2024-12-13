@@ -76,7 +76,7 @@ context('Update Contact Global Restriction', () => {
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .hasSuccessBanner('You’ve updated a global restriction')
+      .hasSuccessBanner("You've updated a global restriction")
 
     cy.verifyLastAPICall(
       {
@@ -112,7 +112,7 @@ context('Update Contact Global Restriction', () => {
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .hasSuccessBanner('You’ve updated a global restriction')
+      .hasSuccessBanner("You've updated a global restriction")
 
     cy.verifyLastAPICall(
       {

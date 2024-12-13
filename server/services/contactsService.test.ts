@@ -20,6 +20,7 @@ import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import AddressJourney = journeys.AddressJourney
 import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
+import UpdateContactAddressRequest = contactsApiClientTypes.UpdateContactAddressRequest
 
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
@@ -679,6 +680,7 @@ describe('contactsService', () => {
         prisonerNumber,
         contactId: 999,
         isCheckingAnswers: false,
+        mode: 'ADD',
         returnPoint: { url: '/foo-bar' },
         contactNames: { firstName: 'first', lastName: 'last' },
         addressType: 'WORK',
@@ -744,6 +746,7 @@ describe('contactsService', () => {
         prisonerNumber,
         contactId: 999,
         isCheckingAnswers: false,
+        mode: 'ADD',
         returnPoint: { url: '/foo-bar' },
         contactNames: { firstName: 'first', lastName: 'last' },
         addressType: 'DO_NOT_KNOW',
@@ -789,6 +792,148 @@ describe('contactsService', () => {
             prisonerNumber,
             contactId: 999,
             isCheckingAnswers: false,
+            mode: 'ADD',
+            returnPoint: { url: '/foo-bar' },
+            contactNames: { firstName: 'first', lastName: 'last' },
+            addressType: 'DO_NOT_KNOW',
+            addressLines: { noFixedAddress: false, country: 'ENG' },
+            addressMetadata: { fromMonth: '01', fromYear: '2000' },
+          },
+          user,
+        ),
+      ).rejects.toBeInstanceOf(BadRequest)
+    })
+  })
+
+  describe('updateContactAddress', () => {
+    it('should update a contact address from the journey dto with all fields', async () => {
+      // Given
+      const expectedUpdated: ContactAddressDetails = {
+        contactAddressId: 123456,
+      }
+      apiClient.updateContactAddress.mockResolvedValue(expectedUpdated)
+      const journey: AddressJourney = {
+        id: '1',
+        lastTouched: new Date().toISOString(),
+        prisonerNumber,
+        contactId: 999,
+        contactAddressId: 123456,
+        isCheckingAnswers: false,
+        mode: 'ADD',
+        returnPoint: { url: '/foo-bar' },
+        contactNames: { firstName: 'first', lastName: 'last' },
+        addressType: 'WORK',
+        addressLines: {
+          noFixedAddress: true,
+          flat: '1a',
+          premises: 'My block',
+          street: 'A street',
+          locality: 'Downtown',
+          town: '1234',
+          county: 'DEVON',
+          postcode: 'PC1 D3',
+          country: 'ENG',
+        },
+        addressMetadata: {
+          fromMonth: '2',
+          fromYear: '2001',
+          toMonth: '12',
+          toYear: '2012',
+          primaryAddress: 'YES',
+          mailAddress: 'YES',
+          comments: 'My comments will be super useful',
+        },
+      }
+
+      const expectedRequest: UpdateContactAddressRequest = {
+        addressType: 'WORK',
+        flat: '1a',
+        property: 'My block',
+        street: 'A street',
+        area: 'Downtown',
+        cityCode: '1234',
+        countyCode: 'DEVON',
+        postcode: 'PC1 D3',
+        countryCode: 'ENG',
+        verified: false,
+        primaryAddress: true,
+        mailFlag: true,
+        startDate: new Date('2001-02-01Z'),
+        endDate: new Date('2012-12-01Z'),
+        noFixedAddress: true,
+        comments: 'My comments will be super useful',
+        updatedBy: user.username,
+      }
+
+      // When
+      const updated = await service.updateContactAddress(journey, user)
+
+      // Then
+      expect(updated).toStrictEqual(expectedUpdated)
+      expect(apiClient.updateContactAddress).toHaveBeenCalledWith(999, 123456, expectedRequest, user)
+    })
+
+    it('should update a contact address from the journey dto with only optional fields', async () => {
+      // Given
+      const expectedUpdated: ContactAddressDetails = {
+        contactAddressId: 123456,
+      }
+      apiClient.updateContactAddress.mockResolvedValue(expectedUpdated)
+      const journey: AddressJourney = {
+        id: '1',
+        lastTouched: new Date().toISOString(),
+        prisonerNumber,
+        contactId: 999,
+        contactAddressId: 123456,
+        isCheckingAnswers: false,
+        mode: 'ADD',
+        returnPoint: { url: '/foo-bar' },
+        contactNames: { firstName: 'first', lastName: 'last' },
+        addressType: 'DO_NOT_KNOW',
+        addressLines: { noFixedAddress: false, country: 'ENG' },
+        addressMetadata: { fromMonth: '2', fromYear: '2000' },
+      }
+
+      const expectedRequest: UpdateContactAddressRequest = {
+        addressType: undefined,
+        flat: undefined,
+        property: undefined,
+        street: undefined,
+        area: undefined,
+        cityCode: undefined,
+        countyCode: undefined,
+        postcode: undefined,
+        countryCode: 'ENG',
+        verified: false,
+        primaryAddress: false,
+        mailFlag: false,
+        startDate: new Date('2000-02-01Z'),
+        endDate: undefined,
+        noFixedAddress: false,
+        comments: undefined,
+        updatedBy: user.username,
+      }
+
+      // When
+      const updated = await service.updateContactAddress(journey, user)
+
+      // Then
+      expect(updated).toStrictEqual(expectedUpdated)
+      expect(apiClient.updateContactAddress).toHaveBeenCalledWith(999, 123456, expectedRequest, user)
+    })
+
+    it('should handle a bad request', async () => {
+      apiClient.updateContactAddress.mockRejectedValue(createError.BadRequest())
+      await expect(
+        service.updateContactAddress(
+          {
+            id: '1',
+            lastTouched: new Date().toISOString(),
+            prisonerNumber,
+            contactId: 999,
+            contactAddressId: 123456,
+            isCheckingAnswers: false,
+            mode: 'ADD',
             returnPoint: { url: '/foo-bar' },
             contactNames: { firstName: 'first', lastName: 'last' },
             addressType: 'DO_NOT_KNOW',

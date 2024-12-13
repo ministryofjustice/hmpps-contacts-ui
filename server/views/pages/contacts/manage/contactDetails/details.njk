@@ -13,8 +13,11 @@
         {%- include "./manageApprovedToVisit.njk" -%}
 
         {% if mostRelevantAddress %}
-            {{ addressDetails(
-                [
+            {{ addressDetails({
+                returnUrl: manageContactRelationshipUrl,
+                prisonerNumber: prisonerNumber,
+                contactId: contactId,
+                addresses: [
                     {
                         mostRelevantAddressLabel: mostRelevantAddressLabel,
                         address: mostRelevantAddress,
@@ -26,10 +29,10 @@
                                 attributes: { 'data-qa': 'view-all-addresses' },
                                 classes: 'govuk-link--no-visited-state'
                             }
-                        ],
-                        changeLink: 'false'
+                        ]
                     }
                 ]
+                }
             )}}
         {% else %}
             {{ notProvided({

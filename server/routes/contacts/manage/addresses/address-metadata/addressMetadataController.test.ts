@@ -10,6 +10,7 @@ import ReferenceDataService from '../../../../../services/referenceDataService'
 import TestData from '../../../../testutils/testData'
 import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
+import ContactsService from '../../../../../services/contactsService'
 import AddressJourney = journeys.AddressJourney
 import YesOrNo = journeys.YesOrNo
 import AddressMetadata = journeys.AddressMetadata
@@ -17,10 +18,12 @@ import AddressMetadata = journeys.AddressMetadata
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
 jest.mock('../../../../../services/referenceDataService')
+jest.mock('../../../../../services/contactsService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
 const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
+const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
 
 let app: Express
 let session: Partial<SessionData>
@@ -37,6 +40,7 @@ beforeEach(() => {
     contactId,
     returnPoint: { url: '/foo-bar' },
     isCheckingAnswers: false,
+    mode: 'ADD',
     contactNames: {
       lastName: 'last',
       middleNames: 'middle',
@@ -49,12 +53,13 @@ beforeEach(() => {
       auditService,
       prisonerSearchService,
       referenceDataService,
+      contactsService,
     },
     userSupplier: () => user,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.addressJourneys = {}
-      session.addressJourneys[journeyId] = { ...existingJourney }
+      session.addressJourneys[journeyId] = existingJourney
     },
   })
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
@@ -122,6 +127,26 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addre
       who: user.username,
       correlationId: expect.any(String),
     })
+  })
+
+  it.each([
+    ['ADD', 'Continue'],
+    ['EDIT', 'Confirm and save'],
+  ])('should label the continue button correctly', async (mode: 'ADD' | 'EDIT', expected: string) => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    existingJourney.mode = mode
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/address-metadata/${journeyId}`,
+    )
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect(response.status).toEqual(200)
+    const $ = cheerio.load(response.text)
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual(expected)
   })
 
   it.each([
@@ -256,10 +281,10 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addre
 
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/address-metadata/:journeyId', () => {
   it.each([['YES'], ['NO'], [undefined]])(
-    'should pass to next page and set address metadata in session if there are no validation errors',
+    'should pass to next page and set address metadata in session if there are no validation errors and in add mode',
     async (option: YesOrNo) => {
       // Given
-      existingJourney.addressLines = undefined
+      existingJourney.mode = 'ADD'
 
       // When
       await request(app)
@@ -291,6 +316,46 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addr
         comments: 'Some comments',
       }
       expect(session.addressJourneys[journeyId].addressMetadata).toStrictEqual(expected)
+    },
+  )
+
+  it.each([['YES'], ['NO'], [undefined]])(
+    'should update the address, remove the session and pass to return url with success notification if there are no validation errors and in edit mode',
+    async (option: YesOrNo) => {
+      // Given
+      contactsService.updateContactAddress.mockResolvedValue({ contactAddressId: 888 })
+      existingJourney.mode = 'EDIT'
+
+      // When
+      await request(app)
+        .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/address-metadata/${journeyId}`)
+        .type('form')
+        .send({
+          fromMonth: '09',
+          fromYear: '2009',
+          toMonth: '12',
+          toYear: '2012',
+          primaryAddress: option,
+          mailAddress: option,
+          comments: 'Some comments',
+        })
+        .expect(302)
+        .expect('Location', '/foo-bar')
+
+      // Then
+      const expected: AddressMetadata = {
+        fromMonth: '9',
+        fromYear: '2009',
+        toMonth: '12',
+        toYear: '2012',
+        primaryAddress: option,
+        mailAddress: option,
+        comments: 'Some comments',
+      }
+      expect(existingJourney.addressMetadata).toStrictEqual(expected)
+      expect(session.addressJourneys[journeyId]).toBeUndefined()
+      expect(contactsService.updateContactAddress).toHaveBeenCalledWith(existingJourney, user)
+      expect(flashProvider).toHaveBeenCalledWith('successNotificationBanner', "You've updated a contact address")
     },
   )
 
