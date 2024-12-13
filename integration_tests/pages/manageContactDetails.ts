@@ -210,7 +210,7 @@ export default class ManageContactDetailsPage extends Page {
   private checkPrisonerContactRestrictionCardRowValues() {
     this.getRestrictionCardColumnValueByRaw(3, 1).should('contain.text', '1 January 2024')
     this.getRestrictionCardColumnValueByRaw(3, 2).should('contain.text', '1 August 2050')
-    this.getRestrictionCardColumnValueByRaw(3, 3).should('contain.text', 'USER1')
+    this.getRestrictionCardColumnValueByRaw(3, 3).should('contain.text', 'User One')
     this.getRestrictionCardColumnValueByRaw(3, 4).should('contain.text', 'Keep an eye')
   }
 
@@ -224,7 +224,7 @@ export default class ManageContactDetailsPage extends Page {
   private checkGlobalRestrictionCardRowValues() {
     this.getRestrictionCardColumnValueByRaw(7, 1).should('contain.text', '1 January 2024')
     this.getRestrictionCardColumnValueByRaw(7, 2).should('contain.text', '1 August 2050')
-    this.getRestrictionCardColumnValueByRaw(7, 3).should('contain.text', 'USER1')
+    this.getRestrictionCardColumnValueByRaw(7, 3).should('contain.text', 'User One')
     this.getRestrictionCardColumnValueByRaw(7, 4).should('contain.text', 'Keep an eye')
   }
 
