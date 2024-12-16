@@ -75,7 +75,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
             phoneNumbers: [
               TestData.getContactPhoneNumberDetails(
                 'MOB',
-                'Mobile phone',
+                'Mobile',
                 '07878 111111',
                 1,
                 null,
@@ -83,7 +83,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
               ),
               TestData.getContactPhoneNumberDetails(
                 'HOME',
-                'Home phone',
+                'Home',
                 '01111 777777',
                 2,
                 '321',

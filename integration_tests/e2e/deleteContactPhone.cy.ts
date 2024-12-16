@@ -12,8 +12,8 @@ context('Delete Contact Phones', () => {
     firstName: 'First',
     middleNames: 'Middle Names',
     phoneNumbers: [
-      TestData.getContactPhoneNumberDetails('MOB', 'Mobile phone', '07878 111111', 99, '123'),
-      TestData.getContactPhoneNumberDetails('HOME', 'Home phone', '01111 777777', 77),
+      TestData.getContactPhoneNumberDetails('MOB', 'Mobile', '07878 111111', 99, '123'),
+      TestData.getContactPhoneNumberDetails('HOME', 'Home', '01111 777777', 77),
     ],
   })
 
@@ -51,7 +51,7 @@ context('Delete Contact Phones', () => {
 
     Page.verifyOnPage(ConfirmDeletePhonePage) //
       .hasPhoneNumber('07878 111111')
-      .hasType('Mobile phone')
+      .hasType('Mobile')
       .hasExtension('123')
       .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
 
@@ -70,7 +70,7 @@ context('Delete Contact Phones', () => {
 
     Page.verifyOnPage(ConfirmDeletePhonePage) //
       .hasPhoneNumber('01111 777777')
-      .hasType('Home phone')
+      .hasType('Home')
       .hasExtension('Not provided')
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
 
