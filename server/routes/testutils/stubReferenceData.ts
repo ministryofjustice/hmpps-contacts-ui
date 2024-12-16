@@ -33,8 +33,8 @@ const STUBBED_RELATIONSHIP_OPTIONS: StubReferenceData[] = [
   { code: 'ILP', description: 'In Loco Parentes', groupCode: 'RELATIONSHIP' },
 ]
 const STUBBED_PHONE_TYPE_OPTIONS: StubReferenceData[] = [
-  { code: 'MOB', description: 'Mobile phone', groupCode: 'PHONE_TYPE' },
-  { code: 'HOME', description: 'Home phone', groupCode: 'PHONE_TYPE' },
+  { code: 'MOB', description: 'Mobile', groupCode: 'PHONE_TYPE' },
+  { code: 'HOME', description: 'Home', groupCode: 'PHONE_TYPE' },
 ]
 const STUBBED_IDENTITY_OPTIONS: StubReferenceData[] = [
   { code: 'DL', description: 'Driving licence', groupCode: 'ID_TYPE' },

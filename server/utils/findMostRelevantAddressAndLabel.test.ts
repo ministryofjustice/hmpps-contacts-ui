@@ -39,7 +39,7 @@ describe('findMostRelevantAddress', () => {
           extNumber: '+0123',
           phoneNumber: '01111 777777',
           phoneType: 'HOME',
-          phoneTypeDescription: 'Home phone',
+          phoneTypeDescription: 'Home',
         },
       ],
       postcode: 'BD9 5AJ',

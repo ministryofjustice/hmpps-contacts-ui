@@ -61,7 +61,7 @@ describe('Addresses', () => {
     expect($('.confirm-address-value').text().trim()).toStrictEqual(
       '24, Acacia AvenueBuntingSheffieldSouth YorkshireS2 3LKEngland',
     )
-    expect($('.address-specific-phone-numbers-not-provided').text().trim()).toStrictEqual('Home: 01111 777777 (+0123)')
+    expect($('.address-1-specific-phone-value').text().trim()).toStrictEqual('Home: 01111 777777 (+0123)')
     expect($('[data-qa=confirm-start-date-value]').first().text().trim()).toStrictEqual('From January 2020')
   })
 
@@ -93,15 +93,16 @@ describe('Addresses', () => {
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     const contact = TestData.contact()
 
-    function getAddress(flat: string = 'Flat 1') {
+    function getAddress(id: number, flat: string = 'Flat 1') {
       const homeAddress = defaultAddress
+      homeAddress.contactAddressId = id
       homeAddress.flat = flat
       return homeAddress
     }
 
     contact.addresses = [
       {
-        ...getAddress('no 1'),
+        ...getAddress(1, 'no 1'),
         addressType: 'HOME',
         addressTypeDescription: 'Home address',
         primaryAddress: true,
@@ -109,7 +110,7 @@ describe('Addresses', () => {
         comments: 'Home comment',
       },
       {
-        ...getAddress('no 2'),
+        ...getAddress(2, 'no 2'),
         addressType: 'WORK',
         addressTypeDescription: 'Work address',
         primaryAddress: false,
@@ -117,7 +118,7 @@ describe('Addresses', () => {
         comments: 'Work comment',
       },
       {
-        ...getAddress('no 3'),
+        ...getAddress(3, 'no 3'),
         addressType: 'BUS',
         addressTypeDescription: 'Business address',
         primaryAddress: false,
@@ -160,11 +161,9 @@ describe('Addresses', () => {
     expect(mostRelevantLabel.eq(0).text()).toContain('Primary')
     expect(mostRelevantLabel.eq(1).text()).toContain('Mail')
 
-    const addressPhones = $('[data-qa=confirm-specific-phone-HOME-value]')
-    expect(addressPhones.length).toStrictEqual(3)
-    expect(addressPhones.eq(0).text()).toContain('Home: 01111 777777 (+0123)')
-    expect(addressPhones.eq(1).text()).toContain('Home: 01111 777777 (+0123)')
-    expect(addressPhones.eq(2).text()).toContain('Home: 01111 777777 (+0123)')
+    expect($('.address-1-specific-phone-value').text().trim()).toContain('Home: 01111 777777 (+0123)')
+    expect($('.address-2-specific-phone-value').text().trim()).toContain('Home: 01111 777777 (+0123)')
+    expect($('.address-3-specific-phone-value').text().trim()).toContain('Home: 01111 777777 (+0123)')
 
     const comments = $('.confirm-comments-value')
     expect(comments.length).toStrictEqual(3)

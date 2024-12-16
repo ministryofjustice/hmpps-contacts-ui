@@ -21,6 +21,8 @@ import PrisonerContactRestrictionsResponse = contactsApiClientTypes.PrisonerCont
 import AddressJourney = journeys.AddressJourney
 import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
 import UpdateContactAddressRequest = contactsApiClientTypes.UpdateContactAddressRequest
+import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAddressPhoneRequest
+import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
 
 type PageableObject = components['schemas']['PageableObject']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
@@ -284,5 +286,50 @@ export default class ContactsService {
       updatedBy: user.username,
     }
     return this.contactsApiClient.updateContactAddress(journey.contactId, journey.contactAddressId, request, user)
+  }
+
+  async createContactAddressPhone(
+    contactId: number,
+    contactAddressId: number,
+    user: Express.User,
+    type: string,
+    phoneNumber: string,
+    extension?: string,
+  ) {
+    const request: CreateContactAddressPhoneRequest = {
+      contactAddressId,
+      phoneType: type,
+      phoneNumber,
+      extNumber: extension,
+      createdBy: user.username,
+    }
+    return this.contactsApiClient.createContactAddressPhone(contactId, contactAddressId, request, user)
+  }
+
+  async updateContactAddressPhone(
+    contactId: number,
+    contactAddressId: number,
+    contactPhoneId: number,
+    user: Express.User,
+    type: string,
+    phoneNumber: string,
+    extension?: string,
+  ) {
+    const request: UpdateContactAddressPhoneRequest = {
+      phoneType: type,
+      phoneNumber,
+      extNumber: extension,
+      updatedBy: user.username,
+    }
+    return this.contactsApiClient.updateContactAddressPhone(contactId, contactAddressId, contactPhoneId, request, user)
+  }
+
+  async deleteContactAddressPhone(
+    contactId: number,
+    contactAddressId: number,
+    contactPhoneId: number,
+    user: Express.User,
+  ) {
+    return this.contactsApiClient.deleteContactAddressPhone(contactId, contactAddressId, contactPhoneId, user)
   }
 }

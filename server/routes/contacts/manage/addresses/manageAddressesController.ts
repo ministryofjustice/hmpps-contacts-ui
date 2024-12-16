@@ -28,6 +28,14 @@ export default class ManageAddressesController implements PageHandler {
       address,
       cardTitle: this.getExpiredAddressTitle(address.endDate, address.addressTypeDescription ?? 'Address'),
       mostRelevantAddressLabel: getLabelForAddress(address),
+      cardActions: [
+        {
+          href: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/${address.contactAddressId}/phone/create?returnUrl=/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/view-addresses`,
+          text: 'Add phone number',
+          attributes: { 'data-qa': `add-address-phone-${address.contactAddressId}` },
+          classes: 'govuk-link--no-visited-state',
+        },
+      ],
     }))
 
     const names: ContactNames = {

@@ -28,6 +28,9 @@ import UpdatePrisonerContactRestrictionRequest = contactsApiClientTypes.UpdatePr
 import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import UpdateContactAddressRequest = contactsApiClientTypes.UpdateContactAddressRequest
+import ContactAddressPhoneResponse = contactsApiClientTypes.ContactAddressPhoneResponse
+import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
+import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAddressPhoneRequest
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
@@ -1169,6 +1172,165 @@ describe('contactsApiClient', () => {
       // When
       try {
         await contactsApiClient.updateContactAddress(99, 123456, request, user)
+      } catch (e) {
+        // Then
+        expect(e.status).toEqual(errorCode)
+        expect(e.data).toEqual(expectedErrorBody)
+      }
+    })
+  })
+
+  describe('createContactAddressPhone', () => {
+    it('should create the contact address phone and return the response', async () => {
+      // Given
+      const expectedContactAddressPhoneDetails: ContactAddressPhoneResponse = {
+        id: 1,
+        phoneType: 'MOB',
+        phoneNumber: '0123456789',
+        createdBy: 'user1',
+        createdTime: new Date().toISOString(),
+      }
+      const request: CreateContactAddressPhoneRequest = {
+        type: 'MOB',
+        phoneNumber: '0123456789',
+        createdBy: 'user1',
+      }
+
+      fakeContactsApi
+        .post('/contact/99/address/123456/phone', request)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(201, expectedContactAddressPhoneDetails)
+
+      // When
+      const createdContact = await contactsApiClient.createContactAddressPhone(99, 123456, request, user)
+
+      // Then
+      expect(createdContact).toEqual(expectedContactAddressPhoneDetails)
+    })
+
+    it.each([400, 401, 403, 500])(
+      'should propagate errors creating contact address phone',
+      async (errorCode: number) => {
+        // Given
+        const request: CreateContactAddressPhoneRequest = {
+          type: 'MOB',
+          phoneNumber: '0123456789',
+          createdBy: 'user1',
+        }
+        const expectedErrorBody = {
+          status: errorCode,
+          userMessage: 'Some error',
+          developerMessage: 'Some error',
+        }
+
+        fakeContactsApi
+          .post('/contact/99/address/123456/phone', request)
+          .matchHeader('authorization', `Bearer systemToken`)
+          .reply(errorCode, expectedErrorBody)
+
+        // When
+        try {
+          await contactsApiClient.createContactAddressPhone(99, 123456, request, user)
+        } catch (e) {
+          // Then
+          expect(e.status).toEqual(errorCode)
+          expect(e.data).toEqual(expectedErrorBody)
+        }
+      },
+    )
+  })
+
+  describe('updateContactAddressPhone', () => {
+    it('should update the contact address phone and return the response', async () => {
+      // Given
+      const expectedContactAddressPhoneDetails: ContactAddressPhoneResponse = {
+        id: 1,
+        phoneType: 'MOB',
+        phoneNumber: '0123456789',
+        createdBy: 'user1',
+        createdTime: new Date().toISOString(),
+        updatedBy: 'user1',
+        updatedTime: new Date().toISOString(),
+      }
+      const request: UpdateContactAddressPhoneRequest = {
+        type: 'MOB',
+        phoneNumber: '0123456789',
+        updatedBy: 'user1',
+      }
+
+      fakeContactsApi
+        .put('/contact/99/address/123456/phone/77', request)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, expectedContactAddressPhoneDetails)
+
+      // When
+      const updated = await contactsApiClient.updateContactAddressPhone(99, 123456, 77, request, user)
+
+      // Then
+      expect(updated).toEqual(expectedContactAddressPhoneDetails)
+    })
+
+    it.each([400, 401, 403, 500])(
+      'should propagate errors updating contact address phone',
+      async (errorCode: number) => {
+        // Given
+        const request: UpdateContactAddressPhoneRequest = {
+          type: 'MOB',
+          phoneNumber: '0123456789',
+          updatedBy: 'user1',
+        }
+        const expectedErrorBody = {
+          status: errorCode,
+          userMessage: 'Some error',
+          developerMessage: 'Some error',
+        }
+
+        fakeContactsApi
+          .put('/contact/99/address/123456/phone/77', request)
+          .matchHeader('authorization', `Bearer systemToken`)
+          .reply(errorCode, expectedErrorBody)
+
+        // When
+        try {
+          await contactsApiClient.updateContactAddressPhone(99, 123456, 77, request, user)
+        } catch (e) {
+          // Then
+          expect(e.status).toEqual(errorCode)
+          expect(e.data).toEqual(expectedErrorBody)
+        }
+      },
+    )
+  })
+
+  describe('deleteContactAddressPhone', () => {
+    it('should delete the contact address phone', async () => {
+      // Given
+
+      fakeContactsApi
+        .delete('/contact/99/address/123456/phone/77')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(204)
+
+      // When
+      await contactsApiClient.deleteContactAddressPhone(99, 123456, 77, user)
+    })
+
+    it.each([400, 401, 403])('should propagate errors deleting contact address phone %s', async (errorCode: number) => {
+      // Given
+      const expectedErrorBody = {
+        status: errorCode,
+        userMessage: 'Some error',
+        developerMessage: 'Some error',
+      }
+
+      fakeContactsApi
+        .delete('/contact/99/address/123456/phone/77')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(errorCode, expectedErrorBody)
+
+      // When
+      try {
+        await contactsApiClient.deleteContactAddressPhone(99, 123456, 77, user)
       } catch (e) {
         // Then
         expect(e.status).toEqual(errorCode)
