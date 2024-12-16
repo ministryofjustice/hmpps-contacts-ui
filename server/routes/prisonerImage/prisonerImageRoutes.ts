@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import path from 'path'
 import PrisonerImageService from '../../services/prisonerImageService'
 
-const placeHolderImage = path.join(process.cwd(), '/dist/assets/images/prisoner-profile-image.png')
+const placeHolderImage = path.join(process.cwd(), '/assets/images/prisoner-profile-image.png')
 
 export default class PrisonerImageRoutes {
   constructor(private readonly prisonerImageService: PrisonerImageService) {}
