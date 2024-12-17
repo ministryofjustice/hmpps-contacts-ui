@@ -21,7 +21,7 @@ import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import AddressJourney = journeys.AddressJourney
 import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
 import UpdateContactAddressRequest = contactsApiClientTypes.UpdateContactAddressRequest
-import ContactAddressPhoneResponse = contactsApiClientTypes.ContactAddressPhoneResponse
+import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAddressPhoneRequest
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
 
@@ -952,7 +952,7 @@ describe('contactsService', () => {
   describe('createContactAddressPhone', () => {
     it('should create a contact address phone with all fields', async () => {
       // Given
-      const expectedCreated: ContactAddressPhoneResponse = {
+      const expectedCreated: ContactAddressPhoneDetails = {
         contactAddressPhoneId: 123,
         contactAddressId: 321,
       }
@@ -975,7 +975,7 @@ describe('contactsService', () => {
 
     it('should create a contact address phone with only required fields', async () => {
       // Given
-      const expectedCreated: ContactAddressPhoneResponse = {
+      const expectedCreated: ContactAddressPhoneDetails = {
         contactAddressPhoneId: 123,
         contactAddressId: 321,
       }
@@ -1006,7 +1006,7 @@ describe('contactsService', () => {
   describe('updateContactAddressPhone', () => {
     it('should update a contact address phone with all fields', async () => {
       // Given
-      const expected: ContactAddressPhoneResponse = {
+      const expected: ContactAddressPhoneDetails = {
         contactAddressPhoneId: 123,
         contactAddressId: 321,
       }
@@ -1028,7 +1028,7 @@ describe('contactsService', () => {
 
     it('should update a contact address phone with only required fields', async () => {
       // Given
-      const expected: ContactAddressPhoneResponse = {
+      const expected: ContactAddressPhoneDetails = {
         contactAddressPhoneId: 123,
         contactAddressId: 321,
       }

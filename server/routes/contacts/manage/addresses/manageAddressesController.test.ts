@@ -8,6 +8,7 @@ import { mockedReferenceData } from '../../../testutils/stubReferenceData'
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import ContactService from '../../../../services/contactsService'
 import TestData from '../../../testutils/testData'
+import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/referenceDataService')
@@ -46,12 +47,34 @@ describe('Addresses', () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-    const contact = TestData.contact()
+    const contact = TestData.contact({
+      addresses: [
+        TestData.address({
+          contactAddressId: 999,
+          phoneNumbers: [
+            {
+              contactAddressPhoneId: 666,
+              contactAddressId: 999,
+              contactPhoneId: 333,
+              contactId: 1,
+              phoneType: 'HOME',
+              phoneTypeDescription: 'Home',
+              phoneNumber: '01111 777777',
+              extNumber: '+0123',
+              createdBy: 'JAMES',
+              createdTime: '2024-10-04T15:35:23.101675v',
+              updatedBy: null,
+              updatedTime: null,
+            } as ContactAddressPhoneDetails,
+          ],
+        }),
+      ],
+    })
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
     const response = await request(app).get(
-      `/prisoner/G7941GL/contacts/manage/20000011/relationship/52/view-addresses?returnUrl=/foo-ba`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/52/view-addresses?returnUrl=/foo-ba`,
     )
 
     // Then
@@ -61,7 +84,13 @@ describe('Addresses', () => {
     expect($('.confirm-address-value').text().trim()).toStrictEqual(
       '24, Acacia AvenueBuntingSheffieldSouth YorkshireS2 3LKEngland',
     )
-    expect($('.address-1-specific-phone-value').text().trim()).toStrictEqual('Home: 01111 777777 (+0123)')
+    expect($('.address-999-specific-phone-value').text().trim()).toStrictEqual('Home: 01111 777777 (+0123)')
+    expect($('[data-qa=change-address-specific-999-phone-666]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/1/address/999/phone/666/edit?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/52/view-addresses',
+    )
+    expect($('[data-qa=delete-address-specific-999-phone-666]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/1/address/999/phone/666/delete?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/52/view-addresses',
+    )
     expect($('[data-qa=confirm-start-date-value]').first().text().trim()).toStrictEqual('From January 2020')
   })
 

@@ -7,9 +7,9 @@ import { PhoneNumberSchemaType } from '../phoneSchemas'
 import { ContactsService } from '../../../../../services'
 import { Navigation } from '../../../common/navigation'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
-import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
+import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 
 export default class ManageContactEditAddressPhoneController implements PageHandler {
   constructor(
@@ -34,8 +34,8 @@ export default class ManageContactEditAddressPhoneController implements PageHand
     const address = contact.addresses.find(
       (item: ContactAddressDetails) => item.contactAddressId === Number(contactAddressId),
     )
-    const phone: ContactPhoneDetails = address.phoneNumbers.find(
-      (aPhone: ContactPhoneDetails) => aPhone.contactPhoneId === Number(contactAddressPhoneId),
+    const phone: ContactAddressPhoneDetails = address.phoneNumbers.find(
+      (aPhone: ContactAddressPhoneDetails) => aPhone.contactAddressPhoneId === Number(contactAddressPhoneId),
     )
     if (!phone) {
       throw new Error(

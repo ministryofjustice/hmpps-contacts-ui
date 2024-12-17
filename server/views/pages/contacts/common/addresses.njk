@@ -80,22 +80,22 @@
                             },
                             value: {
                                 html:  (val.phoneTypeDescription) + ': ' + val.phoneNumber + (" (" + val.extNumber + ")" if val.extNumber),
-                                classes: 'address-specific-phone-value address-' + addressItem.contactAddressId + '-specific-phone-value address-' + addressItem.contactAddressId + '-specific-phone-' + val.contactPhoneId + '-value'
+                                classes: 'address-specific-phone-value address-' + addressItem.contactAddressId + '-specific-phone-value address-' + addressItem.contactAddressId + '-specific-phone-' + val.contactAddressPhoneId + '-value'
                             },
                             actions: {
                                 items: [
                                     {
-                                        href: '/prisoner/' + params.prisonerNumber + '/contacts/manage/' + params.contactId + '/address/' + addressParam.address.contactAddressId + '/phone/' + val.contactPhoneId + '/edit?returnUrl=' + params.returnUrl,
+                                        href: '/prisoner/' + params.prisonerNumber + '/contacts/manage/' + params.contactId + '/address/' + addressParam.address.contactAddressId + '/phone/' + val.contactAddressPhoneId + '/edit?returnUrl=' + params.returnUrl,
                                         text: "Change",
                                         visuallyHiddenText: " phone number",
-                                        attributes: { 'data-qa': 'change-address-specific-' + addressItem.contactAddressId + '-phone-' + val.contactPhoneId },
+                                        attributes: { 'data-qa': 'change-address-specific-' + addressItem.contactAddressId + '-phone-' + val.contactAddressPhoneId },
                                         classes: 'govuk-link--no-visited-state'
                                     },
                                     {
-                                        href: '/prisoner/' + params.prisonerNumber + '/contacts/manage/' + params.contactId + '/address/' + addressParam.address.contactAddressId + '/phone/' + val.contactPhoneId + '/delete?returnUrl=' + params.returnUrl,
+                                        href: '/prisoner/' + params.prisonerNumber + '/contacts/manage/' + params.contactId + '/address/' + addressParam.address.contactAddressId + '/phone/' + val.contactAddressPhoneId + '/delete?returnUrl=' + params.returnUrl,
                                         text: "Delete",
                                         visuallyHiddenText: " phone number",
-                                        attributes: { 'data-qa': 'delete-address-specific-' + addressItem.contactAddressId + '-phone-' + val.contactPhoneId },
+                                        attributes: { 'data-qa': 'delete-address-specific-' + addressItem.contactAddressId + '-phone-' + val.contactAddressPhoneId },
                                         classes: 'govuk-link--no-visited-state'
                                     }
                                 ] if params.canEditAddresses

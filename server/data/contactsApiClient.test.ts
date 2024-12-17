@@ -28,7 +28,7 @@ import UpdatePrisonerContactRestrictionRequest = contactsApiClientTypes.UpdatePr
 import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import UpdateContactAddressRequest = contactsApiClientTypes.UpdateContactAddressRequest
-import ContactAddressPhoneResponse = contactsApiClientTypes.ContactAddressPhoneResponse
+import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
 import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAddressPhoneRequest
 
@@ -1183,7 +1183,7 @@ describe('contactsApiClient', () => {
   describe('createContactAddressPhone', () => {
     it('should create the contact address phone and return the response', async () => {
       // Given
-      const expectedContactAddressPhoneDetails: ContactAddressPhoneResponse = {
+      const expectedContactAddressPhoneDetails: ContactAddressPhoneDetails = {
         id: 1,
         phoneType: 'MOB',
         phoneNumber: '0123456789',
@@ -1243,7 +1243,7 @@ describe('contactsApiClient', () => {
   describe('updateContactAddressPhone', () => {
     it('should update the contact address phone and return the response', async () => {
       // Given
-      const expectedContactAddressPhoneDetails: ContactAddressPhoneResponse = {
+      const expectedContactAddressPhoneDetails: ContactAddressPhoneDetails = {
         id: 1,
         phoneType: 'MOB',
         phoneNumber: '0123456789',

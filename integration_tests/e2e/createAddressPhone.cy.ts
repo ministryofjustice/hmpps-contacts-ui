@@ -9,8 +9,8 @@ context('Create Address Phones', () => {
   const contactId = 654321
   const prisonerContactId = 987654
   const contactAddressId = 555666
-  const phoneOne = TestData.getContactPhoneNumberDetails('MOB', 'Mobile', '07878 111111', 1)
-  const phoneTwo = TestData.getContactPhoneNumberDetails('HOME', 'Home', '01111 777777', 2)
+  const phoneOne = TestData.getAddressPhoneNumberDetails('MOB', 'Mobile', '07878 111111', 1)
+  const phoneTwo = TestData.getAddressPhoneNumberDetails('HOME', 'Home', '01111 777777', 2)
   const contact = TestData.contact({
     id: contactId,
     lastName: 'Last',

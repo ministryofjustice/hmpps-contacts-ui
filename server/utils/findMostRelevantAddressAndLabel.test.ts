@@ -34,6 +34,8 @@ describe('findMostRelevantAddress', () => {
           updatedTime: null,
           contactId: 1,
           contactPhoneId: 2,
+          contactAddressId: 3,
+          contactAddressPhoneId: 4,
           createdBy: 'JAMES',
           createdTime: '2024-12-04T15:35:23.101675v',
           extNumber: '+0123',
