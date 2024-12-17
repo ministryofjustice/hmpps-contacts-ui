@@ -36,8 +36,8 @@ const contact: ContactDetails = {
     TestData.address({
       contactAddressId,
       phoneNumbers: [
-        TestData.getContactPhoneNumberDetails('HOME', 'Home', '01111 777777', 999),
-        TestData.getContactPhoneNumberDetails('MOB', 'Mobile', '07878 111111', 123, '123'),
+        TestData.getAddressPhoneNumberDetails('HOME', 'Home', '01111 777777', 999, contactAddressId, 444),
+        TestData.getAddressPhoneNumberDetails('MOB', 'Mobile', '07878 111111', 123, contactAddressId, 555, '123'),
       ],
     }),
   ],

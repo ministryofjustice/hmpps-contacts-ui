@@ -19,7 +19,7 @@ import TestData from '../../server/routes/testutils/testData'
 
 export type StubContactCreationResult = components['schemas']['ContactCreationResult']
 export type StubPhoneDetails = components['schemas']['ContactPhoneDetails']
-export type StubAddressPhoneDetails = components['schemas']['ContactAddressPhoneResponse']
+export type StubAddressPhoneDetails = components['schemas']['ContactAddressPhoneDetails']
 export type StubContactRestrictionDetails = components['schemas']['ContactRestrictionDetails']
 export type StubPrisonerContactRestrictionDetails = components['schemas']['PrisonerContactRestrictionDetails']
 export type StubIdentityDetails = components['schemas']['ContactIdentityDetails']
@@ -536,18 +536,18 @@ export default {
   stubUpdateAddressPhone: ({
     contactId,
     contactAddressId,
-    contactPhoneId,
+    contactAddressPhoneId,
     updated,
   }: {
     contactId: number
     contactAddressId: number
-    contactPhoneId: number
+    contactAddressPhoneId: number
     updated: StubAddressPhoneDetails
   }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'PUT',
-        urlPath: `/contact/${contactId}/address/${contactAddressId}/phone/${contactPhoneId}`,
+        urlPath: `/contact/${contactId}/address/${contactAddressId}/phone/${contactAddressPhoneId}`,
       },
       response: {
         status: 200,
@@ -577,16 +577,16 @@ export default {
   stubDeleteAddressPhone: ({
     contactId,
     contactAddressId,
-    contactPhoneId,
+    contactAddressPhoneId,
   }: {
     contactId: number
     contactAddressId: number
-    contactPhoneId: number
+    contactAddressPhoneId: number
   }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'DELETE',
-        urlPath: `/contact/${contactId}/address/${contactAddressId}/phone/${contactPhoneId}`,
+        urlPath: `/contact/${contactId}/address/${contactAddressId}/phone/${contactAddressPhoneId}`,
       },
       response: {
         status: 204,

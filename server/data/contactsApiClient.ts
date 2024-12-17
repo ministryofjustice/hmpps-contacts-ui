@@ -33,7 +33,7 @@ import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddress
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import UpdateContactAddressRequest = contactsApiClientTypes.UpdateContactAddressRequest
 import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAddressPhoneRequest
-import ContactAddressPhoneResponse = contactsApiClientTypes.ContactAddressPhoneResponse
+import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
 
 type PageableObject = components['schemas']['PageableObject']
@@ -374,8 +374,8 @@ export default class ContactsApiClient extends RestClient {
     contactAddressId: number,
     request: CreateContactAddressPhoneRequest,
     user: Express.User,
-  ): Promise<ContactAddressPhoneResponse> {
-    return this.post<ContactAddressPhoneResponse>(
+  ): Promise<ContactAddressPhoneDetails> {
+    return this.post<ContactAddressPhoneDetails>(
       {
         path: `/contact/${contactId}/address/${contactAddressId}/phone`,
         data: request,
@@ -390,8 +390,8 @@ export default class ContactsApiClient extends RestClient {
     contactAddressPhoneId: number,
     request: UpdateContactAddressPhoneRequest,
     user: Express.User,
-  ): Promise<ContactAddressPhoneResponse> {
-    return this.put<ContactAddressPhoneResponse>(
+  ): Promise<ContactAddressPhoneDetails> {
+    return this.put<ContactAddressPhoneDetails>(
       {
         path: `/contact/${contactId}/address/${contactAddressId}/phone/${contactAddressPhoneId}`,
         data: request,

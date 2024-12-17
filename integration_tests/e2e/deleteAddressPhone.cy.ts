@@ -8,8 +8,24 @@ context('Delete Address Phones', () => {
   const contactId = 654321
   const prisonerContactId = 987654
   const contactAddressId = 555666
-  const phoneWithExt = TestData.getContactPhoneNumberDetails('MOB', 'Mobile', '07878 111111', 99, '123')
-  const phoneWithoutExt = TestData.getContactPhoneNumberDetails('HOME', 'Home', '01111 777777', 77, '')
+  const phoneWithExt = TestData.getAddressPhoneNumberDetails(
+    'MOB',
+    'Mobile',
+    '07878 111111',
+    99,
+    contactAddressId,
+    66,
+    '123',
+  )
+  const phoneWithoutExt = TestData.getAddressPhoneNumberDetails(
+    'HOME',
+    'Home',
+    '01111 777777',
+    77,
+    contactAddressId,
+    11,
+    '',
+  )
   const contact = TestData.contact({
     id: contactId,
     lastName: 'Last',
@@ -52,10 +68,14 @@ context('Delete Address Phones', () => {
   })
 
   it('Can delete a phone for an address', () => {
-    cy.task('stubDeleteAddressPhone', { contactId, contactAddressId, contactPhoneId: phoneWithExt.contactPhoneId })
+    cy.task('stubDeleteAddressPhone', {
+      contactId,
+      contactAddressId,
+      contactAddressPhoneId: phoneWithExt.contactAddressPhoneId,
+    })
 
     Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
-      .clickDeleteAddressPhoneLink(contactAddressId, phoneWithExt.contactPhoneId)
+      .clickDeleteAddressPhoneLink(contactAddressId, phoneWithExt.contactAddressPhoneId)
 
     Page.verifyOnPage(ConfirmDeleteAddressPhonePage) //
       .hasPhoneNumber('07878 111111')
@@ -74,7 +94,7 @@ context('Delete Address Phones', () => {
 
   it('Can cancel deleting a phone for an address', () => {
     Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
-      .clickDeleteAddressPhoneLink(contactAddressId, phoneWithoutExt.contactPhoneId)
+      .clickDeleteAddressPhoneLink(contactAddressId, phoneWithoutExt.contactAddressPhoneId)
 
     Page.verifyOnPage(ConfirmDeleteAddressPhonePage) //
       .hasPhoneNumber('01111 777777')

@@ -2,10 +2,10 @@ import { Request, Response } from 'express'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { ContactsService } from '../../../../../services'
-import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
-import ContactDetails = contactsApiClientTypes.ContactDetails
 import { Navigation } from '../../../common/navigation'
+import ContactDetails = contactsApiClientTypes.ContactDetails
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
+import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 
 export default class ManageContactDeleteAddressPhoneController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -28,8 +28,8 @@ export default class ManageContactDeleteAddressPhoneController implements PageHa
     const address = contact.addresses.find(
       (item: ContactAddressDetails) => item.contactAddressId === Number(contactAddressId),
     )
-    const phone: ContactPhoneDetails = address.phoneNumbers.find(
-      (aPhone: ContactPhoneDetails) => aPhone.contactPhoneId === Number(contactAddressPhoneId),
+    const phone: ContactAddressPhoneDetails = address.phoneNumbers.find(
+      (aPhone: ContactAddressPhoneDetails) => aPhone.contactAddressPhoneId === Number(contactAddressPhoneId),
     )
     if (!phone) {
       throw new Error(

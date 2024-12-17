@@ -1004,23 +1004,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/prisoner/{prisonNumber}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Endpoint to get a specific prisoner by prison number */
-    get: operations['getPrisoner']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/prisoner/{prisonNumber}/contact': {
     parameters: {
       query?: never
@@ -3267,7 +3250,7 @@ export interface components {
       updatedBy: string
     }
     /** @description An address-specific phone number */
-    ContactAddressPhoneResponse: {
+    ContactAddressPhoneDetails: {
       /**
        * Format: int64
        * @description Unique identifier for the address-specific phone number
@@ -4620,7 +4603,7 @@ export interface components {
        */
       comments?: string | null
       /** @description Phone numbers that are related to this address */
-      phoneNumbers: components['schemas']['ContactPhoneDetails'][]
+      phoneNumbers: components['schemas']['ContactAddressPhoneDetails'][]
       /**
        * @description The id of the user who created the contact
        * @example JD000001
@@ -5215,6 +5198,24 @@ export interface components {
        */
       isActive: boolean
     }
+    Pageable: {
+      /** Format: int32 */
+      page?: number
+      /** Format: int32 */
+      size?: number
+      sort?: string[]
+    }
+    PageableObject: {
+      /** Format: int64 */
+      offset?: number
+      sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      pageSize?: number
+      paged?: boolean
+      /** Format: int32 */
+      pageNumber?: number
+      unpaged?: boolean
+    }
     /** @description Describes the details of a prisoner's contact */
     PrisonerContactSummary: {
       /**
@@ -5386,24 +5387,6 @@ export interface components {
        * @example Close family friend
        */
       comments?: string | null
-    }
-    Pageable: {
-      /** Format: int32 */
-      page?: number
-      /** Format: int32 */
-      size?: number
-      sort?: string[]
-    }
-    PageableObject: {
-      /** Format: int64 */
-      offset?: number
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      pageSize?: number
-      paged?: boolean
-      /** Format: int32 */
-      pageNumber?: number
-      unpaged?: boolean
     }
     PrisonerContactSummaryPage: {
       content?: components['schemas']['PrisonerContactSummary'][]
@@ -7808,7 +7791,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactAddressPhoneResponse']
+          'application/json': components['schemas']['ContactAddressPhoneDetails']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -7875,7 +7858,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactAddressPhoneResponse']
+          'application/json': components['schemas']['ContactAddressPhoneDetails']
         }
       }
       /** @description The request has invalid or missing fields */
@@ -7947,7 +7930,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactAddressPhoneResponse']
+          'application/json': components['schemas']['ContactAddressPhoneDetails']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -9065,7 +9048,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactAddressPhoneResponse']
+          'application/json': components['schemas']['ContactAddressPhoneDetails']
         }
       }
       /** @description The request has invalid or missing fields */
@@ -9380,50 +9363,6 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ReferenceCode'][]
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  getPrisoner: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /**
-         * @description The prison number of the prisoner who's contacts will be returned
-         * @example A1234BC
-         */
-        prisonNumber: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description List of all contacts for the prisoner */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['PrisonerContactSummary']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
