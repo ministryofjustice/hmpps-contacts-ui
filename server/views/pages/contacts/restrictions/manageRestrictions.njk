@@ -1,6 +1,6 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% macro restrictionCard(restrictions, contact, prisonerNumber, prisonerContactId, restrictionClass ) %}
+{% macro restrictionCard(restrictions, contact, prisonerNumber, prisonerContactId, restrictionClass, returnUrl ) %}
 
     {% for restriction in restrictions %}
 
@@ -13,7 +13,7 @@
                     actions: {
                         items: [
                             {
-                                href: "/prisoner/" +  prisonerNumber + "/contacts/" +  contact.id + "/relationship/" +  prisonerContactId + "/restriction/update/" +  restrictionClass + "/enter-restriction/" +  restrictionId + "?returnUrl=/prisoner/" +  prisonerNumber + "/contacts/manage/" +  contact.id + "/relationship/" +  prisonerContactId ,
+                                href: "/prisoner/" +  prisonerNumber + "/contacts/" +  contact.id + "/relationship/" +  prisonerContactId + "/restriction/update/" +  restrictionClass + "/enter-restriction/" +  restrictionId + "?returnUrl=" + returnUrl,
                                 text: "Manage",
                                 visuallyHiddenText: "restrictions",
                                 attributes: {"data-qa": "manage-"+ restrictionClass +"-restriction-link-" + restrictionId},

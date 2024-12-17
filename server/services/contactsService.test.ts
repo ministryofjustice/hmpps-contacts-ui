@@ -21,6 +21,9 @@ import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import AddressJourney = journeys.AddressJourney
 import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
 import UpdateContactAddressRequest = contactsApiClientTypes.UpdateContactAddressRequest
+import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
+import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAddressPhoneRequest
+import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
 
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
@@ -942,6 +945,112 @@ describe('contactsService', () => {
           },
           user,
         ),
+      ).rejects.toBeInstanceOf(BadRequest)
+    })
+  })
+
+  describe('createContactAddressPhone', () => {
+    it('should create a contact address phone with all fields', async () => {
+      // Given
+      const expectedCreated: ContactAddressPhoneDetails = {
+        contactAddressPhoneId: 123,
+        contactAddressId: 321,
+      }
+      apiClient.createContactAddressPhone.mockResolvedValue(expectedCreated)
+      const expectedRequest: CreateContactAddressPhoneRequest = {
+        contactAddressId: 321,
+        phoneType: 'MOB',
+        phoneNumber: '0123456789',
+        extNumber: '000',
+        createdBy: 'user1',
+      }
+
+      // When
+      const created = await service.createContactAddressPhone(99, 321, user, 'MOB', '0123456789', '000')
+
+      // Then
+      expect(created).toStrictEqual(expectedCreated)
+      expect(apiClient.createContactAddressPhone).toHaveBeenCalledWith(99, 321, expectedRequest, user)
+    })
+
+    it('should create a contact address phone with only required fields', async () => {
+      // Given
+      const expectedCreated: ContactAddressPhoneDetails = {
+        contactAddressPhoneId: 123,
+        contactAddressId: 321,
+      }
+      apiClient.createContactAddressPhone.mockResolvedValue(expectedCreated)
+      const expectedRequest: CreateContactAddressPhoneRequest = {
+        contactAddressId: 321,
+        phoneType: 'MOB',
+        phoneNumber: '0123456789',
+        createdBy: 'user1',
+      }
+
+      // When
+      const created = await service.createContactAddressPhone(99, 321, user, 'MOB', '0123456789', undefined)
+
+      // Then
+      expect(created).toStrictEqual(expectedCreated)
+      expect(apiClient.createContactAddressPhone).toHaveBeenCalledWith(99, 321, expectedRequest, user)
+    })
+
+    it('should handle a bad request', async () => {
+      apiClient.createContactAddressPhone.mockRejectedValue(createError.BadRequest())
+      await expect(
+        service.createContactAddressPhone(99, 321, user, 'MOB', '0123456789', undefined),
+      ).rejects.toBeInstanceOf(BadRequest)
+    })
+  })
+
+  describe('updateContactAddressPhone', () => {
+    it('should update a contact address phone with all fields', async () => {
+      // Given
+      const expected: ContactAddressPhoneDetails = {
+        contactAddressPhoneId: 123,
+        contactAddressId: 321,
+      }
+      apiClient.updateContactAddressPhone.mockResolvedValue(expected)
+      const expectedRequest: UpdateContactAddressPhoneRequest = {
+        phoneType: 'MOB',
+        phoneNumber: '0123456789',
+        extNumber: '000',
+        updatedBy: 'user1',
+      }
+
+      // When
+      const updated = await service.updateContactAddressPhone(99, 321, 77, user, 'MOB', '0123456789', '000')
+
+      // Then
+      expect(updated).toStrictEqual(expected)
+      expect(apiClient.updateContactAddressPhone).toHaveBeenCalledWith(99, 321, 77, expectedRequest, user)
+    })
+
+    it('should update a contact address phone with only required fields', async () => {
+      // Given
+      const expected: ContactAddressPhoneDetails = {
+        contactAddressPhoneId: 123,
+        contactAddressId: 321,
+      }
+      apiClient.updateContactAddressPhone.mockResolvedValue(expected)
+      const expectedRequest: UpdateContactAddressPhoneRequest = {
+        phoneType: 'MOB',
+        phoneNumber: '0123456789',
+        updatedBy: 'user1',
+      }
+
+      // When
+      const updated = await service.updateContactAddressPhone(99, 321, 77, user, 'MOB', '0123456789', undefined)
+
+      // Then
+      expect(updated).toStrictEqual(expected)
+      expect(apiClient.updateContactAddressPhone).toHaveBeenCalledWith(99, 321, 77, expectedRequest, user)
+    })
+
+    it('should handle a bad request', async () => {
+      apiClient.updateContactAddressPhone.mockRejectedValue(createError.BadRequest())
+      await expect(
+        service.updateContactAddressPhone(99, 321, 77, user, 'MOB', '0123456789', undefined),
       ).rejects.toBeInstanceOf(BadRequest)
     })
   })

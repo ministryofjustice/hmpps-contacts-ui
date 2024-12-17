@@ -32,6 +32,9 @@ import PrisonerContactRestrictionsResponse = contactsApiClientTypes.PrisonerCont
 import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import UpdateContactAddressRequest = contactsApiClientTypes.UpdateContactAddressRequest
+import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAddressPhoneRequest
+import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
+import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
 
 type PageableObject = components['schemas']['PageableObject']
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
@@ -361,6 +364,51 @@ export default class ContactsApiClient extends RestClient {
       {
         path: `/contact/${contactId}/address/${contactAddressId}`,
         data: request,
+      },
+      user,
+    )
+  }
+
+  async createContactAddressPhone(
+    contactId: number,
+    contactAddressId: number,
+    request: CreateContactAddressPhoneRequest,
+    user: Express.User,
+  ): Promise<ContactAddressPhoneDetails> {
+    return this.post<ContactAddressPhoneDetails>(
+      {
+        path: `/contact/${contactId}/address/${contactAddressId}/phone`,
+        data: request,
+      },
+      user,
+    )
+  }
+
+  async updateContactAddressPhone(
+    contactId: number,
+    contactAddressId: number,
+    contactAddressPhoneId: number,
+    request: UpdateContactAddressPhoneRequest,
+    user: Express.User,
+  ): Promise<ContactAddressPhoneDetails> {
+    return this.put<ContactAddressPhoneDetails>(
+      {
+        path: `/contact/${contactId}/address/${contactAddressId}/phone/${contactAddressPhoneId}`,
+        data: request,
+      },
+      user,
+    )
+  }
+
+  async deleteContactAddressPhone(
+    contactId: number,
+    contactAddressId: number,
+    contactAddressPhoneId: number,
+    user: Express.User,
+  ): Promise<void> {
+    return this.delete(
+      {
+        path: `/contact/${contactId}/address/${contactAddressId}/phone/${contactAddressPhoneId}`,
       },
       user,
     )

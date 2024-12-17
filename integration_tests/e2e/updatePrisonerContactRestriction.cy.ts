@@ -47,10 +47,11 @@ context('Update Prisoner Contact Restriction', () => {
     })
     cy.signIn()
 
-    // TODO visit here from the prisoner contact page instead of directly
-    cy.visit(
-      `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/PRISONER_CONTACT/enter-restriction/${restrictionId}?returnUrl=/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
-    )
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickRestrictionsTab('1')
+      .verifyOnRestrictionsTab()
+      .clickManagePrisonerContactRestriction(prisonerContactRestriction.prisonerContactRestrictionId)
   })
 
   it('Can update a prisoner contact restriction with minimal fields', () => {
@@ -138,5 +139,17 @@ context('Update Prisoner Contact Restriction', () => {
 
     enterRestrictionPage.hasFieldInError('type', 'Select the restriction type')
     enterRestrictionPage.hasFieldInError('startDate', 'Enter the start date')
+  })
+
+  it('Back link goes to manage contacts restrictions tab', () => {
+    Page.verifyOnPage(EnterRestrictionPage, enterPageTitle) //
+      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .verifyOnRestrictionsTab()
+  })
+
+  it('Cancel goes to manage contacts restrictions tab', () => {
+    Page.verifyOnPage(EnterRestrictionPage, enterPageTitle) //
+      .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .verifyOnRestrictionsTab()
   })
 })

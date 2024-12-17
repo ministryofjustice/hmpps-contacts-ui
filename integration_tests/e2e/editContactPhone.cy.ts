@@ -13,8 +13,8 @@ context('Edit Contact Phones', () => {
     firstName: 'First',
     middleNames: 'Middle Names',
     phoneNumbers: [
-      TestData.getContactPhoneNumberDetails('MOB', 'Mobile phone', '07878 111111', 99, '123'),
-      TestData.getContactPhoneNumberDetails('HOME', 'Home phone', '01111 777777', 77),
+      TestData.getContactPhoneNumberDetails('MOB', 'Mobile', '07878 111111', 99, '123'),
+      TestData.getContactPhoneNumberDetails('HOME', 'Home', '01111 777777', 77),
     ],
   })
 
@@ -49,7 +49,7 @@ context('Edit Contact Phones', () => {
       contactPhoneId: 99,
       contactId,
       phoneType: 'HOME',
-      phoneTypeDescription: 'Home phone',
+      phoneTypeDescription: 'Home',
       phoneNumber: '999 888',
       createdBy: 'USER1',
       createdTime: new Date().toISOString(),
@@ -90,7 +90,7 @@ context('Edit Contact Phones', () => {
       contactPhoneId: 77,
       contactId,
       phoneType: 'MOB',
-      phoneTypeDescription: 'Mobile phone',
+      phoneTypeDescription: 'Mobile',
       phoneNumber: '987654321',
       extNumber: '000',
       createdBy: 'USER1',

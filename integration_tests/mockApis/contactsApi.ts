@@ -19,6 +19,7 @@ import TestData from '../../server/routes/testutils/testData'
 
 export type StubContactCreationResult = components['schemas']['ContactCreationResult']
 export type StubPhoneDetails = components['schemas']['ContactPhoneDetails']
+export type StubAddressPhoneDetails = components['schemas']['ContactAddressPhoneDetails']
 export type StubContactRestrictionDetails = components['schemas']['ContactRestrictionDetails']
 export type StubPrisonerContactRestrictionDetails = components['schemas']['PrisonerContactRestrictionDetails']
 export type StubIdentityDetails = components['schemas']['ContactIdentityDetails']
@@ -431,6 +432,27 @@ export default {
       },
     })
   },
+  stubCreateAddressPhone: ({
+    contactId,
+    contactAddressId,
+    created,
+  }: {
+    contactId: number
+    contactAddressId: number
+    created: StubAddressPhoneDetails
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPath: `/contact/${contactId}/address/${contactAddressId}/phone`,
+      },
+      response: {
+        status: 201,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: created,
+      },
+    })
+  },
   stubCreateContactIdentity: ({
     contactId,
     created,
@@ -511,6 +533,29 @@ export default {
       },
     })
   },
+  stubUpdateAddressPhone: ({
+    contactId,
+    contactAddressId,
+    contactAddressPhoneId,
+    updated,
+  }: {
+    contactId: number
+    contactAddressId: number
+    contactAddressPhoneId: number
+    updated: StubAddressPhoneDetails
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PUT',
+        urlPath: `/contact/${contactId}/address/${contactAddressId}/phone/${contactAddressPhoneId}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: updated,
+      },
+    })
+  },
   stubDeleteContactPhone: ({
     contactId,
     contactPhoneId,
@@ -529,7 +574,26 @@ export default {
       },
     })
   },
-
+  stubDeleteAddressPhone: ({
+    contactId,
+    contactAddressId,
+    contactAddressPhoneId,
+  }: {
+    contactId: number
+    contactAddressId: number
+    contactAddressPhoneId: number
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'DELETE',
+        urlPath: `/contact/${contactId}/address/${contactAddressId}/phone/${contactAddressPhoneId}`,
+      },
+      response: {
+        status: 204,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      },
+    })
+  },
   stubCreateContactEmail: ({
     contactId,
     created,

@@ -11,17 +11,9 @@
         visuallyHiddenText: " address",
         attributes: { 'data-qa': 'change-address-' + addressParam.address.contactAddressId },
         classes: 'govuk-link--no-visited-state'
-    } %}
+    } if params.canEditAddresses %}
 
     {% if addressItem %}
-        {% if addressItem.phoneNumbers and addressItem.phoneNumbers.length > 0 %}
-            {% for val in addressItem.phoneNumbers %}
-                {%
-                    set addressSpecificPhoneNumbers = addressSpecificPhoneNumbers + '<p data-qa=confirm-specific-phone-' + val.phoneType + '-value>' + (val.phoneType | capitalizeFirstLetter) + ': ' + val.phoneNumber + ' ' + '(' + val.extNumber + ')</p>'
-                %}
-            {% endfor %}
-        {% endif %}
-
         {%
             set address = {
                 flat: addressItem.flat,
@@ -78,19 +70,55 @@
                 }
         ), addressRow) %}
 
-        {% set addressRow = (
-            addressRow.push(
-                {
-                    key: {
+        {% if addressItem.phoneNumbers and addressItem.phoneNumbers.length > 0 %}
+            {% for val in addressItem.phoneNumbers %}
+                {% set addressRow = (
+                    addressRow.push(
+                        {
+                            key: {
+                                text: "Address phone" if loop.first
+                            },
+                            value: {
+                                html:  (val.phoneTypeDescription) + ': ' + val.phoneNumber + (" (" + val.extNumber + ")" if val.extNumber),
+                                classes: 'address-specific-phone-value address-' + addressItem.contactAddressId + '-specific-phone-value address-' + addressItem.contactAddressId + '-specific-phone-' + val.contactAddressPhoneId + '-value'
+                            },
+                            actions: {
+                                items: [
+                                    {
+                                        href: '/prisoner/' + params.prisonerNumber + '/contacts/manage/' + params.contactId + '/address/' + addressParam.address.contactAddressId + '/phone/' + val.contactAddressPhoneId + '/edit?returnUrl=' + params.returnUrl,
+                                        text: "Change",
+                                        visuallyHiddenText: " phone number",
+                                        attributes: { 'data-qa': 'change-address-specific-' + addressItem.contactAddressId + '-phone-' + val.contactAddressPhoneId },
+                                        classes: 'govuk-link--no-visited-state'
+                                    },
+                                    {
+                                        href: '/prisoner/' + params.prisonerNumber + '/contacts/manage/' + params.contactId + '/address/' + addressParam.address.contactAddressId + '/phone/' + val.contactAddressPhoneId + '/delete?returnUrl=' + params.returnUrl,
+                                        text: "Delete",
+                                        visuallyHiddenText: " phone number",
+                                        attributes: { 'data-qa': 'delete-address-specific-' + addressItem.contactAddressId + '-phone-' + val.contactAddressPhoneId },
+                                        classes: 'govuk-link--no-visited-state'
+                                    }
+                                ] if params.canEditAddresses
+                            },
+                            classes: ('govuk-summary-list__row--no-border') if not loop.last
+                        }
+                    ), addressRow) %}
+
+            {% endfor %}
+        {% else %}
+            {% set addressRow = (
+                addressRow.push(
+                    {
+                        key: {
                         text: "Address phone"
                     },
-                    value: {
-                        html: 'Not provided' if not addressSpecificPhoneNumbers else addressSpecificPhoneNumbers,
+                        value: {
+                        html: 'Not provided',
                         classes: 'address-specific-phone-numbers-not-provided'
                     }
-                }
-        ), addressRow) %}
-
+                    }
+                ), addressRow) %}
+        {% endif %}
 
          {% if addressItem.comments %}
             {% set addressRow = (

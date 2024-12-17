@@ -14,6 +14,7 @@ type PatchContactResponse = components['schemas']['PatchContactResponse']
 type PrisonerContactRelationshipDetails = components['schemas']['PrisonerContactRelationshipDetails']
 type ContactRestrictionDetails = components['schemas']['ContactRestrictionDetails']
 type PrisonerContactRestrictionDetails = components['schemas']['PrisonerContactRestrictionDetails']
+type ContactAddressPhoneDetails = components['schemas']['ContactAddressPhoneDetails']
 export default class TestData {
   static address = ({
     contactAddressId = 1,
@@ -41,17 +42,19 @@ export default class TestData {
     noFixedAddress = false,
     phoneNumbers = [
       {
+        contactAddressPhoneId: 4,
+        contactAddressId: 3,
         contactPhoneId: 2,
         contactId: 1,
         phoneType: 'HOME',
-        phoneTypeDescription: 'Home phone',
+        phoneTypeDescription: 'Home',
         phoneNumber: '01111 777777',
         extNumber: '+0123',
         createdBy: 'JAMES',
         createdTime: '2024-10-04T15:35:23.101675v',
         updatedBy: null,
         updatedTime: null,
-      },
+      } as ContactAddressPhoneDetails,
     ],
     comments = 'Some comments',
     createdBy = 'TIM',
@@ -138,6 +141,32 @@ export default class TestData {
       updatedBy: null,
       updatedTime: null,
     } as ContactPhoneDetails
+  }
+
+  static getAddressPhoneNumberDetails = (
+    phoneType: string,
+    phoneTypeDescription: string,
+    phoneNumber: string,
+    contactAddressPhoneId: number = 3,
+    contactAddressId: number = 2,
+    contactPhoneId: number = 1,
+    extNumber: string = null,
+    createdTime: string = '2024-10-04T15:35:23.101675',
+  ): ContactAddressPhoneDetails => {
+    return {
+      contactAddressPhoneId,
+      contactAddressId,
+      contactPhoneId,
+      contactId: 1,
+      phoneType,
+      phoneTypeDescription,
+      phoneNumber,
+      extNumber,
+      createdBy: 'TIM',
+      createdTime,
+      updatedBy: null,
+      updatedTime: null,
+    } as ContactAddressPhoneDetails
   }
 
   static getContactEmailDetails = (emailAddress: string, contactEmailId: number) => {
@@ -272,8 +301,8 @@ export default class TestData {
     interpreterRequired = false,
     addresses = [this.address({})],
     phoneNumbers = [
-      this.getContactPhoneNumberDetails('MOBILE', 'Mobile phone', '07878 111111'),
-      this.getContactPhoneNumberDetails('HOME', 'Home phone', '01111 777777'),
+      this.getContactPhoneNumberDetails('MOBILE', 'Mobile', '07878 111111'),
+      this.getContactPhoneNumberDetails('HOME', 'Home', '01111 777777'),
     ],
     emailAddresses = [
       this.getContactEmailDetails('mr.last@example.com', 1),

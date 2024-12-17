@@ -17,6 +17,7 @@
                 returnUrl: manageContactRelationshipUrl,
                 prisonerNumber: prisonerNumber,
                 contactId: contactId,
+                canEditAddresses: false,
                 addresses: [
                     {
                         mostRelevantAddressLabel: mostRelevantAddressLabel,
@@ -87,16 +88,17 @@
                 <div class="govuk-tabs__panel govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" data-qa="restrictions-result-message" id="restrictions">
 
                     {% set heading = 'Prisoner-contact restrictions between prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' and contact ' + (contact | formatNameFirstNameFirst(excludeMiddleNames = true)) %}
+                    {% set restrictionsTabUrl  = manageContactRelationshipUrl + "#restrictions" | urlencode  %}
                     <h1 class="govuk-heading-l" data-qa="manage-restriction-title">Restrictions</h1>
                     <h2 class="govuk-heading-m" data-qa="confirm-prisoner-contact-restriction-title">{{ heading }}</h2>
                     {% if prisonerContactRestrictions.length >0 %}
-                        {{ restrictionCard(prisonerContactRestrictions, contact, prisonerNumber, prisonerContactId, 'PRISONER_CONTACT' ) }}
+                        {{ restrictionCard(prisonerContactRestrictions, contact, prisonerNumber, prisonerContactId, 'PRISONER_CONTACT', restrictionsTabUrl ) }}
                     {% else %}
                         <p class="govuk-body no_prisoner_contact_restriction_card__description">No prisoner-contact restrictions recorded.</p>
                     {% endif %}
                     {{ govukButton({
                         text: "Add prisoner-contact restriction",
-                        href: "/prisoner/" + prisonerNumber + "/contacts/" + contactId + "/relationship/" + prisonerContactId+ "/restriction/add/PRISONER_CONTACT/start",
+                        href: "/prisoner/" + prisonerNumber + "/contacts/" + contactId + "/relationship/" + prisonerContactId+ "/restriction/add/PRISONER_CONTACT/start?returnUrl=" + restrictionsTabUrl,
                         classes: 'govuk-!-margin-top-6 govuk-button--secondary',
                         attributes: {"data-qa": "add-prisoner-contact-restriction-button"},
                         preventDoubleClick: true
@@ -106,14 +108,14 @@
                     {% set heading = 'Global restrictions for contact ' + ((contact.firstName + " " + contact.lastName) | capitaliseName ) %}
                     <h2 class="govuk-heading-m" data-qa="confirm-global-restriction-title">{{ heading }}</h1>
                     {% if globalRestrictions.length >0 %}
-                        {{ restrictionCard(globalRestrictions, contact, prisonerNumber, prisonerContactId, 'CONTACT_GLOBAL' ) }}
+                        {{ restrictionCard(globalRestrictions, contact, prisonerNumber, prisonerContactId, 'CONTACT_GLOBAL', restrictionsTabUrl ) }}
                     {% else %}
 
                         <p class="govuk-body no_global_restrictions_card__description">No global restrictions recorded.</p>
                     {% endif %}
                       {{ govukButton({
                             text: "Add global restriction",
-                            href: "/prisoner/" + prisonerNumber + "/contacts/" + contactId + "/relationship/" + prisonerContactId+ "/restriction/add/CONTACT_GLOBAL/start",
+                            href: "/prisoner/" + prisonerNumber + "/contacts/" + contactId + "/relationship/" + prisonerContactId+ "/restriction/add/CONTACT_GLOBAL/start?returnUrl=" + restrictionsTabUrl,
                             classes: 'govuk-!-margin-top-6 govuk-button--secondary',
                             attributes: {"data-qa": "add-global-restriction-button"},
                             preventDoubleClick: true
