@@ -170,13 +170,13 @@ export default class ManageContactDetailsPage extends Page {
     return this
   }
 
-  clickManageGlobalRestriction() {
-    this.getManageGlobalRestriction().should('contain.text', `Manage`).click()
+  clickManageGlobalRestriction(id: number = 1) {
+    this.getManageGlobalRestriction(id).should('contain.text', `Manage`).click()
     return this
   }
 
-  clickManagePrisonerContactRestriction() {
-    this.getManagePrisonerContactRestriction().should('contain.text', `Manage`).click()
+  clickManagePrisonerContactRestriction(id: number = 1) {
+    this.getManagePrisonerContactRestriction(id).should('contain.text', `Manage`).click()
     return this
   }
 
@@ -247,10 +247,11 @@ export default class ManageContactDetailsPage extends Page {
 
   private getAddGlobalRestriction = (): PageElement => cy.get('[data-qa="add-global-restriction-button"]')
 
-  private getManageGlobalRestriction = (): PageElement => cy.get('[data-qa="manage-CONTACT_GLOBAL-restriction-link-1"]')
+  private getManageGlobalRestriction = (id: number): PageElement =>
+    cy.get(`[data-qa="manage-CONTACT_GLOBAL-restriction-link-${id}"]`)
 
-  private getManagePrisonerContactRestriction = (): PageElement =>
-    cy.get('[data-qa="manage-PRISONER_CONTACT-restriction-link-1"]')
+  private getManagePrisonerContactRestriction = (id: number): PageElement =>
+    cy.get(`[data-qa="manage-PRISONER_CONTACT-restriction-link-${id}"]`)
 
   private getRestrictionCard = (): PageElement =>
     cy.get(
@@ -339,6 +340,31 @@ export default class ManageContactDetailsPage extends Page {
     this.deleteIdentityLink(id).click()
   }
 
+  verifyShowIsEmergencyContactAs(expected: string) {
+    this.checkAnswersEmergencyContactValue().should('contain.text', expected)
+  }
+
+  verifyShowIsNextOfKinContactAs(expected: string) {
+    this.checkAnswersNextOfKinValue().should('contain.text', expected)
+  }
+
+  verifyShowIsApprovedVisitorAs(expected: string) {
+    this.checkApprovedVisitorValue().should('contain.text', expected)
+  }
+
+  verifyShowIsRelationshipActiveAs(expected: string) {
+    this.checkRelationshipStatusValue().should('contain.text', expected)
+  }
+
+  verifyShowIsRelationshipCommentsAs(expected: string) {
+    this.checkAnswersRelationshipCommentsValue().should('contain.text', expected)
+  }
+
+  verifyOnRestrictionsTab(): ManageContactDetailsPage {
+    this.restrictionsTabHeading().should('be.visible')
+    return this
+  }
+
   private addIdentityLink = (): PageElement => cy.get('[data-qa="add-identity-number"]')
 
   private editIdentityLink = (id: number): PageElement => cy.get(`[data-qa="edit-identity-number-${id}"]`)
@@ -355,23 +381,7 @@ export default class ManageContactDetailsPage extends Page {
 
   private confirmAddressValue = (): PageElement => cy.get(`.confirm-address-value`)
 
-  verifyShowIsEmergencyContactAs(expected: string) {
-    this.checkAnswersEmergencyContactValue().should('contain.text', expected)
-  }
-
   private checkAnswersEmergencyContactValue = (): PageElement => cy.get('.emergency-contact-value')
-
-  verifyShowIsNextOfKinContactAs(expected: string) {
-    this.checkAnswersNextOfKinValue().should('contain.text', expected)
-  }
-
-  verifyShowIsApprovedVisitorAs(expected: string) {
-    this.checkApprovedVisitorValue().should('contain.text', expected)
-  }
-
-  verifyShowIsRelationshipActiveAs(expected: string) {
-    this.checkRelationshipStatusValue().should('contain.text', expected)
-  }
 
   private checkAnswersNextOfKinValue = (): PageElement => cy.get('.next-of-kin-value')
 
@@ -379,9 +389,7 @@ export default class ManageContactDetailsPage extends Page {
 
   private checkRelationshipStatusValue = (): PageElement => cy.get('.relationship-active-value')
 
-  verifyShowIsRelationshipCommentsAs(expected: string) {
-    this.checkAnswersRelationshipCommentsValue().should('contain.text', expected)
-  }
-
   private checkAnswersRelationshipCommentsValue = (): PageElement => cy.get('.relationship-comments-value')
+
+  private restrictionsTabHeading = (): PageElement => cy.get('[data-qa="manage-restriction-title"]')
 }

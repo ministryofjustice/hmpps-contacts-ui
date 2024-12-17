@@ -778,11 +778,11 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       const $ = cheerio.load(response.text)
 
       expect($('[data-qa=add-global-restriction-button]').first().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/1/relationship/99/restriction/add/CONTACT_GLOBAL/start',
+        '/prisoner/A1234BC/contacts/1/relationship/99/restriction/add/CONTACT_GLOBAL/start?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99%23restrictions',
       )
 
       expect($('[data-qa=add-prisoner-contact-restriction-button]').first().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/1/relationship/99/restriction/add/PRISONER_CONTACT/start',
+        '/prisoner/A1234BC/contacts/1/relationship/99/restriction/add/PRISONER_CONTACT/start?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99%23restrictions',
       )
     })
 
@@ -802,17 +802,17 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       })
 
       // When
-      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/22/relationship/99`)
 
       // Then
       const $ = cheerio.load(response.text)
 
       expect($('[data-qa=manage-CONTACT_GLOBAL-restriction-link-1]').first().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/22/relationship/99/restriction/update/CONTACT_GLOBAL/enter-restriction/1?returnUrl=/prisoner/A1234BC/contacts/manage/22/relationship/99',
+        '/prisoner/A1234BC/contacts/22/relationship/99/restriction/update/CONTACT_GLOBAL/enter-restriction/1?returnUrl=/prisoner/A1234BC/contacts/manage/22/relationship/99%23restrictions',
       )
 
       expect($('[data-qa=manage-PRISONER_CONTACT-restriction-link-2]').first().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/22/relationship/99/restriction/update/PRISONER_CONTACT/enter-restriction/2?returnUrl=/prisoner/A1234BC/contacts/manage/22/relationship/99',
+        '/prisoner/A1234BC/contacts/22/relationship/99/restriction/update/PRISONER_CONTACT/enter-restriction/2?returnUrl=/prisoner/A1234BC/contacts/manage/22/relationship/99%23restrictions',
       )
     })
   })
