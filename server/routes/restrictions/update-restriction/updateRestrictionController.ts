@@ -74,6 +74,7 @@ export default class UpdateRestrictionController implements PageHandler {
 
     const navigation: Navigation = {
       backLink: journey.returnPoint.url,
+      cancelButton: journey.returnPoint.url,
     }
 
     const viewModel = {

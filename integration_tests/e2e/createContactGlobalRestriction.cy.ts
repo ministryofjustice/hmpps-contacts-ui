@@ -4,6 +4,7 @@ import { StubContactRestrictionDetails } from '../mockApis/contactsApi'
 import EnterRestrictionPage from '../pages/enterRestrictionPage'
 import CreateRestrictionCheckYourAnswersPage from '../pages/createRestrictionCheckYourAnswersPage'
 import CreateRestrictionSuccessPage from '../pages/createRestrictionSuccessPage'
+import ManageContactDetailsPage from '../pages/manageContactDetails'
 
 context('Create Contact Global Restriction', () => {
   const contactId = 654321
@@ -29,13 +30,21 @@ context('Create Contact Global Restriction', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship(),
     })
+    cy.task('stubGetPrisonerContactRestrictions', {
+      prisonerContactId,
+      response: {
+        prisonerContactRestrictions: [],
+        contactGlobalRestrictions: [],
+      },
+    })
 
     cy.signIn()
 
-    // TODO visit here from the prisoner contact page instead of directly
-    cy.visit(
-      `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/CONTACT_GLOBAL/start?returnUrl=foo`,
-    )
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickRestrictionsTab('0')
+      .verifyOnRestrictionsTab()
+      .clickAddGlobalRestriction()
   })
 
   it('Can create a new global restriction for a contact with minimal fields', () => {
@@ -204,5 +213,11 @@ context('Create Contact Global Restriction', () => {
       expect($lis[2]).to.contain('Expiry date must be a real date')
       expect($lis[3]).to.contain('Comment must be 240 characters or less')
     })
+  })
+
+  it('Back link goes to manage contacts restrictions tab', () => {
+    Page.verifyOnPage(EnterRestrictionPage, enterPageTitle) //
+      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .verifyOnRestrictionsTab()
   })
 })
