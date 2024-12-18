@@ -33,6 +33,14 @@ const populatePrisonerDetailsIfInCaseload = (
   })
 
   function toPrisonerDetails(prisoner: Prisoner): PrisonerDetails {
+    let hasPrimaryAddress = false
+    if (
+      prisoner.addresses &&
+      prisoner.addresses.length > 0 &&
+      prisoner.addresses.find(address => address.primaryAddress)
+    ) {
+      hasPrimaryAddress = true
+    }
     return {
       prisonerNumber: prisoner.prisonerNumber,
       lastName: prisoner.lastName,
@@ -40,6 +48,7 @@ const populatePrisonerDetailsIfInCaseload = (
       dateOfBirth: prisoner.dateOfBirth,
       prisonName: prisoner.prisonName,
       cellLocation: prisoner.cellLocation,
+      hasPrimaryAddress,
     }
   }
 }

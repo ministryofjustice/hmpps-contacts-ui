@@ -65,6 +65,8 @@ import ManageRelationshipStatusController from './relationship/manageRelationshi
 import ManageContactAddAddressPhoneController from './phone/add-address-phone/manageContactAddAddressPhoneController'
 import ManageContactEditAddressPhoneController from './phone/edit-address-phone/manageContactEditAddressPhoneController'
 import ManageContactDeleteAddressPhoneController from './phone/delete-address-phone/manageContactDeleteAddressPhoneController'
+import UsePrisonerAddressController from './addresses/use-prisoner-address/usePrisonerAddressController'
+import PrisonerAddressService from '../../../services/prisonerAddressService'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -72,6 +74,7 @@ const ManageContactsRoutes = (
   contactsService: ContactsService,
   referenceDataService: ReferenceDataService,
   restrictionsService: RestrictionsService,
+  prisonerAddressService: PrisonerAddressService,
 ) => {
   const router = Router({ mergeParams: true })
 
@@ -556,6 +559,15 @@ const ManageContactsRoutes = (
     ensureInAddressJourney(),
     validate(addressLinesSchema()),
     asyncMiddleware(enterAddressController.POST),
+  )
+
+  const usePrisonerAddressController = new UsePrisonerAddressController(prisonerAddressService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/use-prisoner-address/:journeyId',
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    ensureInAddressJourney(),
+    logPageViewMiddleware(auditService, usePrisonerAddressController),
+    asyncMiddleware(usePrisonerAddressController.GET),
   )
 
   const addressMetadataController = new AddressMetadataController(referenceDataService, contactsService)

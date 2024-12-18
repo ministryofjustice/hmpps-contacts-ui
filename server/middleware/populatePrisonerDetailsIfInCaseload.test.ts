@@ -5,6 +5,7 @@ import PrisonerSearchService from '../services/prisonerSearchService'
 import AuditService from '../services/auditService'
 import TestData from '../routes/testutils/testData'
 import { user } from '../routes/testutils/appSetup'
+import { PrisonerSearchAddress } from '../data/prisonerOffenderSearchTypes'
 import PrisonerDetails = journeys.PrisonerDetails
 
 jest.mock('../services/prisonerSearchService')
@@ -49,6 +50,93 @@ describe('prisonerDetailsMiddleware', () => {
       dateOfBirth: '1975-04-02',
       prisonName: 'HMP Hewell',
       cellLocation: '1-1-C-028',
+      hasPrimaryAddress: false,
+    }
+    expect(res.locals.prisonerDetails).toStrictEqual(expectedPrisonerDetails)
+  })
+
+  it('should add prisoner details if no addresses', async () => {
+    const next = jest.fn()
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
+    prisoner.addresses = []
+
+    req = {
+      params: {
+        prisonerNumber: 'A1234BC',
+      },
+      session: { prisonId: prisoner.prisonId },
+    } as Request<{ prisonerNumber: string }>
+
+    await populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService)(req, res, next)
+
+    const expectedPrisonerDetails: PrisonerDetails = {
+      prisonerNumber: 'A1234BC',
+      lastName: 'SMITH',
+      firstName: 'JOHN',
+      dateOfBirth: '1975-04-02',
+      prisonName: 'HMP Hewell',
+      cellLocation: '1-1-C-028',
+      hasPrimaryAddress: false,
+    }
+    expect(res.locals.prisonerDetails).toStrictEqual(expectedPrisonerDetails)
+  })
+
+  it('should add prisoner details if no primary addresses', async () => {
+    const next = jest.fn()
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
+    const prisonerAddress: PrisonerSearchAddress = {
+      fullAddress: '12, my street, england',
+      primaryAddress: false,
+    }
+    prisoner.addresses = [prisonerAddress]
+
+    req = {
+      params: {
+        prisonerNumber: 'A1234BC',
+      },
+      session: { prisonId: prisoner.prisonId },
+    } as Request<{ prisonerNumber: string }>
+
+    await populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService)(req, res, next)
+
+    const expectedPrisonerDetails: PrisonerDetails = {
+      prisonerNumber: 'A1234BC',
+      lastName: 'SMITH',
+      firstName: 'JOHN',
+      dateOfBirth: '1975-04-02',
+      prisonName: 'HMP Hewell',
+      cellLocation: '1-1-C-028',
+      hasPrimaryAddress: false,
+    }
+    expect(res.locals.prisonerDetails).toStrictEqual(expectedPrisonerDetails)
+  })
+
+  it('should add prisoner details if has a primary addresses', async () => {
+    const next = jest.fn()
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
+    const prisonerAddress: PrisonerSearchAddress = {
+      fullAddress: '12, my street, england',
+      primaryAddress: true,
+    }
+    prisoner.addresses = [prisonerAddress]
+
+    req = {
+      params: {
+        prisonerNumber: 'A1234BC',
+      },
+      session: { prisonId: prisoner.prisonId },
+    } as Request<{ prisonerNumber: string }>
+
+    await populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService)(req, res, next)
+
+    const expectedPrisonerDetails: PrisonerDetails = {
+      prisonerNumber: 'A1234BC',
+      lastName: 'SMITH',
+      firstName: 'JOHN',
+      dateOfBirth: '1975-04-02',
+      prisonName: 'HMP Hewell',
+      cellLocation: '1-1-C-028',
+      hasPrimaryAddress: true,
     }
     expect(res.locals.prisonerDetails).toStrictEqual(expectedPrisonerDetails)
   })

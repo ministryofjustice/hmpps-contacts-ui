@@ -229,6 +229,7 @@ export default class TestData {
     cellLocation = '1-1-C-028',
     currentIncentive = this.currentIncentive(),
     locationDescription = undefined,
+    addresses = [],
   }: Partial<Prisoner> = {}): Prisoner =>
     ({
       prisonerNumber,
@@ -240,6 +241,7 @@ export default class TestData {
       cellLocation,
       currentIncentive,
       locationDescription,
+      addresses,
     }) as Prisoner
 
   static contactSearchResultItem = ({

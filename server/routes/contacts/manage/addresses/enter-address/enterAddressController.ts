@@ -21,8 +21,13 @@ export default class EnterAddressController implements PageHandler {
     res: Response,
   ): Promise<void> => {
     const { journeyId } = req.params
-    const { user } = res.locals
+    const { user, prisonerDetails } = res.locals
     const journey = req.session.addressJourneys[journeyId]
+
+    let usePrisonerAddressEnabled = false
+    if (prisonerDetails.hasPrimaryAddress) {
+      usePrisonerAddressEnabled = true
+    }
 
     let typeLabel
     if (journey.addressType !== 'DO_NOT_KNOW') {
@@ -57,6 +62,10 @@ export default class EnterAddressController implements PageHandler {
       countyOptions,
       countryOptions,
       navigation,
+      usePrisonerAddress: {
+        enabled: usePrisonerAddressEnabled,
+        url: `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/use-prisoner-address/${journeyId}?returnUrl=/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/enter-address/${journeyId}`,
+      },
       flat: res.locals?.formResponses?.flat ?? journey.addressLines?.flat,
       premises: res.locals?.formResponses?.premises ?? journey.addressLines?.premises,
       street: res.locals?.formResponses?.street ?? journey.addressLines?.street,

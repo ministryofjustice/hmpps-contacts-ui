@@ -5,6 +5,21 @@ export default class EnterAddressPage extends Page {
     super(`What is the ${type} for ${name}?`)
   }
 
+  verifyCanUsePrisonerAddress(): EnterAddressPage {
+    this.usePrisonerAddressButton().should('exist')
+    return this
+  }
+
+  verifyCanNotUsePrisonerAddress(): EnterAddressPage {
+    this.usePrisonerAddressButton().should('not.exist')
+    return this
+  }
+
+  clickUsePrisonerAddress(): EnterAddressPage {
+    this.usePrisonerAddressButton().click()
+    return this
+  }
+
   clickNoFixedAddress(): EnterAddressPage {
     this.noFixedAddressCheckbox().click()
     return this
@@ -147,4 +162,6 @@ export default class EnterAddressPage extends Page {
   private postcodeTextbox = (): PageElement => cy.get('#postcode')
 
   private countrySelect = (): PageElement => cy.get('#country')
+
+  private usePrisonerAddressButton = (): PageElement => cy.get('[data-qa=use-prisoner-address-button]')
 }

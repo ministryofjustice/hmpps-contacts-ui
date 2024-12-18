@@ -46,6 +46,7 @@ beforeEach(() => {
           lastName: 'Harper',
           dateOfBirth: '1 Aug 1974',
           prisonName: 'Moorland HMP',
+          hasPrimaryAddress: false,
         },
         activateListPage: 0,
         inactivateListPage: 0,
