@@ -5,6 +5,7 @@ import ContactsService from './contactsService'
 import PrisonerImageService from './prisonerImageService'
 import ReferenceDataService from './referenceDataService'
 import RestrictionsService from './restrictionsService'
+import PrisonerAddressService from './prisonerAddressService'
 
 export const services = () => {
   const { applicationInfo, hmppsAuditClient, prisonerSearchApiClient, contactsApiClient, prisonApiClient } =
@@ -16,6 +17,7 @@ export const services = () => {
   const prisonerImageService = new PrisonerImageService(prisonApiClient)
   const referenceDataService = new ReferenceDataService(contactsApiClient)
   const restrictionsService = new RestrictionsService(contactsApiClient)
+  const prisonerAddressService = new PrisonerAddressService(prisonApiClient)
 
   return {
     applicationInfo,
@@ -25,9 +27,17 @@ export const services = () => {
     prisonerImageService,
     referenceDataService,
     restrictionsService,
+    prisonerAddressService,
   }
 }
 
 export type Services = ReturnType<typeof services>
 
-export { AuditService, PrisonerSearchService, ContactsService, PrisonerImageService, RestrictionsService }
+export {
+  AuditService,
+  PrisonerSearchService,
+  ContactsService,
+  PrisonerImageService,
+  RestrictionsService,
+  PrisonerAddressService,
+}

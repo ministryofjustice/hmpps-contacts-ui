@@ -6,6 +6,7 @@ import SelectAddressTypePage from '../pages/selectAddressTypePage'
 import EnterAddressPage from '../pages/enterAddressPage'
 import EnterAddressMetadataPage from '../pages/enterAddressMetadataPage'
 import AddressCheckYourAnswersPage from '../pages/addressCheckYourAnswersPage'
+import { StubPrisonApiAddress } from '../mockApis/prisonApi'
 
 context('Add Address', () => {
   const contactId = 654321
@@ -16,6 +17,8 @@ context('Add Address', () => {
     firstName: 'First',
     middleNames: 'Middle Names',
   })
+
+  const { prisonerNumber } = TestData.prisoner()
 
   beforeEach(() => {
     cy.task('reset')
@@ -40,7 +43,6 @@ context('Add Address', () => {
       },
     })
     cy.signIn()
-    const { prisonerNumber } = TestData.prisoner()
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
@@ -64,6 +66,7 @@ context('Add Address', () => {
       .clickContinue()
 
     Page.verifyOnPage(EnterAddressPage, 'home address', 'First Middle Names Last') //
+      .verifyCanNotUsePrisonerAddress()
       .clickNoFixedAddress()
       .enterFlat('1A')
       .enterPremises('The Block')
@@ -142,6 +145,7 @@ context('Add Address', () => {
       .clickContinue()
 
     Page.verifyOnPage(EnterAddressPage, 'address', 'First Middle Names Last') //
+      .verifyCanNotUsePrisonerAddress()
       .selectCountry('England')
       .clickContinue()
 
@@ -175,6 +179,108 @@ context('Add Address', () => {
         mailFlag: false,
         startDate: '2009-09-01T00:00:00.000Z',
         noFixedAddress: false,
+        createdBy: 'USER1',
+      },
+    )
+  })
+
+  it('Can use prisoner address', () => {
+    cy.task('stubCreateContactAddress', {
+      contactId,
+      created: {
+        contactAddressId: 123987,
+      },
+    })
+    cy.task(
+      'stubPrisonerById',
+      TestData.prisoner({
+        addresses: [
+          {
+            fullAddress: '12, not used, england',
+            primaryAddress: true,
+          },
+        ],
+      }),
+    )
+    const prisonerAddress: StubPrisonApiAddress = {
+      addressId: 1,
+      addressType: 'foo',
+      primary: true,
+      mail: true,
+      noFixedAddress: true,
+      flat: 'Prisoner Flat',
+      premise: 'Prisoner Premises',
+      street: 'Prisoner Street',
+      locality: 'Prisoner Locality',
+      town: '7521',
+      county: 'W.SUSSEX',
+      postalCode: 'PPCODE',
+      country: 'WALES',
+    }
+    cy.task('stubOffenderAddresses', { prisonerNumber, addresses: [prisonerAddress] })
+
+    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
+      .clickAddAddressButton()
+
+    Page.verifyOnPage(SelectAddressTypePage, 'First Middle Names Last') //
+      .isEmptyForm()
+      .selectAddressType('DO_NOT_KNOW')
+      .clickContinue()
+
+    Page.verifyOnPage(EnterAddressPage, 'address', 'First Middle Names Last') //
+      .verifyCanUsePrisonerAddress()
+      .clickUsePrisonerAddress()
+
+    Page.verifyOnPage(EnterAddressPage, 'address', 'First Middle Names Last') //
+      .hasFlat('Prisoner Flat')
+      .hasPremises('Prisoner Premises')
+      .hasStreet('Prisoner Street')
+      .hasLocality('Prisoner Locality')
+      .hasTown('Ilfracombe')
+      .hasCounty('West Sussex')
+      .hasPostcode('PPCODE')
+      .hasCountry('Wales')
+      .clickContinue()
+
+    Page.verifyOnPage(EnterAddressMetadataPage, 'address', 'First Middle Names Last') //
+      .enterFromMonth('09')
+      .enterFromYear('2009')
+      .clickContinue()
+
+    Page.verifyOnPage(AddressCheckYourAnswersPage, 'address', 'First Middle Names Last') //
+      .verifyShowsAddressTypeAs('Not provided')
+      .verifyShowsAddressAs(
+        'Flat Prisoner Flat, Prisoner Premises, Prisoner Street<br>Prisoner Locality<br>Ilfracombe<br>West Sussex<br>PPCODE<br>Wales',
+      )
+      .verifyShowsNoFixedAddressAs('Yes')
+      .verifyShowsFromDateAs('September 2009')
+      .verifyShowsToDateAs('Not provided')
+      .verifyShowsPrimaryAddressAs('Not provided')
+      .verifyShowsMailAddressAs('Not provided')
+      .verifyShowsCommentsAs('Not provided')
+      .clickContinue()
+
+    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last')
+
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: `/contact/${contactId}/address`,
+      },
+      {
+        flat: 'Prisoner Flat',
+        property: 'Prisoner Premises',
+        street: 'Prisoner Street',
+        area: 'Prisoner Locality',
+        cityCode: '7521',
+        countyCode: 'W.SUSSEX',
+        postcode: 'PPCODE',
+        countryCode: 'WALES',
+        verified: false,
+        primaryAddress: false,
+        mailFlag: false,
+        startDate: '2009-09-01T00:00:00.000Z',
+        noFixedAddress: true,
         createdBy: 'USER1',
       },
     )

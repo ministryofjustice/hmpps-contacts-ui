@@ -14,6 +14,7 @@ export default function routes({
   prisonerImageService,
   referenceDataService,
   restrictionsService,
+  prisonerAddressService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
 
@@ -29,6 +30,7 @@ export default function routes({
       contactsService,
       referenceDataService,
       restrictionsService,
+      prisonerAddressService,
     ),
   )
   router.use(

@@ -6,6 +6,7 @@ import tokenVerification from './integration_tests/mockApis/tokenVerification'
 import prisonerSearchApi from './integration_tests/mockApis/prisonerSearchApi'
 import componentApi from './integration_tests/mockApis/componentApi'
 import contactsApi from './integration_tests/mockApis/contactsApi'
+import prisonApi from './integration_tests/mockApis/prisonApi'
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -27,6 +28,7 @@ export default defineConfig({
         ...prisonerSearchApi,
         ...componentApi,
         ...contactsApi,
+        ...prisonApi,
       })
       on('after:spec', (spec: Cypress.Spec, results: CypressCommandLine.RunResult) => {
         if (results && results.video) {

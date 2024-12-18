@@ -78,6 +78,7 @@ declare namespace journeys {
     dateOfBirth: string
     prisonName: string
     cellLocation?: string
+    hasPrimaryAddress: boolean
   }
 
   export interface UpdateDateOfBirthJourney {
