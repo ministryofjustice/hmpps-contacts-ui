@@ -54,7 +54,7 @@ describe('phoneNumberSchemaFactory', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        phoneNumber: ['Phone number should be 20 digits or fewer'],
+        phoneNumber: ['Phone number must be 20 characters or less'],
       })
     })
 
@@ -73,7 +73,7 @@ describe('phoneNumberSchemaFactory', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        extension: ['Extension should be 7 characters or fewer'],
+        extension: ['Extension must be 7 characters or less'],
       })
     })
 
@@ -133,7 +133,7 @@ describe('phoneNumberSchemaFactory', () => {
         JSON.stringify({
           phoneNumber: ['Enter a phone number'],
           type: ['Select the type of phone number'],
-          extension: ['Extension should be 7 characters or fewer'],
+          extension: ['Extension must be 7 characters or less'],
         }),
       )
     })

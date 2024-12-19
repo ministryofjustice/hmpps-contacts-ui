@@ -4,9 +4,9 @@ import { createSchema } from '../../../../middleware/validationMiddleware'
 const TYPE_REQUIRED_MESSAGE = 'Select the type of phone number'
 
 const PHONE_NUMBER_REQUIRED_MESSAGE = 'Enter a phone number'
-const PHONE_NUMBER_TOO_LONG_ERROR_MSG = 'Phone number should be 20 digits or fewer'
+const PHONE_NUMBER_TOO_LONG_ERROR_MSG = 'Phone number must be 20 characters or less'
 
-const EXT_TOO_LONG_ERROR_MSG = 'Extension should be 7 characters or fewer'
+const EXT_TOO_LONG_ERROR_MSG = 'Extension must be 7 characters or less'
 
 const PHONE_IS_INVALID = 'The phone number you entered is invalid, check the format and try again'
 

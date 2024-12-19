@@ -158,7 +158,7 @@ context('Create Address Phones', () => {
       .selectType('HOME')
       .enterPhoneNumber(''.padEnd(21, '0'))
     enterPhonePage.clickContinue()
-    enterPhonePage.hasFieldInError('phoneNumber', 'Phone number should be 20 digits or fewer')
+    enterPhonePage.hasFieldInError('phoneNumber', 'Phone number must be 20 characters or less')
   })
 
   it('Should require extension is 7 chars or fewer', () => {
@@ -171,7 +171,7 @@ context('Create Address Phones', () => {
       .enterExtension(''.padEnd(8, '0'))
 
     enterPhonePage.clickContinue()
-    enterPhonePage.hasFieldInError('extension', 'Extension should be 7 characters or fewer')
+    enterPhonePage.hasFieldInError('extension', 'Extension must be 7 characters or less')
   })
 
   it('Back link goes to view all addresses', () => {
