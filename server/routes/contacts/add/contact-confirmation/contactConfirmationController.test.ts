@@ -376,7 +376,7 @@ describe('Restrictions', () => {
           'Global restrictions for contact Jones Mason',
         )
 
-        expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions(1)')
+        expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions (1)')
         const titleText = $('.govuk-summary-card.restriction-1-card .govuk-summary-card__title').text().trim()
 
         expect(titleText).toStrictEqual('Child Visitors to be Vetted')
@@ -402,7 +402,7 @@ describe('Restrictions', () => {
         // Then
         const $ = cheerio.load(response.text)
 
-        expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions(1)')
+        expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions (1)')
 
         const cardTitle = $('.govuk-summary-card.restriction-1-card .govuk-summary-card__title').text().trim()
 
@@ -423,7 +423,7 @@ describe('Restrictions', () => {
         // Then
         const $ = cheerio.load(response.text)
 
-        expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions(0)')
+        expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions (0)')
         expect($('[data-qa="restrictions-result-message"]').text().trim()).toStrictEqual(
           'No global restrictions recorded.',
         )
@@ -493,7 +493,7 @@ describe('Restrictions', () => {
         // Then
         const $ = cheerio.load(response.text)
 
-        expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions(4)')
+        expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions (4)')
         const cardTitles = $('.restrictions-cards-titles')
         const titles = cardTitles.map((i, el) => $(el).text()).get()
 
@@ -502,6 +502,56 @@ describe('Restrictions', () => {
         expect(titles[2].trim()).toContain('Third Card')
         expect(titles[3].trim()).toContain('Last Card')
       })
+    })
+  })
+
+  describe('Linked prisoners tab', () => {
+    it('should render linked prisoners tab with no results', async () => {
+      // Given
+      contactsService.getLinkedPrisoners.mockResolvedValue([])
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect($('.linked-prisoners-tab-title').text().trim()).toStrictEqual('Linked prisoners (0)')
+      expect($('[data-qa="no-linked-prisoners-message"]').text().trim()).toStrictEqual('No linked prisoners recorded.')
+    })
+
+    it('should render linked prisoners', async () => {
+      // Given
+      contactsService.getLinkedPrisoners.mockResolvedValue([
+        TestData.getLinkedPrisonerDetails(),
+        TestData.getLinkedPrisonerDetails({
+          prisonerNumber: 'X7896YZ',
+          lastName: 'Smith',
+          firstName: 'John',
+          middleNames: 'The Hatchet',
+          relationships: [
+            TestData.getLinkedPrisonerRelationshipDetails({
+              prisonerContactId: 3,
+            }),
+          ],
+        }),
+      ])
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect($('.linked-prisoners-tab-title').text().trim()).toStrictEqual('Linked prisoners (2)')
+
+      expect($('.linked-prisoner-A1234BC-card-title').text().trim()).toStrictEqual('Last, First')
+      expect($('.linked-prisoner-A1234BC-noms-value').text().trim()).toStrictEqual('A1234BC')
+      expect($('.linked-prisoner-A1234BC-relationship-value').text().trim()).toStrictEqual(
+        'Social/Family - FriendOfficial - Doctor',
+      )
+
+      expect($('.linked-prisoner-X7896YZ-card-title').text().trim()).toStrictEqual('Smith, John The Hatchet')
+      expect($('.linked-prisoner-X7896YZ-noms-value').text().trim()).toStrictEqual('X7896YZ')
+      expect($('.linked-prisoner-X7896YZ-relationship-value').text().trim()).toStrictEqual('Social/Family - Friend')
     })
   })
 })

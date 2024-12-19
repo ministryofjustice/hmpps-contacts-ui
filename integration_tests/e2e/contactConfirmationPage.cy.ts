@@ -35,6 +35,7 @@ context('Contact confirmation', () => {
     cy.task('stubContactList', prisonerNumber)
     cy.task('stubGetContactById', contact)
     cy.task('stubGetGlobalRestrictions', [globalRestriction])
+    cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
 
     cy.task('stubContactSearch', {
       results: {
@@ -68,6 +69,7 @@ context('Contact confirmation', () => {
       .clickTheContactLink(contactId)
 
     Page.verifyOnPage(ContactConfirmationPage, 'John Smith') //
+      .hasLinkedPrisonersCount(0)
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
   })
@@ -88,6 +90,47 @@ context('Contact confirmation', () => {
       .checkRestrictionsDetails()
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
+  })
+
+  it('should render linked prisoners tab', () => {
+    cy.task('stubGetContactById', {
+      id: contactId,
+      firstName: 'Existing',
+      lastName: 'Contact',
+      dateOfBirth: '1990-01-14',
+    })
+    cy.task('stubGetLinkedPrisoners', {
+      contactId,
+      linkedPrisoners: [
+        TestData.getLinkedPrisonerDetails({
+          prisonerNumber: 'R6548ST',
+        }),
+        TestData.getLinkedPrisonerDetails({
+          prisonerNumber: 'X7896YZ',
+          lastName: 'Smith',
+          firstName: 'John',
+          middleNames: 'The Hatchet',
+          relationships: [
+            TestData.getLinkedPrisonerRelationshipDetails({
+              prisonerContactId: 3,
+            }),
+          ],
+        }),
+      ],
+    })
+
+    Page.verifyOnPage(SearchContactPage) //
+      .clickTheContactLink(contactId)
+
+    Page.verifyOnPage(ContactConfirmationPage, 'John Smith') //
+      .hasLinkedPrisonersCount(2)
+      .clickLinkedPrisonersTab()
+      .hasLinkedPrisonersCardTitle('R6548ST', 'Last, First')
+      .hasLinkedPrisonersNomsValue('R6548ST', 'R6548ST')
+      .hasLinkedPrisonersRelationshipValue('R6548ST', 'Social/Family - FriendOfficial - Doctor')
+      .hasLinkedPrisonersCardTitle('X7896YZ', 'Smith, John The Hatchet')
+      .hasLinkedPrisonersNomsValue('X7896YZ', 'X7896YZ')
+      .hasLinkedPrisonersRelationshipValue('X7896YZ', 'Social/Family - Friend')
   })
 
   it(`should not pass validation when radiobox is not selected`, () => {
@@ -124,7 +167,7 @@ context('Contact confirmation', () => {
       .verifyShowTitleHeaderValueAs(titleHeader, 'bottom')
       .verifyShowsTabTitleAs('Contact details', 0)
       .verifyShowsTabTitleAs('Restrictions', 1)
-      .verifyShowsTabTitleAs('Linked offenders', 2)
+      .verifyShowsTabTitleAs('Linked prisoners', 2)
       .verifyShowsCardTitleAs('Basic details', 0)
       .verifyShowNamesValueAs('Contact, Mr Existing')
       .verifyShowGenderValueAs('Male')

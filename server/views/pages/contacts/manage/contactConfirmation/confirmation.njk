@@ -4,6 +4,7 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "../../restrictions/manageRestrictions.njk" import restrictionCard %}
+{% from "../../../../partials/linkedPrisonerCard.njk" import linkedPrisonerCard %}
 {% from "../../common/notProvided.njk" import notProvided %}
 
 
@@ -62,30 +63,38 @@
                     </li>
                     <li class="govuk-tabs__list-item">
                         <a class="govuk-tabs__tab restrictions-tab-title" href="#restrictions">
-                            Restrictions({{ globalRestrictions.length }})
+                            Restrictions ({{ globalRestrictions.length }})
                         </a>
                     </li>
                     <li class="govuk-tabs__list-item">
-                        <a class="govuk-tabs__tab" href="#linked-offenders">
-                            Linked offenders
+                        <a class="govuk-tabs__tab linked-prisoners-tab-title" href="#linked-prisoners">
+                            Linked prisoners ({{ linkedPrisoners.length }})
                         </a>
                     </li>
                 </ul>
-                <div class="govuk-tabs__panel--no-border govuk-!-static-padding-top-7" id="contact-details">
+                <div class="govuk-tabs__panel govuk-!-static-padding-top-7" id="contact-details">
                     {{ contactDetailsHtml() }}
                 </div>
                 <div class="govuk-tabs__panel govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" data-qa="restrictions-result-message" id="restrictions">
 
                     {% if globalRestrictions.length >0 %}
-                        {% set heading = 'Global restrictions for contact ' + ((contact.firstName + " " + contact.lastName) | capitaliseName ) %}
-                        <h1 class="govuk-heading-l" data-qa="confirm-global-restriction-title">{{heading}}</h1>
+                        <h1 class="govuk-heading-l" data-qa="confirm-global-restriction-title">Global restrictions for contact {{ contact | formatNameFirstNameFirst(excludeMiddleNames = true) }}</h1>
                         {{ restrictionCard(globalRestrictions, contact, prisonerNumber, prisonerContactId, 'NONE') }}
                     {% else %}
                         No global restrictions recorded.
                     {% endif %}
 
                 </div>
-                <div class="govuk-tabs__panel--no-border govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" id="linked-offenders"></div>
+                <div class="govuk-tabs__panel govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" id="linked-prisoners">
+                    {% if linkedPrisoners.length >0 %}
+                        <h1 class="govuk-heading-l" data-qa="confirm-global-restriction-title">Linked prisoners for contact {{ contact | formatNameFirstNameFirst(excludeMiddleNames = true) }}</h1>
+                        {% for linkedPrisoner in linkedPrisoners %}
+                            {{ linkedPrisonerCard(linkedPrisoner) }}
+                        {% endfor %}
+                    {% else %}
+                        <p data-qa="no-linked-prisoners-message">No linked prisoners recorded.</p>
+                    {% endif %}
+                </div>
             </div>
             {{ govukRadios({
                 name: "isContactConfirmed",

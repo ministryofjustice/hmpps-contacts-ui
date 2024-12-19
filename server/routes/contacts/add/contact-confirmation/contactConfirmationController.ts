@@ -32,11 +32,14 @@ export default class ContactConfirmationController implements PageHandler {
     const globalRestrictionsEnriched = await this.restrictionsService.getGlobalRestrictionsEnriched(contact, user)
     const globalRestrictions = sortRestrictions(globalRestrictionsEnriched)
 
+    const linkedPrisoners = await this.contactsService.getLinkedPrisoners(contact.id, user)
+
     const formattedFullName = await this.formattedFullName(contact, user)
     const mostRelevantAddress = findMostRelevantAddress(contact, false)
     const mostRelevantAddressLabel = getLabelForAddress(mostRelevantAddress)
     return res.render('pages/contacts/manage/contactConfirmation/confirmation', {
       contact,
+      linkedPrisoners,
       globalRestrictions,
       formattedFullName,
       prisonerDetails,
