@@ -51,7 +51,7 @@ export const extractPrisonerNumber = (search: string): string | false => {
 }
 
 export const getFormatDistanceToNow = (date: Date) => {
-  return formatDistanceStrict(date, new Date())
+  return formatDistanceStrict(date, new Date(), { roundingMethod: 'floor' })
 }
 
 export const formatDateForApi = (dateOfBirth: Partial<DateOfBirth>) => {
