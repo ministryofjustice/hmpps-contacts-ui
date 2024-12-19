@@ -23,6 +23,7 @@ import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddress
 import UpdateContactAddressRequest = contactsApiClientTypes.UpdateContactAddressRequest
 import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAddressPhoneRequest
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
+import LinkedPrisonerDetails = contactsApiClientTypes.LinkedPrisonerDetails
 
 type PageableObject = components['schemas']['PageableObject']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
@@ -331,5 +332,9 @@ export default class ContactsService {
     user: Express.User,
   ) {
     return this.contactsApiClient.deleteContactAddressPhone(contactId, contactAddressId, contactPhoneId, user)
+  }
+
+  async getLinkedPrisoners(contactId: number, user: Express.User): Promise<LinkedPrisonerDetails[]> {
+    return this.contactsApiClient.getLinkedPrisoners(contactId, user)
   }
 }

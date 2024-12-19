@@ -156,7 +156,7 @@ export default class ManageContactDetailsPage extends Page {
   }
 
   clickRestrictionsTab(count: string = '1') {
-    this.getRestrictionsTab().should('contain.text', `Restrictions(${count})`).click()
+    this.getRestrictionsTab().should('contain.text', `Restrictions (${count})`).click()
     return this
   }
 

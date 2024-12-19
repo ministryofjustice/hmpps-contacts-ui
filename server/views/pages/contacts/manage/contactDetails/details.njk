@@ -1,6 +1,5 @@
 {% extends "../../../../partials/layout.njk" %}
 {% from "../../../../partials/miniProfile/macro.njk" import miniProfile %}
-{% from "../../partials/addContactTabNavigation.njk" import contactTabNavigation %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "../../common/addressesMacro.njk" import addressDetails %}
 {% from "../../restrictions/manageRestrictions.njk" import restrictionCard %}
@@ -73,16 +72,11 @@
                     </li>
                     <li class="govuk-tabs__list-item">
                         <a class="govuk-tabs__tab restrictions-tab-title" href="#restrictions">
-                            Restrictions({{ globalRestrictions.length + prisonerContactRestrictions.length }})
-                        </a>
-                    </li>
-                    <li class="govuk-tabs__list-item">
-                        <a class="govuk-tabs__tab" href="#linked-offenders">
-                            Linked offenders
+                            Restrictions ({{ globalRestrictions.length + prisonerContactRestrictions.length }})
                         </a>
                     </li>
                 </ul>
-                <div class="govuk-tabs__panel--no-border govuk-!-static-padding-top-7" id="contact-details">
+                <div class="govuk-tabs__panel govuk-!-static-padding-top-7" id="contact-details">
                     {{ contactDetailsHtml() }}
                 </div>
                 <div class="govuk-tabs__panel govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" data-qa="restrictions-result-message" id="restrictions">
@@ -121,7 +115,6 @@
                             preventDoubleClick: true
                         }) }}
                 </div>
-                <div class="govuk-tabs__panel--no-border govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" id="linked-offenders"></div>
              </div>
     </div>
 </div>

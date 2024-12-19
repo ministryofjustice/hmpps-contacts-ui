@@ -618,7 +618,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       const $ = cheerio.load(response.text)
       expect(response.status).toEqual(200)
 
-      expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions(2)')
+      expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions (2)')
       expect($('[data-qa="manage-restriction-title"]').text().trim()).toStrictEqual('Restrictions')
       const prisonerContactCardTitleText = $('.govuk-summary-card.restriction-1-card .govuk-summary-card__title')
         .text()
@@ -666,7 +666,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       // Then
       const $ = cheerio.load(response.text)
 
-      expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions(1)')
+      expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions (1)')
 
       const cardTitle = $('.govuk-summary-card.restriction-1-card .govuk-summary-card__title').text().trim()
 
@@ -695,7 +695,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       // Then
       const $ = cheerio.load(response.text)
 
-      expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions(1)')
+      expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions (1)')
 
       const cardTitle = $('.govuk-summary-card.restriction-1-card .govuk-summary-card__title').text().trim()
 
@@ -719,7 +719,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       // Then
       const $ = cheerio.load(response.text)
 
-      expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions(0)')
+      expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions (0)')
       expect($('.no_prisoner_contact_restriction_card__description').text().trim()).toStrictEqual(
         'No prisoner-contact restrictions recorded.',
       )

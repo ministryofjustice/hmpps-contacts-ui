@@ -1281,6 +1281,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/contact/{contactId}/linked-prisoners': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get linked prisoners
+     * @description Gets a list of prisoners that have an active relationship with the contact
+     */
+    get: operations['getContactLinkedPrisoners']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/contact/search': {
     parameters: {
       query?: never
@@ -1456,14 +1476,6 @@ export interface components {
        */
       updatedTime: string
     }
-    ErrorResponse: {
-      /** Format: int32 */
-      status: number
-      errorCode?: string
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
-    }
     /** @description Response object with prisoner contact details */
     SyncPrisonerContact: {
       /**
@@ -1570,6 +1582,14 @@ export interface components {
        * @example 2024-02-01T16:00:00Z
        */
       updatedTime?: string | null
+    }
+    ErrorResponse: {
+      /** Format: int32 */
+      status: number
+      errorCode?: string
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
     }
     /** @description Request object to update te  prisoner contact restriction details */
     SyncUpdatePrisonerContactRestrictionRequest: {
@@ -2094,7 +2114,7 @@ export interface components {
        * @description Issuing authority
        * @example DVLA
        */
-      issuingAuthority: string
+      issuingAuthority?: string | null
       /**
        * @description The id of the user who updated the contact identity
        * @example JD000001
@@ -5530,6 +5550,64 @@ export interface components {
        * @example 1
        */
       displaySequence: number
+    }
+    /** @description The details of a prisoner linked to a contact including one or more relationships */
+    LinkedPrisonerDetails: {
+      /**
+       * @description Prisoner number (NOMS ID)
+       * @example A1234BC
+       */
+      prisonerNumber: string
+      /**
+       * @description The last name of the prisoner
+       * @example Doe
+       */
+      lastName: string
+      /**
+       * @description The first name of the prisoner
+       * @example John
+       */
+      firstName: string
+      /**
+       * @description The middle names of the prisoner, if any
+       * @example William
+       */
+      middleNames?: string | null
+      /** @description All the relationships between the prisoner and contact. At least one will be present. */
+      relationships: components['schemas']['LinkedPrisonerRelationshipDetails'][]
+    }
+    /** @description Details of the relationship between the prisoner and contact */
+    LinkedPrisonerRelationshipDetails: {
+      /**
+       * Format: int64
+       * @description The unique identifier for the prisoner contact relationship
+       * @example 123456
+       */
+      prisonerContactId: number
+      /**
+       * @description
+       *           Coded value indicating either a social or official contact (mandatory).
+       *           This is a coded value from the group code CONTACT_TYPE in reference data.
+       *           Known values are (S) Social/Family or (O) official.
+       *
+       * @example S
+       */
+      contactType: string
+      /**
+       * @description The description of the contact type
+       * @example Official
+       */
+      contactTypeDescription: string
+      /**
+       * @description The relationship code between the prisoner and the contact
+       * @example FRI
+       */
+      relationshipCode: string
+      /**
+       * @description The description of the relationship
+       * @example Friend
+       */
+      relationshipDescription?: string | null
     }
     /** @description Contact Search Request */
     ContactSearchRequest: {
@@ -10043,6 +10121,59 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['Country']
+        }
+      }
+    }
+  }
+  getContactLinkedPrisoners: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the the linked prisoners successfully. Can be an empty list. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['LinkedPrisonerDetails'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the the contact */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
         }
       }
     }

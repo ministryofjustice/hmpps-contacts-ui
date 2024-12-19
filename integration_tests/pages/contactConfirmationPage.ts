@@ -142,7 +142,7 @@ export default class ContactConfirmationPage extends Page {
   }
 
   clickRestrictionsTab() {
-    this.getRestrictionsTab().should('contain.text', 'Restrictions(1)').click()
+    this.getRestrictionsTab().should('contain.text', 'Restrictions (1)').click()
     return this
   }
 
@@ -160,7 +160,43 @@ export default class ContactConfirmationPage extends Page {
     return this
   }
 
+  clickLinkedPrisonersTab(): ContactConfirmationPage {
+    this.linkedPrisonersTab().click()
+    return this
+  }
+
+  hasLinkedPrisonersCount(count: number): ContactConfirmationPage {
+    this.linkedPrisonersTab().should('contain.text', `Linked prisoners (${count})`)
+    return this
+  }
+
+  hasLinkedPrisonersCardTitle(prisonerNumber: string, expected: string): ContactConfirmationPage {
+    this.linkedPrisonersCardTitle(prisonerNumber).should('contain.text', expected)
+    return this
+  }
+
+  hasLinkedPrisonersNomsValue(prisonerNumber: string, expected: string): ContactConfirmationPage {
+    this.linkedPrisonersNomsValue(prisonerNumber).should('contain.text', expected)
+    return this
+  }
+
+  hasLinkedPrisonersRelationshipValue(prisonerNumber: string, expected: string): ContactConfirmationPage {
+    this.linkedPrisonersRelationshipValue(prisonerNumber).should('contain.text', expected)
+    return this
+  }
+
   private getRestrictionsTab = (): PageElement => cy.get('#tab_restrictions')
+
+  private linkedPrisonersTab = (): PageElement => cy.get('#tab_linked-prisoners')
+
+  private linkedPrisonersCardTitle = (prisonerNumber: string): PageElement =>
+    cy.get(`.linked-prisoner-${prisonerNumber}-card-title`)
+
+  private linkedPrisonersNomsValue = (prisonerNumber: string): PageElement =>
+    cy.get(`.linked-prisoner-${prisonerNumber}-noms-value`)
+
+  private linkedPrisonersRelationshipValue = (prisonerNumber: string): PageElement =>
+    cy.get(`.linked-prisoner-${prisonerNumber}-relationship-value`)
 
   private getRestrictionCard = (): PageElement =>
     cy.get(

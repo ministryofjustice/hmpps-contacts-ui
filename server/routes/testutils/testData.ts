@@ -15,6 +15,8 @@ type PrisonerContactRelationshipDetails = components['schemas']['PrisonerContact
 type ContactRestrictionDetails = components['schemas']['ContactRestrictionDetails']
 type PrisonerContactRestrictionDetails = components['schemas']['PrisonerContactRestrictionDetails']
 type ContactAddressPhoneDetails = components['schemas']['ContactAddressPhoneDetails']
+type LinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
+type LinkedPrisonerRelationshipDetails = components['schemas']['LinkedPrisonerRelationshipDetails']
 export default class TestData {
   static address = ({
     contactAddressId = 1,
@@ -492,4 +494,43 @@ export default class TestData {
       updatedBy: 'USER2',
       updatedTime: '2024-09-21T10:30:00.000000',
     }) as PrisonerContactRestrictionDetails
+
+  static getLinkedPrisonerDetails = ({
+    prisonerNumber = 'A1234BC',
+    lastName = 'Last',
+    firstName = 'First',
+    middleNames = null,
+    relationships = [
+      TestData.getLinkedPrisonerRelationshipDetails(),
+      TestData.getLinkedPrisonerRelationshipDetails({
+        prisonerContactId: 2,
+        contactType: 'O',
+        contactTypeDescription: 'Official',
+        relationshipCode: 'DR',
+        relationshipDescription: 'Doctor',
+      }),
+    ],
+  }: Partial<LinkedPrisonerDetails> = {}): LinkedPrisonerDetails =>
+    ({
+      prisonerNumber,
+      lastName,
+      firstName,
+      middleNames,
+      relationships,
+    }) as LinkedPrisonerDetails
+
+  static getLinkedPrisonerRelationshipDetails = ({
+    prisonerContactId = 1,
+    contactType = 'S',
+    contactTypeDescription = 'Social/Family',
+    relationshipCode = 'FRI',
+    relationshipDescription = 'Friend',
+  }: Partial<LinkedPrisonerRelationshipDetails> = {}): LinkedPrisonerRelationshipDetails =>
+    ({
+      prisonerContactId,
+      contactType,
+      contactTypeDescription,
+      relationshipCode,
+      relationshipDescription,
+    }) as LinkedPrisonerRelationshipDetails
 }
