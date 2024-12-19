@@ -90,10 +90,13 @@ describe('Prisoner address service', () => {
         premise: 'Prisoner Premises 2',
         street: 'Prisoner Street 2',
         locality: 'Prisoner Locality 2',
-        town: '9999',
-        county: 'CORNWALL',
+        town: 'Falmouth',
+        townCode: '9999',
+        county: 'Cornwall',
+        countyCode: 'CORNWALL',
         postalCode: 'Prisoner Postcode',
-        country: 'WALES',
+        country: 'Wales',
+        countryCode: 'WALES',
       }
       prisonApiClient.getOffenderAddresses.mockResolvedValue([primaryPrisonerAddress, nonPrimaryAddress])
       const primaryAddress = await prisonerAddressService.getPrimaryAddress('ABC123', user)

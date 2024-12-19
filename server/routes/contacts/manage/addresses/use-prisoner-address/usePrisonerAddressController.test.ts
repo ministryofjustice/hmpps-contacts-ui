@@ -106,10 +106,13 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/use-p
       premise: 'Prisoner Premises',
       street: 'Prisoner Street',
       locality: 'Prisoner Locality',
-      town: '9999',
-      county: 'CORNWALL',
+      town: 'Falmouth',
+      townCode: '9999',
+      county: 'Cornwall',
+      countyCode: 'CORNWALL',
       postalCode: 'Prisoner Postcode',
-      country: 'WALES',
+      country: 'Wales',
+      countryCode: 'WALES',
     }
     prisonerAddressService.getPrimaryAddress.mockResolvedValue(prisonerAddress)
 
