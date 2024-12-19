@@ -7,6 +7,7 @@ import {
   formatDateForApi,
   capitalizeFirstLetter,
   capitaliseName,
+  getFormatDistanceToNow,
 } from './utils'
 
 describe('convert to title case', () => {
@@ -119,5 +120,43 @@ describe('capitalizeFirstLetter', () => {
 
     // Then
     expect(results).toEqual('Test')
+  })
+})
+
+describe('getFormatDistanceToNow', () => {
+  it('should format to years if more than one year', () => {
+    // Given
+    const date = new Date()
+    date.setDate(date.getDate() - 365)
+
+    // When
+    const results = getFormatDistanceToNow(date)
+
+    // Then
+    expect(results).toEqual('1 year')
+  })
+
+  it('should format to months if less than one year', () => {
+    // Given
+    const date = new Date()
+    date.setMonth(date.getMonth() - 9)
+
+    // When
+    const results = getFormatDistanceToNow(date)
+
+    // Then
+    expect(results).toEqual('9 months')
+  })
+
+  it('should round down years', () => {
+    // Given
+    const date = new Date()
+    date.setDate(date.getDate() - (365 + 365 - 1))
+
+    // When
+    const results = getFormatDistanceToNow(date)
+
+    // Then
+    expect(results).toEqual('1 year')
   })
 })
