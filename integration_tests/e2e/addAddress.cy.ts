@@ -212,10 +212,13 @@ context('Add Address', () => {
       premise: 'Prisoner Premises',
       street: 'Prisoner Street',
       locality: 'Prisoner Locality',
-      town: '7521',
-      county: 'W.SUSSEX',
+      town: 'Ilfracombe',
+      townCode: '7521',
+      county: 'West Sussex',
+      countyCode: 'W.SUSSEX',
       postalCode: 'PPCODE',
-      country: 'WALES',
+      country: 'Wales',
+      countryCode: 'WALES',
     }
     cy.task('stubOffenderAddresses', { prisonerNumber, addresses: [prisonerAddress] })
 

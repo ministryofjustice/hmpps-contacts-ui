@@ -2803,6 +2803,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/reference-domains/domains/{domain}/all-codes': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List of reference codes for reference domain.
+     * @description List of reference codes / profile codes for reference domain / profile type, ordered by code ascending. The list is an un-paged flat list<p>This endpoint uses the REPLICA database.</p>
+     */
+    get: operations['getReferenceOrProfileCodesByDomain']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/reference-domains/alertTypes': {
     parameters: {
       query?: never
@@ -5840,25 +5860,40 @@ export interface components {
        */
       locality?: string
       /**
-       * @description Town/City. Note: Reference domain is CITY
+       * @description Town/City description. Note: Reference domain is CITY
        * @example Liverpool
        */
       town?: string
+      /**
+       * @description Town/City code. Note: Reference domain is CITY
+       * @example 17743
+       */
+      townCode?: string
       /**
        * @description Postal Code
        * @example LI1 5TH
        */
       postalCode?: string
       /**
-       * @description County. Note: Reference domain is COUNTY
-       * @example HEREFORD
+       * @description County description. Note: Reference domain is COUNTY
+       * @example Herefordshire
        */
       county?: string
       /**
-       * @description Country. Note: Reference domain is COUNTRY
-       * @example ENG
+       * @description County code. Note: Reference domain is COUNTY
+       * @example HEREFORD
+       */
+      countyCode?: string
+      /**
+       * @description Country description. Note: Reference domain is COUNTRY
+       * @example England
        */
       country?: string
+      /**
+       * @description Country code. Note: Reference domain is COUNTRY
+       * @example ENG
+       */
+      countryCode?: string
       /**
        * @description Comment
        * @example This is a comment text
@@ -23427,6 +23462,56 @@ export interface operations {
       header?: never
       path: {
         /** @description The domain identifier/name. */
+        domain: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ReferenceCode'][]
+        }
+      }
+      /** @description Invalid request. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Requested resource not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unrecoverable error occurred whilst processing request. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getReferenceOrProfileCodesByDomain: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The domain or profile type identifier/name. */
         domain: string
       }
       cookie?: never

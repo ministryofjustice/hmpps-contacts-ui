@@ -23,10 +23,10 @@ export default class UsePrisonerAddressController implements PageHandler {
           premises: primaryAddress.premise,
           street: primaryAddress.street,
           locality: primaryAddress.locality,
-          town: primaryAddress.town,
-          county: primaryAddress.county,
+          town: primaryAddress.townCode,
+          county: primaryAddress.countyCode,
           postcode: primaryAddress.postalCode,
-          country: primaryAddress.country,
+          country: primaryAddress.countryCode,
         }
       }
     })
