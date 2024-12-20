@@ -77,6 +77,30 @@ describe('identitySchemaFactory', () => {
       })
     })
 
+    it('should require PNC numbers in required format', async () => {
+      // Given
+      const form = { ...baseForm, type: 'PNC', identity: '1923/1Z34567A' }
+
+      // When
+      const result = await doValidate(form)
+
+      // Then
+      expect(result.success).toStrictEqual(false)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+      expect(deduplicatedFieldErrors).toStrictEqual({ identity: ['Enter a PNC number in the correct format'] })
+    })
+
+    it('should accept PNC numbers in required format', async () => {
+      // Given
+      const form = { ...baseForm, type: 'PNC', identity: '2008/0056560Z' }
+
+      // When
+      const result = await doValidate(form)
+
+      // Then
+      expect(result.success).toStrictEqual(true)
+    })
+
     it('should present errors in field order', async () => {
       // Given
       const form = {
