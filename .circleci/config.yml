@@ -52,7 +52,6 @@ jobs:
             - node_modules
             - build
             - dist
-            - assets
 
   unit_test:
     executor:
@@ -62,6 +61,8 @@ jobs:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
+      - attach_workspace:
+          at: ~/app
       - run:
           name: unit tests
           command: npm run test:ci
