@@ -61,7 +61,7 @@ export default class ManageAddressesController implements PageHandler {
   }
 
   private getExpiredAddressTitle(endDate: string, addressTypeDescription: string): string {
-    return this.isExpired(endDate) ? `Expired ${addressTypeDescription?.toLowerCase()}` : addressTypeDescription
+    return this.isExpired(endDate) ? `${addressTypeDescription} (expired)` : addressTypeDescription
   }
 
   private isExpired(endDate: string): boolean {
