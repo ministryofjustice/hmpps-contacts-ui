@@ -315,7 +315,7 @@ describe('Addresses', () => {
     const $ = cheerio.load(response.text)
     expect(response.status).toEqual(200)
     expect($('[data-qa="main-heading"]').text().trim()).toStrictEqual('Addresses for Jones Mason')
-    expect($('.govuk-summary-card__title').text().trim()).toContain('Expired home address')
+    expect($('.govuk-summary-card__title').text().trim()).toContain('Home address (expired)')
   })
 
   it('should show expired next to address card title if no address type', async () => {
@@ -338,6 +338,6 @@ describe('Addresses', () => {
     const $ = cheerio.load(response.text)
     expect(response.status).toEqual(200)
     expect($('[data-qa="main-heading"]').text().trim()).toStrictEqual('Addresses for Jones Mason')
-    expect($('.govuk-summary-card__title').text().trim()).toContain('Expired address')
+    expect($('.govuk-summary-card__title').text().trim()).toContain('Address (expired)')
   })
 })
