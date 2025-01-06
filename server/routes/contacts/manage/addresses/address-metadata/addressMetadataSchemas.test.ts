@@ -119,6 +119,26 @@ describe('addressMetadataSchema', () => {
       })
     })
 
+    it('to date must be on or after from date ', async () => {
+      // When
+      const result = await doValidate({ ...baseForm, fromMonth: '09', fromYear: '2009', toMonth: '08', toYear: '2009' })
+
+      // Then
+      expect(result.success).toStrictEqual(false)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+      expect(deduplicatedFieldErrors).toStrictEqual({
+        toDate: ['End date must be the same as or after the start date September 2009'],
+      })
+    })
+
+    it('to date can be the same as from date ', async () => {
+      // When
+      const result = await doValidate({ ...baseForm, fromMonth: '09', fromYear: '2009', toMonth: '09', toYear: '2009' })
+
+      // Then
+      expect(result.success).toStrictEqual(true)
+    })
+
     const doValidate = async (form: Form) => {
       const schema = await addressMetadataSchema()()
       return schema.safeParse(form)

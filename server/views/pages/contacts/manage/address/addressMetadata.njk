@@ -18,6 +18,9 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+            <p data-qa="address-reference">
+                {{ formattedAddress | addressToLines | safe }}
+            </p>
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 

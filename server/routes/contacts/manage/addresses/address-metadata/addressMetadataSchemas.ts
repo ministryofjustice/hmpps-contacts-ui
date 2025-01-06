@@ -1,5 +1,7 @@
 import z from 'zod'
+import { isValid, parse } from 'date-fns'
 import { createSchema } from '../../../../../middleware/validationMiddleware'
+import { formatDate } from '../../../../../utils/utils'
 
 const COMMENTS_TOO_LONG_ERROR_MESSAGE = 'Address comment must be 240 characters or less'
 
@@ -86,7 +88,28 @@ export const addressMetadataSchema = () => async () => {
     } else if (!val.toMonth && val.toYear) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, message: END_MONTH_REQUIRED_MESSAGE, path: ['toMonth'] })
     }
+
+    if (
+      val.fromMonth &&
+      val.fromYear &&
+      val.toMonth &&
+      val.toYear &&
+      fromDateIsAfterToDate(val.fromMonth, val.fromYear, val.toMonth, val.toYear)
+    ) {
+      const formattedFromDate = formatDate(new Date(`${val.fromYear}-${val.fromMonth}-01`), 'MMMM yyyy')
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `End date must be the same as or after the start date ${formattedFromDate}`,
+        path: ['toDate'],
+      })
+    }
   })
+}
+
+function fromDateIsAfterToDate(fromMonth: string, fromYear: string, toMonth: string, toYear: string): boolean {
+  const fromDate = parse(`${fromYear}-${fromMonth}-01`, 'yyyy-MM-dd', new Date())
+  const toDate = parse(`${toYear}-${toMonth}-01`, 'yyyy-MM-dd', new Date())
+  return isValid(fromDate) && isValid(toDate) && fromDate > toDate
 }
 
 export type AddressMetadataSchema = z.infer<Awaited<ReturnType<ReturnType<typeof addressMetadataSchema>>>>
