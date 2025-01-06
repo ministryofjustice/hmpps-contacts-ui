@@ -141,6 +141,26 @@ context('Update Prisoner Contact Restriction', () => {
     enterRestrictionPage.hasFieldInError('startDate', 'Enter the start date')
   })
 
+  it('Expiry date should be after the Start date', () => {
+    const enterRestrictionPage = Page.verifyOnPage(EnterRestrictionPage, enterPageTitle)
+    enterRestrictionPage //
+      .selectType('CCTV')
+      .enterStartDate('28/02/2024')
+      .enterExpiryDate('27/02/2024')
+      .enterComments(''.padEnd(20, 'X'))
+      .clickContinue()
+
+    enterRestrictionPage.hasFieldInError(
+      'expiryDate',
+      'End date must be the same as or after the start date February 2024',
+    )
+
+    enterRestrictionPage.errorSummaryItems.spread((...$lis) => {
+      expect($lis).to.have.lengthOf(1)
+      expect($lis[0]).to.contain('End date must be the same as or after the start date February 2024')
+    })
+  })
+
   it('Back link goes to manage contacts restrictions tab', () => {
     Page.verifyOnPage(EnterRestrictionPage, enterPageTitle) //
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
