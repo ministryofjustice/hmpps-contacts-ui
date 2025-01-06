@@ -7,7 +7,7 @@ import {
   formatDateForApi,
   capitalizeFirstLetter,
   capitaliseName,
-  getFormatDistanceToNow,
+  ageInYears,
 } from './utils'
 
 describe('convert to title case', () => {
@@ -123,40 +123,58 @@ describe('capitalizeFirstLetter', () => {
   })
 })
 
-describe('getFormatDistanceToNow', () => {
-  it('should format to years if more than one year', () => {
+describe('ageInYears', () => {
+  it.each([
+    ['1973-01-10', '2025-01-06', '51 years'],
+    ['1982-06-15', '2024-12-25', '42 years'],
+    ['2024-01-01', '2025-01-01', '1 year'],
+    ['2024-01-02', '2025-01-01', '0 years'],
+    ['2024-02-29', '2025-02-28', '0 years'],
+    ['2024-02-29', '2025-03-01', '1 year'],
+  ])(
+    'should calculate years correctly with date input',
+    (dateOfBirth: string, currentDate: string, expected: string) => {
+      // Given
+      const today = new Date(currentDate)
+
+      // When
+      const results = ageInYears(new Date(dateOfBirth), today)
+
+      // Then
+      expect(results).toEqual(expected)
+    },
+  )
+
+  it.each([
+    ['1973-01-10', '2025-01-06', '51 years'],
+    ['1982-06-15', '2024-12-25', '42 years'],
+    ['2024-01-01', '2025-01-01', '1 year'],
+    ['2024-01-02', '2025-01-01', '0 years'],
+    ['2024-02-29', '2025-02-28', '0 years'],
+    ['2024-02-29', '2025-03-01', '1 year'],
+  ])(
+    'should calculate years correctly with string input',
+    (dateOfBirth: string, currentDate: string, expected: string) => {
+      // Given
+      const today = new Date(currentDate)
+
+      // When
+      const results = ageInYears(dateOfBirth, today)
+
+      // Then
+      expect(results).toEqual(expected)
+    },
+  )
+
+  it('should default to today for current date', () => {
     // Given
-    const date = new Date()
-    date.setDate(date.getDate() - 365)
+    const dateOfBirth = new Date()
+    dateOfBirth.setDate(dateOfBirth.getDate() - (365 + 365 + 2))
 
     // When
-    const results = getFormatDistanceToNow(date)
+    const results = ageInYears(dateOfBirth)
 
     // Then
-    expect(results).toEqual('1 year')
-  })
-
-  it('should format to months if less than one year', () => {
-    // Given
-    const date = new Date()
-    date.setMonth(date.getMonth() - 9)
-
-    // When
-    const results = getFormatDistanceToNow(date)
-
-    // Then
-    expect(results).toEqual('9 months')
-  })
-
-  it('should round down years', () => {
-    // Given
-    const date = new Date()
-    date.setDate(date.getDate() - (365 + 365 - 1))
-
-    // When
-    const results = getFormatDistanceToNow(date)
-
-    // Then
-    expect(results).toEqual('1 year')
+    expect(results).toEqual('2 years')
   })
 })

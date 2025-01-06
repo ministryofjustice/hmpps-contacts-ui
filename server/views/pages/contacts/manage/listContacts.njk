@@ -50,7 +50,7 @@
             <td class="govuk-table__cell"  data-qa="contact-{{ item.prisonerContactId }}-dob">
                 {% if item.dateOfBirth %}
                     {{ item.dateOfBirth | formatDate }}<br />
-                    ({{ item.dateOfBirth | getFormatDistanceToNow }} old)
+                    ({{ item.dateOfBirth | ageInYears }} old)
                 {% else %}
                     Not provided
                 {% endif %}

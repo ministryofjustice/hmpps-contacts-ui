@@ -1,4 +1,4 @@
-import { format, formatDistanceStrict, isValid, parseISO } from 'date-fns'
+import { format, isValid, parseISO } from 'date-fns'
 import DateOfBirth = journeys.DateOfBirth
 
 const isBlank = (str: string): boolean => !str || /^\s*$/.test(str)
@@ -50,8 +50,17 @@ export const extractPrisonerNumber = (search: string): string | false => {
   return (searchTerms && searchTerms.find(term => isValidPrisonerNumber(term))) || false
 }
 
-export const getFormatDistanceToNow = (date: Date) => {
-  return formatDistanceStrict(date, new Date(), { roundingMethod: 'floor' })
+export const ageInYears = (date: string | Date, now: Date = new Date()) => {
+  const dateOfBirth = new Date(date)
+  let age = now.getFullYear() - dateOfBirth.getFullYear()
+  const monthDiff = now.getMonth() - dateOfBirth.getMonth()
+  if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < dateOfBirth.getDate())) {
+    age -= 1
+  }
+  if (age === 1) {
+    return '1 year'
+  }
+  return `${age} years`
 }
 
 export const formatDateForApi = (dateOfBirth: Partial<DateOfBirth>) => {
