@@ -43,12 +43,29 @@ export default class AddressMetadataController implements PageHandler {
       fromMonth = today.getMonth() + 1
       fromYear = today.getFullYear()
     }
+
+    const formattedAddress = {
+      flat: journey.addressLines.flat,
+      premise: journey.addressLines.premises,
+      street: journey.addressLines.street,
+      area: journey.addressLines.locality,
+      city: await this.getReferenceCodeDescriptionIfSet(journey.addressLines.town, ReferenceCodeType.CITY, user),
+      county: await this.getReferenceCodeDescriptionIfSet(journey.addressLines.county, ReferenceCodeType.COUNTY, user),
+      postalCode: journey.addressLines.postcode,
+      country: await this.getReferenceCodeDescriptionIfSet(
+        journey.addressLines.country,
+        ReferenceCodeType.COUNTRY,
+        user,
+      ),
+    }
+
     const viewModel = {
       journey,
       navigation,
       typeLabel,
       fromMonth,
       fromYear,
+      formattedAddress,
       continueButtonLabel: journey.mode === 'ADD' ? 'Continue' : 'Confirm and save',
       toMonth: res.locals?.formResponses?.toMonth ?? journey.addressMetadata?.toMonth,
       toYear: res.locals?.formResponses?.toYear ?? journey.addressMetadata?.toYear,
@@ -93,5 +110,16 @@ export default class AddressMetadataController implements PageHandler {
         .then(_ => req.flash('successNotificationBanner', "You've updated a contact address"))
       res.redirect(journey.returnPoint.url)
     }
+  }
+
+  private async getReferenceCodeDescriptionIfSet(
+    code: string | undefined,
+    type: ReferenceCodeType,
+    user: Express.User,
+  ): Promise<string | undefined> {
+    if (!code) {
+      return Promise.resolve(undefined)
+    }
+    return this.referenceDataService.getReferenceDescriptionForCode(type, code, user)
   }
 }

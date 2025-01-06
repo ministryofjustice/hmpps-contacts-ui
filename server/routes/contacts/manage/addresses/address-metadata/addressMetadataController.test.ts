@@ -47,6 +47,10 @@ beforeEach(() => {
       firstName: 'first',
     },
     addressType: 'DO_NOT_KNOW',
+    addressLines: {
+      noFixedAddress: false,
+      country: 'ENG',
+    },
   }
   app = appWithAllRoutes({
     services: {
@@ -65,15 +69,23 @@ beforeEach(() => {
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   referenceDataService.getReferenceDescriptionForCode.mockImplementation(
-    (_: ReferenceCodeType, code: string, __: Express.User) => {
-      if (code === 'WORK') {
-        return Promise.resolve('Work address')
-      }
-      if (code === 'BUS') {
-        return Promise.resolve('Business address')
-      }
-      if (code === 'HOME') {
-        return Promise.resolve('Home address')
+    (type: ReferenceCodeType, code: string, __: Express.User) => {
+      if (type === ReferenceCodeType.ADDRESS_TYPE) {
+        if (code === 'WORK') {
+          return Promise.resolve('Work address')
+        }
+        if (code === 'BUS') {
+          return Promise.resolve('Business address')
+        }
+        if (code === 'HOME') {
+          return Promise.resolve('Home address')
+        }
+      } else if (type === ReferenceCodeType.CITY) {
+        return Promise.resolve('Exeter')
+      } else if (type === ReferenceCodeType.COUNTY) {
+        return Promise.resolve('Devon')
+      } else if (type === ReferenceCodeType.COUNTRY) {
+        return Promise.resolve('England')
       }
       return Promise.reject()
     },
@@ -111,6 +123,34 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addre
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     },
   )
+
+  it('should show entered address', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    existingJourney.addressLines = {
+      noFixedAddress: true,
+      flat: '1a',
+      premises: 'My block',
+      street: 'A street',
+      locality: 'Downtown',
+      town: '1234',
+      county: 'DEVON',
+      postcode: 'PC1 D3',
+      country: 'ENG',
+    }
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/address-metadata/${journeyId}`,
+    )
+
+    // Then
+    expect(response.status).toEqual(200)
+
+    const $ = cheerio.load(response.text)
+    expect($('[data-qa=address-reference]').first().html().trim()).toStrictEqual(
+      'Flat 1a, My block, A street<br>Downtown<br>Exeter<br>Devon<br>PC1 D3<br>England',
+    )
+  })
 
   it('should call the audit service for the page view', async () => {
     // Given
