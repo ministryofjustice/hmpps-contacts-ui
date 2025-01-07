@@ -46,7 +46,7 @@ export const restrictionSchema =
       const parseDate = (date: string) => parse(date, 'dd/MM/yyyy', new Date())
       const isDateValid = (date: string) => date !== undefined && isValid(parseDate(date))
 
-      if (!isDateValid(data.startDate) || !isDateValid(data.expiryDate)) return true
+      if (!isDateValid(data.startDate) || !isDateValid(data.expiryDate)) return
 
       const start = parseDate(data.startDate)
       const expiry = parseDate(data.expiryDate)
@@ -57,9 +57,7 @@ export const restrictionSchema =
           message: `End date must be the same as or after the start date ${startFormatted}`,
           path: ['expiryDate'],
         })
-        return false
       }
-      return true
     })
   }
 
