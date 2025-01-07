@@ -1,6 +1,6 @@
 import z from 'zod'
 import { Request } from 'express'
-import { isValid, parse } from 'date-fns'
+import { format, isValid, parse } from 'date-fns'
 import { createSchema, SchemaFactory } from '../../../middleware/validationMiddleware'
 import RestrictionClass = journeys.RestrictionClass
 
@@ -42,6 +42,22 @@ export const restrictionSchema =
         .max(maxCommentLength, `Comment must be ${maxCommentLength} characters or less`)
         .optional()
         .transform(value => value?.trim() || undefined),
+    }).superRefine((data: { startDate: string; expiryDate: string }, ctx) => {
+      const parseDate = (date: string) => parse(date, 'dd/MM/yyyy', new Date())
+      const isDateValid = (date: string) => date !== undefined && isValid(parseDate(date))
+
+      if (!isDateValid(data.startDate) || !isDateValid(data.expiryDate)) return
+
+      const start = parseDate(data.startDate)
+      const expiry = parseDate(data.expiryDate)
+      if (start > expiry) {
+        const startFormatted = format(start, 'MMMM yyyy')
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `End date must be the same as or after the start date ${startFormatted}`,
+          path: ['expiryDate'],
+        })
+      }
     })
   }
 
