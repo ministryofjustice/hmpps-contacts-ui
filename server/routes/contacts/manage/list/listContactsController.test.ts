@@ -127,7 +127,7 @@ describe('listContactsController', () => {
 
       expect($(`${classes} :nth-child(1) > a`).text()).toContain('Adams, Claire')
       expect($(`${classes} :nth-child(2)`).text()).toContain('10 January 1973')
-      expect($(`${classes} :nth-child(2)`).text()).toContain('(51 years old)')
+      expect($(`${classes} :nth-child(2)`).text()).toContain('(52 years old)')
       expect($(`${classes} :nth-child(3)`).text()).toContain('Flat 1,')
       expect($(`${classes} :nth-child(3)`).text()).toContain('Property')
       expect($(`${classes} :nth-child(3)`).text()).toContain('123 High Street')
@@ -571,7 +571,7 @@ describe('listContactsController', () => {
 
       expect($(`${classes} :nth-child(1) > a`).text()).toContain('Adams, Claire')
       expect($(`${classes} :nth-child(2)`).text()).toContain('10 January 1973')
-      expect($(`${classes} :nth-child(2)`).text()).toContain('(51 years old)')
+      expect($(`${classes} :nth-child(2)`).text()).toContain('(52 years old)')
       expect($(`${classes} :nth-child(3)`).text()).toContain('Flat 1,')
       expect($(`${classes} :nth-child(3)`).text()).toContain('Property')
       expect($(`${classes} :nth-child(3)`).text()).toContain('123 High Street')

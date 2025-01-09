@@ -129,12 +129,11 @@ context('Manage contacts ', () => {
     Page.verifyOnPage(SelectSpokenLanguagePage, 'Jones Mason')
   })
 
-  it(`should render isOverEighteen value when dob is not provided and deceased date when available`, () => {
+  it(`should render deceased date when available`, () => {
     const { prisonerNumber } = TestData.prisoner()
     const contact = {
       ...TestData.contact(),
       dateOfBirth: null,
-      estimatedIsOverEighteen: 'YES',
       deceasedDate: '2020-11-22',
     }
     cy.task('stubGetGenders')
@@ -167,7 +166,6 @@ context('Manage contacts ', () => {
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
       .verifyShowNamesValueAs('Mr Jones Mason')
-      .verifyShowisOverEighteenValueAs('Yes')
       .verifyShowDeceasedDateValueAs('22 November 2020')
   })
 

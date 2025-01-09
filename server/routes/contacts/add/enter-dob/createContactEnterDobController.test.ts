@@ -186,13 +186,13 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId', (
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
-  it('should pass to enter estimated dob page if there are no validation errors and we created the contact with no dob', async () => {
+  it('should pass to comments page if there are no validation errors', async () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
       .type('form')
       .send({ isKnown: 'NO' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-estimated-dob/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`)
 
     const expectedDob = { isKnown: 'NO' }
     expect(session.addContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
@@ -240,38 +240,6 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
       month: 6,
       year: 1982,
     }
-    expect(session.addContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
-  })
-
-  it('should pass to estimated DOB page if no DOB is entered even if we are checking answers and a DOB was previously entered', async () => {
-    existingJourney.isCheckingAnswers = true
-    existingJourney.dateOfBirth = { isKnown: 'YES', day: 25, month: 12, year: 1990 }
-
-    await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
-      .type('form')
-      .send({ isKnown: 'NO' })
-      .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-estimated-dob/${journeyId}`)
-
-    // Then
-    const expectedDob = { isKnown: 'NO' }
-    expect(session.addContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
-  })
-
-  it('should keep estimated DOB if we are checking answers and choose NO again', async () => {
-    existingJourney.isCheckingAnswers = true
-    existingJourney.dateOfBirth = { isKnown: 'NO', isOverEighteen: 'YES' }
-
-    await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
-      .type('form')
-      .send({ isKnown: 'NO' })
-      .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-estimated-dob/${journeyId}`)
-
-    // Then
-    const expectedDob = { isKnown: 'NO', isOverEighteen: 'YES' }
     expect(session.addContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
   })
 

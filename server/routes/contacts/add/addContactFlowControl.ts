@@ -12,7 +12,6 @@ type CreateContactPages =
   | Page.SELECT_EMERGENCY_CONTACT
   | Page.SELECT_NEXT_OF_KIN
   | Page.CREATE_CONTACT_DOB_PAGE
-  | Page.CREATE_CONTACT_ESTIMATED_DOB_PAGE
   | Page.ENTER_RELATIONSHIP_COMMENTS
   | Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE
   | Page.SUCCESSFULLY_ADDED_CONTACT_PAGE
@@ -56,9 +55,6 @@ const PAGES: Record<AllAddContactPages, { url: JourneyUrlProvider; breadcrumbs?:
   },
   [Page.CREATE_CONTACT_DOB_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/enter-dob/${journey.id}`,
-  },
-  [Page.CREATE_CONTACT_ESTIMATED_DOB_PAGE]: {
-    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/enter-estimated-dob/${journey.id}`,
   },
   [Page.ENTER_RELATIONSHIP_COMMENTS]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/enter-relationship-comments/${journey.id}`,
@@ -104,27 +100,14 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   [Page.CREATE_CONTACT_DOB_PAGE]: {
     previousUrl: PAGES.SELECT_NEXT_OF_KIN.url,
     nextUrl: journey => {
-      if (journey.dateOfBirth?.isKnown === 'NO') {
-        return PAGES.CREATE_CONTACT_ESTIMATED_DOB_PAGE.url(journey)
+      if (journey.isCheckingAnswers) {
+        return PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey)
       }
-      if (journey.dateOfBirth?.isKnown === 'YES') {
-        if (journey.isCheckingAnswers) {
-          return PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey)
-        }
-        return PAGES.ENTER_RELATIONSHIP_COMMENTS.url(journey)
-      }
-      return PAGES.CREATE_CONTACT_DOB_PAGE.url(journey)
+      return PAGES.ENTER_RELATIONSHIP_COMMENTS.url(journey)
     },
-  },
-  [Page.CREATE_CONTACT_ESTIMATED_DOB_PAGE]: {
-    previousUrl: PAGES.CREATE_CONTACT_DOB_PAGE.url,
-    nextUrl: checkAnswersOr(PAGES.ENTER_RELATIONSHIP_COMMENTS.url),
   },
   [Page.ENTER_RELATIONSHIP_COMMENTS]: {
     previousUrl: journey => {
-      if (journey.dateOfBirth?.isKnown === 'NO') {
-        return PAGES.CREATE_CONTACT_ESTIMATED_DOB_PAGE.url(journey)
-      }
       return PAGES.CREATE_CONTACT_DOB_PAGE.url(journey)
     },
     nextUrl: checkAnswersOr(PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url),

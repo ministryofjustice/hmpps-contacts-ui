@@ -35,7 +35,6 @@ beforeEach(() => {
     },
     dateOfBirth: {
       isKnown: 'NO',
-      isOverEighteen: 'DO_NOT_KNOW',
     },
     relationship: {
       type: 'MOT',

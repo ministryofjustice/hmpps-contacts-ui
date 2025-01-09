@@ -33,7 +33,6 @@ context('Change Contact Name', () => {
       middleNames: 'Middle Names',
       title: 'MR',
       dateOfBirth: null,
-      estimatedIsOverEighteen: 'YES',
     })
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
@@ -84,7 +83,6 @@ context('Change Contact Name', () => {
       middleNames: 'Middle Names',
       title: 'MR',
       dateOfBirth: null,
-      estimatedIsOverEighteen: 'YES',
     })
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
@@ -135,7 +133,6 @@ context('Change Contact Name', () => {
       middleNames: 'Middle Names',
       title: 'MR',
       dateOfBirth: null,
-      estimatedIsOverEighteen: 'YES',
     })
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
@@ -163,7 +160,6 @@ context('Change Contact Name', () => {
       middleNames: 'Middle Names',
       title: 'MR',
       dateOfBirth: null,
-      estimatedIsOverEighteen: 'YES',
     })
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
@@ -187,7 +183,6 @@ context('Change Contact Name', () => {
       middleNames: 'Middle Names',
       title: 'MR',
       dateOfBirth: null,
-      estimatedIsOverEighteen: 'YES',
     })
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {

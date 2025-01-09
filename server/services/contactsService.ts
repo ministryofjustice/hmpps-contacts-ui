@@ -35,23 +35,8 @@ export default class ContactsService {
 
   async createContact(journey: AddContactJourney, user: Express.User): Promise<ContactCreationResult> {
     let dateOfBirth: Date
-    let isOverEighteen
     if (journey.dateOfBirth.isKnown === 'YES') {
       dateOfBirth = new Date(`${journey.dateOfBirth.year}-${journey.dateOfBirth.month}-${journey.dateOfBirth.day}Z`)
-    } else {
-      switch (journey.dateOfBirth.isOverEighteen) {
-        case 'YES':
-          isOverEighteen = 'YES'
-          break
-        case 'NO':
-          isOverEighteen = 'NO'
-          break
-        case 'DO_NOT_KNOW':
-          isOverEighteen = 'DO_NOT_KNOW'
-          break
-        default:
-          isOverEighteen = undefined
-      }
     }
     const request: CreateContactRequest = {
       title: journey.names.title,
@@ -59,7 +44,6 @@ export default class ContactsService {
       firstName: journey.names.firstName,
       middleNames: journey.names.middleNames,
       dateOfBirth,
-      estimatedIsOverEighteen: isOverEighteen,
       relationship: {
         prisonerNumber: journey.prisonerNumber,
         relationshipCode: journey.relationship.type,

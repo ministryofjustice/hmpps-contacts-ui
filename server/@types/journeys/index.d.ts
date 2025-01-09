@@ -35,7 +35,6 @@ declare namespace journeys {
     day?: number
     month?: number
     year?: number
-    isOverEighteen?: YesNoOrDoNotKnow
   }
 
   export interface PrisonerContactRelationship {
@@ -79,16 +78,6 @@ declare namespace journeys {
     prisonName: string
     cellLocation?: string
     hasPrimaryAddress: boolean
-  }
-
-  export interface UpdateDateOfBirthJourney {
-    id: string
-    lastTouched: string
-    returnPoint: ReturnPoint
-    prisonerNumber: string
-    contactId: number
-    names: ContactNames
-    dateOfBirth?: DateOfBirth
   }
 
   export interface AddRestrictionJourney {

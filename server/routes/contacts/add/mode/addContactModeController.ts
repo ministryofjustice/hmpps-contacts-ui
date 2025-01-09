@@ -50,7 +50,6 @@ export default class AddContactModeController implements PageHandler {
       } else {
         journey.dateOfBirth = {
           isKnown: 'NO',
-          isOverEighteen: existingContact.estimatedIsOverEighteen,
         }
       }
     }

@@ -2,11 +2,7 @@ import { Router } from 'express'
 import { validate } from '../../../middleware/validationMiddleware'
 import AuditService from '../../../services/auditService'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
-import {
-  ensureInManageContactsJourney,
-  ensureInUpdateDateOfBirthJourney,
-  prepareStandaloneManageContactJourney,
-} from './manageContactsMiddleware'
+import { ensureInManageContactsJourney, prepareStandaloneManageContactJourney } from './manageContactsMiddleware'
 import StartManageContactsJourneyController from './start/startManageContactsJourneyController'
 import PrisonerSearchController from './prisoner-search/prisonerSearchController'
 import PrisonerSearchResultsController from './prisoner-search/prisonerSearchResultsController'
@@ -30,12 +26,7 @@ import ManageContactAddIdentityController from './identities/add/manageContactAd
 import ManageContactEditIdentityController from './identities/edit/manageContactEditIdentityController'
 import ManageContactDeleteIdentityController from './identities/delete/manageContactDeleteIdentityController'
 import { enterDobSchema } from '../common/enter-dob/enterDobSchemas'
-import StartUpdateDateOfBirthJourneyController from './update-dob/start/startUpdateDateOfBirthJourneyController'
-import ManageContactEnterDobController from './update-dob/enter-dob/manageContactEnterDobController'
-import UpdateDateOfBirthEnterEstimatedDobController from './update-dob/enter-estimated-dob/updateDateOfBirthEnterEstimatedDobController'
-import CompleteUpdateDateOfBirthJourneyController from './update-dob/complete/completeUpdateDateOfBirthJourneyController'
-import { enterEstimatedDobSchema } from '../common/enter-estimated-dob/enterEstimatedDobSchemas'
-import UpdateEstimatedDobController from './update-estimated-dob/updateEstimatedDobController'
+import ManageContactEnterDobController from './update-dob/manageContactEnterDobController'
 import ManageGenderController from './gender/contactGenderController'
 import UpdateNameController from './name/updateNameController'
 import ManageRelationshipCommentsController from './relationship/manageRelationshipCommentsController'
@@ -303,64 +294,19 @@ const ManageContactsRoutes = (
     asyncMiddleware(manageDomesticStatusController.POST),
   )
 
-  const startUpdateDobJourneyController = new StartUpdateDateOfBirthJourneyController(contactsService)
+  const manageContactUpdateDateOfBirthController = new ManageContactEnterDobController(contactsService)
   router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob/start',
-    logPageViewMiddleware(auditService, startUpdateDobJourneyController),
-    asyncMiddleware(startUpdateDobJourneyController.GET),
-  )
-
-  const manageContactUpdateDateOfBirthController = new ManageContactEnterDobController()
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob/enter-dob/:journeyId',
-    ensureInUpdateDateOfBirthJourney(),
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob',
+    prepareStandaloneManageContactJourney(),
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, manageContactUpdateDateOfBirthController),
     asyncMiddleware(manageContactUpdateDateOfBirthController.GET),
   )
   router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob/enter-dob/:journeyId',
-    ensureInUpdateDateOfBirthJourney(),
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob',
+    prepareStandaloneManageContactJourney(),
     validate(enterDobSchema()),
     asyncMiddleware(manageContactUpdateDateOfBirthController.POST),
-  )
-
-  const updateDateOfBirthEnterEstimatedDobController = new UpdateDateOfBirthEnterEstimatedDobController()
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob/enter-estimated-dob/:journeyId',
-    ensureInUpdateDateOfBirthJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, updateDateOfBirthEnterEstimatedDobController),
-    asyncMiddleware(updateDateOfBirthEnterEstimatedDobController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob/enter-estimated-dob/:journeyId',
-    ensureInUpdateDateOfBirthJourney(),
-    validate(enterEstimatedDobSchema()),
-    asyncMiddleware(updateDateOfBirthEnterEstimatedDobController.POST),
-  )
-
-  const completeUpdateDobJourneyController = new CompleteUpdateDateOfBirthJourneyController(contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob/complete/:journeyId',
-    ensureInUpdateDateOfBirthJourney(),
-    logPageViewMiddleware(auditService, completeUpdateDobJourneyController),
-    asyncMiddleware(completeUpdateDobJourneyController.GET),
-  )
-
-  const updateEstimatedDobController = new UpdateEstimatedDobController(contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-estimated-dob',
-    prepareStandaloneManageContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, updateEstimatedDobController),
-    asyncMiddleware(updateEstimatedDobController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-estimated-dob',
-    prepareStandaloneManageContactJourney(),
-    validate(enterEstimatedDobSchema()),
-    asyncMiddleware(updateEstimatedDobController.POST),
   )
 
   const manageGenderController = new ManageGenderController(contactsService, referenceDataService)

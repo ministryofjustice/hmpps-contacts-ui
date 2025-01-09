@@ -11,7 +11,7 @@ import ListContactsPage from '../pages/listContacts'
 import SearchContactPage from '../pages/searchContactPage'
 import CreateContactSuccessPage from '../pages/createContactSuccessPage'
 
-context('Create contact and update from check answers excluding DOB changes', () => {
+context('Create contact and update from check answers', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn', { roles: ['PRISON'] })
@@ -267,6 +267,87 @@ context('Create contact and update from check answers excluding DOB changes', ()
           isNextOfKin: false,
           isEmergencyContact: false,
           comments: 'Some new comments I entered',
+        },
+      },
+    )
+  })
+
+  it('Can change the date of birth to unknown when creating a new contact', () => {
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowCommentsAs('Some comments about the relationship')
+      .clickChangeDateOfBirthLink()
+
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Last') //
+      .hasIsKnown('YES')
+      .hasDay('15')
+      .hasMonth('6')
+      .hasYear('1982')
+      .selectIsKnown('NO')
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowsDateOfBirthAs('Not provided')
+      .continueTo(CreateContactSuccessPage)
+
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: '/contact',
+      },
+      {
+        title: 'MR',
+        lastName: 'Last',
+        firstName: 'First',
+        middleNames: 'Middle',
+        createdBy: 'USER1',
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipCode: 'MOT',
+          isNextOfKin: false,
+          isEmergencyContact: false,
+          comments: 'Some comments about the relationship',
+        },
+      },
+    )
+  })
+
+  it('Can change the date of birth to unknown when creating a new contact', () => {
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowCommentsAs('Some comments about the relationship')
+      .clickChangeDateOfBirthLink()
+
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Last') //
+      .hasIsKnown('YES')
+      .hasDay('15')
+      .hasMonth('6')
+      .hasYear('1982')
+      .enterDay('28')
+      .enterMonth('12')
+      .enterYear('2010')
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowsDateOfBirthAs('28 December 2010')
+      .continueTo(CreateContactSuccessPage)
+
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: '/contact',
+      },
+      {
+        title: 'MR',
+        lastName: 'Last',
+        firstName: 'First',
+        middleNames: 'Middle',
+        createdBy: 'USER1',
+        dateOfBirth: '2010-12-28T00:00:00.000Z',
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipCode: 'MOT',
+          isNextOfKin: false,
+          isEmergencyContact: false,
+          comments: 'Some comments about the relationship',
         },
       },
     )

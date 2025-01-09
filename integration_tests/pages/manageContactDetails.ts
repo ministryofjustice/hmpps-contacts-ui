@@ -25,11 +25,6 @@ export default class ManageContactDetailsPage extends Page {
     return this
   }
 
-  verifyShowisOverEighteenValueAs(expected: string): ManageContactDetailsPage {
-    this.isOverEighteenValue().should('contain.text', expected)
-    return this
-  }
-
   verifyShowIdentityNumberValueAs(expected: string, type: string): ManageContactDetailsPage {
     this.identityNumberValue(type).should('contain.text', expected)
     return this
@@ -133,10 +128,6 @@ export default class ManageContactDetailsPage extends Page {
 
   clickChangeDateOfBirthLink(id: number) {
     this.changeDateOfBirthLink(id).click()
-  }
-
-  clickChangeEstimatedDateOfBirthLink(id: number) {
-    this.changeEstimatedDateOfBirthLink(id).click()
   }
 
   clickChangeNameLink() {
@@ -278,8 +269,6 @@ export default class ManageContactDetailsPage extends Page {
 
   private deceasedValue = (): PageElement => cy.get('.manage-deceased-date-value')
 
-  private isOverEighteenValue = (): PageElement => cy.get('.manage-is-over-eighteen-value')
-
   private identityNumberValue = (type: string): PageElement => cy.get(`.confirm-${type}-value`)
 
   private spokenLanguageValue = (): PageElement => cy.get('.manage-language-code-value')
@@ -311,8 +300,6 @@ export default class ManageContactDetailsPage extends Page {
   private viewAllAddressesLink = (): PageElement => cy.get(`[data-qa="view-all-addresses"]`)
 
   private changeDateOfBirthLink = (id: number): PageElement => cy.get(`[data-qa="change-dob-${id}"]`)
-
-  private changeEstimatedDateOfBirthLink = (id: number): PageElement => cy.get(`[data-qa="change-estimated-dob-${id}"]`)
 
   private changeNameLink = (): PageElement => cy.get(`[data-qa="change-name-link"]`)
 

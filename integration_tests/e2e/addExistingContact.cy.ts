@@ -117,7 +117,6 @@ context('Add Existing Contact', () => {
       .verifyShowCommentsAs('Some comments about the relationship')
       .verifyNameIsNotChangeable()
       .verifyDateOfBirthIsNotChangeable()
-      .verifyEstimatedDateOfBirthIsNotChangeable()
       .clickContinue()
 
     Page.verifyOnPage(AddContactSuccessPage) //
@@ -144,12 +143,11 @@ context('Add Existing Contact', () => {
     )
   })
 
-  it('Can add an existing contact with only optional fields and the contact has an estimated date of birth', () => {
+  it('Can add an existing contact with only optional fields', () => {
     cy.task('stubGetContactById', {
       id: contactId,
       firstName: 'Existing',
       lastName: 'Contact',
-      estimatedIsOverEighteen: 'YES',
     })
 
     Page.verifyOnPage(SearchContactPage) //
@@ -177,13 +175,11 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsNameAs('Contact, Existing')
       .verifyShowsDateOfBirthAs('Not provided')
-      .verifyShowsEstimatedDateOfBirthAs('Yes')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('Yes')
       .verifyShowIsNextOfKinAs('No')
       .verifyNameIsNotChangeable()
       .verifyDateOfBirthIsNotChangeable()
-      .verifyEstimatedDateOfBirthIsNotChangeable()
       .clickContinue()
 
     Page.verifyOnPage(AddContactSuccessPage) //
@@ -214,7 +210,6 @@ context('Add Existing Contact', () => {
       id: contactId,
       firstName: 'Existing',
       lastName: 'Contact',
-      estimatedIsOverEighteen: 'YES',
     })
 
     Page.verifyOnPage(SearchContactPage) //
@@ -241,7 +236,6 @@ context('Add Existing Contact', () => {
       id: contactId,
       firstName: 'Existing',
       lastName: 'Contact',
-      estimatedIsOverEighteen: 'YES',
     })
 
     Page.verifyOnPage(SearchContactPage) //
@@ -262,7 +256,6 @@ context('Add Existing Contact', () => {
       id: contactId,
       firstName: 'Existing',
       lastName: 'Contact',
-      estimatedIsOverEighteen: 'YES',
     })
 
     Page.verifyOnPage(SearchContactPage) //
@@ -353,7 +346,6 @@ context('Add Existing Contact', () => {
       .verifyShowDeceasedDate('25 December 2020')
       .verifyNameIsNotChangeable()
       .verifyDateOfBirthIsNotChangeable()
-      .verifyEstimatedDateOfBirthIsNotChangeable()
       .continueTo(AddContactSuccessPage)
 
     cy.verifyLastAPICall(

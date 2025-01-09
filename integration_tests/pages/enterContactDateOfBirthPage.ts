@@ -5,15 +5,6 @@ export default class EnterContactDateOfBirthPage extends Page {
     super(`Do you know ${name}'s date of birth?`)
   }
 
-  isEmptyForm(): EnterContactDateOfBirthPage {
-    this.radio('YES').should('not.be.checked')
-    this.radio('NO').should('not.be.checked')
-    this.dayTextBox().should('not.be.visible')
-    this.monthTextBox().should('not.be.visible')
-    this.yearTextBox().should('not.be.visible')
-    return this
-  }
-
   selectIsKnown(value: 'YES' | 'NO'): EnterContactDateOfBirthPage {
     this.radio(value).click()
     return this
