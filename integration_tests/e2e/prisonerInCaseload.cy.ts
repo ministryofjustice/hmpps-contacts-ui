@@ -31,7 +31,6 @@ context('Ensure Prisoner Is In Caseload', () => {
       firstName: 'First',
       middleNames: 'Middle Names',
       dateOfBirth: '1982-06-15',
-      estimatedIsOverEighteen: null,
     })
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {

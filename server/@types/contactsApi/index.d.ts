@@ -1734,12 +1734,6 @@ export interface components {
        */
       dateOfBirth?: string | null
       /**
-       * @description Whether the contact is over 18, based on their date of birth if it is known
-       * @example YES
-       * @enum {string}
-       */
-      estimatedIsOverEighteen?: 'YES' | 'NO' | 'DO_NOT_KNOW'
-      /**
        * @description Whether the contact is a staff member
        * @example false
        */
@@ -1835,12 +1829,6 @@ export interface components {
        * @example 1980-01-01
        */
       dateOfBirth?: string | null
-      /**
-       * @description Whether the contact is over 18, based on their date of birth if it is known
-       * @example YES
-       * @enum {string}
-       */
-      estimatedIsOverEighteen?: 'YES' | 'NO' | 'DO_NOT_KNOW'
       /**
        * @description Whether the contact is a staff member
        * @example false
@@ -3534,12 +3522,6 @@ export interface components {
        * @example 1980-01-01
        */
       dateOfBirth?: string | null
-      /**
-       * @description If the date of birth is not known, this indicates whether they are believed to be over 18 or not
-       * @example YES
-       * @enum {string|null}
-       */
-      estimatedIsOverEighteen?: 'YES' | 'NO' | 'DO_NOT_KNOW' | null
       relationship?: components['schemas']['ContactRelationship']
       /**
        * @description Whether the contact is a staff member
@@ -4478,12 +4460,6 @@ export interface components {
        * @example 1980-01-01
        */
       dateOfBirth?: string | null
-      /**
-       * @description If the date of birth is not known, this indicates whether they are believed to be over 18 or not
-       * @example YES
-       * @enum {string|null}
-       */
-      estimatedIsOverEighteen?: 'YES' | 'NO' | 'DO_NOT_KNOW' | null
       relationship?: components['schemas']['ContactRelationship']
       /**
        * @description The id of the user creating the contact
@@ -4690,12 +4666,6 @@ export interface components {
        * @example 1980-01-01
        */
       dateOfBirth?: string | null
-      /**
-       * @description Whether the contact is over 18, based on their date of birth if it is known
-       * @example YES
-       * @enum {string}
-       */
-      estimatedIsOverEighteen?: 'YES' | 'NO' | 'DO_NOT_KNOW'
       /**
        * @description Whether the contact is a staff member
        * @example false
@@ -5045,11 +5015,6 @@ export interface components {
        */
       dateOfBirth?: string | null
       /**
-       * @description If the date of birth is not known, this indicates whether they are believed to be over 18 or not
-       * @example YES
-       */
-      estimatedIsOverEighteen?: string | null
-      /**
        * @description The title code for the contact, if any
        * @example MR
        */
@@ -5112,12 +5077,6 @@ export interface components {
        * @example 1980-01-01
        */
       dateOfBirth?: string | null
-      /**
-       * @description Whether the contact is over 18, based on their date of birth if it is known
-       * @example YES
-       * @enum {string}
-       */
-      estimatedIsOverEighteen?: 'YES' | 'NO' | 'DO_NOT_KNOW'
       /**
        * @description Whether the contact is a staff member
        * @example false
@@ -5276,12 +5235,6 @@ export interface components {
        * @example 1980-01-01
        */
       dateOfBirth?: string
-      /**
-       * @description YES if the contact is over 18 years old, NO if under, null if unknown
-       * @example YES
-       * @enum {string}
-       */
-      estimatedIsOverEighteen?: 'YES' | 'NO' | 'DO_NOT_KNOW'
       /**
        * @description The relationship code between the prisoner and the contact
        * @example FRI

@@ -7,7 +7,6 @@ import { components } from '../@types/contactsApi'
 import AddContactJourney = journeys.AddContactJourney
 import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
-import IsOverEighteenOptions = journeys.YesNoOrDoNotKnow
 import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
 import ContactDetails = contactsApiClientTypes.ContactDetails
@@ -94,7 +93,6 @@ describe('contactsService', () => {
         firstName: 'first',
         middleNames: 'middle',
         dateOfBirth: new Date('1982-06-01T00:00:00.000Z'),
-        estimatedIsOverEighteen: undefined,
         createdBy: 'user1',
         relationship: {
           prisonerNumber,
@@ -136,7 +134,6 @@ describe('contactsService', () => {
         },
         dateOfBirth: {
           isKnown: 'NO',
-          isOverEighteen: 'DO_NOT_KNOW',
         },
         relationship: {
           type: 'MOT',
@@ -150,63 +147,6 @@ describe('contactsService', () => {
         firstName: 'first',
         middleNames: undefined,
         dateOfBirth: undefined,
-        estimatedIsOverEighteen: 'DO_NOT_KNOW',
-        relationship: {
-          prisonerNumber,
-          relationshipCode: 'MOT',
-          isNextOfKin: false,
-          isEmergencyContact: true,
-        },
-        createdBy: 'user1',
-      }
-
-      // When
-      const created = await service.createContact(journey, user)
-
-      // Then
-      expect(created).toStrictEqual(expectedCreated)
-      expect(apiClient.createContact).toHaveBeenCalledWith(expectedRequest, user)
-    })
-
-    it.each([
-      ['YES', 'YES'],
-      ['NO', 'NO'],
-      ['DO_NOT_KNOW', 'DO_NOT_KNOW'],
-    ])('should map isOverEighteen if dob is not known', async (input: IsOverEighteenOptions, expected: string) => {
-      // Given
-      const expectedCreated: ContactCreationResult = {
-        createdContact: {
-          id: 2136718213,
-        },
-      }
-      apiClient.createContact.mockResolvedValue(expectedCreated)
-      const journey: AddContactJourney = {
-        id: '1',
-        lastTouched: new Date().toISOString(),
-        prisonerNumber,
-        isCheckingAnswers: false,
-        returnPoint: { url: '/foo-bar' },
-        names: {
-          lastName: 'last',
-          firstName: 'first',
-        },
-        dateOfBirth: {
-          isKnown: 'NO',
-          isOverEighteen: input,
-        },
-        relationship: {
-          type: 'MOT',
-          isEmergencyContact: 'YES',
-          isNextOfKin: 'NO',
-        },
-      }
-      const expectedRequest: CreateContactRequest = {
-        title: undefined,
-        lastName: 'last',
-        firstName: 'first',
-        middleNames: undefined,
-        dateOfBirth: undefined,
-        estimatedIsOverEighteen: expected,
         relationship: {
           prisonerNumber,
           relationshipCode: 'MOT',
@@ -398,7 +338,6 @@ describe('contactsService', () => {
         },
         dateOfBirth: {
           isKnown: 'NO',
-          isOverEighteen: 'DO_NOT_KNOW',
         },
         relationship: {
           type: 'MOT',

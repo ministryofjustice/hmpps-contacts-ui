@@ -2,7 +2,6 @@ import Page from '../pages/page'
 import EnterNamePage from '../pages/enterNamePage'
 import EnterContactDateOfBirthPage from '../pages/enterContactDateOfBirthPage'
 import CreateContactCheckYourAnswersPage from '../pages/createContactCheckYourAnswersPage'
-import EnterContactEstimatedDateOfBirthPage from '../pages/enterContactEstimatedDateOfBirthPage'
 import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
@@ -98,16 +97,11 @@ context('Create Contacts', () => {
       .selectIsKnown('NO')
       .clickContinue()
 
-    Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'First Last') //
-      .selectIsOverEighteen('DO_NOT_KNOW')
-      .clickContinue()
-
     Page.verifyOnPage(RelationshipCommentsPage, 'First Last').clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
       .verifyShowsNameAs('Last, First')
       .verifyShowsDateOfBirthAs('Not provided')
-      .verifyShowsEstimatedDateOfBirthAs("I don't know")
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
       .verifyShowIsNextOfKinAs('Yes')
@@ -126,7 +120,6 @@ context('Create Contacts', () => {
       {
         lastName: 'Last',
         firstName: 'First',
-        estimatedIsOverEighteen: 'DO_NOT_KNOW',
         createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',
@@ -384,34 +377,6 @@ context('Create Contacts', () => {
     })
   })
 
-  it('Must select whether contact is over 18 if no dob is known', () => {
-    Page.verifyOnPage(EnterNamePage) //
-      .enterLastName('Last')
-      .enterFirstName('First')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectRelationshipPage, 'First Last') //
-      .selectRelationship('MOT')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectEmergencyContactPage, 'First Last') //
-      .selectIsEmergencyContact('NO')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectNextOfKinPage, 'First Last') //
-      .selectIsNextOfKin('NO')
-      .clickContinue()
-
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Last') //
-      .selectIsKnown('NO')
-      .clickContinue()
-
-    const estimatedDobPage = Page.verifyOnPage(EnterContactEstimatedDateOfBirthPage, 'First Last')
-    estimatedDobPage.clickContinue()
-
-    estimatedDobPage.hasFieldInError('isOverEighteen', 'Select whether the contact is over 18')
-  })
-
   it('Relationship comments must be less than 240 characters', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
@@ -424,8 +389,6 @@ context('Create Contacts', () => {
       .selectIsNextOfKin('YES')
       .continueTo(EnterContactDateOfBirthPage, 'First Last') //
       .selectIsKnown('NO')
-      .continueTo(EnterContactEstimatedDateOfBirthPage, 'First Last') //
-      .selectIsOverEighteen('DO_NOT_KNOW')
       .clickContinue()
 
     const commentsPage = Page.verifyOnPage(RelationshipCommentsPage, 'First Last') //
@@ -447,12 +410,9 @@ context('Create Contacts', () => {
       .selectIsNextOfKin('YES')
       .continueTo(EnterContactDateOfBirthPage, 'First Last')
       .selectIsKnown('NO')
-      .continueTo(EnterContactEstimatedDateOfBirthPage, 'First Last')
-      .selectIsOverEighteen('DO_NOT_KNOW')
       .continueTo(RelationshipCommentsPage, 'First Last')
 
     relationshipCommentsPage //
-      .backTo(EnterContactEstimatedDateOfBirthPage, 'First Last')
       .backTo(EnterContactDateOfBirthPage, 'First Last')
       .backTo(SelectNextOfKinPage, 'First Last')
       .backTo(SelectEmergencyContactPage, 'First Last')

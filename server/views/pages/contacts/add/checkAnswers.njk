@@ -61,30 +61,6 @@
                         }
                     }
                 ] %}
-                {% if journey.dateOfBirth.isKnown === 'NO' %}
-                    {% set contactDetailsRows = (contactDetailsRows.push(
-                        {
-                            key: {
-                                text: "Is over 18 years old?"
-                            },
-                            value: {
-                                html: journey.dateOfBirth.isOverEighteen | formatYesNo,
-                                classes: 'check-answers-estimated-dob-value'
-                            },
-                            actions: {
-                                items: [
-                                    {
-                                        href: baseChangeUrl + "/enter-estimated-dob/"  + journey.id,
-                                        text: "Change",
-                                        visuallyHiddenText: "is over 18",
-                                        attributes: {"data-qa": "change-estimated-dob-link"},
-                                        classes: "govuk-link--no-visited-state"
-                                    }
-                                ] if journey.mode === 'NEW'
-                            }
-                        }
-                    ), contactDetailsRows) %}
-                {% endif %}
                 {% if journey.existingContact.isDeceased and journey.existingContact.deceasedDate %}
                     {% set contactDetailsRows = (contactDetailsRows.push(
                         {

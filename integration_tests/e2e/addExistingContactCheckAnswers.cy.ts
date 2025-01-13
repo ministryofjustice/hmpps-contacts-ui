@@ -90,7 +90,6 @@ context('Add Existing Contact Check Answers', () => {
       .verifyShowCommentsAs('Some comments about the relationship')
       .verifyNameIsNotChangeable()
       .verifyDateOfBirthIsNotChangeable()
-      .verifyEstimatedDateOfBirthIsNotChangeable()
   })
 
   it('Can change the relationship from check answers', () => {

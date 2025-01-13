@@ -130,7 +130,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       firstName: 'middle',
       middleNames: 'first',
       dateOfBirth: undefined,
-      estimatedIsOverEighteen: 'YES',
       createdBy: user.username,
       createdTime: '2024-01-01',
     }
@@ -162,7 +161,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
     })
   })
 
-  it('should pass to the contact confirmation page if mode is EXISTING and the contact has no DOB or estimated DOB', async () => {
+  it('should pass to the contact confirmation page if mode is EXISTING and the contact has no DOB', async () => {
     // Given
     const contact: ContactDetails = {
       id: 123456,
@@ -171,7 +170,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       firstName: 'middle',
       middleNames: 'first',
       dateOfBirth: undefined,
-      estimatedIsOverEighteen: undefined,
       createdBy: user.username,
       createdTime: '2024-01-01',
     }
@@ -199,7 +197,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
     })
     expect(existingJourney.dateOfBirth).toStrictEqual({
       isKnown: 'NO',
-      isOverEighteen: undefined,
     })
   })
 
@@ -286,7 +283,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
         firstName: 'Tsrif',
         middleNames: 'Elldim',
         dateOfBirth: '1980-12-10T00:00:00.000Z',
-        estimatedIsOverEighteen: undefined,
         isDeceased: false,
         createdBy: user.username,
         createdTime: '2024-01-01',

@@ -15,7 +15,6 @@ context('Change Relationship', () => {
     middleNames: 'Middle Names',
     title: 'MR',
     dateOfBirth: null,
-    estimatedIsOverEighteen: 'YES',
   })
 
   beforeEach(() => {

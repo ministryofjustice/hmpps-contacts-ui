@@ -10,7 +10,6 @@ import ensureInAddContactJourney from './addContactMiddleware'
 import { ContactsService, PrisonerSearchService, RestrictionsService } from '../../../services'
 import CreateContactCheckAnswersController from './check-answers/createContactCheckAnswersController'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
-import CreateContactEnterEstimatedDobController from './enter-estimated-dob/createContactEnterEstimatedDobController'
 import ReferenceDataService from '../../../services/referenceDataService'
 import SelectRelationshipController from './relationship/selectRelationshipController'
 import { selectRelationshipSchemaFactory } from '../common/relationship/selectRelationshipSchemas'
@@ -27,7 +26,6 @@ import { selectToConfirmContactSchema } from './contact-confirmation/contactConf
 import AddContactModeController from './mode/addContactModeController'
 import ContactConfirmationController from './contact-confirmation/contactConfirmationController'
 import { enterDobSchema } from '../common/enter-dob/enterDobSchemas'
-import { enterEstimatedDobSchema } from '../common/enter-estimated-dob/enterEstimatedDobSchemas'
 import SuccessfullyAddedContactController from './success/successfullyAddedContactController'
 
 const AddContactRoutes = (
@@ -163,21 +161,6 @@ const AddContactRoutes = (
     ensureInAddContactJourney(),
     validate(enterDobSchema()),
     asyncMiddleware(enterDobController.POST),
-  )
-
-  const enterEstimatedDobController = new CreateContactEnterEstimatedDobController()
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/create/enter-estimated-dob/:journeyId',
-    ensureInAddContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, enterEstimatedDobController),
-    asyncMiddleware(enterEstimatedDobController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/create/enter-estimated-dob/:journeyId',
-    ensureInAddContactJourney(),
-    validate(enterEstimatedDobSchema()),
-    asyncMiddleware(enterEstimatedDobController.POST),
   )
 
   const enterRelationshipCommentsController = new EnterRelationshipCommentsController()

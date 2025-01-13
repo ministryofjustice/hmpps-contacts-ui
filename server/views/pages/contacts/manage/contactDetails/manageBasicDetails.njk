@@ -1,12 +1,6 @@
 
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% set  formattedDateOfBirth %}{% if contact.dateOfBirth %}{{ contact.dateOfBirth | formatDate }}{% else %}Not provided{% endif %}{% endset %}
-{% set  estimatedIsOverEighteen %}
-    {% if contact.estimatedIsOverEighteen == 'YES' %}{{ 'Yes' }}
-    {% elseif contact.estimatedIsOverEighteen == 'NO' %}{{ 'No' }}
-    {% elseif contact.estimatedIsOverEighteen == 'DO_NOT_KNOW' %}{{ 'I don’t know' }}
-    {% else %}{{ 'Not provided' }}
-{% endif %}{% endset %}
 
 {% set contactDetailsRows = [{
         key: {
@@ -59,7 +53,7 @@
         actions: {
             items: [
                 {
-                    href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/update-dob/start?returnUrl=" + manageContactRelationshipUrl,
+                    href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/update-dob?returnUrl=" + manageContactRelationshipUrl,
                     text: "Change",
                     visuallyHiddenText: " date of birth",
                     attributes: {"data-qa": "change-dob-" + contact.id},
@@ -69,31 +63,6 @@
         }
     }]
 %}
-
-{% if contact.dateOfBirth == null %}
-    {% set contactDetailsRows = (contactDetailsRows.push(
-        {
-            key: {
-                text: "Is contact over 18?"
-            },
-            value: {
-                text:  estimatedIsOverEighteen,
-                classes: 'manage-is-over-eighteen-value'
-            },
-            actions: {
-                items: [
-                    {
-                        href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/update-estimated-dob?returnUrl=" + manageContactRelationshipUrl,
-                        text: "Change",
-                        visuallyHiddenText: " is contact over 18?",
-                        attributes: {"data-qa": "change-estimated-dob-" + contact.id},
-                        classes: "govuk-link--no-visited-state"
-                    }
-                ]
-            }
-        }
-    ), contactDetailsRows) %}
-{% endif %}
 
 {% if contact.deceasedDate != null %}
     {% set contactDetailsRows = (contactDetailsRows.push(

@@ -13,10 +13,6 @@ export default class CreateContactCheckYourAnswersPage extends Page {
     this.changeDateOfBirthLink().click()
   }
 
-  clickChangeEstimatedDateOfBirthLink() {
-    this.changeEstimatedDateOfBirthLink().click()
-  }
-
   clickChangeRelationshipLink() {
     this.changeRelationshipLink().click()
   }
@@ -53,11 +49,6 @@ export default class CreateContactCheckYourAnswersPage extends Page {
     return this
   }
 
-  verifyShowsEstimatedDateOfBirthAs(expected: string): CreateContactCheckYourAnswersPage {
-    this.checkAnswersEstimatedDobValue().should('contain.text', expected)
-    return this
-  }
-
   verifyShowRelationshipAs(expected: string): CreateContactCheckYourAnswersPage {
     this.checkAnswersRelationshipValue().should('contain.text', expected)
     return this
@@ -88,18 +79,11 @@ export default class CreateContactCheckYourAnswersPage extends Page {
     return this
   }
 
-  verifyEstimatedDateOfBirthIsNotChangeable(): CreateContactCheckYourAnswersPage {
-    this.changeEstimatedDateOfBirthLink().should('not.exist')
-    return this
-  }
-
   private checkAnswersNameValue = (): PageElement => cy.get('.check-answers-name-value')
 
   private checkAnswersDobValue = (): PageElement => cy.get('.check-answers-dob-value')
 
   private checkAnswersDeceasedValue = (): PageElement => cy.get('.check-answers-deceased-value')
-
-  private checkAnswersEstimatedDobValue = (): PageElement => cy.get('.check-answers-estimated-dob-value')
 
   private checkAnswersRelationshipValue = (): PageElement => cy.get('.check-answers-relationship-value')
 
@@ -112,8 +96,6 @@ export default class CreateContactCheckYourAnswersPage extends Page {
   private changeNameLink = (): PageElement => cy.get('[data-qa=change-name-link]')
 
   private changeDateOfBirthLink = (): PageElement => cy.get('[data-qa=change-dob-link]')
-
-  private changeEstimatedDateOfBirthLink = (): PageElement => cy.get('[data-qa=change-estimated-dob-link]')
 
   private changeRelationshipLink = (): PageElement => cy.get('[data-qa=change-relationship-link]')
 
