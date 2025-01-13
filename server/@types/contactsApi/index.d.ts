@@ -3464,10 +3464,15 @@ export interface components {
        */
       prisonerNumber: string
       /**
-       * @description The relationship code between the prisoner and the contact
+       * @description The relationship between the prisoner and the contact - for social(S) or official(O)
+       * @example S
+       */
+      relationshipType: string
+      /**
+       * @description The relationship to prisoner reference code
        * @example FRI
        */
-      relationshipCode: string
+      relationshipToPrisoner: string
       /**
        * @description Whether they are the next of kin for the prisoner
        * @example true
@@ -3893,10 +3898,10 @@ export interface components {
        */
       prisonerNumber: string
       /**
-       * @description The relationship code between the prisoner and the contact
+       * @description The relationship to prisoner code from reference data
        * @example FRI
        */
-      relationshipCode: string
+      relationshipToPrisoner: string
       /**
        * @description The description of the relationship
        * @example Friend
@@ -4951,10 +4956,10 @@ export interface components {
     /** @description Request to update an existing relationship details */
     UpdateRelationshipRequest: {
       /**
-       * @description The relationship code between the prisoner and the contact
+       * @description The relationship reference code between the prisoner and the contact
        * @example FRI
        */
-      relationshipCode?: string
+      relationshipToPrisoner?: string
       /**
        * @description Whether they are the emergency contact for the prisoner
        * @example boolean
@@ -5236,10 +5241,10 @@ export interface components {
        */
       dateOfBirth?: string
       /**
-       * @description The relationship code between the prisoner and the contact
+       * @description The relationship to prisoner reference code between the prisoner and the contact
        * @example FRI
        */
-      relationshipCode: string
+      relationshipToPrisoner: string
       /**
        * @description The description of the relationship
        * @example Friend
@@ -5545,7 +5550,7 @@ export interface components {
        *
        * @example S
        */
-      contactType: string
+      relationshipType: string
       /**
        * @description The description of the contact type
        * @example Official
@@ -5555,7 +5560,7 @@ export interface components {
        * @description The relationship code between the prisoner and the contact
        * @example FRI
        */
-      relationshipCode: string
+      relationshipToPrisoner: string
       /**
        * @description The description of the relationship
        * @example Friend

@@ -133,7 +133,7 @@ context('Add Existing Contact', () => {
         contactId,
         relationship: {
           prisonerNumber: 'A1234BC',
-          relationshipCode: 'MOT',
+          relationshipToPrisoner: 'MOT',
           isNextOfKin: true,
           isEmergencyContact: false,
           comments: 'Some comments about the relationship',
@@ -196,7 +196,7 @@ context('Add Existing Contact', () => {
         contactId,
         relationship: {
           prisonerNumber: 'A1234BC',
-          relationshipCode: 'MOT',
+          relationshipToPrisoner: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: true,
         },
@@ -357,7 +357,7 @@ context('Add Existing Contact', () => {
         contactId,
         relationship: {
           prisonerNumber: 'A1234BC',
-          relationshipCode: 'MOT',
+          relationshipToPrisoner: 'MOT',
           isNextOfKin: true,
           isEmergencyContact: false,
         },

@@ -114,7 +114,7 @@ context('Add Existing Contact Check Answers', () => {
         contactId,
         relationship: {
           prisonerNumber: 'A1234BC',
-          relationshipCode: 'FA',
+          relationshipToPrisoner: 'FA',
           isNextOfKin: true,
           isEmergencyContact: false,
           comments: 'Some comments about the relationship',
@@ -146,7 +146,7 @@ context('Add Existing Contact Check Answers', () => {
         contactId,
         relationship: {
           prisonerNumber: 'A1234BC',
-          relationshipCode: 'MOT',
+          relationshipToPrisoner: 'MOT',
           isNextOfKin: true,
           isEmergencyContact: true,
           comments: 'Some comments about the relationship',
@@ -178,7 +178,7 @@ context('Add Existing Contact Check Answers', () => {
         contactId,
         relationship: {
           prisonerNumber: 'A1234BC',
-          relationshipCode: 'MOT',
+          relationshipToPrisoner: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: false,
           comments: 'Some comments about the relationship',
@@ -210,7 +210,7 @@ context('Add Existing Contact Check Answers', () => {
         contactId,
         relationship: {
           prisonerNumber: 'A1234BC',
-          relationshipCode: 'MOT',
+          relationshipToPrisoner: 'MOT',
           isNextOfKin: true,
           isEmergencyContact: false,
           comments: 'Some updated comments',

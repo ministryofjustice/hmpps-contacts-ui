@@ -40,7 +40,7 @@ export default class ManageContactRelationshipController implements PageHandler 
       middleNames: contact.middleNames,
     }
 
-    const currentRelationship = res.locals?.formResponses?.relationship ?? relationship.relationshipCode
+    const currentRelationship = res.locals?.formResponses?.relationship ?? relationship.relationshipToPrisoner
     const relationshipOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.RELATIONSHIP, user)
       .then(val => this.getSelectedOptions(val, currentRelationship))
@@ -72,7 +72,7 @@ export default class ManageContactRelationshipController implements PageHandler 
     const { prisonerContactId } = req.params
     const { relationship } = req.body
     const request: UpdateRelationshipRequest = {
-      relationshipCode: relationship,
+      relationshipToPrisoner: relationship,
       updatedBy: user.username,
     }
     await this.contactsService.updateContactRelationshipById(Number(prisonerContactId), request, user)
