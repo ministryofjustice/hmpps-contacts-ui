@@ -34,7 +34,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
     }
 
     const relationshipDescription = await this.referenceDataService.getReferenceDescriptionForCode(
-      ReferenceCodeType.RELATIONSHIP,
+      ReferenceCodeType.SOCIAL_RELATIONSHIP,
       journey.relationship.type,
       user,
     )

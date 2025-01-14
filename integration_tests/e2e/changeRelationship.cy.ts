@@ -38,7 +38,7 @@ context('Change Relationship', () => {
 
   it('Can select a new relationship', () => {
     const relationship = TestData.prisonerContactRelationship({
-      relationshipToPrisoner: 'OTHER',
+      relationshipToPrisonerCode: 'OTHER',
     })
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
@@ -48,7 +48,7 @@ context('Change Relationship', () => {
 
     const updated: StubPrisonerContactRelationshipDetails = {
       ...relationship,
-      relationshipToPrisoner: 'MOT',
+      relationshipToPrisonerCode: 'MOT',
     }
 
     cy.task('stubUpdateContactRelationshipById', {
@@ -82,7 +82,7 @@ context('Change Relationship', () => {
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({
-        relationshipToPrisoner: 'OTHER',
+        relationshipToPrisonerCode: 'OTHER',
       }),
     })
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)

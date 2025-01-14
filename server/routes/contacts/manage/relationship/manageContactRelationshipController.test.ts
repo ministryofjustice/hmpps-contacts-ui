@@ -36,7 +36,7 @@ const contact: ContactDetails = {
   createdTime: '2024-01-01',
 }
 const relationship = TestData.prisonerContactRelationship({
-  relationshipToPrisoner: 'OTHER',
+  relationshipToPrisonerCode: 'OTHER',
 })
 beforeEach(() => {
   app = appWithAllRoutes({

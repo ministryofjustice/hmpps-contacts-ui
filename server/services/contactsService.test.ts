@@ -96,6 +96,7 @@ describe('contactsService', () => {
         createdBy: 'user1',
         relationship: {
           prisonerNumber,
+          relationshipType: 'S',
           relationshipToPrisoner: 'MOT',
           isNextOfKin: true,
           isEmergencyContact: false,
@@ -149,6 +150,7 @@ describe('contactsService', () => {
         dateOfBirth: undefined,
         relationship: {
           prisonerNumber,
+          relationshipType: 'S',
           relationshipToPrisoner: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: true,

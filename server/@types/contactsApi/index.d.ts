@@ -3469,7 +3469,7 @@ export interface components {
        */
       relationshipType: string
       /**
-       * @description The relationship to prisoner reference code
+       * @description The relationship to the prisoner. A code from SOCIAL_RELATIONSHIP or OFFICIAL_RELATIONSHIP reference data groups depending on the relationship type.
        * @example FRI
        */
       relationshipToPrisoner: string
@@ -3898,15 +3898,15 @@ export interface components {
        */
       prisonerNumber: string
       /**
-       * @description The relationship to prisoner code from reference data
+       * @description The relationship to the prisoner. A code from SOCIAL_RELATIONSHIP or OFFICIAL_RELATIONSHIP reference data groups depending on the relationship type.
        * @example FRI
        */
-      relationshipToPrisoner: string
+      relationshipToPrisonerCode: string
       /**
        * @description The description of the relationship
        * @example Friend
        */
-      relationshipDescription: string
+      relationshipToPrisonerDescription: string
       /**
        * @description Is this contact the prisoner's emergency contact?
        * @example true
@@ -5241,7 +5241,7 @@ export interface components {
        */
       dateOfBirth?: string
       /**
-       * @description The relationship to prisoner reference code between the prisoner and the contact
+       * @description The relationship to the prisoner. A code from SOCIAL_RELATIONSHIP or OFFICIAL_RELATIONSHIP reference data groups depending on the relationship type.
        * @example FRI
        */
       relationshipToPrisoner: string
@@ -5557,7 +5557,7 @@ export interface components {
        */
       contactTypeDescription: string
       /**
-       * @description The relationship code between the prisoner and the contact
+       * @description The relationship to the prisoner. A code from SOCIAL_RELATIONSHIP or OFFICIAL_RELATIONSHIP reference data groups depending on the relationship type.
        * @example FRI
        */
       relationshipToPrisoner: string
@@ -5565,7 +5565,7 @@ export interface components {
        * @description The description of the relationship
        * @example Friend
        */
-      relationshipDescription?: string | null
+      relationshipToPrisonerDescription?: string | null
     }
     /** @description Contact Search Request */
     ContactSearchRequest: {

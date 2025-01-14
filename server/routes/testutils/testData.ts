@@ -346,8 +346,8 @@ export default class TestData {
     }) as ContactDetails
 
   static prisonerContactRelationship = ({
-    relationshipToPrisoner = 'FRI',
-    relationshipDescription = 'Friend',
+    relationshipToPrisonerCode = 'FRI',
+    relationshipToPrisonerDescription = 'Friend',
     emergencyContact = false,
     nextOfKin = true,
     isRelationshipActive = true,
@@ -355,8 +355,8 @@ export default class TestData {
     comments = 'Some comments',
   }: Partial<PrisonerContactRelationshipDetails> = {}): PrisonerContactRelationshipDetails =>
     ({
-      relationshipToPrisoner,
-      relationshipDescription,
+      relationshipToPrisonerCode,
+      relationshipToPrisonerDescription,
       emergencyContact,
       nextOfKin,
       isRelationshipActive,
@@ -502,7 +502,7 @@ export default class TestData {
         relationshipType: 'O',
         contactTypeDescription: 'Official',
         relationshipToPrisoner: 'DR',
-        relationshipDescription: 'Doctor',
+        relationshipToPrisonerDescription: 'Doctor',
       }),
     ],
   }: Partial<LinkedPrisonerDetails> = {}): LinkedPrisonerDetails =>
@@ -519,13 +519,13 @@ export default class TestData {
     relationshipType = 'S',
     contactTypeDescription = 'Social/Family',
     relationshipToPrisoner = 'FRI',
-    relationshipDescription = 'Friend',
+    relationshipToPrisonerDescription = 'Friend',
   }: Partial<LinkedPrisonerRelationshipDetails> = {}): LinkedPrisonerRelationshipDetails =>
     ({
       prisonerContactId,
       relationshipType,
       contactTypeDescription,
       relationshipToPrisoner,
-      relationshipDescription,
+      relationshipToPrisonerDescription,
     }) as LinkedPrisonerRelationshipDetails
 }

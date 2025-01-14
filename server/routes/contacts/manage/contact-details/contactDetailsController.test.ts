@@ -246,8 +246,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         contactsService.getContact.mockResolvedValue(TestData.contact())
         contactsService.getPrisonerContactRelationship.mockResolvedValue(
           TestData.prisonerContactRelationship({
-            relationshipToPrisoner: 'FRI',
-            relationshipDescription: 'Friend',
+            relationshipToPrisonerCode: 'FRI',
+            relationshipToPrisonerDescription: 'Friend',
             emergencyContact: true,
             nextOfKin: false,
             isRelationshipActive: true,
@@ -275,8 +275,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         contactsService.getContact.mockResolvedValue(TestData.contact())
         contactsService.getPrisonerContactRelationship.mockResolvedValue(
           TestData.prisonerContactRelationship({
-            relationshipToPrisoner: 'FRI',
-            relationshipDescription: 'Friend',
+            relationshipToPrisonerCode: 'FRI',
+            relationshipToPrisonerDescription: 'Friend',
             emergencyContact: false,
             nextOfKin: true,
             isRelationshipActive: false,
@@ -414,8 +414,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         contactsService.getContact.mockResolvedValue(TestData.contact())
         contactsService.getPrisonerContactRelationship.mockResolvedValue(
           TestData.prisonerContactRelationship({
-            relationshipToPrisoner: 'FRI',
-            relationshipDescription: 'Friend',
+            relationshipToPrisonerCode: 'FRI',
+            relationshipToPrisonerDescription: 'Friend',
             emergencyContact: true,
             nextOfKin: false,
             isRelationshipActive: true,

@@ -172,7 +172,7 @@ export default {
     return stubFor({
       request: {
         method: 'GET',
-        urlPath: '/reference-codes/group/RELATIONSHIP',
+        urlPath: '/reference-codes/group/SOCIAL_RELATIONSHIP',
       },
       response: {
         status: 200,

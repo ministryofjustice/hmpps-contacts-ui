@@ -130,6 +130,7 @@ describe('contactsApiClient', () => {
         contactId: 123456,
         relationship: {
           prisonerNumber: 'A1234BC',
+          relationshipType: 'S',
           relationshipToPrisoner: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: true,
@@ -157,6 +158,7 @@ describe('contactsApiClient', () => {
         contactId: 123456,
         relationship: {
           prisonerNumber: 'A1234BC',
+          relationshipType: 'S',
           relationshipToPrisoner: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: true,

@@ -123,6 +123,7 @@ context('Create Contacts', () => {
         createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',
+          relationshipType: 'S',
           relationshipToPrisoner: 'MOT',
           isNextOfKin: true,
           isEmergencyContact: false,
@@ -189,6 +190,7 @@ context('Create Contacts', () => {
         dateOfBirth: '1982-06-15T00:00:00.000Z',
         relationship: {
           prisonerNumber: 'A1234BC',
+          relationshipType: 'S',
           relationshipToPrisoner: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: true,

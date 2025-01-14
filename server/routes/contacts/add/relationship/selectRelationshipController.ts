@@ -18,7 +18,7 @@ export default class SelectRelationshipController implements PageHandler {
     const { user } = res.locals
     const journey = req.session.addContactJourneys[journeyId]
     const relationshipOptions = await this.referenceDataService
-      .getReferenceData(ReferenceCodeType.RELATIONSHIP, user)
+      .getReferenceData(ReferenceCodeType.SOCIAL_RELATIONSHIP, user)
       .then(val =>
         this.getSelectedRelationshipOptions(
           val,

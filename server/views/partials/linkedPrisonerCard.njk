@@ -3,7 +3,7 @@
 {% macro linkedPrisonerCard(linkedPrisoner) %}
     {% set relationshipHtml = '<ul>' %}
     {% for relationship in linkedPrisoner.relationships %}
-        {% set   relationshipHtml = relationshipHtml + '<li>' + relationship.contactTypeDescription + ' - ' + relationship.relationshipDescription + '</li>' %}
+        {% set   relationshipHtml = relationshipHtml + '<li>' + relationship.contactTypeDescription + ' - ' + relationship.relationshipToPrisonerDescription + '</li>' %}
     {% endfor %}
     {% set relationshipHtml = relationshipHtml + '</ul>' %}
     {{ govukSummaryList({
