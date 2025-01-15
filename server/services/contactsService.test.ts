@@ -306,6 +306,7 @@ describe('contactsService', () => {
         contactId: 123456,
         relationship: {
           prisonerNumber,
+          relationshipType: 'S',
           relationshipToPrisoner: 'MOT',
           isNextOfKin: true,
           isEmergencyContact: false,
@@ -352,6 +353,7 @@ describe('contactsService', () => {
         contactId: 123456,
         relationship: {
           prisonerNumber,
+          relationshipType: 'S',
           relationshipToPrisoner: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: true,

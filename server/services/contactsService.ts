@@ -62,6 +62,7 @@ export default class ContactsService {
       contactId: journey.contactId,
       relationship: {
         prisonerNumber: journey.prisonerNumber,
+        relationshipType: 'S',
         relationshipToPrisoner: journey.relationship.type,
         isNextOfKin: journey.relationship.isNextOfKin === 'YES',
         isEmergencyContact: journey.relationship.isEmergencyContact === 'YES',
