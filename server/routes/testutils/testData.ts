@@ -500,7 +500,7 @@ export default class TestData {
       TestData.getLinkedPrisonerRelationshipDetails({
         prisonerContactId: 2,
         relationshipType: 'O',
-        contactTypeDescription: 'Official',
+        relationshipTypeDescription: 'Official',
         relationshipToPrisoner: 'DR',
         relationshipToPrisonerDescription: 'Doctor',
       }),
@@ -517,14 +517,14 @@ export default class TestData {
   static getLinkedPrisonerRelationshipDetails = ({
     prisonerContactId = 1,
     relationshipType = 'S',
-    contactTypeDescription = 'Social/Family',
+    relationshipTypeDescription = 'Social/Family',
     relationshipToPrisoner = 'FRI',
     relationshipToPrisonerDescription = 'Friend',
   }: Partial<LinkedPrisonerRelationshipDetails> = {}): LinkedPrisonerRelationshipDetails =>
     ({
       prisonerContactId,
       relationshipType,
-      contactTypeDescription,
+      relationshipTypeDescription,
       relationshipToPrisoner,
       relationshipToPrisonerDescription,
     }) as LinkedPrisonerRelationshipDetails
