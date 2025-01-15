@@ -119,7 +119,8 @@ context('Create contact and update from check answers', () => {
         dateOfBirth: '1982-06-15T00:00:00.000Z',
         relationship: {
           prisonerNumber: 'A1234BC',
-          relationshipCode: 'MOT',
+          relationshipType: 'S',
+          relationshipToPrisoner: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: false,
           comments: 'Some comments about the relationship',
@@ -155,7 +156,8 @@ context('Create contact and update from check answers', () => {
         dateOfBirth: '1982-06-15T00:00:00.000Z',
         relationship: {
           prisonerNumber: 'A1234BC',
-          relationshipCode: 'FA',
+          relationshipType: 'S',
+          relationshipToPrisoner: 'FA',
           isNextOfKin: false,
           isEmergencyContact: false,
           comments: 'Some comments about the relationship',
@@ -191,7 +193,8 @@ context('Create contact and update from check answers', () => {
         dateOfBirth: '1982-06-15T00:00:00.000Z',
         relationship: {
           prisonerNumber: 'A1234BC',
-          relationshipCode: 'MOT',
+          relationshipType: 'S',
+          relationshipToPrisoner: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: true,
           comments: 'Some comments about the relationship',
@@ -227,7 +230,8 @@ context('Create contact and update from check answers', () => {
         dateOfBirth: '1982-06-15T00:00:00.000Z',
         relationship: {
           prisonerNumber: 'A1234BC',
-          relationshipCode: 'MOT',
+          relationshipType: 'S',
+          relationshipToPrisoner: 'MOT',
           isNextOfKin: true,
           isEmergencyContact: false,
           comments: 'Some comments about the relationship',
@@ -263,7 +267,8 @@ context('Create contact and update from check answers', () => {
         dateOfBirth: '1982-06-15T00:00:00.000Z',
         relationship: {
           prisonerNumber: 'A1234BC',
-          relationshipCode: 'MOT',
+          relationshipType: 'S',
+          relationshipToPrisoner: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: false,
           comments: 'Some new comments I entered',
@@ -302,7 +307,8 @@ context('Create contact and update from check answers', () => {
         createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',
-          relationshipCode: 'MOT',
+          relationshipType: 'S',
+          relationshipToPrisoner: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: false,
           comments: 'Some comments about the relationship',
@@ -344,7 +350,8 @@ context('Create contact and update from check answers', () => {
         dateOfBirth: '2010-12-28T00:00:00.000Z',
         relationship: {
           prisonerNumber: 'A1234BC',
-          relationshipCode: 'MOT',
+          relationshipType: 'S',
+          relationshipToPrisoner: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: false,
           comments: 'Some comments about the relationship',

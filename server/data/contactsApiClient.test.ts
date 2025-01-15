@@ -130,7 +130,8 @@ describe('contactsApiClient', () => {
         contactId: 123456,
         relationship: {
           prisonerNumber: 'A1234BC',
-          relationshipCode: 'MOT',
+          relationshipType: 'S',
+          relationshipToPrisoner: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: true,
           comments: 'Some comments about this relationship',
@@ -157,7 +158,8 @@ describe('contactsApiClient', () => {
         contactId: 123456,
         relationship: {
           prisonerNumber: 'A1234BC',
-          relationshipCode: 'MOT',
+          relationshipType: 'S',
+          relationshipToPrisoner: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: true,
           comments: 'Some comments about this relationship',
@@ -335,7 +337,7 @@ describe('contactsApiClient', () => {
     it('should get the prisoner contact relationship', async () => {
       // Given
       const expected: PrisonerContactRelationshipDetails = {
-        relationshipCode: 'FRI',
+        relationshipToPrisoner: 'FRI',
         relationshipDescription: 'Friend',
         emergencyContact: false,
         nextOfKin: true,

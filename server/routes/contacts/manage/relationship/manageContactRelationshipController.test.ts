@@ -36,7 +36,7 @@ const contact: ContactDetails = {
   createdTime: '2024-01-01',
 }
 const relationship = TestData.prisonerContactRelationship({
-  relationshipCode: 'OTHER',
+  relationshipToPrisonerCode: 'OTHER',
 })
 beforeEach(() => {
   app = appWithAllRoutes({
@@ -113,7 +113,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .expect('Location', '/foo-bar')
 
     const expected: UpdateRelationshipRequest = {
-      relationshipCode: 'MOT',
+      relationshipToPrisoner: 'MOT',
       updatedBy: 'user1',
     }
     expect(contactsService.updateContactRelationshipById).toHaveBeenCalledWith(prisonerContactId, expected, user)

@@ -40,9 +40,9 @@ export default class ManageContactRelationshipController implements PageHandler 
       middleNames: contact.middleNames,
     }
 
-    const currentRelationship = res.locals?.formResponses?.relationship ?? relationship.relationshipCode
+    const currentRelationship = res.locals?.formResponses?.relationship ?? relationship.relationshipToPrisonerCode
     const relationshipOptions = await this.referenceDataService
-      .getReferenceData(ReferenceCodeType.RELATIONSHIP, user)
+      .getReferenceData(ReferenceCodeType.SOCIAL_RELATIONSHIP, user)
       .then(val => this.getSelectedOptions(val, currentRelationship))
     const navigation: Navigation = { backLink: journey.returnPoint.url }
     const viewModel = {
@@ -72,7 +72,7 @@ export default class ManageContactRelationshipController implements PageHandler 
     const { prisonerContactId } = req.params
     const { relationship } = req.body
     const request: UpdateRelationshipRequest = {
-      relationshipCode: relationship,
+      relationshipToPrisoner: relationship,
       updatedBy: user.username,
     }
     await this.contactsService.updateContactRelationshipById(Number(prisonerContactId), request, user)

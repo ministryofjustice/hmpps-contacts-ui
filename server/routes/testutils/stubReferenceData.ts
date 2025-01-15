@@ -21,16 +21,16 @@ const STUBBED_TITLE_OPTIONS: StubReferenceData[] = [
 ]
 
 const STUBBED_RELATIONSHIP_OPTIONS: StubReferenceData[] = [
-  { code: 'MOT', description: 'Mother', groupCode: 'RELATIONSHIP' },
-  { code: 'FA', description: 'Father', groupCode: 'RELATIONSHIP' },
-  { code: 'DAU', description: 'Daughter', groupCode: 'RELATIONSHIP' },
-  { code: 'SON', description: 'Son', groupCode: 'RELATIONSHIP' },
-  { code: 'WIFE', description: 'Wife', groupCode: 'RELATIONSHIP' },
-  { code: 'FOO', description: 'ZZZ Alphabetically Last', groupCode: 'RELATIONSHIP' },
-  { code: 'HUS', description: 'Husband', groupCode: 'RELATIONSHIP' },
-  { code: 'OTHER', description: 'Other - Social', groupCode: 'RELATIONSHIP' },
-  { code: 'NONE', description: 'None', groupCode: 'RELATIONSHIP' },
-  { code: 'ILP', description: 'In Loco Parentes', groupCode: 'RELATIONSHIP' },
+  { code: 'MOT', description: 'Mother', groupCode: 'SOCIAL_RELATIONSHIP' },
+  { code: 'FA', description: 'Father', groupCode: 'SOCIAL_RELATIONSHIP' },
+  { code: 'DAU', description: 'Daughter', groupCode: 'SOCIAL_RELATIONSHIP' },
+  { code: 'SON', description: 'Son', groupCode: 'SOCIAL_RELATIONSHIP' },
+  { code: 'WIFE', description: 'Wife', groupCode: 'SOCIAL_RELATIONSHIP' },
+  { code: 'FOO', description: 'ZZZ Alphabetically Last', groupCode: 'SOCIAL_RELATIONSHIP' },
+  { code: 'HUS', description: 'Husband', groupCode: 'SOCIAL_RELATIONSHIP' },
+  { code: 'OTHER', description: 'Other - Social', groupCode: 'SOCIAL_RELATIONSHIP' },
+  { code: 'NONE', description: 'None', groupCode: 'SOCIAL_RELATIONSHIP' },
+  { code: 'ILP', description: 'In Loco Parentes', groupCode: 'SOCIAL_RELATIONSHIP' },
 ]
 const STUBBED_PHONE_TYPE_OPTIONS: StubReferenceData[] = [
   { code: 'MOB', description: 'Mobile', groupCode: 'PHONE_TYPE' },
@@ -280,7 +280,7 @@ const mockedReferenceData = (type: ReferenceCodeType, _: HmppsUser): Promise<Stu
   if (type === ReferenceCodeType.TITLE) {
     return Promise.resolve(STUBBED_TITLE_OPTIONS)
   }
-  if (type === ReferenceCodeType.RELATIONSHIP) {
+  if (type === ReferenceCodeType.SOCIAL_RELATIONSHIP) {
     return Promise.resolve(STUBBED_RELATIONSHIP_OPTIONS)
   }
   if (type === ReferenceCodeType.PHONE_TYPE) {

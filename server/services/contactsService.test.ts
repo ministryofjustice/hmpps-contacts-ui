@@ -96,7 +96,8 @@ describe('contactsService', () => {
         createdBy: 'user1',
         relationship: {
           prisonerNumber,
-          relationshipCode: 'MOT',
+          relationshipType: 'S',
+          relationshipToPrisoner: 'MOT',
           isNextOfKin: true,
           isEmergencyContact: false,
           comments: 'Some comments about this relationship',
@@ -149,7 +150,8 @@ describe('contactsService', () => {
         dateOfBirth: undefined,
         relationship: {
           prisonerNumber,
-          relationshipCode: 'MOT',
+          relationshipType: 'S',
+          relationshipToPrisoner: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: true,
         },
@@ -246,7 +248,7 @@ describe('contactsService', () => {
   describe('getPrisonerContactRelationship', () => {
     it('should get the prisoner contact relationship', async () => {
       const expected: PrisonerContactRelationshipDetails = {
-        relationshipCode: 'FRI',
+        relationshipToPrisoner: 'FRI',
         relationshipDescription: 'Friend',
         emergencyContact: false,
         nextOfKin: true,
@@ -304,7 +306,8 @@ describe('contactsService', () => {
         contactId: 123456,
         relationship: {
           prisonerNumber,
-          relationshipCode: 'MOT',
+          relationshipType: 'S',
+          relationshipToPrisoner: 'MOT',
           isNextOfKin: true,
           isEmergencyContact: false,
           comments: 'Some comments about this relationship',
@@ -350,7 +353,8 @@ describe('contactsService', () => {
         contactId: 123456,
         relationship: {
           prisonerNumber,
-          relationshipCode: 'MOT',
+          relationshipType: 'S',
+          relationshipToPrisoner: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: true,
         },
