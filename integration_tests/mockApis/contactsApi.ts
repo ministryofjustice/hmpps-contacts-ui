@@ -4,7 +4,7 @@ import {
   STUBBED_DOMESTIC_STATUS_OPTIONS,
   STUBBED_LANGUAGE_OPTIONS,
   STUBBED_PHONE_TYPE_OPTIONS,
-  STUBBED_RELATIONSHIP_OPTIONS,
+  STUBBED_SOCIAL_RELATIONSHIP_OPTIONS,
   STUBBED_IDENTITY_OPTIONS,
   STUBBED_TITLE_OPTIONS,
   STUBBED_GENDER_OPTIONS,
@@ -13,6 +13,7 @@ import {
   STUBBED_CITY_OPTIONS,
   STUBBED_COUNTY_OPTIONS,
   STUBBED_COUNTRY_OPTIONS,
+  STUBBED_OFFICIAL_RELATIONSHIP_OPTIONS,
 } from '../../server/routes/testutils/stubReferenceData'
 import { components } from '../../server/@types/contactsApi'
 import TestData from '../../server/routes/testutils/testData'
@@ -177,7 +178,20 @@ export default {
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: STUBBED_RELATIONSHIP_OPTIONS,
+        jsonBody: STUBBED_SOCIAL_RELATIONSHIP_OPTIONS,
+      },
+    })
+  },
+  stubOfficialRelationshipReferenceData: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/reference-codes/group/OFFICIAL_RELATIONSHIP',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: STUBBED_OFFICIAL_RELATIONSHIP_OPTIONS,
       },
     })
   },

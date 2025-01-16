@@ -9,6 +9,7 @@ import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
 import SearchContactPage from '../pages/searchContactPage'
 import ContactConfirmationPage from '../pages/contactConfirmationPage'
 import AddContactSuccessPage from '../pages/addContactSuccessPage'
+import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 
 context('Add Existing Contact Check Answers', () => {
   const { prisonerNumber } = TestData.prisoner()
@@ -73,7 +74,9 @@ context('Add Existing Contact Check Answers', () => {
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact') //
+    Page.verifyOnPage(SelectRelationshipTypePage, 'Existing Contact', 'John Smith') //
+      .selectRelationshipType('S')
+      .continueTo(SelectRelationshipPage, 'Existing Contact') //
       .selectRelationship('MOT')
       .continueTo(SelectEmergencyContactPage, 'Existing Contact') //
       .selectIsEmergencyContact('NO')

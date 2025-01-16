@@ -51,66 +51,73 @@ describe('contactsService', () => {
     jest.resetAllMocks()
   })
   describe('createContact', () => {
-    it('should create a contact from the journey dto with all fields', async () => {
-      // Given
-      const expectedCreated: ContactCreationResult = {
-        createdContact: {
-          id: 2136718213,
-        },
-        createdRelationship: {
-          prisonerContactId: 987654,
-        },
-      }
-      apiClient.createContact.mockResolvedValue(expectedCreated)
-      const journey: AddContactJourney = {
-        id: '1',
-        lastTouched: new Date().toISOString(),
-        prisonerNumber,
-        isCheckingAnswers: false,
-        returnPoint: { url: '/foo-bar' },
-        names: {
+    it.each([
+      ['S', 'MOT'],
+      ['O', 'DR'],
+    ])(
+      'should create a contact from the journey dto with all fields',
+      async (relationshipType: string, relationshipToPrisoner: string) => {
+        // Given
+        const expectedCreated: ContactCreationResult = {
+          createdContact: {
+            id: 2136718213,
+          },
+          createdRelationship: {
+            prisonerContactId: 987654,
+          },
+        }
+        apiClient.createContact.mockResolvedValue(expectedCreated)
+        const journey: AddContactJourney = {
+          id: '1',
+          lastTouched: new Date().toISOString(),
+          prisonerNumber,
+          isCheckingAnswers: false,
+          returnPoint: { url: '/foo-bar' },
+          names: {
+            title: 'Mr',
+            lastName: 'last',
+            firstName: 'first',
+            middleNames: 'middle',
+          },
+          dateOfBirth: {
+            isKnown: 'YES',
+            day: 1,
+            month: 6,
+            year: 1982,
+          },
+          relationship: {
+            relationshipType,
+            relationshipToPrisoner,
+            isEmergencyContact: 'NO',
+            isNextOfKin: 'YES',
+            comments: 'Some comments about this relationship',
+          },
+        }
+        const expectedRequest: CreateContactRequest = {
           title: 'Mr',
           lastName: 'last',
           firstName: 'first',
           middleNames: 'middle',
-        },
-        dateOfBirth: {
-          isKnown: 'YES',
-          day: 1,
-          month: 6,
-          year: 1982,
-        },
-        relationship: {
-          type: 'MOT',
-          isEmergencyContact: 'NO',
-          isNextOfKin: 'YES',
-          comments: 'Some comments about this relationship',
-        },
-      }
-      const expectedRequest: CreateContactRequest = {
-        title: 'Mr',
-        lastName: 'last',
-        firstName: 'first',
-        middleNames: 'middle',
-        dateOfBirth: new Date('1982-06-01T00:00:00.000Z'),
-        createdBy: 'user1',
-        relationship: {
-          prisonerNumber,
-          relationshipType: 'S',
-          relationshipToPrisoner: 'MOT',
-          isNextOfKin: true,
-          isEmergencyContact: false,
-          comments: 'Some comments about this relationship',
-        },
-      }
+          dateOfBirth: new Date('1982-06-01T00:00:00.000Z'),
+          createdBy: 'user1',
+          relationship: {
+            prisonerNumber,
+            relationshipType,
+            relationshipToPrisoner,
+            isNextOfKin: true,
+            isEmergencyContact: false,
+            comments: 'Some comments about this relationship',
+          },
+        }
 
-      // When
-      const created = await service.createContact(journey, user)
+        // When
+        const created = await service.createContact(journey, user)
 
-      // Then
-      expect(created).toStrictEqual(expectedCreated)
-      expect(apiClient.createContact).toHaveBeenCalledWith(expectedRequest, user)
-    })
+        // Then
+        expect(created).toStrictEqual(expectedCreated)
+        expect(apiClient.createContact).toHaveBeenCalledWith(expectedRequest, user)
+      },
+    )
 
     it('should create a contact from the journey dto with only optional fields', async () => {
       // Given
@@ -137,7 +144,8 @@ describe('contactsService', () => {
           isKnown: 'NO',
         },
         relationship: {
-          type: 'MOT',
+          relationshipType: 'S',
+          relationshipToPrisoner: 'MOT',
           isEmergencyContact: 'YES',
           isNextOfKin: 'NO',
         },
@@ -178,7 +186,7 @@ describe('contactsService', () => {
             returnPoint: { url: '/foo-bar' },
             names: { firstName: 'first', lastName: 'last' },
             dateOfBirth: { isKnown: 'NO' },
-            relationship: { type: 'MOT', isEmergencyContact: 'YES', isNextOfKin: 'NO' },
+            relationship: { relationshipToPrisoner: 'MOT', isEmergencyContact: 'YES', isNextOfKin: 'NO' },
           },
           user,
         ),
@@ -270,58 +278,65 @@ describe('contactsService', () => {
   })
 
   describe('addContact', () => {
-    it('should add a contact relationship from the journey dto with all fields', async () => {
-      // Given
-      const expectedCreated: PrisonerContactRelationshipDetails = {
-        prisonerContactId: 987654,
-      }
-      apiClient.addContactRelationship.mockResolvedValue(expectedCreated)
-      const journey: AddContactJourney = {
-        id: '1',
-        lastTouched: new Date().toISOString(),
-        prisonerNumber,
-        isCheckingAnswers: false,
-        returnPoint: { url: '/foo-bar' },
-        names: {
-          title: 'Mr',
-          lastName: 'last',
-          firstName: 'first',
-          middleNames: 'middle',
-        },
-        dateOfBirth: {
-          isKnown: 'YES',
-          day: 1,
-          month: 6,
-          year: 1982,
-        },
-        relationship: {
-          type: 'MOT',
-          isEmergencyContact: 'NO',
-          isNextOfKin: 'YES',
-          comments: 'Some comments about this relationship',
-        },
-        contactId: 123456,
-      }
-      const expectedRequest: AddContactRelationshipRequest = {
-        contactId: 123456,
-        relationship: {
+    it.each([
+      ['S', 'MOT'],
+      ['O', 'DR'],
+    ])(
+      'should add a contact relationship from the journey dto with all fields based on relationship type (%s, %s)',
+      async (relationshipType: string, relationshipToPrisoner: string) => {
+        // Given
+        const expectedCreated: PrisonerContactRelationshipDetails = {
+          prisonerContactId: 987654,
+        }
+        apiClient.addContactRelationship.mockResolvedValue(expectedCreated)
+        const journey: AddContactJourney = {
+          id: '1',
+          lastTouched: new Date().toISOString(),
           prisonerNumber,
-          relationshipType: 'S',
-          relationshipToPrisoner: 'MOT',
-          isNextOfKin: true,
-          isEmergencyContact: false,
-          comments: 'Some comments about this relationship',
-        },
-        createdBy: 'user1',
-      }
+          isCheckingAnswers: false,
+          returnPoint: { url: '/foo-bar' },
+          names: {
+            title: 'Mr',
+            lastName: 'last',
+            firstName: 'first',
+            middleNames: 'middle',
+          },
+          dateOfBirth: {
+            isKnown: 'YES',
+            day: 1,
+            month: 6,
+            year: 1982,
+          },
+          relationship: {
+            relationshipType,
+            relationshipToPrisoner,
+            isEmergencyContact: 'NO',
+            isNextOfKin: 'YES',
+            comments: 'Some comments about this relationship',
+          },
+          contactId: 123456,
+        }
+        const expectedRequest: AddContactRelationshipRequest = {
+          contactId: 123456,
+          relationship: {
+            prisonerNumber,
+            relationshipType,
+            relationshipToPrisoner,
+            isNextOfKin: true,
+            isEmergencyContact: false,
+            comments: 'Some comments about this relationship',
+          },
+          createdBy: 'user1',
+        }
 
-      // When
-      const created = await service.addContact(journey, user)
+        // When
+        const created = await service.addContact(journey, user)
 
-      // Then
-      expect(created).toStrictEqual(expectedCreated)
-      expect(apiClient.addContactRelationship).toHaveBeenCalledWith(expectedRequest, user)
-    })
+        // Then
+        expect(created).toStrictEqual(expectedCreated)
+        expect(apiClient.addContactRelationship).toHaveBeenCalledWith(expectedRequest, user)
+      },
+    )
 
     it('should add a contact relationship from the journey dto with only optional fields', async () => {
       // Given
@@ -343,7 +358,8 @@ describe('contactsService', () => {
           isKnown: 'NO',
         },
         relationship: {
-          type: 'MOT',
+          relationshipType: 'S',
+          relationshipToPrisoner: 'MOT',
           isEmergencyContact: 'YES',
           isNextOfKin: 'NO',
         },
@@ -381,7 +397,7 @@ describe('contactsService', () => {
             returnPoint: { url: '/foo-bar' },
             names: { firstName: 'first', lastName: 'last' },
             dateOfBirth: { isKnown: 'NO' },
-            relationship: { type: 'MOT', isEmergencyContact: 'YES', isNextOfKin: 'NO' },
+            relationship: { relationshipToPrisoner: 'MOT', isEmergencyContact: 'YES', isNextOfKin: 'NO' },
             contactId: 123456,
           },
           user,

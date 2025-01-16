@@ -20,7 +20,7 @@ const STUBBED_TITLE_OPTIONS: StubReferenceData[] = [
   { code: 'IMAM', description: 'Imam', groupCode: 'TITLE' },
 ]
 
-const STUBBED_RELATIONSHIP_OPTIONS: StubReferenceData[] = [
+const STUBBED_SOCIAL_RELATIONSHIP_OPTIONS: StubReferenceData[] = [
   { code: 'MOT', description: 'Mother', groupCode: 'SOCIAL_RELATIONSHIP' },
   { code: 'FA', description: 'Father', groupCode: 'SOCIAL_RELATIONSHIP' },
   { code: 'DAU', description: 'Daughter', groupCode: 'SOCIAL_RELATIONSHIP' },
@@ -32,6 +32,21 @@ const STUBBED_RELATIONSHIP_OPTIONS: StubReferenceData[] = [
   { code: 'NONE', description: 'None', groupCode: 'SOCIAL_RELATIONSHIP' },
   { code: 'ILP', description: 'In Loco Parentes', groupCode: 'SOCIAL_RELATIONSHIP' },
 ]
+
+const STUBBED_OFFICIAL_RELATIONSHIP_OPTIONS: StubReferenceData[] = [
+  { code: 'CA', description: 'Case Administrator', groupCode: 'OFFICIAL_RELATIONSHIP' },
+  { code: 'COM', description: 'Community Offender Manager', groupCode: 'OFFICIAL_RELATIONSHIP' },
+  { code: 'CUSPO', description: 'CuSP Officer', groupCode: 'OFFICIAL_RELATIONSHIP' },
+  { code: 'DART', description: 'Drug Worker (DART)', groupCode: 'OFFICIAL_RELATIONSHIP' },
+  { code: 'DR', description: 'Doctor', groupCode: 'OFFICIAL_RELATIONSHIP' },
+  { code: 'FLO', description: 'Family Liaison Officer', groupCode: 'OFFICIAL_RELATIONSHIP' },
+  { code: 'FW', description: 'Family worker', groupCode: 'OFFICIAL_RELATIONSHIP' },
+  { code: 'IMAM', description: 'Imam', groupCode: 'OFFICIAL_RELATIONSHIP' },
+  { code: 'LAC', description: 'Local Authority Contact', groupCode: 'OFFICIAL_RELATIONSHIP' },
+  { code: 'OFS', description: 'Offender Supervisor', groupCode: 'OFFICIAL_RELATIONSHIP' },
+  { code: 'OTH', description: 'Other - Official', groupCode: 'OFFICIAL_RELATIONSHIP' },
+]
+
 const STUBBED_PHONE_TYPE_OPTIONS: StubReferenceData[] = [
   { code: 'MOB', description: 'Mobile', groupCode: 'PHONE_TYPE' },
   { code: 'HOME', description: 'Home', groupCode: 'PHONE_TYPE' },
@@ -281,7 +296,10 @@ const mockedReferenceData = (type: ReferenceCodeType, _: HmppsUser): Promise<Stu
     return Promise.resolve(STUBBED_TITLE_OPTIONS)
   }
   if (type === ReferenceCodeType.SOCIAL_RELATIONSHIP) {
-    return Promise.resolve(STUBBED_RELATIONSHIP_OPTIONS)
+    return Promise.resolve(STUBBED_SOCIAL_RELATIONSHIP_OPTIONS)
+  }
+  if (type === ReferenceCodeType.OFFICIAL_RELATIONSHIP) {
+    return Promise.resolve(STUBBED_OFFICIAL_RELATIONSHIP_OPTIONS)
   }
   if (type === ReferenceCodeType.PHONE_TYPE) {
     return Promise.resolve(STUBBED_PHONE_TYPE_OPTIONS)
@@ -320,7 +338,8 @@ const mockedReferenceData = (type: ReferenceCodeType, _: HmppsUser): Promise<Stu
 export {
   mockedReferenceData,
   STUBBED_TITLE_OPTIONS,
-  STUBBED_RELATIONSHIP_OPTIONS,
+  STUBBED_SOCIAL_RELATIONSHIP_OPTIONS,
+  STUBBED_OFFICIAL_RELATIONSHIP_OPTIONS,
   STUBBED_IDENTITY_OPTIONS,
   STUBBED_LANGUAGE_OPTIONS,
   STUBBED_PHONE_TYPE_OPTIONS,

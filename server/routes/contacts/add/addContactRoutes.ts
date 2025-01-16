@@ -11,7 +11,7 @@ import { ContactsService, PrisonerSearchService, RestrictionsService } from '../
 import CreateContactCheckAnswersController from './check-answers/createContactCheckAnswersController'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import ReferenceDataService from '../../../services/referenceDataService'
-import SelectRelationshipController from './relationship/selectRelationshipController'
+import SelectRelationshipToPrisonerController from './relationship-to-prisoner/selectRelationshipToPrisonerController'
 import { selectRelationshipSchemaFactory } from '../common/relationship/selectRelationshipSchemas'
 import populatePrisonerDetailsIfInCaseload from '../../../middleware/populatePrisonerDetailsIfInCaseload'
 import EmergencyContactController from './emergency-contact/emergencyContactController'
@@ -27,6 +27,8 @@ import AddContactModeController from './mode/addContactModeController'
 import ContactConfirmationController from './contact-confirmation/contactConfirmationController'
 import { enterDobSchema } from '../common/enter-dob/enterDobSchemas'
 import SuccessfullyAddedContactController from './success/successfullyAddedContactController'
+import { selectRelationshipTypeSchema } from './relationship-type/relationshipTypeSchema'
+import RelationshipTypeController from './relationship-type/relationshipTypeController'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -103,19 +105,34 @@ const AddContactRoutes = (
     asyncMiddleware(enterNameController.POST),
   )
 
-  const selectRelationshipController = new SelectRelationshipController(referenceDataService)
+  const selectRelationshipTypeController = new RelationshipTypeController()
   router.get(
-    '/prisoner/:prisonerNumber/contacts/create/select-relationship/:journeyId',
+    '/prisoner/:prisonerNumber/contacts/create/select-relationship-type/:journeyId',
     ensureInAddContactJourney(),
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, selectRelationshipController),
-    asyncMiddleware(selectRelationshipController.GET),
+    logPageViewMiddleware(auditService, selectRelationshipTypeController),
+    asyncMiddleware(selectRelationshipTypeController.GET),
   )
   router.post(
-    '/prisoner/:prisonerNumber/contacts/create/select-relationship/:journeyId',
+    '/prisoner/:prisonerNumber/contacts/create/select-relationship-type/:journeyId',
+    ensureInAddContactJourney(),
+    validate(selectRelationshipTypeSchema()),
+    asyncMiddleware(selectRelationshipTypeController.POST),
+  )
+
+  const selectRelationshipToPrisonerController = new SelectRelationshipToPrisonerController(referenceDataService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/create/select-relationship-to-prisoner/:journeyId',
+    ensureInAddContactJourney(),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    logPageViewMiddleware(auditService, selectRelationshipToPrisonerController),
+    asyncMiddleware(selectRelationshipToPrisonerController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/create/select-relationship-to-prisoner/:journeyId',
     ensureInAddContactJourney(),
     validate(selectRelationshipSchemaFactory()),
-    asyncMiddleware(selectRelationshipController.POST),
+    asyncMiddleware(selectRelationshipToPrisonerController.POST),
   )
 
   const selectEmergencyContact = new EmergencyContactController()

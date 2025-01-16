@@ -11,6 +11,7 @@ import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
 import SearchContactPage from '../pages/searchContactPage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import CreateContactSuccessPage from '../pages/createContactSuccessPage'
+import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 
 context('Create Contacts', () => {
   const contactId = 654321
@@ -22,6 +23,7 @@ context('Create Contacts', () => {
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.task('stubTitlesReferenceData')
     cy.task('stubRelationshipReferenceData')
+    cy.task('stubOfficialRelationshipReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', TestData.prisoner().prisonerNumber)
     cy.task('stubCreateContact', {
@@ -75,10 +77,14 @@ context('Create Contacts', () => {
       .clickTheContactIsNotListed()
   })
 
-  it('Can create a contact with only required fields with direct link', () => {
+  it('Can create a contact with only required fields', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectRelationshipTypePage, 'First Last', 'John Smith') //
+      .selectRelationshipType('S')
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'First Last') //
@@ -132,12 +138,77 @@ context('Create Contacts', () => {
     )
   })
 
+  it('Can create an official contact', () => {
+    Page.verifyOnPage(EnterNamePage) //
+      .enterLastName('Last')
+      .enterFirstName('First')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectRelationshipTypePage, 'First Last', 'John Smith') //
+      .selectRelationshipType('O')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectRelationshipPage, 'First Last') //
+      .selectRelationship('DR')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectEmergencyContactPage, 'First Last') //
+      .selectIsEmergencyContact('NO')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectNextOfKinPage, 'First Last') //
+      .selectIsNextOfKin('YES')
+      .clickContinue()
+
+    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Last') //
+      .selectIsKnown('NO')
+      .clickContinue()
+
+    Page.verifyOnPage(RelationshipCommentsPage, 'First Last').clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowsNameAs('Last, First')
+      .verifyShowsDateOfBirthAs('Not provided')
+      .verifyShowRelationshipAs('Doctor')
+      .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('Yes')
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactSuccessPage) //
+      .clickContactInfoLink()
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Last')
+
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: '/contact',
+      },
+      {
+        lastName: 'Last',
+        firstName: 'First',
+        createdBy: 'USER1',
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipType: 'O',
+          relationshipToPrisoner: 'DR',
+          isNextOfKin: true,
+          isEmergencyContact: false,
+        },
+      },
+    )
+  })
+
   it('Can create a contact with all fields', () => {
     Page.verifyOnPage(EnterNamePage) //
       .selectTitle('Mr')
       .enterLastName('Last')
       .enterFirstName('First')
       .enterMiddleNames('Middle')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectRelationshipTypePage, 'First Middle Last', 'John Smith') //
+      .selectRelationshipType('S')
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'First Middle Last') //
@@ -244,6 +315,10 @@ context('Create Contacts', () => {
       .enterFirstName('First')
       .clickContinue()
 
+    Page.verifyOnPage(SelectRelationshipTypePage, 'First Last', 'John Smith') //
+      .selectRelationshipType('S')
+      .clickContinue()
+
     const selectRelationshipPage = Page.verifyOnPage(SelectRelationshipPage, 'First Last')
     selectRelationshipPage.clickContinue()
 
@@ -254,6 +329,10 @@ context('Create Contacts', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectRelationshipTypePage, 'First Last', 'John Smith') //
+      .selectRelationshipType('S')
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'First Last') //
@@ -275,6 +354,10 @@ context('Create Contacts', () => {
       .enterFirstName('First')
       .clickContinue()
 
+    Page.verifyOnPage(SelectRelationshipTypePage, 'First Last', 'John Smith') //
+      .selectRelationshipType('S')
+      .clickContinue()
+
     Page.verifyOnPage(SelectRelationshipPage, 'First Last') //
       .selectRelationship('MOT')
       .clickContinue()
@@ -293,6 +376,10 @@ context('Create Contacts', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectRelationshipTypePage, 'First Last', 'John Smith') //
+      .selectRelationshipType('S')
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'First Last') //
@@ -317,6 +404,10 @@ context('Create Contacts', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectRelationshipTypePage, 'First Last', 'John Smith') //
+      .selectRelationshipType('S')
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'First Last') //
@@ -344,6 +435,10 @@ context('Create Contacts', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectRelationshipTypePage, 'First Last', 'John Smith') //
+      .selectRelationshipType('S')
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'First Last') //
@@ -383,6 +478,8 @@ context('Create Contacts', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
+      .continueTo(SelectRelationshipTypePage, 'First Last', 'John Smith')
+      .selectRelationshipType('S')
       .continueTo(SelectRelationshipPage, 'First Last') //
       .selectRelationship('MOT')
       .continueTo(SelectEmergencyContactPage, 'First Last') //
@@ -400,10 +497,12 @@ context('Create Contacts', () => {
     commentsPage.hasFieldInError('comments', 'Additional information must be 240 characters or less')
   })
 
-  it('Can navigate back through all pages when no DOB', () => {
+  it('Can navigate back through all pages', () => {
     const relationshipCommentsPage = Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
+      .continueTo(SelectRelationshipTypePage, 'First Last', 'John Smith')
+      .selectRelationshipType('S')
       .continueTo(SelectRelationshipPage, 'First Last')
       .selectRelationship('MOT')
       .continueTo(SelectEmergencyContactPage, 'First Last')
@@ -419,32 +518,7 @@ context('Create Contacts', () => {
       .backTo(SelectNextOfKinPage, 'First Last')
       .backTo(SelectEmergencyContactPage, 'First Last')
       .backTo(SelectRelationshipPage, 'First Last')
+      .backTo(SelectRelationshipTypePage, 'First Last', 'John Smith')
       .backTo(EnterNamePage)
-  })
-
-  it('Can navigate back through all pages when DOB is known', () => {
-    const relationshipCommentsPage = Page.verifyOnPage(EnterNamePage) //
-      .enterLastName('Last')
-      .enterFirstName('First')
-      .continueTo(SelectRelationshipPage, 'First Last')
-      .selectRelationship('MOT')
-      .continueTo(SelectEmergencyContactPage, 'First Last')
-      .selectIsEmergencyContact('NO')
-      .continueTo(SelectNextOfKinPage, 'First Last')
-      .selectIsNextOfKin('YES')
-      .continueTo(EnterContactDateOfBirthPage, 'First Last')
-      .selectIsKnown('YES')
-      .enterDay('15')
-      .enterMonth('06')
-      .enterYear('1982')
-      .continueTo(RelationshipCommentsPage, 'First Last')
-
-    relationshipCommentsPage //
-      .backTo(EnterContactDateOfBirthPage, 'First Last')
-      .backTo(SelectNextOfKinPage, 'First Last')
-      .backTo(SelectEmergencyContactPage, 'First Last')
-      .backTo(SelectRelationshipPage, 'First Last')
-      .backTo(EnterNamePage)
-      .backTo(SearchContactPage)
   })
 })

@@ -46,8 +46,8 @@ export default class ContactsService {
       dateOfBirth,
       relationship: {
         prisonerNumber: journey.prisonerNumber,
-        relationshipType: 'S',
-        relationshipToPrisoner: journey.relationship.type,
+        relationshipType: journey.relationship.relationshipType,
+        relationshipToPrisoner: journey.relationship.relationshipToPrisoner,
         isNextOfKin: journey.relationship.isNextOfKin === 'YES',
         isEmergencyContact: journey.relationship.isEmergencyContact === 'YES',
         comments: journey.relationship.comments,
@@ -62,8 +62,8 @@ export default class ContactsService {
       contactId: journey.contactId,
       relationship: {
         prisonerNumber: journey.prisonerNumber,
-        relationshipType: 'S',
-        relationshipToPrisoner: journey.relationship.type,
+        relationshipType: journey.relationship.relationshipType,
+        relationshipToPrisoner: journey.relationship.relationshipToPrisoner,
         isNextOfKin: journey.relationship.isNextOfKin === 'YES',
         isEmergencyContact: journey.relationship.isEmergencyContact === 'YES',
         comments: journey.relationship.comments,

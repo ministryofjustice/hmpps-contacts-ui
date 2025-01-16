@@ -10,6 +10,7 @@ import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
 import ListContactsPage from '../pages/listContacts'
 import SearchContactPage from '../pages/searchContactPage'
 import CreateContactSuccessPage from '../pages/createContactSuccessPage'
+import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 
 context('Create contact and update from check answers', () => {
   beforeEach(() => {
@@ -67,6 +68,8 @@ context('Create contact and update from check answers', () => {
       .enterLastName('Last')
       .enterMiddleNames('Middle')
       .enterFirstName('First')
+      .continueTo(SelectRelationshipTypePage, 'First Middle Last', 'John Smith')
+      .selectRelationshipType('S')
       .continueTo(SelectRelationshipPage, 'First Middle Last')
       .selectRelationship('MOT')
       .continueTo(SelectEmergencyContactPage, 'First Middle Last')

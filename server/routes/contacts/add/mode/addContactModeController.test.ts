@@ -239,7 +239,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
   describe('reset journeys when switching modes', () => {
     beforeEach(() => {
       existingJourney.relationship = {
-        type: 'MOT',
+        relationshipToPrisoner: 'MOT',
         isEmergencyContact: 'YES',
         isNextOfKin: 'YES',
         comments: 'Some comments',

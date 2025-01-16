@@ -3,7 +3,7 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, flashProvider, user } from '../../../testutils/appSetup'
+import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import AddContactJourney = journeys.AddContactJourney
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
@@ -30,16 +30,8 @@ beforeEach(() => {
     returnPoint: { url: '/foo-bar' },
     names: {
       lastName: 'last',
-      middleNames: 'Middle',
+      middleNames: 'middle',
       firstName: 'first',
-    },
-    dateOfBirth: {
-      isKnown: 'NO',
-    },
-    relationship: {
-      relationshipToPrisoner: 'MOT',
-      isEmergencyContact: 'YES',
-      isNextOfKin: 'YES',
     },
     mode: 'NEW',
   }
@@ -62,17 +54,20 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/create/enter-relationship-comments/:journeyId', () => {
-  it.each(['NEW', 'EXISTING'])(
-    'should render enter relationship comments page for each mode %s',
-    async (mode: 'NEW' | 'EXISTING') => {
+describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-type/:journeyId', () => {
+  it.each([
+    ['NEW', `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`],
+    ['EXISTING', `/prisoner/A1234BC/contacts/add/confirmation/${journeyId}`],
+  ])(
+    'should render relationship type page for each mode %s',
+    async (mode: 'NEW' | 'EXISTING', expectedBackLink: string) => {
       // Given
       auditService.logPageView.mockResolvedValue(null)
       existingJourney.mode = mode
 
       // When
       const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`,
       )
 
       // Then
@@ -80,8 +75,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-relationship-comme
 
       const $ = cheerio.load(response.text)
       expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-        'Add additional information about the relationship between the prisoner and First Middle Last',
+        'Is First Middle Last a social or official contact for John Smith?',
       )
+      expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(expectedBackLink)
       expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     },
@@ -93,12 +89,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-relationship-comme
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`,
     )
 
     // Then
     expect(response.status).toEqual(200)
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.ENTER_RELATIONSHIP_COMMENTS, {
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.SELECT_RELATIONSHIP_TYPE, {
       who: user.username,
       correlationId: expect.any(String),
     })
@@ -107,118 +103,86 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-relationship-comme
   it('should render previously entered details if no validation errors but there are session values', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
-    existingJourney.relationship = {
-      relationshipToPrisoner: 'MOT',
-      isEmergencyContact: 'NO',
-      isNextOfKin: 'YES',
-      comments: 'Foo',
-    }
+    existingJourney.relationship = { relationshipType: 'S' }
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`,
     )
 
     // Then
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
-    expect($('#comments').val()).toStrictEqual('Foo')
-  })
-
-  it('should render invalid data if validation errors and there are no session values', async () => {
-    // Given
-    const newComments = 'Bar'.padEnd(240)
-    auditService.logPageView.mockResolvedValue(null)
-    flashProvider.mockImplementation(key =>
-      key === 'formResponses' ? [JSON.stringify({ comments: newComments })] : [],
-    )
-    existingJourney.relationship = {
-      relationshipToPrisoner: 'MOT',
-      isEmergencyContact: 'NO',
-      isNextOfKin: 'YES',
-      comments: undefined,
-    }
-
-    // When
-    const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`,
-    )
-
-    // Then
-    expect(response.status).toEqual(200)
-    const $ = cheerio.load(response.text)
-    expect($('#comments').val()).toStrictEqual(newComments)
-  })
-
-  it('should render invalid data if validation errors and there are session values', async () => {
-    // Given
-    const newComments = 'Bar'.padEnd(240)
-    auditService.logPageView.mockResolvedValue(null)
-    flashProvider.mockImplementation(key =>
-      key === 'formResponses' ? [JSON.stringify({ comments: newComments })] : [],
-    )
-    existingJourney.relationship = {
-      relationshipToPrisoner: 'MOT',
-      isEmergencyContact: 'NO',
-      isNextOfKin: 'YES',
-      comments: 'Foo',
-    }
-
-    // When
-    const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`,
-    )
-
-    // Then
-    expect(response.status).toEqual(200)
-    const $ = cheerio.load(response.text)
-    expect($('#comments').val()).toStrictEqual(newComments)
+    expect($('input[type=radio]:checked').val()).toStrictEqual('S')
   })
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${uuidv4()}`)
+      .get(`/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${uuidv4()}`)
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/create/enter-relationship-comments', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship-type', () => {
   it('should pass to next page if there are no validation errors and we are not checking answers', async () => {
     // Given
-    existingJourney.relationship = { relationshipToPrisoner: 'MOT', isEmergencyContact: 'NO', isNextOfKin: 'YES' }
+    delete existingJourney.relationship
     existingJourney.isCheckingAnswers = false
 
     // When
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`)
       .type('form')
-      .send({ comments: 'Foo' })
+      .send({ relationshipType: 'S' })
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship-to-prisoner/${journeyId}`)
+
+    // Then
+    const expectedRelationship = { relationshipType: 'S' }
+    expect(session.addContactJourneys[journeyId].relationship).toStrictEqual(expectedRelationship)
+  })
+
+  it('should pass to check answers if there are no validation errors and we are checking answers', async () => {
+    // Given
+    existingJourney.relationship = {
+      relationshipType: 'S',
+      relationshipToPrisoner: 'MOT',
+      isEmergencyContact: 'NO',
+      isNextOfKin: 'YES',
+    }
+    existingJourney.isCheckingAnswers = true
+
+    // When
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`)
+      .type('form')
+      .send({ relationshipType: 'O' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
 
     // Then
     const expectedRelationship = {
+      relationshipType: 'O',
       relationshipToPrisoner: 'MOT',
       isEmergencyContact: 'NO',
       isNextOfKin: 'YES',
-      comments: 'Foo',
     }
     expect(session.addContactJourneys[journeyId].relationship).toStrictEqual(expectedRelationship)
   })
 
   it('should return to enter page if there are validation errors', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`)
       .type('form')
-      .send({ comments: ''.padEnd(241) })
+      .send({})
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`)
   })
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${uuidv4()}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${uuidv4()}`)
       .type('form')
       .send({})
       .expect(302)

@@ -8,6 +8,7 @@ type CreateContactPages =
   | Page.CONTACT_SEARCH_PAGE
   | Page.ADD_CONTACT_MODE_PAGE
   | Page.CREATE_CONTACT_NAME_PAGE
+  | Page.SELECT_RELATIONSHIP_TYPE
   | Page.SELECT_CONTACT_RELATIONSHIP
   | Page.SELECT_EMERGENCY_CONTACT
   | Page.SELECT_NEXT_OF_KIN
@@ -20,6 +21,7 @@ type ExistingContactPages =
   | Page.CONTACT_SEARCH_PAGE
   | Page.ADD_CONTACT_MODE_PAGE
   | Page.CONTACT_CONFIRMATION_PAGE
+  | Page.SELECT_RELATIONSHIP_TYPE
   | Page.SELECT_CONTACT_RELATIONSHIP
   | Page.SELECT_EMERGENCY_CONTACT
   | Page.SELECT_NEXT_OF_KIN
@@ -44,8 +46,11 @@ const PAGES: Record<AllAddContactPages, { url: JourneyUrlProvider; breadcrumbs?:
   [Page.CREATE_CONTACT_NAME_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/enter-name/${journey.id}`,
   },
+  [Page.SELECT_RELATIONSHIP_TYPE]: {
+    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/select-relationship-type/${journey.id}`,
+  },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
-    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/select-relationship/${journey.id}`,
+    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/select-relationship-to-prisoner/${journey.id}`,
   },
   [Page.SELECT_EMERGENCY_CONTACT]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/select-emergency-contact/${journey.id}`,
@@ -83,10 +88,14 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   [Page.ADD_CONTACT_MODE_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CREATE_CONTACT_NAME_PAGE.url },
   [Page.CREATE_CONTACT_NAME_PAGE]: {
     previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
+    nextUrl: checkAnswersOr(PAGES.SELECT_RELATIONSHIP_TYPE.url),
+  },
+  [Page.SELECT_RELATIONSHIP_TYPE]: {
+    previousUrl: PAGES.CREATE_CONTACT_NAME_PAGE.url,
     nextUrl: checkAnswersOr(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
   },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
-    previousUrl: PAGES.CREATE_CONTACT_NAME_PAGE.url,
+    previousUrl: PAGES.SELECT_RELATIONSHIP_TYPE.url,
     nextUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT.url),
   },
   [Page.SELECT_EMERGENCY_CONTACT]: {
@@ -131,10 +140,14 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
   },
   [Page.CONTACT_CONFIRMATION_PAGE]: {
     previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
+    nextUrl: checkAnswersOr(PAGES.SELECT_RELATIONSHIP_TYPE.url),
+  },
+  [Page.SELECT_RELATIONSHIP_TYPE]: {
+    previousUrl: PAGES.CONTACT_CONFIRMATION_PAGE.url,
     nextUrl: checkAnswersOr(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
   },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
-    previousUrl: PAGES.CONTACT_CONFIRMATION_PAGE.url,
+    previousUrl: PAGES.SELECT_RELATIONSHIP_TYPE.url,
     nextUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT.url),
   },
   [Page.SELECT_EMERGENCY_CONTACT]: {

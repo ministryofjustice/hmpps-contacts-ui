@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from 'uuid'
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
-import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import SearchContactPage from '../pages/searchContactPage'
 import ContactConfirmationPage from '../pages/contactConfirmationPage'
+import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 
 const SELECT_IS_THE_RIGHT_PERSON_MESSAGE = 'Select whether this is the right contact'
 
@@ -284,6 +284,6 @@ context('Contact confirmation', () => {
 
     Page.verifyOnPage(ContactConfirmationPage, 'John Smith').selectIsTheRightPersonYesRadio().clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact') //
+    Page.verifyOnPage(SelectRelationshipTypePage, 'Existing Contact', 'John Smith') //
   })
 })
