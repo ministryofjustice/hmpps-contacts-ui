@@ -8,7 +8,7 @@ import { navigationForAddContactJourney, nextPageForAddContactJourney } from '..
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 
-export default class SelectRelationshipController implements PageHandler {
+export default class SelectRelationshipToPrisonerController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
   public PAGE_NAME = Page.SELECT_CONTACT_RELATIONSHIP
@@ -17,12 +17,16 @@ export default class SelectRelationshipController implements PageHandler {
     const { journeyId } = req.params
     const { user } = res.locals
     const journey = req.session.addContactJourneys[journeyId]
+    const groupCodeForRelationshipType =
+      journey.relationship.relationshipType === 'S'
+        ? ReferenceCodeType.SOCIAL_RELATIONSHIP
+        : ReferenceCodeType.OFFICIAL_RELATIONSHIP
     const relationshipOptions = await this.referenceDataService
-      .getReferenceData(ReferenceCodeType.SOCIAL_RELATIONSHIP, user)
+      .getReferenceData(groupCodeForRelationshipType, user)
       .then(val =>
         this.getSelectedRelationshipOptions(
           val,
-          res.locals?.formResponses?.relationship ?? journey?.relationship?.type,
+          res.locals?.formResponses?.relationship ?? journey?.relationship?.relationshipToPrisoner,
         ),
       )
     const viewModel = {
@@ -43,7 +47,7 @@ export default class SelectRelationshipController implements PageHandler {
     if (!journey.relationship) {
       journey.relationship = {}
     }
-    journey.relationship.type = relationship
+    journey.relationship.relationshipToPrisoner = relationship
     res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
   }
 

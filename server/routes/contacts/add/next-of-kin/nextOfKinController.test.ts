@@ -34,7 +34,7 @@ beforeEach(() => {
       firstName: 'first',
     },
     relationship: {
-      type: 'MOT',
+      relationshipToPrisoner: 'MOT',
       isEmergencyContact: 'YES',
     },
     mode: 'NEW',
@@ -103,7 +103,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-next-of-kin/:jour
   it('should render previously entered details if no validation errors but there are session values', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
-    existingJourney.relationship = { type: 'MOT', isEmergencyContact: 'NO', isNextOfKin: 'YES' }
+    existingJourney.relationship = { relationshipToPrisoner: 'MOT', isEmergencyContact: 'NO', isNextOfKin: 'YES' }
 
     // When
     const response = await request(app).get(
@@ -127,7 +127,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-next-of-kin/:jour
 describe('POST /prisoner/:prisonerNumber/contacts/create/select-next-of-kin', () => {
   it('should pass to next page if there are no validation errors and we are not checking answers', async () => {
     // Given
-    existingJourney.relationship = { type: 'MOT', isEmergencyContact: 'NO' }
+    existingJourney.relationship = { relationshipToPrisoner: 'MOT', isEmergencyContact: 'NO' }
     existingJourney.isCheckingAnswers = false
 
     // When
@@ -139,13 +139,13 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-next-of-kin', ()
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
 
     // Then
-    const expectedRelationship = { type: 'MOT', isEmergencyContact: 'NO', isNextOfKin: 'YES' }
+    const expectedRelationship = { relationshipToPrisoner: 'MOT', isEmergencyContact: 'NO', isNextOfKin: 'YES' }
     expect(session.addContactJourneys[journeyId].relationship).toStrictEqual(expectedRelationship)
   })
 
   it('should pass to check answers if there are no validation errors and we are checking answers', async () => {
     // Given
-    existingJourney.relationship = { type: 'MOT', isEmergencyContact: 'NO' }
+    existingJourney.relationship = { relationshipToPrisoner: 'MOT', isEmergencyContact: 'NO' }
     existingJourney.isCheckingAnswers = true
 
     // When
@@ -157,7 +157,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-next-of-kin', ()
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
 
     // Then
-    const expectedRelationship = { type: 'MOT', isEmergencyContact: 'NO', isNextOfKin: 'YES' }
+    const expectedRelationship = { relationshipToPrisoner: 'MOT', isEmergencyContact: 'NO', isNextOfKin: 'YES' }
     expect(session.addContactJourneys[journeyId].relationship).toStrictEqual(expectedRelationship)
   })
 

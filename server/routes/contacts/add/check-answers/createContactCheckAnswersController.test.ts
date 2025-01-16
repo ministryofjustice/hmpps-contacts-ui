@@ -47,7 +47,7 @@ beforeEach(() => {
       year: 2024,
     },
     relationship: {
-      type: 'MOT',
+      relationshipToPrisoner: 'MOT',
       isNextOfKin: 'YES',
       isEmergencyContact: 'YES',
       comments: 'some comments',
@@ -70,8 +70,18 @@ beforeEach(() => {
     },
   })
   referenceDataService.getReferenceDescriptionForCode.mockImplementation(
-    (type: ReferenceCodeType, _: string, __: Express.User) =>
-      type === ReferenceCodeType.TITLE ? Promise.resolve('Reverend') : Promise.resolve('Mother'),
+    (type: ReferenceCodeType, _: string, __: Express.User) => {
+      if (type === ReferenceCodeType.TITLE) {
+        return Promise.resolve('Reverend')
+      }
+      if (type === ReferenceCodeType.SOCIAL_RELATIONSHIP) {
+        return Promise.resolve('Mother')
+      }
+      if (type === ReferenceCodeType.OFFICIAL_RELATIONSHIP) {
+        return Promise.resolve('Doctor')
+      }
+      return Promise.reject()
+    },
   )
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
@@ -120,6 +130,29 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     expect($('.check-answers-dob-value').first().text().trim()).toStrictEqual('Not provided')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
   })
+
+  it.each([
+    ['S', 'MOT', 'Mother'],
+    ['O', 'DR', 'Doctor'],
+  ])(
+    'should render check answers page with different relationship types (%s, %s, %s)',
+    async (relationshipType: string, relationshipToPrisoner: string, relationshipToPrisonerDescription: string) => {
+      // Given
+      auditService.logPageView.mockResolvedValue(null)
+      journey.relationship.relationshipType = relationshipType
+      journey.relationship.relationshipToPrisoner = relationshipToPrisoner
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+      // Then
+      expect(response.status).toEqual(200)
+      const $ = cheerio.load(response.text)
+      expect($('.check-answers-relationship-value').first().text().trim()).toStrictEqual(
+        relationshipToPrisonerDescription,
+      )
+    },
+  )
 
   it('should render check answers page without comments', async () => {
     // Given

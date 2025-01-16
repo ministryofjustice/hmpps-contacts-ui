@@ -10,6 +10,7 @@ import SearchContactPage from '../pages/searchContactPage'
 import ContactConfirmationPage from '../pages/contactConfirmationPage'
 import AddContactSuccessPage from '../pages/addContactSuccessPage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
+import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 
 context('Add Existing Contact', () => {
   const { prisonerNumber } = TestData.prisoner()
@@ -35,6 +36,7 @@ context('Add Existing Contact', () => {
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.task('stubTitlesReferenceData')
     cy.task('stubRelationshipReferenceData')
+    cy.task('stubOfficialRelationshipReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', prisonerNumber)
     cy.task('stubGetContactById', contact)
@@ -89,6 +91,10 @@ context('Add Existing Contact', () => {
 
     Page.verifyOnPage(ContactConfirmationPage, 'John Smith') //
       .selectIsTheRightPersonYesRadio()
+      .clickContinue()
+
+    Page.verifyOnPage(SelectRelationshipTypePage, 'Existing Contact', 'John Smith') //
+      .selectRelationshipType('S')
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact') //
@@ -158,6 +164,10 @@ context('Add Existing Contact', () => {
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
+    Page.verifyOnPage(SelectRelationshipTypePage, 'Existing Contact', 'John Smith') //
+      .selectRelationshipType('S')
+      .clickContinue()
+
     Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact') //
       .selectRelationship('MOT')
       .clickContinue()
@@ -207,6 +217,73 @@ context('Add Existing Contact', () => {
     )
   })
 
+  it('Can add an official contact', () => {
+    cy.task('stubGetContactById', {
+      id: contactId,
+      firstName: 'Existing',
+      lastName: 'Contact',
+    })
+
+    Page.verifyOnPage(SearchContactPage) //
+      .clickTheContactLink(contactId)
+
+    Page.verifyOnPage(ContactConfirmationPage, 'John Smith') //
+      .selectIsTheRightPersonYesRadio()
+      .clickContinue()
+
+    Page.verifyOnPage(SelectRelationshipTypePage, 'Existing Contact', 'John Smith') //
+      .selectRelationshipType('O')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact') //
+      .selectRelationship('DR')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectEmergencyContactPage, 'Existing Contact') //
+      .selectIsEmergencyContact('YES')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectNextOfKinPage, 'Existing Contact') //
+      .selectIsNextOfKin('NO')
+      .clickContinue()
+
+    Page.verifyOnPage(RelationshipCommentsPage, 'Existing Contact') //
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowsNameAs('Contact, Existing')
+      .verifyShowsDateOfBirthAs('Not provided')
+      .verifyShowRelationshipAs('Doctor')
+      .verifyShowIsEmergencyContactAs('Yes')
+      .verifyShowIsNextOfKinAs('No')
+      .verifyNameIsNotChangeable()
+      .verifyDateOfBirthIsNotChangeable()
+      .clickContinue()
+
+    Page.verifyOnPage(AddContactSuccessPage) //
+      .clickContactListLink()
+
+    Page.verifyOnPage(ListContactsPage)
+
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: `/prisoner-contact`,
+      },
+      {
+        contactId,
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipType: 'O',
+          relationshipToPrisoner: 'DR',
+          isNextOfKin: false,
+          isEmergencyContact: true,
+        },
+        createdBy: 'USER1',
+      },
+    )
+  })
+
   it('Should require selection of emergency contact', () => {
     cy.task('stubGetContactById', {
       id: contactId,
@@ -219,6 +296,10 @@ context('Add Existing Contact', () => {
 
     Page.verifyOnPage(ContactConfirmationPage, 'John Smith') //
       .selectIsTheRightPersonYesRadio()
+      .clickContinue()
+
+    Page.verifyOnPage(SelectRelationshipTypePage, 'Existing Contact', 'John Smith') //
+      .selectRelationshipType('S')
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact') //
@@ -247,6 +328,10 @@ context('Add Existing Contact', () => {
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
+    Page.verifyOnPage(SelectRelationshipTypePage, 'Existing Contact', 'John Smith') //
+      .selectRelationshipType('S')
+      .clickContinue()
+
     const selectRelationshipPage = Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact')
     selectRelationshipPage.clickContinue()
 
@@ -265,6 +350,10 @@ context('Add Existing Contact', () => {
 
     Page.verifyOnPage(ContactConfirmationPage, 'John Smith') //
       .selectIsTheRightPersonYesRadio()
+      .clickContinue()
+
+    Page.verifyOnPage(SelectRelationshipTypePage, 'Existing Contact', 'John Smith') //
+      .selectRelationshipType('S')
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact') //
@@ -295,7 +384,9 @@ context('Add Existing Contact', () => {
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact') //
+    Page.verifyOnPage(SelectRelationshipTypePage, 'Existing Contact', 'John Smith') //
+      .selectRelationshipType('S')
+      .continueTo(SelectRelationshipPage, 'Existing Contact')
       .selectRelationship('MOT')
       .continueTo(SelectEmergencyContactPage, 'Existing Contact') //
       .selectIsEmergencyContact('NO')
@@ -305,6 +396,7 @@ context('Add Existing Contact', () => {
       .backTo(SelectNextOfKinPage, 'Existing Contact')
       .backTo(SelectEmergencyContactPage, 'Existing Contact')
       .backTo(SelectRelationshipPage, 'Existing Contact')
+      .backTo(SelectRelationshipTypePage, 'Existing Contact', 'John Smith')
       .backTo(ContactConfirmationPage, 'John Smith')
       .backTo(SearchContactPage)
       .verifyShowsNameAs('Contact, Existing')
@@ -325,6 +417,10 @@ context('Add Existing Contact', () => {
 
     Page.verifyOnPage(ContactConfirmationPage, 'John Smith') //
       .selectIsTheRightPersonYesRadio()
+      .clickContinue()
+
+    Page.verifyOnPage(SelectRelationshipTypePage, 'Deceased Contact', 'John Smith') //
+      .selectRelationshipType('S')
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'Deceased Contact') //

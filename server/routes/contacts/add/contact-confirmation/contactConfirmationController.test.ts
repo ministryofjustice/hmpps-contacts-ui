@@ -565,7 +565,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/add/confirmation/:journeyId?co
       .type('form')
       .send({ isContactConfirmed: 'YES' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`)
 
     // Then
     expect(session.addContactJourneys[journeyId].isContactConfirmed).toStrictEqual('YES')

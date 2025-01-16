@@ -6,7 +6,7 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import ReferenceDataService from '../../../../services/referenceDataService'
-import { mockedReferenceData, STUBBED_RELATIONSHIP_OPTIONS } from '../../../testutils/stubReferenceData'
+import { mockedReferenceData, STUBBED_SOCIAL_RELATIONSHIP_OPTIONS } from '../../../testutils/stubReferenceData'
 import AddContactJourney = journeys.AddContactJourney
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import TestData from '../../../testutils/testData'
@@ -33,6 +33,7 @@ beforeEach(() => {
     isCheckingAnswers: false,
     returnPoint: { url: '/foo-bar' },
     names: { firstName: 'First', middleNames: 'Middle', lastName: 'Last' },
+    relationship: { relationshipType: 'S' },
     mode: 'NEW',
   }
   app = appWithAllRoutes({
@@ -56,7 +57,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-to-prisoner', () => {
   it.each(['NEW', 'EXISTING'])(
     'should render select relationship page for mode %s',
     async (mode: 'NEW' | 'EXISTING') => {
@@ -66,7 +67,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship', ()
 
       // When
       const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/create/select-relationship/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/create/select-relationship-to-prisoner/${journeyId}`,
       )
 
       // Then
@@ -80,9 +81,38 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship', ()
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
       expect($('#relationship :nth-child(1)').text()).toStrictEqual('')
       expect($('#relationship :nth-child(2)').text()).toStrictEqual('Daughter')
-      expect($(`#relationship :nth-child(${STUBBED_RELATIONSHIP_OPTIONS.length + 1})`).text()).toStrictEqual(
+      expect($(`#relationship :nth-child(${STUBBED_SOCIAL_RELATIONSHIP_OPTIONS.length + 1})`).text()).toStrictEqual(
         'ZZZ Alphabetically Last',
       )
+    },
+  )
+
+  it.each([
+    ['S', 'Daughter'],
+    ['O', 'Case Administrator'],
+  ])(
+    'should use correct reference group for different relationship types %s',
+    async (relationshipType: 'S' | 'O', expectedFirstOption: string) => {
+      // Given
+      auditService.logPageView.mockResolvedValue(null)
+      existingJourney.relationship = { relationshipType }
+
+      // When
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/create/select-relationship-to-prisoner/${journeyId}`,
+      )
+
+      // Then
+      expect(response.status).toEqual(200)
+
+      const $ = cheerio.load(response.text)
+      expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
+        'How is First Middle Last related to the prisoner?',
+      )
+      expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+      expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+      expect($('#relationship :nth-child(1)').text()).toStrictEqual('')
+      expect($('#relationship :nth-child(2)').text()).toStrictEqual(expectedFirstOption)
     },
   )
 
@@ -92,7 +122,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship', ()
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/create/select-relationship/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/create/select-relationship-to-prisoner/${journeyId}`,
     )
 
     // Then
@@ -101,7 +131,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship', ()
     const $ = cheerio.load(response.text)
     expect($('#relationship :nth-child(1)').text()).toStrictEqual('')
     expect($('#relationship :nth-child(2)').text()).toStrictEqual('Daughter')
-    expect($(`#relationship :nth-child(${STUBBED_RELATIONSHIP_OPTIONS.length + 1})`).text()).toStrictEqual(
+    expect($(`#relationship :nth-child(${STUBBED_SOCIAL_RELATIONSHIP_OPTIONS.length + 1})`).text()).toStrictEqual(
       'ZZZ Alphabetically Last',
     )
   })
@@ -112,7 +142,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship', ()
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/create/select-relationship/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/create/select-relationship-to-prisoner/${journeyId}`,
     )
 
     // Then
@@ -126,11 +156,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship', ()
   it('should render previously entered details if no validation errors but there are session values', async () => {
     // Given
     auditService.logPageView.mockResolvedValue(null)
-    existingJourney.relationship = { type: 'MOT' }
+    existingJourney.relationship = { relationshipType: 'S', relationshipToPrisoner: 'MOT' }
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/create/select-relationship/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/create/select-relationship-to-prisoner/${journeyId}`,
     )
 
     // Then
@@ -141,36 +171,37 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship', ()
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/create/select-relationship/${uuidv4()}`)
+      .get(`/prisoner/${prisonerNumber}/contacts/create/select-relationship-to-prisoner/${uuidv4()}`)
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship/:journeyId', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship-to-prisoner/:journeyId', () => {
   it('should pass to success page if there are no validation errors', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/select-relationship/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/select-relationship-to-prisoner/${journeyId}`)
       .type('form')
       .send({ relationship: 'MOT' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${journeyId}`)
 
     expect(session.addContactJourneys[journeyId].relationship).toStrictEqual({
-      type: 'MOT',
+      relationshipType: 'S',
+      relationshipToPrisoner: 'MOT',
     })
   })
 
   it('should pass to check answers page if there are no validation errors and journey is in check state', async () => {
     // Given
     existingJourney.relationship = {
-      type: 'FA',
+      relationshipToPrisoner: 'FA',
     }
     existingJourney.isCheckingAnswers = true
 
     // When
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/select-relationship/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/select-relationship-to-prisoner/${journeyId}`)
       .type('form')
       .send({ relationship: 'MOT' })
       .expect(302)
@@ -178,22 +209,22 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship/:jo
 
     // Then
     expect(session.addContactJourneys[journeyId].relationship).toStrictEqual({
-      type: 'MOT',
+      relationshipToPrisoner: 'MOT',
     })
   })
 
   it('should return to enter page with details kept if there are validation errors', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/select-relationship/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/select-relationship-to-prisoner/${journeyId}`)
       .type('form')
       .send({})
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship-to-prisoner/${journeyId}`)
   })
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/select-relationship/${uuidv4()}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/select-relationship-to-prisoner/${uuidv4()}`)
       .type('form')
       .send({ relationship: 'MOT' })
       .expect(302)
