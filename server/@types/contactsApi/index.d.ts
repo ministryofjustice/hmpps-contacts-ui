@@ -5552,10 +5552,10 @@ export interface components {
        */
       relationshipType: string
       /**
-       * @description The description of the contact type
+       * @description The description of the contact relationship type. Description from reference data Official or Social/Family
        * @example Official
        */
-      contactTypeDescription: string
+      relationshipTypeDescription: string
       /**
        * @description The relationship to the prisoner. A code from SOCIAL_RELATIONSHIP or OFFICIAL_RELATIONSHIP reference data groups depending on the relationship type.
        * @example FRI
