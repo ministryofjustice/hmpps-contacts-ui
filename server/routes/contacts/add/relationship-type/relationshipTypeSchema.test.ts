@@ -1,9 +1,9 @@
 import { deduplicateFieldErrors } from '../../../../middleware/validationMiddleware'
 import { selectRelationshipTypeSchema } from './relationshipTypeSchema'
 
-describe('createNextOfKinSchema', () => {
+describe('selectRelationshipTypeSchema', () => {
   type Form = {
-    isNextOfKin?: string
+    relationshipType?: string
   }
   describe('should validate the relationship type form', () => {
     it('should require relationshipType', async () => {

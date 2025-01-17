@@ -337,8 +337,8 @@ describe('contactsApiClient', () => {
     it('should get the prisoner contact relationship', async () => {
       // Given
       const expected: PrisonerContactRelationshipDetails = {
-        relationshipToPrisoner: 'FRI',
-        relationshipDescription: 'Friend',
+        relationshipToPrisonerCode: 'FRI',
+        relationshipToPrisonerDescription: 'Friend',
         emergencyContact: false,
         nextOfKin: true,
         isRelationshipActive: true,

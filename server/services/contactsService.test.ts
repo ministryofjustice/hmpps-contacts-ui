@@ -257,7 +257,7 @@ describe('contactsService', () => {
     it('should get the prisoner contact relationship', async () => {
       const expected: PrisonerContactRelationshipDetails = {
         relationshipToPrisoner: 'FRI',
-        relationshipDescription: 'Friend',
+        relationshipToPrisonerDescription: 'Friend',
         emergencyContact: false,
         nextOfKin: true,
         isRelationshipActive: true,
