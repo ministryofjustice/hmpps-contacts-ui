@@ -58,7 +58,7 @@
             <td class="govuk-table__cell">
                 {{ convertAddressToLines(address) }}
             </td>
-            <td class="govuk-table__cell">{{ item.relationshipDescription }}</td>
+            <td class="govuk-table__cell">{{ item.relationshipToPrisonerDescription }}</td>
             <td class="govuk-table__cell">{{ 'Yes' if item.emergencyContact else 'No' }}</td>
             <td class="govuk-table__cell">{{ 'Yes' if item.nextOfKin else 'No'}}</td>
             <td class="govuk-table__cell">{{ 'Yes' if item.approvedVisitor else 'No'}}</td>

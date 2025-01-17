@@ -193,7 +193,7 @@ export default class TestData {
       middleNames: 'M.',
       dateOfBirth: '1990-01-23',
       relationshipToPrisoner: 'FR',
-      relationshipDescription: 'Father',
+      relationshipToPrisonerDescription: 'Father',
       flat: '',
       property: '40',
       street: 'Acacia Avenue',
