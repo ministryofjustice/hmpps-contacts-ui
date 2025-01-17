@@ -58,34 +58,35 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-to-prisoner', () => {
-  it.each(['NEW', 'EXISTING'])(
-    'should render select relationship page for mode %s',
-    async (mode: 'NEW' | 'EXISTING') => {
-      // Given
-      auditService.logPageView.mockResolvedValue(null)
-      existingJourney.mode = mode
+  it.each([
+    ['NEW', 'Add a contact and link to a prisoner'],
+    ['EXISTING', 'Link a contact to a prisoner'],
+  ])('should render select relationship page for mode %s', async (mode: 'NEW' | 'EXISTING', expectedCaption) => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    existingJourney.mode = mode
 
-      // When
-      const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/create/select-relationship-to-prisoner/${journeyId}`,
-      )
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/create/select-relationship-to-prisoner/${journeyId}`,
+    )
 
-      // Then
-      expect(response.status).toEqual(200)
+    // Then
+    expect(response.status).toEqual(200)
 
-      const $ = cheerio.load(response.text)
-      expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-        'How is First Middle Last related to the prisoner?',
-      )
-      expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-      expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-      expect($('#relationship :nth-child(1)').text()).toStrictEqual('')
-      expect($('#relationship :nth-child(2)').text()).toStrictEqual('Daughter')
-      expect($(`#relationship :nth-child(${STUBBED_SOCIAL_RELATIONSHIP_OPTIONS.length + 1})`).text()).toStrictEqual(
-        'ZZZ Alphabetically Last',
-      )
-    },
-  )
+    const $ = cheerio.load(response.text)
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
+      'How is First Middle Last related to the prisoner?',
+    )
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('#relationship :nth-child(1)').text()).toStrictEqual('')
+    expect($('#relationship :nth-child(2)').text()).toStrictEqual('Daughter')
+    expect($(`#relationship :nth-child(${STUBBED_SOCIAL_RELATIONSHIP_OPTIONS.length + 1})`).text()).toStrictEqual(
+      'ZZZ Alphabetically Last',
+    )
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual(expectedCaption)
+  })
 
   it.each([
     ['S', 'Daughter'],

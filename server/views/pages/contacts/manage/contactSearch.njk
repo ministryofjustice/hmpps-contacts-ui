@@ -18,10 +18,10 @@
 {{ miniProfile(prisonerDetails) }}
 
 {% include '../../../partials/formErrorSummary.njk' %}
-<span class="govuk-caption-l">Contacts</span>
-<h1 class="govuk-heading-l">{{ title }}</h1>
  <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
+        <span class="govuk-caption-l">Link a contact to a prisoner</span>
+        <h1 class="govuk-heading-l">{{ title }}</h1>
         <form method='POST'>
             <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 

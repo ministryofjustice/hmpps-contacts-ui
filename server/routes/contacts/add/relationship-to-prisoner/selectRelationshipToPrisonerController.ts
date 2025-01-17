@@ -7,6 +7,7 @@ import { SelectRelationshipSchema } from '../../common/relationship/selectRelati
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
+import captionForAddContactJourney from '../addContactsUtils'
 
 export default class SelectRelationshipToPrisonerController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
@@ -31,6 +32,7 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
       )
     const viewModel = {
       journey,
+      caption: captionForAddContactJourney(journey),
       relationshipOptions,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
     }

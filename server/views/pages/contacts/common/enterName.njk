@@ -12,10 +12,10 @@
 {% include '../../../partials/navigation.njk' %}
 {{ miniProfile(prisonerDetails) }}
 {% include '../../../partials/formErrorSummary.njk' %}
-<span class="govuk-caption-l">Contacts</span>
-<h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
  <div class="govuk-grid-row">
-        <div class="govuk-grid-column-three-quarters">
+        <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-caption-l">{{ caption or 'Contacts' }}</span>
+            <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 

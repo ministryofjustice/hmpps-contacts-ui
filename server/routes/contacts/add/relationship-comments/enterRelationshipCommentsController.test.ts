@@ -63,9 +63,12 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/create/enter-relationship-comments/:journeyId', () => {
-  it.each(['NEW', 'EXISTING'])(
+  it.each([
+    ['NEW', 'Add a contact and link to a prisoner'],
+    ['EXISTING', 'Link a contact to a prisoner'],
+  ])(
     'should render enter relationship comments page for each mode %s',
-    async (mode: 'NEW' | 'EXISTING') => {
+    async (mode: 'NEW' | 'EXISTING', expectedCaption: string) => {
       // Given
       auditService.logPageView.mockResolvedValue(null)
       existingJourney.mode = mode
@@ -82,6 +85,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-relationship-comme
       expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
         'Add additional information about the relationship between the prisoner and First Middle Last',
       )
+      expect($('.govuk-caption-l').first().text().trim()).toStrictEqual(expectedCaption)
       expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     },

@@ -4,6 +4,7 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { EmergencyContactSchema } from './emergencyContactSchemas'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
+import captionForAddContactJourney from '../addContactsUtils'
 
 export default class EmergencyContactController implements PageHandler {
   public PAGE_NAME = Page.SELECT_EMERGENCY_CONTACT
@@ -13,6 +14,7 @@ export default class EmergencyContactController implements PageHandler {
     const journey = req.session.addContactJourneys[journeyId]
     const view = {
       journey,
+      caption: captionForAddContactJourney(journey),
       isEmergencyContact: res.locals?.formResponses?.isEmergencyContact ?? journey?.relationship?.isEmergencyContact,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
     }

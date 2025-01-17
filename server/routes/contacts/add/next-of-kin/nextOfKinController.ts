@@ -4,6 +4,7 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { NextOfKinSchema } from './nextOfKinSchemas'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
+import captionForAddContactJourney from '../addContactsUtils'
 
 export default class NextOfKinController implements PageHandler {
   public PAGE_NAME = Page.SELECT_NEXT_OF_KIN
@@ -13,6 +14,7 @@ export default class NextOfKinController implements PageHandler {
     const journey = req.session.addContactJourneys[journeyId]
     const view = {
       journey,
+      caption: captionForAddContactJourney(journey),
       isNextOfKin: res.locals?.formResponses?.isNextOfKin ?? journey?.relationship?.isNextOfKin,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
     }
