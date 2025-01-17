@@ -59,7 +59,7 @@ context('Change Relationship', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeRelationshipLink()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last', 'John Smith') //
       .hasRelationshipSelected('OTHER')
       .selectRelationship('MOT')
       .clickContinue()
@@ -90,12 +90,12 @@ context('Change Relationship', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeRelationshipLink()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last', 'John Smith') //
       .hasRelationshipSelected('OTHER')
       .selectRelationship('')
       .clickContinue()
 
-    const enterNamePage = Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last')
+    const enterNamePage = Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last', 'John Smith')
     enterNamePage.hasFieldInError('relationship', "Enter the contact's relationship to the prisoner")
   })
 
@@ -109,7 +109,7 @@ context('Change Relationship', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeRelationshipLink()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last', 'John Smith') //
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
@@ -123,7 +123,7 @@ context('Change Relationship', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickChangeRelationshipLink()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last', 'John Smith') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 })

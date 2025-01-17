@@ -5,7 +5,7 @@
 {% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
 
 {% set pageTitle = applicationName + " - Enter name" %}
-{% set title = "How is " + journey.names | formatNameFirstNameFirst + " related to the prisoner?" %}
+{% set title = "What is " + journey.names | formatNameFirstNameFirst(possessiveSuffix = true) + " relationship to " + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) + "?" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
@@ -16,7 +16,7 @@
  <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <span class="govuk-caption-l">{{ caption or 'Contacts' }}</span>
-            <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+            <h1 class="govuk-heading-l" data-qa="main-heading">{{ title | safe }}</h1>
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
@@ -24,7 +24,8 @@
                     id: "relationship",
                     name: "relationship",
                     hint: {
-                        text: "This is the relationship from the prisoner to the contact. For example, if the contact is the prisoner's mother, select \"Mother\"."
+                        id: 'relationship-hint',
+                        text: hintText
                     },
                     items: relationshipOptions,
                     errorMessage: validationErrors | findError('relationship')

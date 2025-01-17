@@ -76,7 +76,7 @@ context('Add Existing Contact Check Answers', () => {
 
     Page.verifyOnPage(SelectRelationshipTypePage, 'Existing Contact', 'John Smith') //
       .selectRelationshipType('S')
-      .continueTo(SelectRelationshipPage, 'Existing Contact') //
+      .continueTo(SelectRelationshipPage, 'Existing Contact', 'John Smith') //
       .selectRelationship('MOT')
       .continueTo(SelectEmergencyContactPage, 'Existing Contact') //
       .selectIsEmergencyContact('NO')
@@ -100,7 +100,7 @@ context('Add Existing Contact Check Answers', () => {
       .verifyShowRelationshipAs('Mother')
       .clickChangeRelationshipLink()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact') //
+    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact', 'John Smith') //
       .selectRelationship('FA')
       .clickContinue()
 

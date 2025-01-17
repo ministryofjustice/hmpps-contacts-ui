@@ -87,7 +87,7 @@ context('Create Contacts', () => {
       .selectRelationshipType('S')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'First Last') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Last', 'John Smith') //
       .selectRelationship('MOT')
       .clickContinue()
 
@@ -148,7 +148,7 @@ context('Create Contacts', () => {
       .selectRelationshipType('O')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'First Last') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Last', 'John Smith') //
       .selectRelationship('DR')
       .clickContinue()
 
@@ -211,7 +211,7 @@ context('Create Contacts', () => {
       .selectRelationshipType('S')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Last') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Last', 'John Smith') //
       .selectRelationship('MOT')
       .clickContinue()
 
@@ -319,7 +319,7 @@ context('Create Contacts', () => {
       .selectRelationshipType('S')
       .clickContinue()
 
-    const selectRelationshipPage = Page.verifyOnPage(SelectRelationshipPage, 'First Last')
+    const selectRelationshipPage = Page.verifyOnPage(SelectRelationshipPage, 'First Last', 'John Smith')
     selectRelationshipPage.clickContinue()
 
     selectRelationshipPage.hasFieldInError('relationship', "Enter the contact's relationship to the prisoner")
@@ -335,7 +335,7 @@ context('Create Contacts', () => {
       .selectRelationshipType('S')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'First Last') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Last', 'John Smith') //
       .selectRelationship('MOT')
       .clickContinue()
 
@@ -358,7 +358,7 @@ context('Create Contacts', () => {
       .selectRelationshipType('S')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'First Last') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Last', 'John Smith') //
       .selectRelationship('MOT')
       .clickContinue()
 
@@ -382,7 +382,7 @@ context('Create Contacts', () => {
       .selectRelationshipType('S')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'First Last') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Last', 'John Smith') //
       .selectRelationship('MOT')
       .clickContinue()
 
@@ -410,7 +410,7 @@ context('Create Contacts', () => {
       .selectRelationshipType('S')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'First Last') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Last', 'John Smith') //
       .selectRelationship('MOT')
       .clickContinue()
 
@@ -441,7 +441,7 @@ context('Create Contacts', () => {
       .selectRelationshipType('S')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'First Last') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Last', 'John Smith') //
       .selectRelationship('MOT')
       .clickContinue()
 
@@ -480,7 +480,7 @@ context('Create Contacts', () => {
       .enterFirstName('First')
       .continueTo(SelectRelationshipTypePage, 'First Last', 'John Smith')
       .selectRelationshipType('S')
-      .continueTo(SelectRelationshipPage, 'First Last') //
+      .continueTo(SelectRelationshipPage, 'First Last', 'John Smith') //
       .selectRelationship('MOT')
       .continueTo(SelectEmergencyContactPage, 'First Last') //
       .selectIsEmergencyContact('NO')
@@ -503,7 +503,7 @@ context('Create Contacts', () => {
       .enterFirstName('First')
       .continueTo(SelectRelationshipTypePage, 'First Last', 'John Smith')
       .selectRelationshipType('S')
-      .continueTo(SelectRelationshipPage, 'First Last')
+      .continueTo(SelectRelationshipPage, 'First Last', 'John Smith')
       .selectRelationship('MOT')
       .continueTo(SelectEmergencyContactPage, 'First Last')
       .selectIsEmergencyContact('NO')
@@ -517,7 +517,7 @@ context('Create Contacts', () => {
       .backTo(EnterContactDateOfBirthPage, 'First Last')
       .backTo(SelectNextOfKinPage, 'First Last')
       .backTo(SelectEmergencyContactPage, 'First Last')
-      .backTo(SelectRelationshipPage, 'First Last')
+      .backTo(SelectRelationshipPage, 'First Last', 'John Smith')
       .backTo(SelectRelationshipTypePage, 'First Last', 'John Smith')
       .backTo(EnterNamePage)
   })

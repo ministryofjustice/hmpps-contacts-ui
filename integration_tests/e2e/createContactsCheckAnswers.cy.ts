@@ -70,7 +70,7 @@ context('Create contact and update from check answers', () => {
       .enterFirstName('First')
       .continueTo(SelectRelationshipTypePage, 'First Middle Last', 'John Smith')
       .selectRelationshipType('S')
-      .continueTo(SelectRelationshipPage, 'First Middle Last')
+      .continueTo(SelectRelationshipPage, 'First Middle Last', 'John Smith')
       .selectRelationship('MOT')
       .continueTo(SelectEmergencyContactPage, 'First Middle Last')
       .selectIsEmergencyContact('NO')
@@ -137,7 +137,7 @@ context('Create contact and update from check answers', () => {
       .verifyShowRelationshipAs('Mother')
       .clickChangeRelationshipLink()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Last') //
+    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Last', 'John Smith') //
       .selectRelationship('FA')
       .clickContinue()
 

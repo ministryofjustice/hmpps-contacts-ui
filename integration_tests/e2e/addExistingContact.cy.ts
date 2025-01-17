@@ -97,7 +97,7 @@ context('Add Existing Contact', () => {
       .selectRelationshipType('S')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact') //
+    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact', 'John Smith') //
       .selectRelationship('MOT')
       .clickContinue()
 
@@ -168,7 +168,7 @@ context('Add Existing Contact', () => {
       .selectRelationshipType('S')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact') //
+    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact', 'John Smith') //
       .selectRelationship('MOT')
       .clickContinue()
 
@@ -235,7 +235,7 @@ context('Add Existing Contact', () => {
       .selectRelationshipType('O')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact') //
+    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact', 'John Smith') //
       .selectRelationship('DR')
       .clickContinue()
 
@@ -302,7 +302,7 @@ context('Add Existing Contact', () => {
       .selectRelationshipType('S')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact') //
+    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact', 'John Smith') //
       .selectRelationship('MOT')
       .clickContinue()
 
@@ -332,7 +332,7 @@ context('Add Existing Contact', () => {
       .selectRelationshipType('S')
       .clickContinue()
 
-    const selectRelationshipPage = Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact')
+    const selectRelationshipPage = Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact', 'John Smith')
     selectRelationshipPage.clickContinue()
 
     selectRelationshipPage.hasFieldInError('relationship', "Enter the contact's relationship to the prisoner")
@@ -356,7 +356,7 @@ context('Add Existing Contact', () => {
       .selectRelationshipType('S')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact') //
+    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact', 'John Smith') //
       .selectRelationship('MOT')
       .clickContinue()
 
@@ -386,7 +386,7 @@ context('Add Existing Contact', () => {
 
     Page.verifyOnPage(SelectRelationshipTypePage, 'Existing Contact', 'John Smith') //
       .selectRelationshipType('S')
-      .continueTo(SelectRelationshipPage, 'Existing Contact')
+      .continueTo(SelectRelationshipPage, 'Existing Contact', 'John Smith')
       .selectRelationship('MOT')
       .continueTo(SelectEmergencyContactPage, 'Existing Contact') //
       .selectIsEmergencyContact('NO')
@@ -395,7 +395,7 @@ context('Add Existing Contact', () => {
       .continueTo(RelationshipCommentsPage, 'Existing Contact') //
       .backTo(SelectNextOfKinPage, 'Existing Contact')
       .backTo(SelectEmergencyContactPage, 'Existing Contact')
-      .backTo(SelectRelationshipPage, 'Existing Contact')
+      .backTo(SelectRelationshipPage, 'Existing Contact', 'John Smith')
       .backTo(SelectRelationshipTypePage, 'Existing Contact', 'John Smith')
       .backTo(ContactConfirmationPage, 'John Smith')
       .backTo(SearchContactPage)
@@ -423,7 +423,7 @@ context('Add Existing Contact', () => {
       .selectRelationshipType('S')
       .clickContinue()
 
-    Page.verifyOnPage(SelectRelationshipPage, 'Deceased Contact') //
+    Page.verifyOnPage(SelectRelationshipPage, 'Deceased Contact', 'John Smith') //
       .selectRelationship('MOT')
       .clickContinue()
 
