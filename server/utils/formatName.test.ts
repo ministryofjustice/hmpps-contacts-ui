@@ -121,4 +121,17 @@ describe('formatNameFirstNameFirst', () => {
   ])('should capitalise names correctly', (names: ContactNames, expected: string) => {
     expect(formatNameFirstNameFirst(names)).toStrictEqual(expected)
   })
+
+  it.each([
+    [is<ContactNames>({ firstName: 'First', lastName: 'Last' }), 'First Last&rsquo;s'],
+    [is<ContactNames>({ firstName: 'First', lastName: 'Glass' }), 'First Glass&rsquo;'],
+  ])('should append possessive correctly if requested', (names: ContactNames, expected: string) => {
+    expect(formatNameFirstNameFirst(names, { possessiveSuffix: true })).toStrictEqual(expected)
+  })
+
+  it('should not append possessive if turned off', () => {
+    expect(
+      formatNameFirstNameFirst({ firstName: 'First', lastName: 'Last' }, { possessiveSuffix: false }),
+    ).toStrictEqual('First Last')
+  })
 })

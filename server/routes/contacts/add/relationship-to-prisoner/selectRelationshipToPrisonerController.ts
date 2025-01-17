@@ -8,6 +8,7 @@ import { navigationForAddContactJourney, nextPageForAddContactJourney } from '..
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import captionForAddContactJourney from '../addContactsUtils'
+import { formatNameFirstNameFirst } from '../../../../utils/formatName'
 
 export default class SelectRelationshipToPrisonerController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
@@ -18,10 +19,16 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
     const { journeyId } = req.params
     const { user } = res.locals
     const journey = req.session.addContactJourneys[journeyId]
-    const groupCodeForRelationshipType =
-      journey.relationship.relationshipType === 'S'
-        ? ReferenceCodeType.SOCIAL_RELATIONSHIP
-        : ReferenceCodeType.OFFICIAL_RELATIONSHIP
+    let groupCodeForRelationshipType
+    let hintText
+    const formattedName = formatNameFirstNameFirst(journey.names)
+    if (journey.relationship.relationshipType === 'S') {
+      groupCodeForRelationshipType = ReferenceCodeType.SOCIAL_RELATIONSHIP
+      hintText = `For example, if ${formattedName} is the prisoner’s uncle, select ‘Uncle’.`
+    } else {
+      groupCodeForRelationshipType = ReferenceCodeType.OFFICIAL_RELATIONSHIP
+      hintText = `For example, if ${formattedName} is the prisoner’s doctor, select ‘Doctor’.`
+    }
     const relationshipOptions = await this.referenceDataService
       .getReferenceData(groupCodeForRelationshipType, user)
       .then(val =>
@@ -32,6 +39,7 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
       )
     const viewModel = {
       journey,
+      hintText,
       caption: captionForAddContactJourney(journey),
       relationshipOptions,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),

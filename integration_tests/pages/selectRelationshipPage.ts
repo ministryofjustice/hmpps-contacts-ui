@@ -1,8 +1,8 @@
 import Page, { PageElement } from './page'
 
 export default class SelectRelationshipPage extends Page {
-  constructor(name: string) {
-    super(`How is ${name} related to the prisoner?`)
+  constructor(contactName: string, prisonerName: string) {
+    super(`What is ${contactName}’s relationship to ${prisonerName}?`)
   }
 
   hasRelationshipSelected(value: string): SelectRelationshipPage {

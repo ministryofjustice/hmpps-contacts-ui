@@ -11,6 +11,7 @@ import ContactDetails = contactsApiClientTypes.ContactDetails
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 import ContactNames = journeys.ContactNames
 import UpdateRelationshipRequest = contactsApiClientTypes.UpdateRelationshipRequest
+import { formatNameFirstNameFirst } from '../../../../utils/formatName'
 
 export default class ManageContactRelationshipController implements PageHandler {
   constructor(
@@ -39,7 +40,8 @@ export default class ManageContactRelationshipController implements PageHandler 
       firstName: contact.firstName,
       middleNames: contact.middleNames,
     }
-
+    const formattedName = formatNameFirstNameFirst(names)
+    const hintText = `For example, if ${formattedName} is the prisoner’s uncle, select ‘Uncle’.`
     const currentRelationship = res.locals?.formResponses?.relationship ?? relationship.relationshipToPrisonerCode
     const relationshipOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.SOCIAL_RELATIONSHIP, user)
@@ -47,6 +49,7 @@ export default class ManageContactRelationshipController implements PageHandler 
     const navigation: Navigation = { backLink: journey.returnPoint.url }
     const viewModel = {
       journey: { ...journey, names },
+      hintText,
       navigation,
       relationshipOptions,
       relationship: currentRelationship,

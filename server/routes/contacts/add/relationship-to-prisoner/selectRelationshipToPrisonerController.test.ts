@@ -76,7 +76,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-to-p
 
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'How is First Middle Last related to the prisoner?',
+      'What is First Middle Last’s relationship to John Smith?',
     )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
@@ -89,11 +89,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-to-p
   })
 
   it.each([
-    ['S', 'Daughter'],
-    ['O', 'Case Administrator'],
+    ['S', 'Daughter', 'For example, if First Middle Last is the prisoner’s uncle, select ‘Uncle’.'],
+    ['O', 'Case Administrator', 'For example, if First Middle Last is the prisoner’s doctor, select ‘Doctor’.'],
   ])(
     'should use correct reference group for different relationship types %s',
-    async (relationshipType: 'S' | 'O', expectedFirstOption: string) => {
+    async (relationshipType: 'S' | 'O', expectedFirstOption: string, expectedHintText: string) => {
       // Given
       auditService.logPageView.mockResolvedValue(null)
       existingJourney.relationship = { relationshipType }
@@ -108,8 +108,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-to-p
 
       const $ = cheerio.load(response.text)
       expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-        'How is First Middle Last related to the prisoner?',
+        'What is First Middle Last’s relationship to John Smith?',
       )
+      expect($('#relationship-hint').text().trim()).toStrictEqual(expectedHintText)
       expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
       expect($('#relationship :nth-child(1)').text()).toStrictEqual('')

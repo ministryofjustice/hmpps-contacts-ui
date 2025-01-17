@@ -23,7 +23,7 @@ const formatNameLastNameFirst = (
 
 const formatNameFirstNameFirst = (
   val: { lastName: string; firstName: string; middleNames?: string } | ContactNames | PrisonerDetails,
-  opts?: { excludeMiddleNames?: boolean; customTitle?: string },
+  opts?: { excludeMiddleNames?: boolean; customTitle?: string; possessiveSuffix?: boolean },
 ): string => {
   const nameArr = []
   let name = ''
@@ -43,7 +43,16 @@ const formatNameFirstNameFirst = (
 
   nameArr.push(val.lastName)
   name = nameArr.join(' ').trim()
-  return capitaliseName(name)
+  name = capitaliseName(name)
+
+  if (opts?.possessiveSuffix === true) {
+    const requiresAnS = !name.endsWith('s')
+    name += '&rsquo;'
+    if (requiresAnS) {
+      name += 's'
+    }
+  }
+  return name
 }
 
 export { formatNameLastNameFirst, formatNameFirstNameFirst }
