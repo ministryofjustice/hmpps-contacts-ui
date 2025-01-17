@@ -56,11 +56,11 @@ afterEach(() => {
 
 describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-type/:journeyId', () => {
   it.each([
-    ['NEW', `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`],
-    ['EXISTING', `/prisoner/A1234BC/contacts/add/confirmation/${journeyId}`],
+    ['NEW', `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`, 'Add a contact and link to a prisoner'],
+    ['EXISTING', `/prisoner/A1234BC/contacts/add/confirmation/${journeyId}`, 'Link a contact to a prisoner'],
   ])(
     'should render relationship type page for each mode %s',
-    async (mode: 'NEW' | 'EXISTING', expectedBackLink: string) => {
+    async (mode: 'NEW' | 'EXISTING', expectedBackLink: string, expectedCaption: string) => {
       // Given
       auditService.logPageView.mockResolvedValue(null)
       existingJourney.mode = mode
@@ -78,6 +78,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-type
         'Is First Middle Last a social or official contact for John Smith?',
       )
       expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(expectedBackLink)
+      expect($('.govuk-caption-l').first().text().trim()).toStrictEqual(expectedCaption)
       expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     },

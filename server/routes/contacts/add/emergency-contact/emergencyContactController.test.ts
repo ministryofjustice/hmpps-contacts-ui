@@ -58,9 +58,12 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/create/select-emergency-contact/:journeyId', () => {
-  it.each(['NEW', 'EXISTING'])(
+  it.each([
+    ['NEW', 'Add a contact and link to a prisoner'],
+    ['EXISTING', 'Link a contact to a prisoner'],
+  ])(
     'should render enter emergency contact page for all modes %s',
-    async (mode: 'NEW' | 'EXISTING') => {
+    async (mode: 'NEW' | 'EXISTING', expectedCaption: string) => {
       // Given
       auditService.logPageView.mockResolvedValue(null)
       existingJourney.mode = mode
@@ -77,6 +80,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-emergency-contact
       expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
         'Is First Middle Last an emergency contact for the prisoner?',
       )
+      expect($('.govuk-caption-l').first().text().trim()).toStrictEqual(expectedCaption)
       expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     },

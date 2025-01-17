@@ -9,6 +9,7 @@ import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { formatNameLastNameFirst } from '../../../../utils/formatName'
 import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
+import captionForAddContactJourney from '../addContactsUtils'
 
 export default class CreateContactCheckAnswersController implements PageHandler {
   constructor(
@@ -45,6 +46,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
 
     const view = {
       journey,
+      caption: captionForAddContactJourney(journey),
       dateOfBirth,
       relationshipDescription,
       formattedFullName,

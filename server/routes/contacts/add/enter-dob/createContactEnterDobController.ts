@@ -5,6 +5,7 @@ import DateOfBirth = journeys.DateOfBirth
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
 import { EnterDobSchemaType } from '../../common/enter-dob/enterDobSchemas'
+import captionForAddContactJourney from '../addContactsUtils'
 
 export default class CreateContactEnterDobController implements PageHandler {
   public PAGE_NAME = Page.CREATE_CONTACT_DOB_PAGE
@@ -14,6 +15,7 @@ export default class CreateContactEnterDobController implements PageHandler {
     const journey = req.session.addContactJourneys[journeyId]
     const view = {
       journey,
+      caption: captionForAddContactJourney(journey),
       isKnown: res.locals?.formResponses?.isKnown ?? journey?.dateOfBirth?.isKnown,
       day: res.locals?.formResponses?.day ?? journey?.dateOfBirth?.day,
       month: res.locals?.formResponses?.month ?? journey?.dateOfBirth?.month,

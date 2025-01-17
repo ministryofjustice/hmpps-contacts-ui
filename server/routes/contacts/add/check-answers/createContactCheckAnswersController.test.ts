@@ -91,9 +91,12 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId', () => {
-  it.each(['NEW', 'EXISTING'])(
+  it.each([
+    ['NEW', 'Add a contact and link to a prisoner'],
+    ['EXISTING', 'Link a contact to a prisoner'],
+  ])(
     'should render check answers page with dob for mode %s',
-    async (mode: 'NEW' | 'EXISTING') => {
+    async (mode: 'NEW' | 'EXISTING', expectedCaption: string) => {
       // Given
       auditService.logPageView.mockResolvedValue(null)
       journey.mode = mode
@@ -106,6 +109,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
       expect(journey.isCheckingAnswers).toStrictEqual(true)
       const $ = cheerio.load(response.text)
       expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Check your answers')
+      expect($('.govuk-caption-l').first().text().trim()).toStrictEqual(expectedCaption)
       expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
       expect($('.check-answers-dob-value').first().text().trim()).toStrictEqual('1 January 2024')
       expect($('.check-answers-comments-value').first().text().trim()).toStrictEqual('some comments')

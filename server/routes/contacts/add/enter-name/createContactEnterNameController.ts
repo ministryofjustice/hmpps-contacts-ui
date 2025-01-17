@@ -6,6 +6,7 @@ import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
+import captionForAddContactJourney from '../addContactsUtils'
 
 export default class EnterNameController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
@@ -20,6 +21,7 @@ export default class EnterNameController implements PageHandler {
       .getReferenceData(ReferenceCodeType.TITLE, user)
       .then(val => this.getSelectedTitleOptions(val, res.locals?.formResponses?.title ?? journey?.names?.title))
     const viewModel = {
+      caption: captionForAddContactJourney(journey),
       journey,
       titleOptions,
       lastName: res.locals?.formResponses?.lastName ?? journey?.names?.lastName,
