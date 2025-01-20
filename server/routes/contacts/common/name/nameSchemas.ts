@@ -1,4 +1,4 @@
-import z from 'zod'
+import { z } from 'zod'
 import { createSchema } from '../../../../middleware/validationMiddleware'
 
 const LAST_NAME_REQUIRED_MESSAGE = "Enter the contact's last name"

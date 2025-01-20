@@ -1,4 +1,4 @@
-import z from 'zod'
+import { z } from 'zod'
 import { createSchema } from '../../../../middleware/validationMiddleware'
 
 const COMMENTS_TOO_LONG_MESSAGE = 'Additional information must be 240 characters or less'

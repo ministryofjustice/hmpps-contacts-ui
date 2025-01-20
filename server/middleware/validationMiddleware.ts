@@ -1,5 +1,5 @@
 import { Request, RequestHandler } from 'express'
-import z from 'zod'
+import { z } from 'zod'
 import { SafeParseError, SafeParseSuccess } from 'zod/lib/types'
 
 export type fieldErrors = {

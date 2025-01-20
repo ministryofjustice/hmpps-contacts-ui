@@ -1,4 +1,4 @@
-import z from 'zod'
+import { z } from 'zod'
 import { createSchema } from '../../../../middleware/validationMiddleware'
 
 const SELECT_RELATIONSHIP_TYPE_MESSAGE = 'Select if this is a social or official contact for the prisoner'

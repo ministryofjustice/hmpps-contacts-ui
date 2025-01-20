@@ -1,4 +1,4 @@
-import z from 'zod'
+import { z } from 'zod'
 import { createSchema } from '../../../../middleware/validationMiddleware'
 
 export const ENTER_TWO_CHARS_MIN = 'You must enter at least 2 characters'

@@ -1,4 +1,4 @@
-import z from 'zod'
+import { z } from 'zod'
 import { Request } from 'express'
 import { format, isValid, parse } from 'date-fns'
 import { createSchema, SchemaFactory } from '../../../middleware/validationMiddleware'

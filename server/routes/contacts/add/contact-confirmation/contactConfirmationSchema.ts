@@ -1,4 +1,4 @@
-import z from 'zod'
+import { z } from 'zod'
 import { createSchema } from '../../../../middleware/validationMiddleware'
 
 const SELECT_IS_THE_RIGHT_PERSON_MESSAGE = 'Select whether this is the right contact'

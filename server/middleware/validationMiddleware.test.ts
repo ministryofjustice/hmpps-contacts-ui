@@ -1,6 +1,6 @@
 import 'reflect-metadata'
 import { Request, Response } from 'express'
-import z from 'zod'
+import { z } from 'zod'
 import { validate } from './validationMiddleware'
 
 const TOO_LONG_ERROR_MSG = 'Additional information must be 4,000 characters or less'
