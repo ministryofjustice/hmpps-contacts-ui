@@ -9,6 +9,7 @@ context('Ensure Prisoner Is In Caseload', () => {
 
   beforeEach(() => {
     cy.task('reset')
+    cy.task('stubComponentsMeta')
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId,

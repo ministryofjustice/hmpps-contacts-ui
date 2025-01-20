@@ -4,6 +4,7 @@ import IndexPage from '../pages'
 context('Contacts', () => {
   beforeEach(() => {
     cy.task('reset')
+    cy.task('stubComponentsMeta')
     cy.task('stubSignIn', { roles: ['PRISON'] })
   })
 

@@ -14,9 +14,9 @@ context('Select Spoken Language', () => {
   beforeEach(() => {
     const { prisonerNumber } = TestData.prisoner()
     cy.task('reset')
+    cy.task('stubComponentsMeta')
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.signIn()
-    cy.task('stubComponentsMeta')
     cy.task('stubPrisoners', {
       results: {
         totalPages: 1,
