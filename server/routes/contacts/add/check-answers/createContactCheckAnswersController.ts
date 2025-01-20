@@ -33,8 +33,13 @@ export default class CreateContactCheckAnswersController implements PageHandler 
     if (journey.dateOfBirth.isKnown === 'YES') {
       dateOfBirth = new Date(`${journey.dateOfBirth.year}-${journey.dateOfBirth.month}-${journey.dateOfBirth.day}Z`)
     }
+    const relationshipTypeDescription = await this.referenceDataService.getReferenceDescriptionForCode(
+      ReferenceCodeType.RELATIONSHIP_TYPE,
+      journey.relationship.relationshipType,
+      user,
+    )
 
-    const relationshipDescription = await this.referenceDataService.getReferenceDescriptionForCode(
+    const relationshipToPrisonerDescription = await this.referenceDataService.getReferenceDescriptionForCode(
       journey.relationship.relationshipType === 'S'
         ? ReferenceCodeType.SOCIAL_RELATIONSHIP
         : ReferenceCodeType.OFFICIAL_RELATIONSHIP,
@@ -48,7 +53,8 @@ export default class CreateContactCheckAnswersController implements PageHandler 
       journey,
       caption: captionForAddContactJourney(journey),
       dateOfBirth,
-      relationshipDescription,
+      relationshipToPrisonerDescription,
+      relationshipTypeDescription,
       formattedFullName,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
     }

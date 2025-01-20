@@ -97,17 +97,89 @@ context('Add Existing Contact Check Answers', () => {
       .verifyDateOfBirthIsNotChangeable()
   })
 
-  it('Can change emergency contact from check answers', () => {
+  it('Can change the relationship to prisoner directly from check answers', () => {
     Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'Existing Contact') //
-      .verifyShowIsEmergencyContactAs('No')
-      .clickChangeEmergencyContactLink()
+      .verifyShowRelationshipAs('Mother')
+      .clickChangeRelationshipLink()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'Existing Contact') //
-      .selectIsEmergencyContact('YES')
+    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact', 'John Smith') //
+      .selectRelationship('FA')
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowIsEmergencyContactAs('Yes')
+      .verifyShowRelationshipAs('Father')
+      .continueTo(AddContactSuccessPage)
+
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: '/prisoner-contact',
+      },
+      {
+        contactId,
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipType: 'S',
+          relationshipToPrisoner: 'FA',
+          isNextOfKin: true,
+          isEmergencyContact: false,
+          comments: 'Some comments about the relationship',
+        },
+        createdBy: 'USER1',
+      },
+    )
+  })
+
+  it('Can change the relationship type from check answers which requires re-selecting the relationship to prisoner', () => {
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'Existing Contact') //
+      .verifyShowRelationshipTypeAs('Social')
+      .clickChangeRelationshipTypeLink()
+
+    Page.verifyOnPage(SelectRelationshipTypePage, 'Existing Contact', 'John Smith') //
+      .selectRelationshipType('O')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact', 'John Smith') //
+      .selectRelationship('DR')
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowRelationshipTypeAs('Official')
+      .verifyShowRelationshipAs('Doctor')
+      .continueTo(AddContactSuccessPage)
+
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: '/prisoner-contact',
+      },
+      {
+        contactId,
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipType: 'O',
+          relationshipToPrisoner: 'DR',
+          isNextOfKin: true,
+          isEmergencyContact: false,
+          comments: 'Some comments about the relationship',
+        },
+        createdBy: 'USER1',
+      },
+    )
+  })
+
+  it('Re-selecting the same relationship type returns straight to check answers', () => {
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'Existing Contact') //
+      .verifyShowRelationshipTypeAs('Social')
+      .clickChangeRelationshipTypeLink()
+
+    Page.verifyOnPage(SelectRelationshipTypePage, 'Existing Contact', 'John Smith') //
+      .selectRelationshipType('S')
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowRelationshipTypeAs('Social')
+      .verifyShowRelationshipAs('Mother')
       .continueTo(AddContactSuccessPage)
 
     cy.verifyLastAPICall(
@@ -122,74 +194,8 @@ context('Add Existing Contact Check Answers', () => {
           relationshipType: 'S',
           relationshipToPrisoner: 'MOT',
           isNextOfKin: true,
-          isEmergencyContact: true,
-          comments: 'Some comments about the relationship',
-        },
-        createdBy: 'USER1',
-      },
-    )
-  })
-
-  it('Can change next of kin from check answers', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'Existing Contact') //
-      .verifyShowIsNextOfKinAs('Yes')
-      .clickChangeNextOfKinLink()
-
-    Page.verifyOnPage(SelectNextOfKinPage, 'Existing Contact') //
-      .selectIsNextOfKin('NO')
-      .clickContinue()
-
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowIsNextOfKinAs('No')
-      .continueTo(AddContactSuccessPage)
-
-    cy.verifyLastAPICall(
-      {
-        method: 'POST',
-        urlPath: '/prisoner-contact',
-      },
-      {
-        contactId,
-        relationship: {
-          prisonerNumber: 'A1234BC',
-          relationshipType: 'S',
-          relationshipToPrisoner: 'MOT',
-          isNextOfKin: false,
           isEmergencyContact: false,
           comments: 'Some comments about the relationship',
-        },
-        createdBy: 'USER1',
-      },
-    )
-  })
-
-  it('Can change relationship comments from check answers', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'Existing Contact') //
-      .verifyShowCommentsAs('Some comments about the relationship')
-      .clickChangeCommentsLink()
-
-    Page.verifyOnPage(RelationshipCommentsPage, 'Existing Contact') //
-      .enterComments('Some updated comments')
-      .clickContinue()
-
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowCommentsAs('Some updated comments')
-      .continueTo(AddContactSuccessPage)
-
-    cy.verifyLastAPICall(
-      {
-        method: 'POST',
-        urlPath: '/prisoner-contact',
-      },
-      {
-        contactId,
-        relationship: {
-          prisonerNumber: 'A1234BC',
-          relationshipType: 'S',
-          relationshipToPrisoner: 'MOT',
-          isNextOfKin: true,
-          isEmergencyContact: false,
-          comments: 'Some updated comments',
         },
         createdBy: 'USER1',
       },

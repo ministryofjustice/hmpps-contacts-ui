@@ -303,7 +303,7 @@ export default class ManageContactDetailsPage extends Page {
 
   private changeNameLink = (): PageElement => cy.get(`[data-qa="change-name-link"]`)
 
-  private changeRelationshipLink = (): PageElement => cy.get(`[data-qa="change-relationship-link"]`)
+  private changeRelationshipLink = (): PageElement => cy.get(`[data-qa="change-relationship-to-prisoner-link"]`)
 
   private domesticStatusValue = (): PageElement => cy.get('.manage-domestic-status-value')
 
