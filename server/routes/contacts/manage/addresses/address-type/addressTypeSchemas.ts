@@ -1,4 +1,4 @@
-import z from 'zod'
+import { z } from 'zod'
 import { createSchema } from '../../../../../middleware/validationMiddleware'
 
 const ADDRESS_TYPE_REQUIRED_MESSAGE = `Select the address type`

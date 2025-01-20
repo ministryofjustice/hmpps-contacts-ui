@@ -1,4 +1,4 @@
-import z from 'zod'
+import { z } from 'zod'
 import { createSchema } from '../../../../middleware/validationMiddleware'
 
 const SELECT_IS_NEXT_OF_KIN_MESSAGE = 'Select whether the contact is next of kin for the prisoner'

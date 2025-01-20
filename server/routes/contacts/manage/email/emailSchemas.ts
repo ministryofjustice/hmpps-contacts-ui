@@ -1,4 +1,4 @@
-import z from 'zod'
+import { z } from 'zod'
 import { createSchema } from '../../../../middleware/validationMiddleware'
 
 const EMAIL_REQUIRED_ERROR_MESSAGE = `Enter the contact's email address`

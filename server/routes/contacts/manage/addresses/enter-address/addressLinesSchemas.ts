@@ -1,4 +1,4 @@
-import z from 'zod'
+import { z } from 'zod'
 import { createSchema } from '../../../../../middleware/validationMiddleware'
 
 const COUNTRY_REQUIRED_MESSAGE = 'Select a country'
