@@ -13,6 +13,10 @@ export default class CreateContactCheckYourAnswersPage extends Page {
     this.changeDateOfBirthLink().click()
   }
 
+  clickChangeRelationshipTypeLink() {
+    this.changeRelationshipTypeLink().click()
+  }
+
   clickChangeRelationshipLink() {
     this.changeRelationshipLink().click()
   }
@@ -46,6 +50,11 @@ export default class CreateContactCheckYourAnswersPage extends Page {
 
   verifyNoDeceasedDate(): CreateContactCheckYourAnswersPage {
     this.checkAnswersDeceasedValue().should('not.exist')
+    return this
+  }
+
+  verifyShowRelationshipTypeAs(expected: string): CreateContactCheckYourAnswersPage {
+    this.checkAnswersRelationshipTypeValue().should('contain.text', expected)
     return this
   }
 
@@ -85,7 +94,9 @@ export default class CreateContactCheckYourAnswersPage extends Page {
 
   private checkAnswersDeceasedValue = (): PageElement => cy.get('.check-answers-deceased-value')
 
-  private checkAnswersRelationshipValue = (): PageElement => cy.get('.check-answers-relationship-value')
+  private checkAnswersRelationshipValue = (): PageElement => cy.get('.check-answers-relationship-to-prisoner-value')
+
+  private checkAnswersRelationshipTypeValue = (): PageElement => cy.get('.check-answers-relationship-type-value')
 
   private checkAnswersEmergencyContactValue = (): PageElement => cy.get('.check-answers-emergency-contact-value')
 
@@ -97,7 +108,9 @@ export default class CreateContactCheckYourAnswersPage extends Page {
 
   private changeDateOfBirthLink = (): PageElement => cy.get('[data-qa=change-dob-link]')
 
-  private changeRelationshipLink = (): PageElement => cy.get('[data-qa=change-relationship-link]')
+  private changeRelationshipLink = (): PageElement => cy.get('[data-qa=change-relationship-to-prisoner-link]')
+
+  private changeRelationshipTypeLink = (): PageElement => cy.get('[data-qa=change-relationship-type-link]')
 
   private changeEmergencyContactLink = (): PageElement => cy.get('[data-qa=change-emergency-contact-link]')
 

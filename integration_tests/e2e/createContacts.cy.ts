@@ -24,6 +24,7 @@ context('Create Contacts', () => {
     cy.task('stubTitlesReferenceData')
     cy.task('stubRelationshipReferenceData')
     cy.task('stubOfficialRelationshipReferenceData')
+    cy.task('stubRelationshipTypeReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', TestData.prisoner().prisonerNumber)
     cy.task('stubCreateContact', {

@@ -92,7 +92,7 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   },
   [Page.SELECT_RELATIONSHIP_TYPE]: {
     previousUrl: PAGES.CREATE_CONTACT_NAME_PAGE.url,
-    nextUrl: checkAnswersOr(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
+    nextUrl: relationshipToPrisonerOrCheckAnswers(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
   },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
     previousUrl: PAGES.SELECT_RELATIONSHIP_TYPE.url,
@@ -144,7 +144,7 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
   },
   [Page.SELECT_RELATIONSHIP_TYPE]: {
     previousUrl: PAGES.CONTACT_CONFIRMATION_PAGE.url,
-    nextUrl: checkAnswersOr(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
+    nextUrl: relationshipToPrisonerOrCheckAnswers(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
   },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
     previousUrl: PAGES.SELECT_RELATIONSHIP_TYPE.url,
@@ -174,6 +174,16 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
 
 function checkAnswersOr(other: JourneyUrlProvider): JourneyUrlProvider {
   return journey => (journey.isCheckingAnswers ? PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey) : other(journey))
+}
+
+function relationshipToPrisonerOrCheckAnswers(other: JourneyUrlProvider): JourneyUrlProvider {
+  return journey => {
+    const relationshipTypeIsTheSame =
+      journey.relationship?.relationshipType === journey.previousAnswers?.relationship?.relationshipType
+    return journey.isCheckingAnswers && relationshipTypeIsTheSame
+      ? PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey)
+      : other(journey)
+  }
 }
 
 function navigationForAddContactJourney(currentPage: Page, journey: journeys.AddContactJourney): Navigation {

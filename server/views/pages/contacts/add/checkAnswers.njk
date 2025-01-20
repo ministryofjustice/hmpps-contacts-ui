@@ -93,19 +93,39 @@
                     rows: [
                         {
                             key: {
+                                text: "Relationship type"
+                            },
+                            value: {
+                                html: relationshipTypeDescription,
+                                classes: 'check-answers-relationship-type-value'
+                            },
+                            actions: {
+                                items: [
+                                    {
+                                        href: baseChangeUrl + "/select-relationship-type/"  + journey.id,
+                                        text: "Change",
+                                        visuallyHiddenText: " relationship type",
+                                        attributes: {"data-qa": "change-relationship-type-link"},
+                                        classes: "govuk-link--no-visited-state"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            key: {
                                 text: "Relationship to prisoner"
                             },
                             value: {
-                                html: relationshipDescription,
-                                classes: 'check-answers-relationship-value'
+                                html: relationshipToPrisonerDescription,
+                                classes: 'check-answers-relationship-to-prisoner-value'
                             },
                             actions: {
                                 items: [
                                     {
                                         href: baseChangeUrl + "/select-relationship-to-prisoner/"  + journey.id,
                                         text: "Change",
-                                        visuallyHiddenText: "relationship",
-                                        attributes: {"data-qa": "change-relationship-link"},
+                                        visuallyHiddenText: " the relationship to the prisoner",
+                                        attributes: {"data-qa": "change-relationship-to-prisoner-link"},
                                         classes: "govuk-link--no-visited-state"
                                     }
                                 ]

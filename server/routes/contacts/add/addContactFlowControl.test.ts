@@ -104,7 +104,17 @@ describe('addContactFlowControl', () => {
           dateOfBirth: {
             isKnown: 'YES',
           },
+          relationship: {
+            relationshipType: 'S',
+            relationshipToPrisoner: 'MOT',
+          },
           isCheckingAnswers: true,
+          previousAnswers: {
+            relationship: {
+              relationshipType: 'S',
+              relationshipToPrisoner: 'MOT',
+            },
+          },
           mode: 'NEW',
         }
         const expected = `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`
@@ -113,6 +123,40 @@ describe('addContactFlowControl', () => {
 
         expect(nav).toStrictEqual(expected)
       })
+      it.each([
+        ['S', 'O', `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`],
+        ['O', 'S', `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`],
+        ['S', 'S', `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`],
+        ['O', 'O', `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`],
+      ])(
+        'Should go back to relationship to prisoner page if relationship type changed (from %s to %s should redirect to %s)',
+        (before: string, after: string, expected: string) => {
+          const journey: AddContactJourney = {
+            id: journeyId,
+            lastTouched: new Date().toISOString(),
+            prisonerNumber: 'A1234BC',
+            returnPoint: {
+              url: '/foo',
+            },
+            mode: 'NEW',
+            relationship: {
+              relationshipType: after,
+              relationshipToPrisoner: 'MOT',
+            },
+            isCheckingAnswers: true,
+            previousAnswers: {
+              relationship: {
+                relationshipType: before,
+                relationshipToPrisoner: 'MOT',
+              },
+            },
+          }
+
+          const nav = nextPageForAddContactJourney(Page.SELECT_RELATIONSHIP_TYPE, journey)
+
+          expect(nav).toStrictEqual(expected)
+        },
+      )
     })
   })
 
@@ -201,7 +245,17 @@ describe('addContactFlowControl', () => {
             url: '/foo',
           },
           mode: 'EXISTING',
+          relationship: {
+            relationshipType: 'S',
+            relationshipToPrisoner: 'MOT',
+          },
           isCheckingAnswers: true,
+          previousAnswers: {
+            relationship: {
+              relationshipType: 'S',
+              relationshipToPrisoner: 'MOT',
+            },
+          },
         }
         const expected = `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`
 
@@ -209,6 +263,41 @@ describe('addContactFlowControl', () => {
 
         expect(nav).toStrictEqual(expected)
       })
+
+      it.each([
+        ['S', 'O', `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`],
+        ['O', 'S', `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`],
+        ['S', 'S', `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`],
+        ['O', 'O', `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`],
+      ])(
+        'Should go back to relationship to prisoner page if relationship type changed (from %s to %s should redirect to %s)',
+        (before: string, after: string, expected: string) => {
+          const journey: AddContactJourney = {
+            id: journeyId,
+            lastTouched: new Date().toISOString(),
+            prisonerNumber: 'A1234BC',
+            returnPoint: {
+              url: '/foo',
+            },
+            mode: 'EXISTING',
+            relationship: {
+              relationshipType: after,
+              relationshipToPrisoner: 'MOT',
+            },
+            isCheckingAnswers: true,
+            previousAnswers: {
+              relationship: {
+                relationshipType: before,
+                relationshipToPrisoner: 'MOT',
+              },
+            },
+          }
+
+          const nav = nextPageForAddContactJourney(Page.SELECT_RELATIONSHIP_TYPE, journey)
+
+          expect(nav).toStrictEqual(expected)
+        },
+      )
     })
   })
   describe('should work correctly before mode set', () => {

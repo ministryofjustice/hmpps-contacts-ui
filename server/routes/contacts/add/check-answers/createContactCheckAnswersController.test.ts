@@ -9,7 +9,7 @@ import ContactsService from '../../../../services/contactsService'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import TestData from '../../../testutils/testData'
 import PrisonerSearchService from '../../../../services/prisonerSearchService'
-import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
+import { mockedGetReferenceDescriptionForCode } from '../../../testutils/stubReferenceData'
 import AddContactJourney = journeys.AddContactJourney
 import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
@@ -69,20 +69,7 @@ beforeEach(() => {
       session.addContactJourneys[journeyId] = journey
     },
   })
-  referenceDataService.getReferenceDescriptionForCode.mockImplementation(
-    (type: ReferenceCodeType, _: string, __: Express.User) => {
-      if (type === ReferenceCodeType.TITLE) {
-        return Promise.resolve('Reverend')
-      }
-      if (type === ReferenceCodeType.SOCIAL_RELATIONSHIP) {
-        return Promise.resolve('Mother')
-      }
-      if (type === ReferenceCodeType.OFFICIAL_RELATIONSHIP) {
-        return Promise.resolve('Doctor')
-      }
-      return Promise.reject()
-    },
-  )
+  referenceDataService.getReferenceDescriptionForCode.mockImplementation(mockedGetReferenceDescriptionForCode)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
 
@@ -152,7 +139,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
       // Then
       expect(response.status).toEqual(200)
       const $ = cheerio.load(response.text)
-      expect($('.check-answers-relationship-value').first().text().trim()).toStrictEqual(
+      expect($('.check-answers-relationship-to-prisoner-value').first().text().trim()).toStrictEqual(
         relationshipToPrisonerDescription,
       )
     },

@@ -144,7 +144,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship-typ
     expect(session.addContactJourneys[journeyId].relationship).toStrictEqual(expectedRelationship)
   })
 
-  it('should pass to check answers if there are no validation errors and we are checking answers', async () => {
+  it('should pass to select relationship to prisoner if we changed relationship type while we are checking answers', async () => {
     // Given
     existingJourney.relationship = {
       relationshipType: 'S',
@@ -160,11 +160,48 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship-typ
       .type('form')
       .send({ relationshipType: 'O' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship-to-prisoner/${journeyId}`)
 
     // Then
     const expectedRelationship = {
       relationshipType: 'O',
+      relationshipToPrisoner: 'MOT',
+      isEmergencyContact: 'NO',
+      isNextOfKin: 'YES',
+    }
+    expect(session.addContactJourneys[journeyId].relationship).toStrictEqual(expectedRelationship)
+  })
+
+  it('should pass to check answers to prisoner if we selected the same relationship type while we are checking answers', async () => {
+    // Given
+    existingJourney.relationship = {
+      relationshipType: 'S',
+      relationshipToPrisoner: 'MOT',
+      isEmergencyContact: 'NO',
+      isNextOfKin: 'YES',
+    }
+    existingJourney.previousAnswers = {
+      relationship: {
+        relationshipType: 'S',
+        relationshipToPrisoner: 'MOT',
+        isEmergencyContact: 'NO',
+        isNextOfKin: 'YES',
+      },
+    }
+
+    existingJourney.isCheckingAnswers = true
+
+    // When
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`)
+      .type('form')
+      .send({ relationshipType: 'S' })
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+    // Then
+    const expectedRelationship = {
+      relationshipType: 'S',
       relationshipToPrisoner: 'MOT',
       isEmergencyContact: 'NO',
       isNextOfKin: 'YES',

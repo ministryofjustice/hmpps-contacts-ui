@@ -46,6 +46,10 @@ const STUBBED_OFFICIAL_RELATIONSHIP_OPTIONS: StubReferenceData[] = [
   { code: 'OFS', description: 'Offender Supervisor', groupCode: 'OFFICIAL_RELATIONSHIP' },
   { code: 'OTH', description: 'Other - Official', groupCode: 'OFFICIAL_RELATIONSHIP' },
 ]
+const STUBBED_RELATIONSHIP_TYPE_OPTIONS: StubReferenceData[] = [
+  { code: 'S', description: 'Social', groupCode: 'RELATIONSHIP_TYPE' },
+  { code: 'O', description: 'Official', groupCode: 'RELATIONSHIP_TYPE' },
+]
 
 const STUBBED_PHONE_TYPE_OPTIONS: StubReferenceData[] = [
   { code: 'MOB', description: 'Mobile', groupCode: 'PHONE_TYPE' },
@@ -331,13 +335,27 @@ const mockedReferenceData = (type: ReferenceCodeType, _: HmppsUser): Promise<Stu
   if (type === ReferenceCodeType.COUNTRY) {
     return Promise.resolve(STUBBED_COUNTRY_OPTIONS)
   }
+  if (type === ReferenceCodeType.RELATIONSHIP_TYPE) {
+    return Promise.resolve(STUBBED_RELATIONSHIP_TYPE_OPTIONS)
+  }
 
   return Promise.reject(new Error(`You haven't set up the stubbed reference data for ${type} yet`))
 }
 
+const mockedGetReferenceDescriptionForCode = async (
+  type: ReferenceCodeType,
+  code: string,
+  user: HmppsUser,
+): Promise<string> => {
+  const groupValues = await mockedReferenceData(type, user)
+  return groupValues.find(referenceCode => referenceCode.code === code)?.description
+}
+
 export {
   mockedReferenceData,
+  mockedGetReferenceDescriptionForCode,
   STUBBED_TITLE_OPTIONS,
+  STUBBED_RELATIONSHIP_TYPE_OPTIONS,
   STUBBED_SOCIAL_RELATIONSHIP_OPTIONS,
   STUBBED_OFFICIAL_RELATIONSHIP_OPTIONS,
   STUBBED_IDENTITY_OPTIONS,
