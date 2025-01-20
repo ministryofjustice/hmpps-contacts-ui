@@ -29,8 +29,14 @@ beforeEach(() => {
     userSupplier: () => user,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
-      session.prisonId = 'HEI'
-      session.prisonName = 'Hewell'
+      session.activeCaseLoadId = 'HEI'
+      session.activeCaseLoad = {
+        caseLoadId: 'HEI',
+        caseloadFunction: '',
+        currentlyActive: true,
+        description: 'Hewell',
+        type: '',
+      }
       session.manageContactsJourneys = {}
       session.manageContactsJourneys[journeyId] = {
         id: journeyId,
