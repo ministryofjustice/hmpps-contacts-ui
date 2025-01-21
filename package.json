@@ -165,6 +165,7 @@
     "chokidar": "^3.6.0",
     "concurrently": "^9.1.2",
     "cypress": "^13.17.0",
+    "cypress-circleci-reporter": "^0.3.0",
     "cypress-multi-reporters": "^1.6.4",
     "dotenv": "^16.4.7",
     "esbuild": "^0.24.2",
@@ -187,7 +188,8 @@
     "prettier-plugin-jinja-template": "^1.5.0",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "wait-on": "^8.0.2"
   },
   "overrides": {
     "aws-sdk-client-mock": {
