@@ -12,7 +12,7 @@ const populatePrisonerDetailsIfInCaseload = (
     const { prisonerNumber } = req.params
     const { user } = res.locals
     return prisonerSearchService.getByPrisonerNumber(prisonerNumber, user).then((prisoner: Prisoner) => {
-      if (!req.session.prisonId || req.session.prisonId !== prisoner.prisonId) {
+      if (!req.session.activeCaseLoadId || req.session.activeCaseLoadId !== prisoner.prisonId) {
         auditService.logAuditEvent({
           what: 'NOT_IN_CASELOAD',
           who: user.username,
@@ -20,7 +20,7 @@ const populatePrisonerDetailsIfInCaseload = (
           subjectType: 'PRISONER_NUMBER',
           subjectId: prisonerNumber,
           details: {
-            userCurrentPrison: req.session.prisonId,
+            userCurrentPrison: req.session.activeCaseLoadId,
             prisonerCurrentPrison: prisoner.prisonId,
           },
         })

@@ -8,6 +8,7 @@ import IndexPage from '../pages'
 context('Sign In', () => {
   beforeEach(() => {
     cy.task('reset')
+    cy.task('stubComponentsMeta')
     cy.task('stubSignIn', { roles: ['PRISON'] })
   })
 

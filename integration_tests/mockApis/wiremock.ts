@@ -1,5 +1,5 @@
 import Component from '@ministryofjustice/hmpps-connect-dps-components/dist/types/Component'
-import HeaderFooterMeta from '@ministryofjustice/hmpps-connect-dps-components/dist/types/HeaderFooterMeta'
+import HeaderFooterSharedData from '@ministryofjustice/hmpps-connect-dps-components/dist/types/HeaderFooterSharedData'
 import superagent, { Response, SuperAgentRequest } from 'superagent'
 
 const url = 'http://localhost:9091/__admin'
@@ -25,7 +25,10 @@ const getAPICallCountMatching = async (matching: string | object): Promise<numbe
 const resetStubs = (): Promise<Array<Response>> =>
   Promise.all([superagent.delete(`${url}/mappings`), superagent.delete(`${url}/requests`)])
 
-const stubGet = (urlPattern: string, jsonBody?: { header: Component; footer: Component; meta: HeaderFooterMeta }) =>
+const stubGet = (
+  urlPattern: string,
+  jsonBody?: { header: Component; footer: Component; meta: HeaderFooterSharedData },
+) =>
   stubFor({
     request: { method: 'GET', urlPattern },
     response: {

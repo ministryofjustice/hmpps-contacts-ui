@@ -1,3 +1,4 @@
+import CaseLoad from '@ministryofjustice/hmpps-connect-dps-components/dist/types/CaseLoad'
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import { fieldErrors } from '../../middleware/validationMiddleware'
 
@@ -11,13 +12,15 @@ export declare module 'express-session' {
   interface SessionData {
     returnTo: string
     nowInMinutes: number
-    prisonId: string
-    prisonName: string
     search: string
     addContactJourneys: Record<string, AddContactJourney>
     manageContactsJourneys: Record<string, ManageContactsJourney>
     addRestrictionJourneys: Record<string, AddRestrictionJourney>
     addressJourneys: Record<string, AddressJourney>
+    // Caseload details populated by dpsComponents.retrieveCaseLoadData
+    caseLoads?: CaseLoad[]
+    activeCaseLoad?: CaseLoad
+    activeCaseLoadId?: string
   }
 }
 export declare global {
@@ -38,6 +41,19 @@ export declare global {
       user: HmppsUser
       validationErrors?: fieldErrors
       digitalPrisonServicesUrl: string
+      feComponents?: {
+        sharedData?: {
+          activeCaseLoad: CaseLoad
+          caseLoads: CaseLoad[]
+          services: {
+            id: string
+            heading: string
+            description: string
+            href: string
+            navEnabled: boolean
+          }[]
+        }
+      }
     }
   }
 }

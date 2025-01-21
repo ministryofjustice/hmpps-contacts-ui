@@ -15,9 +15,9 @@ context('Select Interpreter Needs', () => {
 
   beforeEach(() => {
     cy.task('reset')
+    cy.task('stubComponentsMeta')
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.signIn()
-    cy.task('stubComponentsMeta')
     cy.task('stubPrisoners', {
       results: {
         totalPages: 1,

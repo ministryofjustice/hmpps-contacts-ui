@@ -14,7 +14,7 @@ export default abstract class Page {
     cy.get('h1').contains(this.title)
   }
 
-  signOut = (): PageElement => cy.get('[data-qa=signOut]')
+  signOut = (): PageElement => cy.findByRole('link', { name: /sign out/i })
 
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
 

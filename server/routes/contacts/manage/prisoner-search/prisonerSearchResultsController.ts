@@ -18,8 +18,8 @@ export default class PrisonerSearchController implements PageHandler {
 
     const page = Number(req.query.page as unknown) || 0
     const pageSize = config.apis.prisonerSearchApi.pageSize || 20
-    const prisonId = req.session?.prisonId
-    const prisonName = req.session?.prisonName
+    const prisonId = req.session?.activeCaseLoad?.caseLoadId
+    const prisonName = req.session?.activeCaseLoad?.description
     const search = res.locals.formResponses?.search ?? journey?.search?.searchTerm
     const validationErrors = res.locals.validationErrors?.search
 

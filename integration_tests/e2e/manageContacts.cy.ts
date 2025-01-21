@@ -8,6 +8,7 @@ import SelectSpokenLanguagePage from '../pages/selectSpokenLanguagePage'
 context('Manage contacts ', () => {
   beforeEach(() => {
     cy.task('reset')
+    cy.task('stubComponentsMeta')
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.signIn()
     cy.visit('/contacts/manage/prisoner-search/start')

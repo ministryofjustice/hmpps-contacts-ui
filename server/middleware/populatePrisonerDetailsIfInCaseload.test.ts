@@ -36,7 +36,7 @@ describe('prisonerDetailsMiddleware', () => {
       params: {
         prisonerNumber: 'A1234BC',
       },
-      session: { prisonId: prisoner.prisonId },
+      session: { activeCaseLoadId: prisoner.prisonId },
     } as Request<{ prisonerNumber: string }>
 
     await populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService)(req, res, next)
@@ -64,7 +64,7 @@ describe('prisonerDetailsMiddleware', () => {
       params: {
         prisonerNumber: 'A1234BC',
       },
-      session: { prisonId: prisoner.prisonId },
+      session: { activeCaseLoadId: prisoner.prisonId },
     } as Request<{ prisonerNumber: string }>
 
     await populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService)(req, res, next)
@@ -94,7 +94,7 @@ describe('prisonerDetailsMiddleware', () => {
       params: {
         prisonerNumber: 'A1234BC',
       },
-      session: { prisonId: prisoner.prisonId },
+      session: { activeCaseLoadId: prisoner.prisonId },
     } as Request<{ prisonerNumber: string }>
 
     await populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService)(req, res, next)
@@ -124,7 +124,7 @@ describe('prisonerDetailsMiddleware', () => {
       params: {
         prisonerNumber: 'A1234BC',
       },
-      session: { prisonId: prisoner.prisonId },
+      session: { activeCaseLoadId: prisoner.prisonId },
     } as Request<{ prisonerNumber: string }>
 
     await populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService)(req, res, next)
@@ -149,7 +149,7 @@ describe('prisonerDetailsMiddleware', () => {
       params: {
         prisonerNumber: 'A1234BC',
       },
-      session: { prisonId: undefined },
+      session: { activeCaseLoadId: undefined },
       id: '123456',
     } as Request<{ prisonerNumber: string }>
 
@@ -179,7 +179,7 @@ describe('prisonerDetailsMiddleware', () => {
       params: {
         prisonerNumber: 'A1234BC',
       },
-      session: { prisonId: 'NOT HERE' },
+      session: { activeCaseLoadId: 'NOT HERE' },
       id: '123456',
     } as Request<{ prisonerNumber: string }>
 

@@ -117,6 +117,7 @@ const token = (userToken: UserToken) =>
       },
       jsonBody: {
         access_token: createToken(userToken),
+        auth_source: 'nomis',
         token_type: 'bearer',
         user_name: 'USER1',
         expires_in: 599,

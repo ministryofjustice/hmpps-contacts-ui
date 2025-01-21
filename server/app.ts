@@ -19,6 +19,7 @@ import type { Services } from './services'
 import AuthorisedRoles from './enumeration/authorisedRoles'
 import populateValidationErrors from './middleware/populateValidationErrors'
 import setUpSuccessNotificationBanner from './middleware/setUpSuccessNotificationBanner'
+import logger from '../logger'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -40,7 +41,7 @@ export default function createApp(services: Services): express.Application {
   app.get(
     '*',
     dpsComponents.getPageComponents({
-      includeMeta: true,
+      includeSharedData: true,
       dpsUrl: config.serviceUrls.digitalPrison,
       timeoutOptions: {
         response: config.apis.componentApi.timeout.response,
@@ -48,6 +49,7 @@ export default function createApp(services: Services): express.Application {
       },
     }),
   )
+  app.use(dpsComponents.retrieveCaseLoadData({ logger }))
   app.use(setUpCurrentUser())
   app.use(populateValidationErrors())
   app.use(setUpSuccessNotificationBanner())
