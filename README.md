@@ -1,18 +1,19 @@
 # hmpps-contacts-ui
 [![repo standards badge](https://img.shields.io/badge/endpoint.svg?&style=flat&logo=github&url=https%3A%2F%2Foperations-engineering-reports.cloud-platform.service.justice.gov.uk%2Fapi%2Fv1%2Fcompliant_public_repositories%2Fhmpps-contacts-ui)](https://operations-engineering-reports.cloud-platform.service.justice.gov.uk/public-github-repositories.html#hmpps-contacts-ui "Link to report")
+[![codecov](https://codecov.io/github/ministryofjustice/hmpps-contacts-ui/graph/badge.svg?token=SJ5M6R0CXZ)](https://codecov.io/github/ministryofjustice/hmpps-contacts-ui)
 [![CircleCI](https://circleci.com/gh/ministryofjustice/hmpps-contacts-ui/tree/main.svg?style=svg)](https://circleci.com/gh/ministryofjustice/hmpps-contacts-ui)
 
 Template github repo used for new Typescript based projects.
 
 # Instructions
 
-If this is a HMPPS project then the project will be created as part of bootstrapping - 
+If this is a HMPPS project then the project will be created as part of bootstrapping -
 see https://github.com/ministryofjustice/hmpps-project-bootstrap. You are able to specify a template application using the `github_template_repo` attribute to clone without the need to manually do this yourself within GitHub.
 
-This bootstrap is community managed by the mojdt `#typescript` slack channel. 
+This bootstrap is community managed by the mojdt `#typescript` slack channel.
 Please raise any questions or queries there. Contributions welcome!
 
-Our security policy is located [here](https://github.com/ministryofjustice/hmpps-contacts-ui/security/policy). 
+Our security policy is located [here](https://github.com/ministryofjustice/hmpps-contacts-ui/security/policy).
 
 More information about the template project including features can be found [here](https://dsdmoj.atlassian.net/wiki/spaces/NDSS/pages/3488677932/Typescript+template+project).
 
@@ -54,20 +55,20 @@ To ensure notifications are routed to the correct slack channels, update the `al
 To allow easy identification of an application, the product Id of the overall product should be set in `values.yaml`. The Service Catalogue contains a list of these IDs and is currently in development here https://developer-portal.hmpps.service.justice.gov.uk/products
 
 ## Running the app
-The easiest way to run the app is to use docker compose to create the service and all dependencies. 
+The easiest way to run the app is to use docker compose to create the service and all dependencies.
 
 `docker compose pull`
 
 `docker compose up`
 
 ### Dependencies
-The app requires: 
+The app requires:
 * hmpps-auth - for authentication
 * redis - session store and token caching
 
 ### Running the app for development
 
-To start the main services excluding the example typescript template app: 
+To start the main services excluding the example typescript template app:
 
 `docker compose up --scale=app=0`
 
@@ -100,7 +101,7 @@ Then run the server in test mode by:
 And then either, run tests in headless mode with:
 
 `npm run int-test`
- 
+
 Or run tests with the cypress UI:
 
 `npm run int-test-ui`

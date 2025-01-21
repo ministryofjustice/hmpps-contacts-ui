@@ -3,6 +3,7 @@ version: 2.1
 orbs:
   hmpps: ministryofjustice/hmpps@8
   slack: circleci/slack@4.12.5
+  codecov: codecov/codecov@3 # v4 doesnt upload coverage, complaining about a lack of token
 
 parameters:
   alerts-slack-channel:
@@ -70,12 +71,17 @@ jobs:
           path: test_results
       - store_artifacts:
           path: test_results/unit-test-reports.html
+      - persist_to_workspace:
+          root: .
+          paths: test_results
 
   integration_test:
     executor:
       name: hmpps/node_redis
       node_tag: << pipeline.parameters.node-version >>
       redis_tag: '7.0'
+    parallelism: 4
+    resource_class: large
     steps:
       - checkout
       - attach_workspace:
@@ -98,16 +104,17 @@ jobs:
           background: true
       - run:
           name: Wait for node app to start
-          command: sleep 5
+          command: ./node_modules/wait-on/bin/wait-on -t 30s http://localhost:3007/ping
       - run:
           name: integration tests
-          command: npm run int-test
+          command: circleci tests glob "**/*.cy.ts" | circleci tests run --command="xargs npx cypress run --reporter cypress-circleci-reporter --spec" --verbose --split-by=timings
       - store_test_results:
           path: test_results
       - store_artifacts:
           path: integration_tests/videos
       - store_artifacts:
           path: integration_tests/screenshots
+      - codecov/upload
 
 workflows:
   version: 2
@@ -123,6 +130,7 @@ workflows:
       - integration_test:
           requires:
             - build
+            - unit_test
       - hmpps/helm_lint:
           name: helm_lint
       - hmpps/build_docker:
