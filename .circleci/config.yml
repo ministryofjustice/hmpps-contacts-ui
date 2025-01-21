@@ -71,6 +71,9 @@ jobs:
           path: test_results
       - store_artifacts:
           path: test_results/unit-test-reports.html
+      - persist_to_workspace:
+          root: .
+          paths: test_results
 
   integration_test:
     executor:
