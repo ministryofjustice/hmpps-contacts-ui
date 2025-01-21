@@ -18,4 +18,4 @@ generic-service:
     AUDIT_ENABLED: 'false'
 
 generic-prometheus-alerts:
-  alertSeverity: digital-prison-service
+  alertSeverity: managing-contacts-alerts-prod
