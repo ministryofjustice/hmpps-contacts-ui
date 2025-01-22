@@ -68,9 +68,16 @@ const main = () => {
 
   if (args.includes('--dev-server')) {
     let serverProcess = null
-    chokidar.watch(['dist']).on('all', () => {
+    chokidar.watch(['dist'], { ignored: ['**/*.cy.ts'] }).on('all', () => {
       if (serverProcess) serverProcess.kill()
-      serverProcess = spawn('node', ['-r', 'dotenv/config', 'dist/server.js'], { stdio: 'inherit' })
+      serverProcess = spawn('node', ['--env-file=.env', 'dist/server.js'], { stdio: 'inherit' })
+    })
+  }
+  if (args.includes('--dev-test-server')) {
+    let serverProcess = null
+    chokidar.watch(['dist'], { ignored: ['**/*.cy.ts'] }).on('all', () => {
+      if (serverProcess) serverProcess.kill()
+      serverProcess = spawn('node', ['--env-file=feature.env', 'dist/server.js'], { stdio: 'inherit' })
     })
   }
 

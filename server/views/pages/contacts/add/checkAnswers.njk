@@ -3,8 +3,8 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
 
-{% set pageTitle = applicationName + " - Enter date of birth" %}
-{% set title = "Check your answers" %}
+{% set title = "Check your answers before linking the contact to " + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) %}
+{% set pageTitle = "Check your answers before linking the contact to the prisoner - Contacts - DPS" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
@@ -12,188 +12,145 @@
 {{ miniProfile(prisonerDetails) }}
 {% include '../../../partials/formErrorSummary.njk' %}
  <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <span class="govuk-caption-l">{{ caption or 'Contacts' }}</span>
-            <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+        <div class="govuk-grid-column-full">
+          <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+              <span class="govuk-caption-l">{{ caption or 'Contacts' }}</span>
+              <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+            </div>
+          </div>
+          <p class="govuk-!-margin-bottom-7">
+            <strong>Prisoner:</strong>&nbsp;<span>{{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }} ({{ prisonerDetails.prisonerNumber }})</span>
+            <br/>
+            <strong>Contact:</strong>&nbsp;<span>{{ journey.names | formatNameFirstNameFirst }} ({{ journey.contactId }})</span>
+          </p>
+
+          {% set baseChangeUrl = "/prisoner/" + journey.prisonerNumber + "/contacts/create" %}
+          {{ govukSummaryList({
+              rows: [
+                {
+                  key: {
+                  text: "Relationship type"
+                },
+                  value: {
+                  html: relationshipTypeDescription,
+                  classes: 'check-answers-relationship-type-value'
+                },
+                  actions: {
+                  items: [
+                    {
+                      href: baseChangeUrl + "/select-relationship-type/"  + journey.id,
+                      text: "Change",
+                      visuallyHiddenText: "relationship type",
+                      attributes: {"data-qa": "change-relationship-type-link"},
+                      classes: "govuk-link--no-visited-state"
+                    }
+                  ]
+                }
+                },
+                {
+                  key: {
+                  text: "Relationship to prisoner"
+                },
+                  value: {
+                  html: relationshipToPrisonerDescription,
+                  classes: 'check-answers-relationship-to-prisoner-value'
+                },
+                  actions: {
+                  items: [
+                    {
+                      href: baseChangeUrl + "/select-relationship-to-prisoner/"  + journey.id,
+                      text: "Change",
+                      visuallyHiddenText: "the relationship to the prisoner",
+                      attributes: {"data-qa": "change-relationship-to-prisoner-link"},
+                      classes: "govuk-link--no-visited-state"
+                    }
+                  ]
+                }
+                },
+                {
+                  key: {
+                  text: "Emergency contact"
+                },
+                  value: {
+                  html: journey.relationship.isEmergencyContact | formatYesNo,
+                  classes: 'check-answers-emergency-contact-value'
+                },
+                  actions: {
+                  items: [
+                    {
+                      href: baseChangeUrl + "/select-emergency-contact/"  + journey.id,
+                      text: "Change",
+                      visuallyHiddenText: "if the contact is the prisoner’s emergency contact",
+                      attributes: {"data-qa": "change-emergency-contact-link"},
+                      classes: "govuk-link--no-visited-state"
+                    }
+                  ]
+                }
+                },
+                {
+                  key: {
+                  text: "Next of kin"
+                },
+                  value: {
+                  html: journey.relationship.isNextOfKin | formatYesNo,
+                  classes: 'check-answers-next-of-kin-value'
+                },
+                  actions: {
+                  items: [
+                    {
+                      href: baseChangeUrl + "/select-next-of-kin/"  + journey.id,
+                      text: "Change",
+                      visuallyHiddenText: "if the contact is the prisoner’s next of kin",
+                      attributes: {"data-qa": "change-next-of-kin-link"},
+                      classes: "govuk-link--no-visited-state"
+                    }
+                  ]
+                }
+                },
+                {
+                  key: {
+                  text: "Approved for visits"
+                },
+                  value: {
+                  html: "Not provided" if journey.relationship.isApprovedForVisits == undefined else (journey.relationship.isApprovedForVisits | formatYesNo)
+                },
+                  actions: {
+                  items: [
+                    {
+                      href: baseChangeUrl + "/select-approved-for-visits/"  + journey.id,
+                      text: "Change",
+                      visuallyHiddenText: "if the contact is approved to visit the prisoner",
+                      classes: "govuk-link--no-visited-state"
+                    }
+                  ]
+                }
+                },
+                {
+                  key: {
+                  text: "Comments on this relationship"
+                },
+                  value: {
+                  html: (journey.relationship.comments or "Not provided") | escape | nl2br,
+                  classes: 'check-answers-comments-value'
+                },
+                  actions: {
+                  items: [
+                    {
+                      href: baseChangeUrl + "/enter-relationship-comments/"  + journey.id,
+                      text: "Change",
+                      visuallyHiddenText: "the comments on the relationship",
+                      attributes: {"data-qa": "change-comments-link"},
+                      classes: "govuk-link--no-visited-state"
+                    }
+                  ]
+                }
+                }
+              ]
+          }) }}
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-                {% set baseChangeUrl = "/prisoner/" + journey.prisonerNumber + "/contacts/create" %}
-                {% set  formattedDateOfBirth %}{% if journey.dateOfBirth.isKnown === 'YES' %}{{ dateOfBirth | formatDate }}{% else %}Not provided{% endif %}{% endset %}
-                {% set contactDetailsRows = [
-                    {
-                        key: {
-                            text: "Name"
-                        },
-                        value: {
-                            html: formattedFullName,
-                            classes: 'check-answers-name-value'
-                        },
-                        actions: {
-                            items: [
-                                {
-                                    href: baseChangeUrl + "/enter-name/"  + journey.id,
-                                    text: "Change",
-                                    visuallyHiddenText: "name",
-                                    attributes: {"data-qa": "change-name-link"},
-                                    classes: "govuk-link--no-visited-state"
-                                }
-                            ] if journey.mode === 'NEW'
-                        }
-                    },
-                    {
-                        key: {
-                            text: "Date of birth"
-                        },
-                        value: {
-                            html: formattedDateOfBirth,
-                            classes: 'check-answers-dob-value'
-                        },
-                        actions: {
-                            items: [
-                                {
-                                    href: baseChangeUrl + "/enter-dob/"  + journey.id,
-                                    text: "Change",
-                                    visuallyHiddenText: "date of birth",
-                                    attributes: {"data-qa": "change-dob-link"},
-                                    classes: "govuk-link--no-visited-state"
-                                } if journey.mode === 'NEW'
-                            ]
-                        }
-                    }
-                ] %}
-                {% if journey.existingContact.isDeceased and journey.existingContact.deceasedDate %}
-                    {% set contactDetailsRows = (contactDetailsRows.push(
-                        {
-                            key: {
-                                text: "Deceased date"
-                            },
-                            value: {
-                                html: journey.existingContact.deceasedDate | formatDate,
-                                classes: 'check-answers-deceased-value'
-                            }
-                        }
-                    ), contactDetailsRows) %}
-                {% endif %}
-
-                {{ govukSummaryList({
-                    card: {
-                        title: {
-                            text: "Contact details"
-                        }
-                    },
-                    rows: contactDetailsRows
-                }) }}
-
-                {{ govukSummaryList({
-                    card: {
-                        title: {
-                            text: "Relationship details"
-                        }
-                    },
-                    rows: [
-                        {
-                            key: {
-                                text: "Relationship type"
-                            },
-                            value: {
-                                html: relationshipTypeDescription,
-                                classes: 'check-answers-relationship-type-value'
-                            },
-                            actions: {
-                                items: [
-                                    {
-                                        href: baseChangeUrl + "/select-relationship-type/"  + journey.id,
-                                        text: "Change",
-                                        visuallyHiddenText: " relationship type",
-                                        attributes: {"data-qa": "change-relationship-type-link"},
-                                        classes: "govuk-link--no-visited-state"
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            key: {
-                                text: "Relationship to prisoner"
-                            },
-                            value: {
-                                html: relationshipToPrisonerDescription,
-                                classes: 'check-answers-relationship-to-prisoner-value'
-                            },
-                            actions: {
-                                items: [
-                                    {
-                                        href: baseChangeUrl + "/select-relationship-to-prisoner/"  + journey.id,
-                                        text: "Change",
-                                        visuallyHiddenText: " the relationship to the prisoner",
-                                        attributes: {"data-qa": "change-relationship-to-prisoner-link"},
-                                        classes: "govuk-link--no-visited-state"
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            key: {
-                                text: "Emergency contact"
-                            },
-                            value: {
-                                html: journey.relationship.isEmergencyContact | formatYesNo,
-                                classes: 'check-answers-emergency-contact-value'
-                            },
-                            actions: {
-                                items: [
-                                    {
-                                        href: baseChangeUrl + "/select-emergency-contact/"  + journey.id,
-                                        text: "Change",
-                                        visuallyHiddenText: "whether contact is an emergency contact",
-                                        attributes: {"data-qa": "change-emergency-contact-link"},
-                                        classes: "govuk-link--no-visited-state"
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            key: {
-                                text: "Next of kin"
-                            },
-                            value: {
-                                html: journey.relationship.isNextOfKin | formatYesNo,
-                                classes: 'check-answers-next-of-kin-value'
-                            },
-                            actions: {
-                            items: [
-                                    {
-                                        href: baseChangeUrl + "/select-next-of-kin/"  + journey.id,
-                                        text: "Change",
-                                        visuallyHiddenText: "whether contact is next of kin",
-                                        attributes: {"data-qa": "change-next-of-kin-link"},
-                                        classes: "govuk-link--no-visited-state"
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            key: {
-                                text: "Comments"
-                            },
-                            value: {
-                                html: journey.relationship.comments or "Not provided",
-                                classes: 'check-answers-comments-value'
-                            },
-                            actions: {
-                                items: [
-                                    {
-                                        href: baseChangeUrl + "/enter-relationship-comments/"  + journey.id,
-                                        text: "Change",
-                                        visuallyHiddenText: "comments about the relationship",
-                                        attributes: {"data-qa": "change-comments-link"},
-                                        classes: "govuk-link--no-visited-state"
-                                    }
-                                ]
-                            }
-                        }
-                    ]
-                }) }}
-                {% set buttonLabel = "Create prisoner contact" %}
+                {% set buttonLabel = "Confirm and link contact" %}
                 <div class="govuk-button-group">
                     {{ govukButton({
                         html: buttonLabel,

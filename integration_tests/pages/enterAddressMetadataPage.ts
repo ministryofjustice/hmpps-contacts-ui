@@ -12,7 +12,7 @@ export default class EnterAddressMetadataPage extends Page {
 
   enterFromMonth(value: string): EnterAddressMetadataPage {
     this.clearFromMonth()
-    this.fromMonthTextbox().type(value)
+    this.fromMonthTextbox().type(value, { delay: 0 })
     return this
   }
 
@@ -28,7 +28,7 @@ export default class EnterAddressMetadataPage extends Page {
 
   enterFromYear(value: string): EnterAddressMetadataPage {
     this.clearFromYear()
-    this.fromYearTextbox().type(value)
+    this.fromYearTextbox().type(value, { delay: 0 })
     return this
   }
 
@@ -44,7 +44,7 @@ export default class EnterAddressMetadataPage extends Page {
 
   enterToMonth(value: string): EnterAddressMetadataPage {
     this.clearToMonth()
-    this.toMonthTextbox().type(value)
+    this.toMonthTextbox().type(value, { delay: 0 })
     return this
   }
 
@@ -60,7 +60,7 @@ export default class EnterAddressMetadataPage extends Page {
 
   enterToYear(value: string): EnterAddressMetadataPage {
     this.clearToYear()
-    this.toYearTextbox().type(value)
+    this.toYearTextbox().type(value, { delay: 0 })
     return this
   }
 
@@ -96,7 +96,7 @@ export default class EnterAddressMetadataPage extends Page {
 
   enterComments(value: string): EnterAddressMetadataPage {
     this.clearComments()
-    this.commentsTextbox().type(value)
+    this.commentsTextbox().type(value, { delay: 0 })
     return this
   }
 

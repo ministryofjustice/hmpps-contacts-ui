@@ -11,7 +11,7 @@ export default class EnterIdentityPage extends Page {
   }
 
   enterIdentity(value: string): EnterIdentityPage {
-    this.identityTextBox().clear().type(value)
+    this.identityTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
@@ -31,7 +31,7 @@ export default class EnterIdentityPage extends Page {
   }
 
   enterIssuingAuthority(value: string): EnterIdentityPage {
-    this.issuingAuthorityTextBox().clear().type(value)
+    this.issuingAuthorityTextBox().clear().type(value, { delay: 0 })
     return this
   }
 

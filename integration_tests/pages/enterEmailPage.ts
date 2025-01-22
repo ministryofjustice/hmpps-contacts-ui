@@ -11,7 +11,7 @@ export default class EnterEmailPage extends Page {
   }
 
   enterEmail(value: string | ''): EnterEmailPage {
-    this.emailTextBox().clear().type(value)
+    this.emailTextBox().clear().type(value, { delay: 0 })
     return this
   }
 

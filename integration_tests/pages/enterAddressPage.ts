@@ -32,7 +32,7 @@ export default class EnterAddressPage extends Page {
 
   enterFlat(value: string): EnterAddressPage {
     this.clearFlat()
-    this.flatTextbox().type(value)
+    this.flatTextbox().type(value, { delay: 0 })
     return this
   }
 
@@ -48,7 +48,7 @@ export default class EnterAddressPage extends Page {
 
   enterPremises(value: string): EnterAddressPage {
     this.clearPremises()
-    this.premisesTextbox().type(value)
+    this.premisesTextbox().type(value, { delay: 0 })
     return this
   }
 
@@ -64,7 +64,7 @@ export default class EnterAddressPage extends Page {
 
   enterStreet(value: string): EnterAddressPage {
     this.clearStreet()
-    this.streetTextbox().type(value)
+    this.streetTextbox().type(value, { delay: 0 })
     return this
   }
 
@@ -80,7 +80,7 @@ export default class EnterAddressPage extends Page {
 
   enterLocality(value: string): EnterAddressPage {
     this.clearLocality()
-    this.localityTextbox().type(value)
+    this.localityTextbox().type(value, { delay: 0 })
     return this
   }
 
@@ -100,7 +100,7 @@ export default class EnterAddressPage extends Page {
   }
 
   selectTown(value: string): EnterAddressPage {
-    this.townSelect().type(value)
+    this.townSelect().type(value, { delay: 0 })
     return this
   }
 
@@ -115,7 +115,7 @@ export default class EnterAddressPage extends Page {
   }
 
   selectCounty(value: string): EnterAddressPage {
-    this.countySelect().type(value)
+    this.countySelect().type(value, { delay: 0 })
     return this
   }
 
@@ -126,7 +126,7 @@ export default class EnterAddressPage extends Page {
 
   enterPostcode(value: string): EnterAddressPage {
     this.clearPostcode()
-    this.postcodeTextbox().type(value)
+    this.postcodeTextbox().type(value, { delay: 0 })
     return this
   }
 
@@ -141,7 +141,7 @@ export default class EnterAddressPage extends Page {
   }
 
   selectCountry(value: string): EnterAddressPage {
-    this.countrySelect().type(value)
+    this.countrySelect().type(value, { delay: 0 })
     return this
   }
 

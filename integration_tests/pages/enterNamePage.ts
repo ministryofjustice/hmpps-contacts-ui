@@ -11,7 +11,7 @@ export default class EnterNamePage extends Page {
   }
 
   enterLastName(value: string): EnterNamePage {
-    this.lastNameTextBox().clear().type(value)
+    this.lastNameTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
@@ -21,7 +21,7 @@ export default class EnterNamePage extends Page {
   }
 
   enterFirstName(value: string): EnterNamePage {
-    this.firstNameTextBox().clear().type(value)
+    this.firstNameTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
@@ -31,7 +31,7 @@ export default class EnterNamePage extends Page {
   }
 
   enterMiddleNames(value: string): EnterNamePage {
-    this.middleNamesTextBox().clear().type(value)
+    this.middleNamesTextBox().clear().type(value, { delay: 0 })
     return this
   }
 

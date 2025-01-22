@@ -21,7 +21,7 @@ export default class EnterRestrictionPage extends Page {
   }
 
   enterStartDate(value: string): EnterRestrictionPage {
-    this.startDateTextBox().clear().type(value)
+    this.startDateTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
@@ -36,7 +36,7 @@ export default class EnterRestrictionPage extends Page {
   }
 
   enterExpiryDate(value: string): EnterRestrictionPage {
-    this.expiryDateTextBox().clear().type(value)
+    this.expiryDateTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
@@ -46,7 +46,7 @@ export default class EnterRestrictionPage extends Page {
   }
 
   enterComments(value: string): EnterRestrictionPage {
-    this.commentsTextBox().clear().type(value)
+    this.commentsTextBox().clear().type(value, { delay: 0 })
     return this
   }
 

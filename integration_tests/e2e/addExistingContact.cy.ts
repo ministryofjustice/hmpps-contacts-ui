@@ -115,15 +115,11 @@ context('Add Existing Contact', () => {
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowsNameAs('Contact, Existing')
-      .verifyShowsDateOfBirthAs('14 January 1990')
-      .verifyNoDeceasedDate()
+      .verifyShowsNameAs('Existing Contact (654321)')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
       .verifyShowIsNextOfKinAs('Yes')
       .verifyShowCommentsAs('Some comments about the relationship')
-      .verifyNameIsNotChangeable()
-      .verifyDateOfBirthIsNotChangeable()
       .clickContinue()
 
     Page.verifyOnPage(AddContactSuccessPage) //
@@ -185,13 +181,10 @@ context('Add Existing Contact', () => {
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowsNameAs('Contact, Existing')
-      .verifyShowsDateOfBirthAs('Not provided')
+      .verifyShowsNameAs('Existing Contact (654321)')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('Yes')
       .verifyShowIsNextOfKinAs('No')
-      .verifyNameIsNotChangeable()
-      .verifyDateOfBirthIsNotChangeable()
       .clickContinue()
 
     Page.verifyOnPage(AddContactSuccessPage) //
@@ -252,13 +245,10 @@ context('Add Existing Contact', () => {
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowsNameAs('Contact, Existing')
-      .verifyShowsDateOfBirthAs('Not provided')
+      .verifyShowsNameAs('Existing Contact (654321)')
       .verifyShowRelationshipAs('Doctor')
       .verifyShowIsEmergencyContactAs('Yes')
       .verifyShowIsNextOfKinAs('No')
-      .verifyNameIsNotChangeable()
-      .verifyDateOfBirthIsNotChangeable()
       .clickContinue()
 
     Page.verifyOnPage(AddContactSuccessPage) //
@@ -440,11 +430,7 @@ context('Add Existing Contact', () => {
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowsNameAs('Contact, Deceased')
-      .verifyShowsDateOfBirthAs('14 January 1990')
-      .verifyShowDeceasedDate('25 December 2020')
-      .verifyNameIsNotChangeable()
-      .verifyDateOfBirthIsNotChangeable()
+      .verifyShowsNameAs('Deceased Contact (654321)')
       .continueTo(AddContactSuccessPage)
 
     cy.verifyLastAPICall(

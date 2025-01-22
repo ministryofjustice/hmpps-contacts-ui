@@ -6,7 +6,7 @@ export default class SearchPrisonerPage extends Page {
   }
 
   enterPrisoner(value: string): SearchPrisonerPage {
-    this.prisonerSearchFormField().clear().type(value)
+    this.prisonerSearchFormField().clear().type(value, { delay: 0 })
     return this
   }
 

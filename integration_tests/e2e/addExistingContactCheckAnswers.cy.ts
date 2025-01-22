@@ -87,14 +87,11 @@ context('Add Existing Contact Check Answers', () => {
       .continueTo(RelationshipCommentsPage, 'Existing Contact') //
       .enterComments('Some comments about the relationship')
       .continueTo(CreateContactCheckYourAnswersPage) //
-      .verifyShowsNameAs('Contact, Existing')
-      .verifyShowsDateOfBirthAs('14 January 1990')
+      .verifyShowsNameAs('Existing Contact (654321)')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
       .verifyShowIsNextOfKinAs('Yes')
       .verifyShowCommentsAs('Some comments about the relationship')
-      .verifyNameIsNotChangeable()
-      .verifyDateOfBirthIsNotChangeable()
   })
 
   it('Can change emergency contact from check answers', () => {

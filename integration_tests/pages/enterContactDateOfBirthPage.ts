@@ -16,7 +16,7 @@ export default class EnterContactDateOfBirthPage extends Page {
   }
 
   enterDay(day: string): EnterContactDateOfBirthPage {
-    this.dayTextBox().clear().type(day)
+    this.dayTextBox().clear().type(day, { delay: 0 })
     return this
   }
 
@@ -26,7 +26,7 @@ export default class EnterContactDateOfBirthPage extends Page {
   }
 
   enterMonth(month: string): EnterContactDateOfBirthPage {
-    this.monthTextBox().clear().type(month)
+    this.monthTextBox().clear().type(month, { delay: 0 })
     return this
   }
 
@@ -36,7 +36,7 @@ export default class EnterContactDateOfBirthPage extends Page {
   }
 
   enterYear(year: string): EnterContactDateOfBirthPage {
-    this.yearTextBox().clear().type(year)
+    this.yearTextBox().clear().type(year, { delay: 0 })
     return this
   }
 
