@@ -21,13 +21,16 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
     const journey = req.session.addContactJourneys[journeyId]
     let groupCodeForRelationshipType
     let hintText
+    let defaultSelectLabel
     const formattedName = formatNameFirstNameFirst(journey.names)
     if (journey.relationship.relationshipType === 'S') {
       groupCodeForRelationshipType = ReferenceCodeType.SOCIAL_RELATIONSHIP
       hintText = `For example, if ${formattedName} is the prisoner’s uncle, select ‘Uncle’.`
+      defaultSelectLabel = 'Select social relationship'
     } else {
       groupCodeForRelationshipType = ReferenceCodeType.OFFICIAL_RELATIONSHIP
       hintText = `For example, if ${formattedName} is the prisoner’s doctor, select ‘Doctor’.`
+      defaultSelectLabel = 'Select official relationship'
     }
     const relationshipOptions = await this.referenceDataService
       .getReferenceData(groupCodeForRelationshipType, user)
@@ -35,6 +38,7 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
         this.getSelectedRelationshipOptions(
           val,
           res.locals?.formResponses?.relationship ?? journey?.relationship?.relationshipToPrisoner,
+          defaultSelectLabel,
         ),
       )
     const viewModel = {
@@ -63,7 +67,8 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
 
   private getSelectedRelationshipOptions(
     options: ReferenceCode[],
-    selected?: string,
+    selected: string | null | undefined,
+    defaultSelectLabel: string,
   ): Array<{
     value: string
     text: string
@@ -78,6 +83,6 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
         }
       })
       .sort((a, b) => a.text.localeCompare(b.text))
-    return [{ text: '', value: '' }, ...mappedOptions]
+    return [{ text: defaultSelectLabel, value: '' }, ...mappedOptions]
   }
 }

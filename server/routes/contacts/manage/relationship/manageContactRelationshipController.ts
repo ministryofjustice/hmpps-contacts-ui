@@ -46,7 +46,7 @@ export default class ManageContactRelationshipController implements PageHandler 
     const relationshipOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.SOCIAL_RELATIONSHIP, user)
       .then(val => this.getSelectedOptions(val, currentRelationship))
-    const navigation: Navigation = { backLink: journey.returnPoint.url }
+    const navigation: Navigation = { backLink: journey.returnPoint.url, cancelButton: journey.returnPoint.url }
     const viewModel = {
       journey: { ...journey, names },
       hintText,

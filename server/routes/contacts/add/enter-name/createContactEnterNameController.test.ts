@@ -167,13 +167,13 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId', () => {
-  it('should pass to relationship type page if there are no validation errors', async () => {
+  it('should pass to next page if there are no validation errors', async () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${journeyId}`)
       .type('form')
       .send({ firstName: 'first', lastName: 'last', middleNames: 'middle', title: 'Mr' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
 
     expect(session.addContactJourneys[journeyId].names).toStrictEqual({
       lastName: 'last',

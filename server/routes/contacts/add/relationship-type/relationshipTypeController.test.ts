@@ -56,7 +56,7 @@ afterEach(() => {
 
 describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-type/:journeyId', () => {
   it.each([
-    ['NEW', `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`, 'Add a contact and link to a prisoner'],
+    ['NEW', `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`, 'Add a contact and link to a prisoner'],
     ['EXISTING', `/prisoner/A1234BC/contacts/add/confirmation/${journeyId}`, 'Link a contact to a prisoner'],
   ])(
     'should render relationship type page for each mode %s',
@@ -79,7 +79,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-type
       )
       expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(expectedBackLink)
       expect($('.govuk-caption-l').first().text().trim()).toStrictEqual(expectedCaption)
-      expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+      expect($('[data-qa=cancel-button]')).toHaveLength(0)
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     },
   )

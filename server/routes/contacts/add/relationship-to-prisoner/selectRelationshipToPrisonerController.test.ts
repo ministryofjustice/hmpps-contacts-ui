@@ -78,22 +78,32 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-to-p
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'What is First Middle Last’s relationship to John Smith?',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]')).toHaveLength(0)
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-    expect($('#relationship :nth-child(1)').text()).toStrictEqual('')
-    expect($('#relationship :nth-child(2)').text()).toStrictEqual('Daughter')
-    expect($(`#relationship :nth-child(${STUBBED_SOCIAL_RELATIONSHIP_OPTIONS.length + 1})`).text()).toStrictEqual(
-      'ZZZ Alphabetically Last',
-    )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual(expectedCaption)
   })
 
   it.each([
-    ['S', 'Daughter', 'For example, if First Middle Last is the prisoner’s uncle, select ‘Uncle’.'],
-    ['O', 'Case Administrator', 'For example, if First Middle Last is the prisoner’s doctor, select ‘Doctor’.'],
+    [
+      'S',
+      'Daughter',
+      'For example, if First Middle Last is the prisoner’s uncle, select ‘Uncle’.',
+      'Select social relationship',
+    ],
+    [
+      'O',
+      'Case Administrator',
+      'For example, if First Middle Last is the prisoner’s doctor, select ‘Doctor’.',
+      'Select official relationship',
+    ],
   ])(
     'should use correct reference group for different relationship types %s',
-    async (relationshipType: 'S' | 'O', expectedFirstOption: string, expectedHintText: string) => {
+    async (
+      relationshipType: 'S' | 'O',
+      expectedFirstOption: string,
+      expectedHintText: string,
+      expectedDefaultLabel: string,
+    ) => {
       // Given
       auditService.logPageView.mockResolvedValue(null)
       existingJourney.relationship = { relationshipType }
@@ -111,9 +121,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-to-p
         'What is First Middle Last’s relationship to John Smith?',
       )
       expect($('#relationship-hint').text().trim()).toStrictEqual(expectedHintText)
-      expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+      expect($('[data-qa=cancel-button]')).toHaveLength(0)
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-      expect($('#relationship :nth-child(1)').text()).toStrictEqual('')
+      expect($('#relationship :nth-child(1)').text()).toStrictEqual(expectedDefaultLabel)
       expect($('#relationship :nth-child(2)').text()).toStrictEqual(expectedFirstOption)
     },
   )
@@ -131,7 +141,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-to-p
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('#relationship :nth-child(1)').text()).toStrictEqual('')
+    expect($('#relationship :nth-child(1)').text()).toStrictEqual('Select social relationship')
     expect($('#relationship :nth-child(2)').text()).toStrictEqual('Daughter')
     expect($(`#relationship :nth-child(${STUBBED_SOCIAL_RELATIONSHIP_OPTIONS.length + 1})`).text()).toStrictEqual(
       'ZZZ Alphabetically Last',

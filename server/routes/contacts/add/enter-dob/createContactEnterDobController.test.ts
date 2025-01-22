@@ -187,13 +187,13 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId', (
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
-  it('should pass to comments page if there are no validation errors', async () => {
+  it('should pass to next page if there are no validation errors', async () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
       .type('form')
       .send({ isKnown: 'NO' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`)
 
     const expectedDob = { isKnown: 'NO' }
     expect(session.addContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
@@ -202,26 +202,23 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
   it.each([
     ['01', '06', '1982'],
     ['1', '6', '1982'],
-  ])(
-    'should pass to relationship comments page if there are no validation errors with the date parsable',
-    async (day, month, year) => {
-      await request(app)
-        .post(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
-        .type('form')
-        .send({ isKnown: 'YES', day, month, year })
-        .expect(302)
-        .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`)
+  ])('should pass to next page if there are no validation errors with the date parsable', async (day, month, year) => {
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
+      .type('form')
+      .send({ isKnown: 'YES', day, month, year })
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`)
 
-      // Then
-      const expectedDob = {
-        isKnown: 'YES',
-        day: 1,
-        month: 6,
-        year: 1982,
-      }
-      expect(session.addContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
-    },
-  )
+    // Then
+    const expectedDob = {
+      isKnown: 'YES',
+      day: 1,
+      month: 6,
+      year: 1982,
+    }
+    expect(session.addContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
+  })
 
   it('should pass to check answers page if a valid DOB is entered and we are checking answers', async () => {
     existingJourney.isCheckingAnswers = true
