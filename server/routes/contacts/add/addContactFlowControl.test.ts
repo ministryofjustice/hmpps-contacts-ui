@@ -11,15 +11,15 @@ describe('addContactFlowControl', () => {
 
       it.each([
         [Page.CREATE_CONTACT_NAME_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`],
-        [Page.SELECT_RELATIONSHIP_TYPE, `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`],
+        [Page.CREATE_CONTACT_DOB_PAGE, `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`],
+        [Page.SELECT_RELATIONSHIP_TYPE, `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`],
         [Page.SELECT_CONTACT_RELATIONSHIP, `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`],
         [
           Page.SELECT_EMERGENCY_CONTACT,
           `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`,
         ],
         [Page.SELECT_NEXT_OF_KIN, `/prisoner/A1234BC/contacts/create/select-emergency-contact/${journeyId}`],
-        [Page.CREATE_CONTACT_DOB_PAGE, `/prisoner/A1234BC/contacts/create/select-next-of-kin/${journeyId}`],
-        [Page.ENTER_RELATIONSHIP_COMMENTS, `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`],
+        [Page.ENTER_RELATIONSHIP_COMMENTS, `/prisoner/A1234BC/contacts/create/select-next-of-kin/${journeyId}`],
         [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, undefined],
       ])('Should go back to previous page: from %s to %s', (page: Page, expectedBackUrl?: string) => {
         const journey: AddContactJourney = {
@@ -52,15 +52,15 @@ describe('addContactFlowControl', () => {
       it.each([
         [Page.CREATE_CONTACT_START_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`],
         [Page.ADD_CONTACT_MODE_PAGE, `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`],
-        [Page.CREATE_CONTACT_NAME_PAGE, `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`],
+        [Page.CREATE_CONTACT_NAME_PAGE, `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`],
+        [Page.CREATE_CONTACT_DOB_PAGE, `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`],
         [
           Page.SELECT_RELATIONSHIP_TYPE,
           `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`,
         ],
         [Page.SELECT_CONTACT_RELATIONSHIP, `/prisoner/A1234BC/contacts/create/select-emergency-contact/${journeyId}`],
         [Page.SELECT_EMERGENCY_CONTACT, `/prisoner/A1234BC/contacts/create/select-next-of-kin/${journeyId}`],
-        [Page.SELECT_NEXT_OF_KIN, `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`],
-        [Page.CREATE_CONTACT_DOB_PAGE, `/prisoner/A1234BC/contacts/create/enter-relationship-comments/${journeyId}`],
+        [Page.SELECT_NEXT_OF_KIN, `/prisoner/A1234BC/contacts/create/enter-relationship-comments/${journeyId}`],
         [Page.ENTER_RELATIONSHIP_COMMENTS, `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`],
         [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, `/prisoner/A1234BC/contact/NEW/123456/654321/success`],
       ])('Should go to next page if not checking answers: from %s to %s', (page: Page, expectedNextUrl?: string) => {

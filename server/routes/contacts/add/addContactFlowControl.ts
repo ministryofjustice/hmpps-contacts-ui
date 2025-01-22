@@ -88,10 +88,14 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   [Page.ADD_CONTACT_MODE_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CREATE_CONTACT_NAME_PAGE.url },
   [Page.CREATE_CONTACT_NAME_PAGE]: {
     previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
+    nextUrl: checkAnswersOr(PAGES.CREATE_CONTACT_DOB_PAGE.url),
+  },
+  [Page.CREATE_CONTACT_DOB_PAGE]: {
+    previousUrl: PAGES.CREATE_CONTACT_NAME_PAGE.url,
     nextUrl: checkAnswersOr(PAGES.SELECT_RELATIONSHIP_TYPE.url),
   },
   [Page.SELECT_RELATIONSHIP_TYPE]: {
-    previousUrl: PAGES.CREATE_CONTACT_NAME_PAGE.url,
+    previousUrl: PAGES.CREATE_CONTACT_DOB_PAGE.url,
     nextUrl: relationshipToPrisonerOrCheckAnswers(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
   },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
@@ -104,20 +108,11 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   },
   [Page.SELECT_NEXT_OF_KIN]: {
     previousUrl: PAGES.SELECT_EMERGENCY_CONTACT.url,
-    nextUrl: checkAnswersOr(PAGES.CREATE_CONTACT_DOB_PAGE.url),
-  },
-  [Page.CREATE_CONTACT_DOB_PAGE]: {
-    previousUrl: PAGES.SELECT_NEXT_OF_KIN.url,
-    nextUrl: journey => {
-      if (journey.isCheckingAnswers) {
-        return PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey)
-      }
-      return PAGES.ENTER_RELATIONSHIP_COMMENTS.url(journey)
-    },
+    nextUrl: checkAnswersOr(PAGES.ENTER_RELATIONSHIP_COMMENTS.url),
   },
   [Page.ENTER_RELATIONSHIP_COMMENTS]: {
     previousUrl: journey => {
-      return PAGES.CREATE_CONTACT_DOB_PAGE.url(journey)
+      return PAGES.SELECT_NEXT_OF_KIN.url(journey)
     },
     nextUrl: checkAnswersOr(PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url),
   },
