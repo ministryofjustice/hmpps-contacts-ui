@@ -133,8 +133,7 @@
     "redis": "^4.7.0",
     "reflect-metadata": "^0.2.2",
     "superagent": "^10.1.1",
-    "undici": "^6.21.1",
-    "uuid": "^10.0.0",
+    "uuid": "^11.0.5",
     "zod": "^3.24.1"
   },
   "devDependencies": {
@@ -190,11 +189,5 @@
     "ts-jest": "^29.2.5",
     "typescript": "^5.7.3",
     "wait-on": "^8.0.2"
-  },
-  "overrides": {
-    "aws-sdk-client-mock": {
-      "sinon": "^18.0.1",
-      "@types/sinon": "^17.0.3"
-    }
   }
 }
