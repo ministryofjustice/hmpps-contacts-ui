@@ -12,7 +12,7 @@ import SearchContactPage from '../pages/searchContactPage'
 import CreateContactSuccessPage from '../pages/createContactSuccessPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 
-context('Create contact and update from check answers', () => {
+context('Create contact and update the relationship from check answers', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn', { roles: ['PRISON'] })
@@ -86,24 +86,107 @@ context('Create contact and update from check answers', () => {
       .continueTo(RelationshipCommentsPage, 'First Middle Last')
       .enterComments('Some comments about the relationship')
       .continueTo(CreateContactCheckYourAnswersPage)
-      .verifyShowsNameAs('First Middle Last')
+      .verifyShowsNameAs('Last, Mr First Middle')
+      .verifyShowsDateOfBirthAs('15 June 1982')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
       .verifyShowIsNextOfKinAs('No')
       .verifyShowCommentsAs('Some comments about the relationship')
   })
 
-  it('Can change a contacts emergency contact status when creating a new contact', () => {
+  it('Can change a contacts relationship to prisoner directly when creating a new contact', () => {
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowIsEmergencyContactAs('No')
-      .clickChangeEmergencyContactLink()
+      .verifyShowRelationshipAs('Mother')
+      .clickChangeRelationshipLink()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'First Middle Last') //
-      .selectIsEmergencyContact('YES')
+    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Last', 'John Smith') //
+      .selectRelationship('FA')
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowIsEmergencyContactAs('Yes')
+      .verifyShowRelationshipAs('Father')
+      .continueTo(CreateContactSuccessPage)
+
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: '/contact',
+      },
+      {
+        title: 'MR',
+        lastName: 'Last',
+        firstName: 'First',
+        middleNames: 'Middle',
+        createdBy: 'USER1',
+        dateOfBirth: '1982-06-15T00:00:00.000Z',
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipType: 'S',
+          relationshipToPrisoner: 'FA',
+          isNextOfKin: false,
+          isEmergencyContact: false,
+          comments: 'Some comments about the relationship',
+        },
+      },
+    )
+  })
+
+  it('Can change a contacts relationship type to prisoner which requires updating relationship to prisoner when creating a new contact', () => {
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowRelationshipTypeAs('Social')
+      .verifyShowRelationshipAs('Mother')
+      .clickChangeRelationshipTypeLink()
+
+    Page.verifyOnPage(SelectRelationshipTypePage, 'First Middle Last', 'John Smith') //
+      .selectRelationshipType('O')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Last', 'John Smith') //
+      .selectRelationship('DR')
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowRelationshipTypeAs('Official')
+      .verifyShowRelationshipAs('Doctor')
+      .continueTo(CreateContactSuccessPage)
+
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: '/contact',
+      },
+      {
+        title: 'MR',
+        lastName: 'Last',
+        firstName: 'First',
+        middleNames: 'Middle',
+        createdBy: 'USER1',
+        dateOfBirth: '1982-06-15T00:00:00.000Z',
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipType: 'O',
+          relationshipToPrisoner: 'DR',
+          isNextOfKin: false,
+          isEmergencyContact: false,
+          comments: 'Some comments about the relationship',
+        },
+      },
+    )
+  })
+
+  it('Re-selecting the same relationship type does not require re-entry of relationship to prisoner', () => {
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowRelationshipTypeAs('Social')
+      .verifyShowRelationshipAs('Mother')
+      .clickChangeRelationshipTypeLink()
+
+    Page.verifyOnPage(SelectRelationshipTypePage, 'First Middle Last', 'John Smith') //
+      .selectRelationshipType('S')
+      .clickContinue()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowRelationshipTypeAs('Social')
+      .verifyShowRelationshipAs('Mother')
       .continueTo(CreateContactSuccessPage)
 
     cy.verifyLastAPICall(
@@ -123,82 +206,8 @@ context('Create contact and update from check answers', () => {
           relationshipType: 'S',
           relationshipToPrisoner: 'MOT',
           isNextOfKin: false,
-          isEmergencyContact: true,
-          comments: 'Some comments about the relationship',
-        },
-      },
-    )
-  })
-
-  it('Can change a contacts next of kin status when creating a new contact', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowIsNextOfKinAs('No')
-      .clickChangeNextOfKinLink()
-
-    Page.verifyOnPage(SelectNextOfKinPage, 'First Middle Last') //
-      .selectIsNextOfKin('YES')
-      .clickContinue()
-
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowIsNextOfKinAs('Yes')
-      .continueTo(CreateContactSuccessPage)
-
-    cy.verifyLastAPICall(
-      {
-        method: 'POST',
-        urlPath: '/contact',
-      },
-      {
-        title: 'MR',
-        lastName: 'Last',
-        firstName: 'First',
-        middleNames: 'Middle',
-        createdBy: 'USER1',
-        dateOfBirth: '1982-06-15T00:00:00.000Z',
-        relationship: {
-          prisonerNumber: 'A1234BC',
-          relationshipType: 'S',
-          relationshipToPrisoner: 'MOT',
-          isNextOfKin: true,
           isEmergencyContact: false,
           comments: 'Some comments about the relationship',
-        },
-      },
-    )
-  })
-
-  it('Can change the comments when creating a new contact', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowCommentsAs('Some comments about the relationship')
-      .clickChangeCommentsLink()
-
-    Page.verifyOnPage(RelationshipCommentsPage, 'First Middle Last') //
-      .enterComments('Some new comments I entered')
-      .clickContinue()
-
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowCommentsAs('Some new comments I entered')
-      .continueTo(CreateContactSuccessPage)
-
-    cy.verifyLastAPICall(
-      {
-        method: 'POST',
-        urlPath: '/contact',
-      },
-      {
-        title: 'MR',
-        lastName: 'Last',
-        firstName: 'First',
-        middleNames: 'Middle',
-        createdBy: 'USER1',
-        dateOfBirth: '1982-06-15T00:00:00.000Z',
-        relationship: {
-          prisonerNumber: 'A1234BC',
-          relationshipType: 'S',
-          relationshipToPrisoner: 'MOT',
-          isNextOfKin: false,
-          isEmergencyContact: false,
-          comments: 'Some new comments I entered',
         },
       },
     )

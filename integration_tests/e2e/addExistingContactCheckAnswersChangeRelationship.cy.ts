@@ -1,5 +1,5 @@
 import Page from '../pages/page'
-import CreateContactCheckYourAnswersPage from '../pages/createContactCheckYourAnswersPage'
+import LinkExistingContactCYAPage from '../pages/linkExistingContactCYAPage'
 import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
@@ -86,7 +86,7 @@ context('Add Existing Contact Check Answers', () => {
       .selectIsNextOfKin('YES')
       .continueTo(RelationshipCommentsPage, 'Existing Contact') //
       .enterComments('Some comments about the relationship')
-      .continueTo(CreateContactCheckYourAnswersPage) //
+      .continueTo(LinkExistingContactCYAPage) //
       .verifyShowsNameAs('Existing Contact (654321)')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
@@ -95,7 +95,7 @@ context('Add Existing Contact Check Answers', () => {
   })
 
   it('Can change the relationship to prisoner directly from check answers', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'Existing Contact') //
+    Page.verifyOnPage(LinkExistingContactCYAPage, 'Existing Contact') //
       .verifyShowRelationshipAs('Mother')
       .clickChangeRelationshipLink()
 
@@ -103,7 +103,7 @@ context('Add Existing Contact Check Answers', () => {
       .selectRelationship('FA')
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(LinkExistingContactCYAPage) //
       .verifyShowRelationshipAs('Father')
       .continueTo(AddContactSuccessPage)
 
@@ -128,7 +128,7 @@ context('Add Existing Contact Check Answers', () => {
   })
 
   it('Can change the relationship type from check answers which requires re-selecting the relationship to prisoner', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'Existing Contact') //
+    Page.verifyOnPage(LinkExistingContactCYAPage, 'Existing Contact') //
       .verifyShowRelationshipTypeAs('Social')
       .clickChangeRelationshipTypeLink()
 
@@ -140,7 +140,7 @@ context('Add Existing Contact Check Answers', () => {
       .selectRelationship('DR')
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(LinkExistingContactCYAPage) //
       .verifyShowRelationshipTypeAs('Official')
       .verifyShowRelationshipAs('Doctor')
       .continueTo(AddContactSuccessPage)
@@ -166,7 +166,7 @@ context('Add Existing Contact Check Answers', () => {
   })
 
   it('Re-selecting the same relationship type returns straight to check answers', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'Existing Contact') //
+    Page.verifyOnPage(LinkExistingContactCYAPage, 'Existing Contact') //
       .verifyShowRelationshipTypeAs('Social')
       .clickChangeRelationshipTypeLink()
 
@@ -174,7 +174,7 @@ context('Add Existing Contact Check Answers', () => {
       .selectRelationshipType('S')
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(LinkExistingContactCYAPage) //
       .verifyShowRelationshipTypeAs('Social')
       .verifyShowRelationshipAs('Mother')
       .continueTo(AddContactSuccessPage)

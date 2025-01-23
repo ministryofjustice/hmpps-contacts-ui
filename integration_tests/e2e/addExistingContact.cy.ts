@@ -1,5 +1,5 @@
 import Page from '../pages/page'
-import CreateContactCheckYourAnswersPage from '../pages/createContactCheckYourAnswersPage'
+import LinkExistingContactCYAPage from '../pages/linkExistingContactCYAPage'
 import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
@@ -114,7 +114,7 @@ context('Add Existing Contact', () => {
       .enterComments('Some comments about the relationship')
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(LinkExistingContactCYAPage) //
       .verifyShowsNameAs('Existing Contact (654321)')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
@@ -180,7 +180,7 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(RelationshipCommentsPage, 'Existing Contact') //
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(LinkExistingContactCYAPage) //
       .verifyShowsNameAs('Existing Contact (654321)')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('Yes')
@@ -244,7 +244,7 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(RelationshipCommentsPage, 'Existing Contact') //
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(LinkExistingContactCYAPage) //
       .verifyShowsNameAs('Existing Contact (654321)')
       .verifyShowRelationshipAs('Doctor')
       .verifyShowIsEmergencyContactAs('Yes')
@@ -429,7 +429,7 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(RelationshipCommentsPage, 'Deceased Contact') //
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(LinkExistingContactCYAPage) //
       .verifyShowsNameAs('Deceased Contact (654321)')
       .continueTo(AddContactSuccessPage)
 

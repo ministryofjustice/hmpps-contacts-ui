@@ -1,5 +1,5 @@
 import Page from '../pages/page'
-import CreateContactCheckYourAnswersPage from '../pages/createContactCheckYourAnswersPage'
+import LinkExistingContactCYAPage from '../pages/linkExistingContactCYAPage'
 import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
@@ -86,7 +86,7 @@ context('Add Existing Contact Check Answers', () => {
       .selectIsNextOfKin('YES')
       .continueTo(RelationshipCommentsPage, 'Existing Contact') //
       .enterComments('Some comments about the relationship')
-      .continueTo(CreateContactCheckYourAnswersPage) //
+      .continueTo(LinkExistingContactCYAPage) //
       .verifyShowsNameAs('Existing Contact (654321)')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
@@ -95,7 +95,7 @@ context('Add Existing Contact Check Answers', () => {
   })
 
   it('Can change emergency contact from check answers', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'Existing Contact') //
+    Page.verifyOnPage(LinkExistingContactCYAPage, 'Existing Contact') //
       .verifyShowIsEmergencyContactAs('No')
       .clickChangeEmergencyContactLink()
 
@@ -103,7 +103,7 @@ context('Add Existing Contact Check Answers', () => {
       .selectIsEmergencyContact('YES')
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(LinkExistingContactCYAPage) //
       .verifyShowIsEmergencyContactAs('Yes')
       .continueTo(AddContactSuccessPage)
 
@@ -128,7 +128,7 @@ context('Add Existing Contact Check Answers', () => {
   })
 
   it('Can change next of kin from check answers', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'Existing Contact') //
+    Page.verifyOnPage(LinkExistingContactCYAPage, 'Existing Contact') //
       .verifyShowIsNextOfKinAs('Yes')
       .clickChangeNextOfKinLink()
 
@@ -136,7 +136,7 @@ context('Add Existing Contact Check Answers', () => {
       .selectIsNextOfKin('NO')
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(LinkExistingContactCYAPage) //
       .verifyShowIsNextOfKinAs('No')
       .continueTo(AddContactSuccessPage)
 
@@ -161,7 +161,7 @@ context('Add Existing Contact Check Answers', () => {
   })
 
   it('Can change relationship comments from check answers', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'Existing Contact') //
+    Page.verifyOnPage(LinkExistingContactCYAPage, 'Existing Contact') //
       .verifyShowCommentsAs('Some comments about the relationship')
       .clickChangeCommentsLink()
 
@@ -169,7 +169,7 @@ context('Add Existing Contact Check Answers', () => {
       .enterComments('Some updated comments')
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(LinkExistingContactCYAPage) //
       .verifyShowCommentsAs('Some updated comments')
       .continueTo(AddContactSuccessPage)
 

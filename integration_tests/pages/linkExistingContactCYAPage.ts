@@ -1,16 +1,8 @@
 import Page, { PageElement } from './page'
 
-export default class CreateContactCheckYourAnswersPage extends Page {
+export default class LinkExistingContactCYAPage extends Page {
   constructor() {
     super(`Check your answers`)
-  }
-
-  clickChangeNameLink() {
-    this.changeNameLink().click()
-  }
-
-  clickChangeDateOfBirthLink() {
-    this.changeDateOfBirthLink().click()
   }
 
   clickChangeRelationshipTypeLink() {
@@ -33,66 +25,37 @@ export default class CreateContactCheckYourAnswersPage extends Page {
     this.changeCommentsLink().click()
   }
 
-  verifyShowsNameAs(expected: string): CreateContactCheckYourAnswersPage {
+  verifyShowsNameAs(expected: string): LinkExistingContactCYAPage {
     this.checkAnswersNameValue().should('contain.text', expected)
     return this
   }
 
-  verifyShowsDateOfBirthAs(expected: string): CreateContactCheckYourAnswersPage {
-    this.checkAnswersDobValue().should('contain.text', expected)
-    return this
-  }
-
-  verifyShowDeceasedDate(expected: string): CreateContactCheckYourAnswersPage {
-    this.checkAnswersDeceasedValue().should('contain.text', expected)
-    return this
-  }
-
-  verifyNoDeceasedDate(): CreateContactCheckYourAnswersPage {
-    this.checkAnswersDeceasedValue().should('not.exist')
-    return this
-  }
-
-  verifyShowRelationshipTypeAs(expected: string): CreateContactCheckYourAnswersPage {
+  verifyShowRelationshipTypeAs(expected: string): LinkExistingContactCYAPage {
     this.checkAnswersRelationshipTypeValue().should('contain.text', expected)
     return this
   }
 
-  verifyShowRelationshipAs(expected: string): CreateContactCheckYourAnswersPage {
+  verifyShowRelationshipAs(expected: string): LinkExistingContactCYAPage {
     this.checkAnswersRelationshipValue().should('contain.text', expected)
     return this
   }
 
-  verifyShowIsEmergencyContactAs(expected: string): CreateContactCheckYourAnswersPage {
+  verifyShowIsEmergencyContactAs(expected: string): LinkExistingContactCYAPage {
     this.checkAnswersEmergencyContactValue().should('contain.text', expected)
     return this
   }
 
-  verifyShowIsNextOfKinAs(expected: string): CreateContactCheckYourAnswersPage {
+  verifyShowIsNextOfKinAs(expected: string): LinkExistingContactCYAPage {
     this.checkAnswersNextOfKinValue().should('contain.text', expected)
     return this
   }
 
-  verifyShowCommentsAs(expected: string): CreateContactCheckYourAnswersPage {
+  verifyShowCommentsAs(expected: string): LinkExistingContactCYAPage {
     this.checkAnswersCommentsValue().should('contain.text', expected)
     return this
   }
 
-  verifyNameIsNotChangeable(): CreateContactCheckYourAnswersPage {
-    this.changeNameLink().should('not.exist')
-    return this
-  }
-
-  verifyDateOfBirthIsNotChangeable(): CreateContactCheckYourAnswersPage {
-    this.changeDateOfBirthLink().should('not.exist')
-    return this
-  }
-
-  private checkAnswersNameValue = (): PageElement => cy.get('.check-answers-name-value')
-
-  private checkAnswersDobValue = (): PageElement => cy.get('.check-answers-dob-value')
-
-  private checkAnswersDeceasedValue = (): PageElement => cy.get('.check-answers-deceased-value')
+  private checkAnswersNameValue = (): PageElement => cy.findByText('Contact:').next()
 
   private checkAnswersRelationshipValue = (): PageElement => cy.get('.check-answers-relationship-to-prisoner-value')
 
@@ -103,10 +66,6 @@ export default class CreateContactCheckYourAnswersPage extends Page {
   private checkAnswersNextOfKinValue = (): PageElement => cy.get('.check-answers-next-of-kin-value')
 
   private checkAnswersCommentsValue = (): PageElement => cy.get('.check-answers-comments-value')
-
-  private changeNameLink = (): PageElement => cy.get('[data-qa=change-name-link]')
-
-  private changeDateOfBirthLink = (): PageElement => cy.get('[data-qa=change-dob-link]')
 
   private changeRelationshipLink = (): PageElement => cy.get('[data-qa=change-relationship-to-prisoner-link]')
 

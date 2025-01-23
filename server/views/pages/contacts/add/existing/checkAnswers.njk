@@ -1,16 +1,16 @@
-{% extends "../../../partials/layout.njk" %}
+{% extends "partials/layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
-{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
 
 {% set title = "Check your answers before linking the contact to " + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) %}
 {% set pageTitle = "Check your answers before linking the contact to the prisoner - Contacts - DPS" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-{% include '../../../partials/navigation.njk' %}
+{% include 'partials/navigation.njk' %}
 {{ miniProfile(prisonerDetails) }}
-{% include '../../../partials/formErrorSummary.njk' %}
+{% include 'partials/formErrorSummary.njk' %}
  <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
           <div class="govuk-grid-row">
@@ -108,7 +108,7 @@
                   ]
                 }
                 },
-                {
+                null and {
                   key: {
                   text: "Approved for visits"
                 },

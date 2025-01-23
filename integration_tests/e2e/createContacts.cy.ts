@@ -107,7 +107,8 @@ context('Create Contacts', () => {
     Page.verifyOnPage(RelationshipCommentsPage, 'First Last').clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowsNameAs('First Last')
+      .verifyShowsNameAs('Last, First')
+      .verifyShowsDateOfBirthAs('Not provided')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
       .verifyShowIsNextOfKinAs('Yes')
@@ -167,7 +168,8 @@ context('Create Contacts', () => {
     Page.verifyOnPage(RelationshipCommentsPage, 'First Last').clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowsNameAs('First Last')
+      .verifyShowsNameAs('Last, First')
+      .verifyShowsDateOfBirthAs('Not provided')
       .verifyShowRelationshipAs('Doctor')
       .verifyShowIsEmergencyContactAs('No')
       .verifyShowIsNextOfKinAs('Yes')
@@ -234,7 +236,8 @@ context('Create Contacts', () => {
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowsNameAs('First Middle Last')
+      .verifyShowsNameAs('Last, Mr First Middle')
+      .verifyShowsDateOfBirthAs('15 June 1982')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('Yes')
       .verifyShowIsNextOfKinAs('No')
