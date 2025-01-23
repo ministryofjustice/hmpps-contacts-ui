@@ -20,6 +20,18 @@ export default class CreateContactCheckAnswersController implements PageHandler 
   public PAGE_NAME = Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE
 
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
+    const { journeyId } = req.params
+    const journey = req.session.addContactJourneys[journeyId]
+    if (journey.mode === 'NEW') {
+      return this.getForNewContact(req, res)
+    }
+    return this.getForExistingContact(req, res)
+  }
+
+  private getForNewContact = async (
+    req: Request<PrisonerJourneyParams, unknown, unknown>,
+    res: Response,
+  ): Promise<void> => {
     const { user } = res.locals
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys[journeyId]
@@ -58,7 +70,44 @@ export default class CreateContactCheckAnswersController implements PageHandler 
       formattedFullName,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
     }
-    res.render('pages/contacts/add/checkAnswers', view)
+    res.render('pages/contacts/add/new/checkAnswers', view)
+  }
+
+  private getForExistingContact = async (
+    req: Request<PrisonerJourneyParams, unknown, unknown>,
+    res: Response,
+  ): Promise<void> => {
+    const { user } = res.locals
+    const { journeyId } = req.params
+    const journey = req.session.addContactJourneys[journeyId]
+    journey.isCheckingAnswers = true
+    journey.previousAnswers = {
+      names: journey.names,
+      dateOfBirth: journey.dateOfBirth,
+      relationship: journey.relationship,
+    }
+    const relationshipTypeDescription = await this.referenceDataService.getReferenceDescriptionForCode(
+      ReferenceCodeType.RELATIONSHIP_TYPE,
+      journey.relationship.relationshipType,
+      user,
+    )
+
+    const relationshipToPrisonerDescription = await this.referenceDataService.getReferenceDescriptionForCode(
+      journey.relationship.relationshipType === 'S'
+        ? ReferenceCodeType.SOCIAL_RELATIONSHIP
+        : ReferenceCodeType.OFFICIAL_RELATIONSHIP,
+      journey.relationship.relationshipToPrisoner,
+      user,
+    )
+
+    const view = {
+      journey,
+      caption: captionForAddContactJourney(journey),
+      relationshipToPrisonerDescription,
+      relationshipTypeDescription,
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+    }
+    res.render('pages/contacts/add/existing/checkAnswers', view)
   }
 
   POST = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {

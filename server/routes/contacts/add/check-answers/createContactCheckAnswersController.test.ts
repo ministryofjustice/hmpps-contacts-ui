@@ -78,31 +78,48 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId', () => {
-  it.each([
-    ['NEW', 'Add a contact and link to a prisoner'],
-    ['EXISTING', 'Link a contact to a prisoner'],
-  ])(
-    'should render check answers page with dob for mode %s',
-    async (mode: 'NEW' | 'EXISTING', expectedCaption: string) => {
-      // Given
-      auditService.logPageView.mockResolvedValue(null)
-      journey.mode = mode
+  it('should render check answers page with dob for mode NEW', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    journey.mode = 'NEW'
 
-      // When
-      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
 
-      // Then
-      expect(response.status).toEqual(200)
-      expect(journey.isCheckingAnswers).toStrictEqual(true)
-      const $ = cheerio.load(response.text)
-      expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Check your answers')
-      expect($('.govuk-caption-l').first().text().trim()).toStrictEqual(expectedCaption)
-      expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-      expect($('.check-answers-dob-value').first().text().trim()).toStrictEqual('1 January 2024')
-      expect($('.check-answers-comments-value').first().text().trim()).toStrictEqual('some comments')
-      expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-    },
-  )
+    // Then
+    expect(response.status).toEqual(200)
+    expect(journey.isCheckingAnswers).toStrictEqual(true)
+    const $ = cheerio.load(response.text)
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Check your answers')
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('.check-answers-dob-value').first().text().trim()).toStrictEqual('1 January 2024')
+    expect($('.check-answers-comments-value').first().text().trim()).toStrictEqual('some comments')
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+  })
+
+  it('should render alternative check answers page for mode EXISTING', async () => {
+    // Given
+    auditService.logPageView.mockResolvedValue(null)
+    journey.mode = 'EXISTING'
+    journey.contactId = 12345
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect(journey.isCheckingAnswers).toStrictEqual(true)
+    const $ = cheerio.load(response.text)
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
+      'Check your answers before linking the contact to John Smith',
+    )
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Link a contact to a prisoner')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('.check-answers-comments-value').first().text().trim()).toStrictEqual('some comments')
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('p > strong:contains("Contact:")').first().next().text().trim()).toStrictEqual('First Last (12345)')
+  })
 
   it('should render check answers page without dob', async () => {
     // Given

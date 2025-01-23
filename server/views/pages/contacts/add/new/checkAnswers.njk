@@ -1,16 +1,16 @@
-{% extends "../../../partials/layout.njk" %}
+{% extends "partials/layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
-{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
 
 {% set pageTitle = applicationName + " - Enter date of birth" %}
 {% set title = "Check your answers" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-{% include '../../../partials/navigation.njk' %}
+{% include 'partials/navigation.njk' %}
 {{ miniProfile(prisonerDetails) }}
-{% include '../../../partials/formErrorSummary.njk' %}
+{% include 'partials/formErrorSummary.njk' %}
  <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <span class="govuk-caption-l">{{ caption or 'Contacts' }}</span>

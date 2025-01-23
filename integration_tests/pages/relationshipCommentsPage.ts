@@ -6,7 +6,7 @@ export default class RelationshipCommentsPage extends Page {
   }
 
   enterComments(value: string): RelationshipCommentsPage {
-    this.commentsTextBox().clear().type(value)
+    this.commentsTextBox().clear().type(value, { delay: 0 })
     return this
   }
 

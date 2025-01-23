@@ -6,32 +6,32 @@ export default class SearchContactPage extends Page {
   }
 
   enterFirstName(value: string): SearchContactPage {
-    this.firstNameTextBox().clear().type(value)
+    this.firstNameTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
   enterMiddleNames(value: string): SearchContactPage {
-    this.middleNamesTextBox().clear().type(value)
+    this.middleNamesTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
   enterLastName(value: string): SearchContactPage {
-    this.lastNameTextBox().clear().type(value)
+    this.lastNameTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
   enterDay(value: string): SearchContactPage {
-    this.dayTextBox().clear().type(value)
+    this.dayTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
   enterMonth(value: string): SearchContactPage {
-    this.monthTextBox().clear().type(value)
+    this.monthTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
   enterYear(value: string): SearchContactPage {
-    this.yearTextBox().clear().type(value)
+    this.yearTextBox().clear().type(value, { delay: 0 })
     return this
   }
 

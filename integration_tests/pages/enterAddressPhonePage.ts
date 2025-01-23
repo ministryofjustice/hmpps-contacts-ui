@@ -11,7 +11,7 @@ export default class EnterAddressPhonePage extends Page {
   }
 
   enterPhoneNumber(value: string): EnterAddressPhonePage {
-    this.phoneNumberTextBox().clear().type(value)
+    this.phoneNumberTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
@@ -31,7 +31,7 @@ export default class EnterAddressPhonePage extends Page {
   }
 
   enterExtension(value: string): EnterAddressPhonePage {
-    this.extensionTextBox().clear().type(value)
+    this.extensionTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
