@@ -23,9 +23,7 @@ export const findError = (errors: fieldErrors, fieldName: string) => {
 
 export type SchemaFactory<P extends { [key: string]: string }> = (request: Request<P>) => Promise<z.ZodTypeAny>
 
-export const validate = <P extends { [key: string]: string }>(
-  schema: z.ZodTypeAny | SchemaFactory<P>,
-) => {
+export const validate = <P extends { [key: string]: string }>(schema: z.ZodTypeAny | SchemaFactory<P>) => {
   return async (req: Request<P>, res: Response, next: NextFunction) => {
     if (!schema) {
       return next()

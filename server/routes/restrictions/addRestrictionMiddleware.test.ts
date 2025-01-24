@@ -4,7 +4,13 @@ import { SessionData } from 'express-session'
 import ensureInAddRestrictionJourney from './addRestrictionMiddleware'
 import { user } from '../testutils/appSetup'
 
-type Request = ExpressRequest<{ journeyId: string; prisonerNumber: string; contactId: string; prisonerContactId: string; restrictionClass: journeys.RestrictionClass }>
+type Request = ExpressRequest<{
+  journeyId: string
+  prisonerNumber: string
+  contactId: string
+  prisonerContactId: string
+  restrictionClass: journeys.RestrictionClass
+}>
 
 describe('addRestrictionMiddleware', () => {
   describe('ensureInAddRestrictionJourney', () => {
