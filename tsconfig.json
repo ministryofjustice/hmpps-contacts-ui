@@ -15,6 +15,12 @@
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "experimentalDecorators": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "inlineSources": true,
     "typeRoots": ["./server/@types", "./node_modules/@types"]
   },
   "exclude": [
@@ -26,7 +32,8 @@
     "esbuild",
     "coverage",
     "eslint.config.mjs",
-    "test_results"
+    "test_results",
+    "**/*.test.ts"
   ],
   "include": ["**/*.js", "**/*.ts"]
 }

@@ -54,6 +54,7 @@ export declare global {
           }[]
         }
       }
+      applicationName: string
     }
   }
 }
