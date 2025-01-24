@@ -189,7 +189,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob?r
 
     expect(contactsService.updateContactById).toHaveBeenCalledWith(
       contactId,
-      { dateOfBirth: null, updatedBy: 'user1' },
+      { dateOfBirth: undefined, updatedBy: 'user1' },
       user,
     )
   })
