@@ -1,8 +1,10 @@
-import { Request, Response } from 'express'
+import { Request as ExpressRequest, Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
 import { SessionData } from 'express-session'
 import ensureInAddRestrictionJourney from './addRestrictionMiddleware'
 import { user } from '../testutils/appSetup'
+
+type Request = ExpressRequest<{ journeyId: string; prisonerNumber: string; contactId: string; prisonerContactId: string; restrictionClass: journeys.RestrictionClass }>
 
 describe('addRestrictionMiddleware', () => {
   describe('ensureInAddRestrictionJourney', () => {

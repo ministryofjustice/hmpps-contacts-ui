@@ -39,7 +39,7 @@ describe('enterRelationshipCommentsSchemas', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
       expect(deduplicatedFieldErrors).toStrictEqual({
         comments: ['Additional information must be 240 characters or less'],
       })

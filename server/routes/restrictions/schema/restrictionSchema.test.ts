@@ -1,7 +1,9 @@
-import { Request } from 'express'
+import { Request as ExpressRequest } from 'express'
 import { restrictionSchema } from './restrictionSchema'
 import { deduplicateFieldErrors } from '../../../middleware/validationMiddleware'
 import RestrictionClass = journeys.RestrictionClass
+
+type Request = ExpressRequest<{ restrictionClass: RestrictionClass }>
 
 describe('restrictionSchema', () => {
   type Form = {
@@ -28,7 +30,7 @@ describe('restrictionSchema', () => {
 
         // Then
         expect(result.success).toStrictEqual(false)
-        const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+        const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
         expect(deduplicatedFieldErrors).toStrictEqual({ type: ['Select the restriction type'] })
       },
     )
@@ -44,7 +46,7 @@ describe('restrictionSchema', () => {
 
         // Then
         expect(result.success).toStrictEqual(false)
-        const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+        const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
         expect(deduplicatedFieldErrors).toStrictEqual({ startDate: ['Enter the start date for the restriction'] })
       },
     )
@@ -74,7 +76,7 @@ describe('restrictionSchema', () => {
 
         // Then
         expect(result.success).toStrictEqual(false)
-        const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+        const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
         expect(deduplicatedFieldErrors).toStrictEqual({ startDate: ['Start date must be a real date'] })
       },
     )
@@ -90,7 +92,7 @@ describe('restrictionSchema', () => {
 
         // Then
         expect(result.success).toStrictEqual(false)
-        const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+        const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
         expect(deduplicatedFieldErrors).toStrictEqual({ expiryDate: ['Expiry date must be a real date'] })
       },
     )
@@ -106,7 +108,7 @@ describe('restrictionSchema', () => {
 
         // Then
         expect(result.success).toStrictEqual(false)
-        const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+        const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
         expect(deduplicatedFieldErrors).toStrictEqual({
           expiryDate: ['End date must be the same as or after the start date December 2024'],
         })
@@ -127,7 +129,7 @@ describe('restrictionSchema', () => {
 
         // Then
         expect(result.success).toStrictEqual(false)
-        const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+        const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
         expect(deduplicatedFieldErrors).toStrictEqual({ comments: [`Comment must be ${maxLength} characters or less`] })
       },
     )

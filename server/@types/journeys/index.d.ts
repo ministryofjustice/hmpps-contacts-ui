@@ -148,5 +148,5 @@ declare namespace journeys {
   type YesOrNo = 'YES' | 'NO'
   type YesNoOrDoNotKnow = 'YES' | 'NO' | 'DO_NOT_KNOW'
   type PrisonerJourneyParams = { prisonerNumber: string; journeyId: string }
-  type RestrictionClass = 'CONTACT_GLOBAL' | 'PRISONER_CONTACT'
+  export type RestrictionClass = 'CONTACT_GLOBAL' | 'PRISONER_CONTACT'
 }

@@ -40,7 +40,7 @@ describe('contactSearchSchema', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
       expect(deduplicatedFieldErrors).toStrictEqual({ lastName: ["Enter the contact's last name"] })
     })
 
@@ -53,7 +53,7 @@ describe('contactSearchSchema', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
       expect(deduplicatedFieldErrors).toStrictEqual({
         firstName: ["Contact's first name must not contain special characters"],
         middleNames: ["Contact's middle names must not contain special characters"],
@@ -70,7 +70,7 @@ describe('contactSearchSchema', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
       expect(deduplicatedFieldErrors).toStrictEqual({
         day: ['Enter a valid day of the month (1-31)'],
         month: ['Enter a valid month (1-12)'],
@@ -97,7 +97,7 @@ describe('contactSearchSchema', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
       expect(deduplicatedFieldErrors).toStrictEqual({
         dob: ['The date of birth must not be in the future'],
       })
@@ -118,7 +118,7 @@ describe('contactSearchSchema', () => {
 
         // Then
         expect(result.success).toStrictEqual(false)
-        const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+        const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
         expect(deduplicatedFieldErrors).toStrictEqual({
           firstName: [`Contact's first name must not contain special characters`],
           lastName: [`Contact's last name must not contain special characters`],

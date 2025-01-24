@@ -18,7 +18,7 @@ describe('createContactEnterDobSchema', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
       expect(deduplicatedFieldErrors).toStrictEqual({ isKnown: ['Select whether the date of birth is known'] })
     })
 
@@ -58,7 +58,7 @@ describe('createContactEnterDobSchema', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
       expect(deduplicatedFieldErrors).toStrictEqual({
         dob: ["Enter the contact's date of birth"],
       })
@@ -73,7 +73,7 @@ describe('createContactEnterDobSchema', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
       expect(deduplicatedFieldErrors).toStrictEqual({
         dob: ["Enter the contact's date of birth"],
       })
@@ -88,7 +88,7 @@ describe('createContactEnterDobSchema', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
       expect(deduplicatedFieldErrors).toStrictEqual({
         day: ['Enter a valid day of the month (1-31)'],
         month: ['Enter a valid month (1-12)'],
@@ -113,7 +113,7 @@ describe('createContactEnterDobSchema', () => {
       // Then
       expect(result.success).toStrictEqual(isValid)
       if (!isValid) {
-        const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+        const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
         expect(deduplicatedFieldErrors).toStrictEqual({
           day: ['Enter a valid day of the month (1-31)'],
           dob: ['The date of birth is invalid'],
@@ -137,7 +137,7 @@ describe('createContactEnterDobSchema', () => {
       // Then
       expect(result.success).toStrictEqual(isValid)
       if (!isValid) {
-        const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+        const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
         expect(deduplicatedFieldErrors).toStrictEqual({
           month: ['Enter a valid month (1-12)'],
           dob: ['The date of birth is invalid'],
@@ -161,7 +161,7 @@ describe('createContactEnterDobSchema', () => {
         // Then
         expect(result.success).toStrictEqual(isValid)
         if (!isValid) {
-          const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+          const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
           expect(deduplicatedFieldErrors).toStrictEqual({
             year: ['Enter a valid year. Must be at least 1900'],
             dob: ['The date of birth is invalid'],
@@ -182,7 +182,7 @@ describe('createContactEnterDobSchema', () => {
         // Then
         expect(result.success).toStrictEqual(isValid)
         if (!isValid) {
-          const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+          const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
           expect(deduplicatedFieldErrors).toStrictEqual({
             year: ['Enter a valid year. Must be at least 1900'],
           })
@@ -199,7 +199,7 @@ describe('createContactEnterDobSchema', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
       expect(deduplicatedFieldErrors).toStrictEqual({
         isKnown: ['The date of birth must not be in the future'],
       })
