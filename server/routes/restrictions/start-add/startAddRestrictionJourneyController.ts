@@ -61,7 +61,7 @@ export default class StartAddRestrictionJourneyController implements PageHandler
             new Date(b.lastTouched).getTime() - new Date(a.lastTouched).getTime(),
         )
         .slice(this.MAX_JOURNEYS)
-        .forEach(journeyToRemove => delete req.session.addRestrictionJourneys[journeyToRemove.id])
+        .forEach(journeyToRemove => delete req.session.addRestrictionJourneys![journeyToRemove.id])
     }
     res.redirect(
       `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/enter-restriction/${journey.id}`,

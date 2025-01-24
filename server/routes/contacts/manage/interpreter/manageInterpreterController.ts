@@ -5,6 +5,7 @@ import { ContactsService } from '../../../../services'
 import { components } from '../../../../@types/contactsApi'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import { Navigation } from '../../common/navigation'
+import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 
@@ -13,7 +14,7 @@ export default class ManageInterpreterController implements PageHandler {
 
   public PAGE_NAME = Page.MANAGE_INTERPRETER_PAGE
 
-  GET = async (req: Request<{ contactId?: string }>, res: Response): Promise<void> => {
+  GET = async (req: Request<PrisonerJourneyParams & { contactId: string }>, res: Response): Promise<void> => {
     const { contactId } = req.params
     const { user, journey } = res.locals
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)

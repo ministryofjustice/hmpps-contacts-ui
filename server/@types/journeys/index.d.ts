@@ -76,7 +76,7 @@ declare namespace journeys {
     lastName: string
     firstName: string
     dateOfBirth: string
-    prisonName: string
+    prisonName?: string
     cellLocation?: string
     hasPrimaryAddress: boolean
   }
@@ -124,7 +124,7 @@ declare namespace journeys {
     town?: string
     county?: string
     postcode?: string
-    country: string
+    country?: string
   }
 
   export interface AddressMetadata {
@@ -139,6 +139,10 @@ declare namespace journeys {
 
   export interface StandaloneManageContactJourney {
     returnPoint: ReturnPoint
+    names?: ContactNames
+    contactNames?: ContactNames
+    restrictionClass?: RestrictionClass
+    contactId?: string
   }
 
   type YesOrNo = 'YES' | 'NO'

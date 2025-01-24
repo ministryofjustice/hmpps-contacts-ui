@@ -56,7 +56,7 @@ export default class UpdateRestrictionController implements PageHandler {
           ),
         )
     } else {
-      title = `Update a global restriction for contact ${formatNameFirstNameFirst(journey.contactNames, {
+      title = `Update a global restriction for contact ${formatNameFirstNameFirst(journey.contactNames!, {
         excludeMiddleNames: true,
       })}`
       existingRestriction = await this.contactsService
@@ -69,7 +69,7 @@ export default class UpdateRestrictionController implements PageHandler {
     const typeOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.RESTRICTION, user)
       .then(val =>
-        this.getSelectedOptions(val, res.locals?.formResponses?.type ?? existingRestriction?.restrictionType),
+        this.getSelectedOptions(val, res.locals?.formResponses?.['type'] ?? existingRestriction?.restrictionType),
       )
 
     const navigation: Navigation = {
@@ -81,11 +81,12 @@ export default class UpdateRestrictionController implements PageHandler {
       journey,
       typeOptions,
       title,
-      type: res.locals?.formResponses?.type ?? existingRestriction?.restrictionType,
-      startDate: res.locals?.formResponses?.startDate ?? this.formatDateForDatePicker(existingRestriction?.startDate),
+      type: res.locals?.formResponses?.['type'] ?? existingRestriction?.restrictionType,
+      startDate:
+        res.locals?.formResponses?.['startDate'] ?? this.formatDateForDatePicker(existingRestriction?.startDate),
       expiryDate:
-        res.locals?.formResponses?.expiryDate ?? this.formatDateForDatePicker(existingRestriction?.expiryDate),
-      comments: res.locals?.formResponses?.comments ?? existingRestriction?.comments,
+        res.locals?.formResponses?.['expiryDate'] ?? this.formatDateForDatePicker(existingRestriction?.expiryDate),
+      comments: res.locals?.formResponses?.['comments'] ?? existingRestriction?.comments,
       navigation,
       maxCommentLength: maxLengthForRestrictionClass(restrictionClass),
       continueButtonLabel: 'Continue',
@@ -100,7 +101,7 @@ export default class UpdateRestrictionController implements PageHandler {
         prisonerNumber: string
         contactId: string
         prisonerContactId: string
-        restrictionClass: string
+        restrictionClass: RestrictionClass
         restrictionId: string
       },
       unknown,
@@ -140,7 +141,7 @@ export default class UpdateRestrictionController implements PageHandler {
     return [{ text: 'Select restriction type', value: '' }, ...mappedOptions]
   }
 
-  private formatDateForDatePicker(date: string | undefined): string {
+  private formatDateForDatePicker(date: string | undefined): string | undefined {
     return date ? format(new Date(date), 'dd/MM/yyyy') : undefined
   }
 }

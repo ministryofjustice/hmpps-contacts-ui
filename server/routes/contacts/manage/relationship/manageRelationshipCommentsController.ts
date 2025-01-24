@@ -5,13 +5,17 @@ import { ContactsService } from '../../../../services'
 import UpdateRelationshipRequest = contactsApiClientTypes.UpdateRelationshipRequest
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import { Navigation } from '../../common/navigation'
+import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 
 export default class ManageRelationshipCommentsController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
 
   public PAGE_NAME = Page.MANAGE_CONTACT_EDIT_RELATIONSHIP_COMMENTS_PAGE
 
-  GET = async (req: Request<{ contactId?: string; prisonerContactId?: string }>, res: Response): Promise<void> => {
+  GET = async (
+    req: Request<PrisonerJourneyParams & { contactId: string; prisonerContactId: string }>,
+    res: Response,
+  ): Promise<void> => {
     const { contactId, prisonerContactId } = req.params
     const { prisonerDetails, user, journey } = res.locals
     const navigation: Navigation = { backLink: journey.returnPoint.url }

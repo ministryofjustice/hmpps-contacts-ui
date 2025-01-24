@@ -30,13 +30,13 @@ export default class ManageContactAddAddressPhoneController implements PageHandl
     )
     const typeOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.PHONE_TYPE, user)
-      .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.type))
+      .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.['type']))
     const navigation: Navigation = { backLink: journey.returnPoint.url }
     const viewModel = {
       typeOptions,
-      phoneNumber: res.locals?.formResponses?.phoneNumber,
-      type: res.locals?.formResponses?.type,
-      extension: res.locals?.formResponses?.extension,
+      phoneNumber: res.locals?.formResponses?.['phoneNumber'],
+      type: res.locals?.formResponses?.['type'],
+      extension: res.locals?.formResponses?.['extension'],
       contact,
       address,
       navigation,

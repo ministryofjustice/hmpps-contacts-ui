@@ -1,9 +1,9 @@
-import { RequestHandler } from 'express'
+import { Request } from 'express'
 import logger from '../../../../logger'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 
-const ensureInAddContactJourney = (): RequestHandler => {
-  return asyncMiddleware(async (req, res, next) => {
+const ensureInAddContactJourney = () => {
+  return asyncMiddleware(async (req: Request<{ journeyId: string; prisonerNumber: string }>, res, next) => {
     const { journeyId, prisonerNumber } = req.params
     if (!req.session.addContactJourneys) {
       req.session.addContactJourneys = {}

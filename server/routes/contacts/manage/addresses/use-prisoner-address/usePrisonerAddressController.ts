@@ -14,7 +14,7 @@ export default class UsePrisonerAddressController implements PageHandler {
   ): Promise<void> => {
     const { journeyId, prisonerNumber } = req.params
     const { user } = res.locals
-    const journey = req.session.addressJourneys[journeyId]
+    const journey = req.session.addressJourneys![journeyId]!
     await this.prisonerAddressService.getPrimaryAddress(prisonerNumber, user).then(primaryAddress => {
       if (primaryAddress) {
         journey.addressLines = {

@@ -24,7 +24,7 @@ export const identitySchemaFactory = () => async () => {
       .string()
       .max(40, ISSUING_AUTHORITY_TOO_LONG_ERROR_MSG)
       .optional()
-      .transform(val => (val?.trim().length > 0 ? val.trim() : undefined)),
+      .transform(val => (val?.trim()?.length ? val?.trim() : undefined)),
   }).superRefine((val, ctx) => {
     if (val.type === 'PNC' && !isValidPNC(val.identity)) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, message: PNC_INVALID_MSG, path: ['identity'] })

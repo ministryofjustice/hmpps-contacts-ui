@@ -18,7 +18,7 @@ export default class ListContactsController implements PageHandler {
     const { user } = res.locals
     const { prisonerNumber } = req.params
     const { tab } = req.query
-    const page = Number(req.query.page as unknown) || 0
+    const page = Number(req.query['page'] as unknown) || 0
     const pageSize = config.apis.contactsApi.pageSize || 10
 
     const activeContacts: PrisonerContactSummaryPage[] = await this.contactsService.getPrisonerContacts(

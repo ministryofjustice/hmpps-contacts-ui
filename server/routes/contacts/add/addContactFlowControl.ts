@@ -194,20 +194,24 @@ function navigationForAddContactJourney(currentPage: Page, journey: journeys.Add
 
 function nextPageForAddContactJourney(currentPage: Page, journey: AddContactJourney): string {
   const spec = findSpec(journey, currentPage)
-  if (spec) {
-    return spec.nextUrl(journey)
+  const nextPage = spec?.nextUrl(journey)
+  if (nextPage) {
+    return nextPage
   }
   throw new Error(`Couldn't determine next page from (${currentPage}) and journey (${JSON.stringify(journey)})`)
 }
 
 function findSpec(journey: journeys.AddContactJourney, currentPage: Page) {
-  let spec: Spec
+  let spec: Spec | undefined
   if (!journey.mode) {
     spec = PRE_MODE_SPEC[`${currentPage}` as PreModePages]
   } else if (journey.mode === 'NEW') {
     spec = CREATE_CONTACT_SPEC[currentPage as CreateContactPages]
   } else if (journey.mode === 'EXISTING') {
     spec = EXISTING_CONTACT_SPEC[currentPage as ExistingContactPages]
+  }
+  if (!spec) {
+    throw Error('Unidentified journey spec')
   }
   return spec
 }

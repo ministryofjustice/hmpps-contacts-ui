@@ -1,4 +1,4 @@
-import { Request, RequestHandler } from 'express'
+import { Request } from 'express'
 import { AuditService, PrisonerSearchService } from '../services'
 import { Prisoner } from '../data/prisonerOffenderSearchTypes'
 import asyncMiddleware from './asyncMiddleware'
@@ -7,7 +7,7 @@ import PrisonerDetails = journeys.PrisonerDetails
 const populatePrisonerDetailsIfInCaseload = (
   prisonerSearchService: PrisonerSearchService,
   auditService: AuditService,
-): RequestHandler => {
+) => {
   return asyncMiddleware(async (req: Request<{ prisonerNumber: string }>, res, next) => {
     const { prisonerNumber } = req.params
     const { user } = res.locals

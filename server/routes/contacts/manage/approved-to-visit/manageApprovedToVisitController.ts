@@ -12,7 +12,7 @@ export default class ManageApprovedToVisitController implements PageHandler {
   public PAGE_NAME = Page.MANAGE_CONTACT_UPDATE_APPROVED_TO_VISIT_PAGE
 
   GET = async (
-    req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId?: string }>,
+    req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }>,
     res: Response,
   ): Promise<void> => {
     const { user, journey } = res.locals
@@ -29,7 +29,7 @@ export default class ManageApprovedToVisitController implements PageHandler {
   }
 
   POST = async (
-    req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId?: string }>,
+    req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }>,
     res: Response,
   ): Promise<void> => {
     const { user, journey } = res.locals

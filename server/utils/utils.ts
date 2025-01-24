@@ -12,7 +12,7 @@ export const initialiseName = (fullName?: string): string | null => {
   if (!fullName) return null
 
   const array = fullName.split(' ')
-  return `${array[0][0]}. ${array.reverse()[0]}`
+  return `${array[0]![0]}. ${array.reverse()[0]!}`
 }
 
 export const prisonerDatePretty = ({
@@ -63,8 +63,8 @@ export const ageInYears = (date: string | Date, now: Date = new Date()) => {
   return `${age} years`
 }
 
-export const formatDateForApi = (dateOfBirth: Partial<DateOfBirth>) => {
-  if (dateOfBirth.year && dateOfBirth.month && dateOfBirth.day) {
+export const formatDateForApi = (dateOfBirth?: Partial<DateOfBirth>) => {
+  if (dateOfBirth && dateOfBirth.year && dateOfBirth.month && dateOfBirth.day) {
     const day = String(dateOfBirth.day).padStart(2, '0')
     const month = String(dateOfBirth.month).padStart(2, '0')
     return `${dateOfBirth.year}-${month}-${day}`
@@ -73,5 +73,5 @@ export const formatDateForApi = (dateOfBirth: Partial<DateOfBirth>) => {
 }
 
 export const capitalizeFirstLetter = (val: string) => {
-  return val.toLowerCase().replace(/^./, val[0].toUpperCase())
+  return val && val.toLowerCase().replace(/^./, val[0]!.toUpperCase())
 }

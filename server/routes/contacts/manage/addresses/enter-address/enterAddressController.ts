@@ -6,6 +6,7 @@ import ReferenceDataService from '../../../../../services/referenceDataService'
 import { Navigation } from '../../../common/navigation'
 import { AddressLinesSchema } from './addressLinesSchemas'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
+import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 
 export default class EnterAddressController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
@@ -14,44 +15,40 @@ export default class EnterAddressController implements PageHandler {
 
   private DEFAULT_COUNTRY = 'ENG'
 
-  GET = async (
-    req: Request<{
-      journeyId: string
-    }>,
-    res: Response,
-  ): Promise<void> => {
+  GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const { user, prisonerDetails } = res.locals
-    const journey = req.session.addressJourneys[journeyId]
+    const journey = req.session.addressJourneys![journeyId]!
 
     let usePrisonerAddressEnabled = false
-    if (prisonerDetails.hasPrimaryAddress) {
+    if (prisonerDetails!.hasPrimaryAddress) {
       usePrisonerAddressEnabled = true
     }
 
     let typeLabel
     if (journey.addressType !== 'DO_NOT_KNOW') {
       typeLabel = await this.referenceDataService
-        .getReferenceDescriptionForCode(ReferenceCodeType.ADDRESS_TYPE, journey.addressType, user)
+        .getReferenceDescriptionForCode(ReferenceCodeType.ADDRESS_TYPE, journey.addressType!, user)
         .then(code => code?.toLowerCase())
     }
     typeLabel = typeLabel ?? 'address'
 
     const townOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.CITY, user)
-      .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.town ?? journey.addressLines?.town))
+      .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.['town'] ?? journey.addressLines?.town))
 
     const countyOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.COUNTY, user)
-      .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.county ?? journey.addressLines?.county))
+      .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.['county'] ?? journey.addressLines?.county))
 
-    const selectedCountry = res.locals?.formResponses?.country ?? journey.addressLines?.country ?? this.DEFAULT_COUNTRY
+    const selectedCountry =
+      res.locals?.formResponses?.['country'] ?? journey.addressLines?.country ?? this.DEFAULT_COUNTRY
     const countryOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.COUNTRY, user)
       .then(val => this.getSelectedOptions(val, selectedCountry))
 
     const noFixedAddress =
-      res.locals?.formResponses?.noFixedAddress ?? (journey.addressLines?.noFixedAddress ? 'YES' : 'NO')
+      res.locals?.formResponses?.['noFixedAddress'] ?? (journey.addressLines?.noFixedAddress ? 'YES' : 'NO')
     const navigation: Navigation = {
       backLink: `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/select-type/${journeyId}`,
     }
@@ -66,11 +63,11 @@ export default class EnterAddressController implements PageHandler {
         enabled: usePrisonerAddressEnabled,
         url: `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/use-prisoner-address/${journeyId}?returnUrl=/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/enter-address/${journeyId}`,
       },
-      flat: res.locals?.formResponses?.flat ?? journey.addressLines?.flat,
-      premises: res.locals?.formResponses?.premises ?? journey.addressLines?.premises,
-      street: res.locals?.formResponses?.street ?? journey.addressLines?.street,
-      locality: res.locals?.formResponses?.locality ?? journey.addressLines?.locality,
-      postcode: res.locals?.formResponses?.postcode ?? journey.addressLines?.postcode,
+      flat: res.locals?.formResponses?.['flat'] ?? journey.addressLines?.flat,
+      premises: res.locals?.formResponses?.['premises'] ?? journey.addressLines?.premises,
+      street: res.locals?.formResponses?.['street'] ?? journey.addressLines?.street,
+      locality: res.locals?.formResponses?.['locality'] ?? journey.addressLines?.locality,
+      postcode: res.locals?.formResponses?.['postcode'] ?? journey.addressLines?.postcode,
       noFixedAddress,
     }
     res.render('pages/contacts/manage/address/enterAddress', viewModel)
@@ -87,7 +84,7 @@ export default class EnterAddressController implements PageHandler {
     res: Response,
   ): Promise<void> => {
     const { journeyId } = req.params
-    const journey = req.session.addressJourneys[journeyId]
+    const journey = req.session.addressJourneys![journeyId]!
     const form: AddressLinesSchema = req.body
     journey.addressLines = {
       noFixedAddress: form.noFixedAddress === 'YES',

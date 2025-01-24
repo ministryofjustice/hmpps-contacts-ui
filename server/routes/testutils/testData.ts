@@ -36,11 +36,11 @@ export default class TestData {
     countryCode = 'ENG',
     countryDescription = 'England',
     verified = false,
-    verifiedBy = null,
-    verifiedTime = null,
+    verifiedBy = undefined,
+    verifiedTime = undefined,
     mailFlag = false,
     startDate = '2020-01-02',
-    endDate = null,
+    endDate = undefined,
     noFixedAddress = false,
     phoneNumbers = [
       {
@@ -54,15 +54,15 @@ export default class TestData {
         extNumber: '+0123',
         createdBy: 'JAMES',
         createdTime: '2024-10-04T15:35:23.101675v',
-        updatedBy: null,
-        updatedTime: null,
+        updatedBy: undefined,
+        updatedTime: undefined,
       } as ContactAddressPhoneDetails,
     ],
     comments = 'Some comments',
     createdBy = 'TIM',
     createdTime = '2024-10-04T0 =3 =44.512401',
-    updatedBy = null,
-    updatedTime = null,
+    updatedBy = undefined,
+    updatedTime = undefined,
   }) => {
     return {
       contactAddressId,
@@ -101,7 +101,7 @@ export default class TestData {
     identityType: string,
     identityTypeDescription: string,
     identityValue: string,
-    issuingAuthority: string,
+    issuingAuthority?: string,
     contactIdentityId: number = 1,
     identityTypeIsActive: boolean = true,
   ) => {
@@ -128,7 +128,7 @@ export default class TestData {
     phoneTypeDescription: string,
     phoneNumber: string,
     contactPhoneId: number = 1,
-    extNumber: string = null,
+    extNumber: string | undefined = undefined,
     createdTime: string = '2024-10-04T15:35:23.101675',
   ): ContactPhoneNumberDetails => {
     return {
@@ -140,8 +140,8 @@ export default class TestData {
       extNumber,
       createdBy: 'TIM',
       createdTime,
-      updatedBy: null,
-      updatedTime: null,
+      updatedBy: undefined,
+      updatedTime: undefined,
     } as ContactPhoneDetails
   }
 
@@ -152,7 +152,7 @@ export default class TestData {
     contactAddressPhoneId: number = 3,
     contactAddressId: number = 2,
     contactPhoneId: number = 1,
-    extNumber: string = null,
+    extNumber: string | undefined = undefined,
     createdTime: string = '2024-10-04T15:35:23.101675',
   ): ContactAddressPhoneDetails => {
     return {
@@ -166,8 +166,8 @@ export default class TestData {
       extNumber,
       createdBy: 'TIM',
       createdTime,
-      updatedBy: null,
-      updatedTime: null,
+      updatedBy: undefined,
+      updatedTime: undefined,
     } as ContactAddressPhoneDetails
   }
 
@@ -178,8 +178,8 @@ export default class TestData {
       emailAddress,
       createdBy: 'TIM',
       createdTime: '2024-10-08T12:16:09.024803',
-      updatedBy: null,
-      updatedTime: null,
+      updatedBy: undefined,
+      updatedTime: undefined,
     } as ContactEmailDetails
   }
 
@@ -291,11 +291,11 @@ export default class TestData {
     title = 'MR',
     lastName = 'Mason',
     firstName = 'Jones',
-    middleNames = null,
+    middleNames = undefined,
     dateOfBirth = '1990-01-14',
     isStaff = false,
     isDeceased = false,
-    deceasedDate = null,
+    deceasedDate = undefined,
     createdBy = 'USER1',
     createdTime = '2024-09-20T10:30:00.000000',
     languageCode = 'ENG',
@@ -311,9 +311,9 @@ export default class TestData {
       this.getContactEmailDetails('mr.first@example.com', 2),
     ],
     identities = [
-      this.getContactIdentityDetails('DL', 'Driving licence', 'LAST-87736799M', null, 1),
+      this.getContactIdentityDetails('DL', 'Driving licence', 'LAST-87736799M', undefined, 1),
       this.getContactIdentityDetails('PASS', 'Passport number', '425362965', 'UK passport office', 2),
-      this.getContactIdentityDetails('NINO', 'National insurance number', '06/614465M', null, 3),
+      this.getContactIdentityDetails('NINO', 'National insurance number', '06/614465M', undefined, 3),
     ],
     gender = 'M',
     genderDescription = 'Male',
@@ -398,13 +398,13 @@ export default class TestData {
     title = 'MR',
     lastName = 'Mason',
     firstName = 'Jones',
-    middleNames = null,
+    middleNames = undefined,
     dateOfBirth = '1990-01-14',
     isStaff = false,
     deceasedFlag = false,
     gender = 'Male',
     domesticStatus = 'Single',
-    deceasedDate = null,
+    deceasedDate = undefined,
     languageCode = 'ENG',
     interpreterRequired = false,
     createdBy = 'USER1',
@@ -494,7 +494,7 @@ export default class TestData {
     prisonerNumber = 'A1234BC',
     lastName = 'Last',
     firstName = 'First',
-    middleNames = null,
+    middleNames = undefined,
     relationships = [
       TestData.getLinkedPrisonerRelationshipDetails(),
       TestData.getLinkedPrisonerRelationshipDetails({

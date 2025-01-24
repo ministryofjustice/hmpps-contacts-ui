@@ -29,7 +29,7 @@ export default class StartManageContactsJourneyController implements PageHandler
             new Date(b.lastTouched).getTime() - new Date(a.lastTouched).getTime(),
         )
         .slice(this.MAX_JOURNEYS)
-        .forEach(journeyToRemove => delete req.session.manageContactsJourneys[journeyToRemove.id])
+        .forEach(journeyToRemove => delete req.session.manageContactsJourneys![journeyToRemove.id])
     }
 
     res.redirect(`/contacts/manage/prisoner-search/${journey.id}`)

@@ -8,6 +8,7 @@ import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import { Navigation } from '../../common/navigation'
+import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 
@@ -19,7 +20,7 @@ export default class ManageDomesticStatusController implements PageHandler {
 
   public PAGE_NAME = Page.MANAGE_DOMESTIC_STATUS_PAGE
 
-  GET = async (req: Request<{ contactId?: string }>, res: Response): Promise<void> => {
+  GET = async (req: Request<PrisonerJourneyParams & { contactId: string }>, res: Response): Promise<void> => {
     const { contactId } = req.params
     const { prisonerDetails, user, journey } = res.locals
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)

@@ -23,13 +23,13 @@ export default class ManageContactAddIdentityController implements PageHandler {
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const typeOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.ID_TYPE, user)
-      .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.type))
+      .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.['type']))
     const navigation: Navigation = { backLink: journey.returnPoint.url }
     const viewModel = {
       typeOptions,
-      identity: res.locals?.formResponses?.identity,
-      type: res.locals?.formResponses?.type,
-      issuingAuthority: res.locals?.formResponses?.issuingAuthority,
+      identity: res.locals?.formResponses?.['identity'],
+      type: res.locals?.formResponses?.['type'],
+      issuingAuthority: res.locals?.formResponses?.['issuingAuthority'],
       contact,
       navigation,
     }

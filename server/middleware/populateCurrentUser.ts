@@ -18,14 +18,17 @@ export default function populateCurrentUser(): RequestHandler {
 
       res.locals.user = {
         ...res.locals.user,
-        userId,
-        name,
-        displayName: capitaliseName(name),
+        userId: userId!,
+        name: name!,
+        displayName: capitaliseName(name!),
         userRoles: roles.map(role => role.substring(role.indexOf('_') + 1)),
       }
 
       if (res.locals.user.authSource === 'nomis') {
-        res.locals.user.staffId = parseInt(userId, 10) || undefined
+        const staffId = parseInt(userId!, 10)
+        if (staffId) {
+          res.locals.user.staffId = staffId
+        }
       }
 
       next()

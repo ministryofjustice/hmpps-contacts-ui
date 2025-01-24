@@ -1,9 +1,10 @@
-import { RequestHandler } from 'express'
+import { NextFunction, Request, Response, RequestHandler } from 'express'
 import logger from '../../../../logger'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
+import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 
-const ensureInManageContactsJourney = (): RequestHandler => {
-  return asyncMiddleware(async (req, res, next) => {
+const ensureInManageContactsJourney = () => {
+  return asyncMiddleware(async (req: Request<PrisonerJourneyParams>, res: Response, next: NextFunction) => {
     const { journeyId, prisonerNumber } = req.params
 
     if (!req.session.manageContactsJourneys) {
@@ -33,7 +34,7 @@ const prepareStandaloneManageContactJourney = (): RequestHandler => {
     }
     res.locals.journey = {
       returnPoint: {
-        url: returnUrl,
+        url: returnUrl as string,
       },
     }
     return next()

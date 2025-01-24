@@ -45,9 +45,9 @@ export default class StartAddressJourneyController implements PageHandler {
     }
     const mode = contactAddressId ? 'EDIT' : 'ADD'
     const contactAddressIdNumber = Number(contactAddressId)
-    let addressType: string
-    let addressLines: AddressLines
-    let addressMetadata: AddressMetadata
+    let addressType: string | undefined
+    let addressLines: AddressLines | undefined
+    let addressMetadata: AddressMetadata | undefined
     if (mode === 'EDIT') {
       const existingAddress = contact.addresses.find(
         (address: ContactAddressDetails) => address.contactAddressId === contactAddressIdNumber,
@@ -105,7 +105,7 @@ export default class StartAddressJourneyController implements PageHandler {
             new Date(b.lastTouched).getTime() - new Date(a.lastTouched).getTime(),
         )
         .slice(this.MAX_JOURNEYS)
-        .forEach(journeyToRemove => delete req.session.addressJourneys[journeyToRemove.id])
+        .forEach(journeyToRemove => delete req.session.addressJourneys![journeyToRemove.id])
     }
     res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/select-type/${journey.id}`)
   }

@@ -57,7 +57,7 @@ export default class ContactDetailsController implements PageHandler {
   }
 
   private async formattedFullName(contact: ContactDetails, user: Express.User) {
-    let titleDescription: string
+    let titleDescription: string | undefined
     if (contact.title) {
       titleDescription = await this.referenceDataService.getReferenceDescriptionForCode(
         ReferenceCodeType.TITLE,

@@ -34,16 +34,16 @@ export default class ManageContactEditIdentityController implements PageHandler 
         `Couldn't find Identity Number with id ${contactIdentityId} for contact ${contactId}. URL probably entered manually.`,
       )
     }
-    const currentType = res.locals?.formResponses?.type ?? identity.identityType
+    const currentType = res.locals?.formResponses?.['type'] ?? identity.identityType
     const typeOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.ID_TYPE, user)
       .then(val => this.getSelectedOptions(val, currentType))
     const navigation: Navigation = { backLink: journey.returnPoint.url }
     const viewModel = {
       typeOptions,
-      identity: res.locals?.formResponses?.identity ?? identity.identityValue,
+      identity: res.locals?.formResponses?.['identity'] ?? identity.identityValue,
       type: currentType,
-      issuingAuthority: res.locals?.formResponses?.issuingAuthority ?? identity.issuingAuthority,
+      issuingAuthority: res.locals?.formResponses?.['issuingAuthority'] ?? identity.issuingAuthority,
       contact,
       navigation,
     }

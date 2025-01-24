@@ -96,6 +96,7 @@ function appSetup(
 export function appWithAllRoutes({
   production = false,
   services = {
+    // @ts-expect-error null param for AuditService
     auditService: new AuditService(null) as jest.Mocked<AuditService>,
   },
   userSupplier = () => user,

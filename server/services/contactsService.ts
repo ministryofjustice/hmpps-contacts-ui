@@ -34,23 +34,23 @@ export default class ContactsService {
   constructor(private readonly contactsApiClient: ContactsApiClient) {}
 
   async createContact(journey: AddContactJourney, user: Express.User): Promise<ContactCreationResult> {
-    let dateOfBirth: Date
-    if (journey.dateOfBirth.isKnown === 'YES') {
+    let dateOfBirth: Date | undefined
+    if (journey.dateOfBirth?.isKnown === 'YES') {
       dateOfBirth = new Date(`${journey.dateOfBirth.year}-${journey.dateOfBirth.month}-${journey.dateOfBirth.day}Z`)
     }
     const request: CreateContactRequest = {
-      title: journey.names.title,
-      lastName: journey.names.lastName,
-      firstName: journey.names.firstName,
-      middleNames: journey.names.middleNames,
+      title: journey.names!.title,
+      lastName: journey.names!.lastName,
+      firstName: journey.names!.firstName,
+      middleNames: journey.names!.middleNames,
       dateOfBirth,
       relationship: {
         prisonerNumber: journey.prisonerNumber,
-        relationshipType: journey.relationship.relationshipType,
-        relationshipToPrisoner: journey.relationship.relationshipToPrisoner,
-        isNextOfKin: journey.relationship.isNextOfKin === 'YES',
-        isEmergencyContact: journey.relationship.isEmergencyContact === 'YES',
-        comments: journey.relationship.comments,
+        relationshipType: journey.relationship!.relationshipType,
+        relationshipToPrisoner: journey.relationship!.relationshipToPrisoner,
+        isNextOfKin: journey.relationship!.isNextOfKin === 'YES',
+        isEmergencyContact: journey.relationship!.isEmergencyContact === 'YES',
+        comments: journey.relationship!.comments,
       },
       createdBy: user.username,
     }
@@ -62,11 +62,11 @@ export default class ContactsService {
       contactId: journey.contactId,
       relationship: {
         prisonerNumber: journey.prisonerNumber,
-        relationshipType: journey.relationship.relationshipType,
-        relationshipToPrisoner: journey.relationship.relationshipToPrisoner,
-        isNextOfKin: journey.relationship.isNextOfKin === 'YES',
-        isEmergencyContact: journey.relationship.isEmergencyContact === 'YES',
-        comments: journey.relationship.comments,
+        relationshipType: journey.relationship!.relationshipType,
+        relationshipToPrisoner: journey.relationship!.relationshipToPrisoner,
+        isNextOfKin: journey.relationship!.isNextOfKin === 'YES',
+        isEmergencyContact: journey.relationship!.isEmergencyContact === 'YES',
+        comments: journey.relationship!.comments,
       },
       createdBy: user.username,
     }
@@ -226,24 +226,24 @@ export default class ContactsService {
   async createContactAddress(journey: AddressJourney, user: Express.User) {
     const request: CreateContactAddressRequest = {
       addressType: journey.addressType === 'DO_NOT_KNOW' ? undefined : journey.addressType,
-      flat: journey.addressLines.flat,
-      property: journey.addressLines.premises,
-      street: journey.addressLines.street,
-      area: journey.addressLines.locality,
-      cityCode: journey.addressLines.town,
-      countyCode: journey.addressLines.county,
-      postcode: journey.addressLines.postcode,
-      countryCode: journey.addressLines.country,
+      flat: journey.addressLines!.flat,
+      property: journey.addressLines!.premises,
+      street: journey.addressLines!.street,
+      area: journey.addressLines!.locality,
+      cityCode: journey.addressLines!.town,
+      countyCode: journey.addressLines!.county,
+      postcode: journey.addressLines!.postcode,
+      countryCode: journey.addressLines!.country,
       verified: false,
-      primaryAddress: journey.addressMetadata.primaryAddress === 'YES',
-      mailFlag: journey.addressMetadata.mailAddress === 'YES',
-      startDate: new Date(`${journey.addressMetadata.fromYear}-${journey.addressMetadata.fromMonth}-01Z`),
+      primaryAddress: journey.addressMetadata!.primaryAddress === 'YES',
+      mailFlag: journey.addressMetadata!.mailAddress === 'YES',
+      startDate: new Date(`${journey.addressMetadata!.fromYear}-${journey.addressMetadata!.fromMonth}-01Z`),
       endDate:
-        journey.addressMetadata.toMonth && journey.addressMetadata.toYear
-          ? new Date(`${journey.addressMetadata.toYear}-${journey.addressMetadata.toMonth}-01Z`)
+        journey.addressMetadata!.toMonth && journey.addressMetadata!.toYear
+          ? new Date(`${journey.addressMetadata!.toYear}-${journey.addressMetadata!.toMonth}-01Z`)
           : undefined,
-      noFixedAddress: journey.addressLines.noFixedAddress,
-      comments: journey.addressMetadata.comments,
+      noFixedAddress: journey.addressLines!.noFixedAddress,
+      comments: journey.addressMetadata!.comments,
       createdBy: user.username,
     }
     return this.contactsApiClient.createContactAddress(journey.contactId, request, user)
@@ -252,27 +252,27 @@ export default class ContactsService {
   async updateContactAddress(journey: AddressJourney, user: Express.User) {
     const request: UpdateContactAddressRequest = {
       addressType: journey.addressType === 'DO_NOT_KNOW' ? undefined : journey.addressType,
-      flat: journey.addressLines.flat,
-      property: journey.addressLines.premises,
-      street: journey.addressLines.street,
-      area: journey.addressLines.locality,
-      cityCode: journey.addressLines.town,
-      countyCode: journey.addressLines.county,
-      postcode: journey.addressLines.postcode,
-      countryCode: journey.addressLines.country,
+      flat: journey.addressLines!.flat,
+      property: journey.addressLines!.premises,
+      street: journey.addressLines!.street,
+      area: journey.addressLines!.locality,
+      cityCode: journey.addressLines!.town,
+      countyCode: journey.addressLines!.county,
+      postcode: journey.addressLines!.postcode,
+      countryCode: journey.addressLines!.country,
       verified: false,
-      primaryAddress: journey.addressMetadata.primaryAddress === 'YES',
-      mailFlag: journey.addressMetadata.mailAddress === 'YES',
-      startDate: new Date(`${journey.addressMetadata.fromYear}-${journey.addressMetadata.fromMonth}-01Z`),
+      primaryAddress: journey.addressMetadata!.primaryAddress === 'YES',
+      mailFlag: journey.addressMetadata!.mailAddress === 'YES',
+      startDate: new Date(`${journey.addressMetadata!.fromYear}-${journey.addressMetadata!.fromMonth}-01Z`),
       endDate:
-        journey.addressMetadata.toMonth && journey.addressMetadata.toYear
-          ? new Date(`${journey.addressMetadata.toYear}-${journey.addressMetadata.toMonth}-01Z`)
+        journey.addressMetadata!.toMonth && journey.addressMetadata!.toYear
+          ? new Date(`${journey.addressMetadata!.toYear}-${journey.addressMetadata!.toMonth}-01Z`)
           : undefined,
-      noFixedAddress: journey.addressLines.noFixedAddress,
-      comments: journey.addressMetadata.comments,
+      noFixedAddress: journey.addressLines!.noFixedAddress,
+      comments: journey.addressMetadata!.comments,
       updatedBy: user.username,
     }
-    return this.contactsApiClient.updateContactAddress(journey.contactId, journey.contactAddressId, request, user)
+    return this.contactsApiClient.updateContactAddress(journey.contactId, journey.contactAddressId!, request, user)
   }
 
   async createContactAddressPhone(
