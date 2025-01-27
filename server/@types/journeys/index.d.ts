@@ -124,7 +124,7 @@ declare namespace journeys {
     town?: string
     county?: string
     postcode?: string
-    country?: string
+    country: string
   }
 
   export interface AddressMetadata {

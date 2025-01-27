@@ -8,6 +8,8 @@ export default class UsePrisonerAddressController implements PageHandler {
 
   public PAGE_NAME = Page.USE_PRISONER_ADDRESS_PAGE
 
+  private DEFAULT_COUNTRY = 'ENG'
+
   GET = async (
     req: Request<{ journeyId: string; prisonerNumber: string }, unknown, unknown, { returnUrl: string }>,
     res: Response,
@@ -26,7 +28,7 @@ export default class UsePrisonerAddressController implements PageHandler {
           town: primaryAddress.townCode,
           county: primaryAddress.countyCode,
           postcode: primaryAddress.postalCode,
-          country: primaryAddress.countryCode,
+          country: primaryAddress.countryCode ?? this.DEFAULT_COUNTRY,
         }
       }
     })
