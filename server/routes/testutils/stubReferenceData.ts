@@ -1,5 +1,4 @@
 import ReferenceCodeType from '../../enumeration/referenceCodeType'
-import { HmppsUser } from '../../interfaces/hmppsUser'
 
 type StubReferenceData = { code: string; description: string; groupCode: string }
 const STUBBED_TITLE_OPTIONS: StubReferenceData[] = [
@@ -295,7 +294,9 @@ const STUBBED_COUNTRY_OPTIONS: StubReferenceData[] = [
   },
 ]
 
-const mockedReferenceData = (type: ReferenceCodeType, _: HmppsUser): Promise<StubReferenceData[]> => {
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const mockedReferenceData = (type: ReferenceCodeType, _: Express.User): Promise<StubReferenceData[]> => {
   if (type === ReferenceCodeType.TITLE) {
     return Promise.resolve(STUBBED_TITLE_OPTIONS)
   }
@@ -345,10 +346,12 @@ const mockedReferenceData = (type: ReferenceCodeType, _: HmppsUser): Promise<Stu
 const mockedGetReferenceDescriptionForCode = async (
   type: ReferenceCodeType,
   code: string,
-  user: HmppsUser,
-): Promise<string | undefined> => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  user: Express.User,
+): Promise<string> => {
   const groupValues = await mockedReferenceData(type, user)
-  return groupValues.find(referenceCode => referenceCode.code === code)?.description
+  return groupValues.find(referenceCode => referenceCode.code === code)?.description ?? ''
 }
 
 export {

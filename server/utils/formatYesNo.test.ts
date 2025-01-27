@@ -9,7 +9,7 @@ describe('yesNoFilter', () => {
     ['DO_NOT_KNOW', "I don't know"],
     ['FOO', ''],
     [undefined, ''],
-  ])('Formats yes no and do not know correctly', (value: string, expected: string) => {
+  ])('Formats yes no and do not know correctly', (value, expected) => {
     expect(formatYesNo(value)).toStrictEqual(expected)
   })
 })

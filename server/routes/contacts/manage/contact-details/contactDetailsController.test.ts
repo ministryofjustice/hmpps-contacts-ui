@@ -2,12 +2,9 @@ import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import PrisonerSearchService from '../../../../services/prisonerSearchService'
-import ContactsService from '../../../../services/contactsService'
-import ReferenceDataService from '../../../../services/referenceDataService'
+import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
-import RestrictionsService from '../../../../services/restrictionsService'
+import { MockedService } from '../../../../testutils/mockedServices'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -15,11 +12,11 @@ jest.mock('../../../../services/contactsService')
 jest.mock('../../../../services/referenceDataService')
 jest.mock('../../../../services/restrictionsService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
-const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
-const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
-const restrictionsService = new RestrictionsService(null) as jest.Mocked<RestrictionsService>
+const auditService = MockedService.AuditService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
+const contactsService = MockedService.ContactsService()
+const referenceDataService = MockedService.ReferenceDataService()
+const restrictionsService = MockedService.RestrictionsService()
 
 let app: Express
 const prisonerNumber = 'A1234BC'
@@ -48,7 +45,6 @@ afterEach(() => {
 describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () => {
   describe('Contact Details', () => {
     it('should render contact details page', async () => {
-      auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.searchContact.mockResolvedValue(TestData.contact())
       contactsService.getContact.mockResolvedValue(TestData.contact())
@@ -68,7 +64,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
     })
     describe('phone numbers', () => {
       it('should render phone numbers in reverse created date order', async () => {
-        auditService.logPageView.mockResolvedValue(null)
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         contactsService.getContact.mockResolvedValue(
           TestData.contact({
@@ -78,7 +73,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
                 'Mobile',
                 '07878 111111',
                 1,
-                null,
+                undefined,
                 '2024-10-04T09:30:00.000000',
               ),
               TestData.getContactPhoneNumberDetails(
@@ -111,7 +106,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       })
 
       it('should render not provided if no phone numbers', async () => {
-        auditService.logPageView.mockResolvedValue(null)
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         contactsService.getContact.mockResolvedValue(TestData.contact({ phoneNumbers: [] }))
         contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
@@ -128,7 +122,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
     describe('identity numbers', () => {
       it('should render identity numbers', async () => {
-        auditService.logPageView.mockResolvedValue(null)
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         contactsService.getContact.mockResolvedValue(TestData.contact())
         contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
@@ -146,10 +139,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       })
 
       it('should render identity numbers edit link only for active identity types ', async () => {
-        auditService.logPageView.mockResolvedValue(null)
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         const contact = TestData.contact()
-        contact.identities[0].identityTypeIsActive = false
+        contact.identities[0]!.identityTypeIsActive = false
         contactsService.getContact.mockResolvedValue(contact)
         contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
 
@@ -170,7 +162,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       })
 
       it('should render not provided if no identity numbers', async () => {
-        auditService.logPageView.mockResolvedValue(null)
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         contactsService.getContact.mockResolvedValue(TestData.contact({ identities: [] }))
         contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
@@ -187,7 +178,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
     describe('Email addresses', () => {
       it('should render email addresses', async () => {
-        auditService.logPageView.mockResolvedValue(null)
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         contactsService.getContact.mockResolvedValue(TestData.contact())
         contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
@@ -204,7 +194,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       })
 
       it('should render not provided if no email addresses', async () => {
-        auditService.logPageView.mockResolvedValue(null)
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         contactsService.getContact.mockResolvedValue(TestData.contact({ emailAddresses: [] }))
         contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
@@ -219,7 +208,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       })
 
       it('should sort email addresses in alphabetic order', async () => {
-        auditService.logPageView.mockResolvedValue(null)
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         const contactDetails = TestData.contact()
         contactDetails.emailAddresses = [
@@ -241,7 +229,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
     describe('Relationship', () => {
       it('should render all fields', async () => {
-        auditService.logPageView.mockResolvedValue(null)
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         contactsService.getContact.mockResolvedValue(TestData.contact())
         contactsService.getPrisonerContactRelationship.mockResolvedValue(
@@ -270,19 +257,18 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       })
 
       it('should render not provided if no comments', async () => {
-        auditService.logPageView.mockResolvedValue(null)
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         contactsService.getContact.mockResolvedValue(TestData.contact())
-        contactsService.getPrisonerContactRelationship.mockResolvedValue(
-          TestData.prisonerContactRelationship({
+        contactsService.getPrisonerContactRelationship.mockResolvedValue({
+          ...TestData.prisonerContactRelationship({
             relationshipToPrisonerCode: 'FRI',
             relationshipToPrisonerDescription: 'Friend',
             emergencyContact: false,
             nextOfKin: true,
             isRelationshipActive: false,
-            comments: null,
           }),
-        )
+          comments: undefined,
+        })
 
         // When
         const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
@@ -379,7 +365,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         }
 
         const setupMocks = (mockResponse: MockResponse) => {
-          auditService.logPageView.mockResolvedValue(null)
           prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
           contactsService.getContact.mockResolvedValue(TestData.contact())
           contactsService.getPrisonerContactRelationship.mockResolvedValue(mockResponse)
@@ -409,7 +394,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         [true, 'Yes'],
         [false, 'No'],
       ])('should render approved visitor card', async (isApprovedVisitor: boolean, expectedStatus: string) => {
-        auditService.logPageView.mockResolvedValue(null)
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         contactsService.getContact.mockResolvedValue(TestData.contact())
         contactsService.getPrisonerContactRelationship.mockResolvedValue(
@@ -449,7 +433,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         ['NS', 'Specified (Indeterminate)'],
       ])('should show gender if question was answered', async (gender: string, genderDescription: string) => {
         // Given
-        auditService.logPageView.mockResolvedValue(null)
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         contactsService.getContact.mockResolvedValue(TestData.contact({ gender, genderDescription }))
         referenceDataService.getReferenceDescriptionForCode.mockResolvedValue(genderDescription)
@@ -465,10 +448,13 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
       it('should show "not provided" for gender if question was not answered', async () => {
         // Given
-        auditService.logPageView.mockResolvedValue(null)
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-        contactsService.getContact.mockResolvedValue(TestData.contact({ gender: null, genderDescription: null }))
-        referenceDataService.getReferenceDescriptionForCode.mockResolvedValue(null)
+        contactsService.getContact.mockResolvedValue({
+          ...TestData.contact({}),
+          gender: undefined,
+          genderDescription: undefined,
+        })
+        referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('')
 
         // When
         const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
@@ -489,11 +475,10 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         'should show relevant primary address flag as %s',
         async (flagLabel: string, primaryAddress: boolean, mailFlag: boolean) => {
           // Given
-          auditService.logPageView.mockResolvedValue(null)
           prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
           const contact = TestData.contact()
-          contact.addresses[0].primaryAddress = primaryAddress
-          contact.addresses[0].mailFlag = mailFlag
+          contact.addresses[0]!.primaryAddress = primaryAddress
+          contact.addresses[0]!.mailFlag = mailFlag
           contactsService.getContact.mockResolvedValue(contact)
 
           // When
@@ -514,7 +499,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
     it('should show primary address details', async () => {
       // Given
-      auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(TestData.contact())
 
@@ -533,10 +517,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
     it('should show "No fixed address" for address flagged as NFA', async () => {
       // Given
-      auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       const contact = TestData.contact()
-      contact.addresses[0].noFixedAddress = true
+      contact.addresses[0]!.noFixedAddress = true
       contactsService.getContact.mockResolvedValue(contact)
 
       // When
@@ -550,9 +533,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
     it('should show "not provided" for address if question was not answered', async () => {
       // Given
-      auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.getContact.mockResolvedValue(TestData.contact({ addresses: null }))
+      contactsService.getContact.mockResolvedValue({ ...TestData.contact({}), addresses: undefined })
 
       // When
       const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
@@ -568,10 +550,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
     it('should not show comments when theres no comments', async () => {
       // Given
-      auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       const contact = TestData.contact()
-      contact.addresses[0].comments = undefined
+      contact.addresses[0]!.comments = undefined
       contactsService.getContact.mockResolvedValue(contact)
 
       // When
@@ -586,7 +567,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
   describe('Restrictions', () => {
     beforeEach(() => {
-      auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.searchContact.mockResolvedValue(TestData.contact())
       contactsService.getContact.mockResolvedValue(TestData.contact())

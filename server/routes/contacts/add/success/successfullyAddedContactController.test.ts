@@ -2,18 +2,17 @@ import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import ContactsService from '../../../../services/contactsService'
+import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
-import PrisonerSearchService from '../../../../services/prisonerSearchService'
+import { MockedService } from '../../../../testutils/mockedServices'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/contactsService')
 jest.mock('../../../../services/prisonerSearchService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
+const auditService = MockedService.AuditService()
+const contactsService = MockedService.ContactsService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
 
 let app: Express
 const prisonerNumber = 'A1234BC'
@@ -37,9 +36,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
   it.each([
     ['NEW', 'New contact added and linked to prisoner'],
     ['EXISTING', 'Existing contact linked to prisoner'],
-  ])('should render check answers page with dob for mode %s', async (mode: 'NEW' | 'EXISTING', message: string) => {
+  ])('should render check answers page with dob for mode %s', async (mode, message: string) => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(TestData.contact())
 
     // When
@@ -59,7 +57,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
 
   it('should call the audit service for the page view', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(TestData.contact())
 
     // When

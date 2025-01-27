@@ -4,17 +4,17 @@ import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, flashProvider, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import PrisonerSearchService from '../../../../services/prisonerSearchService'
+import { Page } from '../../../../services/auditService'
 import { PaginationRequest, Prisoner } from '../../../../data/prisonerOffenderSearchTypes'
 import logger from '../../../../../logger'
 import { ENTER_TWO_CHARS_MIN } from './prisonerSearchSchema'
+import { MockedService } from '../../../../testutils/mockedServices'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
+const auditService = MockedService.AuditService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -56,8 +56,6 @@ afterEach(() => {
 describe('GET /contacts/manage/prisoner-search-results', () => {
   describe('Pagination', () => {
     it('should display the pagination when total pages are more than 1', async () => {
-      auditService.logPageView.mockResolvedValue(null)
-
       prisonerSearchService.searchInCaseload.mockResolvedValue({
         totalPages: 5,
         totalElements: 86,
@@ -85,8 +83,6 @@ describe('GET /contacts/manage/prisoner-search-results', () => {
     })
 
     it('should hide previous link when page equal or greater than 1 is selected', async () => {
-      auditService.logPageView.mockResolvedValue(null)
-
       prisonerSearchService.searchInCaseload.mockResolvedValue({
         totalPages: 5,
         totalElements: 86,
@@ -112,8 +108,6 @@ describe('GET /contacts/manage/prisoner-search-results', () => {
     })
 
     it('should hide next link when last page is selected', async () => {
-      auditService.logPageView.mockResolvedValue(null)
-
       prisonerSearchService.searchInCaseload.mockResolvedValue({
         totalPages: 5,
         totalElements: 86,
@@ -141,8 +135,6 @@ describe('GET /contacts/manage/prisoner-search-results', () => {
   })
 
   it('should render the prisoner search results page', async () => {
-    auditService.logPageView.mockResolvedValue(null)
-
     prisonerSearchService.searchInCaseload.mockResolvedValue({
       totalPages: 1,
       totalElements: 1,
@@ -182,7 +174,6 @@ describe('GET /contacts/manage/prisoner-search-results', () => {
   })
 
   it('should show a message if no results found', async () => {
-    auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.searchInCaseload.mockResolvedValue({
       totalPages: 0,
       totalElements: 0,
@@ -228,7 +219,7 @@ describe('POST /contacts/manage/prisoner-search-results/:journeyId', () => {
       .expect('Location', `/contacts/manage/prisoner-search-results/${journeyId}`)
 
     expect(flashProvider).not.toHaveBeenCalledWith('validationErrors', expect.any(String))
-    expect(session.manageContactsJourneys[journeyId].search.searchTerm).toEqual('A1111AA')
+    expect(session.manageContactsJourneys![journeyId]!.search!.searchTerm).toEqual('A1111AA')
   })
 
   it('should return to search results page if there are validation errors', async () => {

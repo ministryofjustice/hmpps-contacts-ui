@@ -4,21 +4,20 @@ import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, flashProvider, user } from '../../testutils/appSetup'
-import AuditService, { Page } from '../../../services/auditService'
-import ReferenceDataService from '../../../services/referenceDataService'
+import { Page } from '../../../services/auditService'
 import { mockedReferenceData } from '../../testutils/stubReferenceData'
-import PrisonerSearchService from '../../../services/prisonerSearchService'
 import TestData from '../../testutils/testData'
 import AddRestrictionJourney = journeys.AddRestrictionJourney
 import RestrictionClass = journeys.RestrictionClass
+import { MockedService } from '../../../testutils/mockedServices'
 
 jest.mock('../../../services/auditService')
 jest.mock('../../../services/referenceDataService')
 jest.mock('../../../services/prisonerSearchService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
+const auditService = MockedService.AuditService()
+const referenceDataService = MockedService.ReferenceDataService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -66,7 +65,6 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/enter-restriction/:journeyId', () => {
   it('should render enter restriction page', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     existingJourney.restrictionClass = 'PRISONER_CONTACT'
 
     // When
@@ -88,7 +86,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
   it('should render enter restriction page for estate wide', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     existingJourney.restrictionClass = 'CONTACT_GLOBAL'
 
     // When
@@ -110,7 +107,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
   it('should call the audit service for the page view', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     existingJourney.restrictionClass = 'PRISONER_CONTACT'
 
     // When
@@ -130,7 +126,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     // Given
     const form = { type: 'BAN', startDate: '1/2/2024', expiryDate: 'never', comments: 'some comments' }
     existingJourney.restrictionClass = 'PRISONER_CONTACT'
-    auditService.logPageView.mockResolvedValue(null)
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
@@ -149,7 +144,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
   it('should render previously entered details if no validation errors but there are session values', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     existingJourney.restrictionClass = 'PRISONER_CONTACT'
     existingJourney.restriction = {
       type: 'BAN',
@@ -174,7 +168,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
   it('should render submitted options on validation error even if there is a version in the session', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     existingJourney.restrictionClass = 'PRISONER_CONTACT'
     existingJourney.restriction = {
       type: 'BAN',
@@ -215,8 +208,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/enter-restriction/:journeyId', () => {
   it.each([['PRISONER_CONTACT'], ['CONTACT_GLOBAL']])(
     'should pass to check answers page if there are no validation errors',
-    async (restrictionClass: RestrictionClass) => {
-      existingJourney.restrictionClass = restrictionClass
+    async restrictionClass => {
+      existingJourney.restrictionClass = restrictionClass as RestrictionClass
       await request(app)
         .post(
           `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/enter-restriction/${journeyId}`,
@@ -229,7 +222,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
           `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/check-answers/${journeyId}`,
         )
 
-      expect(session.addRestrictionJourneys[journeyId].restriction).toStrictEqual({
+      expect(session.addRestrictionJourneys![journeyId]!.restriction).toStrictEqual({
         type: 'BAN',
         startDate: '1/2/2024',
         expiryDate: '2/3/2025',
@@ -240,8 +233,8 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
 
   it.each([['PRISONER_CONTACT'], ['CONTACT_GLOBAL']])(
     'should return to enter page with details kept if there are validation errors (%s)',
-    async (restrictionClass: RestrictionClass) => {
-      existingJourney.restrictionClass = restrictionClass
+    async restrictionClass => {
+      existingJourney.restrictionClass = restrictionClass as RestrictionClass
       await request(app)
         .post(
           `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/enter-restriction/${journeyId}`,
@@ -258,8 +251,8 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
 
   it.each([['PRISONER_CONTACT'], ['CONTACT_GLOBAL']])(
     'should return to start if no journey in session',
-    async (restrictionClass: RestrictionClass) => {
-      existingJourney.restrictionClass = restrictionClass
+    async restrictionClass => {
+      existingJourney.restrictionClass = restrictionClass as RestrictionClass
       await request(app)
         .post(
           `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/enter-restriction/${uuidv4()}`,

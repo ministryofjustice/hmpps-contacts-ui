@@ -15,7 +15,7 @@ describe('enterRelationshipCommentsSchemas', () => {
 
       // Then
       expect(result.success).toStrictEqual(true)
-      expect(result.data.comments).toBeUndefined()
+      expect(result.data!.comments).toBeUndefined()
     })
 
     it.each(['', '      '])('should be no comments if blank', async (comments: string) => {
@@ -27,7 +27,7 @@ describe('enterRelationshipCommentsSchemas', () => {
 
       // Then
       expect(result.success).toStrictEqual(true)
-      expect(result.data.comments).toBeUndefined()
+      expect(result.data!.comments).toBeUndefined()
     })
 
     it('should require comments to be less than 240', async () => {
@@ -39,7 +39,7 @@ describe('enterRelationshipCommentsSchemas', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
         comments: ['Additional information must be 240 characters or less'],
       })

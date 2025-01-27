@@ -12,7 +12,7 @@ import {
 
 describe('convert to title case', () => {
   it.each([
-    [null, null, ''],
+    [null, undefined, ''],
     ['empty string', '', ''],
     ['Lower case', 'robert', 'Robert'],
     ['Upper case', 'ROBERT', 'Robert'],
@@ -22,20 +22,20 @@ describe('convert to title case', () => {
     ['Trailing spaces', 'RobeRT  ', 'Robert  '],
     ['Hyphenated', 'Robert-John SmiTH-jONes-WILSON', 'Robert-John Smith-Jones-Wilson'],
     ['Otherwise punctuated', "billy-bob o'reilly jr.", "Billy-Bob O'Reilly Jr."],
-  ])('%s capitaliseName(%s, %s)', (_: string, a: string, expected: string) => {
+  ])('%s capitaliseName(%s, %s)', (_, a, expected) => {
     expect(capitaliseName(a)).toEqual(expected)
   })
 })
 
 describe('initialise name', () => {
   it.each([
-    [null, null, null],
+    [null, undefined, null],
     ['Empty string', '', null],
     ['One word', 'robert', 'r. robert'],
     ['Two words', 'Robert James', 'R. James'],
     ['Three words', 'Robert James Smith', 'R. Smith'],
     ['Double barrelled', 'Robert-John Smith-Jones-Wilson', 'R. Smith-Jones-Wilson'],
-  ])('%s initialiseName(%s, %s)', (_: string, a: string, expected: string) => {
+  ])('%s initialiseName(%s, %s)', (_, a, expected) => {
     expect(initialiseName(a)).toEqual(expected)
   })
 })
@@ -50,12 +50,12 @@ describe('Prisoner Date Pretty', () => {
 
 describe('Format date', () => {
   it.each([
-    [null, null, 'd MMMM yyyy', undefined],
+    [null, undefined, 'd MMMM yyyy', undefined],
     ['empty string', '', 'd MMMM yyyy', undefined],
     ['Poor format string', '20-03-2022', 'd MMMM yyyy', undefined],
     ['ISO Date String', '2022-03-20', 'd MMMM yyyy', '20 March 2022'],
     ['Date Object', new Date(2022, 2, 20), 'd MMMM yyyy', '20 March 2022'],
-  ])('%s formatDate(%s, %s)', (_: string, a: string | Date, fmt: string, expected: string) => {
+  ])('%s formatDate(%s, %s)', (_, a, fmt, expected) => {
     expect(formatDate(a, fmt)).toEqual(expected)
   })
 })
@@ -87,8 +87,8 @@ describe('extractPrisonerNumber', () => {
     ['empty string', '', false],
     ['disallowed characters', 'A123-4BC', false],
     ['wrong format', '1ABCD23', false],
-    ['null string', null, false],
-  ])('%s: extractPrisonerNumber(%s) => %s', (_: string, input: string, expected: string | false) => {
+    ['null string', undefined, false],
+  ])('%s: extractPrisonerNumber(%s) => %s', (_, input, expected) => {
     expect(extractPrisonerNumber(input)).toEqual(expected)
   })
 })

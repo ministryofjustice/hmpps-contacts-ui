@@ -11,8 +11,8 @@ describe('findMostRelevantAddress', () => {
     contact.addresses.push({
       addressType: 'HOME',
       addressTypeDescription: 'Home address',
-      updatedBy: null,
-      updatedTime: null,
+      updatedBy: undefined,
+      updatedTime: undefined,
       area: 'Bunting',
       cityCode: '25344',
       cityDescription: 'Bradford',
@@ -24,14 +24,14 @@ describe('findMostRelevantAddress', () => {
       countyDescription: 'West Yorkshire',
       createdBy: 'TIM',
       createdTime: '2014-12-04T0 =3 =44.512401',
-      endDate: null,
+      endDate: undefined,
       flat: '',
       mailFlag: false,
       noFixedAddress: false,
       phoneNumbers: [
         {
-          updatedBy: null,
-          updatedTime: null,
+          updatedBy: undefined,
+          updatedTime: undefined,
           contactId: 1,
           contactPhoneId: 2,
           contactAddressId: 3,
@@ -50,8 +50,8 @@ describe('findMostRelevantAddress', () => {
       startDate: '2012-01-02',
       street: 'Lilycroft Rd',
       verified: false,
-      verifiedBy: null,
-      verifiedTime: null,
+      verifiedBy: undefined,
+      verifiedTime: undefined,
     })
   })
 
@@ -65,10 +65,10 @@ describe('findMostRelevantAddress', () => {
 
   it('should find most relevant address based on mailFlag value', () => {
     // Given
-    contact.addresses[0].primaryAddress = null
-    contact.addresses[1].primaryAddress = null
-    contact.addresses[0].mailFlag = null
-    contact.addresses[1].mailFlag = true
+    contact.addresses[0]!.primaryAddress = false
+    contact.addresses[1]!.primaryAddress = false
+    contact.addresses[0]!.mailFlag = false
+    contact.addresses[1]!.mailFlag = true
 
     // When
     const mostRelevantAddress = findMostRelevantAddress(contact)
@@ -79,11 +79,11 @@ describe('findMostRelevantAddress', () => {
 
   it('should find most relevant address based on startDate value', () => {
     // Given
-    contact.addresses[0].primaryAddress = null
-    contact.addresses[1].primaryAddress = null
-    contact.addresses[0].mailFlag = null
-    contact.addresses[1].mailFlag = null
-    contact.addresses[1].startDate = '2023-01-02'
+    contact.addresses[0]!.primaryAddress = false
+    contact.addresses[1]!.primaryAddress = false
+    contact.addresses[0]!.mailFlag = false
+    contact.addresses[1]!.mailFlag = false
+    contact.addresses[1]!.startDate = '2023-01-02'
 
     // When
     const mostRelevantAddress = findMostRelevantAddress(contact)
@@ -94,14 +94,14 @@ describe('findMostRelevantAddress', () => {
 
   it('should not fallback to expired unless requested', () => {
     // Given
-    contact.addresses[0].primaryAddress = null
-    contact.addresses[1].primaryAddress = null
-    contact.addresses[0].mailFlag = null
-    contact.addresses[1].mailFlag = null
-    contact.addresses[0].startDate = '2023-01-02'
-    contact.addresses[1].startDate = '2023-01-01'
-    contact.addresses[0].endDate = '2025-01-02'
-    contact.addresses[1].endDate = '2025-01-01'
+    contact.addresses[0]!.primaryAddress = false
+    contact.addresses[1]!.primaryAddress = false
+    contact.addresses[0]!.mailFlag = false
+    contact.addresses[1]!.mailFlag = false
+    contact.addresses[0]!.startDate = '2023-01-02'
+    contact.addresses[1]!.startDate = '2023-01-01'
+    contact.addresses[0]!.endDate = '2025-01-02'
+    contact.addresses[1]!.endDate = '2025-01-01'
 
     // When
     const mostRelevantAddress = findMostRelevantAddress(contact, false)
@@ -112,14 +112,14 @@ describe('findMostRelevantAddress', () => {
 
   it('should fallback to expired if requested', () => {
     // Given
-    contact.addresses[0].primaryAddress = null
-    contact.addresses[1].primaryAddress = null
-    contact.addresses[0].mailFlag = null
-    contact.addresses[1].mailFlag = null
-    contact.addresses[0].startDate = '2023-01-02'
-    contact.addresses[1].startDate = '2023-01-01'
-    contact.addresses[0].endDate = '2025-01-02'
-    contact.addresses[1].endDate = '2025-01-01'
+    contact.addresses[0]!.primaryAddress = false
+    contact.addresses[1]!.primaryAddress = false
+    contact.addresses[0]!.mailFlag = false
+    contact.addresses[1]!.mailFlag = false
+    contact.addresses[0]!.startDate = '2023-01-02'
+    contact.addresses[1]!.startDate = '2023-01-01'
+    contact.addresses[0]!.endDate = '2025-01-02'
+    contact.addresses[1]!.endDate = '2025-01-01'
 
     // When
     const mostRelevantAddress = findMostRelevantAddress(contact, true)
@@ -139,8 +139,8 @@ describe('getLabelForAddress', () => {
     async (flagLabel: string, primaryAddress: boolean, mailFlag: boolean) => {
       // Given
       const contact = TestData.contact()
-      contact.addresses[0].primaryAddress = primaryAddress
-      contact.addresses[0].mailFlag = mailFlag
+      contact.addresses[0]!.primaryAddress = primaryAddress
+      contact.addresses[0]!.mailFlag = mailFlag
 
       // When
       const mostRelevantAddressLabel = getLabelForAddress(contact.addresses[0])

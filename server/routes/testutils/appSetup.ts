@@ -9,11 +9,11 @@ import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
 import * as auth from '../../authentication/auth'
 import type { Services } from '../../services'
-import AuditService from '../../services/auditService'
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import setUpWebSession from '../../middleware/setUpWebSession'
 import populateValidationErrors from '../../middleware/populateValidationErrors'
 import setUpAuth from '../../middleware/setUpAuthentication'
+import { MockedService } from '../../testutils/mockedServices'
 
 jest.mock('../../services/auditService')
 
@@ -96,7 +96,7 @@ function appSetup(
 export function appWithAllRoutes({
   production = false,
   services = {
-    auditService: new AuditService(null) as jest.Mocked<AuditService>,
+    auditService: MockedService.AuditService(),
   },
   userSupplier = () => user,
   validationErrors,

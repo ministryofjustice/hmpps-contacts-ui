@@ -4,16 +4,16 @@ import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, flashProvider, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
+import { Page } from '../../../../services/auditService'
 import AddContactJourney = journeys.AddContactJourney
 import TestData from '../../../testutils/testData'
-import PrisonerSearchService from '../../../../services/prisonerSearchService'
+import { MockedService } from '../../../../testutils/mockedServices'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
+const auditService = MockedService.AuditService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -57,7 +57,6 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId', () => {
   it('should render enter dob page', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
@@ -76,7 +75,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId', (
 
   it('should call the audit service for the page view', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
@@ -92,7 +90,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId', (
   it('should render previously entered details if validation errors', async () => {
     // Given
     const form = { isKnown: 'YES', day: '01', month: '06', year: '1982' }
-    auditService.logPageView.mockResolvedValue(null)
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
@@ -110,7 +107,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId', (
   it('should render previously entered details if validation errors with unknown dob', async () => {
     // Given
     const form = { isKnown: 'NO' }
-    auditService.logPageView.mockResolvedValue(null)
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
@@ -127,7 +123,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId', (
 
   it('should render previously entered details if no validation errors but there are session values', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     existingJourney.dateOfBirth = { isKnown: 'YES', day: 1, month: 6, year: 1982 }
 
     // When
@@ -144,7 +139,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId', (
 
   it('should render previously entered details if no validation errors but there are session values with unknown dob', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     existingJourney.dateOfBirth = { isKnown: 'NO' }
 
     // When
@@ -161,7 +155,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId', (
 
   it('should render submitted options on validation error even if there is a version in the session', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     existingJourney.dateOfBirth = { isKnown: 'YES', day: 1, month: 6, year: 1982 }
     const form = { isKnown: 'NO' }
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
@@ -196,7 +189,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`)
 
     const expectedDob = { isKnown: 'NO' }
-    expect(session.addContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
+    expect(session.addContactJourneys![journeyId]!.dateOfBirth).toStrictEqual(expectedDob)
   })
 
   it.each([
@@ -217,7 +210,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
       month: 6,
       year: 1982,
     }
-    expect(session.addContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
+    expect(session.addContactJourneys![journeyId]!.dateOfBirth).toStrictEqual(expectedDob)
   })
 
   it('should pass to check answers page if a valid DOB is entered and we are checking answers', async () => {
@@ -238,7 +231,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
       month: 6,
       year: 1982,
     }
-    expect(session.addContactJourneys[journeyId].dateOfBirth).toStrictEqual(expectedDob)
+    expect(session.addContactJourneys![journeyId]!.dateOfBirth).toStrictEqual(expectedDob)
   })
 
   it('should return to enter page if there are validation errors', async () => {

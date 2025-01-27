@@ -15,7 +15,7 @@ describe('selectRelationshipTypeSchema', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
         relationshipType: ['Select if this is a social or official contact for the prisoner'],
       })

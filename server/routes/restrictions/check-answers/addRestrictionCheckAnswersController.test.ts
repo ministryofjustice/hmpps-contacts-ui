@@ -4,24 +4,22 @@ import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../testutils/appSetup'
-import AuditService, { Page } from '../../../services/auditService'
-import ReferenceDataService from '../../../services/referenceDataService'
+import { Page } from '../../../services/auditService'
 import { mockedReferenceData } from '../../testutils/stubReferenceData'
-import PrisonerSearchService from '../../../services/prisonerSearchService'
-import RestrictionsService from '../../../services/restrictionsService'
 import TestData from '../../testutils/testData'
 import AddRestrictionJourney = journeys.AddRestrictionJourney
 import RestrictionClass = journeys.RestrictionClass
+import { MockedService } from '../../../testutils/mockedServices'
 
 jest.mock('../../../services/auditService')
 jest.mock('../../../services/referenceDataService')
 jest.mock('../../../services/prisonerSearchService')
 jest.mock('../../../services/restrictionsService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
-const restrictionsService = new RestrictionsService(null) as jest.Mocked<RestrictionsService>
+const auditService = MockedService.AuditService()
+const referenceDataService = MockedService.ReferenceDataService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
+const restrictionsService = MockedService.RestrictionsService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -74,7 +72,6 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/check-answers/:journeyId', () => {
   it('should render enter restriction page for prisoner-contact with minimal details', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Banned')
     existingJourney.restrictionClass = 'PRISONER_CONTACT'
     existingJourney.restriction = {
@@ -107,7 +104,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
   it('should render enter restriction page for estate wide with minimal details', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Banned')
     existingJourney.restrictionClass = 'CONTACT_GLOBAL'
     existingJourney.restriction = {
@@ -140,7 +136,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
   it('should render enter restriction page for prisoner-contact with all details', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Banned')
     existingJourney.restrictionClass = 'PRISONER_CONTACT'
     existingJourney.restriction = {
@@ -185,7 +180,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
   it('should render enter restriction page for estate wide with all details', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Banned')
     existingJourney.restrictionClass = 'CONTACT_GLOBAL'
     existingJourney.restriction = {
@@ -231,7 +225,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
   it('should call the audit service for the page view', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     existingJourney.restrictionClass = 'PRISONER_CONTACT'
     existingJourney.restriction = {
       type: 'BAN',
@@ -266,8 +259,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/check-answers/:journeyId', () => {
   it.each([['PRISONER_CONTACT'], ['CONTACT_GLOBAL']])(
     'should pass to success page and remove from session',
-    async (restrictionClass: RestrictionClass) => {
-      existingJourney.restrictionClass = restrictionClass
+    async restrictionClass => {
+      existingJourney.restrictionClass = restrictionClass as RestrictionClass
       restrictionsService.createRestriction.mockResolvedValue({})
 
       await request(app)
@@ -283,14 +276,14 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
         )
 
       expect(restrictionsService.createRestriction).toHaveBeenCalledWith(existingJourney, user)
-      expect(session.addRestrictionJourneys[journeyId]).toBeUndefined()
+      expect(session.addRestrictionJourneys![journeyId]).toBeUndefined()
     },
   )
 
   it.each([['PRISONER_CONTACT'], ['CONTACT_GLOBAL']])(
     'should return to start if no journey in session',
-    async (restrictionClass: RestrictionClass) => {
-      existingJourney.restrictionClass = restrictionClass
+    async restrictionClass => {
+      existingJourney.restrictionClass = restrictionClass as RestrictionClass
       await request(app)
         .post(
           `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/check-answers/${uuidv4()}`,

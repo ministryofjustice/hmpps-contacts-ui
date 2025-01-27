@@ -2,23 +2,20 @@ import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService from '../../../../services/auditService'
-import ReferenceDataService from '../../../../services/referenceDataService'
 import { mockedReferenceData } from '../../../testutils/stubReferenceData'
-import PrisonerSearchService from '../../../../services/prisonerSearchService'
-import ContactService from '../../../../services/contactsService'
 import TestData from '../../../testutils/testData'
 import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
+import { MockedService } from '../../../../testutils/mockedServices'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/referenceDataService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
-const contactsService = new ContactService(null) as jest.Mocked<ContactService>
+const auditService = MockedService.AuditService()
+const referenceDataService = MockedService.ReferenceDataService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
+const contactsService = MockedService.ContactsService()
 
 let app: Express
 const prisonerNumber = 'A1234BC'
@@ -45,7 +42,6 @@ afterEach(() => {
 describe('Addresses', () => {
   it('should show primary address', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     const contact = TestData.contact({
       addresses: [
@@ -96,7 +92,6 @@ describe('Addresses', () => {
 
   it('should show no addresses when there are no addresses', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     const contact = TestData.contact()
     contact.addresses = []
@@ -118,7 +113,6 @@ describe('Addresses', () => {
 
   it('should show all addresses when there are multiple addresses', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     const contact = TestData.contact()
 
@@ -209,7 +203,6 @@ describe('Addresses', () => {
 
   it('should show start date ', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     const contact = TestData.contact()
     contact.addresses = [{ ...defaultAddress, startDate: '2020-01-01' }]
@@ -233,7 +226,6 @@ describe('Addresses', () => {
 
   it('should show end date ', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     const contact = TestData.contact()
     contact.addresses = [{ ...defaultAddress, endDate: '2022-02-02' }]
@@ -257,7 +249,6 @@ describe('Addresses', () => {
 
   it('should show end date not provided', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     const contact = TestData.contact()
     contact.addresses = [{ ...defaultAddress, startDate: '', endDate: '' }]
@@ -278,7 +269,6 @@ describe('Addresses', () => {
 
   it('should show no fixed address', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     const contact = TestData.contact()
     contact.addresses = [{ ...defaultAddress, noFixedAddress: true }]
@@ -299,7 +289,6 @@ describe('Addresses', () => {
 
   it('should show expired next to address card title', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     const contact = TestData.contact()
     contact.addresses = [{ ...defaultAddress, addressTypeDescription: 'Home address', endDate: '2024-01-01' }]
@@ -320,7 +309,6 @@ describe('Addresses', () => {
 
   it('should show expired next to address card title if no address type', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     const contact = TestData.contact()
     contact.addresses = [

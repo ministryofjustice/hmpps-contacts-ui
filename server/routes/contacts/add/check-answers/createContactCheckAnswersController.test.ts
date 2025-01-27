@@ -4,25 +4,23 @@ import { v4 as uuidv4 } from 'uuid'
 import { SessionData } from 'express-session'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import ContactsService from '../../../../services/contactsService'
-import ReferenceDataService from '../../../../services/referenceDataService'
+import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
-import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import { mockedGetReferenceDescriptionForCode } from '../../../testutils/stubReferenceData'
 import AddContactJourney = journeys.AddContactJourney
 import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
+import { MockedService } from '../../../../testutils/mockedServices'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/contactsService')
 jest.mock('../../../../services/referenceDataService')
 jest.mock('../../../../services/prisonerSearchService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
-const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
+const auditService = MockedService.AuditService()
+const contactsService = MockedService.ContactsService()
+const referenceDataService = MockedService.ReferenceDataService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -80,7 +78,6 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId', () => {
   it('should render check answers page with dob for mode NEW', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     journey.mode = 'NEW'
 
     // When
@@ -100,7 +97,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
 
   it('should render alternative check answers page for mode EXISTING', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     journey.mode = 'EXISTING'
     journey.contactId = 12345
 
@@ -123,7 +119,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
 
   it('should render check answers page without dob', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     journey.dateOfBirth = { isKnown: 'NO' }
 
     // When
@@ -146,9 +141,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     'should render check answers page with different relationship types (%s, %s, %s)',
     async (relationshipType: string, relationshipToPrisoner: string, relationshipToPrisonerDescription: string) => {
       // Given
-      auditService.logPageView.mockResolvedValue(null)
-      journey.relationship.relationshipType = relationshipType
-      journey.relationship.relationshipToPrisoner = relationshipToPrisoner
+      journey.relationship!.relationshipType = relationshipType
+      journey.relationship!.relationshipToPrisoner = relationshipToPrisoner
 
       // When
       const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
@@ -164,8 +158,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
 
   it('should render check answers page without comments', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
-    journey.relationship.comments = undefined
+    journey.relationship!.comments = undefined
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
@@ -183,9 +176,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     [undefined, 'First', undefined, 'Last', 'Last, First'],
   ])(
     'should render the full name with optional values and reference data',
-    async (title: string, firstName: string, middleNames: string, lastName: string, expected: string) => {
+    async (title, firstName, middleNames, lastName, expected) => {
       // Given
-      auditService.logPageView.mockResolvedValue(null)
       journey.names = { title, firstName, middleNames, lastName }
 
       // When
@@ -201,7 +193,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
 
   it('should render check answers page with a deceased date', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     journey.existingContact = {
       isDeceased: true,
       deceasedDate: '2020-12-25',
@@ -219,7 +210,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
 
   it('should not show deceased date if not present, even if flag set to true', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     journey.existingContact = {
       isDeceased: true,
     }
@@ -236,7 +226,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
 
   it('should call the audit service for the page view', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
@@ -280,7 +269,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
 
     // Then
     expect(contactsService.createContact).toHaveBeenCalledWith(journey, user)
-    expect(session.addContactJourneys[journeyId]).toBeUndefined()
+    expect(session.addContactJourneys![journeyId]).toBeUndefined()
   })
 
   it('should add the contact relationship and pass to success page', async () => {
@@ -301,7 +290,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
 
     // Then
     expect(contactsService.addContact).toHaveBeenCalledWith(journey, user)
-    expect(session.addContactJourneys[journeyId]).toBeUndefined()
+    expect(session.addContactJourneys![journeyId]).toBeUndefined()
   })
 
   it('should return to start if no journey in session', async () => {

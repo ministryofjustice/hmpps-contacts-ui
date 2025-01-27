@@ -305,7 +305,7 @@ describe('addContactFlowControl', () => {
     it.each([
       [Page.CREATE_CONTACT_START_PAGE, undefined],
       [Page.CONTACT_SEARCH_PAGE, ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS']],
-    ])('Should have no back for initial pages', (page: Page, breadcrumbs?: BreadcrumbType[]) => {
+    ])('Should have no back for initial pages', (page: Page, breadcrumbs) => {
       const journey: AddContactJourney = {
         id: journeyId,
         lastTouched: new Date().toISOString(),
@@ -318,7 +318,7 @@ describe('addContactFlowControl', () => {
       }
       const expected: Navigation = {
         backLink: undefined,
-        breadcrumbs,
+        breadcrumbs: breadcrumbs as BreadcrumbType[] | undefined,
       }
 
       const nav = navigationForAddContactJourney(page, journey)

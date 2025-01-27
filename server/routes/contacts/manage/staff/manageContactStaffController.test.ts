@@ -2,18 +2,17 @@ import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import PrisonerSearchService from '../../../../services/prisonerSearchService'
-import ContactsService from '../../../../services/contactsService'
+import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
+import { MockedService } from '../../../../testutils/mockedServices'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
-const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
+const auditService = MockedService.AuditService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
+const contactsService = MockedService.ContactsService()
 
 let app: Express
 const prisonerNumber = 'A1234BC'
@@ -41,7 +40,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/staff', () =>
     const ContactDetails = TestData.contact(expectedResponse)
     const contactId = ContactDetails.id
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.getContact.mockResolvedValue(ContactDetails)
 

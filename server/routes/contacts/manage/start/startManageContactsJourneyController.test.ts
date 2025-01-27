@@ -3,12 +3,13 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
+import { Page } from '../../../../services/auditService'
 import ManageContactsJourney = journeys.ManageContactsJourney
+import { MockedService } from '../../../../testutils/mockedServices'
 
 jest.mock('../../../../services/auditService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
+const auditService = MockedService.AuditService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -23,7 +24,7 @@ beforeEach(() => {
       if (preExistingJourneysToAddToSession) {
         session.manageContactsJourneys = {}
         preExistingJourneysToAddToSession.forEach((journey: ManageContactsJourney) => {
-          session.manageContactsJourneys[journey.id] = journey
+          session.manageContactsJourneys![journey.id] = journey
         })
       }
     },
@@ -37,8 +38,6 @@ afterEach(() => {
 
 describe('GET /contacts/manage/start', () => {
   it('should create the journey and redirect to the prisoner search page', async () => {
-    auditService.logPageView.mockResolvedValue(null)
-
     const response = await request(app).get('/contacts/manage/start')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACTS_START_PAGE, {
@@ -46,12 +45,11 @@ describe('GET /contacts/manage/start', () => {
       correlationId: expect.any(String),
     })
     expect(response.status).toEqual(302)
-    expect(response.headers.location).toContain('/contacts/manage/prisoner-search/')
-    expect(Object.entries(session.manageContactsJourneys)).toHaveLength(1)
+    expect(response.headers['location']).toContain('/contacts/manage/prisoner-search/')
+    expect(Object.entries(session.manageContactsJourneys!)).toHaveLength(1)
   })
 
   it('validate a journey ID is added to the URL and the session', async () => {
-    auditService.logPageView.mockResolvedValue(null)
     preExistingJourneysToAddToSession = [
       {
         id: uuidv4(),
@@ -73,16 +71,15 @@ describe('GET /contacts/manage/start', () => {
     })
     expect(response.status).toEqual(302)
     expect(location).toContain('/contacts/manage/prisoner-search/')
-    expect(Object.entries(session.manageContactsJourneys)).toHaveLength(2)
+    expect(Object.entries(session.manageContactsJourneys!)).toHaveLength(2)
 
     // Get the most recent UUID added and check it is present in the journey map
-    const newId = location.substring(location.lastIndexOf('/') + 1)
-    expect(session.manageContactsJourneys[newId].id).toEqual(newId)
-    expect(session.manageContactsJourneys[newId].lastTouched).toBeTruthy()
+    const newId = location!.substring(location!.lastIndexOf('/') + 1)
+    expect(session.manageContactsJourneys![newId]!.id).toEqual(newId)
+    expect(session.manageContactsJourneys![newId]!.lastTouched).toBeTruthy()
   })
 
   it('should not remove existing journeys when less than max exist', async () => {
-    auditService.logPageView.mockResolvedValue(null)
     preExistingJourneysToAddToSession = [
       {
         id: uuidv4(),
@@ -100,12 +97,11 @@ describe('GET /contacts/manage/start', () => {
       correlationId: expect.any(String),
     })
     expect(response.status).toEqual(302)
-    expect(response.headers.location).toContain('/contacts/manage/prisoner-search/')
-    expect(Object.entries(session.manageContactsJourneys)).toHaveLength(2)
+    expect(response.headers['location']).toContain('/contacts/manage/prisoner-search/')
+    expect(Object.entries(session.manageContactsJourneys!)).toHaveLength(2)
   })
 
   it('should remove the oldest journey if there will be more than 5 journeys', async () => {
-    auditService.logPageView.mockResolvedValue(null)
     preExistingJourneysToAddToSession = [
       { id: 'old', lastTouched: new Date(2024, 1, 1, 11, 30).toISOString() },
       { id: 'middle-aged', lastTouched: new Date(2024, 1, 1, 12, 30).toISOString() },
@@ -125,16 +121,16 @@ describe('GET /contacts/manage/start', () => {
     expect(location).toContain('/contacts/manage/prisoner-search/')
 
     // Get the latest journey ID just added
-    const newId = location.substring(location.lastIndexOf('/') + 1)
+    const newId = location!.substring(location!.lastIndexOf('/') + 1)
 
     // Check that the oldest journey has been replaced and still 5 are present
-    expect(Object.keys(session.manageContactsJourneys).sort()).toStrictEqual(
+    expect(Object.keys(session.manageContactsJourneys!).sort()).toStrictEqual(
       [newId, 'old', 'middle-aged', 'young', 'youngest'].sort(),
     )
-    expect(Object.entries(session.manageContactsJourneys)).toHaveLength(5)
+    expect(Object.entries(session.manageContactsJourneys!)).toHaveLength(5)
 
     // Check that the newest ID is present in the journey list
-    expect(session.manageContactsJourneys[newId].id).toEqual(newId)
-    expect(session.manageContactsJourneys[newId].lastTouched).toBeTruthy()
+    expect(session.manageContactsJourneys![newId]!.id).toEqual(newId)
+    expect(session.manageContactsJourneys![newId]!.lastTouched).toBeTruthy()
   })
 })

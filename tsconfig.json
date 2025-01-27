@@ -33,9 +33,7 @@
     "esbuild",
     "coverage",
     "eslint.config.mjs",
-    "test_results",
-    "**/*.test.ts",
-    "server/**/appSetup.ts"
+    "test_results"
   ],
   "include": ["**/*.js", "**/*.ts"]
 }

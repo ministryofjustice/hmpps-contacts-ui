@@ -20,7 +20,7 @@ describe('addressLinesSchemas', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
         country: ['Select a country'],
       })
@@ -32,7 +32,7 @@ describe('addressLinesSchemas', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
         flat: ['Flat must be 30 characters or less'],
       })
@@ -44,7 +44,7 @@ describe('addressLinesSchemas', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
         premises: ['Premises must be 50 characters or less'],
       })
@@ -56,7 +56,7 @@ describe('addressLinesSchemas', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
         street: ['Street must be 160 characters or less'],
       })
@@ -68,7 +68,7 @@ describe('addressLinesSchemas', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
         locality: ['Locality must be 70 characters or less'],
       })
@@ -80,7 +80,7 @@ describe('addressLinesSchemas', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
         postcode: ['Postcode must be 12 characters or less'],
       })

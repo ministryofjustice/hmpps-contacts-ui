@@ -3,12 +3,13 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import { appWithAllRoutes, flashProvider, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
+import { Page } from '../../../../services/auditService'
 import { ENTER_TWO_CHARS_MIN } from './prisonerSearchSchema'
+import { MockedService } from '../../../../testutils/mockedServices'
 
 jest.mock('../../../../services/auditService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
+const auditService = MockedService.AuditService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -37,8 +38,6 @@ afterEach(() => {
 
 describe('GET /contacts/manage/prisoner-search', () => {
   it('should render the search page', async () => {
-    auditService.logPageView.mockResolvedValue(null)
-
     const response = await request(app).get(`/contacts/manage/prisoner-search/${journeyId}`)
 
     expect(response.status).toEqual(200)
@@ -70,7 +69,7 @@ describe('POST /contacts/manage/prisoner-search/:journeyId', () => {
       .expect('Location', `/contacts/manage/prisoner-search-results/${journeyId}`)
 
     expect(flashProvider).not.toHaveBeenCalledWith('validationErrors', expect.any(String))
-    expect(session.manageContactsJourneys[journeyId].search.searchTerm).toEqual('A1111AA')
+    expect(session.manageContactsJourneys![journeyId]!.search!.searchTerm).toEqual('A1111AA')
   })
 
   it('should return to search entry page if there are validation errors', async () => {

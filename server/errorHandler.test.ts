@@ -2,16 +2,15 @@ import type { Express } from 'express'
 import request from 'supertest'
 import createError from 'http-errors'
 import { appWithAllRoutes } from './routes/testutils/appSetup'
-import AuditService from './services/auditService'
-import PrisonerSearchService from './services/prisonerSearchService'
+import { MockedService } from './testutils/mockedServices'
 
 let app: Express
 let productionApp: Express
 jest.mock('./services/auditService')
 jest.mock('./services/prisonerSearchService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
+const auditService = MockedService.AuditService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
 
 beforeEach(() => {
   app = appWithAllRoutes({

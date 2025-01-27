@@ -2,18 +2,17 @@ import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, flashProvider, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
+import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
-import PrisonerSearchService from '../../../../services/prisonerSearchService'
-import ContactsService from '../../../../services/contactsService'
+import { MockedService } from '../../../../testutils/mockedServices'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
-const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
+const auditService = MockedService.AuditService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
+const contactsService = MockedService.ContactsService()
 
 let app: Express
 const contactId = 99
@@ -46,7 +45,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob?re
         dateOfBirth: '2010-12-15',
       }),
     )
-    auditService.logPageView.mockResolvedValue(null)
 
     // When
     const response = await request(app).get(
@@ -70,15 +68,14 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob?re
 
   it('should render enter dob page with no dob', async () => {
     // Given
-    contactsService.getContact.mockResolvedValue(
-      TestData.contact({
+    contactsService.getContact.mockResolvedValue({
+      ...TestData.contact({
         firstName: 'First',
         middleNames: 'Middle',
         lastName: 'Last',
-        dateOfBirth: null,
       }),
-    )
-    auditService.logPageView.mockResolvedValue(null)
+      dateOfBirth: undefined,
+    })
 
     // When
     const response = await request(app).get(
@@ -103,8 +100,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob?re
   it('should call the audit service for the page view', async () => {
     // Given
     contactsService.getContact.mockResolvedValue(TestData.contact({}))
-
-    auditService.logPageView.mockResolvedValue(null)
 
     // When
     const response = await request(app).get(
@@ -131,7 +126,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob?re
     )
 
     const form = { isKnown: 'YES', day: '01', month: '06', year: '1982' }
-    auditService.logPageView.mockResolvedValue(null)
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
@@ -160,7 +154,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob?re
     )
 
     const form = { isKnown: 'NO' }
-    auditService.logPageView.mockResolvedValue(null)
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When

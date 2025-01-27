@@ -4,24 +4,22 @@ import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../../services/auditService'
-import PrisonerSearchService from '../../../../../services/prisonerSearchService'
-import ReferenceDataService from '../../../../../services/referenceDataService'
-import ContactsService from '../../../../../services/contactsService'
+import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import AddressJourney = journeys.AddressJourney
+import { MockedService } from '../../../../../testutils/mockedServices'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
 jest.mock('../../../../../services/referenceDataService')
 jest.mock('../../../../../services/contactsService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
-const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
-const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
+const auditService = MockedService.AuditService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
+const referenceDataService = MockedService.ReferenceDataService()
+const contactsService = MockedService.ContactsService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -108,7 +106,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/check
     'should render address check answers page with type %s and expected question %s',
     async (addressType: string, expectedTitle: string) => {
       // Given
-      auditService.logPageView.mockResolvedValue(null)
       existingJourney.addressType = addressType
 
       // When
@@ -132,7 +129,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/check
 
   it('should render address check answers page with minimal address details', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     existingJourney.addressType = 'DO_NOT_KNOW'
     existingJourney.addressLines = {
       noFixedAddress: false,
@@ -164,7 +160,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/check
 
   it('should render address check answers page with all address details', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     existingJourney.addressType = 'HOME'
     existingJourney.addressLines = {
       noFixedAddress: true,
@@ -197,7 +192,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/check
 
     const $ = cheerio.load(response.text)
     expect($('.check-answers-type-value').text().trim()).toStrictEqual('Home address')
-    expect($('.check-answers-address-value').html().trim()).toStrictEqual(
+    expect($('.check-answers-address-value').html()!.trim()).toStrictEqual(
       'Flat 1a, My block, A street<br>Downtown<br>Exeter<br>Devon<br>PC1 D3<br>England',
     )
     expect($('.check-answers-nfa-value').text().trim()).toStrictEqual('Yes')
@@ -210,7 +205,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/check
 
   it('should call the audit service for the page view', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
 
     // When
     const response = await request(app).get(
@@ -249,7 +243,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/chec
       .expect('Location', `/foo-bar`)
 
     // Then
-    expect(session.addressJourneys[journeyId]).toBeUndefined()
+    expect(session.addressJourneys![journeyId]).toBeUndefined()
     expect(contactsService.createContactAddress).toHaveBeenCalledWith(existingJourney, user)
   })
 

@@ -2,22 +2,20 @@ import type { Express } from 'express'
 import * as cheerio from 'cheerio'
 import request from 'supertest'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import PrisonerSearchService from '../../../../services/prisonerSearchService'
-import ContactsService from '../../../../services/contactsService'
-import ReferenceDataService from '../../../../services/referenceDataService'
+import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { mockedReferenceData } from '../../../testutils/stubReferenceData'
+import { MockedService } from '../../../../testutils/mockedServices'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
 jest.mock('../../../../services/referenceDataService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
-const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
-const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
+const auditService = MockedService.AuditService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
+const contactsService = MockedService.ContactsService()
+const referenceDataService = MockedService.ReferenceDataService()
 
 let app: Express
 const prisonerNumber = 'A1234BC'
@@ -42,7 +40,6 @@ afterEach(() => {
 
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/gender', () => {
   beforeEach(() => {
-    auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
   })
 

@@ -4,20 +4,19 @@ import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import PrisonerSearchService from '../../../../services/prisonerSearchService'
-import ContactsService from '../../../../services/contactsService'
+import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
 import PrisonerContactSummaryPage = contactsApiClientTypes.PrisonerContactSummaryPage
+import { MockedService } from '../../../../testutils/mockedServices'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
-const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
+const auditService = MockedService.AuditService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
+const contactsService = MockedService.ContactsService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -62,7 +61,6 @@ describe('listContactsController', () => {
   describe('GET /prisoner/:prisonerNumber/contacts/list', () => {
     it('should render the contacts list for a prisoner', async () => {
       const classes = '#active-contacts > .govuk-table > .govuk-table__body > .govuk-table__row >'
-      auditService.logPageView.mockResolvedValue(null)
       const contactsList: PrisonerContactSummary = [
         {
           prisonerContactId: 100,
@@ -149,7 +147,6 @@ describe('listContactsController', () => {
 
     it('should render the contacts list for a prisoner with emergency contact, next of kin and approved visitors with "No" value', async () => {
       const classes = '#active-contacts > .govuk-table > .govuk-table__body > .govuk-table__row >'
-      auditService.logPageView.mockResolvedValue(null)
       const contactsList: PrisonerContactSummary = [
         {
           prisonerContactId: 100,
@@ -197,7 +194,6 @@ describe('listContactsController', () => {
     })
 
     it('should render a message that the prisoner does not have any active/inactive contacts', async () => {
-      auditService.logPageView.mockResolvedValue(null)
       const contactsList: PrisonerContactSummaryPage = {
         content: [],
       }
@@ -218,7 +214,6 @@ describe('listContactsController', () => {
     })
 
     it('should render a message that the prisoner dob was not provided', async () => {
-      auditService.logPageView.mockResolvedValue(null)
       const contactsList: PrisonerContactSummary = [
         {
           prisonerContactId: 100,
@@ -322,7 +317,6 @@ describe('listContactsController', () => {
     describe('Active', () => {
       it('should render pagination for active contacts list', async () => {
         // Given
-        auditService.logPageView.mockResolvedValue(null)
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         contactsService.getPrisonerContacts.mockResolvedValue({ ...contactListResponse } as PrisonerContactSummaryPage)
 
@@ -345,7 +339,6 @@ describe('listContactsController', () => {
 
       it('should hide previous link when page equal or greater than 1 is selected', async () => {
         // Given
-        auditService.logPageView.mockResolvedValue(null)
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         const actviveResponseList = {
           ...contactListResponse,
@@ -378,7 +371,6 @@ describe('listContactsController', () => {
 
       it('should hide next link when last page is selected', async () => {
         // Given
-        auditService.logPageView.mockResolvedValue(null)
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         const actviveResponseList = {
           ...contactListResponse,
@@ -414,7 +406,6 @@ describe('listContactsController', () => {
     describe('Inactive', () => {
       it('should render pagination for inactive contacts list', async () => {
         // Given
-        auditService.logPageView.mockResolvedValue(null)
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         contactsService.getPrisonerContacts.mockResolvedValue({ ...contactListResponse } as PrisonerContactSummaryPage)
 
@@ -437,7 +428,6 @@ describe('listContactsController', () => {
 
       it('should hide previous link when page equal or greater than 1 is selected', async () => {
         // Given
-        auditService.logPageView.mockResolvedValue(null)
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         const inactviveResponseList = {
           ...contactListResponse,
@@ -472,7 +462,6 @@ describe('listContactsController', () => {
 
       it('should hide next link when last page is selected', async () => {
         // Given
-        auditService.logPageView.mockResolvedValue(null)
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         const inactviveResponseList = {
           ...contactListResponse,
@@ -511,7 +500,6 @@ describe('listContactsController', () => {
   describe('GET /prisoner/:prisonerNumber/contacts/list', () => {
     it('should render the contacts list for a prisoner without a journey', async () => {
       const classes = '#active-contacts > .govuk-table > .govuk-table__body > .govuk-table__row >'
-      auditService.logPageView.mockResolvedValue(null)
       const contactsList: PrisonerContactSummary = [
         {
           prisonerContactId: 100,

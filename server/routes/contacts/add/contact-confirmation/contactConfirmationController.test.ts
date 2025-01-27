@@ -4,13 +4,10 @@ import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import PrisonerSearchService from '../../../../services/prisonerSearchService'
-import ContactsService from '../../../../services/contactsService'
-import ReferenceDataService from '../../../../services/referenceDataService'
+import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import AddContactJourney = journeys.AddContactJourney
-import RestrictionsService from '../../../../services/restrictionsService'
+import { MockedService } from '../../../../testutils/mockedServices'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -18,11 +15,11 @@ jest.mock('../../../../services/contactsService')
 jest.mock('../../../../services/referenceDataService')
 jest.mock('../../../../services/restrictionsService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
-const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
-const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
-const restrictionsService = new RestrictionsService(null) as jest.Mocked<RestrictionsService>
+const auditService = MockedService.AuditService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
+const contactsService = MockedService.ContactsService()
+const referenceDataService = MockedService.ReferenceDataService()
+const restrictionsService = MockedService.RestrictionsService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -42,9 +39,9 @@ const blankAddress = TestData.address({
   countryDescription: '',
   postcode: '',
   primaryAddress: false,
-  mailFlag: false,
-  startDate: null,
-  endDate: null,
+  mailFlag: undefined,
+  startDate: undefined,
+  endDate: undefined,
 })
 beforeEach(() => {
   existingJourney = {
@@ -81,7 +78,6 @@ describe('Contact details', () => {
   describe('GET /prisoner/:prisonerNumber/contacts/EXISTING/confirmation/:journeyId?contactId=', () => {
     it('should render confirmation page', async () => {
       // Given
-      auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.searchContact.mockResolvedValue(TestData.contact())
       contactsService.getContact.mockResolvedValue(TestData.contact())
@@ -113,7 +109,6 @@ describe('Contact details', () => {
         ],
       })
 
-      auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(contact)
 
@@ -132,7 +127,6 @@ describe('Contact details', () => {
         addresses: [{ ...blankAddress, property: 'primary', primaryAddress: true, mailFlag: true }],
       })
 
-      auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(contact)
 
@@ -154,7 +148,6 @@ describe('Contact details', () => {
         ],
       })
 
-      auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(contact)
 
@@ -178,7 +171,7 @@ describe('Contact details', () => {
             mailFlag: false,
             startDate: '2020-01-01',
           },
-          { ...blankAddress, property: 'no start date', primaryAddress: false, mailFlag: false, startDate: null },
+          { ...blankAddress, property: 'no start date', primaryAddress: false, mailFlag: false, startDate: undefined },
           {
             ...blankAddress,
             property: 'latest start date',
@@ -189,7 +182,6 @@ describe('Contact details', () => {
         ],
       })
 
-      auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(contact)
 
@@ -225,7 +217,6 @@ describe('Contact details', () => {
         ],
       })
 
-      auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(contact)
 
@@ -253,7 +244,6 @@ describe('Contact details', () => {
         ],
       })
 
-      auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(contact)
 
@@ -275,7 +265,6 @@ describe('Contact details', () => {
         ],
       })
 
-      auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(contact)
 
@@ -299,7 +288,6 @@ describe('Contact details', () => {
       ['NS', 'Specified (Indeterminate)'],
     ])('should show gender if question was answered', async (gender: string, genderDescription: string) => {
       // Given
-      auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.searchContact.mockResolvedValue(TestData.contact({ gender, genderDescription }))
       contactsService.getContact.mockResolvedValue(TestData.contact({ gender, genderDescription }))
@@ -321,11 +309,14 @@ describe('Contact details', () => {
 
     it('should show "not provided" for gender if question was not answered', async () => {
       // Given
-      auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.searchContact.mockResolvedValue(TestData.contact())
-      contactsService.getContact.mockResolvedValue(TestData.contact({ gender: null, genderDescription: null }))
-      referenceDataService.getReferenceDescriptionForCode.mockResolvedValue(null)
+      contactsService.getContact.mockResolvedValue({
+        ...TestData.contact({}),
+        gender: undefined,
+        genderDescription: undefined,
+      })
+      referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('')
       existingJourney.mode = 'EXISTING'
 
       // When
@@ -345,7 +336,6 @@ describe('Contact details', () => {
 
 describe('Restrictions', () => {
   beforeEach(() => {
-    auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.searchContact.mockResolvedValue(TestData.contact())
     contactsService.getContact.mockResolvedValue(TestData.contact())
@@ -497,10 +487,10 @@ describe('Restrictions', () => {
         const cardTitles = $('.restrictions-cards-titles')
         const titles = cardTitles.map((i, el) => $(el).text()).get()
 
-        expect(titles[0].trim()).toContain('First Card')
-        expect(titles[1].trim()).toContain('Second Card')
-        expect(titles[2].trim()).toContain('Third Card')
-        expect(titles[3].trim()).toContain('Last Card')
+        expect(titles[0]!.trim()).toContain('First Card')
+        expect(titles[1]!.trim()).toContain('Second Card')
+        expect(titles[2]!.trim()).toContain('Third Card')
+        expect(titles[3]!.trim()).toContain('Last Card')
       })
     })
   })
@@ -568,7 +558,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/add/confirmation/:journeyId?co
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`)
 
     // Then
-    expect(session.addContactJourneys[journeyId].isContactConfirmed).toStrictEqual('YES')
+    expect(session.addContactJourneys![journeyId]!.isContactConfirmed).toStrictEqual('YES')
   })
 
   it('should pass validation when "No, this is not the right person" is selected and return to search', async () => {
@@ -582,7 +572,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/add/confirmation/:journeyId?co
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
     // Then
-    expect(session.addContactJourneys[journeyId].isContactConfirmed).toBeUndefined()
+    expect(session.addContactJourneys![journeyId]!.isContactConfirmed).toBeUndefined()
   })
 
   it('should not pass validation when no option is selected', async () => {
@@ -596,6 +586,6 @@ describe('POST /prisoner/:prisonerNumber/contacts/add/confirmation/:journeyId?co
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
 
     // Then
-    expect(session.addContactJourneys[journeyId].isContactConfirmed).toStrictEqual(undefined)
+    expect(session.addContactJourneys![journeyId]!.isContactConfirmed).toStrictEqual(undefined)
   })
 })

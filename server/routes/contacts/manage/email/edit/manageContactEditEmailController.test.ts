@@ -3,11 +3,10 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { components } from '../../../../../@types/contactsApi'
 import { appWithAllRoutes, flashProvider, user } from '../../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../../services/auditService'
-import PrisonerSearchService from '../../../../../services/prisonerSearchService'
-import ContactService from '../../../../../services/contactsService'
+import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import ContactDetails = contactsApiClientTypes.ContactDetails
+import { MockedService } from '../../../../../testutils/mockedServices'
 
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 
@@ -15,9 +14,9 @@ jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
 jest.mock('../../../../../services/contactsService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
-const contactsService = new ContactService(null) as jest.Mocked<ContactService>
+const auditService = MockedService.AuditService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
+const contactsService = MockedService.ContactsService()
 
 let app: Express
 const prisonerNumber = 'A1234BC'
@@ -63,7 +62,6 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/edit', () => {
   it('should render edit email page with navigation back to manage contact and all field populated', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
@@ -86,10 +84,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contac
 
   it('should render edited answer instead of original if there is a validation error', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
     const form = { emailAddress: 'name@' }
-    auditService.logPageView.mockResolvedValue(null)
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
@@ -112,7 +108,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contac
 
   it('should call the audit service for the page view', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
@@ -130,7 +125,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contac
 
   it('should raise an error if the contact email is missing', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
 
     // When

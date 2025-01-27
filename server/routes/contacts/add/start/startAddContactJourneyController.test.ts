@@ -3,13 +3,14 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
+import { Page } from '../../../../services/auditService'
 import AddContactJourney = journeys.AddContactJourney
 import ReturnPoint = journeys.ReturnPoint
+import { MockedService } from '../../../../testutils/mockedServices'
 
 jest.mock('../../../../services/auditService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
+const auditService = MockedService.AuditService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -27,7 +28,7 @@ beforeEach(() => {
       if (preExistingJourneysToAddToSession) {
         session.addContactJourneys = {}
         preExistingJourneysToAddToSession.forEach((journey: AddContactJourney) => {
-          session.addContactJourneys[journey.id] = journey
+          session.addContactJourneys![journey.id] = journey
         })
       }
     },
@@ -41,7 +42,6 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
   it('should create the journey and redirect to search page', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/start`)
@@ -52,13 +52,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
       correlationId: expect.any(String),
     })
     expect(response.status).toEqual(302)
-    expect(response.headers.location).toContain('/contacts/search/')
-    expect(Object.entries(session.addContactJourneys)).toHaveLength(1)
+    expect(response.headers['location']).toContain('/contacts/search/')
+    expect(Object.entries(session.addContactJourneys!)).toHaveLength(1)
   })
 
   it('should set the return point to prisoner contact if no return parameters are specified', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     const expectedReturnPoint: ReturnPoint = {
       url: `/prisoner/${prisonerNumber}/contacts/list`,
     }
@@ -72,14 +71,13 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
       correlationId: expect.any(String),
     })
     expect(response.status).toEqual(302)
-    expect(response.headers.location).toContain('/contacts/search/')
-    const journey = Object.values(session.addContactJourneys)[0]
+    expect(response.headers['location']).toContain('/contacts/search/')
+    const journey = Object.values(session.addContactJourneys!)[0]!
     expect(journey.returnPoint).toStrictEqual(expectedReturnPoint)
   })
 
   it('should not remove any existing add journeys in the session', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     preExistingJourneysToAddToSession = [
       {
         id: uuidv4(),
@@ -105,15 +103,14 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
     })
     expect(response.status).toEqual(302)
     expect(location).toContain('/contacts/search/')
-    expect(Object.entries(session.addContactJourneys)).toHaveLength(2)
-    const newId = location.substring(location.lastIndexOf('/') + 1)
-    expect(session.addContactJourneys[newId].id).toEqual(newId)
-    expect(session.addContactJourneys[newId].lastTouched).toBeTruthy()
+    expect(Object.entries(session.addContactJourneys!)).toHaveLength(2)
+    const newId = location!.substring(location!.lastIndexOf('/') + 1)
+    expect(session.addContactJourneys![newId]!.id).toEqual(newId)
+    expect(session.addContactJourneys![newId]!.lastTouched).toBeTruthy()
   })
 
   it('should remove the oldest if there will be more than 5 journeys', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     preExistingJourneysToAddToSession = [
       {
         id: 'old',
@@ -163,8 +160,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
     })
     expect(response.status).toEqual(302)
     expect(location).toContain('/contacts/search/')
-    const newId = location.substring(location.lastIndexOf('/') + 1)
-    expect(Object.keys(session.addContactJourneys).sort()).toStrictEqual(
+    const newId = location!.substring(location!.lastIndexOf('/') + 1)
+    expect(Object.keys(session.addContactJourneys!).sort()).toStrictEqual(
       [newId, 'old', 'middle-aged', 'young', 'youngest'].sort(),
     )
   })

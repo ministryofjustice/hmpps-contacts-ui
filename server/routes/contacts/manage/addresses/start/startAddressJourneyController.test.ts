@@ -3,17 +3,17 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import { appWithAllRoutes, user } from '../../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../../services/auditService'
-import ContactsService from '../../../../../services/contactsService'
+import { Page } from '../../../../../services/auditService'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import AddressJourney = journeys.AddressJourney
 import TestData from '../../../../testutils/testData'
+import { MockedService } from '../../../../../testutils/mockedServices'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/contactsService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
+const auditService = MockedService.AuditService()
+const contactsService = MockedService.ContactsService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -44,7 +44,7 @@ beforeEach(() => {
       if (preExistingJourneysToAddToSession) {
         session.addressJourneys = {}
         preExistingJourneysToAddToSession.forEach((journey: AddressJourney) => {
-          session.addressJourneys[journey.id] = journey
+          session.addressJourneys![journey.id] = journey
         })
       }
     },
@@ -58,7 +58,6 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/start', () => {
   it('should create the journey and redirect to select type page', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
@@ -72,11 +71,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/s
       correlationId: expect.any(String),
     })
     expect(response.status).toEqual(302)
-    expect(response.headers.location).toContain(
+    expect(response.headers['location']).toContain(
       `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/select-type`,
     )
-    expect(Object.entries(session.addressJourneys)).toHaveLength(1)
-    const journey = Object.values(session.addressJourneys)[0]
+    expect(Object.entries(session.addressJourneys!)).toHaveLength(1)
+    const journey = Object.values(session.addressJourneys!)[0]!
     expect(journey.returnPoint).toStrictEqual({ url: '/foo' })
     expect(journey.mode).toStrictEqual('ADD')
     expect(journey.addressType).toBeUndefined()
@@ -92,7 +91,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/s
 
   it('should not remove any existing address journeys in the session', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
     preExistingJourneysToAddToSession = [
       {
@@ -118,15 +116,14 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/s
 
     // Then
     expect(response.status).toEqual(302)
-    expect(Object.entries(session.addressJourneys)).toHaveLength(2)
-    const newId = location.substring(location.lastIndexOf('/') + 1)
-    expect(session.addressJourneys[newId].id).toEqual(newId)
-    expect(session.addressJourneys[newId].lastTouched).toBeTruthy()
+    expect(Object.entries(session.addressJourneys!)).toHaveLength(2)
+    const newId = location!.substring(location!.lastIndexOf('/') + 1)
+    expect(session.addressJourneys![newId]!.id).toEqual(newId)
+    expect(session.addressJourneys![newId]!.lastTouched).toBeTruthy()
   })
 
   it('should remove the oldest if there will be more than 5 journeys', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
     preExistingJourneysToAddToSession = [
       {
@@ -204,8 +201,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/s
 
     // Then
     expect(response.status).toEqual(302)
-    const newId = location.substring(location.lastIndexOf('/') + 1)
-    expect(Object.keys(session.addressJourneys).sort()).toStrictEqual(
+    const newId = location!.substring(location!.lastIndexOf('/') + 1)
+    expect(Object.keys(session.addressJourneys!).sort()).toStrictEqual(
       [newId, 'old', 'middle-aged', 'young', 'youngest'].sort(),
     )
   })
@@ -214,7 +211,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/s
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/edit/:contactAddressId/start', () => {
   it('should create the journey with prepopulated all fields and redirect to select type page', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue({
       ...contact,
       addresses: [
@@ -248,11 +244,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/edit/
 
     // Then
     expect(response.status).toEqual(302)
-    expect(response.headers.location).toContain(
+    expect(response.headers['location']).toContain(
       `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/select-type`,
     )
-    expect(Object.entries(session.addressJourneys)).toHaveLength(1)
-    const journey = Object.values(session.addressJourneys)[0]
+    expect(Object.entries(session.addressJourneys!)).toHaveLength(1)
+    const journey = Object.values(session.addressJourneys!)[0]!
     expect(journey.returnPoint).toStrictEqual({ url: '/foo' })
     expect(journey.mode).toStrictEqual('EDIT')
     expect(journey.contactAddressId).toStrictEqual(888)
@@ -287,31 +283,32 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/edit/
 
   it('should create the journey with prepopulated minimal fields and redirect to select type page', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue({
       ...contact,
       addresses: [
-        TestData.address({
-          contactAddressId: 888,
-          addressType: null,
-          noFixedAddress: false,
-          flat: null,
-          property: null,
-          street: null,
-          area: null,
-          cityCode: null,
-          cityDescription: null,
-          countyCode: null,
-          countyDescription: null,
-          postcode: null,
-          countryCode: 'ENG',
-          countryDescription: 'England',
-          startDate: '2010-09-01',
-          endDate: null,
-          primaryAddress: false,
-          mailFlag: false,
-          comments: null,
-        }),
+        {
+          ...TestData.address({
+            contactAddressId: 888,
+            noFixedAddress: false,
+            countryCode: 'ENG',
+            countryDescription: 'England',
+            startDate: '2010-09-01',
+            endDate: undefined,
+            primaryAddress: false,
+            mailFlag: false,
+          }),
+          flat: undefined,
+          property: undefined,
+          street: undefined,
+          area: undefined,
+          cityCode: undefined,
+          cityDescription: undefined,
+          countyCode: undefined,
+          countyDescription: undefined,
+          postcode: undefined,
+          addressType: undefined,
+          comments: undefined,
+        },
       ],
     })
 
@@ -322,24 +319,24 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/edit/
 
     // Then
     expect(response.status).toEqual(302)
-    expect(response.headers.location).toContain(
+    expect(response.headers['location']).toContain(
       `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/select-type`,
     )
-    expect(Object.entries(session.addressJourneys)).toHaveLength(1)
-    const journey = Object.values(session.addressJourneys)[0]
+    expect(Object.entries(session.addressJourneys!)).toHaveLength(1)
+    const journey = Object.values(session.addressJourneys!)[0]!
     expect(journey.returnPoint).toStrictEqual({ url: '/foo' })
     expect(journey.mode).toStrictEqual('EDIT')
     expect(journey.contactAddressId).toStrictEqual(888)
     expect(journey.addressType).toStrictEqual('DO_NOT_KNOW')
     expect(journey.addressLines).toStrictEqual({
       noFixedAddress: false,
-      flat: null,
-      premises: null,
-      street: null,
-      locality: null,
-      town: null,
-      county: null,
-      postcode: null,
+      flat: undefined,
+      premises: undefined,
+      street: undefined,
+      locality: undefined,
+      town: undefined,
+      county: undefined,
+      postcode: undefined,
       country: 'ENG',
     })
     expect(journey.addressMetadata).toStrictEqual({
@@ -349,7 +346,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/edit/
       toYear: undefined,
       primaryAddress: 'NO',
       mailAddress: 'NO',
-      comments: null,
+      comments: undefined,
     })
     expect(journey.contactNames).toStrictEqual({
       title: '',
@@ -361,7 +358,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/edit/
 
   it('should return 404 if address with id not found', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue({
       ...contact,
       addresses: [
