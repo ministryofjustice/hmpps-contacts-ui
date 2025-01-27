@@ -24,7 +24,7 @@ export const contactSearchSchema = () => async () => {
       .string()
       .regex(NAME_REGEX, MIDDLE_NAME_INVALID)
       .optional()
-      .transform(val => (val?.trim().length > 0 ? val.trim() : undefined)),
+      .transform(val => (val?.trim()?.length ? val?.trim() : undefined)),
     firstName: z
       .string()
       .regex(NAME_REGEX, FIRST_NAME_INVALID)

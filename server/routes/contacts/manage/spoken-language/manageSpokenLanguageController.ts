@@ -8,6 +8,7 @@ import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
+import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 export default class ManageSpokenLanguageController implements PageHandler {
@@ -18,7 +19,7 @@ export default class ManageSpokenLanguageController implements PageHandler {
 
   public PAGE_NAME = Page.MANAGE_SPOKEN_LANGUAGE_PAGE
 
-  GET = async (req: Request<{ contactId?: string }>, res: Response): Promise<void> => {
+  GET = async (req: Request<PrisonerJourneyParams & { contactId: string }>, res: Response): Promise<void> => {
     const { contactId } = req.params
     const { user, journey } = res.locals
 

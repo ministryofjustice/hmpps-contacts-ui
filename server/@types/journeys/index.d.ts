@@ -76,7 +76,7 @@ declare namespace journeys {
     lastName: string
     firstName: string
     dateOfBirth: string
-    prisonName: string
+    prisonName?: string
     cellLocation?: string
     hasPrimaryAddress: boolean
   }
@@ -139,10 +139,14 @@ declare namespace journeys {
 
   export interface StandaloneManageContactJourney {
     returnPoint: ReturnPoint
+    names?: ContactNames
+    contactNames?: ContactNames
+    restrictionClass?: RestrictionClass
+    contactId?: string
   }
 
   type YesOrNo = 'YES' | 'NO'
   type YesNoOrDoNotKnow = 'YES' | 'NO' | 'DO_NOT_KNOW'
   type PrisonerJourneyParams = { prisonerNumber: string; journeyId: string }
-  type RestrictionClass = 'CONTACT_GLOBAL' | 'PRISONER_CONTACT'
+  export type RestrictionClass = 'CONTACT_GLOBAL' | 'PRISONER_CONTACT'
 }

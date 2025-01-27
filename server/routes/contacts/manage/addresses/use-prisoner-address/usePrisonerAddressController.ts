@@ -8,13 +8,15 @@ export default class UsePrisonerAddressController implements PageHandler {
 
   public PAGE_NAME = Page.USE_PRISONER_ADDRESS_PAGE
 
+  private DEFAULT_COUNTRY = 'ENG'
+
   GET = async (
     req: Request<{ journeyId: string; prisonerNumber: string }, unknown, unknown, { returnUrl: string }>,
     res: Response,
   ): Promise<void> => {
     const { journeyId, prisonerNumber } = req.params
     const { user } = res.locals
-    const journey = req.session.addressJourneys[journeyId]
+    const journey = req.session.addressJourneys![journeyId]!
     await this.prisonerAddressService.getPrimaryAddress(prisonerNumber, user).then(primaryAddress => {
       if (primaryAddress) {
         journey.addressLines = {
@@ -26,7 +28,7 @@ export default class UsePrisonerAddressController implements PageHandler {
           town: primaryAddress.townCode,
           county: primaryAddress.countyCode,
           postcode: primaryAddress.postalCode,
-          country: primaryAddress.countryCode,
+          country: primaryAddress.countryCode ?? this.DEFAULT_COUNTRY,
         }
       }
     })

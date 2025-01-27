@@ -31,7 +31,7 @@ export default class UpdateNameController implements PageHandler {
 
     const titleOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.TITLE, user)
-      .then(val => this.getSelectedTitleOptions(val, res.locals?.formResponses?.title ?? contact.title))
+      .then(val => this.getSelectedTitleOptions(val, res.locals?.formResponses?.['title'] ?? contact.title))
 
     const navigation: Navigation = {
       backLink: journey.returnPoint.url,
@@ -39,9 +39,9 @@ export default class UpdateNameController implements PageHandler {
     const viewModel = {
       journey,
       titleOptions,
-      lastName: res.locals?.formResponses?.lastName ?? contact.lastName,
-      firstName: res.locals?.formResponses?.firstName ?? contact.firstName,
-      middleNames: res.locals?.formResponses?.middleNames ?? contact.middleNames,
+      lastName: res.locals?.formResponses?.['lastName'] ?? contact.lastName,
+      firstName: res.locals?.formResponses?.['firstName'] ?? contact.firstName,
+      middleNames: res.locals?.formResponses?.['middleNames'] ?? contact.middleNames,
       navigation,
       restrictedEditing: true,
       continueButtonLabel: 'Confirm and save',

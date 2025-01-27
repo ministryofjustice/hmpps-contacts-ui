@@ -346,7 +346,7 @@ const mockedGetReferenceDescriptionForCode = async (
   type: ReferenceCodeType,
   code: string,
   user: HmppsUser,
-): Promise<string> => {
+): Promise<string | undefined> => {
   const groupValues = await mockedReferenceData(type, user)
   return groupValues.find(referenceCode => referenceCode.code === code)?.description
 }

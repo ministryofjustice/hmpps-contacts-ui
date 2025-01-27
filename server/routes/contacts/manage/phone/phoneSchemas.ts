@@ -26,7 +26,7 @@ export const phoneNumberSchemaFactory = () => async () => {
       .string()
       .max(7, EXT_TOO_LONG_ERROR_MSG)
       .optional()
-      .transform(val => (val?.trim().length > 0 ? val.trim() : undefined)),
+      .transform(val => (val?.trim()?.length ? val?.trim() : undefined)),
   })
 }
 

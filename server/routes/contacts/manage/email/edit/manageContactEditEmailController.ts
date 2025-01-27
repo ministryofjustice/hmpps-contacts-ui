@@ -32,7 +32,7 @@ export default class ManageContactEditEmailController implements PageHandler {
     }
     const navigation: Navigation = { backLink: journey.returnPoint.url }
     const viewModel = {
-      emailAddress: res.locals?.formResponses?.emailAddress ?? email.emailAddress,
+      emailAddress: res.locals?.formResponses?.['emailAddress'] ?? email.emailAddress,
       contact,
       navigation,
     }

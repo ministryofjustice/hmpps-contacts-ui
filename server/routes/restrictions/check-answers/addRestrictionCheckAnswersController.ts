@@ -28,7 +28,7 @@ export default class AddRestrictionCheckAnswersController implements PageHandler
   ): Promise<void> => {
     const { journeyId, prisonerNumber, contactId, prisonerContactId, restrictionClass } = req.params
     const { user } = res.locals
-    const journey = req.session.addRestrictionJourneys[journeyId]
+    const journey = req.session.addRestrictionJourneys![journeyId]!
     const navigation: Navigation = {
       cancelButton: journey.returnPoint.url,
     }
@@ -36,13 +36,13 @@ export default class AddRestrictionCheckAnswersController implements PageHandler
 
     const restrictionDescription = await this.referenceDataService.getReferenceDescriptionForCode(
       ReferenceCodeType.RESTRICTION,
-      journey.restriction.type,
+      journey.restriction!.type,
       user,
     )
-    const startDate = parse(journey.restriction.startDate, 'dd/MM/yyyy', new Date())
+    const startDate = parse(journey.restriction!.startDate!, 'dd/MM/yyyy', new Date())
     let expiryDate
-    if (journey.restriction.expiryDate) {
-      expiryDate = parse(journey.restriction.expiryDate, 'dd/MM/yyyy', new Date())
+    if (journey.restriction!.expiryDate) {
+      expiryDate = parse(journey.restriction!.expiryDate, 'dd/MM/yyyy', new Date())
     }
     const viewModel = {
       journey,
@@ -71,10 +71,10 @@ export default class AddRestrictionCheckAnswersController implements PageHandler
   ): Promise<void> => {
     const { journeyId, prisonerNumber, contactId, prisonerContactId, restrictionClass } = req.params
     const { user } = res.locals
-    const journey = req.session.addRestrictionJourneys[journeyId]
+    const journey = req.session.addRestrictionJourneys![journeyId]!
     await this.restrictionsService
       .createRestriction(journey, user)
-      .then(_ => delete req.session.addRestrictionJourneys[journeyId])
+      .then(_ => delete req.session.addRestrictionJourneys![journeyId])
     res.redirect(
       `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/success`,
     )

@@ -19,7 +19,7 @@ export const fullNameSchema = () => async () => {
     title: z
       .string()
       .optional()
-      .transform(val => (val?.trim().length > 0 ? val.trim() : undefined))
+      .transform(val => (val?.trim()?.length ? val?.trim() : undefined))
       .transform(val => val?.trim()),
     lastName: z
       .string({ message: LAST_NAME_REQUIRED_MESSAGE })
@@ -37,7 +37,7 @@ export const fullNameSchema = () => async () => {
       .max(35, MIDDLE_NAME_TOO_LONG_ERROR_MSG)
       .regex(NAME_REGEX, MIDDLE_NAME_INVALID)
       .optional()
-      .transform(val => (val?.trim().length > 0 ? val.trim() : undefined)),
+      .transform(val => (val?.trim()?.length ? val?.trim() : undefined)),
   })
 }
 
@@ -46,7 +46,7 @@ export const restrictedEditingNameSchema = () => async () => {
     title: z
       .string()
       .optional()
-      .transform(val => (val?.trim().length > 0 ? val.trim() : undefined))
+      .transform(val => (val?.trim()?.length ? val?.trim() : undefined))
       .transform(val => val?.trim()),
     lastName: z.string().optional(),
     firstName: z.string().optional(),
@@ -55,7 +55,7 @@ export const restrictedEditingNameSchema = () => async () => {
       .max(35, MIDDLE_NAME_TOO_LONG_ERROR_MSG)
       .regex(NAME_REGEX, MIDDLE_NAME_INVALID)
       .optional()
-      .transform(val => (val?.trim().length > 0 ? val.trim() : undefined)),
+      .transform(val => (val?.trim()?.length ? val?.trim() : undefined)),
   })
 }
 

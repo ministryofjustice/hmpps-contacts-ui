@@ -18,12 +18,12 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
   GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const { user } = res.locals
-    const journey = req.session.addContactJourneys[journeyId]
+    const journey = req.session.addContactJourneys![journeyId]!
     let groupCodeForRelationshipType
     let hintText
     let defaultSelectLabel
-    const formattedName = formatNameFirstNameFirst(journey.names)
-    if (journey.relationship.relationshipType === 'S') {
+    const formattedName = formatNameFirstNameFirst(journey.names!)
+    if (journey.relationship!.relationshipType === 'S') {
       groupCodeForRelationshipType = ReferenceCodeType.SOCIAL_RELATIONSHIP
       hintText = `For example, if ${formattedName} is the prisoner’s uncle, select ‘Uncle’.`
       defaultSelectLabel = 'Select social relationship'
@@ -37,7 +37,7 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
       .then(val =>
         this.getSelectedRelationshipOptions(
           val,
-          res.locals?.formResponses?.relationship ?? journey?.relationship?.relationshipToPrisoner,
+          res.locals?.formResponses?.['relationship'] ?? journey?.relationship?.relationshipToPrisoner,
           defaultSelectLabel,
         ),
       )
@@ -57,7 +57,7 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
   ): Promise<void> => {
     const { journeyId } = req.params
     const { relationship } = req.body
-    const journey = req.session.addContactJourneys[journeyId]
+    const journey = req.session.addContactJourneys![journeyId]!
     if (!journey.relationship) {
       journey.relationship = {}
     }

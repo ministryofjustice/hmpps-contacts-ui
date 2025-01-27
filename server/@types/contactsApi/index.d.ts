@@ -78,6 +78,34 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/sync/employment/{employmentId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns the data for an employment record by employmentId
+     * @description Requires role: ROLE_CONTACTS_MIGRATION. Used to get the details for one employment record.
+     */
+    get: operations['syncGetEmploymentById']
+    /**
+     * Updates an employment record
+     * @description Requires role: ROLE_CONTACTS_MIGRATION. Used to update an employment record.
+     */
+    put: operations['syncUpdateEmployment']
+    post?: never
+    /**
+     * Deletes an employment record by internal ID
+     * @description Requires role: ROLE_CONTACTS_MIGRATION. Delete an employment record by internal ID.
+     */
+    delete: operations['syncDeleteEmploymentById']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/sync/contact/{contactId}': {
     parameters: {
       query?: never
@@ -567,6 +595,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/sync/employment': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Creates a new employment record
+     * @description Requires role: ROLE_CONTACTS_MIGRATION. Used to create a new employment record.
+     */
+    post: operations['syncCreateEmployment']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/sync/contact': {
     parameters: {
       query?: never
@@ -772,6 +820,26 @@ export interface paths {
      * @description Creates a new prisoner contact restriction for the specified prisoner contact relationship
      */
     post: operations['createPrisonerContactRestriction']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/organisation': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create new organisation
+     * @description Creates a new organisation
+     */
+    post: operations['createOrganisation']
     delete?: never
     options?: never
     head?: never
@@ -1065,6 +1133,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/organisation/search': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Search organisations
+     * @description Search all organisations by their name
+     */
+    get: operations['searchOrganisations']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/language-reference': {
     parameters: {
       query?: never
@@ -1074,6 +1162,7 @@ export interface paths {
     }
     /**
      * Get language reference
+     * @deprecated
      * @description Gets all language references
      */
     get: operations['getAllLanguages']
@@ -1094,6 +1183,7 @@ export interface paths {
     }
     /**
      * Get language reference
+     * @deprecated
      * @description Gets a language reference by their id
      */
     get: operations['getLanguageById']
@@ -1114,6 +1204,7 @@ export interface paths {
     }
     /**
      * Get language reference
+     * @deprecated
      * @description Gets a language reference by their nomis code
      */
     get: operations['getLanguageByNomisCode']
@@ -1134,6 +1225,7 @@ export interface paths {
     }
     /**
      * Get language reference
+     * @deprecated
      * @description Gets a language reference by their by ISO Alpha 3 code
      */
     get: operations['getLanguageByIsoAlpha3']
@@ -1154,6 +1246,7 @@ export interface paths {
     }
     /**
      * Get language reference
+     * @deprecated
      * @description Gets a language reference by their ISO Alpha 2 code
      */
     get: operations['getLanguageByIsoAlpha2']
@@ -1174,6 +1267,7 @@ export interface paths {
     }
     /**
      * Get county reference
+     * @deprecated
      * @description Gets all county references
      */
     get: operations['getAllCounties']
@@ -1194,6 +1288,7 @@ export interface paths {
     }
     /**
      * Get county reference
+     * @deprecated
      * @description Gets a county reference by their id
      */
     get: operations['getCountyById']
@@ -1214,6 +1309,7 @@ export interface paths {
     }
     /**
      * Get county reference
+     * @deprecated
      * @description Gets a county reference by their nomis code
      */
     get: operations['getCountyByNomisCode']
@@ -1234,6 +1330,7 @@ export interface paths {
     }
     /**
      * Get country reference
+     * @deprecated
      * @description Gets all country references
      */
     get: operations['getAllCountries']
@@ -1254,6 +1351,7 @@ export interface paths {
     }
     /**
      * Get country reference
+     * @deprecated
      * @description Gets a country reference by their id
      */
     get: operations['getCountryById']
@@ -1274,6 +1372,7 @@ export interface paths {
     }
     /**
      * Get country reference
+     * @deprecated
      * @description Gets a country reference by their nomis code
      */
     get: operations['getCountryByNomisCode']
@@ -1294,6 +1393,7 @@ export interface paths {
     }
     /**
      * Get country reference
+     * @deprecated
      * @description Gets a country reference by their by ISO Alpha 3 code
      */
     get: operations['getCountryByIsoAlpha3']
@@ -1314,6 +1414,7 @@ export interface paths {
     }
     /**
      * Get country reference
+     * @deprecated
      * @description Gets a country reference by their ISO Alpha 2 code
      */
     get: operations['getCountryByIsoAlpha2']
@@ -1374,6 +1475,7 @@ export interface paths {
     }
     /**
      * Get city reference
+     * @deprecated
      * @description Gets all city references
      */
     get: operations['getAllCities']
@@ -1394,6 +1496,7 @@ export interface paths {
     }
     /**
      * Get city reference
+     * @deprecated
      * @description Gets a city reference by their id
      */
     get: operations['getCityById']
@@ -1414,6 +1517,7 @@ export interface paths {
     }
     /**
      * Get city reference
+     * @deprecated
      * @description Gets a city reference by their nomis code
      */
     get: operations['getCityByNomisCode']
@@ -1446,7 +1550,7 @@ export interface components {
        * @description
        *           Coded value indicating either a social or official contact (mandatory).
        *           This is a coded value from the group code CONTACT_TYPE in reference data.
-       *           Known values are (S) Social/Family or (O) official.
+       *           Known values are (S) Social or (O) official.
        *
        * @example S
        */
@@ -1532,7 +1636,7 @@ export interface components {
        * @description
        *           Coded value indicating either a social or official contact (mandatory).
        *           This is a coded value (from the group code CONTACT_TYPE in reference data).
-       *           Known values are (S) Social/Family or (O) official.
+       *           Known values are (S) Social or (O) official.
        *
        * @example S
        */
@@ -1720,6 +1824,85 @@ export interface components {
       /**
        * Format: date-time
        * @description Time when the restriction record was last updated
+       * @example 2024-10-02T15:30:00Z
+       */
+      updatedTime?: string
+    }
+    /** @description The request to update details of an employment record via sync */
+    SyncUpdateEmploymentRequest: {
+      /**
+       * Format: int64
+       * @description The ID of the organization associated with the employment
+       * @example 12345
+       */
+      organisationId: number
+      /**
+       * Format: int64
+       * @description The ID of the contact associated with the employment
+       * @example 67890
+       */
+      contactId: number
+      /**
+       * @description If the employment is active
+       * @example true
+       */
+      active: boolean
+      /**
+       * @description The username of the person who made the update
+       * @example JD000001
+       */
+      updatedBy: string
+      /**
+       * Format: date-time
+       * @description The time when the update was made
+       * @example 2024-01-01T00:00:00Z
+       */
+      updatedTime: string
+    }
+    /** @description The response of an employment record via sync */
+    SyncEmployment: {
+      /**
+       * Format: int64
+       * @description The ID of the employment
+       * @example 12345
+       */
+      employmentId: number
+      /**
+       * Format: int64
+       * @description The ID of the organization associated with the employment
+       * @example 12345
+       */
+      organisationId: number
+      /**
+       * Format: int64
+       * @description The ID of the contact associated with the employment
+       * @example 67890
+       */
+      contactId: number
+      /**
+       * @description If the employment is active
+       * @example true
+       */
+      active: boolean
+      /**
+       * @description User who created the employment record
+       * @example admin
+       */
+      createdBy?: string
+      /**
+       * Format: date-time
+       * @description Time when the employment record was created
+       * @example 2024-10-01T12:00:00Z
+       */
+      createdTime?: string
+      /**
+       * @description User who last updated the employment record
+       * @example editor
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Time when the employment record was last updated
        * @example 2024-10-02T15:30:00Z
        */
       updatedTime?: string
@@ -3388,7 +3571,7 @@ export interface components {
        * @description
        *           Coded value indicating either a social or official contact (mandatory).
        *           This is a coded value (from the group code CONTACT_TYPE in reference data).
-       *           Known values are (S) Social/Family or (O) official.
+       *           Known values are (S) Social or (O) official.
        *
        * @example S
        */
@@ -3490,6 +3673,37 @@ export interface components {
        * Format: date-time
        * @description Time when the restriction record was created
        * @example 2024-10-01T12:00:00Z
+       */
+      createdTime: string
+    }
+    /** @description Request object for creating a new employment record */
+    SyncCreateEmploymentRequest: {
+      /**
+       * Format: int64
+       * @description The ID of the organization associated with the employment
+       * @example 12345
+       */
+      organisationId: number
+      /**
+       * Format: int64
+       * @description The ID of the contact associated with the employment
+       * @example 67890
+       */
+      contactId: number
+      /**
+       * @description If the employment is active
+       * @example true
+       */
+      active: boolean
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was created
+       * @example 2023-09-23T10:15:30
        */
       createdTime: string
     }
@@ -3936,6 +4150,20 @@ export interface components {
        */
       prisonerNumber: string
       /**
+       * @description
+       *           Coded value indicating either a social or official contact (mandatory).
+       *           This is a coded value from the group code CONTACT_TYPE in reference data.
+       *           Known values are (S) Social or (O) official.
+       *
+       * @example S
+       */
+      relationshipType: string
+      /**
+       * @description The description of the contact relationship type. Description from reference data Official or Social
+       * @example Official
+       */
+      relationshipTypeDescription: string
+      /**
        * @description The relationship to the prisoner. A code from SOCIAL_RELATIONSHIP or OFFICIAL_RELATIONSHIP reference data groups depending on the relationship type.
        * @example FRI
        */
@@ -4004,6 +4232,125 @@ export interface components {
        * @example admin
        */
       createdBy: string
+    }
+    /** @description Request to create an new organisation */
+    CreateOrganisationRequest: {
+      /**
+       * @description The name of the organisation
+       * @example Example Limited
+       */
+      organisationName: string
+      /**
+       * @description The programme number for the organisation, stored as FEI_NUMBER in NOMIS
+       * @example 1
+       */
+      programmeNumber?: string
+      /**
+       * @description The VAT number for the organisation, if known
+       * @example 123456
+       */
+      vatNumber?: string
+      /**
+       * @description The id of the caseload for this organisation, this is an agency id in NOMIS
+       * @example BXI
+       */
+      caseloadId?: string
+      /**
+       * @description Any comments on the organisation
+       * @example Some additional info
+       */
+      comments?: string
+      /**
+       * @description Whether the organisation is active or not
+       * @example true
+       */
+      active: boolean
+      /**
+       * Format: date
+       * @description The date the organisation was deactivated, EXPIRY_DATE in NOMIS
+       * @example 2010-12-30
+       */
+      deactivatedDate?: string
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was created
+       * @example 2023-09-23T10:15:30
+       */
+      createdTime: string
+      /**
+       * @description User who updated the entry
+       * @example admin2
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was updated
+       * @example 2023-09-24T12:00:00
+       */
+      updatedTime?: string
+    }
+    /** @description Organisation data */
+    Organisation: {
+      /**
+       * Format: int64
+       * @description Unique identifier of the Organisation
+       * @example 1
+       */
+      organisationId: number
+      /**
+       * @description The name of the organisation
+       * @example Example Limited
+       */
+      organisationName: string
+      /**
+       * @description The programme number for the organisation, stored as FEI_NUMBER in NOMIS
+       * @example 1
+       */
+      programmeNumber?: string
+      /**
+       * @description The VAT number for the organisation, if known
+       * @example 123456
+       */
+      vatNumber?: string
+      /**
+       * @description The id of the caseload for this organisation, this is an agency id in NOMIS
+       * @example BXI
+       */
+      caseloadId?: string
+      /**
+       * @description Any comments on the organisation
+       * @example Some additional info
+       */
+      comments?: string
+      /**
+       * @description Whether the organisation is active or not
+       * @example true
+       */
+      active: boolean
+      /**
+       * Format: date
+       * @description The date the organisation was deactivated, EXPIRY_DATE in NOMIS
+       */
+      deactivatedDate?: string
+      /** @description User who created the entry */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was created
+       */
+      createdTime: string
+      /** @description User who updated the entry */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was updated
+       */
+      updatedTime?: string
     }
     MigrateOrganisationAddress: {
       /**
@@ -4279,8 +4626,8 @@ export interface components {
     MigrateOrganisationResponse: {
       /** @description The pair of IDs for this organisation in NOMIS */
       organisation: components['schemas']['IdPair']
-      /** @description List of NOMIS and DPS IDs for organisation types. */
-      organisationTypes: components['schemas']['MigratedOrganisationType'][]
+      /** @description List of organisation types that were created */
+      organisationTypes: string[]
       /** @description List of Nomis and DPS IDs for phone numbers */
       phoneNumbers: components['schemas']['IdPair'][]
       /** @description List of Nomis and DPS IDs for email addresses */
@@ -4295,19 +4642,6 @@ export interface components {
       address: components['schemas']['IdPair']
       /** @description List of Nomis and DPS IDs for email addresses */
       phoneNumbers: components['schemas']['IdPair'][]
-    }
-    MigratedOrganisationType: {
-      /**
-       * @description The type of the organisation from reference data
-       * @example TRUST
-       */
-      organisationType: string
-      /**
-       * Format: int64
-       * @description The unique ID created in the DPS contacts service
-       * @example 1234
-       */
-      dpsId: number
     }
     CodedValue: {
       /**
@@ -4620,7 +4954,7 @@ export interface components {
        * @description
        *         Coded value indicating either a social or official contact (mandatory).
        *         This is a coded value (from the group code CONTACT_TYPE in reference data).
-       *         Known values are (S) Social/Family or (O) official.
+       *         Known values are (S) Social or (O) official.
        *
        * @example S
        */
@@ -5035,6 +5369,8 @@ export interface components {
       emailAddresses: components['schemas']['ContactEmailDetails'][]
       /** @description All identities for the contact */
       identities: components['schemas']['ContactIdentityDetails'][]
+      /** @description All employments for the contact */
+      employments: components['schemas']['EmploymentDetails'][]
       /**
        * @description The NOMIS code for the contacts domestic status
        * @example S
@@ -5061,6 +5397,131 @@ export interface components {
        */
       createdTime: string
       staff?: boolean
+    }
+    /** @description The details of an employment for a contact including a summary of the employing organisation. */
+    EmploymentDetails: {
+      /**
+       * Format: int64
+       * @description The id for this employment
+       * @example 123456
+       */
+      employmentId: number
+      /**
+       * Format: int64
+       * @description This id for this contact
+       * @example 654321
+       */
+      contactId: number
+      /** @description A summary of the employing organisation */
+      employer: components['schemas']['OrganisationSummary']
+      /** @description Whether this is a current employment or not */
+      isActive: boolean
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was created
+       * @example 2023-09-23T10:15:30
+       */
+      createdTime: string
+      /**
+       * @description User who updated the entry
+       * @example admin2
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was updated
+       * @example 2023-09-24T12:00:00
+       */
+      updatedTime?: string
+    }
+    /** @description The high level details of an organisation, it's primary address and any business phone number associated with that address. */
+    OrganisationSummary: {
+      /**
+       * Format: int64
+       * @description The organisation id
+       * @example 123456789
+       */
+      organisationId: number
+      /**
+       * @description The name of the organisation
+       * @example Bob's Bakery
+       */
+      organisationName: string
+      /**
+       * @description Whether the organisation is currently active or not
+       * @example true
+       */
+      organisationActive: boolean
+      /**
+       * @description Flat number in the address, if any
+       * @example Flat 1
+       */
+      flat?: string
+      /**
+       * @description Property name or number, if any
+       * @example 123
+       */
+      property?: string
+      /**
+       * @description Street name, if any
+       * @example Baker Street
+       */
+      street?: string
+      /**
+       * @description Area or locality, if any
+       * @example Marylebone
+       */
+      area?: string
+      /**
+       * @description City code, if any
+       * @example 25343
+       */
+      cityCode?: string
+      /**
+       * @description The description of the city code, if any
+       * @example Sheffield
+       */
+      cityDescription?: string
+      /**
+       * @description County code, if any
+       * @example S.YORKSHIRE
+       */
+      countyCode?: string
+      /**
+       * @description The description of county code, if any
+       * @example South Yorkshire
+       */
+      countyDescription?: string
+      /**
+       * @description Postal code, if any
+       * @example NW1 6XE
+       */
+      postCode?: string
+      /**
+       * @description Country code, if any
+       * @example ENG
+       */
+      countryCode?: string
+      /**
+       * @description The description of country code, if any
+       * @example England
+       */
+      countryDescription?: string
+      /**
+       * @description The business phone number for the primary address, if any
+       * @example 01234 56789
+       */
+      businessPhoneNumber?: string
+      /**
+       * @description The extension for the business phone number for the primary address, if any
+       * @example 123
+       */
+      businessPhoneNumberExtension?: string
     }
     /** @description Request to create a new global restriction on a contact, a.k.a an estate-wide restriction */
     CreateContactRestrictionRequest: {
@@ -5570,6 +6031,21 @@ export interface components {
        */
       updatedBy: string
     }
+    EmploymentEntity: {
+      /** Format: int64 */
+      employmentId: number
+      /** Format: int64 */
+      organisationId: number
+      /** Format: int64 */
+      contactId: number
+      active: boolean
+      createdBy: string
+      /** Format: date-time */
+      createdTime: string
+      updatedBy?: string
+      /** Format: date-time */
+      updatedTime?: string
+    }
     /** @enum {string} */
     ReferenceCodeGroup:
       | 'DOMESTIC_STS'
@@ -5689,7 +6165,7 @@ export interface components {
        * @description
        *           Coded value indicating either a social or official contact (mandatory).
        *           This is a coded value from the group code CONTACT_TYPE in reference data.
-       *           Known values are (S) Social/Family or (O) official.
+       *           Known values are (S) Social or (O) official.
        *
        * @example S
        */
@@ -5831,10 +6307,10 @@ export interface components {
       /** Format: int64 */
       total?: number
       last?: boolean
-      /** Format: int32 */
-      totalPages?: number
       /** Format: int64 */
       totalElements?: number
+      /** Format: int32 */
+      totalPages?: number
       first?: boolean
       /** Format: int32 */
       size?: number
@@ -5882,63 +6358,33 @@ export interface components {
        */
       displaySequence: number
     }
-    /** @description Organisation data */
-    Organisation: {
+    /** @description Organisation search request query parameters */
+    OrganisationSearchRequest: {
       /**
-       * Format: int64
-       * @description Unique identifier of the Organisation
-       * @example 1
+       * @description Full or partial name of the organisation
+       * @example NHS
        */
-      organisationId: number
-      /**
-       * @description The name of the organisation
-       * @example Example Limited
-       */
-      organisationName: string
-      /**
-       * @description The programme number for the organisation, stored as FEI_NUMBER in NOMIS
-       * @example 1
-       */
-      programmeNumber?: string
-      /**
-       * @description The VAT number for the organisation, if known
-       * @example 123456
-       */
-      vatNumber?: string
-      /**
-       * @description The id of the caseload for this organisation, this is an agency id in NOMIS
-       * @example BXI
-       */
-      caseloadId?: string
-      /**
-       * @description Any comments on the organisation
-       * @example Some additional info
-       */
-      comments?: string
-      /**
-       * @description Whether the organisation is active or not
-       * @example true
-       */
-      active: boolean
-      /**
-       * Format: date
-       * @description The date the organisation was deactivated, EXPIRY_DATE in NOMIS
-       */
-      deactivatedDate?: string
-      /** @description User who created the entry */
-      createdBy: string
-      /**
-       * Format: date-time
-       * @description Timestamp when the entry was created
-       */
-      createdTime: string
-      /** @description User who updated the entry */
-      updatedBy?: string
-      /**
-       * Format: date-time
-       * @description Timestamp when the entry was updated
-       */
-      updatedTime?: string
+      name: string
+    }
+    OrganisationSummaryResultItemPage: {
+      content?: components['schemas']['OrganisationSummary'][]
+      pageable?: components['schemas']['PageableObject']
+      /** Format: int64 */
+      total?: number
+      last?: boolean
+      /** Format: int64 */
+      totalElements?: number
+      /** Format: int32 */
+      totalPages?: number
+      first?: boolean
+      /** Format: int32 */
+      size?: number
+      /** Format: int32 */
+      number?: number
+      sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      numberOfElements?: number
+      empty?: boolean
     }
     /** @description Language reference entity */
     Language: {
@@ -6088,13 +6534,13 @@ export interface components {
        * @description
        *           Coded value indicating either a social or official contact (mandatory).
        *           This is a coded value from the group code CONTACT_TYPE in reference data.
-       *           Known values are (S) Social/Family or (O) official.
+       *           Known values are (S) Social or (O) official.
        *
        * @example S
        */
       relationshipType: string
       /**
-       * @description The description of the contact relationship type. Description from reference data Official or Social/Family
+       * @description The description of the contact relationship type. Description from reference data Official or Social
        * @example Official
        */
       relationshipTypeDescription: string
@@ -6262,10 +6708,10 @@ export interface components {
       /** Format: int64 */
       total?: number
       last?: boolean
-      /** Format: int32 */
-      totalPages?: number
       /** Format: int64 */
       totalElements?: number
+      /** Format: int32 */
+      totalPages?: number
       first?: boolean
       /** Format: int32 */
       size?: number
@@ -6608,6 +7054,162 @@ export interface operations {
         content: {
           'application/json': components['schemas']['SyncPrisonerContactRestriction']
         }
+      }
+    }
+  }
+  syncGetEmploymentById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        employmentId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description The details of the employment record */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['EmploymentEntity']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No employment record with this ID could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncEmployment']
+        }
+      }
+    }
+  }
+  syncUpdateEmployment: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        employmentId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SyncUpdateEmploymentRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully updated an employment record */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncEmployment']
+        }
+      }
+      /** @description Invalid data provided in the request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The employment record was not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncEmployment']
+        }
+      }
+    }
+  }
+  syncDeleteEmploymentById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        employmentId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successfully deleted an employment record */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No employment record with this ID could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
@@ -8689,6 +9291,57 @@ export interface operations {
       }
     }
   }
+  syncCreateEmployment: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SyncCreateEmploymentRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully created an employment record */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncEmployment']
+        }
+      }
+      /** @description Invalid data provided in the request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   syncCreateContact: {
     parameters: {
       query?: never
@@ -9126,6 +9779,57 @@ export interface operations {
       }
       /** @description Could not find the the prisoner contact relationship this prisoner contact restriction is for */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  createOrganisation: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateOrganisationRequest']
+      }
+    }
+    responses: {
+      /** @description Created the organisation successfully */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Organisation']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
         headers: {
           [name: string]: unknown
         }
@@ -10164,6 +10868,58 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['Organisation']
+        }
+      }
+    }
+  }
+  searchOrganisations: {
+    parameters: {
+      query: {
+        /** @description Search criteria */
+        request: components['schemas']['OrganisationSearchRequest']
+        /** @description Pageable configurations */
+        pageable: components['schemas']['Pageable']
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Organisations searched successfully. There may be no results. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['OrganisationSummaryResultItemPage']
+        }
+      }
+      /** @description Invalid request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
         }
       }
     }

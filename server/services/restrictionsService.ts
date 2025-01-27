@@ -19,10 +19,10 @@ export default class RestrictionsService {
     journey: AddRestrictionJourney,
     user: Express.User,
   ): Promise<ContactRestrictionDetails | PrisonerContactRestrictionDetails> {
-    const { type, startDate, expiryDate, comments } = journey.restriction
+    const { type, startDate, expiryDate, comments } = journey.restriction!
     const request: CreatePrisonerContactRestrictionRequest & CreateContactRestrictionRequest = {
       restrictionType: type,
-      startDate: formatISO(parse(startDate, 'dd/MM/yyyy', new Date()), { representation: 'date' }),
+      startDate: formatISO(parse(startDate!, 'dd/MM/yyyy', new Date()), { representation: 'date' }),
       expiryDate: expiryDate
         ? formatISO(parse(expiryDate, 'dd/MM/yyyy', new Date()), { representation: 'date' })
         : undefined,
@@ -33,7 +33,7 @@ export default class RestrictionsService {
       case 'CONTACT_GLOBAL':
         return this.contactsApiClient.createContactGlobalRestriction(journey.contactId, request, user)
       case 'PRISONER_CONTACT':
-        return this.contactsApiClient.createPrisonerContactRestriction(journey.prisonerContactId, request, user)
+        return this.contactsApiClient.createPrisonerContactRestriction(journey.prisonerContactId!, request, user)
       default:
         return Promise.reject()
     }

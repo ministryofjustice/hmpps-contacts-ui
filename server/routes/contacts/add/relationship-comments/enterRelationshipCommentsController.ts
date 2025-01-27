@@ -11,12 +11,12 @@ export default class EnterRelationshipCommentsController implements PageHandler 
 
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { journeyId } = req.params
-    const journey = req.session.addContactJourneys[journeyId]
+    const journey = req.session.addContactJourneys![journeyId]!
     const view = {
       journey,
       caption: captionForAddContactJourney(journey),
       continueButtonLabel: 'Continue',
-      comments: res.locals?.formResponses?.comments ?? journey?.relationship?.comments,
+      comments: res.locals?.formResponses?.['comments'] ?? journey?.relationship?.comments,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
     }
     res.render('pages/contacts/common/enterRelationshipComments', view)
@@ -27,9 +27,9 @@ export default class EnterRelationshipCommentsController implements PageHandler 
     res: Response,
   ): Promise<void> => {
     const { journeyId } = req.params
-    const journey = req.session.addContactJourneys[journeyId]
+    const journey = req.session.addContactJourneys![journeyId]!
     const { body } = req
-    journey.relationship.comments = body.comments
+    journey.relationship!.comments = body.comments
     res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
   }
 }

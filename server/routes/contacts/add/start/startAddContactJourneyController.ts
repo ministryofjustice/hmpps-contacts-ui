@@ -32,7 +32,7 @@ export default class StartAddContactJourneyController implements PageHandler {
             new Date(b.lastTouched).getTime() - new Date(a.lastTouched).getTime(),
         )
         .slice(this.MAX_JOURNEYS)
-        .forEach(journeyToRemove => delete req.session.addContactJourneys[journeyToRemove.id])
+        .forEach(journeyToRemove => delete req.session.addContactJourneys![journeyToRemove.id])
     }
     res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
   }

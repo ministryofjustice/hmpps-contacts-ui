@@ -15,7 +15,7 @@ describe('selectRelationshipSchemas', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
       expect(deduplicatedFieldErrors).toStrictEqual({
         relationship: ["Enter the contact's relationship to the prisoner"],
       })

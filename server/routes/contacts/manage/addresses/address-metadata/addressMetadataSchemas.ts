@@ -30,7 +30,7 @@ export const addressMetadataSchema = () => async () => {
         ],
         { errorMap: () => ({ message: START_MONTH_INVALID_MESSAGE }) },
       )
-      .transform(val => val.toString()),
+      .transform(val => val?.toString()),
     fromYear: z
       .union(
         [
@@ -42,7 +42,7 @@ export const addressMetadataSchema = () => async () => {
         ],
         { errorMap: () => ({ message: START_YEAR_INVALID_MESSAGE }) },
       )
-      .transform(val => val.toString()),
+      .transform(val => val?.toString()),
     toMonth: z
       .union(
         [
@@ -55,7 +55,7 @@ export const addressMetadataSchema = () => async () => {
         ],
         { errorMap: () => ({ message: END_MONTH_INVALID_MESSAGE }) },
       )
-      .transform(val => val.toString()),
+      .transform(val => val?.toString()),
     toYear: z
       .union(
         [
@@ -67,15 +67,15 @@ export const addressMetadataSchema = () => async () => {
         ],
         { errorMap: () => ({ message: END_YEAR_INVALID_MESSAGE }) },
       )
-      .transform(val => val.toString()),
+      .transform(val => val?.toString()),
     primaryAddress: z.string().optional(),
     mailAddress: z.string().optional(),
     comments: z
       .string()
       .max(240, COMMENTS_TOO_LONG_ERROR_MESSAGE)
       .optional()
-      .transform(val => (val?.trim().length > 0 ? val.trim() : undefined)),
-  }).superRefine((val, ctx) => {
+      .transform(val => (val?.trim()?.length ? val?.trim() : undefined)),
+  }).transform((val, ctx) => {
     if (val.fromMonth && !val.fromYear) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, message: START_YEAR_REQUIRED_MESSAGE, path: ['fromYear'] })
     } else if (!val.fromMonth && val.fromYear) {
@@ -102,6 +102,12 @@ export const addressMetadataSchema = () => async () => {
         message: `End date must be the same as or after the start date ${formattedFromDate}`,
         path: ['toDate'],
       })
+    }
+
+    return {
+      ...val,
+      fromYear: val.fromYear!,
+      fromMonth: val.fromMonth!,
     }
   })
 }

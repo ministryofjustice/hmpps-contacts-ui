@@ -42,7 +42,7 @@ export default class ManageContactRelationshipController implements PageHandler 
     }
     const formattedName = formatNameFirstNameFirst(names)
     const hintText = `For example, if ${formattedName} is the prisoner’s uncle, select ‘Uncle’.`
-    const currentRelationship = res.locals?.formResponses?.relationship ?? relationship.relationshipToPrisonerCode
+    const currentRelationship = res.locals?.formResponses?.['relationship'] ?? relationship.relationshipToPrisonerCode
     const relationshipOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.SOCIAL_RELATIONSHIP, user)
       .then(val => this.getSelectedOptions(val, currentRelationship))

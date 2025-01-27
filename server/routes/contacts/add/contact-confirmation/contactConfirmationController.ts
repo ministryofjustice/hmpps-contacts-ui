@@ -27,8 +27,8 @@ export default class ContactConfirmationController implements PageHandler {
   ): Promise<void> => {
     const { journeyId } = req.params
     const { prisonerDetails, user } = res.locals
-    const journey = req.session.addContactJourneys[journeyId]
-    const contact: ContactDetails = await this.contactsService.getContact(journey.contactId, user)
+    const journey = req.session.addContactJourneys![journeyId]!
+    const contact: ContactDetails = await this.contactsService.getContact(journey.contactId!, user)
     const globalRestrictionsEnriched = await this.restrictionsService.getGlobalRestrictionsEnriched(contact, user)
     const globalRestrictions = sortRestrictions(globalRestrictionsEnriched)
 
@@ -46,7 +46,7 @@ export default class ContactConfirmationController implements PageHandler {
       journey,
       mostRelevantAddress,
       mostRelevantAddressLabel,
-      isContactConfirmed: res.locals?.formResponses?.isContactConfirmed ?? journey?.isContactConfirmed,
+      isContactConfirmed: res.locals?.formResponses?.['isContactConfirmed'] ?? journey?.isContactConfirmed,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
     })
   }
@@ -54,7 +54,7 @@ export default class ContactConfirmationController implements PageHandler {
   POST = async (req: Request<{ journeyId: string }, IsContactConfirmedSchema>, res: Response): Promise<void> => {
     const { isContactConfirmed } = req.body
     const { journeyId } = req.params
-    const journey = req.session.addContactJourneys[journeyId]
+    const journey = req.session.addContactJourneys![journeyId]!
 
     if (isContactConfirmed === 'YES') {
       journey.isContactConfirmed = isContactConfirmed
@@ -65,7 +65,7 @@ export default class ContactConfirmationController implements PageHandler {
   }
 
   private async formattedFullName(contact: ContactDetails, user: Express.User) {
-    let titleDescription: string
+    let titleDescription: string | undefined
     if (contact.title) {
       titleDescription = await this.referenceDataService.getReferenceDescriptionForCode(
         ReferenceCodeType.TITLE,

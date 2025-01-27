@@ -25,7 +25,7 @@ export default class ManageContactEnterDobController implements PageHandler {
       middleNames: contact.middleNames,
     }
 
-    let dateOfBirth: DateOfBirth
+    let dateOfBirth: DateOfBirth | undefined
     // Only set from the contact if the form has not been submitted and returned with an error.
     if (!res.locals?.formResponses) {
       if (contact.dateOfBirth) {
@@ -43,10 +43,10 @@ export default class ManageContactEnterDobController implements PageHandler {
 
     const view = {
       journey,
-      isKnown: res.locals?.formResponses?.isKnown ?? dateOfBirth?.isKnown,
-      day: res.locals?.formResponses?.day ?? dateOfBirth?.day,
-      month: res.locals?.formResponses?.month ?? dateOfBirth?.month,
-      year: res.locals?.formResponses?.year ?? dateOfBirth?.year,
+      isKnown: res.locals?.formResponses?.['isKnown'] ?? dateOfBirth?.isKnown,
+      day: res.locals?.formResponses?.['day'] ?? dateOfBirth?.day,
+      month: res.locals?.formResponses?.['month'] ?? dateOfBirth?.month,
+      year: res.locals?.formResponses?.['year'] ?? dateOfBirth?.year,
       navigation,
     }
     res.render('pages/contacts/common/enterDob', view)
@@ -59,7 +59,7 @@ export default class ManageContactEnterDobController implements PageHandler {
     const { contactId } = req.params
     const { user, journey } = res.locals
     const { body } = req
-    let dateOfBirth: Date = null
+    let dateOfBirth: Date | undefined
     if (body.isKnown === 'YES') {
       dateOfBirth = new Date(`${body.year}-${body.month}-${body.day}Z`)
     }

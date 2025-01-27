@@ -15,7 +15,7 @@ describe('IsContactConfirmedSchema', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
       expect(deduplicatedFieldErrors).toStrictEqual({
         isContactConfirmed: ['Select whether this is the right contact'],
       })

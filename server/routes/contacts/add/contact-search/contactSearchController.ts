@@ -15,21 +15,21 @@ export default class ContactSearchController implements PageHandler {
 
   public PAGE_NAME = Page.CONTACT_SEARCH_PAGE
 
-  GET = async (req: Request, res: Response): Promise<void> => {
+  GET = async (req: Request<{ journeyId: string }>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const { prisonerDetails, user } = res.locals
-    const journey = req.session.addContactJourneys[journeyId]
-    const validationErrors = res.locals.validationErrors?.search
-    const page = Number(req.query.page as unknown) || 0
+    const journey = req.session.addContactJourneys![journeyId]!
+    const validationErrors = res.locals.validationErrors?.['search']
+    const page = Number(req.query['page'] as unknown) || 0
     const pageSize = config.apis.contactsApi.pageSize || 10
     let results = null
 
-    if (journey?.searchContact) {
+    if (journey.searchContact) {
       const contactSearchRequest: ContactSearchRequest = {
-        lastName: journey?.searchContact?.contact.lastName,
-        firstName: journey?.searchContact?.contact.firstName,
-        middleNames: journey?.searchContact?.contact.middleNames,
-        dateOfBirth: formatDateForApi(journey?.searchContact?.dateOfBirth),
+        lastName: journey.searchContact.contact?.lastName,
+        firstName: journey.searchContact.contact?.firstName,
+        middleNames: journey.searchContact.contact?.middleNames,
+        dateOfBirth: formatDateForApi(journey.searchContact.dateOfBirth),
       }
 
       results = validationErrors
@@ -42,12 +42,12 @@ export default class ContactSearchController implements PageHandler {
     }
     const view = {
       prisonerDetails,
-      lastName: res.locals?.formResponses?.lastName ?? journey?.searchContact?.contact.lastName,
-      firstName: res.locals?.formResponses?.firstName ?? journey?.searchContact?.contact.firstName,
-      middleNames: res.locals?.formResponses?.middleNames ?? journey?.searchContact?.contact.middleNames,
-      day: res.locals?.formResponses?.day ?? journey?.searchContact?.dateOfBirth?.day,
-      month: res.locals?.formResponses?.month ?? journey?.searchContact?.dateOfBirth?.month,
-      year: res.locals?.formResponses?.year ?? journey?.searchContact?.dateOfBirth?.year,
+      lastName: res.locals?.formResponses?.['lastName'] ?? journey?.searchContact?.contact?.lastName,
+      firstName: res.locals?.formResponses?.['firstName'] ?? journey?.searchContact?.contact?.firstName,
+      middleNames: res.locals?.formResponses?.['middleNames'] ?? journey?.searchContact?.contact?.middleNames,
+      day: res.locals?.formResponses?.['day'] ?? journey?.searchContact?.dateOfBirth?.day,
+      month: res.locals?.formResponses?.['month'] ?? journey?.searchContact?.dateOfBirth?.month,
+      year: res.locals?.formResponses?.['year'] ?? journey?.searchContact?.dateOfBirth?.year,
     }
     const navigation = navigationForAddContactJourney(this.PAGE_NAME, journey)
     res.render('pages/contacts/manage/contactSearch', { view, journey, results, navigation })
@@ -56,7 +56,7 @@ export default class ContactSearchController implements PageHandler {
   POST = async (req: Request<{ journeyId: string }, ContactSearchSchemaType>, res: Response): Promise<void> => {
     const { lastName, firstName, middleNames, day, month, year } = req.body
     const { journeyId } = req.params
-    const journey = req.session.addContactJourneys[journeyId]
+    const journey = req.session.addContactJourneys![journeyId]!
     journey.searchContact = {
       contact: {
         lastName,

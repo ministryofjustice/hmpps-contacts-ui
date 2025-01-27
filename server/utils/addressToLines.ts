@@ -9,7 +9,7 @@ const addressToLines = ({
   county,
   postalCode,
   country,
-}: Partial<PrisonerContactSummary>): string => {
+}: Partial<PrisonerContactSummary>): string | null => {
   let lineOne = [premise, street].filter(s => s).join(', ')
   if (flat) {
     lineOne = `Flat ${flat}, ${lineOne}`

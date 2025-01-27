@@ -18,7 +18,7 @@ export default class AddContactModeController implements PageHandler {
     const { contactId } = req.query
     const { user } = res.locals
 
-    const journey = req.session.addContactJourneys[journeyId]
+    const journey = req.session.addContactJourneys![journeyId]!
     journey.mode = mode
     journey.isCheckingAnswers = false
     delete journey.contactId

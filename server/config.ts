@@ -38,12 +38,10 @@ const auditConfig = () => {
   const auditEnabled = get('AUDIT_ENABLED', 'false') === 'true'
   return {
     enabled: auditEnabled,
-    queueUrl: get(
-      'AUDIT_SQS_QUEUE_URL',
-      'http://localhost:4566/000000000000/mainQueue',
-      auditEnabled && requiredInProduction,
-    ),
-    serviceName: get('AUDIT_SERVICE_NAME', 'UNASSIGNED', auditEnabled && requiredInProduction),
+    queueUrl: get('AUDIT_SQS_QUEUE_URL', 'http://localhost:4566/000000000000/mainQueue', {
+      requireInProduction: auditEnabled,
+    }),
+    serviceName: get('AUDIT_SERVICE_NAME', 'UNASSIGNED', { requireInProduction: auditEnabled }),
     region: get('AUDIT_SQS_REGION', 'eu-west-2'),
   }
 }

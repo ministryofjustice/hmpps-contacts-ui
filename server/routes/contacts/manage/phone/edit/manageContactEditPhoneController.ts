@@ -33,16 +33,16 @@ export default class ManageContactEditPhoneController implements PageHandler {
         `Couldn't find phone with id ${contactPhoneId} for contact ${contactId}. URL probably entered manually.`,
       )
     }
-    const currentType = res.locals?.formResponses?.type ?? phone.phoneType
+    const currentType = res.locals?.formResponses?.['type'] ?? phone.phoneType
     const typeOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.PHONE_TYPE, user)
       .then(val => this.getSelectedOptions(val, currentType))
     const navigation: Navigation = { backLink: journey.returnPoint.url }
     const viewModel = {
       typeOptions,
-      phoneNumber: res.locals?.formResponses?.phoneNumber ?? phone.phoneNumber,
+      phoneNumber: res.locals?.formResponses?.['phoneNumber'] ?? phone.phoneNumber,
       type: currentType,
-      extension: res.locals?.formResponses?.extension ?? phone.extNumber,
+      extension: res.locals?.formResponses?.['extension'] ?? phone.extNumber,
       contact,
       navigation,
     }

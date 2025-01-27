@@ -21,7 +21,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
 
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { journeyId } = req.params
-    const journey = req.session.addContactJourneys[journeyId]
+    const journey = req.session.addContactJourneys![journeyId]!
     if (journey.mode === 'NEW') {
       return this.getForNewContact(req, res)
     }
@@ -34,7 +34,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
   ): Promise<void> => {
     const { user } = res.locals
     const { journeyId } = req.params
-    const journey = req.session.addContactJourneys[journeyId]
+    const journey = req.session.addContactJourneys![journeyId]!
     journey.isCheckingAnswers = true
     journey.previousAnswers = {
       names: journey.names,
@@ -42,20 +42,20 @@ export default class CreateContactCheckAnswersController implements PageHandler 
       relationship: journey.relationship,
     }
     let dateOfBirth
-    if (journey.dateOfBirth.isKnown === 'YES') {
-      dateOfBirth = new Date(`${journey.dateOfBirth.year}-${journey.dateOfBirth.month}-${journey.dateOfBirth.day}Z`)
+    if (journey.dateOfBirth!.isKnown === 'YES') {
+      dateOfBirth = new Date(`${journey.dateOfBirth!.year}-${journey.dateOfBirth!.month}-${journey.dateOfBirth!.day}Z`)
     }
     const relationshipTypeDescription = await this.referenceDataService.getReferenceDescriptionForCode(
       ReferenceCodeType.RELATIONSHIP_TYPE,
-      journey.relationship.relationshipType,
+      journey.relationship!.relationshipType!,
       user,
     )
 
     const relationshipToPrisonerDescription = await this.referenceDataService.getReferenceDescriptionForCode(
-      journey.relationship.relationshipType === 'S'
+      journey.relationship!.relationshipType === 'S'
         ? ReferenceCodeType.SOCIAL_RELATIONSHIP
         : ReferenceCodeType.OFFICIAL_RELATIONSHIP,
-      journey.relationship.relationshipToPrisoner,
+      journey.relationship!.relationshipToPrisoner!,
       user,
     )
 
@@ -79,7 +79,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
   ): Promise<void> => {
     const { user } = res.locals
     const { journeyId } = req.params
-    const journey = req.session.addContactJourneys[journeyId]
+    const journey = req.session.addContactJourneys![journeyId]!
     journey.isCheckingAnswers = true
     journey.previousAnswers = {
       names: journey.names,
@@ -88,15 +88,15 @@ export default class CreateContactCheckAnswersController implements PageHandler 
     }
     const relationshipTypeDescription = await this.referenceDataService.getReferenceDescriptionForCode(
       ReferenceCodeType.RELATIONSHIP_TYPE,
-      journey.relationship.relationshipType,
+      journey.relationship!.relationshipType!,
       user,
     )
 
     const relationshipToPrisonerDescription = await this.referenceDataService.getReferenceDescriptionForCode(
-      journey.relationship.relationshipType === 'S'
+      journey.relationship!.relationshipType === 'S'
         ? ReferenceCodeType.SOCIAL_RELATIONSHIP
         : ReferenceCodeType.OFFICIAL_RELATIONSHIP,
-      journey.relationship.relationshipToPrisoner,
+      journey.relationship!.relationshipToPrisoner!,
       user,
     )
 
@@ -113,7 +113,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
   POST = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { user } = res.locals
     const { journeyId } = req.params
-    const journey = req.session.addContactJourneys[journeyId]
+    const journey = req.session.addContactJourneys![journeyId]!
     if (journey.mode === 'NEW') {
       await this.contactService
         .createContact(journey, user)
@@ -121,27 +121,27 @@ export default class CreateContactCheckAnswersController implements PageHandler 
           journey.contactId = createdContact.createdContact.id
           journey.prisonerContactId = createdContact.createdRelationship.prisonerContactId
         })
-        .then(() => delete req.session.addContactJourneys[journeyId])
+        .then(() => delete req.session.addContactJourneys![journeyId])
     } else if (journey.mode === 'EXISTING') {
       await this.contactService
         .addContact(journey, user)
         .then((createdContact: PrisonerContactRelationshipDetails) => {
           journey.prisonerContactId = createdContact.prisonerContactId
         })
-        .then(() => delete req.session.addContactJourneys[journeyId])
+        .then(() => delete req.session.addContactJourneys![journeyId])
     }
     res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
   }
 
   private async formattedFullName(journey: journeys.AddContactJourney, user: Express.User) {
-    let titleDescription: string
-    if (journey.names.title) {
+    let titleDescription: string | undefined
+    if (journey.names!.title) {
       titleDescription = await this.referenceDataService.getReferenceDescriptionForCode(
         ReferenceCodeType.TITLE,
-        journey.names.title,
+        journey.names!.title,
         user,
       )
     }
-    return formatNameLastNameFirst(journey.names, { customTitle: titleDescription })
+    return formatNameLastNameFirst(journey.names!, { customTitle: titleDescription })
   }
 }

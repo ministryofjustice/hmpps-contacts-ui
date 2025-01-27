@@ -1,9 +1,10 @@
-import { RequestHandler } from 'express'
+import { Request } from 'express'
 import asyncMiddleware from '../../../../middleware/asyncMiddleware'
 import logger from '../../../../../logger'
+import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 
-const ensureInAddressJourney = (): RequestHandler => {
-  return asyncMiddleware(async (req, res, next) => {
+const ensureInAddressJourney = () => {
+  return asyncMiddleware(async (req: Request<PrisonerJourneyParams>, res, next) => {
     const { journeyId } = req.params
     if (!req.session.addressJourneys) {
       req.session.addressJourneys = {}

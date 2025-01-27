@@ -6,6 +6,7 @@ import ReferenceDataService from '../../../../../services/referenceDataService'
 import { Navigation } from '../../../common/navigation'
 import { formatDate } from '../../../../../utils/utils'
 import { ContactsService } from '../../../../../services'
+import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 
 export default class AddressCheckAnswersController implements PageHandler {
   constructor(
@@ -15,47 +16,42 @@ export default class AddressCheckAnswersController implements PageHandler {
 
   public PAGE_NAME = Page.ADDRESS_CHECK_ANSWERS_PAGE
 
-  GET = async (
-    req: Request<{
-      journeyId: string
-    }>,
-    res: Response,
-  ): Promise<void> => {
+  GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const { user } = res.locals
-    const journey = req.session.addressJourneys[journeyId]
+    const journey = req.session.addressJourneys![journeyId]!
     journey.isCheckingAnswers = true
 
     let addressTypeDescription
     if (journey.addressType !== 'DO_NOT_KNOW') {
       addressTypeDescription = await this.referenceDataService.getReferenceDescriptionForCode(
         ReferenceCodeType.ADDRESS_TYPE,
-        journey.addressType,
+        journey.addressType!,
         user,
       )
     }
     const formattedAddress = {
-      flat: journey.addressLines.flat,
-      premise: journey.addressLines.premises,
-      street: journey.addressLines.street,
-      area: journey.addressLines.locality,
-      city: await this.getReferenceCodeDescriptionIfSet(journey.addressLines.town, ReferenceCodeType.CITY, user),
-      county: await this.getReferenceCodeDescriptionIfSet(journey.addressLines.county, ReferenceCodeType.COUNTY, user),
-      postalCode: journey.addressLines.postcode,
+      flat: journey.addressLines!.flat,
+      premise: journey.addressLines!.premises,
+      street: journey.addressLines!.street,
+      area: journey.addressLines!.locality,
+      city: await this.getReferenceCodeDescriptionIfSet(journey.addressLines!.town, ReferenceCodeType.CITY, user),
+      county: await this.getReferenceCodeDescriptionIfSet(journey.addressLines!.county, ReferenceCodeType.COUNTY, user),
+      postalCode: journey.addressLines!.postcode,
       country: await this.getReferenceCodeDescriptionIfSet(
-        journey.addressLines.country,
+        journey.addressLines!.country,
         ReferenceCodeType.COUNTRY,
         user,
       ),
     }
     const formattedFromDate = formatDate(
-      new Date(`${journey.addressMetadata.fromYear}-${journey.addressMetadata.fromMonth}-01Z`),
+      new Date(`${journey.addressMetadata!.fromYear}-${journey.addressMetadata!.fromMonth}-01Z`),
       'MMMM yyyy',
     )
     let formattedToDate
-    if (journey.addressMetadata.toMonth && journey.addressMetadata.toYear) {
+    if (journey.addressMetadata!.toMonth && journey.addressMetadata!.toYear) {
       formattedToDate = formatDate(
-        new Date(`${journey.addressMetadata.toYear}-${journey.addressMetadata.toMonth}-01Z`),
+        new Date(`${journey.addressMetadata!.toYear}-${journey.addressMetadata!.toMonth}-01Z`),
         'MMMM yyyy',
       )
     }
@@ -83,10 +79,10 @@ export default class AddressCheckAnswersController implements PageHandler {
   ): Promise<void> => {
     const { journeyId } = req.params
     const { user } = res.locals
-    const journey = req.session.addressJourneys[journeyId]
+    const journey = req.session.addressJourneys![journeyId]!
     await this.contactsService
       .createContactAddress(journey, user)
-      .then(_ => delete req.session.addressJourneys[journeyId])
+      .then(_ => delete req.session.addressJourneys![journeyId])
     res.redirect(journey.returnPoint.url)
   }
 

@@ -1,5 +1,5 @@
 import 'reflect-metadata'
-import { Request, Response } from 'express'
+import { Request as ExpressRequest, Response } from 'express'
 import populatePrisonerDetailsIfInCaseload from './populatePrisonerDetailsIfInCaseload'
 import PrisonerSearchService from '../services/prisonerSearchService'
 import AuditService from '../services/auditService'
@@ -13,6 +13,8 @@ jest.mock('../services/auditService')
 
 const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
+
+type Request = ExpressRequest<{ prisonerNumber: string }>
 
 describe('prisonerDetailsMiddleware', () => {
   const prisoner = TestData.prisoner()
@@ -37,7 +39,7 @@ describe('prisonerDetailsMiddleware', () => {
         prisonerNumber: 'A1234BC',
       },
       session: { activeCaseLoadId: prisoner.prisonId },
-    } as Request<{ prisonerNumber: string }>
+    } as Request
 
     await populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService)(req, res, next)
 
@@ -65,7 +67,7 @@ describe('prisonerDetailsMiddleware', () => {
         prisonerNumber: 'A1234BC',
       },
       session: { activeCaseLoadId: prisoner.prisonId },
-    } as Request<{ prisonerNumber: string }>
+    } as Request
 
     await populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService)(req, res, next)
 
@@ -95,7 +97,7 @@ describe('prisonerDetailsMiddleware', () => {
         prisonerNumber: 'A1234BC',
       },
       session: { activeCaseLoadId: prisoner.prisonId },
-    } as Request<{ prisonerNumber: string }>
+    } as Request
 
     await populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService)(req, res, next)
 
@@ -125,7 +127,7 @@ describe('prisonerDetailsMiddleware', () => {
         prisonerNumber: 'A1234BC',
       },
       session: { activeCaseLoadId: prisoner.prisonId },
-    } as Request<{ prisonerNumber: string }>
+    } as Request
 
     await populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService)(req, res, next)
 
@@ -151,7 +153,7 @@ describe('prisonerDetailsMiddleware', () => {
       },
       session: { activeCaseLoadId: undefined },
       id: '123456',
-    } as Request<{ prisonerNumber: string }>
+    } as Request
 
     await populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService)(req, res, next)
 
@@ -181,7 +183,7 @@ describe('prisonerDetailsMiddleware', () => {
       },
       session: { activeCaseLoadId: 'NOT HERE' },
       id: '123456',
-    } as Request<{ prisonerNumber: string }>
+    } as Request
 
     await populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService)(req, res, next)
 
@@ -211,7 +213,7 @@ describe('prisonerDetailsMiddleware', () => {
         prisonerNumber: 'A1234BC',
       },
       session: {},
-    } as Request<{ prisonerNumber: string }>
+    } as Request
 
     await populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService)(req, res, next)
 

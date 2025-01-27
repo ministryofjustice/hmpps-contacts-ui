@@ -11,11 +11,11 @@ export default class NextOfKinController implements PageHandler {
 
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { journeyId } = req.params
-    const journey = req.session.addContactJourneys[journeyId]
+    const journey = req.session.addContactJourneys![journeyId]!
     const view = {
       journey,
       caption: captionForAddContactJourney(journey),
-      isNextOfKin: res.locals?.formResponses?.isNextOfKin ?? journey?.relationship?.isNextOfKin,
+      isNextOfKin: res.locals?.formResponses?.['isNextOfKin'] ?? journey?.relationship?.isNextOfKin,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
     }
     res.render('pages/contacts/add/selectNextOfKin', view)
@@ -23,9 +23,9 @@ export default class NextOfKinController implements PageHandler {
 
   POST = async (req: Request<PrisonerJourneyParams, unknown, NextOfKinSchema>, res: Response): Promise<void> => {
     const { journeyId } = req.params
-    const journey = req.session.addContactJourneys[journeyId]
+    const journey = req.session.addContactJourneys![journeyId]!
     const { body } = req
-    journey.relationship.isNextOfKin = body.isNextOfKin
+    journey.relationship!.isNextOfKin = body.isNextOfKin
     res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
   }
 }

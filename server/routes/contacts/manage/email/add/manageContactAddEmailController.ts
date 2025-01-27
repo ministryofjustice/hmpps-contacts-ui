@@ -19,7 +19,7 @@ export default class ManageContactAddEmailController implements PageHandler {
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const navigation: Navigation = { backLink: journey.returnPoint.url }
     const viewModel = {
-      emailAddress: res.locals?.formResponses?.emailAddress,
+      emailAddress: res.locals?.formResponses?.['emailAddress'],
       contact,
       navigation,
     }

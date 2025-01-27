@@ -6,25 +6,21 @@ import ReferenceDataService from '../../../../../services/referenceDataService'
 import { Navigation } from '../../../common/navigation'
 import { AddressTypeSchema } from './addressTypeSchemas'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
+import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 
 export default class AddressTypeController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
   public PAGE_NAME = Page.SELECT_ADDRESS_TYPE_PAGE
 
-  GET = async (
-    req: Request<{
-      journeyId: string
-    }>,
-    res: Response,
-  ): Promise<void> => {
+  GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const { user } = res.locals
-    const journey = req.session.addressJourneys[journeyId]
+    const journey = req.session.addressJourneys![journeyId]!
 
     const typeOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.ADDRESS_TYPE, user)
-      .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.type ?? journey.addressType))
+      .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.['type'] ?? journey.addressType))
 
     const navigation: Navigation = {
       backLink: journey.returnPoint.url,
@@ -48,7 +44,7 @@ export default class AddressTypeController implements PageHandler {
     res: Response,
   ): Promise<void> => {
     const { journeyId } = req.params
-    const journey = req.session.addressJourneys[journeyId]
+    const journey = req.session.addressJourneys![journeyId]!
     const { addressType } = req.body
     journey.addressType = addressType
     res.redirect(
