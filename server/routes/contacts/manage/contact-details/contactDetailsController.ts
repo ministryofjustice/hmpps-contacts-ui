@@ -40,7 +40,7 @@ export default class ContactDetailsController implements PageHandler {
       user,
     )
 
-    return res.render('pages/contacts/manage/contactDetails/details', {
+    return res.render('pages/contacts/manage/contactDetails/details/index', {
       contact,
       globalRestrictions: prisonerContactRestrictionsEnriched.contactGlobalRestrictions,
       prisonerContactRestrictions: prisonerContactRestrictionsEnriched.prisonerContactRestrictions,

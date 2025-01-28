@@ -1,0 +1,51 @@
+{% from "../../../common/addressesMacro.njk" import addressDetails %}
+{% from "../../../common/notProvided.njk" import notProvided %}
+
+{%- include "./manageBasicDetails.njk" -%}
+        {%- include "./manageRelationshipDetails.njk" -%}
+        {%- include "./manageApprovedToVisit.njk" -%}
+
+        {% if mostRelevantAddress %}
+          {{ addressDetails({
+            returnUrl: manageContactRelationshipUrl,
+            prisonerNumber: prisonerNumber,
+            contactId: contactId,
+            canEditAddresses: false,
+            addresses: [
+              {
+                mostRelevantAddressLabel: mostRelevantAddressLabel,
+                address: mostRelevantAddress,
+                cardTitle: 'Addresses',
+                cardActions: [
+                {
+                  href: manageContactRelationshipUrl + '/view-addresses',
+                  text: 'View all addresses',
+                  attributes: { 'data-qa': 'view-all-addresses' },
+                  classes: 'govuk-link--no-visited-state'
+                }
+              ]
+              }
+            ]
+          }
+          )}}
+        {% else %}
+          {{ notProvided({
+            title: 'Addresses',
+            key: 'Address',
+            className: 'addresses-not-provided',
+            actions: [
+              {
+                href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contactId + "/address/add/start?returnUrl=" + manageContactRelationshipUrl + '/view-addresses' ,
+                text: 'Add address',
+                attributes: { 'data-qa': 'add-new-addresses-link' },
+                classes: 'govuk-link--no-visited-state'
+              }
+            ]
+          }) }}
+        {% endif %}
+        {%- include "./managePhoneNumbers.njk" -%}
+        {%- include "./manageEmailAddresses.njk" -%}
+        {%- include "./manageIdentityNumbers.njk" -%}
+        {%- include "./language.njk" -%}
+        {%- include "./domesticStatus.njk" -%}
+        {%- include "./manageStaff.njk" -%}
