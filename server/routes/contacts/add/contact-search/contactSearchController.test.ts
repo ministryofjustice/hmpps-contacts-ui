@@ -4,20 +4,19 @@ import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import PrisonerSearchService from '../../../../services/prisonerSearchService'
-import ContactsService from '../../../../services/contactsService'
+import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import AddContactJourney = journeys.AddContactJourney
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
+import { MockedService } from '../../../../testutils/mockedServices'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
-const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
+const auditService = MockedService.AuditService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
+const contactsService = MockedService.ContactsService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -55,7 +54,6 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
   it('should render contact page', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.searchContact.mockResolvedValue({
       totalPages: 0,
@@ -103,7 +101,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
-    expect(session.addContactJourneys[journeyId].searchContact).toStrictEqual({
+    expect(session.addContactJourneys![journeyId]!.searchContact).toStrictEqual({
       contact: {
         firstName: '',
         middleNames: undefined,
@@ -125,7 +123,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
-    expect(session.addContactJourneys[journeyId].searchContact).toBeUndefined()
+    expect(session.addContactJourneys![journeyId]!.searchContact).toBeUndefined()
   })
 
   it('should not pass to result page when rest of the form is completed except last name', async () => {
@@ -136,7 +134,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
-    expect(session.addContactJourneys[journeyId].searchContact).toBeUndefined()
+    expect(session.addContactJourneys![journeyId]!.searchContact).toBeUndefined()
   })
 
   it('should not pass to result page when month and year are not provided', async () => {
@@ -147,7 +145,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
-    expect(session.addContactJourneys[journeyId].searchContact).toBeUndefined()
+    expect(session.addContactJourneys![journeyId]!.searchContact).toBeUndefined()
   })
 
   it('should not pass to result page when year is not provided', async () => {
@@ -158,7 +156,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
-    expect(session.addContactJourneys[journeyId].searchContact).toBeUndefined()
+    expect(session.addContactJourneys![journeyId]!.searchContact).toBeUndefined()
   })
 
   it('should not pass to result page when date is in the future', async () => {
@@ -177,7 +175,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
-    expect(session.addContactJourneys[journeyId].searchContact).toBeUndefined()
+    expect(session.addContactJourneys![journeyId]!.searchContact).toBeUndefined()
   })
 
   it('should not pass to result page when last name contains special characters', async () => {
@@ -188,7 +186,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
-    expect(session.addContactJourneys[journeyId].searchContact).toBeUndefined()
+    expect(session.addContactJourneys![journeyId]!.searchContact).toBeUndefined()
   })
 })
 
@@ -230,7 +228,6 @@ describe('Contact seaarch results', () => {
         dateOfBirth: { day: undefined, month: undefined, year: undefined },
       },
     }
-    auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.searchContact.mockResolvedValue(results)
 
@@ -267,7 +264,6 @@ describe('Contact seaarch results', () => {
         },
       }
 
-      auditService.logPageView.mockResolvedValue(null)
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
 
       for (let i = 0; i < 15; i += 1) {
@@ -368,7 +364,6 @@ describe('Contact seaarch results', () => {
         dateOfBirth: { day: undefined, month: undefined, year: undefined },
       },
     }
-    auditService.logPageView.mockResolvedValue(null)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.searchContact.mockResolvedValue(results)
 

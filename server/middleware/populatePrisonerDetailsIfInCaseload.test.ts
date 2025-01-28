@@ -1,18 +1,17 @@
 import 'reflect-metadata'
 import { Request as ExpressRequest, Response } from 'express'
 import populatePrisonerDetailsIfInCaseload from './populatePrisonerDetailsIfInCaseload'
-import PrisonerSearchService from '../services/prisonerSearchService'
-import AuditService from '../services/auditService'
 import TestData from '../routes/testutils/testData'
 import { user } from '../routes/testutils/appSetup'
 import { PrisonerSearchAddress } from '../data/prisonerOffenderSearchTypes'
 import PrisonerDetails = journeys.PrisonerDetails
+import { MockedService } from '../testutils/mockedServices'
 
 jest.mock('../services/prisonerSearchService')
 jest.mock('../services/auditService')
 
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
+const prisonerSearchService = MockedService.PrisonerSearchService()
+const auditService = MockedService.AuditService()
 
 type Request = ExpressRequest<{ prisonerNumber: string }>
 
@@ -23,7 +22,6 @@ describe('prisonerDetailsMiddleware', () => {
 
   beforeEach(() => {
     delete res.locals.prisonerDetails
-    auditService.logAuditEvent.mockResolvedValue(null)
   })
 
   afterEach(() => {

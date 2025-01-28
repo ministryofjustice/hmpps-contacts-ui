@@ -15,7 +15,7 @@ describe('createNextOfKinSchema', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
         isNextOfKin: ['Select whether the contact is next of kin for the prisoner'],
       })

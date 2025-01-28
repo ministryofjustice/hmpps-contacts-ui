@@ -4,16 +4,16 @@ import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
+import { Page } from '../../../../services/auditService'
 import AddContactJourney = journeys.AddContactJourney
-import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import TestData from '../../../testutils/testData'
+import { MockedService } from '../../../../testutils/mockedServices'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
+const auditService = MockedService.AuditService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -60,10 +60,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-type
     ['EXISTING', `/prisoner/A1234BC/contacts/add/confirmation/${journeyId}`, 'Link a contact to a prisoner'],
   ])(
     'should render relationship type page for each mode %s',
-    async (mode: 'NEW' | 'EXISTING', expectedBackLink: string, expectedCaption: string) => {
+    async (mode, expectedBackLink: string, expectedCaption: string) => {
       // Given
-      auditService.logPageView.mockResolvedValue(null)
-      existingJourney.mode = mode
+      existingJourney.mode = mode as 'NEW' | 'EXISTING'
 
       // When
       const response = await request(app).get(
@@ -86,7 +85,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-type
 
   it('should call the audit service for the page view', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
 
     // When
     const response = await request(app).get(
@@ -103,7 +101,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-type
 
   it('should render previously entered details if no validation errors but there are session values', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     existingJourney.relationship = { relationshipType: 'S' }
 
     // When
@@ -141,7 +138,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship-typ
 
     // Then
     const expectedRelationship = { relationshipType: 'S' }
-    expect(session.addContactJourneys[journeyId].relationship).toStrictEqual(expectedRelationship)
+    expect(session.addContactJourneys![journeyId]!.relationship).toStrictEqual(expectedRelationship)
   })
 
   it('should pass to select relationship to prisoner if we changed relationship type while we are checking answers', async () => {
@@ -169,7 +166,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship-typ
       isEmergencyContact: 'NO',
       isNextOfKin: 'YES',
     }
-    expect(session.addContactJourneys[journeyId].relationship).toStrictEqual(expectedRelationship)
+    expect(session.addContactJourneys![journeyId]!.relationship).toStrictEqual(expectedRelationship)
   })
 
   it('should pass to check answers to prisoner if we selected the same relationship type while we are checking answers', async () => {
@@ -206,7 +203,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship-typ
       isEmergencyContact: 'NO',
       isNextOfKin: 'YES',
     }
-    expect(session.addContactJourneys[journeyId].relationship).toStrictEqual(expectedRelationship)
+    expect(session.addContactJourneys![journeyId]!.relationship).toStrictEqual(expectedRelationship)
   })
 
   it('should return to enter page if there are validation errors', async () => {

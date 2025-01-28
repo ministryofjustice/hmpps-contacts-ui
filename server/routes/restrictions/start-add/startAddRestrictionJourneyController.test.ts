@@ -3,17 +3,16 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import { appWithAllRoutes, user } from '../../testutils/appSetup'
-import AuditService, { Page } from '../../../services/auditService'
-import ContactsService from '../../../services/contactsService'
+import { Page } from '../../../services/auditService'
 import AddRestrictionJourney = journeys.AddRestrictionJourney
 import ContactDetails = contactsApiClientTypes.ContactDetails
-import RestrictionClass = journeys.RestrictionClass
+import { MockedService } from '../../../testutils/mockedServices'
 
 jest.mock('../../../services/auditService')
 jest.mock('../../../services/contactsService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
+const auditService = MockedService.AuditService()
+const contactsService = MockedService.ContactsService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -44,7 +43,7 @@ beforeEach(() => {
       if (preExistingJourneysToAddToSession) {
         session.addRestrictionJourneys = {}
         preExistingJourneysToAddToSession.forEach((journey: AddRestrictionJourney) => {
-          session.addRestrictionJourneys[journey.id] = journey
+          session.addRestrictionJourneys![journey.id] = journey
         })
       }
     },
@@ -58,9 +57,8 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/start', () => {
   it.each([['PRISONER_CONTACT'], ['CONTACT_GLOBAL']])(
     'should create the journey and redirect to enter restriction page for restrictionClass %s',
-    async (restrictionClass: RestrictionClass) => {
+    async restrictionClass => {
       // Given
-      auditService.logPageView.mockResolvedValue(null)
       contactsService.getContact.mockResolvedValue(contact)
 
       // When
@@ -74,18 +72,17 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
         correlationId: expect.any(String),
       })
       expect(response.status).toEqual(302)
-      expect(response.headers.location).toContain(
+      expect(response.headers['location']).toContain(
         `/prisoner/A1234BC/contacts/123/relationship/321/restriction/add/${restrictionClass}/enter-restriction/`,
       )
-      expect(Object.entries(session.addRestrictionJourneys)).toHaveLength(1)
-      const journey = Object.values(session.addRestrictionJourneys)[0]
+      expect(Object.entries(session.addRestrictionJourneys!)).toHaveLength(1)
+      const journey = Object.values(session.addRestrictionJourneys!)[0]!
       expect(journey.returnPoint).toStrictEqual({ url: '/foo' })
     },
   )
 
   it('should not remove any existing add journeys in the session', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
     preExistingJourneysToAddToSession = [
       {
@@ -111,15 +108,14 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
     // Then
     expect(response.status).toEqual(302)
-    expect(Object.entries(session.addRestrictionJourneys)).toHaveLength(2)
-    const newId = location.substring(location.lastIndexOf('/') + 1)
-    expect(session.addRestrictionJourneys[newId].id).toEqual(newId)
-    expect(session.addRestrictionJourneys[newId].lastTouched).toBeTruthy()
+    expect(Object.entries(session.addRestrictionJourneys!)).toHaveLength(2)
+    const newId = location!.substring(location!.lastIndexOf('/') + 1)
+    expect(session.addRestrictionJourneys![newId]!.id).toEqual(newId)
+    expect(session.addRestrictionJourneys![newId]!.lastTouched).toBeTruthy()
   })
 
   it('should remove the oldest if there will be more than 5 journeys', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
     preExistingJourneysToAddToSession = [
       {
@@ -197,8 +193,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
     // Then
     expect(response.status).toEqual(302)
-    const newId = location.substring(location.lastIndexOf('/') + 1)
-    expect(Object.keys(session.addRestrictionJourneys).sort()).toStrictEqual(
+    const newId = location!.substring(location!.lastIndexOf('/') + 1)
+    expect(Object.keys(session.addRestrictionJourneys!).sort()).toStrictEqual(
       [newId, 'old', 'middle-aged', 'young', 'youngest'].sort(),
     )
   })

@@ -4,20 +4,19 @@ import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, flashProvider, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import ReferenceDataService from '../../../../services/referenceDataService'
+import { Page } from '../../../../services/auditService'
 import { mockedReferenceData, STUBBED_TITLE_OPTIONS } from '../../../testutils/stubReferenceData'
-import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import TestData from '../../../testutils/testData'
 import AddContactJourney = journeys.AddContactJourney
+import { MockedService } from '../../../../testutils/mockedServices'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/referenceDataService')
 jest.mock('../../../../services/prisonerSearchService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
+const auditService = MockedService.AuditService()
+const referenceDataService = MockedService.ReferenceDataService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -58,7 +57,6 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
   it('should render enter name page', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${journeyId}`)
@@ -75,7 +73,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
 
   it('title options are ordered alphabetically', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${journeyId}`)
@@ -91,7 +88,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
 
   it('should call the audit service for the page view', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${journeyId}`)
@@ -107,7 +103,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
   it('should render previously entered details if validation errors', async () => {
     // Given
     const form = { firstName: 'first', lastName: 'last', middleNames: 'middle', title: 'MR' }
-    auditService.logPageView.mockResolvedValue(null)
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
@@ -124,7 +119,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
 
   it('should render previously entered details if no validation errors but there are session values', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     existingJourney.names = { firstName: 'first', lastName: 'last', middleNames: 'middle', title: 'MR' }
 
     // When
@@ -141,7 +135,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
 
   it('should render submitted options on validation error even if there is a version in the session', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     existingJourney.names = { firstName: 'first', lastName: 'last', middleNames: 'middle', title: 'MR' }
     const form = { firstName: 'first updated', lastName: 'last updated', middleNames: 'middle updated', title: 'DR' }
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
@@ -175,7 +168,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId',
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
 
-    expect(session.addContactJourneys[journeyId].names).toStrictEqual({
+    expect(session.addContactJourneys![journeyId]!.names).toStrictEqual({
       lastName: 'last',
       firstName: 'first',
       middleNames: 'middle',
@@ -202,7 +195,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId',
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
 
     // Then
-    expect(session.addContactJourneys[journeyId].names).toStrictEqual({
+    expect(session.addContactJourneys![journeyId]!.names).toStrictEqual({
       lastName: 'last updated',
       firstName: 'first updated',
       middleNames: 'middle updated',

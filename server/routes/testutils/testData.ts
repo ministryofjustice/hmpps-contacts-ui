@@ -63,7 +63,7 @@ export default class TestData {
     createdTime = '2024-10-04T0 =3 =44.512401',
     updatedBy = undefined,
     updatedTime = undefined,
-  }) => {
+  }: Partial<ContactAddressDetails>) => {
     return {
       contactAddressId,
       contactId,

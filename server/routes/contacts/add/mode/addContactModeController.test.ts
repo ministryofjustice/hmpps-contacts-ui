@@ -3,16 +3,16 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import ContactsService from '../../../../services/contactsService'
+import { Page } from '../../../../services/auditService'
 import AddContactJourney = journeys.AddContactJourney
 import ContactDetails = contactsApiClientTypes.ContactDetails
+import { MockedService } from '../../../../testutils/mockedServices'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/contactsService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
+const auditService = MockedService.AuditService()
+const contactsService = MockedService.ContactsService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -50,7 +50,6 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () => {
   it('should audit', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/mode/NEW/${journeyId}`)
@@ -65,14 +64,13 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
 
   it('should pass to the enter-name page if mode is NEW', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/mode/NEW/${journeyId}`)
 
     // Then
     expect(response.status).toEqual(302)
-    expect(response.headers.location).toContain('/contacts/create/enter-name/')
+    expect(response.headers['location']).toContain('/contacts/create/enter-name/')
     expect(existingJourney.mode).toStrictEqual('NEW')
     expect(existingJourney.names).toBeUndefined()
     expect(existingJourney.dateOfBirth).toBeUndefined()
@@ -92,7 +90,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       createdTime: '2024-01-01',
     }
 
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
@@ -102,7 +99,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
 
     // Then
     expect(response.status).toEqual(302)
-    expect(response.headers.location).toStrictEqual(
+    expect(response.headers['location']).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`,
     )
     expect(existingJourney.mode).toStrictEqual('EXISTING')
@@ -134,7 +131,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       createdTime: '2024-01-01',
     }
 
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
@@ -148,7 +144,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       correlationId: expect.any(String),
     })
     expect(response.status).toEqual(302)
-    expect(response.headers.location).toStrictEqual(
+    expect(response.headers['location']).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`,
     )
     expect(existingJourney.mode).toStrictEqual('EXISTING')
@@ -174,7 +170,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       createdTime: '2024-01-01',
     }
 
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
@@ -184,7 +179,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
 
     // Then
     expect(response.status).toEqual(302)
-    expect(response.headers.location).toStrictEqual(
+    expect(response.headers['location']).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`,
     )
     expect(existingJourney.mode).toStrictEqual('EXISTING')
@@ -215,7 +210,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       createdTime: '2024-01-01',
     }
 
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
@@ -225,7 +219,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
 
     // Then
     expect(response.status).toEqual(302)
-    expect(response.headers.location).toStrictEqual(
+    expect(response.headers['location']).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`,
     )
     expect(existingJourney.mode).toStrictEqual('EXISTING')
@@ -258,12 +252,10 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
     it('should reset journey if changing mode from EXISTING to NEW', async () => {
       existingJourney.mode = 'EXISTING'
 
-      auditService.logPageView.mockResolvedValue(null)
-
       const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/mode/NEW/${journeyId}`)
 
       expect(response.status).toEqual(302)
-      expect(response.headers.location).toContain('/contacts/create/enter-name/')
+      expect(response.headers['location']).toContain('/contacts/create/enter-name/')
       expect(existingJourney.names).toBeUndefined()
       expect(existingJourney.dateOfBirth).toBeUndefined()
       expect(existingJourney.relationship).toBeUndefined()
@@ -287,7 +279,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
         createdBy: user.username,
         createdTime: '2024-01-01',
       }
-      auditService.logPageView.mockResolvedValue(null)
       contactsService.getContact.mockResolvedValue(contact)
 
       const response = await request(app).get(
@@ -295,7 +286,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       )
 
       expect(response.status).toEqual(302)
-      expect(response.headers.location).toStrictEqual(
+      expect(response.headers['location']).toStrictEqual(
         `/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`,
       )
       expect(existingJourney.names).toStrictEqual({

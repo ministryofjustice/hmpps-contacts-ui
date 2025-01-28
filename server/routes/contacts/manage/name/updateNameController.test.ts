@@ -2,23 +2,21 @@ import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, flashProvider, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import ReferenceDataService from '../../../../services/referenceDataService'
+import { Page } from '../../../../services/auditService'
 import { mockedReferenceData, STUBBED_TITLE_OPTIONS } from '../../../testutils/stubReferenceData'
-import PrisonerSearchService from '../../../../services/prisonerSearchService'
-import ContactsService from '../../../../services/contactsService'
 import TestData from '../../../testutils/testData'
 import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
+import { MockedService } from '../../../../testutils/mockedServices'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/referenceDataService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
-const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
+const auditService = MockedService.AuditService()
+const referenceDataService = MockedService.ReferenceDataService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
+const contactsService = MockedService.ContactsService()
 
 let app: Express
 const contactId = 99
@@ -46,7 +44,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/name', () => 
   it('should render update name page', async () => {
     // Given
     const contact = TestData.contact({ id: contactId })
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
@@ -67,7 +64,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/name', () => 
   it('title options are ordered alphabetically', async () => {
     // Given
     const contact = TestData.contact({ id: contactId })
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
@@ -87,7 +83,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/name', () => 
   it('should call the audit service for the page view', async () => {
     // Given
     const contact = TestData.contact({ id: contactId })
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
@@ -113,7 +108,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/name', () => 
       middleNames: 'middle',
       title: 'MR',
     })
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
@@ -138,7 +132,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/name', () => 
       middleNames: 'middle',
       title: 'MR',
     })
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getContact.mockResolvedValue(contact)
 
     // When

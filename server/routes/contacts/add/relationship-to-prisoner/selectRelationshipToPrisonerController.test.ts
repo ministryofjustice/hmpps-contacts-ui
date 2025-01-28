@@ -4,20 +4,19 @@ import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import ReferenceDataService from '../../../../services/referenceDataService'
+import { Page } from '../../../../services/auditService'
 import { mockedReferenceData, STUBBED_SOCIAL_RELATIONSHIP_OPTIONS } from '../../../testutils/stubReferenceData'
 import AddContactJourney = journeys.AddContactJourney
-import PrisonerSearchService from '../../../../services/prisonerSearchService'
 import TestData from '../../../testutils/testData'
+import { MockedService } from '../../../../testutils/mockedServices'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/referenceDataService')
 jest.mock('../../../../services/prisonerSearchService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
+const auditService = MockedService.AuditService()
+const referenceDataService = MockedService.ReferenceDataService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -61,10 +60,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-to-p
   it.each([
     ['NEW', 'Add a contact and link to a prisoner'],
     ['EXISTING', 'Link a contact to a prisoner'],
-  ])('should render select relationship page for mode %s', async (mode: 'NEW' | 'EXISTING', expectedCaption) => {
+  ])('should render select relationship page for mode %s', async (mode, expectedCaption) => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
-    existingJourney.mode = mode
+    existingJourney.mode = mode as 'NEW' | 'EXISTING'
 
     // When
     const response = await request(app).get(
@@ -98,14 +96,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-to-p
     ],
   ])(
     'should use correct reference group for different relationship types %s',
-    async (
-      relationshipType: 'S' | 'O',
-      expectedFirstOption: string,
-      expectedHintText: string,
-      expectedDefaultLabel: string,
-    ) => {
+    async (relationshipType, expectedFirstOption: string, expectedHintText: string, expectedDefaultLabel: string) => {
       // Given
-      auditService.logPageView.mockResolvedValue(null)
       existingJourney.relationship = { relationshipType }
 
       // When
@@ -130,7 +122,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-to-p
 
   it('options should be alphabetic', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
 
     // When
     const response = await request(app).get(
@@ -150,7 +141,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-to-p
 
   it('should call the audit service for the page view', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
 
     // When
     const response = await request(app).get(
@@ -167,7 +157,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-to-p
 
   it('should render previously entered details if no validation errors but there are session values', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     existingJourney.relationship = { relationshipType: 'S', relationshipToPrisoner: 'MOT' }
 
     // When
@@ -198,7 +187,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship-to-
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${journeyId}`)
 
-    expect(session.addContactJourneys[journeyId].relationship).toStrictEqual({
+    expect(session.addContactJourneys![journeyId]!.relationship).toStrictEqual({
       relationshipType: 'S',
       relationshipToPrisoner: 'MOT',
     })
@@ -220,7 +209,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship-to-
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
 
     // Then
-    expect(session.addContactJourneys[journeyId].relationship).toStrictEqual({
+    expect(session.addContactJourneys![journeyId]!.relationship).toStrictEqual({
       relationshipToPrisoner: 'MOT',
     })
   })

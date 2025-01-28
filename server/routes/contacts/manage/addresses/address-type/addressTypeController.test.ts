@@ -4,20 +4,19 @@ import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../../services/auditService'
-import PrisonerSearchService from '../../../../../services/prisonerSearchService'
-import ReferenceDataService from '../../../../../services/referenceDataService'
+import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import AddressJourney = journeys.AddressJourney
+import { MockedService } from '../../../../../testutils/mockedServices'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
 jest.mock('../../../../../services/referenceDataService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
-const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
+const auditService = MockedService.AuditService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
+const referenceDataService = MockedService.ReferenceDataService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -65,7 +64,6 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/select-type/:journeyId', () => {
   it('should render address type page for new address', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
 
     // When
     const response = await request(app).get(
@@ -86,7 +84,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/selec
 
   it('should call the audit service for the page view', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
 
     // When
     const response = await request(app).get(
@@ -105,7 +102,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/selec
     'should render previously entered details if no validation errors but there are session values (%s)',
     async (addressType: string) => {
       // Given
-      auditService.logPageView.mockResolvedValue(null)
       existingJourney.addressType = addressType
 
       // When
@@ -150,7 +146,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/sele
         .expect('Location', expectedUrl)
 
       // Then
-      expect(session.addressJourneys[journeyId].addressType).toStrictEqual('HOME')
+      expect(session.addressJourneys![journeyId]!.addressType).toStrictEqual('HOME')
     },
   )
 

@@ -2,16 +2,12 @@ import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, flashProvider, user } from '../../testutils/appSetup'
-import AuditService, { Page } from '../../../services/auditService'
-import ReferenceDataService from '../../../services/referenceDataService'
+import { Page } from '../../../services/auditService'
 import { mockedReferenceData } from '../../testutils/stubReferenceData'
-import PrisonerSearchService from '../../../services/prisonerSearchService'
-import RestrictionsService from '../../../services/restrictionsService'
-import ContactsService from '../../../services/contactsService'
 import TestData from '../../testutils/testData'
-import RestrictionClass = journeys.RestrictionClass
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import { RestrictionSchemaType } from '../schema/restrictionSchema'
+import { MockedService } from '../../../testutils/mockedServices'
 
 jest.mock('../../../services/auditService')
 jest.mock('../../../services/referenceDataService')
@@ -19,11 +15,11 @@ jest.mock('../../../services/prisonerSearchService')
 jest.mock('../../../services/restrictionsService')
 jest.mock('../../../services/contactsService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
-const restrictionsService = new RestrictionsService(null) as jest.Mocked<RestrictionsService>
-const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
+const auditService = MockedService.AuditService()
+const referenceDataService = MockedService.ReferenceDataService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
+const restrictionsService = MockedService.RestrictionsService()
+const contactsService = MockedService.ContactsService()
 
 let app: Express
 const prisonerNumber = 'A1234BC'
@@ -77,7 +73,6 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/update/:restrictionClass/enter-restriction/:restrictionId', () => {
   it('should render enter restriction page for PRISONER_CONTACT', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     contactsService.getPrisonerContactRestrictions.mockResolvedValue({
       prisonerContactRestrictions: [
         TestData.getPrisonerContactRestrictionDetails({
@@ -117,9 +112,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
   })
 
   it('should render enter restriction page for CONTACT_GLOBAL', async () => {
-    // Given
-    auditService.logPageView.mockResolvedValue(null)
-
     // When
     const response = await request(app).get(
       `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/CONTACT_GLOBAL/enter-restriction/${restrictionId}?returnUrl=/foo-bar`,
@@ -145,9 +137,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
   })
 
   it('should call the audit service for the page view', async () => {
-    // Given
-    auditService.logPageView.mockResolvedValue(null)
-
     // When
     const response = await request(app).get(
       `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/CONTACT_GLOBAL/enter-restriction/${restrictionId}?returnUrl=/foo-bar`,
@@ -164,7 +153,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
   it('should render previously entered details if validation errors', async () => {
     // Given
     const form = { type: 'CHILD', startDate: '9/9/1999', expiryDate: 'never', comments: 'changed comments' }
-    auditService.logPageView.mockResolvedValue(null)
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
@@ -238,7 +226,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
 
   it.each([['PRISONER_CONTACT'], ['CONTACT_GLOBAL']])(
     'should return to enter page with details kept if there are validation errors (%s)',
-    async (restrictionClass: RestrictionClass) => {
+    async restrictionClass => {
       await request(app)
         .post(
           `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/${restrictionClass}/enter-restriction/${restrictionId}?returnUrl=/foo-bar`,

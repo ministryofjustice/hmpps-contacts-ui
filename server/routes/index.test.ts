@@ -1,11 +1,12 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { appWithAllRoutes, user } from './testutils/appSetup'
-import AuditService, { Page } from '../services/auditService'
+import { Page } from '../services/auditService'
+import { MockedService } from '../testutils/mockedServices'
 
 jest.mock('../services/auditService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
+const auditService = MockedService.AuditService()
 
 let app: Express
 
@@ -25,7 +26,6 @@ afterEach(() => {
 describe('GET /', () => {
   it('should render index page', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
 
     // When
     const response = await request(app).get('/')

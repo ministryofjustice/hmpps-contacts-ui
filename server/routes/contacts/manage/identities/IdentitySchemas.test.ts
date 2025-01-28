@@ -22,7 +22,7 @@ describe('identitySchemaFactory', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({ type: ['Select the type of identity number'] })
     })
 
@@ -35,7 +35,7 @@ describe('identitySchemaFactory', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({ identity: ['Enter the identity number'] })
     })
 
@@ -52,7 +52,7 @@ describe('identitySchemaFactory', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
         identity: ['Identity number should be 20 characters or fewer'],
       })
@@ -71,7 +71,7 @@ describe('identitySchemaFactory', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
         issuingAuthority: ['Issuing authority should be 40 characters or fewer'],
       })
@@ -86,7 +86,7 @@ describe('identitySchemaFactory', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({ identity: ['Enter a PNC number in the correct format'] })
     })
 
@@ -114,7 +114,7 @@ describe('identitySchemaFactory', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(JSON.stringify(deduplicatedFieldErrors)).toBe(
         JSON.stringify({
           identity: ['Enter the identity number'],

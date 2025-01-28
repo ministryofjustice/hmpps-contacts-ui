@@ -72,7 +72,7 @@ function isValid(parsedPNC: ParsedPNC): boolean {
   return parsedPNC.checkChar === expectedCheckChar
 }
 
-export default function isValidPNC(value: string): boolean {
+export default function isValidPNC(value?: string): boolean {
   if (!value) {
     return false
   }

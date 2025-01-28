@@ -1,4 +1,4 @@
-const formatYesNo = (val: string | boolean): string => {
+const formatYesNo = (val?: string | boolean): string => {
   switch (val) {
     case 'YES':
     case true:

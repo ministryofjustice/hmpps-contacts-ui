@@ -83,7 +83,7 @@ describe('Prisoner search service', () => {
 
       const results = await prisonerSearchService.searchInCaseload(search, prisonId, pagination, user)
 
-      expect(results?.content[0].prisonerNumber).toEqual(prisoner.prisonerNumber)
+      expect(results.content![0]!.prisonerNumber).toEqual(prisoner.prisonerNumber)
       expect(results.totalPages).toEqual(1)
       expect(results.totalElements).toEqual(1)
     })

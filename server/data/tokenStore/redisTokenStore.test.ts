@@ -30,7 +30,7 @@ describe('tokenStore', () => {
     })
 
     it('Connects when no connection calling getToken', async () => {
-      ;(redisClient as unknown as Record<string, boolean>).isOpen = false
+      ;(redisClient as unknown as Record<string, boolean>)['isOpen'] = false
 
       await tokenStore.getToken('user-1')
 
@@ -46,7 +46,7 @@ describe('tokenStore', () => {
     })
 
     it('Connects when no connection calling set token', async () => {
-      ;(redisClient as unknown as Record<string, boolean>).isOpen = false
+      ;(redisClient as unknown as Record<string, boolean>)['isOpen'] = false
 
       await tokenStore.setToken('user-1', 'token-1', 10)
 

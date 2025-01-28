@@ -15,7 +15,7 @@ describe('createEmergencyContactSchema', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
         isEmergencyContact: ['Select whether the contact is an emergency contact for the prisoner'],
       })

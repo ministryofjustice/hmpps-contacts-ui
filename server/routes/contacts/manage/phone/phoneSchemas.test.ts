@@ -22,7 +22,7 @@ describe('phoneNumberSchemaFactory', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({ type: ['Select the type of phone number'] })
     })
 
@@ -35,7 +35,7 @@ describe('phoneNumberSchemaFactory', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({ phoneNumber: ['Enter a phone number'] })
     })
 
@@ -52,7 +52,7 @@ describe('phoneNumberSchemaFactory', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
         phoneNumber: ['Phone number must be 20 characters or less'],
       })
@@ -71,7 +71,7 @@ describe('phoneNumberSchemaFactory', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
         extension: ['Extension must be 7 characters or less'],
       })
@@ -109,7 +109,7 @@ describe('phoneNumberSchemaFactory', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
         phoneNumber: ['The phone number you entered is invalid, check the format and try again'],
       })
@@ -128,7 +128,7 @@ describe('phoneNumberSchemaFactory', () => {
 
       // Then
       expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(JSON.stringify(deduplicatedFieldErrors)).toBe(
         JSON.stringify({
           phoneNumber: ['Enter a phone number'],

@@ -21,32 +21,32 @@ describe('restrictionSchema', () => {
   describe('should validate the enter restriction form', () => {
     it.each([['CONTACT_GLOBAL'], ['PRISONER_CONTACT']])(
       'should require type for restriction class (%s)',
-      async (restrictionClass: RestrictionClass) => {
+      async restrictionClass => {
         // Given
         const form = { ...baseForm, startDate: '15/06/1982' }
 
         // When
-        const result = await doValidate(form, restrictionClass)
+        const result = await doValidate(form, restrictionClass as RestrictionClass)
 
         // Then
         expect(result.success).toStrictEqual(false)
-        const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+        const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
         expect(deduplicatedFieldErrors).toStrictEqual({ type: ['Select the restriction type'] })
       },
     )
 
     it.each([['CONTACT_GLOBAL'], ['PRISONER_CONTACT']])(
       'should require start date for restriction class (%s)',
-      async (restrictionClass: RestrictionClass) => {
+      async restrictionClass => {
         // Given
         const form = { ...baseForm, type: 'BAN' }
 
         // When
-        const result = await doValidate(form, restrictionClass)
+        const result = await doValidate(form, restrictionClass as RestrictionClass)
 
         // Then
         expect(result.success).toStrictEqual(false)
-        const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+        const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
         expect(deduplicatedFieldErrors).toStrictEqual({ startDate: ['Enter the start date for the restriction'] })
       },
     )
@@ -67,48 +67,48 @@ describe('restrictionSchema', () => {
 
     it.each(invalidDateCases)(
       'start date should be a valid date for restriction class (%s)',
-      async (restrictionClass: RestrictionClass, startDate: string) => {
+      async (restrictionClass, startDate: string) => {
         // Given
         const form = { ...baseForm, type: 'BAN', startDate }
 
         // When
-        const result = await doValidate(form, restrictionClass)
+        const result = await doValidate(form, restrictionClass as RestrictionClass)
 
         // Then
         expect(result.success).toStrictEqual(false)
-        const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+        const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
         expect(deduplicatedFieldErrors).toStrictEqual({ startDate: ['Start date must be a real date'] })
       },
     )
 
     it.each(invalidDateCases)(
       'expiry date should be a valid date, if provided, for restriction class (%s)',
-      async (restrictionClass: RestrictionClass, expiryDate: string) => {
+      async (restrictionClass, expiryDate: string) => {
         // Given
         const form = { ...baseForm, type: 'BAN', startDate: '1/2/2024', expiryDate }
 
         // When
-        const result = await doValidate(form, restrictionClass)
+        const result = await doValidate(form, restrictionClass as RestrictionClass)
 
         // Then
         expect(result.success).toStrictEqual(false)
-        const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+        const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
         expect(deduplicatedFieldErrors).toStrictEqual({ expiryDate: ['Expiry date must be a real date'] })
       },
     )
 
     it.each(expiryDateBeforeStartDateCases)(
       'expiry date should be same as or after the start date, if provided, for restriction class (%s)',
-      async (restrictionClass: RestrictionClass, startDate: string, expiryDate: string) => {
+      async (restrictionClass, startDate: string, expiryDate: string) => {
         // Given
         const form = { ...baseForm, type: 'BAN', startDate, expiryDate }
 
         // When
-        const result = await doValidate(form, restrictionClass)
+        const result = await doValidate(form, restrictionClass as RestrictionClass)
 
         // Then
         expect(result.success).toStrictEqual(false)
-        const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+        const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
         expect(deduplicatedFieldErrors).toStrictEqual({
           expiryDate: ['End date must be the same as or after the start date December 2024'],
         })
@@ -120,28 +120,28 @@ describe('restrictionSchema', () => {
       ['PRISONER_CONTACT', 255],
     ])(
       'should require comments for restriction class (%s) to be less than (%s)',
-      async (restrictionClass: RestrictionClass, maxLength: number) => {
+      async (restrictionClass, maxLength: number) => {
         // Given
         const form = { ...baseForm, type: 'BAN', startDate: '1/2/2024', comments: ''.padEnd(maxLength + 1) }
 
         // When
-        const result = await doValidate(form, restrictionClass)
+        const result = await doValidate(form, restrictionClass as RestrictionClass)
 
         // Then
         expect(result.success).toStrictEqual(false)
-        const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+        const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
         expect(deduplicatedFieldErrors).toStrictEqual({ comments: [`Comment must be ${maxLength} characters or less`] })
       },
     )
 
     it.each([['CONTACT_GLOBAL'], ['PRISONER_CONTACT']])(
       'should parse with minimal fields successfully for restriction class (%s)',
-      async (restrictionClass: RestrictionClass) => {
+      async restrictionClass => {
         // Given
         const form = { ...baseForm, type: 'BAN', startDate: '1/2/2024' }
 
         // When
-        const result = await doValidate(form, restrictionClass)
+        const result = await doValidate(form, restrictionClass as RestrictionClass)
 
         // Then
         expect(result.success).toStrictEqual(true)
@@ -156,7 +156,7 @@ describe('restrictionSchema', () => {
 
     it.each([['CONTACT_GLOBAL'], ['PRISONER_CONTACT']])(
       'should parse with all fields successfully for restriction class (%s)',
-      async (restrictionClass: RestrictionClass) => {
+      async restrictionClass => {
         // Given
         const form = {
           ...baseForm,
@@ -167,7 +167,7 @@ describe('restrictionSchema', () => {
         }
 
         // When
-        const result = await doValidate(form, restrictionClass)
+        const result = await doValidate(form, restrictionClass as RestrictionClass)
 
         // Then
         expect(result.success).toStrictEqual(true)
@@ -182,7 +182,7 @@ describe('restrictionSchema', () => {
 
     it.each([['CONTACT_GLOBAL'], ['PRISONER_CONTACT']])(
       'should parse with all fields successfully for expiry date is same as start date (%s)',
-      async (restrictionClass: RestrictionClass) => {
+      async restrictionClass => {
         // Given
         const form = {
           ...baseForm,
@@ -193,7 +193,7 @@ describe('restrictionSchema', () => {
         }
 
         // When
-        const result = await doValidate(form, restrictionClass)
+        const result = await doValidate(form, restrictionClass as RestrictionClass)
 
         // Then
         expect(result.success).toStrictEqual(true)

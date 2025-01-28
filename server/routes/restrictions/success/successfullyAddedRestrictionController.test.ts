@@ -2,19 +2,18 @@ import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../testutils/appSetup'
-import AuditService, { Page } from '../../../services/auditService'
-import ContactsService from '../../../services/contactsService'
+import { Page } from '../../../services/auditService'
 import TestData from '../../testutils/testData'
-import PrisonerSearchService from '../../../services/prisonerSearchService'
 import RestrictionClass = journeys.RestrictionClass
+import { MockedService } from '../../../testutils/mockedServices'
 
 jest.mock('../../../services/auditService')
 jest.mock('../../../services/contactsService')
 jest.mock('../../../services/prisonerSearchService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const contactsService = new ContactsService(null) as jest.Mocked<ContactsService>
-const prisonerSearchService = new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>
+const auditService = MockedService.AuditService()
+const contactsService = MockedService.ContactsService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
 
 let app: Express
 const prisonerNumber = 'A1234BC'
@@ -39,7 +38,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     // Given
     const restrictionClass: RestrictionClass = 'PRISONER_CONTACT'
     const message: string = 'New prisoner-contact restriction recorded'
-    auditService.logPageView.mockResolvedValue(null)
     const contactDetails = TestData.contact()
     contactsService.getContact.mockResolvedValue(contactDetails)
 
@@ -70,7 +68,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     // Given
     const restrictionClass: RestrictionClass = 'CONTACT_GLOBAL'
     const message: string = 'New global restriction recorded'
-    auditService.logPageView.mockResolvedValue(null)
     const contactDetails = TestData.contact()
     contactsService.getContact.mockResolvedValue(contactDetails)
 
@@ -99,7 +96,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
   it('should call the audit service for the page view', async () => {
     // Given
-    auditService.logPageView.mockResolvedValue(null)
     const contactDetails = TestData.contact()
     contactsService.getContact.mockResolvedValue(contactDetails)
 

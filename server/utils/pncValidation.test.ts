@@ -663,7 +663,7 @@ const validPNCs = [
   ['033Y'],
 ]
 
-const invalidPNCs = [
+const invalidPNCs: (string | undefined)[][] = [
   ['TOTALLYINVALID'],
   ['1X23/1234567A'],
   ['1923[1234567A'],
@@ -684,7 +684,7 @@ const invalidPNCs = [
   ['01234567890'],
   ['01234567890123'],
   [''],
-  [null],
+  [undefined],
 ]
 
 describe('validatePnc', () => {

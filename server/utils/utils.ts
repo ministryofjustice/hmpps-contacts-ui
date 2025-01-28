@@ -1,10 +1,10 @@
 import { format, isValid, parseISO } from 'date-fns'
 import DateOfBirth = journeys.DateOfBirth
 
-const isBlank = (str: string): boolean => !str || /^\s*$/.test(str)
+const isBlank = (str?: string): boolean => !str || /^\s*$/.test(str)
 
-export const capitaliseName = (name: string) => {
-  return isBlank(name) ? '' : name.toLowerCase().replace(/\b[a-z]/g, letter => letter.toUpperCase())
+export const capitaliseName = (name?: string) => {
+  return isBlank(name) ? '' : name!.toLowerCase().replace(/\b[a-z]/g, letter => letter.toUpperCase())
 }
 
 export const initialiseName = (fullName?: string): string | null => {
@@ -32,7 +32,7 @@ export const prisonerDatePretty = ({
   )}`
 }
 
-export const formatDate = (date: string | Date, fmt = 'd MMMM yyyy') => {
+export const formatDate = (date?: string | Date, fmt = 'd MMMM yyyy') => {
   if (!date) return undefined
   const richDate = typeof date === 'string' ? parseISO(date) : date
   if (!isValid(richDate)) return undefined
@@ -45,7 +45,7 @@ export const isValidPrisonerNumber = (prisonerNo: string): boolean => {
   return matches !== null
 }
 
-export const extractPrisonerNumber = (search: string): string | false => {
+export const extractPrisonerNumber = (search?: string): string | false => {
   const searchTerms = search?.toUpperCase().split(' ')
   return (searchTerms && searchTerms.find(term => isValidPrisonerNumber(term))) || false
 }
