@@ -1,6 +1,7 @@
 import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
+import OrganisationSummary = contactsApiClientTypes.OrganisationSummary
 
-const addressToLines = ({
+export const addressToLines = ({
   flat,
   premise,
   street,
@@ -19,4 +20,30 @@ const addressToLines = ({
   return null
 }
 
-export default addressToLines
+export const businessAddressToLines = ({
+  flat,
+  property,
+  street,
+  area,
+  cityDescription,
+  countyDescription,
+  postalCode,
+  countryDescription,
+}: Partial<OrganisationSummary>): string | null => {
+  let lineOne = property
+  if (flat) {
+    const flatString = flat.toLowerCase().startsWith('flat') ? flat : `Flat ${flat}`
+    lineOne = lineOne ? `${flatString}, ${lineOne}` : flatString
+  }
+  const addressArray = [
+    lineOne,
+    street,
+    area,
+    cityDescription,
+    countyDescription,
+    postalCode,
+    countryDescription,
+  ].filter(s => s)
+
+  return addressArray.length ? addressArray.join('\n') : null
+}
