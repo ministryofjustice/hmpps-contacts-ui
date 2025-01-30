@@ -85,6 +85,7 @@ context('Add Existing Contact', () => {
       lastName: 'Contact',
       dateOfBirth: '1990-01-14',
       isDeceased: false,
+      employments: [],
     })
 
     Page.verifyOnPage(SearchContactPage) //

@@ -20,6 +20,7 @@ export const addressToLines = ({
   return null
 }
 
+// TODO: to be merged into addressToLines once we standardise the address format across the board
 export const businessAddressToLines = ({
   flat,
   property,
@@ -32,7 +33,7 @@ export const businessAddressToLines = ({
 }: Partial<OrganisationSummary>): string | null => {
   let lineOne = property
   if (flat) {
-    const flatString = flat.toLowerCase().startsWith('flat') ? flat : `Flat ${flat}`
+    const flatString = `Flat ${flat}`
     lineOne = lineOne ? `${flatString}, ${lineOne}` : flatString
   }
   const addressArray = [

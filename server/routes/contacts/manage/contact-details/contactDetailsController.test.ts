@@ -809,6 +809,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect($('h1:contains("Professional information")').parent().parent().next().text()).toContain(
         'No employers recorded.',
       )
+      expect($('a:contains("Edit employers")').attr('href')).toMatch(/#/)
     })
 
     it('should render professional information tab with employment record', async () => {
@@ -822,6 +823,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           organisationActive: true,
           businessPhoneNumber: '60511',
           businessPhoneNumberExtension: '123',
+          property: 'Some House',
+          countryDescription: 'England',
         },
         isActive: false,
         createdBy: '',
@@ -835,10 +838,39 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
       // Then
       const $ = cheerio.load(response.text)
-      expect($('dt:contains("Employer name")').next().text()).toContain('Big Corp')
-      expect($('dt:contains("Employer’s primary address")').next().text()).toContain('Not provided')
-      expect($('dt:contains("Business phone number at primary address")').next().text()).toContain('60511, ext. 123')
-      expect($('dt:contains("Employer status")').next().text()).toContain('Inactive')
+      expect($('dt:contains("Employer name")').next().text()).toMatch(/Big Corp/)
+      expect($('dt:contains("Employer’s primary address")').next().text()).toMatch(/Some House(\s+)England/)
+      expect($('dt:contains("Business phone number at primary address")').next().text()).toMatch(/60511, ext\. 123/)
+      expect($('dt:contains("Employment status")').next().text()).toMatch(/Inactive/)
+      expect($('a:contains("Edit employers")').attr('href')).toMatch(/#/)
+    })
+
+    it('should render professional information tab with employment record missing optional values', async () => {
+      // Given
+      const employment: components['schemas']['EmploymentDetails'] = {
+        employmentId: 0,
+        contactId: 0,
+        employer: {
+          organisationId: 0,
+          organisationName: 'Small Corp',
+          organisationActive: true,
+        },
+        isActive: true,
+        createdBy: '',
+        createdTime: '',
+      }
+
+      contactsService.getContact.mockResolvedValue(TestData.contact({ employments: [employment] }))
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect($('dt:contains("Employer name")').next().text()).toMatch(/Small Corp/)
+      expect($('dt:contains("Employer’s primary address")').next().text()).toMatch(/Not provided/)
+      expect($('dt:contains("Business phone number at primary address")').next().text()).toMatch(/Not provided/)
+      expect($('dt:contains("Employment status")').next().text()).toMatch(/Active/)
     })
   })
 })
