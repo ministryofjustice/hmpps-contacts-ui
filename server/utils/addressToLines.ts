@@ -20,7 +20,6 @@ export const addressToLines = ({
   return null
 }
 
-// TODO: to be merged into addressToLines once we standardise the address format across the board
 export const businessAddressToLines = ({
   flat,
   property,

@@ -2,7 +2,7 @@ import hmppsConfig from '@ministryofjustice/eslint-config-hmpps'
 
 export default [
   ...hmppsConfig({
-    extraIgnorePaths: ['assets', '**/contactsApi/index.d.ts'],
+    extraIgnorePaths: ['assets'],
   }),
   {
     rules: {
