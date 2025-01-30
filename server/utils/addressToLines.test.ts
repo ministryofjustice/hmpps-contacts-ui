@@ -1,4 +1,4 @@
-import addressToLines from './addressToLines'
+import { addressToLines, businessAddressToLines } from './addressToLines'
 
 describe('Convert address to string', () => {
   it('should convert array to string with a breakline tag', () => {
@@ -16,5 +16,83 @@ describe('Convert address to string', () => {
     const result = addressToLines(address)
 
     expect(result).toContain('24, Acacia Avenue<br />Bunting<br />SHEF<br />SYORKS<br />S2 3LK<br />UK')
+  })
+})
+
+describe('Convert business address to string', () => {
+  it('should convert business address to string with linebreaks', () => {
+    const address = {
+      flat: '24',
+      property: 'Some House',
+      street: 'Acacia Avenue',
+      area: 'Bunting',
+      cityDescription: 'SHEF',
+      countyDescription: 'SYORKS',
+      postalCode: 'S2 3LK',
+      countryDescription: 'UK',
+    }
+
+    const result = businessAddressToLines(address)
+
+    expect(result).toEqual('Flat 24, Some House\nAcacia Avenue\nBunting\nSHEF\nSYORKS\nS2 3LK\nUK')
+  })
+
+  it('should convert business address without flat', () => {
+    const address = {
+      flat: undefined,
+      property: 'Some House',
+      street: 'Acacia Avenue',
+      area: 'Bunting',
+      cityDescription: 'SHEF',
+      countyDescription: 'SYORKS',
+      postalCode: 'S2 3LK',
+      countryDescription: 'UK',
+    }
+
+    const result = businessAddressToLines(address)
+
+    expect(result).toEqual('Some House\nAcacia Avenue\nBunting\nSHEF\nSYORKS\nS2 3LK\nUK')
+  })
+
+  it('should convert business address without property', () => {
+    const address = {
+      flat: '24',
+      property: undefined,
+      street: 'Acacia Avenue',
+      area: 'Bunting',
+      cityDescription: 'SHEF',
+      countyDescription: 'SYORKS',
+      postalCode: 'S2 3LK',
+      countryDescription: 'UK',
+    }
+
+    const result = businessAddressToLines(address)
+
+    expect(result).toEqual('Flat 24\nAcacia Avenue\nBunting\nSHEF\nSYORKS\nS2 3LK\nUK')
+  })
+
+  it('should convert business address without flat nor property', () => {
+    const address = {
+      flat: undefined,
+      property: undefined,
+      street: 'Acacia Avenue',
+      area: 'Bunting',
+      cityDescription: 'SHEF',
+      countyDescription: 'SYORKS',
+      postalCode: 'S2 3LK',
+      countryDescription: 'UK',
+    }
+
+    const result = businessAddressToLines(address)
+
+    expect(result).toEqual('Acacia Avenue\nBunting\nSHEF\nSYORKS\nS2 3LK\nUK')
+  })
+
+  it('should return null if no address info at all', () => {
+    const address = {}
+
+    const result = businessAddressToLines(address)
+
+    expect(result).toEqual(null)
   })
 })

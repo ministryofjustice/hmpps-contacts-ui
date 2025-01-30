@@ -461,6 +461,34 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/contact/{contactId}/employment/{employmentId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get an employment
+     * @description Get a single employment by id
+     */
+    get: operations['getEmployment']
+    /**
+     * Update employment
+     * @description Update a single employment for a contact
+     */
+    put: operations['updateEmployment']
+    post?: never
+    /**
+     * Delete employment
+     * @description Delete a single employment for a contact
+     */
+    delete: operations['deleteEmployment']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/contact/{contactId}/email/{contactEmailId}': {
     parameters: {
       query?: never
@@ -972,6 +1000,30 @@ export interface paths {
     options?: never
     head?: never
     patch?: never
+    trace?: never
+  }
+  '/contact/{contactId}/employment': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create employment
+     * @description Create a single employment for a contact
+     */
+    post: operations['createEmployment']
+    delete?: never
+    options?: never
+    head?: never
+    /**
+     * Patch employments
+     * @description Allows several updates to employments in one go. Includes creating new employments, updating existing employments and removing existing employments.
+     */
+    patch: operations['patchEmployment']
     trace?: never
   }
   '/contact/{contactId}/email': {
@@ -3179,6 +3231,147 @@ export interface components {
        */
       updatedTime?: string
     }
+    /** @description Request to update an existing employment's employer or active flag. */
+    UpdateEmploymentRequest: {
+      /**
+       * Format: int64
+       * @description The organisation id
+       * @example 123456789
+       */
+      organisationId: number
+      /** @description Whether this is a current employment or not */
+      isActive: boolean
+      /**
+       * @description The id of the user who updated the entry
+       * @example JD000001
+       */
+      updatedBy: string
+    }
+    /** @description The details of an employment for a contact including a summary of the employing organisation. */
+    EmploymentDetails: {
+      /**
+       * Format: int64
+       * @description The id for this employment
+       * @example 123456
+       */
+      employmentId: number
+      /**
+       * Format: int64
+       * @description This id for this contact
+       * @example 654321
+       */
+      contactId: number
+      /** @description A summary of the employing organisation */
+      employer: components['schemas']['OrganisationSummary']
+      /** @description Whether this is a current employment or not */
+      isActive: boolean
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was created
+       * @example 2023-09-23T10:15:30
+       */
+      createdTime: string
+      /**
+       * @description User who updated the entry
+       * @example admin2
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was updated
+       * @example 2023-09-24T12:00:00
+       */
+      updatedTime?: string
+    }
+    /** @description The high level details of an organisation, it's primary address and any business phone number associated with that address. */
+    OrganisationSummary: {
+      /**
+       * Format: int64
+       * @description The organisation id
+       * @example 123456789
+       */
+      organisationId: number
+      /**
+       * @description The name of the organisation
+       * @example Bob's Bakery
+       */
+      organisationName: string
+      /**
+       * @description Whether the organisation is currently active or not
+       * @example true
+       */
+      organisationActive: boolean
+      /**
+       * @description Flat number in the address, if any
+       * @example Flat 1
+       */
+      flat?: string
+      /**
+       * @description Property name or number, if any
+       * @example 123
+       */
+      property?: string
+      /**
+       * @description Street name, if any
+       * @example Baker Street
+       */
+      street?: string
+      /**
+       * @description Area or locality, if any
+       * @example Marylebone
+       */
+      area?: string
+      /**
+       * @description City code, if any
+       * @example 25343
+       */
+      cityCode?: string
+      /**
+       * @description The description of the city code, if any
+       * @example Sheffield
+       */
+      cityDescription?: string
+      /**
+       * @description County code, if any
+       * @example S.YORKSHIRE
+       */
+      countyCode?: string
+      /**
+       * @description The description of county code, if any
+       * @example South Yorkshire
+       */
+      countyDescription?: string
+      /**
+       * @description Postal code, if any
+       * @example NW1 6XE
+       */
+      postcode?: string
+      /**
+       * @description Country code, if any
+       * @example ENG
+       */
+      countryCode?: string
+      /**
+       * @description The description of country code, if any
+       * @example England
+       */
+      countryDescription?: string
+      /**
+       * @description The business phone number for the primary address, if any
+       * @example 01234 56789
+       */
+      businessPhoneNumber?: string
+      /**
+       * @description The extension for the business phone number for the primary address, if any
+       * @example 123
+       */
+      businessPhoneNumberExtension?: string
+    }
     /** @description Request to update an email address */
     UpdateEmailRequest: {
       /**
@@ -4294,8 +4487,242 @@ export interface components {
        */
       updatedTime?: string
     }
-    /** @description Organisation data */
-    Organisation: {
+    /** @description An address related to an organisation with descriptions of all reference data */
+    OrganisationAddressDetails: {
+      /**
+       * Format: int64
+       * @description The id of the organisation address
+       * @example 123456
+       */
+      organisationAddressId: number
+      /**
+       * Format: int64
+       * @description The id of the organisation
+       * @example 123456
+       */
+      organisationId: number
+      /**
+       * @description
+       *           The type of address (optional).
+       *           This is a coded value (from the group code ADDRESS_TYPE in reference data).
+       *           The known values are HOME, WORK or BUS (business address).
+       *
+       * @example HOME
+       */
+      addressType?: string
+      /**
+       * @description The description of the address type
+       * @example HOME
+       */
+      addressTypeDescription?: string
+      /**
+       * @description True if this is the primary address otherwise false
+       * @example true
+       */
+      primaryAddress: boolean
+      /**
+       * @description Flat number or name
+       * @example Flat 2B
+       */
+      flat?: string
+      /**
+       * @description Building or house number or name
+       * @example Mansion House
+       */
+      property?: string
+      /**
+       * @description Street or road name
+       * @example Acacia Avenue
+       */
+      street?: string
+      /**
+       * @description Area
+       * @example Morton Heights
+       */
+      area?: string
+      /**
+       * @description City code
+       * @example 25343
+       */
+      cityCode?: string
+      /**
+       * @description The description of city code
+       * @example Sheffield
+       */
+      cityDescription?: string
+      /**
+       * @description County code
+       * @example S.YORKSHIRE
+       */
+      countyCode?: string
+      /**
+       * @description The description of county code
+       * @example South Yorkshire
+       */
+      countyDescription?: string
+      /**
+       * @description Postcode
+       * @example S13 4FH
+       */
+      postcode?: string
+      /**
+       * @description Country code
+       * @example ENG
+       */
+      countryCode?: string
+      /**
+       * @description The description of country code
+       * @example England
+       */
+      countryDescription?: string
+      /**
+       * @description Flag to indicate whether mail is allowed to be sent to this address
+       * @example false
+       */
+      mailAddress: boolean
+      /**
+       * @description Flag to indicate whether the organisations service is provided at this address
+       * @example false
+       */
+      serviceAddress: boolean
+      /**
+       * Format: date
+       * @description The start date when this address is to be considered active from
+       * @example 2024-01-01
+       */
+      startDate?: string
+      /**
+       * Format: date
+       * @description The end date when this address is to be considered no longer active
+       * @example 2024-01-01
+       */
+      endDate?: string
+      /**
+       * @description Flag to indicate whether this address indicates no fixed address
+       * @example false
+       */
+      noFixedAddress: boolean
+      /**
+       * @description Any additional information or comments about the address
+       * @example Some additional information
+       */
+      comments?: string
+      /**
+       * @description Special needs code for this address from reference data ORG_ADDRESS_SPECIAL_NEEDS.
+       * @example DEAF
+       */
+      specialNeedsCode?: string
+      /**
+       * @description The description of the special needs code
+       * @example Hearing Impaired Translation
+       */
+      specialNeedsCodeDescription?: string
+      /**
+       * @description The name of the contact person at this address
+       * @example Joe Bloggs
+       */
+      contactPersonName?: string
+      /**
+       * @description The business hours of the address
+       * @example 9-5
+       */
+      businessHours?: string
+      /** @description Phone numbers associated with this address */
+      phoneNumbers: components['schemas']['OrganisationAddressPhoneDetails'][]
+      /**
+       * @description The id of the user who created the entry
+       * @example JD000001
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description The timestamp of when the entry was created
+       * @example 2024-01-01T00:00:00Z
+       */
+      createdTime: string
+      /**
+       * @description The id of the user who last updated the entry
+       * @example JD000001
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description The timestamp of when the entry was last updated
+       * @example 2024-01-01T00:00:00Z
+       */
+      updatedTime?: string
+    }
+    /** @description An address-specific phone number for an organisation */
+    OrganisationAddressPhoneDetails: {
+      /**
+       * Format: int64
+       * @description Unique identifier for the address-specific phone number
+       * @example 1
+       */
+      organisationAddressPhoneId: number
+      /**
+       * Format: int64
+       * @description Unique identifier for the phone number
+       * @example 1
+       */
+      organisationPhoneId: number
+      /**
+       * Format: int64
+       * @description Unique identifier for the linked address
+       * @example 1
+       */
+      organisationAddressId: number
+      /**
+       * Format: int64
+       * @description Unique identifier for the organisation
+       * @example 123
+       */
+      organisationId: number
+      /**
+       * @description Type of phone code
+       * @example MOB
+       */
+      phoneType: string
+      /**
+       * @description Type of phone description
+       * @example Mobile phone
+       */
+      phoneTypeDescription: string
+      /**
+       * @description Phone number
+       * @example +1234567890
+       */
+      phoneNumber: string
+      /**
+       * @description Extension number
+       * @example 123
+       */
+      extNumber?: string
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was created
+       * @example 2023-09-23T10:15:30
+       */
+      createdTime: string
+      /**
+       * @description User who updated the entry
+       * @example admin2
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was updated
+       * @example 2023-09-24T12:00:00
+       */
+      updatedTime?: string
+    }
+    /** @description Complete organisation data with reference data descriptions */
+    OrganisationDetails: {
       /**
        * Format: int64
        * @description Unique identifier of the Organisation
@@ -4337,6 +4764,16 @@ export interface components {
        * @description The date the organisation was deactivated, EXPIRY_DATE in NOMIS
        */
       deactivatedDate?: string
+      /** @description All organisation types associated with an organisation */
+      organisationTypes: components['schemas']['OrganisationTypeDetails'][]
+      /** @description All phone numbers associated with an organisation directly and not one of their addresses */
+      phoneNumbers: components['schemas']['OrganisationPhoneDetails'][]
+      /** @description All email addresses associated with an organisation */
+      emailAddresses: components['schemas']['OrganisationEmailDetails'][]
+      /** @description All web addresses associated with an organisation */
+      webAddresses: components['schemas']['OrganisationWebAddressDetails'][]
+      /** @description All addresses associated with an organisation */
+      addresses: components['schemas']['OrganisationAddressDetails'][]
       /** @description User who created the entry */
       createdBy: string
       /**
@@ -4349,6 +4786,188 @@ export interface components {
       /**
        * Format: date-time
        * @description Timestamp when the entry was updated
+       */
+      updatedTime?: string
+    }
+    /** @description Email related to an organisation */
+    OrganisationEmailDetails: {
+      /**
+       * Format: int64
+       * @description Unique identifier for the organisation email
+       * @example 1
+       */
+      organisationEmailId: number
+      /**
+       * Format: int64
+       * @description Unique identifier for the organisation
+       * @example 123
+       */
+      organisationId: number
+      /**
+       * @description Email address
+       * @example test@example.com
+       */
+      emailAddress: string
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was created
+       * @example 2023-09-23T10:15:30
+       */
+      createdTime: string
+      /**
+       * @description User who updated the entry
+       * @example admin2
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was updated
+       * @example 2023-09-24T12:00:00
+       */
+      updatedTime?: string
+    }
+    /** @description A phone number related to an organisation with descriptions of all reference data */
+    OrganisationPhoneDetails: {
+      /**
+       * Format: int64
+       * @description Unique identifier for the organisation phone
+       * @example 1
+       */
+      organisationPhoneId: number
+      /**
+       * Format: int64
+       * @description Unique identifier for the organisation
+       * @example 123
+       */
+      organisationId: number
+      /**
+       * @description Type of phone
+       * @example MOB
+       */
+      phoneType: string
+      /**
+       * @description Description of the type of phone
+       * @example Mobile
+       */
+      phoneTypeDescription: string
+      /**
+       * @description Phone number
+       * @example +1234567890
+       */
+      phoneNumber: string
+      /**
+       * @description Extension number
+       * @example 123
+       */
+      extNumber?: string
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was created
+       * @example 2023-09-23T10:15:30
+       */
+      createdTime: string
+      /**
+       * @description User who updated the entry
+       * @example admin2
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was updated
+       * @example 2023-09-24T12:00:00
+       */
+      updatedTime?: string
+    }
+    /** @description A type categorizing the organisations */
+    OrganisationTypeDetails: {
+      /**
+       * Format: int64
+       * @description Unique identifier for the organisation
+       * @example 123
+       */
+      organisationId: number
+      /**
+       * @description Type of organisation
+       * @example TRUST
+       */
+      organisationType: string
+      /**
+       * @description Description of the type of organisation
+       * @example Trust
+       */
+      organisationTypeDescription: string
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was created
+       * @example 2023-09-23T10:15:30
+       */
+      createdTime: string
+      /**
+       * @description User who updated the entry
+       * @example admin2
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was updated
+       * @example 2023-09-24T12:00:00
+       */
+      updatedTime?: string
+    }
+    /** @description Web address related to an organisation */
+    OrganisationWebAddressDetails: {
+      /**
+       * Format: int64
+       * @description Unique identifier for the organisation web address
+       * @example 1
+       */
+      organisationWebAddressId: number
+      /**
+       * Format: int64
+       * @description Unique identifier for the organisation
+       * @example 123
+       */
+      organisationId: number
+      /**
+       * @description Web address
+       * @example www.example.com
+       */
+      webAddress: string
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was created
+       * @example 2023-09-23T10:15:30
+       */
+      createdTime: string
+      /**
+       * @description User who updated the entry
+       * @example admin2
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was updated
+       * @example 2023-09-24T12:00:00
        */
       updatedTime?: string
     }
@@ -5398,131 +6017,6 @@ export interface components {
       createdTime: string
       staff?: boolean
     }
-    /** @description The details of an employment for a contact including a summary of the employing organisation. */
-    EmploymentDetails: {
-      /**
-       * Format: int64
-       * @description The id for this employment
-       * @example 123456
-       */
-      employmentId: number
-      /**
-       * Format: int64
-       * @description This id for this contact
-       * @example 654321
-       */
-      contactId: number
-      /** @description A summary of the employing organisation */
-      employer: components['schemas']['OrganisationSummary']
-      /** @description Whether this is a current employment or not */
-      isActive: boolean
-      /**
-       * @description User who created the entry
-       * @example admin
-       */
-      createdBy: string
-      /**
-       * Format: date-time
-       * @description Timestamp when the entry was created
-       * @example 2023-09-23T10:15:30
-       */
-      createdTime: string
-      /**
-       * @description User who updated the entry
-       * @example admin2
-       */
-      updatedBy?: string
-      /**
-       * Format: date-time
-       * @description Timestamp when the entry was updated
-       * @example 2023-09-24T12:00:00
-       */
-      updatedTime?: string
-    }
-    /** @description The high level details of an organisation, it's primary address and any business phone number associated with that address. */
-    OrganisationSummary: {
-      /**
-       * Format: int64
-       * @description The organisation id
-       * @example 123456789
-       */
-      organisationId: number
-      /**
-       * @description The name of the organisation
-       * @example Bob's Bakery
-       */
-      organisationName: string
-      /**
-       * @description Whether the organisation is currently active or not
-       * @example true
-       */
-      organisationActive: boolean
-      /**
-       * @description Flat number in the address, if any
-       * @example Flat 1
-       */
-      flat?: string
-      /**
-       * @description Property name or number, if any
-       * @example 123
-       */
-      property?: string
-      /**
-       * @description Street name, if any
-       * @example Baker Street
-       */
-      street?: string
-      /**
-       * @description Area or locality, if any
-       * @example Marylebone
-       */
-      area?: string
-      /**
-       * @description City code, if any
-       * @example 25343
-       */
-      cityCode?: string
-      /**
-       * @description The description of the city code, if any
-       * @example Sheffield
-       */
-      cityDescription?: string
-      /**
-       * @description County code, if any
-       * @example S.YORKSHIRE
-       */
-      countyCode?: string
-      /**
-       * @description The description of county code, if any
-       * @example South Yorkshire
-       */
-      countyDescription?: string
-      /**
-       * @description Postal code, if any
-       * @example NW1 6XE
-       */
-      postCode?: string
-      /**
-       * @description Country code, if any
-       * @example ENG
-       */
-      countryCode?: string
-      /**
-       * @description The description of country code, if any
-       * @example England
-       */
-      countryDescription?: string
-      /**
-       * @description The business phone number for the primary address, if any
-       * @example 01234 56789
-       */
-      businessPhoneNumber?: string
-      /**
-       * @description The extension for the business phone number for the primary address, if any
-       * @example 123
-       */
-      businessPhoneNumberExtension?: string
-    }
     /** @description Request to create a new global restriction on a contact, a.k.a an estate-wide restriction */
     CreateContactRestrictionRequest: {
       /**
@@ -5600,6 +6094,22 @@ export interface components {
       /**
        * @description User who created the entry
        * @example admin
+       */
+      createdBy: string
+    }
+    /** @description Request to create a new employment with an employer and whether it is active or inactive */
+    CreateEmploymentRequest: {
+      /**
+       * Format: int64
+       * @description The organisation id
+       * @example 123456789
+       */
+      organisationId: number
+      /** @description Whether this is a current employment or not */
+      isActive: boolean
+      /**
+       * @description The id of the user who created the entry
+       * @example JD000001
        */
       createdBy: string
     }
@@ -5935,6 +6445,45 @@ export interface components {
        */
       updatedTime?: string
       staff?: boolean
+    }
+    /** @description Request to create a new employment with an employer and whether it is active or inactive */
+    PatchEmploymentsNewEmployment: {
+      /**
+       * Format: int64
+       * @description The organisation id
+       * @example 123456789
+       */
+      organisationId: number
+      /** @description Whether this is a current employment or not */
+      isActive: boolean
+    }
+    /** @description Request allowing several changes to employments in a single request. */
+    PatchEmploymentsRequest: {
+      /** @description List of new employments to create */
+      createEmployments: components['schemas']['PatchEmploymentsNewEmployment'][]
+      /** @description List of updates to apply to existing employments */
+      updateEmployments: components['schemas']['PatchEmploymentsUpdateEmployment'][]
+      /** @description List of ids for employments to delete */
+      deleteEmployments: number[]
+      /** @description The id of the user requesting the changes. Will become created by for new employments and updated by for updated employments */
+      requestedBy: string
+    }
+    /** @description Request to update an existing employment's employer or active flag. */
+    PatchEmploymentsUpdateEmployment: {
+      /**
+       * Format: int64
+       * @description The id for this employment
+       * @example 123456
+       */
+      employmentId: number
+      /**
+       * Format: int64
+       * @description The organisation id
+       * @example 123456789
+       */
+      organisationId: number
+      /** @description Whether this is a current employment or not */
+      isActive: boolean
     }
     JsonNullableString: {
       present?: boolean
@@ -6311,12 +6860,12 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
-      first?: boolean
       /** Format: int32 */
       size?: number
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject']
+      first?: boolean
       /** Format: int32 */
       numberOfElements?: number
       empty?: boolean
@@ -6376,12 +6925,12 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
-      first?: boolean
       /** Format: int32 */
       size?: number
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject']
+      first?: boolean
       /** Format: int32 */
       numberOfElements?: number
       empty?: boolean
@@ -6712,12 +7261,12 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
-      first?: boolean
       /** Format: int32 */
       size?: number
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject']
+      first?: boolean
       /** Format: int32 */
       numberOfElements?: number
       empty?: boolean
@@ -8542,6 +9091,191 @@ export interface operations {
       }
     }
   }
+  getEmployment: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+        /**
+         * @description The id of the employment
+         * @example 123456
+         */
+        employmentId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description The employment was found */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['EmploymentDetails']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No contact or employment with that id could be found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  updateEmployment: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+        /**
+         * @description The id of the employment
+         * @example 123456
+         */
+        employmentId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateEmploymentRequest']
+      }
+    }
+    responses: {
+      /** @description The employment was updated successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['EmploymentDetails']
+        }
+      }
+      /** @description Invalid request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No contact or employment with that id could be found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  deleteEmployment: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+        /**
+         * @description The id of the employment
+         * @example 123456
+         */
+        employmentId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description The employment was deleted successfully */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No contact or employment with that id could be found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getEmailAddress: {
     parameters: {
       query?: never
@@ -9807,7 +10541,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Organisation']
+          'application/json': components['schemas']['OrganisationDetails']
         }
       }
       /** @description The request has invalid or missing fields */
@@ -10256,6 +10990,138 @@ export interface operations {
         }
       }
       /** @description Could not find the the contact this identity is for */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  createEmployment: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateEmploymentRequest']
+      }
+    }
+    responses: {
+      /** @description The employment was created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['EmploymentDetails']
+        }
+      }
+      /** @description Invalid request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No contact with that id could be found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  patchEmployment: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PatchEmploymentsRequest']
+      }
+    }
+    responses: {
+      /** @description The changes were applied successfully. Returns full list of employments after update. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['EmploymentDetails'][]
+        }
+      }
+      /** @description Invalid request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No contact with that id could be found or employments for update or delete could not be found or an organisation could not be found. */
       404: {
         headers: {
           [name: string]: unknown
@@ -10867,7 +11733,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Organisation']
+          'application/json': components['schemas']['OrganisationDetails']
         }
       }
     }

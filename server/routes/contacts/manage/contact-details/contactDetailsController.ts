@@ -11,6 +11,7 @@ import { Navigation } from '../../common/navigation'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 import RestrictionsService from '../../../../services/restrictionsService'
+import { employmentSorter } from '../../../../utils/sorters'
 
 export default class ContactDetailsController implements PageHandler {
   constructor(
@@ -40,7 +41,9 @@ export default class ContactDetailsController implements PageHandler {
       user,
     )
 
-    return res.render('pages/contacts/manage/contactDetails/details', {
+    contact.employments = contact.employments.sort(employmentSorter)
+
+    return res.render('pages/contacts/manage/contactDetails/details/index', {
       contact,
       globalRestrictions: prisonerContactRestrictionsEnriched.contactGlobalRestrictions,
       prisonerContactRestrictions: prisonerContactRestrictionsEnriched.prisonerContactRestrictions,

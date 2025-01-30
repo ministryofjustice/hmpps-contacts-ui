@@ -5,6 +5,7 @@ import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
+import { components } from '../../../../@types/contactsApi'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -794,6 +795,82 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect($('[data-qa=manage-PRISONER_CONTACT-restriction-link-2]').first().attr('href')).toStrictEqual(
         '/prisoner/A1234BC/contacts/22/relationship/99/restriction/update/PRISONER_CONTACT/enter-restriction/2?returnUrl=/prisoner/A1234BC/contacts/manage/22/relationship/99%23restrictions',
       )
+    })
+
+    it('should render professional information tab with no employment record', async () => {
+      // Given
+      contactsService.getContact.mockResolvedValue(TestData.contact())
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect($('h1:contains("Professional information")').parent().parent().next().text()).toContain(
+        'No employers recorded.',
+      )
+      expect($('a:contains("Edit employers")').attr('href')).toMatch(/#/)
+    })
+
+    it('should render professional information tab with employment record', async () => {
+      // Given
+      const employment: components['schemas']['EmploymentDetails'] = {
+        employmentId: 0,
+        contactId: 0,
+        employer: {
+          organisationId: 0,
+          organisationName: 'Big Corp',
+          organisationActive: true,
+          businessPhoneNumber: '60511',
+          businessPhoneNumberExtension: '123',
+          property: 'Some House',
+          countryDescription: 'England',
+        },
+        isActive: false,
+        createdBy: '',
+        createdTime: '',
+      }
+
+      contactsService.getContact.mockResolvedValue(TestData.contact({ employments: [employment] }))
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect($('dt:contains("Employer name")').next().text()).toMatch(/Big Corp/)
+      expect($('dt:contains("Employer’s primary address")').next().text()).toMatch(/Some House(\s+)England/)
+      expect($('dt:contains("Business phone number at primary address")').next().text()).toMatch(/60511, ext\. 123/)
+      expect($('dt:contains("Employment status")').next().text()).toMatch(/Inactive/)
+      expect($('a:contains("Edit employers")').attr('href')).toMatch(/#/)
+    })
+
+    it('should render professional information tab with employment record missing optional values', async () => {
+      // Given
+      const employment: components['schemas']['EmploymentDetails'] = {
+        employmentId: 0,
+        contactId: 0,
+        employer: {
+          organisationId: 0,
+          organisationName: 'Small Corp',
+          organisationActive: true,
+        },
+        isActive: true,
+        createdBy: '',
+        createdTime: '',
+      }
+
+      contactsService.getContact.mockResolvedValue(TestData.contact({ employments: [employment] }))
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect($('dt:contains("Employer name")').next().text()).toMatch(/Small Corp/)
+      expect($('dt:contains("Employer’s primary address")').next().text()).toMatch(/Not provided/)
+      expect($('dt:contains("Business phone number at primary address")').next().text()).toMatch(/Not provided/)
+      expect($('dt:contains("Employment status")').next().text()).toMatch(/Active/)
     })
   })
 })

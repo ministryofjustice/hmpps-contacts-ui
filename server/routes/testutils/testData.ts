@@ -319,6 +319,7 @@ export default class TestData {
     genderDescription = 'Male',
     domesticStatusCode = 'S',
     domesticStatusDescription = 'Single-not married/in civil partnership',
+    employments = [],
   }: Partial<ContactDetails> = {}): ContactDetails =>
     ({
       id,
@@ -343,6 +344,7 @@ export default class TestData {
       genderDescription,
       domesticStatusCode,
       domesticStatusDescription,
+      employments,
     }) as ContactDetails
 
   static prisonerContactRelationship = ({

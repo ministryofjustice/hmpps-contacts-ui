@@ -1,0 +1,63 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">Professional information</h1>
+  </div>
+  <div class="govuk-summary-list govuk-summary-list__actions">
+    <a class="govuk-link govuk-link--no-visited-state" href="#">Edit employers</a>
+  </div>
+</div>
+<div class="govuk-grid-row">
+{% if contact.employments.length %}
+  <div class="govuk-grid-column-two-thirds">
+    {% for employment in contact.employments %}
+      {{ govukSummaryList({
+        card: {
+          title: {
+            text: ("Active employer: " if employment.isActive else "Past employer: ") + employment.employer.organisationName
+          }
+        },
+        rows: [
+          {
+            key: {
+            text: "Employer name"
+          },
+            value: {
+            text: employment.employer.organisationName
+          }
+          },
+          {
+            key: {
+            text: "Employer’s primary address"
+          },
+            value: {
+            html: (employment.employer | businessAddressToLines or 'Not provided') | escape | nl2br
+          }
+          },
+          {
+            key: {
+            text: "Business phone number at primary address"
+          },
+            value: {
+            text: (employment.employer.businessPhoneNumber + ((", ext. " + employment.employer.businessPhoneNumberExtension) if employment.employer.businessPhoneNumberExtension else "")) if employment.employer.businessPhoneNumber else "Not provided"
+          }
+          },
+          {
+            key: {
+            text: "Employment status"
+          },
+            value: {
+            text: "Active" if employment.isActive else "Inactive"
+          }
+          }
+        ]
+      }) }}
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="govuk-grid-column-two-thirds">
+    <p class="govuk-body">No employers recorded.</p>
+  </div>
+{% endif %}
+</div>
