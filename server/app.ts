@@ -65,10 +65,6 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpSuccessNotificationBanner())
   app.use(routes(services))
 
-  app.get('/test-error', (_req, _res) => {
-    throw Error('error to test sentry')
-  })
-
   if (config.sentry.dsn) Sentry.setupExpressErrorHandler(app)
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
