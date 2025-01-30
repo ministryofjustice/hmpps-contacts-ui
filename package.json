@@ -150,7 +150,7 @@
     "@types/express-session": "^1.18.1",
     "@types/http-errors": "^2.0.4",
     "@types/jest": "^29.5.14",
-    "@types/jsonwebtoken": "^9.0.7",
+    "@types/jsonwebtoken": "^9.0.8",
     "@types/node": "^22.10.10",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
