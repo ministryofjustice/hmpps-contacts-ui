@@ -1,11 +1,13 @@
 import express from 'express'
+import * as Sentry from '@sentry/node'
+import './sentry'
 import createError from 'http-errors'
 import dpsComponents from '@ministryofjustice/hmpps-connect-dps-components'
 // @ts-expect-error Import untyped middleware for cypress coverage
 import cypressCoverage from '@cypress/code-coverage/middleware/express'
+import config from './config'
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
-import config from './config'
 import { appInsightsMiddleware } from './utils/azureAppInsights'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
 import setUpAuthentication from './middleware/setUpAuthentication'
@@ -21,6 +23,7 @@ import type { Services } from './services'
 import AuthorisedRoles from './enumeration/authorisedRoles'
 import populateValidationErrors from './middleware/populateValidationErrors'
 import setUpSuccessNotificationBanner from './middleware/setUpSuccessNotificationBanner'
+import sentryMiddleware from './middleware/sentryMiddleware'
 import logger from '../logger'
 
 export default function createApp(services: Services): express.Application {
@@ -34,6 +37,7 @@ export default function createApp(services: Services): express.Application {
   app.set('trust proxy', true)
   app.set('port', process.env.PORT || 3000)
 
+  app.use(sentryMiddleware())
   app.use(appInsightsMiddleware())
   app.use(setUpHealthChecks(services.applicationInfo))
   app.use(setUpWebSecurity())
@@ -60,6 +64,8 @@ export default function createApp(services: Services): express.Application {
   app.use(populateValidationErrors())
   app.use(setUpSuccessNotificationBanner())
   app.use(routes(services))
+
+  if (config.sentry.dsn) Sentry.setupExpressErrorHandler(app)
 
   app.use((req, res, next) => next(createError(404, 'Not found')))
   app.use(errorHandler(process.env.NODE_ENV === 'production' || config.environmentName === 'DEV'))
