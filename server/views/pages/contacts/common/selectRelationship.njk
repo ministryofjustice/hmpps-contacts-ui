@@ -16,7 +16,7 @@
  <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <span class="govuk-caption-l">{{ caption or 'Contacts' }}</span>
-            <h1 class="govuk-heading-l" data-qa="main-heading">{{ title | safe }}</h1>
+            <h1 class="govuk-heading-l" data-qa="main-heading"><label for="relationship">{{ title | safe }}</label></h1>
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 

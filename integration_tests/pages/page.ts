@@ -1,4 +1,10 @@
+import { checkAxeAccessibility } from '../support/accessibilityViolations'
+
 export type PageElement = Cypress.Chainable<JQuery>
+
+type PageConfig = {
+  skipA11yCheck: boolean
+}
 
 export default abstract class Page {
   /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -6,12 +12,19 @@ export default abstract class Page {
     return new constructor(...args)
   }
 
-  protected constructor(private readonly title: string) {
+  protected constructor(
+    private readonly title: string,
+    private readonly config: PageConfig = { skipA11yCheck: false },
+  ) {
     this.checkOnPage()
   }
 
   checkOnPage(): void {
     cy.get('h1').contains(this.title)
+
+    if (!this.config.skipA11yCheck) {
+      checkAxeAccessibility()
+    }
   }
 
   signOut = (): PageElement => cy.findByRole('link', { name: /sign out/i })
