@@ -1,16 +1,16 @@
 import { z } from 'zod'
 import { createSchema } from '../../../../middleware/validationMiddleware'
 
-const LAST_NAME_REQUIRED_MESSAGE = "Enter the contact's last name"
-const LAST_NAME_TOO_LONG_ERROR_MSG = "Contact's last name must be 35 characters or less"
-const LAST_NAME_INVALID = "Contact's last name must not contain special characters"
+const LAST_NAME_REQUIRED_MESSAGE = 'Enter the contact’s last name'
+const LAST_NAME_TOO_LONG_ERROR_MSG = 'Contact’s last name must be 35 characters or less'
+const LAST_NAME_INVALID = 'Contact’s last name must not contain special characters'
 
-const FIRST_NAME_REQUIRED_MESSAGE = "Enter the contact's first name"
-const FIRST_NAME_TOO_LONG_ERROR_MSG = "Contact's first name must be 35 characters or less"
-const FIRST_NAME_INVALID = "Contact's first name must not contain special characters"
+const FIRST_NAME_REQUIRED_MESSAGE = 'Enter the contact’s first name'
+const FIRST_NAME_TOO_LONG_ERROR_MSG = 'Contact’s first name must be 35 characters or less'
+const FIRST_NAME_INVALID = 'Contact’s first name must not contain special characters'
 
-const MIDDLE_NAME_TOO_LONG_ERROR_MSG = "Contact's middle names must be 35 characters or less"
-const MIDDLE_NAME_INVALID = "Contact's middle names must not contain special characters"
+const MIDDLE_NAME_TOO_LONG_ERROR_MSG = 'Contact’s middle names must be 35 characters or less'
+const MIDDLE_NAME_INVALID = 'Contact’s middle names must not contain special characters'
 
 const NAME_REGEX = /^[a-zA-Z\s,.'-]*$/
 

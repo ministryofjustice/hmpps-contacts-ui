@@ -96,7 +96,7 @@ context('Change Relationship', () => {
       .clickContinue()
 
     const enterNamePage = Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last', 'John Smith')
-    enterNamePage.hasFieldInError('relationship', "Enter the contact's relationship to the prisoner")
+    enterNamePage.hasFieldInError('relationship', 'Enter the contact’s relationship to the prisoner')
   })
 
   it('Back link goes back to manage contact', () => {

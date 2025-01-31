@@ -1,4 +1,5 @@
 import { Result, Spec } from 'axe-core'
+import { fail } from 'assert'
 
 const logAccessibilityViolations = (violations: Result[]) => {
   cy.task('logAccessibilityViolationsSummary', `Accessibility violations detected: ${violations.length}`)
@@ -26,6 +27,22 @@ export const checkAxeAccessibility = () => {
     ],
   } as Spec)
   cy.checkA11y(undefined, undefined, logAccessibilityViolations)
+
+  checkStyleRules()
+}
+
+const checkStyleRules = () => {
+  // No un-curly apostrophes in text
+  cy.contains('*', `'`)
+    .should('have.length.gte', 0)
+    .each(element => {
+      if (element.hasClass('user-generated-content')) {
+        return
+      }
+      if (element.text().includes("'")) {
+        fail(`Non-curly apostrophe found in the following text: ${element.text()}`)
+      }
+    })
 }
 
 export default {

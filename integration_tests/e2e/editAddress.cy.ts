@@ -131,7 +131,7 @@ context('Edit Address', () => {
       .clickContinue()
 
     Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
-      .hasSuccessBanner("You've updated a contact address")
+      .hasSuccessBanner('You’ve updated a contact address')
 
     cy.verifyLastAPICall(
       {
@@ -244,7 +244,7 @@ context('Edit Address', () => {
       .clickContinue()
 
     Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
-      .hasSuccessBanner("You've updated a contact address")
+      .hasSuccessBanner('You’ve updated a contact address')
 
     cy.verifyLastAPICall(
       {

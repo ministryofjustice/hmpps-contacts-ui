@@ -59,7 +59,7 @@ context('Create Email Address', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').clickAddEmailLink()
     const enterEmailPage = Page.verifyOnPage(EnterEmailPage, 'Jones Mason')
     enterEmailPage.clickContinue()
-    enterEmailPage.hasFieldInError('emailAddress', `Enter the contact's email address`)
+    enterEmailPage.hasFieldInError('emailAddress', `Enter the contact’s email address`)
   })
 
   it(`should require email address in the correct format`, () => {
@@ -78,7 +78,7 @@ context('Create Email Address', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').clickAddEmailLink()
     const enterEmailPage = Page.verifyOnPage(EnterEmailPage, 'Jones Mason')
     enterEmailPage.enterEmail(invalidEmail).clickContinue()
-    enterEmailPage.hasFieldInError('emailAddress', `The contact's email address should be 240 characters or fewer`)
+    enterEmailPage.hasFieldInError('emailAddress', `The contact’s email address should be 240 characters or fewer`)
   })
 
   it('Back link goes to manage contacts', () => {

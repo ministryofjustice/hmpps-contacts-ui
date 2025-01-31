@@ -103,7 +103,7 @@ export default class AddressMetadataController implements PageHandler {
       await this.contactsService
         .updateContactAddress(journey, user)
         .then(_ => delete req.session.addressJourneys![journeyId])
-        .then(_ => req.flash('successNotificationBanner', "You've updated a contact address"))
+        .then(_ => req.flash('successNotificationBanner', 'You’ve updated a contact address'))
       res.redirect(journey.returnPoint.url)
     }
   }

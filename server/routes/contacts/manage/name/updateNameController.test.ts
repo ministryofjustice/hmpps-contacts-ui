@@ -55,7 +55,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/name', () => 
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual("What is the contact's name?")
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('What is the contact’s name?')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)

@@ -327,7 +327,7 @@ context('Add Existing Contact', () => {
     const selectRelationshipPage = Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact', 'John Smith')
     selectRelationshipPage.clickContinue()
 
-    selectRelationshipPage.hasFieldInError('relationship', "Enter the contact's relationship to the prisoner")
+    selectRelationshipPage.hasFieldInError('relationship', 'Enter the contact’s relationship to the prisoner')
   })
 
   it('Should require selection of next of kin', () => {

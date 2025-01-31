@@ -117,8 +117,8 @@ describe('formatNameFirstNameFirst', () => {
   })
 
   it.each([
-    [is<ContactNames>({ firstName: 'First', lastName: 'Last' }), 'First Last&rsquo;s'],
-    [is<ContactNames>({ firstName: 'First', lastName: 'Glass' }), 'First Glass&rsquo;'],
+    [is<ContactNames>({ firstName: 'First', lastName: 'Last' }), 'First Last’s'],
+    [is<ContactNames>({ firstName: 'First', lastName: 'Glass' }), 'First Glass’'],
   ])('should append possessive correctly if requested', (names: ContactNames, expected: string) => {
     expect(formatNameFirstNameFirst(names, { possessiveSuffix: true })).toStrictEqual(expected)
   })

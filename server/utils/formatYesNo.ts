@@ -7,7 +7,7 @@ const formatYesNo = (val?: string | boolean): string => {
     case false:
       return 'No'
     case 'DO_NOT_KNOW':
-      return "I don't know"
+      return 'I don’t know'
     default:
       return ''
   }

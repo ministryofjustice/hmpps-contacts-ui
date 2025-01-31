@@ -2,10 +2,10 @@ import { z } from 'zod'
 import { isValid, parse } from 'date-fns'
 import { createSchema } from '../../../../middleware/validationMiddleware'
 
-const LAST_NAME_REQUIRED_MESSAGE = "Enter the contact's last name"
-const LAST_NAME_INVALID = "Contact's last name must not contain special characters"
-const FIRST_NAME_INVALID = "Contact's first name must not contain special characters"
-const MIDDLE_NAME_INVALID = "Contact's middle names must not contain special characters"
+const LAST_NAME_REQUIRED_MESSAGE = 'Enter the contact’s last name'
+const LAST_NAME_INVALID = 'Contact’s last name must not contain special characters'
+const FIRST_NAME_INVALID = 'Contact’s first name must not contain special characters'
+const MIDDLE_NAME_INVALID = 'Contact’s middle names must not contain special characters'
 const DAY_TYPE_MESSAGE = 'Enter a valid day of the month (1-31)'
 const MONTH_TYPE_MESSAGE = 'Enter a valid month (1-12)'
 const YEAR_TYPE_MESSAGE = 'Enter a valid year. Must be at least 1900'

@@ -56,7 +56,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob?re
 
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      "Do you know First Middle Last's date of birth?",
+      'Do you know First Middle Last’s date of birth?',
     )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
@@ -87,7 +87,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob?re
 
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      "Do you know First Middle Last's date of birth?",
+      'Do you know First Middle Last’s date of birth?',
     )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)

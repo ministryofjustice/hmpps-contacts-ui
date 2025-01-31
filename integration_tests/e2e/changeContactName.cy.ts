@@ -149,7 +149,7 @@ context('Change Contact Name', () => {
       .clickContinue()
 
     const enterNamePage = Page.verifyOnPage(EnterNamePage, 'First Middle Names Last')
-    enterNamePage.hasFieldInError('middleNames', "Contact's middle names must be 35 characters or less")
+    enterNamePage.hasFieldInError('middleNames', 'Contact’s middle names must be 35 characters or less')
   })
 
   it('Back link goes back to manage contact', () => {
