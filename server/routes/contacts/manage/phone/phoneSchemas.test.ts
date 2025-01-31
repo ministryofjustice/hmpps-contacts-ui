@@ -1,5 +1,5 @@
 import { deduplicateFieldErrors } from '../../../../middleware/validationMiddleware'
-import { phoneNumberSchemaFactory } from './phoneSchemas'
+import { phoneNumberSchema } from './phoneSchemas'
 
 describe('phoneNumberSchemaFactory', () => {
   type Form = {
@@ -139,8 +139,7 @@ describe('phoneNumberSchemaFactory', () => {
     })
 
     const doValidate = async (form: Form) => {
-      const schema = await phoneNumberSchemaFactory()()
-      return schema.safeParse(form)
+      return phoneNumberSchema.safeParse(form)
     }
   })
 })

@@ -39,7 +39,7 @@ describe('ensureInAddressJourney', () => {
       },
     }
 
-    ensureInAddressJourney()(req, res, next)
+    ensureInAddressJourney(req, res, next)
 
     expect(next).toHaveBeenCalledTimes(1)
     expect(new Date(req.session.addressJourneys[journeyId].lastTouched).getTime()).toBeGreaterThan(
@@ -50,14 +50,14 @@ describe('ensureInAddressJourney', () => {
   it('should render not found if the journey is not in the session', () => {
     req.session.addressJourneys = {}
 
-    ensureInAddressJourney()(req, res, next)
+    ensureInAddressJourney(req, res, next)
 
     expect(next).toHaveBeenCalledTimes(0)
     expect(res.render).toHaveBeenCalledWith('pages/errors/notFound')
   })
 
   it('should redirect to start if the journey is not in the session and there are no journeys at all', () => {
-    ensureInAddressJourney()(req, res, next)
+    ensureInAddressJourney(req, res, next)
 
     expect(next).toHaveBeenCalledTimes(0)
     expect(res.render).toHaveBeenCalledWith('pages/errors/notFound')

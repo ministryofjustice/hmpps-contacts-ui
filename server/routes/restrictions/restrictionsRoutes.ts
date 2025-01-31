@@ -77,14 +77,14 @@ const RestrictionsRoutes = (
   )
   router.get(
     '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/update/:restrictionClass/enter-restriction/:restrictionId',
-    prepareStandaloneManageContactJourney(),
+    prepareStandaloneManageContactJourney,
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, updateRestrictionController),
     asyncMiddleware(updateRestrictionController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/update/:restrictionClass/enter-restriction/:restrictionId',
-    prepareStandaloneManageContactJourney(),
+    prepareStandaloneManageContactJourney,
     validate(restrictionSchema()),
     asyncMiddleware(updateRestrictionController.POST),
   )

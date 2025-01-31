@@ -11,9 +11,11 @@ import { MockedService } from '../../../../../testutils/mockedServices'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/contactsService')
+jest.mock('../../../../../services/prisonerSearchService')
 
 const auditService = MockedService.AuditService()
 const contactsService = MockedService.ContactsService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -37,6 +39,7 @@ beforeEach(() => {
     services: {
       auditService,
       contactsService,
+      prisonerSearchService,
     },
     userSupplier: () => user,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -49,6 +52,7 @@ beforeEach(() => {
       }
     },
   })
+  prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
 
 afterEach(() => {

@@ -1,5 +1,5 @@
 import { deduplicateFieldErrors } from '../../../../middleware/validationMiddleware'
-import { identitySchemaFactory } from './IdentitySchemas'
+import { identitySchema } from './IdentitySchemas'
 
 describe('identitySchemaFactory', () => {
   type Form = {
@@ -125,8 +125,7 @@ describe('identitySchemaFactory', () => {
     })
 
     const doValidate = async (form: Form) => {
-      const schema = await identitySchemaFactory()()
-      return schema.safeParse(form)
+      return identitySchema.safeParse(form)
     }
   })
 })

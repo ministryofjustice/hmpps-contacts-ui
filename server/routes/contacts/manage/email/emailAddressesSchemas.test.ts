@@ -1,5 +1,5 @@
 import { deduplicateFieldErrors } from '../../../../middleware/validationMiddleware'
-import { emailSchemaFactory } from './emailSchemas'
+import { emailSchema } from './emailSchemas'
 
 describe('emailSchemaFactory', () => {
   type Form = {
@@ -53,8 +53,7 @@ describe('emailSchemaFactory', () => {
     })
 
     const doValidate = async (form: Form) => {
-      const schema = await emailSchemaFactory()()
-      return schema.safeParse(form)
+      return emailSchema.safeParse(form)
     }
   })
 })
