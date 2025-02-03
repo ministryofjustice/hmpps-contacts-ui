@@ -6,6 +6,12 @@ import PrisonerImageService from './prisonerImageService'
 import ReferenceDataService from './referenceDataService'
 import RestrictionsService from './restrictionsService'
 import PrisonerAddressService from './prisonerAddressService'
+import config from '../config'
+import RedisTokenStore from '../data/tokenStore/redisTokenStore'
+import { createRedisClient } from '../data/redisClient'
+import InMemoryTokenStore from '../data/tokenStore/inMemoryTokenStore'
+
+const tokenStore = config.redis.enabled ? new RedisTokenStore(createRedisClient()) : new InMemoryTokenStore()
 
 export const services = () => {
   const { applicationInfo, hmppsAuditClient, prisonerSearchApiClient, contactsApiClient, prisonApiClient } =
@@ -28,6 +34,7 @@ export const services = () => {
     referenceDataService,
     restrictionsService,
     prisonerAddressService,
+    tokenStore,
   }
 }
 

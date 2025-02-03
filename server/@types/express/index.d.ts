@@ -27,6 +27,7 @@ export declare global {
   namespace Express {
     import PrisonerDetails = journeys.PrisonerDetails
     import StandaloneManageContactJourney = journeys.StandaloneManageContactJourney
+    import JourneyData = journeys.JourneyData
 
     interface User {
       username: string
@@ -37,6 +38,7 @@ export declare global {
     interface Request {
       verified?: boolean
       id: string
+      journey?: JourneyData
       logout(done: (err: unknown) => void): void
     }
 

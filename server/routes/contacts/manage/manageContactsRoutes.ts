@@ -60,6 +60,9 @@ import ManageContactDeleteAddressPhoneController from './phone/delete-address-ph
 import UsePrisonerAddressController from './addresses/use-prisoner-address/usePrisonerAddressController'
 import PrisonerAddressService from '../../../services/prisonerAddressService'
 import { PageHandler } from '../../../interfaces/pageHandler'
+import UpdateEmploymentsController from './update-employments/updateEmploymentsController'
+import TokenStore from '../../../data/tokenStore/tokenStore'
+import setUpJourneyData from '../../../middleware/setUpJourneyData'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -68,6 +71,7 @@ const ManageContactsRoutes = (
   referenceDataService: ReferenceDataService,
   restrictionsService: RestrictionsService,
   prisonerAddressService: PrisonerAddressService,
+  tokenStore: TokenStore,
 ) => {
   const router = Router({ mergeParams: true })
 
@@ -107,26 +111,49 @@ const ManageContactsRoutes = (
   const journeyRoute = <P extends { [key: string]: string }>({
     path,
     controller,
-    journeyProvider,
+    journeyEnsurer,
     schema,
     noValidation,
   }: {
     path: string
     controller: PageHandler
-    journeyProvider: RequestHandler<journeys.PrisonerJourneyParams>
+    journeyEnsurer:
+      | RequestHandler<journeys.PrisonerJourneyParams>
+      | (RequestHandler<journeys.PrisonerJourneyParams> | RequestHandler)[]
     schema?: z.ZodTypeAny | SchemaFactory<P>
     noValidation?: boolean
   }) => {
     if (!schema && !noValidation) {
       throw Error('Missing validation schema for POST route')
     }
-    get(path, controller, journeyProvider)
+
+    const journeyMiddleware = Array.isArray(journeyEnsurer) ? journeyEnsurer : [journeyEnsurer]
+
+    get(path, controller, ...journeyMiddleware)
     if (schema) {
-      post(path, controller, journeyProvider, validate(schema))
+      post(path, controller, ...journeyMiddleware, validate(schema))
     } else {
-      post(path, controller, journeyProvider)
+      post(path, controller, ...journeyMiddleware)
     }
   }
+
+  const setupReqJourney = setUpJourneyData(tokenStore)
+
+  // Edit employments
+  const updateEmploymentsController = new UpdateEmploymentsController(contactsService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments',
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    setupReqJourney,
+    asyncMiddleware(updateEmploymentsController.START),
+  )
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments/:journeyId',
+    controller: updateEmploymentsController,
+    journeyEnsurer: [setupReqJourney, updateEmploymentsController.ensureInJourney],
+    noValidation: true,
+  })
 
   router.get('/prisoner/:prisonerNumber/*', populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService))
 
@@ -137,7 +164,7 @@ const ManageContactsRoutes = (
   journeyRoute({
     path: '/contacts/manage/prisoner-search/:journeyId',
     controller: new PrisonerSearchController(),
-    journeyProvider: ensureInManageContactsJourney,
+    journeyEnsurer: ensureInManageContactsJourney,
     schema: prisonerSearchSchema,
   })
 
@@ -145,14 +172,14 @@ const ManageContactsRoutes = (
   journeyRoute({
     path: '/contacts/manage/prisoner-search/:journeyId',
     controller: new PrisonerSearchController(),
-    journeyProvider: ensureInManageContactsJourney,
+    journeyEnsurer: ensureInManageContactsJourney,
     schema: prisonerSearchSchema,
   })
 
   journeyRoute({
     path: '/contacts/manage/prisoner-search-results/:journeyId',
     controller: new PrisonerSearchResultsController(prisonerSearchService),
-    journeyProvider: ensureInManageContactsJourney,
+    journeyEnsurer: ensureInManageContactsJourney,
     schema: prisonerSearchSchema,
   })
 
@@ -316,14 +343,14 @@ const ManageContactsRoutes = (
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/select-type/:journeyId',
     controller: new AddressTypeController(referenceDataService),
-    journeyProvider: ensureInAddressJourney,
+    journeyEnsurer: ensureInAddressJourney,
     schema: addressTypeSchema,
   })
 
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/enter-address/:journeyId',
     controller: new EnterAddressController(referenceDataService),
-    journeyProvider: ensureInAddressJourney,
+    journeyEnsurer: ensureInAddressJourney,
     schema: addressLinesSchema,
   })
 
@@ -336,14 +363,14 @@ const ManageContactsRoutes = (
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/address-metadata/:journeyId',
     controller: new AddressMetadataController(referenceDataService, contactsService),
-    journeyProvider: ensureInAddressJourney,
+    journeyEnsurer: ensureInAddressJourney,
     schema: addressMetadataSchema,
   })
 
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/check-answers/:journeyId',
     controller: new AddressCheckAnswersController(referenceDataService, contactsService),
-    journeyProvider: ensureInAddressJourney,
+    journeyEnsurer: ensureInAddressJourney,
     noValidation: true,
   })
 

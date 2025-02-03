@@ -809,7 +809,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect($('h1:contains("Professional information")').parent().parent().next().text()).toContain(
         'No employers recorded.',
       )
-      expect($('a:contains("Edit employers")').attr('href')).toMatch(/#/)
+      expect($('a:contains("Edit employers")').attr('href')).toEqual(
+        '/prisoner/A1234BC/contacts/manage/22/update-employments?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99',
+      )
     })
 
     it('should render professional information tab with employment record', async () => {
@@ -842,7 +844,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect($('dt:contains("Employer’s primary address")').next().text()).toMatch(/Some House(\s+)England/)
       expect($('dt:contains("Business phone number at primary address")').next().text()).toMatch(/60511, ext\. 123/)
       expect($('dt:contains("Employment status")').next().text()).toMatch(/Inactive/)
-      expect($('a:contains("Edit employers")').attr('href')).toMatch(/#/)
+      expect($('a:contains("Edit employers")').attr('href')).toEqual(
+        '/prisoner/A1234BC/contacts/manage/22/update-employments?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99',
+      )
     })
 
     it('should render professional information tab with employment record missing optional values', async () => {
