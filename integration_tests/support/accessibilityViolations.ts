@@ -28,6 +28,8 @@ export const checkAxeAccessibility = () => {
   } as Spec)
   cy.checkA11y(undefined, undefined, logAccessibilityViolations)
 
+  checkRadioGroupsHaveLegends()
+
   checkStyleRules()
 }
 
@@ -43,6 +45,25 @@ const checkStyleRules = () => {
         fail(`Non-curly apostrophe found in the following text: ${element.text()}`)
       }
     })
+}
+
+const checkRadioGroupsHaveLegends = () => {
+  cy.get('body').then($body => {
+    const expectedRadios = $body.find('.govuk-radios').length
+    const radiosInFieldset = $body.find('.govuk-fieldset > .govuk-radios').length
+    if (expectedRadios > radiosInFieldset) {
+      fail(
+        `Expected ${expectedRadios} radios to be within a fieldset with a legend but only found ${radiosInFieldset} within a fieldset`,
+      )
+    }
+    if (expectedRadios > 0) {
+      cy.get('.govuk-fieldset > .govuk-radios').then($fieldsetRadioGroup => {
+        if ($fieldsetRadioGroup.parent().find('.govuk-fieldset__legend').length === 0) {
+          fail(`Found radio group fieldset without legend`)
+        }
+      })
+    }
+  })
 }
 
 export default {
