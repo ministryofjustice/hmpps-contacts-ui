@@ -143,10 +143,10 @@ context('Change Contact Date Of Birth', () => {
 
     const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last')
     enterDobPage.selectIsKnown('YES').clickContinue()
-    enterDobPage.hasFieldInError('dob', "Enter the contact's date of birth")
+    enterDobPage.hasFieldInError('dob', 'Enter the contact’s date of birth')
     enterDobPage.errorSummaryItems.spread((...$lis) => {
       expect($lis).to.have.lengthOf(1)
-      expect($lis[0]).to.contain("Enter the contact's date of birth")
+      expect($lis[0]).to.contain('Enter the contact’s date of birth')
     })
   })
 

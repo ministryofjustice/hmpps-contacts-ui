@@ -276,14 +276,14 @@ context('Create Contacts', () => {
     const enterNamePage = Page.verifyOnPage(EnterNamePage)
     enterNamePage.enterLastName('Last').clickContinue()
 
-    enterNamePage.hasFieldInError('firstName', "Enter the contact's first name")
+    enterNamePage.hasFieldInError('firstName', 'Enter the contact’s first name')
   })
 
   it('Last name is required', () => {
     const enterNamePage = Page.verifyOnPage(EnterNamePage)
     enterNamePage.enterFirstName('First').clickContinue()
 
-    enterNamePage.hasFieldInError('lastName', "Enter the contact's last name")
+    enterNamePage.hasFieldInError('lastName', 'Enter the contact’s last name')
   })
 
   it('Names are limited to 35 characters', () => {
@@ -294,9 +294,9 @@ context('Create Contacts', () => {
       .enterMiddleNames('Middle'.padEnd(36))
       .clickContinue()
 
-    enterNamePage.hasFieldInError('lastName', "Contact's last name must be 35 characters or less")
-    enterNamePage.hasFieldInError('firstName', "Contact's first name must be 35 characters or less")
-    enterNamePage.hasFieldInError('middleNames', "Contact's middle names must be 35 characters or less")
+    enterNamePage.hasFieldInError('lastName', 'Contact’s last name must be 35 characters or less')
+    enterNamePage.hasFieldInError('firstName', 'Contact’s first name must be 35 characters or less')
+    enterNamePage.hasFieldInError('middleNames', 'Contact’s middle names must be 35 characters or less')
   })
 
   it('Cannot enter a blank first name or last name', () => {
@@ -306,8 +306,8 @@ context('Create Contacts', () => {
       .enterFirstName('  ')
       .clickContinue()
 
-    enterNamePage.hasFieldInError('lastName', "Enter the contact's last name")
-    enterNamePage.hasFieldInError('firstName', "Enter the contact's first name")
+    enterNamePage.hasFieldInError('lastName', 'Enter the contact’s last name')
+    enterNamePage.hasFieldInError('firstName', 'Enter the contact’s first name')
   })
 
   it('Must select the contacts relationship to the prisoner', () => {
@@ -325,7 +325,7 @@ context('Create Contacts', () => {
     const selectRelationshipPage = Page.verifyOnPage(SelectRelationshipPage, 'First Last', 'John Smith')
     selectRelationshipPage.clickContinue()
 
-    selectRelationshipPage.hasFieldInError('relationship', "Enter the contact's relationship to the prisoner")
+    selectRelationshipPage.hasFieldInError('relationship', 'Enter the contact’s relationship to the prisoner')
   })
 
   it('Must select contact relationship', () => {
@@ -397,10 +397,10 @@ context('Create Contacts', () => {
 
     const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Last')
     enterDobPage.selectIsKnown('YES').clickContinue()
-    enterDobPage.hasFieldInError('dob', "Enter the contact's date of birth")
+    enterDobPage.hasFieldInError('dob', 'Enter the contact’s date of birth')
     enterDobPage.errorSummaryItems.spread((...$lis) => {
       expect($lis).to.have.lengthOf(1)
-      expect($lis[0]).to.contain("Enter the contact's date of birth")
+      expect($lis[0]).to.contain('Enter the contact’s date of birth')
     })
   })
 

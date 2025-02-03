@@ -66,7 +66,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId', (
 
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      "Do you know First Middle Last's date of birth?",
+      'Do you know First Middle Last’s date of birth?',
     )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')

@@ -2,7 +2,7 @@ import Page, { PageElement } from './page'
 
 export default class EnterContactDateOfBirthPage extends Page {
   constructor(name: string) {
-    super(`Do you know ${name}'s date of birth?`)
+    super(`Do you know ${name}’s date of birth?`)
   }
 
   selectIsKnown(value: 'YES' | 'NO'): EnterContactDateOfBirthPage {

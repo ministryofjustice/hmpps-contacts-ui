@@ -25,7 +25,7 @@ describe('createContactEnterNameSchema', () => {
       // Then
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
-      expect(deduplicatedFieldErrors).toStrictEqual({ lastName: ["Enter the contact's last name"] })
+      expect(deduplicatedFieldErrors).toStrictEqual({ lastName: ['Enter the contact’s last name'] })
     })
 
     it('should require first name', async () => {
@@ -38,7 +38,7 @@ describe('createContactEnterNameSchema', () => {
       // Then
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
-      expect(deduplicatedFieldErrors).toStrictEqual({ firstName: ["Enter the contact's first name"] })
+      expect(deduplicatedFieldErrors).toStrictEqual({ firstName: ['Enter the contact’s first name'] })
     })
 
     it('names should be limited to 35 chars', async () => {
@@ -58,9 +58,9 @@ describe('createContactEnterNameSchema', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        firstName: ["Contact's first name must be 35 characters or less"],
-        lastName: ["Contact's last name must be 35 characters or less"],
-        middleNames: ["Contact's middle names must be 35 characters or less"],
+        firstName: ['Contact’s first name must be 35 characters or less'],
+        lastName: ['Contact’s last name must be 35 characters or less'],
+        middleNames: ['Contact’s middle names must be 35 characters or less'],
       })
     })
 
@@ -79,8 +79,8 @@ describe('createContactEnterNameSchema', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        firstName: ["Enter the contact's first name"],
-        lastName: ["Enter the contact's last name"],
+        firstName: ['Enter the contact’s first name'],
+        lastName: ['Enter the contact’s last name'],
       })
     })
 
@@ -102,9 +102,9 @@ describe('createContactEnterNameSchema', () => {
         expect(result.success).toStrictEqual(false)
         const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
         expect(deduplicatedFieldErrors).toStrictEqual({
-          firstName: ["Contact's first name must not contain special characters"],
-          lastName: ["Contact's last name must not contain special characters"],
-          middleNames: ["Contact's middle names must not contain special characters"],
+          firstName: ['Contact’s first name must not contain special characters'],
+          lastName: ['Contact’s last name must not contain special characters'],
+          middleNames: ['Contact’s middle names must not contain special characters'],
         })
       },
     )

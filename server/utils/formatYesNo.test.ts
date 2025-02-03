@@ -6,7 +6,7 @@ describe('yesNoFilter', () => {
     [true, 'Yes'],
     ['NO', 'No'],
     [false, 'No'],
-    ['DO_NOT_KNOW', "I don't know"],
+    ['DO_NOT_KNOW', 'I don’t know'],
     ['FOO', ''],
     [undefined, ''],
   ])('Formats yes no and do not know correctly', (value, expected) => {

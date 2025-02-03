@@ -9,7 +9,7 @@ const MONTH_TYPE_MESSAGE = 'Enter a valid month (1-12)'
 const YEAR_TYPE_MESSAGE = 'Enter a valid year. Must be at least 1900'
 const DOB_IN_FUTURE_MESSAGE = 'The date of birth must not be in the future'
 const DOB_IS_INVALID = 'The date of birth is invalid'
-const DOB_IS_REQUIRED_MESSAGE = "Enter the contact's date of birth"
+const DOB_IS_REQUIRED_MESSAGE = 'Enter the contact’s date of birth'
 
 export const enterDobSchema = () => async () => {
   return createSchema({

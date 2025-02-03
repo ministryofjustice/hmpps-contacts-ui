@@ -60,7 +60,7 @@ describe('createContactEnterDobSchema', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        dob: ["Enter the contact's date of birth"],
+        dob: ['Enter the contact’s date of birth'],
       })
     })
 
@@ -75,7 +75,7 @@ describe('createContactEnterDobSchema', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        dob: ["Enter the contact's date of birth"],
+        dob: ['Enter the contact’s date of birth'],
       })
     })
 

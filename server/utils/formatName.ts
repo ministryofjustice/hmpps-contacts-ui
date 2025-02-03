@@ -47,7 +47,7 @@ const formatNameFirstNameFirst = (
 
   if (opts?.possessiveSuffix === true) {
     const requiresAnS = !name.endsWith('s')
-    name += '&rsquo;'
+    name += '’'
     if (requiresAnS) {
       name += 's'
     }

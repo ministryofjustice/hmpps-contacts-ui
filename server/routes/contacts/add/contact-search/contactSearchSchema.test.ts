@@ -41,7 +41,7 @@ describe('contactSearchSchema', () => {
       // Then
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
-      expect(deduplicatedFieldErrors).toStrictEqual({ lastName: ["Enter the contact's last name"] })
+      expect(deduplicatedFieldErrors).toStrictEqual({ lastName: ['Enter the contact’s last name'] })
     })
 
     it('should not pass validation when special characters are entered', async () => {
@@ -55,9 +55,9 @@ describe('contactSearchSchema', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        firstName: ["Contact's first name must not contain special characters"],
-        middleNames: ["Contact's middle names must not contain special characters"],
-        lastName: ["Contact's last name must not contain special characters"],
+        firstName: ['Contact’s first name must not contain special characters'],
+        middleNames: ['Contact’s middle names must not contain special characters'],
+        lastName: ['Contact’s last name must not contain special characters'],
       })
     })
 
@@ -120,9 +120,9 @@ describe('contactSearchSchema', () => {
         expect(result.success).toStrictEqual(false)
         const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
         expect(deduplicatedFieldErrors).toStrictEqual({
-          firstName: [`Contact's first name must not contain special characters`],
-          lastName: [`Contact's last name must not contain special characters`],
-          middleNames: [`Contact's middle names must not contain special characters`],
+          firstName: [`Contact’s first name must not contain special characters`],
+          lastName: [`Contact’s last name must not contain special characters`],
+          middleNames: [`Contact’s middle names must not contain special characters`],
         })
       },
     )

@@ -7,10 +7,10 @@ import IndexPage from '../pages'
 
 const { prisonerNumber } = TestData.prisoner()
 
-const ENTER_THE_CONTACTS_LAST_NAME = `Enter the contact's last name`
-const CONTACTS_LAST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS = `Contact's last name must not contain special characters`
-const CONTACTS_MIDDLE_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS = `Contact's middle names must not contain special characters`
-const CONTACTS_FIRST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS = `Contact's first name must not contain special characters`
+const ENTER_THE_CONTACTS_LAST_NAME = `Enter the contact’s last name`
+const CONTACTS_LAST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS = `Contact’s last name must not contain special characters`
+const CONTACTS_MIDDLE_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS = `Contact’s middle names must not contain special characters`
+const CONTACTS_FIRST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS = `Contact’s first name must not contain special characters`
 const ENTER_A_VALID_DAY_OF_THE_MONTH = `Enter a valid day of the month (1-31)`
 const ENTER_A_VALID_MONTH = `Enter a valid month (1-12)`
 const ENTER_A_VALID_YEAR = `Enter a valid year. Must be at least 1900`

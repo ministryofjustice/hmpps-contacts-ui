@@ -2,7 +2,7 @@ import Page, { PageElement } from './page'
 
 export default class SelectGenderPage extends Page {
   constructor(name: string) {
-    super(`What is ${name}'s gender? (optional)`)
+    super(`What is ${name}’s gender? (optional)`)
   }
 
   selectGender(value: 'M' | 'F' | 'NK' | 'NF'): SelectGenderPage {

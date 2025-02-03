@@ -383,7 +383,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addr
       expect(existingJourney.addressMetadata).toStrictEqual(expected)
       expect(session.addressJourneys![journeyId]).toBeUndefined()
       expect(contactsService.updateContactAddress).toHaveBeenCalledWith(existingJourney, user)
-      expect(flashProvider).toHaveBeenCalledWith('successNotificationBanner', "You've updated a contact address")
+      expect(flashProvider).toHaveBeenCalledWith('successNotificationBanner', 'You’ve updated a contact address')
     },
   )
 

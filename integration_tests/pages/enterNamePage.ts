@@ -2,7 +2,7 @@ import Page, { PageElement } from './page'
 
 export default class EnterNamePage extends Page {
   constructor() {
-    super("What is the contact's name?")
+    super('What is the contact’s name?')
   }
 
   hasLastName(lastName: string): EnterNamePage {
