@@ -15,7 +15,6 @@
  <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <span class="govuk-caption-l">{{ caption or 'Contacts' }}</span>
-            <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
                 {% if validationErrors %}
@@ -69,7 +68,14 @@
 
                 {% endset %}
                 {{ govukRadios({
-                    name: "isKnown",
+                  fieldset: {
+                    legend: {
+                      text: title,
+                      isPageHeading: true,
+                      classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6 main-heading"
+                    }
+                  },
+                  name: "isKnown",
                     items: [
                         {
                             value: 'YES',

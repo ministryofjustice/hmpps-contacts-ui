@@ -75,9 +75,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-next-of-kin/:jour
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Is First Middle Last next of kin for the prisoner?',
-    )
+    expect($('.main-heading').first().text().trim()).toStrictEqual('Is First Middle Last next of kin for the prisoner?')
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual(expectedCaption)
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)

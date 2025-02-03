@@ -12,14 +12,20 @@
     {% include '../../../partials/navigation.njk' %}
     {{ miniProfile(prisonerDetails) }}
     <span class="govuk-caption-l">Contacts</span>
-    <h1 class="govuk-heading-l">{{ title }}</h1>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
                 {{ govukRadios({
-                    name: "isStaff",
+                  fieldset: {
+                    legend: {
+                      text: title,
+                      isPageHeading: true,
+                      classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6 main-heading"
+                    }
+                  },
+                  name: "isStaff",
                     items: [
                         {
                             value: 'YES',
