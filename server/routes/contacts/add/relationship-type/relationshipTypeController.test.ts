@@ -73,7 +73,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-type
       expect(response.status).toEqual(200)
 
       const $ = cheerio.load(response.text)
-      expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
+      expect($('.main-heading').first().text().trim()).toStrictEqual(
         'Is First Middle Last a social or official contact for John Smith?',
       )
       expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(expectedBackLink)

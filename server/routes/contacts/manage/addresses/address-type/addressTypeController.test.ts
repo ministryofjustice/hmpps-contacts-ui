@@ -74,7 +74,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/selec
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
+    expect($('.main-heading').first().text().trim()).toStrictEqual(
       'What type of address do you want to add for First Middle Last?',
     )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')

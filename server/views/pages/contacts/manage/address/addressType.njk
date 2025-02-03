@@ -15,7 +15,6 @@
     <span class="govuk-caption-l">Contacts</span>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
                 {% set defaultOptions = [
@@ -29,7 +28,14 @@
                 {% set radios = typeOptions.concat(defaultOptions) %}
 
                 {{ govukRadios({
-                    name: "addressType",
+                  fieldset: {
+                    legend: {
+                      text: title,
+                      isPageHeading: true,
+                      classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6 main-heading"
+                    }
+                  },
+                  name: "addressType",
                     items: radios })
                 }}
 

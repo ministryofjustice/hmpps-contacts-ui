@@ -49,9 +49,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').text().trim()).toBe(
-      'Is the relationship between Jones Mason and the prisoner active?',
-    )
+    expect($('.main-heading').text().trim()).toBe('Is the relationship between Jones Mason and the prisoner active?')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Save and continue')
