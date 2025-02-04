@@ -8,6 +8,7 @@ export declare module 'express-session' {
   import ManageContactsJourney = journeys.ManageContactsJourney
   import AddRestrictionJourney = journeys.AddRestrictionJourney
   import AddressJourney = journeys.AddressJourney
+  import UpdateEmploymentsJourney = journeys.UpdateEmploymentsJourney
 
   interface SessionData {
     returnTo: string
@@ -17,6 +18,7 @@ export declare module 'express-session' {
     manageContactsJourneys: Record<string, ManageContactsJourney>
     addRestrictionJourneys: Record<string, AddRestrictionJourney>
     addressJourneys: Record<string, AddressJourney>
+    updateEmploymentsJourneys: Record<string, UpdateEmploymentsJourney>
     // Caseload details populated by dpsComponents.retrieveCaseLoadData
     caseLoads?: CaseLoad[]
     activeCaseLoad?: CaseLoad
@@ -27,7 +29,6 @@ export declare global {
   namespace Express {
     import PrisonerDetails = journeys.PrisonerDetails
     import StandaloneManageContactJourney = journeys.StandaloneManageContactJourney
-    import JourneyData = journeys.JourneyData
 
     interface User {
       username: string
@@ -38,7 +39,6 @@ export declare global {
     interface Request {
       verified?: boolean
       id: string
-      journey?: JourneyData
       logout(done: (err: unknown) => void): void
     }
 

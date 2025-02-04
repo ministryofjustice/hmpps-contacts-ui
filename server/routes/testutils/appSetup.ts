@@ -14,8 +14,6 @@ import setUpWebSession from '../../middleware/setUpWebSession'
 import populateValidationErrors from '../../middleware/populateValidationErrors'
 import setUpAuth from '../../middleware/setUpAuthentication'
 import { MockedService } from '../../testutils/mockedServices'
-import InMemoryTokenStore from '../../data/tokenStore/inMemoryTokenStore'
-import JourneyData = journeys.JourneyData
 
 jest.mock('../../services/auditService')
 
@@ -38,7 +36,6 @@ function appSetup(
   userSupplier: () => HmppsUser,
   validationErrors?: Locals['validationErrors'],
   sessionReceiver?: (session: Partial<SessionData>) => void,
-  suppliedJourneyData?: { data: JourneyData },
 ): Express {
   const app = express()
 
@@ -62,9 +59,6 @@ function appSetup(
       currentlyActive: true,
       description: 'Hewell',
       type: '',
-    }
-    if (suppliedJourneyData) {
-      req.journey = suppliedJourneyData.data
     }
     next()
   })
@@ -103,27 +97,17 @@ export function appWithAllRoutes({
   production = false,
   services = {
     auditService: MockedService.AuditService(),
-    tokenStore: new InMemoryTokenStore(),
   },
   userSupplier = () => user,
   validationErrors,
   sessionReceiver = undefined,
-  suppliedJourneyData = undefined,
 }: {
   production?: boolean
   services?: Partial<Services>
   userSupplier?: () => HmppsUser
   validationErrors?: Locals['validationErrors']
   sessionReceiver?: (session: Partial<SessionData>) => void
-  suppliedJourneyData?: { data: JourneyData }
 }): Express {
   auth.default.authenticationMiddleware = () => (req, res, next) => next()
-  return appSetup(
-    services as Services,
-    production,
-    userSupplier,
-    validationErrors,
-    sessionReceiver,
-    suppliedJourneyData,
-  )
+  return appSetup(services as Services, production, userSupplier, validationErrors, sessionReceiver)
 }

@@ -23,6 +23,14 @@ describe('employmentSorter', () => {
     },
   } as components['schemas']['EmploymentDetails']
 
+  const anotherC = {
+    isActive: false,
+    employer: {
+      organisationName: 'C',
+    },
+    employmentId: 999,
+  } as components['schemas']['EmploymentDetails']
+
   it('should sort Active employer to the top', () => {
     const res = [c, a, b].sort(employmentSorter)
     expect(res[0]).toBe(a)
@@ -31,5 +39,10 @@ describe('employmentSorter', () => {
   it('should sort by alphabetical order of employer name', () => {
     const res = [c, b].sort(employmentSorter)
     expect(res[0]).toBe(b)
+  })
+
+  it('should tie break by sorting greater employmentId to the top (treating nullish as 0)', () => {
+    const res = [c, anotherC].sort(employmentSorter)
+    expect(res[0]).toBe(anotherC)
   })
 })

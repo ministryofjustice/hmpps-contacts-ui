@@ -70,7 +70,8 @@ declare namespace journeys {
   }
 
   export interface UpdateEmploymentsJourney {
-    prisoner: PrisonerDetails
+    id: string
+    lastTouched: string
     contactId: number
     contactNames: ContactNames
     employments: EmploymentDetails[]
@@ -159,12 +160,6 @@ declare namespace journeys {
     contactNames?: ContactNames
     restrictionClass?: RestrictionClass
     contactId?: string
-  }
-
-  type JourneyData = Partial<{
-    updateEmployments: UpdateEmploymentsJourney
-  }> & {
-    journeyId: string
   }
 
   type YesOrNo = 'YES' | 'NO'

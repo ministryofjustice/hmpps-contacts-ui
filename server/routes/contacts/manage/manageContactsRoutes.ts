@@ -61,8 +61,8 @@ import UsePrisonerAddressController from './addresses/use-prisoner-address/usePr
 import PrisonerAddressService from '../../../services/prisonerAddressService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import UpdateEmploymentsController from './update-employments/updateEmploymentsController'
-import TokenStore from '../../../data/tokenStore/tokenStore'
-import setUpJourneyData from '../../../middleware/setUpJourneyData'
+import { ensureInUpdateEmploymentsJourney } from './update-employments/updateEmploymentsMiddleware'
+import UpdateEmploymentsStartController from './update-employments/start/updateEmploymentsStartController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -71,7 +71,6 @@ const ManageContactsRoutes = (
   referenceDataService: ReferenceDataService,
   restrictionsService: RestrictionsService,
   prisonerAddressService: PrisonerAddressService,
-  tokenStore: TokenStore,
 ) => {
   const router = Router({ mergeParams: true })
 
@@ -136,24 +135,6 @@ const ManageContactsRoutes = (
       post(path, controller, ...journeyMiddleware)
     }
   }
-
-  const setupReqJourney = setUpJourneyData(tokenStore)
-
-  // Edit employments
-  const updateEmploymentsController = new UpdateEmploymentsController(contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments',
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    setupReqJourney,
-    asyncMiddleware(updateEmploymentsController.START),
-  )
-
-  journeyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments/:journeyId',
-    controller: updateEmploymentsController,
-    journeyEnsurer: [setupReqJourney, updateEmploymentsController.ensureInJourney],
-    noValidation: true,
-  })
 
   router.get('/prisoner/:prisonerNumber/*', populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService))
 
@@ -389,6 +370,19 @@ const ManageContactsRoutes = (
   standAloneJourneyRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/:contactAddressId/phone/:contactAddressPhoneId/delete',
     controller: new ManageContactDeleteAddressPhoneController(contactsService),
+    noValidation: true,
+  })
+
+  // Edit employments
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments',
+    asyncMiddleware(new UpdateEmploymentsStartController(contactsService).GET),
+  )
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments/:journeyId',
+    controller: new UpdateEmploymentsController(),
+    journeyEnsurer: ensureInUpdateEmploymentsJourney,
     noValidation: true,
   })
 
