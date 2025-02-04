@@ -117,9 +117,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
 
     // Then
     const $ = cheerio.load(response.text)
-    expect($('h1:contains("Edit employment information")').parent().parent().next().text()).toContain(
-      'No employers recorded.',
-    )
+    expect($('h1:contains("Edit employment information")').parent().next().text()).toContain('No employers recorded.')
     expect($('a:contains("Add employer")').attr('href')).toEqual('#')
   })
 

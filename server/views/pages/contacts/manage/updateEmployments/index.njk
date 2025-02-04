@@ -10,12 +10,10 @@
   {% include 'partials/successNotificationBanner.njk' %}
   {{ miniProfile(prisonerDetails) }}
   <div class="govuk-grid-row govuk-!-static-margin-bottom-5">
-    <div class="govuk-grid-column-full">
-      <div class="govuk-grid-row govuk-!-static-margin-bottom-7">
-        <div class="govuk-grid-column-two-thirds">
-          <span class="govuk-caption-l">Edit professional information</span>
-          <h1 class="govuk-heading-l">Edit employment information for {{ contactNames | formatNameFirstNameFirst }}</h1>
-        </div>
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-!-static-margin-bottom-7">
+        <span class="govuk-caption-l">Edit professional information</span>
+        <h1 class="govuk-heading-l">Edit employment information for {{ contactNames | formatNameFirstNameFirst }}</h1>
       </div>
 
       {% if employments.length %}
