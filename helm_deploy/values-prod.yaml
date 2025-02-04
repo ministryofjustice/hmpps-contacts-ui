@@ -19,4 +19,4 @@ generic-service:
     AUDIT_ENABLED: 'false'
 
 generic-prometheus-alerts:
-  alertSeverity: managing-contacts-alerts-prod
+  alertSeverity: hmpps-contacts-ui-prod

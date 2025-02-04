@@ -296,11 +296,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/edit/
             noFixedAddress: false,
             countryCode: 'ENG',
             countryDescription: 'England',
-            startDate: '2010-09-01',
             endDate: undefined,
             primaryAddress: false,
             mailFlag: false,
           }),
+          startDate: undefined,
           flat: undefined,
           property: undefined,
           street: undefined,
@@ -344,8 +344,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/edit/
       country: 'ENG',
     })
     expect(journey.addressMetadata).toStrictEqual({
-      fromMonth: '9',
-      fromYear: '2010',
+      fromMonth: undefined,
+      fromYear: undefined,
       toMonth: undefined,
       toYear: undefined,
       primaryAddress: 'NO',
