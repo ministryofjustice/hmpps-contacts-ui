@@ -145,8 +145,8 @@ declare namespace journeys {
   }
 
   export interface AddressMetadata {
-    fromMonth: string
-    fromYear: string
+    fromMonth?: string
+    fromYear?: string
     toMonth?: string
     toYear?: string
     primaryAddress?: YesOrNo

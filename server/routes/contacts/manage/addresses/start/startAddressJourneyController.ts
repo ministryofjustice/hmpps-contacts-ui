@@ -67,12 +67,12 @@ export default class StartAddressJourneyController implements PageHandler {
         postcode: existingAddress.postcode,
         country: existingAddress.countryCode,
       }
-      const fromDate = parseISO(existingAddress.startDate)
+      const fromDate = existingAddress.startDate ? parseISO(existingAddress.startDate) : undefined
       const toDate = existingAddress.endDate ? parseISO(existingAddress.endDate) : undefined
 
       addressMetadata = {
-        fromMonth: (fromDate.getMonth() + 1).toString(),
-        fromYear: fromDate.getFullYear().toString(),
+        fromMonth: fromDate ? (fromDate.getMonth() + 1).toString() : undefined,
+        fromYear: fromDate?.getFullYear().toString(),
         toMonth: toDate ? (toDate.getMonth() + 1).toString() : undefined,
         toYear: toDate?.getFullYear()?.toString(),
         primaryAddress: existingAddress.primaryAddress ? 'YES' : 'NO',
