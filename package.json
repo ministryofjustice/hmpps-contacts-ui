@@ -104,7 +104,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.734.0",
+    "@aws-sdk/client-sqs": "^3.738.0",
     "@cypress/code-coverage": "^3.13.11",
     "@ministryofjustice/frontend": "^3.3.1",
     "@ministryofjustice/hmpps-connect-dps-components": "^2.0.0",
@@ -122,7 +122,7 @@
     "connect-flash": "^0.1.1",
     "connect-redis": "^8.0.1",
     "csrf-sync": "^4.0.3",
-    "cypress-axe": "^1.5.0",
+    "cypress-axe": "^1.6.0",
     "date-fns": "^4.1.0",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
