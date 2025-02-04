@@ -14,52 +14,46 @@ const MIDDLE_NAME_INVALID = 'Contact’s middle names must not contain special c
 
 const NAME_REGEX = /^[a-zA-Z\s,.'-]*$/
 
-export const fullNameSchema = () => async () => {
-  return createSchema({
-    title: z
-      .string()
-      .optional()
-      .transform(val => (val?.trim()?.length ? val?.trim() : undefined))
-      .transform(val => val?.trim()),
-    lastName: z
-      .string({ message: LAST_NAME_REQUIRED_MESSAGE })
-      .max(35, LAST_NAME_TOO_LONG_ERROR_MSG)
-      .regex(NAME_REGEX, LAST_NAME_INVALID)
-      .refine(val => val?.trim().length > 0, { message: LAST_NAME_REQUIRED_MESSAGE }),
-    firstName: z
-      .string({ message: FIRST_NAME_REQUIRED_MESSAGE })
-      .max(35, FIRST_NAME_TOO_LONG_ERROR_MSG)
-      .regex(NAME_REGEX, FIRST_NAME_INVALID)
-      .refine(val => val?.trim().length > 0, { message: FIRST_NAME_REQUIRED_MESSAGE })
-      .transform(val => val?.trim()),
-    middleNames: z
-      .string()
-      .max(35, MIDDLE_NAME_TOO_LONG_ERROR_MSG)
-      .regex(NAME_REGEX, MIDDLE_NAME_INVALID)
-      .optional()
-      .transform(val => (val?.trim()?.length ? val?.trim() : undefined)),
-  })
-}
+export const fullNameSchema = createSchema({
+  title: z
+    .string()
+    .optional()
+    .transform(val => (val?.trim()?.length ? val?.trim() : undefined))
+    .transform(val => val?.trim()),
+  lastName: z
+    .string({ message: LAST_NAME_REQUIRED_MESSAGE })
+    .max(35, LAST_NAME_TOO_LONG_ERROR_MSG)
+    .regex(NAME_REGEX, LAST_NAME_INVALID)
+    .refine(val => val?.trim().length > 0, { message: LAST_NAME_REQUIRED_MESSAGE }),
+  firstName: z
+    .string({ message: FIRST_NAME_REQUIRED_MESSAGE })
+    .max(35, FIRST_NAME_TOO_LONG_ERROR_MSG)
+    .regex(NAME_REGEX, FIRST_NAME_INVALID)
+    .refine(val => val?.trim().length > 0, { message: FIRST_NAME_REQUIRED_MESSAGE })
+    .transform(val => val?.trim()),
+  middleNames: z
+    .string()
+    .max(35, MIDDLE_NAME_TOO_LONG_ERROR_MSG)
+    .regex(NAME_REGEX, MIDDLE_NAME_INVALID)
+    .optional()
+    .transform(val => (val?.trim()?.length ? val?.trim() : undefined)),
+})
 
-export const restrictedEditingNameSchema = () => async () => {
-  return createSchema({
-    title: z
-      .string()
-      .optional()
-      .transform(val => (val?.trim()?.length ? val?.trim() : undefined))
-      .transform(val => val?.trim()),
-    lastName: z.string().optional(),
-    firstName: z.string().optional(),
-    middleNames: z
-      .string()
-      .max(35, MIDDLE_NAME_TOO_LONG_ERROR_MSG)
-      .regex(NAME_REGEX, MIDDLE_NAME_INVALID)
-      .optional()
-      .transform(val => (val?.trim()?.length ? val?.trim() : undefined)),
-  })
-}
+export const restrictedEditingNameSchema = createSchema({
+  title: z
+    .string()
+    .optional()
+    .transform(val => (val?.trim()?.length ? val?.trim() : undefined))
+    .transform(val => val?.trim()),
+  lastName: z.string().optional(),
+  firstName: z.string().optional(),
+  middleNames: z
+    .string()
+    .max(35, MIDDLE_NAME_TOO_LONG_ERROR_MSG)
+    .regex(NAME_REGEX, MIDDLE_NAME_INVALID)
+    .optional()
+    .transform(val => (val?.trim()?.length ? val?.trim() : undefined)),
+})
 
-export type FullNameSchemaType = z.infer<Awaited<ReturnType<ReturnType<typeof fullNameSchema>>>>
-export type RestrictedEditingNameSchemaType = z.infer<
-  Awaited<ReturnType<ReturnType<typeof restrictedEditingNameSchema>>>
->
+export type FullNameSchemaType = z.infer<typeof fullNameSchema>
+export type RestrictedEditingNameSchemaType = z.infer<typeof restrictedEditingNameSchema>

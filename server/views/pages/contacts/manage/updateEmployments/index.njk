@@ -1,0 +1,114 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+
+{% extends "partials/layout.njk" %}§
+
+{% set pageTitle = "Edit employment information for contact - Contacts - DPS" %}
+
+{% block content %}
+  {% include 'partials/successNotificationBanner.njk' %}
+  {{ miniProfile(prisonerDetails) }}
+  <div class="govuk-grid-row govuk-!-static-margin-bottom-5">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-!-static-margin-bottom-7">
+        <span class="govuk-caption-l">Edit professional information</span>
+        <h1 class="govuk-heading-l">Edit employment information for {{ contactNames | formatNameFirstNameFirst }}</h1>
+      </div>
+
+      {% if employments.length %}
+        {% for employment in employments %}
+          {{ govukSummaryList({
+            card: {
+              title: {
+                text: ("Active employer: " if employment.isActive else "Past employer: ") + employment.employer.organisationName
+              },
+              actions: {
+                items: [
+                  {
+                    href: "#",
+                    text: "Delete employer",
+                    classes: "govuk-link--no-visited-state"
+                  }
+                ]
+              }
+            },
+            rows: [
+              {
+                key: {
+                text: "Employer name"
+              },
+                value: {
+                text: employment.employer.organisationName
+              },
+                actions: {
+                items: [
+                  {
+                    href: "#",
+                    text: "Change organisation",
+                    classes: "govuk-link--no-visited-state"
+                  }
+                ]
+              }
+              },
+              {
+                key: {
+                text: "Employer’s primary address"
+              },
+                value: {
+                html: (employment.employer | businessAddressToLines or 'Not provided') | escape | nl2br
+              }
+              },
+              {
+                key: {
+                text: "Business phone number at primary address"
+              },
+                value: {
+                text: (employment.employer.businessPhoneNumber + ((", ext. " + employment.employer.businessPhoneNumberExtension) if employment.employer.businessPhoneNumberExtension else "")) if employment.employer.businessPhoneNumber else "Not provided"
+              }
+              },
+              {
+                key: {
+                text: "Employment status"
+              },
+                value: {
+                text: "Active" if employment.isActive else "Inactive"
+              },
+                actions: {
+                items: [
+                  {
+                    href: "#",
+                    text: "Change status",
+                    classes: "govuk-link--no-visited-state",
+                    visuallyHiddenText: "of the employment with"
+                  }
+                ]
+              }
+              }
+            ]
+          }) }}
+        {% endfor %}
+      {% else %}
+        <p class="govuk-body">No employers recorded.</p>
+      {% endif %}
+
+      {{ govukButton({
+        text: "Add another employer" if employments.length else "Add employer",
+        href: "#",
+        classes: "govuk-button--secondary govuk-!-static-margin-top-5",
+        preventDoubleClick: true
+      }) }}
+
+      <form method='POST'>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        <div class="govuk-button-group">
+          {{ govukButton({
+            html: "Confirm and save",
+            preventDoubleClick: true
+          }) }}
+          <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ returnPoint.url }}" data-qa="cancel-button">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

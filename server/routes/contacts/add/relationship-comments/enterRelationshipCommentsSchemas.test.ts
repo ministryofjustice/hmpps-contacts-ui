@@ -46,8 +46,7 @@ describe('enterRelationshipCommentsSchemas', () => {
     })
 
     const doValidate = async (form: Form) => {
-      const schema = await enterRelationshipCommentsSchema()()
-      return schema.safeParse(form)
+      return enterRelationshipCommentsSchema.safeParse(form)
     }
   })
 })

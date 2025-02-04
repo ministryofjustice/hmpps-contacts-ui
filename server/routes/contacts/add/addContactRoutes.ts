@@ -101,7 +101,7 @@ const AddContactRoutes = (
   router.post(
     '/prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId',
     ensureInAddContactJourney(),
-    validate(fullNameSchema()),
+    validate(fullNameSchema),
     asyncMiddleware(enterNameController.POST),
   )
 
@@ -191,7 +191,7 @@ const AddContactRoutes = (
   router.post(
     '/prisoner/:prisonerNumber/contacts/create/enter-relationship-comments/:journeyId',
     ensureInAddContactJourney(),
-    validate(enterRelationshipCommentsSchema()),
+    validate(enterRelationshipCommentsSchema),
     asyncMiddleware(enterRelationshipCommentsController.POST),
   )
 

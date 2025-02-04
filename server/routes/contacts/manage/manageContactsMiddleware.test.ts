@@ -32,7 +32,7 @@ describe('manageContactsMiddleware', () => {
         lastTouched: lastTouchedBeforeCall.toISOString(),
       }
 
-      ensureInManageContactsJourney()(req, res, next)
+      ensureInManageContactsJourney(req, res, next)
 
       expect(next).toHaveBeenCalledTimes(1)
       expect(new Date(req.session.manageContactsJourneys[journeyId].lastTouched).getTime()).toBeGreaterThan(
@@ -44,14 +44,14 @@ describe('manageContactsMiddleware', () => {
       it('should return to start if the journey is not in the session and there is no prisoner param', () => {
         req.session.manageContactsJourneys = {}
 
-        ensureInManageContactsJourney()(req, res, next)
+        ensureInManageContactsJourney(req, res, next)
 
         expect(next).toHaveBeenCalledTimes(0)
         expect(res.redirect).toHaveBeenCalledWith('/contacts/manage/start')
       })
 
       it('should return to start if no journeys at all and there is no prisoner param', () => {
-        ensureInManageContactsJourney()(req, res, next)
+        ensureInManageContactsJourney(req, res, next)
 
         expect(next).toHaveBeenCalledTimes(0)
         expect(res.redirect).toHaveBeenCalledWith('/contacts/manage/start')
@@ -63,7 +63,7 @@ describe('manageContactsMiddleware', () => {
         req.params = { journeyId, prisonerNumber }
         req.session.manageContactsJourneys = {}
 
-        ensureInManageContactsJourney()(req, res, next)
+        ensureInManageContactsJourney(req, res, next)
 
         expect(next).toHaveBeenCalledTimes(0)
         expect(res.redirect).toHaveBeenCalledWith('/prisoner/A1234BC/contacts/list')
@@ -71,7 +71,7 @@ describe('manageContactsMiddleware', () => {
 
       it('should redirect to prisoner contact list if the journey is not in the session and there are no journeys at all', () => {
         req.params = { journeyId, prisonerNumber }
-        ensureInManageContactsJourney()(req, res, next)
+        ensureInManageContactsJourney(req, res, next)
 
         expect(next).toHaveBeenCalledTimes(0)
         expect(res.redirect).toHaveBeenCalledWith('/prisoner/A1234BC/contacts/list')

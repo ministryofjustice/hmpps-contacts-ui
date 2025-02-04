@@ -1,9 +1,6 @@
-import { components } from '../@types/contactsApi'
+import EmploymentDetails = journeys.EmploymentDetails
 
-export const employmentSorter = (
-  a: components['schemas']['EmploymentDetails'],
-  b: components['schemas']['EmploymentDetails'],
-) =>
+export const employmentSorter = (a: EmploymentDetails, b: EmploymentDetails) =>
   Number(b.isActive) - Number(a.isActive) ||
   a.employer.organisationName.localeCompare(b.employer.organisationName) ||
-  b.employmentId - a.employmentId
+  (b.employmentId ?? 0) - (a.employmentId ?? 0)

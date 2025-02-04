@@ -1,12 +1,13 @@
-import { Router } from 'express'
-import { validate } from '../../../middleware/validationMiddleware'
+import { RequestHandler, Router } from 'express'
+import { z } from 'zod'
+import { SchemaFactory, validate } from '../../../middleware/validationMiddleware'
 import AuditService from '../../../services/auditService'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import { ensureInManageContactsJourney, prepareStandaloneManageContactJourney } from './manageContactsMiddleware'
 import StartManageContactsJourneyController from './start/startManageContactsJourneyController'
 import PrisonerSearchController from './prisoner-search/prisonerSearchController'
 import PrisonerSearchResultsController from './prisoner-search/prisonerSearchResultsController'
-import { prisonerSearchSchemaFactory } from './prisoner-search/prisonerSearchSchema'
+import { prisonerSearchSchema } from './prisoner-search/prisonerSearchSchema'
 import ListContactsController from './list/listContactsController'
 import { ContactsService, PrisonerSearchService } from '../../../services'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
@@ -16,12 +17,12 @@ import ReferenceDataService from '../../../services/referenceDataService'
 import ManageSpokenLanguageController from './spoken-language/manageSpokenLanguageController'
 import ManageContactAddPhoneController from './phone/add/manageContactAddPhoneController'
 import ManageContactStaffController from './staff/manageContactStaffController'
-import { phoneNumberSchemaFactory } from './phone/phoneSchemas'
+import { phoneNumberSchema } from './phone/phoneSchemas'
 import ManageInterpreterController from './interpreter/manageInterpreterController'
 import ManageContactEditPhoneController from './phone/edit/manageContactEditPhoneController'
 import ManageDomesticStatusController from './domestic-status/manageDomesticStatusController'
 import ManageContactDeletePhoneController from './phone/delete/manageContactDeletePhoneController'
-import { identitySchemaFactory } from './identities/IdentitySchemas'
+import { identitySchema } from './identities/IdentitySchemas'
 import ManageContactAddIdentityController from './identities/add/manageContactAddIdentityController'
 import ManageContactEditIdentityController from './identities/edit/manageContactEditIdentityController'
 import ManageContactDeleteIdentityController from './identities/delete/manageContactDeleteIdentityController'
@@ -33,7 +34,7 @@ import ManageRelationshipCommentsController from './relationship/manageRelations
 import { restrictedEditingNameSchema } from '../common/name/nameSchemas'
 import ManageContactAddEmailController from './email/add/manageContactAddEmailController'
 import ManageContactEditEmailController from './email/edit/manageContactEditEmailController'
-import { emailSchemaFactory } from './email/emailSchemas'
+import { emailSchema } from './email/emailSchemas'
 import ManageEmergencyContactController from './relationship/manageEmergencyContactController'
 import ManageContactRelationshipController from './relationship/manageContactRelationshipController'
 import { selectRelationshipSchemaFactory } from '../common/relationship/selectRelationshipSchemas'
@@ -58,6 +59,10 @@ import ManageContactEditAddressPhoneController from './phone/edit-address-phone/
 import ManageContactDeleteAddressPhoneController from './phone/delete-address-phone/manageContactDeleteAddressPhoneController'
 import UsePrisonerAddressController from './addresses/use-prisoner-address/usePrisonerAddressController'
 import PrisonerAddressService from '../../../services/prisonerAddressService'
+import { PageHandler } from '../../../interfaces/pageHandler'
+import UpdateEmploymentsController from './update-employments/updateEmploymentsController'
+import { ensureInUpdateEmploymentsJourney } from './update-employments/updateEmploymentsMiddleware'
+import UpdateEmploymentsStartController from './update-employments/start/updateEmploymentsStartController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -69,531 +74,317 @@ const ManageContactsRoutes = (
 ) => {
   const router = Router({ mergeParams: true })
 
+  const get = (
+    path: string,
+    controller: PageHandler,
+    ...handlers: (RequestHandler | RequestHandler<journeys.PrisonerJourneyParams>)[]
+  ) => router.get(path, ...handlers, logPageViewMiddleware(auditService, controller), asyncMiddleware(controller.GET))
+  const post = <P extends { [key: string]: string }>(
+    path: string,
+    controller: PageHandler,
+    ...handlers: (RequestHandler<P> | RequestHandler<journeys.PrisonerJourneyParams>)[]
+  ) => router.post(path, ...(handlers as RequestHandler[]), asyncMiddleware(controller.POST!))
+
+  const standAloneJourneyRoute = <P extends { [key: string]: string }>({
+    path,
+    controller,
+    schema,
+    noValidation,
+  }: {
+    path: string
+    controller: PageHandler
+    schema?: z.ZodTypeAny | SchemaFactory<P>
+    noValidation?: boolean
+  }) => {
+    if (!schema && !noValidation) {
+      throw Error('Missing validation schema for POST route')
+    }
+    get(path, controller, prepareStandaloneManageContactJourney)
+    if (schema) {
+      post(path, controller, prepareStandaloneManageContactJourney, validate(schema))
+    } else {
+      post(path, controller, prepareStandaloneManageContactJourney)
+    }
+  }
+
+  const journeyRoute = <P extends { [key: string]: string }>({
+    path,
+    controller,
+    journeyEnsurer,
+    schema,
+    noValidation,
+  }: {
+    path: string
+    controller: PageHandler
+    journeyEnsurer:
+      | RequestHandler<journeys.PrisonerJourneyParams>
+      | (RequestHandler<journeys.PrisonerJourneyParams> | RequestHandler)[]
+    schema?: z.ZodTypeAny | SchemaFactory<P>
+    noValidation?: boolean
+  }) => {
+    if (!schema && !noValidation) {
+      throw Error('Missing validation schema for POST route')
+    }
+
+    const journeyMiddleware = Array.isArray(journeyEnsurer) ? journeyEnsurer : [journeyEnsurer]
+
+    get(path, controller, ...journeyMiddleware)
+    if (schema) {
+      post(path, controller, ...journeyMiddleware, validate(schema))
+    } else {
+      post(path, controller, ...journeyMiddleware)
+    }
+  }
+
+  router.get('/prisoner/:prisonerNumber/*', populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService))
+
   // Part 1: Start manage contacts
-  const startController = new StartManageContactsJourneyController()
-  router.get(
-    '/contacts/manage/start',
-    logPageViewMiddleware(auditService, startController),
-    asyncMiddleware(startController.GET),
-  )
+  get('/contacts/manage/start', new StartManageContactsJourneyController())
 
   // Part 2: Prisoner search
-  const prisonerSearchController = new PrisonerSearchController()
-  router.get(
-    '/contacts/manage/prisoner-search/:journeyId',
-    ensureInManageContactsJourney(),
-    logPageViewMiddleware(auditService, prisonerSearchController),
-    asyncMiddleware(prisonerSearchController.GET),
-  )
-  router.post(
-    '/contacts/manage/prisoner-search/:journeyId',
-    ensureInManageContactsJourney(),
-    validate(prisonerSearchSchemaFactory()),
-    asyncMiddleware(prisonerSearchController.POST),
-  )
+  journeyRoute({
+    path: '/contacts/manage/prisoner-search/:journeyId',
+    controller: new PrisonerSearchController(),
+    journeyEnsurer: ensureInManageContactsJourney,
+    schema: prisonerSearchSchema,
+  })
 
   // Part 3: Prisoner search results
-  const prisonerSearchResultsController = new PrisonerSearchResultsController(prisonerSearchService)
-  router.get(
-    '/contacts/manage/prisoner-search-results/:journeyId',
-    ensureInManageContactsJourney(),
-    logPageViewMiddleware(auditService, prisonerSearchResultsController),
-    asyncMiddleware(prisonerSearchResultsController.GET),
-  )
-  router.post(
-    '/contacts/manage/prisoner-search-results/:journeyId',
-    ensureInManageContactsJourney(),
-    validate(prisonerSearchSchemaFactory()),
-    asyncMiddleware(prisonerSearchResultsController.POST),
-  )
+  journeyRoute({
+    path: '/contacts/manage/prisoner-search/:journeyId',
+    controller: new PrisonerSearchController(),
+    journeyEnsurer: ensureInManageContactsJourney,
+    schema: prisonerSearchSchema,
+  })
+
+  journeyRoute({
+    path: '/contacts/manage/prisoner-search-results/:journeyId',
+    controller: new PrisonerSearchResultsController(prisonerSearchService),
+    journeyEnsurer: ensureInManageContactsJourney,
+    schema: prisonerSearchSchema,
+  })
 
   // Part 4: List contacts for a prisoner
-  const listContactsController = new ListContactsController(contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/list',
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, listContactsController),
-    asyncMiddleware(listContactsController.GET),
-  )
+  get('/prisoner/:prisonerNumber/contacts/list', new ListContactsController(contactsService))
 
   // Part 5: View one contact
-  const contactDetailsController = new ContactDetailsController(
-    contactsService,
-    referenceDataService,
-    restrictionsService,
-  )
-  router.get(
+  get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId',
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, contactDetailsController),
-    asyncMiddleware(contactDetailsController.GET),
+    new ContactDetailsController(contactsService, referenceDataService, restrictionsService),
   )
 
   // Part 6: Manage the attribute of one contact (phones, addresses, IDs, emails, restrictions)
-  const spokenLanguageController = new ManageSpokenLanguageController(contactsService, referenceDataService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/language',
-    prepareStandaloneManageContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, spokenLanguageController),
-    asyncMiddleware(spokenLanguageController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/language',
-    prepareStandaloneManageContactJourney(),
-    asyncMiddleware(spokenLanguageController.POST),
-  )
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/language',
+    controller: new ManageSpokenLanguageController(contactsService, referenceDataService),
+    noValidation: true,
+  })
 
-  const manageInterpreterController = new ManageInterpreterController(contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/interpreter',
-    prepareStandaloneManageContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, manageInterpreterController),
-    asyncMiddleware(manageInterpreterController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/interpreter',
-    prepareStandaloneManageContactJourney(),
-    asyncMiddleware(manageInterpreterController.POST),
-  )
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/interpreter',
+    controller: new ManageInterpreterController(contactsService),
+    noValidation: true,
+  })
 
-  const manageApprovedToVisitController = new ManageApprovedToVisitController(contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/approved-to-visit',
-    prepareStandaloneManageContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, manageApprovedToVisitController),
-    asyncMiddleware(manageApprovedToVisitController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/approved-to-visit',
-    prepareStandaloneManageContactJourney(),
-    asyncMiddleware(manageApprovedToVisitController.POST),
-  )
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/approved-to-visit',
+    controller: new ManageApprovedToVisitController(contactsService),
+    noValidation: true,
+  })
 
-  const manageContactStaffController = new ManageContactStaffController(contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/staff',
-    prepareStandaloneManageContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, manageContactStaffController),
-    asyncMiddleware(manageContactStaffController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/staff',
-    prepareStandaloneManageContactJourney(),
-    asyncMiddleware(manageContactStaffController.POST),
-  )
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/staff',
+    controller: new ManageContactStaffController(contactsService),
+    noValidation: true,
+  })
 
-  const manageContactAddPhoneController = new ManageContactAddPhoneController(contactsService, referenceDataService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/create',
-    prepareStandaloneManageContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, manageContactAddPhoneController),
-    asyncMiddleware(manageContactAddPhoneController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/create',
-    prepareStandaloneManageContactJourney(),
-    validate(phoneNumberSchemaFactory()),
-    asyncMiddleware(manageContactAddPhoneController.POST),
-  )
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/create',
+    controller: new ManageContactAddPhoneController(contactsService, referenceDataService),
+    schema: phoneNumberSchema,
+  })
 
-  const manageContactEditPhoneController = new ManageContactEditPhoneController(contactsService, referenceDataService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/edit',
-    prepareStandaloneManageContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, manageContactEditPhoneController),
-    asyncMiddleware(manageContactEditPhoneController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/edit',
-    prepareStandaloneManageContactJourney(),
-    validate(phoneNumberSchemaFactory()),
-    asyncMiddleware(manageContactEditPhoneController.POST),
-  )
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/edit',
+    controller: new ManageContactEditPhoneController(contactsService, referenceDataService),
+    schema: phoneNumberSchema,
+  })
 
-  const manageContactDeletePhoneController = new ManageContactDeletePhoneController(contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/delete',
-    prepareStandaloneManageContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, manageContactDeletePhoneController),
-    asyncMiddleware(manageContactDeletePhoneController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/delete',
-    prepareStandaloneManageContactJourney(),
-    asyncMiddleware(manageContactDeletePhoneController.POST),
-  )
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/delete',
+    controller: new ManageContactDeletePhoneController(contactsService),
+    noValidation: true,
+  })
 
-  const manageContactAddIdentityController = new ManageContactAddIdentityController(
-    contactsService,
-    referenceDataService,
-  )
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/identity/create',
-    prepareStandaloneManageContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, manageContactAddIdentityController),
-    asyncMiddleware(manageContactAddIdentityController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/identity/create',
-    prepareStandaloneManageContactJourney(),
-    validate(identitySchemaFactory()),
-    asyncMiddleware(manageContactAddIdentityController.POST),
-  )
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/identity/create',
+    controller: new ManageContactAddIdentityController(contactsService, referenceDataService),
+    schema: identitySchema,
+  })
 
-  const manageContactEditIdentityController = new ManageContactEditIdentityController(
-    contactsService,
-    referenceDataService,
-  )
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:contactIdentityId/edit',
-    prepareStandaloneManageContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, manageContactEditIdentityController),
-    asyncMiddleware(manageContactEditIdentityController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:contactIdentityId/edit',
-    prepareStandaloneManageContactJourney(),
-    validate(identitySchemaFactory()),
-    asyncMiddleware(manageContactEditIdentityController.POST),
-  )
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:contactIdentityId/edit',
+    controller: new ManageContactEditIdentityController(contactsService, referenceDataService),
+    schema: identitySchema,
+  })
 
-  const manageContactDeleteIdentityController = new ManageContactDeleteIdentityController(contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:contactIdentityId/delete',
-    prepareStandaloneManageContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, manageContactDeleteIdentityController),
-    asyncMiddleware(manageContactDeleteIdentityController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:contactIdentityId/delete',
-    prepareStandaloneManageContactJourney(),
-    asyncMiddleware(manageContactDeleteIdentityController.POST),
-  )
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:contactIdentityId/delete',
+    controller: new ManageContactDeleteIdentityController(contactsService),
+    noValidation: true,
+  })
 
-  const manageDomesticStatusController = new ManageDomesticStatusController(contactsService, referenceDataService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/domestic-status',
-    prepareStandaloneManageContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, manageDomesticStatusController),
-    asyncMiddleware(manageDomesticStatusController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/domestic-status',
-    prepareStandaloneManageContactJourney(),
-    asyncMiddleware(manageDomesticStatusController.POST),
-  )
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/domestic-status',
+    controller: new ManageDomesticStatusController(contactsService, referenceDataService),
+    noValidation: true,
+  })
 
-  const manageContactUpdateDateOfBirthController = new ManageContactEnterDobController(contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob',
-    prepareStandaloneManageContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, manageContactUpdateDateOfBirthController),
-    asyncMiddleware(manageContactUpdateDateOfBirthController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob',
-    prepareStandaloneManageContactJourney(),
-    validate(enterDobSchema()),
-    asyncMiddleware(manageContactUpdateDateOfBirthController.POST),
-  )
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-dob',
+    controller: new ManageContactEnterDobController(contactsService),
+    schema: enterDobSchema(),
+  })
 
-  const manageGenderController = new ManageGenderController(contactsService, referenceDataService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/gender',
-    prepareStandaloneManageContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, manageGenderController),
-    asyncMiddleware(manageGenderController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/gender',
-    prepareStandaloneManageContactJourney(),
-    asyncMiddleware(manageGenderController.POST),
-  )
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/gender',
+    controller: new ManageGenderController(contactsService, referenceDataService),
+    noValidation: true,
+  })
 
-  const updateNameController = new UpdateNameController(referenceDataService, contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/name',
-    prepareStandaloneManageContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, updateNameController),
-    asyncMiddleware(updateNameController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/name',
-    prepareStandaloneManageContactJourney(),
-    validate(restrictedEditingNameSchema()),
-    asyncMiddleware(updateNameController.POST),
-  )
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/name',
+    controller: new UpdateNameController(referenceDataService, contactsService),
+    schema: restrictedEditingNameSchema,
+  })
 
-  const manageEmergencyContactStatusController = new ManageEmergencyContactController(contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/emergency-contact',
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    prepareStandaloneManageContactJourney(),
-    logPageViewMiddleware(auditService, manageEmergencyContactStatusController),
-    asyncMiddleware(manageEmergencyContactStatusController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/emergency-contact',
-    prepareStandaloneManageContactJourney(),
-    asyncMiddleware(manageEmergencyContactStatusController.POST),
-  )
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/emergency-contact',
+    controller: new ManageEmergencyContactController(contactsService),
+    noValidation: true,
+  })
 
-  const updateRelationshipController = new ManageContactRelationshipController(contactsService, referenceDataService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-relationship',
-    prepareStandaloneManageContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, updateRelationshipController),
-    asyncMiddleware(updateRelationshipController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-relationship',
-    prepareStandaloneManageContactJourney(),
-    validate(selectRelationshipSchemaFactory()),
-    asyncMiddleware(updateRelationshipController.POST),
-  )
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-relationship',
+    controller: new ManageContactRelationshipController(contactsService, referenceDataService),
+    schema: selectRelationshipSchemaFactory(),
+  })
 
-  const manageAddressesController = new ManageAddressesController(contactsService)
-  router.get(
+  get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/view-addresses',
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, manageAddressesController),
-    asyncMiddleware(manageAddressesController.GET),
+    new ManageAddressesController(contactsService),
   )
 
-  const manageNextOfKinContactController = new ManageNextOfKinContactController(contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/next-of-kin',
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    prepareStandaloneManageContactJourney(),
-    logPageViewMiddleware(auditService, manageNextOfKinContactController),
-    asyncMiddleware(manageNextOfKinContactController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/next-of-kin',
-    prepareStandaloneManageContactJourney(),
-    asyncMiddleware(manageNextOfKinContactController.POST),
-  )
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/next-of-kin',
+    controller: new ManageNextOfKinContactController(contactsService),
+    noValidation: true,
+  })
 
-  const manageRelationshipStatusController = new ManageRelationshipStatusController(contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/relationship-status',
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    prepareStandaloneManageContactJourney(),
-    logPageViewMiddleware(auditService, manageRelationshipStatusController),
-    asyncMiddleware(manageRelationshipStatusController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/relationship-status',
-    prepareStandaloneManageContactJourney(),
-    asyncMiddleware(manageRelationshipStatusController.POST),
-  )
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/relationship-status',
+    controller: new ManageRelationshipStatusController(contactsService),
+    noValidation: true,
+  })
 
-  const manageContactAddEmailController = new ManageContactAddEmailController(contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/create',
-    prepareStandaloneManageContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, manageContactAddEmailController),
-    asyncMiddleware(manageContactAddEmailController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/create',
-    prepareStandaloneManageContactJourney(),
-    validate(emailSchemaFactory()),
-    asyncMiddleware(manageContactAddEmailController.POST),
-  )
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/create',
+    controller: new ManageContactAddEmailController(contactsService),
+    schema: emailSchema,
+  })
 
-  const manageContactEditEmailController = new ManageContactEditEmailController(contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/edit',
-    prepareStandaloneManageContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, manageContactEditEmailController),
-    asyncMiddleware(manageContactEditEmailController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/edit',
-    prepareStandaloneManageContactJourney(),
-    validate(emailSchemaFactory()),
-    asyncMiddleware(manageContactEditEmailController.POST),
-  )
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/edit',
+    controller: new ManageContactEditEmailController(contactsService),
+    schema: emailSchema,
+  })
 
-  const manageContactDeleteEmailController = new ManageContactDeleteEmailController(contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/delete',
-    prepareStandaloneManageContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, manageContactDeleteEmailController),
-    asyncMiddleware(manageContactDeleteEmailController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/delete',
-    prepareStandaloneManageContactJourney(),
-    asyncMiddleware(manageContactDeleteEmailController.POST),
-  )
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/delete',
+    controller: new ManageContactDeleteEmailController(contactsService),
+    noValidation: true,
+  })
 
-  const manageRelationshipCommentsController = new ManageRelationshipCommentsController(contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/relationship-comments',
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    prepareStandaloneManageContactJourney(),
-    logPageViewMiddleware(auditService, manageRelationshipCommentsController),
-    asyncMiddleware(manageRelationshipCommentsController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/relationship-comments',
-    prepareStandaloneManageContactJourney(),
-    validate(enterRelationshipCommentsSchema()),
-    asyncMiddleware(manageRelationshipCommentsController.POST),
-  )
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/relationship-comments',
+    controller: new ManageRelationshipCommentsController(contactsService),
+    schema: enterRelationshipCommentsSchema,
+  })
 
   // Addresses
   const startAddressJourneyController = new StartAddressJourneyController(contactsService)
   // Add
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/start',
-    logPageViewMiddleware(auditService, startAddressJourneyController),
-    asyncMiddleware(startAddressJourneyController.GET),
-  )
+  get('/prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/start', startAddressJourneyController)
   // Edit
-  router.get(
+  get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/edit/:contactAddressId/start',
-    logPageViewMiddleware(auditService, startAddressJourneyController),
-    asyncMiddleware(startAddressJourneyController.GET),
+    startAddressJourneyController,
   )
 
-  const addressTypeController = new AddressTypeController(referenceDataService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/select-type/:journeyId',
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    ensureInAddressJourney(),
-    logPageViewMiddleware(auditService, addressTypeController),
-    asyncMiddleware(addressTypeController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/select-type/:journeyId',
-    ensureInAddressJourney(),
-    validate(addressTypeSchema()),
-    asyncMiddleware(addressTypeController.POST),
-  )
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/select-type/:journeyId',
+    controller: new AddressTypeController(referenceDataService),
+    journeyEnsurer: ensureInAddressJourney,
+    schema: addressTypeSchema,
+  })
 
-  const enterAddressController = new EnterAddressController(referenceDataService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/enter-address/:journeyId',
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    ensureInAddressJourney(),
-    logPageViewMiddleware(auditService, enterAddressController),
-    asyncMiddleware(enterAddressController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/enter-address/:journeyId',
-    ensureInAddressJourney(),
-    validate(addressLinesSchema()),
-    asyncMiddleware(enterAddressController.POST),
-  )
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/enter-address/:journeyId',
+    controller: new EnterAddressController(referenceDataService),
+    journeyEnsurer: ensureInAddressJourney,
+    schema: addressLinesSchema,
+  })
 
-  const usePrisonerAddressController = new UsePrisonerAddressController(prisonerAddressService)
-  router.get(
+  get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/use-prisoner-address/:journeyId',
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    ensureInAddressJourney(),
-    logPageViewMiddleware(auditService, usePrisonerAddressController),
-    asyncMiddleware(usePrisonerAddressController.GET),
+    new UsePrisonerAddressController(prisonerAddressService),
+    ensureInAddressJourney,
   )
 
-  const addressMetadataController = new AddressMetadataController(referenceDataService, contactsService)
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/address-metadata/:journeyId',
+    controller: new AddressMetadataController(referenceDataService, contactsService),
+    journeyEnsurer: ensureInAddressJourney,
+    schema: addressMetadataSchema,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/check-answers/:journeyId',
+    controller: new AddressCheckAnswersController(referenceDataService, contactsService),
+    journeyEnsurer: ensureInAddressJourney,
+    noValidation: true,
+  })
+
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/:contactAddressId/phone/create',
+    controller: new ManageContactAddAddressPhoneController(contactsService, referenceDataService),
+    schema: phoneNumberSchema,
+  })
+
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/:contactAddressId/phone/:contactAddressPhoneId/edit',
+    controller: new ManageContactEditAddressPhoneController(contactsService, referenceDataService),
+    schema: phoneNumberSchema,
+  })
+
+  standAloneJourneyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/:contactAddressId/phone/:contactAddressPhoneId/delete',
+    controller: new ManageContactDeleteAddressPhoneController(contactsService),
+    noValidation: true,
+  })
+
+  // Edit employments
   router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/address-metadata/:journeyId',
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    ensureInAddressJourney(),
-    logPageViewMiddleware(auditService, addressMetadataController),
-    asyncMiddleware(addressMetadataController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/address-metadata/:journeyId',
-    ensureInAddressJourney(),
-    validate(addressMetadataSchema()),
-    asyncMiddleware(addressMetadataController.POST),
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments',
+    asyncMiddleware(new UpdateEmploymentsStartController(contactsService).GET),
   )
 
-  const addressCheckAnswersController = new AddressCheckAnswersController(referenceDataService, contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/check-answers/:journeyId',
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    ensureInAddressJourney(),
-    logPageViewMiddleware(auditService, addressCheckAnswersController),
-    asyncMiddleware(addressCheckAnswersController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/check-answers/:journeyId',
-    ensureInAddressJourney(),
-    asyncMiddleware(addressCheckAnswersController.POST),
-  )
-
-  const manageContactAddAddressPhoneController = new ManageContactAddAddressPhoneController(
-    contactsService,
-    referenceDataService,
-  )
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/:contactAddressId/phone/create',
-    prepareStandaloneManageContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, manageContactAddAddressPhoneController),
-    asyncMiddleware(manageContactAddAddressPhoneController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/:contactAddressId/phone/create',
-    prepareStandaloneManageContactJourney(),
-    validate(phoneNumberSchemaFactory()),
-    asyncMiddleware(manageContactAddAddressPhoneController.POST),
-  )
-
-  const manageContactEditAddressPhoneController = new ManageContactEditAddressPhoneController(
-    contactsService,
-    referenceDataService,
-  )
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/:contactAddressId/phone/:contactAddressPhoneId/edit',
-    prepareStandaloneManageContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, manageContactEditAddressPhoneController),
-    asyncMiddleware(manageContactEditAddressPhoneController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/:contactAddressId/phone/:contactAddressPhoneId/edit',
-    prepareStandaloneManageContactJourney(),
-    validate(phoneNumberSchemaFactory()),
-    asyncMiddleware(manageContactEditAddressPhoneController.POST),
-  )
-
-  const manageContactDeleteAddressPhoneController = new ManageContactDeleteAddressPhoneController(contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/:contactAddressId/phone/:contactAddressPhoneId/delete',
-    prepareStandaloneManageContactJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, manageContactDeleteAddressPhoneController),
-    asyncMiddleware(manageContactDeleteAddressPhoneController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/:contactAddressId/phone/:contactAddressPhoneId/delete',
-    prepareStandaloneManageContactJourney(),
-    asyncMiddleware(manageContactDeleteAddressPhoneController.POST),
-  )
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments/:journeyId',
+    controller: new UpdateEmploymentsController(),
+    journeyEnsurer: ensureInUpdateEmploymentsJourney,
+    noValidation: true,
+  })
 
   return router
 }

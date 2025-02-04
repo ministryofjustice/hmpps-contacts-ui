@@ -129,8 +129,7 @@ describe('createContactEnterNameSchema', () => {
     )
 
     const doValidate = async (form: Form) => {
-      const schema = await fullNameSchema()()
-      return schema.safeParse(form)
+      return fullNameSchema.safeParse(form)
     }
   })
 })

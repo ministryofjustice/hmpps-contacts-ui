@@ -140,8 +140,7 @@ describe('addressMetadataSchema', () => {
     })
 
     const doValidate = async (form: Form) => {
-      const schema = await addressMetadataSchema()()
-      return schema.safeParse(form)
+      return addressMetadataSchema.safeParse(form)
     }
   })
 })

@@ -12,22 +12,20 @@ const PHONE_IS_INVALID = 'The phone number you entered is invalid, check the for
 
 const PHONE_REGEX = /^\+?[\d\s()]*$/
 
-export const phoneNumberSchemaFactory = () => async () => {
-  return createSchema({
-    phoneNumber: z
-      .string({ message: PHONE_NUMBER_REQUIRED_MESSAGE })
-      .max(20, PHONE_NUMBER_TOO_LONG_ERROR_MSG)
-      .regex(PHONE_REGEX, PHONE_IS_INVALID)
-      .refine(val => val?.trim().length > 0, { message: PHONE_NUMBER_REQUIRED_MESSAGE }),
-    type: z
-      .string({ message: TYPE_REQUIRED_MESSAGE })
-      .refine(val => val?.trim().length > 0, { message: TYPE_REQUIRED_MESSAGE }),
-    extension: z
-      .string()
-      .max(7, EXT_TOO_LONG_ERROR_MSG)
-      .optional()
-      .transform(val => (val?.trim()?.length ? val?.trim() : undefined)),
-  })
-}
+export const phoneNumberSchema = createSchema({
+  phoneNumber: z
+    .string({ message: PHONE_NUMBER_REQUIRED_MESSAGE })
+    .max(20, PHONE_NUMBER_TOO_LONG_ERROR_MSG)
+    .regex(PHONE_REGEX, PHONE_IS_INVALID)
+    .refine(val => val?.trim().length > 0, { message: PHONE_NUMBER_REQUIRED_MESSAGE }),
+  type: z
+    .string({ message: TYPE_REQUIRED_MESSAGE })
+    .refine(val => val?.trim().length > 0, { message: TYPE_REQUIRED_MESSAGE }),
+  extension: z
+    .string()
+    .max(7, EXT_TOO_LONG_ERROR_MSG)
+    .optional()
+    .transform(val => (val?.trim()?.length ? val?.trim() : undefined)),
+})
 
-export type PhoneNumberSchemaType = z.infer<Awaited<ReturnType<ReturnType<typeof phoneNumberSchemaFactory>>>>
+export type PhoneNumberSchemaType = z.infer<typeof phoneNumberSchema>

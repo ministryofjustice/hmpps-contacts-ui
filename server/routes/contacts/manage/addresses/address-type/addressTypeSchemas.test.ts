@@ -19,8 +19,7 @@ describe('addressTypeSchemaFactory', () => {
     })
 
     const doValidate = async (form: Form) => {
-      const schema = await addressTypeSchema()()
-      return schema.safeParse(form)
+      return addressTypeSchema.safeParse(form)
     }
   })
 })

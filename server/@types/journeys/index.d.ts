@@ -1,4 +1,6 @@
 declare namespace journeys {
+  import OrganisationSummary = contactsApiClientTypes.OrganisationSummary
+
   export interface AddContactJourney {
     id: string
     lastTouched: string
@@ -67,6 +69,15 @@ declare namespace journeys {
     inactivateListPage?: number
   }
 
+  export interface UpdateEmploymentsJourney {
+    id: string
+    lastTouched: string
+    contactId: number
+    contactNames: ContactNames
+    employments: EmploymentDetails[]
+    returnPoint: ReturnPoint
+  }
+
   export interface ReturnPoint {
     url: string
   }
@@ -79,6 +90,12 @@ declare namespace journeys {
     prisonName?: string
     cellLocation?: string
     hasPrimaryAddress: boolean
+  }
+
+  export interface EmploymentDetails {
+    employmentId?: number
+    employer: OrganisationSummary
+    isActive?: boolean
   }
 
   export interface AddRestrictionJourney {

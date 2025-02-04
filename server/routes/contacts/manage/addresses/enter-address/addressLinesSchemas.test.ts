@@ -131,8 +131,7 @@ describe('addressLinesSchemas', () => {
     })
 
     const doValidate = async (form: Form) => {
-      const schema = await addressLinesSchema()()
-      return schema.safeParse(form)
+      return addressLinesSchema.safeParse(form)
     }
   })
 })
