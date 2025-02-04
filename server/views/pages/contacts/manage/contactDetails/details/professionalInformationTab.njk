@@ -2,15 +2,15 @@
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
-    <h1 class="govuk-heading-l">Professional information</h1>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Professional information</h1>
+    </div>
+    <div class="govuk-summary-list govuk-summary-list__actions">
+      <a class="govuk-link govuk-link--no-visited-state" href="{{ "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/update-employments?returnUrl=" + manageContactRelationshipUrl }}">Edit employers</a>
+    </div>
   </div>
-  <div class="govuk-summary-list govuk-summary-list__actions">
-    <a class="govuk-link govuk-link--no-visited-state" href="{{ "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/update-employments?returnUrl=" + manageContactRelationshipUrl }}">Edit employers</a>
-  </div>
-</div>
-<div class="govuk-grid-row">
 {% if contact.employments.length %}
-  <div class="govuk-grid-column-two-thirds">
     {% for employment in contact.employments %}
       {{ govukSummaryList({
         card: {
@@ -54,10 +54,8 @@
         ]
       }) }}
     {% endfor %}
-  </div>
 {% else %}
-  <div class="govuk-grid-column-two-thirds">
     <p class="govuk-body">No employers recorded.</p>
-  </div>
 {% endif %}
+</div>
 </div>
