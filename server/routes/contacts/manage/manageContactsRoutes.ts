@@ -61,8 +61,12 @@ import UsePrisonerAddressController from './addresses/use-prisoner-address/usePr
 import PrisonerAddressService from '../../../services/prisonerAddressService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import UpdateEmploymentsController from './update-employments/updateEmploymentsController'
-import { ensureInUpdateEmploymentsJourney } from './update-employments/updateEmploymentsMiddleware'
+import {
+  ensureInUpdateEmploymentsJourney,
+  ensureValidEmploymentIdx,
+} from './update-employments/updateEmploymentsMiddleware'
 import UpdateEmploymentsStartController from './update-employments/start/updateEmploymentsStartController'
+import SearchOrganisationController from './update-employments/search-organisation/searchOrganisationController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -74,10 +78,10 @@ const ManageContactsRoutes = (
 ) => {
   const router = Router({ mergeParams: true })
 
-  const get = (
+  const get = <P extends { [key: string]: string }>(
     path: string,
     controller: PageHandler,
-    ...handlers: (RequestHandler | RequestHandler<journeys.PrisonerJourneyParams>)[]
+    ...handlers: (RequestHandler | RequestHandler<P>)[]
   ) => router.get(path, ...handlers, logPageViewMiddleware(auditService, controller), asyncMiddleware(controller.GET))
   const post = <P extends { [key: string]: string }>(
     path: string,
@@ -116,9 +120,7 @@ const ManageContactsRoutes = (
   }: {
     path: string
     controller: PageHandler
-    journeyEnsurer:
-      | RequestHandler<journeys.PrisonerJourneyParams>
-      | (RequestHandler<journeys.PrisonerJourneyParams> | RequestHandler)[]
+    journeyEnsurer: RequestHandler<P> | (RequestHandler<P> | RequestHandler)[]
     schema?: z.ZodTypeAny | SchemaFactory<P>
     noValidation?: boolean
   }) => {
@@ -383,6 +385,13 @@ const ManageContactsRoutes = (
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments/:journeyId',
     controller: new UpdateEmploymentsController(),
     journeyEnsurer: ensureInUpdateEmploymentsJourney,
+    noValidation: true,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments/:employmentIdx/search-organisation/:journeyId',
+    controller: new SearchOrganisationController(contactsService),
+    journeyEnsurer: [ensureInUpdateEmploymentsJourney, ensureValidEmploymentIdx],
     noValidation: true,
   })
 

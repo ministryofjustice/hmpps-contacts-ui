@@ -27,6 +27,7 @@ export default class UpdateEmploymentsStartController {
       },
       employments: contact.employments,
       returnPoint: { url: req.query.returnUrl },
+      organisationSearch: { page: 1 },
     }
 
     // Add this journey to the list

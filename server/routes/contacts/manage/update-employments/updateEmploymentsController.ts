@@ -7,10 +7,13 @@ import { employmentSorter } from '../../../../utils/sorters'
 export default class UpdateEmploymentsController implements PageHandler {
   public PAGE_NAME = Page.MANAGE_CONTACT_UPDATE_EMPLOYMENTS_PAGE
 
-  GET = async (req: Request<PrisonerJourneyParams>, res: Response) => {
-    const { journeyId } = req.params
+  GET = async (req: Request<PrisonerJourneyParams & { contactId: string }>, res: Response) => {
+    const { prisonerNumber, contactId, journeyId } = req.params
     const { contactNames, employments, returnPoint } = req.session.updateEmploymentsJourneys![journeyId]!
     res.render('pages/contacts/manage/updateEmployments/index', {
+      prisonerNumber,
+      contactId,
+      journeyId,
       contactNames,
       employments: employments.sort(employmentSorter),
       returnPoint,

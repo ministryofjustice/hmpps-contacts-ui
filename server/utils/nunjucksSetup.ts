@@ -3,7 +3,14 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
-import { initialiseName, formatDate, ageInYears, capitalizeFirstLetter, capitaliseName } from './utils'
+import {
+  initialiseName,
+  formatDate,
+  ageInYears,
+  capitalizeFirstLetter,
+  capitaliseName,
+  convertToSortableColumns,
+} from './utils'
 import config from '../config'
 import logger from '../../logger'
 import { buildErrorSummaryList, findError } from '../middleware/validationMiddleware'
@@ -70,4 +77,5 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('formatNameFirstNameFirst', formatNameFirstNameFirst)
   njkEnv.addFilter('formatRestrictionCardTitle', formatRestrictionCardTitle)
   njkEnv.addFilter('capitalizeFirstLetter', capitalizeFirstLetter)
+  njkEnv.addFilter('convertToSortableColumns', convertToSortableColumns)
 }

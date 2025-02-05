@@ -75,3 +75,38 @@ export const formatDateForApi = (dateOfBirth?: Partial<DateOfBirth>) => {
 export const capitalizeFirstLetter = (val: string) => {
   return val && val.toLowerCase().replace(/^./, val[0]!.toUpperCase())
 }
+
+// add aria-sort attributes to govukTable head row, so that moj-sortable-table css will be applied
+export const convertToSortableColumns = (headings: { text: string; key?: string }[], sort: string) => {
+  const [sortingKey, sortingDirection] = sort.split(',')
+
+  return headings.map(heading => {
+    if (!heading.key) {
+      return heading
+    }
+    if (heading.key === sortingKey) {
+      if (sortingDirection === 'asc') {
+        return {
+          attributes: {
+            'aria-sort': 'ascending',
+          },
+          html: `<a href="?sort=${heading.key},desc"><button>${heading.text}</button></a>`,
+        }
+      }
+      if (sortingDirection === 'desc') {
+        return {
+          attributes: {
+            'aria-sort': 'descending',
+          },
+          html: `<a href="?sort=${heading.key},asc"><button>${heading.text}</button></a>`,
+        }
+      }
+    }
+    return {
+      attributes: {
+        'aria-sort': 'none',
+      },
+      html: `<a href="?sort=${heading.key},asc"><button>${heading.text}</button></a>`,
+    }
+  })
+}

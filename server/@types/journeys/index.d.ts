@@ -76,6 +76,11 @@ declare namespace journeys {
     contactNames: ContactNames
     employments: EmploymentDetails[]
     returnPoint: ReturnPoint
+    organisationSearch: {
+      page: number
+      searchTerm?: string
+      sort?: string
+    }
   }
 
   export interface ReturnPoint {
@@ -166,4 +171,9 @@ declare namespace journeys {
   type YesNoOrDoNotKnow = 'YES' | 'NO' | 'DO_NOT_KNOW'
   type PrisonerJourneyParams = { prisonerNumber: string; journeyId: string }
   export type RestrictionClass = 'CONTACT_GLOBAL' | 'PRISONER_CONTACT'
+
+  export type UpdateEmploymentJourneyParams = PrisonerJourneyParams & {
+    contactId: string
+    employmentIdx: string
+  }
 }
