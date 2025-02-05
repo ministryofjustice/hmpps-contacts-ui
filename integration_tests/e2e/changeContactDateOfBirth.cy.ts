@@ -48,7 +48,9 @@ context('Change Contact Date Of Birth', () => {
     }
     cy.task('stubPatchContactById', { contactId, updated })
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickChangeDateOfBirthLink(contactId)
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
+      .clickChangeDateOfBirthLink(contactId)
 
     Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last') //
       .hasIsKnown('YES')
@@ -97,7 +99,9 @@ context('Change Contact Date Of Birth', () => {
     }
     cy.task('stubPatchContactById', { contactId, updated })
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickChangeDateOfBirthLink(contactId)
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
+      .clickChangeDateOfBirthLink(contactId)
 
     Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last') //
       .hasIsKnown('NO')
@@ -139,6 +143,7 @@ context('Change Contact Date Of Birth', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
       .clickChangeDateOfBirthLink(contactId)
 
     const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last')
@@ -168,6 +173,7 @@ context('Change Contact Date Of Birth', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
       .clickChangeDateOfBirthLink(contactId)
 
     const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last')
@@ -209,6 +215,7 @@ context('Change Contact Date Of Birth', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
       .clickChangeDateOfBirthLink(contactId)
 
     Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last') //
@@ -234,6 +241,7 @@ context('Change Contact Date Of Birth', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
       .clickChangeDateOfBirthLink(contactId)
 
     Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last') //

@@ -45,7 +45,9 @@ context('Manage contact update relationship status active', () => {
   })
 
   it('Can update relationship status active', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickEditRelationshipStatusLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
+      .clickEditRelationshipStatusLink()
 
     Page.verifyOnPage(SelectRelationshipStatusPage, 'First Middle Names Last') //
       .selectIsRelationshipActive('NO')
@@ -63,14 +65,18 @@ context('Manage contact update relationship status active', () => {
   })
 
   it(`Back link goes to manage contacts`, () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickEditRelationshipStatusLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
+      .clickEditRelationshipStatusLink()
 
     Page.verifyOnPage(SelectRelationshipStatusPage, 'First Middle Names Last') //
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
   it(`Cancel goes to manage contacts`, () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickEditRelationshipStatusLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
+      .clickEditRelationshipStatusLink()
 
     Page.verifyOnPage(SelectRelationshipStatusPage, 'First Middle Names Last') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')

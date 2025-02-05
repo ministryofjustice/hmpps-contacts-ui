@@ -48,6 +48,7 @@ context('Delete Contact Identity', () => {
     cy.task('stubDeleteContactIdentity', { contactId, contactIdentityId: 1 })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickTemporaryEditContactDetailsTab()
       .clickDeleteIdentityLink(1)
 
     Page.verifyOnPage(ConfirmDeleteIdentityPage) //
@@ -71,6 +72,7 @@ context('Delete Contact Identity', () => {
     cy.task('stubDeleteContactIdentity', { contactId, contactIdentityId: 1 })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickTemporaryEditContactDetailsTab()
       .clickDeleteIdentityLink(3)
 
     Page.verifyOnPage(ConfirmDeleteIdentityPage) //

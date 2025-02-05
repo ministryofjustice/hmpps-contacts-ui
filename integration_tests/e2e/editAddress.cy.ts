@@ -83,6 +83,7 @@ context('Edit Address', () => {
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickTemporaryEditContactDetailsTab()
       .clickViewAllAddressesLink()
 
     Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
@@ -196,6 +197,7 @@ context('Edit Address', () => {
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickTemporaryEditContactDetailsTab()
       .clickViewAllAddressesLink()
 
     Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //

@@ -40,13 +40,17 @@ context('Manage contact view all addresses for a contact', () => {
   })
 
   it('Can view all addresses for a contact', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickViewAllAddressesLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickTemporaryEditContactDetailsTab()
+      .clickViewAllAddressesLink()
 
     Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
   })
 
   it(`Back link goes to manage contacts`, () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickViewAllAddressesLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickTemporaryEditContactDetailsTab()
+      .clickViewAllAddressesLink()
 
     Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')

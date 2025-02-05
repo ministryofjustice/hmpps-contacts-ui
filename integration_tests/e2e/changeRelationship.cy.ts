@@ -57,6 +57,7 @@ context('Change Relationship', () => {
     })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
       .clickChangeRelationshipLink()
 
     Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last', 'John Smith') //
@@ -88,6 +89,7 @@ context('Change Relationship', () => {
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
       .clickChangeRelationshipLink()
 
     Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last', 'John Smith') //
@@ -107,6 +109,7 @@ context('Change Relationship', () => {
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
       .clickChangeRelationshipLink()
 
     Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last', 'John Smith') //
@@ -121,6 +124,7 @@ context('Change Relationship', () => {
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
       .clickChangeRelationshipLink()
 
     Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last', 'John Smith') //

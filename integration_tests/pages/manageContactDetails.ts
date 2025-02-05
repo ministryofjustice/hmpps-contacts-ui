@@ -146,6 +146,17 @@ export default class ManageContactDetailsPage extends Page {
     this.editEmailLink(id).click()
   }
 
+  clickTemporaryEditContactDetailsTab() {
+    // TODO this is temporary until the pages are completely split
+    this.editContactDetailsTab().click()
+    return this
+  }
+
+  clickEditContactDetailsLink() {
+    this.editContactDetailsLink().click()
+    return this
+  }
+
   clickRestrictionsTab(count: string = '1') {
     this.getRestrictionsTab().should('contain.text', `Restrictions (${count})`).click()
     return this
@@ -232,6 +243,10 @@ export default class ManageContactDetailsPage extends Page {
   private getGlobalRestrictionsCardTitle = (): PageElement => cy.get('[data-qa="confirm-global-restriction-title"]')
 
   private getRestrictionsTab = (): PageElement => cy.get('#tab_restrictions')
+
+  private editContactDetailsTab = (): PageElement => cy.get('#tab_contact-details-editable')
+
+  private editContactDetailsLink = (): PageElement => cy.get('[data-qa="edit-contact-details-link"]')
 
   private getAddPrisonerContactRestriction = (): PageElement =>
     cy.get('[data-qa="add-prisoner-contact-restriction-button"]')

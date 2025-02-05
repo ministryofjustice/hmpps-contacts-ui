@@ -43,7 +43,9 @@ context('Manage contact update emergency contact', () => {
   })
 
   it('Can update a emergency contact', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickEditEmergencyContactLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
+      .clickEditEmergencyContactLink()
 
     Page.verifyOnPage(SelectEmergencyContactPage, 'First Middle Names Last') //
       .selectIsEmergencyContact('NO')
@@ -61,14 +63,18 @@ context('Manage contact update emergency contact', () => {
   })
 
   it(`Back link goes to manage contacts`, () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickEditEmergencyContactLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
+      .clickEditEmergencyContactLink()
 
     Page.verifyOnPage(SelectEmergencyContactPage, 'First Middle Names Last') //
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
   it(`Cancel goes to manage contacts`, () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickEditEmergencyContactLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
+      .clickEditEmergencyContactLink()
 
     Page.verifyOnPage(SelectEmergencyContactPage, 'First Middle Names Last') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')

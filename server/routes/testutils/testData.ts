@@ -289,6 +289,7 @@ export default class TestData {
   static contact = ({
     id = 22,
     title = 'MR',
+    titleDescription = 'Mr',
     lastName = 'Mason',
     firstName = 'Jones',
     middleNames = undefined,
@@ -324,6 +325,7 @@ export default class TestData {
     ({
       id,
       title,
+      titleDescription,
       lastName,
       firstName,
       middleNames,
@@ -348,6 +350,8 @@ export default class TestData {
     }) as ContactDetails
 
   static prisonerContactRelationship = ({
+    relationshipType = 'S',
+    relationshipTypeDescription = 'Social',
     relationshipToPrisonerCode = 'FRI',
     relationshipToPrisonerDescription = 'Friend',
     emergencyContact = false,
@@ -357,6 +361,8 @@ export default class TestData {
     comments = 'Some comments',
   }: Partial<PrisonerContactRelationshipDetails> = {}): PrisonerContactRelationshipDetails =>
     ({
+      relationshipType,
+      relationshipTypeDescription,
       relationshipToPrisonerCode,
       relationshipToPrisonerDescription,
       emergencyContact,
