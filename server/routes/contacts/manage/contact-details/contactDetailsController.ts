@@ -12,6 +12,8 @@ import ContactDetails = contactsApiClientTypes.ContactDetails
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 import RestrictionsService from '../../../../services/restrictionsService'
 import { employmentSorter } from '../../../../utils/sorters'
+import sortContactAddresses from '../../../../utils/sortAddress'
+import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 
 export default class ContactDetailsController implements PageHandler {
   constructor(
@@ -43,10 +45,22 @@ export default class ContactDetailsController implements PageHandler {
 
     contact.employments = contact.employments.sort(employmentSorter)
 
+    const sortedAddresses = sortContactAddresses(contact.addresses)
+
+    const addresses = sortedAddresses.map((address: ContactAddressDetails) => {
+      const expired = this.isExpiredAddress(address.endDate)
+      return {
+        ...address,
+        isExpired: expired,
+        addressTitle: this.getAddressTitle(address, expired),
+      }
+    })
+
     return res.render('pages/contacts/manage/contactDetails/details/index', {
       contact,
       globalRestrictions: prisonerContactRestrictionsEnriched.contactGlobalRestrictions,
       prisonerContactRestrictions: prisonerContactRestrictionsEnriched.prisonerContactRestrictions,
+      addresses,
       mostRelevantAddress,
       mostRelevantAddressLabel,
       prisonerNumber,
@@ -69,5 +83,25 @@ export default class ContactDetailsController implements PageHandler {
       )
     }
     return formatNameFirstNameFirst(contact, { customTitle: titleDescription })
+  }
+
+  private getAddressTitle(address: ContactAddressDetails, expired: boolean): string {
+    let title = address.addressTypeDescription ?? 'Address'
+    if (address.primaryAddress && address.mailFlag) {
+      title = 'Primary and postal address'
+    } else if (address.primaryAddress) {
+      title = 'Primary address'
+    } else if (address.mailFlag) {
+      title = 'Postal address'
+    }
+    return expired ? `Previous ${title.toLowerCase()}` : title
+  }
+
+  private isExpiredAddress(endDate: string): boolean {
+    if (endDate) {
+      const expirationDate = new Date(endDate)
+      return expirationDate.getTime() < new Date().getTime()
+    }
+    return false
   }
 }

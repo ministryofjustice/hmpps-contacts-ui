@@ -27,6 +27,17 @@ describe('sortContactAddresses', () => {
     expect(sortedAddresses[0]).toEqual(olderDate)
     expect(sortedAddresses[1]).toEqual(newerDate)
   })
+
+  it('should handle undefined start date', () => {
+    const left = getContactAddress('WORK', false, false, undefined)
+    const right = getContactAddress('OTHER', false, false, undefined)
+    const addresses = [right, left]
+
+    const sortedAddresses = sortContactAddresses(addresses)
+
+    expect(sortedAddresses[0]).toEqual(right)
+    expect(sortedAddresses[1]).toEqual(left)
+  })
 })
 
 function getContactAddress(
