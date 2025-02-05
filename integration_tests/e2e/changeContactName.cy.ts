@@ -49,6 +49,7 @@ context('Change Contact Name', () => {
     cy.task('stubPatchContactById', { contactId, updated })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
       .clickChangeNameLink()
 
     Page.verifyOnPage(EnterNamePage, 'First Middle Names Last') //
@@ -99,6 +100,7 @@ context('Change Contact Name', () => {
     cy.task('stubPatchContactById', { contactId, updated })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
       .clickChangeNameLink()
 
     Page.verifyOnPage(EnterNamePage, 'First Middle Names Last') //
@@ -142,6 +144,7 @@ context('Change Contact Name', () => {
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
       .clickChangeNameLink()
 
     Page.verifyOnPage(EnterNamePage, 'First Middle Names Last') //
@@ -169,6 +172,7 @@ context('Change Contact Name', () => {
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
       .clickChangeNameLink()
 
     Page.verifyOnPage(EnterNamePage, 'First Middle Names Last') //
@@ -192,6 +196,7 @@ context('Change Contact Name', () => {
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
       .clickChangeNameLink()
 
     Page.verifyOnPage(EnterNamePage, 'First Middle Names Last') //

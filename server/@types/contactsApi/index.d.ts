@@ -5929,6 +5929,11 @@ export interface components {
        */
       title?: string
       /**
+       * @description The description of the title code, if present
+       * @example Mr
+       */
+      titleDescription?: string
+      /**
        * @description The last name of the contact
        * @example Doe
        */
@@ -6860,12 +6865,12 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      first?: boolean
       /** Format: int32 */
       size?: number
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject']
-      first?: boolean
       /** Format: int32 */
       numberOfElements?: number
       empty?: boolean
@@ -6925,12 +6930,12 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      first?: boolean
       /** Format: int32 */
       size?: number
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject']
-      first?: boolean
       /** Format: int32 */
       numberOfElements?: number
       empty?: boolean
@@ -7261,12 +7266,12 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      first?: boolean
       /** Format: int32 */
       size?: number
       /** Format: int32 */
       number?: number
       sort?: components['schemas']['SortObject']
-      first?: boolean
       /** Format: int32 */
       numberOfElements?: number
       empty?: boolean

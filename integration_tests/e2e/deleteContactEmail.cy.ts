@@ -46,6 +46,7 @@ context('Delete Contact Email', () => {
     cy.task('stubDeleteContactEmail', { contactId, contactEmailId: 123 })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickTemporaryEditContactDetailsTab()
       .clickDeleteEmailLink(123)
 
     Page.verifyOnPage(ConfirmDeleteEmailPage) //
@@ -63,6 +64,7 @@ context('Delete Contact Email', () => {
 
   it('Can cancel deleting a contact email address', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickTemporaryEditContactDetailsTab()
       .clickDeleteEmailLink(777)
 
     Page.verifyOnPage(ConfirmDeleteEmailPage) //

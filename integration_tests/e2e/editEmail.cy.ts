@@ -40,7 +40,9 @@ context('Edit Email Address', () => {
       updatedBy: 'john smith',
     }
     cy.task('stubUpdateContactEmail', { contactId, contactEmailId, updated })
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').clickEditEmailLink(contactEmailId)
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
+      .clickTemporaryEditContactDetailsTab()
+      .clickEditEmailLink(contactEmailId)
     Page.verifyOnPage(EnterEmailPage, 'Jones Mason')
       .hasEmail('mr.last@example.com')
       .clearEmail()
@@ -61,14 +63,19 @@ context('Edit Email Address', () => {
   })
 
   it(`should require email address`, () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').clickAddEmailLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
+      .clickTemporaryEditContactDetailsTab()
+      .clickEditEmailLink(contactEmailId)
     const enterEmailPage = Page.verifyOnPage(EnterEmailPage, 'Jones Mason')
+    enterEmailPage.clearEmail()
     enterEmailPage.clickContinue()
     enterEmailPage.hasFieldInError('emailAddress', `Enter the contact’s email address`)
   })
 
   it(`should require email address in the correct format`, () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').clickEditEmailLink(contactEmailId)
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
+      .clickTemporaryEditContactDetailsTab()
+      .clickEditEmailLink(contactEmailId)
     const enterEmailPage = Page.verifyOnPage(EnterEmailPage, 'Jones Mason')
     enterEmailPage.enterEmail('name@')
     enterEmailPage.clickContinue()
@@ -80,21 +87,27 @@ context('Edit Email Address', () => {
 
   it(`should require email address with 240 characters or fewer`, () => {
     const invalidEmail = 'name@example'.padEnd(241, '0').concat('.com')
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').clickEditEmailLink(contactEmailId)
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
+      .clickTemporaryEditContactDetailsTab()
+      .clickEditEmailLink(contactEmailId)
     const enterEmailPage = Page.verifyOnPage(EnterEmailPage, 'Jones Mason')
     enterEmailPage.enterEmail(invalidEmail).clickContinue()
     enterEmailPage.hasFieldInError('emailAddress', `The contact’s email address should be 240 characters or fewer`)
   })
 
   it('Back link goes to manage contacts', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').clickAddEmailLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
+      .clickTemporaryEditContactDetailsTab()
+      .clickEditEmailLink(contactEmailId)
 
     Page.verifyOnPage(EnterEmailPage, 'Jones Mason') //
       .backTo(ManageContactDetailsPage, 'Jones Mason')
   })
 
   it('Cancel goes to manage contacts', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').clickAddEmailLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
+      .clickTemporaryEditContactDetailsTab()
+      .clickEditEmailLink(contactEmailId)
 
     Page.verifyOnPage(EnterEmailPage, 'Jones Mason') //
       .cancelTo(ManageContactDetailsPage, 'Jones Mason')

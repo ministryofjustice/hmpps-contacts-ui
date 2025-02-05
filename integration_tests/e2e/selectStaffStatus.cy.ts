@@ -54,11 +54,14 @@ context('Select Staff Status', () => {
 
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
       .verifyShowStaffStatusValueAs('No')
+      .clickEditContactDetailsLink()
       .clickChangeStaffStatusLink()
     Page.verifyOnPage(SelectStaffStatusPage, 'Jones Mason').selectStaffStatus().clickContinue()
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').clickChangeStaffStatusLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
+      .clickEditContactDetailsLink()
+      .clickChangeStaffStatusLink()
     Page.verifyOnPage(SelectStaffStatusPage, 'Jones Mason').selectStaffStatus().clickCancel()
 
     cy.verifyLastAPICall(
@@ -79,8 +82,9 @@ context('Select Staff Status', () => {
 
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
       .verifyShowStaffStatusValueAs('No')
+      .clickEditContactDetailsLink()
       .clickChangeStaffStatusLink()
     Page.verifyOnPage(SelectStaffStatusPage, 'Jones Mason') //
       .backTo(ManageContactDetailsPage, 'Jones Mason')
@@ -92,8 +96,9 @@ context('Select Staff Status', () => {
 
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
       .verifyShowStaffStatusValueAs('No')
+      .clickEditContactDetailsLink()
       .clickChangeStaffStatusLink()
     Page.verifyOnPage(SelectStaffStatusPage, 'Jones Mason') //
       .cancelTo(ManageContactDetailsPage, 'Jones Mason')

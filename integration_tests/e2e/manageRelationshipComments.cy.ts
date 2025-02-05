@@ -44,7 +44,9 @@ context('Manage contact update comments for a contact', () => {
   })
 
   it('Can update a comments for a contact', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickEditRelationshipCommentsLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
+      .clickEditRelationshipCommentsLink()
 
     Page.verifyOnPage(RelationshipCommentsPage, 'First Middle Names Last') //
       .enterComments('my comments')
@@ -64,7 +66,9 @@ context('Manage contact update comments for a contact', () => {
   })
 
   it(`Relationship comments must be less than 240 characters`, () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickEditRelationshipCommentsLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
+      .clickEditRelationshipCommentsLink()
 
     const commentsPage = Page.verifyOnPage(RelationshipCommentsPage, 'First Middle Names Last') //
       .enterComments(''.padEnd(241))
@@ -73,14 +77,18 @@ context('Manage contact update comments for a contact', () => {
   })
 
   it(`Back link goes to manage contacts`, () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickEditRelationshipCommentsLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
+      .clickEditRelationshipCommentsLink()
 
     Page.verifyOnPage(RelationshipCommentsPage, 'First Middle Names Last') //
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
   it(`Cancel goes to manage contacts`, () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickEditRelationshipCommentsLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
+      .clickEditRelationshipCommentsLink()
 
     Page.verifyOnPage(RelationshipCommentsPage, 'First Middle Names Last') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')

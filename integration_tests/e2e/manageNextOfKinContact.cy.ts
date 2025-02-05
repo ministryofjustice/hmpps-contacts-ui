@@ -45,7 +45,9 @@ context('Manage contact update next of kin contact', () => {
   })
 
   it('Can update next of kin', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickEditNextOfKinContactLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
+      .clickEditNextOfKinContactLink()
 
     Page.verifyOnPage(SelectNextOfKinContactPage, 'First Middle Names Last') //
       .selectIsNextOfKin('NO')
@@ -63,14 +65,18 @@ context('Manage contact update next of kin contact', () => {
   })
 
   it(`Back link goes to manage contacts`, () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickEditNextOfKinContactLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
+      .clickEditNextOfKinContactLink()
 
     Page.verifyOnPage(SelectNextOfKinContactPage, 'First Middle Names Last') //
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
   it(`Cancel goes to manage contacts`, () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickEditNextOfKinContactLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
+      .clickEditNextOfKinContactLink()
 
     Page.verifyOnPage(SelectNextOfKinContactPage, 'First Middle Names Last') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')

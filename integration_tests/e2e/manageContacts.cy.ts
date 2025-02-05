@@ -78,7 +78,8 @@ context('Manage contacts ', () => {
       .verifyShowPaginationPageLinkValueAs('5', 4)
   })
 
-  it(`should render manage contact details`, () => {
+  it(`should render manage contact details (old view)`, () => {
+    // TODO can be removed when all new tabs and edit pages created
     const { prisonerNumber } = TestData.prisoner()
     cy.task('stubGetGenders')
     cy.task('stubTitlesReferenceData')
@@ -110,6 +111,7 @@ context('Manage contacts ', () => {
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
+      .clickTemporaryEditContactDetailsTab()
       .verifyShowNamesValueAs('Mr Jones Mason')
       .verifyShowDOBValueAs('14 January 1990')
       .verifyShowMostRelevantAddressLabelValueAs('Primary')

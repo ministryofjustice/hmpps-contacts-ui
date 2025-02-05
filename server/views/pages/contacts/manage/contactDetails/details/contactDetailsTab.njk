@@ -1,51 +1,206 @@
-{% from "../../../common/addressesMacro.njk" import addressDetails %}
-{% from "../../../common/notProvided.njk" import notProvided %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "moj/components/page-header-actions/macro.njk" import mojPageHeaderActions %}
 
-{%- include "./manageBasicDetails.njk" -%}
-        {%- include "./manageRelationshipDetails.njk" -%}
-        {%- include "./manageApprovedToVisit.njk" -%}
-
-        {% if mostRelevantAddress %}
-          {{ addressDetails({
-            returnUrl: manageContactRelationshipUrl,
-            prisonerNumber: prisonerNumber,
-            contactId: contactId,
-            canEditAddresses: false,
-            addresses: [
-              {
-                mostRelevantAddressLabel: mostRelevantAddressLabel,
-                address: mostRelevantAddress,
-                cardTitle: 'Addresses',
-                cardActions: [
-                {
-                  href: manageContactRelationshipUrl + '/view-addresses',
-                  text: 'View all addresses',
-                  attributes: { 'data-qa': 'view-all-addresses' },
-                  classes: 'govuk-link--no-visited-state'
-                }
-              ]
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <div class="moj-page-header-actions">
+      <div class="moj-page-header-actions__title">
+        <h1 class="govuk-heading-l">Contact details</h1>
+      </div>
+      <div class="moj-page-header-actions__actions">
+        <div class="moj-button-group moj-button-group--inline">
+          <a class="govuk-link govuk-link--no-visited-state" data-qa="edit-contact-details-link" href="#contact-details-editable">Edit contact details</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% set  formattedDateOfBirth %}{% if contact.dateOfBirth %}{{ contact.dateOfBirth | formatDate }}{% else %}Not provided{% endif %}{% endset %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        {{ govukSummaryList({
+          card: {
+            title: {
+              text: 'Personal information'
+            }
+          },
+          rows: [
+            {
+              key: {
+                text: 'Title'
+              },
+              value: {
+                text: contact.titleDescription if contact.titleDescription else 'Not provided'
               }
-            ]
+            },
+            {
+              key: {
+                text: 'Name'
+              },
+              value: {
+                text: contact | formatNameFirstNameFirst
+              }
+            },
+            {
+              key: {
+                text: 'Date of birth'
+              },
+              value: {
+                text: formattedDateOfBirth
+              }
+            },
+            {
+              key: {
+                text: 'Gender'
+              },
+              value: {
+                text: contact.genderDescription if contact.genderDescription else 'Not provided'
+              }
+            },
+            {
+              key: {
+                text: 'Staff member'
+              },
+              value: {
+                text: 'Yes' if contact.isStaff else 'No'
+              }
+            }
+          ]
+        }) }}
+
+      {{ govukSummaryList({
+          card: {
+            title: {
+              text: 'Relationship to prisoner ' + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)
+            }
+          },
+          rows: [
+            {
+              key: {
+                text: 'Relationship type'
+              },
+              value: {
+                text: prisonerContactRelationship.relationshipTypeDescription
+              }
+            },
+            {
+              key: {
+                text: 'Relationship to prisoner'
+              },
+              value: {
+                text: prisonerContactRelationship.relationshipToPrisonerDescription
+              }
+            },
+            {
+              key: {
+                text: 'Relationship status'
+              },
+              value: {
+                text: 'Active' if prisonerContactRelationship.isRelationshipActive else 'Inactive'
+              }
+            },
+            {
+              key: {
+                text: 'Emergency contact'
+              },
+              value: {
+                text: prisonerContactRelationship.emergencyContact | formatYesNo
+              }
+            },
+            {
+              key: {
+                text: 'Next of kin'
+              },
+              value: {
+                text: prisonerContactRelationship.nextOfKin | formatYesNo
+              }
+            },
+            {
+              key: {
+                text: 'Approved for visits'
+              },
+              value: {
+                text: prisonerContactRelationship.isApprovedVisitor | formatYesNo
+              }
+            },
+            {
+              key: {
+                text: 'Comments on the relationship'
+              },
+              value: {
+                text: prisonerContactRelationship.comments if prisonerContactRelationship.comments else 'Not provided'
+              }
+            }
+          ]
+        }) }}
+
+      {% if contact.identities and contact.identities.length > 0 %}
+        {% set identityNumbers = [] %}
+        {% for item in contact.identities | sort(attribute = 'identityValue') | sort(attribute = 'identityTypeDescription') %}
+          {% set identityNumbers = identityNumbers.concat([{
+            key: {
+              text: (item.identityTypeDescription)
+            },
+            value: {
+              html: item.identityValue + ('<p>Issued by ' + item.issuingAuthority + '</p>' if item.issuingAuthority else '')
+            }
+          }]) %}
+        {% endfor %}
+        {{ govukSummaryList({
+          card: {
+            title: {
+              text: "Identity documentation"
+            }
+          },
+          rows: identityNumbers
+        }) }}
+      {% else %}
+        <div class="govuk-summary-card">
+          <div class="govuk-summary-card__title-wrapper">
+            <h2 class="govuk-summary-card__title">Identity documentation</h2>
+          </div>
+          <div class="govuk-summary-card__content">
+            <dl class="govuk-summary-list">
+              <div class="govuk-summary-list__row">
+                <dd class="govuk-summary-list__value">No identity documents provided.</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      {% endif %}
+
+      {{ govukSummaryList({
+        card: {
+          title: {
+            text: 'Additional information'
           }
-          )}}
-        {% else %}
-          {{ notProvided({
-            title: 'Addresses',
-            key: 'Address',
-            className: 'addresses-not-provided',
-            actions: [
-              {
-                href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contactId + "/address/add/start?returnUrl=" + manageContactRelationshipUrl + '/view-addresses' ,
-                text: 'Add address',
-                attributes: { 'data-qa': 'add-new-addresses-link' },
-                classes: 'govuk-link--no-visited-state'
-              }
-            ]
-          }) }}
-        {% endif %}
-        {%- include "./managePhoneNumbers.njk" -%}
-        {%- include "./manageEmailAddresses.njk" -%}
-        {%- include "./manageIdentityNumbers.njk" -%}
-        {%- include "./language.njk" -%}
-        {%- include "./domesticStatus.njk" -%}
-        {%- include "./manageStaff.njk" -%}
+        },
+        rows: [
+          {
+            key: {
+              text: 'Contact’s first language'
+            },
+            value: {
+              text: contact.languageDescription if contact.languageDescription else 'Not provided'
+            }
+          },
+          {
+            key: {
+              text: 'Interpreter required'
+            },
+            value: {
+              text: contact.interpreterRequired | formatYesNo
+            }
+          },
+          {
+            key: {
+              text: 'Contact’s domestic status'
+            },
+            value: {
+              text: contact.domesticStatusDescription if contact.domesticStatusDescription else 'Not provided'
+            }
+          }
+        ]
+      }) }}
+    </div>
+</div>

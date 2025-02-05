@@ -56,7 +56,9 @@ context('Create Contact Phones', () => {
     }
     cy.task('stubCreateContactPhone', { contactId, created })
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickAddPhoneNumberLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickTemporaryEditContactDetailsTab()
+      .clickAddPhoneNumberLink()
 
     Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
       .enterPhoneNumber('01234 777777')
@@ -91,7 +93,9 @@ context('Create Contact Phones', () => {
     }
     cy.task('stubCreateContactPhone', { contactId, created })
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickAddPhoneNumberLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickTemporaryEditContactDetailsTab()
+      .clickAddPhoneNumberLink()
 
     Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
       .enterPhoneNumber('01234 777777')
@@ -116,7 +120,9 @@ context('Create Contact Phones', () => {
   })
 
   it('Should require type', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickAddPhoneNumberLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickTemporaryEditContactDetailsTab()
+      .clickAddPhoneNumberLink()
 
     const enterPhonePage = Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
       .enterPhoneNumber('01234 777777')
@@ -125,7 +131,9 @@ context('Create Contact Phones', () => {
   })
 
   it('Should require phone number', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickAddPhoneNumberLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickTemporaryEditContactDetailsTab()
+      .clickAddPhoneNumberLink()
 
     const enterPhonePage = Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
       .selectType('HOME')
@@ -134,7 +142,9 @@ context('Create Contact Phones', () => {
   })
 
   it('Should require phone number is 20 chars or fewer', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickAddPhoneNumberLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickTemporaryEditContactDetailsTab()
+      .clickAddPhoneNumberLink()
 
     const enterPhonePage = Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
       .selectType('HOME')
@@ -144,7 +154,9 @@ context('Create Contact Phones', () => {
   })
 
   it('Should require extension is 7 chars or fewer', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickAddPhoneNumberLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickTemporaryEditContactDetailsTab()
+      .clickAddPhoneNumberLink()
 
     const enterPhonePage = Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
       .selectType('HOME')
@@ -156,14 +168,18 @@ context('Create Contact Phones', () => {
   })
 
   it('Back link goes to manage contacts', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickAddPhoneNumberLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickTemporaryEditContactDetailsTab()
+      .clickAddPhoneNumberLink()
 
     Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
   it('Cancel goes to manage contacts', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickAddPhoneNumberLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickTemporaryEditContactDetailsTab()
+      .clickAddPhoneNumberLink()
 
     Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')

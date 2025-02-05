@@ -47,6 +47,7 @@ context('Delete Contact Phones', () => {
     cy.task('stubDeleteContactPhone', { contactId, contactPhoneId: 99 })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickTemporaryEditContactDetailsTab()
       .clickDeletePhoneNumberLink(99)
 
     Page.verifyOnPage(ConfirmDeletePhonePage) //
@@ -66,6 +67,7 @@ context('Delete Contact Phones', () => {
 
   it('Can cancel deleting a contact phone', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickTemporaryEditContactDetailsTab()
       .clickDeletePhoneNumberLink(77)
 
     Page.verifyOnPage(ConfirmDeletePhonePage) //

@@ -45,7 +45,9 @@ context('Manage contact update approved visitor contact', () => {
   })
 
   it('Can update approved visitor', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickEditApprovedVisitorLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
+      .clickEditApprovedVisitorLink()
 
     Page.verifyOnPage(SelectApprovedVisitorPage, 'First Middle Names Last') //
       .selectIsApprovedVisitor('NO')
@@ -63,14 +65,18 @@ context('Manage contact update approved visitor contact', () => {
   })
 
   it(`Back link goes to manage contacts`, () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickEditApprovedVisitorLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
+      .clickEditApprovedVisitorLink()
 
     Page.verifyOnPage(SelectApprovedVisitorPage, 'First Middle Names Last') //
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
   it(`Cancel goes to manage contacts`, () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').clickEditApprovedVisitorLink()
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
+      .clickEditApprovedVisitorLink()
 
     Page.verifyOnPage(SelectApprovedVisitorPage, 'First Middle Names Last') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')

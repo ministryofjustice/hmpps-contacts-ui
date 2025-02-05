@@ -46,6 +46,7 @@ context('Add Address', () => {
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickTemporaryEditContactDetailsTab()
       .clickViewAllAddressesLink()
   })
 

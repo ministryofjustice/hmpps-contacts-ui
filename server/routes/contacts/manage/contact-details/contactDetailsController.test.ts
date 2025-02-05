@@ -6,6 +6,8 @@ import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { components } from '../../../../@types/contactsApi'
+import ContactDetails = contactsApiClientTypes.ContactDetails
+import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -875,6 +877,258 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect($('dt:contains("Employer’s primary address")').next().text()).toMatch(/Not provided/)
       expect($('dt:contains("Business phone number at primary address")').next().text()).toMatch(/Not provided/)
       expect($('dt:contains("Employment status")').next().text()).toMatch(/Active/)
+    })
+  })
+
+  describe('Contact details tab', () => {
+    beforeEach(() => {
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.getContact.mockResolvedValue(TestData.contact())
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
+    })
+
+    describe('Personal details card', () => {
+      it('should render with all personal details', async () => {
+        const contactDetails = {
+          ...TestData.contact(),
+          title: 'MR',
+          titleDescription: 'Mr',
+          firstName: 'First',
+          middleNames: 'Middle Names',
+          lastName: 'Last',
+          dateOfBirth: '1982-06-15',
+          gender: 'M',
+          genderDescription: 'Male',
+          isStaff: true,
+        } as ContactDetails
+        contactsService.getContact.mockResolvedValue(contactDetails)
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+        const $ = cheerio.load(response.text)
+
+        const personalInformationCard = $('h2:contains("Personal information")').parent().parent()
+        expect(personalInformationCard).toHaveLength(1)
+        expect($(personalInformationCard).find('dt:contains("Title")').next().text().trim()).toStrictEqual('Mr')
+        expect($(personalInformationCard).find('dt:contains("Name")').next().text().trim()).toStrictEqual(
+          'First Middle Names Last',
+        )
+        expect($(personalInformationCard).find('dt:contains("Date of birth")').next().text().trim()).toStrictEqual(
+          '15 June 1982',
+        )
+        expect($(personalInformationCard).find('dt:contains("Gender")').next().text().trim()).toStrictEqual('Male')
+        expect($(personalInformationCard).find('dt:contains("Staff member")').next().text().trim()).toStrictEqual('Yes')
+      })
+
+      it('should render without optional personal details', async () => {
+        const contactDetails = {
+          ...TestData.contact(),
+          title: undefined,
+          titleDescription: undefined,
+          firstName: 'First',
+          middleNames: undefined,
+          lastName: 'Last',
+          dateOfBirth: undefined,
+          gender: undefined,
+          genderDescription: undefined,
+          isStaff: false,
+        } as ContactDetails
+        contactsService.getContact.mockResolvedValue(contactDetails)
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+        const $ = cheerio.load(response.text)
+        const personalInformationCard = $('h2:contains("Personal information")').parent().parent()
+        expect(personalInformationCard).toHaveLength(1)
+        expect($(personalInformationCard).find('dt:contains("Title")').next().text().trim()).toStrictEqual(
+          'Not provided',
+        )
+        expect($(personalInformationCard).find('dt:contains("Name")').next().text().trim()).toStrictEqual('First Last')
+        expect($(personalInformationCard).find('dt:contains("Date of birth")').next().text().trim()).toStrictEqual(
+          'Not provided',
+        )
+        expect($(personalInformationCard).find('dt:contains("Gender")').next().text().trim()).toStrictEqual(
+          'Not provided',
+        )
+        expect($(personalInformationCard).find('dt:contains("Staff member")').next().text().trim()).toStrictEqual('No')
+      })
+    })
+
+    describe('Relationship to prisoner card', () => {
+      it('should render with all relationship details', async () => {
+        const prisonerContactRelationshipDetails = {
+          relationshipType: 'S',
+          relationshipTypeDescription: 'Social',
+          relationshipToPrisonerCode: 'FRI',
+          relationshipToPrisonerDescription: 'Friend',
+          emergencyContact: true,
+          nextOfKin: true,
+          isRelationshipActive: true,
+          isApprovedVisitor: true,
+          comments: 'Some comments',
+        } as PrisonerContactRelationshipDetails
+        contactsService.getPrisonerContactRelationship.mockResolvedValue(prisonerContactRelationshipDetails)
+
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+        const $ = cheerio.load(response.text)
+
+        const relationshipInformationCard = $('h2:contains("Relationship to prisoner John Smith")').parent().parent()
+        expect(relationshipInformationCard).toHaveLength(1)
+        expect(
+          $(relationshipInformationCard).find('dt:contains("Relationship type")').next().text().trim(),
+        ).toStrictEqual('Social')
+        expect(
+          $(relationshipInformationCard).find('dt:contains("Relationship to prisoner")').next().text().trim(),
+        ).toStrictEqual('Friend')
+        expect(
+          $(relationshipInformationCard).find('dt:contains("Relationship status")').next().text().trim(),
+        ).toStrictEqual('Active')
+        expect(
+          $(relationshipInformationCard).find('dt:contains("Emergency contact")').next().text().trim(),
+        ).toStrictEqual('Yes')
+        expect($(relationshipInformationCard).find('dt:contains("Next of kin")').next().text().trim()).toStrictEqual(
+          'Yes',
+        )
+        expect(
+          $(relationshipInformationCard).find('dt:contains("Approved for visits")').next().text().trim(),
+        ).toStrictEqual('Yes')
+        expect(
+          $(relationshipInformationCard).find('dt:contains("Comments on the relationship")').next().text().trim(),
+        ).toStrictEqual('Some comments')
+      })
+
+      it('should render without optional relationship details', async () => {
+        const prisonerContactRelationshipDetails = {
+          relationshipType: 'O',
+          relationshipTypeDescription: 'Official',
+          relationshipToPrisonerCode: 'DR',
+          relationshipToPrisonerDescription: 'Doctor',
+          emergencyContact: false,
+          nextOfKin: false,
+          isRelationshipActive: false,
+          isApprovedVisitor: false,
+          comments: undefined,
+        } as PrisonerContactRelationshipDetails
+        contactsService.getPrisonerContactRelationship.mockResolvedValue(prisonerContactRelationshipDetails)
+
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+        const $ = cheerio.load(response.text)
+
+        const relationshipInformationCard = $('h2:contains("Relationship to prisoner John Smith")').parent().parent()
+        expect(relationshipInformationCard).toHaveLength(1)
+        expect(
+          $(relationshipInformationCard).find('dt:contains("Relationship type")').next().text().trim(),
+        ).toStrictEqual('Official')
+        expect(
+          $(relationshipInformationCard).find('dt:contains("Relationship to prisoner")').next().text().trim(),
+        ).toStrictEqual('Doctor')
+        expect(
+          $(relationshipInformationCard).find('dt:contains("Relationship status")').next().text().trim(),
+        ).toStrictEqual('Inactive')
+        expect(
+          $(relationshipInformationCard).find('dt:contains("Emergency contact")').next().text().trim(),
+        ).toStrictEqual('No')
+        expect($(relationshipInformationCard).find('dt:contains("Next of kin")').next().text().trim()).toStrictEqual(
+          'No',
+        )
+        expect(
+          $(relationshipInformationCard).find('dt:contains("Approved for visits")').next().text().trim(),
+        ).toStrictEqual('No')
+        expect(
+          $(relationshipInformationCard).find('dt:contains("Comments on the relationship")').next().text().trim(),
+        ).toStrictEqual('Not provided')
+      })
+    })
+
+    describe('Identity documents card', () => {
+      it('should render with all identity documents', async () => {
+        contactsService.getContact.mockResolvedValue(
+          TestData.contact({
+            identities: [
+              TestData.getContactIdentityDetails('PASS', 'Passport number', '5555', undefined, 3),
+              TestData.getContactIdentityDetails('PASS', 'Passport number', '6666', undefined, 2),
+              TestData.getContactIdentityDetails('DL', 'Driving licence', '123456', 'DVLA', 1),
+            ],
+          }),
+        )
+
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+        const $ = cheerio.load(response.text)
+
+        const identityDocCard = $('h2:contains("Identity documentation")').parent().parent()
+        expect(identityDocCard).toHaveLength(1)
+        expect($(identityDocCard).find('dt:contains("Driving licence")').next().text().trim()).toMatch(/123456/)
+        expect($(identityDocCard).find('dt:contains("Driving licence")').next().text().trim()).toMatch(/Issued by DVLA/)
+        expect($(identityDocCard).find('dt:contains("Passport number")').first().next().text().trim()).toStrictEqual(
+          '5555',
+        )
+        expect($(identityDocCard).find('dt:contains("Passport number")').last().next().text().trim()).toStrictEqual(
+          '6666',
+        )
+      })
+
+      it('should render no identity documentation provided', async () => {
+        contactsService.getContact.mockResolvedValue(
+          TestData.contact({
+            identities: [],
+          }),
+        )
+
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+        const $ = cheerio.load(response.text)
+
+        const identityDocCard = $('h2:contains("Identity documentation")').parent().parent()
+        expect(identityDocCard).toHaveLength(1)
+        expect($(identityDocCard).text()).toMatch(/No identity documents provided./)
+      })
+    })
+
+    describe('Additional information card', () => {
+      it('should render with all additional information', async () => {
+        const contactDetails = {
+          ...TestData.contact(),
+          languageCode: 'EN',
+          languageDescription: 'English',
+          interpreterRequired: true,
+          domesticStatusCode: 'M',
+          domesticStatusDescription: 'Married',
+        }
+        contactsService.getContact.mockResolvedValue(contactDetails)
+
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+        const $ = cheerio.load(response.text)
+
+        const identityDocCard = $('h2:contains("Additional information")').parent().parent()
+        expect(identityDocCard).toHaveLength(1)
+        expect($(identityDocCard).find('dt:contains("Contact’s first language")').next().text().trim()).toStrictEqual(
+          'English',
+        )
+        expect($(identityDocCard).find('dt:contains("Interpreter required")').next().text().trim()).toStrictEqual('Yes')
+        expect($(identityDocCard).find('dt:contains("Contact’s domestic status")').next().text().trim()).toStrictEqual(
+          'Married',
+        )
+      })
+
+      it('should render without optional additional information', async () => {
+        const contactDetails = {
+          ...TestData.contact(),
+          languageCode: undefined,
+          languageDescription: undefined,
+          interpreterRequired: false,
+          domesticStatusCode: undefined,
+          domesticStatusDescription: undefined,
+        }
+        contactsService.getContact.mockResolvedValue(contactDetails)
+
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+        const $ = cheerio.load(response.text)
+
+        const identityDocCard = $('h2:contains("Additional information")').parent().parent()
+        expect(identityDocCard).toHaveLength(1)
+        expect($(identityDocCard).find('dt:contains("Contact’s first language")').next().text().trim()).toStrictEqual(
+          'Not provided',
+        )
+        expect($(identityDocCard).find('dt:contains("Interpreter required")').next().text().trim()).toStrictEqual('No')
+        expect($(identityDocCard).find('dt:contains("Contact’s domestic status")').next().text().trim()).toStrictEqual(
+          'Not provided',
+        )
+      })
     })
   })
 })

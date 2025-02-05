@@ -61,6 +61,7 @@ context('Edit Contact Identities', () => {
     cy.task('stubUpdateContactIdentity', { contactId, contactIdentityId: 1, updated })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
       .clickEditIdentityLink(1)
 
     Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') // without issuing authority
@@ -99,6 +100,7 @@ context('Edit Contact Identities', () => {
     cy.task('stubUpdateContactIdentity', { contactId, contactIdentityId: 1, updated })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
       .clickEditIdentityLink(1)
 
     Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
@@ -123,6 +125,7 @@ context('Edit Contact Identities', () => {
 
   it('Should require type', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
       .clickEditIdentityLink(1)
 
     const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
@@ -134,6 +137,7 @@ context('Edit Contact Identities', () => {
 
   it('Should require identity number', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
       .clickEditIdentityLink(1)
 
     const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
@@ -144,6 +148,7 @@ context('Edit Contact Identities', () => {
 
   it('Should require identity is 20 chars or fewer', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
       .clickEditIdentityLink(1)
 
     const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
@@ -154,6 +159,7 @@ context('Edit Contact Identities', () => {
 
   it('Should require issuing authority is 7 chars or fewer', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
       .clickEditIdentityLink(1)
 
     const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
@@ -167,6 +173,7 @@ context('Edit Contact Identities', () => {
 
   it('Back link goes to manage contacts', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
       .clickEditIdentityLink(1)
 
     Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
@@ -175,6 +182,7 @@ context('Edit Contact Identities', () => {
 
   it('Cancel goes to manage contacts', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
       .clickEditIdentityLink(1)
 
     Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
