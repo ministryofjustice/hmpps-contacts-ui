@@ -41,13 +41,13 @@ context('Ensure Prisoner Is In Caseload', () => {
   })
 
   it('Manage contacts page not accessible if prisoner not in caseload', () => {
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/list`)
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/list`, { failOnStatusCode: false })
 
     Page.verifyOnPage(PageNotFoundPage)
   })
 
   it('Manage contacts page not accessible if prisoner not in caseload', () => {
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/99`)
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/99`, { failOnStatusCode: false })
 
     Page.verifyOnPage(PageNotFoundPage)
   })
