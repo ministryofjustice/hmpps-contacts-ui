@@ -433,9 +433,9 @@ export default class ContactsApiClient extends RestClient {
       sort: string[]
     },
     user: Express.User,
-  ) {
+  ): Promise<OrganisationSummaryResultItemPage> {
     const name = encodeURIComponent(searchTerm)
-    return this.get<OrganisationSummaryResultItemPage[]>(
+    return this.get<OrganisationSummaryResultItemPage>(
       {
         path: `/organisation/search?name=${name}&page=${page}&size=${size}${sort.map(itm => `&sort=${encodeURIComponent(itm)}`).join('')}`,
       },

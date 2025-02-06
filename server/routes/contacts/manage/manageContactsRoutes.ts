@@ -66,7 +66,7 @@ import {
   ensureValidEmploymentIdx,
 } from './update-employments/updateEmploymentsMiddleware'
 import UpdateEmploymentsStartController from './update-employments/start/updateEmploymentsStartController'
-import SearchOrganisationController from './update-employments/search-organisation/searchOrganisationController'
+import OrganisationSearchController from './update-employments/organisation-search/organisationSearchController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -389,8 +389,8 @@ const ManageContactsRoutes = (
   })
 
   journeyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments/:employmentIdx/search-organisation/:journeyId',
-    controller: new SearchOrganisationController(contactsService),
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments/:employmentIdx/organisation-search/:journeyId',
+    controller: new OrganisationSearchController(contactsService),
     journeyEnsurer: [ensureInUpdateEmploymentsJourney, ensureValidEmploymentIdx],
     noValidation: true,
   })

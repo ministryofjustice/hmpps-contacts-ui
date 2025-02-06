@@ -7,7 +7,7 @@ import { ContactsService } from '../../../../../services'
 import OrganisationSummaryResultItemPage = contactsApiClientTypes.OrganisationSummaryResultItemPage
 import { setPaginationLocals } from '../../../../../views/partials/simplePagination/utils'
 
-export default class SearchOrganisationController implements PageHandler {
+export default class OrganisationSearchController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
 
   public PAGE_NAME = Page.MANAGE_CONTACT_SEARCH_ORGANISATION_PAGE
@@ -26,14 +26,14 @@ export default class SearchOrganisationController implements PageHandler {
       journey.organisationSearch.sort = sort
       journey.organisationSearch.page = 1
       return res.redirect(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/search-organisation/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/organisation-search/${journeyId}`,
       )
     }
     if (page) {
       const pageNumber = Number(page)
       journey.organisationSearch.page = Number.isNaN(pageNumber) ? 0 : pageNumber
       return res.redirect(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/search-organisation/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/organisation-search/${journeyId}`,
       )
     }
 
@@ -58,7 +58,7 @@ export default class SearchOrganisationController implements PageHandler {
       )
     }
 
-    return res.render('pages/contacts/manage/updateEmployments/searchOrganisation/index', {
+    return res.render('pages/contacts/manage/updateEmployments/organisationSearch/index', {
       organisationName: journey.organisationSearch.searchTerm ?? '',
       organisations: searchResult?.content ?? [],
       sort: journey.organisationSearch.sort,

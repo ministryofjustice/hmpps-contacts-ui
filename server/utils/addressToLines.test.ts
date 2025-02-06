@@ -28,7 +28,7 @@ describe('Convert business address to string', () => {
       area: 'Bunting',
       cityDescription: 'SHEF',
       countyDescription: 'SYORKS',
-      postalCode: 'S2 3LK',
+      postcode: 'S2 3LK',
       countryDescription: 'UK',
     }
 
@@ -45,7 +45,7 @@ describe('Convert business address to string', () => {
       area: 'Bunting',
       cityDescription: 'SHEF',
       countyDescription: 'SYORKS',
-      postalCode: 'S2 3LK',
+      postcode: 'S2 3LK',
       countryDescription: 'UK',
     }
 
@@ -62,7 +62,7 @@ describe('Convert business address to string', () => {
       area: 'Bunting',
       cityDescription: 'SHEF',
       countyDescription: 'SYORKS',
-      postalCode: 'S2 3LK',
+      postcode: 'S2 3LK',
       countryDescription: 'UK',
     }
 
@@ -79,7 +79,7 @@ describe('Convert business address to string', () => {
       area: 'Bunting',
       cityDescription: 'SHEF',
       countyDescription: 'SYORKS',
-      postalCode: 'S2 3LK',
+      postcode: 'S2 3LK',
       countryDescription: 'UK',
     }
 

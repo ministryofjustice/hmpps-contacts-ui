@@ -17,7 +17,9 @@ type Request = ExpressRequest<{ prisonerNumber: string }>
 
 describe('prisonerDetailsMiddleware', () => {
   const prisoner = TestData.prisoner()
-  const res = { locals: { user }, render: jest.fn() } as unknown as Response
+  const resStatus = jest.fn()
+  const res = { locals: { user }, render: jest.fn(), status: resStatus } as unknown as Response
+
   let req = {} as Request
 
   beforeEach(() => {
@@ -153,10 +155,14 @@ describe('prisonerDetailsMiddleware', () => {
       id: '123456',
     } as Request
 
+    const resStatusRender = jest.fn()
+    resStatus.mockReturnValue({ render: resStatusRender })
+
     await populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService)(req, res, next)
 
     expect(next).toHaveBeenCalledTimes(0)
-    expect(res.render).toHaveBeenCalledWith('pages/errors/notFound')
+    expect(res.status).toHaveBeenCalledWith(404)
+    expect(resStatusRender).toHaveBeenCalledWith('pages/errors/notFound')
     expect(res.locals.prisonerDetails).toBeUndefined()
     expect(auditService.logAuditEvent).toHaveBeenCalledWith({
       what: 'NOT_IN_CASELOAD',
@@ -183,10 +189,14 @@ describe('prisonerDetailsMiddleware', () => {
       id: '123456',
     } as Request
 
+    const resStatusRender = jest.fn()
+    resStatus.mockReturnValue({ render: resStatusRender })
+
     await populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService)(req, res, next)
 
     expect(next).toHaveBeenCalledTimes(0)
-    expect(res.render).toHaveBeenCalledWith('pages/errors/notFound')
+    expect(res.status).toHaveBeenCalledWith(404)
+    expect(resStatusRender).toHaveBeenCalledWith('pages/errors/notFound')
     expect(res.locals.prisonerDetails).toBeUndefined()
     expect(auditService.logAuditEvent).toHaveBeenCalledWith({
       what: 'NOT_IN_CASELOAD',

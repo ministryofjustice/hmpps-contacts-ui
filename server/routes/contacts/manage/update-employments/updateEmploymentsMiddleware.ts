@@ -13,7 +13,7 @@ export const ensureInUpdateEmploymentsJourney = async (
     logger.warn(
       `Update employments journey (${journeyId}) not found for user ${res.locals.user?.username}. Rendering not found.`,
     )
-    return res.render('pages/errors/notFound')
+    return res.status(404).render('pages/errors/notFound')
   }
   req.session.updateEmploymentsJourneys[journeyId].lastTouched = new Date().toISOString()
   return next()
@@ -32,7 +32,7 @@ export const ensureValidEmploymentIdx = async (
     logger.warn(
       `Invalid employment index (${employmentIdx}) for Update employments journey (${journeyId}) by user ${res.locals.user?.username}.`,
     )
-    return res.render('pages/errors/notFound')
+    return res.status(404).render('pages/errors/notFound')
   }
   return next()
 }

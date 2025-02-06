@@ -2,8 +2,8 @@
 
 {% macro simplePagination(params) %}
     {% if params.totalPages > 1 %}
-        {% set previous = undefined if params.currentPage <= 1 else ({ href: params.hrefTemplate | replace('{page}', params.currentPage - 1) }) %}
-        {% set next = undefined if params.currentPage >= params.totalPages else ({ href: params.hrefTemplate | replace('{page}', params.currentPage + 1) }) %}
+        {% set previous = undefined if params.currentPage <= 1 else ({ text: 'Previous', href: params.hrefTemplate | replace('{page}', params.currentPage - 1) }) %}
+        {% set next = undefined if params.currentPage >= params.totalPages else ({ text: 'Next', href: params.hrefTemplate | replace('{page}', params.currentPage + 1) }) %}
 
         {% set items = [] %}
         {% for page in range(1, params.totalPages + 1) %}

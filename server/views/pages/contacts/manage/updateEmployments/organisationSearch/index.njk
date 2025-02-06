@@ -7,7 +7,7 @@
 
 {% extends "partials/layout.njk" %}§
 
-{% set pageTitle = "Edit employment information for contact - Contacts - DPS" %}
+{% set pageTitle = "Check if the employer organisation is already on the system - Contacts - DPS" %}
 
 {% block content %}
   {% include 'partials/successNotificationBanner.njk' %}
@@ -66,7 +66,7 @@
                 html: (organisation | businessAddressToLines or 'Not provided') | escape | nl2br
               },
               {
-                text: (organisation.businessPhoneNumber + ((", ext. " + organisation.businessPhoneNumberExtension) if organisation.businessPhoneNumberExtension else "")) if organisation.businessPhoneNumber else "Not provided"
+                text: organisation | formatBusinessPhoneNumber or "Not provided"
               },
               {
                 classes: 'govuk-link govuk-link--no-visited-state',

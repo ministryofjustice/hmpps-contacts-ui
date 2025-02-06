@@ -42,7 +42,7 @@
             text: "Business phone number at primary address"
           },
             value: {
-            text: (employment.employer.businessPhoneNumber + ((", ext. " + employment.employer.businessPhoneNumberExtension) if employment.employer.businessPhoneNumberExtension else "")) if employment.employer.businessPhoneNumber else "Not provided"
+            text: employment.employer | formatBusinessPhoneNumber or "Not provided"
           }
           },
           {
