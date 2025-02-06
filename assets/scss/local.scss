@@ -38,3 +38,20 @@ div.contact-list {
 .email-addresses-card {
   .govuk-summary-list__row { border-bottom: 0 }
 }
+
+// DPS standard styling on top of GDS summary cards.
+.govuk-summary-card {
+  border: 1px solid govuk-colour("dark-grey");
+  box-shadow: 0 5px #D9D9D9;
+}
+
+.govuk-summary-card__title-wrapper {
+  background-color: govuk-colour("light-grey");
+  padding: 0 15px 0 15px;
+}
+
+.govuk-summary-card__title-wrapper h2 {
+  line-height: 50px;
+  font-size: 24px;
+  margin: 0;
+}

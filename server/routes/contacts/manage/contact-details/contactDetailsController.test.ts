@@ -8,6 +8,7 @@ import { MockedService } from '../../../../testutils/mockedServices'
 import { components } from '../../../../@types/contactsApi'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
+import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -1128,6 +1129,319 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         expect($(identityDocCard).find('dt:contains("Contact’s domestic status")').next().text().trim()).toStrictEqual(
           'Not provided',
         )
+      })
+    })
+  })
+
+  describe('Contact methods tab', () => {
+    beforeEach(() => {
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.getContact.mockResolvedValue(TestData.contact())
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
+    })
+
+    describe('Phone numbers summary card', () => {
+      it('should render all phone numbers', async () => {
+        contactsService.getContact.mockResolvedValue(
+          TestData.contact({
+            phoneNumbers: [
+              TestData.getContactPhoneNumberDetails('MOB', 'Mobile', '4321', 1, undefined),
+              TestData.getContactPhoneNumberDetails('BUS', 'Business', '5555', 2, undefined),
+              TestData.getContactPhoneNumberDetails('BUS', 'Business', '1234', 3, '999'),
+            ],
+          }),
+        )
+
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+        const $ = cheerio.load(response.text)
+
+        const phoneNumbersCard = $('h2:contains("Phone numbers")').first().parent().parent()
+        expect(phoneNumbersCard).toHaveLength(1)
+        expect($(phoneNumbersCard).find('dt:contains("Business")').first().next().text().trim()).toStrictEqual(
+          '1234, ext. 999',
+        )
+        expect($(phoneNumbersCard).find('dt:contains("Business")').last().next().text().trim()).toStrictEqual('5555')
+        expect($(phoneNumbersCard).find('dt:contains("Mobile")').next().text().trim()).toStrictEqual('4321')
+      })
+
+      it('should render no phone numbers provided', async () => {
+        contactsService.getContact.mockResolvedValue(
+          TestData.contact({
+            phoneNumbers: [],
+          }),
+        )
+
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+        const $ = cheerio.load(response.text)
+
+        const phoneNumbersCard = $('h2:contains("Phone numbers")').first().parent().parent()
+        expect(phoneNumbersCard).toHaveLength(1)
+        expect($(phoneNumbersCard).text()).toMatch(/No phone numbers provided./)
+      })
+    })
+
+    describe('Emails summary card', () => {
+      it('should render all emails', async () => {
+        contactsService.getContact.mockResolvedValue(
+          TestData.contact({
+            emailAddresses: [
+              TestData.getContactEmailDetails('zzz@example.com', 1),
+              TestData.getContactEmailDetails('test@example.com', 2),
+            ],
+          }),
+        )
+
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+        const $ = cheerio.load(response.text)
+
+        const emailAddressesCard = $('h2:contains("Email addresses")').first().parent().parent()
+        expect(emailAddressesCard).toHaveLength(1)
+        expect($(emailAddressesCard).find('dd').first().text().trim()).toStrictEqual('test@example.com')
+        expect($(emailAddressesCard).find('dd').last().text().trim()).toStrictEqual('zzz@example.com')
+      })
+
+      it('should render no email addresses provided', async () => {
+        contactsService.getContact.mockResolvedValue(
+          TestData.contact({
+            emailAddresses: [],
+          }),
+        )
+
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+        const $ = cheerio.load(response.text)
+
+        const emailAddressesCard = $('h2:contains("Email addresses")').first().parent().parent()
+        expect(emailAddressesCard).toHaveLength(1)
+        expect($(emailAddressesCard).text()).toMatch(/No email addresses provided./)
+      })
+    })
+
+    describe('Addresses', () => {
+      it.each([
+        [
+          true,
+          true,
+          'Business address',
+          'Primary and postal address',
+          'Business address',
+          'Primary and postal address',
+        ],
+        [true, false, 'Business address', 'Primary address', 'Business address', 'Primary address'],
+        [false, true, 'Business address', 'Postal address', 'Business address', 'Postal address'],
+        [false, false, 'Business address', 'Business address', 'Business address', 'No'],
+        [false, false, undefined, 'Address', 'Not provided', 'No'],
+      ])(
+        'should render an address with all details and the correct title (primary %s, mail %s, expired %s, type %s, expected title %s)',
+        async (primary, mail, type, expectedTitle, expectedType, expectedPrimaryOrPostal) => {
+          contactsService.getContact.mockResolvedValue(
+            TestData.contact({
+              addresses: [
+                {
+                  contactAddressId: 1,
+                  contactId: 1,
+                  addressType: type,
+                  addressTypeDescription: type,
+                  primaryAddress: primary,
+                  flat: '1a',
+                  property: 'Property',
+                  street: 'Street',
+                  area: 'Area',
+                  cityCode: '123',
+                  cityDescription: 'City',
+                  countyCode: 'CNTY',
+                  countyDescription: 'County',
+                  postcode: 'Postcode',
+                  countryCode: 'ENG',
+                  countryDescription: 'England',
+                  verified: false,
+                  verifiedBy: undefined,
+                  verifiedTime: undefined,
+                  mailFlag: mail,
+                  startDate: '2021-01-01',
+                  endDate: undefined,
+                  noFixedAddress: false,
+                  phoneNumbers: [
+                    TestData.getAddressPhoneNumberDetails('MOB', 'Mobile phone', '07878 111111', 123, 1, 555, '123'),
+                    TestData.getAddressPhoneNumberDetails('BUS', 'Business phone', '999', 321, 1, 666, undefined),
+                  ],
+                  comments: 'Some comments',
+                  createdBy: 'James',
+                  createdTime: '2021-01-01',
+                } as ContactAddressDetails,
+              ],
+            }),
+          )
+
+          const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+          const $ = cheerio.load(response.text)
+
+          const addressCard = $(`h2:contains("${expectedTitle}")`).first().parent().parent()
+          expect(addressCard).toHaveLength(1)
+          expect($(addressCard).find('dt:contains("Type")').next().text().trim()).toStrictEqual(expectedType)
+          expect($(addressCard).find('dt:contains("Address")').next().html()?.trim()).toStrictEqual(
+            'Flat 1a, Property, Street<br>Area<br>City<br>County<br>Postcode<br>England',
+          )
+          expect($(addressCard).find('dt:contains("Date")').next().text().trim()).toStrictEqual('From January 2021')
+          expect($(addressCard).find('dt:contains("Primary or postal address")').next().text().trim()).toStrictEqual(
+            expectedPrimaryOrPostal,
+          )
+          expect($(addressCard).find('dt:contains("Mobile phone")').next().text().trim()).toStrictEqual(
+            '07878 111111, ext. 123',
+          )
+          expect($(addressCard).find('dt:contains("Business phone")').next().text().trim()).toStrictEqual('999')
+          expect($(addressCard).find('dt:contains("Comments on this address")').next().text().trim()).toStrictEqual(
+            'Some comments',
+          )
+        },
+      )
+
+      it.each([
+        [
+          true,
+          true,
+          'Business address',
+          'Previous primary and postal address',
+          'Business address',
+          'Primary and postal address',
+        ],
+        [true, false, 'Business address', 'Previous primary address', 'Business address', 'Primary address'],
+        [false, true, 'Business address', 'Previous postal address', 'Business address', 'Postal address'],
+        [false, false, 'Business address', 'Previous business address', 'Business address', 'No'],
+        [false, false, undefined, 'Previous address', 'Not provided', 'No'],
+      ])(
+        'should render an expired address with all details and the correct title (primary %s, mail %s, expired %s, type %s, expected title %s)',
+        async (primary, mail, type, expectedTitle, expectedType, expectedPrimaryOrPostal) => {
+          contactsService.getContact.mockResolvedValue(
+            TestData.contact({
+              addresses: [
+                {
+                  contactAddressId: 1,
+                  contactId: 1,
+                  addressType: type,
+                  addressTypeDescription: type,
+                  primaryAddress: primary,
+                  flat: '1a',
+                  property: 'Property',
+                  street: 'Street',
+                  area: 'Area',
+                  cityCode: '123',
+                  cityDescription: 'City',
+                  countyCode: 'CNTY',
+                  countyDescription: 'County',
+                  postcode: 'Postcode',
+                  countryCode: 'ENG',
+                  countryDescription: 'England',
+                  verified: false,
+                  verifiedBy: undefined,
+                  verifiedTime: undefined,
+                  mailFlag: mail,
+                  startDate: '2021-01-01',
+                  endDate: '2022-01-01',
+                  noFixedAddress: false,
+                  phoneNumbers: [
+                    TestData.getAddressPhoneNumberDetails('MOB', 'Mobile phone', '07878 111111', 123, 1, 555, '123'),
+                    TestData.getAddressPhoneNumberDetails('BUS', 'Business phone', '999', 321, 1, 666, undefined),
+                  ],
+                  comments: 'Some comments',
+                  createdBy: 'James',
+                  createdTime: '2021-01-01',
+                } as ContactAddressDetails,
+              ],
+            }),
+          )
+
+          const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+          const $ = cheerio.load(response.text)
+
+          const addressCard = $(`h2:contains("${expectedTitle}")`).first().parent().parent()
+          expect(addressCard).toHaveLength(1)
+          expect($(addressCard).find('dt:contains("Type")').next().text().trim()).toStrictEqual(expectedType)
+          expect($(addressCard).find('dt:contains("Address")').next().html()?.trim()).toStrictEqual(
+            'Flat 1a, Property, Street<br>Area<br>City<br>County<br>Postcode<br>England',
+          )
+          expect($(addressCard).find('dt:contains("Date")').next().text().trim()).toStrictEqual(
+            'From January 2021 to January 2022',
+          )
+          expect($(addressCard).find('dt:contains("Primary or postal address")').next().text().trim()).toStrictEqual(
+            expectedPrimaryOrPostal,
+          )
+          expect($(addressCard).find('dt:contains("Mobile phone")').next().text().trim()).toStrictEqual(
+            '07878 111111, ext. 123',
+          )
+          expect($(addressCard).find('dt:contains("Business phone")').next().text().trim()).toStrictEqual('999')
+          expect($(addressCard).find('dt:contains("Comments on this address")').next().text().trim()).toStrictEqual(
+            'Some comments',
+          )
+        },
+      )
+
+      it('should render an address without optional details', async () => {
+        contactsService.getContact.mockResolvedValue(
+          TestData.contact({
+            addresses: [
+              {
+                contactAddressId: 1,
+                contactId: 1,
+                addressType: undefined,
+                addressTypeDescription: undefined,
+                primaryAddress: false,
+                flat: undefined,
+                property: undefined,
+                street: undefined,
+                area: undefined,
+                cityCode: undefined,
+                cityDescription: undefined,
+                countyCode: undefined,
+                countyDescription: undefined,
+                postcode: undefined,
+                countryCode: 'ENG',
+                countryDescription: 'England',
+                verified: false,
+                verifiedBy: undefined,
+                verifiedTime: undefined,
+                mailFlag: false,
+                startDate: undefined,
+                endDate: undefined,
+                noFixedAddress: true,
+                phoneNumbers: [],
+                comments: undefined,
+                createdBy: 'James',
+                createdTime: '2021-01-01',
+              } as ContactAddressDetails,
+            ],
+          }),
+        )
+
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+        const $ = cheerio.load(response.text)
+
+        const addressCard = $(`h2:contains("Address")`).first().parent().parent()
+        expect(addressCard).toHaveLength(1)
+        expect($(addressCard).find('dt:contains("Type")').next().text().trim()).toStrictEqual('Not provided')
+        expect($(addressCard).find('dt:contains("Address")').next().html()?.trim()).toStrictEqual(
+          'No fixed address<br>England',
+        )
+        expect($(addressCard).find('dt:contains("Date")').next().text().trim()).toStrictEqual('Not provided')
+        expect($(addressCard).find('dt:contains("Primary or postal address")').next().text().trim()).toStrictEqual('No')
+        expect($(addressCard).find('dt:contains("Address phone numbers")').next().text().trim()).toStrictEqual(
+          'Not provided',
+        )
+        expect($(addressCard).find('dt:contains("Comments on this address")').next().text().trim()).toStrictEqual(
+          'Not provided',
+        )
+      })
+
+      it('should render no addresses provided', async () => {
+        contactsService.getContact.mockResolvedValue(
+          TestData.contact({
+            addresses: [],
+          }),
+        )
+
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+        const $ = cheerio.load(response.text)
+
+        expect($('h2:contains("Addresses")').first().next().text()).toMatch(/No addresses provided./)
       })
     })
   })
