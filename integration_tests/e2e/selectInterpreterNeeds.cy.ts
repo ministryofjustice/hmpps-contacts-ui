@@ -57,7 +57,7 @@ context('Select Interpreter Needs', () => {
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickEditContactDetailsLink()
+      .clickTemporaryEditContactDetailsTab()
       .clickAddInterpreterLink()
     Page.verifyOnPage(SelectInterpreterNeedsPage, 'Jones Mason').selectIsInterpreterNeeded('YES').clickContinue()
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').verifyShowNeedsInterpreterValueAs('Yes')
@@ -85,7 +85,7 @@ context('Select Interpreter Needs', () => {
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickEditContactDetailsLink()
+      .clickTemporaryEditContactDetailsTab()
       .clickAddInterpreterLink()
     Page.verifyOnPage(SelectInterpreterNeedsPage, 'Jones Mason').selectIsInterpreterNeeded('NO').clickContinue()
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').verifyShowNeedsInterpreterValueAs('No')
@@ -106,7 +106,7 @@ context('Select Interpreter Needs', () => {
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickEditContactDetailsLink()
+      .clickTemporaryEditContactDetailsTab()
       .clickAddInterpreterLink()
     Page.verifyOnPage(SelectInterpreterNeedsPage, 'Jones Mason') //
       .cancelTo(ManageContactDetailsPage, 'Jones Mason')
@@ -116,7 +116,7 @@ context('Select Interpreter Needs', () => {
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickEditContactDetailsLink()
+      .clickTemporaryEditContactDetailsTab()
       .clickAddInterpreterLink()
     Page.verifyOnPage(SelectInterpreterNeedsPage, 'Jones Mason') //
       .backTo(ManageContactDetailsPage, 'Jones Mason')

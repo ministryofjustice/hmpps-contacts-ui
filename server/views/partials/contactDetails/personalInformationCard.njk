@@ -1,0 +1,115 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro personalInformationCard(opts) %}
+
+  {% set contact = opts.contact %}
+  {% set showActions = opts.showActions %}
+  {% set returnUrl = opts.returnUrl %}
+  {% set prisonerNumber = opts.prisonerNumber %}
+
+  {% set  formattedDateOfBirth %}{% if contact.dateOfBirth %}{{ contact.dateOfBirth | formatDate }}{% else %}Not provided{% endif %}{% endset %}
+
+  {{ govukSummaryList({
+    card: {
+      title: {
+        text: 'Personal information'
+      }
+    },
+    rows: [
+      {
+        key: {
+          text: 'Title'
+        },
+        value: {
+          text: contact.titleDescription if contact.titleDescription else 'Not provided'
+        },
+        actions: {
+         items: [
+            {
+              href: "/prisoner/"+ prisonerNumber + "/contacts/manage/" + contact.id + "/name?returnUrl=" + returnUrl,
+              text: "Change",
+              visuallyHiddenText: "the contact’s title",
+              attributes: {"data-qa": "change-title-link"},
+              classes: "govuk-link--no-visited-state"
+            }
+          ] if showActions else []
+        }
+      },
+      {
+        key: {
+          text: 'Name'
+        },
+        value: {
+          text: contact | formatNameFirstNameFirst
+        },
+        actions: {
+          items: [
+            {
+              href: "/prisoner/"+ prisonerNumber + "/contacts/manage/" + contact.id + "/name?returnUrl=" + returnUrl,
+              text: "Change middle name" if contact.middleNames else "Add middle name",
+              attributes: {"data-qa": "change-middle-name-link"},
+              classes: "govuk-link--no-visited-state"
+            }
+          ] if showActions else []
+        }
+      },
+      {
+        key: {
+          text: 'Date of birth'
+        },
+        value: {
+          text: formattedDateOfBirth
+        },
+        actions: {
+          items: [
+              {
+                href: "/prisoner/"+ prisonerNumber + "/contacts/manage/" + contact.id + "/update-dob?returnUrl=" + returnUrl,
+                text: "Change",
+                visuallyHiddenText: "the contact’s date of birth",
+                attributes: {"data-qa": "change-dob-link"},
+                classes: "govuk-link--no-visited-state"
+              }
+            ] if showActions else []
+        }
+      },
+      {
+        key: {
+          text: 'Gender'
+        },
+        value: {
+          text: contact.genderDescription if contact.genderDescription else 'Not provided'
+        },
+        actions: {
+          items: [
+            {
+              href: "/prisoner/"+ prisonerNumber + "/contacts/manage/" + contact.id + "/gender?returnUrl=" + returnUrl,
+              text: "Change",
+              visuallyHiddenText: "the contact’s gender",
+              attributes: {"data-qa": "change-gender-link"},
+              classes: "govuk-link--no-visited-state"
+            }
+          ] if showActions else []
+        }
+      },
+      {
+        key: {
+          text: 'Staff member'
+        },
+        value: {
+          text: 'Yes' if contact.isStaff else 'No'
+        },
+        actions: {
+          items: [
+            {
+              href: "/prisoner/"+ prisonerNumber + "/contacts/manage/" + contact.id + "/staff?returnUrl=" + returnUrl,
+              text: "Change",
+              visuallyHiddenText: "if the contact is a member of staff",
+              attributes: {"data-qa": "change-is-staff-link"},
+              classes: "govuk-link--no-visited-state"
+            }
+          ] if showActions else []
+        }
+      }
+    ]
+  }) }}
+{% endmacro %}

@@ -5,6 +5,7 @@ import ManageContactDetailsPage from '../pages/manageContactDetails'
 import Page from '../pages/page'
 import SearchPrisonerPage from '../pages/searchPrisoner'
 import SelectStaffStatusPage from '../pages/selectStaffStatus'
+import EditContactDetailsPage from '../pages/editContactDetailsPage'
 
 export type PatchContactRequest = components['schemas']['PatchContactRequest']
 
@@ -55,13 +56,17 @@ context('Select Staff Status', () => {
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason') //
       .verifyShowStaffStatusValueAs('No')
-      .clickEditContactDetailsLink()
       .clickChangeStaffStatusLink()
+
     Page.verifyOnPage(SelectStaffStatusPage, 'Jones Mason').selectStaffStatus().clickContinue()
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason') //
       .clickChangeStaffStatusLink()
+
     Page.verifyOnPage(SelectStaffStatusPage, 'Jones Mason').selectStaffStatus().clickCancel()
 
     cy.verifyLastAPICall(
@@ -83,10 +88,14 @@ context('Select Staff Status', () => {
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .verifyShowStaffStatusValueAs('No')
       .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason') //
+      .verifyShowStaffStatusValueAs('No')
       .clickChangeStaffStatusLink()
+
     Page.verifyOnPage(SelectStaffStatusPage, 'Jones Mason') //
+      .backTo(EditContactDetailsPage, 'Jones Mason')
       .backTo(ManageContactDetailsPage, 'Jones Mason')
   })
 
@@ -97,10 +106,14 @@ context('Select Staff Status', () => {
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .verifyShowStaffStatusValueAs('No')
       .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason') //
+      .verifyShowStaffStatusValueAs('No')
       .clickChangeStaffStatusLink()
+
     Page.verifyOnPage(SelectStaffStatusPage, 'Jones Mason') //
+      .cancelTo(EditContactDetailsPage, 'Jones Mason')
       .cancelTo(ManageContactDetailsPage, 'Jones Mason')
   })
 })

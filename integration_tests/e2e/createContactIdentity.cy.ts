@@ -58,7 +58,7 @@ context('Create Contact Identity', () => {
     cy.task('stubCreateContactIdentity', { contactId, created })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickEditContactDetailsLink()
+      .clickTemporaryEditContactDetailsTab()
       .clickAddIdentityLink()
 
     Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
@@ -95,7 +95,7 @@ context('Create Contact Identity', () => {
     cy.task('stubCreateContactIdentity', { contactId, created })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickEditContactDetailsLink()
+      .clickTemporaryEditContactDetailsTab()
       .clickAddIdentityLink()
 
     Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
@@ -117,7 +117,7 @@ context('Create Contact Identity', () => {
 
   it('Should require type', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickEditContactDetailsLink()
+      .clickTemporaryEditContactDetailsTab()
       .clickAddIdentityLink()
 
     const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
@@ -128,7 +128,7 @@ context('Create Contact Identity', () => {
 
   it('Should require identity number', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickEditContactDetailsLink()
+      .clickTemporaryEditContactDetailsTab()
       .clickAddIdentityLink()
 
     const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
@@ -139,7 +139,7 @@ context('Create Contact Identity', () => {
 
   it('Should require identity number is 20 chars or fewer', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickEditContactDetailsLink()
+      .clickTemporaryEditContactDetailsTab()
       .clickAddIdentityLink()
 
     const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
@@ -151,7 +151,7 @@ context('Create Contact Identity', () => {
 
   it('Should require Issuing authority is 40 chars or fewer', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickEditContactDetailsLink()
+      .clickTemporaryEditContactDetailsTab()
       .clickAddIdentityLink()
 
     const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
@@ -165,7 +165,7 @@ context('Create Contact Identity', () => {
 
   it('Back link goes to manage contacts', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickEditContactDetailsLink()
+      .clickTemporaryEditContactDetailsTab()
       .clickAddIdentityLink()
 
     Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
@@ -174,7 +174,7 @@ context('Create Contact Identity', () => {
 
   it('Cancel goes to manage contacts', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickEditContactDetailsLink()
+      .clickTemporaryEditContactDetailsTab()
       .clickAddIdentityLink()
 
     Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //

@@ -1,10 +1,6 @@
 {% from "../../../common/addressesMacro.njk" import addressDetails %}
 {% from "../../../common/notProvided.njk" import notProvided %}
 
-{%- include "./manageBasicDetails.njk" -%}
-        {%- include "./manageRelationshipDetails.njk" -%}
-        {%- include "./manageApprovedToVisit.njk" -%}
-
         {% if mostRelevantAddress %}
           {{ addressDetails({
             returnUrl: manageContactRelationshipUrl,
@@ -48,4 +44,3 @@
         {%- include "./manageIdentityNumbers.njk" -%}
         {%- include "./language.njk" -%}
         {%- include "./domesticStatus.njk" -%}
-        {%- include "./manageStaff.njk" -%}

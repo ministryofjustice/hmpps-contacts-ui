@@ -2,6 +2,7 @@ import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import SelectApprovedVisitorPage from '../pages/selectApprovedVisitorPage'
+import EditContactDetailsPage from '../pages/editContactDetailsPage'
 
 context('Manage contact update approved visitor contact', () => {
   const contactId = 654321
@@ -22,7 +23,10 @@ context('Manage contact update approved visitor contact', () => {
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
-      response: TestData.prisonerContactRelationship(),
+      response: TestData.prisonerContactRelationship({
+        prisonerContactId,
+        isApprovedVisitor: true,
+      }),
     })
 
     cy.task('stubUpdateContactRelationshipById', {
@@ -47,13 +51,16 @@ context('Manage contact update approved visitor contact', () => {
   it('Can update approved visitor', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
-      .clickEditApprovedVisitorLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .verifyShowApprovedForVisitsAs('Yes')
+      .clickChangeApprovedForVisitsLink()
 
     Page.verifyOnPage(SelectApprovedVisitorPage, 'First Middle Names Last') //
       .selectIsApprovedVisitor('NO')
       .clickContinue()
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').verifyShowIsApprovedVisitorAs('Yes')
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last')
 
     cy.verifyLastAPICall(
       {
@@ -67,18 +74,24 @@ context('Manage contact update approved visitor contact', () => {
   it(`Back link goes to manage contacts`, () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
-      .clickEditApprovedVisitorLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickChangeApprovedForVisitsLink()
 
     Page.verifyOnPage(SelectApprovedVisitorPage, 'First Middle Names Last') //
+      .backTo(EditContactDetailsPage, 'First Middle Names Last')
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
   it(`Cancel goes to manage contacts`, () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
-      .clickEditApprovedVisitorLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickChangeApprovedForVisitsLink()
 
     Page.verifyOnPage(SelectApprovedVisitorPage, 'First Middle Names Last') //
+      .cancelTo(EditContactDetailsPage, 'First Middle Names Last')
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 })

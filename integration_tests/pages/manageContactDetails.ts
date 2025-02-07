@@ -5,26 +5,6 @@ export default class ManageContactDetailsPage extends Page {
     super(`Contact details - ${name}`)
   }
 
-  verifyShowNamesValueAs(expected: string): ManageContactDetailsPage {
-    this.namesValue().should('contain.text', expected)
-    return this
-  }
-
-  verifyGenderValueAs(expected: string): ManageContactDetailsPage {
-    this.genderValue().should('contain.text', expected)
-    return this
-  }
-
-  verifyShowDOBValueAs(expected: string): ManageContactDetailsPage {
-    this.dobValue().should('contain.text', expected)
-    return this
-  }
-
-  verifyShowDeceasedDateValueAs(expected: string): ManageContactDetailsPage {
-    this.deceasedValue().should('contain.text', expected)
-    return this
-  }
-
   verifyShowIdentityNumberValueAs(expected: string, type: string): ManageContactDetailsPage {
     this.identityNumberValue(type).should('contain.text', expected)
     return this
@@ -55,17 +35,8 @@ export default class ManageContactDetailsPage extends Page {
     return this
   }
 
-  clickChangeGenderLink() {
-    this.selectGenderLink().click()
-  }
-
   clickAddInterpreterLink() {
     this.addInterpreterLink().click()
-  }
-
-  verifyShowStaffStatusValueAs(expected: string): ManageContactDetailsPage {
-    this.staffStatusValue().should('contain.text', expected)
-    return this
   }
 
   verifyShowMostRelevantAddressLabelValueAs(expected: string): ManageContactDetailsPage {
@@ -76,30 +47,6 @@ export default class ManageContactDetailsPage extends Page {
   verifyShowConfirmAddressValueAs(expected: string): ManageContactDetailsPage {
     this.confirmAddressValue().should('contain.text', expected)
     return this
-  }
-
-  clickChangeStaffStatusLink() {
-    this.changeStaffStatusLink().click()
-  }
-
-  clickEditEmergencyContactLink() {
-    this.editEmergencyContactLink().click()
-  }
-
-  clickEditNextOfKinContactLink() {
-    this.editNextOfKinContactLink().click()
-  }
-
-  clickEditApprovedVisitorLink() {
-    this.editApprovedVisitorLink().click()
-  }
-
-  clickEditRelationshipStatusLink() {
-    this.editRelationshipStatusLink().click()
-  }
-
-  clickEditRelationshipCommentsLink() {
-    this.editRelationshipCommentsLink().click()
   }
 
   clickViewAllAddressesLink() {
@@ -124,18 +71,6 @@ export default class ManageContactDetailsPage extends Page {
 
   clickDeleteEmailLink(id: number) {
     this.deleteEmailLink(id).click()
-  }
-
-  clickChangeDateOfBirthLink(id: number) {
-    this.changeDateOfBirthLink(id).click()
-  }
-
-  clickChangeNameLink() {
-    this.changeNameLink().click()
-  }
-
-  clickChangeRelationshipLink() {
-    this.changeRelationshipLink().click()
   }
 
   clickAddEmailLink() {
@@ -276,14 +211,6 @@ export default class ManageContactDetailsPage extends Page {
   getGlobalRestrictionSelector = (cardNumber: number, childNumber: number): string =>
     `[data-qa="restrictions-result-message"] > :nth-child(${cardNumber}) > .govuk-summary-card__content > .govuk-summary-list > :nth-child(${childNumber}) > .govuk-summary-list__value`
 
-  private namesValue = (): PageElement => cy.get('.manage-names-value')
-
-  private genderValue = (): PageElement => cy.get('.manage-gender-value')
-
-  private dobValue = (): PageElement => cy.get('.manage-dob-value')
-
-  private deceasedValue = (): PageElement => cy.get('.manage-deceased-date-value')
-
   private identityNumberValue = (type: string): PageElement => cy.get(`.confirm-${type}-value`)
 
   private spokenLanguageValue = (): PageElement => cy.get('.manage-language-code-value')
@@ -294,31 +221,11 @@ export default class ManageContactDetailsPage extends Page {
 
   private addInterpreterLink = (): PageElement => cy.get('[data-qa="add-interpreter"]')
 
-  private staffStatusValue = (): PageElement => cy.get('.manage-staff-status')
-
-  private changeStaffStatusLink = (): PageElement => cy.get('[data-qa=manage-staff-status-link]')
-
   private addPhoneNumberLink = (): PageElement => cy.get('[data-qa="add-phone-number"]')
 
   private editPhoneNumberLink = (id: number): PageElement => cy.get(`[data-qa="edit-phone-number-${id}"]`)
 
-  private editEmergencyContactLink = (): PageElement => cy.get(`[data-qa="change-emergency-contact-link"]`)
-
-  private editNextOfKinContactLink = (): PageElement => cy.get(`[data-qa="change-next-of-kin-link"]`)
-
-  private editApprovedVisitorLink = (): PageElement => cy.get('[data-qa="manage-approved-to-visit-status-link"]')
-
-  private editRelationshipStatusLink = (): PageElement => cy.get('[data-qa="change-relationship-active-link"]')
-
-  private editRelationshipCommentsLink = (): PageElement => cy.get(`[data-qa="change-relationship-comments-link"]`)
-
   private viewAllAddressesLink = (): PageElement => cy.get(`[data-qa="view-all-addresses"]`)
-
-  private changeDateOfBirthLink = (id: number): PageElement => cy.get(`[data-qa="change-dob-${id}"]`)
-
-  private changeNameLink = (): PageElement => cy.get(`[data-qa="change-name-link"]`)
-
-  private changeRelationshipLink = (): PageElement => cy.get(`[data-qa="change-relationship-to-prisoner-link"]`)
 
   private domesticStatusValue = (): PageElement => cy.get('.manage-domestic-status-value')
 
@@ -327,8 +234,6 @@ export default class ManageContactDetailsPage extends Page {
   private deletePhoneNumberLink = (id: number): PageElement => cy.get(`[data-qa="delete-phone-number-${id}"]`)
 
   private deleteEmailLink = (id: number): PageElement => cy.get(`[data-qa="delete-email-address-${id}"]`)
-
-  private selectGenderLink = (): PageElement => cy.get('[data-qa="select-gender"]')
 
   clickAddIdentityLink() {
     this.addIdentityLink().click()
@@ -340,26 +245,6 @@ export default class ManageContactDetailsPage extends Page {
 
   clickDeleteIdentityLink(id: number) {
     this.deleteIdentityLink(id).click()
-  }
-
-  verifyShowIsEmergencyContactAs(expected: string) {
-    this.checkAnswersEmergencyContactValue().should('contain.text', expected)
-  }
-
-  verifyShowIsNextOfKinContactAs(expected: string) {
-    this.checkAnswersNextOfKinValue().should('contain.text', expected)
-  }
-
-  verifyShowIsApprovedVisitorAs(expected: string) {
-    this.checkApprovedVisitorValue().should('contain.text', expected)
-  }
-
-  verifyShowIsRelationshipActiveAs(expected: string) {
-    this.checkRelationshipStatusValue().should('contain.text', expected)
-  }
-
-  verifyShowIsRelationshipCommentsAs(expected: string) {
-    this.checkAnswersRelationshipCommentsValue().should('contain.text', expected)
   }
 
   verifyOnRestrictionsTab(): ManageContactDetailsPage {
@@ -382,16 +267,6 @@ export default class ManageContactDetailsPage extends Page {
   private mostRelevantAddressLabel = (): PageElement => cy.get(`.most-relevant-address-label`)
 
   private confirmAddressValue = (): PageElement => cy.get(`.confirm-address-value`)
-
-  private checkAnswersEmergencyContactValue = (): PageElement => cy.get('.emergency-contact-value')
-
-  private checkAnswersNextOfKinValue = (): PageElement => cy.get('.next-of-kin-value')
-
-  private checkApprovedVisitorValue = (): PageElement => cy.get('.next-of-kin-value')
-
-  private checkRelationshipStatusValue = (): PageElement => cy.get('.relationship-active-value')
-
-  private checkAnswersRelationshipCommentsValue = (): PageElement => cy.get('.relationship-comments-value')
 
   private restrictionsTabHeading = (): PageElement => cy.get('[data-qa="manage-restriction-title"]')
 }

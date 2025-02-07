@@ -1,5 +1,7 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "moj/components/page-header-actions/macro.njk" import mojPageHeaderActions %}
+{% from "partials/contactDetails/personalInformationCard.njk" import personalInformationCard %}
+{% from "partials/contactDetails/relationshipToPrisonerCard.njk" import relationshipToPrisonerCard %}
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
@@ -9,130 +11,22 @@
       </div>
       <div class="moj-page-header-actions__actions">
         <div class="moj-button-group moj-button-group--inline">
-          <a class="govuk-link govuk-link--no-visited-state" data-qa="edit-contact-details-link" href="#contact-details-editable">Edit contact details</a>
+          <a class="govuk-link govuk-link--no-visited-state" data-qa="edit-contact-details-link" href="/prisoner/{{ prisonerNumber }}/contacts/manage/{{ contactId }}/relationship/{{ prisonerContactId }}/edit-contact-details?returnUrl={{  manageContactRelationshipUrl }}">Edit contact details</a>
         </div>
       </div>
     </div>
   </div>
 </div>
-{% set  formattedDateOfBirth %}{% if contact.dateOfBirth %}{{ contact.dateOfBirth | formatDate }}{% else %}Not provided{% endif %}{% endset %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        {{ govukSummaryList({
-          card: {
-            title: {
-              text: 'Personal information'
-            }
-          },
-          rows: [
-            {
-              key: {
-                text: 'Title'
-              },
-              value: {
-                text: contact.titleDescription if contact.titleDescription else 'Not provided'
-              }
-            },
-            {
-              key: {
-                text: 'Name'
-              },
-              value: {
-                text: contact | formatNameFirstNameFirst
-              }
-            },
-            {
-              key: {
-                text: 'Date of birth'
-              },
-              value: {
-                text: formattedDateOfBirth
-              }
-            },
-            {
-              key: {
-                text: 'Gender'
-              },
-              value: {
-                text: contact.genderDescription if contact.genderDescription else 'Not provided'
-              }
-            },
-            {
-              key: {
-                text: 'Staff member'
-              },
-              value: {
-                text: 'Yes' if contact.isStaff else 'No'
-              }
-            }
-          ]
-        }) }}
+      {{  personalInformationCard({ contact: contact, showActions: false }) }}
 
-      {{ govukSummaryList({
-          card: {
-            title: {
-              text: 'Relationship to prisoner ' + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)
-            }
-          },
-          rows: [
-            {
-              key: {
-                text: 'Relationship type'
-              },
-              value: {
-                text: prisonerContactRelationship.relationshipTypeDescription
-              }
-            },
-            {
-              key: {
-                text: 'Relationship to prisoner'
-              },
-              value: {
-                text: prisonerContactRelationship.relationshipToPrisonerDescription
-              }
-            },
-            {
-              key: {
-                text: 'Relationship status'
-              },
-              value: {
-                text: 'Active' if prisonerContactRelationship.isRelationshipActive else 'Inactive'
-              }
-            },
-            {
-              key: {
-                text: 'Emergency contact'
-              },
-              value: {
-                text: prisonerContactRelationship.emergencyContact | formatYesNo
-              }
-            },
-            {
-              key: {
-                text: 'Next of kin'
-              },
-              value: {
-                text: prisonerContactRelationship.nextOfKin | formatYesNo
-              }
-            },
-            {
-              key: {
-                text: 'Approved for visits'
-              },
-              value: {
-                text: prisonerContactRelationship.isApprovedVisitor | formatYesNo
-              }
-            },
-            {
-              key: {
-                text: 'Comments on the relationship'
-              },
-              value: {
-                text: prisonerContactRelationship.comments if prisonerContactRelationship.comments else 'Not provided'
-              }
-            }
-          ]
-        }) }}
+      {{  relationshipToPrisonerCard({
+        contact: contact,
+        relationship: prisonerContactRelationship,
+        prisonerDetails: prisonerDetails,
+        showActions: false
+      }) }}
 
       {% if contact.identities and contact.identities.length > 0 %}
         {% set identityNumbers = [] %}
