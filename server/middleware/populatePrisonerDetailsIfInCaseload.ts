@@ -24,7 +24,7 @@ const populatePrisonerDetailsIfInCaseload = (
             prisonerCurrentPrison: prisoner.prisonId,
           },
         })
-        return res.render('pages/errors/notFound')
+        return res.status(404).render('pages/errors/notFound')
       }
 
       res.locals.prisonerDetails = toPrisonerDetails(prisoner)

@@ -44,7 +44,7 @@
                 actions: {
                 items: [
                   {
-                    href: "#",
+                    href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contactId + "/update-employments/" + loop.index + "/organisation-search/" + journeyId,
                     text: "Change organisation",
                     classes: "govuk-link--no-visited-state"
                   }
@@ -94,7 +94,7 @@
 
       {{ govukButton({
         text: "Add another employer" if employments.length else "Add employer",
-        href: "#",
+        href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contactId + "/update-employments/new/organisation-search/" + journeyId,
         classes: "govuk-button--secondary govuk-!-static-margin-top-5",
         preventDoubleClick: true
       }) }}

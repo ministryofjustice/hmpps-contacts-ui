@@ -36,6 +36,7 @@ import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAd
 import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
 import LinkedPrisonerDetails = contactsApiClientTypes.LinkedPrisonerDetails
+import OrganisationSummaryResultItemPage = contactsApiClientTypes.OrganisationSummaryResultItemPage
 
 type PageableObject = components['schemas']['PageableObject']
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
@@ -417,5 +418,28 @@ export default class ContactsApiClient extends RestClient {
 
   async getLinkedPrisoners(contactId: number, user: Express.User): Promise<LinkedPrisonerDetails[]> {
     return this.get<LinkedPrisonerDetails[]>({ path: `/contact/${contactId}/linked-prisoners` }, user)
+  }
+
+  async searchOrganisations(
+    {
+      searchTerm,
+      page,
+      size,
+      sort,
+    }: {
+      searchTerm: string
+      page: number
+      size: number
+      sort: string[]
+    },
+    user: Express.User,
+  ): Promise<OrganisationSummaryResultItemPage> {
+    const name = encodeURIComponent(searchTerm)
+    return this.get<OrganisationSummaryResultItemPage>(
+      {
+        path: `/organisation/search?name=${name}&page=${page}&size=${size}${sort.map(itm => `&sort=${encodeURIComponent(itm)}`).join('')}`,
+      },
+      user,
+    )
   }
 }

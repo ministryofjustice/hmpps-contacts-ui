@@ -27,7 +27,7 @@ export const businessAddressToLines = ({
   area,
   cityDescription,
   countyDescription,
-  postalCode,
+  postcode,
   countryDescription,
 }: Partial<OrganisationSummary>): string | null => {
   let lineOne = property
@@ -35,15 +35,9 @@ export const businessAddressToLines = ({
     const flatString = `Flat ${flat}`
     lineOne = lineOne ? `${flatString}, ${lineOne}` : flatString
   }
-  const addressArray = [
-    lineOne,
-    street,
-    area,
-    cityDescription,
-    countyDescription,
-    postalCode,
-    countryDescription,
-  ].filter(s => s)
+  const addressArray = [lineOne, street, area, cityDescription, countyDescription, postcode, countryDescription].filter(
+    s => s,
+  )
 
   return addressArray.length ? addressArray.join('\n') : null
 }

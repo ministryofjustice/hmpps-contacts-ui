@@ -71,6 +71,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
         contactNames: { ...contact },
         employments: [employment],
         returnPoint: { url: '/foo/bar' },
+        organisationSearch: { page: 1 },
       }
     }
 
@@ -88,9 +89,13 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
     expect($('dt:contains("Employment status")').next().text()).toMatch(/Inactive/)
 
     expect($('a:contains("Delete employer (Past employer: Big Corp)")').attr('href')).toEqual('#')
-    expect($('a:contains("Change organisation (Past employer: Big Corp)")').attr('href')).toEqual('#')
+    expect($('a:contains("Change organisation (Past employer: Big Corp)")').attr('href')).toEqual(
+      `/prisoner/A1234BC/contacts/manage/1/update-employments/1/organisation-search/${journeyId}`,
+    )
     expect($('a:contains("Change status of the employment with (Past employer: Big Corp)")').attr('href')).toEqual('#')
-    expect($('a:contains("Add another employer")').attr('href')).toEqual('#')
+    expect($('a:contains("Add another employer")').attr('href')).toEqual(
+      `/prisoner/A1234BC/contacts/manage/1/update-employments/new/organisation-search/${journeyId}`,
+    )
     expect($('a:contains("Cancel")').attr('href')).toEqual('/foo/bar')
   })
 
@@ -107,6 +112,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
         contactNames: { ...contact },
         employments: [],
         returnPoint: { url: '/foo/bar' },
+        organisationSearch: { page: 1 },
       }
     }
 
@@ -118,7 +124,9 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
     // Then
     const $ = cheerio.load(response.text)
     expect($('h1:contains("Edit employment information")').parent().next().text()).toContain('No employers recorded.')
-    expect($('a:contains("Add employer")').attr('href')).toEqual('#')
+    expect($('a:contains("Add employer")').attr('href')).toEqual(
+      `/prisoner/A1234BC/contacts/manage/1/update-employments/new/organisation-search/${journeyId}`,
+    )
   })
 
   it('should handle employment record missing optional values', async () => {
@@ -146,6 +154,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
         contactNames: { ...contact },
         employments: [employment],
         returnPoint: { url: '/foo/bar' },
+        organisationSearch: { page: 1 },
       }
     }
 

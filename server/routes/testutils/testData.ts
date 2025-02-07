@@ -17,6 +17,7 @@ type PrisonerContactRestrictionDetails = components['schemas']['PrisonerContactR
 type ContactAddressPhoneDetails = components['schemas']['ContactAddressPhoneDetails']
 type LinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
 type LinkedPrisonerRelationshipDetails = components['schemas']['LinkedPrisonerRelationshipDetails']
+type OrganisationSummary = components['schemas']['OrganisationSummary']
 export default class TestData {
   static address = ({
     contactAddressId = 1,
@@ -536,4 +537,33 @@ export default class TestData {
       relationshipToPrisoner,
       relationshipToPrisonerDescription,
     }) as LinkedPrisonerRelationshipDetails
+
+  static organisation = ({
+    organisationId = 0,
+    organisationName = 'Organisation Name',
+    businessPhoneNumber,
+    businessPhoneNumberExtension,
+    flat,
+    property,
+    street,
+    area,
+    cityDescription,
+    countyDescription,
+    postcode,
+    countryDescription,
+  }: Partial<OrganisationSummary> = {}): OrganisationSummary =>
+    ({
+      organisationId,
+      organisationName,
+      businessPhoneNumber,
+      businessPhoneNumberExtension,
+      flat,
+      property,
+      street,
+      area,
+      cityDescription,
+      countyDescription,
+      postcode,
+      countryDescription,
+    }) as OrganisationSummary
 }

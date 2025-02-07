@@ -1,0 +1,108 @@
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "partials/simplePagination/macro.njk" import simplePagination %}
+
+{% extends "partials/layout.njk" %}§
+
+{% set pageTitle = "Check if the employer organisation is already on the system - Contacts - DPS" %}
+
+{% block content %}
+  {% include 'partials/successNotificationBanner.njk' %}
+  {{ miniProfile(prisonerDetails) }}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-!-static-margin-bottom-7">
+        <span class="govuk-caption-l">Edit professional information</span>
+        <h1 class="govuk-heading-l">Check if the employer organisation is already on the system</h1>
+      </div>
+      {{ govukWarningText({
+        html: "[Placeholder text - If you can’t find the correct employer on the system, {insert instructions on adding org in NOMIS and returning to this process. Possibly use body text / reveal for the location directions.}]",
+        iconFallbackText: "Warning"
+      }) }}
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <div class="block-background govuk-!-padding-6 govuk-!-margin-bottom-7">
+        <div class="moj-search govuk-!-width-two-thirds">
+          <h2 class="govuk-heading-m">Search</h2>
+          <form method="POST">
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+            {{ govukInput({
+              classes: "moj-search__input",
+              id: "organisationName",
+              name: "organisationName",
+              value: organisationName,
+              label: {
+                text: 'Name of organisation'
+              }
+            }) }}
+
+            {{ govukButton({
+              classes: "moj-search__button",
+              text: "Search",
+              preventDoubleClick: true
+            }) }}
+          </form>
+        </div>
+      </div>
+
+      {% if organisationName %}
+        {% if organisations.length %}
+          {{ simplePagination(paginationParams)  }}
+        {% endif %}
+
+        {% if organisations.length %}
+          {% set organisationRows = [] %}
+          {% for organisation in organisations %}
+            {% set organisationRows = (organisationRows.push([
+              {
+                html: organisation.organisationName + '<br/><span class="govuk-hint">' + organisation.organisationId + '</span>'
+              },
+              {
+                html: (organisation | businessAddressToLines or 'Not provided') | escape | nl2br
+              },
+              {
+                text: organisation | formatBusinessPhoneNumber or "Not provided"
+              },
+              {
+                classes: 'govuk-link govuk-link--no-visited-state',
+                html: '<a href="#">Check if this is the correct employer</a>'
+              }
+            ]), organisationRows) %}
+          {% endfor %}
+
+          {{ govukTable({
+            firstCellIsHeader: false,
+            classes: 'table-vertical-align-middle govuk-!-margin-top-6',
+            head: [
+              {
+                text: 'Organisation name and corporate ID',
+                key: 'organisationName'
+              },
+              {
+                text: "Primary or default address"
+              },
+              {
+                text: "Business phone number"
+              },
+              {
+                text: "Action"
+              }
+            ] | convertToSortableColumns(sort or 'organisationName,asc'),
+            rows: organisationRows
+          }) }}
+        {% else %}
+          <p class="govuk-!-margin-bottom-6"><strong>No organisation records match your search.</strong></p>
+        {% endif %}
+
+        {% if organisations.length %}
+          {{ simplePagination(paginationParams)  }}
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

@@ -19,7 +19,7 @@ export default function createErrorHandler(production: boolean) {
 
     res.status(error.status || 500)
     if (error.status === 404) {
-      return res.render('pages/errors/notFound')
+      return res.status(404).render('pages/errors/notFound')
     }
     return res.render('pages/errors/sorry')
   }

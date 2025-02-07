@@ -37,4 +37,5 @@ declare namespace contactsApiClientTypes {
   export type ContactAddressPhoneDetails = components['schemas']['ContactAddressPhoneDetails']
   export type LinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
   export type OrganisationSummary = components['schemas']['OrganisationSummary']
+  export type OrganisationSummaryResultItemPage = components['schemas']['OrganisationSummaryResultItemPage']
 }
