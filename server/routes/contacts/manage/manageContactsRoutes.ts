@@ -68,6 +68,7 @@ import {
 import UpdateEmploymentsStartController from './update-employments/start/updateEmploymentsStartController'
 import OrganisationSearchController from './update-employments/organisation-search/organisationSearchController'
 import OrganisationsService from '../../../services/organisationsService'
+import EditContactDetailsController from './edit-contact-details/editContactDetailsController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -396,6 +397,12 @@ const ManageContactsRoutes = (
     journeyEnsurer: [ensureInUpdateEmploymentsJourney, ensureValidEmploymentIdx],
     noValidation: true,
   })
+
+  get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-contact-details',
+    new EditContactDetailsController(contactsService),
+    prepareStandaloneManageContactJourney,
+  )
 
   return router
 }

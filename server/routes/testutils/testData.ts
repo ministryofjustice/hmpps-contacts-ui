@@ -351,6 +351,7 @@ export default class TestData {
     }) as ContactDetails
 
   static prisonerContactRelationship = ({
+    prisonerContactId = 99,
     relationshipType = 'S',
     relationshipTypeDescription = 'Social',
     relationshipToPrisonerCode = 'FRI',
@@ -362,6 +363,7 @@ export default class TestData {
     comments = 'Some comments',
   }: Partial<PrisonerContactRelationshipDetails> = {}): PrisonerContactRelationshipDetails =>
     ({
+      prisonerContactId,
       relationshipType,
       relationshipTypeDescription,
       relationshipToPrisonerCode,

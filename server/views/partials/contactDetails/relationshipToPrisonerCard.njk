@@ -1,0 +1,143 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro relationshipToPrisonerCard(opts) %}
+
+  {% set contact = opts.contact %}
+  {% set relationship = opts.relationship %}
+  {% set showActions = opts.showActions %}
+  {% set returnUrl = opts.returnUrl %}
+  {% set prisonerDetails = opts.prisonerDetails %}
+
+  {{ govukSummaryList({
+    card: {
+      title: {
+        text: 'Relationship to prisoner ' + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)
+      }
+    },
+    rows: [
+      {
+        key: {
+          text: 'Relationship type'
+        },
+        value: {
+          text: relationship.relationshipTypeDescription
+        }
+      },
+      {
+        key: {
+          text: 'Relationship to prisoner'
+        },
+        value: {
+          text: relationship.relationshipToPrisonerDescription
+        },
+        actions: {
+          items: [
+            {
+              href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + relationship.prisonerContactId + "/update-relationship?returnUrl=" + returnUrl,
+              text: "Change",
+              visuallyHiddenText: "the relationship to the prisoner",
+              attributes: {"data-qa": "change-relationship-to-prisoner-link"},
+              classes: "govuk-link--no-visited-state"
+            }
+          ] if showActions else []
+        }
+      },
+      {
+        key: {
+          text: 'Relationship status'
+        },
+        value: {
+          text: 'Active' if relationship.isRelationshipActive else 'Inactive'
+        },
+        actions: {
+          items: [
+            {
+              href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + relationship.prisonerContactId + "/relationship-status?returnUrl=" + returnUrl,
+              text: "Change",
+              visuallyHiddenText: "the status of the relationship",
+              attributes: {"data-qa": "change-relationship-active-link"},
+              classes: "govuk-link--no-visited-state"
+            }
+          ] if showActions else []
+        }
+      },
+      {
+        key: {
+          text: 'Emergency contact'
+        },
+        value: {
+          text: relationship.emergencyContact | formatYesNo
+        },
+        actions: {
+          items: [
+            {
+              href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + relationship.prisonerContactId + "/emergency-contact?returnUrl=" + returnUrl,
+              text: "Change",
+              visuallyHiddenText: "if the contact is the prisoner’s emergency contact",
+              attributes: {"data-qa": "change-emergency-contact-link"},
+              classes: "govuk-link--no-visited-state"
+            }
+          ] if showActions else []
+        }
+      },
+      {
+        key: {
+          text: 'Next of kin'
+        },
+        value: {
+          text: relationship.nextOfKin | formatYesNo
+        },
+        actions: {
+          items: [
+            {
+              href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + relationship.prisonerContactId + "/next-of-kin?returnUrl=" + returnUrl,
+              text: "Change",
+              visuallyHiddenText: "if the contact is the prisoner’s next of kin",
+              attributes: {"data-qa": "change-next-of-kin-link"},
+              classes: "govuk-link--no-visited-state"
+            }
+          ] if showActions else []
+        }
+      },
+      {
+        key: {
+          text: 'Approved for visits'
+        },
+        value: {
+          text: relationship.isApprovedVisitor | formatYesNo
+        },
+        actions: {
+          items: [
+            {
+              href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + relationship.prisonerContactId + "/approved-to-visit?returnUrl=" + returnUrl,
+              text: "Change",
+              visuallyHiddenText: "if the contact is approved to visit the prisoner",
+              attributes: {"data-qa": "change-approved-visitor-link"},
+              classes: "govuk-link--no-visited-state"
+            }
+          ] if showActions else []
+        }
+      },
+      {
+        key: {
+          text: 'Comments on the relationship'
+        },
+        value: {
+          text: relationship.comments if relationship.comments else 'Not provided'
+        },
+        actions: {
+          items: [
+            {
+              href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + relationship.prisonerContactId + "/relationship-comments?returnUrl=" + returnUrl,
+              text: "Change",
+              visuallyHiddenText: "the comments on the relationship",
+              attributes: {"data-qa": "change-relationship-comments-link"},
+              classes: "govuk-link--no-visited-state"
+            }
+          ] if showActions else []
+        }
+      }
+    ]
+  }) }}
+
+{% endmacro %}

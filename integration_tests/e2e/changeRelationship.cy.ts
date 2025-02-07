@@ -3,6 +3,7 @@ import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import { StubPrisonerContactRelationshipDetails } from '../mockApis/contactsApi'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
+import EditContactDetailsPage from '../pages/editContactDetailsPage'
 
 context('Change Relationship', () => {
   const contactId = 654321
@@ -38,7 +39,9 @@ context('Change Relationship', () => {
 
   it('Can select a new relationship', () => {
     const relationship = TestData.prisonerContactRelationship({
+      prisonerContactId,
       relationshipToPrisonerCode: 'OTHER',
+      relationshipToPrisonerDescription: 'Other',
     })
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
@@ -58,14 +61,17 @@ context('Change Relationship', () => {
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
-      .clickChangeRelationshipLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .verifyShowRelationshipToPrisonerAs('Other')
+      .clickChangeRelationshipToPrisonerLink()
 
     Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last', 'John Smith') //
       .hasRelationshipSelected('OTHER')
       .selectRelationship('MOT')
       .clickContinue()
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last')
 
     cy.verifyLastAPICall(
       {
@@ -83,14 +89,19 @@ context('Change Relationship', () => {
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({
+        prisonerContactId,
         relationshipToPrisonerCode: 'OTHER',
+        relationshipToPrisonerDescription: 'Other',
       }),
     })
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
-      .clickChangeRelationshipLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .verifyShowRelationshipToPrisonerAs('Other')
+      .clickChangeRelationshipToPrisonerLink()
 
     Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last', 'John Smith') //
       .hasRelationshipSelected('OTHER')
@@ -104,30 +115,36 @@ context('Change Relationship', () => {
   it('Back link goes back to manage contact', () => {
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
-      response: TestData.prisonerContactRelationship(),
+      response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
-      .clickChangeRelationshipLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickChangeRelationshipToPrisonerLink()
 
     Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last', 'John Smith') //
+      .backTo(EditContactDetailsPage, 'First Middle Names Last')
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
   it('Cancel goes back to manage contact', () => {
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
-      response: TestData.prisonerContactRelationship(),
+      response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
-      .clickChangeRelationshipLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickChangeRelationshipToPrisonerLink()
 
     Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last', 'John Smith') //
+      .cancelTo(EditContactDetailsPage, 'First Middle Names Last')
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 })

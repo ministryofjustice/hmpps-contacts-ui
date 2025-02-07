@@ -3,6 +3,7 @@ import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import Page from '../pages/page'
 import SelectGenderPage from '../pages/selectGenderPage'
+import EditContactDetailsPage from '../pages/editContactDetailsPage'
 
 export type PatchContactRequest = components['schemas']['PatchContactRequest']
 
@@ -20,7 +21,7 @@ context('Select Gender', () => {
     cy.task('stubGetGenders')
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
-      response: TestData.prisonerContactRelationship(),
+      response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId,
@@ -46,9 +47,14 @@ context('Select Gender', () => {
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
       .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason') //
+      .verifyShowGenderValueAs('Male')
       .clickChangeGenderLink()
+
     Page.verifyOnPage(SelectGenderPage, 'Jones Mason').selectGender('M').clickContinue()
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').verifyGenderValueAs('Male')
+
+    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason')
 
     cy.verifyLastAPICall(
       {
@@ -68,13 +74,23 @@ context('Select Gender', () => {
       updatedBy: 'USER1',
     }
     cy.task('stubPatchContactById', { contactId, request })
-    cy.task('stubGetContactById', TestData.contact({ gender: null, genderDescription: null }))
+    cy.task(
+      'stubGetContactById',
+      TestData.contact({
+        gender: null,
+        genderDescription: null,
+      }),
+    )
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
       .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason') //
+      .verifyShowGenderValueAs('Not provided')
       .clickChangeGenderLink()
+
     Page.verifyOnPage(SelectGenderPage, 'Jones Mason').clickContinue()
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').verifyGenderValueAs('Not provided')
+    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason')
 
     cy.verifyLastAPICall(
       {
@@ -91,16 +107,26 @@ context('Select Gender', () => {
   it(`Back link goes back to manage contact`, () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
       .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason') //
+      .verifyShowGenderValueAs('Male')
       .clickChangeGenderLink()
+
     Page.verifyOnPage(SelectGenderPage, 'Jones Mason') //
+      .backTo(EditContactDetailsPage, 'Jones Mason')
       .backTo(ManageContactDetailsPage, 'Jones Mason')
   })
 
   it(`Cancel goes back to manage contact`, () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
       .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason') //
+      .verifyShowGenderValueAs('Male')
       .clickChangeGenderLink()
+
     Page.verifyOnPage(SelectGenderPage, 'Jones Mason') //
+      .cancelTo(EditContactDetailsPage, 'Jones Mason')
       .cancelTo(ManageContactDetailsPage, 'Jones Mason')
   })
 })

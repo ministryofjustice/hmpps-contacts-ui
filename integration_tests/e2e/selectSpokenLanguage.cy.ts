@@ -56,7 +56,7 @@ context('Select Spoken Language', () => {
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickEditContactDetailsLink()
+      .clickTemporaryEditContactDetailsTab()
       .clickChangeSpokenLanguageLink()
     Page.verifyOnPage(SelectSpokenLanguagePage, 'Jones Mason').selectSpokenLanguage('Arabic').clickContinue()
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
@@ -80,7 +80,7 @@ context('Select Spoken Language', () => {
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickEditContactDetailsLink()
+      .clickTemporaryEditContactDetailsTab()
       .clickChangeSpokenLanguageLink()
     Page.verifyOnPage(SelectSpokenLanguagePage, 'Jones Mason') //
       .backTo(ManageContactDetailsPage, 'Jones Mason')
@@ -93,7 +93,7 @@ context('Select Spoken Language', () => {
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickEditContactDetailsLink()
+      .clickTemporaryEditContactDetailsTab()
       .clickChangeSpokenLanguageLink()
     Page.verifyOnPage(SelectSpokenLanguagePage, 'Jones Mason') //
       .cancelTo(ManageContactDetailsPage, 'Jones Mason')

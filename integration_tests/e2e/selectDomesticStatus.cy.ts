@@ -46,7 +46,7 @@ context('Select Domestic Status', () => {
     cy.task('stubPatchContactById', { contactId, request })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickEditContactDetailsLink()
+      .clickTemporaryEditContactDetailsTab()
       .clickChangeDomesticStatusLink()
     Page.verifyOnPage(SelectDomesticStatusPage, 'Jones Mason')
       .selectDomesticStatus('Single-not married/in civil partnership')
@@ -72,7 +72,7 @@ context('Select Domestic Status', () => {
     cy.task('stubGetDomesticStatuses')
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickEditContactDetailsLink()
+      .clickTemporaryEditContactDetailsTab()
       .clickChangeDomesticStatusLink()
     Page.verifyOnPage(SelectDomesticStatusPage, 'Jones Mason') //
       .backTo(ManageContactDetailsPage, 'Jones Mason')
@@ -83,7 +83,7 @@ context('Select Domestic Status', () => {
     cy.task('stubGetDomesticStatuses')
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickEditContactDetailsLink()
+      .clickTemporaryEditContactDetailsTab()
       .clickChangeDomesticStatusLink()
     Page.verifyOnPage(SelectDomesticStatusPage, 'Jones Mason') //
       .cancelTo(ManageContactDetailsPage, 'Jones Mason')

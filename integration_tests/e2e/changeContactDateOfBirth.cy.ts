@@ -3,6 +3,7 @@ import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import { StubPatchContactResponse } from '../mockApis/contactsApi'
 import EnterContactDateOfBirthPage from '../pages/enterContactDateOfBirthPage'
+import EditContactDetailsPage from '../pages/editContactDetailsPage'
 
 context('Change Contact Date Of Birth', () => {
   const contactId = 654321
@@ -50,7 +51,10 @@ context('Change Contact Date Of Birth', () => {
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
-      .clickChangeDateOfBirthLink(contactId)
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .verifyShowDOBValueAs('15 June 1982')
+      .clickChangeDateOfBirthLink()
 
     Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last') //
       .hasIsKnown('YES')
@@ -62,7 +66,7 @@ context('Change Contact Date Of Birth', () => {
       .enterYear('2000')
       .clickContinue()
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last')
 
     cy.verifyLastAPICall(
       {
@@ -101,7 +105,10 @@ context('Change Contact Date Of Birth', () => {
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
-      .clickChangeDateOfBirthLink(contactId)
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .verifyShowDOBValueAs('Not provided')
+      .clickChangeDateOfBirthLink()
 
     Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last') //
       .hasIsKnown('NO')
@@ -111,7 +118,7 @@ context('Change Contact Date Of Birth', () => {
       .enterYear('2000')
       .clickContinue()
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last')
 
     cy.verifyLastAPICall(
       {
@@ -144,7 +151,10 @@ context('Change Contact Date Of Birth', () => {
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
-      .clickChangeDateOfBirthLink(contactId)
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .verifyShowDOBValueAs('Not provided')
+      .clickChangeDateOfBirthLink()
 
     const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last')
     enterDobPage.selectIsKnown('YES').clickContinue()
@@ -174,7 +184,10 @@ context('Change Contact Date Of Birth', () => {
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
-      .clickChangeDateOfBirthLink(contactId)
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .verifyShowDOBValueAs('Not provided')
+      .clickChangeDateOfBirthLink()
 
     const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last')
     enterDobPage
@@ -216,9 +229,13 @@ context('Change Contact Date Of Birth', () => {
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
-      .clickChangeDateOfBirthLink(contactId)
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .verifyShowDOBValueAs('Not provided')
+      .clickChangeDateOfBirthLink()
 
     Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last') //
+      .backTo(EditContactDetailsPage, 'First Middle Names Last')
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
@@ -242,9 +259,13 @@ context('Change Contact Date Of Birth', () => {
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
-      .clickChangeDateOfBirthLink(contactId)
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .verifyShowDOBValueAs('Not provided')
+      .clickChangeDateOfBirthLink()
 
     Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last') //
+      .cancelTo(EditContactDetailsPage, 'First Middle Names Last')
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 })

@@ -2,6 +2,7 @@ import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import SelectNextOfKinContactPage from '../pages/selectNextOfKinPage'
+import EditContactDetailsPage from '../pages/editContactDetailsPage'
 
 context('Manage contact update next of kin contact', () => {
   const contactId = 654321
@@ -22,7 +23,10 @@ context('Manage contact update next of kin contact', () => {
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
-      response: TestData.prisonerContactRelationship(),
+      response: TestData.prisonerContactRelationship({
+        prisonerContactId,
+        nextOfKin: true,
+      }),
     })
 
     cy.task('stubUpdateContactRelationshipById', {
@@ -47,13 +51,16 @@ context('Manage contact update next of kin contact', () => {
   it('Can update next of kin', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
-      .clickEditNextOfKinContactLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .verifyShowNextOfKinAs('Yes')
+      .clickChangeNextOfKinLink()
 
     Page.verifyOnPage(SelectNextOfKinContactPage, 'First Middle Names Last') //
       .selectIsNextOfKin('NO')
       .clickContinue()
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').verifyShowIsNextOfKinContactAs('Yes')
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last')
 
     cy.verifyLastAPICall(
       {
@@ -67,18 +74,24 @@ context('Manage contact update next of kin contact', () => {
   it(`Back link goes to manage contacts`, () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
-      .clickEditNextOfKinContactLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickChangeNextOfKinLink()
 
     Page.verifyOnPage(SelectNextOfKinContactPage, 'First Middle Names Last') //
+      .backTo(EditContactDetailsPage, 'First Middle Names Last')
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
   it(`Cancel goes to manage contacts`, () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
-      .clickEditNextOfKinContactLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickChangeNextOfKinLink()
 
     Page.verifyOnPage(SelectNextOfKinContactPage, 'First Middle Names Last') //
+      .cancelTo(EditContactDetailsPage, 'First Middle Names Last')
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 })

@@ -2,6 +2,7 @@ import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import SelectRelationshipStatusPage from '../pages/selectRelationshipStatusPage'
+import EditContactDetailsPage from '../pages/editContactDetailsPage'
 
 context('Manage contact update relationship status active', () => {
   const contactId = 654321
@@ -22,7 +23,7 @@ context('Manage contact update relationship status active', () => {
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
-      response: TestData.prisonerContactRelationship(),
+      response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
 
     cy.task('stubUpdateContactRelationshipById', {
@@ -47,13 +48,16 @@ context('Manage contact update relationship status active', () => {
   it('Can update relationship status active', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
-      .clickEditRelationshipStatusLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .verifyShowRelationshipStatusAs('Active')
+      .clickChangeRelationshipStatusLink()
 
     Page.verifyOnPage(SelectRelationshipStatusPage, 'First Middle Names Last') //
       .selectIsRelationshipActive('NO')
       .clickContinue()
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').verifyShowIsRelationshipActiveAs('Yes')
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last')
 
     cy.verifyLastAPICall(
       {
@@ -67,18 +71,24 @@ context('Manage contact update relationship status active', () => {
   it(`Back link goes to manage contacts`, () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
-      .clickEditRelationshipStatusLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickChangeRelationshipStatusLink()
 
     Page.verifyOnPage(SelectRelationshipStatusPage, 'First Middle Names Last') //
+      .backTo(EditContactDetailsPage, 'First Middle Names Last')
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
   it(`Cancel goes to manage contacts`, () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
-      .clickEditRelationshipStatusLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickChangeRelationshipStatusLink()
 
     Page.verifyOnPage(SelectRelationshipStatusPage, 'First Middle Names Last') //
+      .cancelTo(EditContactDetailsPage, 'First Middle Names Last')
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 })
