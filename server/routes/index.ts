@@ -15,6 +15,7 @@ export default function routes({
   referenceDataService,
   restrictionsService,
   prisonerAddressService,
+  organisationsApiClient,
 }: Services): Router {
   const router = Router({ mergeParams: true })
 
@@ -31,6 +32,7 @@ export default function routes({
       referenceDataService,
       restrictionsService,
       prisonerAddressService,
+      organisationsApiClient,
     ),
   )
   router.use(

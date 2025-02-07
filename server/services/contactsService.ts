@@ -324,16 +324,4 @@ export default class ContactsService {
   async getLinkedPrisoners(contactId: number, user: Express.User): Promise<LinkedPrisonerDetails[]> {
     return this.contactsApiClient.getLinkedPrisoners(contactId, user)
   }
-
-  async searchOrganisations(
-    searchParams: {
-      searchTerm: string
-      page: number
-      size: number
-      sort: string[]
-    },
-    user: Express.User,
-  ): Promise<OrganisationSummaryResultItemPage> {
-    return this.contactsApiClient.searchOrganisations(searchParams, user)
-  }
 }

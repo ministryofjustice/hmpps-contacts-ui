@@ -8,8 +8,14 @@ import RestrictionsService from './restrictionsService'
 import PrisonerAddressService from './prisonerAddressService'
 
 export const services = () => {
-  const { applicationInfo, hmppsAuditClient, prisonerSearchApiClient, contactsApiClient, prisonApiClient } =
-    dataAccess()
+  const {
+    applicationInfo,
+    hmppsAuditClient,
+    prisonerSearchApiClient,
+    contactsApiClient,
+    prisonApiClient,
+    organisationsApiClient,
+  } = dataAccess()
 
   const auditService = new AuditService(hmppsAuditClient)
   const prisonerSearchService = new PrisonerSearchService(prisonerSearchApiClient)
@@ -28,6 +34,7 @@ export const services = () => {
     referenceDataService,
     restrictionsService,
     prisonerAddressService,
+    organisationsApiClient,
   }
 }
 

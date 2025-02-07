@@ -3,12 +3,12 @@ import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { Page } from '../../../../../services/auditService'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import UpdateEmploymentJourneyParams = journeys.UpdateEmploymentJourneyParams
-import { ContactsService } from '../../../../../services'
 import OrganisationSummaryResultItemPage = contactsApiClientTypes.OrganisationSummaryResultItemPage
 import { setPaginationLocals } from '../../../../../views/partials/simplePagination/utils'
+import { OrganisationsApiClient } from '../../../../../data'
 
 export default class OrganisationSearchController implements PageHandler {
-  constructor(private readonly contactsService: ContactsService) {}
+  constructor(private readonly organisationsApiClient: OrganisationsApiClient) {}
 
   public PAGE_NAME = Page.MANAGE_CONTACT_SEARCH_ORGANISATION_PAGE
 
@@ -40,7 +40,7 @@ export default class OrganisationSearchController implements PageHandler {
     let searchResult: OrganisationSummaryResultItemPage | undefined
 
     if (journey.organisationSearch.searchTerm) {
-      searchResult = await this.contactsService.searchOrganisations(
+      searchResult = await this.organisationsApiClient.searchOrganisations(
         {
           searchTerm: journey.organisationSearch.searchTerm,
           page: journey.organisationSearch.page - 1,
