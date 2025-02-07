@@ -10,11 +10,11 @@ import UpdateEmploymentsJourney = journeys.UpdateEmploymentsJourney
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
-jest.mock('../../../../../data/organisationsApiClient')
+jest.mock('../../../../../services/organisationsService')
 
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
-const organisationsApiClient = MockedService.OrganisationsApiClient()
+const organisationsService = MockedService.OrganisationsService()
 
 let app: Express
 const journeyId = uuidv4()
@@ -61,7 +61,7 @@ beforeEach(() => {
     services: {
       auditService,
       prisonerSearchService,
-      organisationsApiClient,
+      organisationsService,
     },
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
@@ -161,7 +161,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
       organisationSearch: { searchTerm: 'test', page: 2 },
     })
 
-    organisationsApiClient.searchOrganisations.mockResolvedValue({
+    organisationsService.searchOrganisations.mockResolvedValue({
       content: [
         TestData.organisation({
           organisationName: 'Some Corp',
@@ -198,7 +198,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
       organisationSearch: { searchTerm: 'test', page: 1 },
     })
 
-    organisationsApiClient.searchOrganisations.mockResolvedValue({
+    organisationsService.searchOrganisations.mockResolvedValue({
       content: [
         TestData.organisation({
           organisationName: 'Some Corp',
@@ -231,7 +231,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
       organisationSearch: { searchTerm: 'test', page: 1 },
     })
 
-    organisationsApiClient.searchOrganisations.mockResolvedValue({
+    organisationsService.searchOrganisations.mockResolvedValue({
       content: [],
       totalElements: 0,
     })
@@ -254,7 +254,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
       organisationSearch: { searchTerm: undefined, page: 1 },
     })
 
-    organisationsApiClient.searchOrganisations.mockResolvedValue({
+    organisationsService.searchOrganisations.mockResolvedValue({
       content: [],
       totalElements: 0,
     })

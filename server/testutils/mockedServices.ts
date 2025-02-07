@@ -3,7 +3,7 @@ import ReferenceDataService from '../services/referenceDataService'
 import PrisonerSearchService from '../services/prisonerSearchService'
 import RestrictionsService from '../services/restrictionsService'
 import ContactsService from '../services/contactsService'
-import OrganisationsApiClient from '../data/organisationsApiClient'
+import OrganisationsService from '../services/organisationsService'
 
 export const MockedService = {
   // @ts-expect-error passing null param into mock service
@@ -16,5 +16,6 @@ export const MockedService = {
   RestrictionsService: () => new RestrictionsService(null) as jest.Mocked<RestrictionsService>,
   // @ts-expect-error passing null param into mock service
   ContactsService: () => new ContactsService(null) as jest.Mocked<ContactsService>,
-  OrganisationsApiClient: () => new OrganisationsApiClient() as jest.Mocked<OrganisationsApiClient>,
+  // @ts-expect-error passing null param into mock service
+  OrganisationsService: () => new OrganisationsService(null) as jest.Mocked<OrganisationsService>,
 }

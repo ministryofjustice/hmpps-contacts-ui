@@ -24,7 +24,6 @@ import UpdateContactAddressRequest = contactsApiClientTypes.UpdateContactAddress
 import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAddressPhoneRequest
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
 import LinkedPrisonerDetails = contactsApiClientTypes.LinkedPrisonerDetails
-import OrganisationSummaryResultItemPage = contactsApiClientTypes.OrganisationSummaryResultItemPage
 
 type PageableObject = components['schemas']['PageableObject']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']

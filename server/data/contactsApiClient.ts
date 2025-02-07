@@ -36,7 +36,6 @@ import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAd
 import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
 import LinkedPrisonerDetails = contactsApiClientTypes.LinkedPrisonerDetails
-import OrganisationSummaryResultItemPage = contactsApiClientTypes.OrganisationSummaryResultItemPage
 
 type PageableObject = components['schemas']['PageableObject']
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
