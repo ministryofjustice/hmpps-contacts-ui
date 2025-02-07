@@ -115,6 +115,15 @@ export default {
       agent: new AgentConfig(Number(get('CONTACTS_API_TIMEOUT_RESPONSE', 10000))),
       pageSize: 10,
     },
+    organisationsApi: {
+      url: get('ORGANISATIONS_API_URL', 'http://localhost:8080', requiredInProduction),
+      timeout: {
+        response: Number(get('ORGANISATIONS_API_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('ORGANISATIONS_API_TIMEOUT_DEADLINE', 10000)),
+      },
+      agent: new AgentConfig(Number(get('ORGANISATIONS_API_TIMEOUT_RESPONSE', 10000))),
+      pageSize: 10,
+    },
     componentApi: {
       timeout: {
         response: Number(get('COMPONENT_API_TIMEOUT_RESPONSE', 5000)),

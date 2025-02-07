@@ -67,6 +67,7 @@ import {
 } from './update-employments/updateEmploymentsMiddleware'
 import UpdateEmploymentsStartController from './update-employments/start/updateEmploymentsStartController'
 import OrganisationSearchController from './update-employments/organisation-search/organisationSearchController'
+import OrganisationsService from '../../../services/organisationsService'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -75,6 +76,7 @@ const ManageContactsRoutes = (
   referenceDataService: ReferenceDataService,
   restrictionsService: RestrictionsService,
   prisonerAddressService: PrisonerAddressService,
+  organisationsService: OrganisationsService,
 ) => {
   const router = Router({ mergeParams: true })
 
@@ -390,7 +392,7 @@ const ManageContactsRoutes = (
 
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments/:employmentIdx/organisation-search/:journeyId',
-    controller: new OrganisationSearchController(contactsService),
+    controller: new OrganisationSearchController(organisationsService),
     journeyEnsurer: [ensureInUpdateEmploymentsJourney, ensureValidEmploymentIdx],
     noValidation: true,
   })

@@ -15,6 +15,7 @@ import HmppsAuditClient from './hmppsAuditClient'
 import PrisonerSearchApiClient from './prisonerSearchApiClient'
 import ContactsApiClient from './contactsApiClient'
 import PrisonApiClient from './prisonApiClient'
+import OrganisationsApiClient from './organisationsApiClient'
 
 export const dataAccess = () => ({
   applicationInfo,
@@ -22,6 +23,7 @@ export const dataAccess = () => ({
   prisonerSearchApiClient: new PrisonerSearchApiClient(),
   contactsApiClient: new ContactsApiClient(),
   prisonApiClient: new PrisonApiClient(),
+  organisationsApiClient: new OrganisationsApiClient(),
 })
 
-export { HmppsAuditClient, PrisonerSearchApiClient, ContactsApiClient, PrisonApiClient }
+export { HmppsAuditClient, PrisonerSearchApiClient, ContactsApiClient, PrisonApiClient, OrganisationsApiClient }

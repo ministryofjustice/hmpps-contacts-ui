@@ -6,10 +6,17 @@ import PrisonerImageService from './prisonerImageService'
 import ReferenceDataService from './referenceDataService'
 import RestrictionsService from './restrictionsService'
 import PrisonerAddressService from './prisonerAddressService'
+import OrganisationsService from './organisationsService'
 
 export const services = () => {
-  const { applicationInfo, hmppsAuditClient, prisonerSearchApiClient, contactsApiClient, prisonApiClient } =
-    dataAccess()
+  const {
+    applicationInfo,
+    hmppsAuditClient,
+    prisonerSearchApiClient,
+    contactsApiClient,
+    prisonApiClient,
+    organisationsApiClient,
+  } = dataAccess()
 
   const auditService = new AuditService(hmppsAuditClient)
   const prisonerSearchService = new PrisonerSearchService(prisonerSearchApiClient)
@@ -18,6 +25,7 @@ export const services = () => {
   const referenceDataService = new ReferenceDataService(contactsApiClient)
   const restrictionsService = new RestrictionsService(contactsApiClient)
   const prisonerAddressService = new PrisonerAddressService(prisonApiClient)
+  const organisationsService = new OrganisationsService(organisationsApiClient)
 
   return {
     applicationInfo,
@@ -28,6 +36,7 @@ export const services = () => {
     referenceDataService,
     restrictionsService,
     prisonerAddressService,
+    organisationsService,
   }
 }
 

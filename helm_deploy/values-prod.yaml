@@ -14,6 +14,7 @@ generic-service:
     PRISONER_SEARCH_API_URL: 'https://prisoner-search.prison.service.justice.gov.uk'
     PRISON_API_URL: 'https://prison-api.prison.service.justice.gov.uk'
     CONTACTS_API_URL: 'https://contacts-api.hmpps.service.justice.gov.uk'
+    ORGANISATIONS_API_URL: 'https://organisations-api.hmpps.service.justice.gov.uk'
     COMMON_COMPONENTS_ENABLED: true
     SENTRY_ENVIRONMENT: PRODUCTION
     AUDIT_ENABLED: 'false'
