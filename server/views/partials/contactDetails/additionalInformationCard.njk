@@ -1,0 +1,77 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro additionalInformationCard(opts) %}
+
+  {% set contact = opts.contact %}
+  {% set showActions = opts.showActions %}
+  {% set returnUrl = opts.returnUrl %}
+  {% set prisonerNumber = opts.prisonerNumber %}
+
+
+  {{ govukSummaryList({
+      card: {
+        title: {
+          text: 'Additional information'
+        }
+      },
+      rows: [
+        {
+          key: {
+            text: 'Contact’s first language'
+          },
+          value: {
+            text: contact.languageDescription if contact.languageDescription else 'Not provided'
+          },
+          actions: {
+            items: [
+              {
+                href: "/prisoner/"+ prisonerNumber + "/contacts/manage/" + contact.id + "/language?returnUrl=" + returnUrl,
+                text: "Change",
+                visuallyHiddenText: "the contact’s first language",
+                attributes: {"data-qa": "change-language-link"},
+                classes: 'govuk-link--no-visited-state'
+              }
+            ] if showActions else []
+          }
+        },
+        {
+          key: {
+            text: 'Interpreter required'
+          },
+          value: {
+            text: contact.interpreterRequired | formatYesNo
+          },
+          actions: {
+            items: [
+              {
+                href: "/prisoner/"+ prisonerNumber + "/contacts/manage/" + contact.id + "/interpreter?returnUrl=" + returnUrl,
+                text: "Change",
+                visuallyHiddenText: "if an interpreter is required",
+                attributes: {"data-qa": "change-interpreter-link"},
+                classes: 'govuk-link--no-visited-state'
+              }
+            ] if showActions else []
+          }
+        },
+        {
+          key: {
+            text: 'Contact’s domestic status'
+          },
+          value: {
+            text: contact.domesticStatusDescription if contact.domesticStatusDescription else 'Not provided'
+          },
+          actions: {
+            items: [
+              {
+                href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/domestic-status?returnUrl=" + returnUrl,
+                text: "Change",
+                visuallyHiddenText: "the contact’s domestic status",
+                attributes: {"data-qa": "change-domestic-status-link"},
+                classes: 'govuk-link--no-visited-state'
+              }
+            ] if showActions else []
+          }
+        }
+      ]
+    }) }}
+{% endmacro %}

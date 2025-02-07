@@ -2,6 +2,8 @@
 {% from "moj/components/page-header-actions/macro.njk" import mojPageHeaderActions %}
 {% from "partials/contactDetails/personalInformationCard.njk" import personalInformationCard %}
 {% from "partials/contactDetails/relationshipToPrisonerCard.njk" import relationshipToPrisonerCard %}
+{% from "partials/contactDetails/identityDocumentationCard.njk" import identityDocumentationCard %}
+{% from "partials/contactDetails/additionalInformationCard.njk" import additionalInformationCard %}
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
@@ -19,6 +21,7 @@
 </div>
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+
       {{  personalInformationCard({ contact: contact, showActions: false }) }}
 
       {{  relationshipToPrisonerCard({
@@ -28,73 +31,9 @@
         showActions: false
       }) }}
 
-      {% if contact.identities and contact.identities.length > 0 %}
-        {% set identityNumbers = [] %}
-        {% for item in contact.identities | sort(attribute = 'identityValue') | sort(attribute = 'identityTypeDescription') %}
-          {% set identityNumbers = identityNumbers.concat([{
-            key: {
-              text: (item.identityTypeDescription)
-            },
-            value: {
-              html: item.identityValue + ('<p>Issued by ' + item.issuingAuthority + '</p>' if item.issuingAuthority else '')
-            }
-          }]) %}
-        {% endfor %}
-        {{ govukSummaryList({
-          card: {
-            title: {
-              text: "Identity documentation"
-            }
-          },
-          rows: identityNumbers
-        }) }}
-      {% else %}
-        <div class="govuk-summary-card">
-          <div class="govuk-summary-card__title-wrapper">
-            <h2 class="govuk-summary-card__title">Identity documentation</h2>
-          </div>
-          <div class="govuk-summary-card__content">
-            <dl class="govuk-summary-list">
-              <div class="govuk-summary-list__row">
-                <dd class="govuk-summary-list__value">No identity documents provided.</dd>
-              </div>
-            </dl>
-          </div>
-        </div>
-      {% endif %}
+      {{  identityDocumentationCard({ contact: contact, showActions: false }) }}
 
-      {{ govukSummaryList({
-        card: {
-          title: {
-            text: 'Additional information'
-          }
-        },
-        rows: [
-          {
-            key: {
-              text: 'Contact’s first language'
-            },
-            value: {
-              text: contact.languageDescription if contact.languageDescription else 'Not provided'
-            }
-          },
-          {
-            key: {
-              text: 'Interpreter required'
-            },
-            value: {
-              text: contact.interpreterRequired | formatYesNo
-            }
-          },
-          {
-            key: {
-              text: 'Contact’s domestic status'
-            },
-            value: {
-              text: contact.domesticStatusDescription if contact.domesticStatusDescription else 'Not provided'
-            }
-          }
-        ]
-      }) }}
+      {{  additionalInformationCard({ contact: contact, showActions: false }) }}
+
     </div>
 </div>

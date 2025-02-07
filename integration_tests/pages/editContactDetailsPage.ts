@@ -104,6 +104,45 @@ export default class EditContactDetailsPage extends Page {
     this.changeCommentsLink().click()
   }
 
+  clickAddIdentityDocumentLink() {
+    this.addIdentityDocumentLink().click()
+  }
+
+  clickEditIdentityLink(documentNumber: string) {
+    this.editIdentityByDocumentNumberLink(documentNumber).click()
+  }
+
+  clickDeleteIdentityLink(documentNumber: string) {
+    this.deleteIdentityByDocumentNumberLink(documentNumber).click()
+  }
+
+  verifyShowLanguageAs(expected: string): EditContactDetailsPage {
+    this.languageValue().should('contain.text', expected)
+    return this
+  }
+
+  clickChangeLanguageLink() {
+    this.changeLanguageLink().click()
+  }
+
+  verifyShowInterpreterRequiredAs(expected: string): EditContactDetailsPage {
+    this.interpreterRequiredValue().should('contain.text', expected)
+    return this
+  }
+
+  clickChangeInterpreterRequiredLink() {
+    this.changeInterpreterRequiredLink().click()
+  }
+
+  verifyShowDomesticStatusAs(expected: string): EditContactDetailsPage {
+    this.domesticStatusValue().should('contain.text', expected)
+    return this
+  }
+
+  clickChangeDomesticStatusLink() {
+    this.changeDomesticStatusLink().click()
+  }
+
   private titleHeading = (): PageElement => cy.findByText('Title')
 
   private titleValue = (): PageElement => this.titleHeading().next()
@@ -135,40 +174,66 @@ export default class EditContactDetailsPage extends Page {
 
   private changeStaffMemberLink = (): PageElement => this.staffMemberHeading().next().next().find('a')
 
-  private relationshipToPrisonerHeading = (): PageElement => cy.findAllByText('Relationship to prisoner').last()
+  private relationshipToPrisonerHeading = (): PageElement => cy.findByText('Relationship to prisoner')
 
   private relationshipToPrisonerValue = (): PageElement => this.relationshipToPrisonerHeading().next()
 
   private changeRelationshipToPrisonerLink = (): PageElement =>
     this.relationshipToPrisonerHeading().next().next().find('a')
 
-  private relationshipStatusHeading = (): PageElement => cy.findAllByText('Relationship status').last()
+  private relationshipStatusHeading = (): PageElement => cy.findByText('Relationship status')
 
   private relationshipStatusValue = (): PageElement => this.relationshipStatusHeading().next()
 
   private changeRelationshipStatusLink = (): PageElement => this.relationshipStatusHeading().next().next().find('a')
 
-  private emergencyContactHeading = (): PageElement => cy.findAllByText('Emergency contact').last()
+  private emergencyContactHeading = (): PageElement => cy.findByText('Emergency contact')
 
   private emergencyContactValue = (): PageElement => this.emergencyContactHeading().next()
 
   private changeEmergencyContactLink = (): PageElement => this.emergencyContactHeading().next().next().find('a')
 
-  private nextOfKinHeading = (): PageElement => cy.findAllByText('Next of kin').last()
+  private nextOfKinHeading = (): PageElement => cy.findByText('Next of kin')
 
   private nextOfKinValue = (): PageElement => this.nextOfKinHeading().next()
 
   private changeNextOfKinLink = (): PageElement => this.nextOfKinHeading().next().next().find('a')
 
-  private approvedForVisitsHeading = (): PageElement => cy.findAllByText('Approved for visits').last()
+  private approvedForVisitsHeading = (): PageElement => cy.findByText('Approved for visits')
 
   private approvedForVisitsValue = (): PageElement => this.approvedForVisitsHeading().next()
 
   private changeApprovedForVisitsLink = (): PageElement => this.approvedForVisitsHeading().next().next().find('a')
 
-  private commentsHeading = (): PageElement => cy.findAllByText('Comments on the relationship').last()
+  private commentsHeading = (): PageElement => cy.findByText('Comments on the relationship')
 
   private commentsValue = (): PageElement => this.commentsHeading().next()
 
   private changeCommentsLink = (): PageElement => this.commentsHeading().next().next().find('a')
+
+  private addIdentityDocumentLink = (): PageElement => cy.findByText('Identity documentation').next().find('a')
+
+  private editIdentityByDocumentNumberLink = (documentNumber: string): PageElement =>
+    cy.findByText(documentNumber).next().findByText('Change')
+
+  private deleteIdentityByDocumentNumberLink = (documentNumber: string): PageElement =>
+    cy.findByText(documentNumber).next().findByText('Delete')
+
+  private languageHeading = (): PageElement => cy.findByText('Contact’s first language')
+
+  private languageValue = (): PageElement => this.languageHeading().next()
+
+  private changeLanguageLink = (): PageElement => this.languageHeading().next().next().find('a')
+
+  private interpreterHeading = (): PageElement => cy.findByText('Interpreter required')
+
+  private interpreterRequiredValue = (): PageElement => this.interpreterHeading().next()
+
+  private changeInterpreterRequiredLink = (): PageElement => this.interpreterHeading().next().next().find('a')
+
+  private domesticStatusHeading = (): PageElement => cy.findByText('Contact’s domestic status')
+
+  private domesticStatusValue = (): PageElement => this.domesticStatusHeading().next()
+
+  private changeDomesticStatusLink = (): PageElement => this.domesticStatusHeading().next().next().find('a')
 }

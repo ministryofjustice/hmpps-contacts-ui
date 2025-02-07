@@ -3,7 +3,6 @@ import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
-import SelectSpokenLanguagePage from '../pages/selectSpokenLanguagePage'
 
 context('Manage contacts ', () => {
   beforeEach(() => {
@@ -118,15 +117,8 @@ context('Manage contacts ', () => {
       .verifyShowConfirmAddressValueAs('Sheffield')
       .verifyShowConfirmAddressValueAs('South Yorkshire')
       .verifyShowConfirmAddressValueAs('England')
-      .verifyShowSpokenLanguageValueAs('English')
-      .verifyShowIdentityNumberValueAs('LAST-87736799M', 'DL')
-      .verifyShowIdentityNumberValueAs('425362965', 'PASS')
-      .verifyShowIdentityNumberValueAs('06/614465M', 'NINO')
       .verifyEmailValueAs('mr.last@example.com', 1)
       .verifyEmailValueAs('mr.first@example.com', 2)
-      .clickChangeSpokenLanguageLink()
-
-    Page.verifyOnPage(SelectSpokenLanguagePage, 'Jones Mason')
   })
 
   it('should show a message that no contacts match the criteria', () => {

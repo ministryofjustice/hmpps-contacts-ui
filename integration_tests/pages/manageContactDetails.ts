@@ -5,38 +5,9 @@ export default class ManageContactDetailsPage extends Page {
     super(`Contact details - ${name}`)
   }
 
-  verifyShowIdentityNumberValueAs(expected: string, type: string): ManageContactDetailsPage {
-    this.identityNumberValue(type).should('contain.text', expected)
-    return this
-  }
-
-  verifyShowSpokenLanguageValueAs(expected: string): ManageContactDetailsPage {
-    this.spokenLanguageValue().should('contain.text', expected)
-    return this
-  }
-
-  clickChangeSpokenLanguageLink(): ManageContactDetailsPage {
-    this.spokenLanguageLink().click()
-    return this
-  }
-
-  verifyShowNeedsInterpreterValueAs(expected: string): ManageContactDetailsPage {
-    this.needsInterpreterValue().should('contain.text', expected)
-    return this
-  }
-
-  verifyDomesticStatusValueAs(expected: string): ManageContactDetailsPage {
-    this.domesticStatusValue().should('contain.text', expected)
-    return this
-  }
-
   verifyEmailValueAs(expected: string, id: number): ManageContactDetailsPage {
     this.emailValue(id).should('contain.text', expected)
     return this
-  }
-
-  clickAddInterpreterLink() {
-    this.addInterpreterLink().click()
   }
 
   verifyShowMostRelevantAddressLabelValueAs(expected: string): ManageContactDetailsPage {
@@ -59,10 +30,6 @@ export default class ManageContactDetailsPage extends Page {
 
   clickEditPhoneNumberLink(id: number) {
     this.editPhoneNumberLink(id).click()
-  }
-
-  clickChangeDomesticStatusLink() {
-    this.selectDomesticStatusLink().click()
   }
 
   clickDeletePhoneNumberLink(id: number) {
@@ -211,52 +178,20 @@ export default class ManageContactDetailsPage extends Page {
   getGlobalRestrictionSelector = (cardNumber: number, childNumber: number): string =>
     `[data-qa="restrictions-result-message"] > :nth-child(${cardNumber}) > .govuk-summary-card__content > .govuk-summary-list > :nth-child(${childNumber}) > .govuk-summary-list__value`
 
-  private identityNumberValue = (type: string): PageElement => cy.get(`.confirm-${type}-value`)
-
-  private spokenLanguageValue = (): PageElement => cy.get('.manage-language-code-value')
-
-  private needsInterpreterValue = (): PageElement => cy.get('.manage-interpreter-needs-value')
-
-  private spokenLanguageLink = (): PageElement => cy.get('[data-qa=add-language]')
-
-  private addInterpreterLink = (): PageElement => cy.get('[data-qa="add-interpreter"]')
-
   private addPhoneNumberLink = (): PageElement => cy.get('[data-qa="add-phone-number"]')
 
   private editPhoneNumberLink = (id: number): PageElement => cy.get(`[data-qa="edit-phone-number-${id}"]`)
 
   private viewAllAddressesLink = (): PageElement => cy.get(`[data-qa="view-all-addresses"]`)
 
-  private domesticStatusValue = (): PageElement => cy.get('.manage-domestic-status-value')
-
-  private selectDomesticStatusLink = (): PageElement => cy.get('[data-qa="select-domestic-status"]')
-
   private deletePhoneNumberLink = (id: number): PageElement => cy.get(`[data-qa="delete-phone-number-${id}"]`)
 
   private deleteEmailLink = (id: number): PageElement => cy.get(`[data-qa="delete-email-address-${id}"]`)
-
-  clickAddIdentityLink() {
-    this.addIdentityLink().click()
-  }
-
-  clickEditIdentityLink(id: number) {
-    this.editIdentityLink(id).click()
-  }
-
-  clickDeleteIdentityLink(id: number) {
-    this.deleteIdentityLink(id).click()
-  }
 
   verifyOnRestrictionsTab(): ManageContactDetailsPage {
     this.restrictionsTabHeading().should('be.visible')
     return this
   }
-
-  private addIdentityLink = (): PageElement => cy.get('[data-qa="add-identity-number"]')
-
-  private editIdentityLink = (id: number): PageElement => cy.get(`[data-qa="edit-identity-number-${id}"]`)
-
-  private deleteIdentityLink = (id: number): PageElement => cy.get(`[data-qa="delete-identity-number-${id}"]`)
 
   private emailValue = (id: number): PageElement => cy.get(`.confirm-email-${id}-value`)
 

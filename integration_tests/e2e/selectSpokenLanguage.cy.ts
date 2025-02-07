@@ -5,6 +5,7 @@ import ManageContactDetailsPage from '../pages/manageContactDetails'
 import Page from '../pages/page'
 import SearchPrisonerPage from '../pages/searchPrisoner'
 import SelectSpokenLanguagePage from '../pages/selectSpokenLanguagePage'
+import EditContactDetailsPage from '../pages/editContactDetailsPage'
 
 export type PatchContactRequest = components['schemas']['PatchContactRequest']
 
@@ -27,7 +28,13 @@ context('Select Spoken Language', () => {
       term: prisonerNumber,
     })
     cy.task('stubPrisonerById', TestData.prisoner())
-    cy.task('stubGetContactById', TestData.contact())
+    cy.task(
+      'stubGetContactById',
+      TestData.contact({
+        languageCode: 'EN',
+        languageDescription: 'English',
+      }),
+    )
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship(),
@@ -56,10 +63,14 @@ context('Select Spoken Language', () => {
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickChangeSpokenLanguageLink()
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason') //
+      .verifyShowLanguageAs('English')
+      .clickChangeLanguageLink()
+
     Page.verifyOnPage(SelectSpokenLanguagePage, 'Jones Mason').selectSpokenLanguage('Arabic').clickContinue()
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
+    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason')
 
     cy.verifyLastAPICall(
       {
@@ -80,9 +91,13 @@ context('Select Spoken Language', () => {
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickChangeSpokenLanguageLink()
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason') //
+      .clickChangeLanguageLink()
+
     Page.verifyOnPage(SelectSpokenLanguagePage, 'Jones Mason') //
+      .backTo(EditContactDetailsPage, 'Jones Mason')
       .backTo(ManageContactDetailsPage, 'Jones Mason')
   })
 
@@ -93,9 +108,13 @@ context('Select Spoken Language', () => {
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickChangeSpokenLanguageLink()
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason') //
+      .clickChangeLanguageLink()
+
     Page.verifyOnPage(SelectSpokenLanguagePage, 'Jones Mason') //
+      .cancelTo(EditContactDetailsPage, 'Jones Mason')
       .cancelTo(ManageContactDetailsPage, 'Jones Mason')
   })
 })
