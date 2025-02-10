@@ -2,6 +2,7 @@ import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import ConfirmDeleteIdentityPage from '../pages/confirmDeleteIdentityPage'
+import EditContactDetailsPage from '../pages/editContactDetailsPage'
 
 context('Delete Contact Identity', () => {
   const contactId = 654321
@@ -48,16 +49,17 @@ context('Delete Contact Identity', () => {
     cy.task('stubDeleteContactIdentity', { contactId, contactIdentityId: 1 })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickDeleteIdentityLink(1)
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickDeleteIdentityLink('LAST-87736799M')
 
     Page.verifyOnPage(ConfirmDeleteIdentityPage) //
       .hasIdentityNumber('LAST-87736799M')
       .hasType('Driving licence')
       .hasIssuingAuthority('UK')
-      .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
-
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
+      .continueTo(EditContactDetailsPage, 'First Middle Names Last')
+      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
 
     cy.verifyAPIWasCalled(
       {
@@ -72,13 +74,16 @@ context('Delete Contact Identity', () => {
     cy.task('stubDeleteContactIdentity', { contactId, contactIdentityId: 1 })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickDeleteIdentityLink(3)
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickDeleteIdentityLink('06/614465M')
 
     Page.verifyOnPage(ConfirmDeleteIdentityPage) //
       .hasIdentityNumber('06/614465M')
       .hasType('National insurance number')
       .hasIssuingAuthority('Not provided')
+      .cancelTo(EditContactDetailsPage, 'First Middle Names Last')
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
 
     cy.verifyAPIWasCalled(

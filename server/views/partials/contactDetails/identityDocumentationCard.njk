@@ -1,0 +1,70 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro identityDocumentationCard(opts) %}
+
+  {% set contact = opts.contact %}
+  {% set showActions = opts.showActions %}
+  {% set returnUrl = opts.returnUrl %}
+  {% set prisonerNumber = opts.prisonerNumber %}
+
+  {% set identityNumbers = [] %}
+  {% if contact.identities and contact.identities.length > 0 %}
+    {% for item in contact.identities | sort(attribute = 'identityValue') | sort(attribute = 'identityTypeDescription') %}
+      {% set actions = [] %}
+      {% if item.identityTypeIsActive == true %}
+        {% set actions = actions.concat([{
+          href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/identity/" + item.contactIdentityId + "/edit?returnUrl=" + returnUrl,
+          text: "Change",
+          visuallyHiddenText: "the information about this " + item.identityTypeDescription,
+          attributes: {"data-qa": "edit-identity-number-" + item.contactIdentityId},
+          classes: "govuk-link--no-visited-state"
+        }]) %}
+      {% endif %}
+
+      {% set actions = actions.concat([{
+        href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/identity/" + item.contactIdentityId + "/delete?returnUrl=" + returnUrl,
+        text: "Delete",
+        visuallyHiddenText: "the information about this " + item.identityTypeDescription,
+        attributes: {"data-qa": "delete-identity-number-" + item.contactIdentityId},
+        classes: "govuk-link--no-visited-state"
+      }]) %}
+
+      {% set identityNumbers = identityNumbers.concat([{
+        key: {
+          html: item.identityTypeDescription | escape + ('<p class="unsupported-identity-hint">Cannot be changed as the document type is no longer supported in DPS and NOMIS.</p>' if showActions and item.identityTypeIsActive === false else '')
+        },
+        value: {
+          html: item.identityValue | escape + ('<p>Issued by ' + item.issuingAuthority | escape + '</p>' if item.issuingAuthority else '')
+        },
+        actions: { items: actions if showActions else [] }
+      }]) %}
+    {% endfor %}
+
+  {% else %}
+    {% set identityNumbers = identityNumbers.concat([{
+      key: {
+        text: 'No identity documents provided.',
+        classes: 'govuk-!-font-weight-regular'
+      }
+    }]) %}
+  {% endif %}
+
+  {{ govukSummaryList({
+    card: {
+      title: {
+        text: "Identity documentation"
+      },
+      actions: {
+        items: [
+            {
+              href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/identity/create?returnUrl=" + returnUrl,
+              text: "Add identity document",
+              attributes: {"data-qa": "add-identity-document-link"},
+              classes: "govuk-link--no-visited-state"
+            }
+          ] if showActions else []
+        }
+    },
+    rows: identityNumbers
+  }) }}
+{% endmacro %}

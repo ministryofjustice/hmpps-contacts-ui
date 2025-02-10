@@ -5,6 +5,7 @@ import ManageContactDetailsPage from '../pages/manageContactDetails'
 import Page from '../pages/page'
 import SearchPrisonerPage from '../pages/searchPrisoner'
 import SelectInterpreterNeedsPage from '../pages/selectInterpreterNeedsPage'
+import EditContactDetailsPage from '../pages/editContactDetailsPage'
 
 export type PatchContactRequest = components['schemas']['PatchContactRequest']
 
@@ -30,7 +31,12 @@ context('Select Interpreter Needs', () => {
     cy.task('stubTitlesReferenceData')
     cy.task('stubLanguagesReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
-    cy.task('stubGetContactById', TestData.contact())
+    cy.task(
+      'stubGetContactById',
+      TestData.contact({
+        interpreterRequired: false,
+      }),
+    )
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship(),
@@ -52,15 +58,19 @@ context('Select Interpreter Needs', () => {
       updatedBy: 'USER1',
     }
     cy.task('stubPatchContactById', { contactId, request })
-    cy.task('stubGetContactById', TestData.contact({ interpreterRequired: true }))
+    cy.task('stubGetContactById', TestData.contact({ interpreterRequired: false }))
 
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickAddInterpreterLink()
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason') //
+      .verifyShowInterpreterRequiredAs('No')
+      .clickChangeInterpreterRequiredLink()
+
     Page.verifyOnPage(SelectInterpreterNeedsPage, 'Jones Mason').selectIsInterpreterNeeded('YES').clickContinue()
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').verifyShowNeedsInterpreterValueAs('Yes')
+    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason')
 
     cy.verifyLastAPICall(
       {
@@ -80,15 +90,20 @@ context('Select Interpreter Needs', () => {
       updatedBy: 'USER1',
     }
     cy.task('stubPatchContactById', { contactId, request })
-    cy.task('stubGetContactById', TestData.contact({ interpreterRequired: false }))
+    cy.task('stubGetContactById', TestData.contact({ interpreterRequired: true }))
 
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickAddInterpreterLink()
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason') //
+      .verifyShowInterpreterRequiredAs('Yes')
+      .clickChangeInterpreterRequiredLink()
+
     Page.verifyOnPage(SelectInterpreterNeedsPage, 'Jones Mason').selectIsInterpreterNeeded('NO').clickContinue()
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').verifyShowNeedsInterpreterValueAs('No')
+
+    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason')
 
     cy.verifyLastAPICall(
       {
@@ -106,9 +121,13 @@ context('Select Interpreter Needs', () => {
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickAddInterpreterLink()
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason') //
+      .clickChangeInterpreterRequiredLink()
+
     Page.verifyOnPage(SelectInterpreterNeedsPage, 'Jones Mason') //
+      .cancelTo(EditContactDetailsPage, 'Jones Mason')
       .cancelTo(ManageContactDetailsPage, 'Jones Mason')
   })
 
@@ -116,9 +135,13 @@ context('Select Interpreter Needs', () => {
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickAddInterpreterLink()
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason') //
+      .clickChangeInterpreterRequiredLink()
+
     Page.verifyOnPage(SelectInterpreterNeedsPage, 'Jones Mason') //
+      .backTo(EditContactDetailsPage, 'Jones Mason')
       .backTo(ManageContactDetailsPage, 'Jones Mason')
   })
 })

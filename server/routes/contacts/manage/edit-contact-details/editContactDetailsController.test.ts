@@ -324,6 +324,189 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
     })
   })
 
+  describe('Identity documents card', () => {
+    it('should render with all identity documents with change and delete links', async () => {
+      contactsService.getContact.mockResolvedValue(
+        TestData.contact({
+          identities: [
+            TestData.getContactIdentityDetails('PASS', 'Passport number', '5555', 'Passport Office', 3, true),
+            TestData.getContactIdentityDetails('PASS', 'Passport number', '6666', undefined, 2, true),
+            TestData.getContactIdentityDetails('DL', 'Driving licence', '123456', undefined, 1, false),
+          ],
+        }),
+      )
+
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo`,
+      )
+
+      const $ = cheerio.load(response.text)
+      const identityDocCard = $('h2:contains("Identity documentation")').parent().parent()
+      expect(identityDocCard).toHaveLength(1)
+
+      // driving licence is inactive type so should display hint and no change link
+      const drivingLicenceHeading = $(identityDocCard).find('dt:contains("Driving licence")')
+      expect(drivingLicenceHeading.text().trim()).toMatch(
+        /Cannot be changed as the document type is no longer supported in DPS and NOMIS./,
+      )
+      expect(drivingLicenceHeading.next().text().trim()).toMatch(/123456/)
+      expect(drivingLicenceHeading.next().next().find('a')).toHaveLength(1)
+      expect(drivingLicenceHeading.next().next().find('a').text()).toStrictEqual(
+        'Delete the information about this Driving licence (Identity documentation)',
+      )
+      expect(drivingLicenceHeading.next().next().find('a').attr('href')).toStrictEqual(
+        '/prisoner/A1234BC/contacts/manage/22/identity/1/delete?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+      )
+
+      const firstPassportHeading = $(identityDocCard).find('dt:contains("Passport number")').first()
+      expect(firstPassportHeading.next().text().trim()).toMatch(/5555/)
+      expect(firstPassportHeading.next().text().trim()).toMatch(/Issued by Passport Office/)
+      expect(firstPassportHeading.next().next().find('a')).toHaveLength(2)
+      expect(firstPassportHeading.next().next().find('a').first().text()).toStrictEqual(
+        'Change the information about this Passport number (Identity documentation)',
+      )
+      expect(firstPassportHeading.next().next().find('a').first().attr('href')).toStrictEqual(
+        '/prisoner/A1234BC/contacts/manage/22/identity/3/edit?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+      )
+      expect(firstPassportHeading.next().next().find('a').last().text()).toStrictEqual(
+        'Delete the information about this Passport number (Identity documentation)',
+      )
+      expect(firstPassportHeading.next().next().find('a').last().attr('href')).toStrictEqual(
+        '/prisoner/A1234BC/contacts/manage/22/identity/3/delete?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+      )
+
+      const secondPassportHeading = $(identityDocCard).find('dt:contains("Passport number")').last()
+      expect(secondPassportHeading.next().text().trim()).toStrictEqual('6666')
+      expect(secondPassportHeading.next().next().find('a')).toHaveLength(2)
+      expect(secondPassportHeading.next().next().find('a').first().text()).toStrictEqual(
+        'Change the information about this Passport number (Identity documentation)',
+      )
+      expect(secondPassportHeading.next().next().find('a').first().attr('href')).toStrictEqual(
+        '/prisoner/A1234BC/contacts/manage/22/identity/2/edit?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+      )
+      expect(secondPassportHeading.next().next().find('a').last().text()).toStrictEqual(
+        'Delete the information about this Passport number (Identity documentation)',
+      )
+      expect(secondPassportHeading.next().next().find('a').last().attr('href')).toStrictEqual(
+        '/prisoner/A1234BC/contacts/manage/22/identity/2/delete?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+      )
+
+      const addIdentityDocLink = $('a:contains("Add identity document")')
+      expect(addIdentityDocLink).toHaveLength(1)
+      expect(addIdentityDocLink.attr('href')).toStrictEqual(
+        '/prisoner/A1234BC/contacts/manage/22/identity/create?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+      )
+    })
+
+    it('should render no identity documentation provided with add link', async () => {
+      contactsService.getContact.mockResolvedValue(
+        TestData.contact({
+          identities: [],
+        }),
+      )
+
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo`,
+      )
+      const $ = cheerio.load(response.text)
+
+      const identityDocCard = $('h2:contains("Identity documentation")').parent().parent()
+      expect(identityDocCard).toHaveLength(1)
+      expect($(identityDocCard).text()).toMatch(/No identity documents provided./)
+
+      const addIdentityDocLink = $('a:contains("Add identity document")')
+      expect(addIdentityDocLink).toHaveLength(1)
+      expect(addIdentityDocLink.attr('href')).toStrictEqual(
+        '/prisoner/A1234BC/contacts/manage/22/identity/create?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+      )
+    })
+  })
+
+  describe('Additional information card', () => {
+    it('should render with all additional information and change links', async () => {
+      const contactDetails = {
+        ...TestData.contact(),
+        languageCode: 'EN',
+        languageDescription: 'English',
+        interpreterRequired: true,
+        domesticStatusCode: 'M',
+        domesticStatusDescription: 'Married',
+      }
+      contactsService.getContact.mockResolvedValue(contactDetails)
+
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo`,
+      )
+
+      const $ = cheerio.load(response.text)
+      const additionalInfoCard = $('h2:contains("Additional information")').parent().parent()
+      expect(additionalInfoCard).toHaveLength(1)
+
+      expectSummaryListItem(
+        additionalInfoCard,
+        'Contact’s first language',
+        'English',
+        '/prisoner/A1234BC/contacts/manage/22/language?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        'Change the contact’s first language (Additional information)',
+      )
+      expectSummaryListItem(
+        additionalInfoCard,
+        'Interpreter required',
+        'Yes',
+        '/prisoner/A1234BC/contacts/manage/22/interpreter?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        'Change if an interpreter is required (Additional information)',
+      )
+      expectSummaryListItem(
+        additionalInfoCard,
+        'Contact’s domestic status',
+        'Married',
+        '/prisoner/A1234BC/contacts/manage/22/domestic-status?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        'Change the contact’s domestic status (Additional information)',
+      )
+    })
+
+    it('should render without optional additional information and change links', async () => {
+      const contactDetails = {
+        ...TestData.contact(),
+        languageCode: undefined,
+        languageDescription: undefined,
+        interpreterRequired: false,
+        domesticStatusCode: undefined,
+        domesticStatusDescription: undefined,
+      }
+      contactsService.getContact.mockResolvedValue(contactDetails)
+
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo`,
+      )
+
+      const $ = cheerio.load(response.text)
+      const additionalInfoCard = $('h2:contains("Additional information")').parent().parent()
+      expect(additionalInfoCard).toHaveLength(1)
+      expectSummaryListItem(
+        additionalInfoCard,
+        'Contact’s first language',
+        'Not provided',
+        '/prisoner/A1234BC/contacts/manage/22/language?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        'Change the contact’s first language (Additional information)',
+      )
+      expectSummaryListItem(
+        additionalInfoCard,
+        'Interpreter required',
+        'No',
+        '/prisoner/A1234BC/contacts/manage/22/interpreter?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        'Change if an interpreter is required (Additional information)',
+      )
+      expectSummaryListItem(
+        additionalInfoCard,
+        'Contact’s domestic status',
+        'Not provided',
+        '/prisoner/A1234BC/contacts/manage/22/domestic-status?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        'Change the contact’s domestic status (Additional information)',
+      )
+    })
+  })
+
   const expectSummaryListItem = (
     card: Cheerio<Element>,
     label: string,
@@ -331,8 +514,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
     changeLink: string,
     changeLabel: string,
   ) => {
-    expect(card.find(`dt:contains("${label}")`).next().text().trim()).toStrictEqual(value)
-    const link = card.find(`dt:contains("${label}")`).next().next().find('a')
+    const summaryCardFirstColumn = card.find(`dt:contains("${label}")`).first()
+    expect(summaryCardFirstColumn.next().text().trim()).toStrictEqual(value)
+    const link = summaryCardFirstColumn.next().next().find('a')
     expect(link.attr('href')).toStrictEqual(changeLink)
     expect(link.text().trim()).toStrictEqual(changeLabel)
   }

@@ -124,62 +124,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       })
     })
 
-    describe('identity numbers', () => {
-      it('should render identity numbers', async () => {
-        prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-        contactsService.getContact.mockResolvedValue(TestData.contact())
-        contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
-
-        // When
-        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
-
-        // Then
-        const $ = cheerio.load(response.text)
-        expect(response.status).toEqual(200)
-
-        expect($('.confirm-DL-value').text().trim()).toStrictEqual('LAST-87736799M')
-        expect($('.confirm-PASS-value').text().trim()).toStrictEqual('425362965Issuing authority - UK passport office')
-        expect($('.confirm-NINO-value').text().trim()).toStrictEqual('06/614465M')
-      })
-
-      it('should render identity numbers edit link only for active identity types ', async () => {
-        prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-        const contact = TestData.contact()
-        contact.identities[0]!.identityTypeIsActive = false
-        contactsService.getContact.mockResolvedValue(contact)
-        contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
-
-        // When
-        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
-
-        // Then
-        const $ = cheerio.load(response.text)
-        expect(response.status).toEqual(200)
-
-        expect($('a[data-qa="edit-identity-number-1"]').length).toStrictEqual(0) // Edit button is not preset
-        expect($('a[data-qa="edit-identity-number-2"]').text().trim()).toStrictEqual(
-          'Edit identity number (Identity numbers)',
-        )
-        expect($('a[data-qa="edit-identity-number-3"]').text().trim()).toStrictEqual(
-          'Edit identity number (Identity numbers)',
-        )
-      })
-
-      it('should render not provided if no identity numbers', async () => {
-        prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-        contactsService.getContact.mockResolvedValue(TestData.contact({ identities: [] }))
-        contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
-
-        // When
-        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
-
-        // Then
-        const $ = cheerio.load(response.text)
-        expect(response.status).toEqual(200)
-        expect($('.identity-numbers-not-provide-value').text().trim()).toStrictEqual('Not provided')
-      })
-    })
-
     describe('Email addresses', () => {
       it('should render email addresses', async () => {
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
@@ -856,15 +800,17 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
         const $ = cheerio.load(response.text)
 
-        const identityDocCard = $('h2:contains("Additional information")').parent().parent()
-        expect(identityDocCard).toHaveLength(1)
-        expect($(identityDocCard).find('dt:contains("Contact’s first language")').next().text().trim()).toStrictEqual(
-          'English',
+        const additionalInfoCard = $('h2:contains("Additional information")').parent().parent()
+        expect(additionalInfoCard).toHaveLength(1)
+        expect(
+          $(additionalInfoCard).find('dt:contains("Contact’s first language")').next().text().trim(),
+        ).toStrictEqual('English')
+        expect($(additionalInfoCard).find('dt:contains("Interpreter required")').next().text().trim()).toStrictEqual(
+          'Yes',
         )
-        expect($(identityDocCard).find('dt:contains("Interpreter required")').next().text().trim()).toStrictEqual('Yes')
-        expect($(identityDocCard).find('dt:contains("Contact’s domestic status")').next().text().trim()).toStrictEqual(
-          'Married',
-        )
+        expect(
+          $(additionalInfoCard).find('dt:contains("Contact’s domestic status")').next().text().trim(),
+        ).toStrictEqual('Married')
       })
 
       it('should render without optional additional information', async () => {
@@ -881,15 +827,17 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
         const $ = cheerio.load(response.text)
 
-        const identityDocCard = $('h2:contains("Additional information")').parent().parent()
-        expect(identityDocCard).toHaveLength(1)
-        expect($(identityDocCard).find('dt:contains("Contact’s first language")').next().text().trim()).toStrictEqual(
-          'Not provided',
+        const additionalInfoCard = $('h2:contains("Additional information")').parent().parent()
+        expect(additionalInfoCard).toHaveLength(1)
+        expect(
+          $(additionalInfoCard).find('dt:contains("Contact’s first language")').next().text().trim(),
+        ).toStrictEqual('Not provided')
+        expect($(additionalInfoCard).find('dt:contains("Interpreter required")').next().text().trim()).toStrictEqual(
+          'No',
         )
-        expect($(identityDocCard).find('dt:contains("Interpreter required")').next().text().trim()).toStrictEqual('No')
-        expect($(identityDocCard).find('dt:contains("Contact’s domestic status")').next().text().trim()).toStrictEqual(
-          'Not provided',
-        )
+        expect(
+          $(additionalInfoCard).find('dt:contains("Contact’s domestic status")').next().text().trim(),
+        ).toStrictEqual('Not provided')
       })
     })
   })

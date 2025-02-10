@@ -3,6 +3,7 @@ import TestData from '../../server/routes/testutils/testData'
 import EnterIdentityPage from '../pages/enterIdentityPage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import { StubIdentityDetails } from '../mockApis/contactsApi'
+import EditContactDetailsPage from '../pages/editContactDetailsPage'
 
 context('Create Contact Identity', () => {
   const contactId = 654321
@@ -58,15 +59,17 @@ context('Create Contact Identity', () => {
     cy.task('stubCreateContactIdentity', { contactId, created })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickAddIdentityLink()
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickAddIdentityDocumentLink()
 
     Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
       .enterIdentity('425362965')
       .selectType('PASS')
       .clickContinue()
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last')
 
     cy.verifyLastAPICall(
       {
@@ -95,8 +98,10 @@ context('Create Contact Identity', () => {
     cy.task('stubCreateContactIdentity', { contactId, created })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickAddIdentityLink()
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickAddIdentityDocumentLink()
 
     Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
       .enterIdentity('425362965')
@@ -104,7 +109,7 @@ context('Create Contact Identity', () => {
       .selectType('NINO')
       .clickContinue()
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last')
 
     cy.verifyLastAPICall(
       {
@@ -117,8 +122,10 @@ context('Create Contact Identity', () => {
 
   it('Should require type', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickAddIdentityLink()
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickAddIdentityDocumentLink()
 
     const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
       .enterIdentity('425362965')
@@ -128,8 +135,10 @@ context('Create Contact Identity', () => {
 
   it('Should require identity number', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickAddIdentityLink()
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickAddIdentityDocumentLink()
 
     const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
       .selectType('NINO')
@@ -139,8 +148,10 @@ context('Create Contact Identity', () => {
 
   it('Should require identity number is 20 chars or fewer', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickAddIdentityLink()
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickAddIdentityDocumentLink()
 
     const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
       .selectType('NINO')
@@ -151,8 +162,10 @@ context('Create Contact Identity', () => {
 
   it('Should require Issuing authority is 40 chars or fewer', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickAddIdentityLink()
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickAddIdentityDocumentLink()
 
     const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
       .selectType('NINO')
@@ -165,19 +178,25 @@ context('Create Contact Identity', () => {
 
   it('Back link goes to manage contacts', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickAddIdentityLink()
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickAddIdentityDocumentLink()
 
     Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
+      .backTo(EditContactDetailsPage, 'First Middle Names Last')
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
   it('Cancel goes to manage contacts', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickAddIdentityLink()
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickAddIdentityDocumentLink()
 
     Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
+      .cancelTo(EditContactDetailsPage, 'First Middle Names Last')
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 })

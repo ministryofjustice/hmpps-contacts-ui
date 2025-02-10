@@ -39,6 +39,11 @@ div.contact-list {
   .govuk-summary-list__row { border-bottom: 0 }
 }
 
+.unsupported-identity-hint {
+  margin-bottom: 0;
+  color: $govuk-secondary-text-colour;
+}
+
 // DPS standard styling on top of GDS summary cards.
 .govuk-summary-card {
   border: 1px solid govuk-colour("dark-grey");
@@ -54,4 +59,8 @@ div.contact-list {
   line-height: 50px;
   font-size: 24px;
   margin: 0;
+}
+
+.govuk-summary-card__actions {
+  margin: 10px 0;
 }

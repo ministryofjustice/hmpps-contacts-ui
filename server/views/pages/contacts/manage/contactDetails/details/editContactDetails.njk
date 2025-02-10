@@ -3,6 +3,8 @@
 {% from "partials/miniProfile/macro.njk" import miniProfile %}
 {% from "partials/contactDetails/personalInformationCard.njk" import personalInformationCard %}
 {% from "partials/contactDetails/relationshipToPrisonerCard.njk" import relationshipToPrisonerCard %}
+{% from "partials/contactDetails/identityDocumentationCard.njk" import identityDocumentationCard %}
+{% from "partials/contactDetails/additionalInformationCard.njk" import additionalInformationCard %}
 
 {% extends "partials/layout.njk" %}§
 
@@ -29,12 +31,29 @@
       }}
 
       {{ relationshipToPrisonerCard({
-        contact: contact,
-        relationship: prisonerContactRelationship,
-        prisonerDetails: prisonerDetails,
-        returnUrl: returnUrl,
-        showActions: true
-      }) }}
+          contact: contact,
+          relationship: prisonerContactRelationship,
+          prisonerDetails: prisonerDetails,
+          returnUrl: returnUrl,
+          showActions: true
+        })
+      }}
+
+      {{ identityDocumentationCard({
+          contact: contact,
+          prisonerNumber: prisonerNumber,
+          returnUrl: returnUrl,
+          showActions: true
+        })
+      }}
+
+      {{ additionalInformationCard({
+          contact: contact,
+          prisonerNumber: prisonerNumber,
+          returnUrl: returnUrl,
+          showActions: true
+        })
+      }}
 
       <div class="govuk-button-group">
         {% if navigation.cancelButton %}
