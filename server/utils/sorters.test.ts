@@ -1,5 +1,6 @@
-import { employmentSorter } from './sorters'
+import { employmentSorter, organisationAddressSorter } from './sorters'
 import { components } from '../@types/contactsApi'
+import OrganisationAddressDetails = organisationsApiClientTypes.OrganisationAddressDetails
 
 describe('employmentSorter', () => {
   const a = {
@@ -44,5 +45,35 @@ describe('employmentSorter', () => {
   it('should tie break by sorting greater employmentId to the top (treating nullish as 0)', () => {
     const res = [c, anotherC].sort(employmentSorter)
     expect(res[0]).toBe(anotherC)
+  })
+})
+
+describe('organisationAddressSorter', () => {
+  const primary = {
+    primaryAddress: true,
+    mailAddress: false,
+  } as OrganisationAddressDetails
+
+  const mail = {
+    primaryAddress: false,
+    mailAddress: true,
+  } as OrganisationAddressDetails
+
+  const primaryAndMail = {
+    primaryAddress: true,
+    mailAddress: true,
+  } as OrganisationAddressDetails
+
+  const other = {
+    primaryAddress: false,
+    mailAddress: false,
+  } as OrganisationAddressDetails
+
+  it('should sort by PrimaryAddress, then by MailAddress', () => {
+    const res = [mail, primary, primaryAndMail, other].sort(organisationAddressSorter)
+    expect(res[0]).toBe(primaryAndMail)
+    expect(res[1]).toBe(primary)
+    expect(res[2]).toBe(mail)
+    expect(res[3]).toBe(other)
   })
 })

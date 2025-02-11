@@ -1,6 +1,7 @@
 import config from '../config'
 import RestClient from './restClient'
 import OrganisationSummaryResultItemPage = contactsApiClientTypes.OrganisationSummaryResultItemPage
+import OrganisationDetails = organisationsApiClientTypes.OrganisationDetails
 
 export default class OrganisationsApiClient extends RestClient {
   constructor() {
@@ -28,5 +29,9 @@ export default class OrganisationsApiClient extends RestClient {
       },
       user,
     )
+  }
+
+  async getOrganisation(organisationId: number, user: Express.User): Promise<OrganisationDetails> {
+    return this.get<OrganisationSummaryResultItemPage>({ path: `/organisation/${organisationId}` }, user)
   }
 }

@@ -59,6 +59,7 @@ export default class OrganisationSearchController implements PageHandler {
     }
 
     return res.render('pages/contacts/manage/updateEmployments/organisationSearch/index', {
+      ...req.params,
       organisationName: journey.organisationSearch.searchTerm ?? '',
       organisations: searchResult?.content ?? [],
       sort: journey.organisationSearch.sort,

@@ -1,0 +1,245 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "./organisationAddress/macro.njk" import organisationAddress %}
+
+{% extends "partials/layout.njk" %}§
+
+{% set pageTitle = "Check and confirm if this is the correct employer for contact - Contacts - DPS" %}
+
+{% block content %}
+  {% include 'partials/navigation.njk' %}
+  {{ miniProfile(prisonerDetails) }}
+  {% include 'partials/formErrorSummary.njk' %}
+  <div class="govuk-grid-row govuk-!-static-margin-bottom-5">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-!-static-margin-bottom-7">
+        <span class="govuk-caption-l">Edit professional information</span>
+        <h1 class="govuk-heading-l">Check and confirm if this is the correct employer for contact {{ contactNames | formatNameFirstNameFirst }}</h1>
+      </div>
+
+      <p>
+        If this is the correct organisation record but some of the information needs to be updated, you can make updates after you link the contact to the prisoner.
+      </p>
+
+      {{ govukSummaryList({
+        card: {
+          title: {
+            text: 'Organisation details'
+          }
+        },
+        rows: [
+          {
+            key: {
+            text: "Organisation name"
+          },
+            value: {
+            text: organisation.organisationName
+          }
+          },
+          {
+            key: {
+            text: "Organisation type"
+          },
+            value: {
+            html: (organisationTypes or 'Not provided')
+            | escape | nl2br
+          }
+          },
+          {
+            key: {
+            text: "Caseload"
+          },
+            value: {
+            text: organisation.caseloadId or 'Not provided'
+          }
+          },
+          {
+            key: {
+            text: "Programme number"
+          },
+            value: {
+            text: organisation.programmeNumber or 'Not provided'
+          }
+          },
+          {
+            key: {
+            text: "VAT number"
+          },
+            value: {
+            text: organisation.vatNumber or 'Not provided'
+          }
+          },
+          {
+            key: {
+            text: "Comments on this organisation"
+          },
+            value: {
+            html: (organisation.comments or 'Not provided') | escape | nl2br
+          }
+          },
+          {
+            key: {
+            text: "Organisation status"
+          },
+            value: {
+            text: "Active" if organisation.active else "Inactive"
+          }
+          },
+          {
+            key: {
+            text: "Expiry date"
+          },
+            value: {
+            text: organisation.deactivatedDate | formatDate
+          }
+          } if organisation.deactivatedDate else null
+        ]
+      }) }}
+
+      {% set phoneRows = [] %}
+      {% if organisation.phoneNumbers.length %}
+        {% for phoneNumber in organisation.phoneNumbers %}
+          {% set phoneRows = (phoneRows.push({
+            key: {
+              text: (phoneNumber.phoneTypeDescription | sentenceCase | escape) + ' phone number'
+            },
+            value: {
+              text: {businessPhoneNumber: phoneNumber.phoneNumber, businessPhoneNumberExtension: phoneNumber.extNumber} | formatBusinessPhoneNumber or "Not provided"
+            }
+          }), phoneRows) %}
+        {% endfor %}
+      {% else %}
+        {% set phoneRows = (phoneRows.push({
+          key: {
+            classes: 'full-width-summary-key',
+            html: '<span class="govuk-body-m">No phone numbers provided.</span>'
+          },
+          value: {
+            text: ""
+          }
+        }), phoneRows) %}
+      {% endif %}
+
+      {% set emailAndWebRows = [] %}
+      {% if emailAddresses %}
+        {% set emailAndWebRows = (emailAndWebRows.push({
+          key: {
+            text: "Email address"
+          },
+          value: {
+            text: emailAddresses | escape | nl2br
+          }
+        }), emailAndWebRows) %}
+      {% endif %}
+
+      {% if webAddresses %}
+        {% set emailAndWebRows = (emailAndWebRows.push({
+          key: {
+            text: "Web address"
+          },
+          value: {
+            text: webAddresses | escape | nl2br
+          }
+        }), emailAndWebRows) %}
+      {% endif %}
+
+      {% if not emailAndWebRows.length %}
+        {% set emailAndWebRows = (emailAndWebRows.push({
+          key: {
+            classes: 'full-width-summary-key',
+            html: '<span class="govuk-body-m">No email or web addresses provided.</span>'
+          },
+          value: {
+            text: ""
+          }
+        }), emailAndWebRows) %}
+      {% endif %}
+
+      {{ govukSummaryList({
+        card: {
+          title: {
+            text: 'Phone numbers'
+          }
+        },
+        rows: phoneRows
+      }) }}
+
+      {{ govukSummaryList({
+        card: {
+          title: {
+            text: 'Email and web addresses'
+          }
+        },
+        rows: emailAndWebRows
+      }) }}
+
+      <h2 class="govuk-heading-m govuk-!-margin-bottom-7 govuk-!-margin-top-7">Addresses</h2>
+
+      {% if activeAddresses.length %}
+        {% for address in activeAddresses %}
+          {{ organisationAddress({
+            address: address
+          }) }}
+        {% endfor %}
+      {% endif %}
+
+      {% if inactiveAddresses.length %}
+        {% set previousAdddressesHtml %}
+          {% for address in inactiveAddresses %}
+            {{ organisationAddress({
+              titleSuffix: "(inactive)",
+              address: address
+            }) }}
+          {% endfor %}
+        {% endset %}
+        {{ govukDetails({
+          summaryText: "View previous addresses",
+          html: previousAdddressesHtml
+        }) }}
+      {% endif %}
+
+      {% if not activeAddresses.length and not inactiveAddresses.length %}
+        <p>
+          No addresses provided.
+        </p>
+      {% endif %}
+
+      <form class="govuk-!-margin-top-9" method='POST'>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        {{ govukRadios({
+          fieldset: {
+            legend: {
+              text: 'Is this the correct employer for ' + (contactNames | formatNameFirstNameFirst)  + '?',
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "[Placeholder text - If you can’t find the correct employer on the system, {insert instructions on adding org in NOMIS and returning to this process.}]"
+          },
+          id: 'isCorrectEmployer',
+          name: "isCorrectEmployer",
+          items: [
+            {
+              value: "YES",
+              text: 'Yes'
+            },
+            {
+              value: "NO",
+              text: 'No, take me back to the organisation search'
+            }
+          ],
+          errorMessage: validationErrors | findError('isCorrectEmployer')
+        })
+        }}
+        {{ govukButton({
+          html: "Continue",
+          preventDoubleClick: true
+        }) }}
+      </form>
+    </div>
+  </div>
+{% endblock %}
