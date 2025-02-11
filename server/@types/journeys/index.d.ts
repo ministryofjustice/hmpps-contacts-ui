@@ -88,6 +88,7 @@ declare namespace journeys {
 
   export interface ReturnPoint {
     url: string
+    anchor?: string
   }
 
   export interface PrisonerDetails {
@@ -171,7 +172,6 @@ declare namespace journeys {
   }
 
   type YesOrNo = 'YES' | 'NO'
-  type YesNoOrDoNotKnow = 'YES' | 'NO' | 'DO_NOT_KNOW'
   type PrisonerJourneyParams = { prisonerNumber: string; journeyId: string }
   export type RestrictionClass = 'CONTACT_GLOBAL' | 'PRISONER_CONTACT'
 

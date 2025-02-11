@@ -24,18 +24,6 @@ export default class ManageContactDetailsPage extends Page {
     this.viewAllAddressesLink().click()
   }
 
-  clickAddPhoneNumberLink() {
-    this.addPhoneNumberLink().click()
-  }
-
-  clickEditPhoneNumberLink(id: number) {
-    this.editPhoneNumberLink(id).click()
-  }
-
-  clickDeletePhoneNumberLink(id: number) {
-    this.deletePhoneNumberLink(id).click()
-  }
-
   clickDeleteEmailLink(id: number) {
     this.deleteEmailLink(id).click()
   }
@@ -56,6 +44,16 @@ export default class ManageContactDetailsPage extends Page {
 
   clickEditContactDetailsLink() {
     this.editContactDetailsLink().click()
+    return this
+  }
+
+  clickEditContactMethodsLink() {
+    this.editContactMethodsLink().click()
+    return this
+  }
+
+  clickContactMethodsTab() {
+    this.contactMethodsTab().click()
     return this
   }
 
@@ -150,6 +148,8 @@ export default class ManageContactDetailsPage extends Page {
 
   private editContactDetailsLink = (): PageElement => cy.get('[data-qa="edit-contact-details-link"]')
 
+  private editContactMethodsLink = (): PageElement => cy.get('[data-qa="edit-contact-methods-link"]')
+
   private getAddPrisonerContactRestriction = (): PageElement =>
     cy.get('[data-qa="add-prisoner-contact-restriction-button"]')
 
@@ -178,18 +178,17 @@ export default class ManageContactDetailsPage extends Page {
   getGlobalRestrictionSelector = (cardNumber: number, childNumber: number): string =>
     `[data-qa="restrictions-result-message"] > :nth-child(${cardNumber}) > .govuk-summary-card__content > .govuk-summary-list > :nth-child(${childNumber}) > .govuk-summary-list__value`
 
-  private addPhoneNumberLink = (): PageElement => cy.get('[data-qa="add-phone-number"]')
-
-  private editPhoneNumberLink = (id: number): PageElement => cy.get(`[data-qa="edit-phone-number-${id}"]`)
-
   private viewAllAddressesLink = (): PageElement => cy.get(`[data-qa="view-all-addresses"]`)
-
-  private deletePhoneNumberLink = (id: number): PageElement => cy.get(`[data-qa="delete-phone-number-${id}"]`)
 
   private deleteEmailLink = (id: number): PageElement => cy.get(`[data-qa="delete-email-address-${id}"]`)
 
   verifyOnRestrictionsTab(): ManageContactDetailsPage {
     this.restrictionsTabHeading().should('be.visible')
+    return this
+  }
+
+  verifyOnContactsMethodsTab(): ManageContactDetailsPage {
+    this.contactMethodsTabHeading().should('be.visible')
     return this
   }
 
@@ -204,4 +203,8 @@ export default class ManageContactDetailsPage extends Page {
   private confirmAddressValue = (): PageElement => cy.get(`.confirm-address-value`)
 
   private restrictionsTabHeading = (): PageElement => cy.get('[data-qa="manage-restriction-title"]')
+
+  private contactMethodsTab = (): PageElement => cy.get('#tab_contact-methods')
+
+  private contactMethodsTabHeading = (): PageElement => cy.get('[data-qa="contact-methods-tab-title"]')
 }

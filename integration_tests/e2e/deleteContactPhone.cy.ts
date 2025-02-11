@@ -2,6 +2,7 @@ import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import ConfirmDeletePhonePage from '../pages/confirmDeletePhonePage'
+import EditContactMethodsPage from '../pages/editContactMethodsPage'
 
 context('Delete Contact Phones', () => {
   const contactId = 654321
@@ -47,14 +48,17 @@ context('Delete Contact Phones', () => {
     cy.task('stubDeleteContactPhone', { contactId, contactPhoneId: 99 })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickDeletePhoneNumberLink(99)
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
+      .clickDeletePhoneNumberLink('07878 111111, ext. 123')
 
     Page.verifyOnPage(ConfirmDeletePhonePage) //
       .hasPhoneNumber('07878 111111')
       .hasType('Mobile')
       .hasExtension('123')
-      .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .continueTo(EditContactMethodsPage, 'First Middle Names Last')
 
     cy.verifyAPIWasCalled(
       {
@@ -68,13 +72,19 @@ context('Delete Contact Phones', () => {
   it('Can cancel deleting a contact phone', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickTemporaryEditContactDetailsTab()
-      .clickDeletePhoneNumberLink(77)
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
+      .clickDeletePhoneNumberLink('01111 777777')
 
     Page.verifyOnPage(ConfirmDeletePhonePage) //
       .hasPhoneNumber('01111 777777')
       .hasType('Home')
       .hasExtension('Not provided')
+      .cancelTo(EditContactMethodsPage, 'First Middle Names Last')
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .verifyOnContactsMethodsTab()
 
     cy.verifyAPIWasCalled(
       {
