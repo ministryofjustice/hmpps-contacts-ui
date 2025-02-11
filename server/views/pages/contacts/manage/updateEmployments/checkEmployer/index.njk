@@ -114,8 +114,8 @@
       {% else %}
         {% set phoneRows = (phoneRows.push({
           key: {
-            classes: 'full-width-summary-key',
-            html: '<span class="govuk-body-m">No phone numbers provided.</span>'
+            classes: 'govuk-!-font-weight-regular govuk-!-width-full',
+            text: 'No phone numbers provided.'
           },
           value: {
             text: ""
@@ -149,8 +149,8 @@
       {% if not emailAndWebRows.length %}
         {% set emailAndWebRows = (emailAndWebRows.push({
           key: {
-            classes: 'full-width-summary-key',
-            html: '<span class="govuk-body-m">No email or web addresses provided.</span>'
+            classes: 'govuk-!-font-weight-regular govuk-!-width-full',
+            text: 'No email or web addresses provided.'
           },
           value: {
             text: ""

@@ -68,7 +68,8 @@
       {% set rows = (rows.push({
         classes: "govuk-summary-list__row--no-border" if loop.index != params.address.phoneNumbers.length else null,
         key: {
-          html: '<span class="govuk-body-m">' + (phoneNumber.phoneTypeDescription | sentenceCase | escape) + ' phone number</span>'
+          classes: 'govuk-!-font-weight-regular',
+          text: (phoneNumber.phoneTypeDescription | sentenceCase) + ' phone number'
         },
         value: {
           text: {businessPhoneNumber: phoneNumber.phoneNumber, businessPhoneNumberExtension: phoneNumber.extNumber} | formatBusinessPhoneNumber or "Not provided"
