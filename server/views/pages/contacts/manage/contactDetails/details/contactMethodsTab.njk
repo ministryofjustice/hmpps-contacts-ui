@@ -1,6 +1,8 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "moj/components/page-header-actions/macro.njk" import mojPageHeaderActions %}
 {% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "partials/contactMethods/phoneNumbersCard.njk" import phoneNumbersCard %}
+{% from "partials/contactMethods/emailAddressesCard.njk" import emailAddressesCard %}
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
@@ -20,77 +22,10 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      {% if contact.phoneNumbers and contact.phoneNumbers.length > 0 %}
-        {% set phoneNumbers = [] %}
-        {% for item in contact.phoneNumbers | sort(attribute = 'phoneNumber') | sort(attribute = 'phoneTypeDescription') %}
-          {% set phoneNumbers = phoneNumbers.concat([{
-            key: {
-              text: item.phoneTypeDescription
-            },
-            value: {
-              text: item.phoneNumber + (", ext. " + item.extNumber if item.extNumber)
-            }
-          }]) %}
-        {% endfor %}
-        {{ govukSummaryList({
-          card: {
-            title: {
-              text: "Phone numbers"
-            }
-          },
-          rows: phoneNumbers
-        }) }}
-      {% else %}
-        <div class="govuk-summary-card">
-          <div class="govuk-summary-card__title-wrapper">
-            <h2 class="govuk-summary-card__title">Phone numbers</h2>
-          </div>
-          <div class="govuk-summary-card__content">
-            <dl class="govuk-summary-list">
-              <div class="govuk-summary-list__row">
-                <dd class="govuk-summary-list__value">No phone numbers provided.</dd>
-              </div>
-            </dl>
-          </div>
-        </div>
-      {% endif %}
+      {{  phoneNumbersCard({ contact: contact, showActions: false }) }}
 
+      {{  emailAddressesCard({ contact: contact, showActions: false }) }}
 
-      {% if contact.emailAddresses and contact.emailAddresses.length > 0 %}
-        {% set emailAddresses = [] %}
-        {% for item in contact.emailAddresses | sort(attribute = 'emailAddress') %}
-          {% set emailAddresses = emailAddresses.concat([{
-            key: {
-              text: 'Email addresses' if loop.index0 == 0 else ''
-            },
-            value: {
-              text: item.emailAddress
-            }
-          }]) %}
-        {% endfor %}
-        {{ govukSummaryList({
-          card: {
-            title: {
-              text: "Email addresses"
-            },
-            classes: 'email-addresses-card'
-          },
-          rows: emailAddresses
-        }) }}
-      {% else %}
-        <div class="govuk-summary-card">
-          <div class="govuk-summary-card__title-wrapper">
-            <h2 class="govuk-summary-card__title">Email addresses</h2>
-          </div>
-          <div class="govuk-summary-card__content">
-            <dl class="govuk-summary-list">
-              <div class="govuk-summary-list__row">
-                <dd class="govuk-summary-list__value">No email addresses provided.</dd>
-              </div>
-            </dl>
-          </div>
-        </div>
-      {% endif %}
       <h2 class="govuk-heading-l govuk-!-font-size-24">Addresses</h2>
       {% if addresses and addresses.length > 0 %}
         {% set activeAddresses = [] %}

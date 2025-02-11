@@ -3,6 +3,7 @@ import ManageContactDetailsPage from '../pages/manageContactDetails'
 import Page from '../pages/page'
 import EnterEmailPage from '../pages/enterEmailPage'
 import { CreateEmailRequest } from '../mockApis/contactsApi'
+import EditContactMethodsPage from '../pages/editContactMethodsPage'
 
 context('Create Email Address', () => {
   const contactId = 22
@@ -40,10 +41,14 @@ context('Create Email Address', () => {
     }
     cy.task('stubCreateContactEmail', { contactId, created })
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickTemporaryEditContactDetailsTab()
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickAddEmailLink()
+
     Page.verifyOnPage(EnterEmailPage, 'Jones Mason').enterEmail('test@email.com').clickContinue()
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').verifyEmailValueAs('mr.last@example.com', 1)
+    Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason')
 
     cy.verifyLastAPICall(
       {
@@ -59,8 +64,12 @@ context('Create Email Address', () => {
 
   it(`should require email address`, () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickTemporaryEditContactDetailsTab()
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickAddEmailLink()
+
     const enterEmailPage = Page.verifyOnPage(EnterEmailPage, 'Jones Mason')
     enterEmailPage.clickContinue()
     enterEmailPage.hasFieldInError('emailAddress', `Enter the contact’s email address`)
@@ -68,8 +77,12 @@ context('Create Email Address', () => {
 
   it(`should require email address in the correct format`, () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickTemporaryEditContactDetailsTab()
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickAddEmailLink()
+
     const enterEmailPage = Page.verifyOnPage(EnterEmailPage, 'Jones Mason')
     enterEmailPage.enterEmail('name@')
     enterEmailPage.clickContinue()
@@ -82,8 +95,12 @@ context('Create Email Address', () => {
   it(`should require email address with 240 characters or fewer`, () => {
     const invalidEmail = 'name@example'.padEnd(241, '0').concat('.com')
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickTemporaryEditContactDetailsTab()
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickAddEmailLink()
+
     const enterEmailPage = Page.verifyOnPage(EnterEmailPage, 'Jones Mason')
     enterEmailPage.enterEmail(invalidEmail).clickContinue()
     enterEmailPage.hasFieldInError('emailAddress', `The contact’s email address should be 240 characters or fewer`)
@@ -91,19 +108,29 @@ context('Create Email Address', () => {
 
   it('Back link goes to manage contacts', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickTemporaryEditContactDetailsTab()
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickAddEmailLink()
 
     Page.verifyOnPage(EnterEmailPage, 'Jones Mason') //
+      .backTo(EditContactMethodsPage, 'Jones Mason')
       .backTo(ManageContactDetailsPage, 'Jones Mason')
+      .verifyOnContactsMethodsTab()
   })
 
   it('Cancel goes to manage contacts', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickTemporaryEditContactDetailsTab()
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickAddEmailLink()
 
     Page.verifyOnPage(EnterEmailPage, 'Jones Mason') //
+      .cancelTo(EditContactMethodsPage, 'Jones Mason')
       .cancelTo(ManageContactDetailsPage, 'Jones Mason')
+      .verifyOnContactsMethodsTab()
   })
 })

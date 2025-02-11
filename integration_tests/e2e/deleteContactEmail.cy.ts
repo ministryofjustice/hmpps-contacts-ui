@@ -2,6 +2,7 @@ import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import ConfirmDeleteEmailPage from '../pages/confirmDeleteEmailPage'
+import EditContactMethodsPage from '../pages/editContactMethodsPage'
 
 context('Delete Contact Email', () => {
   const contactId = 654321
@@ -46,12 +47,17 @@ context('Delete Contact Email', () => {
     cy.task('stubDeleteContactEmail', { contactId, contactEmailId: 123 })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickDeleteEmailLink(123)
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
+      .clickDeleteEmailLink('first@example.com')
 
     Page.verifyOnPage(ConfirmDeleteEmailPage) //
       .hasEmailAddress('first@example.com')
-      .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .continueTo(EditContactMethodsPage, 'First Middle Names Last')
+      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .verifyOnContactsMethodsTab()
 
     cy.verifyAPIWasCalled(
       {
@@ -64,12 +70,17 @@ context('Delete Contact Email', () => {
 
   it('Can cancel deleting a contact email address', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickDeleteEmailLink(777)
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
+      .clickDeleteEmailLink('last@example.com')
 
     Page.verifyOnPage(ConfirmDeleteEmailPage) //
       .hasEmailAddress('last@example.com')
+      .cancelTo(EditContactMethodsPage, 'First Middle Names Last')
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .verifyOnContactsMethodsTab()
 
     cy.verifyAPIWasCalled(
       {
