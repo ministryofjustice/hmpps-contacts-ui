@@ -3,6 +3,7 @@ import TestData from '../../server/routes/testutils/testData'
 import EnterPhonePage from '../pages/enterPhonePage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import { StubPhoneDetails } from '../mockApis/contactsApi'
+import EditContactMethodsPage from '../pages/editContactMethodsPage'
 
 context('Create Contact Phones', () => {
   const contactId = 654321
@@ -57,7 +58,10 @@ context('Create Contact Phones', () => {
     cy.task('stubCreateContactPhone', { contactId, created })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddPhoneNumberLink()
 
     Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
@@ -65,7 +69,7 @@ context('Create Contact Phones', () => {
       .selectType('HOME')
       .clickContinue()
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
 
     cy.verifyLastAPICall(
       {
@@ -94,7 +98,10 @@ context('Create Contact Phones', () => {
     cy.task('stubCreateContactPhone', { contactId, created })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddPhoneNumberLink()
 
     Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
@@ -103,7 +110,7 @@ context('Create Contact Phones', () => {
       .selectType('HOME')
       .clickContinue()
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
 
     cy.verifyLastAPICall(
       {
@@ -121,7 +128,10 @@ context('Create Contact Phones', () => {
 
   it('Should require type', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddPhoneNumberLink()
 
     const enterPhonePage = Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
@@ -132,7 +142,10 @@ context('Create Contact Phones', () => {
 
   it('Should require phone number', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddPhoneNumberLink()
 
     const enterPhonePage = Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
@@ -143,7 +156,10 @@ context('Create Contact Phones', () => {
 
   it('Should require phone number is 20 chars or fewer', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddPhoneNumberLink()
 
     const enterPhonePage = Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
@@ -155,7 +171,10 @@ context('Create Contact Phones', () => {
 
   it('Should require extension is 7 chars or fewer', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddPhoneNumberLink()
 
     const enterPhonePage = Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
@@ -169,19 +188,29 @@ context('Create Contact Phones', () => {
 
   it('Back link goes to manage contacts', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddPhoneNumberLink()
 
     Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
+      .backTo(EditContactMethodsPage, 'First Middle Names Last')
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .verifyOnContactsMethodsTab()
   })
 
   it('Cancel goes to manage contacts', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddPhoneNumberLink()
 
     Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
+      .cancelTo(EditContactMethodsPage, 'First Middle Names Last')
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .verifyOnContactsMethodsTab()
   })
 })

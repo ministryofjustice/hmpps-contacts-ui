@@ -69,6 +69,7 @@ import UpdateEmploymentsStartController from './update-employments/start/updateE
 import OrganisationSearchController from './update-employments/organisation-search/organisationSearchController'
 import OrganisationsService from '../../../services/organisationsService'
 import EditContactDetailsController from './edit-contact-details/editContactDetailsController'
+import EditContactMethodsController from './edit-contact-methods/editContactMethodsController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -401,6 +402,12 @@ const ManageContactsRoutes = (
   get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-contact-details',
     new EditContactDetailsController(contactsService),
+    prepareStandaloneManageContactJourney,
+  )
+
+  get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-contact-methods',
+    new EditContactMethodsController(contactsService),
     prepareStandaloneManageContactJourney,
   )
 

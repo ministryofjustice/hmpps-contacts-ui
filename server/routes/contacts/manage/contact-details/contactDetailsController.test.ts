@@ -66,63 +66,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect(contactsService.getContact).toHaveBeenCalledWith(1, user)
       expect(contactsService.getPrisonerContactRelationship).toHaveBeenCalledWith(99, user)
     })
-    describe('phone numbers', () => {
-      it('should render phone numbers in reverse created date order', async () => {
-        prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-        contactsService.getContact.mockResolvedValue(
-          TestData.contact({
-            phoneNumbers: [
-              TestData.getContactPhoneNumberDetails(
-                'MOB',
-                'Mobile',
-                '07878 111111',
-                1,
-                undefined,
-                '2024-10-04T09:30:00.000000',
-              ),
-              TestData.getContactPhoneNumberDetails(
-                'HOME',
-                'Home',
-                '01111 777777',
-                2,
-                '321',
-                '2024-10-04T10:30:00.000000',
-              ),
-            ],
-          }),
-        )
-        contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
-
-        // When
-        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
-
-        // Then
-        const $ = cheerio.load(response.text)
-        expect(response.status).toEqual(200)
-
-        expect($('.phone-number-value-1').text().trim()).toStrictEqual('07878 111111')
-        expect($('.phone-number-value-2').text().trim()).toStrictEqual('01111 777777 (321)')
-
-        const phoneNumbers = $('.phone-number-value').toArray()
-        expect(phoneNumbers).toHaveLength(2)
-        expect($(phoneNumbers[0]).text().trim()).toStrictEqual('01111 777777 (321)')
-        expect($(phoneNumbers[1]).text().trim()).toStrictEqual('07878 111111')
-      })
-
-      it('should render not provided if no phone numbers', async () => {
-        prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-        contactsService.getContact.mockResolvedValue(TestData.contact({ phoneNumbers: [] }))
-        contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
-
-        // When
-        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
-
-        // Then
-        const $ = cheerio.load(response.text)
-        expect(response.status).toEqual(200)
-        expect($('.phone-numbers-not-provide-value').text().trim()).toStrictEqual('Not provided')
-      })
-    })
 
     describe('Email addresses', () => {
       it('should render email addresses', async () => {
