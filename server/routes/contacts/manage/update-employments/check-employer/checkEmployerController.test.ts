@@ -82,6 +82,35 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/chec
     expect(journeyData.changeOrganisationId).toEqual(222)
   })
 
+  it('should show not found error when no organisationId is set', async () => {
+    // Given
+    setJourneyData(generateJourneyData())
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/new/check-employer/${journeyId}`,
+    )
+
+    // Then
+    expect(response.status).toEqual(404)
+  })
+
+  it('should show not found error when no organisation is found for provided ID', async () => {
+    // Given
+    setJourneyData({
+      ...generateJourneyData(),
+      changeOrganisationId: 222,
+    })
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/new/check-employer/${journeyId}`,
+    )
+
+    // Then
+    expect(response.status).toEqual(404)
+  })
+
   it('should render full details', async () => {
     // Given
     setJourneyData({
@@ -217,7 +246,7 @@ it('should render result with minimal mandatory data', async () => {
 })
 
 describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/check-employer', () => {
-  it('should redirect to update-employment on answer YES', async () => {
+  it('should redirect to update-employment and add new employment record on answer YES', async () => {
     // Given
     const journeyData = generateJourneyData()
     journeyData.changeOrganisationId = 222
@@ -259,6 +288,59 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/che
       businessPhoneNumberExtension: '222',
     })
     expect(journeyData.employments[0]!.isActive).toBeTruthy()
+  })
+
+  it('should redirect to update-employment and change employer on employment record on answer YES', async () => {
+    // Given
+    const journeyData = generateJourneyData()
+    journeyData.employments = [
+      {
+        employer: {
+          organisationName: 'Wrong Corp',
+          organisationId: 321,
+        },
+        isActive: false,
+      },
+    ]
+    journeyData.changeOrganisationId = 222
+    journeyData.changeOrganisation = {
+      organisationName: 'Some Corp',
+      organisationId: 111,
+      addresses: [
+        {
+          primaryAddress: true,
+          street: 'Some Street',
+          phoneNumbers: [
+            {
+              phoneType: 'BUS',
+              phoneNumber: '1234 1234',
+              extNumber: '222',
+            },
+          ],
+        },
+      ],
+    }
+    setJourneyData(journeyData)
+
+    // When
+    const response = await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/check-employer/${journeyId}`)
+      .type('form')
+      .send({
+        isCorrectEmployer: 'YES',
+      })
+
+    // Then
+    expect(response.status).toEqual(302)
+    expect(response.headers['location']).toMatch(/contacts\/manage\/1\/update-employments\/[a-f0-9-]{36}/)
+    expect(journeyData.employments[0]!.employer).toEqual({
+      organisationName: 'Some Corp',
+      organisationId: 111,
+      street: 'Some Street',
+      businessPhoneNumber: '1234 1234',
+      businessPhoneNumberExtension: '222',
+    })
+    expect(journeyData.employments[0]!.isActive).toBeFalsy()
   })
 
   it('should redirect to organisation-search on answer NO', async () => {
