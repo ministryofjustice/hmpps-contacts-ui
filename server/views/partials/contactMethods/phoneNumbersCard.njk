@@ -1,0 +1,67 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro phoneNumbersCard(opts) %}
+
+  {% set contact = opts.contact %}
+  {% set showActions = opts.showActions %}
+  {% set returnUrl = opts.returnUrl %}
+  {% set prisonerNumber = opts.prisonerNumber %}
+
+  {% set phoneNumbers = [] %}
+  {% if contact.phoneNumbers and contact.phoneNumbers.length > 0 %}
+    {% for item in contact.phoneNumbers | sort(attribute = 'phoneNumber') | sort(attribute = 'phoneTypeDescription') %}
+      {% set phoneNumbers = phoneNumbers.concat([{
+        key: {
+          text: item.phoneTypeDescription
+        },
+        value: {
+          text: item.phoneNumber + (", ext. " + item.extNumber if item.extNumber)
+        },
+        actions: {
+          items: [
+            {
+              href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/phone/" + item.contactPhoneId + "/edit?returnUrl=" + returnUrl,
+              text: "Change",
+              visuallyHiddenText: "the information about this " + item.phoneTypeDescription + " phone number",
+              attributes: {"data-qa": "edit-phone-number-" + item.contactPhoneId},
+              classes: "govuk-link--no-visited-state"
+            },
+            {
+              href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/phone/" + item.contactPhoneId + "/delete?returnUrl=" + returnUrl,
+              text: "Delete",
+              visuallyHiddenText: "the information about this " + item.phoneTypeDescription + " phone number",
+              attributes: {"data-qa": "delete-phone-number-" + item.contactPhoneId},
+              classes: "govuk-link--no-visited-state"
+            }
+          ] if showActions else []
+        }
+      }]) %}
+    {% endfor %}
+  {% else %}
+    {% set phoneNumbers = phoneNumbers.concat([{
+      key: {
+        text: 'No phone numbers provided.',
+        classes: 'govuk-!-font-weight-regular'
+      }
+    }]) %}
+  {% endif %}
+
+  {{ govukSummaryList({
+    card: {
+      title: {
+        text: "Phone numbers"
+      },
+      actions: {
+        items: [
+            {
+              href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/phone/create?returnUrl=" + returnUrl,
+              text: "Add phone number",
+              attributes: {"data-qa": "add-phone-number-link"},
+              classes: "govuk-link--no-visited-state"
+            }
+          ] if showActions else []
+        }
+    },
+    rows: phoneNumbers
+  }) }}
+{% endmacro %}
