@@ -117,8 +117,6 @@ context('Manage contacts ', () => {
       .verifyShowConfirmAddressValueAs('Sheffield')
       .verifyShowConfirmAddressValueAs('South Yorkshire')
       .verifyShowConfirmAddressValueAs('England')
-      .verifyEmailValueAs('mr.last@example.com', 1)
-      .verifyEmailValueAs('mr.first@example.com', 2)
   })
 
   it('should show a message that no contacts match the criteria', () => {

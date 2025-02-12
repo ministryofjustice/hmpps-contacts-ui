@@ -33,7 +33,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-contact-details', () => {
+describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-contact-methods', () => {
   beforeEach(() => {
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(
       TestData.prisoner({ firstName: 'Incarcerated', lastName: 'Individual' }),
@@ -140,6 +140,72 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
       expect(addPhoneNumberLink).toHaveLength(1)
       expect(addPhoneNumberLink.attr('href')).toStrictEqual(
         '/prisoner/A1234BC/contacts/manage/22/phone/create?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+      )
+    })
+  })
+
+  describe('Emails summary card', () => {
+    it('should render all emails with change and delete links that return to contact method tab', async () => {
+      contactsService.getContact.mockResolvedValue(
+        TestData.contact({
+          emailAddresses: [
+            TestData.getContactEmailDetails('zzz@example.com', 1),
+            TestData.getContactEmailDetails('test@example.com', 2),
+          ],
+        }),
+      )
+
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-methods?returnUrl=/foo&returnAnchor=bar`,
+      )
+      const $ = cheerio.load(response.text)
+
+      const emailAddressesCard = $('h2:contains("Email addresses")').first().parent().parent()
+      expect(emailAddressesCard).toHaveLength(1)
+      expectSummaryListItem(
+        $(emailAddressesCard).find('dt:contains("Email addresses")').first(),
+        'test@example.com',
+        '/prisoner/A1234BC/contacts/manage/22/email/2/edit?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+        'Change this email address (Email addresses)',
+        '/prisoner/A1234BC/contacts/manage/22/email/2/delete?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+        'Delete this email address (Email addresses)',
+      )
+      expectSummaryListItem(
+        $(emailAddressesCard).find('dt:contains("Email addresses")').parent().next().find('dt'),
+        'zzz@example.com',
+        '/prisoner/A1234BC/contacts/manage/22/email/1/edit?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+        'Change this email address (Email addresses)',
+        '/prisoner/A1234BC/contacts/manage/22/email/1/delete?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+        'Delete this email address (Email addresses)',
+      )
+
+      const addEmailAddressLink = $('a:contains("Add email address")')
+      expect(addEmailAddressLink).toHaveLength(1)
+      expect(addEmailAddressLink.attr('href')).toStrictEqual(
+        '/prisoner/A1234BC/contacts/manage/22/email/create?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+      )
+    })
+
+    it('should render no email addresses provided with an email link', async () => {
+      contactsService.getContact.mockResolvedValue(
+        TestData.contact({
+          emailAddresses: [],
+        }),
+      )
+
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-methods?returnUrl=/foo&returnAnchor=bar`,
+      )
+      const $ = cheerio.load(response.text)
+
+      const emailAddressesCard = $('h2:contains("Email addresses")').first().parent().parent()
+      expect(emailAddressesCard).toHaveLength(1)
+      expect($(emailAddressesCard).text()).toMatch(/No email addresses provided./)
+
+      const addEmailAddressLink = $('a:contains("Add email address")')
+      expect(addEmailAddressLink).toHaveLength(1)
+      expect(addEmailAddressLink.attr('href')).toStrictEqual(
+        '/prisoner/A1234BC/contacts/manage/22/email/create?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
       )
     })
   })

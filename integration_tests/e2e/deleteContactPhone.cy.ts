@@ -59,6 +59,8 @@ context('Delete Contact Phones', () => {
       .hasType('Mobile')
       .hasExtension('123')
       .continueTo(EditContactMethodsPage, 'First Middle Names Last')
+      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .verifyOnContactsMethodsTab()
 
     cy.verifyAPIWasCalled(
       {

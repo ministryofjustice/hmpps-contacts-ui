@@ -2,6 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "partials/miniProfile/macro.njk" import miniProfile %}
 {% from "partials/contactMethods/phoneNumbersCard.njk" import phoneNumbersCard %}
+{% from "partials/contactMethods/emailAddressesCard.njk" import emailAddressesCard %}
 
 {% extends "partials/layout.njk" %}§
 
@@ -24,6 +25,14 @@
       {% set returnUrl = returnUrl | urlencode %}
 
       {{ phoneNumbersCard({
+          contact: contact,
+          prisonerNumber: prisonerNumber,
+          returnUrl: returnUrl,
+          showActions: true
+        })
+      }}
+
+      {{ emailAddressesCard({
           contact: contact,
           prisonerNumber: prisonerNumber,
           returnUrl: returnUrl,

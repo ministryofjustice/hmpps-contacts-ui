@@ -5,11 +5,6 @@ export default class ManageContactDetailsPage extends Page {
     super(`Contact details - ${name}`)
   }
 
-  verifyEmailValueAs(expected: string, id: number): ManageContactDetailsPage {
-    this.emailValue(id).should('contain.text', expected)
-    return this
-  }
-
   verifyShowMostRelevantAddressLabelValueAs(expected: string): ManageContactDetailsPage {
     this.mostRelevantAddressLabel().should('contain.text', expected)
     return this
@@ -22,18 +17,6 @@ export default class ManageContactDetailsPage extends Page {
 
   clickViewAllAddressesLink() {
     this.viewAllAddressesLink().click()
-  }
-
-  clickDeleteEmailLink(id: number) {
-    this.deleteEmailLink(id).click()
-  }
-
-  clickAddEmailLink() {
-    this.addEmailLink().click()
-  }
-
-  clickEditEmailLink(id: number) {
-    this.editEmailLink(id).click()
   }
 
   clickTemporaryEditContactDetailsTab() {
@@ -180,8 +163,6 @@ export default class ManageContactDetailsPage extends Page {
 
   private viewAllAddressesLink = (): PageElement => cy.get(`[data-qa="view-all-addresses"]`)
 
-  private deleteEmailLink = (id: number): PageElement => cy.get(`[data-qa="delete-email-address-${id}"]`)
-
   verifyOnRestrictionsTab(): ManageContactDetailsPage {
     this.restrictionsTabHeading().should('be.visible')
     return this
@@ -191,12 +172,6 @@ export default class ManageContactDetailsPage extends Page {
     this.contactMethodsTabHeading().should('be.visible')
     return this
   }
-
-  private emailValue = (id: number): PageElement => cy.get(`.confirm-email-${id}-value`)
-
-  private addEmailLink = (): PageElement => cy.get('[data-qa="add-email-address"]')
-
-  private editEmailLink = (id: number): PageElement => cy.get(`[data-qa="edit-email-address-${id}"]`)
 
   private mostRelevantAddressLabel = (): PageElement => cy.get(`.most-relevant-address-label`)
 

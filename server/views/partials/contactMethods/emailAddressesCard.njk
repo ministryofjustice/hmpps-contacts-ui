@@ -1,0 +1,70 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro emailAddressesCard(opts) %}
+
+  {% set contact = opts.contact %}
+  {% set showActions = opts.showActions %}
+  {% set returnUrl = opts.returnUrl %}
+  {% set prisonerNumber = opts.prisonerNumber %}
+
+
+  {% set emailAddresses = [] %}
+  {% if contact.emailAddresses and contact.emailAddresses.length > 0 %}
+    {% for item in contact.emailAddresses | sort(attribute = 'emailAddress') %}
+      {% set actions = [] %}
+
+      {% set actions = actions.concat([{
+        href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/email/" + item.contactEmailId + "/edit?returnUrl=" + returnUrl,
+        text: "Change",
+        visuallyHiddenText: "this email address",
+        attributes: {"data-qa": "change-email-address-" + item.contactEmailId},
+        classes: "govuk-link--no-visited-state"
+      }]) %}
+
+      {% set actions = actions.concat([{
+        href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/email/" + item.contactEmailId + "/delete?returnUrl=" + returnUrl,
+        text: "Delete",
+        visuallyHiddenText: "this email address",
+        attributes: {"data-qa": "delete-email-address-" + item.contactEmailId},
+        classes: "govuk-link--no-visited-state"
+      }]) %}
+      {% set emailAddresses = emailAddresses.concat([{
+        key: {
+          text: 'Email addresses' if loop.index0 == 0 else ''
+        },
+        value: {
+          text: item.emailAddress
+        },
+        actions: {
+          items: actions if showActions else []
+        }
+      }]) %}
+    {% endfor %}
+  {% else %}
+    {% set emailAddresses = emailAddresses.concat([{
+      key: {
+        text: 'No email addresses provided.',
+        classes: 'govuk-!-font-weight-regular govuk-!-width-full'
+      }
+    }]) %}
+  {% endif %}
+
+  {{ govukSummaryList({
+    card: {
+      title: {
+        text: "Email addresses"
+      },
+      actions: {
+        items: [
+            {
+              href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/email/create?returnUrl=" + returnUrl,
+              text: "Add email address",
+              attributes: {"data-qa": "add-email-address-link"},
+              classes: "govuk-link--no-visited-state"
+            }
+          ] if showActions else []
+        }
+    },
+    rows: emailAddresses
+  }) }}
+{% endmacro %}
