@@ -1,5 +1,6 @@
 import OrganisationsApiClient from '../data/organisationsApiClient'
 import OrganisationSummaryResultItemPage = contactsApiClientTypes.OrganisationSummaryResultItemPage
+import OrganisationDetails = organisationsApiClientTypes.OrganisationDetails
 
 export default class OrganisationsService {
   constructor(private readonly organisationsApiClient: OrganisationsApiClient) {}
@@ -14,5 +15,9 @@ export default class OrganisationsService {
     user: Express.User,
   ): Promise<OrganisationSummaryResultItemPage> {
     return this.organisationsApiClient.searchOrganisations(searchParams, user)
+  }
+
+  async getOrganisation(organisationId: number, user: Express.User): Promise<OrganisationDetails> {
+    return this.organisationsApiClient.getOrganisation(organisationId, user)
   }
 }

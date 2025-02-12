@@ -70,6 +70,8 @@ import OrganisationSearchController from './update-employments/organisation-sear
 import OrganisationsService from '../../../services/organisationsService'
 import EditContactDetailsController from './edit-contact-details/editContactDetailsController'
 import EditContactMethodsController from './edit-contact-methods/editContactMethodsController'
+import CheckEmployerController from './update-employments/check-employer/checkEmployerController'
+import { checkEmployerSchema } from './update-employments/check-employer/checkEmployerSchema'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -397,6 +399,13 @@ const ManageContactsRoutes = (
     controller: new OrganisationSearchController(organisationsService),
     journeyEnsurer: [ensureInUpdateEmploymentsJourney, ensureValidEmploymentIdx],
     noValidation: true,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments/:employmentIdx/check-employer/:journeyId',
+    controller: new CheckEmployerController(organisationsService),
+    journeyEnsurer: [ensureInUpdateEmploymentsJourney, ensureValidEmploymentIdx],
+    schema: checkEmployerSchema,
   })
 
   get(

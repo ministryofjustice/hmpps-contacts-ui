@@ -181,13 +181,18 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
 
     // Then
     const $ = cheerio.load(response.text)
+    expect($('a:contains("Back")').attr('href')).toEqual(
+      `/prisoner/A1234BC/contacts/manage/1/update-employments/${journeyId}`,
+    )
     expect($('input#organisationName').val()).toEqual('test')
     expect($('h1:contains("Check if the employer organisation is already on the system")').text()).toBeTruthy()
     expect($('p:contains("Showing 11 to 11 of 11 results")').text()).toBeTruthy()
     expect($('p:contains("No organisation records match your search.")').text()).toBeFalsy()
     expect($('td:contains("Some Corp")').text()).toEqual('Some Corp111')
     expect($('td:contains("1234 1234, ext. 222")').text()).toBeTruthy()
-    expect($('a:contains("Check if this is the correct employer")').attr('href')).toEqual('#')
+    expect($('a:contains("Check if this is the correct employer")').attr('href')).toEqual(
+      `/prisoner/A1234BC/contacts/manage/1/update-employments/1/check-employer/${journeyId}?organisationId=111`,
+    )
     expect($('.moj-pagination__list').text()).toBeTruthy()
   })
 

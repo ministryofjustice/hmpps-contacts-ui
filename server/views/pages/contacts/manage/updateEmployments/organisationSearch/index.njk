@@ -10,7 +10,7 @@
 {% set pageTitle = "Check if the employer organisation is already on the system - Contacts - DPS" %}
 
 {% block content %}
-  {% include 'partials/successNotificationBanner.njk' %}
+  {% include 'partials/navigation.njk' %}
   {{ miniProfile(prisonerDetails) }}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -70,7 +70,7 @@
               },
               {
                 classes: 'govuk-link govuk-link--no-visited-state',
-                html: '<a href="#">Check if this is the correct employer</a>'
+                html: '<a href="/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/update-employments/' + employmentIdx + '/check-employer/' + journeyId + '?organisationId=' + organisation.organisationId + '">Check if this is the correct employer</a>'
               }
             ]), organisationRows) %}
           {% endfor %}

@@ -10,6 +10,7 @@ import {
   capitalizeFirstLetter,
   capitaliseName,
   convertToSortableColumns,
+  sentenceCase,
 } from './utils'
 import config from '../config'
 import logger from '../../logger'
@@ -80,4 +81,5 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('capitalizeFirstLetter', capitalizeFirstLetter)
   njkEnv.addFilter('convertToSortableColumns', convertToSortableColumns)
   njkEnv.addFilter('formatBusinessPhoneNumber', formatBusinessPhoneNumber)
+  njkEnv.addFilter('sentenceCase', sentenceCase)
 }

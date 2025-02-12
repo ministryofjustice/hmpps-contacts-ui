@@ -1,0 +1,132 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro organisationAddress(params) %}
+  {% set dateText %}
+    {% if params.address.startDate and not params.address.endDate %}
+      From {{ (params.address.startDate | formatDate('MMMM yyyy')) }}
+    {% elseif params.address.startDate and params.address.endDate %}
+      From {{ (params.address.startDate | formatDate('MMMM yyyy')) }} to {{ (params.address.endDate | formatDate('MMMM yyyy')) }}
+    {% else %}
+      Not provided
+    {% endif %}
+  {% endset -%}
+
+  {% set rows = [
+    {
+      key: {
+      text: "Type"
+    },
+      value: {
+      text: params.address.addressTypeDescription or 'Not provided'
+    }
+    },
+    {
+      key: {
+      text: "Address"
+    },
+      value: {
+      html: (params.address | businessAddressToLines or 'Not provided') | escape | nl2br
+    }
+    },
+    {
+      key: {
+      text: "Dates"
+    },
+      value: {
+      text: dateText
+    }
+    },
+    {
+      key: {
+      text: "Primary or postal address"
+    },
+      value: {
+      text: (params.address.primaryAddress and params.address.mailAddress and "Primary and postal address") or  (params.address.primaryAddress and "Primary address") or (params.address.mailAddress and "Postal address") or "No"
+    }
+    },
+    {
+      key: {
+      text: "Service address"
+    },
+      value: {
+      text: "Yes" if params.address.serviceAddress else "No"
+    }
+    }
+  ] %}
+
+  {% if params.address.phoneNumbers.length %}
+    {% set rows = (rows.push({
+      classes: "govuk-summary-list__row--no-border",
+      key: {
+        text: "Address phone numbers"
+      },
+      value: {
+        text: ""
+      }
+    }), rows) %}
+    {% for phoneNumber in params.address.phoneNumbers %}
+      {% set rows = (rows.push({
+        classes: "govuk-summary-list__row--no-border" if loop.index != params.address.phoneNumbers.length else null,
+        key: {
+          classes: 'govuk-!-font-weight-regular',
+          text: (phoneNumber.phoneTypeDescription | sentenceCase) + ' phone number'
+        },
+        value: {
+          text: {businessPhoneNumber: phoneNumber.phoneNumber, businessPhoneNumberExtension: phoneNumber.extNumber} | formatBusinessPhoneNumber or "Not provided"
+        }
+      }), rows) %}
+    {% endfor %}
+  {% else %}
+    {% set rows = (rows.push({
+      key: {
+        text: "Address phone numbers"
+      },
+      value: {
+        text: "Not provided"
+      }
+    }), rows) %}
+  {% endif %}
+
+  {% set rows = (rows.push({
+    key: {
+      text: "Contact person"
+    },
+    value: {
+      text: params.address.contactPersonName or "Not provided"
+    }
+    },
+    {
+      key: {
+      text: "Business hours"
+    },
+      value: {
+      html: params.address.businessHours or "Not provided"
+    }
+    },
+    {
+      key: {
+      text: "Special needs provision"
+    },
+      value: {
+      text: params.address.specialNeedsCodeDescription or "Not provided"
+    }
+    },
+    {
+      key: {
+      text: "Comments on this address"
+    },
+      value: {
+      html: (params.address.comments or 'Not provided') | escape | nl2br
+    }
+    }
+  ), rows) %}
+
+  {{ govukSummaryList({
+    card: {
+      title: {
+        text: ((params.address.primaryAddress and params.address.mailAddress and 'Primary and postal address') or (params.address.primaryAddress and 'Primary address') or (params.address.mailAddress and 'Postal address') or ((params.address.addressTypeDescription + ' address') if params.address.addressTypeDescription else 'Address')) + ((" " + params.titleSuffix) if params.titleSuffix else "")
+      }
+    },
+    rows: rows
+  }) }}
+{% endmacro %}
