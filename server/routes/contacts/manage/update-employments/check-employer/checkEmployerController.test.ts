@@ -151,14 +151,14 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/chec
       phoneNumbers: [
         {
           phoneType: 'BUS',
-          phoneTypeDescription: 'Alternative Business',
+          phoneTypeDescription: 'Alt-Business TRA',
           phoneNumber: '1234 1234',
           extNumber: '222',
         },
       ],
       webAddresses: [{ webAddress: 'a.b.c' }],
       emailAddresses: [{ emailAddress: 'a@b.c' }],
-      organisationTypes: [{ organisationTypeDescription: 'Org Type' }],
+      organisationTypes: [{ organisationTypeDescription: 'Org Type' }, { organisationTypeDescription: 'Another Type' }],
     })
 
     // When
@@ -168,18 +168,21 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/chec
 
     // Then
     const $ = cheerio.load(response.text)
+    expect($('a:contains("Back")').attr('href')).toEqual(
+      `/prisoner/A1234BC/contacts/manage/1/update-employments/new/organisation-search/${journeyId}`,
+    )
     expect(
       $('h1:contains("Check and confirm if this is the correct employer for contact Jones Mason")').text(),
     ).toBeTruthy()
     expect($('dt:contains("Organisation name")').next().text()).toMatch(/Some Corp/)
-    expect($('dt:contains("Organisation type")').next().text()).toMatch(/Org Type/)
+    expect($('dt:contains("Organisation type")').next().text()).toMatch(/Another Type\s+?Org Type/)
     expect($('dt:contains("Caseload")').next().text()).toMatch(/TEST/)
     expect($('dt:contains("Programme number")').next().text()).toMatch(/123/)
     expect($('dt:contains("VAT number")').next().text()).toMatch(/123456/)
     expect($('dt:contains("Comments on this organisation")').next().text()).toMatch(/some words/)
     expect($('dt:contains("Organisation status")').next().text()).toMatch(/Inactive/)
     expect($('dt:contains("Expiry date")').next().text()).toMatch(/December 2020/)
-    expect($('dt:contains("Alternative business phone number")').next().text()).toMatch(/1234 1234, ext\. 222/)
+    expect($('dt:contains("Alt-business TRA phone number")').next().text()).toMatch(/1234 1234, ext\. 222/)
     expect($('dt:contains("Email address")').next().text()).toMatch(/a@b\.c/)
     expect($('dt:contains("Web address")').next().text()).toMatch(/a\.b\.c/)
 

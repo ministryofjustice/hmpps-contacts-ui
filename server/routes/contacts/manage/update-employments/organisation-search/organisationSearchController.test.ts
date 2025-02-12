@@ -181,6 +181,9 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
 
     // Then
     const $ = cheerio.load(response.text)
+    expect($('a:contains("Back")').attr('href')).toEqual(
+      `/prisoner/A1234BC/contacts/manage/1/update-employments/${journeyId}`,
+    )
     expect($('input#organisationName').val()).toEqual('test')
     expect($('h1:contains("Check if the employer organisation is already on the system")').text()).toBeTruthy()
     expect($('p:contains("Showing 11 to 11 of 11 results")').text()).toBeTruthy()
