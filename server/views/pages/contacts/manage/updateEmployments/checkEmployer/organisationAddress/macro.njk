@@ -1,16 +1,6 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
 {% macro organisationAddress(params) %}
-  {% set dateText %}
-    {% if params.address.startDate and not params.address.endDate %}
-      From {{ (params.address.startDate | formatDate('MMMM yyyy')) }}
-    {% elseif params.address.startDate and params.address.endDate %}
-      From {{ (params.address.startDate | formatDate('MMMM yyyy')) }} to {{ (params.address.endDate | formatDate('MMMM yyyy')) }}
-    {% else %}
-      Not provided
-    {% endif %}
-  {% endset -%}
-
   {% set rows = [
     {
       key: {
@@ -33,7 +23,7 @@
       text: "Dates"
     },
       value: {
-      text: dateText
+      text: params.address | formatDateRange or 'Not provided'
     }
     },
     {
@@ -72,7 +62,7 @@
           text: (phoneNumber.phoneTypeDescription | sentenceCase) + ' phone number'
         },
         value: {
-          text: {businessPhoneNumber: phoneNumber.phoneNumber, businessPhoneNumberExtension: phoneNumber.extNumber} | formatBusinessPhoneNumber or "Not provided"
+          text: phoneNumber | formatPhoneNumber or "Not provided"
         }
       }), rows) %}
     {% endfor %}

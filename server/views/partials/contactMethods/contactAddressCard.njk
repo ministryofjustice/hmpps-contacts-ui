@@ -22,15 +22,6 @@
     country: address.countryDescription
   }
   %}
-  {% set dateText %}
-    {% if address.startDate and not address.endDate %}
-      From {{ (address.startDate | formatDate('MMMM yyyy')) }}
-    {% elseif address.startDate and address.endDate %}
-      From {{ (address.startDate | formatDate('MMMM yyyy')) }} to {{ (address.endDate | formatDate('MMMM yyyy')) }}
-    {% else %}
-      Not provided
-    {% endif %}
-  {% endset -%}
   {% set primaryOrPostalText %}
     {% if address.primaryAddress and address.mailFlag %}
       Primary and postal address
@@ -75,7 +66,7 @@
     },
     {
       key: { text: 'Dates' },
-      value: { text: dateText },
+      value: { text: address | formatDateRange or 'Not provided' },
       actions: {
         items: [
           {

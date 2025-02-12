@@ -66,7 +66,7 @@
                 html: (organisation | businessAddressToLines or 'Not provided') | escape | nl2br
               },
               {
-                text: organisation | formatBusinessPhoneNumber or "Not provided"
+                text: organisation | formatPhoneNumber or "Not provided"
               },
               {
                 classes: 'govuk-link govuk-link--no-visited-state',
