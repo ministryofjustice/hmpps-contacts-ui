@@ -19,20 +19,21 @@ export const ensureInUpdateEmploymentsJourney = async (
   return next()
 }
 
-export const ensureValidEmploymentIdx = async (
-  req: Request<UpdateEmploymentJourneyParams>,
-  res: Response,
-  next: NextFunction,
-) => {
-  const { journeyId, employmentIdx } = req.params
-  const journey = req.session.updateEmploymentsJourneys![journeyId]!
-  const employmentIdxNumber = Number(employmentIdx)
+export const ensureValidEmploymentIdx =
+  (allowNew: boolean = true) =>
+  async (req: Request<UpdateEmploymentJourneyParams>, res: Response, next: NextFunction) => {
+    const { journeyId, employmentIdx } = req.params
+    const journey = req.session.updateEmploymentsJourneys![journeyId]!
+    const employmentIdxNumber = Number(employmentIdx)
 
-  if (employmentIdx !== 'new' && (Number.isNaN(employmentIdxNumber) || !journey.employments[employmentIdxNumber - 1])) {
-    logger.warn(
-      `Invalid employment index (${employmentIdx}) for Update employments journey (${journeyId}) by user ${res.locals.user?.username}.`,
-    )
-    return res.status(404).render('pages/errors/notFound')
+    if (
+      !(allowNew && employmentIdx === 'new') &&
+      (Number.isNaN(employmentIdxNumber) || !journey.employments[employmentIdxNumber - 1])
+    ) {
+      logger.warn(
+        `Invalid employment index (${employmentIdx}) for Update employments journey (${journeyId}) by user ${res.locals.user?.username}.`,
+      )
+      return res.status(404).render('pages/errors/notFound')
+    }
+    return next()
   }
-  return next()
-}

@@ -1,0 +1,50 @@
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+
+{% extends "partials/layout.njk" %}§
+
+{% set pageTitle = "What is the current employment status - Contacts - DPS" %}
+
+{% block content %}
+  {% include 'partials/navigation.njk' %}
+  {{ miniProfile(prisonerDetails) }}
+  {% include 'partials/formErrorSummary.njk' %}
+  <div class="govuk-grid-row govuk-!-static-margin-bottom-5">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-l">Edit professional information</span>
+      <form method='POST'>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        {{ govukRadios({
+          classes: "govuk-!-margin-bottom-6",
+          fieldset: {
+            legend: {
+              text: 'What is the current employment status for ' + (contactNames | formatNameFirstNameFirst) + ' at ' + employerName + '?',
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-7"
+            }
+          },
+          id: 'isActive',
+          name: 'isActive',
+          items: [
+            {
+              value: 'true',
+              text: "Active",
+              checked: isActive === true
+            },
+            {
+              value: 'false',
+              text: "Inactive",
+              checked: isActive === false
+            }
+          ],
+          errorMessage: validationErrors | findError('isActive')
+        }) }}
+        {{ govukButton({
+          html: "Continue",
+          preventDoubleClick: true
+        }) }}
+      </form>
+    </div>
+  </div>
+{% endblock %}
