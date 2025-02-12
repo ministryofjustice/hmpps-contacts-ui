@@ -1,12 +1,12 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
-import ViewAllAddressesPage from '../pages/viewAllAddressesPage'
 import SelectAddressTypePage from '../pages/selectAddressTypePage'
 import EnterAddressPage from '../pages/enterAddressPage'
 import EnterAddressMetadataPage from '../pages/enterAddressMetadataPage'
 import AddressCheckYourAnswersPage from '../pages/addressCheckYourAnswersPage'
 import { StubPrisonApiAddress } from '../mockApis/prisonApi'
+import EditContactMethodsPage from '../pages/editContactMethodsPage'
 
 context('Add Address', () => {
   const contactId = 654321
@@ -46,8 +46,8 @@ context('Add Address', () => {
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickViewAllAddressesLink()
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
   })
 
   it('Can add address for a contact with all fields populated', () => {
@@ -58,8 +58,8 @@ context('Add Address', () => {
       },
     })
 
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
-      .clickAddAddressButton()
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
+      .clickAddAddressLink()
 
     Page.verifyOnPage(SelectAddressTypePage, 'First Middle Names Last') //
       .isEmptyForm()
@@ -100,7 +100,10 @@ context('Add Address', () => {
       .verifyShowsCommentsAs('Something about the address')
       .clickContinue()
 
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last')
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last').backTo(
+      ManageContactDetailsPage,
+      'First Middle Names Last',
+    )
 
     cy.verifyLastAPICall(
       {
@@ -137,8 +140,8 @@ context('Add Address', () => {
       },
     })
 
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
-      .clickAddAddressButton()
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
+      .clickAddAddressLink()
 
     Page.verifyOnPage(SelectAddressTypePage, 'First Middle Names Last') //
       .isEmptyForm()
@@ -166,7 +169,7 @@ context('Add Address', () => {
       .verifyShowsCommentsAs('Not provided')
       .clickContinue()
 
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last')
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last')
 
     cy.verifyLastAPICall(
       {
@@ -223,8 +226,8 @@ context('Add Address', () => {
     }
     cy.task('stubOffenderAddresses', { prisonerNumber, addresses: [prisonerAddress] })
 
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
-      .clickAddAddressButton()
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
+      .clickAddAddressLink()
 
     Page.verifyOnPage(SelectAddressTypePage, 'First Middle Names Last') //
       .isEmptyForm()
@@ -264,7 +267,7 @@ context('Add Address', () => {
       .verifyShowsCommentsAs('Not provided')
       .clickContinue()
 
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last')
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last')
 
     cy.verifyLastAPICall(
       {
@@ -298,8 +301,8 @@ context('Add Address', () => {
       },
     })
 
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
-      .clickAddAddressButton()
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
+      .clickAddAddressLink()
 
     Page.verifyOnPage(SelectAddressTypePage, 'First Middle Names Last') //
       .isEmptyForm()
@@ -414,7 +417,7 @@ context('Add Address', () => {
       .verifyShowsCommentsAs('Updated comments')
       .clickContinue()
 
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last')
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last')
 
     cy.verifyLastAPICall(
       {
@@ -444,10 +447,22 @@ context('Add Address', () => {
   })
 
   it(`Back link goes to manage contacts`, () => {
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
-      .clickAddAddressButton()
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
+      .clickAddAddressLink()
 
     Page.verifyOnPage(SelectAddressTypePage, 'First Middle Names Last') //
-      .backTo(ViewAllAddressesPage, 'First Middle Names Last')
+      .backTo(EditContactMethodsPage, 'First Middle Names Last')
+      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .verifyOnContactsMethodsTab()
+  })
+
+  it(`Cancel link goes to manage contacts`, () => {
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
+      .clickAddAddressLink()
+
+    Page.verifyOnPage(SelectAddressTypePage, 'First Middle Names Last') //
+      .cancelTo(EditContactMethodsPage, 'First Middle Names Last')
+      .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .verifyOnContactsMethodsTab()
   })
 })

@@ -1,10 +1,10 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
-import ViewAllAddressesPage from '../pages/viewAllAddressesPage'
 import SelectAddressTypePage from '../pages/selectAddressTypePage'
 import EnterAddressPage from '../pages/enterAddressPage'
 import EnterAddressMetadataPage from '../pages/enterAddressMetadataPage'
+import EditContactMethodsPage from '../pages/editContactMethodsPage'
 
 context('Edit Address', () => {
   const contactId = 654321
@@ -83,10 +83,10 @@ context('Edit Address', () => {
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickViewAllAddressesLink()
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
 
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickChangeAddressLink(contactAddressId)
 
     Page.verifyOnPage(SelectAddressTypePage, 'First Middle Names Last') //
@@ -131,8 +131,10 @@ context('Edit Address', () => {
       .clearComments()
       .clickContinue()
 
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .hasSuccessBanner('You’ve updated a contact address')
+      .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .verifyOnContactsMethodsTab()
 
     cy.verifyLastAPICall(
       {
@@ -197,10 +199,10 @@ context('Edit Address', () => {
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickViewAllAddressesLink()
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
 
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickChangeAddressLink(contactAddressId)
 
     Page.verifyOnPage(SelectAddressTypePage, 'First Middle Names Last') //
@@ -245,8 +247,138 @@ context('Edit Address', () => {
       .enterComments('New comments')
       .clickContinue()
 
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .hasSuccessBanner('You’ve updated a contact address')
+      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .verifyOnContactsMethodsTab()
+
+    cy.verifyLastAPICall(
+      {
+        method: 'PUT',
+        urlPath: `/contact/${contactId}/address/${contactAddressId}`,
+      },
+      {
+        addressType: 'WORK',
+        flat: '1A',
+        property: 'Tower Block',
+        street: 'My Street',
+        area: 'Downtown',
+        cityCode: '7375',
+        countyCode: 'DEVON',
+        postcode: 'P1',
+        countryCode: 'SCOT',
+        verified: false,
+        primaryAddress: false,
+        mailFlag: false,
+        startDate: '2009-09-01T00:00:00.000Z',
+        endDate: '2012-12-01T00:00:00.000Z',
+        noFixedAddress: false,
+        comments: 'New comments',
+        updatedBy: 'USER1',
+      },
+    )
+  })
+
+  it('Can update an expired address', () => {
+    const address = TestData.address({
+      contactId,
+      contactAddressId,
+      addressType: null,
+      addressTypeDescription: null,
+      flat: null,
+      property: null,
+      street: null,
+      area: null,
+      cityCode: null,
+      cityDescription: null,
+      countyCode: null,
+      countyDescription: null,
+      postcode: null,
+      countryCode: 'ENG',
+      countryDescription: 'England',
+      verified: false,
+      verifiedBy: null,
+      verifiedTime: null,
+      primaryAddress: true,
+      mailFlag: true,
+      startDate: '2020-01-02',
+      endDate: '2021-02-03',
+      noFixedAddress: true,
+      comments: null,
+    })
+    const contact = TestData.contact({
+      id: contactId,
+      lastName: 'Last',
+      firstName: 'First',
+      middleNames: 'Middle Names',
+      addresses: [address],
+    })
+
+    cy.task('stubGetContactById', contact)
+    cy.task('stubUpdateContactAddress', {
+      contactId,
+      contactAddressId,
+      updated: {
+        contactAddressId,
+      },
+    })
+
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
+      .clickViewPreviousAddresses()
+      .clickChangeAddressLink(contactAddressId)
+
+    Page.verifyOnPage(SelectAddressTypePage, 'First Middle Names Last') //
+      .hasAddressType('DO_NOT_KNOW')
+      .selectAddressType('WORK')
+      .clickContinue()
+
+    Page.verifyOnPage(EnterAddressPage, 'work address', 'First Middle Names Last') //
+      .hasFlat('')
+      .hasPremises('')
+      .hasStreet('')
+      .hasLocality('')
+      .hasTown('')
+      .hasCounty('')
+      .hasPostcode('')
+      .hasCountry('England')
+      .clickNoFixedAddress()
+      .enterFlat('1A')
+      .enterPremises('Tower Block')
+      .enterStreet('My Street')
+      .enterLocality('Downtown')
+      .selectTown('Exeter')
+      .selectCounty('Devon')
+      .enterPostcode('P1')
+      .selectCountry('Scotland')
+      .clickContinue()
+
+    Page.verifyOnPage(EnterAddressMetadataPage, 'work address', 'First Middle Names Last') //
+      .hasPrimaryAddress('Yes')
+      .hasMailAddress('Yes')
+      .hasFromMonth('1')
+      .hasFromYear('2020')
+      .hasToMonth('2')
+      .hasToYear('2021')
+      .hasComments('')
+      .enterFromMonth('09')
+      .enterFromYear('2009')
+      .enterToMonth('12')
+      .enterToYear('2012')
+      .selectPrimaryAddress('No')
+      .selectMailAddress('No')
+      .enterComments('New comments')
+      .clickContinue()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
+      .hasSuccessBanner('You’ve updated a contact address')
+      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .verifyOnContactsMethodsTab()
 
     cy.verifyLastAPICall(
       {

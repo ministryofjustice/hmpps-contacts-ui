@@ -1,8 +1,8 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
-import ViewAllAddressesPage from '../pages/viewAllAddressesPage'
 import ConfirmDeleteAddressPhonePage from '../pages/confirmDeleteAddressPhonePage'
+import EditContactMethodsPage from '../pages/editContactMethodsPage'
 
 context('Delete Address Phones', () => {
   const contactId = 654321
@@ -64,8 +64,8 @@ context('Delete Address Phones', () => {
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickViewAllAddressesLink()
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
   })
 
   it('Can delete a phone for an address', () => {
@@ -75,14 +75,16 @@ context('Delete Address Phones', () => {
       contactAddressPhoneId: phoneWithExt.contactAddressPhoneId,
     })
 
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
-      .clickDeleteAddressPhoneLink(contactAddressId, phoneWithExt.contactAddressPhoneId)
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
+      .clickDeleteAddressPhoneLink(phoneWithExt.contactAddressPhoneId)
 
     Page.verifyOnPage(ConfirmDeleteAddressPhonePage) //
       .hasPhoneNumber('07878 111111')
       .hasType('Mobile')
       .hasExtension('123')
-      .continueTo(ViewAllAddressesPage, 'First Middle Names Last')
+      .continueTo(EditContactMethodsPage, 'First Middle Names Last')
+      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .verifyOnContactsMethodsTab()
 
     cy.verifyAPIWasCalled(
       {
@@ -94,14 +96,16 @@ context('Delete Address Phones', () => {
   })
 
   it('Can cancel deleting a phone for an address', () => {
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
-      .clickDeleteAddressPhoneLink(contactAddressId, phoneWithoutExt.contactAddressPhoneId)
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
+      .clickDeleteAddressPhoneLink(phoneWithoutExt.contactAddressPhoneId)
 
     Page.verifyOnPage(ConfirmDeleteAddressPhonePage) //
       .hasPhoneNumber('01111 777777')
       .hasType('Home')
       .hasExtension('Not provided')
-      .cancelTo(ViewAllAddressesPage, 'First Middle Names Last')
+      .cancelTo(EditContactMethodsPage, 'First Middle Names Last')
+      .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .verifyOnContactsMethodsTab()
 
     cy.verifyAPIWasCalled(
       {

@@ -1,12 +1,13 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { Cheerio } from 'cheerio'
+import { Cheerio, CheerioAPI } from 'cheerio'
 import { Element } from 'domhandler'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { Page } from '../../../../services/auditService'
+import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -44,27 +45,26 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
 
   it('should audit page view', async () => {
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-methods?returnUrl=/foo&returnAnchor=bar`,
     )
     expect(response.status).toEqual(200)
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.EDIT_CONTACT_DETAILS_PAGE, {
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.EDIT_CONTACT_METHODS_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })
     expect(contactsService.getContact).toHaveBeenCalledWith(1, user)
-    expect(contactsService.getPrisonerContactRelationship).toHaveBeenCalledWith(99, user)
   })
 
   it('should have correct navigation', async () => {
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-methods?returnUrl=/foo&returnAnchor=bar`,
     )
     const $ = cheerio.load(response.text)
-    expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('Edit contact details for Jones Mason')
+    expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('Edit contact methods for Jones Mason')
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Manage contacts')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo#bar')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo#bar')
   })
 
   describe('Phone numbers summary card', () => {
@@ -92,7 +92,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
 
       const phoneNumbersCard = $('h2:contains("Phone numbers")').first().parent().parent()
       expect(phoneNumbersCard).toHaveLength(1)
-      expectSummaryListItem(
+      expectChangeAndDeleteItem(
         $(phoneNumbersCard).find('dt:contains("Business")').first(),
         '1234, ext. 999',
         '/prisoner/A1234BC/contacts/manage/22/phone/3/edit?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
@@ -101,7 +101,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         'Delete the information about this Business phone number (Phone numbers)',
       )
 
-      expectSummaryListItem(
+      expectChangeAndDeleteItem(
         $(phoneNumbersCard).find('dt:contains("Business")').last(),
         '5555',
         '/prisoner/A1234BC/contacts/manage/22/phone/2/edit?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
@@ -110,7 +110,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         'Delete the information about this Business phone number (Phone numbers)',
       )
 
-      expectSummaryListItem(
+      expectChangeAndDeleteItem(
         $(phoneNumbersCard).find('dt:contains("Mobile")').first(),
         '4321',
         '/prisoner/A1234BC/contacts/manage/22/phone/1/edit?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
@@ -162,7 +162,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
 
       const emailAddressesCard = $('h2:contains("Email addresses")').first().parent().parent()
       expect(emailAddressesCard).toHaveLength(1)
-      expectSummaryListItem(
+      expectChangeAndDeleteItem(
         $(emailAddressesCard).find('dt:contains("Email addresses")').first(),
         'test@example.com',
         '/prisoner/A1234BC/contacts/manage/22/email/2/edit?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
@@ -170,7 +170,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         '/prisoner/A1234BC/contacts/manage/22/email/2/delete?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
         'Delete this email address (Email addresses)',
       )
-      expectSummaryListItem(
+      expectChangeAndDeleteItem(
         $(emailAddressesCard).find('dt:contains("Email addresses")').parent().next().find('dt'),
         'zzz@example.com',
         '/prisoner/A1234BC/contacts/manage/22/email/1/edit?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
@@ -210,7 +210,361 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
     })
   })
 
+  describe('Addresses', () => {
+    it.each([
+      [true, true, 'Business address', 'Primary and postal address', 'Business address', 'Primary and postal address'],
+      [true, false, 'Business address', 'Primary address', 'Business address', 'Primary address'],
+      [false, true, 'Business address', 'Postal address', 'Business address', 'Postal address'],
+      [false, false, 'Business address', 'Business address', 'Business address', 'No'],
+      [false, false, undefined, 'Address', 'Not provided', 'No'],
+    ])(
+      'should render an address with all details and the correct title (primary %s, mail %s, type %s, expected title %s)',
+      async (primary, mail, type, expectedTitle, expectedType, expectedPrimaryOrPostal) => {
+        contactsService.getContact.mockResolvedValue(
+          TestData.contact({
+            addresses: [
+              {
+                contactAddressId: 1,
+                contactId: 1,
+                addressType: type,
+                addressTypeDescription: type,
+                primaryAddress: primary,
+                flat: '1a',
+                property: 'Property',
+                street: 'Street',
+                area: 'Area',
+                cityCode: '123',
+                cityDescription: 'City',
+                countyCode: 'CNTY',
+                countyDescription: 'County',
+                postcode: 'Postcode',
+                countryCode: 'ENG',
+                countryDescription: 'England',
+                verified: false,
+                verifiedBy: undefined,
+                verifiedTime: undefined,
+                mailFlag: mail,
+                startDate: '2021-01-01',
+                endDate: undefined,
+                noFixedAddress: false,
+                phoneNumbers: [
+                  TestData.getAddressPhoneNumberDetails('MOB', 'Mobile phone', '07878 111111', 123, 1, 555, '123'),
+                  TestData.getAddressPhoneNumberDetails('BUS', 'Business phone', '999', 321, 1, 666, undefined),
+                ],
+                comments: 'Some comments',
+                createdBy: 'James',
+                createdTime: '2021-01-01',
+              } as ContactAddressDetails,
+            ],
+          }),
+        )
+
+        const response = await request(app).get(
+          `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-methods?returnUrl=/foo&returnAnchor=bar`,
+        )
+        const $ = cheerio.load(response.text)
+
+        expectAddAddressLink($)
+
+        expect($(`span:contains("View previous addresses")`)).toHaveLength(0)
+
+        const addressCard = $(`h2:contains("${expectedTitle}")`).last().parent().parent()
+        expect(addressCard).toHaveLength(1)
+        expectSummaryListItem(
+          addressCard,
+          'Type',
+          expectedType,
+          '/prisoner/A1234BC/contacts/manage/22/address/edit/1/start?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+          `Change the address type (${expectedTitle})`,
+        )
+        expectSummaryListItem(
+          addressCard,
+          'Address',
+          'Flat 1a, Property, StreetAreaCityCountyPostcodeEngland',
+          '/prisoner/A1234BC/contacts/manage/22/address/edit/1/start?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+          `Change the address (${expectedTitle})`,
+        )
+        expectSummaryListItem(
+          addressCard,
+          'Date',
+          'From January 2021',
+          '/prisoner/A1234BC/contacts/manage/22/address/edit/1/start?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+          `Change the dates for the prisoner’s use of the address (${expectedTitle})`,
+        )
+        expectSummaryListItem(
+          addressCard,
+          'Primary or postal address',
+          expectedPrimaryOrPostal,
+          '/prisoner/A1234BC/contacts/manage/22/address/edit/1/start?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+          `Change if this address is set as the primary or postal address for the contact (${expectedTitle})`,
+        )
+        expectChangeAndDeleteItem(
+          $(addressCard).find('dt:contains("Mobile phone")'),
+          '07878 111111, ext. 123',
+          '/prisoner/A1234BC/contacts/manage/22/address/1/phone/123/edit?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+          `Change the information about the Mobile phone phone number for this address (${expectedTitle})`,
+          '/prisoner/A1234BC/contacts/manage/22/address/1/phone/123/delete?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+          `Delete the information about the Mobile phone phone number for this address (${expectedTitle})`,
+        )
+        expectChangeAndDeleteItem(
+          $(addressCard).find('dt:contains("Business phone")'),
+          '999',
+          '/prisoner/A1234BC/contacts/manage/22/address/1/phone/321/edit?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+          `Change the information about the Business phone phone number for this address (${expectedTitle})`,
+          '/prisoner/A1234BC/contacts/manage/22/address/1/phone/321/delete?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+          `Delete the information about the Business phone phone number for this address (${expectedTitle})`,
+        )
+        expectSummaryListItem(
+          addressCard,
+          'Comments on this address',
+          'Some comments',
+          '/prisoner/A1234BC/contacts/manage/22/address/edit/1/start?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+          `Change the comments on this address (${expectedTitle})`,
+        )
+      },
+    )
+
+    it.each([
+      [
+        true,
+        true,
+        'Business address',
+        'Previous primary and postal address',
+        'Business address',
+        'Primary and postal address',
+      ],
+      [true, false, 'Business address', 'Previous primary address', 'Business address', 'Primary address'],
+      [false, true, 'Business address', 'Previous postal address', 'Business address', 'Postal address'],
+      [false, false, 'Business address', 'Previous business address', 'Business address', 'No'],
+      [false, false, undefined, 'Previous address', 'Not provided', 'No'],
+    ])(
+      'should render an expired address with all details and the correct title and change links (primary %s, mail %s, type %s, expected title %s)',
+      async (primary, mail, type, expectedTitle, expectedType, expectedPrimaryOrPostal) => {
+        contactsService.getContact.mockResolvedValue(
+          TestData.contact({
+            addresses: [
+              {
+                contactAddressId: 1,
+                contactId: 1,
+                addressType: type,
+                addressTypeDescription: type,
+                primaryAddress: primary,
+                flat: '1a',
+                property: 'Property',
+                street: 'Street',
+                area: 'Area',
+                cityCode: '123',
+                cityDescription: 'City',
+                countyCode: 'CNTY',
+                countyDescription: 'County',
+                postcode: 'Postcode',
+                countryCode: 'ENG',
+                countryDescription: 'England',
+                verified: false,
+                verifiedBy: undefined,
+                verifiedTime: undefined,
+                mailFlag: mail,
+                startDate: '2021-01-01',
+                endDate: '2022-01-01',
+                noFixedAddress: false,
+                phoneNumbers: [
+                  TestData.getAddressPhoneNumberDetails('MOB', 'Mobile phone', '07878 111111', 123, 1, 555, '123'),
+                  TestData.getAddressPhoneNumberDetails('BUS', 'Business phone', '999', 321, 1, 666, undefined),
+                ],
+                comments: 'Some comments',
+                createdBy: 'James',
+                createdTime: '2021-01-01',
+              } as ContactAddressDetails,
+            ],
+          }),
+        )
+
+        const response = await request(app).get(
+          `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-methods?returnUrl=/foo&returnAnchor=bar`,
+        )
+        const $ = cheerio.load(response.text)
+
+        expectAddAddressLink($)
+
+        expect($(`span:contains("View previous addresses")`)).toHaveLength(1)
+
+        const addressCard = $(`h2:contains("${expectedTitle}")`).last().parent().parent()
+        expect(addressCard).toHaveLength(1)
+        expectSummaryListItem(
+          addressCard,
+          'Type',
+          expectedType,
+          '/prisoner/A1234BC/contacts/manage/22/address/edit/1/start?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+          `Change the address type (${expectedTitle})`,
+        )
+        expectSummaryListItem(
+          addressCard,
+          'Address',
+          'Flat 1a, Property, StreetAreaCityCountyPostcodeEngland',
+          '/prisoner/A1234BC/contacts/manage/22/address/edit/1/start?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+          `Change the address (${expectedTitle})`,
+        )
+        expectSummaryListItem(
+          addressCard,
+          'Date',
+          'From January 2021 to January 2022',
+          '/prisoner/A1234BC/contacts/manage/22/address/edit/1/start?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+          `Change the dates for the prisoner’s use of the address (${expectedTitle})`,
+        )
+        expectSummaryListItem(
+          addressCard,
+          'Primary or postal address',
+          expectedPrimaryOrPostal,
+          '/prisoner/A1234BC/contacts/manage/22/address/edit/1/start?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+          `Change if this address is set as the primary or postal address for the contact (${expectedTitle})`,
+        )
+        expectChangeAndDeleteItem(
+          $(addressCard).find('dt:contains("Mobile phone")'),
+          '07878 111111, ext. 123',
+          '/prisoner/A1234BC/contacts/manage/22/address/1/phone/123/edit?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+          `Change the information about the Mobile phone phone number for this address (${expectedTitle})`,
+          '/prisoner/A1234BC/contacts/manage/22/address/1/phone/123/delete?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+          `Delete the information about the Mobile phone phone number for this address (${expectedTitle})`,
+        )
+        expectChangeAndDeleteItem(
+          $(addressCard).find('dt:contains("Business phone")'),
+          '999',
+          '/prisoner/A1234BC/contacts/manage/22/address/1/phone/321/edit?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+          `Change the information about the Business phone phone number for this address (${expectedTitle})`,
+          '/prisoner/A1234BC/contacts/manage/22/address/1/phone/321/delete?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+          `Delete the information about the Business phone phone number for this address (${expectedTitle})`,
+        )
+        expectSummaryListItem(
+          addressCard,
+          'Comments on this address',
+          'Some comments',
+          '/prisoner/A1234BC/contacts/manage/22/address/edit/1/start?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+          `Change the comments on this address (${expectedTitle})`,
+        )
+      },
+    )
+
+    it('should render an address without optional details and change links including to change address phone numbers', async () => {
+      contactsService.getContact.mockResolvedValue(
+        TestData.contact({
+          addresses: [
+            {
+              contactAddressId: 1,
+              contactId: 1,
+              addressType: undefined,
+              addressTypeDescription: undefined,
+              primaryAddress: false,
+              flat: undefined,
+              property: undefined,
+              street: undefined,
+              area: undefined,
+              cityCode: undefined,
+              cityDescription: undefined,
+              countyCode: undefined,
+              countyDescription: undefined,
+              postcode: undefined,
+              countryCode: 'ENG',
+              countryDescription: 'England',
+              verified: false,
+              verifiedBy: undefined,
+              verifiedTime: undefined,
+              mailFlag: false,
+              startDate: undefined,
+              endDate: undefined,
+              noFixedAddress: true,
+              phoneNumbers: [],
+              comments: undefined,
+              createdBy: 'James',
+              createdTime: '2021-01-01',
+            } as ContactAddressDetails,
+          ],
+        }),
+      )
+
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-methods?returnUrl=/foo&returnAnchor=bar`,
+      )
+      const $ = cheerio.load(response.text)
+
+      expectAddAddressLink($)
+
+      const addressCard = $(`h2:contains("Address")`).last().parent().parent()
+      expect(addressCard).toHaveLength(1)
+      expectSummaryListItem(
+        addressCard,
+        'Type',
+        'Not provided',
+        '/prisoner/A1234BC/contacts/manage/22/address/edit/1/start?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+        `Change the address type (Address)`,
+      )
+      expectSummaryListItem(
+        addressCard,
+        'Address',
+        'No fixed addressEngland',
+        '/prisoner/A1234BC/contacts/manage/22/address/edit/1/start?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+        `Change the address (Address)`,
+      )
+      expectSummaryListItem(
+        addressCard,
+        'Date',
+        'Not provided',
+        '/prisoner/A1234BC/contacts/manage/22/address/edit/1/start?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+        `Change the dates for the prisoner’s use of the address (Address)`,
+      )
+      expectSummaryListItem(
+        addressCard,
+        'Primary or postal address',
+        'No',
+        '/prisoner/A1234BC/contacts/manage/22/address/edit/1/start?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+        `Change if this address is set as the primary or postal address for the contact (Address)`,
+      )
+      expectSummaryListItem(
+        addressCard,
+        'Address phone numbers',
+        'Not provided',
+        '/prisoner/A1234BC/contacts/manage/22/address/1/phone/create?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+        `Change the information about the phone number for this address (Address)`,
+      )
+      expectSummaryListItem(
+        addressCard,
+        'Comments on this address',
+        'Not provided',
+        '/prisoner/A1234BC/contacts/manage/22/address/edit/1/start?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+        `Change the comments on this address (Address)`,
+      )
+    })
+
+    it('should render no addresses provided with add address link', async () => {
+      contactsService.getContact.mockResolvedValue(
+        TestData.contact({
+          addresses: [],
+        }),
+      )
+
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-methods?returnUrl=/foo&returnAnchor=bar`,
+      )
+      const $ = cheerio.load(response.text)
+      expect($('h2:contains("Addresses")').first().parent().parent().next().text()).toMatch(/No addresses provided./)
+      expectAddAddressLink($)
+    })
+  })
+
   const expectSummaryListItem = (
+    card: Cheerio<Element>,
+    label: string,
+    value: string,
+    changeLink: string,
+    changeLabel: string,
+  ) => {
+    const summaryCardFirstColumn = card.find(`dt:contains("${label}")`).first()
+    expect(summaryCardFirstColumn.next().text().trim()).toStrictEqual(value)
+    const link = summaryCardFirstColumn.next().next().find('a')
+    expect(link.attr('href')).toStrictEqual(changeLink)
+    expect(link.text().trim()).toStrictEqual(changeLabel)
+  }
+
+  const expectChangeAndDeleteItem = (
     heading: Cheerio<Element>,
     value: string,
     changeLink: string,
@@ -224,5 +578,13 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
     expect(links.first().text().trim()).toStrictEqual(changeLabel)
     expect(links.last().attr('href')).toStrictEqual(deleteLink)
     expect(links.last().text().trim()).toStrictEqual(deleteLabel)
+  }
+
+  const expectAddAddressLink = ($: CheerioAPI) => {
+    const addAddressLink = $(`h2:contains("Addresses")`).first().parent().next().find('a').first()
+    expect(addAddressLink.text()).toStrictEqual('Add address')
+    expect(addAddressLink.attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/1/address/add/start?returnUrl=%2Fprisoner%2FA1234BC%2Fcontacts%2Fmanage%2F1%2Frelationship%2F99%2Fedit-contact-methods%3FreturnUrl%3D%2Ffoo%26returnAnchor%3Dbar',
+    )
   }
 })

@@ -1,8 +1,10 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "partials/contactMethods/phoneNumbersCard.njk" import phoneNumbersCard %}
 {% from "partials/contactMethods/emailAddressesCard.njk" import emailAddressesCard %}
+{% from "partials/contactMethods/contactAddressCard.njk" import contactAddressCard %}
 
 {% extends "partials/layout.njk" %}§
 
@@ -40,6 +42,54 @@
         })
       }}
 
+      <div class="moj-page-header-actions">
+        <div class="moj-page-header-actions__title">
+          <h2 class="govuk-heading-l govuk-!-font-size-24">Addresses</h2>
+        </div>
+        <div class="moj-page-header-actions__actions">
+          <div class="moj-button-group moj-button-group--inline">
+            <a class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold" data-qa="add-address-link" href="/prisoner/{{ prisonerNumber }}/contacts/manage/{{ contactId }}/address/add/start?returnUrl={{  returnUrl }}">Add address</a>
+          </div>
+        </div>
+      </div>
+      {% if addresses and addresses.length > 0 %}
+        {% for item in addresses %}
+          {% if not item.isExpired %}
+            {{ contactAddressCard({
+                address: item,
+                prisonerNumber: prisonerNumber,
+                contactId: contact.id,
+                returnUrl: returnUrl,
+                showActions: true
+              })
+            }}
+          {% endif %}
+        {% endfor %}
+        {% set hasInactive = false %}
+        {% set inactiveHtml %}
+          {% for item in addresses %}
+            {% if item.isExpired %}
+              {% set hasInactive = true %}
+              {{ contactAddressCard({
+                  address: item,
+                  prisonerNumber: prisonerNumber,
+                  contactId: contact.id,
+                  returnUrl: returnUrl,
+                  showActions: true
+                })
+              }}
+            {% endif %}
+          {% endfor %}
+        {% endset %}
+        {% if hasInactive %}
+          {{ govukDetails({
+            summaryText: "View previous addresses",
+            html: inactiveHtml
+          }) }}
+        {% endif %}
+      {% else %}
+        <p>No addresses provided.</p>
+      {% endif %}
       <div class="govuk-button-group">
         {% if navigation.cancelButton %}
           <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>

@@ -3,6 +3,7 @@
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "partials/contactMethods/phoneNumbersCard.njk" import phoneNumbersCard %}
 {% from "partials/contactMethods/emailAddressesCard.njk" import emailAddressesCard %}
+{% from "partials/contactMethods/contactAddressCard.njk" import contactAddressCard %}
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
@@ -28,123 +29,26 @@
 
       <h2 class="govuk-heading-l govuk-!-font-size-24">Addresses</h2>
       {% if addresses and addresses.length > 0 %}
-        {% set activeAddresses = [] %}
-        {% set inactiveAddresses = [] %}
         {% for item in addresses %}
-          {%
-            set addressLines = {
-            flat: item.flat,
-            premise: item.property,
-            street: item.street,
-            area: item.area,
-            city: item.cityDescription,
-            county: item.countyDescription,
-            postalCode: item.postcode,
-            country: item.countryDescription
-          }
-          %}
-          {% set dateText %}
-            {% if item.startDate and not item.endDate %}
-              From {{ (item.startDate | formatDate('MMMM yyyy')) }}
-            {% elseif item.startDate and item.endDate %}
-              From {{ (item.startDate | formatDate('MMMM yyyy')) }} to {{ (item.endDate | formatDate('MMMM yyyy')) }}
-            {% else %}
-              Not provided
-            {% endif %}
-          {% endset -%}
-          {% set primaryOrPostalText %}
-            {% if item.primaryAddress and item.mailFlag %}
-              Primary and postal address
-            {% elseif item.primaryAddress %}
-              Primary address
-            {% elseif item.mailFlag %}
-              Postal address
-            {% else %}
-              No
-            {% endif %}
-          {% endset -%}
-          {% set rows = [
-              {
-                key: { text: 'Type' },
-                value: { text: item.addressTypeDescription if item.addressTypeDescription else 'Not provided' }
-              },
-              {
-                key: { text: 'Address' },
-                value: { html: ('No fixed address<br/>' if item.noFixedAddress ) + addressLines | addressToLines }
-              },
-              {
-                key: { text: 'Dates' },
-                value: { text: dateText }
-              },
-              {
-                key: { text: 'Primary or postal address' },
-                value: { text: primaryOrPostalText }
-              }
-          ] %}
-
-          {% if item.phoneNumbers and item.phoneNumbers.length > 0 %}
-              {% set rows = rows.concat([{
-                key: {
-                  text: 'Address phone numbers'
-                },
-                classes: 'govuk-summary-list__row--no-border'
-              }]) %}
-            {% for val in item.phoneNumbers | sort(attribute = 'phoneNumber') | sort(attribute = 'phoneTypeDescription') %}
-              {% set rows = rows.concat([{
-                key: {
-                  text: val.phoneTypeDescription,
-                  classes: 'govuk-!-font-weight-regular'
-                },
-                value: {
-                  text: val.phoneNumber + (", ext. " + val.extNumber if val.extNumber)
-                },
-                classes: ('govuk-summary-list__row--no-border') if not loop.last
-              }]) %}
-            {% endfor %}
-          {% else %}
-            {% set rows = rows.concat([{
-              key: {
-                text: 'Address phone numbers'
-              },
-              value: {
-                text: 'Not provided'
-              }
-            }]) %}
-          {% endif %}
-
-          {% set rows = rows.concat([{
-            key: {
-              text: 'Comments on this address'
-            },
-            value: {
-              text: item.comments if item.comments else 'Not provided'
-            }
-          }]) %}
-
-          {% set summaryCard = govukSummaryList({
-            card: {
-              title: {
-                text: item.addressTitle
-              }
-            },
-            rows: rows
-          })
-          %}
-          {% if item.isExpired %}
-            {% set inactiveAddresses = inactiveAddresses.concat([ summaryCard ]) %}
-          {% else %}
-            {% set activeAddresses = activeAddresses.concat([ summaryCard ]) %}
+          {% if not item.isExpired %}
+            {{  contactAddressCard({ address: item, showActions: false }) }}
           {% endif %}
         {% endfor %}
-
-        {% for item in activeAddresses %}{{ item }}{% endfor %}
+        {% set hasInactive = false %}
         {% set inactiveHtml %}
-          {% for item in inactiveAddresses %}{{ item }}{% endfor %}
+          {% for item in addresses %}
+            {% if item.isExpired %}
+              {% set hasInactive = true %}
+              {{  contactAddressCard({ address: item, showActions: false }) }}
+            {% endif %}
+          {% endfor %}
         {% endset %}
-        {{ govukDetails({
-          summaryText: "View previous addresses",
-          html: inactiveHtml
-        }) }}
+        {% if hasInactive %}
+          {{ govukDetails({
+            summaryText: "View previous addresses",
+            html: inactiveHtml
+          }) }}
+        {% endif %}
       {% else %}
         <p>No addresses provided.</p>
       {% endif %}

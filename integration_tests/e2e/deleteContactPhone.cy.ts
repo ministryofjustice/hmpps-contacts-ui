@@ -12,6 +12,7 @@ context('Delete Contact Phones', () => {
     lastName: 'Last',
     firstName: 'First',
     middleNames: 'Middle Names',
+    addresses: [],
     phoneNumbers: [
       TestData.getContactPhoneNumberDetails('MOB', 'Mobile', '07878 111111', 99, '123'),
       TestData.getContactPhoneNumberDetails('HOME', 'Home', '01111 777777', 77),
@@ -73,7 +74,6 @@ context('Delete Contact Phones', () => {
 
   it('Can cancel deleting a contact phone', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
       .clickContactMethodsTab()
       .clickEditContactMethodsLink()
 

@@ -15,16 +15,6 @@ export default class ManageContactDetailsPage extends Page {
     return this
   }
 
-  clickViewAllAddressesLink() {
-    this.viewAllAddressesLink().click()
-  }
-
-  clickTemporaryEditContactDetailsTab() {
-    // TODO this is temporary until the pages are completely split
-    this.editContactDetailsTab().click()
-    return this
-  }
-
   clickEditContactDetailsLink() {
     this.editContactDetailsLink().click()
     return this
@@ -127,8 +117,6 @@ export default class ManageContactDetailsPage extends Page {
 
   private getRestrictionsTab = (): PageElement => cy.get('#tab_restrictions')
 
-  private editContactDetailsTab = (): PageElement => cy.get('#tab_contact-details-editable')
-
   private editContactDetailsLink = (): PageElement => cy.get('[data-qa="edit-contact-details-link"]')
 
   private editContactMethodsLink = (): PageElement => cy.get('[data-qa="edit-contact-methods-link"]')
@@ -160,8 +148,6 @@ export default class ManageContactDetailsPage extends Page {
 
   getGlobalRestrictionSelector = (cardNumber: number, childNumber: number): string =>
     `[data-qa="restrictions-result-message"] > :nth-child(${cardNumber}) > .govuk-summary-card__content > .govuk-summary-list > :nth-child(${childNumber}) > .govuk-summary-list__value`
-
-  private viewAllAddressesLink = (): PageElement => cy.get(`[data-qa="view-all-addresses"]`)
 
   verifyOnRestrictionsTab(): ManageContactDetailsPage {
     this.restrictionsTabHeading().should('be.visible')

@@ -41,7 +41,6 @@ import { selectRelationshipSchemaFactory } from '../common/relationship/selectRe
 import ManageNextOfKinContactController from './relationship/manageNextOfKinContactController'
 import ManageContactDeleteEmailController from './email/delete/manageContactDeleteEmailController'
 import { enterRelationshipCommentsSchema } from '../add/relationship-comments/enterRelationshipCommentsSchemas'
-import ManageAddressesController from './addresses/manageAddressesController'
 import StartAddressJourneyController from './addresses/start/startAddressJourneyController'
 import AddressTypeController from './addresses/address-type/addressTypeController'
 import ensureInAddressJourney from './addresses/addressesMiddleware'
@@ -178,7 +177,7 @@ const ManageContactsRoutes = (
   // Part 5: View one contact
   get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId',
-    new ContactDetailsController(contactsService, referenceDataService, restrictionsService),
+    new ContactDetailsController(contactsService, restrictionsService),
   )
 
   // Part 6: Manage the attribute of one contact (phones, addresses, IDs, emails, restrictions)
@@ -277,11 +276,6 @@ const ManageContactsRoutes = (
     controller: new ManageContactRelationshipController(contactsService, referenceDataService),
     schema: selectRelationshipSchemaFactory(),
   })
-
-  get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/view-addresses',
-    new ManageAddressesController(contactsService),
-  )
 
   standAloneJourneyRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/next-of-kin',
