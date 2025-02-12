@@ -10,12 +10,13 @@ export default class UpdateEmploymentsController implements PageHandler {
   GET = async (req: Request<PrisonerJourneyParams & { contactId: string }>, res: Response) => {
     const { prisonerNumber, contactId, journeyId } = req.params
     const { contactNames, employments, returnPoint } = req.session.updateEmploymentsJourneys![journeyId]!
+    employments.sort(employmentSorter)
     res.render('pages/contacts/manage/updateEmployments/index', {
       prisonerNumber,
       contactId,
       journeyId,
       contactNames,
-      employments: employments.sort(employmentSorter),
+      employments,
       returnPoint,
     })
   }

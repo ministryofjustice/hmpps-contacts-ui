@@ -92,7 +92,9 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
     expect($('a:contains("Change organisation (Past employer: Big Corp)")').attr('href')).toEqual(
       `/prisoner/A1234BC/contacts/manage/1/update-employments/1/organisation-search/${journeyId}`,
     )
-    expect($('a:contains("Change status of the employment with (Past employer: Big Corp)")').attr('href')).toEqual('#')
+    expect($('a:contains("Change status of the employment with (Past employer: Big Corp)")').attr('href')).toEqual(
+      `/prisoner/A1234BC/contacts/manage/1/update-employments/1/employment-status/${journeyId}`,
+    )
     expect($('a:contains("Add another employer")').attr('href')).toEqual(
       `/prisoner/A1234BC/contacts/manage/1/update-employments/new/organisation-search/${journeyId}`,
     )
