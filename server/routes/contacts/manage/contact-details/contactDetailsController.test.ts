@@ -67,88 +67,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect(contactsService.getPrisonerContactRelationship).toHaveBeenCalledWith(99, user)
     })
 
-    describe('Addresses', () => {
-      it.each([
-        ['Primary and mail', true, true],
-        ['Primary', true, false],
-        ['Mail', false, true],
-      ])(
-        'should show relevant primary address flag as %s',
-        async (flagLabel: string, primaryAddress: boolean, mailFlag: boolean) => {
-          // Given
-          prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-          const contact = TestData.contact()
-          contact.addresses[0]!.primaryAddress = primaryAddress
-          contact.addresses[0]!.mailFlag = mailFlag
-          contactsService.getContact.mockResolvedValue(contact)
-
-          // When
-          const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
-
-          // Then
-          const $ = cheerio.load(response.text)
-          expect(response.status).toEqual(200)
-          const addressCard = $('[data-qa=view-all-addresses]')
-          expect(addressCard.first().text().trim()).toStrictEqual('View all addresses (Addresses)')
-          expect(addressCard.first().attr('href')).toStrictEqual(
-            '/prisoner/A1234BC/contacts/manage/1/relationship/99/view-addresses',
-          )
-          expect($('.most-relevant-address-label').text().trim()).toStrictEqual(flagLabel)
-        },
-      )
-    })
-
-    it('should show primary address details', async () => {
-      // Given
-      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.getContact.mockResolvedValue(TestData.contact())
-
-      // When
-      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
-
-      // Then
-      const $ = cheerio.load(response.text)
-      expect(response.status).toEqual(200)
-
-      const confirmAddressValueClass = '.confirm-address-value'
-      expect($(confirmAddressValueClass).text().trim()).toStrictEqual(
-        '24, Acacia AvenueBuntingSheffieldSouth YorkshireS2 3LKEngland',
-      )
-    })
-
-    it('should show "No fixed address" for address flagged as NFA', async () => {
-      // Given
-      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      const contact = TestData.contact()
-      contact.addresses[0]!.noFixedAddress = true
-      contactsService.getContact.mockResolvedValue(contact)
-
-      // When
-      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
-
-      // Then
-      const $ = cheerio.load(response.text)
-      expect(response.status).toEqual(200)
-      expect($('.confirm-address-value').text().trim()).toStrictEqual('No fixed address, Sheffield, England')
-    })
-
-    it('should show "not provided" for address if question was not answered', async () => {
-      // Given
-      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.getContact.mockResolvedValue({ ...TestData.contact({}), addresses: undefined })
-
-      // When
-      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
-
-      // Then
-      const $ = cheerio.load(response.text)
-      expect(response.status).toEqual(200)
-      expect($('.addresses-not-provided').text().trim()).toStrictEqual('Not provided')
-      expect($('[data-qa=add-new-addresses-link]').first().attr('href')).toStrictEqual(
-        `/prisoner/${prisonerNumber}/contacts/manage/1/address/add/start?returnUrl=/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/view-addresses`,
-      )
-    })
-
     it('should not show comments when theres no comments', async () => {
       // Given
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
@@ -876,7 +794,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
           const $ = cheerio.load(response.text)
 
-          const addressCard = $(`h2:contains("${expectedTitle}")`).first().parent().parent()
+          const addressCard = $(`h2:contains("${expectedTitle}")`).last().parent().parent()
           expect(addressCard).toHaveLength(1)
           expect($(addressCard).find('dt:contains("Type")').next().text().trim()).toStrictEqual(expectedType)
           expect($(addressCard).find('dt:contains("Address")').next().html()?.trim()).toStrictEqual(
@@ -954,7 +872,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
           const $ = cheerio.load(response.text)
 
-          const addressCard = $(`h2:contains("${expectedTitle}")`).first().parent().parent()
+          const addressCard = $(`h2:contains("${expectedTitle}")`).last().parent().parent()
           expect(addressCard).toHaveLength(1)
           expect($(addressCard).find('dt:contains("Type")').next().text().trim()).toStrictEqual(expectedType)
           expect($(addressCard).find('dt:contains("Address")').next().html()?.trim()).toStrictEqual(
@@ -1016,7 +934,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
         const $ = cheerio.load(response.text)
 
-        const addressCard = $(`h2:contains("Address")`).first().parent().parent()
+        const addressCard = $(`h2:contains("Address")`).last().parent().parent()
         expect(addressCard).toHaveLength(1)
         expect($(addressCard).find('dt:contains("Type")').next().text().trim()).toStrictEqual('Not provided')
         expect($(addressCard).find('dt:contains("Address")').next().html()?.trim()).toStrictEqual(

@@ -4,6 +4,9 @@ import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
 import { Navigation } from '../../common/navigation'
 import ContactDetails = contactsApiClientTypes.ContactDetails
+import sortContactAddresses from '../../../../utils/sortAddress'
+import { getAddressTitle, isExpiredAddress } from '../../../../utils/addressUtils'
+import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 
 export default class EditContactMethodsController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -26,8 +29,18 @@ export default class EditContactMethodsController implements PageHandler {
       cancelButton: returnUrlWithAnchor,
     }
 
+    const addresses = sortContactAddresses(contact.addresses).map((address: ContactAddressDetails) => {
+      const expired = isExpiredAddress(address.endDate)
+      return {
+        ...address,
+        isExpired: expired,
+        addressTitle: getAddressTitle(address, expired),
+      }
+    })
+
     return res.render('pages/contacts/manage/contactDetails/details/editContactMethods', {
       contact,
+      addresses,
       prisonerNumber,
       contactId,
       prisonerContactId,

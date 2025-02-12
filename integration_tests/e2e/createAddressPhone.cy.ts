@@ -2,8 +2,8 @@ import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import { StubAddressPhoneDetails } from '../mockApis/contactsApi'
-import ViewAllAddressesPage from '../pages/viewAllAddressesPage'
 import EnterAddressPhonePage from '../pages/enterAddressPhonePage'
+import EditContactMethodsPage from '../pages/editContactMethodsPage'
 
 context('Create Address Phones', () => {
   const contactId = 654321
@@ -49,8 +49,8 @@ context('Create Address Phones', () => {
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickTemporaryEditContactDetailsTab()
-      .clickViewAllAddressesLink()
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
   })
 
   it('Can create a phone for an address with minimal fields', () => {
@@ -67,7 +67,7 @@ context('Create Address Phones', () => {
     }
     cy.task('stubCreateAddressPhone', { contactId, contactAddressId, created })
 
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddAddressPhoneLink(contactAddressId)
 
     Page.verifyOnPage(EnterAddressPhonePage) //
@@ -75,7 +75,7 @@ context('Create Address Phones', () => {
       .selectType('HOME')
       .clickContinue()
 
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last')
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last')
 
     cy.verifyLastAPICall(
       {
@@ -105,7 +105,7 @@ context('Create Address Phones', () => {
     }
     cy.task('stubCreateAddressPhone', { contactId, contactAddressId, created })
 
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddAddressPhoneLink(contactAddressId)
 
     Page.verifyOnPage(EnterAddressPhonePage) //
@@ -114,7 +114,7 @@ context('Create Address Phones', () => {
       .selectType('HOME')
       .clickContinue()
 
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last')
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last')
 
     cy.verifyLastAPICall(
       {
@@ -132,7 +132,7 @@ context('Create Address Phones', () => {
   })
 
   it('Should require type', () => {
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddAddressPhoneLink(contactAddressId)
 
     const enterPhonePage = Page.verifyOnPage(EnterAddressPhonePage) //
@@ -142,7 +142,7 @@ context('Create Address Phones', () => {
   })
 
   it('Should require phone number', () => {
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddAddressPhoneLink(contactAddressId)
 
     const enterPhonePage = Page.verifyOnPage(EnterAddressPhonePage) //
@@ -152,7 +152,7 @@ context('Create Address Phones', () => {
   })
 
   it('Should require phone number is 20 chars or fewer', () => {
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddAddressPhoneLink(contactAddressId)
 
     const enterPhonePage = Page.verifyOnPage(EnterAddressPhonePage) //
@@ -163,7 +163,7 @@ context('Create Address Phones', () => {
   })
 
   it('Should require extension is 7 chars or fewer', () => {
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddAddressPhoneLink(contactAddressId)
 
     const enterPhonePage = Page.verifyOnPage(EnterAddressPhonePage) //
@@ -176,18 +176,22 @@ context('Create Address Phones', () => {
   })
 
   it('Back link goes to view all addresses', () => {
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddAddressPhoneLink(contactAddressId)
 
     Page.verifyOnPage(EnterAddressPhonePage) //
-      .backTo(ViewAllAddressesPage, 'First Middle Names Last')
+      .backTo(EditContactMethodsPage, 'First Middle Names Last')
+      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .verifyOnContactsMethodsTab()
   })
 
   it('Cancel goes to view all addresses', () => {
-    Page.verifyOnPage(ViewAllAddressesPage, 'First Middle Names Last') //
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddAddressPhoneLink(contactAddressId)
 
     Page.verifyOnPage(EnterAddressPhonePage) //
-      .cancelTo(ViewAllAddressesPage, 'First Middle Names Last')
+      .cancelTo(EditContactMethodsPage, 'First Middle Names Last')
+      .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .verifyOnContactsMethodsTab()
   })
 })

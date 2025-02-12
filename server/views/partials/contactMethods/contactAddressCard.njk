@@ -1,0 +1,211 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro contactAddressCard(opts) %}
+
+  {% set address = opts.address %}
+  {% set showActions = opts.showActions %}
+  {% set returnUrl = opts.returnUrl %}
+  {% set prisonerNumber = opts.prisonerNumber %}
+  {% set contactId = opts.contactId %}
+
+  {% set changeAddressLink = '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/address/edit/' + address.contactAddressId + '/start?returnUrl=' + returnUrl %}
+
+  {%
+    set addressLines = {
+    flat: address.flat,
+    premise: address.property,
+    street: address.street,
+    area: address.area,
+    city: address.cityDescription,
+    county: address.countyDescription,
+    postalCode: address.postcode,
+    country: address.countryDescription
+  }
+  %}
+  {% set dateText %}
+    {% if address.startDate and not address.endDate %}
+      From {{ (address.startDate | formatDate('MMMM yyyy')) }}
+    {% elseif address.startDate and address.endDate %}
+      From {{ (address.startDate | formatDate('MMMM yyyy')) }} to {{ (address.endDate | formatDate('MMMM yyyy')) }}
+    {% else %}
+      Not provided
+    {% endif %}
+  {% endset -%}
+  {% set primaryOrPostalText %}
+    {% if address.primaryAddress and address.mailFlag %}
+      Primary and postal address
+    {% elseif address.primaryAddress %}
+      Primary address
+    {% elseif address.mailFlag %}
+      Postal address
+    {% else %}
+      No
+    {% endif %}
+  {% endset -%}
+  {% set rows = [
+    {
+      key: { text: 'Type' },
+      value: { text: address.addressTypeDescription if address.addressTypeDescription else 'Not provided' },
+      actions: {
+        items: [
+          {
+            href: changeAddressLink,
+            text: "Change",
+            visuallyHiddenText: "the address type",
+            attributes: { 'data-qa': 'change-address-type-' + address.contactAddressId },
+            classes: 'govuk-link--no-visited-state'
+          }
+        ] if showActions else []
+      }
+    },
+    {
+      key: { text: 'Address' },
+      value: { html: ('No fixed address<br/>' if address.noFixedAddress ) + addressLines | addressToLines },
+      actions: {
+      items: [
+          {
+            href: changeAddressLink,
+            text: "Change",
+            visuallyHiddenText: "the address",
+            attributes: { 'data-qa': 'change-address-lines-' + address.contactAddressId },
+            classes: 'govuk-link--no-visited-state'
+          }
+        ] if showActions else []
+      }
+    },
+    {
+      key: { text: 'Dates' },
+      value: { text: dateText },
+      actions: {
+        items: [
+          {
+            href: changeAddressLink,
+            text: "Change",
+            visuallyHiddenText: "the dates for the prisoner’s use of the address",
+            attributes: { 'data-qa': 'change-address-dates-' + address.contactAddressId },
+            classes: 'govuk-link--no-visited-state'
+          }
+        ] if showActions else []
+      }
+    },
+    {
+      key: { text: 'Primary or postal address' },
+      value: { text: primaryOrPostalText },
+      actions: {
+        items: [
+          {
+            href: changeAddressLink,
+            text: "Change",
+            visuallyHiddenText: "if this address is set as the primary or postal address for the contact",
+            attributes: { 'data-qa': 'change-address-primary-postal-' + address.contactAddressId },
+            classes: 'govuk-link--no-visited-state'
+          }
+        ] if showActions else []
+      }
+    }
+  ] %}
+
+  {% if address.phoneNumbers and address.phoneNumbers.length > 0 %}
+    {% set rows = rows.concat([{
+      key: {
+        text: 'Address phone numbers'
+      },
+      value: {
+        classes: 'govuk-!-display-none'
+      },
+      actions: {
+        items: [
+          {
+            href: '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/address/' + address.contactAddressId + '/phone/create?returnUrl=' + returnUrl,
+            text: "Add address phone number",
+            attributes: { 'data-qa': 'add-address-phone-link-' + address.contactAddressId },
+            classes: 'govuk-link--no-visited-state'
+          }
+        ] if showActions else [],
+        classes: 'govuk-!-text-align-left govuk-!-width-two-thirds'
+      },
+      classes: 'govuk-summary-list__row--no-border'
+    }]) %}
+    {% for val in address.phoneNumbers | sort(attribute = 'phoneNumber') | sort(attribute = 'phoneTypeDescription') %}
+      {% set rows = rows.concat([{
+        key: {
+          text: val.phoneTypeDescription,
+          classes: 'govuk-!-font-weight-regular'
+        },
+        value: {
+          text: val.phoneNumber + (", ext. " + val.extNumber if val.extNumber)
+        },
+        actions: {
+          items: [
+            {
+              href: '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/address/' + address.contactAddressId + '/phone/' + val.contactAddressPhoneId + '/edit?returnUrl=' + returnUrl,
+              text: "Change",
+              visuallyHiddenText: 'the information about the ' + val.phoneTypeDescription + ' phone number for this address',
+              attributes: { 'data-qa': 'change-address-phone-' + val.contactAddressPhoneId },
+              classes: 'govuk-link--no-visited-state'
+            },
+            {
+              href: '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/address/' + address.contactAddressId + '/phone/' + val.contactAddressPhoneId + '/delete?returnUrl=' + returnUrl,
+              text: "Delete",
+              visuallyHiddenText: 'the information about the ' + val.phoneTypeDescription + ' phone number for this address',
+              attributes: { 'data-qa': 'delete-address-phone-' + val.contactAddressPhoneId },
+              classes: 'govuk-link--no-visited-state'
+            }
+          ] if showActions else []
+        },
+        classes: ('govuk-summary-list__row--no-border') if not loop.last
+      }]) %}
+    {% endfor %}
+  {% else %}
+    {% set rows = rows.concat([{
+      key: {
+        text: 'Address phone numbers'
+      },
+      value: {
+        text: 'Not provided'
+      },
+      actions: {
+        items: [
+          {
+            href: '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/address/' + address.contactAddressId + '/phone/create?returnUrl=' + returnUrl,
+            text: "Change",
+            visuallyHiddenText: 'the information about the phone number for this address',
+            attributes: { 'data-qa': 'add-address-phone-link-' + address.contactAddressId },
+            classes: 'govuk-link--no-visited-state'
+          }
+        ] if showActions else []
+      }
+    }]) %}
+  {% endif %}
+
+  {% set rows = rows.concat([{
+    key: {
+      text: 'Comments on this address'
+    },
+    value: {
+      text: address.comments if address.comments else 'Not provided'
+    },
+    actions: {
+      items: [
+        {
+          href: changeAddressLink,
+          text: "Change",
+          visuallyHiddenText: "the comments on this address",
+          attributes: { 'data-qa': 'change-address-comments-' + address.contactAddressId },
+          classes: 'govuk-link--no-visited-state'
+        }
+      ] if showActions else []
+    }
+  }]) %}
+
+  {{  govukSummaryList({
+        card: {
+          title: {
+            text: address.addressTitle
+          }
+        },
+        rows: rows
+      })
+  }}
+
+{% endmacro %}

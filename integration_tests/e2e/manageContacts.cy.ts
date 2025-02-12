@@ -2,7 +2,6 @@ import SearchPrisonerPage from '../pages/searchPrisoner'
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
-import ManageContactDetailsPage from '../pages/manageContactDetails'
 
 context('Manage contacts ', () => {
   beforeEach(() => {
@@ -75,48 +74,6 @@ context('Manage contacts ', () => {
       .verifyShowPaginationPageLinkValueAs('3', 2)
       .verifyShowPaginationActivePageValueAs('4')
       .verifyShowPaginationPageLinkValueAs('5', 4)
-  })
-
-  it(`should render manage contact details (old view)`, () => {
-    // TODO can be removed when all new tabs and edit pages created
-    const { prisonerNumber } = TestData.prisoner()
-    cy.task('stubGetGenders')
-    cy.task('stubTitlesReferenceData')
-    cy.task('stubComponentsMeta')
-    cy.task('stubPrisoners', {
-      results: {
-        totalPages: 1,
-        totalElements: 1,
-        content: [TestData.prisoner()],
-      },
-      prisonId: 'HEI',
-      term: prisonerNumber,
-    })
-    cy.task('stubPrisonerById', TestData.prisoner())
-    cy.task('stubGetContactById', TestData.contact())
-    cy.task('stubGetPrisonerContactRelationshipById', { id: 31, response: TestData.prisonerContactRelationship() })
-    cy.task('stubGetPrisonerContactRestrictions', {
-      prisonerContactId: 31,
-      response: {
-        prisonerContactRestrictions: [],
-        contactGlobalRestrictions: [],
-      },
-    })
-    cy.task('stubContactList', 'A1234BC')
-    cy.task('stubLanguagesReferenceData')
-
-    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
-
-    Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
-
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
-      .clickTemporaryEditContactDetailsTab()
-      .verifyShowMostRelevantAddressLabelValueAs('Primary')
-      .verifyShowConfirmAddressValueAs('24, Acacia Avenue')
-      .verifyShowConfirmAddressValueAs('Bunting')
-      .verifyShowConfirmAddressValueAs('Sheffield')
-      .verifyShowConfirmAddressValueAs('South Yorkshire')
-      .verifyShowConfirmAddressValueAs('England')
   })
 
   it('should show a message that no contacts match the criteria', () => {
