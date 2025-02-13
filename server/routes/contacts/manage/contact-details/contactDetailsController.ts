@@ -5,11 +5,8 @@ import { ContactsService } from '../../../../services'
 import { Navigation } from '../../common/navigation'
 import RestrictionsService from '../../../../services/restrictionsService'
 import { employmentSorter } from '../../../../utils/sorters'
-import sortContactAddresses from '../../../../utils/sortAddress'
-import { getAddressTitle, isExpiredAddress } from '../../../../utils/addressUtils'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
-import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 
 export default class ContactDetailsController implements PageHandler {
   constructor(
@@ -37,22 +34,10 @@ export default class ContactDetailsController implements PageHandler {
 
     contact.employments = contact.employments.sort(employmentSorter)
 
-    const sortedAddresses = sortContactAddresses(contact.addresses)
-
-    const addresses = sortedAddresses.map((address: ContactAddressDetails) => {
-      const expired = isExpiredAddress(address.endDate)
-      return {
-        ...address,
-        isExpired: expired,
-        addressTitle: getAddressTitle(address, expired),
-      }
-    })
-
     return res.render('pages/contacts/manage/contactDetails/details/index', {
       contact,
       globalRestrictions: prisonerContactRestrictionsEnriched.contactGlobalRestrictions,
       prisonerContactRestrictions: prisonerContactRestrictionsEnriched.prisonerContactRestrictions,
-      addresses,
       prisonerNumber,
       contactId,
       prisonerContactId,

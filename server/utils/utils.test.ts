@@ -8,6 +8,7 @@ import {
   capitalizeFirstLetter,
   capitaliseName,
   ageInYears,
+  isDateAndInThePast,
 } from './utils'
 
 describe('convert to title case', () => {
@@ -176,5 +177,17 @@ describe('ageInYears', () => {
 
     // Then
     expect(results).toEqual('2 years')
+  })
+})
+
+describe('isDateAndInThePast', () => {
+  it('should be false if no end date is in the future', () => {
+    expect(isDateAndInThePast(undefined)).toStrictEqual(false)
+  })
+  it('should be false if date is in the future', () => {
+    expect(isDateAndInThePast('2029-01-01')).toStrictEqual(false)
+  })
+  it('should be true if date is in the past', () => {
+    expect(isDateAndInThePast('2025-01-01')).toStrictEqual(true)
   })
 })
