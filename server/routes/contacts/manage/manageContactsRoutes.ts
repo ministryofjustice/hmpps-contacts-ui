@@ -73,6 +73,7 @@ import CheckEmployerController from './update-employments/check-employer/checkEm
 import { checkEmployerSchema } from './update-employments/check-employer/checkEmployerSchema'
 import { employmentStatusSchema } from './update-employments/employment-status/employmentStatusSchema'
 import EmploymentStatusController from './update-employments/employment-status/employmentStatusController'
+import DeleteEmploymentController from './update-employments/delete-employment/deleteEmploymentController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -409,6 +410,13 @@ const ManageContactsRoutes = (
     controller: new EmploymentStatusController(),
     journeyEnsurer: [ensureInUpdateEmploymentsJourney, ensureValidEmploymentIdx(false)],
     schema: employmentStatusSchema,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments/:employmentIdx/delete-employment/:journeyId',
+    controller: new DeleteEmploymentController(),
+    journeyEnsurer: [ensureInUpdateEmploymentsJourney, ensureValidEmploymentIdx(false)],
+    noValidation: true,
   })
 
   get(
