@@ -1,13 +1,16 @@
-import { formatPhoneNumber } from './formatPhoneNumber'
+import { formatBusinessPhoneNumber, formatPhoneNumber } from './formatPhoneNumber'
+import TestData from '../routes/testutils/testData'
+import OrganisationPhoneDetails = organisationsApiClientTypes.OrganisationPhoneDetails
+import OrganisationAddressPhoneDetails = organisationsApiClientTypes.OrganisationAddressPhoneDetails
 
 describe('format business phone number from OrganisationSummary', () => {
-  it('should format phone number and extension', () => {
+  it('should format phone number and extension for business', () => {
     const organisation = {
       businessPhoneNumber: '1234 5678',
       businessPhoneNumberExtension: '111',
     }
 
-    const result = formatPhoneNumber(organisation)
+    const result = formatBusinessPhoneNumber(organisation)
 
     expect(result).toEqual('1234 5678, ext. 111')
   })
@@ -18,7 +21,7 @@ describe('format business phone number from OrganisationSummary', () => {
       businessPhoneNumberExtension: undefined,
     }
 
-    const result = formatPhoneNumber(organisation)
+    const result = formatBusinessPhoneNumber(organisation)
 
     expect(result).toEqual('1234 5678')
   })
@@ -29,43 +32,30 @@ describe('format business phone number from OrganisationSummary', () => {
       businessPhoneNumberExtension: undefined,
     }
 
-    const result = formatPhoneNumber(organisation)
+    const result = formatBusinessPhoneNumber(organisation)
 
     expect(result).toBeNull()
   })
 })
 
-describe('format phone number from PrisonerContactSummary', () => {
-  it('should format phone number and extension', () => {
-    const contact = {
-      phoneNumber: '1234 5678',
-      extNumber: '111',
-    }
-
-    const result = formatPhoneNumber(contact)
-
-    expect(result).toEqual('1234 5678, ext. 111')
+describe('format phone numbers', () => {
+  it.each([
+    [TestData.getContactPhoneNumberDetails('MOBILE', 'Mobile', '1234 5678', 1, '111'), '1234 5678, ext. 111'],
+    [TestData.getAddressPhoneNumberDetails('MOBILE', 'Mobile', '1234 5678', 1, 2, 3, '111'), '1234 5678, ext. 111'],
+    [{ phoneNumber: '1234 5678', extNumber: '111' } as OrganisationPhoneDetails, '1234 5678, ext. 111'],
+    [{ phoneNumber: '1234 5678', extNumber: '111' } as OrganisationAddressPhoneDetails, '1234 5678, ext. 111'],
+  ])('should format phone number and extension', (phone, expected) => {
+    const result = formatPhoneNumber(phone)
+    expect(result).toEqual(expected)
   })
 
-  it('should handle null extension', () => {
-    const contact = {
-      phoneNumber: '1234 5678',
-      extNumber: undefined,
-    }
-
-    const result = formatPhoneNumber(contact)
-
-    expect(result).toEqual('1234 5678')
-  })
-
-  it('should return null when there is no phone number', () => {
-    const contact = {
-      phoneNumber: undefined,
-      extNumber: undefined,
-    }
-
-    const result = formatPhoneNumber(contact)
-
-    expect(result).toBeNull()
+  it.each([
+    [TestData.getContactPhoneNumberDetails('MOBILE', 'Mobile', '1234 5678', 1, undefined), '1234 5678'],
+    [TestData.getAddressPhoneNumberDetails('MOBILE', 'Mobile', '1234 5678', 1, 2, 3, undefined), '1234 5678'],
+    [{ phoneNumber: '1234 5678' } as OrganisationPhoneDetails, '1234 5678'],
+    [{ phoneNumber: '1234 5678' } as OrganisationAddressPhoneDetails, '1234 5678'],
+  ])('should format phone number without extension', (phone, expected) => {
+    const result = formatPhoneNumber(phone)
+    expect(result).toEqual(expected)
   })
 })

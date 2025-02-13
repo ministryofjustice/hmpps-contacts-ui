@@ -52,35 +52,25 @@
           </div>
         </div>
       </div>
-      {% if addresses and addresses.length > 0 %}
-        {% for item in addresses %}
-          {% if not item.isExpired %}
-            {{ contactAddressCard({
-                address: item,
-                prisonerNumber: prisonerNumber,
-                contactId: contact.id,
-                returnUrl: returnUrl,
-                showActions: true
-              })
-            }}
+      {% if contact.addresses and contact.addresses.length > 0 %}
+        {% set hasInactive = false %}
+        {% set inactiveHtml = '' %}
+        {% for item in contact.addresses | sortContactAddresses %}
+          {% set summaryCard = contactAddressCard({
+              address: item,
+              prisonerNumber: prisonerNumber,
+              contactId: contact.id,
+              returnUrl: returnUrl,
+              showActions: true
+            })
+          %}
+          {% if (item.endDate | isDateAndInThePast) %}
+            {% set inactiveHtml = inactiveHtml + summaryCard %}
+            {% set hasInactive = true %}
+          {% else %}
+            {{ summaryCard }}
           {% endif %}
         {% endfor %}
-        {% set hasInactive = false %}
-        {% set inactiveHtml %}
-          {% for item in addresses %}
-            {% if item.isExpired %}
-              {% set hasInactive = true %}
-              {{ contactAddressCard({
-                  address: item,
-                  prisonerNumber: prisonerNumber,
-                  contactId: contact.id,
-                  returnUrl: returnUrl,
-                  showActions: true
-                })
-              }}
-            {% endif %}
-          {% endfor %}
-        {% endset %}
         {% if hasInactive %}
           {{ govukDetails({
             summaryText: "View previous addresses",

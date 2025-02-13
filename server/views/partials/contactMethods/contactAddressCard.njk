@@ -124,7 +124,7 @@
           classes: 'govuk-!-font-weight-regular'
         },
         value: {
-          text: val.phoneNumber + (", ext. " + val.extNumber if val.extNumber)
+          text: val | formatPhoneNumber
         },
         actions: {
           items: [
@@ -192,7 +192,7 @@
   {{  govukSummaryList({
         card: {
           title: {
-            text: address.addressTitle
+            text: address | formatTitleForAddress
           }
         },
         rows: rows

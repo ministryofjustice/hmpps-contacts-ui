@@ -1,17 +1,31 @@
 import OrganisationSummary = contactsApiClientTypes.OrganisationSummary
-import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
+import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
+import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
+import OrganisationPhoneDetails = organisationsApiClientTypes.OrganisationPhoneDetails
+import OrganisationAddressPhoneDetails = organisationsApiClientTypes.OrganisationAddressPhoneDetails
 
-export const formatPhoneNumber = (obj: Partial<OrganisationSummary & PrisonerContactSummary>): string | null => {
-  if (!obj) return null
+export const formatBusinessPhoneNumber = ({
+  businessPhoneNumber,
+  businessPhoneNumberExtension,
+}: Partial<OrganisationSummary>): string | null => {
+  if (!businessPhoneNumber) {
+    return null
+  }
+  return phoneToString(businessPhoneNumber, businessPhoneNumberExtension)
+}
 
-  const { businessPhoneNumber, businessPhoneNumberExtension, phoneNumber, extNumber } = obj
-  if (businessPhoneNumber) {
-    return businessPhoneNumberExtension
-      ? `${businessPhoneNumber}, ext. ${businessPhoneNumberExtension}`
-      : businessPhoneNumber
+export const formatPhoneNumber = ({
+  phoneNumber,
+  extNumber,
+}: Partial<
+  ContactPhoneDetails | ContactAddressPhoneDetails | OrganisationPhoneDetails | OrganisationAddressPhoneDetails
+>): string | null => {
+  return phoneToString(phoneNumber, extNumber)
+}
+
+const phoneToString = (phoneNumber: string, extension?: string): string => {
+  if (extension) {
+    return `${phoneNumber}, ext. ${extension}`
   }
-  if (phoneNumber) {
-    return extNumber ? `${phoneNumber}, ext. ${extNumber}` : phoneNumber
-  }
-  return null
+  return phoneNumber     
 }

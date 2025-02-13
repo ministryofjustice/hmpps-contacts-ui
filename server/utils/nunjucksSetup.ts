@@ -11,6 +11,7 @@ import {
   capitaliseName,
   convertToSortableColumns,
   sentenceCase,
+  isDateAndInThePast,
 } from './utils'
 import config from '../config'
 import logger from '../../logger'
@@ -19,8 +20,10 @@ import { addressToLines, businessAddressToLines } from './addressToLines'
 import formatYesNo from './formatYesNo'
 import { formatNameLastNameFirst, formatNameFirstNameFirst } from './formatName'
 import formatRestrictionCardTitle from './formatRestrictionCardTitle'
-import { formatPhoneNumber } from './formatPhoneNumber'
 import { formatDateRange } from './formatDateRange'
+import { formatBusinessPhoneNumber, formatPhoneNumber } from './formatPhoneNumber'
+import { formatTitleForAddress } from './addressUtils'
+import sortContactAddresses from './sortAddress'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -73,6 +76,8 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('pluralise', (word, count, plural = `${word}s`) => (count === 1 ? word : plural))
   njkEnv.addFilter('addressToLines', addressToLines)
   njkEnv.addFilter('businessAddressToLines', businessAddressToLines)
+  njkEnv.addFilter('formatTitleForAddress', formatTitleForAddress)
+  njkEnv.addFilter('sortContactAddresses', sortContactAddresses)
   njkEnv.addFilter('ageInYears', ageInYears)
   njkEnv.addFilter('formatDate', formatDate)
   njkEnv.addFilter('formatYesNo', formatYesNo)
@@ -81,7 +86,9 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('formatRestrictionCardTitle', formatRestrictionCardTitle)
   njkEnv.addFilter('capitalizeFirstLetter', capitalizeFirstLetter)
   njkEnv.addFilter('convertToSortableColumns', convertToSortableColumns)
+  njkEnv.addFilter('formatDateRange', formatDateRange)
+  njkEnv.addFilter('formatBusinessPhoneNumber', formatBusinessPhoneNumber)
   njkEnv.addFilter('formatPhoneNumber', formatPhoneNumber)
   njkEnv.addFilter('sentenceCase', sentenceCase)
-  njkEnv.addFilter('formatDateRange', formatDateRange)
+  njkEnv.addFilter('isDateAndInThePast', isDateAndInThePast)          
 }
