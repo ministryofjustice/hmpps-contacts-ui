@@ -230,7 +230,7 @@ context('Contact confirmation', () => {
       .verifyShowDeceasedDateValueAs('Not provided')
       .verifyShowCommentsValueAs('Not provided')
       .verifyShowAddressesSpecificPhoneNumbersValueAsNotProvided('Not provided')
-      .verifyShowAddressFromToDateValueAsNotProvided('Not provided')
+      .verifyShowFromStartDateValueAs('Not provided')
   })
 
   it('should render contact information with empity sections if not available', () => {

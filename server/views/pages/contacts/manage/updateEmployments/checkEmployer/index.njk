@@ -107,7 +107,7 @@
               text: (phoneNumber.phoneTypeDescription | sentenceCase | escape) + ' phone number'
             },
             value: {
-              text: {businessPhoneNumber: phoneNumber.phoneNumber, businessPhoneNumberExtension: phoneNumber.extNumber} | formatBusinessPhoneNumber or "Not provided"
+              text: phoneNumber | formatPhoneNumber or "Not provided"
             }
           }), phoneRows) %}
         {% endfor %}

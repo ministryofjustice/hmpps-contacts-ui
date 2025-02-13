@@ -66,12 +66,7 @@ export default class ContactConfirmationPage extends Page {
   }
 
   verifyShowFromStartDateValueAs(expected: string): ContactConfirmationPage {
-    this.fromStartDateValue().should('contain.text', expected)
-    return this
-  }
-
-  verifyShowToEndDateValueAs(expected: string): ContactConfirmationPage {
-    this.toEndDateValue().should('contain.text', expected)
+    this.addressFromToDate().should('contain.text', expected)
     return this
   }
 
@@ -133,11 +128,6 @@ export default class ContactConfirmationPage extends Page {
 
   verifyShowIdentitiesValueAsNotProvided(expected: string): ContactConfirmationPage {
     this.identityNumbersNotProvided().should('contain.text', expected)
-    return this
-  }
-
-  verifyShowAddressFromToDateValueAsNotProvided(expected: string): ContactConfirmationPage {
-    this.addressFromToDate().should('contain.text', expected)
     return this
   }
 
@@ -237,10 +227,6 @@ export default class ContactConfirmationPage extends Page {
 
   private commentsValue = (): PageElement => cy.get('.confirm-comments-value')
 
-  private fromStartDateValue = (): PageElement => cy.get('[data-qa=confirm-start-date-value]')
-
-  private toEndDateValue = (): PageElement => cy.get('[data-qa=confirm-end-date-value]')
-
   private phoneNumbersValue = (phoneType: string): PageElement => cy.get(`.confirm-${phoneType}-number-value`)
 
   private emalAddressValue = (): PageElement => cy.get('.confirm-email-addresses-value')
@@ -264,7 +250,7 @@ export default class ContactConfirmationPage extends Page {
 
   private identityNumbersNotProvided = (): PageElement => cy.get('.identity-numbers-not-provided')
 
-  private addressFromToDate = (): PageElement => cy.get('[data-qa=from-to-date-not-provided]')
+  private addressFromToDate = (): PageElement => cy.get('[data-qa=from-to-date]')
 
   private titleHeader = (position: string): PageElement => cy.get(`[data-qa=confim-title-value-${position}]`)
 
