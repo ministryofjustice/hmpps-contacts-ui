@@ -132,3 +132,11 @@ export const sentenceCase = (val: string, startsWithUppercase: boolean = true): 
   const sentence = words.map(lowercaseExceptAcronym).join(' ')
   return startsWithUppercase ? sentence.charAt(0).toUpperCase() + sentence.slice(1) : sentence
 }
+
+export const isDateAndInThePast = (date?: string): boolean => {
+  if (date) {
+    const expirationDate = new Date(date)
+    return expirationDate.getTime() < new Date().getTime()
+  }
+  return false
+}

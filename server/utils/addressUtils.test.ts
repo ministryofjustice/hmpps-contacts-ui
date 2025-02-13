@@ -1,9 +1,9 @@
 import TestData from '../routes/testutils/testData'
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
-import { getAddressTitle, isExpiredAddress } from './addressUtils'
+import { formatTitleForAddress } from './addressUtils'
 
 describe('addressUtils', () => {
-  describe('getAddressTitle', () => {
+  describe('formatTitleForAddress', () => {
     it.each([
       [undefined, true, true, false, 'Primary and postal address'],
       ['Home address', true, true, false, 'Primary and postal address'],
@@ -26,22 +26,11 @@ describe('addressUtils', () => {
           addressTypeDescription: description,
           primaryAddress: primary,
           mailFlag: mail,
-          endDate: expired ? '2029-01-01' : undefined,
+          endDate: expired ? '2021-01-01' : undefined,
         } as ContactAddressDetails
 
-        expect(getAddressTitle(address, expired)).toStrictEqual(expectedTitle)
+        expect(formatTitleForAddress(address)).toStrictEqual(expectedTitle)
       },
     )
-  })
-  describe('isExpiredAddress', () => {
-    it('should be false if no end date is in the future', () => {
-      expect(isExpiredAddress(undefined)).toStrictEqual(false)
-    })
-    it('should be false if date is in the future', () => {
-      expect(isExpiredAddress('2029-01-01')).toStrictEqual(false)
-    })
-    it('should be true if date is in the past', () => {
-      expect(isExpiredAddress('2025-01-01')).toStrictEqual(true)
-    })
   })
 })

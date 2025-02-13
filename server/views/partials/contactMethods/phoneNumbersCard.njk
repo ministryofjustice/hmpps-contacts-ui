@@ -15,7 +15,7 @@
           text: item.phoneTypeDescription
         },
         value: {
-          text: item.phoneNumber + (", ext. " + item.extNumber if item.extNumber)
+          text: item | formatPhoneNumber
         },
         actions: {
           items: [

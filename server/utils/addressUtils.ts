@@ -1,6 +1,7 @@
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
+import { isDateAndInThePast } from './utils'
 
-const getAddressTitle = (address: ContactAddressDetails, expired: boolean): string => {
+const formatTitleForAddress = (address: ContactAddressDetails): string => {
   let title = address.addressTypeDescription ?? 'Address'
   if (address.primaryAddress && address.mailFlag) {
     title = 'Primary and postal address'
@@ -9,15 +10,7 @@ const getAddressTitle = (address: ContactAddressDetails, expired: boolean): stri
   } else if (address.mailFlag) {
     title = 'Postal address'
   }
-  return expired ? `Previous ${title.toLowerCase()}` : title
+  return isDateAndInThePast(address.endDate) ? `Previous ${title.toLowerCase()}` : title
 }
 
-const isExpiredAddress = (endDate?: string): boolean => {
-  if (endDate) {
-    const expirationDate = new Date(endDate)
-    return expirationDate.getTime() < new Date().getTime()
-  }
-  return false
-}
-
-export { getAddressTitle, isExpiredAddress }
+export { formatTitleForAddress }
