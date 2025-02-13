@@ -28,10 +28,8 @@ export default class EnterNameController implements PageHandler {
       firstName: res.locals?.formResponses?.['firstName'] ?? journey?.names?.firstName,
       middleNames: res.locals?.formResponses?.['middleNames'] ?? journey?.names?.middleNames,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
-      restrictedEditing: false,
-      continueButtonLabel: 'Continue',
     }
-    res.render('pages/contacts/common/enterName', viewModel)
+    res.render('pages/contacts/add/new/enterName', viewModel)
   }
 
   POST = async (

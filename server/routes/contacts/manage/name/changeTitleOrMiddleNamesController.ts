@@ -5,11 +5,13 @@ import { RestrictedEditingNameSchemaType } from '../../common/name/nameSchemas'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import { ContactsService } from '../../../../services'
+import { Navigation } from '../../common/navigation'
+import { formatNameFirstNameFirst } from '../../../../utils/formatName'
+import Urls from '../../../urls'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
-import { Navigation } from '../../common/navigation'
 
-export default class UpdateNameController implements PageHandler {
+export default class ChangeTitleOrMiddleNamesController implements PageHandler {
   constructor(
     private readonly referenceDataService: ReferenceDataService,
     private readonly contactService: ContactsService,
@@ -21,12 +23,12 @@ export default class UpdateNameController implements PageHandler {
     req: Request<{
       prisonerNumber: string
       contactId: string
+      prisonerContactId: string
     }>,
     res: Response,
   ): Promise<void> => {
-    const { contactId } = req.params
+    const { prisonerNumber, contactId, prisonerContactId } = req.params
     const { user } = res.locals
-    const { journey } = res.locals
     const contact = await this.contactService.getContact(Number(contactId), user)
 
     const titleOptions = await this.referenceDataService
@@ -34,19 +36,19 @@ export default class UpdateNameController implements PageHandler {
       .then(val => this.getSelectedTitleOptions(val, res.locals?.formResponses?.['title'] ?? contact.title))
 
     const navigation: Navigation = {
-      backLink: journey.returnPoint.url,
+      backLink: Urls.editContactDetails(prisonerNumber, contactId, prisonerContactId),
+      cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
     }
+
     const viewModel = {
-      journey,
+      contact,
       titleOptions,
       lastName: res.locals?.formResponses?.['lastName'] ?? contact.lastName,
       firstName: res.locals?.formResponses?.['firstName'] ?? contact.firstName,
       middleNames: res.locals?.formResponses?.['middleNames'] ?? contact.middleNames,
       navigation,
-      restrictedEditing: true,
-      continueButtonLabel: 'Confirm and save',
     }
-    res.render('pages/contacts/common/enterName', viewModel)
+    res.render('pages/contacts/manage/changeTitleOrMiddleNames', viewModel)
   }
 
   POST = async (
@@ -54,6 +56,7 @@ export default class UpdateNameController implements PageHandler {
       {
         prisonerNumber: string
         contactId: string
+        prisonerContactId: string
       },
       unknown,
       RestrictedEditingNameSchemaType
@@ -61,16 +64,22 @@ export default class UpdateNameController implements PageHandler {
     res: Response,
   ): Promise<void> => {
     const { user } = res.locals
-    const { journey } = res.locals
-    const { contactId } = req.params
+    const { prisonerNumber, contactId, prisonerContactId } = req.params
     const { title, middleNames } = req.body
     const request: PatchContactRequest = {
       title: title || null,
       middleNames: middleNames || null,
       updatedBy: user.username,
     }
-    await this.contactService.updateContactById(Number(contactId), request, user)
-    res.redirect(journey.returnPoint.url)
+    await this.contactService
+      .updateContactById(Number(contactId), request, user)
+      .then(response =>
+        req.flash(
+          'successNotificationBanner',
+          `You’ve updated the personal information for ${formatNameFirstNameFirst(response)}.`,
+        ),
+      )
+    res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
   }
 
   private getSelectedTitleOptions(
@@ -90,6 +99,6 @@ export default class UpdateNameController implements PageHandler {
         }
       })
       .sort((a, b) => a.text.localeCompare(b.text))
-    return [{ text: '', value: '' }, ...mappedOptions]
+    return [{ text: 'Select title', value: '' }, { text: '', value: '' }, ...mappedOptions]
   }
 }

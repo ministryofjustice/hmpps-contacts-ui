@@ -46,7 +46,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
 
   it('should audit page view', async () => {
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details`,
     )
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.EDIT_CONTACT_DETAILS_PAGE, {
@@ -59,14 +59,18 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
 
   it('should have correct navigation', async () => {
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details`,
     )
     const $ = cheerio.load(response.text)
     expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('Edit contact details for Jones Mason')
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Manage contacts')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/1/relationship/99',
+    )
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/1/relationship/99',
+    )
   })
 
   describe('Personal details card', () => {
@@ -85,7 +89,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
       } as ContactDetails
       contactsService.getContact.mockResolvedValue(contactDetails)
       const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo`,
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details`,
       )
       const $ = cheerio.load(response.text)
 
@@ -95,35 +99,35 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         personalInformationCard,
         'Title',
         'Mr',
-        '/prisoner/A1234BC/contacts/manage/22/name?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/change-contact-title-or-middle-names#title',
         'Change the contact’s title (Personal information)',
       )
       expectSummaryListItem(
         personalInformationCard,
         'Name',
         'First Middle Names Last',
-        '/prisoner/A1234BC/contacts/manage/22/name?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/change-contact-title-or-middle-names#middleNames',
         'Change middle name (Personal information)',
       )
       expectSummaryListItem(
         personalInformationCard,
         'Date of birth',
         '15 June 1982',
-        '/prisoner/A1234BC/contacts/manage/22/update-dob?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/update-dob?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change the contact’s date of birth (Personal information)',
       )
       expectSummaryListItem(
         personalInformationCard,
         'Gender',
         'Male',
-        '/prisoner/A1234BC/contacts/manage/22/gender?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/gender?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change the contact’s gender (Personal information)',
       )
       expectSummaryListItem(
         personalInformationCard,
         'Staff member',
         'Yes',
-        '/prisoner/A1234BC/contacts/manage/22/staff?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/staff?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change if the contact is a member of staff (Personal information)',
       )
     })
@@ -143,7 +147,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
       } as ContactDetails
       contactsService.getContact.mockResolvedValue(contactDetails)
       const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo`,
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details`,
       )
       const $ = cheerio.load(response.text)
       const personalInformationCard = $('h2:contains("Personal information")').parent().parent()
@@ -152,35 +156,35 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         personalInformationCard,
         'Title',
         'Not provided',
-        '/prisoner/A1234BC/contacts/manage/22/name?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/change-contact-title-or-middle-names#title',
         'Change the contact’s title (Personal information)',
       )
       expectSummaryListItem(
         personalInformationCard,
         'Name',
         'First Last',
-        '/prisoner/A1234BC/contacts/manage/22/name?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/change-contact-title-or-middle-names#middleNames',
         'Add middle name (Personal information)',
       )
       expectSummaryListItem(
         personalInformationCard,
         'Date of birth',
         'Not provided',
-        '/prisoner/A1234BC/contacts/manage/22/update-dob?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/update-dob?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change the contact’s date of birth (Personal information)',
       )
       expectSummaryListItem(
         personalInformationCard,
         'Gender',
         'Not provided',
-        '/prisoner/A1234BC/contacts/manage/22/gender?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/gender?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change the contact’s gender (Personal information)',
       )
       expectSummaryListItem(
         personalInformationCard,
         'Staff member',
         'No',
-        '/prisoner/A1234BC/contacts/manage/22/staff?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/staff?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change if the contact is a member of staff (Personal information)',
       )
     })
@@ -203,7 +207,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
       contactsService.getPrisonerContactRelationship.mockResolvedValue(prisonerContactRelationshipDetails)
 
       const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo`,
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details`,
       )
 
       const $ = cheerio.load(response.text)
@@ -215,42 +219,42 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         relationshipInformationCard,
         'Relationship to prisoner',
         'Friend',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/update-relationship?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/update-relationship?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change the relationship to the prisoner (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(
         relationshipInformationCard,
         'Relationship status',
         'Active',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/relationship-status?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/relationship-status?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change the status of the relationship (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(
         relationshipInformationCard,
         'Emergency contact',
         'Yes',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/emergency-contact?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/emergency-contact?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change if the contact is the prisoner’s emergency contact (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(
         relationshipInformationCard,
         'Next of kin',
         'Yes',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/next-of-kin?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/next-of-kin?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change if the contact is the prisoner’s next of kin (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(
         relationshipInformationCard,
         'Approved for visits',
         'Yes',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/approved-to-visit?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/approved-to-visit?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change if the contact is approved to visit the prisoner (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(
         relationshipInformationCard,
         'Comments',
         'Some comments',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/relationship-comments?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/relationship-comments?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change the comments on the relationship (Relationship to prisoner Incarcerated Individual)',
       )
     })
@@ -271,7 +275,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
       contactsService.getPrisonerContactRelationship.mockResolvedValue(prisonerContactRelationshipDetails)
 
       const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo`,
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details`,
       )
 
       const $ = cheerio.load(response.text)
@@ -283,42 +287,42 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         relationshipInformationCard,
         'Relationship to prisoner',
         'Doctor',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/update-relationship?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/update-relationship?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change the relationship to the prisoner (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(
         relationshipInformationCard,
         'Relationship status',
         'Inactive',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/relationship-status?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/relationship-status?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change the status of the relationship (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(
         relationshipInformationCard,
         'Emergency contact',
         'No',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/emergency-contact?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/emergency-contact?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change if the contact is the prisoner’s emergency contact (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(
         relationshipInformationCard,
         'Next of kin',
         'No',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/next-of-kin?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/next-of-kin?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change if the contact is the prisoner’s next of kin (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(
         relationshipInformationCard,
         'Approved for visits',
         'No',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/approved-to-visit?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/approved-to-visit?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change if the contact is approved to visit the prisoner (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(
         relationshipInformationCard,
         'Comments',
         'Not provided',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/relationship-comments?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/relationship-comments?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change the comments on the relationship (Relationship to prisoner Incarcerated Individual)',
       )
     })
@@ -337,7 +341,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
       )
 
       const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo`,
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details`,
       )
 
       const $ = cheerio.load(response.text)
@@ -355,7 +359,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         'Delete the information about this Driving licence (Identity documentation)',
       )
       expect(drivingLicenceHeading.next().next().find('a').attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/manage/22/identity/1/delete?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/identity/1/delete?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
       )
 
       const firstPassportHeading = $(identityDocCard).find('dt:contains("Passport number")').first()
@@ -366,13 +370,13 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         'Change the information about this Passport number (Identity documentation)',
       )
       expect(firstPassportHeading.next().next().find('a').first().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/manage/22/identity/3/edit?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/identity/3/edit?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
       )
       expect(firstPassportHeading.next().next().find('a').last().text()).toStrictEqual(
         'Delete the information about this Passport number (Identity documentation)',
       )
       expect(firstPassportHeading.next().next().find('a').last().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/manage/22/identity/3/delete?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/identity/3/delete?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
       )
 
       const secondPassportHeading = $(identityDocCard).find('dt:contains("Passport number")').last()
@@ -382,19 +386,19 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         'Change the information about this Passport number (Identity documentation)',
       )
       expect(secondPassportHeading.next().next().find('a').first().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/manage/22/identity/2/edit?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/identity/2/edit?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
       )
       expect(secondPassportHeading.next().next().find('a').last().text()).toStrictEqual(
         'Delete the information about this Passport number (Identity documentation)',
       )
       expect(secondPassportHeading.next().next().find('a').last().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/manage/22/identity/2/delete?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/identity/2/delete?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
       )
 
       const addIdentityDocLink = $('a:contains("Add identity document")')
       expect(addIdentityDocLink).toHaveLength(1)
       expect(addIdentityDocLink.attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/manage/22/identity/create?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/identity/create?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
       )
     })
 
@@ -406,7 +410,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
       )
 
       const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo`,
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details`,
       )
       const $ = cheerio.load(response.text)
 
@@ -417,7 +421,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
       const addIdentityDocLink = $('a:contains("Add identity document")')
       expect(addIdentityDocLink).toHaveLength(1)
       expect(addIdentityDocLink.attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/manage/22/identity/create?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/identity/create?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
       )
     })
   })
@@ -435,7 +439,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
       contactsService.getContact.mockResolvedValue(contactDetails)
 
       const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo`,
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details`,
       )
 
       const $ = cheerio.load(response.text)
@@ -446,21 +450,21 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         additionalInfoCard,
         'Contact’s first language',
         'English',
-        '/prisoner/A1234BC/contacts/manage/22/language?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/language?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change the contact’s first language (Additional information)',
       )
       expectSummaryListItem(
         additionalInfoCard,
         'Interpreter required',
         'Yes',
-        '/prisoner/A1234BC/contacts/manage/22/interpreter?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/interpreter?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change if an interpreter is required (Additional information)',
       )
       expectSummaryListItem(
         additionalInfoCard,
         'Contact’s domestic status',
         'Married',
-        '/prisoner/A1234BC/contacts/manage/22/domestic-status?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/domestic-status?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change the contact’s domestic status (Additional information)',
       )
     })
@@ -477,7 +481,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
       contactsService.getContact.mockResolvedValue(contactDetails)
 
       const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo`,
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details`,
       )
 
       const $ = cheerio.load(response.text)
@@ -487,21 +491,21 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         additionalInfoCard,
         'Contact’s first language',
         'Not provided',
-        '/prisoner/A1234BC/contacts/manage/22/language?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/language?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change the contact’s first language (Additional information)',
       )
       expectSummaryListItem(
         additionalInfoCard,
         'Interpreter required',
         'No',
-        '/prisoner/A1234BC/contacts/manage/22/interpreter?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/interpreter?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change if an interpreter is required (Additional information)',
       )
       expectSummaryListItem(
         additionalInfoCard,
         'Contact’s domestic status',
         'Not provided',
-        '/prisoner/A1234BC/contacts/manage/22/domestic-status?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details?returnUrl=/foo',
+        '/prisoner/A1234BC/contacts/manage/22/domestic-status?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
         'Change the contact’s domestic status (Additional information)',
       )
     })

@@ -29,7 +29,7 @@ import ManageContactDeleteIdentityController from './identities/delete/manageCon
 import { enterDobSchema } from '../common/enter-dob/enterDobSchemas'
 import ManageContactEnterDobController from './update-dob/manageContactEnterDobController'
 import ManageGenderController from './gender/contactGenderController'
-import UpdateNameController from './name/updateNameController'
+import ChangeTitleOrMiddleNamesController from './name/changeTitleOrMiddleNamesController'
 import ManageRelationshipCommentsController from './relationship/manageRelationshipCommentsController'
 import { restrictedEditingNameSchema } from '../common/name/nameSchemas'
 import ManageContactAddEmailController from './email/add/manageContactAddEmailController'
@@ -115,6 +115,28 @@ const ManageContactsRoutes = (
       post(path, controller, prepareStandaloneManageContactJourney, validate(schema))
     } else {
       post(path, controller, prepareStandaloneManageContactJourney)
+    }
+  }
+
+  const standAloneRoute = <P extends { [key: string]: string }>({
+    path,
+    controller,
+    schema,
+    noValidation,
+  }: {
+    path: string
+    controller: PageHandler
+    schema?: z.ZodTypeAny | SchemaFactory<P>
+    noValidation?: boolean
+  }) => {
+    if (!schema && !noValidation) {
+      throw Error('Missing validation schema for POST route')
+    }
+    get(path, controller)
+    if (schema) {
+      post(path, controller, validate(schema))
+    } else {
+      post(path, controller)
     }
   }
 
@@ -261,9 +283,9 @@ const ManageContactsRoutes = (
     noValidation: true,
   })
 
-  standAloneJourneyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/name',
-    controller: new UpdateNameController(referenceDataService, contactsService),
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/change-contact-title-or-middle-names',
+    controller: new ChangeTitleOrMiddleNamesController(referenceDataService, contactsService),
     schema: restrictedEditingNameSchema,
   })
 
@@ -414,7 +436,6 @@ const ManageContactsRoutes = (
   get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-contact-details',
     new EditContactDetailsController(contactsService),
-    prepareStandaloneManageContactJourney,
   )
 
   get(

@@ -3,6 +3,7 @@
 {% macro personalInformationCard(opts) %}
 
   {% set contact = opts.contact %}
+  {% set prisonerContactId = opts.prisonerContactId %}
   {% set showActions = opts.showActions %}
   {% set returnUrl = opts.returnUrl %}
   {% set prisonerNumber = opts.prisonerNumber %}
@@ -26,7 +27,7 @@
         actions: {
          items: [
             {
-              href: "/prisoner/"+ prisonerNumber + "/contacts/manage/" + contact.id + "/name?returnUrl=" + returnUrl,
+              href: "/prisoner/"+ prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + prisonerContactId + "/change-contact-title-or-middle-names#title",
               text: "Change",
               visuallyHiddenText: "the contact’s title",
               attributes: {"data-qa": "change-title-link"},
@@ -45,7 +46,7 @@
         actions: {
           items: [
             {
-              href: "/prisoner/"+ prisonerNumber + "/contacts/manage/" + contact.id + "/name?returnUrl=" + returnUrl,
+              href: "/prisoner/"+ prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + prisonerContactId + "/change-contact-title-or-middle-names#middleNames",
               text: "Change middle name" if contact.middleNames else "Add middle name",
               attributes: {"data-qa": "change-middle-name-link"},
               classes: "govuk-link--no-visited-state"
