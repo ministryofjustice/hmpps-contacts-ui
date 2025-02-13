@@ -88,7 +88,9 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
     expect($('dt:contains("Business phone number at primary address")').next().text()).toMatch(/60511, ext\. 123/)
     expect($('dt:contains("Employment status")').next().text()).toMatch(/Inactive/)
 
-    expect($('a:contains("Delete employer (Past employer: Big Corp)")').attr('href')).toEqual('#')
+    expect($('a:contains("Delete employer (Past employer: Big Corp)")').attr('href')).toEqual(
+      `/prisoner/A1234BC/contacts/manage/1/update-employments/1/delete-employment/${journeyId}`,
+    )
     expect($('a:contains("Change organisation (Past employer: Big Corp)")').attr('href')).toEqual(
       `/prisoner/A1234BC/contacts/manage/1/update-employments/1/organisation-search/${journeyId}`,
     )

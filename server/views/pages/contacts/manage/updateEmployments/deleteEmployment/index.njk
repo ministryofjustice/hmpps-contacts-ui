@@ -1,0 +1,77 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+
+{% extends "partials/layout.njk" %}§
+
+{% set pageTitle = "Are you sure you want to delete this employer - Contacts - DPS" %}
+
+{% block content %}
+  {% include 'partials/navigation.njk' %}
+  {{ miniProfile(prisonerDetails) }}
+  <div class="govuk-grid-row govuk-!-static-margin-bottom-5">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-!-static-margin-bottom-7">
+        <span class="govuk-caption-l">Edit professional information</span>
+        <h1 class="govuk-heading-l">Are you sure you want to delete this employer from {{ contactNames | formatNameFirstNameFirst(possessiveSuffix = true) }} contact record?</h1>
+      </div>
+      {{ govukSummaryList({
+        card: {
+          title: {
+            text: ("Active employer: " if employment.isActive else "Past employer: ") + employment.employer.organisationName
+          }
+        },
+        rows: [
+          {
+            key: {
+            text: "Employer name"
+          },
+            value: {
+            text: employment.employer.organisationName
+          }
+          },
+          {
+            key: {
+            text: "Employer’s primary address"
+          },
+            value: {
+            html: (employment.employer | businessAddressToLines or 'Not provided') | escape | nl2br
+          }
+          },
+          {
+            key: {
+            text: "Business phone number at primary address"
+          },
+            value: {
+            text: employment.employer | formatBusinessPhoneNumber or "Not provided"
+          }
+          },
+          {
+            key: {
+            text: "Employment status"
+          },
+            value: {
+            text: "Active" if employment.isActive else "Inactive"
+          }
+          }
+        ]
+      }) }}
+      <form method='POST'>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        <div class="govuk-button-group">
+          {{ govukButton({
+            html: "Yes, delete",
+            classes: 'govuk-button--warning',
+            preventDoubleClick: true
+          }) }}
+          {{ govukButton({
+            html: "No, do not delete",
+            classes: 'govuk-button--secondary',
+            preventDoubleClick: true,
+            href: navigation.backLink
+          }) }}
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -72,14 +72,14 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/employment-status', () => {
+describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/delete-employment', () => {
   it('should show error on "new" employment index', async () => {
     // Given
     setJourneyData(generateJourneyData())
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/new/employment-status/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/new/delete-employment/${journeyId}`,
     )
 
     // Then
@@ -96,7 +96,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/empl
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/9999/organisation-search/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/9999/delete-employment/${journeyId}`,
     )
 
     // Then
@@ -107,13 +107,13 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/empl
     )
   })
 
-  it('should render question with prepopulated answer for isActive=false', async () => {
+  it('should render delete employer page', async () => {
     // Given
     setJourneyData(generateJourneyData())
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/employment-status/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/delete-employment/${journeyId}`,
     )
 
     // Then
@@ -121,48 +121,33 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/empl
     expect($('a:contains("Back")').attr('href')).toEqual(
       `/prisoner/A1234BC/contacts/manage/1/update-employments/${journeyId}`,
     )
-    expect($('h1:contains("What is the current employment status")').text()).toBeTruthy()
-    expect($('label:contains("Active")').prev('input').attr('checked')).toBeFalsy()
-    expect($('label:contains("Inactive")').prev('input').attr('checked')).toBeTruthy()
-    expect($('button:contains("Continue")').text()).toBeTruthy()
-  })
-
-  it('should render question with prepopulated answer for isActive=true', async () => {
-    // Given
-    const journeyData = generateJourneyData()
-    journeyData.employments[0]!.isActive = true
-    setJourneyData(journeyData)
-
-    // When
-    const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/employment-status/${journeyId}`,
+    expect($('a:contains("No, do not delete")').attr('href')).toEqual(
+      `/prisoner/A1234BC/contacts/manage/1/update-employments/${journeyId}`,
     )
-
-    // Then
-    const $ = cheerio.load(response.text)
-    expect($('label:contains("Active")').prev('input').attr('checked')).toBeTruthy()
-    expect($('label:contains("Inactive")').prev('input').attr('checked')).toBeFalsy()
+    expect($('h1:contains("Are you sure you want to delete this employer")').text()).toBeTruthy()
+    expect($('dt:contains("Employer name")').next().text()).toMatch(/Big Corp/)
+    expect($('dt:contains("Employer’s primary address")').next().text()).toMatch(/Some House(\s+)England/)
+    expect($('dt:contains("Business phone number at primary address")').next().text()).toMatch(/60511, ext\. 123/)
+    expect($('dt:contains("Employment status")').next().text()).toMatch(/Inactive/)
+    expect($('button:contains("Yes, delete")').text()).toBeTruthy()
   })
 })
 
-describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/employment-status', () => {
+describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/delete-employment', () => {
   it('should update employment status in session and redirect', async () => {
     // Given
     const journeyData = generateJourneyData()
-    journeyData.employments[0]!.isActive = false
     setJourneyData(journeyData)
 
     // When
     const response = await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/employment-status/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/delete-employment/${journeyId}`)
       .type('form')
-      .send({
-        isActive: 'true',
-      })
+      .send({})
 
     // Then
     expect(response.status).toEqual(302)
     expect(response.headers['location']).toMatch(/contacts\/manage\/1\/update-employments\/[a-f0-9-]{36}/)
-    expect(journeyData.employments[0]!.isActive).toBeTruthy()
+    expect(journeyData.employments.length).toEqual(0)
   })
 })

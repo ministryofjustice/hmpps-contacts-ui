@@ -1,0 +1,31 @@
+import { Request, Response } from 'express'
+import { PageHandler } from '../../../../../interfaces/pageHandler'
+import { Page } from '../../../../../services/auditService'
+import UpdateEmploymentJourneyParams = journeys.UpdateEmploymentJourneyParams
+
+export default class DeleteEmploymentController implements PageHandler {
+  public PAGE_NAME = Page.MANAGE_CONTACT_DELETE_EMPLOYMENT_PAGE
+
+  GET = async (req: Request<UpdateEmploymentJourneyParams>, res: Response) => {
+    const { prisonerNumber, contactId, employmentIdx, journeyId } = req.params
+    const journey = req.session.updateEmploymentsJourneys![journeyId]!
+    const employment = journey.employments[Number(employmentIdx) - 1]
+
+    return res.render('pages/contacts/manage/updateEmployments/deleteEmployment/index', {
+      navigation: {
+        backLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${journeyId}`,
+      },
+      contactNames: journey.contactNames,
+      employment,
+    })
+  }
+
+  POST = async (req: Request<UpdateEmploymentJourneyParams>, res: Response) => {
+    const { prisonerNumber, contactId, employmentIdx, journeyId } = req.params
+    const journey = req.session.updateEmploymentsJourneys![journeyId]!
+
+    journey.employments.splice(Number(employmentIdx) - 1, 1)
+
+    return res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${journeyId}`)
+  }
+}
