@@ -90,5 +90,5 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('formatBusinessPhoneNumber', formatBusinessPhoneNumber)
   njkEnv.addFilter('formatPhoneNumber', formatPhoneNumber)
   njkEnv.addFilter('sentenceCase', sentenceCase)
-  njkEnv.addFilter('isDateAndInThePast', isDateAndInThePast)          
+  njkEnv.addFilter('isDateAndInThePast', isDateAndInThePast)
 }

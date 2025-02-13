@@ -27,5 +27,5 @@ const phoneToString = (phoneNumber: string, extension?: string): string => {
   if (extension) {
     return `${phoneNumber}, ext. ${extension}`
   }
-  return phoneNumber     
+  return phoneNumber
 }
