@@ -24,7 +24,13 @@ export default class DeleteEmploymentController implements PageHandler {
     const { prisonerNumber, contactId, employmentIdx, journeyId } = req.params
     const journey = req.session.updateEmploymentsJourneys![journeyId]!
 
-    journey.employments.splice(Number(employmentIdx) - 1, 1)
+    const idx = Number(employmentIdx) - 1
+
+    if (journey.employments[idx]!.employmentId) {
+      journey.employmentIdsToDelete ??= []
+      journey.employmentIdsToDelete.push(journey.employments[idx]!.employmentId)
+    }
+    journey.employments.splice(idx, 1)
 
     return res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${journeyId}`)
   }

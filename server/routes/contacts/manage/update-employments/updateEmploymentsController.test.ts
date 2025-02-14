@@ -3,15 +3,18 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { v4 as uuidv4 } from 'uuid'
 import { SessionData } from 'express-session'
-import { appWithAllRoutes } from '../../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, user } from '../../../testutils/appSetup'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
-import { components } from '../../../../@types/contactsApi'
+import UpdateEmploymentsJourney = journeys.UpdateEmploymentsJourney
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
 
 jest.mock('../../../../services/auditService')
+jest.mock('../../../../services/contactsService')
 jest.mock('../../../../services/prisonerSearchService')
 
 const auditService = MockedService.AuditService()
+const contactsService = MockedService.ContactsService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 
 let app: Express
@@ -22,11 +25,29 @@ let session: Partial<SessionData>
 const sessionInjection = {
   setSession: (_target: Partial<SessionData>) => undefined,
 }
+const contact = TestData.contact()
+const generateJourneyData = (): UpdateEmploymentsJourney => ({
+  id: journeyId,
+  lastTouched: new Date().toISOString(),
+  contactId: contact.id,
+  contactNames: { ...contact },
+  employments: [],
+  returnPoint: { url: '/foo/bar' },
+  organisationSearch: { page: 1 },
+})
+const setJourneyData = (data: UpdateEmploymentsJourney) => {
+  sessionInjection.setSession = (s: Partial<SessionData>) => {
+    const target = s
+    target.updateEmploymentsJourneys ??= {}
+    target.updateEmploymentsJourneys[journeyId] = data
+  }
+}
 
 beforeEach(() => {
   app = appWithAllRoutes({
     services: {
       auditService,
+      contactsService,
       prisonerSearchService,
     },
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -44,36 +65,24 @@ afterEach(() => {
 describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => {
   it('should render employment records with change links', async () => {
     // Given
-    const employment: components['schemas']['EmploymentDetails'] = {
-      employmentId: 0,
-      contactId: 0,
-      employer: {
-        organisationId: 0,
-        organisationName: 'Big Corp',
-        organisationActive: true,
-        businessPhoneNumber: '60511',
-        businessPhoneNumberExtension: '123',
-        property: 'Some House',
-        countryDescription: 'England',
-      },
-      isActive: false,
-      createdBy: '',
-      createdTime: '',
-    }
-    const contact = TestData.contact({ employments: [employment] })
-    sessionInjection.setSession = (s: Partial<SessionData>) => {
-      const target = s
-      target.updateEmploymentsJourneys ??= {}
-      target.updateEmploymentsJourneys[journeyId] = {
-        id: journeyId,
-        lastTouched: new Date().toISOString(),
-        contactId: contact.id,
-        contactNames: { ...contact },
-        employments: [employment],
-        returnPoint: { url: '/foo/bar' },
-        organisationSearch: { page: 1 },
-      }
-    }
+    setJourneyData({
+      ...generateJourneyData(),
+      employments: [
+        {
+          employmentId: 0,
+          employer: {
+            organisationId: 0,
+            organisationName: 'Big Corp',
+            organisationActive: true,
+            businessPhoneNumber: '60511',
+            businessPhoneNumberExtension: '123',
+            property: 'Some House',
+            countryDescription: 'England',
+          },
+          isActive: false,
+        },
+      ],
+    })
 
     // When
     const response = await request(app).get(
@@ -100,25 +109,15 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
     expect($('a:contains("Add another employer")').attr('href')).toEqual(
       `/prisoner/A1234BC/contacts/manage/1/update-employments/new/organisation-search/${journeyId}`,
     )
-    expect($('a:contains("Cancel")').attr('href')).toEqual('/foo/bar')
+    expect($('a:contains("Cancel")').attr('href')).toEqual('/foo/bar#professional-information')
   })
 
   it('should handle no employment record', async () => {
     // Given
-    const contact = TestData.contact()
-    sessionInjection.setSession = (s: Partial<SessionData>) => {
-      const target = s
-      target.updateEmploymentsJourneys ??= {}
-      target.updateEmploymentsJourneys[journeyId] = {
-        id: journeyId,
-        lastTouched: new Date().toISOString(),
-        contactId: contact.id,
-        contactNames: { ...contact },
-        employments: [],
-        returnPoint: { url: '/foo/bar' },
-        organisationSearch: { page: 1 },
-      }
-    }
+    setJourneyData({
+      ...generateJourneyData(),
+      employments: [],
+    })
 
     // When
     const response = await request(app).get(
@@ -135,32 +134,20 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
 
   it('should handle employment record missing optional values', async () => {
     // Given
-    const employment: components['schemas']['EmploymentDetails'] = {
-      employmentId: 0,
-      contactId: 0,
-      employer: {
-        organisationId: 0,
-        organisationName: 'Small Corp',
-        organisationActive: true,
-      },
-      isActive: true,
-      createdBy: '',
-      createdTime: '',
-    }
-    const contact = TestData.contact({ employments: [employment] })
-    sessionInjection.setSession = (s: Partial<SessionData>) => {
-      const target = s
-      target.updateEmploymentsJourneys ??= {}
-      target.updateEmploymentsJourneys[journeyId] = {
-        id: journeyId,
-        lastTouched: new Date().toISOString(),
-        contactId: contact.id,
-        contactNames: { ...contact },
-        employments: [employment],
-        returnPoint: { url: '/foo/bar' },
-        organisationSearch: { page: 1 },
-      }
-    }
+    setJourneyData({
+      ...generateJourneyData(),
+      employments: [
+        {
+          employmentId: 0,
+          employer: {
+            organisationId: 0,
+            organisationName: 'Small Corp',
+            organisationActive: true,
+          },
+          isActive: true,
+        },
+      ],
+    })
 
     // When
     const response = await request(app).get(
@@ -171,5 +158,173 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
     const $ = cheerio.load(response.text)
     expect($('dt:contains("Employer’s primary address")').next().text()).toMatch(/Not provided/)
     expect($('dt:contains("Business phone number at primary address")').next().text()).toMatch(/Not provided/)
+  })
+})
+
+describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () => {
+  it('should send PATCH employments API call, then redirect with success message', async () => {
+    // Given
+    setJourneyData({
+      ...generateJourneyData(),
+      employmentIdsToDelete: [201],
+      employments: [
+        {
+          employmentId: 1,
+          employer: {
+            organisationId: 101,
+          },
+          isActive: false,
+        },
+        {
+          employer: {
+            organisationId: 102,
+          },
+          isActive: true,
+        },
+      ],
+    })
+
+    // When
+    const response = await request(app).post(
+      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/${journeyId}`,
+    )
+
+    // Then
+    expect(contactsService.patchEmployments).toHaveBeenCalledWith(
+      1,
+      {
+        createEmployments: [
+          {
+            organisationId: 102,
+            isActive: true,
+          },
+        ],
+        updateEmployments: [
+          {
+            employmentId: 1,
+            organisationId: 101,
+            isActive: false,
+          },
+        ],
+        deleteEmployments: [201],
+        requestedBy: user.username,
+      },
+      user,
+    )
+
+    expect(flashProvider).toHaveBeenCalledWith(
+      FLASH_KEY__SUCCESS_BANNER,
+      'You’ve updated the professional information for Jones Mason.',
+    )
+
+    expect(response.status).toEqual(302)
+    expect(response.headers['location']).toMatch(/\/foo\/bar/)
+  })
+
+  it('should handle request with only CREATE', async () => {
+    // Given
+    setJourneyData({
+      ...generateJourneyData(),
+      employmentIdsToDelete: undefined,
+      employments: [
+        {
+          employer: {
+            organisationId: 102,
+          },
+          isActive: true,
+        },
+      ],
+    })
+
+    // When
+    const response = await request(app).post(
+      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/${journeyId}`,
+    )
+
+    // Then
+    expect(contactsService.patchEmployments).toHaveBeenCalledWith(
+      1,
+      {
+        createEmployments: [
+          {
+            organisationId: 102,
+            isActive: true,
+          },
+        ],
+        updateEmployments: [],
+        deleteEmployments: [],
+        requestedBy: user.username,
+      },
+      user,
+    )
+    expect(response.status).toEqual(302)
+  })
+
+  it('should handle request with only UPDATE', async () => {
+    // Given
+    setJourneyData({
+      ...generateJourneyData(),
+      employmentIdsToDelete: undefined,
+      employments: [
+        {
+          employmentId: 1,
+          employer: {
+            organisationId: 101,
+          },
+          isActive: false,
+        },
+      ],
+    })
+
+    // When
+    const response = await request(app).post(
+      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/${journeyId}`,
+    )
+
+    // Then
+    expect(contactsService.patchEmployments).toHaveBeenCalledWith(
+      1,
+      {
+        createEmployments: [],
+        updateEmployments: [
+          {
+            employmentId: 1,
+            organisationId: 101,
+            isActive: false,
+          },
+        ],
+        deleteEmployments: [],
+        requestedBy: user.username,
+      },
+      user,
+    )
+    expect(response.status).toEqual(302)
+  })
+
+  it('should handle request with only DELETE', async () => {
+    // Given
+    setJourneyData({
+      ...generateJourneyData(),
+      employmentIdsToDelete: [201],
+      employments: [],
+    })
+
+    // When
+    const response = await request(app).post(
+      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/${journeyId}`,
+    )
+
+    // Then
+    expect(contactsService.patchEmployments).toHaveBeenCalledWith(
+      1,
+      {
+        createEmployments: [],
+        updateEmployments: [],
+        deleteEmployments: [201],
+        requestedBy: user.username,
+      },
+      user,
+    )
+    expect(response.status).toEqual(302)
   })
 })

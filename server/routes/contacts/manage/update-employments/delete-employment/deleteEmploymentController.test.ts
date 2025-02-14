@@ -30,7 +30,7 @@ const generateJourneyData = (): UpdateEmploymentsJourney => ({
   contactNames: { ...contact },
   employments: [
     {
-      employmentId: 0,
+      employmentId: 1234,
       employer: {
         organisationId: 0,
         organisationName: 'Big Corp',
@@ -134,7 +134,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/dele
 })
 
 describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/delete-employment', () => {
-  it('should update employment status in session and redirect', async () => {
+  it('should mark employment for deletion and redirect', async () => {
     // Given
     const journeyData = generateJourneyData()
     setJourneyData(journeyData)
@@ -149,5 +149,24 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/del
     expect(response.status).toEqual(302)
     expect(response.headers['location']).toMatch(/contacts\/manage\/1\/update-employments\/[a-f0-9-]{36}/)
     expect(journeyData.employments.length).toEqual(0)
+    expect(journeyData.employmentIdsToDelete?.length).toEqual(1)
+    expect(journeyData.employmentIdsToDelete).toContain(1234)
+  })
+
+  it('should handle employment without id', async () => {
+    // Given
+    const journeyData = generateJourneyData()
+    delete journeyData.employments[0]!.employmentId
+    setJourneyData(journeyData)
+
+    // When
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/delete-employment/${journeyId}`)
+      .type('form')
+      .send({})
+
+    // Then
+    expect(journeyData.employments.length).toEqual(0)
+    expect(journeyData.employmentIdsToDelete).toBeFalsy()
   })
 })

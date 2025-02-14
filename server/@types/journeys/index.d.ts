@@ -76,6 +76,7 @@ declare namespace journeys {
     contactId: number
     contactNames: ContactNames
     employments: EmploymentDetails[]
+    employmentIdsToDelete?: number[]
     returnPoint: ReturnPoint
     changeOrganisationId?: number
     changeOrganisation?: OrganisationDetails

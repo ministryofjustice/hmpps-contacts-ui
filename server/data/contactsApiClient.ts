@@ -36,6 +36,7 @@ import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAd
 import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
 import LinkedPrisonerDetails = contactsApiClientTypes.LinkedPrisonerDetails
+import PatchEmploymentsRequest = contactsApiClientTypes.PatchEmploymentsRequest
 
 type PageableObject = components['schemas']['PageableObject']
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
@@ -417,5 +418,15 @@ export default class ContactsApiClient extends RestClient {
 
   async getLinkedPrisoners(contactId: number, user: Express.User): Promise<LinkedPrisonerDetails[]> {
     return this.get<LinkedPrisonerDetails[]>({ path: `/contact/${contactId}/linked-prisoners` }, user)
+  }
+
+  async patchEmployments(contactId: number, request: PatchEmploymentsRequest, user: Express.User) {
+    await this.patch(
+      {
+        path: `/contact/${contactId}/employment`,
+        data: request,
+      },
+      user,
+    )
   }
 }
