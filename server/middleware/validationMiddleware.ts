@@ -66,3 +66,16 @@ export const deduplicateFieldErrors = <Result>(error: ZodError) =>
       [...new Set((value as Array<Result>) || [])],
     ]),
   )
+
+// Handy way to override default messaging with access to the value, e.g., for regex errors
+export const makeErrorMap = (messages: {
+  [Code in z.ZodIssueCode]?: (value: unknown) => string
+}): { errorMap: z.ZodErrorMap } => {
+  return {
+    errorMap: (issue, ctx) => {
+      return {
+        message: messages[issue.code]?.(ctx.data) || ctx.defaultError,
+      }
+    },
+  }
+}

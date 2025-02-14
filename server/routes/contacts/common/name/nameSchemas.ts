@@ -1,18 +1,25 @@
 import { z } from 'zod'
-import { createSchema } from '../../../../middleware/validationMiddleware'
+import { createSchema, makeErrorMap } from '../../../../middleware/validationMiddleware'
 
 const LAST_NAME_REQUIRED_MESSAGE = 'Enter the contact’s last name'
 const LAST_NAME_TOO_LONG_ERROR_MSG = 'Contact’s last name must be 35 characters or less'
-const LAST_NAME_INVALID = 'Contact’s last name must not contain special characters'
+const LAST_NAME_INVALID_PREFIX = 'Contact’s last name must not contain '
 
 const FIRST_NAME_REQUIRED_MESSAGE = 'Enter the contact’s first name'
 const FIRST_NAME_TOO_LONG_ERROR_MSG = 'Contact’s first name must be 35 characters or less'
-const FIRST_NAME_INVALID = 'Contact’s first name must not contain special characters'
+const FIRST_NAME_INVALID_PREFIX = 'Contact’s first name must not contain '
 
 const MIDDLE_NAME_TOO_LONG_ERROR_MSG = 'Contact’s middle names must be 35 characters or less'
-const MIDDLE_NAME_INVALID = 'Contact’s middle names must not contain special characters'
+const MIDDLE_NAME_INVALID_PREFIX = 'Contact’s middle names must not contain '
 
+// Keep these in sync as VALID_CHAR_REGEX is used to extract the non-matching chars for the error
 const NAME_REGEX = /^[a-zA-Z\s,.'-]*$/
+const VALID_CHAR_REGEX = /[a-zA-Z\s,.'-]/g
+
+const lf = new Intl.ListFormat('en')
+const getUniqueInvalidChars = (value?: string) => {
+  return lf.format(new Set(value?.toString()?.replace(VALID_CHAR_REGEX, '') ?? ''))
+}
 
 export const fullNameSchema = createSchema({
   title: z
@@ -21,20 +28,32 @@ export const fullNameSchema = createSchema({
     .transform(val => (val?.trim()?.length ? val?.trim() : undefined))
     .transform(val => val?.trim()),
   lastName: z
-    .string({ message: LAST_NAME_REQUIRED_MESSAGE })
+    .string(
+      makeErrorMap({
+        invalid_string: value => LAST_NAME_INVALID_PREFIX + getUniqueInvalidChars(value?.toString()),
+      }),
+    )
     .max(35, LAST_NAME_TOO_LONG_ERROR_MSG)
-    .regex(NAME_REGEX, LAST_NAME_INVALID)
+    .regex(NAME_REGEX)
     .refine(val => val?.trim().length > 0, { message: LAST_NAME_REQUIRED_MESSAGE }),
   firstName: z
-    .string({ message: FIRST_NAME_REQUIRED_MESSAGE })
+    .string(
+      makeErrorMap({
+        invalid_string: value => FIRST_NAME_INVALID_PREFIX + getUniqueInvalidChars(value?.toString()),
+      }),
+    )
     .max(35, FIRST_NAME_TOO_LONG_ERROR_MSG)
-    .regex(NAME_REGEX, FIRST_NAME_INVALID)
+    .regex(NAME_REGEX)
     .refine(val => val?.trim().length > 0, { message: FIRST_NAME_REQUIRED_MESSAGE })
     .transform(val => val?.trim()),
   middleNames: z
-    .string()
+    .string(
+      makeErrorMap({
+        invalid_string: value => MIDDLE_NAME_INVALID_PREFIX + getUniqueInvalidChars(value?.toString()),
+      }),
+    )
     .max(35, MIDDLE_NAME_TOO_LONG_ERROR_MSG)
-    .regex(NAME_REGEX, MIDDLE_NAME_INVALID)
+    .regex(NAME_REGEX)
     .optional()
     .transform(val => (val?.trim()?.length ? val?.trim() : undefined)),
 })
@@ -48,9 +67,13 @@ export const restrictedEditingNameSchema = createSchema({
   lastName: z.string().optional(),
   firstName: z.string().optional(),
   middleNames: z
-    .string()
+    .string(
+      makeErrorMap({
+        invalid_string: value => MIDDLE_NAME_INVALID_PREFIX + getUniqueInvalidChars(value?.toString()),
+      }),
+    )
     .max(35, MIDDLE_NAME_TOO_LONG_ERROR_MSG)
-    .regex(NAME_REGEX, MIDDLE_NAME_INVALID)
+    .regex(NAME_REGEX)
     .optional()
     .transform(val => (val?.trim()?.length ? val?.trim() : undefined)),
 })
