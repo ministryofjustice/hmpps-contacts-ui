@@ -8,6 +8,7 @@ import TestData from '../../testutils/testData'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import { RestrictionSchemaType } from '../schema/restrictionSchema'
 import { MockedService } from '../../../testutils/mockedServices'
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../middleware/setUpSuccessNotificationBanner'
 
 jest.mock('../../../services/auditService')
 jest.mock('../../../services/referenceDataService')
@@ -194,7 +195,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
       user,
     )
     expect(flashProvider).toHaveBeenCalledWith(
-      'successNotificationBanner',
+      FLASH_KEY__SUCCESS_BANNER,
       'You’ve updated a prisoner-contact restriction',
     )
   })
@@ -221,7 +222,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
       form,
       user,
     )
-    expect(flashProvider).toHaveBeenCalledWith('successNotificationBanner', 'You’ve updated a global restriction')
+    expect(flashProvider).toHaveBeenCalledWith(FLASH_KEY__SUCCESS_BANNER, 'You’ve updated a global restriction')
   })
 
   it.each([['PRISONER_CONTACT'], ['CONTACT_GLOBAL']])(

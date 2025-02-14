@@ -12,6 +12,7 @@ import AddressJourney = journeys.AddressJourney
 import YesOrNo = journeys.YesOrNo
 import AddressMetadata = journeys.AddressMetadata
 import { MockedService } from '../../../../../testutils/mockedServices'
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -383,7 +384,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addr
       expect(existingJourney.addressMetadata).toStrictEqual(expected)
       expect(session.addressJourneys![journeyId]).toBeUndefined()
       expect(contactsService.updateContactAddress).toHaveBeenCalledWith(existingJourney, user)
-      expect(flashProvider).toHaveBeenCalledWith('successNotificationBanner', 'You’ve updated a contact address')
+      expect(flashProvider).toHaveBeenCalledWith(FLASH_KEY__SUCCESS_BANNER, 'You’ve updated a contact address')
     },
   )
 

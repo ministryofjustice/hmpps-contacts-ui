@@ -11,6 +11,7 @@ import { ContactsService, RestrictionsService } from '../../../services'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import RestrictionClass = journeys.RestrictionClass
 import PrisonerContactRestrictionDetails = contactsApiClientTypes.PrisonerContactRestrictionDetails
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../middleware/setUpSuccessNotificationBanner'
 
 export default class UpdateRestrictionController implements PageHandler {
   constructor(
@@ -114,11 +115,11 @@ export default class UpdateRestrictionController implements PageHandler {
     if (restrictionClass === 'PRISONER_CONTACT') {
       await this.restrictionsService
         .updatePrisonerContactRestriction(Number(prisonerContactId), Number(restrictionId), req.body, user)
-        .then(_ => req.flash('successNotificationBanner', 'You’ve updated a prisoner-contact restriction'))
+        .then(_ => req.flash(FLASH_KEY__SUCCESS_BANNER, 'You’ve updated a prisoner-contact restriction'))
     } else {
       await this.restrictionsService
         .updateContactGlobalRestriction(Number(contactId), Number(restrictionId), req.body, user)
-        .then(_ => req.flash('successNotificationBanner', 'You’ve updated a global restriction'))
+        .then(_ => req.flash(FLASH_KEY__SUCCESS_BANNER, 'You’ve updated a global restriction'))
     }
     res.redirect(journey.returnPoint.url)
   }

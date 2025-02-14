@@ -386,7 +386,7 @@ const ManageContactsRoutes = (
 
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments/:journeyId',
-    controller: new UpdateEmploymentsController(),
+    controller: new UpdateEmploymentsController(contactsService),
     journeyEnsurer: ensureInUpdateEmploymentsJourney,
     noValidation: true,
   })

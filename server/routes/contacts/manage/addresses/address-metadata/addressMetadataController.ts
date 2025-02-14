@@ -8,6 +8,7 @@ import { Navigation } from '../../../common/navigation'
 import ContactsService from '../../../../../services/contactsService'
 import YesOrNo = journeys.YesOrNo
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 
 export default class AddressMetadataController implements PageHandler {
   constructor(
@@ -103,7 +104,7 @@ export default class AddressMetadataController implements PageHandler {
       await this.contactsService
         .updateContactAddress(journey, user)
         .then(_ => delete req.session.addressJourneys![journeyId])
-        .then(_ => req.flash('successNotificationBanner', 'You’ve updated a contact address'))
+        .then(_ => req.flash(FLASH_KEY__SUCCESS_BANNER, 'You’ve updated a contact address'))
       res.redirect(journey.returnPoint.url)
     }
   }
