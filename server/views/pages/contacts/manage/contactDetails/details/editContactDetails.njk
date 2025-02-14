@@ -12,7 +12,6 @@
 
 {% block content %}
   {% include 'partials/navigation.njk' %}
-  {% include 'partials/successNotificationBanner.njk' %}
   {{ miniProfile(prisonerDetails) }}
   <div class="govuk-grid-row govuk-!-static-margin-bottom-5">
     <div class="govuk-grid-column-two-thirds">
@@ -20,11 +19,12 @@
         <span class="govuk-caption-l">Manage contacts</span>
         <h1 class="govuk-heading-l">Edit contact details for {{ contact | formatNameFirstNameFirst }}</h1>
       </div>
-      {% set returnUrl = '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/relationship/' + prisonerContactId + '/edit-contact-details?returnUrl=' + navigation.backLink %}
+      {% set returnUrl = '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/relationship/' + prisonerContactId + '/edit-contact-details' %}
 
       {{ personalInformationCard({
           contact: contact,
           prisonerNumber: prisonerNumber,
+          prisonerContactId: prisonerContactRelationship.prisonerContactId,
           returnUrl: returnUrl,
           showActions: true
         })

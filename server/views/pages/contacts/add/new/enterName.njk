@@ -1,17 +1,17 @@
-{% extends "../../../partials/layout.njk" %}
+{% extends "partials/layout.njk" %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
 {% set pageTitle = applicationName + " - Enter name" %}
 {% set title = "What is the contact’s name?" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
 
-{% include '../../../partials/navigation.njk' %}
+{% include 'partials/navigation.njk' %}
 {{ miniProfile(prisonerDetails) }}
-{% include '../../../partials/formErrorSummary.njk' %}
+{% include 'partials/formErrorSummary.njk' %}
  <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <span class="govuk-caption-l">{{ caption or 'Contacts' }}</span>
@@ -34,8 +34,7 @@
                     label: { text: "First name" },
                     classes: 'govuk-!-width-one-third',
                     errorMessage: validationErrors | findError('firstName'),
-                    value: firstName,
-                    disabled: restrictedEditing
+                    value: firstName
                 }) }}
 
                 {{ govukInput({
@@ -53,13 +52,12 @@
                     label: { text: "Last name" },
                     classes: 'govuk-!-width-one-third',
                     errorMessage: validationErrors | findError('lastName'),
-                    value: lastName,
-                    disabled: restrictedEditing
+                    value: lastName
                 }) }}
 
                 <div class="govuk-button-group">
                     {{ govukButton({
-                        html: continueButtonLabel,
+                        html: "Continue",
                         type: "submit",
                         classes: 'govuk-!-margin-top-6',
                         attributes: {"data-qa": "continue-button"},

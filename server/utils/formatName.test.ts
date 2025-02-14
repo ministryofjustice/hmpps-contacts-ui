@@ -2,6 +2,7 @@ import ContactNames = journeys.ContactNames
 import PrisonerDetails = journeys.PrisonerDetails
 import { formatNameFirstNameFirst, formatNameLastNameFirst } from './formatName'
 import { Prisoner } from '../data/prisonerOffenderSearchTypes'
+import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
 
 describe('formatName', () => {
   it.each([
@@ -10,6 +11,15 @@ describe('formatName', () => {
     [{ lastName: 'last', firstName: 'first', middleNames: 'middle' }, 'Last, First Middle'],
     [{ lastName: 'LAST', firstName: 'FIRST', middleNames: 'MIDDLE' }, 'Last, First Middle'],
   ])('should format journey ContactNames', (names: ContactNames, expected: string) => {
+    expect(formatNameLastNameFirst(names)).toStrictEqual(expected)
+  })
+
+  it.each([
+    [{ lastName: 'Last', firstName: 'First' }, 'Last, First'],
+    [{ lastName: 'Last', firstName: 'First', middleNames: 'Middle' }, 'Last, First Middle'],
+    [{ lastName: 'last', firstName: 'first', middleNames: 'middle' }, 'Last, First Middle'],
+    [{ lastName: 'LAST', firstName: 'FIRST', middleNames: 'MIDDLE' }, 'Last, First Middle'],
+  ])('should format journey ContactNames', (names: PatchContactResponse, expected: string) => {
     expect(formatNameLastNameFirst(names)).toStrictEqual(expected)
   })
 

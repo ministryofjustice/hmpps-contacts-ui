@@ -1,6 +1,7 @@
 import { capitaliseName } from './utils'
 import PrisonerDetails = journeys.PrisonerDetails
 import ContactNames = journeys.ContactNames
+import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
 
 const formatNameLastNameFirst = (
   val: { lastName: string; firstName: string; middleNames?: string } | ContactNames | PrisonerDetails,
@@ -22,7 +23,11 @@ const formatNameLastNameFirst = (
 }
 
 const formatNameFirstNameFirst = (
-  val: { lastName: string; firstName: string; middleNames?: string } | ContactNames | PrisonerDetails,
+  val:
+    | { lastName: string; firstName: string; middleNames?: string }
+    | ContactNames
+    | PrisonerDetails
+    | PatchContactResponse,
   opts?: { excludeMiddleNames?: boolean; customTitle?: string; possessiveSuffix?: boolean },
 ): string => {
   const nameArr = []

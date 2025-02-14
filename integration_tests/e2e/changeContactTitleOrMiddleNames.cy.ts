@@ -2,10 +2,10 @@ import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import { StubPatchContactResponse } from '../mockApis/contactsApi'
-import EnterNamePage from '../pages/enterNamePage'
+import ChangeTitleOrMiddleNamesPage from '../pages/changeTitleOrMiddleNamesPage'
 import EditContactDetailsPage from '../pages/editContactDetailsPage'
 
-context('Change Contact Name', () => {
+context('Change Contact Title Or Middle Names', () => {
   const contactId = 654321
   const prisonerContactId = 987654
   const { prisonerNumber } = TestData.prisoner()
@@ -39,7 +39,7 @@ context('Change Contact Name', () => {
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
-      response: TestData.prisonerContactRelationship(),
+      response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
@@ -48,7 +48,7 @@ context('Change Contact Name', () => {
       title: 'DR',
       middleNames: 'Middle Updated',
     }
-    cy.task('stubPatchContactById', { contactId, updated })
+    cy.task('stubPatchContactById', { contactId, response: updated })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Last') //
       .clickEditContactDetailsLink()
@@ -58,16 +58,18 @@ context('Change Contact Name', () => {
       .verifyShowNameAs('First Last')
       .clickChangeNameLink()
 
-    Page.verifyOnPage(EnterNamePage, 'First Last') //
+    Page.verifyOnPage(ChangeTitleOrMiddleNamesPage, 'First Last') //
       .hasLastName('Last')
       .hasFirstName('First')
       .hasMiddleNames('')
       .hasTitle('')
+      .middleNamesHasFocus()
       .enterMiddleNames('Middle Updated')
       .selectTitle('DR')
       .clickContinue()
 
-    Page.verifyOnPage(EditContactDetailsPage, 'First Last')
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Last') //
+      .hasSuccessBanner('You’ve updated the personal information for First Middle Updated Last.')
 
     cy.verifyLastAPICall(
       {
@@ -95,16 +97,16 @@ context('Change Contact Name', () => {
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
-      response: TestData.prisonerContactRelationship(),
+      response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     const updated: StubPatchContactResponse = {
       ...contact,
       title: 'DR',
-      middleNames: 'Middle Updated',
+      middleNames: null,
     }
-    cy.task('stubPatchContactById', { contactId, updated })
+    cy.task('stubPatchContactById', { contactId, response: updated })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
@@ -114,16 +116,18 @@ context('Change Contact Name', () => {
       .verifyShowNameAs('First Middle Names Last')
       .clickChangeNameLink()
 
-    Page.verifyOnPage(EnterNamePage, 'First Middle Names Last') //
+    Page.verifyOnPage(ChangeTitleOrMiddleNamesPage, 'First Middle Names Last') //
       .hasLastName('Last')
       .hasFirstName('First')
       .hasMiddleNames('Middle Names')
       .hasTitle('MR')
+      .middleNamesHasFocus()
       .clearMiddleNames()
-      .selectTitle('')
+      .selectBlankTitle()
       .clickContinue()
 
-    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last')
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .hasSuccessBanner('You’ve updated the personal information for First Last.')
 
     cy.verifyLastAPICall(
       {
@@ -151,16 +155,16 @@ context('Change Contact Name', () => {
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
-      response: TestData.prisonerContactRelationship(),
+      response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     const updated: StubPatchContactResponse = {
       ...contact,
       title: 'DR',
-      middleNames: 'Middle Updated',
+      middleNames: null,
     }
-    cy.task('stubPatchContactById', { contactId, updated })
+    cy.task('stubPatchContactById', { contactId, response: updated })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
@@ -170,16 +174,18 @@ context('Change Contact Name', () => {
       .verifyShowNameAs('First Middle Names Last')
       .clickChangeTitleLink()
 
-    Page.verifyOnPage(EnterNamePage, 'First Middle Names Last') //
+    Page.verifyOnPage(ChangeTitleOrMiddleNamesPage, 'First Middle Names Last') //
       .hasLastName('Last')
       .hasFirstName('First')
       .hasMiddleNames('Middle Names')
       .hasTitle('MR')
+      .titleHasFocus()
       .clearMiddleNames()
-      .selectTitle('')
+      .selectTitle('DR')
       .clickContinue()
 
-    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last')
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .hasSuccessBanner('You’ve updated the personal information for First Last.')
 
     cy.verifyLastAPICall(
       {
@@ -187,7 +193,7 @@ context('Change Contact Name', () => {
         urlPath: `/contact/${contactId}`,
       },
       {
-        title: null,
+        title: 'DR',
         middleNames: null,
         updatedBy: 'USER1',
       },
@@ -207,7 +213,7 @@ context('Change Contact Name', () => {
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
-      response: TestData.prisonerContactRelationship(),
+      response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
@@ -219,11 +225,11 @@ context('Change Contact Name', () => {
       .verifyShowNameAs('First Middle Names Last')
       .clickChangeNameLink()
 
-    Page.verifyOnPage(EnterNamePage, 'First Middle Names Last') //
+    Page.verifyOnPage(ChangeTitleOrMiddleNamesPage, 'First Middle Names Last') //
       .enterMiddleNames(''.padEnd(36, 'X'))
       .clickContinue()
 
-    const enterNamePage = Page.verifyOnPage(EnterNamePage, 'First Middle Names Last')
+    const enterNamePage = Page.verifyOnPage(ChangeTitleOrMiddleNamesPage, 'First Middle Names Last')
     enterNamePage.hasFieldInError('middleNames', 'Contact’s middle names must be 35 characters or less')
   })
 
@@ -240,7 +246,7 @@ context('Change Contact Name', () => {
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
-      response: TestData.prisonerContactRelationship(),
+      response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
@@ -251,7 +257,7 @@ context('Change Contact Name', () => {
       .verifyShowNameAs('First Middle Names Last')
       .clickChangeNameLink()
 
-    Page.verifyOnPage(EnterNamePage, 'First Middle Names Last') //
+    Page.verifyOnPage(ChangeTitleOrMiddleNamesPage, 'First Middle Names Last') //
       .backTo(EditContactDetailsPage, 'First Middle Names Last')
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
@@ -269,7 +275,7 @@ context('Change Contact Name', () => {
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
-      response: TestData.prisonerContactRelationship(),
+      response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
@@ -280,8 +286,7 @@ context('Change Contact Name', () => {
       .verifyShowNameAs('First Middle Names Last')
       .clickChangeNameLink()
 
-    Page.verifyOnPage(EnterNamePage, 'First Middle Names Last') //
-      .cancelTo(EditContactDetailsPage, 'First Middle Names Last')
+    Page.verifyOnPage(ChangeTitleOrMiddleNamesPage, 'First Middle Names Last') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 })
