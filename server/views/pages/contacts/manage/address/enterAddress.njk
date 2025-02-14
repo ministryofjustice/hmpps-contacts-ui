@@ -24,7 +24,7 @@
             <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
             {% if usePrisonerAddress.enabled %}
                 {{ govukButton({
-                    html: "Use prisoner’s address",
+                    text: "Use prisoner’s address",
                     type: "button",
                     classes: 'govuk-button--secondary',
                     attributes: {"data-qa": "use-prisoner-address-button"},
@@ -124,7 +124,7 @@
                 }) }}
                 <div class="govuk-button-group">
                     {{ govukButton({
-                        html: "Continue",
+                        text: "Continue",
                         type: "submit",
                         classes: 'govuk-!-margin-top-6',
                         attributes: {"data-qa": "continue-button"},

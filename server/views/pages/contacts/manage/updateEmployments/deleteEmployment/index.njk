@@ -60,12 +60,12 @@
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
         <div class="govuk-button-group">
           {{ govukButton({
-            html: "Yes, delete",
+            text: "Yes, delete",
             classes: 'govuk-button--warning',
             preventDoubleClick: true
           }) }}
           {{ govukButton({
-            html: "No, do not delete",
+            text: "No, do not delete",
             classes: 'govuk-button--secondary',
             preventDoubleClick: true,
             href: navigation.backLink
