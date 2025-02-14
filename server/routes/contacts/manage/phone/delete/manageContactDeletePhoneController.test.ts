@@ -1,12 +1,13 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, user } from '../../../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, user } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import TestData from '../../../../testutils/testData'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import { MockedService } from '../../../../../testutils/mockedServices'
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/referenceDataService')
@@ -21,6 +22,7 @@ const contactsService = MockedService.ContactsService()
 let app: Express
 const prisonerNumber = 'A1234BC'
 const contactId = 987654
+const prisonerContactId = 456789
 const contact: ContactDetails = {
   id: contactId,
   title: '',
@@ -53,14 +55,16 @@ beforeEach(() => {
 afterEach(() => {
   jest.resetAllMocks()
 })
-describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/delete', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/phone/:contactPhoneId/delete', () => {
   it('should call the audit service for the page view', async () => {
     // Given
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/999/delete?returnUrl=/foo-bar`)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/999/delete`,
+      )
       .expect(200)
 
     // Then
@@ -76,16 +80,23 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contac
 
     // When
     const response = await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/123/delete?returnUrl=/foo-bar`)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/123/delete`,
+      )
       .expect(200)
 
     // Then
     const $ = cheerio.load(response.text)
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact methods')
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Are you sure you want to delete this phone number?',
+      'Are you sure you want to delete this phone number for First Middle Last?',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}#contact-methods`,
+    )
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-contact-methods`,
+    )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('.phone-number-value').text().trim()).toStrictEqual('07878 111111')
     expect($('.extension-value').text().trim()).toStrictEqual('123')
@@ -98,17 +109,25 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contac
 
     // When
     const response = await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/999/delete?returnUrl=/foo-bar`)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/999/delete`,
+      )
       .expect(200)
 
     // Then
     const $ = cheerio.load(response.text)
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact methods')
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Are you sure you want to delete this phone number?',
+      'Are you sure you want to delete this phone number for First Middle Last?',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}#contact-methods`,
+    )
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-contact-methods`,
+    )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+
     expect($('.phone-number-value').text().trim()).toStrictEqual('01111 777777')
     expect($('.extension-value').text().trim()).toStrictEqual('Not provided')
     expect($('.type-value').text().trim()).toStrictEqual('Home')
@@ -119,7 +138,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contac
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/555/delete?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/555/delete`,
     )
 
     // Then
@@ -127,18 +146,24 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contac
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/delete', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/phone/:contactPhoneId/delete', () => {
   it('should delete contact and redirect back to manage contact', async () => {
     // Given
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/123/delete?returnUrl=/foo-bar`)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/123/delete`,
+      )
       .expect(302)
-      .expect('Location', '/foo-bar')
+      .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789#contact-methods')
 
     // Then
     expect(contactsService.deleteContactPhone).toHaveBeenCalledWith(contactId, 123, user)
+    expect(flashProvider).toHaveBeenCalledWith(
+      FLASH_KEY__SUCCESS_BANNER,
+      'You’ve updated the contact methods for First Middle Last.',
+    )
   })
 })

@@ -10,6 +10,7 @@ import { formatNameFirstNameFirst } from '../../../../utils/formatName'
 import Urls from '../../../urls'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
 
 export default class ChangeTitleOrMiddleNamesController implements PageHandler {
   constructor(
@@ -75,7 +76,7 @@ export default class ChangeTitleOrMiddleNamesController implements PageHandler {
       .updateContactById(Number(contactId), request, user)
       .then(response =>
         req.flash(
-          'successNotificationBanner',
+          FLASH_KEY__SUCCESS_BANNER,
           `You’ve updated the personal information for ${formatNameFirstNameFirst(response)}.`,
         ),
       )

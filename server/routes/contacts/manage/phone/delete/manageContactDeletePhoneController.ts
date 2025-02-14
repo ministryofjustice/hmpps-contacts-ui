@@ -2,9 +2,12 @@ import { Request, Response } from 'express'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { ContactsService } from '../../../../../services'
+import { Navigation } from '../../../common/navigation'
+import Urls from '../../../../urls'
+import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
 import ContactDetails = contactsApiClientTypes.ContactDetails
-import { Navigation } from '../../../common/navigation'
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 
 export default class ManageContactDeletePhoneController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -12,11 +15,11 @@ export default class ManageContactDeletePhoneController implements PageHandler {
   public PAGE_NAME = Page.MANAGE_CONTACT_DELETE_PHONE_PAGE
 
   GET = async (
-    req: Request<{ prisonerNumber: string; contactId: string; contactPhoneId: string }>,
+    req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string; contactPhoneId: string }>,
     res: Response,
   ): Promise<void> => {
-    const { user, journey } = res.locals
-    const { contactId, contactPhoneId } = req.params
+    const { user } = res.locals
+    const { prisonerNumber, contactId, contactPhoneId, prisonerContactId } = req.params
     const contactIdNumber = Number(contactId)
     const contactPhoneIdNumber = Number(contactPhoneId)
     const contact: ContactDetails = await this.contactsService.getContact(contactIdNumber, user)
@@ -28,21 +31,31 @@ export default class ManageContactDeletePhoneController implements PageHandler {
         `Couldn't find phone with id ${contactPhoneId} for contact ${contactId}. URL probably entered manually.`,
       )
     }
-    const navigation: Navigation = { backLink: journey.returnPoint.url }
-    res.render('pages/contacts/manage/confirmDeletePhone', { phone, navigation })
+    const navigation: Navigation = {
+      backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
+      cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId, 'contact-methods'),
+    }
+    res.render('pages/contacts/manage/confirmDeletePhone', { contact, phone, navigation })
   }
 
   POST = async (
-    req: Request<{ prisonerNumber: string; contactId: string; contactPhoneId: string }>,
+    req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string; contactPhoneId: string }>,
     res: Response,
   ): Promise<void> => {
     const { user } = res.locals
-    const { journey } = res.locals
-    const { contactId, contactPhoneId } = req.params
+    const { prisonerNumber, contactId, prisonerContactId, contactPhoneId } = req.params
     const contactIdNumber = Number(contactId)
     const contactPhoneIdNumber = Number(contactPhoneId)
 
     await this.contactsService.deleteContactPhone(contactIdNumber, contactPhoneIdNumber, user)
-    res.redirect(journey.returnPoint.url)
+    await this.contactsService
+      .getContact(contactIdNumber, user)
+      .then(response =>
+        req.flash(
+          FLASH_KEY__SUCCESS_BANNER,
+          `You’ve updated the contact methods for ${formatNameFirstNameFirst(response)}.`,
+        ),
+      )
+    res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId, 'contact-methods'))
   }
 }

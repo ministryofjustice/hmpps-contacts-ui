@@ -4,6 +4,7 @@ import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
 import { Navigation } from '../../common/navigation'
 import ContactDetails = contactsApiClientTypes.ContactDetails
+import Urls from '../../../urls'
 
 export default class EditContactMethodsController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -11,16 +12,13 @@ export default class EditContactMethodsController implements PageHandler {
   public PAGE_NAME = Page.EDIT_CONTACT_METHODS_PAGE
 
   GET = async (
-    req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId?: string }, unknown, unknown>,
+    req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }, unknown, unknown>,
     res: Response,
   ): Promise<void> => {
     const { prisonerNumber, contactId, prisonerContactId } = req.params
-    const { user, journey } = res.locals
+    const { user } = res.locals
     const contact: ContactDetails = await this.contactsService.getContact(Number(contactId), user)
-    let returnUrlWithAnchor = journey.returnPoint.url
-    if (journey.returnPoint.anchor) {
-      returnUrlWithAnchor += `#${journey.returnPoint.anchor}`
-    }
+    const returnUrlWithAnchor = Urls.contactDetails(prisonerNumber, contactId, prisonerContactId, 'contact-methods')
     const navigation: Navigation = {
       backLink: returnUrlWithAnchor,
       cancelButton: returnUrlWithAnchor,
@@ -32,7 +30,6 @@ export default class EditContactMethodsController implements PageHandler {
       contactId,
       prisonerContactId,
       navigation,
-      returnPoint: journey.returnPoint,
     })
   }
 }

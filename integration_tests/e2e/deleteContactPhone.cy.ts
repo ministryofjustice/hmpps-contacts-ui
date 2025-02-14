@@ -55,12 +55,11 @@ context('Delete Contact Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickDeletePhoneNumberLink('07878 111111, ext. 123')
 
-    Page.verifyOnPage(ConfirmDeletePhonePage) //
+    Page.verifyOnPage(ConfirmDeletePhonePage, 'First Middle Names Last') //
       .hasPhoneNumber('07878 111111')
       .hasType('Mobile')
       .hasExtension('123')
-      .continueTo(EditContactMethodsPage, 'First Middle Names Last')
-      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
       .verifyOnContactsMethodsTab()
 
     cy.verifyAPIWasCalled(
@@ -72,6 +71,28 @@ context('Delete Contact Phones', () => {
     )
   })
 
+  it('Can go back from deleting a contact phone', () => {
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
+      .clickDeletePhoneNumberLink('01111 777777')
+
+    Page.verifyOnPage(ConfirmDeletePhonePage, 'First Middle Names Last') //
+      .backTo(EditContactMethodsPage, 'First Middle Names Last')
+      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .verifyOnContactsMethodsTab()
+
+    cy.verifyAPIWasCalled(
+      {
+        method: 'DELETE',
+        urlPath: `/contact/${contactId}/phone/77`,
+      },
+      0,
+    )
+  })
+
   it('Can cancel deleting a contact phone', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickContactMethodsTab()
@@ -80,11 +101,10 @@ context('Delete Contact Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickDeletePhoneNumberLink('01111 777777')
 
-    Page.verifyOnPage(ConfirmDeletePhonePage) //
+    Page.verifyOnPage(ConfirmDeletePhonePage, 'First Middle Names Last') //
       .hasPhoneNumber('01111 777777')
       .hasType('Home')
       .hasExtension('Not provided')
-      .cancelTo(EditContactMethodsPage, 'First Middle Names Last')
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
       .verifyOnContactsMethodsTab()
 

@@ -3,7 +3,7 @@ export default class Urls {
     prisonerNumber: string,
     contactId: string | number,
     prisonerContactId: string | number,
-    tab?: string | undefined,
+    tab?: 'contact-details' | 'contact-methods' | undefined,
   ) => {
     return `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}${tab ? `#${tab}` : ''}`
   }
@@ -14,5 +14,13 @@ export default class Urls {
     prisonerContactId: string | number,
   ) => {
     return `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-contact-details`
+  }
+
+  static editContactMethods = (
+    prisonerNumber: string,
+    contactId: string | number,
+    prisonerContactId: string | number,
+  ) => {
+    return `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-contact-methods`
   }
 }
