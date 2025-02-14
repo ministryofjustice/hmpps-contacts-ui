@@ -8,6 +8,7 @@ import TestData from '../../../testutils/testData'
 import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
 import { MockedService } from '../../../../testutils/mockedServices'
 import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/referenceDataService')
@@ -216,7 +217,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
 
     expect(contactsService.updateContactById).toHaveBeenCalledWith(contactId, expectedRequest, user)
     expect(flashProvider).toHaveBeenCalledWith(
-      'successNotificationBanner',
+      FLASH_KEY__SUCCESS_BANNER,
       'You’ve updated the personal information for First Mid Last.',
     )
   })

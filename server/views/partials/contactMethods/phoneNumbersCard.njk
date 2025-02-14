@@ -6,6 +6,7 @@
   {% set showActions = opts.showActions %}
   {% set returnUrl = opts.returnUrl %}
   {% set prisonerNumber = opts.prisonerNumber %}
+  {% set prisonerContactId = opts.prisonerContactId %}
 
   {% set phoneNumbers = [] %}
   {% if contact.phoneNumbers and contact.phoneNumbers.length > 0 %}
@@ -27,7 +28,7 @@
               classes: "govuk-link--no-visited-state"
             },
             {
-              href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/phone/" + item.contactPhoneId + "/delete?returnUrl=" + returnUrl,
+              href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + prisonerContactId + "/phone/" + item.contactPhoneId + "/delete",
               text: "Delete",
               visuallyHiddenText: "the information about this " + item.phoneTypeDescription + " phone number",
               attributes: {"data-qa": "delete-phone-number-" + item.contactPhoneId},

@@ -12,23 +12,21 @@
 
 {% block content %}
   {% include 'partials/navigation.njk' %}
-  {% include 'partials/successNotificationBanner.njk' %}
   {{ miniProfile(prisonerDetails) }}
+  {# TODO can be removed once all journies return to contact details page directly #}
+  {% include 'partials/successNotificationBanner.njk' %}
   <div class="govuk-grid-row govuk-!-static-margin-bottom-5">
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-!-static-margin-bottom-7">
         <span class="govuk-caption-l">Manage contacts</span>
         <h1 class="govuk-heading-l">Edit contact methods for {{ contact | formatNameFirstNameFirst }}</h1>
       </div>
-      {% set returnUrl = '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/relationship/' + prisonerContactId + '/edit-contact-methods?returnUrl=' + returnPoint.url %}
-      {% if returnPoint.anchor %}
-        {% set returnUrl = returnUrl + '&returnAnchor=' + returnPoint.anchor %}
-      {% endif %}
-      {% set returnUrl = returnUrl | urlencode %}
+      {% set returnUrl = '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/relationship/' + prisonerContactId + '/edit-contact-methods' %}
 
       {{ phoneNumbersCard({
           contact: contact,
           prisonerNumber: prisonerNumber,
+          prisonerContactId: prisonerContactId,
           returnUrl: returnUrl,
           showActions: true
         })

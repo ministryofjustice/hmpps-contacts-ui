@@ -242,8 +242,8 @@ const ManageContactsRoutes = (
     schema: phoneNumberSchema,
   })
 
-  standAloneJourneyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/delete',
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/phone/:contactPhoneId/delete',
     controller: new ManageContactDeletePhoneController(contactsService),
     noValidation: true,
   })
@@ -449,7 +449,6 @@ const ManageContactsRoutes = (
   get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-contact-methods',
     new EditContactMethodsController(contactsService),
-    prepareStandaloneManageContactJourney,
   )
 
   return router
