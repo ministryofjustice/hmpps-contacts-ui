@@ -81,16 +81,18 @@ export const convertToSortableColumns = (headings: { text: string; key?: string 
   const [sortingKey, sortingDirection] = sort.split(',')
 
   return headings.map(heading => {
-    if (!heading.key) {
+    const { text, key, ...others } = heading
+    if (!key) {
       return heading
     }
-    if (heading.key === sortingKey) {
+    if (key === sortingKey) {
       if (sortingDirection === 'asc') {
         return {
           attributes: {
             'aria-sort': 'ascending',
           },
-          html: `<a href="?sort=${heading.key},desc"><button>${heading.text}</button></a>`,
+          html: `<a href="?sort=${key},desc"><button>${text}</button></a>`,
+          ...others,
         }
       }
       if (sortingDirection === 'desc') {
@@ -98,7 +100,8 @@ export const convertToSortableColumns = (headings: { text: string; key?: string 
           attributes: {
             'aria-sort': 'descending',
           },
-          html: `<a href="?sort=${heading.key},asc"><button>${heading.text}</button></a>`,
+          html: `<a href="?sort=${key},asc"><button>${text}</button></a>`,
+          ...others,
         }
       }
     }
@@ -106,7 +109,8 @@ export const convertToSortableColumns = (headings: { text: string; key?: string 
       attributes: {
         'aria-sort': 'none',
       },
-      html: `<a href="?sort=${heading.key},asc"><button>${heading.text}</button></a>`,
+      html: `<a href="?sort=${key},asc"><button>${text}</button></a>`,
+      ...others,
     }
   })
 }

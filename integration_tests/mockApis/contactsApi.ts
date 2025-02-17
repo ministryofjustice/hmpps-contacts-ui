@@ -820,4 +820,17 @@ export default {
       },
     })
   },
+
+  stubPatchEmployments: () =>
+    stubFor({
+      request: {
+        method: 'PATCH',
+        urlPattern: '/contact/[0-9]+/employment',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {},
+      },
+    }),
 }

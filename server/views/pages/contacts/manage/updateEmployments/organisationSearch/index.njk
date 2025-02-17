@@ -60,7 +60,7 @@
           {% for organisation in organisations %}
             {% set organisationRows = (organisationRows.push([
               {
-                html: organisation.organisationName + '<br/><span class="govuk-hint">' + organisation.organisationId + '</span>'
+                html: (organisation.organisationName | escape) + '<br/><span class="govuk-hint">' + organisation.organisationId + '</span>'
               },
               {
                 html: (organisation | businessAddressToLines or 'Not provided') | escape | nl2br
@@ -70,7 +70,8 @@
               },
               {
                 classes: 'govuk-link govuk-link--no-visited-state',
-                html: '<a href="/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/update-employments/' + employmentIdx + '/check-employer/' + journeyId + '?organisationId=' + organisation.organisationId + '">Check if this is the correct employer</a>'
+                html: '<a href="/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/update-employments/' + employmentIdx + '/check-employer/' + journeyId + '?organisationId=' + organisation.organisationId + '">Check if this is the correct employer<span class="govuk-visually-hidden"> (' + (organisation.organisationName | escape) + ')</span></a>',
+                format: "numeric"
               }
             ]), organisationRows) %}
           {% endfor %}
@@ -90,7 +91,8 @@
                 text: "Business phone number"
               },
               {
-                text: "Action"
+                text: "Action",
+                format: "numeric"
               }
             ] | convertToSortableColumns(sort or 'organisationName,asc'),
             rows: organisationRows
