@@ -9,6 +9,7 @@ import componentApi from './integration_tests/mockApis/componentApi'
 import contactsApi from './integration_tests/mockApis/contactsApi'
 import prisonApi from './integration_tests/mockApis/prisonApi'
 import logAccessibilityViolations from './integration_tests/support/accessibilityViolations'
+import organisationsApi from './integration_tests/mockApis/organisationsApi'
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -31,6 +32,7 @@ export default defineConfig({
         ...prisonerSearchApi,
         ...componentApi,
         ...contactsApi,
+        ...organisationsApi,
         ...prisonApi,
         ...logAccessibilityViolations,
       })

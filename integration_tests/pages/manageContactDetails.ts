@@ -35,6 +35,11 @@ export default class ManageContactDetailsPage extends Page {
     return this
   }
 
+  clickProfessionalInformationTab() {
+    cy.findByRole('tab', { name: 'Professional information' }).click()
+    return this
+  }
+
   clickAddPrisonerContactRestriction() {
     this.getAddPrisonerContactRestriction().should('contain.text', `Add prisoner-contact restriction`).click()
     return this
@@ -53,6 +58,10 @@ export default class ManageContactDetailsPage extends Page {
   clickManagePrisonerContactRestriction(id: number = 1) {
     this.getManagePrisonerContactRestriction(id).should('contain.text', `Manage`).click()
     return this
+  }
+
+  clickEditEmployers() {
+    cy.findByRole('link', { name: 'Edit employers' }).click()
   }
 
   checkPrisonerContactRestrictionsCardTitle() {
@@ -156,6 +165,11 @@ export default class ManageContactDetailsPage extends Page {
 
   verifyOnContactsMethodsTab(): ManageContactDetailsPage {
     this.contactMethodsTabHeading().should('be.visible')
+    return this
+  }
+
+  verifyOnProfessionalInformationTab() {
+    cy.findByRole('heading', { name: 'Professional information' }).should('be.visible')
     return this
   }
 
