@@ -230,14 +230,14 @@ const ManageContactsRoutes = (
     noValidation: true,
   })
 
-  standAloneJourneyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/create',
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/phone/create',
     controller: new ManageContactAddPhoneController(contactsService, referenceDataService),
     schema: phoneNumberSchema,
   })
 
-  standAloneJourneyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/edit',
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/phone/:contactPhoneId/edit',
     controller: new ManageContactEditPhoneController(contactsService, referenceDataService),
     schema: phoneNumberSchema,
   })
@@ -314,20 +314,20 @@ const ManageContactsRoutes = (
     noValidation: true,
   })
 
-  standAloneJourneyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/create',
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/email/create',
     controller: new ManageContactAddEmailController(contactsService),
     schema: emailSchema,
   })
 
-  standAloneJourneyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/edit',
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/email/:contactEmailId/edit',
     controller: new ManageContactEditEmailController(contactsService),
     schema: emailSchema,
   })
 
-  standAloneJourneyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/delete',
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/email/:contactEmailId/delete',
     controller: new ManageContactDeleteEmailController(contactsService),
     noValidation: true,
   })
@@ -341,22 +341,25 @@ const ManageContactsRoutes = (
   // Addresses
   const startAddressJourneyController = new StartAddressJourneyController(contactsService)
   // Add
-  get('/prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/start', startAddressJourneyController)
+  get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/add/start',
+    startAddressJourneyController,
+  )
   // Edit
   get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/edit/:contactAddressId/start',
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/edit/:contactAddressId/start',
     startAddressJourneyController,
   )
 
   journeyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/select-type/:journeyId',
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/select-type/:journeyId',
     controller: new AddressTypeController(referenceDataService),
     journeyEnsurer: ensureInAddressJourney,
     schema: addressTypeSchema,
   })
 
   journeyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/enter-address/:journeyId',
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/enter-address/:journeyId',
     controller: new EnterAddressController(referenceDataService),
     journeyEnsurer: ensureInAddressJourney,
     schema: addressLinesSchema,
@@ -369,33 +372,33 @@ const ManageContactsRoutes = (
   )
 
   journeyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/address-metadata/:journeyId',
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/address-metadata/:journeyId',
     controller: new AddressMetadataController(referenceDataService, contactsService),
     journeyEnsurer: ensureInAddressJourney,
     schema: addressMetadataSchema,
   })
 
   journeyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/check-answers/:journeyId',
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/check-answers/:journeyId',
     controller: new AddressCheckAnswersController(referenceDataService, contactsService),
     journeyEnsurer: ensureInAddressJourney,
     noValidation: true,
   })
 
-  standAloneJourneyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/:contactAddressId/phone/create',
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/phone/create',
     controller: new ManageContactAddAddressPhoneController(contactsService, referenceDataService),
     schema: phoneNumberSchema,
   })
 
-  standAloneJourneyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/:contactAddressId/phone/:contactAddressPhoneId/edit',
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/phone/:contactAddressPhoneId/edit',
     controller: new ManageContactEditAddressPhoneController(contactsService, referenceDataService),
     schema: phoneNumberSchema,
   })
 
-  standAloneJourneyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/:contactAddressId/phone/:contactAddressPhoneId/delete',
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/phone/:contactAddressPhoneId/delete',
     controller: new ManageContactDeleteAddressPhoneController(contactsService),
     noValidation: true,
   })

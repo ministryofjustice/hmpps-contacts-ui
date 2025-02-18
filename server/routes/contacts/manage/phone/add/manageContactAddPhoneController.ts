@@ -8,6 +8,9 @@ import { ContactsService } from '../../../../../services'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import { Navigation } from '../../../common/navigation'
+import Urls from '../../../../urls'
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
+import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 
 export default class ManageContactAddPhoneController implements PageHandler {
   constructor(
@@ -17,14 +20,17 @@ export default class ManageContactAddPhoneController implements PageHandler {
 
   public PAGE_NAME = Page.MANAGE_CONTACT_ADD_PHONE_PAGE
 
-  GET = async (req: Request<{ prisonerNumber: string; contactId: string }>, res: Response): Promise<void> => {
-    const { user, journey } = res.locals
-    const { contactId } = req.params
+  GET = async (
+    req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }>,
+    res: Response,
+  ): Promise<void> => {
+    const { user } = res.locals
+    const { prisonerNumber, contactId, prisonerContactId } = req.params
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const typeOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.PHONE_TYPE, user)
       .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.['type']))
-    const navigation: Navigation = { backLink: journey.returnPoint.url }
+    const navigation: Navigation = { backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId) }
     const viewModel = {
       typeOptions,
       phoneNumber: res.locals?.formResponses?.['phoneNumber'],
@@ -37,15 +43,26 @@ export default class ManageContactAddPhoneController implements PageHandler {
   }
 
   POST = async (
-    req: Request<{ prisonerNumber: string; contactId: string }, unknown, PhoneNumberSchemaType>,
+    req: Request<
+      { prisonerNumber: string; contactId: string; prisonerContactId: string },
+      unknown,
+      PhoneNumberSchemaType
+    >,
     res: Response,
   ): Promise<void> => {
     const { user } = res.locals
-    const { journey } = res.locals
-    const { contactId } = req.params
+    const { prisonerNumber, contactId, prisonerContactId } = req.params
     const { phoneNumber, type, extension } = req.body
     await this.contactsService.createContactPhone(parseInt(contactId, 10), user, type, phoneNumber, extension)
-    res.redirect(journey.returnPoint.url)
+    await this.contactsService
+      .getContact(Number(contactId), user)
+      .then(response =>
+        req.flash(
+          FLASH_KEY__SUCCESS_BANNER,
+          `You’ve updated the contact methods for ${formatNameFirstNameFirst(response)}.`,
+        ),
+      )
+    res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
   }
 
   private getSelectedOptions(

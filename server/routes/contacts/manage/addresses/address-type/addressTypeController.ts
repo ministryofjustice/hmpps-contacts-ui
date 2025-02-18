@@ -7,14 +7,18 @@ import { Navigation } from '../../../common/navigation'
 import { AddressTypeSchema } from './addressTypeSchemas'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
+import Urls from '../../../../urls'
 
 export default class AddressTypeController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
   public PAGE_NAME = Page.SELECT_ADDRESS_TYPE_PAGE
 
-  GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
-    const { journeyId } = req.params
+  GET = async (
+    req: Request<PrisonerJourneyParams & { contactId: string; prisonerContactId: string }>,
+    res: Response,
+  ): Promise<void> => {
+    const { prisonerNumber, contactId, prisonerContactId, journeyId } = req.params
     const { user } = res.locals
     const journey = req.session.addressJourneys![journeyId]!
 
@@ -22,9 +26,7 @@ export default class AddressTypeController implements PageHandler {
       .getReferenceData(ReferenceCodeType.ADDRESS_TYPE, user)
       .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.['type'] ?? journey.addressType))
 
-    const navigation: Navigation = {
-      backLink: journey.returnPoint.url,
-    }
+    const navigation: Navigation = { backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId) }
     const viewModel = {
       journey,
       typeOptions,
@@ -36,6 +38,9 @@ export default class AddressTypeController implements PageHandler {
   POST = async (
     req: Request<
       {
+        prisonerNumber: string
+        contactId: string
+        prisonerContactId: string
         journeyId: string
       },
       unknown,
@@ -43,14 +48,14 @@ export default class AddressTypeController implements PageHandler {
     >,
     res: Response,
   ): Promise<void> => {
-    const { journeyId } = req.params
+    const { prisonerNumber, contactId, prisonerContactId, journeyId } = req.params
     const journey = req.session.addressJourneys![journeyId]!
     const { addressType } = req.body
     journey.addressType = addressType
     res.redirect(
       journey.isCheckingAnswers
-        ? `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/check-answers/${journeyId}`
-        : `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/enter-address/${journeyId}`,
+        ? `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/check-answers/${journeyId}`
+        : `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/enter-address/${journeyId}`,
     )
   }
 

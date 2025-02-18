@@ -4,9 +4,8 @@
 
   {% set contact = opts.contact %}
   {% set showActions = opts.showActions %}
-  {% set returnUrl = opts.returnUrl %}
   {% set prisonerNumber = opts.prisonerNumber %}
-
+  {% set prisonerContactId = opts.prisonerContactId %}
 
   {% set emailAddresses = [] %}
   {% if contact.emailAddresses and contact.emailAddresses.length > 0 %}
@@ -14,7 +13,7 @@
       {% set actions = [] %}
 
       {% set actions = actions.concat([{
-        href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/email/" + item.contactEmailId + "/edit?returnUrl=" + returnUrl,
+        href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + prisonerContactId + "/email/" + item.contactEmailId + "/edit",
         text: "Change",
         visuallyHiddenText: "this email address",
         attributes: {"data-qa": "change-email-address-" + item.contactEmailId},
@@ -22,7 +21,7 @@
       }]) %}
 
       {% set actions = actions.concat([{
-        href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/email/" + item.contactEmailId + "/delete?returnUrl=" + returnUrl,
+        href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + prisonerContactId + "/email/" + item.contactEmailId + "/delete",
         text: "Delete",
         visuallyHiddenText: "this email address",
         attributes: {"data-qa": "delete-email-address-" + item.contactEmailId},
@@ -57,7 +56,7 @@
       actions: {
         items: [
             {
-              href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/email/create?returnUrl=" + returnUrl,
+              href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + prisonerContactId + "/email/create",
               text: "Add email address",
               attributes: {"data-qa": "add-email-address-link"},
               classes: "govuk-link--no-visited-state"

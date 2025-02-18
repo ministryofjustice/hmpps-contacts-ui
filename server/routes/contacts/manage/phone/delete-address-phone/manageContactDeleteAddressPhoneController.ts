@@ -6,6 +6,9 @@ import { Navigation } from '../../../common/navigation'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
+import Urls from '../../../../urls'
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
+import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 
 export default class ManageContactDeleteAddressPhoneController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -16,13 +19,14 @@ export default class ManageContactDeleteAddressPhoneController implements PageHa
     req: Request<{
       prisonerNumber: string
       contactId: string
+      prisonerContactId: string
       contactAddressId: string
       contactAddressPhoneId: string
     }>,
     res: Response,
   ): Promise<void> => {
-    const { user, journey } = res.locals
-    const { contactId, contactAddressId, contactAddressPhoneId } = req.params
+    const { user } = res.locals
+    const { prisonerNumber, contactId, prisonerContactId, contactAddressId, contactAddressPhoneId } = req.params
     const contactIdNumber = Number(contactId)
     const contact: ContactDetails = await this.contactsService.getContact(contactIdNumber, user)
     const address = contact.addresses.find(
@@ -36,7 +40,10 @@ export default class ManageContactDeleteAddressPhoneController implements PageHa
         `Couldn't find phone with id ${contactAddressPhoneId} for contact ${contactId} and address ${contactAddressId}. URL probably entered manually.`,
       )
     }
-    const navigation: Navigation = { backLink: journey.returnPoint.url }
+    const navigation: Navigation = {
+      backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
+      cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId, 'contact-methods'),
+    }
     res.render('pages/contacts/manage/confirmDeleteAddressPhone', { phone, navigation, address })
   }
 
@@ -44,14 +51,14 @@ export default class ManageContactDeleteAddressPhoneController implements PageHa
     req: Request<{
       prisonerNumber: string
       contactId: string
+      prisonerContactId: string
       contactAddressId: string
       contactAddressPhoneId: string
     }>,
     res: Response,
   ): Promise<void> => {
     const { user } = res.locals
-    const { journey } = res.locals
-    const { contactId, contactAddressId, contactAddressPhoneId } = req.params
+    const { prisonerNumber, contactId, prisonerContactId, contactAddressId, contactAddressPhoneId } = req.params
     const contactIdNumber = Number(contactId)
     const contactAddressIdNumber = Number(contactAddressId)
     const contactPhoneIdNumber = Number(contactAddressPhoneId)
@@ -62,6 +69,14 @@ export default class ManageContactDeleteAddressPhoneController implements PageHa
       contactPhoneIdNumber,
       user,
     )
-    res.redirect(journey.returnPoint.url)
+    await this.contactsService
+      .getContact(Number(contactId), user)
+      .then(response =>
+        req.flash(
+          FLASH_KEY__SUCCESS_BANNER,
+          `You’ve updated the contact methods for ${formatNameFirstNameFirst(response)}.`,
+        ),
+      )
+    res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
   }
 }

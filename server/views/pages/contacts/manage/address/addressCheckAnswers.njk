@@ -17,7 +17,7 @@
             <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-                {% set baseChangeUrl = "/prisoner/" + journey.prisonerNumber + "/contacts/manage/" + journey.contactId + "/address" %}
+                {% set baseChangeUrl = "/prisoner/" + prisonerNumber + "/contacts/manage/" + contactId + "/relationship/" + prisonerContactId + "/address" %}
                 {{ govukSummaryList({
                     card: {
                         title: {

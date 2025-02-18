@@ -5,7 +5,6 @@ import { parseISO } from 'date-fns'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import ContactsService from '../../../../../services/contactsService'
-import ReturnPoint = journeys.ReturnPoint
 import ContactNames = journeys.ContactNames
 import AddressJourney = journeys.AddressJourney
 import AddressLines = journeys.AddressLines
@@ -24,6 +23,7 @@ export default class StartAddressJourneyController implements PageHandler {
       {
         prisonerNumber: string
         contactId: string
+        prisonerContactId: string
         contactAddressId?: string
       },
       unknown,
@@ -32,10 +32,8 @@ export default class StartAddressJourneyController implements PageHandler {
     >,
     res: Response,
   ): Promise<void> => {
-    const { prisonerNumber, contactId, contactAddressId } = req.params
-    const { returnUrl } = req.query
+    const { prisonerNumber, contactId, prisonerContactId, contactAddressId } = req.params
     const { user } = res.locals
-    const returnPoint: ReturnPoint = { url: returnUrl }
     const contact = await this.contactService.getContact(Number(contactId), user)
     const contactNames: ContactNames = {
       title: contact.title,
@@ -83,7 +81,6 @@ export default class StartAddressJourneyController implements PageHandler {
     const journey: AddressJourney = {
       id: uuidv4(),
       lastTouched: new Date().toISOString(),
-      returnPoint,
       prisonerNumber,
       contactId: Number(contactId),
       contactAddressId: contactAddressIdNumber,
@@ -107,6 +104,8 @@ export default class StartAddressJourneyController implements PageHandler {
         .slice(this.MAX_JOURNEYS)
         .forEach(journeyToRemove => delete req.session.addressJourneys![journeyToRemove.id])
     }
-    res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/select-type/${journey.id}`)
+    res.redirect(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/select-type/${journey.id}`,
+    )
   }
 }

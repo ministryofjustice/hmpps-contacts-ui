@@ -4,11 +4,11 @@
 
   {% set address = opts.address %}
   {% set showActions = opts.showActions %}
-  {% set returnUrl = opts.returnUrl %}
   {% set prisonerNumber = opts.prisonerNumber %}
   {% set contactId = opts.contactId %}
+  {% set prisonerContactId = opts.prisonerContactId %}
 
-  {% set changeAddressLink = '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/address/edit/' + address.contactAddressId + '/start?returnUrl=' + returnUrl %}
+  {% set changeAddressLink = '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + "/relationship/" + prisonerContactId + '/address/edit/' + address.contactAddressId + '/start' %}
 
   {%
     set addressLines = {
@@ -107,7 +107,7 @@
       actions: {
         items: [
           {
-            href: '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/address/' + address.contactAddressId + '/phone/create?returnUrl=' + returnUrl,
+            href: '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + "/relationship/" + prisonerContactId + '/address/' + address.contactAddressId + '/phone/create',
             text: "Add address phone number",
             attributes: { 'data-qa': 'add-address-phone-link-' + address.contactAddressId },
             classes: 'govuk-link--no-visited-state'
@@ -129,14 +129,14 @@
         actions: {
           items: [
             {
-              href: '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/address/' + address.contactAddressId + '/phone/' + val.contactAddressPhoneId + '/edit?returnUrl=' + returnUrl,
+              href: '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + "/relationship/" + prisonerContactId + '/address/' + address.contactAddressId + '/phone/' + val.contactAddressPhoneId + '/edit',
               text: "Change",
               visuallyHiddenText: 'the information about the ' + val.phoneTypeDescription + ' phone number for this address',
               attributes: { 'data-qa': 'change-address-phone-' + val.contactAddressPhoneId },
               classes: 'govuk-link--no-visited-state'
             },
             {
-              href: '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/address/' + address.contactAddressId + '/phone/' + val.contactAddressPhoneId + '/delete?returnUrl=' + returnUrl,
+              href: '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + "/relationship/" + prisonerContactId + '/address/' + address.contactAddressId + '/phone/' + val.contactAddressPhoneId + '/delete',
               text: "Delete",
               visuallyHiddenText: 'the information about the ' + val.phoneTypeDescription + ' phone number for this address',
               attributes: { 'data-qa': 'delete-address-phone-' + val.contactAddressPhoneId },
@@ -158,7 +158,7 @@
       actions: {
         items: [
           {
-            href: '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/address/' + address.contactAddressId + '/phone/create?returnUrl=' + returnUrl,
+            href: '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + "/relationship/" + prisonerContactId + '/address/' + address.contactAddressId + '/phone/create',
             text: "Change",
             visuallyHiddenText: 'the information about the phone number for this address',
             attributes: { 'data-qa': 'add-address-phone-link-' + address.contactAddressId },

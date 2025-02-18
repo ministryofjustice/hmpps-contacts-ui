@@ -5,6 +5,9 @@ import { ContactsService } from '../../../../../services'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import ContactEmailDetails = contactsApiClientTypes.ContactEmailDetails
 import { Navigation } from '../../../common/navigation'
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
+import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
+import Urls from '../../../../urls'
 
 export default class ManageContactDeleteEmailController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -12,11 +15,11 @@ export default class ManageContactDeleteEmailController implements PageHandler {
   public PAGE_NAME = Page.MANAGE_CONTACT_DELETE_EMAIL_PAGE
 
   GET = async (
-    req: Request<{ prisonerNumber: string; contactId: string; contactEmailId: string }>,
+    req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string; contactEmailId: string }>,
     res: Response,
   ): Promise<void> => {
-    const { user, journey } = res.locals
-    const { contactId, contactEmailId } = req.params
+    const { user } = res.locals
+    const { prisonerNumber, contactId, prisonerContactId, contactEmailId } = req.params
     const contactIdNumber = Number(contactId)
     const contactEmailIdNumber = Number(contactEmailId)
     const contact: ContactDetails = await this.contactsService.getContact(contactIdNumber, user)
@@ -28,21 +31,31 @@ export default class ManageContactDeleteEmailController implements PageHandler {
         `Couldn't find email with id ${contactEmailId} for contact ${contactId}. URL probably entered manually.`,
       )
     }
-    const navigation: Navigation = { backLink: journey.returnPoint.url }
+    const navigation: Navigation = {
+      backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
+      cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId, 'contact-methods'),
+    }
     res.render('pages/contacts/manage/confirmDeleteEmail', { email, navigation })
   }
 
   POST = async (
-    req: Request<{ prisonerNumber: string; contactId: string; contactEmailId: string }>,
+    req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string; contactEmailId: string }>,
     res: Response,
   ): Promise<void> => {
     const { user } = res.locals
-    const { journey } = res.locals
-    const { contactId, contactEmailId } = req.params
+    const { prisonerNumber, contactId, prisonerContactId, contactEmailId } = req.params
     const contactIdNumber = Number(contactId)
     const contactEmailIdNumber = Number(contactEmailId)
 
     await this.contactsService.deleteContactEmail(contactIdNumber, contactEmailIdNumber, user)
-    res.redirect(journey.returnPoint.url)
+    await this.contactsService
+      .getContact(Number(contactId), user)
+      .then(response =>
+        req.flash(
+          FLASH_KEY__SUCCESS_BANNER,
+          `You’ve updated the contact methods for ${formatNameFirstNameFirst(response)}.`,
+        ),
+      )
+    res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
   }
 }

@@ -4,7 +4,6 @@
 
   {% set contact = opts.contact %}
   {% set showActions = opts.showActions %}
-  {% set returnUrl = opts.returnUrl %}
   {% set prisonerNumber = opts.prisonerNumber %}
   {% set prisonerContactId = opts.prisonerContactId %}
 
@@ -21,7 +20,7 @@
         actions: {
           items: [
             {
-              href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/phone/" + item.contactPhoneId + "/edit?returnUrl=" + returnUrl,
+              href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + prisonerContactId + "/phone/" + item.contactPhoneId + "/edit",
               text: "Change",
               visuallyHiddenText: "the information about this " + item.phoneTypeDescription + " phone number",
               attributes: {"data-qa": "edit-phone-number-" + item.contactPhoneId},
@@ -55,7 +54,7 @@
       actions: {
         items: [
             {
-              href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/phone/create?returnUrl=" + returnUrl,
+              href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + prisonerContactId + "/phone/create",
               text: "Add phone number",
               attributes: {"data-qa": "add-phone-number-link"},
               classes: "govuk-link--no-visited-state"

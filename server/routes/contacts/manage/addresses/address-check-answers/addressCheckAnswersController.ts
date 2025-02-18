@@ -7,6 +7,9 @@ import { Navigation } from '../../../common/navigation'
 import { formatDate } from '../../../../../utils/utils'
 import { ContactsService } from '../../../../../services'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
+import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
+import Urls from '../../../../urls'
 
 export default class AddressCheckAnswersController implements PageHandler {
   constructor(
@@ -16,7 +19,10 @@ export default class AddressCheckAnswersController implements PageHandler {
 
   public PAGE_NAME = Page.ADDRESS_CHECK_ANSWERS_PAGE
 
-  GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
+  GET = async (
+    req: Request<PrisonerJourneyParams & { contactId: string; prisonerContactId: string }>,
+    res: Response,
+  ): Promise<void> => {
     const { journeyId } = req.params
     const { user } = res.locals
     const journey = req.session.addressJourneys![journeyId]!
@@ -60,6 +66,7 @@ export default class AddressCheckAnswersController implements PageHandler {
       breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'],
     }
     const viewModel = {
+      ...req.params,
       journey,
       navigation,
       addressTypeDescription,
@@ -73,17 +80,28 @@ export default class AddressCheckAnswersController implements PageHandler {
 
   POST = async (
     req: Request<{
+      prisonerNumber: string
+      contactId: string
+      prisonerContactId: string
       journeyId: string
     }>,
     res: Response,
   ): Promise<void> => {
-    const { journeyId } = req.params
+    const { prisonerNumber, contactId, prisonerContactId, journeyId } = req.params
     const { user } = res.locals
     const journey = req.session.addressJourneys![journeyId]!
     await this.contactsService
       .createContactAddress(journey, user)
       .then(_ => delete req.session.addressJourneys![journeyId])
-    res.redirect(journey.returnPoint.url)
+    await this.contactsService
+      .getContact(Number(contactId), user)
+      .then(response =>
+        req.flash(
+          FLASH_KEY__SUCCESS_BANNER,
+          `You’ve updated the contact methods for ${formatNameFirstNameFirst(response)}.`,
+        ),
+      )
+    res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
   }
 
   private async getReferenceCodeDescriptionIfSet(
