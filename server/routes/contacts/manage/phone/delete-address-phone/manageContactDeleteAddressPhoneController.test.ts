@@ -21,6 +21,7 @@ const contactsService = MockedService.ContactsService()
 let app: Express
 const prisonerNumber = 'A1234BC'
 const contactId = 987654
+const prisonerContactId = 456789
 const contactAddressId = 456654
 const contact: ContactDetails = {
   id: contactId,
@@ -60,7 +61,7 @@ beforeEach(() => {
 afterEach(() => {
   jest.resetAllMocks()
 })
-describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/:contactAddressId/phone/:contactPhoneId/delete`, () => {
+describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/phone/:contactPhoneId/delete`, () => {
   it('should call the audit service for the page view', async () => {
     // Given
     contactsService.getContact.mockResolvedValue(contact)
@@ -68,7 +69,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/:cont
     // When
     await request(app)
       .get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/${contactAddressId}/phone/999/delete?returnUrl=/foo-bar`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/phone/999/delete`,
       )
       .expect(200)
 
@@ -86,7 +87,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/:cont
     // When
     const response = await request(app)
       .get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/${contactAddressId}/phone/123/delete?returnUrl=/foo-bar`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/phone/123/delete`,
       )
       .expect(200)
 
@@ -95,8 +96,12 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/:cont
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Are you sure you want to delete this phone number?',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789#contact-methods',
+    )
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
+    )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('.phone-number-value').text().trim()).toStrictEqual('07878 111111')
     expect($('.extension-value').text().trim()).toStrictEqual('123')
@@ -110,7 +115,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/:cont
     // When
     const response = await request(app)
       .get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/${contactAddressId}/phone/999/delete?returnUrl=/foo-bar`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/phone/999/delete`,
       )
       .expect(200)
 
@@ -119,8 +124,12 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/:cont
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Are you sure you want to delete this phone number?',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789#contact-methods',
+    )
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
+    )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('.phone-number-value').text().trim()).toStrictEqual('01111 777777')
     expect($('.extension-value').text().trim()).toStrictEqual('Not provided')
@@ -133,7 +142,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/:cont
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/${contactAddressId}/phone/555/delete?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/phone/555/delete`,
     )
 
     // Then
@@ -141,7 +150,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/:cont
   })
 })
 
-describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/:contactAddressId/phone/:contactPhoneId/delete`, () => {
+describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/phone/:contactPhoneId/delete`, () => {
   it('should delete address phone and redirect back to entry point', async () => {
     // Given
     contactsService.getContact.mockResolvedValue(contact)
@@ -149,10 +158,10 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/:con
     // When
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/${contactAddressId}/phone/123/delete?returnUrl=/foo-bar`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/phone/123/delete`,
       )
       .expect(302)
-      .expect('Location', '/foo-bar')
+      .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
 
     // Then
     expect(contactsService.deleteContactAddressPhone).toHaveBeenCalledWith(contactId, contactAddressId, 123, user)

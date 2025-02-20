@@ -82,9 +82,8 @@ context('Delete Address Phones', () => {
       .hasPhoneNumber('07878 111111')
       .hasType('Mobile')
       .hasExtension('123')
-      .continueTo(EditContactMethodsPage, 'First Middle Names Last')
-      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .verifyOnContactsMethodsTab()
+      .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last.')
 
     cy.verifyAPIWasCalled(
       {
@@ -103,7 +102,6 @@ context('Delete Address Phones', () => {
       .hasPhoneNumber('01111 777777')
       .hasType('Home')
       .hasExtension('Not provided')
-      .cancelTo(EditContactMethodsPage, 'First Middle Names Last')
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
       .verifyOnContactsMethodsTab()
 

@@ -9,6 +9,8 @@ import ContactsService from '../../../../../services/contactsService'
 import YesOrNo = journeys.YesOrNo
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
+import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
+import Urls from '../../../../urls'
 
 export default class AddressMetadataController implements PageHandler {
   constructor(
@@ -18,8 +20,11 @@ export default class AddressMetadataController implements PageHandler {
 
   public PAGE_NAME = Page.ENTER_ADDRESS_METADATA_PAGE
 
-  GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
-    const { journeyId } = req.params
+  GET = async (
+    req: Request<PrisonerJourneyParams & { contactId: string; prisonerContactId: string }>,
+    res: Response,
+  ): Promise<void> => {
+    const { prisonerNumber, contactId, prisonerContactId, journeyId } = req.params
     const { user } = res.locals
     const journey = req.session.addressJourneys![journeyId]!
 
@@ -31,7 +36,7 @@ export default class AddressMetadataController implements PageHandler {
     }
     typeLabel = typeLabel ?? 'address'
     const navigation: Navigation = {
-      backLink: `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/enter-address/${journeyId}`,
+      backLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/enter-address/${journeyId}`,
     }
     let fromMonth = res.locals?.formResponses?.['fromMonth'] ?? journey.addressMetadata?.fromMonth
     let fromYear = res.locals?.formResponses?.['fromYear'] ?? journey.addressMetadata?.fromYear
@@ -76,6 +81,9 @@ export default class AddressMetadataController implements PageHandler {
   POST = async (
     req: Request<
       {
+        prisonerNumber: string
+        contactId: string
+        prisonerContactId: string
         journeyId: string
       },
       unknown,
@@ -83,7 +91,7 @@ export default class AddressMetadataController implements PageHandler {
     >,
     res: Response,
   ): Promise<void> => {
-    const { journeyId } = req.params
+    const { prisonerNumber, contactId, prisonerContactId, journeyId } = req.params
     const { user } = res.locals
     const journey = req.session.addressJourneys![journeyId]!
     const form: AddressMetadataSchema = req.body
@@ -98,14 +106,21 @@ export default class AddressMetadataController implements PageHandler {
     }
     if (journey.mode === 'ADD') {
       res.redirect(
-        `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/check-answers/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/check-answers/${journeyId}`,
       )
     } else if (journey.mode === 'EDIT') {
       await this.contactsService
         .updateContactAddress(journey, user)
         .then(_ => delete req.session.addressJourneys![journeyId])
-        .then(_ => req.flash(FLASH_KEY__SUCCESS_BANNER, 'You’ve updated a contact address'))
-      res.redirect(journey.returnPoint.url)
+      await this.contactsService
+        .getContact(Number(contactId), user)
+        .then(response =>
+          req.flash(
+            FLASH_KEY__SUCCESS_BANNER,
+            `You’ve updated the contact methods for ${formatNameFirstNameFirst(response)}.`,
+          ),
+        )
+      res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
     }
   }
 

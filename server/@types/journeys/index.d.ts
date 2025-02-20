@@ -133,7 +133,6 @@ declare namespace journeys {
     contactId: number
     prisonerNumber?: string
     contactAddressId?: number
-    returnPoint: ReturnPoint
     isCheckingAnswers: boolean
     mode: 'ADD' | 'EDIT'
     contactNames: ContactNames

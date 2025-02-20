@@ -13,21 +13,17 @@
 {% block content %}
   {% include 'partials/navigation.njk' %}
   {{ miniProfile(prisonerDetails) }}
-  {# TODO can be removed once all journies return to contact details page directly #}
-  {% include 'partials/successNotificationBanner.njk' %}
   <div class="govuk-grid-row govuk-!-static-margin-bottom-5">
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-!-static-margin-bottom-7">
         <span class="govuk-caption-l">Manage contacts</span>
         <h1 class="govuk-heading-l">Edit contact methods for {{ contact | formatNameFirstNameFirst }}</h1>
       </div>
-      {% set returnUrl = '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/relationship/' + prisonerContactId + '/edit-contact-methods' %}
 
       {{ phoneNumbersCard({
           contact: contact,
           prisonerNumber: prisonerNumber,
           prisonerContactId: prisonerContactId,
-          returnUrl: returnUrl,
           showActions: true
         })
       }}
@@ -35,7 +31,7 @@
       {{ emailAddressesCard({
           contact: contact,
           prisonerNumber: prisonerNumber,
-          returnUrl: returnUrl,
+          prisonerContactId: prisonerContactId,
           showActions: true
         })
       }}
@@ -46,7 +42,7 @@
         </div>
         <div class="moj-page-header-actions__actions">
           <div class="moj-button-group moj-button-group--inline">
-            <a class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold" data-qa="add-address-link" href="/prisoner/{{ prisonerNumber }}/contacts/manage/{{ contactId }}/address/add/start?returnUrl={{  returnUrl }}">Add address</a>
+            <a class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold" data-qa="add-address-link" href="/prisoner/{{ prisonerNumber }}/contacts/manage/{{ contactId }}/relationship/{{ prisonerContactId }}/address/add/start">Add address</a>
           </div>
         </div>
       </div>
@@ -58,7 +54,7 @@
               address: item,
               prisonerNumber: prisonerNumber,
               contactId: contact.id,
-              returnUrl: returnUrl,
+              prisonerContactId: prisonerContactId,
               showActions: true
             })
           %}

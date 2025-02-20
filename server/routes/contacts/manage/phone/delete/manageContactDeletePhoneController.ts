@@ -56,6 +56,6 @@ export default class ManageContactDeletePhoneController implements PageHandler {
           `You’ve updated the contact methods for ${formatNameFirstNameFirst(response)}.`,
         ),
       )
-    res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId, 'contact-methods'))
+    res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
   }
 }

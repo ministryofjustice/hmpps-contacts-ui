@@ -21,6 +21,7 @@ const contactsService = MockedService.ContactsService()
 let app: Express
 const prisonerNumber = 'A1234BC'
 const contactId = 987654
+const prisonerContactId = 456789
 const contactAddressId = 456987
 const contact: ContactDetails = {
   id: contactId,
@@ -56,14 +57,14 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/:contactAddressId/phone/create?returnUrl=/foo-bar`, () => {
+describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/phone/create`, () => {
   it('should render create address phone page', async () => {
     // Given
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/${contactAddressId}/phone/create?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/phone/create`,
     )
 
     // Then
@@ -73,8 +74,12 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/:cont
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'What is the phone number for this address?',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
+    )
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
+    )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
   })
 
@@ -84,7 +89,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/:cont
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/${contactAddressId}/phone/create?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/phone/create`,
     )
 
     // Then
@@ -103,7 +108,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/:cont
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/${contactAddressId}/phone/create?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/phone/create`,
     )
 
     // Then
@@ -115,16 +120,17 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/:cont
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/:contactAddressId/phone/create?returnUrl=/foo-bar', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/phone/create', () => {
   it('should create address phone with extension and pass to return point if there are no validation errors', async () => {
+    contactsService.getContact.mockResolvedValue(contact)
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/${contactAddressId}/phone/create?returnUrl=/foo-bar`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/phone/create`,
       )
       .type('form')
       .send({ type: 'MOB', phoneNumber: '123456789', extension: '000' })
       .expect(302)
-      .expect('Location', '/foo-bar')
+      .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
 
     expect(contactsService.createContactAddressPhone).toHaveBeenCalledWith(
       contactId,
@@ -137,14 +143,15 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/:con
   })
 
   it('should create phone without extension and pass to return point url if there are no validation errors', async () => {
+    contactsService.getContact.mockResolvedValue(contact)
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/${contactAddressId}/phone/create?returnUrl=/foo-bar`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/phone/create`,
       )
       .type('form')
       .send({ type: 'MOB', phoneNumber: '123456789', extension: '' })
       .expect(302)
-      .expect('Location', '/foo-bar')
+      .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
 
     expect(contactsService.createContactAddressPhone).toHaveBeenCalledWith(
       contactId,
@@ -159,14 +166,14 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/:con
   it('should return to input page with details kept if there are validation errors', async () => {
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/${contactAddressId}/phone/create?returnUrl=/foo-bar`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/phone/create`,
       )
       .type('form')
       .send({ type: '' })
       .expect(302)
       .expect(
         'Location',
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/${contactAddressId}/phone/create?returnUrl=/foo-bar`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/phone/create`,
       )
     expect(contactsService.createContactAddressPhone).not.toHaveBeenCalled()
   })

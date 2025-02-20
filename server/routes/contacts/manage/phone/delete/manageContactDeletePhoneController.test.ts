@@ -157,7 +157,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/123/delete`,
       )
       .expect(302)
-      .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789#contact-methods')
+      .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
 
     // Then
     expect(contactsService.deleteContactPhone).toHaveBeenCalledWith(contactId, 123, user)

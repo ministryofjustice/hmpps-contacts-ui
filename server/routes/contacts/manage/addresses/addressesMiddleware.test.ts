@@ -30,7 +30,6 @@ describe('ensureInAddressJourney', () => {
       lastTouched: lastTouchedBeforeCall.toISOString(),
       contactId: 99,
       prisonerNumber: 'A1324BC',
-      returnPoint: { url: '/foo' },
       isCheckingAnswers: false,
       mode: 'ADD',
       contactNames: {

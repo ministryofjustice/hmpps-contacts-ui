@@ -48,8 +48,9 @@ context('Create Email Address', () => {
       .clickAddEmailLink()
 
     Page.verifyOnPage(EnterEmailPage, 'Jones Mason').enterEmail('test@email.com').clickContinue()
-    Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason')
-
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').hasSuccessBanner(
+      'You’ve updated the contact methods for Jones Mason.',
+    )
     cy.verifyLastAPICall(
       {
         method: 'POST',

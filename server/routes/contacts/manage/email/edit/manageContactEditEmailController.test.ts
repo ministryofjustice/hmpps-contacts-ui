@@ -21,6 +21,7 @@ const contactsService = MockedService.ContactsService()
 let app: Express
 const prisonerNumber = 'A1234BC'
 const contactId = 987654
+const prisonerContactId = 456789
 const contact: ContactDetails = {
   id: contactId,
   title: '',
@@ -59,14 +60,14 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/edit', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/email/:contactEmailId/edit', () => {
   it('should render edit email page with navigation back to manage contact and all field populated', async () => {
     // Given
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/6/edit?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/6/edit`,
     )
 
     // Then
@@ -76,8 +77,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contac
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'What is the email address for First Middle Last?',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
+    )
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
+    )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('#emailAddress').val()).toStrictEqual('mr.first@example.com')
   })
@@ -90,7 +95,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contac
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/6/edit?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/6/edit`,
     )
 
     // Then
@@ -100,8 +105,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contac
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'What is the email address for First Middle Last?',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
+    )
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
+    )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('#emailAddress').val()).toStrictEqual('name@')
   })
@@ -112,7 +121,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contac
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/6/edit?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/6/edit`,
     )
 
     // Then
@@ -129,7 +138,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contac
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/600/edit?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/600/edit`,
     )
 
     // Then
@@ -137,14 +146,15 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contac
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:contactEmailId/edit', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/email/:contactEmailId/edit', () => {
   it('should edit mail and pass to manage contact details page if there are no validation errors', async () => {
+    contactsService.getContact.mockResolvedValue(contact)
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/6/edit?returnUrl=/foo-bar`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/6/edit`)
       .type('form')
       .send({ emailAddress: 'test@example.com' })
       .expect(302)
-      .expect('Location', '/foo-bar')
+      .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
 
     const requestBody: UpdateEmailRequest = {
       emailAddress: 'test@example.com',
@@ -155,11 +165,14 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/email/:conta
 
   it('should return to input page with details kept if there are validation errors', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/6/edit?returnUrl=/foo-bar`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/6/edit`)
       .type('form')
       .send({ emailAddress: '' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/6/edit?returnUrl=/foo-bar`)
+      .expect(
+        'Location',
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/6/edit`,
+      )
     expect(contactsService.updateContactEmail).not.toHaveBeenCalled()
   })
 })

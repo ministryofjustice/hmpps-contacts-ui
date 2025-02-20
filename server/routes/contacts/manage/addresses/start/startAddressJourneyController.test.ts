@@ -22,6 +22,7 @@ let session: Partial<SessionData>
 let preExistingJourneysToAddToSession: Array<AddressJourney>
 const prisonerNumber = 'A1234BC'
 const contactId = 123
+const prisonerContactId = 456789
 const contact: ContactDetails = {
   id: contactId,
   title: '',
@@ -59,14 +60,14 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/start', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/add/start', () => {
   it('should create the journey and redirect to select type page', async () => {
     // Given
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/add/start?returnUrl=/foo`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/add/start`,
     )
 
     // Then
@@ -76,11 +77,10 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/s
     })
     expect(response.status).toEqual(302)
     expect(response.headers['location']).toContain(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/select-type`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/select-type`,
     )
     expect(Object.entries(session.addressJourneys!)).toHaveLength(1)
     const journey = Object.values(session.addressJourneys!)[0]!
-    expect(journey.returnPoint).toStrictEqual({ url: '/foo' })
     expect(journey.mode).toStrictEqual('ADD')
     expect(journey.addressType).toBeUndefined()
     expect(journey.addressLines).toBeUndefined()
@@ -100,7 +100,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/s
       {
         id: uuidv4(),
         lastTouched: new Date().toISOString(),
-        returnPoint: { url: '/foo-bar' },
         prisonerNumber,
         contactId,
         isCheckingAnswers: false,
@@ -114,7 +113,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/s
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/add/start`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/add/start`,
     )
     const { location } = response.headers
 
@@ -141,7 +140,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/s
           lastName: 'foo',
           firstName: 'bar',
         },
-        returnPoint: { url: '/foo-bar' },
       },
       {
         id: 'middle-aged',
@@ -154,7 +152,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/s
           lastName: 'foo',
           firstName: 'bar',
         },
-        returnPoint: { url: '/foo-bar' },
       },
       {
         id: 'youngest',
@@ -167,7 +164,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/s
           lastName: 'foo',
           firstName: 'bar',
         },
-        returnPoint: { url: '/foo-bar' },
       },
       {
         id: 'oldest',
@@ -180,7 +176,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/s
           lastName: 'foo',
           firstName: 'bar',
         },
-        returnPoint: { url: '/foo-bar' },
       },
       {
         id: 'young',
@@ -193,13 +188,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/s
           lastName: 'foo',
           firstName: 'bar',
         },
-        returnPoint: { url: '/foo-bar' },
       },
     ]
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/add/start`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/add/start`,
     )
     const { location } = response.headers
 
@@ -212,7 +206,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/add/s
   })
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/edit/:contactAddressId/start', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/edit/:contactAddressId/start', () => {
   it('should create the journey with prepopulated all fields and redirect to select type page', async () => {
     // Given
     contactsService.getContact.mockResolvedValue({
@@ -243,17 +237,16 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/edit/
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/edit/888/start?returnUrl=/foo`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/edit/888/start`,
     )
 
     // Then
     expect(response.status).toEqual(302)
     expect(response.headers['location']).toContain(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/select-type`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/select-type`,
     )
     expect(Object.entries(session.addressJourneys!)).toHaveLength(1)
     const journey = Object.values(session.addressJourneys!)[0]!
-    expect(journey.returnPoint).toStrictEqual({ url: '/foo' })
     expect(journey.mode).toStrictEqual('EDIT')
     expect(journey.contactAddressId).toStrictEqual(888)
     expect(journey.addressType).toStrictEqual('HOME')
@@ -318,17 +311,16 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/edit/
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/edit/888/start?returnUrl=/foo`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/edit/888/start`,
     )
 
     // Then
     expect(response.status).toEqual(302)
     expect(response.headers['location']).toContain(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/select-type`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/select-type`,
     )
     expect(Object.entries(session.addressJourneys!)).toHaveLength(1)
     const journey = Object.values(session.addressJourneys!)[0]!
-    expect(journey.returnPoint).toStrictEqual({ url: '/foo' })
     expect(journey.mode).toStrictEqual('EDIT')
     expect(journey.contactAddressId).toStrictEqual(888)
     expect(journey.addressType).toStrictEqual('DO_NOT_KNOW')
@@ -373,7 +365,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/edit/
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/edit/999/start?returnUrl=/foo`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/edit/999/start`,
     )
 
     // Then

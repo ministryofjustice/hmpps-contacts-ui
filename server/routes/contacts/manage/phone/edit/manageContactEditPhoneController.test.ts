@@ -21,6 +21,7 @@ const contactsService = MockedService.ContactsService()
 let app: Express
 const prisonerNumber = 'A1234BC'
 const contactId = 987654
+const prisonerContactId = 456789
 const contact: ContactDetails = {
   id: contactId,
   title: '',
@@ -54,14 +55,14 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/edit', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/phone/:contactPhoneId/edit', () => {
   it('should render edit phone page with navigation back to manage contact and all field populated', async () => {
     // Given
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/123/edit?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/123/edit`,
     )
 
     // Then
@@ -71,8 +72,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contac
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'What is the phone number for First Middle Last?',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
+    )
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
+    )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('#phoneNumber').val()).toStrictEqual('07878 111111')
     expect($('#type').val()).toStrictEqual('MOB')
@@ -87,7 +92,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contac
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/123/edit?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/123/edit`,
     )
 
     // Then
@@ -97,8 +102,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contac
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'What is the phone number for First Middle Last?',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
+    )
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
+    )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('#phoneNumber').val()).toStrictEqual('999999999999999999999999999')
     expect($('#type').val()).toStrictEqual('HOME')
@@ -111,7 +120,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contac
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/999/edit?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/999/edit`,
     )
 
     // Then
@@ -128,7 +137,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contac
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/555/edit?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/555/edit`,
     )
 
     // Then
@@ -136,36 +145,41 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contac
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/phone/:contactPhoneId/edit', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/phone/:contactPhoneId/edit', () => {
   it('should edit phone with extension and pass to manage contact details page if there are no validation errors', async () => {
+    contactsService.getContact.mockResolvedValue(contact)
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/999/edit?returnUrl=/foo-bar`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/999/edit`)
       .type('form')
       .send({ type: 'MOB', phoneNumber: '123456789', extension: '000' })
       .expect(302)
-      .expect('Location', '/foo-bar')
+      .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
 
     expect(contactsService.updateContactPhone).toHaveBeenCalledWith(contactId, 999, user, 'MOB', '123456789', '000')
   })
 
   it('should edit phone without extension and pass to manage contact details page if there are no validation errors', async () => {
+    contactsService.getContact.mockResolvedValue(contact)
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/999/edit?returnUrl=/foo-bar`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/999/edit`)
       .type('form')
       .send({ type: 'MOB', phoneNumber: '123456789', extension: '' })
       .expect(302)
-      .expect('Location', '/foo-bar')
+      .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
 
     expect(contactsService.updateContactPhone).toHaveBeenCalledWith(contactId, 999, user, 'MOB', '123456789', undefined)
   })
 
   it('should return to input page with details kept if there are validation errors', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/999/edit?returnUrl=/foo-bar`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/999/edit`)
       .type('form')
       .send({ type: '' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/phone/999/edit?returnUrl=/foo-bar`)
+      .expect(
+        'Location',
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/999/edit`,
+      )
     expect(contactsService.updateContactPhone).not.toHaveBeenCalled()
   })
 })

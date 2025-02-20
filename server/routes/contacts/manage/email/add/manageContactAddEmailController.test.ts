@@ -24,6 +24,7 @@ const contactsService = MockedService.ContactsService()
 let app: Express
 const prisonerNumber = 'A1234BC'
 const contactId = 987654
+const prisonerContactId = 456789
 const contact: ContactDetails = {
   id: contactId,
   title: '',
@@ -53,14 +54,14 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/manage/email/create', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/email/create', () => {
   it('should render create email page with navigation back to manage contact', async () => {
     // Given
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/create?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`,
     )
 
     // Then
@@ -70,8 +71,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/email/create', () => {
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'What is the email address for First Middle Last?',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
+    )
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
+    )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
   })
 
@@ -81,7 +86,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/email/create', () => {
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/create?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`,
     )
 
     // Then
@@ -100,7 +105,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/email/create', () => {
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/create?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`,
     )
 
     // Then
@@ -110,14 +115,15 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/email/create', () => {
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/manage/email/create', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/email/create', () => {
   it('should create email and pass to manage contact details page if there are no validation errors', async () => {
+    contactsService.getContact.mockResolvedValue(contact)
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/create?returnUrl=/foo-bar`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`)
       .type('form')
       .send({ emailAddress: 'test@example.com' })
       .expect(302)
-      .expect('Location', `/foo-bar`)
+      .expect('Location', `/prisoner/A1234BC/contacts/manage/987654/relationship/456789`)
 
     const requestBody: CreateEmailRequest = {
       emailAddress: 'test@example.com',
@@ -129,11 +135,14 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/email/create', () => {
 
   it('should return to input page with details kept if there are validation errors', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/create?returnUrl=/foo-bar`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`)
       .type('form')
       .send({ emailAddress: '' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/email/create?returnUrl=/foo-bar`)
+      .expect(
+        'Location',
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`,
+      )
     expect(contactsService.createContactEmail).not.toHaveBeenCalled()
   })
 })

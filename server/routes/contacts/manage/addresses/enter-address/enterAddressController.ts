@@ -15,8 +15,11 @@ export default class EnterAddressController implements PageHandler {
 
   private DEFAULT_COUNTRY = 'ENG'
 
-  GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
-    const { journeyId } = req.params
+  GET = async (
+    req: Request<PrisonerJourneyParams & { contactId: string; prisonerContactId: string }>,
+    res: Response,
+  ): Promise<void> => {
+    const { prisonerNumber, contactId, prisonerContactId, journeyId } = req.params
     const { user, prisonerDetails } = res.locals
     const journey = req.session.addressJourneys![journeyId]!
 
@@ -50,7 +53,7 @@ export default class EnterAddressController implements PageHandler {
     const noFixedAddress =
       res.locals?.formResponses?.['noFixedAddress'] ?? (journey.addressLines?.noFixedAddress ? 'YES' : 'NO')
     const navigation: Navigation = {
-      backLink: `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/select-type/${journeyId}`,
+      backLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/select-type/${journeyId}`,
     }
     const viewModel = {
       journey,
@@ -61,7 +64,7 @@ export default class EnterAddressController implements PageHandler {
       navigation,
       usePrisonerAddress: {
         enabled: usePrisonerAddressEnabled,
-        url: `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/use-prisoner-address/${journeyId}?returnUrl=/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/enter-address/${journeyId}`,
+        url: `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/use-prisoner-address/${journeyId}?returnUrl=/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/relationship/${prisonerContactId}/address/enter-address/${journeyId}`,
       },
       flat: res.locals?.formResponses?.['flat'] ?? journey.addressLines?.flat,
       premises: res.locals?.formResponses?.['premises'] ?? journey.addressLines?.premises,
@@ -76,6 +79,9 @@ export default class EnterAddressController implements PageHandler {
   POST = async (
     req: Request<
       {
+        prisonerNumber: string
+        contactId: string
+        prisonerContactId: string
         journeyId: string
       },
       unknown,
@@ -83,7 +89,7 @@ export default class EnterAddressController implements PageHandler {
     >,
     res: Response,
   ): Promise<void> => {
-    const { journeyId } = req.params
+    const { prisonerNumber, contactId, prisonerContactId, journeyId } = req.params
     const journey = req.session.addressJourneys![journeyId]!
     const form: AddressLinesSchema = req.body
     journey.addressLines = {
@@ -99,8 +105,8 @@ export default class EnterAddressController implements PageHandler {
     }
     res.redirect(
       journey.isCheckingAnswers
-        ? `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/check-answers/${journeyId}`
-        : `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/address-metadata/${journeyId}`,
+        ? `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/check-answers/${journeyId}`
+        : `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/address-metadata/${journeyId}`,
     )
   }
 

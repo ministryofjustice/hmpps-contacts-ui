@@ -100,9 +100,8 @@ context('Add Address', () => {
       .verifyShowsCommentsAs('Something about the address')
       .clickContinue()
 
-    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last').backTo(
-      ManageContactDetailsPage,
-      'First Middle Names Last',
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
+      'You’ve updated the contact methods for First Middle Names Last.',
     )
 
     cy.verifyLastAPICall(
@@ -169,7 +168,9 @@ context('Add Address', () => {
       .verifyShowsCommentsAs('Not provided')
       .clickContinue()
 
-    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last')
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
+      'You’ve updated the contact methods for First Middle Names Last.',
+    )
 
     cy.verifyLastAPICall(
       {
@@ -267,7 +268,9 @@ context('Add Address', () => {
       .verifyShowsCommentsAs('Not provided')
       .clickContinue()
 
-    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last')
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
+      'You’ve updated the contact methods for First Middle Names Last.',
+    )
 
     cy.verifyLastAPICall(
       {
@@ -417,7 +420,9 @@ context('Add Address', () => {
       .verifyShowsCommentsAs('Updated comments')
       .clickContinue()
 
-    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last')
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
+      'You’ve updated the contact methods for First Middle Names Last.',
+    )
 
     cy.verifyLastAPICall(
       {

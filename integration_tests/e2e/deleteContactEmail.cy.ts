@@ -55,9 +55,8 @@ context('Delete Contact Email', () => {
 
     Page.verifyOnPage(ConfirmDeleteEmailPage) //
       .hasEmailAddress('first@example.com')
-      .continueTo(EditContactMethodsPage, 'First Middle Names Last')
-      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .verifyOnContactsMethodsTab()
+      .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last.')
 
     cy.verifyAPIWasCalled(
       {
@@ -78,7 +77,6 @@ context('Delete Contact Email', () => {
 
     Page.verifyOnPage(ConfirmDeleteEmailPage) //
       .hasEmailAddress('last@example.com')
-      .cancelTo(EditContactMethodsPage, 'First Middle Names Last')
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
       .verifyOnContactsMethodsTab()
 
