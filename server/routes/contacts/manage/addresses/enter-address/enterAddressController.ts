@@ -15,7 +15,10 @@ export default class EnterAddressController implements PageHandler {
 
   private DEFAULT_COUNTRY = 'ENG'
 
-  GET = async (req: Request<PrisonerJourneyParams & { contactId: string; prisonerContactId: string }>, res: Response): Promise<void> => {
+  GET = async (
+    req: Request<PrisonerJourneyParams & { contactId: string; prisonerContactId: string }>,
+    res: Response,
+  ): Promise<void> => {
     const { prisonerNumber, contactId, prisonerContactId, journeyId } = req.params
     const { user, prisonerDetails } = res.locals
     const journey = req.session.addressJourneys![journeyId]!

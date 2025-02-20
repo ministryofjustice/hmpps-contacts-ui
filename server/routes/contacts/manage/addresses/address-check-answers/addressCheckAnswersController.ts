@@ -23,7 +23,7 @@ export default class AddressCheckAnswersController implements PageHandler {
     req: Request<PrisonerJourneyParams & { contactId: string; prisonerContactId: string }>,
     res: Response,
   ): Promise<void> => {
-    const { journeyId } = req.params
+    const { prisonerNumber, contactId, prisonerContactId, journeyId } = req.params
     const { user } = res.locals
     const journey = req.session.addressJourneys![journeyId]!
     journey.isCheckingAnswers = true
@@ -64,6 +64,7 @@ export default class AddressCheckAnswersController implements PageHandler {
     const typeLabel = addressTypeDescription?.toLowerCase() ?? 'address'
     const navigation: Navigation = {
       breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'],
+      cancelButton: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
     }
     const viewModel = {
       ...req.params,

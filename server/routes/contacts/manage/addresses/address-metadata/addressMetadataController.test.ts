@@ -13,6 +13,7 @@ import YesOrNo = journeys.YesOrNo
 import AddressMetadata = journeys.AddressMetadata
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
+import ContactDetails = contactsApiClientTypes.ContactDetails
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -29,6 +30,18 @@ let session: Partial<SessionData>
 const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 const contactId = 123456
+const prisonerContactId = 456789
+const contact: ContactDetails = {
+  id: contactId,
+  title: '',
+  lastName: 'last',
+  firstName: 'first',
+  middleNames: 'middle',
+  dateOfBirth: '1980-12-10T00:00:00.000Z',
+  createdBy: user.username,
+  createdTime: '2024-01-01',
+}
+
 let existingJourney: AddressJourney
 
 beforeEach(() => {
@@ -37,7 +50,6 @@ beforeEach(() => {
     lastTouched: new Date().toISOString(),
     prisonerNumber,
     contactId,
-    returnPoint: { url: '/foo-bar' },
     isCheckingAnswers: false,
     mode: 'ADD',
     contactNames: {
@@ -65,6 +77,7 @@ beforeEach(() => {
       session.addressJourneys[journeyId] = existingJourney
     },
   })
+  contactsService.getContact.mockResolvedValue(contact)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   referenceDataService.getReferenceDescriptionForCode.mockImplementation(
@@ -95,7 +108,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/address-metadata/:journeyId', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/address-metadata/:journeyId', () => {
   it.each([
     ['HOME', 'Provide further details about the home address for First Middle Last'],
     ['WORK', 'Provide further details about the work address for First Middle Last'],
@@ -109,7 +122,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addre
 
       // When
       const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/address-metadata/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/address-metadata/${journeyId}`,
       )
 
       // Then
@@ -117,7 +130,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addre
 
       const $ = cheerio.load(response.text)
       expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(expectedTitle)
-      expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+      expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+        `/prisoner/A1234BC/contacts/manage/123456/relationship/456789/address/enter-address/${journeyId}`,
+      )
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     },
   )
@@ -137,7 +152,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addre
     }
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/address-metadata/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/address-metadata/${journeyId}`,
     )
 
     // Then
@@ -152,7 +167,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addre
   it('should call the audit service for the page view', async () => {
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/address-metadata/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/address-metadata/${journeyId}`,
     )
 
     // Then
@@ -172,7 +187,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addre
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/address-metadata/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/address-metadata/${journeyId}`,
     )
 
     // Then
@@ -201,7 +216,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addre
 
       // When
       const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/address-metadata/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/address-metadata/${journeyId}`,
       )
 
       // Then
@@ -246,7 +261,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addre
 
       // When
       const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/address-metadata/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/address-metadata/${journeyId}`,
       )
 
       // Then
@@ -267,7 +282,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addre
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/address-metadata/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/address-metadata/${journeyId}`,
     )
 
     // Then
@@ -288,7 +303,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addre
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/address-metadata/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/address-metadata/${journeyId}`,
     )
 
     // Then
@@ -300,7 +315,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addre
 
   it('should render not found no journey in session', async () => {
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/address-metadata/${uuidv4()}`)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/address-metadata/${uuidv4()}`,
+      )
       .expect(200)
       .expect(res => {
         expect(res.text).toContain('Page not found')
@@ -308,7 +325,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addre
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/address-metadata/:journeyId', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/address-metadata/:journeyId', () => {
   it.each([['YES'], ['NO'], [undefined]])(
     'should pass to next page and set address metadata in session if there are no validation errors and in add mode',
     async option => {
@@ -317,7 +334,9 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addr
 
       // When
       await request(app)
-        .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/address-metadata/${journeyId}`)
+        .post(
+          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/address-metadata/${journeyId}`,
+        )
         .type('form')
         .send({
           fromMonth: '09',
@@ -331,7 +350,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addr
         .expect(302)
         .expect(
           'Location',
-          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/check-answers/${journeyId}`,
+          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/check-answers/${journeyId}`,
         )
 
       // Then
@@ -357,7 +376,9 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addr
 
       // When
       await request(app)
-        .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/address-metadata/${journeyId}`)
+        .post(
+          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/address-metadata/${journeyId}`,
+        )
         .type('form')
         .send({
           fromMonth: '09',
@@ -369,7 +390,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addr
           comments: 'Some comments',
         })
         .expect(302)
-        .expect('Location', '/foo-bar')
+        .expect('Location', '/prisoner/A1234BC/contacts/manage/123456/relationship/456789')
 
       // Then
       const expected: AddressMetadata = {
@@ -390,19 +411,23 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/addr
 
   it('should return to enter page if there are validation errors', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/address-metadata/${journeyId}`)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/address-metadata/${journeyId}`,
+      )
       .type('form')
       .send({ fromMonth: '', fromYear: '', toMonth: '', toYear: '' })
       .expect(302)
       .expect(
         'Location',
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/address-metadata/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/address-metadata/${journeyId}`,
       )
   })
 
   it('should return not found page if no journey in session', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/address-metadata/${uuidv4()}`)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/address-metadata/${uuidv4()}`,
+      )
       .type('form')
       .send({})
       .expect(200)

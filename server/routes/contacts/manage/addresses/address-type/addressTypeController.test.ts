@@ -23,6 +23,7 @@ let session: Partial<SessionData>
 const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 const contactId = 123456
+const prisonerContactId = 456789
 let existingJourney: AddressJourney
 
 beforeEach(() => {
@@ -31,7 +32,6 @@ beforeEach(() => {
     lastTouched: new Date().toISOString(),
     prisonerNumber,
     contactId,
-    returnPoint: { url: '/foo-bar' },
     isCheckingAnswers: false,
     mode: 'ADD',
     contactNames: {
@@ -61,13 +61,13 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/select-type/:journeyId', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/select-type/:journeyId', () => {
   it('should render address type page for new address', async () => {
     // Given
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/select-type/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/select-type/${journeyId}`,
     )
 
     // Then
@@ -77,7 +77,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/selec
     expect($('.main-heading').first().text().trim()).toStrictEqual(
       'What type of address do you want to add for First Middle Last?',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/123456/relationship/456789/edit-contact-methods',
+    )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('input[type=radio]:checked').val()).toBeUndefined()
   })
@@ -87,7 +89,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/selec
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/select-type/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/select-type/${journeyId}`,
     )
 
     // Then
@@ -106,7 +108,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/selec
 
       // When
       const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/select-type/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/select-type/${journeyId}`,
       )
 
       // Then
@@ -118,7 +120,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/selec
 
   it('should render not found no journey in session', async () => {
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/select-type/${uuidv4()}`)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/select-type/${uuidv4()}`,
+      )
       .expect(200)
       .expect(res => {
         expect(res.text).toContain('Page not found')
@@ -126,10 +130,16 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/selec
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/select-type/:journeyId', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/select-type/:journeyId', () => {
   it.each([
-    [false, `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/enter-address/${journeyId}`],
-    [true, `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/check-answers/${journeyId}`],
+    [
+      false,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/enter-address/${journeyId}`,
+    ],
+    [
+      true,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/check-answers/${journeyId}`,
+    ],
   ])(
     'should pass to next page and set type in session if there are no validation errors (%s, %s)',
     async (isCheckingAnswers: boolean, expectedUrl: string) => {
@@ -139,7 +149,9 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/sele
 
       // When
       await request(app)
-        .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/select-type/${journeyId}`)
+        .post(
+          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/select-type/${journeyId}`,
+        )
         .type('form')
         .send({ addressType: 'HOME' })
         .expect(302)
@@ -152,16 +164,23 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/address/sele
 
   it('should return to enter page if there are validation errors', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/select-type/${journeyId}`)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/select-type/${journeyId}`,
+      )
       .type('form')
       .send({})
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/select-type/${journeyId}`)
+      .expect(
+        'Location',
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/select-type/${journeyId}`,
+      )
   })
 
   it('should return not found page if no journey in session', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/select-type/${uuidv4()}`)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/select-type/${uuidv4()}`,
+      )
       .type('form')
       .send({})
       .expect(200)
