@@ -5,6 +5,19 @@ import { components } from '../../server/@types/organisationsApi'
 type OrganisationDetails = components['schemas']['OrganisationDetails']
 
 export default {
+  stubOrganisationsApiHealth: () =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/organisations-api/health/ping',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: { status: 'UP' },
+      },
+    }),
+
   stubOrganisationSearch: () =>
     stubFor({
       request: {
