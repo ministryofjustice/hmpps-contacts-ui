@@ -75,7 +75,9 @@ context('Edit Contact Phones', () => {
       .clearExtension()
       .clickContinue()
 
-    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last')
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
+      'You’ve updated the contact methods for First Middle Names Last.',
+    )
 
     cy.verifyLastAPICall(
       {
@@ -121,7 +123,9 @@ context('Edit Contact Phones', () => {
       .selectType('MOB')
       .clickContinue()
 
-    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last')
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
+      'You’ve updated the contact methods for First Middle Names Last.',
+    )
 
     cy.verifyLastAPICall(
       {

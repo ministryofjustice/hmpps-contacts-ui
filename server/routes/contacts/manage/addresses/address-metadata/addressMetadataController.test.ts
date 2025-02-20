@@ -405,7 +405,10 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       expect(existingJourney.addressMetadata).toStrictEqual(expected)
       expect(session.addressJourneys![journeyId]).toBeUndefined()
       expect(contactsService.updateContactAddress).toHaveBeenCalledWith(existingJourney, user)
-      expect(flashProvider).toHaveBeenCalledWith(FLASH_KEY__SUCCESS_BANNER, 'You’ve updated a contact address')
+      expect(flashProvider).toHaveBeenCalledWith(
+        FLASH_KEY__SUCCESS_BANNER,
+        'You’ve updated the contact methods for First Middle Last.',
+      )
     },
   )
 

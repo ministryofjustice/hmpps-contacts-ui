@@ -112,7 +112,6 @@ export default class AddressMetadataController implements PageHandler {
       await this.contactsService
         .updateContactAddress(journey, user)
         .then(_ => delete req.session.addressJourneys![journeyId])
-        .then(_ => req.flash(FLASH_KEY__SUCCESS_BANNER, 'You’ve updated a contact address'))
       await this.contactsService
         .getContact(Number(contactId), user)
         .then(response =>
