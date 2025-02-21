@@ -1,8 +1,8 @@
 import Page, { PageElement } from './page'
 
 export default class ConfirmDeleteEmailPage extends Page {
-  constructor() {
-    super(`Are you sure you want to delete this email address?`)
+  constructor(name: string) {
+    super(`Are you sure you want to delete this email address for ${name}?`)
   }
 
   hasEmailAddress(value: string): ConfirmDeleteEmailPage {
