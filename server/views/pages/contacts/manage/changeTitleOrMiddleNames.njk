@@ -30,7 +30,7 @@
 
               <div class="govuk-form-group">
                 <label class="govuk-label" for="firstName">First name</label>
-                <p class="govuk-!-width-one-third govuk-!-font-weight-bold" id="firstName">{{ firstName }}</p>
+                <p class="govuk-!-width-one-third govuk-!-font-weight-bold" id="firstName">{{ firstName | capitaliseName }}</p>
               </div>
 
                 {{ govukInput({
@@ -44,12 +44,12 @@
 
               <div class="govuk-form-group">
                 <label class="govuk-label" for="lastName">Last name</label>
-                <p class="govuk-!-width-one-third govuk-!-font-weight-bold" id="lastName">{{ lastName }}</p>
+                <p class="govuk-!-width-one-third govuk-!-font-weight-bold" id="lastName">{{ lastName | capitaliseName }}</p>
               </div>
 
                 <div class="govuk-button-group">
                     {{ govukButton({
-                        text: "Save and continue",
+                        text: "Confirm and save",
                         type: "submit",
                         classes: 'govuk-!-margin-top-6',
                         attributes: {"data-qa": "continue-button"},
