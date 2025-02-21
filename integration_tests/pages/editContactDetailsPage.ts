@@ -160,7 +160,8 @@ export default class EditContactDetailsPage extends Page {
 
   private dateOfBirthValue = (): PageElement => this.dateOfBirthHeading().next()
 
-  private changeDateOfBirthLink = (): PageElement => this.dateOfBirthHeading().next().next().find('a')
+  private changeDateOfBirthLink = (): PageElement =>
+    cy.findByRole('link', { name: /Change the contact’s date of birth/ })
 
   private genderHeading = (): PageElement => cy.findByText('Gender')
 

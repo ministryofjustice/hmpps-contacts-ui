@@ -113,7 +113,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         personalInformationCard,
         'Date of birth',
         '15 June 1982',
-        '/prisoner/A1234BC/contacts/manage/22/update-dob?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/update-dob',
         'Change the contact’s date of birth (Personal information)',
       )
       expectSummaryListItem(
@@ -170,7 +170,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         personalInformationCard,
         'Date of birth',
         'Not provided',
-        '/prisoner/A1234BC/contacts/manage/22/update-dob?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/update-dob',
         'Change the contact’s date of birth (Personal information)',
       )
       expectSummaryListItem(
