@@ -23,6 +23,7 @@ context('Change Relationship', () => {
     cy.task('stubComponentsMeta')
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.task('stubRelationshipReferenceData')
+    cy.task('stubOfficialRelationshipReferenceData')
     cy.task('stubTitlesReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetContactById', contact)
@@ -37,9 +38,11 @@ context('Change Relationship', () => {
     cy.signIn()
   })
 
-  it('Can select a new relationship', () => {
+  it('Can select a new social relationship', () => {
     const relationship = TestData.prisonerContactRelationship({
       prisonerContactId,
+      relationshipType: 'S',
+      relationshipTypeDescription: 'Social',
       relationshipToPrisonerCode: 'OTHER',
       relationshipToPrisonerDescription: 'Other',
     })
@@ -71,7 +74,9 @@ context('Change Relationship', () => {
       .selectRelationship('MOT')
       .clickContinue()
 
-    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last')
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
+      'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith.',
+    )
 
     cy.verifyLastAPICall(
       {
@@ -80,6 +85,58 @@ context('Change Relationship', () => {
       },
       {
         relationshipToPrisoner: 'MOT',
+        updatedBy: 'USER1',
+      },
+    )
+  })
+
+  it('Can select a new official relationship', () => {
+    const relationship = TestData.prisonerContactRelationship({
+      prisonerContactId,
+      relationshipType: 'O',
+      relationshipTypeDescription: 'Official',
+      relationshipToPrisonerCode: 'DR',
+      relationshipToPrisonerDescription: 'Doctor',
+    })
+    cy.task('stubGetPrisonerContactRelationshipById', {
+      id: prisonerContactId,
+      response: relationship,
+    })
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+
+    const updated: StubPrisonerContactRelationshipDetails = {
+      ...relationship,
+      relationshipToPrisonerCode: 'OFS',
+    }
+
+    cy.task('stubUpdateContactRelationshipById', {
+      prisonerContactId,
+      response: updated,
+    })
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .verifyShowRelationshipToPrisonerAs('Doctor')
+      .clickChangeRelationshipToPrisonerLink()
+
+    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last', 'John Smith') //
+      .hasRelationshipSelected('DR')
+      .selectRelationship('OFS')
+      .clickContinue()
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
+      'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith.',
+    )
+
+    cy.verifyLastAPICall(
+      {
+        method: 'PATCH',
+        urlPath: `/prisoner-contact/${prisonerContactId}`,
+      },
+      {
+        relationshipToPrisoner: 'OFS',
         updatedBy: 'USER1',
       },
     )
@@ -109,10 +166,10 @@ context('Change Relationship', () => {
       .clickContinue()
 
     const enterNamePage = Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last', 'John Smith')
-    enterNamePage.hasFieldInError('relationship', 'Enter the contact’s relationship to the prisoner')
+    enterNamePage.hasFieldInError('relationship', 'Select the contact’s relationship to the prisoner')
   })
 
-  it('Back link goes back to manage contact', () => {
+  it('Back link goes back to edit contact details', () => {
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),
@@ -144,7 +201,6 @@ context('Change Relationship', () => {
       .clickChangeRelationshipToPrisonerLink()
 
     Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last', 'John Smith') //
-      .cancelTo(EditContactDetailsPage, 'First Middle Names Last')
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 })
