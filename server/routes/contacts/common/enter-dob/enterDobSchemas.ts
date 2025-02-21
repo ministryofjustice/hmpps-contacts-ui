@@ -46,7 +46,6 @@ export const enterDobSchema = () => async () => {
       ],
       { errorMap: () => ({ message: YEAR_TYPE_MESSAGE }) },
     ),
-    dateOfBirth: z.date().optional(),
   })
     .superRefine((val, ctx) => {
       if (val.isKnown === 'YES') {
