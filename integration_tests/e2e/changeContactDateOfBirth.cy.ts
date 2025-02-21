@@ -2,7 +2,6 @@ import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import { StubPatchContactResponse } from '../mockApis/contactsApi'
-import EnterContactDateOfBirthPage from '../pages/enterContactDateOfBirthPage'
 import EditContactDetailsPage from '../pages/editContactDetailsPage'
 import ContactDetailsDobPage from '../pages/contact-details/dobPage'
 
