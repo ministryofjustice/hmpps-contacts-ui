@@ -4,6 +4,7 @@ import ManageContactDetailsPage from '../pages/manageContactDetails'
 import { StubPatchContactResponse } from '../mockApis/contactsApi'
 import EnterContactDateOfBirthPage from '../pages/enterContactDateOfBirthPage'
 import EditContactDetailsPage from '../pages/editContactDetailsPage'
+import ContactDetailsDobPage from '../pages/contact-details/dobPage'
 
 context('Change Contact Date Of Birth', () => {
   const contactId = 654321
@@ -37,7 +38,7 @@ context('Change Contact Date Of Birth', () => {
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
-      response: TestData.prisonerContactRelationship(),
+      response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
@@ -56,8 +57,7 @@ context('Change Contact Date Of Birth', () => {
       .verifyShowDOBValueAs('15 June 1982')
       .clickChangeDateOfBirthLink()
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last') //
-      .hasIsKnown('YES')
+    Page.verifyOnPage(ContactDetailsDobPage, 'First Middle Names Last') //
       .hasDay('15')
       .hasMonth('6')
       .hasYear('1982')
@@ -66,7 +66,9 @@ context('Change Contact Date Of Birth', () => {
       .enterYear('2000')
       .clickContinue()
 
-    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last')
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
+      'You’ve updated the personal information for First Middle Names Last.',
+    )
 
     cy.verifyLastAPICall(
       {
@@ -91,7 +93,7 @@ context('Change Contact Date Of Birth', () => {
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
-      response: TestData.prisonerContactRelationship(),
+      response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
@@ -110,15 +112,15 @@ context('Change Contact Date Of Birth', () => {
       .verifyShowDOBValueAs('Not provided')
       .clickChangeDateOfBirthLink()
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last') //
-      .hasIsKnown('NO')
-      .selectIsKnown('YES')
+    Page.verifyOnPage(ContactDetailsDobPage, 'First Middle Names Last') //
       .enterDay('25')
       .enterMonth('12')
       .enterYear('2000')
       .clickContinue()
 
-    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last')
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
+      'You’ve updated the personal information for First Middle Names Last.',
+    )
 
     cy.verifyLastAPICall(
       {
@@ -132,7 +134,7 @@ context('Change Contact Date Of Birth', () => {
     )
   })
 
-  it('Must enter dob if it is known', () => {
+  it('Must enter dob', () => {
     const contact = TestData.contact({
       id: contactId,
       lastName: 'Last',
@@ -143,7 +145,7 @@ context('Change Contact Date Of Birth', () => {
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
-      response: TestData.prisonerContactRelationship(),
+      response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
@@ -156,8 +158,8 @@ context('Change Contact Date Of Birth', () => {
       .verifyShowDOBValueAs('Not provided')
       .clickChangeDateOfBirthLink()
 
-    const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last')
-    enterDobPage.selectIsKnown('YES').clickContinue()
+    const enterDobPage = Page.verifyOnPage(ContactDetailsDobPage, 'First Middle Names Last')
+    enterDobPage.clickContinue()
     enterDobPage.hasFieldInError('dob', 'Enter the contact’s date of birth')
     enterDobPage.errorSummaryItems.spread((...$lis) => {
       expect($lis).to.have.lengthOf(1)
@@ -176,7 +178,7 @@ context('Change Contact Date Of Birth', () => {
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
-      response: TestData.prisonerContactRelationship(),
+      response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
@@ -189,13 +191,8 @@ context('Change Contact Date Of Birth', () => {
       .verifyShowDOBValueAs('Not provided')
       .clickChangeDateOfBirthLink()
 
-    const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last')
-    enterDobPage
-      .selectIsKnown('YES') //
-      .enterDay('aa')
-      .enterMonth('bb')
-      .enterYear('cc')
-      .clickContinue()
+    const enterDobPage = Page.verifyOnPage(ContactDetailsDobPage, 'First Middle Names Last')
+    enterDobPage.enterDay('aa').enterMonth('bb').enterYear('cc').clickContinue()
 
     enterDobPage.hasFieldInError('dob', 'Enter a valid day of the month (1-31)')
     enterDobPage.hasFieldInError('dob', 'Enter a valid month (1-12)')
@@ -210,7 +207,7 @@ context('Change Contact Date Of Birth', () => {
     })
   })
 
-  it('Back link goes back manage contacts from DOB', () => {
+  it('Back link goes back edit contact details from DOB', () => {
     const contact = TestData.contact({
       id: contactId,
       lastName: 'Last',
@@ -221,7 +218,7 @@ context('Change Contact Date Of Birth', () => {
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
-      response: TestData.prisonerContactRelationship(),
+      response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
@@ -234,9 +231,8 @@ context('Change Contact Date Of Birth', () => {
       .verifyShowDOBValueAs('Not provided')
       .clickChangeDateOfBirthLink()
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last') //
+    Page.verifyOnPage(ContactDetailsDobPage, 'First Middle Names Last') //
       .backTo(EditContactDetailsPage, 'First Middle Names Last')
-      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
   it('Cancel goes back to manage contacts from DOB', () => {
@@ -251,7 +247,7 @@ context('Change Contact Date Of Birth', () => {
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
-      response: TestData.prisonerContactRelationship(),
+      response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
@@ -264,8 +260,7 @@ context('Change Contact Date Of Birth', () => {
       .verifyShowDOBValueAs('Not provided')
       .clickChangeDateOfBirthLink()
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Names Last') //
-      .cancelTo(EditContactDetailsPage, 'First Middle Names Last')
+    Page.verifyOnPage(ContactDetailsDobPage, 'First Middle Names Last') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 })
