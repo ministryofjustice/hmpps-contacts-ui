@@ -41,6 +41,7 @@ export default class ManageGenderController implements PageHandler {
     }
     return res.render('pages/contacts/manage/contactDetails/manageGender', {
       isOptional: false,
+      continueButtonLabel: 'Confirm and save',
       contact,
       genderOptions,
       navigation,
