@@ -138,7 +138,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('#title').val()).toStrictEqual('DR')
   })
 
-  it('should render contact names on first load', async () => {
+  it('should render contact names with first and last capitalised', async () => {
     // Given
     contactsService.getContact.mockResolvedValue(
       TestData.contact({
@@ -158,9 +158,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
-    expect($('#firstName').text()).toStrictEqual('first')
+    expect($('#firstName').text()).toStrictEqual('First')
     expect($('#middleNames').val()).toStrictEqual('middle')
-    expect($('#lastName').text()).toStrictEqual('last')
+    expect($('#lastName').text()).toStrictEqual('Last')
     expect($('#title').val()).toStrictEqual('MR')
   })
 
@@ -183,9 +183,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
-    expect($('#firstName').text()).toStrictEqual('first')
+    expect($('#firstName').text()).toStrictEqual('First')
     expect($('#middleNames').val()).toBeUndefined()
-    expect($('#lastName').text()).toStrictEqual('last')
+    expect($('#lastName').text()).toStrictEqual('Last')
     expect($('#title').val()).toStrictEqual('')
   })
 })
