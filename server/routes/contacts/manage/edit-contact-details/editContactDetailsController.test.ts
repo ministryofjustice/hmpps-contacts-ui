@@ -120,7 +120,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         personalInformationCard,
         'Gender',
         'Male',
-        '/prisoner/A1234BC/contacts/manage/22/gender?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/gender',
         'Change the contact’s gender (Personal information)',
       )
       expectSummaryListItem(
@@ -177,7 +177,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         personalInformationCard,
         'Gender',
         'Not provided',
-        '/prisoner/A1234BC/contacts/manage/22/gender?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/gender',
         'Change the contact’s gender (Personal information)',
       )
       expectSummaryListItem(

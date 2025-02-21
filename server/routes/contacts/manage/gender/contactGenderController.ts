@@ -9,6 +9,10 @@ import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import { Navigation } from '../../common/navigation'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
+import { formatNameFirstNameFirst } from '../../../../utils/formatName'
+import Urls from '../../../urls'
+import { ContactGenderSchemaType } from './contactGenderSchema'
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 
@@ -20,34 +24,54 @@ export default class ManageGenderController implements PageHandler {
 
   public PAGE_NAME = Page.MANAGE_GENDER_PAGE
 
-  GET = async (req: Request<PrisonerJourneyParams & { contactId: string }>, res: Response): Promise<void> => {
-    const { contactId } = req.params
-    const { user, journey } = res.locals
+  GET = async (
+    req: Request<PrisonerJourneyParams & { contactId: string; prisonerContactId: string }>,
+    res: Response,
+  ): Promise<void> => {
+    const { prisonerNumber, contactId, prisonerContactId } = req.params
+    const { user } = res.locals
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
 
     const genderOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.GENDER, user)
       .then(val => this.getSelectedGenderOptions(val, contact.gender))
-    const navigation: Navigation = { backLink: journey.returnPoint.url }
+    const navigation: Navigation = {
+      backLink: Urls.editContactDetails(prisonerNumber, contactId, prisonerContactId),
+      cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
+    }
     return res.render('pages/contacts/manage/contactDetails/manageGender', {
+      isOptional: false,
       contact,
       genderOptions,
       navigation,
     })
   }
 
-  POST = async (req: Request<{ contactId: string; prisonerNumber: string }>, res: Response): Promise<void> => {
+  POST = async (
+    req: Request<
+      { contactId: string; prisonerNumber: string; prisonerContactId: string },
+      unknown,
+      ContactGenderSchemaType
+    >,
+    res: Response,
+  ): Promise<void> => {
     const { user } = res.locals
-    const { journey } = res.locals
-    const { contactId } = req.params
+    const { prisonerNumber, contactId, prisonerContactId } = req.params
     const request: PatchContactRequest = {
-      gender: req.body.gender || null,
+      gender: req.body.gender,
       updatedBy: user.username,
     }
 
     await this.contactsService.updateContactById(parseInt(contactId, 10), request, user)
-
-    res.redirect(journey.returnPoint.url)
+    await this.contactsService
+      .getContact(Number(contactId), user)
+      .then(response =>
+        req.flash(
+          FLASH_KEY__SUCCESS_BANNER,
+          `You’ve updated the personal information for ${formatNameFirstNameFirst(response)}.`,
+        ),
+      )
+    res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
   }
 
   private getSelectedGenderOptions(

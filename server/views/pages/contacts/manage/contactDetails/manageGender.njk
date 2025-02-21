@@ -1,16 +1,17 @@
-{% extends "../../../../partials/layout.njk" %}
+{% extends "partials/layout.njk" %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "../../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
 
 {% set pageTitle = applicationName + " - Enter gender" %}
-{% set title = "What is " + contact | formatNameFirstNameFirst(possessiveSuffix = true) + " gender? (optional)" %}
+{% set title = "What is " + contact | formatNameFirstNameFirst(possessiveSuffix = true) + " gender?" + (" (optional)" if isOptional else "") %}
 
 {% block content %}
 
-{% include '../../../../partials/navigation.njk' %}
+{% include 'partials/navigation.njk' %}
 {{ miniProfile(prisonerDetails) }}
+{% include 'partials/formErrorSummary.njk' %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <span class="govuk-caption-l">Contacts</span>
@@ -24,19 +25,22 @@
                   classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6 main-heading"
                 }
               },
+              errorMessage: validationErrors | findError('gender'),
               id: "gender",
                 name: "gender",
                 items: genderOptions
             }) }}
             <div class="govuk-button-group">
                 {{ govukButton({
-                    text: "Confirm and save",
+                    text: submitButtonLabel or "Confirm and save",
                     type: "submit",
                     classes: 'govuk-!-margin-top-6',
                     attributes: {"data-qa": "continue-button"},
                     preventDoubleClick: true
                 }) }}
-                <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ journey.returnPoint.url }}" data-qa="cancel-button">Cancel</a>
+              {% if navigation.cancelButton %}
+                <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
+              {% endif %}
             </div>
         </form>
      </div>
