@@ -54,7 +54,9 @@ context('Select Gender', () => {
 
     Page.verifyOnPage(SelectGenderPage, 'Jones Mason').selectGender('M').clickContinue()
 
-    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason')
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').hasSuccessBanner(
+      'You’ve updated the personal information for Jones Mason.',
+    )
 
     cy.verifyLastAPICall(
       {
@@ -68,12 +70,7 @@ context('Select Gender', () => {
     )
   })
 
-  it(`should display 'Not provided' when gender not selected`, () => {
-    const request: PatchContactRequest = {
-      gender: null,
-      updatedBy: 'USER1',
-    }
-    cy.task('stubPatchContactById', { contactId, request })
+  it(`should require mandatory gender input`, () => {
     cy.task(
       'stubGetContactById',
       TestData.contact({
@@ -90,18 +87,7 @@ context('Select Gender', () => {
       .clickChangeGenderLink()
 
     Page.verifyOnPage(SelectGenderPage, 'Jones Mason').clickContinue()
-    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason')
-
-    cy.verifyLastAPICall(
-      {
-        method: 'PATCH',
-        urlPath: `/contact/${contactId}`,
-      },
-      {
-        gender: null,
-        updatedBy: 'USER1',
-      },
-    )
+    Page.verifyOnPage(SelectGenderPage, 'Jones Mason').hasFieldInError('gender', 'Select the contact’s gender')
   })
 
   it(`Back link goes back to manage contact`, () => {
@@ -126,7 +112,6 @@ context('Select Gender', () => {
       .clickChangeGenderLink()
 
     Page.verifyOnPage(SelectGenderPage, 'Jones Mason') //
-      .cancelTo(EditContactDetailsPage, 'Jones Mason')
       .cancelTo(ManageContactDetailsPage, 'Jones Mason')
   })
 })

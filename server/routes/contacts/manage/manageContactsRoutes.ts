@@ -74,6 +74,7 @@ import { checkEmployerSchema } from './update-employments/check-employer/checkEm
 import { employmentStatusSchema } from './update-employments/employment-status/employmentStatusSchema'
 import EmploymentStatusController from './update-employments/employment-status/employmentStatusController'
 import DeleteEmploymentController from './update-employments/delete-employment/deleteEmploymentController'
+import { contactGenderSchema } from './gender/contactGenderSchema'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -284,10 +285,10 @@ const ManageContactsRoutes = (
     schema: enterDobSchema(),
   })
 
-  standAloneJourneyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/gender',
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/gender',
     controller: new ManageGenderController(contactsService, referenceDataService),
-    noValidation: true,
+    schema: contactGenderSchema,
   })
 
   standAloneRoute({
