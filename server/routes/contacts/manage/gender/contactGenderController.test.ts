@@ -20,6 +20,7 @@ const referenceDataService = MockedService.ReferenceDataService()
 let app: Express
 const prisonerNumber = 'A1234BC'
 const contactId = 10
+const prisonerContactId = 987654
 
 beforeEach(() => {
   app = appWithAllRoutes({
@@ -38,7 +39,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/gender', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/gender', () => {
   beforeEach(() => {
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
   })
@@ -54,7 +55,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/gender', () =
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/gender?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/gender`,
     )
     const $ = cheerio.load(response.text)
 
@@ -65,21 +66,38 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/gender', () =
       who: user.username,
       correlationId: expect.any(String),
     })
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/10/relationship/987654',
+    )
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/10/relationship/987654/edit-contact-details',
+    )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/gender', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/gender', () => {
   it('should update contact when gender is selected', async () => {
+    contactsService.getContact.mockResolvedValue(TestData.contact())
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/gender?returnUrl=/foo-bar`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/gender`)
       .type('form')
       .send({ gender: 'M' })
       .expect(302)
-      .expect('Location', '/foo-bar')
+      .expect('Location', '/prisoner/A1234BC/contacts/manage/10/relationship/987654')
 
     expect(contactsService.updateContactById).toHaveBeenCalledWith(10, { gender: 'M', updatedBy: 'user1' }, user)
+  })
+
+  it('should return to enter page if there are validation errors', async () => {
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/gender`)
+      .type('form')
+      .send({ gender: undefined })
+      .expect(302)
+      .expect(
+        'Location',
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/gender`,
+      )
   })
 })
