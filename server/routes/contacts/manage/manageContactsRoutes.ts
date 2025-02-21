@@ -36,7 +36,7 @@ import ManageContactAddEmailController from './email/add/manageContactAddEmailCo
 import ManageContactEditEmailController from './email/edit/manageContactEditEmailController'
 import { emailSchema } from './email/emailSchemas'
 import ManageEmergencyContactController from './relationship/manageEmergencyContactController'
-import ManageContactRelationshipController from './relationship/manageContactRelationshipController'
+import ManageContactRelationshipToPrisonerController from './relationship/manageContactRelationshipToPrisonerController'
 import { selectRelationshipSchemaFactory } from '../common/relationship/selectRelationshipSchemas'
 import ManageNextOfKinContactController from './relationship/manageNextOfKinContactController'
 import ManageContactDeleteEmailController from './email/delete/manageContactDeleteEmailController'
@@ -124,21 +124,27 @@ const ManageContactsRoutes = (
     controller,
     schema,
     noValidation,
+    prisonerDetailsRequiredOnPost,
   }: {
     path: string
     controller: PageHandler
     schema?: z.ZodTypeAny | SchemaFactory<P>
     noValidation?: boolean
+    prisonerDetailsRequiredOnPost?: boolean
   }) => {
     if (!schema && !noValidation) {
       throw Error('Missing validation schema for POST route')
     }
     get(path, controller)
+
+    const postMiddleware: (RequestHandler<P> | RequestHandler)[] = []
     if (schema) {
-      post(path, controller, validate(schema))
-    } else {
-      post(path, controller)
+      postMiddleware.push(validate(schema))
     }
+    if (prisonerDetailsRequiredOnPost) {
+      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService) as RequestHandler)
+    }
+    post(path, controller, ...postMiddleware)
   }
 
   const journeyRoute = <P extends { [key: string]: string }>({
@@ -296,10 +302,11 @@ const ManageContactsRoutes = (
     noValidation: true,
   })
 
-  standAloneJourneyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-relationship',
-    controller: new ManageContactRelationshipController(contactsService, referenceDataService),
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-relationship-to-prisoner',
+    controller: new ManageContactRelationshipToPrisonerController(contactsService, referenceDataService),
     schema: selectRelationshipSchemaFactory(),
+    prisonerDetailsRequiredOnPost: true,
   })
 
   standAloneJourneyRoute({

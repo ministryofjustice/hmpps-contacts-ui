@@ -219,7 +219,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         relationshipInformationCard,
         'Relationship to prisoner',
         'Friend',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/update-relationship?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/update-relationship-to-prisoner',
         'Change the relationship to the prisoner (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(
@@ -287,7 +287,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         relationshipInformationCard,
         'Relationship to prisoner',
         'Doctor',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/update-relationship?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/update-relationship-to-prisoner',
         'Change the relationship to the prisoner (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(

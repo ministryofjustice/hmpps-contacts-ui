@@ -325,7 +325,7 @@ context('Create Contacts', () => {
     const selectRelationshipPage = Page.verifyOnPage(SelectRelationshipPage, 'First Last', 'John Smith')
     selectRelationshipPage.clickContinue()
 
-    selectRelationshipPage.hasFieldInError('relationship', 'Enter the contact’s relationship to the prisoner')
+    selectRelationshipPage.hasFieldInError('relationship', 'Select the contact’s relationship to the prisoner')
   })
 
   it('Must select contact relationship', () => {

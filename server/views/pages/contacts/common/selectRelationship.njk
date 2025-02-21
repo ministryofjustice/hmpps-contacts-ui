@@ -1,21 +1,21 @@
-{% extends "../../../partials/layout.njk" %}
+{% extends "partials/layout.njk" %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
 
 {% set pageTitle = applicationName + " - Enter name" %}
-{% set title = "What is " + journey.names | formatNameFirstNameFirst(possessiveSuffix = true) + " relationship to " + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) + "?" %}
+{% set title = "What is " + names | formatNameFirstNameFirst(possessiveSuffix = true) + " relationship to " + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) + "?" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
 
-{% include '../../../partials/navigation.njk' %}
+{% include 'partials/navigation.njk' %}
 {{ miniProfile(prisonerDetails) }}
-{% include '../../../partials/formErrorSummary.njk' %}
+{% include 'partials/formErrorSummary.njk' %}
  <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <span class="govuk-caption-l">{{ caption or 'Contacts' }}</span>
+            <span class="govuk-caption-l">{{ caption }}</span>
             <h1 class="govuk-heading-l" data-qa="main-heading"><label for="relationship">{{ title }}</label></h1>
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
@@ -32,7 +32,7 @@
                 }) }}
                 <div class="govuk-button-group">
                     {{ govukButton({
-                        text: "Continue",
+                        text: continueButtonLabel,
                         type: "submit",
                         classes: 'govuk-!-margin-top-6',
                         attributes: {"data-qa": "continue-button"},

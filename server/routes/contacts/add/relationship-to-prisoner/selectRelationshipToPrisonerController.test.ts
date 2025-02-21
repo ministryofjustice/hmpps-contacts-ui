@@ -79,12 +79,13 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-to-p
     expect($('[data-qa=cancel-button]')).toHaveLength(0)
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual(expectedCaption)
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
   })
 
   it.each([
     [
       'S',
-      'Daughter',
+      'Mother',
       'For example, if First Middle Last is the prisoner’s uncle, select ‘Uncle’.',
       'Select social relationship',
     ],
@@ -120,7 +121,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-to-p
     },
   )
 
-  it('options should be alphabetic', async () => {
+  it('options should be default order', async () => {
     // Given
 
     // When
@@ -133,9 +134,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-to-p
 
     const $ = cheerio.load(response.text)
     expect($('#relationship :nth-child(1)').text()).toStrictEqual('Select social relationship')
-    expect($('#relationship :nth-child(2)').text()).toStrictEqual('Daughter')
+    expect($('#relationship :nth-child(2)').text()).toStrictEqual('Mother')
     expect($(`#relationship :nth-child(${STUBBED_SOCIAL_RELATIONSHIP_OPTIONS.length + 1})`).text()).toStrictEqual(
-      'ZZZ Alphabetically Last',
+      'In Loco Parentes',
     )
   })
 

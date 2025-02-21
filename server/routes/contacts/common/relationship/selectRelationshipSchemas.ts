@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { createSchema } from '../../../../middleware/validationMiddleware'
 
-const RELATIONSHIP_REQUIRED_MESSAGE = 'Enter the contact’s relationship to the prisoner'
+const RELATIONSHIP_REQUIRED_MESSAGE = 'Select the contact’s relationship to the prisoner'
 
 export const selectRelationshipSchemaFactory = () => async () => {
   return createSchema({

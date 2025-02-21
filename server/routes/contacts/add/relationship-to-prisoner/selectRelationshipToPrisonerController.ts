@@ -42,11 +42,12 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
         ),
       )
     const viewModel = {
-      journey,
+      names: journey.names,
       hintText,
       caption: captionForAddContactJourney(journey),
       relationshipOptions,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      continueButtonLabel: 'Continue',
     }
     res.render('pages/contacts/common/selectRelationship', viewModel)
   }
@@ -74,15 +75,13 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
     text: string
     selected?: boolean
   }> {
-    const mappedOptions = options
-      .map((relationship: ReferenceCode) => {
-        return {
-          text: relationship.description,
-          value: relationship.code,
-          selected: relationship.code === selected,
-        }
-      })
-      .sort((a, b) => a.text.localeCompare(b.text))
+    const mappedOptions = options.map((relationship: ReferenceCode) => {
+      return {
+        text: relationship.description,
+        value: relationship.code,
+        selected: relationship.code === selected,
+      }
+    })
     return [{ text: defaultSelectLabel, value: '' }, ...mappedOptions]
   }
 }
