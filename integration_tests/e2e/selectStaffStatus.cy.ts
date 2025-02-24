@@ -1,37 +1,28 @@
 import { components } from '../../server/@types/contactsApi'
 import TestData from '../../server/routes/testutils/testData'
-import ListContactsPage from '../pages/listContacts'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import Page from '../pages/page'
-import SearchPrisonerPage from '../pages/searchPrisoner'
-import SelectStaffStatusPage from '../pages/selectStaffStatus'
+import SelectStaffStatusPage from '../pages/contact-details/selectStaffStatus'
 import EditContactDetailsPage from '../pages/editContactDetailsPage'
 
 export type PatchContactRequest = components['schemas']['PatchContactRequest']
 
 context('Select Staff Status', () => {
+  const prisoner = TestData.prisoner()
   const contactId = 22
   const prisonerContactId = 31
+  const { prisonerNumber } = prisoner
+
   beforeEach(() => {
-    const { prisonerNumber } = TestData.prisoner()
     cy.task('reset')
     cy.task('stubComponentsMeta')
     cy.task('stubSignIn', { roles: ['PRISON'] })
-    cy.signIn()
-    cy.task('stubPrisoners', {
-      results: {
-        totalPages: 1,
-        totalElements: 1,
-        content: [TestData.prisoner()],
-      },
-      prisonId: 'HEI',
-      term: prisonerNumber,
-    })
-    cy.task('stubPrisonerById', TestData.prisoner())
-    cy.task('stubGetContactById', TestData.contact())
+    cy.task('stubTitlesReferenceData')
+    cy.task('stubPrisonerById', prisoner)
+    cy.task('stubGetContactById', TestData.contact({ id: contactId }))
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
-      response: TestData.prisonerContactRelationship(),
+      response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId,
@@ -40,8 +31,7 @@ context('Select Staff Status', () => {
         contactGlobalRestrictions: [],
       },
     })
-    cy.task('stubContactList', 'A1234BC')
-    cy.visit('/contacts/manage/prisoner-search/start')
+    cy.signIn()
   })
 
   it(`should render manage contact details staff status`, () => {
@@ -49,12 +39,9 @@ context('Select Staff Status', () => {
       isStaff: true,
       updatedBy: 'USER1',
     }
-    const { prisonerNumber } = TestData.prisoner()
-    cy.task('stubTitlesReferenceData')
     cy.task('stubPatchContactById', { contactId, request })
 
-    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
-    Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
       .clickEditContactDetailsLink()
 
@@ -64,10 +51,8 @@ context('Select Staff Status', () => {
 
     Page.verifyOnPage(SelectStaffStatusPage, 'Jones Mason').selectStaffStatus().clickContinue()
 
-    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason') //
-      .clickChangeStaffStatusLink()
-
-    Page.verifyOnPage(SelectStaffStatusPage, 'Jones Mason').selectStaffStatus().clickCancel()
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
+      .hasSuccessBanner('You’ve updated the personal information for Jones Mason.')
 
     cy.verifyLastAPICall(
       {
@@ -81,12 +66,8 @@ context('Select Staff Status', () => {
     )
   })
 
-  it(`Back link goes to manage contacts`, () => {
-    const { prisonerNumber } = TestData.prisoner()
-    cy.task('stubTitlesReferenceData')
-
-    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
-    Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
+  it('goes to correct page on Back or Cancel', () => {
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
       .clickEditContactDetailsLink()
 
@@ -94,26 +75,13 @@ context('Select Staff Status', () => {
       .verifyShowStaffStatusValueAs('No')
       .clickChangeStaffStatusLink()
 
+    // Back to Edit Contact Details
     Page.verifyOnPage(SelectStaffStatusPage, 'Jones Mason') //
       .backTo(EditContactDetailsPage, 'Jones Mason')
-      .backTo(ManageContactDetailsPage, 'Jones Mason')
-  })
-
-  it(`Cancel goes to manage contacts`, () => {
-    const { prisonerNumber } = TestData.prisoner()
-    cy.task('stubTitlesReferenceData')
-
-    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
-    Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickEditContactDetailsLink()
-
-    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason') //
-      .verifyShowStaffStatusValueAs('No')
       .clickChangeStaffStatusLink()
 
+    // Cancel to Contact Details page
     Page.verifyOnPage(SelectStaffStatusPage, 'Jones Mason') //
-      .cancelTo(EditContactDetailsPage, 'Jones Mason')
       .cancelTo(ManageContactDetailsPage, 'Jones Mason')
   })
 })

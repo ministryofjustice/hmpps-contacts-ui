@@ -75,6 +75,7 @@ import EmploymentStatusController from './update-employments/employment-status/e
 import DeleteEmploymentController from './update-employments/delete-employment/deleteEmploymentController'
 import { updateDobSchema } from './update-dob/manageContactDobSchema'
 import { contactGenderSchema } from './gender/contactGenderSchema'
+import { manageContactStaffSchema } from './staff/manageContactStaffSchema'
 import ChangeRelationshipTypeStartController from './relationship/type/start/changeRelationshipTypeStartController'
 import ChangeRelationshipTypeController from './relationship/type/select-new-relationship-type/changeRelationshipTypeController'
 import { selectRelationshipTypeSchema } from '../add/relationship-type/relationshipTypeSchema'
@@ -241,10 +242,10 @@ const ManageContactsRoutes = (
     noValidation: true,
   })
 
-  standAloneJourneyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/staff',
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/staff',
     controller: new ManageContactStaffController(contactsService),
-    noValidation: true,
+    schema: manageContactStaffSchema,
   })
 
   standAloneRoute({
