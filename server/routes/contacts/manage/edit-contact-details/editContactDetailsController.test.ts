@@ -127,7 +127,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         personalInformationCard,
         'Staff member',
         'Yes',
-        '/prisoner/A1234BC/contacts/manage/22/staff?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/staff',
         'Change if the contact is a member of staff (Personal information)',
       )
     })
@@ -184,7 +184,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         personalInformationCard,
         'Staff member',
         'No',
-        '/prisoner/A1234BC/contacts/manage/22/staff?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/staff',
         'Change if the contact is a member of staff (Personal information)',
       )
     })
