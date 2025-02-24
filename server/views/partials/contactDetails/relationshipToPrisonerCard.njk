@@ -21,6 +21,17 @@
         },
         value: {
           text: relationship.relationshipTypeDescription
+        },
+        actions: {
+          items: [
+            {
+              href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + relationship.prisonerContactId + "/type/start",
+              text: "Change",
+              visuallyHiddenText: "relationship type",
+              attributes: {"data-qa": "change-relationship-type-link"},
+              classes: "govuk-link--no-visited-state"
+            }
+          ] if showActions else []
         }
       },
       {
