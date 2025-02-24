@@ -233,7 +233,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         relationshipInformationCard,
         'Relationship status',
         'Active',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/relationship-status?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/relationship-status',
         'Change the status of the relationship (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(
@@ -308,7 +308,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         relationshipInformationCard,
         'Relationship status',
         'Inactive',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/relationship-status?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/relationship-status',
         'Change the status of the relationship (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(

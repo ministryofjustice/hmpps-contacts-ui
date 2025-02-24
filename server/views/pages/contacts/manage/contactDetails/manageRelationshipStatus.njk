@@ -1,21 +1,21 @@
-{% extends "../../../../partials/layout.njk" %}
+{% extends "partials/layout.njk" %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
-{% from "../../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
 
 {% set pageTitle = applicationName + " - Update relationship between prisoner" %}
-{% set title = "Is the relationship between " + contact | formatNameFirstNameFirst + " and the prisoner active?" %}
+{% set title = "What is the status of the relationship between " + contact | formatNameFirstNameFirst + " and " + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) + "?" %}
 
 {% block content %}
 
-{% include '../../../../partials/navigation.njk' %}
-
-{{ miniProfile(prisonerDetails) }}
+  {% include 'partials/navigation.njk' %}
+  {{ miniProfile(prisonerDetails) }}
+  {% include 'partials/formErrorSummary.njk' %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <span class="govuk-caption-l">Contacts</span>
+        <span class="govuk-caption-l">Edit contact relationship information</span>
         <form method='POST'>
             <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
@@ -27,16 +27,17 @@
                   classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6 main-heading"
                 }
               },
+              errorMessage: validationErrors | findError('relationshipStatus'),
               name: "relationshipStatus",
                     items: [
                         {
                             value: "YES",
-                            text: 'YES' | formatYesNo,
+                            text: 'Active',
                             checked: relationship.isRelationshipActive === true
                         },
                         {
                             value: "NO",
-                            text: 'NO' | formatYesNo,
+                            text: 'Inactive',
                             checked: relationship.isRelationshipActive === false
                         }
                     ]
@@ -45,13 +46,13 @@
 
             <div class="govuk-button-group">
                 {{ govukButton({
-                    text: "Save and continue",
+                    text: "Confirm and save",
                     type: "submit",
                     classes: 'govuk-!-margin-top-6',
                     attributes: {"data-qa": "continue-button"},
                     preventDoubleClick: true
                 }) }}
-                <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ journey.returnPoint.url }}" data-qa="cancel-button">Cancel</a>
+                <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
             </div>
         </form>
      </div>

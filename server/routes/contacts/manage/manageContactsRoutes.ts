@@ -51,7 +51,7 @@ import { addressMetadataSchema } from './addresses/address-metadata/addressMetad
 import AddressCheckAnswersController from './addresses/address-check-answers/addressCheckAnswersController'
 import RestrictionsService from '../../../services/restrictionsService'
 import ManageApprovedToVisitController from './approved-to-visit/manageApprovedToVisitController'
-import ManageRelationshipStatusController from './relationship/manageRelationshipStatusController'
+import ManageRelationshipStatusController from './relationship/status/manageRelationshipStatusController'
 import ManageContactAddAddressPhoneController from './phone/add-address-phone/manageContactAddAddressPhoneController'
 import ManageContactEditAddressPhoneController from './phone/edit-address-phone/manageContactEditAddressPhoneController'
 import ManageContactDeleteAddressPhoneController from './phone/delete-address-phone/manageContactDeleteAddressPhoneController'
@@ -81,6 +81,7 @@ import ChangeRelationshipTypeController from './relationship/type/select-new-rel
 import { selectRelationshipTypeSchema } from '../add/relationship-type/relationshipTypeSchema'
 import { ensureInChangeRelationshipTypeJourney } from './relationship/type/changeRelationshipTypeMiddleware'
 import ChangeRelationshipTypeRelationshipToPrisonerController from './relationship/type/select-new-relationship-to-prisoner/changeRelationshipTypeRelationshipToPrisonerController'
+import { manageRelationshipStatusSchema } from './relationship/status/manageRelationshipStatusSchema'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -327,10 +328,11 @@ const ManageContactsRoutes = (
     noValidation: true,
   })
 
-  standAloneJourneyRoute({
+  standAloneRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/relationship-status',
     controller: new ManageRelationshipStatusController(contactsService),
-    noValidation: true,
+    schema: manageRelationshipStatusSchema,
+    prisonerDetailsRequiredOnPost: true,
   })
 
   standAloneRoute({

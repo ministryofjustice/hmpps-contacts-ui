@@ -180,7 +180,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     // Given
     existingJourney.relationshipType = 'O'
     contactsService.getContact.mockResolvedValue(contact)
-    contactsService.updateContactRelationshipById.mockResolvedValue(relationship)
+    contactsService.updateContactRelationshipById.mockResolvedValue(undefined)
 
     // When
     await request(app)

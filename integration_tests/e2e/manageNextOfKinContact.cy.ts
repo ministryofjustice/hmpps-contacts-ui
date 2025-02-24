@@ -31,7 +31,6 @@ context('Manage contact update next of kin contact', () => {
 
     cy.task('stubUpdateContactRelationshipById', {
       prisonerContactId,
-      response: { isNextOfKin: false },
     })
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId,

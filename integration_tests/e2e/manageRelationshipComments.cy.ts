@@ -30,7 +30,6 @@ context('Manage contact update comments for a contact', () => {
     })
     cy.task('stubUpdateContactRelationshipById', {
       prisonerContactId,
-      response: { comments: 'my comments' },
     })
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId,

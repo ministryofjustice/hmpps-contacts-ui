@@ -1,8 +1,8 @@
-import Page, { PageElement } from './page'
+import Page, { PageElement } from '../../page'
 
 export default class SelectRelationshipStatusPage extends Page {
-  constructor(name: string) {
-    super(`Is the relationship between ${name} and the prisoner active?`)
+  constructor(contactName: string, prisonerName) {
+    super(`What is the status of the relationship between ${contactName} and ${prisonerName}?`)
   }
 
   selectIsRelationshipActive(value: 'YES' | 'NO'): SelectRelationshipStatusPage {

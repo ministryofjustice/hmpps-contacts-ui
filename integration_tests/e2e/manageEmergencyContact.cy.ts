@@ -30,7 +30,6 @@ context('Manage contact update emergency contact', () => {
     })
     cy.task('stubUpdateContactRelationshipById', {
       prisonerContactId,
-      response: { isEmergencyContact: false },
     })
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId,
