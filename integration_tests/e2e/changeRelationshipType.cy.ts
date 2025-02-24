@@ -1,7 +1,6 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
-import { StubPrisonerContactRelationshipDetails } from '../mockApis/contactsApi'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import EditContactDetailsPage from '../pages/editContactDetailsPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
