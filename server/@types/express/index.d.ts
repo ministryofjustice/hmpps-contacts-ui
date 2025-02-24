@@ -9,6 +9,7 @@ export declare module 'express-session' {
   import AddRestrictionJourney = journeys.AddRestrictionJourney
   import AddressJourney = journeys.AddressJourney
   import UpdateEmploymentsJourney = journeys.UpdateEmploymentsJourney
+  import ChangeRelationshipTypeJourney = journeys.ChangeRelationshipTypeJourney
 
   interface SessionData {
     returnTo: string
@@ -19,6 +20,7 @@ export declare module 'express-session' {
     addRestrictionJourneys: Record<string, AddRestrictionJourney>
     addressJourneys: Record<string, AddressJourney>
     updateEmploymentsJourneys: Record<string, UpdateEmploymentsJourney>
+    changeRelationshipTypeJourneys: Record<string, ChangeRelationshipTypeJourney>
     // Caseload details populated by dpsComponents.retrieveCaseLoadData
     caseLoads?: CaseLoad[]
     activeCaseLoad?: CaseLoad

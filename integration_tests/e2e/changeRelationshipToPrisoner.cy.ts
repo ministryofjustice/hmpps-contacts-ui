@@ -5,7 +5,7 @@ import { StubPrisonerContactRelationshipDetails } from '../mockApis/contactsApi'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import EditContactDetailsPage from '../pages/editContactDetailsPage'
 
-context('Change Relationship', () => {
+context('Change Relationship To Prisoner', () => {
   const contactId = 654321
   const prisonerContactId = 987654
   const { prisonerNumber } = TestData.prisoner()

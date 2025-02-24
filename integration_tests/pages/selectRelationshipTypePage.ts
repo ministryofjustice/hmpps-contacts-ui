@@ -10,5 +10,10 @@ export default class SelectRelationshipTypePage extends Page {
     return this
   }
 
+  hasRelationshipType(value: 'S' | 'O'): SelectRelationshipTypePage {
+    this.radio(value).should('be.checked')
+    return this
+  }
+
   private radio = (value: 'S' | 'O'): PageElement => cy.get(`.govuk-radios__input[value='${value}']`)
 }

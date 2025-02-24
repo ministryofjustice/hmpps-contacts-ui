@@ -75,6 +75,11 @@ import EmploymentStatusController from './update-employments/employment-status/e
 import DeleteEmploymentController from './update-employments/delete-employment/deleteEmploymentController'
 import { updateDobSchema } from './update-dob/manageContactDobSchema'
 import { contactGenderSchema } from './gender/contactGenderSchema'
+import ChangeRelationshipTypeStartController from './relationship/type/start/changeRelationshipTypeStartController'
+import ChangeRelationshipTypeController from './relationship/type/select-new-relationship-type/changeRelationshipTypeController'
+import { selectRelationshipTypeSchema } from '../add/relationship-type/relationshipTypeSchema'
+import { ensureInChangeRelationshipTypeJourney } from './relationship/type/changeRelationshipTypeMiddleware'
+import ChangeRelationshipTypeRelationshipToPrisonerController from './relationship/type/select-new-relationship-to-prisoner/changeRelationshipTypeRelationshipToPrisonerController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -154,12 +159,14 @@ const ManageContactsRoutes = (
     journeyEnsurer,
     schema,
     noValidation,
+    prisonerDetailsRequiredOnPost,
   }: {
     path: string
     controller: PageHandler
     journeyEnsurer: RequestHandler<P> | (RequestHandler<P> | RequestHandler)[]
     schema?: z.ZodTypeAny | SchemaFactory<P>
     noValidation?: boolean
+    prisonerDetailsRequiredOnPost?: boolean
   }) => {
     if (!schema && !noValidation) {
       throw Error('Missing validation schema for POST route')
@@ -168,11 +175,14 @@ const ManageContactsRoutes = (
     const journeyMiddleware = Array.isArray(journeyEnsurer) ? journeyEnsurer : [journeyEnsurer]
 
     get(path, controller, ...journeyMiddleware)
+    const postMiddleware: (RequestHandler<P> | RequestHandler)[] = [...journeyMiddleware]
     if (schema) {
-      post(path, controller, ...journeyMiddleware, validate(schema))
-    } else {
-      post(path, controller, ...journeyMiddleware)
+      postMiddleware.push(validate(schema))
     }
+    if (prisonerDetailsRequiredOnPost) {
+      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService) as RequestHandler)
+    }
+    post(path, controller, ...postMiddleware)
   }
 
   router.get('/prisoner/:prisonerNumber/*', populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService))
@@ -461,6 +471,27 @@ const ManageContactsRoutes = (
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-contact-methods',
     new EditContactMethodsController(contactsService),
   )
+
+  // Relationship type mini journey
+  get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/type/start',
+    new ChangeRelationshipTypeStartController(contactsService),
+  )
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/type/select-new-relationship-type/:journeyId',
+    controller: new ChangeRelationshipTypeController(),
+    schema: selectRelationshipTypeSchema(),
+    journeyEnsurer: [ensureInChangeRelationshipTypeJourney],
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/type/select-new-relationship-to-prisoner/:journeyId',
+    controller: new ChangeRelationshipTypeRelationshipToPrisonerController(contactsService, referenceDataService),
+    schema: selectRelationshipSchemaFactory(),
+    journeyEnsurer: [ensureInChangeRelationshipTypeJourney],
+    prisonerDetailsRequiredOnPost: true,
+  })
 
   return router
 }
