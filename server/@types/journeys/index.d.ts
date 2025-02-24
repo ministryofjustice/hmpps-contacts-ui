@@ -87,6 +87,17 @@ declare namespace journeys {
     }
   }
 
+  export interface ChangeRelationshipTypeJourney {
+    id: string
+    lastTouched: string
+    prisonerNumber: string
+    contactId: number
+    prisonerContactId: number
+    names: ContactNames
+    relationshipType: string
+    relationshipToPrisoner: string
+  }
+
   export interface ReturnPoint {
     url: string
     anchor?: string

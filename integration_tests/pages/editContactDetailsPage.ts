@@ -59,6 +59,15 @@ export default class EditContactDetailsPage extends Page {
     this.changeRelationshipToPrisonerLink().click()
   }
 
+  verifyShowRelationshipTypeAs(expected: string): EditContactDetailsPage {
+    this.relationshipTypeValue().should('contain.text', expected)
+    return this
+  }
+
+  clickChangeRelationshipTypeLink() {
+    this.changeRelationshipTypeLink().click()
+  }
+
   verifyShowRelationshipStatusAs(expected: string): EditContactDetailsPage {
     this.relationshipStatusValue().should('contain.text', expected)
     return this
@@ -181,6 +190,12 @@ export default class EditContactDetailsPage extends Page {
 
   private changeRelationshipToPrisonerLink = (): PageElement =>
     this.relationshipToPrisonerHeading().next().next().find('a')
+
+  private relationshipTypeHeading = (): PageElement => cy.findByText('Relationship type')
+
+  private relationshipTypeValue = (): PageElement => this.relationshipTypeHeading().next()
+
+  private changeRelationshipTypeLink = (): PageElement => this.relationshipTypeHeading().next().next().find('a')
 
   private relationshipStatusHeading = (): PageElement => cy.findByText('Relationship status')
 

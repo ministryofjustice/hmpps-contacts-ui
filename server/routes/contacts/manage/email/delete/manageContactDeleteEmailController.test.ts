@@ -87,7 +87,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Are you sure you want to delete this email address?',
+      'Are you sure you want to delete this email address for First Middle Last?',
     )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/987654/relationship/456789#contact-methods',

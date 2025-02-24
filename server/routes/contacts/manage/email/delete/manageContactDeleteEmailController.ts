@@ -35,7 +35,12 @@ export default class ManageContactDeleteEmailController implements PageHandler {
       backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
       cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId, 'contact-methods'),
     }
-    res.render('pages/contacts/manage/confirmDeleteEmail', { email, navigation })
+    res.render('pages/contacts/manage/confirmDeleteEmail', {
+      caption: 'Edit contact methods',
+      contact,
+      email,
+      navigation,
+    })
   }
 
   POST = async (
