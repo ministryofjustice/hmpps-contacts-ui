@@ -53,7 +53,7 @@ context('Delete Contact Email', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickDeleteEmailLink('first@example.com')
 
-    Page.verifyOnPage(ConfirmDeleteEmailPage) //
+    Page.verifyOnPage(ConfirmDeleteEmailPage, 'First Middle Names Last') //
       .hasEmailAddress('first@example.com')
       .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
       .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last.')
@@ -75,7 +75,7 @@ context('Delete Contact Email', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickDeleteEmailLink('last@example.com')
 
-    Page.verifyOnPage(ConfirmDeleteEmailPage) //
+    Page.verifyOnPage(ConfirmDeleteEmailPage, 'First Middle Names Last') //
       .hasEmailAddress('last@example.com')
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
       .verifyOnContactsMethodsTab()
