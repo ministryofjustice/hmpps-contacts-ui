@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 import { Page } from '../../../../../../services/auditService'
 import { PageHandler } from '../../../../../../interfaces/pageHandler'
-import ReferenceCodeType from '../../../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../../../services/referenceDataService'
 import { ContactsService } from '../../../../../../services'
 import { SelectRelationshipSchema } from '../../../../common/relationship/selectRelationshipSchemas'
@@ -9,6 +8,7 @@ import { Navigation } from '../../../../common/navigation'
 import { formatNameFirstNameFirst } from '../../../../../../utils/formatName'
 import Urls from '../../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../../middleware/setUpSuccessNotificationBanner'
+import { relationshipToPrisonerOptionsForRelationshipType } from '../../../../../../utils/relationshipTypeUtils'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import UpdateRelationshipRequest = contactsApiClientTypes.UpdateRelationshipRequest
 
@@ -31,18 +31,9 @@ export default class ChangeRelationshipTypeRelationshipToPrisonerController impl
     const formattedName = formatNameFirstNameFirst(journey.names)
     const currentRelationship = res.locals?.formResponses?.['relationship'] ?? journey.relationshipToPrisoner
 
-    let groupCodeForRelationshipType
-    let hintText
-    let defaultSelectLabel
-    if (journey.relationshipType === 'S') {
-      groupCodeForRelationshipType = ReferenceCodeType.SOCIAL_RELATIONSHIP
-      hintText = `For example, if ${formattedName} is the prisoner’s uncle, select ‘Uncle’.`
-      defaultSelectLabel = 'Select social relationship'
-    } else {
-      groupCodeForRelationshipType = ReferenceCodeType.OFFICIAL_RELATIONSHIP
-      hintText = `For example, if ${formattedName} is the prisoner’s doctor, select ‘Doctor’.`
-      defaultSelectLabel = 'Select official relationship'
-    }
+    const { groupCodeForRelationshipType, hintText, defaultSelectLabel } =
+      relationshipToPrisonerOptionsForRelationshipType(journey.relationshipType, formattedName)
+
     const relationshipOptions = await this.referenceDataService
       .getReferenceData(groupCodeForRelationshipType, user)
       .then(val => this.getSelectedOptions(val, currentRelationship, defaultSelectLabel))

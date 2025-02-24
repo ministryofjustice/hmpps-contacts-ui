@@ -1,19 +1,19 @@
 import { Request, Response } from 'express'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
-import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import { ContactsService } from '../../../../services'
 import { SelectRelationshipSchema } from '../../common/relationship/selectRelationshipSchemas'
 import { Navigation } from '../../common/navigation'
 import { formatNameFirstNameFirst } from '../../../../utils/formatName'
 import Urls from '../../../urls'
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
+import { relationshipToPrisonerOptionsForRelationshipType } from '../../../../utils/relationshipTypeUtils'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 import ContactNames = journeys.ContactNames
 import UpdateRelationshipRequest = contactsApiClientTypes.UpdateRelationshipRequest
-import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
 
 export default class ManageContactRelationshipToPrisonerController implements PageHandler {
   constructor(
@@ -44,18 +44,9 @@ export default class ManageContactRelationshipToPrisonerController implements Pa
     const formattedName = formatNameFirstNameFirst(names)
     const currentRelationship = res.locals?.formResponses?.['relationship'] ?? relationship.relationshipToPrisonerCode
 
-    let groupCodeForRelationshipType
-    let hintText
-    let defaultSelectLabel
-    if (relationship.relationshipType === 'S') {
-      groupCodeForRelationshipType = ReferenceCodeType.SOCIAL_RELATIONSHIP
-      hintText = `For example, if ${formattedName} is the prisoner’s uncle, select ‘Uncle’.`
-      defaultSelectLabel = 'Select social relationship'
-    } else {
-      groupCodeForRelationshipType = ReferenceCodeType.OFFICIAL_RELATIONSHIP
-      hintText = `For example, if ${formattedName} is the prisoner’s doctor, select ‘Doctor’.`
-      defaultSelectLabel = 'Select official relationship'
-    }
+    const { groupCodeForRelationshipType, hintText, defaultSelectLabel } =
+      relationshipToPrisonerOptionsForRelationshipType(relationship.relationshipType, formattedName)
+
     const relationshipOptions = await this.referenceDataService
       .getReferenceData(groupCodeForRelationshipType, user)
       .then(val => this.getSelectedOptions(val, currentRelationship, defaultSelectLabel))
