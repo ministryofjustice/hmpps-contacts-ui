@@ -1,7 +1,6 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
-import { StubPrisonerContactRelationshipDetails } from '../mockApis/contactsApi'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import EditContactDetailsPage from '../pages/editContactDetailsPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
@@ -53,15 +52,8 @@ context('Change Relationship Type', () => {
     })
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
-    const updated: StubPrisonerContactRelationshipDetails = {
-      ...relationship,
-      relationshipToPrisonerCode: 'DR',
-      relationshipType: 'O',
-    }
-
     cy.task('stubUpdateContactRelationshipById', {
       prisonerContactId,
-      response: updated,
     })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
@@ -113,14 +105,8 @@ context('Change Relationship Type', () => {
     })
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
-    const updated: StubPrisonerContactRelationshipDetails = {
-      ...relationship,
-      relationshipToPrisonerCode: 'MOT',
-    }
-
     cy.task('stubUpdateContactRelationshipById', {
       prisonerContactId,
-      response: updated,
     })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
@@ -171,14 +157,8 @@ context('Change Relationship Type', () => {
     })
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
-    const updated: StubPrisonerContactRelationshipDetails = {
-      ...relationship,
-      relationshipToPrisonerCode: 'OFS',
-    }
-
     cy.task('stubUpdateContactRelationshipById', {
       prisonerContactId,
-      response: updated,
     })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //

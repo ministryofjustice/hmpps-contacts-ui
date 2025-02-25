@@ -188,7 +188,7 @@ export default class ContactsService {
     prisonerContactId: number,
     request: contactsApiClientTypes.UpdateRelationshipRequest,
     user: Express.User,
-  ): Promise<contactsApiClientTypes.PatchContactResponse> {
+  ): Promise<void> {
     return this.contactsApiClient.updateContactRelationshipById(prisonerContactId, request, user)
   }
 

@@ -382,13 +382,7 @@ export default {
     })
   },
 
-  stubUpdateContactRelationshipById: ({
-    prisonerContactId,
-    response,
-  }: {
-    prisonerContactId: number
-    response: StubPatchContactResponse
-  }): SuperAgentRequest => {
+  stubUpdateContactRelationshipById: ({ prisonerContactId }: { prisonerContactId: number }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'PATCH',
@@ -397,7 +391,7 @@ export default {
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: response,
+        jsonBody: {},
       },
     })
   },

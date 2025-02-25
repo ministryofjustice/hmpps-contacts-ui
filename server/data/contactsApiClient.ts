@@ -222,7 +222,7 @@ export default class ContactsApiClient extends RestClient {
     prisonerContactId: number,
     request: UpdateRelationshipRequest,
     user: Express.User,
-  ): Promise<PatchContactResponse> {
+  ): Promise<void> {
     return this.patch<UpdateRelationshipRequest>(
       {
         path: `/prisoner-contact/${prisonerContactId}`,

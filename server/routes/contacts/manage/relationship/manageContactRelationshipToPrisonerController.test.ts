@@ -147,7 +147,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-relationship-to-prisoner', () => {
   it('should update relationship and pass to return url if there are no validation errors', async () => {
     contactsService.getContact.mockResolvedValue(contact)
-    contactsService.updateContactRelationshipById.mockResolvedValue(relationship)
+    contactsService.updateContactRelationshipById.mockResolvedValue(undefined)
     await request(app)
       .post(
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/update-relationship-to-prisoner`,

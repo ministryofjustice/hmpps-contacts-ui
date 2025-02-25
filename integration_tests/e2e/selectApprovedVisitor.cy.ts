@@ -31,7 +31,6 @@ context('Manage contact update approved visitor contact', () => {
 
     cy.task('stubUpdateContactRelationshipById', {
       prisonerContactId,
-      response: { isApprovedVisitor: false },
     })
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId,
