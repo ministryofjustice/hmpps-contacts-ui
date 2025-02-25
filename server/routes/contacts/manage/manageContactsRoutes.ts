@@ -82,6 +82,8 @@ import { selectRelationshipTypeSchema } from '../add/relationship-type/relations
 import { ensureInChangeRelationshipTypeJourney } from './relationship/type/changeRelationshipTypeMiddleware'
 import ChangeRelationshipTypeRelationshipToPrisonerController from './relationship/type/select-new-relationship-to-prisoner/changeRelationshipTypeRelationshipToPrisonerController'
 import { manageRelationshipStatusSchema } from './relationship/status/manageRelationshipStatusSchema'
+import ManageContactEnterDateOfDeathController from './date-of-death/manageContactEnterDateOfDeathController'
+import { dateOfDeathSchema } from './date-of-death/manageContactDateOfDeathSchema'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -295,6 +297,12 @@ const ManageContactsRoutes = (
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-dob',
     controller: new ManageContactEnterDobController(contactsService),
     schema: updateDobSchema,
+  })
+
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/enter-date-of-death',
+    controller: new ManageContactEnterDateOfDeathController(contactsService),
+    schema: dateOfDeathSchema,
   })
 
   standAloneRoute({

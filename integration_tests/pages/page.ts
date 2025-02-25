@@ -36,6 +36,11 @@ export default abstract class Page {
     return this
   }
 
+  hasFieldHighlightedWithError(field: string) {
+    cy.get(`#${Cypress.$.escapeSelector(field)}`).should('have.class', 'govuk-input--error')
+    return this
+  }
+
   get errorSummaryItems(): PageElement {
     return this.errorSummary.find('.govuk-error-summary__list a')
   }

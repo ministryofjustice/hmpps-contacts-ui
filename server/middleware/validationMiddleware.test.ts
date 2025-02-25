@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 import { Request, Response } from 'express'
 import { z } from 'zod'
-import { validate } from './validationMiddleware'
+import { buildErrorSummaryList, validate } from './validationMiddleware'
 
 const TOO_LONG_ERROR_MSG = 'Additional information must be 4,000 characters or less'
 const DESCRIPTION_OF_INFORMATION = 'Enter information description'
@@ -141,6 +141,35 @@ describe('validationMiddleware', () => {
         }),
       )
       expect(req.flash).toHaveBeenCalledWith('formResponses', JSON.stringify(req.body))
+    })
+
+    it('should filter fields with blank messages for summary list to avoid empty links when highlighting a secondary field in an error', () => {
+      const errorList = buildErrorSummaryList({
+        emptyMessage: [''],
+        noMessages: [],
+        undefinedMessages: undefined,
+        aMessage: ['a message'],
+        aBlankAndNormalMessage: ['', 'a non-blank message'],
+        multipleMessages: ['message 1', 'message 2'],
+      })
+      expect(errorList).toStrictEqual([
+        {
+          href: '#aMessage',
+          text: 'a message',
+        },
+        {
+          href: '#aBlankAndNormalMessage',
+          text: 'a non-blank message',
+        },
+        {
+          href: '#multipleMessages',
+          text: 'message 1',
+        },
+        {
+          href: '#multipleMessages',
+          text: 'message 2',
+        },
+      ])
     })
   })
 })

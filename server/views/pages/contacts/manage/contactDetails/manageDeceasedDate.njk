@@ -1,0 +1,84 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+
+{% set pageTitle = applicationName + " - Enter date of death" %}
+
+{% block content %}
+
+{% include 'partials/navigation.njk' %}
+{{ miniProfile(prisonerDetails) }}
+{% include 'partials/formErrorSummary.njk' %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-l">Edit contact details</span>
+        <form method='POST'>
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+          {% if validationErrors %}
+            {% set dayError = validationErrors['day'] if validationErrors['day'] else '' %}
+            {% set monthError = validationErrors['month'] if validationErrors['month'] else '' %}
+            {% set yearError = validationErrors['year']  if validationErrors['year'] else '' %}
+          {% endif %}
+
+          {% macro joinErrors(errors) %}
+            {% if errors %}{% for error in errors %}{% if error and error.length > 0 %}{{ error }}{% endif %}{% endfor %}{% endif %}
+          {% endmacro %}
+
+          {{ govukDateInput({
+            id: "dateOfDeath",
+            fieldset: {
+              legend: {
+                text: title,
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6 main-heading"
+              }
+            },
+            hint: {
+              text: "For example, 17 2 2025."
+            },
+            errorMessage: {
+              html: '<span id="day-error" class="govuk-error-message">' + joinErrors(dayError) + '</span>
+                            <span id="month-error" class="govuk-error-message">' + joinErrors(monthError) + '</span>
+                            <span id="year-error" class="govuk-error-message">' + joinErrors(yearError) + '</span>'
+            } if dayError or monthError or yearError or dateOfDeathError,
+            items: [
+              {
+                id: 'day',
+                label: 'Day',
+                name: "day",
+                classes: 'govuk-input--width-2' + (' govuk-input--error' if dayError),
+                value: day
+              },
+              {
+                id: 'month',
+                label: 'Month',
+                name: "month",
+                classes: 'govuk-input--width-2' + (' govuk-input--error' if monthError),
+                value: month
+              },
+              {
+                id: 'year',
+                label: 'Year',
+                name: "year",
+                classes: 'govuk-input--width-4' + (' govuk-input--error' if yearError),
+                value: year
+              }
+            ]
+          }) }}
+          <div class="govuk-button-group">
+            {{ govukButton({
+              text: "Confirm and save",
+              type: "submit",
+              classes: 'govuk-!-margin-top-6',
+              attributes: {"data-qa": "continue-button"},
+              preventDoubleClick: true
+            }) }}
+            {% if navigation.cancelButton %}
+              <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
+            {% endif %}
+          </div>
+        </form>
+     </div>
+</div>
+{% endblock %}

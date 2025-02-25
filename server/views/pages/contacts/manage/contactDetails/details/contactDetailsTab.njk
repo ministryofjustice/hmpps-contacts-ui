@@ -22,7 +22,12 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      {{  personalInformationCard({ contact: contact, showActions: false }) }}
+      {{  personalInformationCard({
+        prisonerNumber: prisonerNumber,
+        contact: contact,
+        prisonerContactId: prisonerContactId,
+        showActions: false
+      }) }}
 
       {{  relationshipToPrisonerCard({
         contact: contact,

@@ -48,7 +48,7 @@ afterEach(() => {
 
 describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () => {
   describe('Contact Details', () => {
-    it('should render contact details page', async () => {
+    it('should audit contact details page', async () => {
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.searchContact.mockResolvedValue(TestData.contact())
       contactsService.getContact.mockResolvedValue(TestData.contact())
@@ -65,6 +65,56 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       })
       expect(contactsService.getContact).toHaveBeenCalledWith(1, user)
       expect(contactsService.getPrisonerContactRelationship).toHaveBeenCalledWith(99, user)
+    })
+
+    it('should render contact details page for living contact', async () => {
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.searchContact.mockResolvedValue(TestData.contact())
+      contactsService.getContact.mockResolvedValue(TestData.contact())
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('Contact details - Jones Mason')
+      expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Contacts')
+
+      expect($('[data-qa=breadcrumbs]')).toHaveLength(1)
+      const breadcrumbLinks = $('[data-qa=breadcrumbs] a')
+      expect(breadcrumbLinks.eq(0).attr('href')).toStrictEqual('http://localhost:3001')
+      expect(breadcrumbLinks.eq(1).attr('href')).toStrictEqual('http://localhost:3001/prisoner/A1234BC')
+      expect(breadcrumbLinks.eq(2).attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/list')
+
+      expect($('[data-qa=cancel-button]')).toHaveLength(0)
+      expect($('[data-qa=back-link]')).toHaveLength(0)
+    })
+
+    it('should render contact details page for living contact', async () => {
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.getContact.mockResolvedValue({
+        ...TestData.contact(),
+        deceasedDate: '2000-01-01',
+      })
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('Contact details - Jones Mason (deceased)')
+      expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Contacts')
+
+      expect($('[data-qa=breadcrumbs]')).toHaveLength(1)
+      const breadcrumbLinks = $('[data-qa=breadcrumbs] a')
+      expect(breadcrumbLinks.eq(0).attr('href')).toStrictEqual('http://localhost:3001')
+      expect(breadcrumbLinks.eq(1).attr('href')).toStrictEqual('http://localhost:3001/prisoner/A1234BC')
+      expect(breadcrumbLinks.eq(2).attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/list')
+
+      expect($('[data-qa=cancel-button]')).toHaveLength(0)
+      expect($('[data-qa=back-link]')).toHaveLength(0)
     })
 
     it('should not show comments when theres no comments', async () => {
@@ -416,6 +466,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           gender: 'M',
           genderDescription: 'Male',
           isStaff: true,
+          deceasedDate: '2000-12-25',
         } as ContactDetails
         contactsService.getContact.mockResolvedValue(contactDetails)
         const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
@@ -430,8 +481,12 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         expect($(personalInformationCard).find('dt:contains("Date of birth")').next().text().trim()).toStrictEqual(
           '15 June 1982',
         )
+        expect($(personalInformationCard).find('dt:contains("Date of death")').next().text().trim()).toStrictEqual(
+          '25 December 2000',
+        )
         expect($(personalInformationCard).find('dt:contains("Gender")').next().text().trim()).toStrictEqual('Male')
         expect($(personalInformationCard).find('dt:contains("Staff member")').next().text().trim()).toStrictEqual('Yes')
+        expect($('[data-qa=record-date-of-death-link]')).toHaveLength(0)
       })
 
       it('should render without optional personal details', async () => {
@@ -446,6 +501,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           gender: undefined,
           genderDescription: undefined,
           isStaff: false,
+          deceasedDate: undefined,
         } as ContactDetails
         contactsService.getContact.mockResolvedValue(contactDetails)
         const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
@@ -459,10 +515,14 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         expect($(personalInformationCard).find('dt:contains("Date of birth")').next().text().trim()).toStrictEqual(
           'Not provided',
         )
+        expect($(personalInformationCard).find('dt:contains("Date of death")')).toHaveLength(0)
         expect($(personalInformationCard).find('dt:contains("Gender")').next().text().trim()).toStrictEqual(
           'Not provided',
         )
         expect($(personalInformationCard).find('dt:contains("Staff member")').next().text().trim()).toStrictEqual('No')
+        expect($('[data-qa=record-date-of-death-link]').attr('href')).toStrictEqual(
+          '/prisoner/A1234BC/contacts/manage/22/relationship/99/enter-date-of-death?backTo=contact-details',
+        )
       })
     })
 

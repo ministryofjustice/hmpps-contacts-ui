@@ -61,7 +61,7 @@
                         }
                     }
                 ] %}
-                {% if journey.existingContact.isDeceased and journey.existingContact.deceasedDate %}
+                {% if journey.existingContact.deceasedDate %}
                     {% set contactDetailsRows = (contactDetailsRows.push(
                         {
                             key: {

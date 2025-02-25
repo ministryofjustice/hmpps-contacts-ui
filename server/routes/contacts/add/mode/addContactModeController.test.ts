@@ -204,7 +204,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       firstName: 'middle',
       middleNames: 'first',
       dateOfBirth: '1982-01-01',
-      isDeceased: true,
       deceasedDate: '2020-12-25',
       createdBy: user.username,
       createdTime: '2024-01-01',
@@ -225,7 +224,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
     expect(existingJourney.mode).toStrictEqual('EXISTING')
     expect(contactsService.getContact).toHaveBeenCalledWith(123456, user)
     expect(existingJourney.existingContact).toStrictEqual({
-      isDeceased: true,
       deceasedDate: '2020-12-25',
     })
   })
@@ -275,7 +273,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
         firstName: 'Tsrif',
         middleNames: 'Elldim',
         dateOfBirth: '1980-12-10T00:00:00.000Z',
-        isDeceased: false,
         createdBy: user.username,
         createdTime: '2024-01-01',
       }
@@ -305,7 +302,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       expect(existingJourney.contactId).toStrictEqual(123456)
       expect(existingJourney.isCheckingAnswers).toStrictEqual(false)
       expect(existingJourney.existingContact).toStrictEqual({
-        isDeceased: false,
         deceasedDate: undefined,
       })
       expect(contactsService.getContact).toHaveBeenCalled()

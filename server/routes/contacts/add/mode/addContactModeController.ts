@@ -36,7 +36,6 @@ export default class AddContactModeController implements PageHandler {
         middleNames: existingContact.middleNames,
       }
       journey.existingContact = {
-        isDeceased: existingContact.isDeceased,
         deceasedDate: existingContact.deceasedDate,
       }
       if (existingContact.dateOfBirth) {
