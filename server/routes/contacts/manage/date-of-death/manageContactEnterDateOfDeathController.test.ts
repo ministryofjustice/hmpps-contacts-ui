@@ -5,6 +5,7 @@ import { appWithAllRoutes, flashProvider, user } from '../../../testutils/appSet
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -193,6 +194,10 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         contactId,
         { deceasedDate: new Date('1982-06-01Z'), updatedBy: 'user1' },
         user,
+      )
+      expect(flashProvider).toHaveBeenCalledWith(
+        FLASH_KEY__SUCCESS_BANNER,
+        'You’ve updated the personal information for Jones Mason.',
       )
     },
   )

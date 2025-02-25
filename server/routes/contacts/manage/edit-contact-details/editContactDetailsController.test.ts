@@ -123,6 +123,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         '25 December 2000',
         '/prisoner/A1234BC/contacts/manage/22/relationship/99/enter-date-of-death',
         'Change the contact’s date of death (Personal information)',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/delete-date-of-death',
+        'Delete the contact’s date of death (Personal information)',
       )
       expectSummaryListItem(
         personalInformationCard,
@@ -543,11 +545,18 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
     value: string,
     changeLink: string,
     changeLabel: string,
+    deleteLink?: string,
+    deleteLabel?: string,
   ) => {
     const summaryCardFirstColumn = card.find(`dt:contains("${label}")`).first()
     expect(summaryCardFirstColumn.next().text().trim()).toStrictEqual(value)
-    const link = summaryCardFirstColumn.next().next().find('a')
-    expect(link.attr('href')).toStrictEqual(changeLink)
-    expect(link.text().trim()).toStrictEqual(changeLabel)
+    const firstLink = summaryCardFirstColumn.next().next().find('a').first()
+    expect(firstLink.attr('href')).toStrictEqual(changeLink)
+    expect(firstLink.text().trim()).toStrictEqual(changeLabel)
+    if (deleteLink && deleteLabel) {
+      const secondLink = summaryCardFirstColumn.next().next().find('a').last()
+      expect(secondLink.attr('href')).toStrictEqual(deleteLink)
+      expect(secondLink.text().trim()).toStrictEqual(deleteLabel)
+    }
   }
 })

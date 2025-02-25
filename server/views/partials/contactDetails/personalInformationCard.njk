@@ -88,6 +88,13 @@
               visuallyHiddenText: "the contact’s date of death",
               attributes: {"data-qa": "change-date-of-death-link"},
               classes: "govuk-link--no-visited-state"
+            },
+            {
+              href: "/prisoner/"+ prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + prisonerContactId + "/delete-date-of-death",
+              text: "Delete",
+              visuallyHiddenText: "the contact’s date of death",
+              attributes: {"data-qa": "delete-date-of-death-link"},
+              classes: "govuk-link--no-visited-state"
             }
           ] if showActions else []
         }

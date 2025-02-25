@@ -160,6 +160,10 @@ export default class EditContactDetailsPage extends Page {
     this.changeDateOfDeathLink().click()
   }
 
+  clickDeleteDateOfDeathLink() {
+    this.deleteDateOfDeathLink().click()
+  }
+
   private titleHeading = (): PageElement => cy.findByText('Title')
 
   private titleValue = (): PageElement => this.titleHeading().next()
@@ -265,4 +269,7 @@ export default class EditContactDetailsPage extends Page {
 
   private changeDateOfDeathLink = (): PageElement =>
     cy.findByRole('link', { name: 'Change the contact’s date of death (Personal information)' })
+
+  private deleteDateOfDeathLink = (): PageElement =>
+    cy.findByRole('link', { name: 'Delete the contact’s date of death (Personal information)' })
 }
