@@ -5,16 +5,6 @@ export default class ManageContactDetailsPage extends Page {
     super(`Contact details - ${name}`)
   }
 
-  verifyShowMostRelevantAddressLabelValueAs(expected: string): ManageContactDetailsPage {
-    this.mostRelevantAddressLabel().should('contain.text', expected)
-    return this
-  }
-
-  verifyShowConfirmAddressValueAs(expected: string): ManageContactDetailsPage {
-    this.confirmAddressValue().should('contain.text', expected)
-    return this
-  }
-
   clickEditContactDetailsLink() {
     this.editContactDetailsLink().click()
     return this
@@ -23,6 +13,10 @@ export default class ManageContactDetailsPage extends Page {
   clickEditContactMethodsLink() {
     this.editContactMethodsLink().click()
     return this
+  }
+
+  clickRecordDateOfDeathLink() {
+    this.recordDateOfDeathLink().click()
   }
 
   clickContactMethodsTab() {
@@ -129,6 +123,8 @@ export default class ManageContactDetailsPage extends Page {
   private editContactDetailsLink = (): PageElement => cy.get('[data-qa="edit-contact-details-link"]')
 
   private editContactMethodsLink = (): PageElement => cy.get('[data-qa="edit-contact-methods-link"]')
+
+  private recordDateOfDeathLink = (): PageElement => cy.findByRole('link', { name: 'Record the death of this contact' })
 
   private getAddPrisonerContactRestriction = (): PageElement =>
     cy.get('[data-qa="add-prisoner-contact-restriction-button"]')

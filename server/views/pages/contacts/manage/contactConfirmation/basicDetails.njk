@@ -38,7 +38,7 @@
             text: "Deceased date"
         },
         value: {
-            text: 'Not provided' if not contact.isDeceased else  contact.deceasedDate | formatDate,
+            text:  contact.deceasedDate | formatDate if contact.deceasedDate else 'Not provided',
             classes: 'confirm-deceased-date-value'
         }
     }]

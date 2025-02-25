@@ -84,7 +84,6 @@ context('Add Existing Contact', () => {
       firstName: 'Existing',
       lastName: 'Contact',
       dateOfBirth: '1990-01-14',
-      isDeceased: false,
       employments: [],
     })
 
@@ -400,7 +399,6 @@ context('Add Existing Contact', () => {
       firstName: 'Deceased',
       lastName: 'Contact',
       dateOfBirth: '1990-01-14',
-      isDeceased: true,
       deceasedDate: '2020-12-25',
     })
 

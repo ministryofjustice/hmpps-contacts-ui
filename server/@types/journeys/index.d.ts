@@ -21,7 +21,6 @@ declare namespace journeys {
     contactId?: number
     prisonerContactId?: number
     existingContact?: {
-      isDeceased?: boolean
       deceasedDate?: string
     }
   }

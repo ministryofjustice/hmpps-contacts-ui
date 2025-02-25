@@ -75,6 +75,25 @@
       },
       {
         key: {
+          text: 'Date of death'
+        },
+        value: {
+          text: contact.deceasedDate | formatDate
+        },
+        actions: {
+          items: [
+            {
+              href: "/prisoner/"+ prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + prisonerContactId + "/enter-date-of-death",
+              text: "Change",
+              visuallyHiddenText: "the contact’s date of death",
+              attributes: {"data-qa": "change-date-of-death-link"},
+              classes: "govuk-link--no-visited-state"
+            }
+          ] if showActions else []
+        }
+      } if contact.deceasedDate,
+      {
+        key: {
           text: 'Gender'
         },
         value: {
@@ -110,7 +129,12 @@
             }
           ] if showActions else []
         }
-      }
+      },
+      {
+        key: {
+          html: '<a data-qa="record-date-of-death-link" class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-regular" href="/prisoner/' + prisonerNumber + '/contacts/manage/' + contact.id + '/relationship/' + prisonerContactId + '/enter-date-of-death?backTo=' + ('edit-contact-details' if showActions else 'contact-details')  + '">Record the death of this contact</a>'
+        }
+      } if not contact.deceasedDate
     ]
   }) }}
 {% endmacro %}

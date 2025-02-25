@@ -86,6 +86,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         gender: 'M',
         genderDescription: 'Male',
         isStaff: true,
+        deceasedDate: '2000-12-25',
       } as ContactDetails
       contactsService.getContact.mockResolvedValue(contactDetails)
       const response = await request(app).get(
@@ -118,6 +119,13 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
       )
       expectSummaryListItem(
         personalInformationCard,
+        'Date of death',
+        '25 December 2000',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/enter-date-of-death',
+        'Change the contact’s date of death (Personal information)',
+      )
+      expectSummaryListItem(
+        personalInformationCard,
         'Gender',
         'Male',
         '/prisoner/A1234BC/contacts/manage/22/relationship/99/gender',
@@ -130,6 +138,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         '/prisoner/A1234BC/contacts/manage/22/relationship/99/staff',
         'Change if the contact is a member of staff (Personal information)',
       )
+      expect($('[data-qa=record-date-of-death-link]')).toHaveLength(0)
     })
 
     it('should render without optional personal details', async () => {
@@ -186,6 +195,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         'No',
         '/prisoner/A1234BC/contacts/manage/22/relationship/99/staff',
         'Change if the contact is a member of staff (Personal information)',
+      )
+      expect($('[data-qa=record-date-of-death-link]').attr('href')).toStrictEqual(
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/enter-date-of-death?backTo=edit-contact-details',
       )
     })
   })

@@ -152,6 +152,14 @@ export default class EditContactDetailsPage extends Page {
     this.changeDomesticStatusLink().click()
   }
 
+  clickRecordDateOfDeathLink() {
+    this.recordDateOfDeathLink().click()
+  }
+
+  clickChangeDateOfDeathLink() {
+    this.changeDateOfDeathLink().click()
+  }
+
   private titleHeading = (): PageElement => cy.findByText('Title')
 
   private titleValue = (): PageElement => this.titleHeading().next()
@@ -252,4 +260,9 @@ export default class EditContactDetailsPage extends Page {
   private domesticStatusValue = (): PageElement => this.domesticStatusHeading().next()
 
   private changeDomesticStatusLink = (): PageElement => this.domesticStatusHeading().next().next().find('a')
+
+  private recordDateOfDeathLink = (): PageElement => cy.findByRole('link', { name: 'Record the death of this contact' })
+
+  private changeDateOfDeathLink = (): PageElement =>
+    cy.findByRole('link', { name: 'Change the contact’s date of death (Personal information)' })
 }

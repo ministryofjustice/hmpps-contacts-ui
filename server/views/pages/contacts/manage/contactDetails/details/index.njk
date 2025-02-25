@@ -10,7 +10,7 @@
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
           <span class="govuk-caption-l">Contacts</span>
-          <h1 class="govuk-heading-l">Contact details - {{ contact | formatNameFirstNameFirst }}</h1>
+          <h1 class="govuk-heading-l">Contact details - {{ contact | formatNameFirstNameFirst }}{{ ' (deceased)' if contact.deceasedDate }}</h1>
         </div>
       </div>
              <div class="govuk-tabs" data-module="govuk-tabs">

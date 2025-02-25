@@ -207,7 +207,6 @@ context('Contact confirmation', () => {
       lastName: 'Contact',
       middleNames: 'Mr',
       dateOfBirth: '1990-01-14',
-      isDeceased: false,
       deceasedDate: null,
       languageCode: null,
       languageDescription: null,
