@@ -161,39 +161,35 @@ context('Change Contact Date Of Birth', () => {
 
     // Must enter dob
     enterDobPage.clickContinue()
-    enterDobPage.hasFieldInError('dob', 'Enter the contact’s date of birth')
     enterDobPage.errorSummaryItems.spread((...$lis) => {
       expect($lis).to.have.lengthOf(1)
-      expect($lis[0]).to.contain('Enter the contact’s date of birth')
+      expect($lis[0]).to.contain('Enter the date of birth')
     })
 
-    // Day, month and year must be numbers
-    enterDobPage.enterDay('aa').enterMonth('bb').enterYear('cc').clickContinue()
-
-    enterDobPage.hasFieldInError('dob', 'Enter a valid day of the month (1-31)')
-    enterDobPage.hasFieldInError('dob', 'Enter a valid month (1-12)')
-    enterDobPage.hasFieldInError('dob', 'Enter a valid year. Must be at least 1900')
-    enterDobPage.hasFieldInError('dob', 'The date of birth is invalid')
+    // Day, month and year must present, year must have 4 numbers
+    enterDobPage.enterYear('99').clickContinue()
+    enterDobPage.hasFieldInError('year', 'Year must include 4 numbers')
+    enterDobPage.hasFieldInError('day', 'Date of birth must include a day and a month')
     enterDobPage.errorSummaryItems.spread((...$lis) => {
-      expect($lis).to.have.lengthOf(4)
-      expect($lis[0]).to.contain('Enter a valid day of the month (1-31)')
-      expect($lis[1]).to.contain('Enter a valid month (1-12)')
-      expect($lis[2]).to.contain('Enter a valid year. Must be at least 1900')
-      expect($lis[3]).to.contain('The date of birth is invalid')
+      expect($lis).to.have.lengthOf(2)
+    })
+
+    // Must be a real date
+    enterDobPage.enterDay('a').enterMonth('a').enterYear('abcd').clickContinue()
+    enterDobPage.hasFieldInError('day', 'Date of birth must be a real date')
+    enterDobPage.errorSummaryItems.spread((...$lis) => {
+      expect($lis).to.have.lengthOf(1)
     })
 
     // Date must not be in the future
-    const date = new Date()
-    date.setFullYear(date.getFullYear() + 1)
     enterDobPage
-      .enterDay(date.getDay().toString())
-      .enterMonth(date.getMonth().toString())
-      .enterYear(date.getFullYear().toString())
+      .enterDay('31')
+      .enterMonth('12')
+      .enterYear((new Date().getFullYear() + 1).toString())
       .clickContinue()
-    enterDobPage.hasFieldInError('dob', 'The date of birth must not be in the future')
+    enterDobPage.hasFieldInError('dob', 'Date of birth must be in the past')
     enterDobPage.errorSummaryItems.spread((...$lis) => {
       expect($lis).to.have.lengthOf(1)
-      expect($lis[0]).to.contain('The date of birth must not be in the future')
     })
   })
 
