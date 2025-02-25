@@ -1,7 +1,7 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
-import ConfirmDeleteIdentityPage from '../pages/confirmDeleteIdentityPage'
+import ConfirmDeleteIdentityPage from '../pages/contact-details/confirmDeleteIdentityPage'
 import EditContactDetailsPage from '../pages/editContactDetailsPage'
 
 context('Delete Contact Identity', () => {
@@ -54,12 +54,12 @@ context('Delete Contact Identity', () => {
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickDeleteIdentityLink('LAST-87736799M')
 
-    Page.verifyOnPage(ConfirmDeleteIdentityPage) //
+    Page.verifyOnPage(ConfirmDeleteIdentityPage, 'First Middle Names Last') //
       .hasIdentityNumber('LAST-87736799M')
       .hasType('Driving licence')
       .hasIssuingAuthority('UK')
-      .continueTo(EditContactDetailsPage, 'First Middle Names Last')
-      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .hasSuccessBanner('You’ve updated the identity documentation for First Middle Names Last.')
 
     cy.verifyAPIWasCalled(
       {
@@ -70,7 +70,7 @@ context('Delete Contact Identity', () => {
     )
   })
 
-  it('Can cancel deleting a contact identity', () => {
+  it('Can back or cancel to correct page', () => {
     cy.task('stubDeleteContactIdentity', { contactId, contactIdentityId: 1 })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
@@ -79,11 +79,15 @@ context('Delete Contact Identity', () => {
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickDeleteIdentityLink('06/614465M')
 
-    Page.verifyOnPage(ConfirmDeleteIdentityPage) //
-      .hasIdentityNumber('06/614465M')
-      .hasType('National insurance number')
-      .hasIssuingAuthority('Not provided')
-      .cancelTo(EditContactDetailsPage, 'First Middle Names Last')
+    // Back to Edit Contact Details page
+    Page.verifyOnPage(ConfirmDeleteIdentityPage, 'First Middle Names Last') //
+      .backTo(EditContactDetailsPage, 'First Middle Names Last')
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickDeleteIdentityLink('06/614465M')
+
+    // Cancel to Manage Contact Details page
+    Page.verifyOnPage(ConfirmDeleteIdentityPage, 'First Middle Names Last') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
 
     cy.verifyAPIWasCalled(

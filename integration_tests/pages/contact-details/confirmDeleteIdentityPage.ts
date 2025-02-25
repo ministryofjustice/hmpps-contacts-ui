@@ -1,8 +1,8 @@
-import Page, { PageElement } from './page'
+import Page, { PageElement } from '../page'
 
 export default class ConfirmDeleteIdentityPage extends Page {
-  constructor() {
-    super(`Are you sure you want to delete this identity number?`)
+  constructor(name: string) {
+    super(`Are you sure you want to delete this identity document for ${name}?`)
   }
 
   hasIdentityNumber(value: string): ConfirmDeleteIdentityPage {
