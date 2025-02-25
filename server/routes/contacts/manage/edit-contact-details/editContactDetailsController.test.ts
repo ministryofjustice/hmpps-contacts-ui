@@ -385,7 +385,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         'Delete the information about this Driving licence (Identity documentation)',
       )
       expect(drivingLicenceHeading.next().next().find('a').attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/manage/22/identity/1/delete?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/identity/1/delete',
       )
 
       const firstPassportHeading = $(identityDocCard).find('dt:contains("Passport number")').first()
@@ -402,7 +402,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         'Delete the information about this Passport number (Identity documentation)',
       )
       expect(firstPassportHeading.next().next().find('a').last().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/manage/22/identity/3/delete?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/identity/3/delete',
       )
 
       const secondPassportHeading = $(identityDocCard).find('dt:contains("Passport number")').last()
@@ -418,7 +418,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         'Delete the information about this Passport number (Identity documentation)',
       )
       expect(secondPassportHeading.next().next().find('a').last().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/manage/22/identity/2/delete?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/identity/2/delete',
       )
 
       const addIdentityDocLink = $('a:contains("Add identity document")')

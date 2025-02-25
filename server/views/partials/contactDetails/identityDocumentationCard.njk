@@ -6,6 +6,7 @@
   {% set showActions = opts.showActions %}
   {% set returnUrl = opts.returnUrl %}
   {% set prisonerNumber = opts.prisonerNumber %}
+  {% set prisonerContactId = opts.prisonerContactId %}
 
   {% set identityNumbers = [] %}
   {% if contact.identities and contact.identities.length > 0 %}
@@ -22,7 +23,7 @@
       {% endif %}
 
       {% set actions = actions.concat([{
-        href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/identity/" + item.contactIdentityId + "/delete?returnUrl=" + returnUrl,
+        href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + prisonerContactId + "/identity/" + item.contactIdentityId + "/delete",
         text: "Delete",
         visuallyHiddenText: "the information about this " + item.identityTypeDescription,
         attributes: {"data-qa": "delete-identity-number-" + item.contactIdentityId},

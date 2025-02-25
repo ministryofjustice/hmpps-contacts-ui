@@ -281,8 +281,8 @@ const ManageContactsRoutes = (
     schema: identitySchema,
   })
 
-  standAloneJourneyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:contactIdentityId/delete',
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/identity/:contactIdentityId/delete',
     controller: new ManageContactDeleteIdentityController(contactsService),
     noValidation: true,
   })

@@ -21,6 +21,7 @@ const contactsService = MockedService.ContactsService()
 let app: Express
 const prisonerNumber = 'A1234BC'
 const contactId = 987654
+const prisonerContactId = 456789
 const contact: ContactDetails = {
   id: contactId,
   title: '',
@@ -55,14 +56,16 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:contactIdentityId/delete', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/identity/:contactIdentityId/delete', () => {
   it('should call the audit service for the page view', async () => {
     // Given
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/1/delete?returnUrl=/foo-bar`)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/1/delete?returnUrl=/foo-bar`,
+      )
       .expect(200)
 
     // Then
@@ -78,16 +81,22 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:con
 
     // When
     const response = await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/1/delete?returnUrl=/foo-bar`)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/1/delete?returnUrl=/foo-bar`,
+      )
       .expect(200)
 
     // Then
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Are you sure you want to delete this identity number?',
+      'Are you sure you want to delete this identity document for First Middle Last?',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789',
+    )
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-details',
+    )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('.identity-number-value').text().trim()).toStrictEqual('LAST-87736799M')
     expect($('.issuing-authority-value').text().trim()).toStrictEqual('UK')
@@ -100,7 +109,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:con
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/555/delete?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/555/delete?returnUrl=/foo-bar`,
     )
 
     // Then
@@ -108,16 +117,18 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:con
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:contactIdentityId/delete', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/identity/:contactIdentityId/delete', () => {
   it('should delete contact and redirect back to manage contact', async () => {
     // Given
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/1/delete?returnUrl=/foo-bar`)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/1/delete?returnUrl=/foo-bar`,
+      )
       .expect(302)
-      .expect('Location', '/foo-bar')
+      .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
 
     // Then
     expect(contactsService.deleteContactIdentity).toHaveBeenCalledWith(contactId, 1, user)
