@@ -84,6 +84,7 @@ import ChangeRelationshipTypeRelationshipToPrisonerController from './relationsh
 import { manageRelationshipStatusSchema } from './relationship/status/manageRelationshipStatusSchema'
 import ManageContactEnterDateOfDeathController from './date-of-death/manageContactEnterDateOfDeathController'
 import { dateOfDeathSchema } from './date-of-death/manageContactDateOfDeathSchema'
+import ManageContactDeleteDateOfDeathController from './date-of-death/manageContactDeleteDateOfDeathController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -303,6 +304,12 @@ const ManageContactsRoutes = (
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/enter-date-of-death',
     controller: new ManageContactEnterDateOfDeathController(contactsService),
     schema: dateOfDeathSchema,
+  })
+
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/delete-date-of-death',
+    controller: new ManageContactDeleteDateOfDeathController(contactsService),
+    noValidation: true,
   })
 
   standAloneRoute({
