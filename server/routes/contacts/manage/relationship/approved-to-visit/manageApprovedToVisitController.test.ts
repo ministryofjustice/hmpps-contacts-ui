@@ -1,14 +1,14 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import { Page } from '../../../../services/auditService'
-import TestData from '../../../testutils/testData'
-import { MockedService } from '../../../../testutils/mockedServices'
+import { appWithAllRoutes, user } from '../../../../testutils/appSetup'
+import { Page } from '../../../../../services/auditService'
+import TestData from '../../../../testutils/testData'
+import { MockedService } from '../../../../../testutils/mockedServices'
 
-jest.mock('../../../../services/auditService')
-jest.mock('../../../../services/prisonerSearchService')
-jest.mock('../../../../services/contactsService')
+jest.mock('../../../../../services/auditService')
+jest.mock('../../../../../services/prisonerSearchService')
+jest.mock('../../../../../services/contactsService')
 
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
@@ -47,15 +47,19 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // When
 
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/approved-to-visit?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/approved-to-visit`,
     )
     const $ = cheerio.load(response.text)
 
     // Then
     expect(response.status).toEqual(200)
     expect($('input[type=radio]:checked').val()).toStrictEqual(isApprovedToVisit)
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/22/relationship/12232',
+    )
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/22/relationship/12232/edit-contact-details',
+    )
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_UPDATE_APPROVED_TO_VISIT_PAGE, {
       who: user.username,
@@ -71,14 +75,16 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       ['YES', { isApprovedVisitor: true, updatedBy: 'user1' }],
       ['NO', { isApprovedVisitor: false, updatedBy: 'user1' }],
     ])('should update contact when isApprovedToVisit is %p', async (isApprovedToVisit, expectedPayload) => {
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.getContact.mockResolvedValue(TestData.contact())
       await request(app)
         .post(
-          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/approved-to-visit?returnUrl=/foo-bar`,
+          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/approved-to-visit`,
         )
         .type('form')
         .send({ isApprovedToVisit })
         .expect(302)
-        .expect('Location', '/foo-bar')
+        .expect('Location', '/prisoner/A1234BC/contacts/manage/10/relationship/12232')
 
       expect(contactsService.updateContactRelationshipById).toHaveBeenCalledWith(
         prisonerContactId,
@@ -86,5 +92,20 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         user,
       )
     })
+  })
+
+  it('should return to enter page if there are validation errors', async () => {
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    await request(app)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/approved-to-visit`,
+      )
+      .type('form')
+      .send({ isApprovedToVisit: undefined })
+      .expect(302)
+      .expect(
+        'Location',
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/approved-to-visit`,
+      )
   })
 })

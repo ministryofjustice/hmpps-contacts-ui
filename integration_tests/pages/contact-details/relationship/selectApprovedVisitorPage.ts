@@ -1,8 +1,12 @@
-import Page, { PageElement } from './page'
+import Page, { PageElement } from '../../page'
 
 export default class SelectApprovedVisitorPage extends Page {
-  constructor(name: string) {
-    super(`Is ${name} approved to visit the prisoner?`)
+  constructor(contactName: string, prisonerName: string, isOptional: boolean = false) {
+    let title = `Is ${contactName} approved to visit ${prisonerName}?`
+    if (isOptional) {
+      title += ' (optional)'
+    }
+    super(title)
   }
 
   selectIsApprovedVisitor(value: 'YES' | 'NO'): SelectApprovedVisitorPage {

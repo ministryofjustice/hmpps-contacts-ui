@@ -1,7 +1,7 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
-import SelectApprovedVisitorPage from '../pages/selectApprovedVisitorPage'
+import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
 import EditContactDetailsPage from '../pages/editContactDetailsPage'
 
 context('Manage contact update approved visitor contact', () => {
@@ -55,11 +55,12 @@ context('Manage contact update approved visitor contact', () => {
       .verifyShowApprovedForVisitsAs('Yes')
       .clickChangeApprovedForVisitsLink()
 
-    Page.verifyOnPage(SelectApprovedVisitorPage, 'First Middle Names Last') //
+    Page.verifyOnPage(SelectApprovedVisitorPage, 'First Middle Names Last', 'John Smith') //
       .selectIsApprovedVisitor('NO')
-      .clickContinue()
-
-    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last')
+      .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .hasSuccessBanner(
+        'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith.',
+      )
 
     cy.verifyLastAPICall(
       {
@@ -70,27 +71,20 @@ context('Manage contact update approved visitor contact', () => {
     )
   })
 
-  it(`Back link goes to manage contacts`, () => {
+  it('goes to correct page on Back or Cancel', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
 
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickChangeApprovedForVisitsLink()
 
-    Page.verifyOnPage(SelectApprovedVisitorPage, 'First Middle Names Last') //
+    // back to Edit Contact Details
+    Page.verifyOnPage(SelectApprovedVisitorPage, 'First Middle Names Last', 'John Smith') //
       .backTo(EditContactDetailsPage, 'First Middle Names Last')
-      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
-  })
-
-  it(`Cancel goes to manage contacts`, () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickEditContactDetailsLink()
-
-    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickChangeApprovedForVisitsLink()
 
-    Page.verifyOnPage(SelectApprovedVisitorPage, 'First Middle Names Last') //
-      .cancelTo(EditContactDetailsPage, 'First Middle Names Last')
+    // cancel to Manage Contact Details
+    Page.verifyOnPage(SelectApprovedVisitorPage, 'First Middle Names Last', 'John Smith') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 })
