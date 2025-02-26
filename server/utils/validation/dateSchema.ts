@@ -64,13 +64,13 @@ export const createDateInputSchema = ({
           })
           ctx.addIssue({ code: z.ZodIssueCode.custom, message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: [fieldTwo] })
         } else if (val.year && val.year.length >= 4) {
-          const inputDateStr = `${val.year}-${val.month}-${val.day}`
-          const parsed = parse(inputDateStr, 'yyyy-MM-dd', new Date())
+          const parsed = parse(`${val.year}-${val.month}-${val.day}`, 'yyyy-MM-dd', new Date())
           if (!isValid(parsed)) {
             ctx.addIssue({ code: z.ZodIssueCode.custom, message: REAL_DATE_ERROR, path: ['day'] })
             ctx.addIssue({ code: z.ZodIssueCode.custom, message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: ['month'] })
             ctx.addIssue({ code: z.ZodIssueCode.custom, message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: ['year'] })
           } else {
+            const inputDateStr = parsed.toISOString().substring(0, 10)
             const todayStr = new Date().toISOString().substring(0, 10)
             if (additionalRule === DateInputSchemaRule.MUST_BE_TODAY_OR_PAST && inputDateStr > todayStr) {
               ctx.addIssue({ code: z.ZodIssueCode.custom, message: NOT_TODAY_OR_PAST_ERROR, path: ['day'] })
