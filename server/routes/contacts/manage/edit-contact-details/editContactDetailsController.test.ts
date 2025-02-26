@@ -268,7 +268,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         relationshipInformationCard,
         'Approved for visits',
         'Yes',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/approved-to-visit?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/approved-to-visit',
         'Change if the contact is approved to visit the prisoner (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(
@@ -343,7 +343,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         relationshipInformationCard,
         'Approved for visits',
         'No',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/approved-to-visit?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/approved-to-visit',
         'Change if the contact is approved to visit the prisoner (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(

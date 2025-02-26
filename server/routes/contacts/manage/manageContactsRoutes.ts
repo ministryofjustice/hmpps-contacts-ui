@@ -50,7 +50,7 @@ import AddressMetadataController from './addresses/address-metadata/addressMetad
 import { addressMetadataSchema } from './addresses/address-metadata/addressMetadataSchemas'
 import AddressCheckAnswersController from './addresses/address-check-answers/addressCheckAnswersController'
 import RestrictionsService from '../../../services/restrictionsService'
-import ManageApprovedToVisitController from './approved-to-visit/manageApprovedToVisitController'
+import ManageApprovedToVisitController from './relationship/approved-to-visit/manageApprovedToVisitController'
 import ManageRelationshipStatusController from './relationship/status/manageRelationshipStatusController'
 import ManageContactAddAddressPhoneController from './phone/add-address-phone/manageContactAddAddressPhoneController'
 import ManageContactEditAddressPhoneController from './phone/edit-address-phone/manageContactEditAddressPhoneController'
@@ -85,6 +85,7 @@ import { manageRelationshipStatusSchema } from './relationship/status/manageRela
 import ManageContactEnterDateOfDeathController from './date-of-death/manageContactEnterDateOfDeathController'
 import { dateOfDeathSchema } from './date-of-death/manageContactDateOfDeathSchema'
 import ManageContactDeleteDateOfDeathController from './date-of-death/manageContactDeleteDateOfDeathController'
+import { manageApprovedToVisitSchema } from './relationship/approved-to-visit/manageApprovedToVisitSchema'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -240,10 +241,11 @@ const ManageContactsRoutes = (
     noValidation: true,
   })
 
-  standAloneJourneyRoute({
+  standAloneRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/approved-to-visit',
     controller: new ManageApprovedToVisitController(contactsService),
-    noValidation: true,
+    schema: manageApprovedToVisitSchema,
+    prisonerDetailsRequiredOnPost: true,
   })
 
   standAloneRoute({
