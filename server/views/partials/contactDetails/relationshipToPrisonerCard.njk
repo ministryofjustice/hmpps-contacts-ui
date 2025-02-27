@@ -82,7 +82,7 @@
         actions: {
           items: [
             {
-              href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + relationship.prisonerContactId + "/emergency-contact?returnUrl=" + returnUrl,
+              href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + relationship.prisonerContactId + "/emergency-contact-or-next-of-kin",
               text: "Change",
               visuallyHiddenText: "if the contact is the prisoner’s emergency contact",
               attributes: {"data-qa": "change-emergency-contact-link"},
@@ -101,7 +101,7 @@
         actions: {
           items: [
             {
-              href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + relationship.prisonerContactId + "/next-of-kin?returnUrl=" + returnUrl,
+              href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + relationship.prisonerContactId + "/emergency-contact-or-next-of-kin",
               text: "Change",
               visuallyHiddenText: "if the contact is the prisoner’s next of kin",
               attributes: {"data-qa": "change-next-of-kin-link"},

@@ -2,18 +2,18 @@ import { Request, Response } from 'express'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { ContactsService } from '../../../../../services'
-import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
 import { Navigation } from '../../../common/navigation'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
-import { ManageApprovedToVisitSchemaType } from './manageApprovedToVisitSchema'
+import { ManageEmergencyContactOrNextOfKinSchemaType } from './manageEmergencyContactOrNextOfKinSchema'
+import UpdateRelationshipRequest = contactsApiClientTypes.UpdateRelationshipRequest
 
-export default class ManageApprovedToVisitController implements PageHandler {
+export default class ManageEmergencyContactOrNextOfKinController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
 
-  public PAGE_NAME = Page.MANAGE_CONTACT_UPDATE_APPROVED_TO_VISIT_PAGE
+  public PAGE_NAME = Page.MANAGE_CONTACT_UPDATE_EMERGENCY_CONTACT_OR_NEXT_OF_KIN_PAGE
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }>,
@@ -33,24 +33,26 @@ export default class ManageApprovedToVisitController implements PageHandler {
       continueButtonLabel: 'Confirm and save',
       contact,
       prisonerContactId,
-      isApprovedVisitor: relationship.isApprovedVisitor,
+      emergencyContact: relationship.emergencyContact,
+      nextOfKin: relationship.nextOfKin,
       navigation,
     }
-    res.render('pages/contacts/manage/contactDetails/manageApprovedToVisit', viewModel)
+    res.render('pages/contacts/manage/contactDetails/manageNextOfKinAndEmergencyContact', viewModel)
   }
 
   POST = async (
     req: Request<
       { prisonerNumber: string; contactId: string; prisonerContactId: string },
       unknown,
-      ManageApprovedToVisitSchemaType
+      ManageEmergencyContactOrNextOfKinSchemaType
     >,
     res: Response,
   ): Promise<void> => {
     const { user, prisonerDetails } = res.locals
     const { prisonerNumber, contactId, prisonerContactId } = req.params
-    const request: PatchContactRequest = {
-      isApprovedVisitor: req.body.isApprovedToVisit === 'YES',
+    const request: UpdateRelationshipRequest = {
+      isEmergencyContact: req.body.emergencyContact,
+      isNextOfKin: req.body.nextOfKin,
       updatedBy: user.username,
     }
     await this.contactsService.updateContactRelationshipById(parseInt(prisonerContactId, 10), request, user)

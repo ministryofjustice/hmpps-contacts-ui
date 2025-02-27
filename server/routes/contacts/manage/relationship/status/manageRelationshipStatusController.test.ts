@@ -49,6 +49,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact relationship information')
     expect($('.main-heading').text().trim()).toBe(
       'What is the status of the relationship between Jones Mason and John Smith?',
     )

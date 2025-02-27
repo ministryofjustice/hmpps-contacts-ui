@@ -34,10 +34,8 @@ import { restrictedEditingNameSchema } from '../common/name/nameSchemas'
 import ManageContactAddEmailController from './email/add/manageContactAddEmailController'
 import ManageContactEditEmailController from './email/edit/manageContactEditEmailController'
 import { emailSchema } from './email/emailSchemas'
-import ManageEmergencyContactController from './relationship/manageEmergencyContactController'
-import ManageContactRelationshipToPrisonerController from './relationship/manageContactRelationshipToPrisonerController'
+import ManageContactRelationshipToPrisonerController from './relationship/relationship-to-prisoner/manageContactRelationshipToPrisonerController'
 import { selectRelationshipSchemaFactory } from '../common/relationship/selectRelationshipSchemas'
-import ManageNextOfKinContactController from './relationship/manageNextOfKinContactController'
 import ManageContactDeleteEmailController from './email/delete/manageContactDeleteEmailController'
 import { enterRelationshipCommentsSchema } from '../add/relationship-comments/enterRelationshipCommentsSchemas'
 import StartAddressJourneyController from './addresses/start/startAddressJourneyController'
@@ -86,6 +84,8 @@ import ManageContactEnterDateOfDeathController from './date-of-death/manageConta
 import { dateOfDeathSchema } from './date-of-death/manageContactDateOfDeathSchema'
 import ManageContactDeleteDateOfDeathController from './date-of-death/manageContactDeleteDateOfDeathController'
 import { manageApprovedToVisitSchema } from './relationship/approved-to-visit/manageApprovedToVisitSchema'
+import ManageEmergencyContactOrNextOfKinController from './relationship/emergency-contact-or-next-of-kin/manageEmergencyContactOrNextOfKinController'
+import { manageEmergencyContactOrNextOfKinSchema } from './relationship/emergency-contact-or-next-of-kin/manageEmergencyContactOrNextOfKinSchema'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -326,12 +326,6 @@ const ManageContactsRoutes = (
     schema: restrictedEditingNameSchema,
   })
 
-  standAloneJourneyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/emergency-contact',
-    controller: new ManageEmergencyContactController(contactsService),
-    noValidation: true,
-  })
-
   standAloneRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-relationship-to-prisoner',
     controller: new ManageContactRelationshipToPrisonerController(contactsService, referenceDataService),
@@ -339,10 +333,11 @@ const ManageContactsRoutes = (
     prisonerDetailsRequiredOnPost: true,
   })
 
-  standAloneJourneyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/next-of-kin',
-    controller: new ManageNextOfKinContactController(contactsService),
-    noValidation: true,
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/emergency-contact-or-next-of-kin',
+    controller: new ManageEmergencyContactOrNextOfKinController(contactsService),
+    schema: manageEmergencyContactOrNextOfKinSchema,
+    prisonerDetailsRequiredOnPost: true,
   })
 
   standAloneRoute({

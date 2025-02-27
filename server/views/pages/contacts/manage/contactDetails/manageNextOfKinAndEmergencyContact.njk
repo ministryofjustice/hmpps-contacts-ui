@@ -4,24 +4,13 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% set pageTitle = applicationName + " - Staff status" %}
-{% set title = "Is " + (contact | formatNameFirstNameFirst) + " approved to visit " + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) + "?" + (" (optional)" if isOptional else "") %}
+{% set title = "Is " + (contact | formatNameFirstNameFirst) + " an emergency contact or next of kin for " + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) + "?" + (" (optional)" if isOptional else "") %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
   {% include 'partials/navigation.njk' %}
   {{ miniProfile(prisonerDetails) }}
   {% include 'partials/formErrorSummary.njk' %}
-
-  {% set hintHtmlForOptional %}
-    <div class="govuk-body">
-      <p>Skip this question if:</p>
-      <ul>
-        <li>the contact has not yet been checked and approved for visits to this prisoner</li>
-        <li>for any other reason, you’re not sure whether the contact is approved to visit the prisoner or not</li>
-      </ul>
-    </div>
-  {% endset -%}
-
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <span class="govuk-caption-l">{{ caption }}</span>
@@ -35,21 +24,31 @@
               classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6 main-heading"
             }
           },
-          hint: {
-            html: hintHtmlForOptional
-          } if isOptional else undefined,
-          name: "isApprovedToVisit",
-          errorMessage: validationErrors | findError('isApprovedToVisit'),
+          name: "isEmergencyContactOrNextOfKin",
+          errorMessage: validationErrors | findError('isEmergencyContactOrNextOfKin'),
           items: [
             {
-              value: 'YES',
-              text: 'YES' | formatYesNo,
-              checked: isApprovedVisitor === true
+              value: 'EC',
+              text: 'Emergency contact',
+              checked: emergencyContact === true and nextOfKin === false
             },
             {
-              value: 'NO',
-              text: 'NO' | formatYesNo,
-              checked: isApprovedVisitor === false
+              value: 'NOK',
+              text: 'Next of kin',
+              checked: emergencyContact === false and nextOfKin === true
+            },
+            {
+              value: 'ECNOK',
+              text: 'Both emergency contact and next of kin',
+              checked: emergencyContact === true and nextOfKin === true
+            },
+            {
+              divider: "or"
+            },
+            {
+              value: 'NONE',
+              text: 'None of the above',
+              checked: emergencyContact === false and nextOfKin === false
             }
           ]
         }) }}
