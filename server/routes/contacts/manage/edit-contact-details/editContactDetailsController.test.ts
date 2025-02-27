@@ -275,7 +275,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         relationshipInformationCard,
         'Comments',
         'Some comments',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/relationship-comments?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/relationship-comments',
         'Change the comments on the relationship (Relationship to prisoner Incarcerated Individual)',
       )
     })
@@ -350,7 +350,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         relationshipInformationCard,
         'Comments',
         'Not provided',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/relationship-comments?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/relationship-comments',
         'Change the comments on the relationship (Relationship to prisoner Incarcerated Individual)',
       )
     })

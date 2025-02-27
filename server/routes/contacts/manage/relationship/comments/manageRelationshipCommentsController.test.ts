@@ -1,14 +1,14 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import { Page } from '../../../../services/auditService'
-import TestData from '../../../testutils/testData'
-import { MockedService } from '../../../../testutils/mockedServices'
+import { appWithAllRoutes, user } from '../../../../testutils/appSetup'
+import { Page } from '../../../../../services/auditService'
+import TestData from '../../../../testutils/testData'
+import { MockedService } from '../../../../../testutils/mockedServices'
 
-jest.mock('../../../../services/auditService')
-jest.mock('../../../../services/prisonerSearchService')
-jest.mock('../../../../services/contactsService')
+jest.mock('../../../../../services/auditService')
+jest.mock('../../../../../services/prisonerSearchService')
+jest.mock('../../../../../services/contactsService')
 
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
@@ -43,18 +43,22 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/relationship-comments?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/relationship-comments`,
     )
 
     // Then
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').text().trim()).toBe(
-      'Add additional information about the relationship between the prisoner and Jones Mason',
+      'Change the comments on the relationship between Jones Mason and John Smith',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Save and continue')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/10/relationship/1',
+    )
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/10/relationship/1/edit-contact-details',
+    )
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_EDIT_RELATIONSHIP_COMMENTS_PAGE, {
       who: user.username,
@@ -65,18 +69,35 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
 describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/relationship-comments`, () => {
   it('should update additional information for a contacts', async () => {
+    contactsService.getContact.mockResolvedValue(TestData.contact())
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/relationship-comments?returnUrl=/foo-bar`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/relationship-comments`,
       )
       .type('form')
       .send({ comments: 'comment added' })
       .expect(302)
-      .expect('Location', '/foo-bar')
+      .expect('Location', '/prisoner/A1234BC/contacts/manage/10/relationship/1')
     expect(contactsService.updateContactRelationshipById).toHaveBeenCalledWith(
       1,
       { comments: 'comment added', updatedBy: 'user1' },
       user,
     )
+  })
+
+  it('should return to enter page if there are validation errors', async () => {
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    await request(app)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/relationship-comments`,
+      )
+      .type('form')
+      .send({ comments: 'a'.repeat(241) })
+      .expect(302)
+      .expect(
+        'Location',
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/relationship-comments`,
+      )
   })
 })

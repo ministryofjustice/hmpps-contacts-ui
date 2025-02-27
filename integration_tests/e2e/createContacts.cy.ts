@@ -451,7 +451,7 @@ context('Create Contacts', () => {
       .enterComments(''.padEnd(241))
       .continueTo(RelationshipCommentsPage, 'First Last')
 
-    commentsPage.hasFieldInError('comments', 'Additional information must be 240 characters or less')
+    commentsPage.hasFieldInError('comments', 'Comments must be 240 characters or less')
   })
 
   it('Can navigate back through all pages', () => {

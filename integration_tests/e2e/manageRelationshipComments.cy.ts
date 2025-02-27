@@ -1,8 +1,8 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
-import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
 import EditContactDetailsPage from '../pages/editContactDetailsPage'
+import ManageRelationshipCommentsPage from '../pages/contact-details/relationship/manageRelationshipCommentsPage'
 
 context('Manage contact update comments for a contact', () => {
   const contactId = 654321
@@ -54,11 +54,12 @@ context('Manage contact update comments for a contact', () => {
       .verifyShowCommentsAs('Some existing comments')
       .clickChangeCommentsLink()
 
-    Page.verifyOnPage(RelationshipCommentsPage, 'First Middle Names Last') //
+    Page.verifyOnPage(ManageRelationshipCommentsPage, 'First Middle Names Last', 'John Smith') //
       .enterComments('my comments')
-      .clickContinue()
-
-    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last')
+      .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .hasSuccessBanner(
+        'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith.',
+      )
 
     cy.verifyLastAPICall(
       {
@@ -66,6 +67,30 @@ context('Manage contact update comments for a contact', () => {
         urlPath: `/prisoner-contact/${prisonerContactId}`,
       },
       { comments: 'my comments', updatedBy: 'USER1' },
+    )
+  })
+
+  it('Can remove comments for a contact', () => {
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickChangeCommentsLink()
+
+    Page.verifyOnPage(ManageRelationshipCommentsPage, 'First Middle Names Last', 'John Smith') //
+      .verifyComments('Some existing comments')
+      .clearComments()
+      .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .hasSuccessBanner(
+        'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith.',
+      )
+
+    cy.verifyLastAPICall(
+      {
+        method: 'PATCH',
+        urlPath: `/prisoner-contact/${prisonerContactId}`,
+      },
+      { comments: null, updatedBy: 'USER1' },
     )
   })
 
@@ -77,33 +102,26 @@ context('Manage contact update comments for a contact', () => {
       .verifyShowCommentsAs('Some existing comments')
       .clickChangeCommentsLink()
 
-    const commentsPage = Page.verifyOnPage(RelationshipCommentsPage, 'First Middle Names Last') //
+    const commentsPage = Page.verifyOnPage(ManageRelationshipCommentsPage, 'First Middle Names Last', 'John Smith') //
       .enterComments(''.padEnd(241))
-      .continueTo(RelationshipCommentsPage, 'First Middle Names Last')
-    commentsPage.hasFieldInError('comments', 'Additional information must be 240 characters or less')
+      .continueTo(ManageRelationshipCommentsPage, 'First Middle Names Last', 'John Smith')
+    commentsPage.hasFieldInError('comments', 'Comments must be 240 characters or less')
   })
 
-  it(`Back link goes to manage contacts`, () => {
+  it('goes to correct page on Back or Cancel', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
 
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickChangeCommentsLink()
 
-    Page.verifyOnPage(RelationshipCommentsPage, 'First Middle Names Last') //
+    // Back to Edit Contact Details
+    Page.verifyOnPage(ManageRelationshipCommentsPage, 'First Middle Names Last', 'John Smith') //
       .backTo(EditContactDetailsPage, 'First Middle Names Last')
-      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
-  })
-
-  it(`Cancel goes to manage contacts`, () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickEditContactDetailsLink()
-
-    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickChangeCommentsLink()
 
-    Page.verifyOnPage(RelationshipCommentsPage, 'First Middle Names Last') //
-      .cancelTo(EditContactDetailsPage, 'First Middle Names Last')
+    // Cancel to Contact Details page
+    Page.verifyOnPage(ManageRelationshipCommentsPage, 'First Middle Names Last', 'John Smith') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 })

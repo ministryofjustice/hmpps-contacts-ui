@@ -134,12 +134,12 @@
           text: 'Comments on the relationship'
         },
         value: {
-          text: relationship.comments if relationship.comments else 'Not provided'
+          text: (relationship.comments or 'Not provided') | escape | nl2br
         },
         actions: {
           items: [
             {
-              href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + relationship.prisonerContactId + "/relationship-comments?returnUrl=" + returnUrl,
+              href: "/prisoner/"+ prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + relationship.prisonerContactId + "/relationship-comments",
               text: "Change",
               visuallyHiddenText: "the comments on the relationship",
               attributes: {"data-qa": "change-relationship-comments-link"},
