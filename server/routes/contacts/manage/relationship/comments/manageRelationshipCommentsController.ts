@@ -49,7 +49,7 @@ export default class ManageRelationshipCommentsController implements PageHandler
     const { user, prisonerDetails } = res.locals
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const request: UpdateRelationshipRequest = {
-      comments: req.body.comments ?? '',
+      comments: req.body.comments ?? null,
       updatedBy: user.username,
     }
 

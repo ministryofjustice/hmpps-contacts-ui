@@ -90,7 +90,7 @@ context('Manage contact update comments for a contact', () => {
         method: 'PATCH',
         urlPath: `/prisoner-contact/${prisonerContactId}`,
       },
-      { comments: '', updatedBy: 'USER1' },
+      { comments: null, updatedBy: 'USER1' },
     )
   })
 
