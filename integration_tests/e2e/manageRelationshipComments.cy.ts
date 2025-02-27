@@ -70,6 +70,30 @@ context('Manage contact update comments for a contact', () => {
     )
   })
 
+  it('Can remove comments for a contact', () => {
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickChangeCommentsLink()
+
+    Page.verifyOnPage(ManageRelationshipCommentsPage, 'First Middle Names Last', 'John Smith') //
+      .verifyComments('Some existing comments')
+      .clearComments()
+      .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .hasSuccessBanner(
+        'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith.',
+      )
+
+    cy.verifyLastAPICall(
+      {
+        method: 'PATCH',
+        urlPath: `/prisoner-contact/${prisonerContactId}`,
+      },
+      { comments: '', updatedBy: 'USER1' },
+    )
+  })
+
   it(`Relationship comments must be less than 240 characters`, () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()

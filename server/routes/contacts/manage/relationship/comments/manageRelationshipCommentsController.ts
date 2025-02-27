@@ -8,6 +8,7 @@ import { Navigation } from '../../../common/navigation'
 import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
+import { EnterRelationshipCommentsSchemas } from '../../../add/relationship-comments/enterRelationshipCommentsSchemas'
 
 export default class ManageRelationshipCommentsController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -38,13 +39,17 @@ export default class ManageRelationshipCommentsController implements PageHandler
   }
 
   POST = async (
-    req: Request<{ contactId: string; prisonerNumber: string; prisonerContactId: string }>,
+    req: Request<
+      { contactId: string; prisonerNumber: string; prisonerContactId: string },
+      unknown,
+      EnterRelationshipCommentsSchemas
+    >,
     res: Response,
   ): Promise<void> => {
     const { user, prisonerDetails } = res.locals
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const request: UpdateRelationshipRequest = {
-      comments: req.body.comments,
+      comments: req.body.comments ?? '',
       updatedBy: user.username,
     }
 

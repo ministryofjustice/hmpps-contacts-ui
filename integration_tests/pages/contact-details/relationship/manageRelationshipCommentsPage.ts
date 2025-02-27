@@ -11,6 +11,16 @@ export default class ManageRelationshipCommentsPage extends Page {
     super(title)
   }
 
+  verifyComments(value: string): ManageRelationshipCommentsPage {
+    this.commentsTextBox().should('have.value', value)
+    return this
+  }
+
+  clearComments(): ManageRelationshipCommentsPage {
+    this.commentsTextBox().clear()
+    return this
+  }
+
   enterComments(value: string): ManageRelationshipCommentsPage {
     this.commentsTextBox().clear().type(value, { delay: 0 })
     return this
