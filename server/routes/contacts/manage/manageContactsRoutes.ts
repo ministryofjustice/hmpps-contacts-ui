@@ -20,7 +20,7 @@ import ManageContactStaffController from './staff/manageContactStaffController'
 import { phoneNumberSchema } from './phone/phoneSchemas'
 import ManageInterpreterController from './interpreter/manageInterpreterController'
 import ManageContactEditPhoneController from './phone/edit/manageContactEditPhoneController'
-import ManageDomesticStatusController from './domestic-status/manageDomesticStatusController'
+import ManageDomesticStatusController from './additional-information/domestic-status/manageDomesticStatusController'
 import ManageContactDeletePhoneController from './phone/delete/manageContactDeletePhoneController'
 import { identitySchema } from './identities/IdentitySchemas'
 import ManageContactAddIdentityController from './identities/add/manageContactAddIdentityController'
@@ -86,6 +86,7 @@ import ManageContactDeleteDateOfDeathController from './date-of-death/manageCont
 import { manageApprovedToVisitSchema } from './relationship/approved-to-visit/manageApprovedToVisitSchema'
 import ManageEmergencyContactOrNextOfKinController from './relationship/emergency-contact-or-next-of-kin/manageEmergencyContactOrNextOfKinController'
 import { manageEmergencyContactOrNextOfKinSchema } from './relationship/emergency-contact-or-next-of-kin/manageEmergencyContactOrNextOfKinSchema'
+import { manageDomesticStatusSchema } from './additional-information/domestic-status/manageDomesticStatusSchema'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -290,10 +291,10 @@ const ManageContactsRoutes = (
     noValidation: true,
   })
 
-  standAloneJourneyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/domestic-status',
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/domestic-status',
     controller: new ManageDomesticStatusController(contactsService, referenceDataService),
-    noValidation: true,
+    schema: manageDomesticStatusSchema,
   })
 
   standAloneRoute({

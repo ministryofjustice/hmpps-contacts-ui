@@ -147,7 +147,7 @@ type StubStatusData = {
   displayOrder: number
 }
 
-const STUBBED_DOMESTIC_STATUS_OPTIONS: StubReferenceData[] & StubStatusData[] = [
+const STUBBED_DOMESTIC_STATUS_OPTIONS: (StubReferenceData & StubStatusData)[] = [
   {
     referenceCodeId: 3,
     groupCode: 'DOMESTIC_STS',

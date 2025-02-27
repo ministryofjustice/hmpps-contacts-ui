@@ -1,38 +1,47 @@
-{% extends "../../../../partials/layout.njk" %}
+{% extends "partials/layout.njk" %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
-{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "../../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
 
 {% set pageTitle = applicationName + " - Enter domestic status" %}
-{% set title = "What is the domestic status of " + contact | formatNameFirstNameFirst + "?" %}
+{% set title = "What is " + contact | formatNameFirstNameFirst(possessiveSuffix = true) + " domestic status?" + (" (optional)" if isOptional else "") %}
 
 {% block content %}
 
-{% include '../../../../partials/navigation.njk' %}
-
+{% include 'partials/navigation.njk' %}
 {{ miniProfile(prisonerDetails) }}
+{% include 'partials/formErrorSummary.njk' %}
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-half">
-        <span class="govuk-caption-l">Contacts</span>
-      <h1 class="govuk-heading-l" data-qa="main-heading"><label for="domesticStatusCode">{{ title }}</label></h1>
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-l">{{ caption }}</span>
         <form method='POST'>
-             <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-             {{ govukSelect({
-                id: "domesticStatusCode",
-                name: "domesticStatusCode",
-                items: domesticStatusOptions
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+          {{ govukRadios({
+            fieldset: {
+              legend: {
+                text: title,
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6 main-heading"
+              }
+            },
+            errorMessage: validationErrors | findError('domesticStatusCode'),
+            id: "domesticStatusCode",
+            name: "domesticStatusCode",
+            items: domesticStatusOptions
+          }) }}
+          <div class="govuk-button-group">
+            {{ govukButton({
+              text: continueButtonLabel,
+              type: "submit",
+              classes: 'govuk-!-margin-top-6',
+              attributes: {"data-qa": "continue-button"},
+              preventDoubleClick: true
             }) }}
-            <div class="govuk-button-group">
-                {{ govukButton({
-                    text: "Confirm and save",
-                    type: "submit",
-                    classes: 'govuk-!-margin-top-6',
-                    attributes: {"data-qa": "continue-button"},
-                    preventDoubleClick: true
-                }) }}
-                <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ journey.returnPoint.url }}" data-qa="cancel-button">Cancel</a>
-            </div>
+            {% if navigation.cancelButton %}
+              <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
+            {% endif %}
+          </div>
         </form>
      </div>
 </div>

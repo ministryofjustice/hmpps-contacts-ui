@@ -5,7 +5,6 @@
   {% set contact = opts.contact %}
   {% set prisonerContactId = opts.prisonerContactId %}
   {% set showActions = opts.showActions %}
-  {% set returnUrl = opts.returnUrl %}
   {% set prisonerNumber = opts.prisonerNumber %}
 
   {% set  formattedDateOfBirth %}{% if contact.dateOfBirth %}{{ contact.dateOfBirth | formatDate }}{% else %}Not provided{% endif %}{% endset %}
