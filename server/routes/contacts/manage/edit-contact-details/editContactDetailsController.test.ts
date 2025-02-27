@@ -254,14 +254,14 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         relationshipInformationCard,
         'Emergency contact',
         'Yes',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/emergency-contact?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/emergency-contact-or-next-of-kin',
         'Change if the contact is the prisoner’s emergency contact (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(
         relationshipInformationCard,
         'Next of kin',
         'Yes',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/next-of-kin?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/emergency-contact-or-next-of-kin',
         'Change if the contact is the prisoner’s next of kin (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(
@@ -329,14 +329,14 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         relationshipInformationCard,
         'Emergency contact',
         'No',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/emergency-contact?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/emergency-contact-or-next-of-kin',
         'Change if the contact is the prisoner’s emergency contact (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(
         relationshipInformationCard,
         'Next of kin',
         'No',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/next-of-kin?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/emergency-contact-or-next-of-kin',
         'Change if the contact is the prisoner’s next of kin (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(

@@ -1,8 +1,8 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
-import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
 import EditContactDetailsPage from '../pages/editContactDetailsPage'
+import SelectEmergencyContactOrNextOfKinPage from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
 
 context('Manage contact update emergency contact', () => {
   const contactId = 654321
@@ -26,6 +26,7 @@ context('Manage contact update emergency contact', () => {
       response: TestData.prisonerContactRelationship({
         prisonerContactId,
         emergencyContact: true,
+        nextOfKin: true,
       }),
     })
     cy.task('stubUpdateContactRelationshipById', {
@@ -45,50 +46,45 @@ context('Manage contact update emergency contact', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
-  it('Can update a emergency contact', () => {
+  it('Can update emergency contact and next of kin status', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
 
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .verifyShowEmergencyContactAs('Yes')
+      .verifyShowNextOfKinAs('Yes')
       .clickChangeEmergencyContactLink()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'First Middle Names Last') //
-      .selectIsEmergencyContact('NO')
-      .clickContinue()
-
-    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last')
+    Page.verifyOnPage(SelectEmergencyContactOrNextOfKinPage, 'First Middle Names Last', 'John Smith') //
+      .selectIsEmergencyContactOrNextOfKin('NONE')
+      .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .hasSuccessBanner(
+        'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith.',
+      )
 
     cy.verifyLastAPICall(
       {
         method: 'PATCH',
         urlPath: `/prisoner-contact/${prisonerContactId}`,
       },
-      { isEmergencyContact: false, updatedBy: 'USER1' },
+      { isEmergencyContact: false, isNextOfKin: false, updatedBy: 'USER1' },
     )
   })
 
-  it(`Back link goes to manage contacts`, () => {
+  it('goes to correct page on Back or Cancel', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
 
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
-      .clickChangeEmergencyContactLink()
+      .clickChangeEmergencyContactLink() // change emergency contact link goes to Emergency Contact or Next of Kin page
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'First Middle Names Last') //
+    // Back to Edit Contact Details
+    Page.verifyOnPage(SelectEmergencyContactOrNextOfKinPage, 'First Middle Names Last', 'John Smith') //
       .backTo(EditContactDetailsPage, 'First Middle Names Last')
-      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
-  })
+      .clickChangeNextOfKinLink() // change next of kin link goes to Emergency Contact or Next of Kin page
 
-  it(`Cancel goes to manage contacts`, () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickEditContactDetailsLink()
-
-    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
-      .clickChangeEmergencyContactLink()
-
-    Page.verifyOnPage(SelectEmergencyContactPage, 'First Middle Names Last') //
-      .cancelTo(EditContactDetailsPage, 'First Middle Names Last')
+    // Cancel to Contact Details page
+    Page.verifyOnPage(SelectEmergencyContactOrNextOfKinPage, 'First Middle Names Last', 'John Smith') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 })

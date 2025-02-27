@@ -1,19 +1,19 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, flashProvider, user } from '../../../testutils/appSetup'
-import { Page } from '../../../../services/auditService'
-import { mockedReferenceData } from '../../../testutils/stubReferenceData'
-import TestData from '../../../testutils/testData'
+import { appWithAllRoutes, flashProvider, user } from '../../../../testutils/appSetup'
+import { Page } from '../../../../../services/auditService'
+import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
+import TestData from '../../../../testutils/testData'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import UpdateRelationshipRequest = contactsApiClientTypes.UpdateRelationshipRequest
-import { MockedService } from '../../../../testutils/mockedServices'
-import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
+import { MockedService } from '../../../../../testutils/mockedServices'
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 
-jest.mock('../../../../services/auditService')
-jest.mock('../../../../services/referenceDataService')
-jest.mock('../../../../services/prisonerSearchService')
-jest.mock('../../../../services/contactsService')
+jest.mock('../../../../../services/auditService')
+jest.mock('../../../../../services/referenceDataService')
+jest.mock('../../../../../services/prisonerSearchService')
+jest.mock('../../../../../services/contactsService')
 
 const auditService = MockedService.AuditService()
 const referenceDataService = MockedService.ReferenceDataService()

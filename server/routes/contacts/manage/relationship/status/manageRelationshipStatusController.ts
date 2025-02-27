@@ -31,7 +31,7 @@ export default class ManageRelationshipStatusController implements PageHandler {
     return res.render('pages/contacts/manage/contactDetails/manageRelationshipStatus', {
       contact,
       prisonerContactId,
-      relationship,
+      isRelationshipActive: relationship.isRelationshipActive,
       navigation,
     })
   }
