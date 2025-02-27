@@ -55,7 +55,7 @@ context('Select Gender', () => {
     Page.verifyOnPage(SelectGenderPage, 'Jones Mason').selectGender('M').clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').hasSuccessBanner(
-      'You’ve updated the personal information for Jones Mason.',
+      'You’ve updated the personal information for contact Jones Mason.',
     )
 
     cy.verifyLastAPICall(

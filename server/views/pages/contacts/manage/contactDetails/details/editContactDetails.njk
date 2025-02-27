@@ -25,7 +25,6 @@
           contact: contact,
           prisonerNumber: prisonerNumber,
           prisonerContactId: prisonerContactRelationship.prisonerContactId,
-          returnUrl: returnUrl,
           showActions: true
         })
       }}
@@ -34,7 +33,6 @@
           contact: contact,
           relationship: prisonerContactRelationship,
           prisonerDetails: prisonerDetails,
-          returnUrl: returnUrl,
           showActions: true
         })
       }}
@@ -51,6 +49,7 @@
       {{ additionalInformationCard({
           contact: contact,
           prisonerNumber: prisonerNumber,
+          prisonerContactId: prisonerContactRelationship.prisonerContactId,
           returnUrl: returnUrl,
           showActions: true
         })

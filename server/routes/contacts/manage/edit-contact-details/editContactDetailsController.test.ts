@@ -492,7 +492,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         additionalInfoCard,
         'Contact’s domestic status',
         'Married',
-        '/prisoner/A1234BC/contacts/manage/22/domestic-status?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/domestic-status',
         'Change the contact’s domestic status (Additional information)',
       )
     })
@@ -533,7 +533,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         additionalInfoCard,
         'Contact’s domestic status',
         'Not provided',
-        '/prisoner/A1234BC/contacts/manage/22/domestic-status?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/domestic-status',
         'Change the contact’s domestic status (Additional information)',
       )
     })

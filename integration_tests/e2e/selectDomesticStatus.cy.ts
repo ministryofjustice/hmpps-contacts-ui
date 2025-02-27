@@ -2,7 +2,7 @@ import { components } from '../../server/@types/contactsApi'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import Page from '../pages/page'
-import SelectDomesticStatusPage from '../pages/selectDomesticStatusPage'
+import SelectDomesticStatusPage from '../pages/contact-details/additional-information/selectDomesticStatusPage'
 import EditContactDetailsPage from '../pages/editContactDetailsPage'
 
 export type PatchContactRequest = components['schemas']['PatchContactRequest']
@@ -26,7 +26,7 @@ context('Select Domestic Status', () => {
     )
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
-      response: TestData.prisonerContactRelationship(),
+      response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId,
@@ -35,15 +35,17 @@ context('Select Domestic Status', () => {
         contactGlobalRestrictions: [],
       },
     })
-
     cy.signIn()
-    const { prisonerNumber } = TestData.prisoner()
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
-
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
   })
 
-  it(`should render manage contact details domestic status`, () => {
+  it(`should update contact details domestic status`, () => {
+    visitContactPage(
+      TestData.contact({
+        domesticStatusCode: 'M',
+        domesticStatusDescription: 'Married',
+      }),
+    )
+
     const request: PatchContactRequest = {
       domesticStatus: 'S',
       updatedBy: 'USER1',
@@ -60,9 +62,10 @@ context('Select Domestic Status', () => {
       .clickChangeDomesticStatusLink()
 
     Page.verifyOnPage(SelectDomesticStatusPage, 'Jones Mason')
-      .selectDomesticStatus('Single-not married/in civil partnership')
-      .clickContinue()
-    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason')
+      .verifyDomesticStatus('M')
+      .selectDomesticStatus('S')
+      .continueTo(ManageContactDetailsPage, 'Jones Mason')
+      .hasSuccessBanner('You’ve updated the additional information for Jones Mason.')
 
     cy.verifyLastAPICall(
       {
@@ -76,7 +79,13 @@ context('Select Domestic Status', () => {
     )
   })
 
-  it(`Back link goes to manage contacts`, () => {
+  it(`should require mandatory input`, () => {
+    visitContactPage({
+      ...TestData.contact(),
+      domesticStatusCode: undefined,
+      domesticStatusDescription: undefined,
+    })
+
     cy.task('stubTitlesReferenceData')
     cy.task('stubGetDomesticStatuses')
 
@@ -86,23 +95,42 @@ context('Select Domestic Status', () => {
     Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason') //
       .clickChangeDomesticStatusLink()
 
+    Page.verifyOnPage(SelectDomesticStatusPage, 'Jones Mason')
+      .continueTo(SelectDomesticStatusPage, 'Jones Mason')
+      .hasFieldInError('domesticStatusCode', 'Select the contact’s domestic status')
+  })
+
+  it('goes to correct page on Back or Cancel', () => {
+    visitContactPage(TestData.contact())
+
+    cy.task('stubTitlesReferenceData')
+    cy.task('stubGetDomesticStatuses')
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason') //
+      .clickChangeDomesticStatusLink()
+
+    // Back to Edit Contact Details
     Page.verifyOnPage(SelectDomesticStatusPage, 'Jones Mason') //
       .backTo(EditContactDetailsPage, 'Jones Mason')
-      .backTo(ManageContactDetailsPage, 'Jones Mason')
-  })
-
-  it(`Cancel goes to manage contacts`, () => {
-    cy.task('stubTitlesReferenceData')
-    cy.task('stubGetDomesticStatuses')
-
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .clickEditContactDetailsLink()
-
-    Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason') //
       .clickChangeDomesticStatusLink()
 
+    // Cancel to Contact Details page
     Page.verifyOnPage(SelectDomesticStatusPage, 'Jones Mason') //
-      .cancelTo(EditContactDetailsPage, 'Jones Mason')
       .cancelTo(ManageContactDetailsPage, 'Jones Mason')
   })
+
+  const visitContactPage = (contact: {
+    id: number
+    domesticStatusCode?: string
+    domesticStatusDescription?: string
+  }) => {
+    cy.task('stubGetContactById', contact)
+    const { prisonerNumber } = TestData.prisoner()
+    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
+  }
 })

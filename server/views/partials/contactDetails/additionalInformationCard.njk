@@ -6,7 +6,7 @@
   {% set showActions = opts.showActions %}
   {% set returnUrl = opts.returnUrl %}
   {% set prisonerNumber = opts.prisonerNumber %}
-
+  {% set prisonerContactId = opts.prisonerContactId %}
 
   {{ govukSummaryList({
       card: {
@@ -63,7 +63,7 @@
           actions: {
             items: [
               {
-                href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/domestic-status?returnUrl=" + returnUrl,
+                href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + prisonerContactId + "/domestic-status",
                 text: "Change",
                 visuallyHiddenText: "the contact’s domestic status",
                 attributes: {"data-qa": "change-domestic-status-link"},
