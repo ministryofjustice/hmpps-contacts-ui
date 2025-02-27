@@ -29,7 +29,7 @@ import ManageContactDeleteIdentityController from './identities/delete/manageCon
 import ManageContactEnterDobController from './update-dob/manageContactEnterDobController'
 import ManageGenderController from './gender/contactGenderController'
 import ChangeTitleOrMiddleNamesController from './name/changeTitleOrMiddleNamesController'
-import ManageRelationshipCommentsController from './relationship/manageRelationshipCommentsController'
+import ManageRelationshipCommentsController from './relationship/comments/manageRelationshipCommentsController'
 import { restrictedEditingNameSchema } from '../common/name/nameSchemas'
 import ManageContactAddEmailController from './email/add/manageContactAddEmailController'
 import ManageContactEditEmailController from './email/edit/manageContactEditEmailController'
@@ -370,10 +370,11 @@ const ManageContactsRoutes = (
     noValidation: true,
   })
 
-  standAloneJourneyRoute({
+  standAloneRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/relationship-comments',
     controller: new ManageRelationshipCommentsController(contactsService),
     schema: enterRelationshipCommentsSchema,
+    prisonerDetailsRequiredOnPost: true,
   })
 
   // Addresses

@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { createSchema } from '../../../../middleware/validationMiddleware'
 
-const COMMENTS_TOO_LONG_MESSAGE = 'Additional information must be 240 characters or less'
+const COMMENTS_TOO_LONG_MESSAGE = 'Comments must be 240 characters or less'
 
 export const enterRelationshipCommentsSchema = createSchema({
   comments: z
