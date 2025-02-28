@@ -11,8 +11,6 @@ describe('findMostRelevantAddress', () => {
     contact.addresses.push({
       addressType: 'HOME',
       addressTypeDescription: 'Home address',
-      updatedBy: undefined,
-      updatedTime: undefined,
       area: 'Bunting',
       cityCode: '25344',
       cityDescription: 'Bradford',
@@ -24,14 +22,11 @@ describe('findMostRelevantAddress', () => {
       countyDescription: 'West Yorkshire',
       createdBy: 'TIM',
       createdTime: '2014-12-04T0 =3 =44.512401',
-      endDate: undefined,
       flat: '',
       mailFlag: false,
       noFixedAddress: false,
       phoneNumbers: [
         {
-          updatedBy: undefined,
-          updatedTime: undefined,
           contactId: 1,
           contactPhoneId: 2,
           contactAddressId: 3,
@@ -50,8 +45,6 @@ describe('findMostRelevantAddress', () => {
       startDate: '2012-01-02',
       street: 'Lilycroft Rd',
       verified: false,
-      verifiedBy: undefined,
-      verifiedTime: undefined,
     })
   })
 

@@ -20,7 +20,7 @@ export default class UpdateEmploymentsStartController {
       lastTouched: new Date().toISOString(),
       contactId: contact.id,
       contactNames: {
-        title: contact.title,
+        title: contact.titleCode,
         lastName: contact.lastName,
         firstName: contact.firstName,
         middleNames: contact.middleNames,

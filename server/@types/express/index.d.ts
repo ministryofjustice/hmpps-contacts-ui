@@ -62,7 +62,7 @@ export declare global {
         }
       }
       prisonerDetails?: PrisonerDetails
-      successNotificationBanner?: string
+      successNotificationBanner?: string | undefined
       formResponses?: { [key: string]: string }
       asset_path: string
       applicationName: string
@@ -71,7 +71,7 @@ export declare global {
       csrfToken: string
       message?: string
       status?: number
-      stack?: string | null
+      stack?: string | null | undefined
       journey: StandaloneManageContactJourney
     }
   }

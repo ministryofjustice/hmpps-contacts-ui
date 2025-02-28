@@ -225,7 +225,7 @@ describe('Contact seaarch results', () => {
       ...existingJourney,
       searchContact: {
         contact: { lastName: 'last', middleNames: '', firstName: '' },
-        dateOfBirth: { day: undefined, month: undefined, year: undefined },
+        dateOfBirth: {},
       },
     }
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
@@ -260,7 +260,7 @@ describe('Contact seaarch results', () => {
         ...existingJourney,
         searchContact: {
           contact: { lastName: 'last', middleNames: '', firstName: '' },
-          dateOfBirth: { day: undefined, month: undefined, year: undefined },
+          dateOfBirth: {},
         },
       }
 
@@ -361,7 +361,7 @@ describe('Contact seaarch results', () => {
       ...existingJourney,
       searchContact: {
         contact: { lastName: 'last', middleNames: '', firstName: '' },
-        dateOfBirth: { day: undefined, month: undefined, year: undefined },
+        dateOfBirth: {},
       },
     }
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())

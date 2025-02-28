@@ -4,11 +4,11 @@ import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import { appWithAllRoutes, user } from '../../../../../testutils/appSetup'
 import { Page } from '../../../../../../services/auditService'
-import ContactDetails = contactsApiClientTypes.ContactDetails
-import ChangeRelationshipTypeJourney = journeys.ChangeRelationshipTypeJourney
 import TestData from '../../../../../testutils/testData'
 import { MockedService } from '../../../../../../testutils/mockedServices'
-import PrisonerContactRelationship = journeys.PrisonerContactRelationship
+import ContactDetails = contactsApiClientTypes.ContactDetails
+import ChangeRelationshipTypeJourney = journeys.ChangeRelationshipTypeJourney
+import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 
 jest.mock('../../../../../../services/auditService')
 jest.mock('../../../../../../services/contactsService')
@@ -34,9 +34,9 @@ const contact: ContactDetails = {
   createdBy: user.username,
   createdTime: '2024-01-01',
 }
-const prisonerContact: PrisonerContactRelationship = TestData.prisonerContactRelationship({
+const prisonerContact: PrisonerContactRelationshipDetails = TestData.prisonerContactRelationship({
   prisonerContactId,
-  relationshipType: 'S',
+  relationshipTypeCode: 'S',
   relationshipToPrisonerCode: 'MOT',
 })
 

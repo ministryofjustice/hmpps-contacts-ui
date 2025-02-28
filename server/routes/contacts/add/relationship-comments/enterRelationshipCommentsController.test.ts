@@ -133,7 +133,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-relationship-comme
       relationshipToPrisoner: 'MOT',
       isEmergencyContact: 'NO',
       isNextOfKin: 'YES',
-      comments: undefined,
     }
 
     // When

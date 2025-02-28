@@ -32,7 +32,7 @@ context('Change Contact Title Or Middle Names', () => {
       lastName: 'Last',
       firstName: 'First',
       middleNames: null,
-      title: null,
+      titleCode: null,
       titleDescription: null,
       dateOfBirth: null,
     })
@@ -45,7 +45,7 @@ context('Change Contact Title Or Middle Names', () => {
 
     const updated: StubPatchContactResponse = {
       ...contact,
-      title: 'DR',
+      titleCode: 'DR',
       middleNames: 'Middle Updated',
     }
     cy.task('stubPatchContactById', { contactId, response: updated })
@@ -77,7 +77,7 @@ context('Change Contact Title Or Middle Names', () => {
         urlPath: `/contact/${contactId}`,
       },
       {
-        title: 'DR',
+        titleCode: 'DR',
         middleNames: 'Middle Updated',
         updatedBy: 'USER1',
       },
@@ -90,7 +90,7 @@ context('Change Contact Title Or Middle Names', () => {
       lastName: 'Last',
       firstName: 'First',
       middleNames: 'Middle Names',
-      title: 'MR',
+      titleCode: 'MR',
       titleDescription: 'Mr',
       dateOfBirth: null,
     })
@@ -103,7 +103,7 @@ context('Change Contact Title Or Middle Names', () => {
 
     const updated: StubPatchContactResponse = {
       ...contact,
-      title: 'DR',
+      titleCode: 'DR',
       middleNames: null,
     }
     cy.task('stubPatchContactById', { contactId, response: updated })
@@ -135,7 +135,7 @@ context('Change Contact Title Or Middle Names', () => {
         urlPath: `/contact/${contactId}`,
       },
       {
-        title: null,
+        titleCode: null,
         middleNames: null,
         updatedBy: 'USER1',
       },
@@ -148,7 +148,7 @@ context('Change Contact Title Or Middle Names', () => {
       lastName: 'Last',
       firstName: 'First',
       middleNames: 'Middle Names',
-      title: 'MR',
+      titleCode: 'MR',
       titleDescription: 'Mr',
       dateOfBirth: null,
     })
@@ -161,7 +161,7 @@ context('Change Contact Title Or Middle Names', () => {
 
     const updated: StubPatchContactResponse = {
       ...contact,
-      title: 'DR',
+      titleCode: 'DR',
       middleNames: null,
     }
     cy.task('stubPatchContactById', { contactId, response: updated })
@@ -193,7 +193,7 @@ context('Change Contact Title Or Middle Names', () => {
         urlPath: `/contact/${contactId}`,
       },
       {
-        title: 'DR',
+        titleCode: 'DR',
         middleNames: null,
         updatedBy: 'USER1',
       },
@@ -206,7 +206,7 @@ context('Change Contact Title Or Middle Names', () => {
       lastName: 'Last',
       firstName: 'First',
       middleNames: 'Middle Names',
-      title: 'MR',
+      titleCode: 'MR',
       titleDescription: 'Mr',
       dateOfBirth: null,
     })
@@ -239,7 +239,7 @@ context('Change Contact Title Or Middle Names', () => {
       lastName: 'Last',
       firstName: 'First',
       middleNames: 'Middle Names',
-      title: 'MR',
+      titleCode: 'MR',
       titleDescription: 'Mr',
       dateOfBirth: null,
     })
@@ -268,7 +268,7 @@ context('Change Contact Title Or Middle Names', () => {
       lastName: 'Last',
       firstName: 'First',
       middleNames: 'Middle Names',
-      title: 'MR',
+      titleCode: 'MR',
       titleDescription: 'Mr',
       dateOfBirth: null,
     })

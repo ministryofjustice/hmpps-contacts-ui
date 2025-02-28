@@ -1,7 +1,6 @@
 declare namespace contactsApiClientTypes {
   import { components } from '../contactsApi'
 
-  export type CreateContactRequest = components['schemas']['CreateContactRequest']
   export type ContactDetails = components['schemas']['ContactDetails']
   export type ContactCreationResult = components['schemas']['ContactCreationResult']
   export type PrisonerContactRelationshipDetails = components['schemas']['PrisonerContactRelationshipDetails']
@@ -12,7 +11,6 @@ declare namespace contactsApiClientTypes {
   export type ContactSearchRequest = components['schemas']['ContactSearchRequest']
   export type ContactSearchResultItemPage = components['schemas']['ContactSearchResultItemPage']
   export type Pageable = components['schemas']['Pageable']
-  export type AddContactRelationshipRequest = components['schemas']['AddContactRelationshipRequest']
   export type CreatePhoneRequest = components['schemas']['CreatePhoneRequest']
   export type UpdatePhoneRequest = components['schemas']['UpdatePhoneRequest']
   export type ContactPhoneDetails = components['schemas']['ContactPhoneDetails']
@@ -21,7 +19,7 @@ declare namespace contactsApiClientTypes {
   export type ContactIdentityDetails = components['schemas']['ContactIdentityDetails']
   export type PatchContactRequest = components['schemas']['PatchContactRequest']
   export type PatchContactResponse = components['schemas']['PatchContactResponse']
-  export type UpdateRelationshipRequest = components['schemas']['UpdateRelationshipRequest']
+  export type PatchRelationshipRequest = components['schemas']['PatchRelationshipRequest']
   export type ContactEmailDetails = components['schemas']['ContactEmailDetails']
   export type ContactRestrictionDetails = components['schemas']['ContactRestrictionDetails']
   export type CreateContactRestrictionRequest = components['schemas']['CreateContactRestrictionRequest']

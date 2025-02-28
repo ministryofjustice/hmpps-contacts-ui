@@ -5,7 +5,7 @@ import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
 
 const formatNameLastNameFirst = (
   val: { lastName: string; firstName: string; middleNames?: string } | ContactNames | PrisonerDetails,
-  opts?: { excludeMiddleNames?: boolean; customTitle?: string },
+  opts?: { excludeMiddleNames?: boolean; customTitle?: string | undefined },
 ): string => {
   let name = `${val.lastName}, `
   if (opts?.customTitle) {

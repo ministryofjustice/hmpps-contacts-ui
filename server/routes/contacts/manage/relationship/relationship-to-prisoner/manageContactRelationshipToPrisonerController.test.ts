@@ -5,10 +5,10 @@ import { appWithAllRoutes, flashProvider, user } from '../../../../testutils/app
 import { Page } from '../../../../../services/auditService'
 import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import TestData from '../../../../testutils/testData'
-import ContactDetails = contactsApiClientTypes.ContactDetails
-import UpdateRelationshipRequest = contactsApiClientTypes.UpdateRelationshipRequest
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
+import ContactDetails = contactsApiClientTypes.ContactDetails
+import PatchRelationshipRequest = contactsApiClientTypes.PatchRelationshipRequest
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/referenceDataService')
@@ -104,7 +104,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       contactsService.getContact.mockResolvedValue(contact)
       contactsService.getPrisonerContactRelationship.mockResolvedValue({
         ...relationship,
-        relationshipType,
+        relationshipTypeCode: relationshipType,
       })
 
       // When
@@ -157,8 +157,8 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
-    const expected: UpdateRelationshipRequest = {
-      relationshipToPrisoner: 'MOT',
+    const expected: PatchRelationshipRequest = {
+      relationshipToPrisonerCode: 'MOT',
       updatedBy: 'user1',
     }
     expect(contactsService.updateContactRelationshipById).toHaveBeenCalledWith(prisonerContactId, expected, user)

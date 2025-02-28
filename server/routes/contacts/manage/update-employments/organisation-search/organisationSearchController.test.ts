@@ -256,7 +256,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
     // Given
     setJourneyData({
       ...generateJourneyData(),
-      organisationSearch: { searchTerm: undefined, page: 1 },
+      organisationSearch: { page: 1 },
     })
 
     organisationsService.searchOrganisations.mockResolvedValue({

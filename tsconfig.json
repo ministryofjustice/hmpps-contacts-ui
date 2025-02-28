@@ -22,6 +22,7 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "inlineSources": true,
+    "exactOptionalPropertyTypes": true,
     "typeRoots": ["./server/@types", "./node_modules/@types"]
   },
   "exclude": [

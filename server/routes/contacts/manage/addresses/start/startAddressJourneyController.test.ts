@@ -289,7 +289,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
             noFixedAddress: false,
             countryCode: 'ENG',
             countryDescription: 'England',
-            endDate: undefined,
             primaryAddress: false,
             mailFlag: false,
           }),

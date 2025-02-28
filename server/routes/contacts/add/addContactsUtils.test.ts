@@ -20,9 +20,7 @@ describe('addContactUtils', () => {
       )
     })
     it('should return default caption if journey mode is not set', () => {
-      expect(captionForAddContactJourney({ ...baseJourney, mode: undefined })).toStrictEqual(
-        'Link a contact to a prisoner',
-      )
+      expect(captionForAddContactJourney({ ...baseJourney })).toStrictEqual('Link a contact to a prisoner')
     })
   })
 })

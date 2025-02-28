@@ -121,7 +121,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
         firstName: 'first',
         lastName: 'last',
         middleNames: 'middle',
-        title: 'MR',
+        titleCode: 'MR',
       }),
     )
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
@@ -146,7 +146,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
         firstName: 'first',
         lastName: 'last',
         middleNames: 'middle',
-        title: 'MR',
+        titleCode: 'MR',
       }),
     )
 
@@ -171,7 +171,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       firstName: 'first',
       lastName: 'last',
       middleNames: undefined,
-      title: undefined,
+      titleCode: undefined,
       titleDescription: undefined,
     })
 
@@ -210,7 +210,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .expect('Location', '/prisoner/A1234BC/contacts/manage/99/relationship/42')
 
     const expectedRequest: PatchContactRequest = {
-      title: 'DR',
+      titleCode: 'DR',
       middleNames: 'mid',
       updatedBy: user.username,
     }

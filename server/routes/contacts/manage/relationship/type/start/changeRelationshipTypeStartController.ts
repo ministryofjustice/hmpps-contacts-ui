@@ -34,7 +34,7 @@ export default class ChangeRelationshipTypeStartController implements PageHandle
         firstName: contact.firstName,
         middleNames: contact.middleNames,
       },
-      relationshipType: relationship.relationshipType,
+      relationshipType: relationship.relationshipTypeCode,
       relationshipToPrisoner: relationship.relationshipToPrisonerCode,
     }
 
