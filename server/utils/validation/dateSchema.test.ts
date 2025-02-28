@@ -7,6 +7,12 @@ type Form = {
   year?: string
 }
 
+const today = new Date()
+const tomorrow = new Date()
+tomorrow.setDate(tomorrow.getDate() + 1)
+const yesterday = new Date()
+yesterday.setDate(yesterday.getDate() - 1)
+
 describe('createDateInputSchema - MUST_BE_TODAY_OR_PAST', () => {
   const schema = createDateInputSchema({
     inputId: 'dateOfDeath',
@@ -225,11 +231,9 @@ describe('createDateInputSchema - MUST_BE_PAST', () => {
   const doValidate = async (form: Form) => schema.safeParse(form)
 
   describe('should validate the enter date of death form', () => {
-    const today = new Date()
-
     it.each([
       [today.getDate(), today.getMonth() + 1, today.getFullYear()], // today
-      [today.getDate(), today.getMonth() + 1, today.getFullYear()], // tomorrow
+      [tomorrow.getDate(), tomorrow.getMonth() + 1, tomorrow.getFullYear()], // tomorrow
     ])('Should return a single error if date is in the future or in today', async (day, month, year) => {
       // Given
       const form = { day: day.toString(), month: month.toString(), year: year.toString() }
@@ -250,9 +254,9 @@ describe('createDateInputSchema - MUST_BE_PAST', () => {
     it('Should allow date in past', async () => {
       // Given
       const form = {
-        day: (today.getDate() - 1).toString(),
-        month: (today.getMonth() + 1).toString(),
-        year: today.getFullYear().toString(),
+        day: yesterday.getDate().toString(),
+        month: (yesterday.getMonth() + 1).toString(),
+        year: yesterday.getFullYear().toString(),
       }
 
       // When
@@ -274,11 +278,9 @@ describe('createDateInputSchema - MUST_BE_FUTURE', () => {
   const doValidate = async (form: Form) => schema.safeParse(form)
 
   describe('should validate the enter date of death form', () => {
-    const today = new Date()
-
     it.each([
       [today.getDate(), today.getMonth() + 1, today.getFullYear()], // today
-      [today.getDate() - 1, today.getMonth() + 1, today.getFullYear()], // yesterday
+      [yesterday.getDate(), yesterday.getMonth() + 1, yesterday.getFullYear()], // yesterday
     ])('Should return a single error if date is in the past or in today', async (day, month, year) => {
       // Given
       const form = { day: day.toString(), month: month.toString(), year: year.toString() }
@@ -299,9 +301,9 @@ describe('createDateInputSchema - MUST_BE_FUTURE', () => {
     it('Should allow date in future', async () => {
       // Given
       const form = {
-        day: (today.getDate() + 1).toString(),
-        month: (today.getMonth() + 1).toString(),
-        year: today.getFullYear().toString(),
+        day: tomorrow.getDate().toString(),
+        month: (tomorrow.getMonth() + 1).toString(),
+        year: tomorrow.getFullYear().toString(),
       }
 
       // When
@@ -323,14 +325,12 @@ describe('createDateInputSchema - MUST_BE_TODAY_OR_FUTURE', () => {
   const doValidate = async (form: Form) => schema.safeParse(form)
 
   describe('should validate the enter date of death form', () => {
-    const today = new Date()
-
     it('Should return a single error if date is in the past', async () => {
       // Given
       const form = {
-        day: (today.getDate() - 1).toString(),
-        month: (today.getMonth() + 1).toString(),
-        year: today.getFullYear().toString(),
+        day: yesterday.getDate().toString(),
+        month: (yesterday.getMonth() + 1).toString(),
+        year: yesterday.getFullYear().toString(),
       }
 
       // When
@@ -348,7 +348,7 @@ describe('createDateInputSchema - MUST_BE_TODAY_OR_FUTURE', () => {
 
     it.each([
       [today.getDate(), today.getMonth() + 1, today.getFullYear()], // today
-      [today.getDate() + 1, today.getMonth() + 1, today.getFullYear()], // tomorrow
+      [tomorrow.getDate(), tomorrow.getMonth() + 1, tomorrow.getFullYear()], // tomorrow
     ])('Should allow date in the future or in today', async (day, month, year) => {
       // Given
       const form = { day: day.toString(), month: month.toString(), year: year.toString() }
