@@ -14,7 +14,7 @@ context('Change Relationship Type', () => {
     lastName: 'Last',
     firstName: 'First',
     middleNames: 'Middle Names',
-    title: 'MR',
+    titleCode: 'MR',
     dateOfBirth: null,
   })
 
@@ -41,7 +41,7 @@ context('Change Relationship Type', () => {
   it('Can change from social to official', () => {
     const relationship = TestData.prisonerContactRelationship({
       prisonerContactId,
-      relationshipType: 'S',
+      relationshipTypeCode: 'S',
       relationshipTypeDescription: 'Social',
       relationshipToPrisonerCode: 'OTHER',
       relationshipToPrisonerDescription: 'Other',
@@ -84,8 +84,8 @@ context('Change Relationship Type', () => {
         urlPath: `/prisoner-contact/${prisonerContactId}`,
       },
       {
-        relationshipType: 'O',
-        relationshipToPrisoner: 'DR',
+        relationshipTypeCode: 'O',
+        relationshipToPrisonerCode: 'DR',
         updatedBy: 'USER1',
       },
     )
@@ -94,7 +94,7 @@ context('Change Relationship Type', () => {
   it('Can select a new social relationship', () => {
     const relationship = TestData.prisonerContactRelationship({
       prisonerContactId,
-      relationshipType: 'S',
+      relationshipTypeCode: 'S',
       relationshipTypeDescription: 'Social',
       relationshipToPrisonerCode: 'OTHER',
       relationshipToPrisonerDescription: 'Other',
@@ -136,8 +136,8 @@ context('Change Relationship Type', () => {
         urlPath: `/prisoner-contact/${prisonerContactId}`,
       },
       {
-        relationshipType: 'S',
-        relationshipToPrisoner: 'MOT',
+        relationshipTypeCode: 'S',
+        relationshipToPrisonerCode: 'MOT',
         updatedBy: 'USER1',
       },
     )
@@ -146,7 +146,7 @@ context('Change Relationship Type', () => {
   it('Can select a new official relationship', () => {
     const relationship = TestData.prisonerContactRelationship({
       prisonerContactId,
-      relationshipType: 'O',
+      relationshipTypeCode: 'O',
       relationshipTypeDescription: 'Official',
       relationshipToPrisonerCode: 'DR',
       relationshipToPrisonerDescription: 'Doctor',
@@ -188,8 +188,8 @@ context('Change Relationship Type', () => {
         urlPath: `/prisoner-contact/${prisonerContactId}`,
       },
       {
-        relationshipType: 'O',
-        relationshipToPrisoner: 'OFS',
+        relationshipTypeCode: 'O',
+        relationshipToPrisonerCode: 'OFS',
         updatedBy: 'USER1',
       },
     )

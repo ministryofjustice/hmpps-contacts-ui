@@ -5,9 +5,7 @@ import { PaginationRequest } from '../data/prisonerOffenderSearchTypes'
 import TestData from '../routes/testutils/testData'
 import { components } from '../@types/contactsApi'
 import AddContactJourney = journeys.AddContactJourney
-import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
-import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
@@ -27,6 +25,8 @@ import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAd
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
+type AddContactRelationshipRequest = components['schemas']['AddContactRelationshipRequest']
+type CreateContactRequest = components['schemas']['CreateContactRequest']
 
 jest.mock('../data/contactsApiClient')
 const searchResult = TestData.contactSearchResultItem()
@@ -94,18 +94,21 @@ describe('contactsService', () => {
           },
         }
         const expectedRequest: CreateContactRequest = {
-          title: 'Mr',
+          titleCode: 'Mr',
           lastName: 'last',
           firstName: 'first',
           middleNames: 'middle',
-          dateOfBirth: new Date('1982-06-01T00:00:00.000Z'),
+          dateOfBirth: '1982-06-01',
+          isStaff: false,
+          interpreterRequired: false,
           createdBy: 'user1',
           relationship: {
             prisonerNumber,
-            relationshipType,
-            relationshipToPrisoner,
+            relationshipTypeCode: relationshipType,
+            relationshipToPrisonerCode: relationshipToPrisoner,
             isNextOfKin: true,
             isEmergencyContact: false,
+            isApprovedVisitor: false,
             comments: 'Some comments about this relationship',
           },
         }
@@ -151,17 +154,17 @@ describe('contactsService', () => {
         },
       }
       const expectedRequest: CreateContactRequest = {
-        title: undefined,
         lastName: 'last',
         firstName: 'first',
-        middleNames: undefined,
-        dateOfBirth: undefined,
+        isStaff: false,
+        interpreterRequired: false,
         relationship: {
           prisonerNumber,
-          relationshipType: 'S',
-          relationshipToPrisoner: 'MOT',
+          relationshipTypeCode: 'S',
+          relationshipToPrisonerCode: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: true,
+          isApprovedVisitor: false,
         },
         createdBy: 'user1',
       }
@@ -256,10 +259,10 @@ describe('contactsService', () => {
   describe('getPrisonerContactRelationship', () => {
     it('should get the prisoner contact relationship', async () => {
       const expected: PrisonerContactRelationshipDetails = {
-        relationshipToPrisoner: 'FRI',
+        relationshipToPrisonerCode: 'FRI',
         relationshipToPrisonerDescription: 'Friend',
-        emergencyContact: false,
-        nextOfKin: true,
+        isEmergencyContact: false,
+        isNextOfKin: true,
         isRelationshipActive: true,
         comments: 'Some comments',
       }
@@ -320,10 +323,11 @@ describe('contactsService', () => {
           contactId: 123456,
           relationship: {
             prisonerNumber,
-            relationshipType,
-            relationshipToPrisoner,
+            relationshipTypeCode: relationshipType,
+            relationshipToPrisonerCode: relationshipToPrisoner,
             isNextOfKin: true,
             isEmergencyContact: false,
+            isApprovedVisitor: false,
             comments: 'Some comments about this relationship',
           },
           createdBy: 'user1',
@@ -369,10 +373,11 @@ describe('contactsService', () => {
         contactId: 123456,
         relationship: {
           prisonerNumber,
-          relationshipType: 'S',
-          relationshipToPrisoner: 'MOT',
+          relationshipTypeCode: 'S',
+          relationshipToPrisonerCode: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: true,
+          isApprovedVisitor: false,
         },
         createdBy: 'user1',
       }

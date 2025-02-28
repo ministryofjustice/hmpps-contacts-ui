@@ -225,7 +225,6 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
     // Given
     setJourneyData({
       ...generateJourneyData(),
-      employmentIdsToDelete: undefined,
       employments: [
         {
           employer: {
@@ -264,7 +263,6 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
     // Given
     setJourneyData({
       ...generateJourneyData(),
-      employmentIdsToDelete: undefined,
       employments: [
         {
           employmentId: 1,

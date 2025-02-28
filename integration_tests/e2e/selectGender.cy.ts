@@ -40,7 +40,7 @@ context('Select Gender', () => {
 
   it(`should render manage contact details gender`, () => {
     const request: PatchContactRequest = {
-      gender: 'M',
+      genderCode: 'M',
       updatedBy: 'USER1',
     }
     cy.task('stubPatchContactById', { contactId, request })
@@ -64,7 +64,7 @@ context('Select Gender', () => {
         urlPath: `/contact/${contactId}`,
       },
       {
-        gender: 'M',
+        genderCode: 'M',
         updatedBy: 'USER1',
       },
     )
@@ -74,7 +74,7 @@ context('Select Gender', () => {
     cy.task(
       'stubGetContactById',
       TestData.contact({
-        gender: null,
+        genderCode: null,
         genderDescription: null,
       }),
     )

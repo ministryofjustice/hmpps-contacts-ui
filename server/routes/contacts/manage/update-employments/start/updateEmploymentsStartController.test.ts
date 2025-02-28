@@ -75,7 +75,7 @@ describe('GET /contacts/manage/:contactId/update-employments', () => {
     expect(journeyData.contactNames!.firstName).toEqual(contact.firstName)
     expect(journeyData.contactNames!.middleNames).toEqual(contact.middleNames)
     expect(journeyData.contactNames!.lastName).toEqual(contact.lastName)
-    expect(journeyData.contactNames!.title).toEqual(contact.title)
+    expect(journeyData.contactNames!.title).toEqual(contact.titleCode)
     expect(journeyData.employments[0]).toEqual(employment)
     expect(journeyData.returnPoint!.url).toEqual('/foo/bar')
   })

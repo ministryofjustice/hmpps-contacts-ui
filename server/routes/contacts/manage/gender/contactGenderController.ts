@@ -34,7 +34,7 @@ export default class ManageGenderController implements PageHandler {
 
     const genderOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.GENDER, user)
-      .then(val => this.getSelectedGenderOptions(val, contact.gender))
+      .then(val => this.getSelectedGenderOptions(val, contact.genderCode))
     const navigation: Navigation = {
       backLink: Urls.editContactDetails(prisonerNumber, contactId, prisonerContactId),
       cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
@@ -60,7 +60,7 @@ export default class ManageGenderController implements PageHandler {
     const { user } = res.locals
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const request: PatchContactRequest = {
-      gender: req.body.gender,
+      genderCode: req.body.gender,
       updatedBy: user.username,
     }
 

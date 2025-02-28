@@ -208,12 +208,12 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
     it('should render with all relationship details and change links', async () => {
       const prisonerContactRelationshipDetails = {
         prisonerContactId: 99,
-        relationshipType: 'S',
+        relationshipTypeCode: 'S',
         relationshipTypeDescription: 'Social',
         relationshipToPrisonerCode: 'FRI',
         relationshipToPrisonerDescription: 'Friend',
-        emergencyContact: true,
-        nextOfKin: true,
+        isEmergencyContact: true,
+        isNextOfKin: true,
         isRelationshipActive: true,
         isApprovedVisitor: true,
         comments: 'Some comments',
@@ -283,12 +283,12 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
     it('should render without optional relationship details', async () => {
       const prisonerContactRelationshipDetails = {
         prisonerContactId: 99,
-        relationshipType: 'O',
+        relationshipTypeCode: 'O',
         relationshipTypeDescription: 'Official',
         relationshipToPrisonerCode: 'DR',
         relationshipToPrisonerDescription: 'Doctor',
-        emergencyContact: false,
-        nextOfKin: false,
+        isEmergencyContact: false,
+        isNextOfKin: false,
         isRelationshipActive: false,
         isApprovedVisitor: false,
         comments: undefined,

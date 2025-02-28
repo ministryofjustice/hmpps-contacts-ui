@@ -3,12 +3,12 @@ import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { ContactsService } from '../../../../../services'
 import { Navigation } from '../../../common/navigation'
-import ContactDetails = contactsApiClientTypes.ContactDetails
 import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import { ManageEmergencyContactOrNextOfKinSchemaType } from './manageEmergencyContactOrNextOfKinSchema'
-import UpdateRelationshipRequest = contactsApiClientTypes.UpdateRelationshipRequest
+import ContactDetails = contactsApiClientTypes.ContactDetails
+import PatchRelationshipRequest = contactsApiClientTypes.PatchRelationshipRequest
 
 export default class ManageEmergencyContactOrNextOfKinController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -33,8 +33,8 @@ export default class ManageEmergencyContactOrNextOfKinController implements Page
       continueButtonLabel: 'Confirm and save',
       contact,
       prisonerContactId,
-      emergencyContact: relationship.emergencyContact,
-      nextOfKin: relationship.nextOfKin,
+      emergencyContact: relationship.isEmergencyContact,
+      nextOfKin: relationship.isNextOfKin,
       navigation,
     }
     res.render('pages/contacts/manage/contactDetails/manageNextOfKinAndEmergencyContact', viewModel)
@@ -50,7 +50,7 @@ export default class ManageEmergencyContactOrNextOfKinController implements Page
   ): Promise<void> => {
     const { user, prisonerDetails } = res.locals
     const { prisonerNumber, contactId, prisonerContactId } = req.params
-    const request: UpdateRelationshipRequest = {
+    const request: PatchRelationshipRequest = {
       isEmergencyContact: req.body.emergencyContact,
       isNextOfKin: req.body.nextOfKin,
       updatedBy: user.username,

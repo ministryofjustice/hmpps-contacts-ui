@@ -1,10 +1,8 @@
 import ContactsApiClient from '../data/contactsApiClient'
 import { components } from '../@types/contactsApi'
 import AddContactJourney = journeys.AddContactJourney
-import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import Pageable = contactsApiClientTypes.Pageable
-import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
 import PrisonerContactSummaryPage = contactsApiClientTypes.PrisonerContactSummaryPage
 import ContactDetails = contactsApiClientTypes.ContactDetails
@@ -30,46 +28,62 @@ type PageableObject = components['schemas']['PageableObject']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
+type CreateContactRequest = components['schemas']['CreateContactRequest']
+type AddContactRelationshipRequest = components['schemas']['AddContactRelationshipRequest']
 
 export default class ContactsService {
   constructor(private readonly contactsApiClient: ContactsApiClient) {}
 
   async createContact(journey: AddContactJourney, user: Express.User): Promise<ContactCreationResult> {
-    let dateOfBirth: Date | undefined
-    if (journey.dateOfBirth?.isKnown === 'YES') {
-      dateOfBirth = new Date(`${journey.dateOfBirth.year}-${journey.dateOfBirth.month}-${journey.dateOfBirth.day}Z`)
-    }
     const request: CreateContactRequest = {
-      title: journey.names!.title,
-      lastName: journey.names!.lastName,
-      firstName: journey.names!.firstName,
-      middleNames: journey.names!.middleNames,
-      dateOfBirth,
+      lastName: journey.names!.lastName!,
+      firstName: journey.names!.firstName!,
+      interpreterRequired: false,
+      isStaff: false,
       relationship: {
         prisonerNumber: journey.prisonerNumber,
-        relationshipType: journey.relationship!.relationshipType,
-        relationshipToPrisoner: journey.relationship!.relationshipToPrisoner,
+        relationshipTypeCode: journey.relationship!.relationshipType!,
+        relationshipToPrisonerCode: journey.relationship!.relationshipToPrisoner!,
         isNextOfKin: journey.relationship!.isNextOfKin === 'YES',
         isEmergencyContact: journey.relationship!.isEmergencyContact === 'YES',
-        comments: journey.relationship!.comments,
+        isApprovedVisitor: false,
       },
       createdBy: user.username,
+    }
+    if (journey.dateOfBirth?.isKnown === 'YES') {
+      request.dateOfBirth = new Date(
+        `${journey.dateOfBirth.year}-${journey.dateOfBirth.month}-${journey.dateOfBirth.day}Z`,
+      )
+        .toISOString()
+        .substring(0, 10)
+    }
+    if (journey.relationship!.comments) {
+      request.relationship!.comments = journey.relationship!.comments
+    }
+    if (journey.names!.title) {
+      request.titleCode = journey.names!.title
+    }
+    if (journey.names!.middleNames) {
+      request.middleNames = journey.names!.middleNames
     }
     return this.contactsApiClient.createContact(request, user)
   }
 
   async addContact(journey: AddContactJourney, user: Express.User): Promise<PrisonerContactRelationshipDetails> {
     const request: AddContactRelationshipRequest = {
-      contactId: journey.contactId,
+      contactId: journey.contactId!,
       relationship: {
         prisonerNumber: journey.prisonerNumber,
-        relationshipType: journey.relationship!.relationshipType,
-        relationshipToPrisoner: journey.relationship!.relationshipToPrisoner,
+        relationshipTypeCode: journey.relationship!.relationshipType!,
+        relationshipToPrisonerCode: journey.relationship!.relationshipToPrisoner!,
         isNextOfKin: journey.relationship!.isNextOfKin === 'YES',
         isEmergencyContact: journey.relationship!.isEmergencyContact === 'YES',
-        comments: journey.relationship!.comments,
+        isApprovedVisitor: false,
       },
       createdBy: user.username,
+    }
+    if (journey.relationship!.comments) {
+      request.relationship!.comments = journey.relationship!.comments
     }
     return this.contactsApiClient.addContactRelationship(request, user)
   }
@@ -186,7 +200,7 @@ export default class ContactsService {
 
   async updateContactRelationshipById(
     prisonerContactId: number,
-    request: contactsApiClientTypes.UpdateRelationshipRequest,
+    request: contactsApiClientTypes.PatchRelationshipRequest,
     user: Express.User,
   ): Promise<void> {
     return this.contactsApiClient.updateContactRelationshipById(prisonerContactId, request, user)

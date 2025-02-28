@@ -2,13 +2,13 @@ import { Request, Response } from 'express'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { Page } from '../../../../../services/auditService'
 import { ContactsService } from '../../../../../services'
-import UpdateRelationshipRequest = contactsApiClientTypes.UpdateRelationshipRequest
-import ContactDetails = contactsApiClientTypes.ContactDetails
 import { Navigation } from '../../../common/navigation'
 import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import { ManageRelationshipStatusSchemaType } from './manageRelationshipStatusSchema'
+import PatchRelationshipRequest = contactsApiClientTypes.PatchRelationshipRequest
+import ContactDetails = contactsApiClientTypes.ContactDetails
 
 export default class ManageRelationshipStatusController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -46,7 +46,7 @@ export default class ManageRelationshipStatusController implements PageHandler {
   ): Promise<void> => {
     const { user, prisonerDetails } = res.locals
     const { prisonerNumber, contactId, prisonerContactId } = req.params
-    const request: UpdateRelationshipRequest = {
+    const request: PatchRelationshipRequest = {
       isRelationshipActive: req.body.relationshipStatus === 'YES',
       updatedBy: user.username,
     }

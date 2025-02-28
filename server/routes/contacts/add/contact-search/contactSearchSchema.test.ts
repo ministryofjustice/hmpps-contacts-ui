@@ -7,9 +7,9 @@ describe('contactSearchSchema', () => {
       lastName: string
       firstName?: string
       middleNames?: string
-      day?: number
-      month?: number
-      year?: number
+      day?: number | undefined
+      month?: number | undefined
+      year?: number | undefined
     }
     const baseForm: Form = {
       lastName: '',

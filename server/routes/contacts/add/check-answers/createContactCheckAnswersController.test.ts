@@ -158,7 +158,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
 
   it('should render check answers page without comments', async () => {
     // Given
-    journey.relationship!.comments = undefined
+    delete journey.relationship!.comments
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)

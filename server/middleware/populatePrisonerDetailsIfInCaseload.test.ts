@@ -151,7 +151,7 @@ describe('prisonerDetailsMiddleware', () => {
       params: {
         prisonerNumber: 'A1234BC',
       },
-      session: { activeCaseLoadId: undefined },
+      session: {},
       id: '123456',
     } as Request
 

@@ -10,7 +10,7 @@ import Urls from '../../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../../middleware/setUpSuccessNotificationBanner'
 import { relationshipToPrisonerOptionsForRelationshipType } from '../../../../../../utils/relationshipTypeUtils'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
-import UpdateRelationshipRequest = contactsApiClientTypes.UpdateRelationshipRequest
+import PatchRelationshipRequest = contactsApiClientTypes.PatchRelationshipRequest
 
 export default class ChangeRelationshipTypeRelationshipToPrisonerController implements PageHandler {
   constructor(
@@ -71,9 +71,9 @@ export default class ChangeRelationshipTypeRelationshipToPrisonerController impl
     const { prisonerNumber, contactId, prisonerContactId, journeyId } = req.params
     const { relationship } = req.body
     const journey = req.session.changeRelationshipTypeJourneys![journeyId]!
-    const request: UpdateRelationshipRequest = {
-      relationshipType: journey.relationshipType,
-      relationshipToPrisoner: relationship,
+    const request: PatchRelationshipRequest = {
+      relationshipTypeCode: journey.relationshipType,
+      relationshipToPrisonerCode: relationship,
       updatedBy: user.username,
     }
     await this.contactsService

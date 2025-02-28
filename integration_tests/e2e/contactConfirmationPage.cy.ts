@@ -156,7 +156,14 @@ context('Contact confirmation', () => {
 
   it(`should render contact information`, () => {
     const titleHeader = 'Is this the right person to add as a contact for John Smith?'
-    cy.task('stubGetContactById', TestData.contact())
+    cy.task('stubGetContactById', {
+      ...contact,
+      addresses: [
+        TestData.address({
+          startDate: '2020-01-01',
+        }),
+      ],
+    })
     cy.task('stubGetGenders')
 
     Page.verifyOnPage(SearchContactPage) //
@@ -200,7 +207,7 @@ context('Contact confirmation', () => {
       .verifyShowNeedsInterpreterValueAs('No')
   })
 
-  it('should render contact information with empity rows if not available', () => {
+  it('should render contact information with empty rows if not available', () => {
     cy.task('stubGetContactById', {
       id: contactId,
       firstName: 'Existing',
@@ -232,10 +239,11 @@ context('Contact confirmation', () => {
       .verifyShowFromStartDateValueAs('Not provided')
   })
 
-  it('should render contact information with empity sections if not available', () => {
+  it('should render contact information with empty sections if not available', () => {
     cy.task('stubGetContactById', {
       id: contactId,
-      title: 'MR',
+      titleCode: 'MR',
+      titleDescription: 'Mr',
       firstName: 'Existing',
       lastName: 'Contact',
       middleNames: 'Middle',

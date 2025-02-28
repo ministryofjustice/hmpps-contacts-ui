@@ -234,7 +234,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     'should pass to next page and set address in session if there are no validation errors',
     async (formNFA, expectedNFA) => {
       // Given
-      existingJourney.addressLines = undefined
+      delete existingJourney.addressLines
 
       // When
       await request(app)

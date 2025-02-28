@@ -74,7 +74,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
         firstName: 'First',
         middleNames: 'Middle',
         lastName: 'Last',
-        deceasedDate: undefined,
       }),
     )
 

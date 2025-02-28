@@ -34,10 +34,10 @@ afterEach(() => {
 })
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/emergency-contact-or-next-of-kin', () => {
   test.each([
-    ['EC', { emergencyContact: true, nextOfKin: false }],
-    ['NOK', { emergencyContact: false, nextOfKin: true }],
-    ['ECNOK', { emergencyContact: true, nextOfKin: true }],
-    ['NONE', { emergencyContact: false, nextOfKin: false }],
+    ['EC', { isEmergencyContact: true, isNextOfKin: false }],
+    ['NOK', { isEmergencyContact: false, isNextOfKin: true }],
+    ['ECNOK', { isEmergencyContact: true, isNextOfKin: true }],
+    ['NONE', { isEmergencyContact: false, isNextOfKin: false }],
   ])(
     'should render manage emergency contact or next of kin page when flag is %p',
     async (isEmergencyContactOrNextOfKin, relationship) => {

@@ -26,7 +26,7 @@ context('Delete date of death', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({
         prisonerContactId,
-        emergencyContact: true,
+        isEmergencyContact: true,
       }),
     })
     cy.task('stubPatchContactById', { contactId, response: contact })

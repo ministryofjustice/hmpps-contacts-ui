@@ -2,12 +2,10 @@ import config from '../config'
 import RestClient from './restClient'
 import ReferenceCodeType from '../enumeration/referenceCodeType'
 import { components } from '../@types/contactsApi'
-import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import Pageable = contactsApiClientTypes.Pageable
 import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
-import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
 import PrisonerContactSummaryPage = contactsApiClientTypes.PrisonerContactSummaryPage
 import ContactDetails = contactsApiClientTypes.ContactDetails
@@ -19,7 +17,7 @@ import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
 import CreateIdentityRequest = contactsApiClientTypes.CreateIdentityRequest
 import UpdateIdentityRequest = contactsApiClientTypes.UpdateIdentityRequest
 import ContactIdentityDetails = contactsApiClientTypes.ContactIdentityDetails
-import UpdateRelationshipRequest = contactsApiClientTypes.UpdateRelationshipRequest
+import PatchRelationshipRequest = contactsApiClientTypes.PatchRelationshipRequest
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
 import CreateContactRestrictionRequest = contactsApiClientTypes.CreateContactRestrictionRequest
@@ -42,6 +40,9 @@ type PageableObject = components['schemas']['PageableObject']
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
+type AddContactRelationshipRequest = components['schemas']['AddContactRelationshipRequest']
+type CreateContactRequest = components['schemas']['CreateContactRequest']
+
 export default class ContactsApiClient extends RestClient {
   constructor() {
     super('Contacts API client', config.apis.contactsApi)
@@ -220,10 +221,10 @@ export default class ContactsApiClient extends RestClient {
 
   async updateContactRelationshipById(
     prisonerContactId: number,
-    request: UpdateRelationshipRequest,
+    request: PatchRelationshipRequest,
     user: Express.User,
   ): Promise<void> {
-    return this.patch<UpdateRelationshipRequest>(
+    return this.patch<PatchRelationshipRequest>(
       {
         path: `/prisoner-contact/${prisonerContactId}`,
         data: request,

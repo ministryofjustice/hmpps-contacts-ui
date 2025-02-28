@@ -1,7 +1,7 @@
 interface Navigation {
-  backLink?: string
-  breadcrumbs?: BreadcrumbType[]
-  cancelButton?: string
+  backLink?: string | undefined
+  breadcrumbs?: BreadcrumbType[] | undefined
+  cancelButton?: string | undefined
 }
 
 type BreadcrumbType = 'DPS_HOME' | 'DPS_PROFILE' | 'PRISONER_CONTACTS'

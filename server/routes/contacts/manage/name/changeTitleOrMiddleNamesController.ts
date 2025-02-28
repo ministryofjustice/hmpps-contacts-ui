@@ -34,7 +34,7 @@ export default class ChangeTitleOrMiddleNamesController implements PageHandler {
 
     const titleOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.TITLE, user)
-      .then(val => this.getSelectedTitleOptions(val, res.locals?.formResponses?.['title'] ?? contact.title))
+      .then(val => this.getSelectedTitleOptions(val, res.locals?.formResponses?.['title'] ?? contact.titleCode))
 
     const navigation: Navigation = {
       backLink: Urls.editContactDetails(prisonerNumber, contactId, prisonerContactId),
@@ -68,7 +68,7 @@ export default class ChangeTitleOrMiddleNamesController implements PageHandler {
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const { title, middleNames } = req.body
     const request: PatchContactRequest = {
-      title: title || null,
+      titleCode: title || null,
       middleNames: middleNames || null,
       updatedBy: user.username,
     }

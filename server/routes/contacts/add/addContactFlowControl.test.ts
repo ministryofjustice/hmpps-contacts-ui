@@ -313,7 +313,6 @@ describe('addContactFlowControl', () => {
         returnPoint: {
           url: '/foo',
         },
-        mode: undefined,
         isCheckingAnswers: false,
       }
       const expected: Navigation = {
@@ -337,7 +336,6 @@ describe('addContactFlowControl', () => {
         returnPoint: {
           url: '/foo',
         },
-        mode: undefined,
         isCheckingAnswers: false,
       }
 

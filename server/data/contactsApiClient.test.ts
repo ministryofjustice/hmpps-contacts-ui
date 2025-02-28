@@ -4,10 +4,8 @@ import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import ContactsApiClient from './contactsApiClient'
 import ReferenceCodeType from '../enumeration/referenceCodeType'
 import { components } from '../@types/contactsApi'
-import CreateContactRequest = contactsApiClientTypes.CreateContactRequest
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
-import AddContactRelationshipRequest = contactsApiClientTypes.AddContactRelationshipRequest
 import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
@@ -36,6 +34,8 @@ type PatchContactRequest = components['schemas']['PatchContactRequest']
 type CreateEmailRequest = components['schemas']['CreateEmailRequest']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
+type AddContactRelationshipRequest = components['schemas']['AddContactRelationshipRequest']
+type CreateContactRequest = components['schemas']['CreateContactRequest']
 
 jest.mock('./tokenStore/inMemoryTokenStore')
 
@@ -76,6 +76,8 @@ describe('contactsApiClient', () => {
       const request: CreateContactRequest = {
         lastName: 'last',
         firstName: 'first',
+        isStaff: false,
+        interpreterRequired: false,
         createdBy: 'user1',
       }
 
@@ -96,6 +98,8 @@ describe('contactsApiClient', () => {
       const request: CreateContactRequest = {
         lastName: 'last',
         firstName: 'first',
+        isStaff: false,
+        interpreterRequired: false,
         createdBy: 'user1',
       }
       const expectedErrorBody = {
@@ -131,10 +135,11 @@ describe('contactsApiClient', () => {
         contactId: 123456,
         relationship: {
           prisonerNumber: 'A1234BC',
-          relationshipType: 'S',
-          relationshipToPrisoner: 'MOT',
+          relationshipTypeCode: 'S',
+          relationshipToPrisonerCode: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: true,
+          isApprovedVisitor: false,
           comments: 'Some comments about this relationship',
         },
         createdBy: 'user1',
@@ -159,10 +164,11 @@ describe('contactsApiClient', () => {
         contactId: 123456,
         relationship: {
           prisonerNumber: 'A1234BC',
-          relationshipType: 'S',
-          relationshipToPrisoner: 'MOT',
+          relationshipTypeCode: 'S',
+          relationshipToPrisonerCode: 'MOT',
           isNextOfKin: false,
           isEmergencyContact: true,
+          isApprovedVisitor: false,
           comments: 'Some comments about this relationship',
         },
         createdBy: 'user1',
@@ -343,8 +349,8 @@ describe('contactsApiClient', () => {
       const expected: PrisonerContactRelationshipDetails = {
         relationshipToPrisonerCode: 'FRI',
         relationshipToPrisonerDescription: 'Friend',
-        emergencyContact: false,
-        nextOfKin: true,
+        isEmergencyContact: false,
+        isNextOfKin: true,
         isRelationshipActive: true,
         comments: 'Some comments',
       }

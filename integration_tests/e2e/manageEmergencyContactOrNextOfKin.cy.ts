@@ -25,8 +25,8 @@ context('Manage contact update emergency contact', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({
         prisonerContactId,
-        emergencyContact: true,
-        nextOfKin: true,
+        isEmergencyContact: true,
+        isNextOfKin: true,
       }),
     })
     cy.task('stubUpdateContactRelationshipById', {

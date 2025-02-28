@@ -40,7 +40,7 @@ export default class TestData {
     verifiedBy = undefined,
     verifiedTime = undefined,
     mailFlag = false,
-    startDate = '2020-01-02',
+    startDate = undefined,
     endDate = undefined,
     noFixedAddress = false,
     phoneNumbers = [
@@ -55,8 +55,6 @@ export default class TestData {
         extNumber: '+0123',
         createdBy: 'JAMES',
         createdTime: '2024-10-04T15:35:23.101675v',
-        updatedBy: undefined,
-        updatedTime: undefined,
       } as ContactAddressPhoneDetails,
     ],
     comments = 'Some comments',
@@ -141,8 +139,6 @@ export default class TestData {
       extNumber,
       createdBy: 'TIM',
       createdTime,
-      updatedBy: undefined,
-      updatedTime: undefined,
     } as ContactPhoneDetails
   }
 
@@ -167,8 +163,6 @@ export default class TestData {
       extNumber,
       createdBy: 'TIM',
       createdTime,
-      updatedBy: undefined,
-      updatedTime: undefined,
     } as ContactAddressPhoneDetails
   }
 
@@ -179,8 +173,6 @@ export default class TestData {
       emailAddress,
       createdBy: 'TIM',
       createdTime: '2024-10-08T12:16:09.024803',
-      updatedBy: undefined,
-      updatedTime: undefined,
     } as ContactEmailDetails
   }
 
@@ -193,7 +185,7 @@ export default class TestData {
       firstName: 'Daniel',
       middleNames: 'M.',
       dateOfBirth: '1990-01-23',
-      relationshipToPrisoner: 'FR',
+      relationshipToPrisonerCode: 'FR',
       relationshipToPrisonerDescription: 'Father',
       flat: '',
       property: '40',
@@ -206,9 +198,9 @@ export default class TestData {
       postCode: 'S2 3LK',
       countryCode: 'ENG',
       countryDescription: 'England',
-      approvedVisitor: false,
-      nextOfKin: false,
-      emergencyContact: false,
+      isApprovedVisitor: false,
+      isNextOfKin: false,
+      isEmergencyContact: false,
       currentTerm: true,
       comments: 'Active Comment',
     } as PrisonerContactSummary
@@ -289,7 +281,7 @@ export default class TestData {
 
   static contact = ({
     id = 22,
-    title = 'MR',
+    titleCode = 'MR',
     titleDescription = 'Mr',
     lastName = 'Mason',
     firstName = 'Jones',
@@ -316,7 +308,7 @@ export default class TestData {
       this.getContactIdentityDetails('PASS', 'Passport number', '425362965', 'UK passport office', 2),
       this.getContactIdentityDetails('NINO', 'National insurance number', '06/614465M', undefined, 3),
     ],
-    gender = 'M',
+    genderCode = 'M',
     genderDescription = 'Male',
     domesticStatusCode = 'S',
     domesticStatusDescription = 'Single-not married/in civil partnership',
@@ -324,7 +316,7 @@ export default class TestData {
   }: Partial<ContactDetails> = {}): ContactDetails =>
     ({
       id,
-      title,
+      titleCode,
       titleDescription,
       lastName,
       firstName,
@@ -341,7 +333,7 @@ export default class TestData {
       phoneNumbers,
       emailAddresses,
       identities,
-      gender,
+      genderCode,
       genderDescription,
       domesticStatusCode,
       domesticStatusDescription,
@@ -350,24 +342,24 @@ export default class TestData {
 
   static prisonerContactRelationship = ({
     prisonerContactId = 99,
-    relationshipType = 'S',
+    relationshipTypeCode = 'S',
     relationshipTypeDescription = 'Social',
     relationshipToPrisonerCode = 'FRI',
     relationshipToPrisonerDescription = 'Friend',
-    emergencyContact = false,
-    nextOfKin = true,
+    isEmergencyContact = false,
+    isNextOfKin = true,
     isRelationshipActive = true,
     isApprovedVisitor = true,
     comments = 'Some comments',
   }: Partial<PrisonerContactRelationshipDetails> = {}): PrisonerContactRelationshipDetails =>
     ({
       prisonerContactId,
-      relationshipType,
+      relationshipTypeCode,
       relationshipTypeDescription,
       relationshipToPrisonerCode,
       relationshipToPrisonerDescription,
-      emergencyContact,
-      nextOfKin,
+      isEmergencyContact,
+      isNextOfKin,
       isRelationshipActive,
       isApprovedVisitor,
       comments,
@@ -404,14 +396,14 @@ export default class TestData {
 
   static patchContact = ({
     id = 22,
-    title = 'MR',
+    titleCode = 'MR',
     lastName = 'Mason',
     firstName = 'Jones',
     middleNames = undefined,
     dateOfBirth = '1990-01-14',
     isStaff = false,
-    gender = 'Male',
-    domesticStatus = 'Single',
+    genderCode = 'Male',
+    domesticStatusCode = 'Single',
     deceasedDate = undefined,
     languageCode = 'ENG',
     interpreterRequired = false,
@@ -422,15 +414,15 @@ export default class TestData {
   }: Partial<PatchContactResponse> = {}): PatchContactResponse =>
     ({
       id,
-      title,
+      titleCode,
       lastName,
       firstName,
       middleNames,
       dateOfBirth,
       isStaff,
       deceasedDate,
-      gender,
-      domesticStatus,
+      genderCode,
+      domesticStatusCode,
       languageCode,
       interpreterRequired,
       createdBy,
@@ -506,9 +498,9 @@ export default class TestData {
       TestData.getLinkedPrisonerRelationshipDetails(),
       TestData.getLinkedPrisonerRelationshipDetails({
         prisonerContactId: 2,
-        relationshipType: 'O',
+        relationshipTypeCode: 'O',
         relationshipTypeDescription: 'Official',
-        relationshipToPrisoner: 'DR',
+        relationshipToPrisonerCode: 'DR',
         relationshipToPrisonerDescription: 'Doctor',
       }),
     ],
@@ -523,16 +515,16 @@ export default class TestData {
 
   static getLinkedPrisonerRelationshipDetails = ({
     prisonerContactId = 1,
-    relationshipType = 'S',
+    relationshipTypeCode = 'S',
     relationshipTypeDescription = 'Social/Family',
-    relationshipToPrisoner = 'FRI',
+    relationshipToPrisonerCode = 'FRI',
     relationshipToPrisonerDescription = 'Friend',
   }: Partial<LinkedPrisonerRelationshipDetails> = {}): LinkedPrisonerRelationshipDetails =>
     ({
       prisonerContactId,
-      relationshipType,
+      relationshipTypeCode,
       relationshipTypeDescription,
-      relationshipToPrisoner,
+      relationshipToPrisonerCode,
       relationshipToPrisonerDescription,
     }) as LinkedPrisonerRelationshipDetails
 

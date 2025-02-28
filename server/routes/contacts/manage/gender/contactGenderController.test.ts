@@ -51,7 +51,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     ['NS', ' Specified (Indeterminate)'],
   ])('should render gender page with radio selected', async (gender: string, genderDescription: string) => {
     // Given
-    contactsService.getContact.mockResolvedValue(TestData.contact({ gender, genderDescription }))
+    contactsService.getContact.mockResolvedValue(TestData.contact({ genderCode: gender, genderDescription }))
 
     // When
     const response = await request(app).get(
@@ -86,7 +86,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .expect(302)
       .expect('Location', '/prisoner/A1234BC/contacts/manage/10/relationship/987654')
 
-    expect(contactsService.updateContactById).toHaveBeenCalledWith(10, { gender: 'M', updatedBy: 'user1' }, user)
+    expect(contactsService.updateContactById).toHaveBeenCalledWith(10, { genderCode: 'M', updatedBy: 'user1' }, user)
   })
 
   it('should return to enter page if there are validation errors', async () => {

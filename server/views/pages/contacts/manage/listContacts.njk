@@ -33,8 +33,8 @@
         </thead>
         <tbody class="govuk-table__body">
         {% for item in contactsList %}
-        {% 
-            set address = { 
+        {%
+            set address = {
                 flat: item.flat,
                 premise: item.property,
                 street: item.street,
@@ -59,9 +59,9 @@
                 {{ convertAddressToLines(address) }}
             </td>
             <td class="govuk-table__cell">{{ item.relationshipToPrisonerDescription }}</td>
-            <td class="govuk-table__cell">{{ 'Yes' if item.emergencyContact else 'No' }}</td>
-            <td class="govuk-table__cell">{{ 'Yes' if item.nextOfKin else 'No'}}</td>
-            <td class="govuk-table__cell">{{ 'Yes' if item.approvedVisitor else 'No'}}</td>
+            <td class="govuk-table__cell">{{ 'Yes' if item.isEmergencyContact else 'No' }}</td>
+            <td class="govuk-table__cell">{{ 'Yes' if item.isNextOfKin else 'No'}}</td>
+            <td class="govuk-table__cell">{{ 'Yes' if item.isApprovedVisitor else 'No'}}</td>
         </tr>
         {% endfor %}
         </tbody>

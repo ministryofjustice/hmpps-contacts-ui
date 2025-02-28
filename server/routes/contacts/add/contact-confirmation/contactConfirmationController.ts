@@ -4,18 +4,15 @@ import { Page } from '../../../../services/auditService'
 import { IsContactConfirmedSchema } from './contactConfirmationSchema'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
 import { ContactsService, RestrictionsService } from '../../../../services'
-import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import { formatNameLastNameFirst } from '../../../../utils/formatName'
-import ReferenceDataService from '../../../../services/referenceDataService'
 import { findMostRelevantAddress, getLabelForAddress } from '../../../../utils/findMostRelevantAddressAndLabel'
+import sortRestrictions from '../../../../utils/sortGlobalRstrictions'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import ContactDetails = contactsApiClientTypes.ContactDetails
-import sortRestrictions from '../../../../utils/sortGlobalRstrictions'
 
 export default class ContactConfirmationController implements PageHandler {
   constructor(
     private readonly contactsService: ContactsService,
-    private readonly referenceDataService: ReferenceDataService,
     private readonly restrictionsService: RestrictionsService,
   ) {}
 
@@ -34,7 +31,7 @@ export default class ContactConfirmationController implements PageHandler {
 
     const linkedPrisoners = await this.contactsService.getLinkedPrisoners(contact.id, user)
 
-    const formattedFullName = await this.formattedFullName(contact, user)
+    const formattedFullName = await formatNameLastNameFirst(contact, { customTitle: contact.titleDescription })
     const mostRelevantAddress = findMostRelevantAddress(contact, false)
     const mostRelevantAddressLabel = getLabelForAddress(mostRelevantAddress)
     return res.render('pages/contacts/manage/contactConfirmation/confirmation', {
@@ -60,19 +57,7 @@ export default class ContactConfirmationController implements PageHandler {
       journey.isContactConfirmed = isContactConfirmed
       return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
     }
-    journey.isContactConfirmed = undefined
+    delete journey.isContactConfirmed
     return res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/search/${journeyId}`)
-  }
-
-  private async formattedFullName(contact: ContactDetails, user: Express.User) {
-    let titleDescription: string | undefined
-    if (contact.title) {
-      titleDescription = await this.referenceDataService.getReferenceDescriptionForCode(
-        ReferenceCodeType.TITLE,
-        contact.title,
-        user,
-      )
-    }
-    return formatNameLastNameFirst(contact, { customTitle: titleDescription })
   }
 }

@@ -31,12 +31,12 @@
                         {
                             value: "YES",
                             text: 'YES' | formatYesNo,
-                            checked: relationship.emergencyContact === true
+                            checked: relationship.isEmergencyContact === true
                         },
                         {
                             value: "NO",
                             text: 'NO' | formatYesNo,
-                            checked: relationship.emergencyContact === false
+                            checked: relationship.isEmergencyContact === false
                         }
                     ]
                 })

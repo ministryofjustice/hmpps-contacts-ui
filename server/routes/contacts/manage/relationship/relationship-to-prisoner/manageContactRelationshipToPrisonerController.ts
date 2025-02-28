@@ -13,7 +13,7 @@ import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 import ContactNames = journeys.ContactNames
-import UpdateRelationshipRequest = contactsApiClientTypes.UpdateRelationshipRequest
+import PatchRelationshipRequest = contactsApiClientTypes.PatchRelationshipRequest
 
 export default class ManageContactRelationshipToPrisonerController implements PageHandler {
   constructor(
@@ -45,7 +45,7 @@ export default class ManageContactRelationshipToPrisonerController implements Pa
     const currentRelationship = res.locals?.formResponses?.['relationship'] ?? relationship.relationshipToPrisonerCode
 
     const { groupCodeForRelationshipType, hintText, defaultSelectLabel } =
-      relationshipToPrisonerOptionsForRelationshipType(relationship.relationshipType, formattedName)
+      relationshipToPrisonerOptionsForRelationshipType(relationship.relationshipTypeCode, formattedName)
 
     const relationshipOptions = await this.referenceDataService
       .getReferenceData(groupCodeForRelationshipType, user)
@@ -82,8 +82,8 @@ export default class ManageContactRelationshipToPrisonerController implements Pa
     const { user, prisonerDetails } = res.locals
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const { relationship } = req.body
-    const request: UpdateRelationshipRequest = {
-      relationshipToPrisoner: relationship,
+    const request: PatchRelationshipRequest = {
+      relationshipToPrisonerCode: relationship,
       updatedBy: user.username,
     }
     await this.contactsService

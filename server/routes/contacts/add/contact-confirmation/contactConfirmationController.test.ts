@@ -39,9 +39,7 @@ const blankAddress = TestData.address({
   countryDescription: '',
   postcode: '',
   primaryAddress: false,
-  mailFlag: undefined,
-  startDate: undefined,
-  endDate: undefined,
+  mailFlag: false,
 })
 beforeEach(() => {
   existingJourney = {
@@ -171,7 +169,7 @@ describe('Contact details', () => {
             mailFlag: false,
             startDate: '2020-01-01',
           },
-          { ...blankAddress, property: 'no start date', primaryAddress: false, mailFlag: false, startDate: undefined },
+          { ...blankAddress, property: 'no start date', primaryAddress: false, mailFlag: false },
           {
             ...blankAddress,
             property: 'latest start date',
@@ -286,11 +284,11 @@ describe('Contact details', () => {
       ['F', 'Female'],
       ['NK', 'Not Known / Not Recorded'],
       ['NS', 'Specified (Indeterminate)'],
-    ])('should show gender if question was answered', async (gender: string, genderDescription: string) => {
+    ])('should show gender if question was answered', async (genderCode: string, genderDescription: string) => {
       // Given
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.searchContact.mockResolvedValue(TestData.contact({ gender, genderDescription }))
-      contactsService.getContact.mockResolvedValue(TestData.contact({ gender, genderDescription }))
+      contactsService.searchContact.mockResolvedValue(TestData.contact({ genderCode, genderDescription }))
+      contactsService.getContact.mockResolvedValue(TestData.contact({ genderCode, genderDescription }))
       referenceDataService.getReferenceDescriptionForCode.mockResolvedValue(genderDescription)
       existingJourney.mode = 'EXISTING'
 

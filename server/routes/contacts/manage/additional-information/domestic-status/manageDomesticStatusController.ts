@@ -60,7 +60,7 @@ export default class ManageDomesticStatusController implements PageHandler {
     const { user } = res.locals
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const request: PatchContactRequest = {
-      domesticStatus: req.body.domesticStatusCode,
+      domesticStatusCode: req.body.domesticStatusCode,
       updatedBy: user.username,
     }
 

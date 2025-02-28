@@ -8,7 +8,7 @@ declare namespace journeys {
     prisonerNumber: string
     isCheckingAnswers: boolean
     returnPoint: ReturnPoint
-    mode?: 'EXISTING' | 'NEW'
+    mode?: 'EXISTING' | 'NEW' | undefined
     searchContact?: {
       contact?: Partial<ContactNames>
       dateOfBirth?: Partial<DateOfBirth>
@@ -17,7 +17,7 @@ declare namespace journeys {
     names?: ContactNames
     dateOfBirth?: DateOfBirth
     relationship?: PrisonerContactRelationship
-    previousAnswers?: CreateContactJourneyPreviousAnswers
+    previousAnswers?: CreateContactJourneyPreviousAnswers | undefined
     contactId?: number
     prisonerContactId?: number
     existingContact?: {
@@ -26,10 +26,10 @@ declare namespace journeys {
   }
 
   export interface ContactNames {
-    title?: string
+    title?: string | undefined
     lastName: string
     firstName: string
-    middleNames?: string
+    middleNames?: string | undefined
   }
 
   export interface DateOfBirth {
@@ -44,21 +44,19 @@ declare namespace journeys {
     relationshipToPrisoner?: string
     isEmergencyContact?: YesOrNo
     isNextOfKin?: YesOrNo
-    comments?: string
+    comments?: string | undefined
   }
 
   export interface CreateContactJourneyPreviousAnswers {
-    names?: ContactNames
-    dateOfBirth?: DateOfBirth
-    relationship?: PrisonerContactRelationship
+    names?: ContactNames | undefined
+    dateOfBirth?: DateOfBirth | undefined
+    relationship?: PrisonerContactRelationship | undefined
   }
 
   export interface ManageContactsJourney {
     id: string
     lastTouched: string
-    search?: {
-      searchTerm?: string
-    }
+    search?: { searchTerm?: string | undefined }
     prisoner?: PrisonerDetails
     searchContact?: {
       contact?: Partial<ContactNames>
@@ -107,8 +105,8 @@ declare namespace journeys {
     lastName: string
     firstName: string
     dateOfBirth: string
-    prisonName?: string
-    cellLocation?: string
+    prisonName?: string | undefined
+    cellLocation?: string | undefined
     hasPrimaryAddress: boolean
   }
 
@@ -133,8 +131,8 @@ declare namespace journeys {
   export interface Restriction {
     type: string
     startDate?: string
-    expiryDate?: string
-    comments?: string
+    expiryDate?: string | undefined
+    comments?: string | undefined
   }
 
   export interface AddressJourney {
@@ -146,31 +144,31 @@ declare namespace journeys {
     isCheckingAnswers: boolean
     mode: 'ADD' | 'EDIT'
     contactNames: ContactNames
-    addressType?: string
-    addressLines?: AddressLines
-    addressMetadata?: AddressMetadata
+    addressType?: string | undefined
+    addressLines?: AddressLines | undefined
+    addressMetadata?: AddressMetadata | undefined
   }
 
   export interface AddressLines {
     noFixedAddress: boolean
-    flat?: string
-    premises?: string
-    street?: string
-    locality?: string
-    town?: string
-    county?: string
-    postcode?: string
+    flat?: string | undefined
+    premises?: string | undefined
+    street?: string | undefined
+    locality?: string | undefined
+    town?: string | undefined
+    county?: string | undefined
+    postcode?: string | undefined
     country: string
   }
 
   export interface AddressMetadata {
-    fromMonth?: string
-    fromYear?: string
-    toMonth?: string
-    toYear?: string
-    primaryAddress?: YesOrNo
-    mailAddress?: YesOrNo
-    comments?: string
+    fromMonth?: string | undefined
+    fromYear?: string | undefined
+    toMonth?: string | undefined
+    toYear?: string | undefined
+    primaryAddress?: YesOrNo | undefined
+    mailAddress?: YesOrNo | undefined
+    comments?: string | undefined
   }
 
   export interface StandaloneManageContactJourney {

@@ -144,7 +144,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     'should pass to next page and set type in session if there are no validation errors (%s, %s)',
     async (isCheckingAnswers: boolean, expectedUrl: string) => {
       // Given
-      existingJourney.addressType = undefined
+      delete existingJourney.addressType
       existingJourney.isCheckingAnswers = isCheckingAnswers
 
       // When

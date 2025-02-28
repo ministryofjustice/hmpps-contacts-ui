@@ -121,7 +121,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       // Given
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       const contact = TestData.contact()
-      contact.addresses[0]!.comments = undefined
+      delete contact.addresses[0]!.comments
       contactsService.getContact.mockResolvedValue(contact)
 
       // When
@@ -529,12 +529,12 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
     describe('Relationship to prisoner card', () => {
       it('should render with all relationship details', async () => {
         const prisonerContactRelationshipDetails = {
-          relationshipType: 'S',
+          relationshipTypeCode: 'S',
           relationshipTypeDescription: 'Social',
           relationshipToPrisonerCode: 'FRI',
           relationshipToPrisonerDescription: 'Friend',
-          emergencyContact: true,
-          nextOfKin: true,
+          isEmergencyContact: true,
+          isNextOfKin: true,
           isRelationshipActive: true,
           isApprovedVisitor: true,
           comments: 'Some comments',
@@ -571,12 +571,12 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
       it('should render without optional relationship details', async () => {
         const prisonerContactRelationshipDetails = {
-          relationshipType: 'O',
+          relationshipTypeCode: 'O',
           relationshipTypeDescription: 'Official',
           relationshipToPrisonerCode: 'DR',
           relationshipToPrisonerDescription: 'Doctor',
-          emergencyContact: false,
-          nextOfKin: false,
+          isEmergencyContact: false,
+          isNextOfKin: false,
           isRelationshipActive: false,
           isApprovedVisitor: false,
           comments: undefined,
