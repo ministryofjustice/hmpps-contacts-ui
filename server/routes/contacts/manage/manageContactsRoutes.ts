@@ -279,8 +279,8 @@ const ManageContactsRoutes = (
     schema: identitySchema,
   })
 
-  standAloneJourneyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:contactIdentityId/edit',
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/identity/:contactIdentityId/edit',
     controller: new ManageContactEditIdentityController(contactsService, referenceDataService),
     schema: identitySchema,
   })

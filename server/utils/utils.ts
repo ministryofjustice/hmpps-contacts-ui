@@ -1,5 +1,6 @@
 import { format, isValid, parseISO } from 'date-fns'
 import DateOfBirth = journeys.DateOfBirth
+import ReferenceCode = contactsApiClientTypes.ReferenceCode
 
 const isBlank = (str?: string): boolean => !str || /^\s*$/.test(str)
 
@@ -143,4 +144,23 @@ export const isDateAndInThePast = (date?: string): boolean => {
     return expirationDate.getTime() < new Date().getTime()
   }
   return false
+}
+
+export const referenceCodesToOptions = (
+  options: ReferenceCode[],
+  selectedType?: string | undefined,
+  defaultLabel?: string | undefined,
+): Array<{
+  value: string
+  text: string
+  selected?: boolean
+}> => {
+  const mappedOptions = options.map((referenceCode: ReferenceCode) => {
+    return {
+      text: referenceCode.description,
+      value: referenceCode.code,
+      selected: referenceCode.code === selectedType,
+    }
+  })
+  return [{ text: defaultLabel ?? '', value: '' }, ...mappedOptions]
 }

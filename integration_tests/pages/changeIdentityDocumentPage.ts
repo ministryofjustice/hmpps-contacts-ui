@@ -1,46 +1,46 @@
 import Page, { PageElement } from './page'
 
-export default class EnterIdentityPage extends Page {
+export default class ChangeIdentityDocumentPage extends Page {
   constructor(name: string) {
-    super(`What is the identity number for ${name}?`)
+    super(`Update an identity document for ${name}`)
   }
 
-  hasIdentity(value: string): EnterIdentityPage {
+  hasIdentity(value: string): ChangeIdentityDocumentPage {
     this.identityTextBox().should('have.value', value)
     return this
   }
 
-  enterIdentity(value: string): EnterIdentityPage {
+  enterIdentity(value: string): ChangeIdentityDocumentPage {
     this.identityTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
-  clearIdentity(): EnterIdentityPage {
+  clearIdentity(): ChangeIdentityDocumentPage {
     this.identityTextBox().clear()
     return this
   }
 
-  selectType(value: string): EnterIdentityPage {
+  selectType(value: string): ChangeIdentityDocumentPage {
     this.typeSelect().select(value)
     return this
   }
 
-  hasType(value: string): EnterIdentityPage {
+  hasType(value: string): ChangeIdentityDocumentPage {
     this.typeSelect().should('have.value', value)
     return this
   }
 
-  enterIssuingAuthority(value: string): EnterIdentityPage {
+  enterIssuingAuthority(value: string): ChangeIdentityDocumentPage {
     this.issuingAuthorityTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
-  hasIssuingAuthority(value: string): EnterIdentityPage {
+  hasIssuingAuthority(value: string): ChangeIdentityDocumentPage {
     this.issuingAuthorityTextBox().should('have.value', value)
     return this
   }
 
-  clearIssuingAuthority(): EnterIdentityPage {
+  clearIssuingAuthority(): ChangeIdentityDocumentPage {
     this.issuingAuthorityTextBox().clear()
     return this
   }

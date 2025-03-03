@@ -1,6 +1,6 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
-import EnterIdentityPage from '../pages/enterIdentityPage'
+import ChangeIdentityDocumentPage from '../pages/changeIdentityDocumentPage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import { StubIdentityDetails } from '../mockApis/contactsApi'
 import EditContactDetailsPage from '../pages/editContactDetailsPage'
@@ -64,7 +64,7 @@ context('Create Contact Identity', () => {
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickAddIdentityDocumentLink()
 
-    Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
+    Page.verifyOnPage(ChangeIdentityDocumentPage, 'First Middle Names Last') //
       .enterIdentity('425362965')
       .selectType('PASS')
       .clickContinue()
@@ -103,7 +103,7 @@ context('Create Contact Identity', () => {
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickAddIdentityDocumentLink()
 
-    Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
+    Page.verifyOnPage(ChangeIdentityDocumentPage, 'First Middle Names Last') //
       .enterIdentity('425362965')
       .enterIssuingAuthority('000')
       .selectType('NINO')
@@ -127,10 +127,10 @@ context('Create Contact Identity', () => {
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickAddIdentityDocumentLink()
 
-    const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
+    const enterIdentityPage = Page.verifyOnPage(ChangeIdentityDocumentPage, 'First Middle Names Last') //
       .enterIdentity('425362965')
     enterIdentityPage.clickContinue()
-    enterIdentityPage.hasFieldInError('type', 'Select the type of identity number')
+    enterIdentityPage.hasFieldInError('type', 'Select the document type')
   })
 
   it('Should require identity number', () => {
@@ -140,10 +140,10 @@ context('Create Contact Identity', () => {
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickAddIdentityDocumentLink()
 
-    const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
+    const enterIdentityPage = Page.verifyOnPage(ChangeIdentityDocumentPage, 'First Middle Names Last') //
       .selectType('NINO')
     enterIdentityPage.clickContinue()
-    enterIdentityPage.hasFieldInError('identity', 'Enter the identity number')
+    enterIdentityPage.hasFieldInError('identity', 'Enter the document number')
   })
 
   it('Should require identity number is 20 chars or fewer', () => {
@@ -153,11 +153,11 @@ context('Create Contact Identity', () => {
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickAddIdentityDocumentLink()
 
-    const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
+    const enterIdentityPage = Page.verifyOnPage(ChangeIdentityDocumentPage, 'First Middle Names Last') //
       .selectType('NINO')
       .enterIdentity(''.padEnd(21, '0'))
     enterIdentityPage.clickContinue()
-    enterIdentityPage.hasFieldInError('identity', 'Identity number should be 20 characters or fewer')
+    enterIdentityPage.hasFieldInError('identity', 'Document number must be 20 characters or less')
   })
 
   it('Should require Issuing authority is 40 chars or fewer', () => {
@@ -167,13 +167,13 @@ context('Create Contact Identity', () => {
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickAddIdentityDocumentLink()
 
-    const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
+    const enterIdentityPage = Page.verifyOnPage(ChangeIdentityDocumentPage, 'First Middle Names Last') //
       .selectType('NINO')
       .enterIdentity('0123')
       .enterIssuingAuthority(''.padEnd(41, '0'))
 
     enterIdentityPage.clickContinue()
-    enterIdentityPage.hasFieldInError('issuingAuthority', 'Issuing authority should be 40 characters or fewer')
+    enterIdentityPage.hasFieldInError('issuingAuthority', 'Issuing authority must be 40 characters or less')
   })
 
   it('Back link goes to manage contacts', () => {
@@ -183,7 +183,7 @@ context('Create Contact Identity', () => {
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickAddIdentityDocumentLink()
 
-    Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
+    Page.verifyOnPage(ChangeIdentityDocumentPage, 'First Middle Names Last') //
       .backTo(EditContactDetailsPage, 'First Middle Names Last')
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
@@ -195,7 +195,7 @@ context('Create Contact Identity', () => {
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickAddIdentityDocumentLink()
 
-    Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
+    Page.verifyOnPage(ChangeIdentityDocumentPage, 'First Middle Names Last') //
       .cancelTo(EditContactDetailsPage, 'First Middle Names Last')
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })

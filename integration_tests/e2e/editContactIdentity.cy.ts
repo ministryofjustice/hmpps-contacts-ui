@@ -1,6 +1,6 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
-import EnterIdentityPage from '../pages/enterIdentityPage'
+import ChangeIdentityDocumentPage from '../pages/changeIdentityDocumentPage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import { StubIdentityDetails } from '../mockApis/contactsApi'
 import EditContactDetailsPage from '../pages/editContactDetailsPage'
@@ -39,6 +39,7 @@ context('Edit Contact Identities', () => {
         contactGlobalRestrictions: [],
       },
     })
+    cy.task('stubGetContactNameById', contact)
     cy.signIn()
     const { prisonerNumber } = TestData.prisoner()
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
@@ -67,7 +68,7 @@ context('Edit Contact Identities', () => {
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickEditIdentityLink('LAST-8773671M')
 
-    Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') // without issuing authority
+    Page.verifyOnPage(ChangeIdentityDocumentPage, 'First Middle Names Last') // without issuing authority
       .hasIdentity('LAST-8773671M')
       .enterIdentity('123434')
       .hasType('DL')
@@ -76,7 +77,8 @@ context('Edit Contact Identities', () => {
       .clearIssuingAuthority()
       .clickContinue()
 
-    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last')
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .hasSuccessBanner('You’ve updated the identity documentation for First Middle Names Last.')
 
     cy.verifyLastAPICall(
       {
@@ -108,7 +110,7 @@ context('Edit Contact Identities', () => {
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickEditIdentityLink('LAST-8773671M')
 
-    Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
+    Page.verifyOnPage(ChangeIdentityDocumentPage, 'First Middle Names Last') //
       .hasIdentity('LAST-8773671M')
       .enterIdentity('987654321')
       .hasIssuingAuthority('UK')
@@ -117,7 +119,8 @@ context('Edit Contact Identities', () => {
       .selectType('NINO')
       .clickContinue()
 
-    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last')
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .hasSuccessBanner('You’ve updated the identity documentation for First Middle Names Last.')
 
     cy.verifyLastAPICall(
       {
@@ -135,11 +138,11 @@ context('Edit Contact Identities', () => {
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickEditIdentityLink('LAST-8773671M')
 
-    const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
+    const enterIdentityPage = Page.verifyOnPage(ChangeIdentityDocumentPage, 'First Middle Names Last') //
       .selectType('')
       .enterIdentity('425362965')
     enterIdentityPage.clickContinue()
-    enterIdentityPage.hasFieldInError('type', 'Select the type of identity number')
+    enterIdentityPage.hasFieldInError('type', 'Select the document type')
   })
 
   it('Should require identity number', () => {
@@ -149,10 +152,10 @@ context('Edit Contact Identities', () => {
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickEditIdentityLink('LAST-8773671M')
 
-    const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
+    const enterIdentityPage = Page.verifyOnPage(ChangeIdentityDocumentPage, 'First Middle Names Last') //
       .clearIdentity()
     enterIdentityPage.clickContinue()
-    enterIdentityPage.hasFieldInError('identity', 'Enter the identity number')
+    enterIdentityPage.hasFieldInError('identity', 'Enter the document number')
   })
 
   it('Should require identity is 20 chars or fewer', () => {
@@ -162,10 +165,10 @@ context('Edit Contact Identities', () => {
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickEditIdentityLink('LAST-8773671M')
 
-    const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
+    const enterIdentityPage = Page.verifyOnPage(ChangeIdentityDocumentPage, 'First Middle Names Last') //
       .enterIdentity(''.padEnd(21, '0'))
     enterIdentityPage.clickContinue()
-    enterIdentityPage.hasFieldInError('identity', 'Identity number should be 20 characters or fewer')
+    enterIdentityPage.hasFieldInError('identity', 'Document number must be 20 characters or less')
   })
 
   it('Should require issuing authority is 7 chars or fewer', () => {
@@ -175,36 +178,35 @@ context('Edit Contact Identities', () => {
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickEditIdentityLink('LAST-8773671M')
 
-    const enterIdentityPage = Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
+    const enterIdentityPage = Page.verifyOnPage(ChangeIdentityDocumentPage, 'First Middle Names Last') //
       .selectType('PASS')
       .enterIdentity('0123')
       .enterIssuingAuthority(''.padEnd(41, '0'))
 
     enterIdentityPage.clickContinue()
-    enterIdentityPage.hasFieldInError('issuingAuthority', 'Issuing authority should be 40 characters or fewer')
+    enterIdentityPage.hasFieldInError('issuingAuthority', 'Issuing authority must be 40 characters or less')
   })
 
-  it('Back link goes to manage contacts', () => {
+  it('Back link goes to edit contact details then contact details', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
 
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickEditIdentityLink('LAST-8773671M')
 
-    Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
+    Page.verifyOnPage(ChangeIdentityDocumentPage, 'First Middle Names Last') //
       .backTo(EditContactDetailsPage, 'First Middle Names Last')
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 
-  it('Cancel goes to manage contacts', () => {
+  it('Cancel goes to contact details', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
 
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickEditIdentityLink('LAST-8773671M')
 
-    Page.verifyOnPage(EnterIdentityPage, 'First Middle Names Last') //
-      .cancelTo(EditContactDetailsPage, 'First Middle Names Last')
+    Page.verifyOnPage(ChangeIdentityDocumentPage, 'First Middle Names Last') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 })

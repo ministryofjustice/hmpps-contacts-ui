@@ -398,7 +398,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         'Change the information about this Passport number (Identity documentation)',
       )
       expect(firstPassportHeading.next().next().find('a').first().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/manage/22/identity/3/edit?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/identity/3/edit',
       )
       expect(firstPassportHeading.next().next().find('a').last().text()).toStrictEqual(
         'Delete the information about this Passport number (Identity documentation)',
@@ -414,7 +414,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         'Change the information about this Passport number (Identity documentation)',
       )
       expect(secondPassportHeading.next().next().find('a').first().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/manage/22/identity/2/edit?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/identity/2/edit',
       )
       expect(secondPassportHeading.next().next().find('a').last().text()).toStrictEqual(
         'Delete the information about this Passport number (Identity documentation)',

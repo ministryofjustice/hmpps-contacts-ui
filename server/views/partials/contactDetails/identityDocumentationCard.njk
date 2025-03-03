@@ -14,7 +14,7 @@
       {% set actions = [] %}
       {% if item.identityTypeIsActive == true %}
         {% set actions = actions.concat([{
-          href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/identity/" + item.contactIdentityId + "/edit?returnUrl=" + returnUrl,
+          href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + prisonerContactId + "/identity/" + item.contactIdentityId + "/edit",
           text: "Change",
           visuallyHiddenText: "the information about this " + item.identityTypeDescription,
           attributes: {"data-qa": "edit-identity-number-" + item.contactIdentityId},

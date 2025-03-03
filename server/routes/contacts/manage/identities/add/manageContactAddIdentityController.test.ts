@@ -62,7 +62,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/crea
 
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'What is the identity number for First Middle Last?',
+      'Update an identity document for First Middle Last',
     )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
