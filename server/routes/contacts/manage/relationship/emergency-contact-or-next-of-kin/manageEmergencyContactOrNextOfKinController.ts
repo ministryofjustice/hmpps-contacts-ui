@@ -37,7 +37,7 @@ export default class ManageEmergencyContactOrNextOfKinController implements Page
       nextOfKin: relationship.isNextOfKin,
       navigation,
     }
-    res.render('pages/contacts/manage/contactDetails/manageNextOfKinAndEmergencyContact', viewModel)
+    res.render('pages/contacts/manage/contactDetails/relationship/manageNextOfKinAndEmergencyContact', viewModel)
   }
 
   POST = async (

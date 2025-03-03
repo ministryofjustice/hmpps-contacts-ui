@@ -107,11 +107,11 @@ export default function nunjucksSetup(app: express.Express): void {
   )
   njkEnv.addFilter(
     'setChecked',
-    (items: { value: string; text: string }[], checked: string[]) =>
+    (items: { value: string; text: string }[], checked?: string[] | string) =>
       items &&
       items.map(entry => ({
         ...entry,
-        checked: entry && checked.includes(String(entry.value)),
+        checked: entry && (Array.isArray(checked) ? checked.includes(String(entry.value)) : entry.value === checked),
       })),
   )
 }

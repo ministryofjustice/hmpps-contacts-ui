@@ -29,7 +29,7 @@ export default class ManageContactAddEmailController implements PageHandler {
       contact,
       navigation,
     }
-    res.render('pages/contacts/manage/addEditEmail', viewModel)
+    res.render('pages/contacts/manage/contactMethods/addEditEmail', viewModel)
   }
 
   POST = async (

@@ -25,9 +25,9 @@
                     name: "relationship",
                     hint: {
                         id: 'relationship-hint',
-                        text: hintText
+                        text: ('For example, if ' + names | formatNameFirstNameFirst + ' is the prisoner’s uncle, select ‘Uncle’.') if relationshipType === 'S' else ('For example, if ' + names | formatNameFirstNameFirst + ' is the prisoner’s doctor, select ‘Doctor’.')
                     },
-                    items: relationshipOptions,
+                    items: relationshipOptions | referenceCodesToSelect('Select social relationship' if relationshipType === 'S' else 'Select official relationship') | setSelected(relationship),
                     errorMessage: validationErrors | findError('relationship')
                 }) }}
                 <div class="govuk-button-group">

@@ -5,7 +5,6 @@ import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import { PhoneNumberSchemaType } from '../phoneSchemas'
 import { ContactsService } from '../../../../../services'
-import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import { Navigation } from '../../../common/navigation'
 import Urls from '../../../../urls'
@@ -27,9 +26,7 @@ export default class ManageContactAddPhoneController implements PageHandler {
     const { user } = res.locals
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
-    const typeOptions = await this.referenceDataService
-      .getReferenceData(ReferenceCodeType.PHONE_TYPE, user)
-      .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.['type']))
+    const typeOptions = await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user)
     const navigation: Navigation = { backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId) }
     const viewModel = {
       typeOptions,
@@ -39,7 +36,7 @@ export default class ManageContactAddPhoneController implements PageHandler {
       contact,
       navigation,
     }
-    res.render('pages/contacts/manage/addEditPhone', viewModel)
+    res.render('pages/contacts/manage/contactMethods/addEditPhone', viewModel)
   }
 
   POST = async (
@@ -63,23 +60,5 @@ export default class ManageContactAddPhoneController implements PageHandler {
         ),
       )
     res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
-  }
-
-  private getSelectedOptions(
-    options: ReferenceCode[],
-    selectedType?: string,
-  ): Array<{
-    value: string
-    text: string
-    selected?: boolean
-  }> {
-    const mappedOptions = options.map((referenceCode: ReferenceCode) => {
-      return {
-        text: referenceCode.description,
-        value: referenceCode.code,
-        selected: referenceCode.code === selectedType,
-      }
-    })
-    return [{ text: '', value: '' }, ...mappedOptions]
   }
 }

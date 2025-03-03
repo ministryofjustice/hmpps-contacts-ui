@@ -8,7 +8,6 @@ import { ContactsService } from '../../../../services'
 import { Navigation } from '../../common/navigation'
 import { formatNameFirstNameFirst } from '../../../../utils/formatName'
 import Urls from '../../../urls'
-import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
 
@@ -32,9 +31,10 @@ export default class ChangeTitleOrMiddleNamesController implements PageHandler {
     const { user } = res.locals
     const contact = await this.contactService.getContact(Number(contactId), user)
 
-    const titleOptions = await this.referenceDataService
-      .getReferenceData(ReferenceCodeType.TITLE, user)
-      .then(val => this.getSelectedTitleOptions(val, res.locals?.formResponses?.['title'] ?? contact.titleCode))
+    const titleOptions = [
+      { code: '', description: '' },
+      ...(await this.referenceDataService.getReferenceData(ReferenceCodeType.TITLE, user)),
+    ]
 
     const navigation: Navigation = {
       backLink: Urls.editContactDetails(prisonerNumber, contactId, prisonerContactId),
@@ -44,12 +44,13 @@ export default class ChangeTitleOrMiddleNamesController implements PageHandler {
     const viewModel = {
       contact,
       titleOptions,
+      titleCode: res.locals?.formResponses?.['title'] ?? contact.titleCode,
       lastName: res.locals?.formResponses?.['lastName'] ?? contact.lastName,
       firstName: res.locals?.formResponses?.['firstName'] ?? contact.firstName,
       middleNames: res.locals?.formResponses?.['middleNames'] ?? contact.middleNames,
       navigation,
     }
-    res.render('pages/contacts/manage/changeTitleOrMiddleNames', viewModel)
+    res.render('pages/contacts/manage/contactDetails/changeTitleOrMiddleNames', viewModel)
   }
 
   POST = async (
@@ -81,25 +82,5 @@ export default class ChangeTitleOrMiddleNamesController implements PageHandler {
         ),
       )
     res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
-  }
-
-  private getSelectedTitleOptions(
-    options: ReferenceCode[],
-    selectedTitle?: string,
-  ): Array<{
-    value: string
-    text: string
-    selected?: boolean
-  }> {
-    const mappedOptions = options
-      .map((title: ReferenceCode) => {
-        return {
-          text: title.description,
-          value: title.code,
-          selected: title.code === selectedTitle,
-        }
-      })
-      .sort((a, b) => a.text.localeCompare(b.text))
-    return [{ text: 'Select title', value: '' }, { text: '', value: '' }, ...mappedOptions]
   }
 }

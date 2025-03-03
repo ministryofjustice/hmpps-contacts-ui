@@ -28,7 +28,7 @@ export default class ManageRelationshipStatusController implements PageHandler {
       backLink: Urls.editContactDetails(prisonerNumber, contactId, prisonerContactId),
       cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
     }
-    return res.render('pages/contacts/manage/contactDetails/manageRelationshipStatus', {
+    return res.render('pages/contacts/manage/contactDetails/relationship/manageRelationshipStatus', {
       contact,
       prisonerContactId,
       isRelationshipActive: relationship.isRelationshipActive,

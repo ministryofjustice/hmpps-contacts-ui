@@ -1,5 +1,5 @@
-{% extends "../../../partials/layout.njk" %}
-{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% extends "partials/layout.njk" %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
@@ -9,7 +9,7 @@
 
 {% block content %}
 
-    {% include '../../../partials/navigation.njk' %}
+    {% include 'partials/navigation.njk' %}
     {{ miniProfile(prisonerDetails) }}
     <span class="govuk-caption-l">Contacts</span>
     <div class="govuk-grid-row">

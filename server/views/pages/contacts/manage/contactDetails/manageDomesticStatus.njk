@@ -28,7 +28,7 @@
             errorMessage: validationErrors | findError('domesticStatusCode'),
             id: "domesticStatusCode",
             name: "domesticStatusCode",
-            items: domesticStatusOptions
+            items: domesticStatusOptions | referenceCodesToRadios | setChecked(domesticStatusCode)
           }) }}
           <div class="govuk-button-group">
             {{ govukButton({

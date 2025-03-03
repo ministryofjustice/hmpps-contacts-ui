@@ -2,21 +2,21 @@ import ReferenceCodeType from '../../enumeration/referenceCodeType'
 
 type StubReferenceData = { code: string; description: string; groupCode: string }
 const STUBBED_TITLE_OPTIONS: StubReferenceData[] = [
+  { code: 'BR', description: 'Brother', groupCode: 'TITLE' },
   { code: 'DAME', description: 'Dame', groupCode: 'TITLE' },
+  { code: 'DR', description: 'Dr', groupCode: 'TITLE' },
   { code: 'FR', description: 'Father', groupCode: 'TITLE' },
+  { code: 'IMAM', description: 'Imam', groupCode: 'TITLE' },
+  { code: 'LADY', description: 'Lady', groupCode: 'TITLE' },
   { code: 'LORD', description: 'Lord', groupCode: 'TITLE' },
+  { code: 'MISS', description: 'Miss', groupCode: 'TITLE' },
+  { code: 'MR', description: 'Mr', groupCode: 'TITLE' },
+  { code: 'MRS', description: 'Mrs', groupCode: 'TITLE' },
   { code: 'MS', description: 'Ms', groupCode: 'TITLE' },
   { code: 'RABBI', description: 'Rabbi', groupCode: 'TITLE' },
   { code: 'REV', description: 'Reverend', groupCode: 'TITLE' },
   { code: 'SIR', description: 'Sir', groupCode: 'TITLE' },
   { code: 'SR', description: 'Sister', groupCode: 'TITLE' },
-  { code: 'MR', description: 'Mr', groupCode: 'TITLE' },
-  { code: 'BR', description: 'Brother', groupCode: 'TITLE' },
-  { code: 'DR', description: 'Dr', groupCode: 'TITLE' },
-  { code: 'LADY', description: 'Lady', groupCode: 'TITLE' },
-  { code: 'MISS', description: 'Miss', groupCode: 'TITLE' },
-  { code: 'MRS', description: 'Mrs', groupCode: 'TITLE' },
-  { code: 'IMAM', description: 'Imam', groupCode: 'TITLE' },
 ]
 
 const STUBBED_SOCIAL_RELATIONSHIP_OPTIONS: StubReferenceData[] = [

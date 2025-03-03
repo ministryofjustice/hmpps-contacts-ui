@@ -1,33 +1,20 @@
-{% extends "../../../partials/layout.njk" %}
-{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% extends "partials/layout.njk" %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% set pageTitle = applicationName + " - Create contact phone number" %}
-{% set title = "What is the phone number for this address?" %}
+{% set title = "What is the phone number for " + (contact | formatNameFirstNameFirst) + "?" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
 
-    {% include '../../../partials/navigation.njk' %}
+    {% include 'partials/navigation.njk' %}
     {{ miniProfile(prisonerDetails) }}
-    {% include '../../../partials/formErrorSummary.njk' %}
+    {% include 'partials/formErrorSummary.njk' %}
     <span class="govuk-caption-l">Contacts</span>
     <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
-    {% set formattedAddress= {
-        flat: address.flat,
-        premise: address.property,
-        street: address.street,
-        area: address.area,
-        city: address.cityDescription,
-        county: address.countyDescription,
-        postalCode: address.postcode,
-        country: address.countryDescription
-    } %}
-    <p data-qa="address-reference">
-        {{ formattedAddress | addressToLines | safe }}
-    </p>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
             <form method='POST'>
@@ -48,7 +35,7 @@
                     label: {
                         text: "Type"
                     },
-                    items: typeOptions,
+                    items: typeOptions | referenceCodesToSelect('Select phone number type') | setSelected(type),
                     errorMessage: validationErrors | findError('type')
                 }) }}
 

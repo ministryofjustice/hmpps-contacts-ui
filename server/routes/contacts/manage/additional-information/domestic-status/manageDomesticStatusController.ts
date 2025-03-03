@@ -5,7 +5,6 @@ import { ContactsService } from '../../../../../services'
 import { components } from '../../../../../@types/contactsApi'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
-import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import { Navigation } from '../../../common/navigation'
 import Urls from '../../../../urls'
@@ -31,9 +30,7 @@ export default class ManageDomesticStatusController implements PageHandler {
     const { user } = res.locals
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
 
-    const domesticStatusOptions = await this.referenceDataService
-      .getReferenceData(ReferenceCodeType.DOMESTIC_STS, user)
-      .then(val => this.getSelectedOptions(val, contact.domesticStatusCode))
+    const domesticStatusOptions = await this.referenceDataService.getReferenceData(ReferenceCodeType.DOMESTIC_STS, user)
 
     const navigation: Navigation = {
       backLink: Urls.editContactDetails(prisonerNumber, contactId, prisonerContactId),
@@ -45,6 +42,7 @@ export default class ManageDomesticStatusController implements PageHandler {
       continueButtonLabel: 'Confirm and save',
       contact,
       domesticStatusOptions,
+      domesticStatusCode: contact.domesticStatusCode,
       navigation,
     })
   }
@@ -72,23 +70,5 @@ export default class ManageDomesticStatusController implements PageHandler {
       )
     })
     res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
-  }
-
-  private getSelectedOptions(
-    options: ReferenceCode[],
-    selected?: string,
-  ): Array<{
-    text: string
-    value: string
-    checked?: boolean
-  }> {
-    return options.map((itm: ReferenceCode) => {
-      return {
-        text: itm.description,
-        value: itm.code,
-        checked: itm.code === selected,
-        attributes: { 'data-qa': `status-${itm.code}-option` },
-      }
-    })
   }
 }

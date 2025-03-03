@@ -8,12 +8,11 @@ import { Navigation } from '../../../common/navigation'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
-import { relationshipToPrisonerOptionsForRelationshipType } from '../../../../../utils/relationshipTypeUtils'
-import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 import ContactNames = journeys.ContactNames
 import PatchRelationshipRequest = contactsApiClientTypes.PatchRelationshipRequest
+import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 
 export default class ManageContactRelationshipToPrisonerController implements PageHandler {
   constructor(
@@ -41,30 +40,28 @@ export default class ManageContactRelationshipToPrisonerController implements Pa
       firstName: contact.firstName,
       middleNames: contact.middleNames,
     }
-    const formattedName = formatNameFirstNameFirst(names)
     const currentRelationship = res.locals?.formResponses?.['relationship'] ?? relationship.relationshipToPrisonerCode
 
-    const { groupCodeForRelationshipType, hintText, defaultSelectLabel } =
-      relationshipToPrisonerOptionsForRelationshipType(relationship.relationshipTypeCode, formattedName)
-
-    const relationshipOptions = await this.referenceDataService
-      .getReferenceData(groupCodeForRelationshipType, user)
-      .then(val => this.getSelectedOptions(val, currentRelationship, defaultSelectLabel))
+    const groupCodeForRelationshipType =
+      relationship.relationshipTypeCode === 'S'
+        ? ReferenceCodeType.SOCIAL_RELATIONSHIP
+        : ReferenceCodeType.OFFICIAL_RELATIONSHIP
+    const relationshipOptions = await this.referenceDataService.getReferenceData(groupCodeForRelationshipType, user)
 
     const navigation: Navigation = {
       backLink: Urls.editContactDetails(prisonerNumber, contactId, prisonerContactId),
       cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
     }
     const viewModel = {
-      hintText,
       navigation,
       relationshipOptions,
+      relationshipType: relationship.relationshipTypeCode,
       relationship: currentRelationship,
       names,
       caption: 'Edit contact relationship information',
       continueButtonLabel: 'Confirm and save',
     }
-    res.render('pages/contacts/common/selectRelationship', viewModel)
+    res.render('pages/contacts/manage/contactDetails/relationship/selectRelationship', viewModel)
   }
 
   POST = async (
@@ -97,24 +94,5 @@ export default class ManageContactRelationshipToPrisonerController implements Pa
       )
 
     res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
-  }
-
-  private getSelectedOptions(
-    options: ReferenceCode[],
-    selectedType: string | null | undefined,
-    defaultSelectLabel: string,
-  ): Array<{
-    value: string
-    text: string
-    selected?: boolean
-  }> {
-    const mappedOptions = options.map((referenceCode: ReferenceCode) => {
-      return {
-        text: referenceCode.description,
-        value: referenceCode.code,
-        selected: referenceCode.code === selectedType,
-      }
-    })
-    return [{ text: defaultSelectLabel, value: '' }, ...mappedOptions]
   }
 }

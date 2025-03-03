@@ -36,7 +36,7 @@ export default class ManageApprovedToVisitController implements PageHandler {
       isApprovedVisitor: relationship.isApprovedVisitor,
       navigation,
     }
-    res.render('pages/contacts/manage/contactDetails/manageApprovedToVisit', viewModel)
+    res.render('pages/contacts/manage/contactDetails/relationship/manageApprovedToVisit', viewModel)
   }
 
   POST = async (
