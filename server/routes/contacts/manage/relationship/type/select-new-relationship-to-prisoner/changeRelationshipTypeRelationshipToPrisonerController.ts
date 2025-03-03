@@ -8,9 +8,8 @@ import { Navigation } from '../../../../common/navigation'
 import { formatNameFirstNameFirst } from '../../../../../../utils/formatName'
 import Urls from '../../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../../middleware/setUpSuccessNotificationBanner'
-import { relationshipToPrisonerOptionsForRelationshipType } from '../../../../../../utils/relationshipTypeUtils'
-import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import PatchRelationshipRequest = contactsApiClientTypes.PatchRelationshipRequest
+import ReferenceCodeType from '../../../../../../enumeration/referenceCodeType'
 
 export default class ChangeRelationshipTypeRelationshipToPrisonerController implements PageHandler {
   constructor(
@@ -28,30 +27,26 @@ export default class ChangeRelationshipTypeRelationshipToPrisonerController impl
     const { prisonerNumber, contactId, prisonerContactId, journeyId } = req.params
     const journey = req.session.changeRelationshipTypeJourneys![journeyId]!
 
-    const formattedName = formatNameFirstNameFirst(journey.names)
     const currentRelationship = res.locals?.formResponses?.['relationship'] ?? journey.relationshipToPrisoner
 
-    const { groupCodeForRelationshipType, hintText, defaultSelectLabel } =
-      relationshipToPrisonerOptionsForRelationshipType(journey.relationshipType, formattedName)
-
-    const relationshipOptions = await this.referenceDataService
-      .getReferenceData(groupCodeForRelationshipType, user)
-      .then(val => this.getSelectedOptions(val, currentRelationship, defaultSelectLabel))
+    const groupCodeForRelationshipType =
+      journey.relationshipType === 'S' ? ReferenceCodeType.SOCIAL_RELATIONSHIP : ReferenceCodeType.OFFICIAL_RELATIONSHIP
+    const relationshipOptions = await this.referenceDataService.getReferenceData(groupCodeForRelationshipType, user)
 
     const navigation: Navigation = {
       backLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-type/${journey.id}`,
       cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
     }
     const viewModel = {
-      hintText,
       navigation,
       relationshipOptions,
+      relationshipType: journey.relationshipType,
       relationship: currentRelationship,
       names: journey.names,
       caption: 'Edit contact relationship information',
       continueButtonLabel: 'Confirm and save',
     }
-    res.render('pages/contacts/common/selectRelationship', viewModel)
+    res.render('pages/contacts/manage/contactDetails/relationship/selectRelationship', viewModel)
   }
 
   POST = async (
@@ -88,24 +83,5 @@ export default class ChangeRelationshipTypeRelationshipToPrisonerController impl
       })
 
     res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
-  }
-
-  private getSelectedOptions(
-    options: ReferenceCode[],
-    selectedType: string | null | undefined,
-    defaultSelectLabel: string,
-  ): Array<{
-    value: string
-    text: string
-    selected?: boolean
-  }> {
-    const mappedOptions = options.map((referenceCode: ReferenceCode) => {
-      return {
-        text: referenceCode.description,
-        value: referenceCode.code,
-        selected: referenceCode.code === selectedType,
-      }
-    })
-    return [{ text: defaultSelectLabel, value: '' }, ...mappedOptions]
   }
 }
