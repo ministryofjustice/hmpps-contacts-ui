@@ -25,7 +25,7 @@
                     label: {
                         text: "Title (optional)"
                     },
-                    items: titleOptions
+                    items: titleOptions | referenceCodesToSelect('Select title') | setSelected(titleCode)
                 }) }}
 
               <div class="govuk-form-group">

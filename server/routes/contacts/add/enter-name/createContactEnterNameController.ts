@@ -4,7 +4,6 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { FullNameSchemaType } from '../../common/name/nameSchemas'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../services/referenceDataService'
-import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
 import captionForAddContactJourney from '../addContactsUtils'
 
@@ -17,12 +16,13 @@ export default class EnterNameController implements PageHandler {
     const { journeyId } = req.params
     const { user } = res.locals
     const journey = req.session.addContactJourneys![journeyId]!
-    const titleOptions = await this.referenceDataService
-      .getReferenceData(ReferenceCodeType.TITLE, user)
-      .then(val => this.getSelectedTitleOptions(val, res.locals?.formResponses?.['title'] ?? journey?.names?.title))
+    const titleOptions = (await this.referenceDataService.getReferenceData(ReferenceCodeType.TITLE, user)).sort(
+      (a, b) => a.description.localeCompare(b.description),
+    )
     const viewModel = {
       caption: captionForAddContactJourney(journey),
       journey,
+      titleCode: res.locals?.formResponses?.['title'] ?? journey?.names?.title,
       titleOptions,
       lastName: res.locals?.formResponses?.['lastName'] ?? journey?.names?.lastName,
       firstName: res.locals?.formResponses?.['firstName'] ?? journey?.names?.firstName,
@@ -48,25 +48,5 @@ export default class EnterNameController implements PageHandler {
     const journey = req.session.addContactJourneys![journeyId]!
     journey.names = { title, lastName, firstName, middleNames }
     res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
-  }
-
-  private getSelectedTitleOptions(
-    options: ReferenceCode[],
-    selectedTitle?: string,
-  ): Array<{
-    value: string
-    text: string
-    selected?: boolean
-  }> {
-    const mappedOptions = options
-      .map((title: ReferenceCode) => {
-        return {
-          text: title.description,
-          value: title.code,
-          selected: title.code === selectedTitle,
-        }
-      })
-      .sort((a, b) => a.text.localeCompare(b.text))
-    return [{ text: '', value: '' }, ...mappedOptions]
   }
 }

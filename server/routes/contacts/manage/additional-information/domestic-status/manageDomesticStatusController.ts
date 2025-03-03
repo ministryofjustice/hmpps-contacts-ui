@@ -5,7 +5,6 @@ import { ContactsService } from '../../../../../services'
 import { components } from '../../../../../@types/contactsApi'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
-import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import { Navigation } from '../../../common/navigation'
 import Urls from '../../../../urls'

@@ -27,8 +27,8 @@
               },
               errorMessage: validationErrors | findError('gender'),
               id: "gender",
-                name: "gender",
-                items: genderOptions
+              name: "gender",
+              items: genderOptions | referenceCodesToRadios | setChecked(gender)
             }) }}
             <div class="govuk-button-group">
                 {{ govukButton({

@@ -1,5 +1,5 @@
-{% extends "../../../partials/layout.njk" %}
-{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% extends "partials/layout.njk" %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
@@ -9,9 +9,9 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-    {% include '../../../partials/navigation.njk' %}
+    {% include 'partials/navigation.njk' %}
     {{ miniProfile(prisonerDetails) }}
-    {% include '../../../partials/formErrorSummary.njk' %}
+    {% include 'partials/formErrorSummary.njk' %}
     <span class="govuk-caption-l">Contacts</span>
     <h1 class="govuk-heading-l" data-qa="main-heading"><label for="emailAddress">{{ title }}</label></h1>
     <div class="govuk-grid-row">
