@@ -5,7 +5,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% set pageTitle = applicationName + " - Create Identity number" %}
-{% set title = "What is the identity number for " + (contact | formatNameFirstNameFirst) + "?" %}
+{% set title = "Update an identity document for " + (contact | formatNameFirstNameFirst) %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
@@ -13,38 +13,38 @@
     {% include '../../../partials/navigation.njk' %}
     {{ miniProfile(prisonerDetails) }}
     {% include '../../../partials/formErrorSummary.njk' %}
-    <span class="govuk-caption-l">Contacts</span>
+    <span class="govuk-caption-l">Edit identity documentation for a contact</span>
     <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
+              {{ govukSelect({
+                id: "type",
+                name: "type",
+                label: {
+                  text: "Document type"
+                },
+                classes: 'govuk-!-width-one-quarter',
+                items: typeOptions,
+                errorMessage: validationErrors | findError('type')
+              }) }}
+
                 {{ govukInput({
                     id: "identity",
                     name: "identity",
-                    label: { text: "Identity number" },
+                    label: { text: "Document number" },
                     classes: 'govuk-!-width-one-third',
                     errorMessage: validationErrors | findError('identity'),
                     value: identity
                 }) }}
 
-                {{ govukSelect({
-                    id: "type",
-                    name: "type",
-                    label: {
-                        text: "Type"
-                    },
-                    items: typeOptions,
-                    errorMessage: validationErrors | findError('type')
-                }) }}
-
-
                 {{ govukInput({
                     id: "issuingAuthority",
                     name: "issuingAuthority",
-                    label: { text: "Issuing authority" },
-                    classes: 'govuk-!-width-one-third',
+                    label: { text: "Issuing authority (optional)" },
+                    classes: 'govuk-!-width-one-half',
                     errorMessage: validationErrors | findError('issuingAuthority'),
                     value: issuingAuthority
                 }) }}
@@ -57,7 +57,9 @@
                         attributes: {"data-qa": "continue-button"},
                         preventDoubleClick: true
                     }) }}
-                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ journey.returnPoint.url }}" data-qa="cancel-button">Cancel</a>
+                    {% if navigation.cancelButton %}
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
+                    {% endif %}
                 </div>
             </form>
 

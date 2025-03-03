@@ -30,6 +30,7 @@ type CreateEmailRequest = components['schemas']['CreateEmailRequest']
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 type CreateContactRequest = components['schemas']['CreateContactRequest']
 type AddContactRelationshipRequest = components['schemas']['AddContactRelationshipRequest']
+type ContactNameDetails = components['schemas']['ContactNameDetails']
 
 export default class ContactsService {
   constructor(private readonly contactsApiClient: ContactsApiClient) {}
@@ -107,6 +108,10 @@ export default class ContactsService {
 
   async getContact(contactId: number, user: Express.User): Promise<ContactDetails> {
     return this.contactsApiClient.getContact(contactId, user)
+  }
+
+  async getContactName(contactId: number, user: Express.User): Promise<ContactNameDetails> {
+    return this.contactsApiClient.getContactName(contactId, user)
   }
 
   async getPrisonerContactRelationship(

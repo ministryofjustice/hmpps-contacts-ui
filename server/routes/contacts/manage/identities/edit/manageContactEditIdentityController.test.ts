@@ -7,6 +7,7 @@ import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import TestData from '../../../../testutils/testData'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import { MockedService } from '../../../../../testutils/mockedServices'
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/referenceDataService')
@@ -21,6 +22,7 @@ const contactsService = MockedService.ContactsService()
 let app: Express
 const prisonerNumber = 'A1234BC'
 const contactId = 987654
+const prisonerContactId = 456789
 const contact: ContactDetails = {
   id: contactId,
   lastName: 'last',
@@ -53,28 +55,33 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:contactIdentityId/edit', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/identity/:contactIdentityId/edit', () => {
   it('should render edit identity number page with navigation back to manage contact and all field populated', async () => {
     // Given
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/1/edit?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/1/edit`,
     )
 
     // Then
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'What is the identity number for First Middle Last?',
+    expect($('.govuk-heading-l').first().text().trim()).toStrictEqual(
+      'Update an identity document for First Middle Last',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit identity documentation for a contact')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789',
+    )
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-details',
+    )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-    expect($('#identity').val()).toStrictEqual('LAST-87736799M')
     expect($('#type').val()).toStrictEqual('DL')
+    expect($('#identity').val()).toStrictEqual('LAST-87736799M')
     expect($('#issuingAuthority').val()).toStrictEqual('UK')
   })
 
@@ -86,19 +93,13 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:con
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/1/edit?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/1/edit`,
     )
 
     // Then
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'What is the identity number for First Middle Last?',
-    )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
-    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('#identity').val()).toStrictEqual('425362965')
     expect($('#type').val()).toStrictEqual('PASS')
     expect($('#issuingAuthority').val()).toStrictEqual('UK')
@@ -110,7 +111,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:con
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/1/edit?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/1/edit`,
     )
 
     // Then
@@ -127,7 +128,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:con
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/555/edit?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/555/edit`,
     )
 
     // Then
@@ -135,25 +136,39 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:con
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:contactIdentityId/edit', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/identity/:contactIdentityId/edit', () => {
   it('should edit identity number with issuing authority and pass to manage contact details page if there are no validation errors', async () => {
+    contactsService.updateContactIdentity.mockResolvedValue(Promise.resolve())
+    contactsService.getContactName.mockResolvedValue(TestData.contactName({ middleNames: 'Middle Names' }))
+
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/999/edit?returnUrl=/foo-bar`)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/999/edit`,
+      )
       .type('form')
       .send({ type: 'MOB', identity: '123456789', issuingAuthority: '000' })
       .expect(302)
-      .expect('Location', '/foo-bar')
+      .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
 
     expect(contactsService.updateContactIdentity).toHaveBeenCalledWith(contactId, 999, user, 'MOB', '123456789', '000')
+    expect(flashProvider).toHaveBeenCalledWith(
+      FLASH_KEY__SUCCESS_BANNER,
+      'You’ve updated the identity documentation for Jones Middle Names Mason.',
+    )
   })
 
   it('should edit identity number without issuing authority and pass to manage contact details page if there are no validation errors', async () => {
+    contactsService.updateContactIdentity.mockResolvedValue(Promise.resolve())
+    contactsService.getContactName.mockResolvedValue(TestData.contactName())
+
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/999/edit?returnUrl=/foo-bar`)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/999/edit`,
+      )
       .type('form')
       .send({ type: 'MOB', identity: '123456789', issuingAuthority: '' })
       .expect(302)
-      .expect('Location', '/foo-bar')
+      .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
 
     expect(contactsService.updateContactIdentity).toHaveBeenCalledWith(
       contactId,
@@ -163,17 +178,23 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/identity/:co
       '123456789',
       undefined,
     )
+    expect(flashProvider).toHaveBeenCalledWith(
+      FLASH_KEY__SUCCESS_BANNER,
+      'You’ve updated the identity documentation for Jones Mason.',
+    )
   })
 
   it('should return to input page with details kept if there are validation errors', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/999/edit?returnUrl=/foo-bar`)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/999/edit`,
+      )
       .type('form')
       .send({ type: '' })
       .expect(302)
       .expect(
         'Location',
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/identity/999/edit?returnUrl=/foo-bar`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/999/edit`,
       )
     expect(contactsService.updateContactIdentity).not.toHaveBeenCalled()
   })

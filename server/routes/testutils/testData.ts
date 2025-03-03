@@ -3,6 +3,7 @@ import { components } from '../../@types/contactsApi'
 
 type ContactSearchResultItem = components['schemas']['ContactSearchResultItem']
 type ContactDetails = components['schemas']['ContactDetails']
+type ContactNameDetails = components['schemas']['ContactNameDetails']
 type ContactAddressDetails = components['schemas']['ContactAddressDetails']
 type ContactPhoneDetails = components['schemas']['ContactPhoneDetails']
 type ContactPhoneNumberDetails = components['schemas']['ContactPhoneDetails']
@@ -339,6 +340,21 @@ export default class TestData {
       domesticStatusDescription,
       employments,
     }) as ContactDetails
+
+  static contactName = ({
+    titleCode = 'MR',
+    titleDescription = 'Mr',
+    lastName = 'Mason',
+    firstName = 'Jones',
+    middleNames = undefined,
+  }: Partial<ContactNameDetails> = {}): ContactNameDetails =>
+    ({
+      titleCode,
+      titleDescription,
+      lastName,
+      firstName,
+      middleNames,
+    }) as ContactNameDetails
 
   static prisonerContactRelationship = ({
     prisonerContactId = 99,

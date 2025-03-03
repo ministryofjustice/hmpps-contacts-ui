@@ -23,7 +23,7 @@ describe('identitySchemaFactory', () => {
       // Then
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
-      expect(deduplicatedFieldErrors).toStrictEqual({ type: ['Select the type of identity number'] })
+      expect(deduplicatedFieldErrors).toStrictEqual({ type: ['Select the document type'] })
     })
 
     it('should require identity number', async () => {
@@ -36,7 +36,7 @@ describe('identitySchemaFactory', () => {
       // Then
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
-      expect(deduplicatedFieldErrors).toStrictEqual({ identity: ['Enter the identity number'] })
+      expect(deduplicatedFieldErrors).toStrictEqual({ identity: ['Enter the document number'] })
     })
 
     it('identity number should be limited to 20 chars', async () => {
@@ -54,7 +54,7 @@ describe('identitySchemaFactory', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        identity: ['Identity number should be 20 characters or fewer'],
+        identity: ['Document number must be 20 characters or less'],
       })
     })
 
@@ -73,7 +73,7 @@ describe('identitySchemaFactory', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        issuingAuthority: ['Issuing authority should be 40 characters or fewer'],
+        issuingAuthority: ['Issuing authority must be 40 characters or less'],
       })
     })
 
@@ -87,7 +87,9 @@ describe('identitySchemaFactory', () => {
       // Then
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
-      expect(deduplicatedFieldErrors).toStrictEqual({ identity: ['Enter a PNC number in the correct format'] })
+      expect(deduplicatedFieldErrors).toStrictEqual({
+        identity: ['Enter a PNC number in the correct format – for example, ‘22/1234567A’'],
+      })
     })
 
     it('should accept PNC numbers in required format', async () => {
@@ -117,9 +119,9 @@ describe('identitySchemaFactory', () => {
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(JSON.stringify(deduplicatedFieldErrors)).toBe(
         JSON.stringify({
-          identity: ['Enter the identity number'],
-          type: ['Select the type of identity number'],
-          issuingAuthority: ['Issuing authority should be 40 characters or fewer'],
+          type: ['Select the document type'],
+          identity: ['Enter the document number'],
+          issuingAuthority: ['Issuing authority must be 40 characters or less'],
         }),
       )
     })

@@ -109,6 +109,33 @@ export default {
     })
   },
 
+  stubGetContactNameById: (contact: {
+    id: number
+    titleCode?: string | undefined
+    titleDescription?: string | undefined
+    lastName?: string | undefined
+    firstName?: string | undefined
+    middleNames?: string | undefined
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/contact/${contact.id}/name`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          titleCode: contact.titleCode,
+          titleDescription: contact.titleDescription,
+          lastName: contact.lastName,
+          firstName: contact.firstName,
+          middleNames: contact.middleNames,
+        },
+      },
+    })
+  },
+
   stubGetGlobalRestrictions: (globalRestrictions: ContactRestrictionDetails[]): SuperAgentRequest => {
     return stubFor({
       request: {

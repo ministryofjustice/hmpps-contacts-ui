@@ -5,10 +5,13 @@ import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import { IdentitySchemaType } from '../IdentitySchemas'
 import { ContactsService } from '../../../../../services'
-import ReferenceCode = contactsApiClientTypes.ReferenceCode
+import { Navigation } from '../../../common/navigation'
+import Urls from '../../../../urls'
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
+import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
+import { referenceCodesToOptions } from '../../../../../utils/utils'
 import ContactIdentityDetails = contactsApiClientTypes.ContactIdentityDetails
 import ContactDetails = contactsApiClientTypes.ContactDetails
-import { Navigation } from '../../../common/navigation'
 
 export default class ManageContactEditIdentityController implements PageHandler {
   constructor(
@@ -19,11 +22,11 @@ export default class ManageContactEditIdentityController implements PageHandler 
   public PAGE_NAME = Page.MANAGE_CONTACT_EDIT_IDENTITY_PAGE
 
   GET = async (
-    req: Request<{ prisonerNumber: string; contactId: string; contactIdentityId: string }>,
+    req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string; contactIdentityId: string }>,
     res: Response,
   ): Promise<void> => {
-    const { user, journey } = res.locals
-    const { contactId, contactIdentityId } = req.params
+    const { user } = res.locals
+    const { prisonerNumber, contactId, prisonerContactId, contactIdentityId } = req.params
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const identity: ContactIdentityDetails = contact.identities.find(
       (aIdentityNumber: ContactIdentityDetails) =>
@@ -37,8 +40,11 @@ export default class ManageContactEditIdentityController implements PageHandler 
     const currentType = res.locals?.formResponses?.['type'] ?? identity.identityType
     const typeOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.ID_TYPE, user)
-      .then(val => this.getSelectedOptions(val, currentType))
-    const navigation: Navigation = { backLink: journey.returnPoint.url }
+      .then(val => referenceCodesToOptions(val, currentType, 'Select document type'))
+    const navigation: Navigation = {
+      backLink: Urls.editContactDetails(prisonerNumber, contactId, prisonerContactId),
+      cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
+    }
     const viewModel = {
       typeOptions,
       identity: res.locals?.formResponses?.['identity'] ?? identity.identityValue,
@@ -47,43 +53,36 @@ export default class ManageContactEditIdentityController implements PageHandler 
       contact,
       navigation,
     }
-    res.render('pages/contacts/manage/addEditIdentity', viewModel)
+    res.render('pages/contacts/manage/editIdentity', viewModel)
   }
 
   POST = async (
-    req: Request<{ prisonerNumber: string; contactId: string; contactIdentityId: string }, unknown, IdentitySchemaType>,
+    req: Request<
+      { prisonerNumber: string; contactId: string; prisonerContactId: string; contactIdentityId: string },
+      unknown,
+      IdentitySchemaType
+    >,
     res: Response,
   ): Promise<void> => {
     const { user } = res.locals
-    const { journey } = res.locals
-    const { contactId, contactIdentityId } = req.params
+    const { prisonerNumber, contactId, prisonerContactId, contactIdentityId } = req.params
     const { identity, type, issuingAuthority } = req.body
-    await this.contactsService.updateContactIdentity(
-      parseInt(contactId, 10),
-      parseInt(contactIdentityId, 10),
-      user,
-      type,
-      identity,
-      issuingAuthority,
-    )
-    res.redirect(journey.returnPoint.url)
-  }
-
-  private getSelectedOptions(
-    options: ReferenceCode[],
-    selectedType?: string,
-  ): Array<{
-    value: string
-    text: string
-    selected?: boolean
-  }> {
-    const mappedOptions = options.map((referenceCode: ReferenceCode) => {
-      return {
-        text: referenceCode.description,
-        value: referenceCode.code,
-        selected: referenceCode.code === selectedType,
-      }
-    })
-    return [{ text: '', value: '' }, ...mappedOptions]
+    await this.contactsService
+      .updateContactIdentity(
+        parseInt(contactId, 10),
+        parseInt(contactIdentityId, 10),
+        user,
+        type,
+        identity,
+        issuingAuthority,
+      )
+      .then(_ => this.contactsService.getContactName(Number(contactId), user))
+      .then(response =>
+        req.flash(
+          FLASH_KEY__SUCCESS_BANNER,
+          `You’ve updated the identity documentation for ${formatNameFirstNameFirst(response)}.`,
+        ),
+      )
+    res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
   }
 }

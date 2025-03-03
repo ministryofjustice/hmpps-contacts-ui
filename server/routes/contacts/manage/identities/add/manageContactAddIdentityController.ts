@@ -5,9 +5,9 @@ import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import { IdentitySchemaType } from '../IdentitySchemas'
 import { ContactsService } from '../../../../../services'
-import ReferenceCode = contactsApiClientTypes.ReferenceCode
-import ContactDetails = contactsApiClientTypes.ContactDetails
 import { Navigation } from '../../../common/navigation'
+import { referenceCodesToOptions } from '../../../../../utils/utils'
+import ContactDetails = contactsApiClientTypes.ContactDetails
 
 export default class ManageContactAddIdentityController implements PageHandler {
   constructor(
@@ -23,8 +23,8 @@ export default class ManageContactAddIdentityController implements PageHandler {
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const typeOptions = await this.referenceDataService
       .getReferenceData(ReferenceCodeType.ID_TYPE, user)
-      .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.['type']))
-    const navigation: Navigation = { backLink: journey.returnPoint.url }
+      .then(val => referenceCodesToOptions(val, res.locals?.formResponses?.['type'], 'Select document type'))
+    const navigation: Navigation = { backLink: journey.returnPoint.url, cancelButton: journey.returnPoint.url }
     const viewModel = {
       typeOptions,
       identity: res.locals?.formResponses?.['identity'],
@@ -33,7 +33,7 @@ export default class ManageContactAddIdentityController implements PageHandler {
       contact,
       navigation,
     }
-    res.render('pages/contacts/manage/addEditIdentity', viewModel)
+    res.render('pages/contacts/manage/editIdentity', viewModel)
   }
 
   POST = async (
@@ -46,23 +46,5 @@ export default class ManageContactAddIdentityController implements PageHandler {
     const { identity, type, issuingAuthority } = req.body
     await this.contactsService.createContactIdentity(parseInt(contactId, 10), user, type, identity, issuingAuthority)
     res.redirect(journey.returnPoint.url)
-  }
-
-  private getSelectedOptions(
-    options: ReferenceCode[],
-    selectedType?: string,
-  ): Array<{
-    value: string
-    text: string
-    selected?: boolean
-  }> {
-    const mappedOptions = options.map((referenceCode: ReferenceCode) => {
-      return {
-        text: referenceCode.description,
-        value: referenceCode.code,
-        selected: referenceCode.code === selectedType,
-      }
-    })
-    return [{ text: '', value: '' }, ...mappedOptions]
   }
 }

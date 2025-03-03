@@ -42,6 +42,7 @@ type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 type AddContactRelationshipRequest = components['schemas']['AddContactRelationshipRequest']
 type CreateContactRequest = components['schemas']['CreateContactRequest']
+type ContactNameDetails = components['schemas']['ContactNameDetails']
 
 export default class ContactsApiClient extends RestClient {
   constructor() {
@@ -120,6 +121,10 @@ export default class ContactsApiClient extends RestClient {
 
   async getContact(contactId: number, user: Express.User): Promise<ContactDetails> {
     return this.get<ContactDetails>({ path: `/contact/${contactId}` }, user)
+  }
+
+  async getContactName(contactId: number, user: Express.User): Promise<ContactNameDetails> {
+    return this.get<ContactNameDetails>({ path: `/contact/${contactId}/name` }, user)
   }
 
   async getPrisonerContactRelationship(
