@@ -33,9 +33,7 @@ export default class ChangeTitleOrMiddleNamesController implements PageHandler {
 
     const titleOptions = [
       { code: '', description: '' },
-      ...(await this.referenceDataService.getReferenceData(ReferenceCodeType.TITLE, user)).sort((a, b) =>
-        a.description.localeCompare(b.description),
-      ),
+      ...(await this.referenceDataService.getReferenceData(ReferenceCodeType.TITLE, user)),
     ]
 
     const navigation: Navigation = {

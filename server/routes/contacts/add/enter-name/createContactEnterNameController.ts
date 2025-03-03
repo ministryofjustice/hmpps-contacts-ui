@@ -16,9 +16,7 @@ export default class EnterNameController implements PageHandler {
     const { journeyId } = req.params
     const { user } = res.locals
     const journey = req.session.addContactJourneys![journeyId]!
-    const titleOptions = (await this.referenceDataService.getReferenceData(ReferenceCodeType.TITLE, user)).sort(
-      (a, b) => a.description.localeCompare(b.description),
-    )
+    const titleOptions = await this.referenceDataService.getReferenceData(ReferenceCodeType.TITLE, user)
     const viewModel = {
       caption: captionForAddContactJourney(journey),
       journey,
