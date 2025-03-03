@@ -9,7 +9,6 @@ import { Navigation } from '../../../common/navigation'
 import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
-import { referenceCodesToOptions } from '../../../../../utils/utils'
 import ContactIdentityDetails = contactsApiClientTypes.ContactIdentityDetails
 import ContactDetails = contactsApiClientTypes.ContactDetails
 
@@ -37,10 +36,7 @@ export default class ManageContactEditIdentityController implements PageHandler 
         `Couldn't find Identity Number with id ${contactIdentityId} for contact ${contactId}. URL probably entered manually.`,
       )
     }
-    const currentType = res.locals?.formResponses?.['type'] ?? identity.identityType
-    const typeOptions = await this.referenceDataService
-      .getReferenceData(ReferenceCodeType.ID_TYPE, user)
-      .then(val => referenceCodesToOptions(val, currentType, 'Select document type'))
+    const typeOptions = await this.referenceDataService.getReferenceData(ReferenceCodeType.ID_TYPE, user)
     const navigation: Navigation = {
       backLink: Urls.editContactDetails(prisonerNumber, contactId, prisonerContactId),
       cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
@@ -48,7 +44,7 @@ export default class ManageContactEditIdentityController implements PageHandler 
     const viewModel = {
       typeOptions,
       identity: res.locals?.formResponses?.['identity'] ?? identity.identityValue,
-      type: currentType,
+      type: res.locals?.formResponses?.['type'] ?? identity.identityType,
       issuingAuthority: res.locals?.formResponses?.['issuingAuthority'] ?? identity.issuingAuthority,
       contact,
       navigation,

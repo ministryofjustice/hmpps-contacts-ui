@@ -12,6 +12,8 @@ import {
   convertToSortableColumns,
   sentenceCase,
   isDateAndInThePast,
+  referenceCodesToSelect,
+  referenceCodesToRadiosOrCheckboxes,
 } from './utils'
 import config from '../config'
 import logger from '../../logger'
@@ -91,4 +93,25 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('formatPhoneNumber', formatPhoneNumber)
   njkEnv.addFilter('sentenceCase', sentenceCase)
   njkEnv.addFilter('isDateAndInThePast', isDateAndInThePast)
+  njkEnv.addFilter('referenceCodesToSelect', referenceCodesToSelect)
+  njkEnv.addFilter('referenceCodesToRadios', referenceCodesToRadiosOrCheckboxes)
+  njkEnv.addFilter('referenceCodesToCheckboxes', referenceCodesToRadiosOrCheckboxes)
+  njkEnv.addFilter(
+    'setSelected',
+    (items: { value: string; text: string }[], selected) =>
+      items &&
+      items.map(entry => ({
+        ...entry,
+        selected: entry && String(entry.value) === String(selected),
+      })),
+  )
+  njkEnv.addFilter(
+    'setChecked',
+    (items: { value: string; text: string }[], checked: string[]) =>
+      items &&
+      items.map(entry => ({
+        ...entry,
+        checked: entry && checked.includes(String(entry.value)),
+      })),
+  )
 }

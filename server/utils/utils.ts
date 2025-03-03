@@ -146,21 +146,29 @@ export const isDateAndInThePast = (date?: string): boolean => {
   return false
 }
 
-export const referenceCodesToOptions = (
+export const referenceCodesToSelect = (
   options: ReferenceCode[],
-  selectedType?: string | undefined,
   defaultLabel?: string | undefined,
 ): Array<{
   value: string
   text: string
   selected?: boolean
-}> => {
-  const mappedOptions = options.map((referenceCode: ReferenceCode) => {
-    return {
-      text: referenceCode.description,
-      value: referenceCode.code,
-      selected: referenceCode.code === selectedType,
-    }
-  })
-  return [{ text: defaultLabel ?? '', value: '' }, ...mappedOptions]
-}
+}> => [
+  { text: defaultLabel ?? '', value: '' },
+  ...options.map((referenceCode: ReferenceCode) => ({
+    text: referenceCode.description,
+    value: referenceCode.code,
+  })),
+]
+
+export const referenceCodesToRadiosOrCheckboxes = (
+  options: ReferenceCode[],
+): Array<{
+  value: string
+  text: string
+  selected?: boolean
+}> =>
+  options.map((referenceCode: ReferenceCode) => ({
+    text: referenceCode.description,
+    value: referenceCode.code,
+  }))

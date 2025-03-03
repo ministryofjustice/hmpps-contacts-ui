@@ -27,7 +27,7 @@
                   text: "Document type"
                 },
                 classes: 'govuk-!-width-one-quarter',
-                items: typeOptions,
+                items: typeOptions | referenceCodesToSelect('Select document type') | setSelected(type),
                 errorMessage: validationErrors | findError('type')
               }) }}
 
