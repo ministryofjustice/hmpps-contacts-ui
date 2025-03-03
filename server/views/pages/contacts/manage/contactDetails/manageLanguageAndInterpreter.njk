@@ -23,22 +23,6 @@
         <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
         <form method='POST'>
              <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-             {% set languages = [{
-                value: '',
-                text: '',
-                selected: true
-             }] %}
-
-             {% for item in spokenLanguages %}
-                {% set languages = (languages.push(
-                    {
-                        value: item.code,
-                        text: item.description,
-                        selected: true if language == item.code else false
-                    }
-                ), languages) %}
-             {% endfor %}
-
              {{ govukSelect({
                 label: {
                   text: "What is " + contact | formatNameFirstNameFirst(possessiveSuffix = true) + " first language?",
@@ -49,7 +33,7 @@
                  },
                 id: "language",
                 name: "language",
-                items: languages,
+                items: spokenLanguages | referenceCodesToSelect('') | setSelected(language),
                 errorMessage: validationErrors | findError('language')
             }) }}
 

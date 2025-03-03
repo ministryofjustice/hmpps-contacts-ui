@@ -6,7 +6,6 @@ import ReferenceDataService from '../../../../../services/referenceDataService'
 import { IdentitySchemaType } from '../IdentitySchemas'
 import { ContactsService } from '../../../../../services'
 import { Navigation } from '../../../common/navigation'
-import { referenceCodesToOptions } from '../../../../../utils/utils'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 
 export default class ManageContactAddIdentityController implements PageHandler {
@@ -21,9 +20,7 @@ export default class ManageContactAddIdentityController implements PageHandler {
     const { user, journey } = res.locals
     const { contactId } = req.params
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
-    const typeOptions = await this.referenceDataService
-      .getReferenceData(ReferenceCodeType.ID_TYPE, user)
-      .then(val => referenceCodesToOptions(val, res.locals?.formResponses?.['type'], 'Select document type'))
+    const typeOptions = await this.referenceDataService.getReferenceData(ReferenceCodeType.ID_TYPE, user)
     const navigation: Navigation = { backLink: journey.returnPoint.url, cancelButton: journey.returnPoint.url }
     const viewModel = {
       typeOptions,
