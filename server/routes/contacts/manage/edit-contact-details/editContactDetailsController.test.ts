@@ -478,14 +478,14 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         additionalInfoCard,
         'Contact’s first language',
         'English',
-        '/prisoner/A1234BC/contacts/manage/22/language?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/language-and-interpreter#language',
         'Change the contact’s first language (Additional information)',
       )
       expectSummaryListItem(
         additionalInfoCard,
         'Interpreter required',
         'Yes',
-        '/prisoner/A1234BC/contacts/manage/22/interpreter?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/language-and-interpreter#interpreterRequired',
         'Change if an interpreter is required (Additional information)',
       )
       expectSummaryListItem(
@@ -519,14 +519,14 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         additionalInfoCard,
         'Contact’s first language',
         'Not provided',
-        '/prisoner/A1234BC/contacts/manage/22/language?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/language-and-interpreter#language',
         'Change the contact’s first language (Additional information)',
       )
       expectSummaryListItem(
         additionalInfoCard,
         'Interpreter required',
         'No',
-        '/prisoner/A1234BC/contacts/manage/22/interpreter?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/language-and-interpreter#interpreterRequired',
         'Change if an interpreter is required (Additional information)',
       )
       expectSummaryListItem(

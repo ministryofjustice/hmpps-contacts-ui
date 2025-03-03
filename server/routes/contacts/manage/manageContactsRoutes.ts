@@ -14,11 +14,10 @@ import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import populatePrisonerDetailsIfInCaseload from '../../../middleware/populatePrisonerDetailsIfInCaseload'
 import ContactDetailsController from './contact-details/contactDetailsController'
 import ReferenceDataService from '../../../services/referenceDataService'
-import ManageSpokenLanguageController from './spoken-language/manageSpokenLanguageController'
+import ManageLanguageAndInterpreterController from './additional-information/language-and-interpreter/manageLanguageAndInterpreterController'
 import ManageContactAddPhoneController from './phone/add/manageContactAddPhoneController'
 import ManageContactStaffController from './staff/manageContactStaffController'
 import { phoneNumberSchema } from './phone/phoneSchemas'
-import ManageInterpreterController from './interpreter/manageInterpreterController'
 import ManageContactEditPhoneController from './phone/edit/manageContactEditPhoneController'
 import ManageDomesticStatusController from './additional-information/domestic-status/manageDomesticStatusController'
 import ManageContactDeletePhoneController from './phone/delete/manageContactDeletePhoneController'
@@ -87,6 +86,7 @@ import { manageApprovedToVisitSchema } from './relationship/approved-to-visit/ma
 import ManageEmergencyContactOrNextOfKinController from './relationship/emergency-contact-or-next-of-kin/manageEmergencyContactOrNextOfKinController'
 import { manageEmergencyContactOrNextOfKinSchema } from './relationship/emergency-contact-or-next-of-kin/manageEmergencyContactOrNextOfKinSchema'
 import { manageDomesticStatusSchema } from './additional-information/domestic-status/manageDomesticStatusSchema'
+import { manageLanguageAndInterpreterSchema } from './additional-information/language-and-interpreter/manageLanguageAndInterpreterSchema'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -230,16 +230,11 @@ const ManageContactsRoutes = (
   )
 
   // Part 6: Manage the attribute of one contact (phones, addresses, IDs, emails, restrictions)
-  standAloneJourneyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/language',
-    controller: new ManageSpokenLanguageController(contactsService, referenceDataService),
-    noValidation: true,
-  })
-
-  standAloneJourneyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/interpreter',
-    controller: new ManageInterpreterController(contactsService),
-    noValidation: true,
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/language-and-interpreter',
+    controller: new ManageLanguageAndInterpreterController(contactsService, referenceDataService),
+    schema: manageLanguageAndInterpreterSchema,
+    prisonerDetailsRequiredOnPost: true,
   })
 
   standAloneRoute({
