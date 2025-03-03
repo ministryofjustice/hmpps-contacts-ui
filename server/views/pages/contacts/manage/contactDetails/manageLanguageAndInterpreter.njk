@@ -1,0 +1,94 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+
+{% block meta %}
+  <meta name="autocompleteElements" content="language"/>
+{% endblock %}
+
+{% set pageTitle = applicationName + " - Enter spoken language" %}
+{% set title = "Enter language and interpretation requirements" + (" (optional)" if isOptional else "") %}
+
+{% block content %}
+
+{% include 'partials/navigation.njk' %}
+{{ miniProfile(prisonerDetails) }}
+{% include 'partials/formErrorSummary.njk' %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-l">{{ caption }}</span>
+        <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+        <form method='POST'>
+             <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+             {% set languages = [{
+                value: '',
+                text: '',
+                selected: true
+             }] %}
+
+             {% for item in spokenLanguages %}
+                {% set languages = (languages.push(
+                    {
+                        value: item.code,
+                        text: item.description,
+                        selected: true if language == item.code else false
+                    }
+                ), languages) %}
+             {% endfor %}
+
+             {{ govukSelect({
+                label: {
+                  text: "What is " + contact | formatNameFirstNameFirst(possessiveSuffix = true) + " first language?",
+                  classes: "govuk-fieldset__legend--m"
+                 },
+                 hint: {
+                   text: "Select the language from the suggestions that appear when you start to enter a name. "
+                 },
+                id: "language",
+                name: "language",
+                items: languages,
+                errorMessage: validationErrors | findError('language')
+            }) }}
+
+            {{ govukRadios({
+              fieldset: {
+                legend: {
+                  text: 'Does ' + contact | formatNameFirstNameFirst + ' require an interpreter?',
+                  classes: "govuk-fieldset__legend--m"
+                }
+              },
+              name: "interpreterRequired",
+              errorMessage: validationErrors | findError('interpreterRequired'),
+              items: [
+                {
+                  value: "YES",
+                  text: 'YES' | formatYesNo,
+                  checked: interpreterRequired === true
+                },
+                {
+                  value: "NO",
+                  text: 'NO' | formatYesNo,
+                  checked: interpreterRequired === false
+                }
+              ]
+            })
+            }}
+            <div class="govuk-button-group">
+              {{ govukButton({
+                text: continueButtonLabel,
+                type: "submit",
+                classes: 'govuk-!-margin-top-6',
+                attributes: {"data-qa": "continue-button"},
+                preventDoubleClick: true
+              }) }}
+              {% if navigation.cancelButton %}
+                <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
+              {% endif %}
+            </div>
+        </form>
+     </div>
+</div>
+{% endblock %}

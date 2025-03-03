@@ -25,7 +25,7 @@
           actions: {
             items: [
               {
-                href: "/prisoner/"+ prisonerNumber + "/contacts/manage/" + contact.id + "/language?returnUrl=" + returnUrl,
+                href: "/prisoner/"+ prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + prisonerContactId + "/language-and-interpreter#language",
                 text: "Change",
                 visuallyHiddenText: "the contact’s first language",
                 attributes: {"data-qa": "change-language-link"},
@@ -44,7 +44,7 @@
           actions: {
             items: [
               {
-                href: "/prisoner/"+ prisonerNumber + "/contacts/manage/" + contact.id + "/interpreter?returnUrl=" + returnUrl,
+                href: "/prisoner/"+ prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + prisonerContactId + "/language-and-interpreter#interpreterRequired",
                 text: "Change",
                 visuallyHiddenText: "if an interpreter is required",
                 attributes: {"data-qa": "change-interpreter-link"},
