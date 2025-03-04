@@ -14,7 +14,6 @@ import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
 import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
 import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
 import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
-import CreateIdentityRequest = contactsApiClientTypes.CreateIdentityRequest
 import UpdateIdentityRequest = contactsApiClientTypes.UpdateIdentityRequest
 import ContactIdentityDetails = contactsApiClientTypes.ContactIdentityDetails
 import PatchRelationshipRequest = contactsApiClientTypes.PatchRelationshipRequest
@@ -43,6 +42,7 @@ type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 type AddContactRelationshipRequest = components['schemas']['AddContactRelationshipRequest']
 type CreateContactRequest = components['schemas']['CreateContactRequest']
 type ContactNameDetails = components['schemas']['ContactNameDetails']
+type CreateMultipleIdentitiesRequest = components['schemas']['CreateMultipleIdentitiesRequest']
 
 export default class ContactsApiClient extends RestClient {
   constructor() {
@@ -172,14 +172,14 @@ export default class ContactsApiClient extends RestClient {
     )
   }
 
-  async createContactIdentity(
+  async createContactIdentities(
     contactId: number,
-    request: CreateIdentityRequest,
+    request: CreateMultipleIdentitiesRequest,
     user: Express.User,
   ): Promise<ContactIdentityDetails> {
-    return this.post<ContactIdentityDetails>(
+    return this.post<ContactIdentityDetails[]>(
       {
-        path: `/contact/${contactId}/identity`,
+        path: `/contact/${contactId}/identities`,
         data: request,
       },
       user,

@@ -10,7 +10,7 @@
     "build": "node esbuild/esbuild.config.js --build",
     "start": "node $NODE_OPTIONS dist/server.js | bunyan -o short",
     "watch-node": "DEBUG=gov-starter-server* nodemon -r dotenv/config --inspect --watch dist/ dist/server.js | bunyan -o short",
-    "start:dev": "concurrently -k -p \"[{name}]\" -n \"ESBuild,Node\" -c \"yellow.bold,cyan.bold\" \"node esbuild/esbuild.config.js --build --watch\" \"node esbuild/esbuild.config.js --dev-server\"",
+    "start:dev": "concurrently -k -p \"[{name}]\" -n \"ESBuild,Node\" -c \"yellow.bold,cyan.bold\" \"node esbuild/esbuild.config.js --build --watch\" \"npm run watch-node\"",
     "start-feature": "npx nyc instrument dist --nycrc-path ./.nycrc && export $(cat feature.env) && node $NODE_DEBUG_OPTION dist/server.js | bunyan -o short",
     "start-feature:dev": "concurrently -k -p \"[{name}]\" -n \"ESBuild,Node\" -c \"yellow.bold,cyan.bold\" \"node esbuild/esbuild.config.js  --build --watch \" \"node esbuild/esbuild.config.js --dev-test-server\"",
     "lint": "eslint . --cache --max-warnings 0",

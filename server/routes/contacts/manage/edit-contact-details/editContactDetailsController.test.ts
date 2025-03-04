@@ -426,7 +426,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
       const addIdentityDocLink = $('a:contains("Add identity document")')
       expect(addIdentityDocLink).toHaveLength(1)
       expect(addIdentityDocLink.attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/manage/22/identity/create?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/identity/create',
       )
     })
 
@@ -449,7 +449,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
       const addIdentityDocLink = $('a:contains("Add identity document")')
       expect(addIdentityDocLink).toHaveLength(1)
       expect(addIdentityDocLink.attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/manage/22/identity/create?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99/edit-contact-details',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/identity/create',
       )
     })
   })

@@ -14,7 +14,6 @@ import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
 import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
 import ContactIdentityDetails = contactsApiClientTypes.ContactIdentityDetails
 import UpdateIdentityRequest = contactsApiClientTypes.UpdateIdentityRequest
-import CreateIdentityRequest = contactsApiClientTypes.CreateIdentityRequest
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
 import CreateContactRestrictionRequest = contactsApiClientTypes.CreateContactRestrictionRequest
@@ -36,6 +35,7 @@ type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 type AddContactRelationshipRequest = components['schemas']['AddContactRelationshipRequest']
 type CreateContactRequest = components['schemas']['CreateContactRequest']
+type CreateMultipleIdentitiesRequest = components['schemas']['CreateMultipleIdentitiesRequest']
 
 jest.mock('./tokenStore/inMemoryTokenStore')
 
@@ -572,7 +572,7 @@ describe('contactsApiClient', () => {
   })
 
   describe('Identity', () => {
-    describe('createContactIdentity', () => {
+    describe('createContactIdentities', () => {
       it('should create the contact identity and return the response', async () => {
         // Given
         const expectedContactIdentityDetails: ContactIdentityDetails = {
@@ -583,31 +583,39 @@ describe('contactsApiClient', () => {
           createdBy: 'user1',
           createdTime: new Date().toISOString(),
         }
-        const request: CreateIdentityRequest = {
-          type: 'PASS',
-          identityNumber: '0123456789',
-          issuingAuthority: 'UK',
+        const request: CreateMultipleIdentitiesRequest = {
+          identities: [
+            {
+              identityType: 'PASS',
+              identityValue: '0123456789',
+              issuingAuthority: 'UK',
+            },
+          ],
           createdBy: 'user1',
         }
 
         fakeContactsApi
-          .post('/contact/99/identity', request)
+          .post('/contact/99/identities', request)
           .matchHeader('authorization', `Bearer systemToken`)
-          .reply(201, expectedContactIdentityDetails)
+          .reply(201, [expectedContactIdentityDetails])
 
         // When
-        const createdContact = await contactsApiClient.createContactIdentity(99, request, user)
+        const createdContact = await contactsApiClient.createContactIdentities(99, request, user)
 
         // Then
-        expect(createdContact).toEqual(expectedContactIdentityDetails)
+        expect(createdContact).toEqual([expectedContactIdentityDetails])
       })
 
       it.each([400, 401, 403, 500])('should propagate errors creating contact identity', async (errorCode: number) => {
         // Given
-        const request: CreateIdentityRequest = {
-          type: 'PASS',
-          identityNumber: '0123456789',
-          issuingAuthority: 'UK',
+        const request: CreateMultipleIdentitiesRequest = {
+          identities: [
+            {
+              identityType: 'PASS',
+              identityValue: '0123456789',
+              issuingAuthority: 'UK',
+            },
+          ],
           createdBy: 'user1',
         }
         const expectedErrorBody = {
@@ -617,13 +625,13 @@ describe('contactsApiClient', () => {
         }
 
         fakeContactsApi
-          .post('/contact/99/identity', request)
+          .post('/contact/99/identities', request)
           .matchHeader('authorization', `Bearer systemToken`)
           .reply(errorCode, expectedErrorBody)
 
         // When
         try {
-          await contactsApiClient.createContactIdentity(99, request, user)
+          await contactsApiClient.createContactIdentities(99, request, user)
         } catch (error) {
           const e = error as { status: unknown; data: unknown }
           // Then
@@ -732,7 +740,7 @@ describe('contactsApiClient', () => {
   })
 
   describe('Email Address', () => {
-    describe('createContactIdentity', () => {
+    describe('createContactEmail', () => {
       it('should create the contact email and return the response', async () => {
         // Given
         const expectedContactEmailDetails: ContactEmailDetails = {

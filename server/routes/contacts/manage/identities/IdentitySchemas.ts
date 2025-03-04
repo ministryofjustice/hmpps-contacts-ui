@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { Request } from 'express'
 import { createSchema } from '../../../../middleware/validationMiddleware'
 import isValidPNC from '../../../../utils/pncValidation'
 
@@ -30,4 +31,21 @@ export const identitySchema = createSchema({
   }
 })
 
+const blankIdentitySchema = createSchema({
+  type: z.string().optional(),
+  identity: z.string().optional(),
+  issuingAuthority: z.string().optional(),
+})
+
+export const identitiesSchema = () => async (request: Request<unknown, unknown, { save?: string }>) => {
+  const childSchema = typeof request.body.save !== 'undefined' ? identitySchema : blankIdentitySchema
+  return createSchema({
+    identities: z.array(childSchema),
+    save: z.string().optional(),
+    add: z.string().optional(),
+    remove: z.string().optional(),
+  })
+}
+
 export type IdentitySchemaType = z.infer<typeof identitySchema>
+export type IdentitiesSchemaType = z.infer<Awaited<ReturnType<ReturnType<typeof identitiesSchema>>>>

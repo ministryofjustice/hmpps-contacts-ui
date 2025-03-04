@@ -10,7 +10,6 @@ import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
 import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
 import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
 import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
-import CreateIdentityRequest = contactsApiClientTypes.CreateIdentityRequest
 import UpdateIdentityRequest = contactsApiClientTypes.UpdateIdentityRequest
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
@@ -31,6 +30,8 @@ type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 type CreateContactRequest = components['schemas']['CreateContactRequest']
 type AddContactRelationshipRequest = components['schemas']['AddContactRelationshipRequest']
 type ContactNameDetails = components['schemas']['ContactNameDetails']
+type CreateMultipleIdentitiesRequest = components['schemas']['CreateMultipleIdentitiesRequest']
+type IdentityDocument = components['schemas']['IdentityDocument']
 
 export default class ContactsService {
   constructor(private readonly contactsApiClient: ContactsApiClient) {}
@@ -158,20 +159,12 @@ export default class ContactsService {
     return this.contactsApiClient.deleteContactPhone(contactId, contactPhoneId, user)
   }
 
-  async createContactIdentity(
-    contactId: number,
-    user: Express.User,
-    identityType: string,
-    identityValue: string,
-    issuingAuthority?: string,
-  ) {
-    const request: CreateIdentityRequest = {
-      identityType,
-      identityValue,
-      issuingAuthority,
+  async createContactIdentities(contactId: number, user: Express.User, identities: IdentityDocument[]) {
+    const request: CreateMultipleIdentitiesRequest = {
+      identities,
       createdBy: user.username,
     }
-    return this.contactsApiClient.createContactIdentity(contactId, request, user)
+    return this.contactsApiClient.createContactIdentities(contactId, request, user)
   }
 
   async updateContactIdentity(

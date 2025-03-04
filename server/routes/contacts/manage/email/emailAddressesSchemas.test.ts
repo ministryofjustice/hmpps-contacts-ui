@@ -8,7 +8,7 @@ describe('emailSchemaFactory', () => {
   const baseForm: Form = {
     emailAddress: '',
   }
-  describe('should validate a identity number form', () => {
+  describe('should validate a email address form', () => {
     const EMAIL_REQUIRED_ERROR_MESSAGE = `Enter the contact’s email address`
     const EMAIL_NUMBER_OF_CHARACTERS_LIMIT_ERROR_MESSAGE = `The contact’s email address should be 240 characters or fewer`
     const EMAIL_FORMAT_ERROR_MESSAGE = `Enter an email address in the correct format, like name@example.com`
