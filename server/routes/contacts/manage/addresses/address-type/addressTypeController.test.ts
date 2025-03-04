@@ -74,13 +74,15 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact methods')
     expect($('.main-heading').first().text().trim()).toStrictEqual(
-      'What type of address do you want to add for First Middle Last?',
+      'What type of address are you adding for First Middle Last?',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/123456/relationship/456789/edit-contact-methods',
     )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
     expect($('input[type=radio]:checked').val()).toBeUndefined()
   })
 

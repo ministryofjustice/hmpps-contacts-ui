@@ -1,7 +1,7 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
-import SelectAddressTypePage from '../pages/selectAddressTypePage'
+import SelectAddressTypePage from '../pages/contact-methods/address/selectAddressTypePage'
 import EnterAddressPage from '../pages/enterAddressPage'
 import EnterAddressMetadataPage from '../pages/enterAddressMetadataPage'
 import AddressCheckYourAnswersPage from '../pages/addressCheckYourAnswersPage'
@@ -458,16 +458,6 @@ context('Add Address', () => {
     Page.verifyOnPage(SelectAddressTypePage, 'First Middle Names Last') //
       .backTo(EditContactMethodsPage, 'First Middle Names Last')
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .verifyOnContactsMethodsTab()
-  })
-
-  it(`Cancel link goes to manage contacts`, () => {
-    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
-      .clickAddAddressLink()
-
-    Page.verifyOnPage(SelectAddressTypePage, 'First Middle Names Last') //
-      .cancelTo(EditContactMethodsPage, 'First Middle Names Last')
-      .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
       .verifyOnContactsMethodsTab()
   })
 })

@@ -1,8 +1,8 @@
-import Page, { PageElement } from './page'
+import Page, { PageElement } from '../../page'
 
 export default class SelectAddressTypePage extends Page {
   constructor(name: string) {
-    super(`What type of address do you want to add for ${name}?`)
+    super(`What type of address are you adding for ${name}?`)
   }
 
   isEmptyForm(): SelectAddressTypePage {
