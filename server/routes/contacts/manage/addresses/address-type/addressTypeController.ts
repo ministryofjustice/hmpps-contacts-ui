@@ -5,7 +5,6 @@ import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import { Navigation } from '../../../common/navigation'
 import { AddressTypeSchema } from './addressTypeSchemas'
-import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import Urls from '../../../../urls'
 
@@ -22,17 +21,22 @@ export default class AddressTypeController implements PageHandler {
     const { user } = res.locals
     const journey = req.session.addressJourneys![journeyId]!
 
-    const typeOptions = await this.referenceDataService
-      .getReferenceData(ReferenceCodeType.ADDRESS_TYPE, user)
-      .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.['type'] ?? journey.addressType))
+    const typeOptions = await this.referenceDataService.getReferenceData(ReferenceCodeType.ADDRESS_TYPE, user)
 
-    const navigation: Navigation = { backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId) }
+    const navigation: Navigation = {
+      backLink: journey.isCheckingAnswers
+        ? `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/check-answers/${journeyId}`
+        : Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
+    }
     const viewModel = {
-      journey,
+      caption: 'Edit contact methods',
+      continueButtonLabel: 'Continue',
+      contact: journey.contactNames,
+      addressType: res.locals?.formResponses?.['type'] ?? journey.addressType,
       typeOptions,
       navigation,
     }
-    res.render('pages/contacts/manage/address/addressType', viewModel)
+    res.render('pages/contacts/manage/contactMethods/address/addressType', viewModel)
   }
 
   POST = async (
@@ -57,22 +61,5 @@ export default class AddressTypeController implements PageHandler {
         ? `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/check-answers/${journeyId}`
         : `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/enter-address/${journeyId}`,
     )
-  }
-
-  private getSelectedOptions(
-    options: ReferenceCode[],
-    selected?: string,
-  ): Array<{
-    value: string
-    text: string
-    selected?: boolean
-  }> {
-    return options.map((referenceCode: ReferenceCode) => {
-      return {
-        text: referenceCode.description,
-        value: referenceCode.code,
-        checked: referenceCode.code === selected,
-      }
-    })
   }
 }

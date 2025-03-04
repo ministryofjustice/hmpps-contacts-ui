@@ -1,0 +1,52 @@
+{% extends "partials/layout.njk" %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = applicationName  + " - " + title %}
+{% set title = "What type of address are you adding for " + (contact | formatNameFirstNameFirst) + "?" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+  {% include 'partials/navigation.njk' %}
+  {{ miniProfile(prisonerDetails) }}
+  {% include 'partials/formErrorSummary.njk' %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+    <span class="govuk-caption-l">{{ caption }}</span>
+      <form method='POST'>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        {{ govukRadios({
+          fieldset: {
+            legend: {
+              text: title,
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6 main-heading"
+            }
+          },
+          errorMessage: validationErrors | findError('addressType'),
+          name: "addressType",
+          items: (typeOptions | referenceCodesToRadios).concat([
+            { divider: 'or' },
+            {
+              value: "DO_NOT_KNOW",
+              text: "Address type not known"
+            }
+          ]) | setChecked(addressType)
+        }) }}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: continueButtonLabel,
+            type: "submit",
+            classes: 'govuk-!-margin-top-6',
+            attributes: {"data-qa": "continue-button"},
+            preventDoubleClick: true
+          }) }}
+          {% if navigation.cancelButton %}
+            <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}
