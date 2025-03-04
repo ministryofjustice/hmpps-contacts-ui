@@ -503,17 +503,17 @@ export default {
       },
     })
   },
-  stubCreateContactIdentity: ({
+  stubCreateContactIdentities: ({
     contactId,
     created,
   }: {
     contactId: number
-    created: StubIdentityDetails
+    created: StubIdentityDetails[]
   }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'POST',
-        urlPath: `/contact/${contactId}/identity`,
+        urlPath: `/contact/${contactId}/identities`,
       },
       response: {
         status: 201,

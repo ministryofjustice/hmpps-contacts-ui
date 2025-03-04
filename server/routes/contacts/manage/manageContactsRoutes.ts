@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { SchemaFactory, validate } from '../../../middleware/validationMiddleware'
 import AuditService from '../../../services/auditService'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
-import { ensureInManageContactsJourney, prepareStandaloneManageContactJourney } from './manageContactsMiddleware'
+import { ensureInManageContactsJourney } from './manageContactsMiddleware'
 import StartManageContactsJourneyController from './start/startManageContactsJourneyController'
 import PrisonerSearchController from './prisoner-search/prisonerSearchController'
 import PrisonerSearchResultsController from './prisoner-search/prisonerSearchResultsController'
@@ -21,7 +21,7 @@ import { phoneNumberSchema } from './phone/phoneSchemas'
 import ManageContactEditPhoneController from './phone/edit/manageContactEditPhoneController'
 import ManageDomesticStatusController from './additional-information/domestic-status/manageDomesticStatusController'
 import ManageContactDeletePhoneController from './phone/delete/manageContactDeletePhoneController'
-import { identitySchema } from './identities/IdentitySchemas'
+import { identitiesSchema, identitySchema } from './identities/IdentitySchemas'
 import ManageContactAddIdentityController from './identities/add/manageContactAddIdentityController'
 import ManageContactEditIdentityController from './identities/edit/manageContactEditIdentityController'
 import ManageContactDeleteIdentityController from './identities/delete/manageContactDeleteIdentityController'
@@ -109,28 +109,6 @@ const ManageContactsRoutes = (
     controller: PageHandler,
     ...handlers: (RequestHandler<P> | RequestHandler<journeys.PrisonerJourneyParams>)[]
   ) => router.post(path, ...(handlers as RequestHandler[]), asyncMiddleware(controller.POST!))
-
-  const standAloneJourneyRoute = <P extends { [key: string]: string }>({
-    path,
-    controller,
-    schema,
-    noValidation,
-  }: {
-    path: string
-    controller: PageHandler
-    schema?: z.ZodTypeAny | SchemaFactory<P>
-    noValidation?: boolean
-  }) => {
-    if (!schema && !noValidation) {
-      throw Error('Missing validation schema for POST route')
-    }
-    get(path, controller, prepareStandaloneManageContactJourney)
-    if (schema) {
-      post(path, controller, prepareStandaloneManageContactJourney, validate(schema))
-    } else {
-      post(path, controller, prepareStandaloneManageContactJourney)
-    }
-  }
 
   const standAloneRoute = <P extends { [key: string]: string }>({
     path,
@@ -268,10 +246,10 @@ const ManageContactsRoutes = (
     noValidation: true,
   })
 
-  standAloneJourneyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/identity/create',
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/identity/create',
     controller: new ManageContactAddIdentityController(contactsService, referenceDataService),
-    schema: identitySchema,
+    schema: identitiesSchema(),
   })
 
   standAloneRoute({

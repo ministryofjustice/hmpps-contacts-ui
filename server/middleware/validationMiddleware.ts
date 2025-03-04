@@ -65,13 +65,30 @@ const zodAlwaysRefine = <T extends z.ZodTypeAny>(zodType: T) =>
     return res.data || val
   }) as unknown as T
 
-export const deduplicateFieldErrors = <Result>(error: ZodError) =>
-  Object.fromEntries(
-    Object.entries(error.flatten().fieldErrors).map(([key, value]) => [
-      key,
-      [...new Set((value as Array<Result>) || [])],
-    ]),
-  )
+const pathArrayToString = (previous: string | number, next: string | number): string | number => {
+  if (!previous) {
+    return next.toString()
+  }
+  if (typeof next === 'number') {
+    return `${previous}[${next.toString()}]`
+  }
+  return `${previous}.${next.toString()}`
+}
+
+export const deduplicateFieldErrors = (error: ZodError) => {
+  const flattened: Record<string, Set<string>> = {}
+  error.issues.forEach(issue => {
+    // only field issues have a path
+    if (issue.path.length > 0) {
+      const path = issue.path.reduce(pathArrayToString)
+      if (!flattened[path]) {
+        flattened[path] = new Set([])
+      }
+      flattened[path]!.add(issue.message)
+    }
+  })
+  return Object.fromEntries(Object.entries(flattened).map(([key, value]) => [key, [...value]]))
+}
 
 // Handy way to override default messaging with access to the value, e.g., for regex errors
 export const makeErrorMap = (messages: {

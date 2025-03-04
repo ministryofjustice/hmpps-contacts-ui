@@ -1,0 +1,116 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
+{% set pageTitle = applicationName + " - Create Identity number" %}
+{% set title = "Add identity documents for " + (contact | formatNameFirstNameFirst) %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+
+    {% include '../../../partials/navigation.njk' %}
+    {{ miniProfile(prisonerDetails) }}
+    {% include '../../../partials/formErrorSummary.njk' %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+          <span class="govuk-caption-l">Edit identity documentation for a contact</span>
+          <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+
+          <div data-module="moj-add-another">
+            <form method="POST">
+              <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+              {% for identity in identities %}
+                {% call govukFieldset({
+                  classes: "moj-add-another__item",
+                  legend: {
+                    text: "Identity document",
+                    classes: "moj-add-another__title govuk-fieldset__legend--m",
+                    isPageHeading: false
+                  }
+                }) %}
+
+                  {{ govukSelect({
+                    id: "identities[" + loop.index0 + "].type",
+                    name: "identities[" + loop.index0 + "][type]",
+                    label: {
+                      text: "Document type"
+                    },
+                    classes: 'govuk-!-width-one-quarter',
+                    items: typeOptions | referenceCodesToSelect('Select document type') | setSelected(identity.type),
+                    errorMessage: validationErrors | findError('identities[' + loop.index0 + '].type'),
+                    attributes: {
+                      "data-id": "identities[%index%].type",
+                      "data-name": "identities[%index%][type]",
+                      "data-qa": "identities-" + loop.index0 + "-type"
+                    }
+                  }) }}
+
+                  {{ govukInput({
+                    id: "identities[" + loop.index0 + "].identity",
+                    name: "identities[" + loop.index0 + "][identity]",
+                    label: { text: "Document number" },
+                    classes: 'govuk-!-width-one-third',
+                    errorMessage: validationErrors | findError('identities[' + loop.index0 + '].identity'),
+                    value: identity.identity,
+                    attributes: {
+                      "data-id": "identities[%index%].identity",
+                      "data-name": "identities[%index%][identity]",
+                      "data-qa": "identities-" + loop.index0 + "-identity"
+                    }
+                  }) }}
+
+                  {{ govukInput({
+                    id: "identities[" + loop.index0 + "].issuingAuthority",
+                    name: "identities[" + loop.index0 + "][issuingAuthority]",
+                    label: { text: "Issuing authority (optional)" },
+                    classes: 'govuk-!-width-one-half',
+                    errorMessage: validationErrors | findError('identities[' + loop.index0 + '].issuingAuthority'),
+                    value: identity.issuingAuthority,
+                    attributes: {
+                      "data-id": "identities[%index%].issuingAuthority",
+                      "data-name": "identities[%index%][issuingAuthority]",
+                      "data-qa": "identities-" + loop.index0 + "-issuing-authority"
+                    }
+                  }) }}
+
+                  {% if identities.length > 1 %}
+                    {{ govukButton({
+                      name: "remove",
+                      value: loop.index0,
+                      text: "Remove",
+                      classes: "govuk-button--secondary moj-add-another__remove-button"
+                    }) }}
+                  {% endif %}
+                {% endcall %}
+              {% endfor %}
+
+                <div class="moj-button-action">
+                  {{ govukButton({
+                    name: "add",
+                    text: "Add another identity document",
+                    classes: "govuk-button--secondary moj-add-another__add-button govuk-!-margin-bottom-4"
+                  }) }}
+                </div>
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                      text: "Confirm and save",
+                      name: "save",
+                      type: "submit",
+                      classes: 'govuk-!-margin-top-6',
+                      attributes: {"data-qa": "continue-button"},
+                      preventDoubleClick: true
+                    }) }}
+                    {% if navigation.cancelButton %}
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
+                    {% endif %}
+                </div>
+            </form>
+          </div>
+          </div>
+        </div>
+
+{% endblock %}
