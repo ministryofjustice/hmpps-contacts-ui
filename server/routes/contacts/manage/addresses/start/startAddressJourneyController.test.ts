@@ -60,14 +60,14 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/add/start', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/start', () => {
   it('should create the journey and redirect to select type page', async () => {
     // Given
     contactsService.getContact.mockResolvedValue(contact)
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/add/start`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/start`,
     )
 
     // Then
@@ -81,7 +81,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     )
     expect(Object.entries(session.addressJourneys!)).toHaveLength(1)
     const journey = Object.values(session.addressJourneys!)[0]!
-    expect(journey.mode).toStrictEqual('ADD')
     expect(journey.addressType).toBeUndefined()
     expect(journey.addressLines).toBeUndefined()
     expect(journey.addressMetadata).toBeUndefined()
@@ -103,7 +102,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
         prisonerNumber,
         contactId,
         isCheckingAnswers: false,
-        mode: 'ADD',
         contactNames: {
           lastName: 'foo',
           firstName: 'bar',
@@ -113,7 +111,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/add/start`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/start`,
     )
     const { location } = response.headers
 
@@ -135,7 +133,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
         prisonerNumber,
         contactId,
         isCheckingAnswers: false,
-        mode: 'ADD',
         contactNames: {
           lastName: 'foo',
           firstName: 'bar',
@@ -147,7 +144,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
         prisonerNumber,
         contactId,
         isCheckingAnswers: false,
-        mode: 'ADD',
         contactNames: {
           lastName: 'foo',
           firstName: 'bar',
@@ -159,7 +155,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
         prisonerNumber,
         contactId,
         isCheckingAnswers: false,
-        mode: 'ADD',
         contactNames: {
           lastName: 'foo',
           firstName: 'bar',
@@ -171,7 +166,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
         prisonerNumber,
         contactId,
         isCheckingAnswers: false,
-        mode: 'ADD',
         contactNames: {
           lastName: 'foo',
           firstName: 'bar',
@@ -183,7 +177,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
         prisonerNumber,
         contactId,
         isCheckingAnswers: false,
-        mode: 'ADD',
         contactNames: {
           lastName: 'foo',
           firstName: 'bar',
@@ -193,7 +186,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/add/start`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/start`,
     )
     const { location } = response.headers
 
@@ -203,171 +196,5 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(Object.keys(session.addressJourneys!).sort()).toStrictEqual(
       [newId, 'old', 'middle-aged', 'young', 'youngest'].sort(),
     )
-  })
-})
-
-describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/edit/:contactAddressId/start', () => {
-  it('should create the journey with prepopulated all fields and redirect to select type page', async () => {
-    // Given
-    contactsService.getContact.mockResolvedValue({
-      ...contact,
-      addresses: [
-        TestData.address({
-          contactAddressId: 888,
-          noFixedAddress: true,
-          flat: '1a',
-          property: 'My block',
-          street: 'A street',
-          area: 'Downtown',
-          cityCode: '1234',
-          cityDescription: 'Exeter',
-          countyCode: 'DEVON',
-          countyDescription: 'Devon',
-          postcode: 'PC1 D3',
-          countryCode: 'ENG',
-          countryDescription: 'England',
-          startDate: '2010-09-01',
-          endDate: '2025-04-01',
-          primaryAddress: true,
-          mailFlag: true,
-          comments: 'My comments will be super useful',
-        }),
-      ],
-    })
-
-    // When
-    const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/edit/888/start`,
-    )
-
-    // Then
-    expect(response.status).toEqual(302)
-    expect(response.headers['location']).toContain(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/select-type`,
-    )
-    expect(Object.entries(session.addressJourneys!)).toHaveLength(1)
-    const journey = Object.values(session.addressJourneys!)[0]!
-    expect(journey.mode).toStrictEqual('EDIT')
-    expect(journey.contactAddressId).toStrictEqual(888)
-    expect(journey.addressType).toStrictEqual('HOME')
-    expect(journey.addressLines).toStrictEqual({
-      noFixedAddress: true,
-      flat: '1a',
-      premises: 'My block',
-      street: 'A street',
-      locality: 'Downtown',
-      town: '1234',
-      county: 'DEVON',
-      postcode: 'PC1 D3',
-      country: 'ENG',
-    })
-    expect(journey.addressMetadata).toStrictEqual({
-      fromMonth: '9',
-      fromYear: '2010',
-      toMonth: '4',
-      toYear: '2025',
-      primaryAddress: 'YES',
-      mailAddress: 'YES',
-      comments: 'My comments will be super useful',
-    })
-    expect(journey.contactNames).toStrictEqual({
-      title: '',
-      lastName: 'last',
-      firstName: 'first',
-      middleNames: 'middle',
-    })
-  })
-
-  it('should create the journey with prepopulated minimal fields and redirect to select type page', async () => {
-    // Given
-    contactsService.getContact.mockResolvedValue({
-      ...contact,
-      addresses: [
-        {
-          ...TestData.address({
-            contactAddressId: 888,
-            noFixedAddress: false,
-            countryCode: 'ENG',
-            countryDescription: 'England',
-            primaryAddress: false,
-            mailFlag: false,
-          }),
-          startDate: undefined,
-          flat: undefined,
-          property: undefined,
-          street: undefined,
-          area: undefined,
-          cityCode: undefined,
-          cityDescription: undefined,
-          countyCode: undefined,
-          countyDescription: undefined,
-          postcode: undefined,
-          addressType: undefined,
-          comments: undefined,
-        },
-      ],
-    })
-
-    // When
-    const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/edit/888/start`,
-    )
-
-    // Then
-    expect(response.status).toEqual(302)
-    expect(response.headers['location']).toContain(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/select-type`,
-    )
-    expect(Object.entries(session.addressJourneys!)).toHaveLength(1)
-    const journey = Object.values(session.addressJourneys!)[0]!
-    expect(journey.mode).toStrictEqual('EDIT')
-    expect(journey.contactAddressId).toStrictEqual(888)
-    expect(journey.addressType).toStrictEqual('DO_NOT_KNOW')
-    expect(journey.addressLines).toStrictEqual({
-      noFixedAddress: false,
-      flat: undefined,
-      premises: undefined,
-      street: undefined,
-      locality: undefined,
-      town: undefined,
-      county: undefined,
-      postcode: undefined,
-      country: 'ENG',
-    })
-    expect(journey.addressMetadata).toStrictEqual({
-      fromMonth: undefined,
-      fromYear: undefined,
-      toMonth: undefined,
-      toYear: undefined,
-      primaryAddress: 'NO',
-      mailAddress: 'NO',
-      comments: undefined,
-    })
-    expect(journey.contactNames).toStrictEqual({
-      title: '',
-      lastName: 'last',
-      firstName: 'first',
-      middleNames: 'middle',
-    })
-  })
-
-  it('should return 404 if address with id not found', async () => {
-    // Given
-    contactsService.getContact.mockResolvedValue({
-      ...contact,
-      addresses: [
-        TestData.address({
-          contactAddressId: 888,
-        }),
-      ],
-    })
-
-    // When
-    const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/edit/999/start`,
-    )
-
-    // Then
-    expect(response.status).toEqual(404)
   })
 })

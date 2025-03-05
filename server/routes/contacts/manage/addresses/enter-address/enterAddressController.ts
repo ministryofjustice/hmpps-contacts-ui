@@ -5,8 +5,8 @@ import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import { Navigation } from '../../../common/navigation'
 import { AddressLinesSchema } from './addressLinesSchemas'
-import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
+import { getAddressJourneyAndUrl } from '../common/utils'
 
 export default class EnterAddressController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
@@ -19,61 +19,40 @@ export default class EnterAddressController implements PageHandler {
     req: Request<PrisonerJourneyParams & { contactId: string; prisonerContactId: string }>,
     res: Response,
   ): Promise<void> => {
-    const { prisonerNumber, contactId, prisonerContactId, journeyId } = req.params
     const { user, prisonerDetails } = res.locals
-    const journey = req.session.addressJourneys![journeyId]!
+    const { journey, addressUrl, checkAnswersOrAddressUrl } = getAddressJourneyAndUrl(req)
 
-    let usePrisonerAddressEnabled = false
-    if (prisonerDetails!.hasPrimaryAddress) {
-      usePrisonerAddressEnabled = true
-    }
+    const townOptions = await this.referenceDataService.getReferenceData(ReferenceCodeType.CITY, user)
+    const countyOptions = await this.referenceDataService.getReferenceData(ReferenceCodeType.COUNTY, user)
+    const countryOptions = await this.referenceDataService.getReferenceData(ReferenceCodeType.COUNTRY, user)
 
-    let typeLabel
-    if (journey.addressType !== 'DO_NOT_KNOW') {
-      typeLabel = await this.referenceDataService
-        .getReferenceDescriptionForCode(ReferenceCodeType.ADDRESS_TYPE, journey.addressType!, user)
-        .then(code => code?.toLowerCase())
-    }
-    typeLabel = typeLabel ?? 'address'
-
-    const townOptions = await this.referenceDataService
-      .getReferenceData(ReferenceCodeType.CITY, user)
-      .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.['town'] ?? journey.addressLines?.town))
-
-    const countyOptions = await this.referenceDataService
-      .getReferenceData(ReferenceCodeType.COUNTY, user)
-      .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.['county'] ?? journey.addressLines?.county))
-
-    const selectedCountry =
-      res.locals?.formResponses?.['country'] ?? journey.addressLines?.country ?? this.DEFAULT_COUNTRY
-    const countryOptions = await this.referenceDataService
-      .getReferenceData(ReferenceCodeType.COUNTRY, user)
-      .then(val => this.getSelectedOptions(val, selectedCountry))
-
-    const noFixedAddress =
-      res.locals?.formResponses?.['noFixedAddress'] ?? (journey.addressLines?.noFixedAddress ? 'YES' : 'NO')
     const navigation: Navigation = {
-      backLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/select-type/${journeyId}`,
+      backLink: checkAnswersOrAddressUrl({ subPath: 'select-type' }),
     }
     const viewModel = {
-      journey,
-      typeLabel,
+      caption: 'Edit contact methods',
+      continueButtonLabel: 'Continue',
+      contact: journey.contactNames,
+      navigation,
       townOptions,
       countyOptions,
       countryOptions,
-      navigation,
       usePrisonerAddress: {
-        enabled: usePrisonerAddressEnabled,
-        url: `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/use-prisoner-address/${journeyId}?returnUrl=/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/relationship/${prisonerContactId}/address/enter-address/${journeyId}`,
+        enabled: prisonerDetails!.hasPrimaryAddress,
+        url: `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/use-prisoner-address/${journey.id}?returnUrl=${addressUrl({ subPath: 'enter-address' })}`,
       },
+      noFixedAddress:
+        res.locals?.formResponses?.['noFixedAddress'] ?? (journey.addressLines?.noFixedAddress ? 'YES' : 'NO'),
       flat: res.locals?.formResponses?.['flat'] ?? journey.addressLines?.flat,
       premises: res.locals?.formResponses?.['premises'] ?? journey.addressLines?.premises,
       street: res.locals?.formResponses?.['street'] ?? journey.addressLines?.street,
       locality: res.locals?.formResponses?.['locality'] ?? journey.addressLines?.locality,
+      town: res.locals?.formResponses?.['town'] ?? journey.addressLines?.town,
+      county: res.locals?.formResponses?.['county'] ?? journey.addressLines?.county,
       postcode: res.locals?.formResponses?.['postcode'] ?? journey.addressLines?.postcode,
-      noFixedAddress,
+      country: res.locals?.formResponses?.['country'] ?? journey.addressLines?.country ?? this.DEFAULT_COUNTRY,
     }
-    res.render('pages/contacts/manage/address/enterAddress', viewModel)
+    res.render('pages/contacts/manage/contactMethods/address/enterAddress', viewModel)
   }
 
   POST = async (
@@ -89,44 +68,12 @@ export default class EnterAddressController implements PageHandler {
     >,
     res: Response,
   ): Promise<void> => {
-    const { prisonerNumber, contactId, prisonerContactId, journeyId } = req.params
-    const journey = req.session.addressJourneys![journeyId]!
-    const form: AddressLinesSchema = req.body
+    const { journey, checkAnswersOrAddressUrl } = getAddressJourneyAndUrl(req)
+    const { noFixedAddress, _csrf, ...requestBody } = req.body
     journey.addressLines = {
-      noFixedAddress: form.noFixedAddress === 'YES',
-      flat: form.flat,
-      premises: form.premises,
-      street: form.street,
-      locality: form.locality,
-      town: form.town,
-      county: form.county,
-      postcode: form.postcode,
-      country: form.country,
+      ...requestBody,
+      noFixedAddress: noFixedAddress === 'YES',
     }
-    res.redirect(
-      journey.isCheckingAnswers
-        ? `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/check-answers/${journeyId}`
-        : `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/address-metadata/${journeyId}`,
-    )
-  }
-
-  private getSelectedOptions(
-    options: ReferenceCode[],
-    selected?: string,
-  ): Array<{
-    value: string
-    text: string
-    selected?: boolean
-  }> {
-    return [
-      { text: '', value: '' },
-      ...options.map((referenceCode: ReferenceCode) => {
-        return {
-          text: referenceCode.description,
-          value: referenceCode.code,
-          selected: referenceCode.code === selected,
-        }
-      }),
-    ]
+    res.redirect(checkAnswersOrAddressUrl({ subPath: 'dates' }))
   }
 }

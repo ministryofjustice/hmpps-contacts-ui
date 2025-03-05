@@ -24,7 +24,7 @@ import UpdateContactRestrictionRequest = contactsApiClientTypes.UpdateContactRes
 import UpdatePrisonerContactRestrictionRequest = contactsApiClientTypes.UpdatePrisonerContactRestrictionRequest
 import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
-import UpdateContactAddressRequest = contactsApiClientTypes.UpdateContactAddressRequest
+import PatchContactAddressRequest = contactsApiClientTypes.PatchContactAddressRequest
 import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
 import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAddressPhoneRequest
@@ -1166,7 +1166,7 @@ describe('contactsApiClient', () => {
   describe('updateContactAddress', () => {
     it('should update the contact address', async () => {
       // Given
-      const request: UpdateContactAddressRequest = {
+      const request: PatchContactAddressRequest = {
         addressType: 'HOME',
         countryCode: 'ENG',
         startDate: '2020-01-01',
@@ -1175,7 +1175,7 @@ describe('contactsApiClient', () => {
         contactAddressId: 123456,
       }
       fakeContactsApi
-        .put('/contact/99/address/123456', request)
+        .patch('/contact/99/address/123456', request)
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(201, expected)
 
@@ -1188,7 +1188,7 @@ describe('contactsApiClient', () => {
 
     it.each([400, 401, 403])('should propagate errors updating the contact address %s', async (errorCode: number) => {
       // Given
-      const request: UpdateContactAddressRequest = {
+      const request: PatchContactAddressRequest = {
         addressType: 'HOME',
         countryCode: 'ENG',
         startDate: '2020-01-01',
@@ -1200,7 +1200,7 @@ describe('contactsApiClient', () => {
       }
 
       fakeContactsApi
-        .put('/contact/99/address/123456')
+        .patch('/contact/99/address/123456')
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(errorCode, expectedErrorBody)
 

@@ -3,8 +3,6 @@ import { isValid, parse } from 'date-fns'
 import { createSchema } from '../../../../../middleware/validationMiddleware'
 import { formatDate } from '../../../../../utils/utils'
 
-const COMMENTS_TOO_LONG_ERROR_MESSAGE = 'Address comment must be 240 characters or less'
-
 const START_DATE_REQUIRED_MESSAGE = 'Enter the date when the contact started using the address'
 const START_MONTH_REQUIRED_MESSAGE = 'Start date must include a month'
 const START_MONTH_INVALID_MESSAGE = 'Start month must be a real month'
@@ -16,7 +14,7 @@ const END_MONTH_INVALID_MESSAGE = 'End month must be a real month'
 const END_YEAR_REQUIRED_MESSAGE = 'End date must include a year'
 const END_YEAR_INVALID_MESSAGE = 'End year must be a real year'
 
-export const addressMetadataSchema = createSchema({
+export const addressDatesSchema = createSchema({
   fromMonth: z
     .union(
       [
@@ -67,13 +65,6 @@ export const addressMetadataSchema = createSchema({
       { errorMap: () => ({ message: END_YEAR_INVALID_MESSAGE }) },
     )
     .transform(val => val?.toString()),
-  primaryAddress: z.string().optional(),
-  mailAddress: z.string().optional(),
-  comments: z
-    .string()
-    .max(240, COMMENTS_TOO_LONG_ERROR_MESSAGE)
-    .optional()
-    .transform(val => (val?.trim()?.length ? val?.trim() : undefined)),
 }).transform((val, ctx) => {
   if (val.fromMonth && !val.fromYear) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, message: START_YEAR_REQUIRED_MESSAGE, path: ['fromYear'] })
@@ -116,4 +107,4 @@ function fromDateIsAfterToDate(fromMonth: string, fromYear: string, toMonth: str
   return isValid(fromDate) && isValid(toDate) && fromDate > toDate
 }
 
-export type AddressMetadataSchema = z.infer<typeof addressMetadataSchema>
+export type AddressDatesSchemaType = z.infer<typeof addressDatesSchema>

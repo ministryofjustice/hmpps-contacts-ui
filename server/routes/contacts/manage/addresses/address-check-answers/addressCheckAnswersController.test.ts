@@ -48,7 +48,6 @@ beforeEach(() => {
     prisonerNumber,
     contactId,
     isCheckingAnswers: false,
-    mode: 'ADD',
     contactNames: {
       lastName: 'last',
       middleNames: 'middle',
@@ -192,8 +191,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       fromYear: '2001',
       toMonth: '12',
       toYear: '2012',
-      primaryAddress: 'YES',
-      mailAddress: 'NO',
+      primaryAddress: true,
+      mailAddress: false,
       comments: 'My comments will be super useful',
     }
 

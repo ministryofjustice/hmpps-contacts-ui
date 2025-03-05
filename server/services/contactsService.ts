@@ -17,11 +17,13 @@ import ContactRestrictionDetails = contactsApiClientTypes.ContactRestrictionDeta
 import PrisonerContactRestrictionsResponse = contactsApiClientTypes.PrisonerContactRestrictionsResponse
 import AddressJourney = journeys.AddressJourney
 import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
-import UpdateContactAddressRequest = contactsApiClientTypes.UpdateContactAddressRequest
+import UpdateContactAddressRequest = contactsApiClientTypes.PatchContactAddressRequest
 import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAddressPhoneRequest
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
 import LinkedPrisonerDetails = contactsApiClientTypes.LinkedPrisonerDetails
 import PatchEmploymentsRequest = contactsApiClientTypes.PatchEmploymentsRequest
+import AddressMetadata = journeys.AddressMetadata
+import AddressLines = journeys.AddressLines
 
 type PageableObject = components['schemas']['PageableObject']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
@@ -248,8 +250,8 @@ export default class ContactsService {
       postcode: journey.addressLines!.postcode,
       countryCode: journey.addressLines!.country,
       verified: false,
-      primaryAddress: journey.addressMetadata!.primaryAddress === 'YES',
-      mailFlag: journey.addressMetadata!.mailAddress === 'YES',
+      primaryAddress: journey.addressMetadata!.primaryAddress,
+      mailFlag: journey.addressMetadata!.mailAddress,
       startDate: new Date(`${journey.addressMetadata!.fromYear}-${journey.addressMetadata!.fromMonth}-01Z`),
       endDate:
         journey.addressMetadata!.toMonth && journey.addressMetadata!.toYear
@@ -262,30 +264,31 @@ export default class ContactsService {
     return this.contactsApiClient.createContactAddress(journey.contactId, request, user)
   }
 
-  async updateContactAddress(journey: AddressJourney, user: Express.User) {
+  async updateContactAddress(
+    changes: Partial<AddressJourney & AddressMetadata & AddressLines> & { contactId: number; contactAddressId: number },
+    user: Express.User,
+  ) {
     const request: UpdateContactAddressRequest = {
-      addressType: journey.addressType === 'DO_NOT_KNOW' ? undefined : journey.addressType,
-      flat: journey.addressLines!.flat,
-      property: journey.addressLines!.premises,
-      street: journey.addressLines!.street,
-      area: journey.addressLines!.locality,
-      cityCode: journey.addressLines!.town,
-      countyCode: journey.addressLines!.county,
-      postcode: journey.addressLines!.postcode,
-      countryCode: journey.addressLines!.country,
+      addressType: changes.addressType === 'DO_NOT_KNOW' ? undefined : changes.addressType,
+      flat: changes.flat,
+      property: changes.premises,
+      street: changes.street,
+      area: changes.locality,
+      cityCode: changes.town,
+      countyCode: changes.county,
+      postcode: changes.postcode,
+      countryCode: changes.country,
+      noFixedAddress: changes.noFixedAddress,
       verified: false,
-      primaryAddress: journey.addressMetadata!.primaryAddress === 'YES',
-      mailFlag: journey.addressMetadata!.mailAddress === 'YES',
-      startDate: new Date(`${journey.addressMetadata!.fromYear}-${journey.addressMetadata!.fromMonth}-01Z`),
-      endDate:
-        journey.addressMetadata!.toMonth && journey.addressMetadata!.toYear
-          ? new Date(`${journey.addressMetadata!.toYear}-${journey.addressMetadata!.toMonth}-01Z`)
-          : undefined,
-      noFixedAddress: journey.addressLines!.noFixedAddress,
-      comments: journey.addressMetadata!.comments,
+      primaryAddress: changes.primaryAddress,
+      mailFlag: changes.mailAddress,
+      startDate:
+        changes.fromMonth && changes.fromYear ? new Date(`${changes.fromYear}-${changes.fromMonth}-01Z`) : undefined,
+      endDate: changes.toMonth && changes.toYear ? new Date(`${changes.toYear}-${changes.toMonth}-01Z`) : undefined,
+      comments: changes.comments,
       updatedBy: user.username,
     }
-    return this.contactsApiClient.updateContactAddress(journey.contactId, journey.contactAddressId!, request, user)
+    return this.contactsApiClient.updateContactAddress(changes.contactId, changes.contactAddressId!, request, user)
   }
 
   async createContactAddressPhone(

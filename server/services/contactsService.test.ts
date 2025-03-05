@@ -17,7 +17,7 @@ import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import AddressJourney = journeys.AddressJourney
 import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
-import UpdateContactAddressRequest = contactsApiClientTypes.UpdateContactAddressRequest
+import PatchContactAddressRequest = contactsApiClientTypes.PatchContactAddressRequest
 import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAddressPhoneRequest
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
@@ -647,7 +647,6 @@ describe('contactsService', () => {
         prisonerNumber,
         contactId: 999,
         isCheckingAnswers: false,
-        mode: 'ADD',
         contactNames: { firstName: 'first', lastName: 'last' },
         addressType: 'WORK',
         addressLines: {
@@ -666,8 +665,8 @@ describe('contactsService', () => {
           fromYear: '2001',
           toMonth: '12',
           toYear: '2012',
-          primaryAddress: 'YES',
-          mailAddress: 'YES',
+          primaryAddress: true,
+          mailAddress: true,
           comments: 'My comments will be super useful',
         },
       }
@@ -712,11 +711,10 @@ describe('contactsService', () => {
         prisonerNumber,
         contactId: 999,
         isCheckingAnswers: false,
-        mode: 'ADD',
         contactNames: { firstName: 'first', lastName: 'last' },
         addressType: 'DO_NOT_KNOW',
         addressLines: { noFixedAddress: false, country: 'ENG' },
-        addressMetadata: { fromMonth: '2', fromYear: '2000' },
+        addressMetadata: { fromMonth: '2', fromYear: '2000', mailAddress: false, primaryAddress: false },
       }
 
       const expectedRequest: CreateContactAddressRequest = {
@@ -757,7 +755,6 @@ describe('contactsService', () => {
             prisonerNumber,
             contactId: 999,
             isCheckingAnswers: false,
-            mode: 'ADD',
             contactNames: { firstName: 'first', lastName: 'last' },
             addressType: 'DO_NOT_KNOW',
             addressLines: { noFixedAddress: false, country: 'ENG' },
@@ -776,39 +773,29 @@ describe('contactsService', () => {
         contactAddressId: 123456,
       }
       apiClient.updateContactAddress.mockResolvedValue(expectedUpdated)
-      const journey: AddressJourney = {
-        id: '1',
-        lastTouched: new Date().toISOString(),
-        prisonerNumber,
+      const journey = {
         contactId: 999,
         contactAddressId: 123456,
-        isCheckingAnswers: false,
-        mode: 'ADD',
-        contactNames: { firstName: 'first', lastName: 'last' },
         addressType: 'WORK',
-        addressLines: {
-          noFixedAddress: true,
-          flat: '1a',
-          premises: 'My block',
-          street: 'A street',
-          locality: 'Downtown',
-          town: '1234',
-          county: 'DEVON',
-          postcode: 'PC1 D3',
-          country: 'ENG',
-        },
-        addressMetadata: {
-          fromMonth: '2',
-          fromYear: '2001',
-          toMonth: '12',
-          toYear: '2012',
-          primaryAddress: 'YES',
-          mailAddress: 'YES',
-          comments: 'My comments will be super useful',
-        },
+        noFixedAddress: true,
+        flat: '1a',
+        premises: 'My block',
+        street: 'A street',
+        locality: 'Downtown',
+        town: '1234',
+        county: 'DEVON',
+        postcode: 'PC1 D3',
+        country: 'ENG',
+        fromMonth: '2',
+        fromYear: '2001',
+        toMonth: '12',
+        toYear: '2012',
+        primaryAddress: true,
+        mailAddress: true,
+        comments: 'My comments will be super useful',
       }
 
-      const expectedRequest: UpdateContactAddressRequest = {
+      const expectedRequest: PatchContactAddressRequest = {
         addressType: 'WORK',
         flat: '1a',
         property: 'My block',
@@ -836,27 +823,20 @@ describe('contactsService', () => {
       expect(apiClient.updateContactAddress).toHaveBeenCalledWith(999, 123456, expectedRequest, user)
     })
 
-    it('should update a contact address from the journey dto with only optional fields', async () => {
+    it('should update a contact address from the journey dto with partial fields', async () => {
       // Given
       const expectedUpdated: ContactAddressDetails = {
         contactAddressId: 123456,
       }
       apiClient.updateContactAddress.mockResolvedValue(expectedUpdated)
-      const journey: AddressJourney = {
-        id: '1',
-        lastTouched: new Date().toISOString(),
-        prisonerNumber,
+      const journey = {
         contactId: 999,
         contactAddressId: 123456,
-        isCheckingAnswers: false,
-        mode: 'ADD',
-        contactNames: { firstName: 'first', lastName: 'last' },
-        addressType: 'DO_NOT_KNOW',
-        addressLines: { noFixedAddress: false, country: 'ENG' },
-        addressMetadata: { fromMonth: '2', fromYear: '2000' },
+        noFixedAddress: false,
+        country: 'ENG',
       }
 
-      const expectedRequest: UpdateContactAddressRequest = {
+      const expectedRequest: PatchContactAddressRequest = {
         addressType: undefined,
         flat: undefined,
         property: undefined,
@@ -867,9 +847,9 @@ describe('contactsService', () => {
         postcode: undefined,
         countryCode: 'ENG',
         verified: false,
-        primaryAddress: false,
-        mailFlag: false,
-        startDate: new Date('2000-02-01Z'),
+        primaryAddress: undefined,
+        mailFlag: undefined,
+        startDate: undefined,
         endDate: undefined,
         noFixedAddress: false,
         comments: undefined,
@@ -895,7 +875,6 @@ describe('contactsService', () => {
             contactId: 999,
             contactAddressId: 123456,
             isCheckingAnswers: false,
-            mode: 'ADD',
             contactNames: { firstName: 'first', lastName: 'last' },
             addressType: 'DO_NOT_KNOW',
             addressLines: { noFixedAddress: false, country: 'ENG' },

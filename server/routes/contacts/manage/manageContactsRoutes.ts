@@ -43,8 +43,6 @@ import ensureInAddressJourney from './addresses/addressesMiddleware'
 import { addressTypeSchema } from './addresses/address-type/addressTypeSchemas'
 import EnterAddressController from './addresses/enter-address/enterAddressController'
 import { addressLinesSchema } from './addresses/enter-address/addressLinesSchemas'
-import AddressMetadataController from './addresses/address-metadata/addressMetadataController'
-import { addressMetadataSchema } from './addresses/address-metadata/addressMetadataSchemas'
 import AddressCheckAnswersController from './addresses/address-check-answers/addressCheckAnswersController'
 import RestrictionsService from '../../../services/restrictionsService'
 import ManageApprovedToVisitController from './relationship/approved-to-visit/manageApprovedToVisitController'
@@ -87,6 +85,17 @@ import ManageEmergencyContactOrNextOfKinController from './relationship/emergenc
 import { manageEmergencyContactOrNextOfKinSchema } from './relationship/emergency-contact-or-next-of-kin/manageEmergencyContactOrNextOfKinSchema'
 import { manageDomesticStatusSchema } from './additional-information/domestic-status/manageDomesticStatusSchema'
 import { manageLanguageAndInterpreterSchema } from './additional-information/language-and-interpreter/manageLanguageAndInterpreterSchema'
+import ChangeAddressTypeController from './addresses/address-type/changeAddressTypeController'
+import ChangeAddressLinesController from './addresses/enter-address/changeAddressLinesController'
+import AddressDatesController from './addresses/dates/addressDatesController'
+import { addressDatesSchema } from './addresses/dates/addressDatesSchemas'
+import ChangeAddressDatesController from './addresses/dates/changeAddressDatesController'
+import AddressFlagsController from './addresses/primary-or-postal/addressFlagsController'
+import { addressFlagsSchema } from './addresses/primary-or-postal/addressFlagsSchemas'
+import ChangeAddressFlagsController from './addresses/primary-or-postal/changeAddressFlagsController'
+import AddressCommentsController from './addresses/comments/addressCommentsController'
+import { addressCommentsSchema } from './addresses/comments/addressCommentsSchema'
+import ChangeAddressCommentsController from './addresses/comments/changeAddressCommentsController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -347,16 +356,40 @@ const ManageContactsRoutes = (
   })
 
   // Addresses
-  const startAddressJourneyController = new StartAddressJourneyController(contactsService)
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/select-type',
+    controller: new ChangeAddressTypeController(contactsService, referenceDataService),
+    schema: addressTypeSchema,
+  })
+
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/enter-address',
+    controller: new ChangeAddressLinesController(contactsService, referenceDataService),
+    schema: addressLinesSchema,
+  })
+
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/dates',
+    controller: new ChangeAddressDatesController(contactsService),
+    schema: addressDatesSchema,
+  })
+
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/primary-or-postal',
+    controller: new ChangeAddressFlagsController(contactsService),
+    schema: addressFlagsSchema(false),
+  })
+
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/comments',
+    controller: new ChangeAddressCommentsController(contactsService),
+    schema: addressCommentsSchema,
+  })
+
   // Add
   get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/add/start',
-    startAddressJourneyController,
-  )
-  // Edit
-  get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/edit/:contactAddressId/start',
-    startAddressJourneyController,
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/start',
+    new StartAddressJourneyController(contactsService),
   )
 
   journeyRoute({
@@ -380,10 +413,24 @@ const ManageContactsRoutes = (
   )
 
   journeyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/address-metadata/:journeyId',
-    controller: new AddressMetadataController(referenceDataService, contactsService),
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/dates/:journeyId',
+    controller: new AddressDatesController(referenceDataService),
     journeyEnsurer: ensureInAddressJourney,
-    schema: addressMetadataSchema,
+    schema: addressDatesSchema,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/primary-or-postal/:journeyId',
+    controller: new AddressFlagsController(referenceDataService),
+    journeyEnsurer: ensureInAddressJourney,
+    schema: addressFlagsSchema(true),
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/comments/:journeyId',
+    controller: new AddressCommentsController(referenceDataService),
+    journeyEnsurer: ensureInAddressJourney,
+    schema: addressCommentsSchema,
   })
 
   journeyRoute({

@@ -35,7 +35,6 @@ beforeEach(() => {
     prisonerNumber,
     contactId,
     isCheckingAnswers: false,
-    mode: 'ADD',
     contactNames: {
       lastName: 'last',
       middleNames: 'middle',
@@ -79,34 +78,27 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/enter-address/:journeyId', () => {
-  it.each([
-    ['HOME', 'What is the home address for First Middle Last?'],
-    ['WORK', 'What is the work address for First Middle Last?'],
-    ['BUS', 'What is the business address for First Middle Last?'],
-    ['DO_NOT_KNOW', 'What is the address for First Middle Last?'],
-  ])(
-    'should render address lines page for new address with type %s and expected question %s',
-    async (addressType: string, expectedTitle: string) => {
-      // Given
-      existingJourney.addressType = addressType
+  it('should render address lines page', async () => {
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/enter-address/${journeyId}`,
+    )
 
-      // When
-      const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/enter-address/${journeyId}`,
-      )
+    // Then
+    expect(response.status).toEqual(200)
 
-      // Then
-      expect(response.status).toEqual(200)
+    const $ = cheerio.load(response.text)
+    expect($('#country').val()).toStrictEqual('ENG')
 
-      const $ = cheerio.load(response.text)
-      expect($('#country').val()).toStrictEqual('ENG')
-      expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(expectedTitle)
-      expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-        `/prisoner/A1234BC/contacts/manage/123456/relationship/456789/address/select-type/${journeyId}`,
-      )
-      expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-    },
-  )
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact methods')
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Enter the address for First Middle Last')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/select-type/${journeyId}`,
+    )
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
+    expect($('input[type=radio]:checked').val()).toBeUndefined()
+  })
 
   it('should call the audit service for the page view', async () => {
     // Given
@@ -256,7 +248,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         .expect(302)
         .expect(
           'Location',
-          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/address-metadata/${journeyId}`,
+          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/dates/${journeyId}`,
         )
 
       // Then
@@ -278,7 +270,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   it.each([
     [
       false,
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/address-metadata/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/dates/${journeyId}`,
     ],
     [
       true,
