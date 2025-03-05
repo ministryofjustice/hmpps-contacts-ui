@@ -277,7 +277,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/check-answers/${journeyId}`,
     ],
   ])(
-    'should pass to next page and based on checking answsers or not',
+    'should pass to next page and based on checking answers or not',
     async (isCheckingAnswers: boolean, expectedRedirect: string) => {
       existingJourney.isCheckingAnswers = isCheckingAnswers
 
