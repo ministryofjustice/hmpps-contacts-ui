@@ -1,8 +1,8 @@
-import Page, { PageElement } from './page'
+import Page, { PageElement } from '../../page'
 
 export default class EnterAddressPage extends Page {
-  constructor(type: string, name: string) {
-    super(`What is the ${type} for ${name}?`)
+  constructor(name: string) {
+    super(`Enter the address for ${name}`)
   }
 
   verifyCanUsePrisonerAddress(): EnterAddressPage {
@@ -163,5 +163,6 @@ export default class EnterAddressPage extends Page {
 
   private countrySelect = (): PageElement => cy.get('#country')
 
-  private usePrisonerAddressButton = (): PageElement => cy.get('[data-qa=use-prisoner-address-button]')
+  private usePrisonerAddressButton = (): PageElement =>
+    cy.findByRole('link', { name: 'Automatically copy the prisoner’s primary address into this page' })
 }

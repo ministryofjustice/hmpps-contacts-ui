@@ -1,16 +1,16 @@
-{% extends "../../../../partials/layout.njk" %}
+{% extends "partials/layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
-{% from "../../../../partials/miniProfile/macro.njk" import miniProfile %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
 
 {% set title = "Check your answers before saving the new " + typeLabel + " for " + (journey.contactNames | formatNameFirstNameFirst) %}
 {% set pageTitle = applicationName  + " - " + title %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-{% include '../../../../partials/navigation.njk' %}
+{% include 'partials/navigation.njk' %}
 {{ miniProfile(prisonerDetails) }}
-{% include '../../../../partials/formErrorSummary.njk' %}
+{% include 'partials/formErrorSummary.njk' %}
 <span class="govuk-caption-l">Contacts</span>
  <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
@@ -96,7 +96,7 @@
                             actions: {
                                 items: [
                                     {
-                                        href: baseChangeUrl + "/address-metadata/"  + journey.id + "#fromDate",
+                                        href: baseChangeUrl + "/dates/"  + journey.id + "#fromDate",
                                         text: "Change",
                                         visuallyHiddenText: " from date",
                                         attributes: {"data-qa": "change-from-date-link"},
@@ -116,7 +116,7 @@
                             actions: {
                                 items: [
                                     {
-                                        href: baseChangeUrl + "/address-metadata/"  + journey.id + "#toDate",
+                                        href: baseChangeUrl + "/dates/"  + journey.id + "#toDate",
                                         text: "Change",
                                         visuallyHiddenText: " to date",
                                         attributes: {"data-qa": "change-to-date-link"},
@@ -136,7 +136,7 @@
                             actions: {
                                 items: [
                                     {
-                                        href: baseChangeUrl + "/address-metadata/"  + journey.id + "#primaryAddressGroup",
+                                        href: baseChangeUrl + "/primary-or-postal/"  + journey.id + "#isPrimaryOrPostal",
                                         text: "Change",
                                         visuallyHiddenText: " primary address",
                                         attributes: {"data-qa": "change-primary-link"},
@@ -156,7 +156,7 @@
                             actions: {
                                 items: [
                                     {
-                                        href: baseChangeUrl + "/address-metadata/"  + journey.id + "#mailAddressGroup",
+                                        href: baseChangeUrl + "/primary-or-postal/"  + journey.id + "#isPrimaryOrPostal",
                                         text: "Change",
                                         visuallyHiddenText: " mail address",
                                         attributes: {"data-qa": "change-mail-link"},
@@ -176,7 +176,7 @@
                             actions: {
                                 items: [
                                     {
-                                        href: baseChangeUrl + "/address-metadata/"  + journey.id + "#comments",
+                                        href: baseChangeUrl + "/comments/"  + journey.id + "#comments",
                                         text: "Change",
                                         visuallyHiddenText: " comments",
                                         attributes: {"data-qa": "change-comments-link"},

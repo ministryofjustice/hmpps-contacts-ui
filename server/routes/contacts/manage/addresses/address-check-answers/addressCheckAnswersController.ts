@@ -76,7 +76,7 @@ export default class AddressCheckAnswersController implements PageHandler {
       formattedFromDate,
       formattedToDate,
     }
-    res.render('pages/contacts/manage/address/addressCheckAnswers', viewModel)
+    res.render('pages/contacts/manage/contactMethods/address/addressCheckAnswers', viewModel)
   }
 
   POST = async (
