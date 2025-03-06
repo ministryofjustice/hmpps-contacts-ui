@@ -4,8 +4,7 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, flashProvider, user } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
-import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
-import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
+import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import ContactDetails = contactsApiClientTypes.ContactDetails
@@ -71,28 +70,7 @@ beforeEach(() => {
   contactsService.getContact.mockResolvedValue(contact)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
-  referenceDataService.getReferenceDescriptionForCode.mockImplementation(
-    (type: ReferenceCodeType, code: string, __: Express.User) => {
-      if (type === ReferenceCodeType.ADDRESS_TYPE) {
-        if (code === 'WORK') {
-          return Promise.resolve('Work address')
-        }
-        if (code === 'BUS') {
-          return Promise.resolve('Business address')
-        }
-        if (code === 'HOME') {
-          return Promise.resolve('Home address')
-        }
-      } else if (type === ReferenceCodeType.CITY) {
-        return Promise.resolve('Exeter')
-      } else if (type === ReferenceCodeType.COUNTY) {
-        return Promise.resolve('Devon')
-      } else if (type === ReferenceCodeType.COUNTRY) {
-        return Promise.resolve('England')
-      }
-      return Promise.reject()
-    },
-  )
+  referenceDataService.getReferenceDescriptionForCode.mockImplementation(mockedGetReferenceDescriptionForCode)
 })
 
 afterEach(() => {

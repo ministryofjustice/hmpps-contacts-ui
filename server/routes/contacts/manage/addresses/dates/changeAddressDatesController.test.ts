@@ -4,8 +4,7 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, flashProvider, user } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
-import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
-import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
+import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import ContactDetails = contactsApiClientTypes.ContactDetails
@@ -71,20 +70,7 @@ beforeEach(() => {
   contactsService.getContact.mockResolvedValue(contact)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
-  referenceDataService.getReferenceDescriptionForCode.mockImplementation(
-    (type: ReferenceCodeType, _code: string, __: Express.User) => {
-      switch (type) {
-        case ReferenceCodeType.CITY:
-          return Promise.resolve('Exeter')
-        case ReferenceCodeType.COUNTY:
-          return Promise.resolve('Devon')
-        case ReferenceCodeType.COUNTRY:
-          return Promise.resolve('England')
-        default:
-          return Promise.reject()
-      }
-    },
-  )
+  referenceDataService.getReferenceDescriptionForCode.mockImplementation(mockedGetReferenceDescriptionForCode)
 })
 
 afterEach(() => {

@@ -6,9 +6,8 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
-import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
+import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import AddressJourney = journeys.AddressJourney
-import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import { MockedService } from '../../../../../testutils/mockedServices'
 
 jest.mock('../../../../../services/auditService')
@@ -60,20 +59,7 @@ beforeEach(() => {
   })
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
-  referenceDataService.getReferenceDescriptionForCode.mockImplementation(
-    (type: ReferenceCodeType, _code: string, __: Express.User) => {
-      switch (type) {
-        case ReferenceCodeType.CITY:
-          return Promise.resolve('Exeter')
-        case ReferenceCodeType.COUNTY:
-          return Promise.resolve('Devon')
-        case ReferenceCodeType.COUNTRY:
-          return Promise.resolve('England')
-        default:
-          return Promise.reject()
-      }
-    },
-  )
+  referenceDataService.getReferenceDescriptionForCode.mockImplementation(mockedGetReferenceDescriptionForCode)
 })
 
 afterEach(() => {

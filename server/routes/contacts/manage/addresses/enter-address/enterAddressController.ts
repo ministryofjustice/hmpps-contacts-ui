@@ -39,7 +39,7 @@ export default class EnterAddressController implements PageHandler {
       countryOptions,
       usePrisonerAddress: {
         enabled: prisonerDetails!.hasPrimaryAddress,
-        url: `/prisoner/${journey.prisonerNumber}/contacts/manage/${journey.contactId}/address/use-prisoner-address/${journey.id}?returnUrl=${addressUrl({ subPath: 'enter-address' })}`,
+        url: `${addressUrl({ subPath: 'use-prisoner-address' })}?returnUrl=${addressUrl({ subPath: 'enter-address' })}`,
       },
       noFixedAddress:
         res.locals?.formResponses?.['noFixedAddress'] ?? (journey.addressLines?.noFixedAddress ? 'YES' : 'NO'),

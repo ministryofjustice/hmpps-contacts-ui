@@ -6,8 +6,7 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
-import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
-import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
+import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import AddressJourney = journeys.AddressJourney
 import { MockedService } from '../../../../../testutils/mockedServices'
 import ContactDetails = contactsApiClientTypes.ContactDetails
@@ -80,28 +79,7 @@ beforeEach(() => {
   contactsService.getContact.mockResolvedValue(contact)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
-  referenceDataService.getReferenceDescriptionForCode.mockImplementation(
-    (type: ReferenceCodeType, code: string, __: Express.User) => {
-      if (type === ReferenceCodeType.ADDRESS_TYPE) {
-        if (code === 'WORK') {
-          return Promise.resolve('Work address')
-        }
-        if (code === 'BUS') {
-          return Promise.resolve('Business address')
-        }
-        if (code === 'HOME') {
-          return Promise.resolve('Home address')
-        }
-      } else if (type === ReferenceCodeType.CITY) {
-        return Promise.resolve('Exeter')
-      } else if (type === ReferenceCodeType.COUNTY) {
-        return Promise.resolve('Devon')
-      } else if (type === ReferenceCodeType.COUNTRY) {
-        return Promise.resolve('England')
-      }
-      return Promise.reject()
-    },
-  )
+  referenceDataService.getReferenceDescriptionForCode.mockImplementation(mockedGetReferenceDescriptionForCode)
 })
 
 afterEach(() => {
@@ -207,7 +185,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     const $ = cheerio.load(response.text)
     expect($('.check-answers-type-value').text().trim()).toStrictEqual('Home address')
     expect($('.check-answers-address-value').html()!.trim()).toStrictEqual(
-      'Flat 1a, My block, A street<br>Downtown<br>Exeter<br>Devon<br>PC1 D3<br>England',
+      'Flat 1a, My block, A street<br>Downtown<br>Devon<br>PC1 D3<br>England',
     )
     expect($('.check-answers-nfa-value').text().trim()).toStrictEqual('Yes')
     expect($('.check-answers-from-date-value').text().trim()).toStrictEqual('January 2001')

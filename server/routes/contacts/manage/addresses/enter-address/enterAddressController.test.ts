@@ -6,9 +6,8 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, flashProvider, user } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
-import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
+import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import AddressJourney = journeys.AddressJourney
-import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import AddressLines = journeys.AddressLines
 import { MockedService } from '../../../../../testutils/mockedServices'
 
@@ -57,20 +56,7 @@ beforeEach(() => {
   })
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
-  referenceDataService.getReferenceDescriptionForCode.mockImplementation(
-    (_: ReferenceCodeType, code: string, __: Express.User) => {
-      if (code === 'WORK') {
-        return Promise.resolve('Work address')
-      }
-      if (code === 'BUS') {
-        return Promise.resolve('Business address')
-      }
-      if (code === 'HOME') {
-        return Promise.resolve('Home address')
-      }
-      return Promise.reject()
-    },
-  )
+  referenceDataService.getReferenceDescriptionForCode.mockImplementation(mockedGetReferenceDescriptionForCode)
 })
 
 afterEach(() => {
