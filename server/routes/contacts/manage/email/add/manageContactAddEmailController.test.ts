@@ -117,7 +117,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/email/create', () => {
   it('should create email and pass to manage contact details page if there are no validation errors', async () => {
-    contactsService.getContact.mockResolvedValue(contact)
+    contactsService.getContactName.mockResolvedValue(contact)
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`)
       .type('form')

@@ -77,6 +77,7 @@ beforeEach(() => {
     },
   })
   contactsService.getContact.mockResolvedValue(contact)
+  contactsService.getContactName.mockResolvedValue(contact)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   referenceDataService.getReferenceDescriptionForCode.mockImplementation(mockedGetReferenceDescriptionForCode)

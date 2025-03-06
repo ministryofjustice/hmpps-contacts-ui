@@ -179,7 +179,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   it('should update relationship type and relationship to prisoner and pass back to contact details page with success banner', async () => {
     // Given
     existingJourney.relationshipType = 'O'
-    contactsService.getContact.mockResolvedValue(contact)
+    contactsService.getContactName.mockResolvedValue(contact)
     contactsService.updateContactRelationshipById.mockResolvedValue(undefined)
 
     // When

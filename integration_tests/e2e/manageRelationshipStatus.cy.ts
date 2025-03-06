@@ -21,6 +21,7 @@ context('Manage contact update relationship status active', () => {
     cy.task('stubTitlesReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetContactById', contact)
+    cy.task('stubGetContactNameById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),

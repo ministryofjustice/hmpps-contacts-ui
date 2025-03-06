@@ -73,6 +73,7 @@ context.skip('Edit Address', () => {
     })
 
     cy.task('stubGetContactById', contact)
+    cy.task('stubGetContactNameById', contact)
     cy.task('stubUpdateContactAddress', {
       contactId,
       contactAddressId,

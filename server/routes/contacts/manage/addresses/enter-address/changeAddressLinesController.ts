@@ -85,7 +85,7 @@ export default class ChangeAddressLinesController implements PageHandler {
       user,
     )
     await this.contactsService
-      .getContact(Number(contactId), user)
+      .getContactName(Number(contactId), user)
       .then(response =>
         req.flash(
           FLASH_KEY__SUCCESS_BANNER,

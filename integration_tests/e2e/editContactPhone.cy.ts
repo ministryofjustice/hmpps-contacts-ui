@@ -28,6 +28,7 @@ context('Edit Contact Phones', () => {
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetContactById', contact)
     cy.task('stubGetContactNameById', contact)
+    cy.task('stubGetContactNameById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship(),

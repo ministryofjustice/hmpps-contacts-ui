@@ -35,6 +35,7 @@ context('Create contact and update from check answers', () => {
         firstName: 'First',
       }),
     )
+    cy.task('stubGetContactNameById', { id: 123456, lastName: 'Last', firstName: 'First' })
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: 654321,
       response: TestData.prisonerContactRelationship(),

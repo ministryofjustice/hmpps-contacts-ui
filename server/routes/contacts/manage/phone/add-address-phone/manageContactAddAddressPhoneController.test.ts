@@ -122,7 +122,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/phone/create', () => {
   it('should create address phone with extension and pass to return point if there are no validation errors', async () => {
-    contactsService.getContact.mockResolvedValue(contact)
+    contactsService.getContactName.mockResolvedValue(contact)
     await request(app)
       .post(
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/phone/create`,
@@ -143,7 +143,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   })
 
   it('should create phone without extension and pass to return point url if there are no validation errors', async () => {
-    contactsService.getContact.mockResolvedValue(contact)
+    contactsService.getContactName.mockResolvedValue(contact)
     await request(app)
       .post(
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/phone/create`,

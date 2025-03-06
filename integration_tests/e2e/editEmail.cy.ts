@@ -24,6 +24,7 @@ context('Edit Email Address', () => {
         ],
       }),
     )
+    cy.task('stubGetContactNameById', TestData.contact())
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship(),

@@ -33,6 +33,7 @@ context('Add Address', () => {
     cy.task('stubCountryReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetContactById', contact)
+    cy.task('stubGetContactNameById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship(),

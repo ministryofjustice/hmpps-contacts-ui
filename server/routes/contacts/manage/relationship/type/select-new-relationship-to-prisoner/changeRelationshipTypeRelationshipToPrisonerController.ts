@@ -73,7 +73,7 @@ export default class ChangeRelationshipTypeRelationshipToPrisonerController impl
     }
     await this.contactsService
       .updateContactRelationshipById(Number(prisonerContactId), request, user)
-      .then(_ => this.contactsService.getContact(Number(contactId), user))
+      .then(_ => this.contactsService.getContactName(Number(contactId), user))
       .then(response => {
         delete req.session.changeRelationshipTypeJourneys![journeyId]
         return req.flash(

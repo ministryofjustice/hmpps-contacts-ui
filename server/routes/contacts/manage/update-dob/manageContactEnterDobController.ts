@@ -68,7 +68,7 @@ export default class ManageContactEnterDobController implements PageHandler {
     }
     await this.contactsService.updateContactById(Number(contactId), request, user)
     await this.contactsService
-      .getContact(Number(contactId), user)
+      .getContactName(Number(contactId), user)
       .then(response =>
         req.flash(
           FLASH_KEY__SUCCESS_BANNER,

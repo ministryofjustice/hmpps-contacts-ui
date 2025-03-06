@@ -59,7 +59,7 @@ export default class ManageContactEditEmailController implements PageHandler {
     }
     await this.contactsService.updateContactEmail(parseInt(contactId, 10), parseInt(contactEmailId, 10), request, user)
     await this.contactsService
-      .getContact(Number(contactId), user)
+      .getContactName(Number(contactId), user)
       .then(response =>
         req.flash(
           FLASH_KEY__SUCCESS_BANNER,

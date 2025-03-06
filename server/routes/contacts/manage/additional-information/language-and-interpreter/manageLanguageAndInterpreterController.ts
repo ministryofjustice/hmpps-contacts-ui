@@ -67,7 +67,7 @@ export default class ManageLanguageAndInterpreterController implements PageHandl
       updatedBy: user.username,
     }
     await this.contactsService.updateContactById(parseInt(contactId, 10), request, user)
-    await this.contactsService.getContact(Number(contactId), user).then(response => {
+    await this.contactsService.getContactName(Number(contactId), user).then(response => {
       req.flash(
         FLASH_KEY__SUCCESS_BANNER,
         `You’ve updated the additional information for ${formatNameFirstNameFirst(response)}.`,

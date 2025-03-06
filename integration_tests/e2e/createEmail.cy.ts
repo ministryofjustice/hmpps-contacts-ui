@@ -16,6 +16,7 @@ context('Create Email Address', () => {
     cy.task('stubTitlesReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetContactById', TestData.contact())
+    cy.task('stubGetContactNameById', TestData.contact())
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship(),

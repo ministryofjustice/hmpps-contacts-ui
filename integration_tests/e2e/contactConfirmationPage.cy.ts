@@ -34,6 +34,7 @@ context('Contact confirmation', () => {
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', prisonerNumber)
     cy.task('stubGetContactById', contact)
+    cy.task('stubGetContactNameById', contact)
     cy.task('stubGetGlobalRestrictions', [globalRestriction])
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
 

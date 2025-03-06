@@ -29,7 +29,7 @@ export default class ChangeTitleOrMiddleNamesController implements PageHandler {
   ): Promise<void> => {
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const { user } = res.locals
-    const contact = await this.contactService.getContact(Number(contactId), user)
+    const contact = await this.contactService.getContactName(Number(contactId), user)
 
     const titleOptions = [
       { code: '', description: '' },

@@ -39,7 +39,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     const restrictionClass: RestrictionClass = 'PRISONER_CONTACT'
     const message: string = 'New prisoner-contact restriction recorded'
     const contactDetails = TestData.contact()
-    contactsService.getContact.mockResolvedValue(contactDetails)
+    contactsService.getContactName.mockResolvedValue(contactDetails)
 
     // When
     const response = await request(app).get(
@@ -69,7 +69,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     const restrictionClass: RestrictionClass = 'CONTACT_GLOBAL'
     const message: string = 'New global restriction recorded'
     const contactDetails = TestData.contact()
-    contactsService.getContact.mockResolvedValue(contactDetails)
+    contactsService.getContactName.mockResolvedValue(contactDetails)
 
     // When
     const response = await request(app).get(
@@ -97,7 +97,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
   it('should call the audit service for the page view', async () => {
     // Given
     const contactDetails = TestData.contact()
-    contactsService.getContact.mockResolvedValue(contactDetails)
+    contactsService.getContactName.mockResolvedValue(contactDetails)
 
     // When
     const response = await request(app).get(

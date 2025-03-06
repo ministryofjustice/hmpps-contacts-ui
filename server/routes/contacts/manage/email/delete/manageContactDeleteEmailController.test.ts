@@ -116,7 +116,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/email/:contactEmailId/delete', () => {
   it('should delete contact email and redirect back to manage contact', async () => {
     // Given
-    contactsService.getContact.mockResolvedValue(contact)
+    contactsService.getContactName.mockResolvedValue(contact)
 
     // When
     await request(app)

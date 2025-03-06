@@ -78,7 +78,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/gender', () => {
   it('should update contact when gender is selected', async () => {
-    contactsService.getContact.mockResolvedValue(TestData.contact())
+    contactsService.getContactName.mockResolvedValue(TestData.contact())
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/gender`)
       .type('form')
