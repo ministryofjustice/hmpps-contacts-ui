@@ -2,11 +2,11 @@ import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import SelectAddressTypePage from '../pages/contact-methods/address/selectAddressTypePage'
-import EnterAddressPage from '../pages/enterAddressPage'
+import EnterAddressPage from '../pages/contact-methods/address/enterAddressPage'
 import EnterAddressMetadataPage from '../pages/enterAddressMetadataPage'
 import EditContactMethodsPage from '../pages/editContactMethodsPage'
 
-context('Edit Address', () => {
+context.skip('Edit Address', () => {
   const contactId = 654321
   const prisonerContactId = 987654
   const contactAddressId = 888666

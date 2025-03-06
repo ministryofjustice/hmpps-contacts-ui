@@ -1,20 +1,11 @@
 {% extends "partials/layout.njk" %}
 {% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
+{% set title = "Change the comments about this address" if isEdit else "Add any comments about this address (optional)" %}
 {% set pageTitle = applicationName  + " - " + title %}
-{% set title = ("Change the address type for this address for " + (contact | formatNameFirstNameFirst)) if isEdit else ("What type of address are you adding for " + (contact | formatNameFirstNameFirst) + "?") %}
 {% set mainClasses = "app-container govuk-body" %}
-
-{% if formattedAddress %}
-  {% set hintHtml %}
-    <div data-qa="address-reference" class="govuk-body govuk-!-margin-bottom-7 govuk-!-margin-top-2">
-      <strong>Address:</strong><br/>
-      {{ formattedAddress | addressToLines | safe }}
-    </div>
-  {% endset -%}
-{% endif %}
 
 {% block content %}
   {% include 'partials/navigation.njk' %}
@@ -23,26 +14,20 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
     <span class="govuk-caption-l">{{ caption }}</span>
+      <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+      <div data-qa="address-reference" class="govuk-body govuk-!-margin-bottom-7 govuk-!-margin-top-2">
+        <strong>Address:</strong><br/>
+        {{ formattedAddress | addressToLines | safe }}
+      </div>
       <form method='POST'>
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-        {{ govukRadios({
-          fieldset: {
-            legend: {
-              text: title,
-              isPageHeading: true,
-              classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6 main-heading"
-            }
-          },
-          hint: { html: hintHtml } if formattedAddress else undefined,
-          errorMessage: validationErrors | findError('addressType'),
-          name: "addressType",
-          items: (typeOptions | referenceCodesToRadios).concat([
-            { divider: 'or' },
-            {
-              value: "DO_NOT_KNOW",
-              text: "Address type not known"
-            }
-          ]) | setChecked(addressType)
+        {{ govukCharacterCount({
+          id: "comments",
+          name: "comments",
+          label: { text: "Comments about this address", classes: "govuk-label--m" },
+          errorMessage: validationErrors | findError('comments'),
+          value: comments,
+          maxlength: 240
         }) }}
         <div class="govuk-button-group">
           {{ govukButton({

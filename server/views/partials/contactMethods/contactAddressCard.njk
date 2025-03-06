@@ -9,6 +9,7 @@
   {% set prisonerContactId = opts.prisonerContactId %}
 
   {% set changeAddressLink = '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + "/relationship/" + prisonerContactId + '/address/edit/' + address.contactAddressId + '/start' %}
+  {% set updateAddressBaseLink = '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + "/relationship/" + prisonerContactId + '/address/' + address.contactAddressId %}
 
   {%
     set addressLines = {
@@ -40,7 +41,7 @@
       actions: {
         items: [
           {
-            href: changeAddressLink,
+            href: updateAddressBaseLink + '/select-type',
             text: "Change",
             visuallyHiddenText: "the address type",
             attributes: { 'data-qa': 'change-address-type-' + address.contactAddressId },
@@ -55,7 +56,7 @@
       actions: {
       items: [
           {
-            href: changeAddressLink,
+            href: updateAddressBaseLink + '/enter-address',
             text: "Change",
             visuallyHiddenText: "the address",
             attributes: { 'data-qa': 'change-address-lines-' + address.contactAddressId },
@@ -70,7 +71,7 @@
       actions: {
         items: [
           {
-            href: changeAddressLink,
+            href: updateAddressBaseLink + '/dates',
             text: "Change",
             visuallyHiddenText: "the dates for the prisoner’s use of the address",
             attributes: { 'data-qa': 'change-address-dates-' + address.contactAddressId },
@@ -85,7 +86,7 @@
       actions: {
         items: [
           {
-            href: changeAddressLink,
+            href: updateAddressBaseLink + '/primary-or-postal',
             text: "Change",
             visuallyHiddenText: "if this address is set as the primary or postal address for the contact",
             attributes: { 'data-qa': 'change-address-primary-postal-' + address.contactAddressId },
@@ -107,7 +108,7 @@
       actions: {
         items: [
           {
-            href: '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + "/relationship/" + prisonerContactId + '/address/' + address.contactAddressId + '/phone/create',
+            href: updateAddressBaseLink + '/phone/create',
             text: "Add address phone number",
             attributes: { 'data-qa': 'add-address-phone-link-' + address.contactAddressId },
             classes: 'govuk-link--no-visited-state'
@@ -179,7 +180,7 @@
     actions: {
       items: [
         {
-          href: changeAddressLink,
+          href: updateAddressBaseLink + '/comments',
           text: "Change",
           visuallyHiddenText: "the comments on this address",
           attributes: { 'data-qa': 'change-address-comments-' + address.contactAddressId },

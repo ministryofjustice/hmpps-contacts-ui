@@ -1,0 +1,120 @@
+{% extends "partials/layout.njk" %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set title = ("Change the dates for " + contact | formatNameFirstNameFirst(possessiveSuffix = true) + " use of this address") if isEdit else ("Enter the dates for " + contact | formatNameFirstNameFirst(possessiveSuffix = true) + " use of this address") %}
+{% set pageTitle = applicationName  + " - " + title %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+  {% include 'partials/navigation.njk' %}
+  {{ miniProfile(prisonerDetails) }}
+  {% include 'partials/formErrorSummary.njk' %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+    <span class="govuk-caption-l">{{ caption }}</span>
+      <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+      <div data-qa="address-reference" class="govuk-body govuk-!-margin-bottom-7 govuk-!-margin-top-2">
+        <strong>Address:</strong><br/>
+        {{ formattedAddress | addressToLines | safe }}
+      </div>
+      <form method='POST'>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+        {% if validationErrors %}
+          {% set fromMonthError = validationErrors['fromMonth'] if validationErrors['fromMonth'] else '' %}
+          {% set fromYearError = validationErrors['fromYear']  if validationErrors['fromYear'] else '' %}
+          {% set fromDateError = validationErrors['fromDate'] if validationErrors['fromDate'] else '' %}
+          {% set toMonthError = validationErrors['toMonth'] if validationErrors['toMonth'] else '' %}
+          {% set toYearError = validationErrors['toYear']  if validationErrors['toYear'] else '' %}
+          {% set toDateError = validationErrors['toDate'] if validationErrors['toDate'] else '' %}
+        {% endif %}
+
+        {{ govukDateInput({
+          id: "fromDate",
+          name: "fromDate",
+          fieldset: {
+            legend: {
+              text: "From date",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "This has been set to the current month and year. You can change this to a past or future date as required."
+          } if not isEdit else undefined,
+          errorMessage: {
+            html: '<span class="govuk-error-message">' + fromMonthError + '</span>
+                            <span class="govuk-error-message">' + fromYearError + '</span>
+                            <span class="govuk-error-message">' + fromDateError + '</span>'
+          } if fromMonthError or fromYearError or fromDateError,
+          items: [
+            {
+              id: 'fromMonth',
+              label: 'Month',
+              name: "fromMonth",
+              classes: 'govuk-input--width-2' + (' govuk-input--error' if fromMonthError or fromDateError),
+              value: fromMonth
+            },
+            {
+              id: 'fromYear',
+              label: 'Year',
+              name: "fromYear",
+              classes: 'govuk-input--width-4' + (' govuk-input--error' if fromYearError or fromDateError),
+              value: fromYear
+            }
+          ]
+        }) }}
+
+        {{ govukDateInput({
+          id: "toDate",
+          name: "toDate",
+          fieldset: {
+            legend: {
+              text: "To date (optional)",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "For example, 4 2026."
+          },
+          errorMessage: {
+            html: '<span class="govuk-error-message">' + toMonthError + '</span>
+                            <span class="govuk-error-message">' + toYearError + '</span>
+                            <span class="govuk-error-message">' + toDateError + '</span>'
+          } if toMonthError or toYearError or toDateError,
+          items: [
+            {
+              id: 'toMonth',
+              label: 'Month',
+              name: "toMonth",
+              classes: 'govuk-input--width-2' + (' govuk-input--error' if toMonthError or toDateError),
+              value: toMonth
+            },
+            {
+              id: 'toYear',
+              label: 'Year',
+              name: "toYear",
+              classes: 'govuk-input--width-4' + (' govuk-input--error' if toYearError or toDateError),
+              value: toYear
+            }
+          ]
+        }) }}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: continueButtonLabel,
+            type: "submit",
+            classes: 'govuk-!-margin-top-6',
+            attributes: {"data-qa": "continue-button"},
+            preventDoubleClick: true
+          }) }}
+          {% if navigation.cancelButton %}
+            <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

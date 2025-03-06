@@ -278,28 +278,28 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
           addressCard,
           'Type',
           expectedType,
-          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/edit/1/start',
+          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/select-type',
           `Change the address type (${expectedTitle})`,
         )
         expectSummaryListItem(
           addressCard,
           'Address',
           'Flat 1a, Property, StreetAreaCityCountyPostcodeEngland',
-          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/edit/1/start',
+          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/enter-address',
           `Change the address (${expectedTitle})`,
         )
         expectSummaryListItem(
           addressCard,
           'Date',
           'From January 2021',
-          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/edit/1/start',
+          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/dates',
           `Change the dates for the prisoner’s use of the address (${expectedTitle})`,
         )
         expectSummaryListItem(
           addressCard,
           'Primary or postal address',
           expectedPrimaryOrPostal,
-          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/edit/1/start',
+          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/primary-or-postal',
           `Change if this address is set as the primary or postal address for the contact (${expectedTitle})`,
         )
         expectChangeAndDeleteItem(
@@ -322,7 +322,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
           addressCard,
           'Comments on this address',
           'Some comments',
-          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/edit/1/start',
+          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/comments',
           `Change the comments on this address (${expectedTitle})`,
         )
       },
@@ -398,28 +398,28 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
           addressCard,
           'Type',
           expectedType,
-          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/edit/1/start',
+          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/select-type',
           `Change the address type (${expectedTitle})`,
         )
         expectSummaryListItem(
           addressCard,
           'Address',
           'Flat 1a, Property, StreetAreaCityCountyPostcodeEngland',
-          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/edit/1/start',
+          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/enter-address',
           `Change the address (${expectedTitle})`,
         )
         expectSummaryListItem(
           addressCard,
           'Date',
           'From January 2021 to January 2022',
-          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/edit/1/start',
+          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/dates',
           `Change the dates for the prisoner’s use of the address (${expectedTitle})`,
         )
         expectSummaryListItem(
           addressCard,
           'Primary or postal address',
           expectedPrimaryOrPostal,
-          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/edit/1/start',
+          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/primary-or-postal',
           `Change if this address is set as the primary or postal address for the contact (${expectedTitle})`,
         )
         expectChangeAndDeleteItem(
@@ -442,7 +442,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
           addressCard,
           'Comments on this address',
           'Some comments',
-          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/edit/1/start',
+          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/comments',
           `Change the comments on this address (${expectedTitle})`,
         )
       },
@@ -498,28 +498,28 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         addressCard,
         'Type',
         'Not provided',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/edit/1/start',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/select-type',
         `Change the address type (Address)`,
       )
       expectSummaryListItem(
         addressCard,
         'Address',
         'No fixed addressEngland',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/edit/1/start',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/enter-address',
         `Change the address (Address)`,
       )
       expectSummaryListItem(
         addressCard,
         'Date',
         'Not provided',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/edit/1/start',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/dates',
         `Change the dates for the prisoner’s use of the address (Address)`,
       )
       expectSummaryListItem(
         addressCard,
         'Primary or postal address',
         'No',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/edit/1/start',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/primary-or-postal',
         `Change if this address is set as the primary or postal address for the contact (Address)`,
       )
       expectSummaryListItem(
@@ -533,7 +533,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         addressCard,
         'Comments on this address',
         'Not provided',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/edit/1/start',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/comments',
         `Change the comments on this address (Address)`,
       )
     })
@@ -588,7 +588,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
     const addAddressLink = $(`h2:contains("Addresses")`).first().parent().next().find('a').first()
     expect(addAddressLink.text()).toStrictEqual('Add address')
     expect(addAddressLink.attr('href')).toStrictEqual(
-      '/prisoner/A1234BC/contacts/manage/1/relationship/99/address/add/start',
+      '/prisoner/A1234BC/contacts/manage/1/relationship/99/address/start',
     )
   }
 })

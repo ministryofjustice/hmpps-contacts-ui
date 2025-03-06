@@ -33,7 +33,6 @@ beforeEach(() => {
     prisonerNumber,
     contactId,
     isCheckingAnswers: false,
-    mode: 'ADD',
     contactNames: {
       lastName: 'last',
       middleNames: 'middle',

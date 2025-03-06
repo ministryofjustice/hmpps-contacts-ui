@@ -1,43 +1,34 @@
 import { Request, Response } from 'express'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
-import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import { Navigation } from '../../../common/navigation'
-import { AddressTypeSchema } from './addressTypeSchemas'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
-import Urls from '../../../../urls'
-import { getAddressJourneyAndUrl } from '../common/utils'
+import { getAddressJourneyAndUrl, getFormattedAddress } from '../common/utils'
+import { AddressCommentsSchemaType } from './addressCommentsSchema'
 
-export default class AddressTypeController implements PageHandler {
+export default class AddressCommentsController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
-  public PAGE_NAME = Page.SELECT_ADDRESS_TYPE_PAGE
+  public PAGE_NAME = Page.ENTER_ADDRESS_COMMENTS_PAGE
 
   GET = async (
     req: Request<PrisonerJourneyParams & { contactId: string; prisonerContactId: string }>,
     res: Response,
   ): Promise<void> => {
-    const { prisonerNumber, contactId, prisonerContactId } = req.params
-    const { user } = res.locals
     const { journey, checkAnswersOrAddressUrl } = getAddressJourneyAndUrl(req)
-
-    const typeOptions = await this.referenceDataService.getReferenceData(ReferenceCodeType.ADDRESS_TYPE, user)
-
     const navigation: Navigation = {
-      backLink: checkAnswersOrAddressUrl({
-        fullPath: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
-      }),
+      backLink: checkAnswersOrAddressUrl({ subPath: 'primary-or-postal' }),
     }
     const viewModel = {
       caption: 'Edit contact methods',
       continueButtonLabel: 'Continue',
       contact: journey.contactNames,
-      addressType: res.locals?.formResponses?.['type'] ?? journey.addressType,
-      typeOptions,
       navigation,
+      formattedAddress: await getFormattedAddress(this.referenceDataService, journey, res.locals.user),
+      comments: res.locals?.formResponses?.['comments'] ?? journey.addressMetadata?.comments,
     }
-    res.render('pages/contacts/manage/contactMethods/address/addressType', viewModel)
+    res.render('pages/contacts/manage/contactMethods/address/comments', viewModel)
   }
 
   POST = async (
@@ -49,12 +40,15 @@ export default class AddressTypeController implements PageHandler {
         journeyId: string
       },
       unknown,
-      AddressTypeSchema
+      AddressCommentsSchemaType
     >,
     res: Response,
   ): Promise<void> => {
     const { journey, checkAnswersOrAddressUrl } = getAddressJourneyAndUrl(req)
-    journey.addressType = req.body.addressType
-    res.redirect(checkAnswersOrAddressUrl({ subPath: 'enter-address' }))
+    journey.addressMetadata = {
+      ...(journey.addressMetadata ?? {}),
+      comments: req.body.comments,
+    }
+    res.redirect(checkAnswersOrAddressUrl({ subPath: 'check-answers' }))
   }
 }

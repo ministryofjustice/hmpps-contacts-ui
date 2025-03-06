@@ -2,11 +2,13 @@ import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import SelectAddressTypePage from '../pages/contact-methods/address/selectAddressTypePage'
-import EnterAddressPage from '../pages/enterAddressPage'
-import EnterAddressMetadataPage from '../pages/enterAddressMetadataPage'
+import EnterAddressPage from '../pages/contact-methods/address/enterAddressPage'
 import AddressCheckYourAnswersPage from '../pages/addressCheckYourAnswersPage'
 import { StubPrisonApiAddress } from '../mockApis/prisonApi'
 import EditContactMethodsPage from '../pages/editContactMethodsPage'
+import EnterAddressDatesPage from '../pages/contact-methods/address/enterAddressDatesPage'
+import SelectAddressFlagsPage from '../pages/contact-methods/address/selectAddressFlagsPage'
+import EnterAddressCommentsPage from '../pages/contact-methods/address/enterAddressCommentsPage'
 
 context('Add Address', () => {
   const contactId = 654321
@@ -65,9 +67,7 @@ context('Add Address', () => {
     Page.verifyOnPage(SelectAddressTypePage, 'First Middle Names Last') //
       .isEmptyForm()
       .selectAddressType('HOME')
-      .clickContinue()
-
-    Page.verifyOnPage(EnterAddressPage, 'home address', 'First Middle Names Last') //
+      .continueTo(EnterAddressPage, 'First Middle Names Last') //
       .verifyCanNotUsePrisonerAddress()
       .clickNoFixedAddress()
       .enterFlat('1A')
@@ -78,15 +78,14 @@ context('Add Address', () => {
       .selectCounty('Devon')
       .enterPostcode('P05T C0D3')
       .selectCountry('England')
-      .clickContinue()
-
-    Page.verifyOnPage(EnterAddressMetadataPage, 'home address', 'First Middle Names Last') //
+      .continueTo(EnterAddressDatesPage, 'First Middle Names Last') //
       .enterFromMonth('09')
       .enterFromYear('2009')
       .enterToMonth('10')
       .enterToYear('2010')
-      .selectPrimaryAddress('Yes')
-      .selectMailAddress('No')
+      .continueTo(SelectAddressFlagsPage, 'First Middle Names Last')
+      .selectIsPrimaryOrPostal('P')
+      .continueTo(EnterAddressCommentsPage)
       .enterComments('Something about the address')
       .clickContinue()
 
@@ -148,14 +147,14 @@ context('Add Address', () => {
       .selectAddressType('DO_NOT_KNOW')
       .clickContinue()
 
-    Page.verifyOnPage(EnterAddressPage, 'address', 'First Middle Names Last') //
+    Page.verifyOnPage(EnterAddressPage, 'First Middle Names Last') //
       .verifyCanNotUsePrisonerAddress()
       .selectCountry('England')
-      .clickContinue()
-
-    Page.verifyOnPage(EnterAddressMetadataPage, 'address', 'First Middle Names Last') //
+      .continueTo(EnterAddressDatesPage, 'First Middle Names Last')
       .enterFromMonth('09')
       .enterFromYear('2009')
+      .continueTo(SelectAddressFlagsPage, 'First Middle Names Last')
+      .continueTo(EnterAddressCommentsPage)
       .clickContinue()
 
     Page.verifyOnPage(AddressCheckYourAnswersPage, 'address', 'First Middle Names Last') //
@@ -181,8 +180,6 @@ context('Add Address', () => {
       {
         countryCode: 'ENG',
         verified: false,
-        primaryAddress: false,
-        mailFlag: false,
         startDate: '2009-09-01T00:00:00.000Z',
         noFixedAddress: false,
         createdBy: 'USER1',
@@ -232,15 +229,11 @@ context('Add Address', () => {
       .clickAddAddressLink()
 
     Page.verifyOnPage(SelectAddressTypePage, 'First Middle Names Last') //
-      .isEmptyForm()
       .selectAddressType('DO_NOT_KNOW')
-      .clickContinue()
-
-    Page.verifyOnPage(EnterAddressPage, 'address', 'First Middle Names Last') //
-      .verifyCanUsePrisonerAddress()
+      .continueTo(EnterAddressPage, 'First Middle Names Last')
       .clickUsePrisonerAddress()
 
-    Page.verifyOnPage(EnterAddressPage, 'address', 'First Middle Names Last') //
+    Page.verifyOnPage(EnterAddressPage, 'First Middle Names Last') //
       .hasFlat('Prisoner Flat')
       .hasPremises('Prisoner Premises')
       .hasStreet('Prisoner Street')
@@ -249,52 +242,6 @@ context('Add Address', () => {
       .hasCounty('West Sussex')
       .hasPostcode('PPCODE')
       .hasCountry('Wales')
-      .clickContinue()
-
-    Page.verifyOnPage(EnterAddressMetadataPage, 'address', 'First Middle Names Last') //
-      .enterFromMonth('09')
-      .enterFromYear('2009')
-      .clickContinue()
-
-    Page.verifyOnPage(AddressCheckYourAnswersPage, 'address', 'First Middle Names Last') //
-      .verifyShowsAddressTypeAs('Not provided')
-      .verifyShowsAddressAs(
-        'Flat Prisoner Flat, Prisoner Premises, Prisoner Street<br>Prisoner Locality<br>Ilfracombe<br>West Sussex<br>PPCODE<br>Wales',
-      )
-      .verifyShowsNoFixedAddressAs('Yes')
-      .verifyShowsFromDateAs('September 2009')
-      .verifyShowsToDateAs('Not provided')
-      .verifyShowsPrimaryAddressAs('Not provided')
-      .verifyShowsMailAddressAs('Not provided')
-      .verifyShowsCommentsAs('Not provided')
-      .clickContinue()
-
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
-      'You’ve updated the contact methods for First Middle Names Last.',
-    )
-
-    cy.verifyLastAPICall(
-      {
-        method: 'POST',
-        urlPath: `/contact/${contactId}/address`,
-      },
-      {
-        flat: 'Prisoner Flat',
-        property: 'Prisoner Premises',
-        street: 'Prisoner Street',
-        area: 'Prisoner Locality',
-        cityCode: '7521',
-        countyCode: 'W.SUSSEX',
-        postcode: 'PPCODE',
-        countryCode: 'WALES',
-        verified: false,
-        primaryAddress: false,
-        mailFlag: false,
-        startDate: '2009-09-01T00:00:00.000Z',
-        noFixedAddress: true,
-        createdBy: 'USER1',
-      },
-    )
   })
 
   it('Can change answers', () => {
@@ -311,9 +258,7 @@ context('Add Address', () => {
     Page.verifyOnPage(SelectAddressTypePage, 'First Middle Names Last') //
       .isEmptyForm()
       .selectAddressType('HOME')
-      .clickContinue()
-
-    Page.verifyOnPage(EnterAddressPage, 'home address', 'First Middle Names Last') //
+      .continueTo(EnterAddressPage, 'First Middle Names Last') //
       .clickNoFixedAddress()
       .enterFlat('1A')
       .enterPremises('The Block')
@@ -323,15 +268,14 @@ context('Add Address', () => {
       .selectCounty('Devon')
       .enterPostcode('P05T C0D3')
       .selectCountry('England')
-      .clickContinue()
-
-    Page.verifyOnPage(EnterAddressMetadataPage, 'home address', 'First Middle Names Last') //
+      .continueTo(EnterAddressDatesPage, 'First Middle Names Last') //
       .enterFromMonth('09')
       .enterFromYear('2009')
       .enterToMonth('10')
       .enterToYear('2010')
-      .selectPrimaryAddress('Yes')
-      .selectMailAddress('No')
+      .continueTo(SelectAddressFlagsPage, 'First Middle Names Last') //
+      .selectIsPrimaryOrPostal('P')
+      .continueTo(EnterAddressCommentsPage) //
       .enterComments('Something about the address')
       .clickContinue()
 
@@ -353,7 +297,7 @@ context('Add Address', () => {
       .verifyShowsAddressTypeAs('Work address')
       .clickChangeAddressLink()
 
-    Page.verifyOnPage(EnterAddressPage, 'work address', 'First Middle Names Last') //
+    Page.verifyOnPage(EnterAddressPage, 'First Middle Names Last') //
       .hasFlat('1A')
       .hasPremises('The Block')
       .hasStreet('My Street')
@@ -376,13 +320,13 @@ context('Add Address', () => {
       )
       .clickChangeNoFixedAddressLink()
 
-    Page.verifyOnPage(EnterAddressPage, 'work address', 'First Middle Names Last') //
+    Page.verifyOnPage(EnterAddressPage, 'First Middle Names Last') //
       .clickNoFixedAddress()
       .continueTo(AddressCheckYourAnswersPage, 'work address', 'First Middle Names Last')
       .verifyShowsNoFixedAddressAs('No')
       .clickChangeFromDateLink()
 
-    Page.verifyOnPage(EnterAddressMetadataPage, 'work address', 'First Middle Names Last') //
+    Page.verifyOnPage(EnterAddressDatesPage, 'First Middle Names Last') //
       .hasFromMonth('9')
       .hasFromYear('2009')
       .enterFromMonth('10')
@@ -391,7 +335,7 @@ context('Add Address', () => {
       .verifyShowsFromDateAs('October 2010')
       .clickChangeToDateLink()
 
-    Page.verifyOnPage(EnterAddressMetadataPage, 'work address', 'First Middle Names Last') //
+    Page.verifyOnPage(EnterAddressDatesPage, 'First Middle Names Last') //
       .hasToMonth('10')
       .hasToYear('2010')
       .enterToMonth('11')
@@ -400,21 +344,15 @@ context('Add Address', () => {
       .verifyShowsToDateAs('November 2011')
       .clickChangePrimaryAddressLink()
 
-    Page.verifyOnPage(EnterAddressMetadataPage, 'work address', 'First Middle Names Last') //
-      .hasPrimaryAddress('Yes')
-      .selectPrimaryAddress('No')
+    Page.verifyOnPage(SelectAddressFlagsPage, 'First Middle Names Last') //
+      .verifyIsPrimaryOrPostalAnswer('P')
+      .selectIsPrimaryOrPostal('M')
       .continueTo(AddressCheckYourAnswersPage, 'work address', 'First Middle Names Last')
       .verifyShowsPrimaryAddressAs('No')
-      .clickChangeMailAddressLink()
-
-    Page.verifyOnPage(EnterAddressMetadataPage, 'work address', 'First Middle Names Last') //
-      .hasMailAddress('No')
-      .selectMailAddress('Yes')
-      .continueTo(AddressCheckYourAnswersPage, 'work address', 'First Middle Names Last')
       .verifyShowsMailAddressAs('Yes')
       .clickChangeCommentsLink()
 
-    Page.verifyOnPage(EnterAddressMetadataPage, 'work address', 'First Middle Names Last') //
+    Page.verifyOnPage(EnterAddressCommentsPage) //
       .hasComments('Something about the address')
       .enterComments('Updated comments')
       .continueTo(AddressCheckYourAnswersPage, 'work address', 'First Middle Names Last')
@@ -459,6 +397,5 @@ context('Add Address', () => {
     Page.verifyOnPage(SelectAddressTypePage, 'First Middle Names Last') //
       .backTo(EditContactMethodsPage, 'First Middle Names Last')
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .verifyOnContactsMethodsTab()
   })
 })

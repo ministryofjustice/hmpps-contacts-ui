@@ -1,0 +1,137 @@
+{% extends "partials/layout.njk" %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set title = ("Change this address for " + contact | formatNameFirstNameFirst) if isEdit else ("Enter the address for " + contact | formatNameFirstNameFirst) %}
+{% set pageTitle = applicationName  + " - " + title %}
+{% set mainClasses = "app-container govuk-body" %}
+{% block meta %}
+  <meta name="autocompleteElements" content="town"/>
+  <meta name="autocompleteElements" content="county"/>
+  <meta name="autocompleteElements" content="country"/>
+{% endblock %}
+{% block content %}
+  {% include 'partials/navigation.njk' %}
+  {{ miniProfile(prisonerDetails) }}
+  {% include 'partials/formErrorSummary.njk' %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+    <span class="govuk-caption-l">{{ caption }}</span>
+      <h1 class="govuk-heading-l govuk-!-margin-bottom-6" data-qa="main-heading">{{ title }}</h1>
+      {% if usePrisonerAddress.enabled %}
+        <div class="govuk-!-margin-bottom-6">
+          <a class="govuk-link govuk-link--no-visited-state card__link" href="{{ usePrisonerAddress.url }}">Automatically copy the prisoner’s primary address into this page</a>
+        </div>
+      {% endif %}
+
+      <form method='POST'>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        {{ govukCheckboxes({
+          id: "noFixedAddress",
+          name: "noFixedAddress",
+          items: [
+            {
+              value: "YES",
+              text: "No fixed address",
+              id: 'noFixedAddressYes'
+            }
+          ] | setChecked(noFixedAddress)
+        }) }}
+
+        {{ govukInput({
+          id: "flat",
+          name: "flat",
+          label: { text: "Flat or building unit (optional)" },
+          hint: { text: "For example, ‘Flat 2’ or ‘Unit B’." },
+          classes: 'govuk-!-width-two-thirds',
+          errorMessage: validationErrors | findError('flat'),
+          value: flat
+        }) }}
+        {{ govukInput({
+          id: "premises",
+          name: "premises",
+          label: { text: "Building name (optional)" },
+          hint: { text: "For example, ‘Dale House’." },
+          classes: 'govuk-!-width-two-thirds',
+          errorMessage: validationErrors | findError('premises'),
+          value: premises
+        }) }}
+
+        {{ govukInput({
+          id: "street",
+          name: "street",
+          label: { text: "Street number and name (optional)" },
+          hint: { text: "For example, ‘35 High Road’." },
+          classes: 'govuk-!-width-two-thirds',
+          errorMessage: validationErrors | findError('street'),
+          value: street
+        }) }}
+
+        {{ govukInput({
+          id: "locality",
+          name: "locality",
+          label: { text: "District or locality (optional)" },
+          classes: 'govuk-!-width-two-thirds',
+          errorMessage: validationErrors | findError('locality'),
+          value: locality
+        }) }}
+
+        {{ govukSelect({
+          id: "town",
+          name: "town",
+          label: { text: "Town or city (optional)" },
+          hint: { text: "Select the town or city from the suggestions that appear when you start to enter a name." },
+          formGroup: { classes: 'govuk-!-width-two-thirds'},
+          items: townOptions | referenceCodesToSelect('') | setSelected(town),
+          errorMessage: validationErrors | findError('town')
+        }) }}
+
+        {{ govukSelect({
+          id: "county",
+          name: "county",
+          label: { text: "County (optional)" },
+          hint: { text: "Select the county from the suggestions that appear when you start to enter a name." },
+          formGroup: { classes: 'govuk-!-width-two-thirds'},
+          items: countyOptions | referenceCodesToSelect('') | setSelected(county),
+          errorMessage: validationErrors | findError('county')
+        }) }}
+
+        {{ govukInput({
+          id: "postcode",
+          name: "postcode",
+          label: { text: "Postcode (optional)" },
+          classes: 'govuk-!-width-two-thirds',
+          errorMessage: validationErrors | findError('postcode'),
+          value: postcode
+        }) }}
+
+        {{ govukSelect({
+          id: "country",
+          name: "country",
+          label: {  text: "Country" },
+          hint: { text: "Select the country from the suggestions that appear when you start to enter a name." },
+          formGroup: { classes: 'govuk-!-width-two-thirds'},
+          items: countryOptions | referenceCodesToSelect('') | setSelected(country),
+          errorMessage: validationErrors | findError('country')
+        }) }}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: continueButtonLabel,
+            type: "submit",
+            classes: 'govuk-!-margin-top-6',
+            attributes: {"data-qa": "continue-button"},
+            preventDoubleClick: true
+          }) }}
+          {% if navigation.cancelButton %}
+            <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
+          {% endif %}
+        </div>
+      </form>
+
+        </div>
+    </div>
+
+{% endblock %}

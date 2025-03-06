@@ -1,24 +1,18 @@
 import { deduplicateFieldErrors } from '../../../../../middleware/validationMiddleware'
-import { addressMetadataSchema } from './addressMetadataSchemas'
+import { addressDatesSchema } from './addressDatesSchemas'
 
-describe('addressMetadataSchema', () => {
+describe('addressDatesSchema', () => {
   type Form = {
     fromMonth?: string
     fromYear?: string
     toMonth?: string
     toYear?: string
-    primaryAddress?: string
-    mailAddress?: string
-    comments?: string
   }
   const baseForm: Form = {
     fromMonth: '',
     fromYear: '',
     toMonth: '',
     toYear: '',
-    primaryAddress: '',
-    mailAddress: '',
-    comments: '',
   }
   describe('should validate an address metadata form', () => {
     it('Whole field is invalid if fromMonth and fromYear are missing ', async () => {
@@ -107,18 +101,6 @@ describe('addressMetadataSchema', () => {
       })
     })
 
-    it('Comment must be less than 240', async () => {
-      // When
-      const result = await doValidate({ ...baseForm, fromMonth: '09', fromYear: '2009', comments: ''.padEnd(241, 'X') })
-
-      // Then
-      expect(result.success).toStrictEqual(false)
-      const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
-      expect(deduplicatedFieldErrors).toStrictEqual({
-        comments: ['Address comment must be 240 characters or less'],
-      })
-    })
-
     it('to date must be on or after from date ', async () => {
       // When
       const result = await doValidate({ ...baseForm, fromMonth: '09', fromYear: '2009', toMonth: '08', toYear: '2009' })
@@ -140,7 +122,7 @@ describe('addressMetadataSchema', () => {
     })
 
     const doValidate = async (form: Form) => {
-      return addressMetadataSchema.safeParse(form)
+      return addressDatesSchema.safeParse(form)
     }
   })
 })

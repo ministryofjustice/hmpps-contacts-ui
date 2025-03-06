@@ -6,8 +6,7 @@ import { appWithAllRoutes, user } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import PrisonerAddressService from '../../../../../services/prisonerAddressService'
 import TestData from '../../../../testutils/testData'
-import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
-import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
+import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import { PrisonApiAddress } from '../../../../../data/prisonApiTypes'
 import AddressJourney = journeys.AddressJourney
 import { MockedService } from '../../../../../testutils/mockedServices'
@@ -28,6 +27,8 @@ let session: Partial<SessionData>
 const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 const contactId = 123456
+const prisonerContactId = 456789
+
 let existingJourney: AddressJourney
 
 beforeEach(() => {
@@ -37,7 +38,6 @@ beforeEach(() => {
     prisonerNumber,
     contactId,
     isCheckingAnswers: false,
-    mode: 'ADD',
     contactNames: {
       lastName: 'last',
       middleNames: 'middle',
@@ -61,27 +61,14 @@ beforeEach(() => {
   })
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
-  referenceDataService.getReferenceDescriptionForCode.mockImplementation(
-    (_: ReferenceCodeType, code: string, __: Express.User) => {
-      if (code === 'WORK') {
-        return Promise.resolve('Work address')
-      }
-      if (code === 'BUS') {
-        return Promise.resolve('Business address')
-      }
-      if (code === 'HOME') {
-        return Promise.resolve('Home address')
-      }
-      return Promise.reject()
-    },
-  )
+  referenceDataService.getReferenceDescriptionForCode.mockImplementation(mockedGetReferenceDescriptionForCode)
 })
 
 afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/use-prisoner-address/:journeyId', () => {
+describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/use-prisoner-address/:journeyId`, () => {
   it('should replace the address lines with prisoner address primary address if found', async () => {
     existingJourney.addressLines = {
       noFixedAddress: false,
@@ -116,7 +103,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/use-p
 
     await request(app)
       .get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/use-prisoner-address/${journeyId}?returnUrl=/foo`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/use-prisoner-address/${journeyId}?returnUrl=/foo`,
       )
       .expect(302)
       .expect('Location', `/foo`)
@@ -150,7 +137,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/use-p
 
     await request(app)
       .get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/use-prisoner-address/${journeyId}?returnUrl=/foo`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/use-prisoner-address/${journeyId}?returnUrl=/foo`,
       )
       .expect(302)
       .expect('Location', `/foo`)
@@ -175,7 +162,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/use-p
     // When
     await request(app)
       .get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/use-prisoner-address/${journeyId}?returnUrl=/foo`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/use-prisoner-address/${journeyId}?returnUrl=/foo`,
       )
       .expect(302)
       .expect('Location', `/foo`)
@@ -189,7 +176,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/use-p
 
   it('should render not found if there is no journey in the session', async () => {
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/use-prisoner-address/${uuidv4()}`)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/use-prisoner-address/${uuidv4()}`,
+      )
       .expect(200)
       .expect(res => {
         expect(res.text).toContain('Page not found')

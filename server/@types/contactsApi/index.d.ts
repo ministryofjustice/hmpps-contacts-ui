@@ -1759,14 +1759,6 @@ export interface components {
        */
       createdTime: string
     }
-    ErrorResponse: {
-      /** Format: int32 */
-      status: number
-      errorCode?: string
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
-    }
     SyncPrisonerNumberOfChildrenResponse: {
       /**
        * Format: int64
@@ -1785,6 +1777,14 @@ export interface components {
       createdTime?: string
       /** @description Username of the creator */
       createdBy?: string
+    }
+    ErrorResponse: {
+      /** Format: int32 */
+      status: number
+      errorCode?: string
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
     }
     /** @description Request to update a prisoner's domestic status */
     SyncUpdatePrisonerDomesticStatusRequest: {
@@ -6716,6 +6716,11 @@ export interface components {
        * @example Friend
        */
       relationshipToPrisonerDescription?: string
+      /**
+       * @description Is this prisoner's contact relationship active?
+       * @example true
+       */
+      isRelationshipActive: boolean
     }
     /** @description Contact Search Request */
     ContactSearchRequest: {

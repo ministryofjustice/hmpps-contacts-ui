@@ -6,9 +6,8 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, flashProvider, user } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
-import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
+import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import AddressJourney = journeys.AddressJourney
-import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import AddressLines = journeys.AddressLines
 import { MockedService } from '../../../../../testutils/mockedServices'
 
@@ -35,7 +34,6 @@ beforeEach(() => {
     prisonerNumber,
     contactId,
     isCheckingAnswers: false,
-    mode: 'ADD',
     contactNames: {
       lastName: 'last',
       middleNames: 'middle',
@@ -56,22 +54,11 @@ beforeEach(() => {
       session.addressJourneys[journeyId] = { ...existingJourney }
     },
   })
-  prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
-  referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
-  referenceDataService.getReferenceDescriptionForCode.mockImplementation(
-    (_: ReferenceCodeType, code: string, __: Express.User) => {
-      if (code === 'WORK') {
-        return Promise.resolve('Work address')
-      }
-      if (code === 'BUS') {
-        return Promise.resolve('Business address')
-      }
-      if (code === 'HOME') {
-        return Promise.resolve('Home address')
-      }
-      return Promise.reject()
-    },
+  prisonerSearchService.getByPrisonerNumber.mockResolvedValue(
+    TestData.prisoner({ prisonerNumber, addresses: [{ primaryAddress: true, fullAddress: 'address' }] }),
   )
+  referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
+  referenceDataService.getReferenceDescriptionForCode.mockImplementation(mockedGetReferenceDescriptionForCode)
 })
 
 afterEach(() => {
@@ -79,34 +66,30 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/enter-address/:journeyId', () => {
-  it.each([
-    ['HOME', 'What is the home address for First Middle Last?'],
-    ['WORK', 'What is the work address for First Middle Last?'],
-    ['BUS', 'What is the business address for First Middle Last?'],
-    ['DO_NOT_KNOW', 'What is the address for First Middle Last?'],
-  ])(
-    'should render address lines page for new address with type %s and expected question %s',
-    async (addressType: string, expectedTitle: string) => {
-      // Given
-      existingJourney.addressType = addressType
+  it('should render address lines page', async () => {
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/enter-address/${journeyId}`,
+    )
 
-      // When
-      const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/enter-address/${journeyId}`,
-      )
+    // Then
+    expect(response.status).toEqual(200)
 
-      // Then
-      expect(response.status).toEqual(200)
+    const $ = cheerio.load(response.text)
+    expect($('#country').val()).toStrictEqual('ENG')
 
-      const $ = cheerio.load(response.text)
-      expect($('#country').val()).toStrictEqual('ENG')
-      expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(expectedTitle)
-      expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-        `/prisoner/A1234BC/contacts/manage/123456/relationship/456789/address/select-type/${journeyId}`,
-      )
-      expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-    },
-  )
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact methods')
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Enter the address for First Middle Last')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/select-type/${journeyId}`,
+    )
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
+    expect($('input[type=radio]:checked').val()).toBeUndefined()
+    expect($('a:contains("Automatically copy")').attr('href')).toEqual(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/use-prisoner-address/${journeyId}?returnUrl=/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/enter-address/${journeyId}`,
+    )
+  })
 
   it('should call the audit service for the page view', async () => {
     // Given
@@ -256,7 +239,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         .expect(302)
         .expect(
           'Location',
-          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/address-metadata/${journeyId}`,
+          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/dates/${journeyId}`,
         )
 
       // Then
@@ -278,14 +261,14 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   it.each([
     [
       false,
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/address-metadata/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/dates/${journeyId}`,
     ],
     [
       true,
       `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/check-answers/${journeyId}`,
     ],
   ])(
-    'should pass to next page and based on checking answsers or not',
+    'should pass to next page and based on checking answers or not',
     async (isCheckingAnswers: boolean, expectedRedirect: string) => {
       existingJourney.isCheckingAnswers = isCheckingAnswers
 

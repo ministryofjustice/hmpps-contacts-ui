@@ -31,7 +31,6 @@ describe('ensureInAddressJourney', () => {
       contactId: 99,
       prisonerNumber: 'A1324BC',
       isCheckingAnswers: false,
-      mode: 'ADD',
       contactNames: {
         lastName: 'Bar',
         firstName: 'Foo',

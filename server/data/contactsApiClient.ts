@@ -28,7 +28,7 @@ import UpdateContactRestrictionRequest = contactsApiClientTypes.UpdateContactRes
 import PrisonerContactRestrictionsResponse = contactsApiClientTypes.PrisonerContactRestrictionsResponse
 import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
-import UpdateContactAddressRequest = contactsApiClientTypes.UpdateContactAddressRequest
+import PatchContactAddressRequest = contactsApiClientTypes.PatchContactAddressRequest
 import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAddressPhoneRequest
 import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
@@ -365,10 +365,10 @@ export default class ContactsApiClient extends RestClient {
   async updateContactAddress(
     contactId: number,
     contactAddressId: number,
-    request: UpdateContactAddressRequest,
+    request: PatchContactAddressRequest,
     user: Express.User,
   ): Promise<ContactIdentityDetails> {
-    return this.put<ContactAddressDetails>(
+    return this.patch<ContactAddressDetails>(
       {
         path: `/contact/${contactId}/address/${contactAddressId}`,
         data: request,

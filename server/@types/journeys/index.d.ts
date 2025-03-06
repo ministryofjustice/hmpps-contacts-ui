@@ -140,9 +140,7 @@ declare namespace journeys {
     lastTouched: string
     contactId: number
     prisonerNumber?: string
-    contactAddressId?: number
     isCheckingAnswers: boolean
-    mode: 'ADD' | 'EDIT'
     contactNames: ContactNames
     addressType?: string | undefined
     addressLines?: AddressLines | undefined
@@ -166,9 +164,9 @@ declare namespace journeys {
     fromYear?: string | undefined
     toMonth?: string | undefined
     toYear?: string | undefined
-    primaryAddress?: YesOrNo | undefined
-    mailAddress?: YesOrNo | undefined
-    comments?: string | undefined
+    primaryAddress?: boolean | undefined
+    mailAddress?: boolean | undefined
+    comments?: string | null | undefined
   }
 
   export interface StandaloneManageContactJourney {

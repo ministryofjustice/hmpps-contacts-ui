@@ -1,0 +1,80 @@
+{% extends "partials/layout.njk" %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set title = ("Change if this is the primary or postal address for " + contact | formatNameFirstNameFirst) if isEdit else ("Set this address as the primary or postal address for " + contact | formatNameFirstNameFirst + " (optional)") %}
+{% set pageTitle = applicationName  + " - " + title %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+  {% include 'partials/navigation.njk' %}
+  {{ miniProfile(prisonerDetails) }}
+  {% include 'partials/formErrorSummary.njk' %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+    <span class="govuk-caption-l">{{ caption }}</span>
+      <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+      <div data-qa="address-reference" class="govuk-body govuk-!-margin-bottom-7 govuk-!-margin-top-2">
+        <strong>Address:</strong><br/>
+        {{ formattedAddress | addressToLines | safe }}
+      </div>
+      <div class="govuk-body govuk-!-margin-bottom-6">
+        <p>You can only set one primary and one postal address flag for each contact.</p>
+        <p>Setting this address as the primary or postal address for {{ contact | formatNameFirstNameFirst }} will remove these flags from any other addresses previously flagged.</p>
+      </div>
+      <form method='POST'>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        {{ govukRadios({
+          fieldset: {
+            legend: {
+              text: "Is this address the current primary or postal address for " + contact | formatNameFirstNameFirst + "?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          id: "isPrimaryOrPostal",
+          name: "isPrimaryOrPostal",
+          errorMessage: validationErrors | findError('isPrimaryOrPostal'),
+          items: [
+            {
+              value: 'P',
+              text: 'Primary address',
+              checked: primaryAddress === true and mailAddress === false
+            },
+            {
+              value: 'M',
+              text: 'Postal address',
+              checked: primaryAddress === false and mailAddress === true
+            },
+            {
+              value: 'PM',
+              text: 'Both primary and postal address',
+              checked: primaryAddress === true and mailAddress === true
+            },
+            {
+              divider: "or"
+            },
+            {
+              value: 'NONE',
+              text: 'None of the above',
+              checked: primaryAddress === false and mailAddress === false
+            }
+          ]
+        }) }}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: continueButtonLabel,
+            type: "submit",
+            classes: 'govuk-!-margin-top-6',
+            attributes: {"data-qa": "continue-button"},
+            preventDoubleClick: true
+          }) }}
+          {% if navigation.cancelButton %}
+            <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}
