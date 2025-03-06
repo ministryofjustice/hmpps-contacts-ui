@@ -26,6 +26,7 @@ import { formatDateRange } from './formatDateRange'
 import { formatBusinessPhoneNumber, formatPhoneNumber } from './formatPhoneNumber'
 import { formatTitleForAddress } from './addressUtils'
 import sortContactAddresses from './sortAddress'
+import { sortLinkedPrisoners } from './sortLinkedPrisoners'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -96,6 +97,7 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('referenceCodesToSelect', referenceCodesToSelect)
   njkEnv.addFilter('referenceCodesToRadios', referenceCodesToRadiosOrCheckboxes)
   njkEnv.addFilter('referenceCodesToCheckboxes', referenceCodesToRadiosOrCheckboxes)
+  njkEnv.addFilter('sortLinkedPrisoners', sortLinkedPrisoners)
   njkEnv.addFilter(
     'setSelected',
     (items: { value: string; text: string }[], selected) =>

@@ -6,7 +6,7 @@
     {% set contact = opts.contact %}
 
     {% set rows = [] %}
-    {% for linkedPrisoner in linkedPrisoners %}
+    {% for linkedPrisoner in linkedPrisoners | sortLinkedPrisoners %}
       {% for relationship in linkedPrisoner.relationships %}
         {% set prisonerNameAndNumberHtml %}
           <a class="govuk-link--no-visited-state" href="{{ DPS_HOME_PAGE_URL }}/prisoner/{{ linkedPrisoner.prisonerNumber }}" target="_blank" data-qa="linked-prisoner-profile-link-{{ relationship.prisonerContactId }}">{{ linkedPrisoner | formatNameLastNameFirst }}</a><br/>

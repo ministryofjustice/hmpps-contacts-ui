@@ -109,7 +109,7 @@ context('Contact confirmation', () => {
           prisonerNumber: 'X7896YZ',
           lastName: 'Smith',
           firstName: 'John',
-          middleNames: 'The Hatchet',
+          middleNames: 'Middle Names',
           relationships: [
             TestData.getLinkedPrisonerRelationshipDetails({
               prisonerContactId: 3,
@@ -128,7 +128,7 @@ context('Contact confirmation', () => {
       .hasLinkedPrisonersCardTitle('R6548ST', 'Last, First')
       .hasLinkedPrisonersNomsValue('R6548ST', 'R6548ST')
       .hasLinkedPrisonersRelationshipValue('R6548ST', 'Social/Family - FriendOfficial - Doctor')
-      .hasLinkedPrisonersCardTitle('X7896YZ', 'Smith, John The Hatchet')
+      .hasLinkedPrisonersCardTitle('X7896YZ', 'Smith, John Middle Names')
       .hasLinkedPrisonersNomsValue('X7896YZ', 'X7896YZ')
       .hasLinkedPrisonersRelationshipValue('X7896YZ', 'Social/Family - Friend')
   })
