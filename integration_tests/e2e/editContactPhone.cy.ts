@@ -1,6 +1,6 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
-import EnterPhonePage from '../pages/enterPhonePage'
+import EditPhonePage from '../pages/editPhonePage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import { StubPhoneDetails } from '../mockApis/contactsApi'
 import EditContactMethodsPage from '../pages/editContactMethodsPage'
@@ -27,6 +27,7 @@ context('Edit Contact Phones', () => {
     cy.task('stubTitlesReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetContactById', contact)
+    cy.task('stubGetContactNameById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship(),
@@ -67,7 +68,7 @@ context('Edit Contact Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickEditPhoneNumberLink('07878 111111, ext. 123')
 
-    Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
+    Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
       .hasPhoneNumber('07878 111111')
       .enterPhoneNumber('999 888')
       .hasType('MOB')
@@ -115,7 +116,7 @@ context('Edit Contact Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickEditPhoneNumberLink('01111 777777')
 
-    Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
+    Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
       .hasPhoneNumber('01111 777777')
       .enterPhoneNumber('987654321')
       .hasExtension('')
@@ -150,7 +151,7 @@ context('Edit Contact Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickEditPhoneNumberLink('01111 777777')
 
-    const enterPhonePage = Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
+    const enterPhonePage = Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
       .selectType('')
       .enterPhoneNumber('01234 777777')
     enterPhonePage.clickContinue()
@@ -165,7 +166,7 @@ context('Edit Contact Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickEditPhoneNumberLink('01111 777777')
 
-    const enterPhonePage = Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
+    const enterPhonePage = Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
       .clearPhoneNumber()
     enterPhonePage.clickContinue()
     enterPhonePage.hasFieldInError('phoneNumber', 'Enter a phone number')
@@ -179,7 +180,7 @@ context('Edit Contact Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickEditPhoneNumberLink('01111 777777')
 
-    const enterPhonePage = Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
+    const enterPhonePage = Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
       .enterPhoneNumber(''.padEnd(21, '0'))
     enterPhonePage.clickContinue()
     enterPhonePage.hasFieldInError('phoneNumber', 'Phone number must be 20 characters or less')
@@ -193,7 +194,7 @@ context('Edit Contact Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickEditPhoneNumberLink('01111 777777')
 
-    const enterPhonePage = Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
+    const enterPhonePage = Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
       .selectType('HOME')
       .enterPhoneNumber('0123')
       .enterExtension(''.padEnd(8, '0'))
@@ -202,7 +203,7 @@ context('Edit Contact Phones', () => {
     enterPhonePage.hasFieldInError('extension', 'Extension must be 7 characters or less')
   })
 
-  it('Back link goes to manage contact', () => {
+  it('Back link goes to manage contact via edit contact details', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickContactMethodsTab()
       .clickEditContactMethodsLink()
@@ -210,7 +211,7 @@ context('Edit Contact Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickEditPhoneNumberLink('01111 777777')
 
-    Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
+    Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
       .backTo(EditContactMethodsPage, 'First Middle Names Last')
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
       .verifyOnContactsMethodsTab()
@@ -224,9 +225,7 @@ context('Edit Contact Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickEditPhoneNumberLink('01111 777777')
 
-    Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
-      .cancelTo(EditContactMethodsPage, 'First Middle Names Last')
+    Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .verifyOnContactsMethodsTab()
   })
 })

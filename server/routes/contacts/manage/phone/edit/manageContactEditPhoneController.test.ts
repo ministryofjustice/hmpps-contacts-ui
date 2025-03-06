@@ -7,6 +7,7 @@ import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import TestData from '../../../../testutils/testData'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import { MockedService } from '../../../../../testutils/mockedServices'
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/referenceDataService')
@@ -69,18 +70,17 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'What is the phone number for First Middle Last?',
-    )
+    expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('Update a phone number for First Middle Last')
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact methods')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789',
     )
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
     )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-    expect($('#phoneNumber').val()).toStrictEqual('07878 111111')
     expect($('#type').val()).toStrictEqual('MOB')
+    expect($('#phoneNumber').val()).toStrictEqual('07878 111111')
     expect($('#extension').val()).toStrictEqual('123')
   })
 
@@ -99,18 +99,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'What is the phone number for First Middle Last?',
-    )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
-    )
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
-      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
-    )
-    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-    expect($('#phoneNumber').val()).toStrictEqual('999999999999999999999999999')
     expect($('#type').val()).toStrictEqual('HOME')
+    expect($('#phoneNumber').val()).toStrictEqual('999999999999999999999999999')
     expect($('#extension').val()).toStrictEqual('123456897877987985')
   })
 
@@ -147,7 +137,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/phone/:contactPhoneId/edit', () => {
   it('should edit phone with extension and pass to manage contact details page if there are no validation errors', async () => {
-    contactsService.getContact.mockResolvedValue(contact)
+    contactsService.getContactName.mockResolvedValue(contact)
+    contactsService.updateContactPhone.mockResolvedValue(null)
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/999/edit`)
       .type('form')
@@ -156,10 +147,15 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
 
     expect(contactsService.updateContactPhone).toHaveBeenCalledWith(contactId, 999, user, 'MOB', '123456789', '000')
+    expect(flashProvider).toHaveBeenCalledWith(
+      FLASH_KEY__SUCCESS_BANNER,
+      'You’ve updated the contact methods for First Middle Last.',
+    )
   })
 
   it('should edit phone without extension and pass to manage contact details page if there are no validation errors', async () => {
-    contactsService.getContact.mockResolvedValue(contact)
+    contactsService.getContactName.mockResolvedValue(contact)
+    contactsService.updateContactPhone.mockResolvedValue(null)
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/999/edit`)
       .type('form')
@@ -168,6 +164,10 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
 
     expect(contactsService.updateContactPhone).toHaveBeenCalledWith(contactId, 999, user, 'MOB', '123456789', undefined)
+    expect(flashProvider).toHaveBeenCalledWith(
+      FLASH_KEY__SUCCESS_BANNER,
+      'You’ve updated the contact methods for First Middle Last.',
+    )
   })
 
   it('should return to input page with details kept if there are validation errors', async () => {
@@ -181,5 +181,6 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/999/edit`,
       )
     expect(contactsService.updateContactPhone).not.toHaveBeenCalled()
+    expect(flashProvider).not.toHaveBeenCalledWith(FLASH_KEY__SUCCESS_BANNER, expect.anything)
   })
 })

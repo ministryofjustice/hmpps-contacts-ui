@@ -65,8 +65,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    // TODO temporarily sharing edit phone number template.
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'What is the phone number for First Middle Last?',
+      'Update a phone number for First Middle Last',
     )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',

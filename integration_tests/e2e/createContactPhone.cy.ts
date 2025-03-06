@@ -1,6 +1,6 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
-import EnterPhonePage from '../pages/enterPhonePage'
+import EditPhonePage from '../pages/editPhonePage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import { StubPhoneDetails } from '../mockApis/contactsApi'
 import EditContactMethodsPage from '../pages/editContactMethodsPage'
@@ -65,7 +65,7 @@ context('Create Contact Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddPhoneNumberLink()
 
-    Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
+    Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
       .enterPhoneNumber('01234 777777')
       .selectType('HOME')
       .clickContinue()
@@ -107,7 +107,7 @@ context('Create Contact Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddPhoneNumberLink()
 
-    Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
+    Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
       .enterPhoneNumber('01234 777777')
       .enterExtension('000')
       .selectType('HOME')
@@ -139,7 +139,7 @@ context('Create Contact Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddPhoneNumberLink()
 
-    const enterPhonePage = Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
+    const enterPhonePage = Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
       .enterPhoneNumber('01234 777777')
     enterPhonePage.clickContinue()
     enterPhonePage.hasFieldInError('type', 'Select the type of phone number')
@@ -153,7 +153,7 @@ context('Create Contact Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddPhoneNumberLink()
 
-    const enterPhonePage = Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
+    const enterPhonePage = Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
       .selectType('HOME')
     enterPhonePage.clickContinue()
     enterPhonePage.hasFieldInError('phoneNumber', 'Enter a phone number')
@@ -167,7 +167,7 @@ context('Create Contact Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddPhoneNumberLink()
 
-    const enterPhonePage = Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
+    const enterPhonePage = Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
       .selectType('HOME')
       .enterPhoneNumber(''.padEnd(21, '0'))
     enterPhonePage.clickContinue()
@@ -182,7 +182,7 @@ context('Create Contact Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddPhoneNumberLink()
 
-    const enterPhonePage = Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
+    const enterPhonePage = Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
       .selectType('HOME')
       .enterPhoneNumber('0123')
       .enterExtension(''.padEnd(8, '0'))
@@ -199,7 +199,7 @@ context('Create Contact Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddPhoneNumberLink()
 
-    Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
+    Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
       .backTo(EditContactMethodsPage, 'First Middle Names Last')
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
       .verifyOnContactsMethodsTab()
@@ -213,7 +213,7 @@ context('Create Contact Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddPhoneNumberLink()
 
-    Page.verifyOnPage(EnterPhonePage, 'First Middle Names Last') //
+    Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
       .cancelTo(EditContactMethodsPage, 'First Middle Names Last')
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
       .verifyOnContactsMethodsTab()
