@@ -4,8 +4,8 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% set pageTitle = applicationName + " - Create contact phone number" %}
-{% set title = "What is the phone number for " + (contact | formatNameFirstNameFirst) + "?" %}
+{% set pageTitle = applicationName + " - Update contact phone number" %}
+{% set title = "Update a phone number for " + (contact | formatNameFirstNameFirst) %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
@@ -13,12 +13,23 @@
     {% include 'partials/navigation.njk' %}
     {{ miniProfile(prisonerDetails) }}
     {% include 'partials/formErrorSummary.njk' %}
-    <span class="govuk-caption-l">Contacts</span>
-    <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-three-quarters">
+        <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-caption-l">Edit contact methods</span>
+            <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+                {{ govukSelect({
+                  id: "type",
+                  name: "type",
+                  label: {
+                    text: "Phone number type"
+                  },
+                  classes: 'govuk-!-width-one-quarter',
+                  items: typeOptions | referenceCodesToSelect('Select phone number type') | setSelected(type),
+                  errorMessage: validationErrors | findError('type')
+                }) }}
 
                 {{ govukInput({
                     id: "phoneNumber",
@@ -29,20 +40,10 @@
                     value: phoneNumber
                 }) }}
 
-                {{ govukSelect({
-                    id: "type",
-                    name: "type",
-                    label: {
-                        text: "Type"
-                    },
-                    items: typeOptions | referenceCodesToSelect('Select phone number type') | setSelected(type),
-                    errorMessage: validationErrors | findError('type')
-                }) }}
-
                 {{ govukInput({
                     id: "extension",
                     name: "extension",
-                    label: { text: "Extension" },
+                    label: { text: "Extension (optional)" },
                     classes: 'govuk-!-width-one-third',
                     errorMessage: validationErrors | findError('extension'),
                     value: extension
@@ -56,7 +57,9 @@
                         attributes: {"data-qa": "continue-button"},
                         preventDoubleClick: true
                     }) }}
-                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.backLink }}" data-qa="cancel-button">Cancel</a>
+                  {% if navigation.cancelButton %}
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
+                  {% endif %}
                 </div>
             </form>
 

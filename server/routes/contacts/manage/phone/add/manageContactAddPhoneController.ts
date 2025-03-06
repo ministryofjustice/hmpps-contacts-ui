@@ -27,7 +27,10 @@ export default class ManageContactAddPhoneController implements PageHandler {
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const typeOptions = await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user)
-    const navigation: Navigation = { backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId) }
+    const navigation: Navigation = {
+      backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
+      cancelButton: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
+    }
     const viewModel = {
       typeOptions,
       phoneNumber: res.locals?.formResponses?.['phoneNumber'],
@@ -36,7 +39,7 @@ export default class ManageContactAddPhoneController implements PageHandler {
       contact,
       navigation,
     }
-    res.render('pages/contacts/manage/contactMethods/addEditPhone', viewModel)
+    res.render('pages/contacts/manage/contactMethods/editPhone', viewModel)
   }
 
   POST = async (

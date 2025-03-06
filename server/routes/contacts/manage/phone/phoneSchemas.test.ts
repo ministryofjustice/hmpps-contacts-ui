@@ -111,7 +111,7 @@ describe('phoneNumberSchemaFactory', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        phoneNumber: ['The phone number you entered is invalid, check the format and try again'],
+        phoneNumber: ['Enter a phone number, like 01632 960 001, 07700 900 982 or +44 808 157 0192'],
       })
     })
 

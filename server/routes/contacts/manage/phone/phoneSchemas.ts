@@ -8,7 +8,7 @@ const PHONE_NUMBER_TOO_LONG_ERROR_MSG = 'Phone number must be 20 characters or l
 
 const EXT_TOO_LONG_ERROR_MSG = 'Extension must be 7 characters or less'
 
-const PHONE_IS_INVALID = 'The phone number you entered is invalid, check the format and try again'
+const PHONE_IS_INVALID = 'Enter a phone number, like 01632 960 001, 07700 900 982 or +44 808 157 0192'
 
 const PHONE_REGEX = /^\+?[\d\s()]*$/
 

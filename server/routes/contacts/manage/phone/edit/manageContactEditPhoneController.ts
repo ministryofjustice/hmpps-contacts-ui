@@ -5,12 +5,12 @@ import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import { PhoneNumberSchemaType } from '../phoneSchemas'
 import { ContactsService } from '../../../../../services'
-import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
-import ContactDetails = contactsApiClientTypes.ContactDetails
 import { Navigation } from '../../../common/navigation'
 import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
+import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
+import ContactDetails = contactsApiClientTypes.ContactDetails
 
 export default class ManageContactEditPhoneController implements PageHandler {
   constructor(
@@ -36,7 +36,10 @@ export default class ManageContactEditPhoneController implements PageHandler {
       )
     }
     const typeOptions = await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user)
-    const navigation: Navigation = { backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId) }
+    const navigation: Navigation = {
+      backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
+      cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
+    }
     const viewModel = {
       typeOptions,
       phoneNumber: res.locals?.formResponses?.['phoneNumber'] ?? phone.phoneNumber,
@@ -45,7 +48,7 @@ export default class ManageContactEditPhoneController implements PageHandler {
       contact,
       navigation,
     }
-    res.render('pages/contacts/manage/contactMethods/addEditPhone', viewModel)
+    res.render('pages/contacts/manage/contactMethods/editPhone', viewModel)
   }
 
   POST = async (
@@ -59,16 +62,9 @@ export default class ManageContactEditPhoneController implements PageHandler {
     const { user } = res.locals
     const { prisonerNumber, contactId, prisonerContactId, contactPhoneId } = req.params
     const { phoneNumber, type, extension } = req.body
-    await this.contactsService.updateContactPhone(
-      parseInt(contactId, 10),
-      parseInt(contactPhoneId, 10),
-      user,
-      type,
-      phoneNumber,
-      extension,
-    )
     await this.contactsService
-      .getContact(Number(contactId), user)
+      .updateContactPhone(parseInt(contactId, 10), parseInt(contactPhoneId, 10), user, type, phoneNumber, extension)
+      .then(_ => this.contactsService.getContactName(Number(contactId), user))
       .then(response =>
         req.flash(
           FLASH_KEY__SUCCESS_BANNER,

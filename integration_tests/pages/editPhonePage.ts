@@ -1,46 +1,46 @@
 import Page, { PageElement } from './page'
 
-export default class EnterPhonePage extends Page {
+export default class EditPhonePage extends Page {
   constructor(name: string) {
-    super(`What is the phone number for ${name}?`)
+    super(`Update a phone number for ${name}`)
   }
 
-  hasPhoneNumber(value: string): EnterPhonePage {
+  hasPhoneNumber(value: string): EditPhonePage {
     this.phoneNumberTextBox().should('have.value', value)
     return this
   }
 
-  enterPhoneNumber(value: string): EnterPhonePage {
+  enterPhoneNumber(value: string): EditPhonePage {
     this.phoneNumberTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
-  clearPhoneNumber(): EnterPhonePage {
+  clearPhoneNumber(): EditPhonePage {
     this.phoneNumberTextBox().clear()
     return this
   }
 
-  selectType(value: string): EnterPhonePage {
+  selectType(value: string): EditPhonePage {
     this.typeSelect().select(value)
     return this
   }
 
-  hasType(value: string): EnterPhonePage {
+  hasType(value: string): EditPhonePage {
     this.typeSelect().should('have.value', value)
     return this
   }
 
-  enterExtension(value: string): EnterPhonePage {
+  enterExtension(value: string): EditPhonePage {
     this.extensionTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
-  hasExtension(value: string): EnterPhonePage {
+  hasExtension(value: string): EditPhonePage {
     this.extensionTextBox().should('have.value', value)
     return this
   }
 
-  clearExtension(): EnterPhonePage {
+  clearExtension(): EditPhonePage {
     this.extensionTextBox().clear()
     return this
   }
