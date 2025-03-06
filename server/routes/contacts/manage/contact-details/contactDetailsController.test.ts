@@ -1043,6 +1043,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
               relationshipTypeDescription: 'Social/Family',
               relationshipToPrisonerCode: 'FRI',
               relationshipToPrisonerDescription: 'Friend',
+              isRelationshipActive: true,
             },
           ],
         },
@@ -1059,6 +1060,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
               relationshipTypeDescription: 'Social/Family',
               relationshipToPrisonerCode: 'MOT',
               relationshipToPrisonerDescription: 'Mother',
+              isRelationshipActive: true,
             },
             {
               prisonerContactId: 3,
@@ -1066,6 +1068,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
               relationshipTypeDescription: 'Official',
               relationshipToPrisonerCode: 'DR',
               relationshipToPrisonerDescription: 'Doctor',
+              isRelationshipActive: true,
             },
           ],
         },
