@@ -1,21 +1,21 @@
 import Page, { PageElement } from './page'
 
-export default class EnterEmailPage extends Page {
+export default class EditEmailPage extends Page {
   constructor(name: string) {
-    super(`What is the email address for ${name}?`)
+    super(`Update an email address for ${name}`)
   }
 
-  hasEmail(email: string): EnterEmailPage {
+  hasEmail(email: string): EditEmailPage {
     this.emailTextBox().should('have.value', email)
     return this
   }
 
-  enterEmail(value: string | ''): EnterEmailPage {
+  enterEmail(value: string | ''): EditEmailPage {
     this.emailTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
-  clearEmail(): EnterEmailPage {
+  clearEmail(): EditEmailPage {
     this.emailTextBox().clear()
     return this
   }

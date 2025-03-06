@@ -7,6 +7,7 @@ import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import { MockedService } from '../../../../../testutils/mockedServices'
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 
@@ -74,11 +75,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact methods')
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'What is the email address for First Middle Last?',
+      'Update an email address for First Middle Last',
     )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789',
     )
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
@@ -102,16 +104,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'What is the email address for First Middle Last?',
-    )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
-    )
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
-      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
-    )
-    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('#emailAddress').val()).toStrictEqual('name@')
   })
 
@@ -148,7 +140,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/email/:contactEmailId/edit', () => {
   it('should edit mail and pass to manage contact details page if there are no validation errors', async () => {
-    contactsService.getContact.mockResolvedValue(contact)
+    contactsService.getContactName.mockResolvedValue(contact)
+    contactsService.updateContactEmail.mockResolvedValue(TestData.getContactEmailDetails('mr.last@example.com', 1))
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/6/edit`)
       .type('form')
@@ -161,6 +154,10 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       updatedBy: 'FIRST LAST',
     }
     expect(contactsService.updateContactEmail).toHaveBeenCalledWith(contactId, 6, requestBody, user)
+    expect(flashProvider).toHaveBeenCalledWith(
+      FLASH_KEY__SUCCESS_BANNER,
+      'You’ve updated the contact methods for First Middle Last.',
+    )
   })
 
   it('should return to input page with details kept if there are validation errors', async () => {
@@ -174,5 +171,6 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/6/edit`,
       )
     expect(contactsService.updateContactEmail).not.toHaveBeenCalled()
+    expect(flashProvider).not.toHaveBeenCalledWith(FLASH_KEY__SUCCESS_BANNER, expect.anything)
   })
 })
