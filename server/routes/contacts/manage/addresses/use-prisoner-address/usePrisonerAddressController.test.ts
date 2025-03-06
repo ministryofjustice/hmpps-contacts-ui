@@ -27,6 +27,8 @@ let session: Partial<SessionData>
 const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 const contactId = 123456
+const prisonerContactId = 456789
+
 let existingJourney: AddressJourney
 
 beforeEach(() => {
@@ -66,7 +68,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/use-prisoner-address/:journeyId', () => {
+describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/use-prisoner-address/:journeyId`, () => {
   it('should replace the address lines with prisoner address primary address if found', async () => {
     existingJourney.addressLines = {
       noFixedAddress: false,
@@ -101,7 +103,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/use-p
 
     await request(app)
       .get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/use-prisoner-address/${journeyId}?returnUrl=/foo`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/use-prisoner-address/${journeyId}?returnUrl=/foo`,
       )
       .expect(302)
       .expect('Location', `/foo`)
@@ -135,7 +137,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/use-p
 
     await request(app)
       .get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/use-prisoner-address/${journeyId}?returnUrl=/foo`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/use-prisoner-address/${journeyId}?returnUrl=/foo`,
       )
       .expect(302)
       .expect('Location', `/foo`)
@@ -160,7 +162,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/use-p
     // When
     await request(app)
       .get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/use-prisoner-address/${journeyId}?returnUrl=/foo`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/use-prisoner-address/${journeyId}?returnUrl=/foo`,
       )
       .expect(302)
       .expect('Location', `/foo`)
@@ -174,7 +176,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/address/use-p
 
   it('should render not found if there is no journey in the session', async () => {
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/address/use-prisoner-address/${uuidv4()}`)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/use-prisoner-address/${uuidv4()}`,
+      )
       .expect(200)
       .expect(res => {
         expect(res.text).toContain('Page not found')

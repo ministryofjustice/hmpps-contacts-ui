@@ -407,7 +407,7 @@ const ManageContactsRoutes = (
   })
 
   get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/address/use-prisoner-address/:journeyId',
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/use-prisoner-address/:journeyId',
     new UsePrisonerAddressController(prisonerAddressService),
     ensureInAddressJourney,
   )

@@ -54,7 +54,9 @@ beforeEach(() => {
       session.addressJourneys[journeyId] = { ...existingJourney }
     },
   })
-  prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
+  prisonerSearchService.getByPrisonerNumber.mockResolvedValue(
+    TestData.prisoner({ prisonerNumber, addresses: [{ primaryAddress: true, fullAddress: 'address' }] }),
+  )
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   referenceDataService.getReferenceDescriptionForCode.mockImplementation(mockedGetReferenceDescriptionForCode)
 })
@@ -84,6 +86,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
     expect($('input[type=radio]:checked').val()).toBeUndefined()
+    expect($('a:contains("Automatically copy")').attr('href')).toEqual(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/use-prisoner-address/${journeyId}?returnUrl=/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/enter-address/${journeyId}`,
+    )
   })
 
   it('should call the audit service for the page view', async () => {
