@@ -67,6 +67,7 @@ context('Update Prisoner Contact Employments', () => {
         contactGlobalRestrictions: [],
       },
     })
+    cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
     cy.task('stubOrganisationSearch')
     cy.task('stubGetOrganisation', {
       organisationId: 201,

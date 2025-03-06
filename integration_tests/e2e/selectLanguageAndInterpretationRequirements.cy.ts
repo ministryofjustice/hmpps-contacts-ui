@@ -26,6 +26,7 @@ context('Select Language and interpretation requirements', () => {
         contactGlobalRestrictions: [],
       },
     })
+    cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
     cy.task('stubLanguagesReferenceData')
     cy.task('stubTitlesReferenceData')
     cy.signIn()

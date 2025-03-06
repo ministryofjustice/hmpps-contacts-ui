@@ -61,7 +61,7 @@ context('Create Contacts', () => {
         contactGlobalRestrictions: [],
       },
     })
-
+    cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
     cy.signIn()
     const { prisonerNumber } = TestData.prisoner()
     cy.visit(`/prisoner/${prisonerNumber}/contacts/list`)

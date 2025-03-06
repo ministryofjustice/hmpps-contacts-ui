@@ -23,6 +23,7 @@ context('Change Contact Title Or Middle Names', () => {
         contactGlobalRestrictions: [],
       },
     })
+    cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
     cy.signIn()
   })
 

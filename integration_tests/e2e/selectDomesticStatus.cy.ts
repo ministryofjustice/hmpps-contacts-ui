@@ -35,6 +35,7 @@ context('Select Domestic Status', () => {
         contactGlobalRestrictions: [],
       },
     })
+    cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
     cy.signIn()
   })
 

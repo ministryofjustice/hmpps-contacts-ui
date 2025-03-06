@@ -37,7 +37,7 @@ context('Create Contact Global Restriction', () => {
         contactGlobalRestrictions: [],
       },
     })
-
+    cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
     cy.signIn()
 
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)

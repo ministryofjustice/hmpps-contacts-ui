@@ -30,7 +30,7 @@ context('Manage contacts restrictions', () => {
     })
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', 'A1234BC')
-
+    cy.task('stubGetLinkedPrisoners', { contactId: contact.id, linkedPrisoners: [] })
     cy.task('stubGetContactById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', { id: 31, response: TestData.prisonerContactRelationship() })
   })
