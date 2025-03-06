@@ -32,7 +32,6 @@ import UpdateContactAddressRequest = contactsApiClientTypes.UpdateContactAddress
 import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAddressPhoneRequest
 import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
-import LinkedPrisonerDetails = contactsApiClientTypes.LinkedPrisonerDetails
 import PatchEmploymentsRequest = contactsApiClientTypes.PatchEmploymentsRequest
 
 type PageableObject = components['schemas']['PageableObject']
@@ -43,6 +42,7 @@ type AddContactRelationshipRequest = components['schemas']['AddContactRelationsh
 type CreateContactRequest = components['schemas']['CreateContactRequest']
 type ContactNameDetails = components['schemas']['ContactNameDetails']
 type CreateMultipleIdentitiesRequest = components['schemas']['CreateMultipleIdentitiesRequest']
+type LinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
 
 export default class ContactsApiClient extends RestClient {
   constructor() {

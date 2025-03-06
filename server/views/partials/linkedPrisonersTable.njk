@@ -1,0 +1,44 @@
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% macro linkedPrisonersTable(opts) %}
+
+    {% set linkedPrisoners = opts.linkedPrisoners %}
+    {% set contact = opts.contact %}
+
+    {% set rows = [] %}
+    {% for linkedPrisoner in linkedPrisoners %}
+      {% for relationship in linkedPrisoner.relationships %}
+        {% set prisonerNameAndNumberHtml %}
+          <a class="govuk-link--no-visited-state" href="{{ DPS_HOME_PAGE_URL }}/prisoner/{{ linkedPrisoner.prisonerNumber }}" target="_blank" data-qa="linked-prisoner-profile-link-{{ relationship.prisonerContactId }}">{{ linkedPrisoner | formatNameLastNameFirst }}</a><br/>
+          {{ linkedPrisoner.prisonerNumber }}
+        {% endset %}
+        {% set rows = (rows.push([
+          { html: prisonerNameAndNumberHtml },
+          { text: linkedPrisoner.prisonName },
+          { text: relationship.relationshipTypeDescription },
+          { text: relationship.relationshipToPrisonerDescription }
+        ]), rows) %}
+      {% endfor %}
+    {% endfor %}
+
+    {{ govukTable({
+      caption: "Prisoners linked to contact " + (contact | formatNameFirstNameFirst),
+      captionClasses: "govuk-table__caption--l govuk-!-margin-bottom-6",
+      firstCellIsHeader: false,
+      head: [
+        {
+          text: "Name and prison number"
+        },
+        {
+          text: "Establishment"
+        },
+        {
+          text: "Relationship type"
+        },
+        {
+          text: "Contact’s relationship to the prisoner"
+        }
+      ],
+      rows: rows
+    }) }}
+{% endmacro %}

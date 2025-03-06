@@ -39,6 +39,7 @@ context('Edit Contact Identities', () => {
         contactGlobalRestrictions: [],
       },
     })
+    cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
     cy.task('stubGetContactNameById', contact)
     cy.signIn()
     const { prisonerNumber } = TestData.prisoner()

@@ -34,7 +34,7 @@ context('Change Relationship Type', () => {
         contactGlobalRestrictions: [],
       },
     })
-
+    cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
     cy.signIn()
   })
 

@@ -10,6 +10,7 @@ import ContactDetails = contactsApiClientTypes.ContactDetails
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 
+type LinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
@@ -40,6 +41,7 @@ beforeEach(() => {
     prisonerContactRestrictions: [],
     contactGlobalRestrictions: [],
   })
+  contactsService.getLinkedPrisoners.mockResolvedValue([])
 })
 
 afterEach(() => {
@@ -1022,6 +1024,92 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
         expect($('h2:contains("Addresses")').first().next().text()).toMatch(/No addresses provided./)
       })
+    })
+  })
+  describe('Linked prisoners tab', () => {
+    it('should show linked prisoners table with count in the heading', async () => {
+      const linkedPrisoners: LinkedPrisonerDetails[] = [
+        {
+          prisonerNumber: 'X7896YZ',
+          lastName: 'Smith',
+          firstName: 'John',
+          middleNames: 'The Hatchet',
+          prisonId: 'EXE',
+          prisonName: 'Exeter (HMP)',
+          relationships: [
+            {
+              prisonerContactId: 1,
+              relationshipTypeCode: 'S',
+              relationshipTypeDescription: 'Social/Family',
+              relationshipToPrisonerCode: 'FRI',
+              relationshipToPrisonerDescription: 'Friend',
+            },
+          ],
+        },
+        {
+          prisonerNumber: 'A1234BC',
+          lastName: 'Last',
+          firstName: 'First',
+          prisonId: 'BXI',
+          prisonName: 'Brixton (HMP)',
+          relationships: [
+            {
+              prisonerContactId: 2,
+              relationshipTypeCode: 'S',
+              relationshipTypeDescription: 'Social/Family',
+              relationshipToPrisonerCode: 'MOT',
+              relationshipToPrisonerDescription: 'Mother',
+            },
+            {
+              prisonerContactId: 3,
+              relationshipTypeCode: 'O',
+              relationshipTypeDescription: 'Official',
+              relationshipToPrisonerCode: 'DR',
+              relationshipToPrisonerDescription: 'Doctor',
+            },
+          ],
+        },
+      ]
+      contactsService.getLinkedPrisoners.mockResolvedValue(linkedPrisoners)
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.getContact.mockResolvedValue(TestData.contact())
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
+
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+      const $ = cheerio.load(response.text)
+
+      // Should include all relationships in the count if a prisoner has more than one relationship to the contact
+      expect($('.linked-prisoners-tab-title').text().trim()).toStrictEqual('Linked prisoners (3)')
+      const tableBody = $('caption:contains(Prisoners linked to contact Jones Mason)').next().next()
+      const firstRowColumns = $($(tableBody).find('tr').eq(0)).find('td')
+      expect(firstRowColumns.eq(0).text()).toContain('Smith, John The Hatchet')
+      expect(firstRowColumns.eq(0).text()).toContain('X7896YZ')
+      expect(firstRowColumns.eq(1).text()).toStrictEqual('Exeter (HMP)')
+      expect(firstRowColumns.eq(2).text()).toStrictEqual('Social/Family')
+      expect(firstRowColumns.eq(3).text()).toStrictEqual('Friend')
+      expect($('[data-qa=linked-prisoner-profile-link-1]').attr('href')).toStrictEqual(
+        'http://localhost:3001/prisoner/X7896YZ',
+      )
+
+      const secondRowColumns = $($(tableBody).find('tr').eq(1)).find('td')
+      expect(secondRowColumns.eq(0).text()).toContain('Last, First')
+      expect(secondRowColumns.eq(0).text()).toContain('A1234BC')
+      expect(secondRowColumns.eq(1).text()).toStrictEqual('Brixton (HMP)')
+      expect(secondRowColumns.eq(2).text()).toStrictEqual('Social/Family')
+      expect(secondRowColumns.eq(3).text()).toStrictEqual('Mother')
+      expect($('[data-qa=linked-prisoner-profile-link-2]').attr('href')).toStrictEqual(
+        'http://localhost:3001/prisoner/A1234BC',
+      )
+
+      const thirdRowColumns = $($(tableBody).find('tr').eq(2)).find('td')
+      expect(thirdRowColumns.eq(0).text()).toContain('Last, First')
+      expect(thirdRowColumns.eq(0).text()).toContain('A1234BC')
+      expect(thirdRowColumns.eq(1).text()).toStrictEqual('Brixton (HMP)')
+      expect(thirdRowColumns.eq(2).text()).toStrictEqual('Official')
+      expect(thirdRowColumns.eq(3).text()).toStrictEqual('Doctor')
+      expect($('[data-qa=linked-prisoner-profile-link-3]').attr('href')).toStrictEqual(
+        'http://localhost:3001/prisoner/A1234BC',
+      )
     })
   })
 })

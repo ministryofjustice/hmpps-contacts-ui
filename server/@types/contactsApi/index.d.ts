@@ -425,6 +425,42 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/prisoner/{prisonerNumber}/number-of-children': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get prisoner number of children */
+    get: operations['getNumberOfChildren']
+    /** Create or update prisoner number of children */
+    put: operations['createOrUpdateNumberOfChildren']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/prisoner/{prisonerNumber}/domestic-status': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get prisoner domestic status */
+    get: operations['getDomesticStatus']
+    /** Create or update prisoner domestic status */
+    put: operations['createOrUpdateDomesticStatus']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/prisoner-contact/{prisonerContactId}/restriction/{prisonerContactRestrictionId}': {
     parameters: {
       query?: never
@@ -3024,6 +3060,75 @@ export interface components {
        * @example 2023-09-24T12:00:00
        */
       updatedTime?: string
+    }
+    /** @description Request to update prisoner number of children */
+    CreateOrUpdatePrisonerNumberOfChildrenRequest: {
+      /**
+       * Format: int32
+       * @description The number of children
+       * @example 1
+       */
+      numberOfChildren?: number
+      /**
+       * @description User who requesting to create or update
+       * @example admin
+       */
+      requestedBy: string
+    }
+    /** @description Response object containing prisoner number of children information */
+    PrisonerNumberOfChildrenResponse: {
+      /**
+       * Format: int64
+       * @description The unique identifier of the number of children
+       * @example 1
+       */
+      id: number
+      /** @description The number of children of the prisoner */
+      numberOfChildren?: string
+      /** @description Is this the active number of children of the prisoner */
+      active: boolean
+      /**
+       * Format: date-time
+       * @description Creation date and time
+       */
+      createdTime?: string
+      /** @description Username of the creator */
+      createdBy?: string
+    }
+    /** @description Request to create or update prisoner domestic status */
+    CreateOrUpdatePrisonerDomesticStatusRequest: {
+      /**
+       * @description The domestic status code for DOMESTIC_STS group code
+       * @example M
+       */
+      domesticStatusCode?: string
+      /**
+       * @description User who requesting to create or update
+       * @example admin
+       */
+      requestedBy: string
+    }
+    /** @description Response object containing prisoner domestic status information */
+    PrisonerDomesticStatusResponse: {
+      /**
+       * Format: int64
+       * @description The unique identifier of the domestic status
+       * @example 1
+       */
+      id: number
+      /** @description The domestic status code of the prisoner */
+      domesticStatusCode?: string
+      /** @description The domestic status description of the prisoner */
+      domesticStatusDescription?: string
+      /** @description Is this the active domestic status code of the prisoner */
+      active: boolean
+      /**
+       * Format: date-time
+       * @description Creation date and time
+       */
+      createdTime?: string
+      /** @description Username of the creator */
+      createdBy?: string
     }
     /** @description Request to update an existing new restriction between a prisoner and a contact */
     UpdatePrisonerContactRestrictionRequest: {
@@ -6183,11 +6288,11 @@ export interface components {
       /** Format: int64 */
       offset?: number
       sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      pageSize?: number
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
-      /** Format: int32 */
-      pageSize?: number
       unpaged?: boolean
     }
     /** @description Describes the details of a prisoner's contact */
@@ -6376,10 +6481,10 @@ export interface components {
       /** Format: int64 */
       total?: number
       last?: boolean
-      /** Format: int32 */
-      totalPages?: number
       /** Format: int64 */
       totalElements?: number
+      /** Format: int32 */
+      totalPages?: number
       first?: boolean
       /** Format: int32 */
       size?: number
@@ -6392,8 +6497,8 @@ export interface components {
     }
     SortObject: {
       empty?: boolean
-      unsorted?: boolean
       sorted?: boolean
+      unsorted?: boolean
     }
     /** @description Restriction related to a specific relationship between a prisoner and contact */
     PrisonerContactRestrictionsResponse: {
@@ -6566,6 +6671,16 @@ export interface components {
        * @example William
        */
       middleNames?: string
+      /**
+       * @description The id of the prisoners current prison
+       * @example BXI
+       */
+      prisonId?: string
+      /**
+       * @description The name of the prisoners current prison
+       * @example Brixton (HMP)
+       */
+      prisonName?: string
       /** @description All the relationships between the prisoner and contact. At least one will be present. */
       relationships: components['schemas']['LinkedPrisonerRelationshipDetails'][]
     }
@@ -6755,10 +6870,10 @@ export interface components {
       /** Format: int64 */
       total?: number
       last?: boolean
-      /** Format: int32 */
-      totalPages?: number
       /** Format: int64 */
       totalElements?: number
+      /** Format: int32 */
+      totalPages?: number
       first?: boolean
       /** Format: int32 */
       size?: number
@@ -8289,6 +8404,210 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['SyncContactAddressPhone']
+        }
+      }
+    }
+  }
+  getNumberOfChildren: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonerNumber: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Prisoner number of children retrieved successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerNumberOfChildrenResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Prisoner not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  createOrUpdateNumberOfChildren: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonerNumber: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateOrUpdatePrisonerNumberOfChildrenRequest']
+      }
+    }
+    responses: {
+      /** @description Prisoner number of children created/updated successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerNumberOfChildrenResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Prisoner not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getDomesticStatus: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonerNumber: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Prisoner domestic status retrieved successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerDomesticStatusResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Prisoner not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  createOrUpdateDomesticStatus: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonerNumber: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateOrUpdatePrisonerDomesticStatusRequest']
+      }
+    }
+    responses: {
+      /** @description Prisoner domestic status created/updated successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerDomesticStatusResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Prisoner not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
         }
       }
     }

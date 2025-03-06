@@ -30,7 +30,7 @@ context('Select Gender', () => {
         contactGlobalRestrictions: [],
       },
     })
-
+    cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
     cy.signIn()
     const { prisonerNumber } = TestData.prisoner()
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)

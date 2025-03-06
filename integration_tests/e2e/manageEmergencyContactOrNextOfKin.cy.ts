@@ -29,6 +29,7 @@ context('Manage contact update emergency contact', () => {
         isNextOfKin: true,
       }),
     })
+    cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
     cy.task('stubUpdateContactRelationshipById', {
       prisonerContactId,
     })
