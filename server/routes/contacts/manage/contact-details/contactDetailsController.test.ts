@@ -1033,7 +1033,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           prisonerNumber: 'X7896YZ',
           lastName: 'Smith',
           firstName: 'John',
-          middleNames: 'The Hatchet',
+          middleNames: 'Middle Names',
           prisonId: 'EXE',
           prisonName: 'Exeter (HMP)',
           relationships: [
@@ -1043,6 +1043,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
               relationshipTypeDescription: 'Social/Family',
               relationshipToPrisonerCode: 'FRI',
               relationshipToPrisonerDescription: 'Friend',
+              isRelationshipActive: true,
             },
           ],
         },
@@ -1059,6 +1060,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
               relationshipTypeDescription: 'Social/Family',
               relationshipToPrisonerCode: 'MOT',
               relationshipToPrisonerDescription: 'Mother',
+              isRelationshipActive: true,
             },
             {
               prisonerContactId: 3,
@@ -1066,6 +1068,26 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
               relationshipTypeDescription: 'Official',
               relationshipToPrisonerCode: 'DR',
               relationshipToPrisonerDescription: 'Doctor',
+              isRelationshipActive: true,
+            },
+          ],
+        },
+        // Same name but alphabetically later prisoner number
+        {
+          prisonerNumber: 'Z7896YZ',
+          lastName: 'Smith',
+          firstName: 'John',
+          middleNames: 'Middle Names',
+          prisonId: 'EXE',
+          prisonName: 'Exeter (HMP)',
+          relationships: [
+            {
+              prisonerContactId: 4,
+              relationshipTypeCode: 'S',
+              relationshipTypeDescription: 'Social/Family',
+              relationshipToPrisonerCode: 'UNC',
+              relationshipToPrisonerDescription: 'Uncle',
+              isRelationshipActive: true,
             },
           ],
         },
@@ -1079,36 +1101,46 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       const $ = cheerio.load(response.text)
 
       // Should include all relationships in the count if a prisoner has more than one relationship to the contact
-      expect($('.linked-prisoners-tab-title').text().trim()).toStrictEqual('Linked prisoners (3)')
+      expect($('.linked-prisoners-tab-title').text().trim()).toStrictEqual('Linked prisoners (4)')
       const tableBody = $('caption:contains(Prisoners linked to contact Jones Mason)').next().next()
       const firstRowColumns = $($(tableBody).find('tr').eq(0)).find('td')
-      expect(firstRowColumns.eq(0).text()).toContain('Smith, John The Hatchet')
-      expect(firstRowColumns.eq(0).text()).toContain('X7896YZ')
-      expect(firstRowColumns.eq(1).text()).toStrictEqual('Exeter (HMP)')
+      expect(firstRowColumns.eq(0).text()).toContain('Last, First')
+      expect(firstRowColumns.eq(0).text()).toContain('A1234BC')
+      expect(firstRowColumns.eq(1).text()).toStrictEqual('Brixton (HMP)')
       expect(firstRowColumns.eq(2).text()).toStrictEqual('Social/Family')
-      expect(firstRowColumns.eq(3).text()).toStrictEqual('Friend')
-      expect($('[data-qa=linked-prisoner-profile-link-1]').attr('href')).toStrictEqual(
-        'http://localhost:3001/prisoner/X7896YZ',
+      expect(firstRowColumns.eq(3).text()).toStrictEqual('Mother')
+      expect($('[data-qa=linked-prisoner-profile-link-2]').attr('href')).toStrictEqual(
+        'http://localhost:3001/prisoner/A1234BC',
       )
 
       const secondRowColumns = $($(tableBody).find('tr').eq(1)).find('td')
       expect(secondRowColumns.eq(0).text()).toContain('Last, First')
       expect(secondRowColumns.eq(0).text()).toContain('A1234BC')
       expect(secondRowColumns.eq(1).text()).toStrictEqual('Brixton (HMP)')
-      expect(secondRowColumns.eq(2).text()).toStrictEqual('Social/Family')
-      expect(secondRowColumns.eq(3).text()).toStrictEqual('Mother')
-      expect($('[data-qa=linked-prisoner-profile-link-2]').attr('href')).toStrictEqual(
+      expect(secondRowColumns.eq(2).text()).toStrictEqual('Official')
+      expect(secondRowColumns.eq(3).text()).toStrictEqual('Doctor')
+      expect($('[data-qa=linked-prisoner-profile-link-3]').attr('href')).toStrictEqual(
         'http://localhost:3001/prisoner/A1234BC',
       )
 
       const thirdRowColumns = $($(tableBody).find('tr').eq(2)).find('td')
-      expect(thirdRowColumns.eq(0).text()).toContain('Last, First')
-      expect(thirdRowColumns.eq(0).text()).toContain('A1234BC')
-      expect(thirdRowColumns.eq(1).text()).toStrictEqual('Brixton (HMP)')
-      expect(thirdRowColumns.eq(2).text()).toStrictEqual('Official')
-      expect(thirdRowColumns.eq(3).text()).toStrictEqual('Doctor')
-      expect($('[data-qa=linked-prisoner-profile-link-3]').attr('href')).toStrictEqual(
-        'http://localhost:3001/prisoner/A1234BC',
+      expect(thirdRowColumns.eq(0).text()).toContain('Smith, John Middle Names')
+      expect(thirdRowColumns.eq(0).text()).toContain('X7896YZ')
+      expect(thirdRowColumns.eq(1).text()).toStrictEqual('Exeter (HMP)')
+      expect(thirdRowColumns.eq(2).text()).toStrictEqual('Social/Family')
+      expect(thirdRowColumns.eq(3).text()).toStrictEqual('Friend')
+      expect($('[data-qa=linked-prisoner-profile-link-1]').attr('href')).toStrictEqual(
+        'http://localhost:3001/prisoner/X7896YZ',
+      )
+
+      const fourthRowColumns = $($(tableBody).find('tr').eq(3)).find('td')
+      expect(fourthRowColumns.eq(0).text()).toContain('Smith, John Middle Names')
+      expect(fourthRowColumns.eq(0).text()).toContain('Z7896YZ')
+      expect(fourthRowColumns.eq(1).text()).toStrictEqual('Exeter (HMP)')
+      expect(fourthRowColumns.eq(2).text()).toStrictEqual('Social/Family')
+      expect(fourthRowColumns.eq(3).text()).toStrictEqual('Uncle')
+      expect($('[data-qa=linked-prisoner-profile-link-4]').attr('href')).toStrictEqual(
+        'http://localhost:3001/prisoner/Z7896YZ',
       )
     })
   })

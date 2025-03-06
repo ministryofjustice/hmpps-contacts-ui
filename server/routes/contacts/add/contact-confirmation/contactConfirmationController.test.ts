@@ -515,7 +515,7 @@ describe('Restrictions', () => {
           prisonerNumber: 'X7896YZ',
           lastName: 'Smith',
           firstName: 'John',
-          middleNames: 'The Hatchet',
+          middleNames: 'Middle Names',
           relationships: [
             TestData.getLinkedPrisonerRelationshipDetails({
               prisonerContactId: 3,
@@ -537,7 +537,7 @@ describe('Restrictions', () => {
         'Social/Family - FriendOfficial - Doctor',
       )
 
-      expect($('.linked-prisoner-X7896YZ-card-title').text().trim()).toStrictEqual('Smith, John The Hatchet')
+      expect($('.linked-prisoner-X7896YZ-card-title').text().trim()).toStrictEqual('Smith, John Middle Names')
       expect($('.linked-prisoner-X7896YZ-noms-value').text().trim()).toStrictEqual('X7896YZ')
       expect($('.linked-prisoner-X7896YZ-relationship-value').text().trim()).toStrictEqual('Social/Family - Friend')
     })
