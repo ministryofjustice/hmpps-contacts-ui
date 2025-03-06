@@ -23,13 +23,16 @@ export default class ManageContactAddEmailController implements PageHandler {
     const { user } = res.locals
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
-    const navigation: Navigation = { backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId) }
+    const navigation: Navigation = {
+      backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
+      cancelButton: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
+    }
     const viewModel = {
       emailAddress: res.locals?.formResponses?.['emailAddress'],
       contact,
       navigation,
     }
-    res.render('pages/contacts/manage/contactMethods/addEditEmail', viewModel)
+    res.render('pages/contacts/manage/contactMethods/editEmail', viewModel)
   }
 
   POST = async (
