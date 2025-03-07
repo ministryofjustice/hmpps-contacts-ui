@@ -85,7 +85,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
     expect($('[data-qa=address-reference]').first().html()!.trim()).toMatch(/<strong>Address:<\/strong><br>\s+?England/)
-    expect($('input#comments').val()).toEqual('')
+    expect($('#comments').val()).toEqual('')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ENTER_ADDRESS_COMMENTS_PAGE, {
       who: user.username,
