@@ -1,6 +1,6 @@
 import { Readable } from 'stream'
 
-import Agent, { HttpsAgent } from 'agentkeepalive'
+import { HttpAgent, HttpsAgent } from 'agentkeepalive'
 import superagent from 'superagent'
 
 import { URLSearchParams } from 'url'
@@ -64,7 +64,7 @@ function getSystemClientTokenFromHmppsAuth(username: string): Promise<superagent
 }
 
 export default abstract class RestClient {
-  agent: Agent
+  agent: HttpAgent
 
   tokenStore: TokenStore
 
@@ -72,7 +72,7 @@ export default abstract class RestClient {
     private readonly name: string,
     private readonly apiConfig: ApiConfig,
   ) {
-    this.agent = apiConfig.url.startsWith('https') ? new HttpsAgent(apiConfig.agent) : new Agent(apiConfig.agent)
+    this.agent = apiConfig.url.startsWith('https') ? new HttpsAgent(apiConfig.agent) : new HttpAgent(apiConfig.agent)
     this.tokenStore = config.redis.enabled ? new RedisTokenStore(createRedisClient()) : new InMemoryTokenStore()
   }
 
@@ -121,7 +121,7 @@ export default abstract class RestClient {
         .responseType(responseType)
         .timeout(this.timeoutConfig())
 
-      return raw ? result : result.body
+      return raw ? (result as Response) : result.body
     } catch (error) {
       const sanitisedError = sanitiseError(error as Error)
       logger.warn({ ...sanitisedError }, `Error calling ${this.name}, path: '${path}', verb: 'GET'`)
@@ -156,7 +156,7 @@ export default abstract class RestClient {
         .responseType(responseType)
         .timeout(this.timeoutConfig())
 
-      return raw ? result : result.body
+      return raw ? (result as Response) : result.body
     } catch (error) {
       const sanitisedError = sanitiseError(error as Error)
       logger.warn({ ...sanitisedError }, `Error calling ${this.name}, path: '${path}', verb: '${method.toUpperCase()}'`)
@@ -211,7 +211,7 @@ export default abstract class RestClient {
         .responseType(responseType)
         .timeout(this.timeoutConfig())
 
-      return raw ? result : result.body
+      return raw ? (result as Response) : result.body
     } catch (error) {
       const sanitisedError = sanitiseError(error as Error)
       logger.warn({ ...sanitisedError }, `Error calling ${this.name}, path: '${path}', verb: 'DELETE'`)
