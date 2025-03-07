@@ -10,40 +10,54 @@ describe('addContactFlowControl', () => {
       const journeyId = uuidv4()
 
       it.each([
-        [Page.CREATE_CONTACT_NAME_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`],
-        [Page.CREATE_CONTACT_DOB_PAGE, `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`],
-        [Page.SELECT_RELATIONSHIP_TYPE, `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`],
-        [Page.SELECT_CONTACT_RELATIONSHIP, `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`],
+        [Page.CREATE_CONTACT_NAME_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`, undefined],
+        [Page.CREATE_CONTACT_DOB_PAGE, `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`, undefined],
+        [Page.SELECT_RELATIONSHIP_TYPE, `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`, undefined],
+        [
+          Page.SELECT_CONTACT_RELATIONSHIP,
+          `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`,
+          undefined,
+        ],
         [
           Page.SELECT_EMERGENCY_CONTACT,
           `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`,
+          undefined,
         ],
-        [Page.SELECT_NEXT_OF_KIN, `/prisoner/A1234BC/contacts/create/select-emergency-contact/${journeyId}`],
-        [Page.ENTER_RELATIONSHIP_COMMENTS, `/prisoner/A1234BC/contacts/create/select-next-of-kin/${journeyId}`],
-        [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, undefined],
-      ])('Should go back to previous page: from %s to %s', (page: Page, expectedBackUrl?: string) => {
-        const journey: AddContactJourney = {
-          id: journeyId,
-          lastTouched: new Date().toISOString(),
-          prisonerNumber: 'A1234BC',
-          returnPoint: {
-            url: '/foo',
-          },
-          mode: 'NEW',
-          isCheckingAnswers: false,
-          dateOfBirth: {
-            isKnown: 'NO',
-          },
-        }
-        const expected: Navigation = {
-          backLink: expectedBackUrl,
-          breadcrumbs: undefined,
-        }
+        [Page.SELECT_NEXT_OF_KIN, `/prisoner/A1234BC/contacts/create/select-emergency-contact/${journeyId}`, undefined],
+        [
+          Page.ENTER_RELATIONSHIP_COMMENTS,
+          `/prisoner/A1234BC/contacts/create/select-next-of-kin/${journeyId}`,
+          undefined,
+        ],
+        [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, undefined, `/prisoner/A1234BC/contacts/add/cancel/${journeyId}`],
+        [Page.ADD_CONTACT_CANCEL_PAGE, `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`, undefined],
+      ])(
+        'Should go back to previous page: from %s to %s',
+        (page: Page, expectedBackUrl?: string, expectedCancelButton?: string) => {
+          const journey: AddContactJourney = {
+            id: journeyId,
+            lastTouched: new Date().toISOString(),
+            prisonerNumber: 'A1234BC',
+            returnPoint: {
+              url: '/foo',
+            },
+            mode: 'NEW',
+            isCheckingAnswers: false,
+            dateOfBirth: {
+              isKnown: 'NO',
+            },
+          }
+          const expected: Navigation = {
+            backLink: expectedBackUrl,
+            breadcrumbs: undefined,
+            cancelButton: expectedCancelButton,
+          }
 
-        const nav = navigationForAddContactJourney(page, journey)
+          const nav = navigationForAddContactJourney(page, journey)
 
-        expect(nav).toStrictEqual(expected)
-      })
+          expect(nav).toStrictEqual(expected)
+        },
+      )
     })
 
     describe('getNextPageForAddContactJourney', () => {
@@ -164,36 +178,50 @@ describe('addContactFlowControl', () => {
     describe('getNavigationForAddContactJourney', () => {
       const journeyId = uuidv4()
       it.each([
-        [Page.CONTACT_CONFIRMATION_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`],
-        [Page.SELECT_RELATIONSHIP_TYPE, `/prisoner/A1234BC/contacts/add/confirmation/${journeyId}`],
-        [Page.SELECT_CONTACT_RELATIONSHIP, `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`],
+        [Page.CONTACT_CONFIRMATION_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`, undefined],
+        [Page.SELECT_RELATIONSHIP_TYPE, `/prisoner/A1234BC/contacts/add/confirmation/${journeyId}`, undefined],
+        [
+          Page.SELECT_CONTACT_RELATIONSHIP,
+          `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`,
+          undefined,
+        ],
         [
           Page.SELECT_EMERGENCY_CONTACT,
           `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`,
+          undefined,
         ],
-        [Page.SELECT_NEXT_OF_KIN, `/prisoner/A1234BC/contacts/create/select-emergency-contact/${journeyId}`],
-        [Page.ENTER_RELATIONSHIP_COMMENTS, `/prisoner/A1234BC/contacts/create/select-next-of-kin/${journeyId}`],
-        [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, undefined],
-      ])('Should go back to previous page: from %s to %s', (page: Page, expectedBackUrl?: string) => {
-        const journey: AddContactJourney = {
-          id: journeyId,
-          lastTouched: new Date().toISOString(),
-          prisonerNumber: 'A1234BC',
-          returnPoint: {
-            url: '/foo',
-          },
-          mode: 'EXISTING',
-          isCheckingAnswers: false,
-        }
-        const expected: Navigation = {
-          backLink: expectedBackUrl,
-          breadcrumbs: undefined,
-        }
+        [Page.SELECT_NEXT_OF_KIN, `/prisoner/A1234BC/contacts/create/select-emergency-contact/${journeyId}`, undefined],
+        [
+          Page.ENTER_RELATIONSHIP_COMMENTS,
+          `/prisoner/A1234BC/contacts/create/select-next-of-kin/${journeyId}`,
+          undefined,
+        ],
+        [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, undefined, `/prisoner/A1234BC/contacts/add/cancel/${journeyId}`],
+        [Page.ADD_CONTACT_CANCEL_PAGE, `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`, undefined],
+      ])(
+        'Should go back to previous page: from %s to %s',
+        (page: Page, expectedBackUrl?: string, expectedCancelButton?: string) => {
+          const journey: AddContactJourney = {
+            id: journeyId,
+            lastTouched: new Date().toISOString(),
+            prisonerNumber: 'A1234BC',
+            returnPoint: {
+              url: '/foo',
+            },
+            mode: 'EXISTING',
+            isCheckingAnswers: false,
+          }
+          const expected: Navigation = {
+            backLink: expectedBackUrl,
+            breadcrumbs: undefined,
+            cancelButton: expectedCancelButton,
+          }
 
-        const nav = navigationForAddContactJourney(page, journey)
+          const nav = navigationForAddContactJourney(page, journey)
 
-        expect(nav).toStrictEqual(expected)
-      })
+          expect(nav).toStrictEqual(expected)
+        },
+      )
     })
 
     describe('getNextPageForAddContactJourney', () => {
@@ -318,6 +346,7 @@ describe('addContactFlowControl', () => {
       const expected: Navigation = {
         backLink: undefined,
         breadcrumbs: breadcrumbs as BreadcrumbType[] | undefined,
+        cancelButton: undefined,
       }
 
       const nav = navigationForAddContactJourney(page, journey)

@@ -11,6 +11,7 @@ import ContactConfirmationPage from '../pages/contactConfirmationPage'
 import AddContactSuccessPage from '../pages/addContactSuccessPage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
+import CancelAddContactPage from '../pages/cancelAddContactPage'
 
 context('Add Existing Contact', () => {
   const { prisonerNumber } = TestData.prisoner()
@@ -454,5 +455,44 @@ context('Add Existing Contact', () => {
         createdBy: 'USER1',
       },
     )
+  })
+
+  it('Cancelling from check answers prompts for confirmation', () => {
+    cy.task('stubGetContactById', {
+      id: contactId,
+      firstName: 'Existing',
+      lastName: 'Contact',
+      dateOfBirth: '1990-01-14',
+      employments: [],
+    })
+
+    Page.verifyOnPage(SearchContactPage) //
+      .clickTheContactLink(contactId)
+
+    Page.verifyOnPage(ContactConfirmationPage, 'John Smith') //
+      .selectIsTheRightPersonYesRadio()
+      .continueTo(SelectRelationshipTypePage, 'Existing Contact', 'John Smith') //
+      .selectRelationshipType('S')
+      .continueTo(SelectRelationshipPage, 'Existing Contact', 'John Smith') //
+      .selectRelationship('MOT')
+      .continueTo(SelectEmergencyContactPage, 'Existing Contact') //
+      .selectIsEmergencyContact('NO')
+      .continueTo(SelectNextOfKinPage, 'Existing Contact') //
+      .selectIsNextOfKin('YES')
+      .continueTo(RelationshipCommentsPage, 'Existing Contact') //
+      .enterComments('Some comments about the relationship')
+      .continueTo(LinkExistingContactCYAPage) //
+      .clickCancelLink()
+
+    Page.verifyOnPage(CancelAddContactPage, 'EXISTING', 'Existing Contact') // cancel cancelling
+      .clickCancelLink()
+
+    Page.verifyOnPage(LinkExistingContactCYAPage) //
+      .clickCancelLink()
+
+    Page.verifyOnPage(CancelAddContactPage, 'EXISTING', 'Existing Contact') // confirm cancelling
+      .clickContinue()
+
+    Page.verifyOnPage(ListContactsPage)
   })
 })

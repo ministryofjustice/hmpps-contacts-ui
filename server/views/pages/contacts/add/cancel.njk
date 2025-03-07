@@ -1,0 +1,59 @@
+{% extends "partials/layout.njk" %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% set pageTitle = applicationName + " - Cancel adding a contact" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+
+  {% include 'partials/navigation.njk' %}
+  {{ miniProfile(prisonerDetails) }}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-l">{{ caption }}</span>
+      <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+
+      <form method='POST'>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        {% if showPrisonerAndContact %}
+        <p class="govuk-!-margin-bottom-7" data-qa="prisoner-and-contact-details">
+          <strong>Prisoner:</strong>&nbsp;<span>{{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }} ({{ prisonerDetails.prisonerNumber }})</span>
+          <br/>
+          <strong>Contact:</strong>&nbsp;<span>{{ journey.names | formatNameFirstNameFirst }} ({{ journey.contactId }})</span>
+        </p>
+        {% endif %}
+
+        {{ govukWarningText({
+          text: "If you cancel, the information you’ve entered will not be saved and the contact will not be linked to the prisoner.",
+          iconFallbackText: "Warning"
+        }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Yes, cancel",
+            type: "submit",
+            name: "action",
+            value: "YES",
+            classes: 'govuk-button--warning',
+            attributes: {"data-qa": "continue-button"},
+            preventDoubleClick: true
+          }) }}
+          {{ govukButton({
+            text: "No, return to check answers",
+            type: "submit",
+            name: "action",
+            value: "NO",
+            classes: 'govuk-!-margin-top-6 govuk-button--secondary',
+            attributes: {"data-qa": "cancel-button"},
+            href: navigation.cancelButton,
+            preventDoubleClick: true
+          }) }}
+        </div>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

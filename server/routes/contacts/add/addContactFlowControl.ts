@@ -16,6 +16,7 @@ type CreateContactPages =
   | Page.ENTER_RELATIONSHIP_COMMENTS
   | Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE
   | Page.SUCCESSFULLY_ADDED_CONTACT_PAGE
+  | Page.ADD_CONTACT_CANCEL_PAGE
 type ExistingContactPages =
   | Page.CREATE_CONTACT_START_PAGE
   | Page.CONTACT_SEARCH_PAGE
@@ -28,9 +29,10 @@ type ExistingContactPages =
   | Page.ENTER_RELATIONSHIP_COMMENTS
   | Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE
   | Page.SUCCESSFULLY_ADDED_CONTACT_PAGE
+  | Page.ADD_CONTACT_CANCEL_PAGE
 type AllAddContactPages = PreModePages | CreateContactPages | ExistingContactPages
 type JourneyUrlProvider = (journey: journeys.AddContactJourney) => string | undefined
-type Spec = { previousUrl: JourneyUrlProvider; nextUrl: JourneyUrlProvider }
+type Spec = { previousUrl: JourneyUrlProvider; nextUrl: JourneyUrlProvider; cancelUrl?: JourneyUrlProvider }
 
 const PAGES: Record<AllAddContactPages, { url: JourneyUrlProvider; breadcrumbs?: BreadcrumbType[] }> = {
   [Page.CREATE_CONTACT_START_PAGE]: {
@@ -74,6 +76,9 @@ const PAGES: Record<AllAddContactPages, { url: JourneyUrlProvider; breadcrumbs?:
     url: journey =>
       `/prisoner/${journey.prisonerNumber}/contact/${journey.mode}/${journey.contactId}/${journey.prisonerContactId}/success`,
     breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'],
+  },
+  [Page.ADD_CONTACT_CANCEL_PAGE]: {
+    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/add/cancel/${journey.id}`,
   },
 }
 
@@ -119,9 +124,14 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE]: {
     previousUrl: _ => undefined,
     nextUrl: PAGES.SUCCESSFULLY_ADDED_CONTACT_PAGE.url,
+    cancelUrl: PAGES.ADD_CONTACT_CANCEL_PAGE.url,
   },
   [Page.SUCCESSFULLY_ADDED_CONTACT_PAGE]: {
     previousUrl: _ => undefined,
+    nextUrl: _ => undefined,
+  },
+  [Page.ADD_CONTACT_CANCEL_PAGE]: {
+    previousUrl: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url,
     nextUrl: _ => undefined,
   },
 }
@@ -160,9 +170,14 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
   [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE]: {
     previousUrl: _ => undefined,
     nextUrl: PAGES.SUCCESSFULLY_ADDED_CONTACT_PAGE.url,
+    cancelUrl: PAGES.ADD_CONTACT_CANCEL_PAGE.url,
   },
   [Page.SUCCESSFULLY_ADDED_CONTACT_PAGE]: {
     previousUrl: _ => undefined,
+    nextUrl: _ => undefined,
+  },
+  [Page.ADD_CONTACT_CANCEL_PAGE]: {
+    previousUrl: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url,
     nextUrl: _ => undefined,
   },
 }
@@ -187,6 +202,7 @@ function navigationForAddContactJourney(currentPage: Page, journey: journeys.Add
     return {
       backLink: spec.previousUrl(journey),
       breadcrumbs: PAGES[currentPage as AllAddContactPages].breadcrumbs,
+      cancelButton: spec.cancelUrl?.(journey),
     }
   }
   throw new Error(`Couldn't determine navigation for page (${currentPage}) and journey (${JSON.stringify(journey)})`)

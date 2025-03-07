@@ -89,7 +89,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Check your answers')
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      `/prisoner/A1234BC/contacts/add/cancel/${journeyId}`,
+    )
     expect($('.check-answers-dob-value').first().text().trim()).toStrictEqual('1 January 2024')
     expect($('.check-answers-comments-value').first().text().trim()).toStrictEqual('some comments')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
@@ -111,7 +113,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
       'Check your answers before linking the contact to John Smith',
     )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Link a contact to a prisoner')
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      `/prisoner/A1234BC/contacts/add/cancel/${journeyId}`,
+    )
     expect($('.check-answers-comments-value').first().text().trim()).toStrictEqual('some comments')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('p > strong:contains("Contact:")').first().next().text().trim()).toStrictEqual('First Last (12345)')
@@ -129,7 +133,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     expect(journey.isCheckingAnswers).toStrictEqual(true)
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Check your answers')
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      `/prisoner/A1234BC/contacts/add/cancel/${journeyId}`,
+    )
     expect($('.check-answers-dob-value').first().text().trim()).toStrictEqual('Not provided')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
   })

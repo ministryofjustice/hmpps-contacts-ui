@@ -29,6 +29,7 @@ import { enterDobSchema } from '../common/enter-dob/enterDobSchemas'
 import SuccessfullyAddedContactController from './success/successfullyAddedContactController'
 import { selectRelationshipTypeSchema } from './relationship-type/relationshipTypeSchema'
 import RelationshipTypeController from './relationship-type/relationshipTypeController'
+import CancelAddContactController from './cancel/cancelAddContactController'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -211,6 +212,20 @@ const AddContactRoutes = (
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, successfullyAddedContactController),
     asyncMiddleware(successfullyAddedContactController.GET),
+  )
+
+  const cancelAddContactController = new CancelAddContactController()
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/add/cancel/:journeyId',
+    ensureInAddContactJourney(),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    logPageViewMiddleware(auditService, cancelAddContactController),
+    asyncMiddleware(cancelAddContactController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/add/cancel/:journeyId',
+    ensureInAddContactJourney(),
+    asyncMiddleware(cancelAddContactController.POST),
   )
   return router
 }
