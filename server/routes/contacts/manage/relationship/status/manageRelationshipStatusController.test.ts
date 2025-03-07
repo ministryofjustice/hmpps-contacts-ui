@@ -76,7 +76,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     'should update relationship status active status to %s when %s is selected',
     async (expected: boolean, input: string) => {
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.getContact.mockResolvedValue(TestData.contact())
+      contactsService.getContactName.mockResolvedValue(TestData.contact())
       await request(app)
         .post(
           `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/relationship-status`,

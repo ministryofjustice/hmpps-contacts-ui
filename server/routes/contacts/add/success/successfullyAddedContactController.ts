@@ -21,10 +21,10 @@ export default class SuccessfullyAddedContactController implements PageHandler {
   ): Promise<void> => {
     const { user } = res.locals
     const { contactId, prisonerContactId, mode } = req.params
-    const contact: ContactDetails = await this.contactsService.getContact(Number(contactId), user)
+    const contact: ContactDetails = await this.contactsService.getContactName(Number(contactId), user)
 
     const names: ContactNames = {
-      title: contact.title,
+      title: contact.titleDescription,
       lastName: contact.lastName,
       firstName: contact.firstName,
       middleNames: contact.middleNames,

@@ -81,7 +81,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/language-and-interpreter', () => {
   it('should update contact when language code and interpretation requirement is provided', async () => {
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-    contactsService.getContact.mockResolvedValue(TestData.contact())
+    contactsService.getContactName.mockResolvedValue(TestData.contact())
     await request(app)
       .post(
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/language-and-interpreter`,

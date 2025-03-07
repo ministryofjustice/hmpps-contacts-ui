@@ -75,7 +75,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       ['YES', { isStaff: true, updatedBy: 'user1' }],
       ['NO', { isStaff: false, updatedBy: 'user1' }],
     ])('should update contact when isStaff is %p', async (isStaff, expectedPayload) => {
-      contactsService.getContact.mockResolvedValue(TestData.contact())
+      contactsService.getContactName.mockResolvedValue(TestData.contact())
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/staff`)
         .type('form')

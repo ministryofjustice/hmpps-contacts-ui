@@ -63,7 +63,7 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/start', () => {
   it('should create the journey and redirect to select type page', async () => {
     // Given
-    contactsService.getContact.mockResolvedValue(contact)
+    contactsService.getContactName.mockResolvedValue({ ...contact, titleDescription: 'Mr' })
 
     // When
     const response = await request(app).get(
@@ -85,7 +85,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(journey.addressLines).toBeUndefined()
     expect(journey.addressMetadata).toBeUndefined()
     expect(journey.contactNames).toStrictEqual({
-      title: '',
+      title: 'Mr',
       lastName: 'last',
       firstName: 'first',
       middleNames: 'middle',
@@ -94,7 +94,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
   it('should not remove any existing address journeys in the session', async () => {
     // Given
-    contactsService.getContact.mockResolvedValue(contact)
+    contactsService.getContactName.mockResolvedValue(contact)
     preExistingJourneysToAddToSession = [
       {
         id: uuidv4(),
@@ -125,7 +125,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
   it('should remove the oldest if there will be more than 5 journeys', async () => {
     // Given
-    contactsService.getContact.mockResolvedValue(contact)
+    contactsService.getContactName.mockResolvedValue(contact)
     preExistingJourneysToAddToSession = [
       {
         id: 'old',

@@ -39,6 +39,7 @@ context('Create Contacts', () => {
         firstName: 'First',
       }),
     )
+    cy.task('stubGetContactNameById', { id: contactId, lastName: 'Last', firstName: 'First' })
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship(),

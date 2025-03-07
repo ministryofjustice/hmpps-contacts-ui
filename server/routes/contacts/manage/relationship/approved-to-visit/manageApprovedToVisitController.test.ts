@@ -80,7 +80,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       ['NO', { isApprovedVisitor: false, updatedBy: 'user1' }],
     ])('should update contact when isApprovedToVisit is %p', async (isApprovedToVisit, expectedPayload) => {
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.getContact.mockResolvedValue(TestData.contact())
+      contactsService.getContactName.mockResolvedValue(TestData.contact())
       await request(app)
         .post(
           `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/approved-to-visit`,

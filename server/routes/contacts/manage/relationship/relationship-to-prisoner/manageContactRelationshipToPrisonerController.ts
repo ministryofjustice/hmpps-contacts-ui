@@ -28,14 +28,14 @@ export default class ManageContactRelationshipToPrisonerController implements Pa
   ): Promise<void> => {
     const { user } = res.locals
     const { prisonerNumber, contactId, prisonerContactId } = req.params
-    const contact: ContactDetails = await this.contactsService.getContact(Number(contactId), user)
+    const contact: ContactDetails = await this.contactsService.getContactName(Number(contactId), user)
     const relationship: PrisonerContactRelationshipDetails = await this.contactsService.getPrisonerContactRelationship(
       Number(prisonerContactId),
       user,
     )
 
     const names: ContactNames = {
-      title: contact.title,
+      title: contact.titleDescription,
       lastName: contact.lastName,
       firstName: contact.firstName,
       middleNames: contact.middleNames,
@@ -85,7 +85,7 @@ export default class ManageContactRelationshipToPrisonerController implements Pa
     }
     await this.contactsService
       .updateContactRelationshipById(Number(prisonerContactId), request, user)
-      .then(_ => this.contactsService.getContact(Number(contactId), user))
+      .then(_ => this.contactsService.getContactName(Number(contactId), user))
       .then(response =>
         req.flash(
           FLASH_KEY__SUCCESS_BANNER,

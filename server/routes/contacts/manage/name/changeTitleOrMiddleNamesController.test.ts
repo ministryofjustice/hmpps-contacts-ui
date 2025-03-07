@@ -52,7 +52,7 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/change-contact-title-or-middle-names', () => {
   it('should render update name page with correct navigation and labeling', async () => {
     // Given
-    contactsService.getContact.mockResolvedValue(contact)
+    contactsService.getContactName.mockResolvedValue(contact)
 
     // When
     const response = await request(app).get(
@@ -78,7 +78,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
   it('title options are ordered alphabetically', async () => {
     // Given
-    contactsService.getContact.mockResolvedValue(contact)
+    contactsService.getContactName.mockResolvedValue(contact)
 
     // When
     const response = await request(app).get(
@@ -97,7 +97,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
   it('should call the audit service for the page view', async () => {
     // Given
-    contactsService.getContact.mockResolvedValue(contact)
+    contactsService.getContactName.mockResolvedValue(contact)
 
     // When
     const response = await request(app).get(
@@ -115,7 +115,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
   it('should render previously entered details if validation errors', async () => {
     // Given
     const form = { middleNames: 'middle updated', title: 'DR' }
-    contactsService.getContact.mockResolvedValue(
+    contactsService.getContactName.mockResolvedValue(
       TestData.contact({
         id: contact.id,
         firstName: 'first',
@@ -140,7 +140,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
   it('should render contact names with first and last capitalised', async () => {
     // Given
-    contactsService.getContact.mockResolvedValue(
+    contactsService.getContactName.mockResolvedValue(
       TestData.contact({
         id: contact.id,
         firstName: 'first',
@@ -166,13 +166,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
   it('should render contact names if optional values missing', async () => {
     // Given
-    contactsService.getContact.mockResolvedValue({
-      ...TestData.contact({ id: contact.id }),
+    contactsService.getContactName.mockResolvedValue({
       firstName: 'first',
       lastName: 'last',
-      middleNames: undefined,
-      titleCode: undefined,
-      titleDescription: undefined,
     })
 
     // When

@@ -52,6 +52,7 @@ beforeEach(() => {
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
   contactsService.getContact.mockResolvedValue(contact)
+  contactsService.getContactName.mockResolvedValue(contact)
   contactsService.getGlobalContactRestrictions.mockResolvedValue([
     TestData.getContactRestrictionDetails({
       contactRestrictionId: 1,

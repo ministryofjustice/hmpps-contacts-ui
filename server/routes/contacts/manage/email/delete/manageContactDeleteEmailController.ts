@@ -54,7 +54,7 @@ export default class ManageContactDeleteEmailController implements PageHandler {
 
     await this.contactsService.deleteContactEmail(contactIdNumber, contactEmailIdNumber, user)
     await this.contactsService
-      .getContact(Number(contactId), user)
+      .getContactName(Number(contactId), user)
       .then(response =>
         req.flash(
           FLASH_KEY__SUCCESS_BANNER,

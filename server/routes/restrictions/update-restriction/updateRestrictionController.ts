@@ -34,9 +34,9 @@ export default class UpdateRestrictionController implements PageHandler {
   ): Promise<void> => {
     const { contactId, prisonerContactId, restrictionId, restrictionClass } = req.params
     const { user, journey } = res.locals
-    await this.contactsService.getContact(Number(contactId), user).then(contact => {
+    await this.contactsService.getContactName(Number(contactId), user).then(contact => {
       journey.contactNames = {
-        title: contact.title,
+        title: contact.titleDescription,
         lastName: contact.lastName,
         firstName: contact.firstName,
         middleNames: contact.middleNames,

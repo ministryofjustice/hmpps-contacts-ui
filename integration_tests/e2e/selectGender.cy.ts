@@ -18,6 +18,7 @@ context('Select Gender', () => {
     cy.task('stubTitlesReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetContactById', TestData.contact())
+    cy.task('stubGetContactNameById', TestData.contact())
     cy.task('stubGetGenders')
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,

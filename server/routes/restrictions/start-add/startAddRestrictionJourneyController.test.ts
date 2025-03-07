@@ -64,7 +64,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     'should create the journey and redirect to enter restriction page for restrictionClass %s',
     async restrictionClass => {
       // Given
-      contactsService.getContact.mockResolvedValue(contact)
+      contactsService.getContactName.mockResolvedValue(contact)
 
       // When
       const response = await request(app).get(
@@ -88,7 +88,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
   it('should not remove any existing add journeys in the session', async () => {
     // Given
-    contactsService.getContact.mockResolvedValue(contact)
+    contactsService.getContactName.mockResolvedValue(contact)
     preExistingJourneysToAddToSession = [
       {
         id: uuidv4(),
@@ -121,7 +121,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
   it('should remove the oldest if there will be more than 5 journeys', async () => {
     // Given
-    contactsService.getContact.mockResolvedValue(contact)
+    contactsService.getContactName.mockResolvedValue(contact)
     preExistingJourneysToAddToSession = [
       {
         id: 'old',

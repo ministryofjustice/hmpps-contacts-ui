@@ -123,6 +123,7 @@ context('Select Language and interpretation requirements', () => {
     interpreterRequired?: boolean
   }) => {
     cy.task('stubGetContactById', contact)
+    cy.task('stubGetContactNameById', contact)
     const { prisonerNumber } = TestData.prisoner()
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 

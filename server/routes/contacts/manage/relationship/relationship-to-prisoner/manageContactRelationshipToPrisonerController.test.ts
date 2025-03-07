@@ -58,7 +58,7 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-relationship-to-prisoner', () => {
   it('should have correct navigations', async () => {
     // Given
-    contactsService.getContact.mockResolvedValue(contact)
+    contactsService.getContactName.mockResolvedValue(contact)
     contactsService.getPrisonerContactRelationship.mockResolvedValue(relationship)
 
     // When
@@ -101,7 +101,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     'should use correct reference group for different relationship types %s',
     async (relationshipType, expectedFirstOption: string, expectedHintText: string, expectedDefaultLabel: string) => {
       // Given
-      contactsService.getContact.mockResolvedValue(contact)
+      contactsService.getContactName.mockResolvedValue(contact)
       contactsService.getPrisonerContactRelationship.mockResolvedValue({
         ...relationship,
         relationshipTypeCode: relationshipType,
@@ -127,7 +127,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
   it('should call the audit service for the page view', async () => {
     // Given
-    contactsService.getContact.mockResolvedValue(contact)
+    contactsService.getContactName.mockResolvedValue(contact)
     contactsService.getPrisonerContactRelationship.mockResolvedValue(relationship)
 
     // When
@@ -146,7 +146,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-relationship-to-prisoner', () => {
   it('should update relationship and pass to return url if there are no validation errors', async () => {
-    contactsService.getContact.mockResolvedValue(contact)
+    contactsService.getContactName.mockResolvedValue(contact)
     contactsService.updateContactRelationshipById.mockResolvedValue(undefined)
     await request(app)
       .post(

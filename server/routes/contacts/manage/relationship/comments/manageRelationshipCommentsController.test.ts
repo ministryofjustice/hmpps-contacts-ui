@@ -69,7 +69,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
 describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/relationship-comments`, () => {
   it('should update additional information for a contacts', async () => {
-    contactsService.getContact.mockResolvedValue(TestData.contact())
+    contactsService.getContactName.mockResolvedValue(TestData.contact())
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     await request(app)
       .post(

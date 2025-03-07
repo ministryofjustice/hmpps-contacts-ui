@@ -27,6 +27,7 @@ context('Change Relationship Type', () => {
     cy.task('stubTitlesReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetContactById', contact)
+    cy.task('stubGetContactNameById', contact)
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId,
       response: {

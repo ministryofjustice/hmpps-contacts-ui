@@ -38,6 +38,7 @@ context('Add Existing Contact Check Answers', () => {
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', prisonerNumber)
     cy.task('stubGetContactById', contact)
+    cy.task('stubGetContactNameById', contact)
     cy.task('stubAddContactRelationship', { contactId, createdPrisonerContactId: 654321 })
     cy.task('stubGetGlobalRestrictions', [globalRestriction])
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })

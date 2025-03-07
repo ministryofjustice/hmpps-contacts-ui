@@ -118,7 +118,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   ])(
     'should pass to complete update endpoint if there are no validation errors with the date parsable',
     async (day, month, year) => {
-      contactsService.getContact.mockResolvedValue(TestData.contact())
+      contactsService.getContactName.mockResolvedValue(TestData.contact())
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/update-dob`)
         .type('form')

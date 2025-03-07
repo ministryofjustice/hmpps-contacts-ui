@@ -38,6 +38,7 @@ context('Change Contact Title Or Middle Names', () => {
       dateOfBirth: null,
     })
     cy.task('stubGetContactById', contact)
+    cy.task('stubGetContactNameById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),
@@ -96,6 +97,7 @@ context('Change Contact Title Or Middle Names', () => {
       dateOfBirth: null,
     })
     cy.task('stubGetContactById', contact)
+    cy.task('stubGetContactNameById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),
@@ -154,6 +156,7 @@ context('Change Contact Title Or Middle Names', () => {
       dateOfBirth: null,
     })
     cy.task('stubGetContactById', contact)
+    cy.task('stubGetContactNameById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),
@@ -212,6 +215,7 @@ context('Change Contact Title Or Middle Names', () => {
       dateOfBirth: null,
     })
     cy.task('stubGetContactById', contact)
+    cy.task('stubGetContactNameById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),
@@ -245,6 +249,7 @@ context('Change Contact Title Or Middle Names', () => {
       dateOfBirth: null,
     })
     cy.task('stubGetContactById', contact)
+    cy.task('stubGetContactNameById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),
@@ -274,6 +279,7 @@ context('Change Contact Title Or Middle Names', () => {
       dateOfBirth: null,
     })
     cy.task('stubGetContactById', contact)
+    cy.task('stubGetContactNameById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),

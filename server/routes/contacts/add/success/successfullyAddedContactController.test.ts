@@ -38,7 +38,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     ['EXISTING', 'Existing contact linked to prisoner'],
   ])('should render check answers page with dob for mode %s', async (mode, message: string) => {
     // Given
-    contactsService.getContact.mockResolvedValue(TestData.contact())
+    contactsService.getContactName.mockResolvedValue(TestData.contact())
 
     // When
     const response = await request(app).get(`/prisoner/A1234BC/contact/${mode}/123456/654321/success`)
@@ -57,7 +57,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
 
   it('should call the audit service for the page view', async () => {
     // Given
-    contactsService.getContact.mockResolvedValue(TestData.contact())
+    contactsService.getContactName.mockResolvedValue(TestData.contact())
 
     // When
     const response = await request(app).get(`/prisoner/A1234BC/contact/NEW/123456/654321/success`)

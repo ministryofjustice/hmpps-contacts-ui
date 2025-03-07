@@ -36,6 +36,7 @@ context('Change Contact Date Of Birth', () => {
       dateOfBirth: '1982-06-15',
     })
     cy.task('stubGetContactById', contact)
+    cy.task('stubGetContactNameById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),
@@ -91,6 +92,7 @@ context('Change Contact Date Of Birth', () => {
       dateOfBirth: null,
     })
     cy.task('stubGetContactById', contact)
+    cy.task('stubGetContactNameById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),
@@ -143,6 +145,7 @@ context('Change Contact Date Of Birth', () => {
       dateOfBirth: null,
     })
     cy.task('stubGetContactById', contact)
+    cy.task('stubGetContactNameById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),

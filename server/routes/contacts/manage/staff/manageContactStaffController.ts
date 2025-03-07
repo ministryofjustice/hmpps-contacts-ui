@@ -51,7 +51,7 @@ export default class ManageContactStaffController implements PageHandler {
     }
     await this.contactsService.updateContactById(parseInt(contactId, 10), request, user)
     await this.contactsService
-      .getContact(Number(contactId), user)
+      .getContactName(Number(contactId), user)
       .then(response =>
         req.flash(
           FLASH_KEY__SUCCESS_BANNER,

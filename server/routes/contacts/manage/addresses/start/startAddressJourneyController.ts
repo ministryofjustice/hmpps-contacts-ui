@@ -28,9 +28,9 @@ export default class StartAddressJourneyController implements PageHandler {
   ): Promise<void> => {
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const { user } = res.locals
-    const contact = await this.contactService.getContact(Number(contactId), user)
+    const contact = await this.contactService.getContactName(Number(contactId), user)
     const contactNames: ContactNames = {
-      title: contact.title,
+      title: contact.titleDescription,
       lastName: contact.lastName,
       firstName: contact.firstName,
       middleNames: contact.middleNames,

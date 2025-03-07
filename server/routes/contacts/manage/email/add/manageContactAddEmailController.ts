@@ -48,7 +48,7 @@ export default class ManageContactAddEmailController implements PageHandler {
     }
     await this.contactsService.createContactEmail(parseInt(contactId, 10), request, user)
     await this.contactsService
-      .getContact(Number(contactId), user)
+      .getContactName(Number(contactId), user)
       .then(response =>
         req.flash(
           FLASH_KEY__SUCCESS_BANNER,
