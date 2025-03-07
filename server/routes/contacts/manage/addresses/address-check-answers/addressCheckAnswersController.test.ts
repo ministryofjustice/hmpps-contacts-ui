@@ -185,8 +185,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     const $ = cheerio.load(response.text)
     expect($('.check-answers-type-value').text().trim()).toStrictEqual('Home address')
-    expect($('.check-answers-address-value').html()!.trim()).toStrictEqual(
-      'Flat 1a, My block, A street<br>Downtown<br>Devon<br>PC1 D3<br>England',
+    expect($('.check-answers-address-value').html()!.trim()).toMatch(
+      /1a<br>\s+?My block<br>\s+?A street<br>\s+?Downtown<br>\s+?Devon<br>\s+?PC1 D3<br>\s+?England/,
     )
     expect($('.check-answers-nfa-value').text().trim()).toStrictEqual('Yes')
     expect($('.check-answers-from-date-value').text().trim()).toStrictEqual('January 2001')

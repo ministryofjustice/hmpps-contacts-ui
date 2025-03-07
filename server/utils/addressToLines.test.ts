@@ -15,14 +15,14 @@ describe('Convert address to string', () => {
 
     const result = addressToLines(address)
 
-    expect(result).toContain('24, Acacia Avenue<br />Bunting<br />SHEF<br />SYORKS<br />S2 3LK<br />UK')
+    expect(result).toContain('24\nAcacia Avenue\nBunting\nSHEF\nSYORKS\nS2 3LK\nUK')
   })
 })
 
 describe('Convert business address to string', () => {
   it('should convert business address to string with linebreaks', () => {
     const address = {
-      flat: '24',
+      flat: 'Flat 24',
       property: 'Some House',
       street: 'Acacia Avenue',
       area: 'Bunting',
@@ -34,7 +34,7 @@ describe('Convert business address to string', () => {
 
     const result = businessAddressToLines(address)
 
-    expect(result).toEqual('Flat 24, Some House\nAcacia Avenue\nBunting\nSHEF\nSYORKS\nS2 3LK\nUK')
+    expect(result).toEqual('Flat 24\nSome House\nAcacia Avenue\nBunting\nSHEF\nSYORKS\nS2 3LK\nUK')
   })
 
   it('should convert business address without flat', () => {
@@ -56,7 +56,7 @@ describe('Convert business address to string', () => {
 
   it('should convert business address without property', () => {
     const address = {
-      flat: '24',
+      flat: 'Flat 24',
       property: undefined,
       street: 'Acacia Avenue',
       area: 'Bunting',

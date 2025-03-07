@@ -175,12 +175,9 @@ context('Search contact', () => {
 
     searchContactPage.verifyShowsNameAs('Mason')
     searchContactPage.verifyShowsDobAs('14/01/1990')
-    searchContactPage.verifyShowsAddressAs('Flat 32, Acacia Avenue')
-    searchContactPage.verifyShowsAddressAs('Bunting')
-    searchContactPage.verifyShowsAddressAs('Sheffield')
-    searchContactPage.verifyShowsAddressAs('South Yorkshire')
-    searchContactPage.verifyShowsAddressAs('S2 3LK')
-    searchContactPage.verifyShowsAddressAs('England')
+    searchContactPage.verifyShowsAddressAs(
+      '32<br>Acacia Avenue<br>Bunting<br>Sheffield<br>South Yorkshire<br>S2 3LK<br>England',
+    )
   })
 
   it(`should pass validation when all the fields are entered`, () => {
@@ -207,12 +204,9 @@ context('Search contact', () => {
 
     searchContactPage.verifyShowsNameAs('Mason')
     searchContactPage.verifyShowsDobAs('14/01/1990')
-    searchContactPage.verifyShowsAddressAs('Flat 32, Acacia Avenue')
-    searchContactPage.verifyShowsAddressAs('Bunting')
-    searchContactPage.verifyShowsAddressAs('Sheffield')
-    searchContactPage.verifyShowsAddressAs('South Yorkshire')
-    searchContactPage.verifyShowsAddressAs('S2 3LK')
-    searchContactPage.verifyShowsAddressAs('England')
+    searchContactPage.verifyShowsAddressAs(
+      '32<br>Acacia Avenue<br>Bunting<br>Sheffield<br>South Yorkshire<br>S2 3LK<br>England',
+    )
     searchContactPage.verifyShowsTheContactIsNotListedAs('The contact is not listed')
   })
 

@@ -6,7 +6,7 @@
         rows: [
             {
                 key: { text: '' },
-                value: { html: address | addressToLines},
+                value: { html: address | addressToLines | escape | nl2br},
                 classes: 'govuk-summary-list__row--no-border'
             }
         ]

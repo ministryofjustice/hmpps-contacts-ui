@@ -92,7 +92,7 @@ context('Add Address', () => {
 
     Page.verifyOnPage(AddressCheckYourAnswersPage, 'home address', 'First Middle Names Last') //
       .verifyShowsAddressTypeAs('Home address')
-      .verifyShowsAddressAs('Flat 1A, The Block, My Street<br>Downtown<br>Exeter<br>Devon<br>P05T C0D3<br>England')
+      .verifyShowsAddressAs('1A<br>The Block<br>My Street<br>Downtown<br>Exeter<br>Devon<br>P05T C0D3<br>England')
       .verifyShowsNoFixedAddressAs('Yes')
       .verifyShowsFromDateAs('September 2009')
       .verifyShowsToDateAs('October 2010')
@@ -282,7 +282,7 @@ context('Add Address', () => {
 
     Page.verifyOnPage(AddressCheckYourAnswersPage, 'home address', 'First Middle Names Last') //
       .verifyShowsAddressTypeAs('Home address')
-      .verifyShowsAddressAs('Flat 1A, The Block, My Street<br>Downtown<br>Exeter<br>Devon<br>P05T C0D3<br>England')
+      .verifyShowsAddressAs('1A<br>The Block<br>My Street<br>Downtown<br>Exeter<br>Devon<br>P05T C0D3<br>England')
       .verifyShowsNoFixedAddressAs('Yes')
       .verifyShowsFromDateAs('September 2009')
       .verifyShowsToDateAs('October 2010')
@@ -317,7 +317,7 @@ context('Add Address', () => {
       .selectCountry('Scotland')
       .continueTo(AddressCheckYourAnswersPage, 'work address', 'First Middle Names Last')
       .verifyShowsAddressAs(
-        'Flat 2B, Another Block, Another Street<br>Uptown<br>Sheffield<br>South Yorkshire<br>POBOX1<br>Scotland',
+        '2B<br>Another Block<br>Another Street<br>Uptown<br>Sheffield<br>South Yorkshire<br>POBOX1<br>Scotland',
       )
       .clickChangeNoFixedAddressLink()
 

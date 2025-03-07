@@ -45,7 +45,7 @@
                         text: "Address"
                     },
                     value: {
-                        html: address | addressToLines,
+                        html: address | addressToLines | escape | nl2br,
                         classes: 'confirm-address-value'
                     }
                 }
