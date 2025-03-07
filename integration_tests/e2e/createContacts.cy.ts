@@ -12,6 +12,7 @@ import SearchContactPage from '../pages/searchContactPage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import CreateContactSuccessPage from '../pages/createContactSuccessPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
+import CancelAddContactPage from '../pages/cancelAddContactPage'
 
 context('Create Contacts', () => {
   const contactId = 654321
@@ -487,5 +488,35 @@ context('Create Contacts', () => {
       .backTo(SelectRelationshipTypePage, 'First Last', 'John Smith')
       .backTo(EnterContactDateOfBirthPage, 'First Last')
       .backTo(EnterNamePage)
+  })
+
+  it('Cancelling from check answers prompts for confirmation', () => {
+    Page.verifyOnPage(EnterNamePage) //
+      .enterLastName('Last')
+      .enterFirstName('First')
+      .continueTo(EnterContactDateOfBirthPage, 'First Last') //
+      .selectIsKnown('NO')
+      .continueTo(SelectRelationshipTypePage, 'First Last', 'John Smith') //
+      .selectRelationshipType('S')
+      .continueTo(SelectRelationshipPage, 'First Last', 'John Smith') //
+      .selectRelationship('MOT')
+      .continueTo(SelectEmergencyContactPage, 'First Last') //
+      .selectIsEmergencyContact('NO')
+      .continueTo(SelectNextOfKinPage, 'First Last') //
+      .selectIsNextOfKin('YES')
+      .continueTo(RelationshipCommentsPage, 'First Last')
+      .continueTo(CreateContactCheckYourAnswersPage) //
+      .clickCancelLink()
+
+    Page.verifyOnPage(CancelAddContactPage, 'NEW', 'First Last') // cancel cancelling
+      .clickCancelLink()
+
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .clickCancelLink()
+
+    Page.verifyOnPage(CancelAddContactPage, 'NEW', 'First Last') // confirm cancelling
+      .clickContinue()
+
+    Page.verifyOnPage(ListContactsPage)
   })
 })

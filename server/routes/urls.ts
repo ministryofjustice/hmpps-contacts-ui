@@ -1,4 +1,8 @@
 export default class Urls {
+  static contactList = (prisonerNumber: string) => {
+    return `/prisoner/${prisonerNumber}/contacts/list`
+  }
+
   static contactDetails = (
     prisonerNumber: string,
     contactId: string | number,
