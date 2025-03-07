@@ -284,7 +284,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         expectSummaryListItem(
           addressCard,
           'Address',
-          'Flat 1a, Property, StreetAreaCityCountyPostcodeEngland',
+          /1a\s+?Property\s+?Street\s+?Area\s+?City\s+?County\s+?Postcode\s+?England/,
           '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/enter-address',
           `Change the address (${expectedTitle})`,
         )
@@ -404,7 +404,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         expectSummaryListItem(
           addressCard,
           'Address',
-          'Flat 1a, Property, StreetAreaCityCountyPostcodeEngland',
+          /1a\s+?Property\s+?Street\s+?Area\s+?City\s+?County\s+?Postcode\s+?England/,
           '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/enter-address',
           `Change the address (${expectedTitle})`,
         )
@@ -557,12 +557,16 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
   const expectSummaryListItem = (
     card: Cheerio<Element>,
     label: string,
-    value: string,
+    value: string | RegExp,
     changeLink: string,
     changeLabel: string,
   ) => {
     const summaryCardFirstColumn = card.find(`dt:contains("${label}")`).first()
-    expect(summaryCardFirstColumn.next().text().trim()).toStrictEqual(value)
+    if (value instanceof RegExp) {
+      expect(summaryCardFirstColumn.next().text().trim()).toMatch(value)
+    } else {
+      expect(summaryCardFirstColumn.next().text().trim()).toStrictEqual(value)
+    }
     const link = summaryCardFirstColumn.next().next().find('a')
     expect(link.attr('href')).toStrictEqual(changeLink)
     expect(link.text().trim()).toStrictEqual(changeLabel)

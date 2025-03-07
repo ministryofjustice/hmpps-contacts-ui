@@ -101,7 +101,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       '/prisoner/A1234BC/contacts/manage/123456/relationship/456789',
     )
     expect($('[data-qa=address-reference]').first().html()!.trim()).toMatch(
-      /<strong>Address:<\/strong><br>\n\s+Flat 1a, My block, A street<br>Downtown<br>Exeter<br>Devon<br>PC1 D3<br>England/,
+      /<strong>Address:<\/strong><br>\n\s+?1a<br>\s+?My block<br>\s+?A street<br>\s+?Downtown<br>\s+?Exeter<br>\s+?Devon<br>\s+?PC1 D3<br>\s+?England/,
     )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')

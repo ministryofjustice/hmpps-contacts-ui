@@ -19,7 +19,8 @@ export default class AddressCheckYourAnswersPage extends Page {
   }
 
   verifyShowsAddressAs(expected: string): AddressCheckYourAnswersPage {
-    this.checkAnswersAddressValue().should('contain.html', expected)
+    const regex = new RegExp(expected.split('<br>').join('<br>\\s+?'))
+    this.checkAnswersAddressValue().then(element => expect(element.html()).match(regex))
     return this
   }
 

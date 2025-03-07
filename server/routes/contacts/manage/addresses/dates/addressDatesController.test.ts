@@ -41,6 +41,13 @@ beforeEach(() => {
     addressType: 'DO_NOT_KNOW',
     addressLines: {
       noFixedAddress: false,
+      flat: '1a',
+      premises: 'My block',
+      street: 'A street',
+      locality: 'Downtown',
+      town: '7375', // Exeter
+      county: 'DEVON', // Devon
+      postcode: 'PC1 D3',
       country: 'ENG',
     },
   }
@@ -84,12 +91,31 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
-    expect($('input[type=radio]:checked').val()).toBeUndefined()
+    expect($('[data-qa=address-reference]').first().html()!.trim()).toMatch(
+      /<strong>Address:<\/strong><br>\n\s+?1a<br>\s+?My block<br>\s+?A street<br>\s+?Downtown<br>\s+?Exeter<br>\s+?Devon<br>\s+?PC1 D3<br>\s+?England/,
+    )
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ENTER_ADDRESS_DATES_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })
+  })
+
+  it('should back to CYA page when checking answers', async () => {
+    // Given
+    existingJourney.isCheckingAnswers = true
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/dates/${journeyId}`,
+    )
+
+    // Then
+    expect(response.status).toEqual(200)
+    const $ = cheerio.load(response.text)
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/check-answers/${journeyId}`,
+    )
   })
 
   it('should render previously entered details if no validation errors but there are session values', async () => {
@@ -189,19 +215,32 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     },
   )
 
-  it('should return to enter page if there are validation errors', async () => {
-    await request(app)
-      .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/dates/${journeyId}`,
-      )
-      .type('form')
-      .send({})
-      .expect(302)
-      .expect(
-        'Location',
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/dates/${journeyId}`,
-      )
-  })
+  it.each([
+    ['01', '', '', ''],
+    ['', '1999', '', ''],
+    ['01', '1999', '12', ''],
+    ['01', '1999', '', '2077'],
+    ['error', '1999', '12', '2077'],
+    ['01', 'error', '12', '2077'],
+    ['01', '1999', 'error', '2077'],
+    ['01', '1999', '12', 'error'],
+    ['01', '1999', '01', '1977'],
+  ])(
+    'should return to enter page if there are validation errors - fromMonth: %s fromYear: %s toMonth: %s toYear: %s',
+    async (fromMonth, fromYear, toMonth, toYear) => {
+      await request(app)
+        .post(
+          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/dates/${journeyId}`,
+        )
+        .type('form')
+        .send({ fromMonth, fromYear, toMonth, toYear })
+        .expect(302)
+        .expect(
+          'Location',
+          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/dates/${journeyId}`,
+        )
+    },
+  )
 
   it('should return not found page if no journey in session', async () => {
     await request(app)

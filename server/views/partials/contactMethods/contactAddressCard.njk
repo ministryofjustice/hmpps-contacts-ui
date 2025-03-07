@@ -52,7 +52,7 @@
     },
     {
       key: { text: 'Address' },
-      value: { html: ('No fixed address<br/>' if address.noFixedAddress ) + addressLines | addressToLines },
+      value: { html: ('No fixed address<br/>' if address.noFixedAddress ) + addressLines | addressToLines | escape | nl2br },
       actions: {
       items: [
           {

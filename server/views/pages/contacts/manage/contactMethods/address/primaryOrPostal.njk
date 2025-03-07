@@ -17,7 +17,7 @@
       <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
       <div data-qa="address-reference" class="govuk-body govuk-!-margin-bottom-7 govuk-!-margin-top-2">
         <strong>Address:</strong><br/>
-        {{ formattedAddress | addressToLines | safe }}
+        {{ formattedAddress | addressToLines | escape | nl2br | safe }}
       </div>
       <div class="govuk-body govuk-!-margin-bottom-6">
         <p>You can only set one primary and one postal address flag for each contact.</p>

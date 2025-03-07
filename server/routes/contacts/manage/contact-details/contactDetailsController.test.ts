@@ -859,8 +859,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           const addressCard = $(`h2:contains("${expectedTitle}")`).last().parent().parent()
           expect(addressCard).toHaveLength(1)
           expect($(addressCard).find('dt:contains("Type")').next().text().trim()).toStrictEqual(expectedType)
-          expect($(addressCard).find('dt:contains("Address")').next().html()?.trim()).toStrictEqual(
-            'Flat 1a, Property, Street<br>Area<br>City<br>County<br>Postcode<br>England',
+          expect($(addressCard).find('dt:contains("Address")').next().html()?.trim()).toMatch(
+            /1a<br>\s+?Property<br>\s+?Street<br>\s+?Area<br>\s+?City<br>\s+?County<br>\s+?Postcode<br>\s+?England/,
           )
           expect($(addressCard).find('dt:contains("Date")').next().text().trim()).toStrictEqual('From January 2021')
           expect($(addressCard).find('dt:contains("Primary or postal address")').next().text().trim()).toStrictEqual(
@@ -937,8 +937,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           const addressCard = $(`h2:contains("${expectedTitle}")`).last().parent().parent()
           expect(addressCard).toHaveLength(1)
           expect($(addressCard).find('dt:contains("Type")').next().text().trim()).toStrictEqual(expectedType)
-          expect($(addressCard).find('dt:contains("Address")').next().html()?.trim()).toStrictEqual(
-            'Flat 1a, Property, Street<br>Area<br>City<br>County<br>Postcode<br>England',
+          expect($(addressCard).find('dt:contains("Address")').next().html()?.trim()).toMatch(
+            /1a<br>\s+?Property<br>\s+?Street<br>\s+?Area<br>\s+?City<br>\s+?County<br>\s+?Postcode<br>\s+?England/,
           )
           expect($(addressCard).find('dt:contains("Date")').next().text().trim()).toStrictEqual(
             'From January 2021 to January 2022',

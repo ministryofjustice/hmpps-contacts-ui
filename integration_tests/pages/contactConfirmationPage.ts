@@ -41,7 +41,8 @@ export default class ContactConfirmationPage extends Page {
   }
 
   verifyShowAddressValueAs(expected: string): ContactConfirmationPage {
-    this.addressValue().should('contain.text', expected)
+    const regex = new RegExp(expected.split('<br>').join('<br>\\n?\\s+?'))
+    this.addressValue().then(element => expect(element.html()).match(regex))
     return this
   }
 
@@ -75,7 +76,7 @@ export default class ContactConfirmationPage extends Page {
     return this
   }
 
-  verifyShowEmalAddressValueAs(expected: string): ContactConfirmationPage {
+  verifyShowEmailAddressValueAs(expected: string): ContactConfirmationPage {
     this.emalAddressValue().should('contain.text', expected)
     return this
   }

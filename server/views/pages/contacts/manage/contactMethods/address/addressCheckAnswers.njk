@@ -50,7 +50,7 @@
                                 text: "Address"
                             },
                             value: {
-                                html: formattedAddress | addressToLines,
+                                html: formattedAddress | addressToLines | escape | nl2br,
                                 classes: 'check-answers-address-value'
                             },
                             actions: {

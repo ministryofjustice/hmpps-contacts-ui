@@ -50,7 +50,8 @@ export default class SearchContactPage extends Page {
   }
 
   verifyShowsAddressAs(expected: string): SearchContactPage {
-    this.checkContactSearchTableAddressValue().should('contain.text', expected)
+    const regex = new RegExp(expected.split('<br>').join('<br>\\n?\\s+?'))
+    this.checkContactSearchTableAddressValue().then(element => expect(element.html()).match(regex))
     return this
   }
 
