@@ -1,13 +1,19 @@
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import Page from '../pages/page'
-import EnterEmailPage from '../pages/enterEmailPage'
+import EditEmailPage from '../pages/editEmailPage'
 import { UpdateEmailRequest } from '../mockApis/contactsApi'
 import EditContactMethodsPage from '../pages/editContactMethodsPage'
 
 context('Edit Email Address', () => {
   const contactId = 22
   const prisonerContactId = 987654
+  const contact = TestData.contact({
+    emailAddresses: [
+      TestData.getContactEmailDetails('first@example.com', 123),
+      TestData.getContactEmailDetails('last@example.com', 777),
+    ],
+  })
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
@@ -15,16 +21,8 @@ context('Edit Email Address', () => {
     cy.task('stubPhoneTypeReferenceData')
     cy.task('stubTitlesReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
-    cy.task(
-      'stubGetContactById',
-      TestData.contact({
-        emailAddresses: [
-          TestData.getContactEmailDetails('first@example.com', 123),
-          TestData.getContactEmailDetails('last@example.com', 777),
-        ],
-      }),
-    )
-    cy.task('stubGetContactNameById', TestData.contact())
+    cy.task('stubGetContactById', contact)
+    cy.task('stubGetContactNameById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship(),
@@ -57,7 +55,7 @@ context('Edit Email Address', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickEditEmailLink('last@example.com')
 
-    Page.verifyOnPage(EnterEmailPage, 'Jones Mason')
+    Page.verifyOnPage(EditEmailPage, 'Jones Mason')
       .hasEmail('last@example.com')
       .clearEmail()
       .enterEmail('mr.last@example.com')
@@ -79,6 +77,54 @@ context('Edit Email Address', () => {
     )
   })
 
+  it('Should not prevent setting to the same email address being edited', () => {
+    const updated: UpdateEmailRequest = {
+      emailAddress: 'mr.last@example.com',
+      updatedBy: 'john smith',
+    }
+    cy.task('stubUpdateContactEmail', { contactId, contactEmailId: 777, updated })
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
+      .clickEditEmailLink('last@example.com')
+
+    Page.verifyOnPage(EditEmailPage, 'Jones Mason').hasEmail('last@example.com').clickContinue()
+
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').hasSuccessBanner(
+      'You’ve updated the contact methods for Jones Mason.',
+    )
+
+    cy.verifyLastAPICall(
+      {
+        method: 'PUT',
+        urlPath: `/contact/${contactId}/email/777`,
+      },
+      {
+        emailAddress: 'last@example.com',
+        updatedBy: 'john smith',
+      },
+    )
+  })
+
+  it(`should give an error if changing to an existing email address to prevent duplicates`, () => {
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
+      .clickContactMethodsTab()
+      .clickEditContactMethodsLink()
+
+    Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
+      .clickEditEmailLink('last@example.com')
+
+    const enterEmailPage = Page.verifyOnPage(EditEmailPage, 'Jones Mason')
+    enterEmailPage.enterEmail('FIRST@example.com')
+    enterEmailPage.clickContinue()
+    enterEmailPage.hasFieldInError(
+      'emailAddress',
+      `Email address ‘FIRST@example.com’ has already been entered for this contact`,
+    )
+  })
+
   it(`should require email address`, () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
       .clickContactMethodsTab()
@@ -87,10 +133,10 @@ context('Edit Email Address', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickEditEmailLink('last@example.com')
 
-    const enterEmailPage = Page.verifyOnPage(EnterEmailPage, 'Jones Mason')
+    const enterEmailPage = Page.verifyOnPage(EditEmailPage, 'Jones Mason')
     enterEmailPage.clearEmail()
     enterEmailPage.clickContinue()
-    enterEmailPage.hasFieldInError('emailAddress', `Enter the contact’s email address`)
+    enterEmailPage.hasFieldInError('emailAddress', `Enter an email address`)
   })
 
   it(`should require email address in the correct format`, () => {
@@ -101,7 +147,7 @@ context('Edit Email Address', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickEditEmailLink('last@example.com')
 
-    const enterEmailPage = Page.verifyOnPage(EnterEmailPage, 'Jones Mason')
+    const enterEmailPage = Page.verifyOnPage(EditEmailPage, 'Jones Mason')
     enterEmailPage.enterEmail('name@')
     enterEmailPage.clickContinue()
     enterEmailPage.hasFieldInError(
@@ -119,12 +165,12 @@ context('Edit Email Address', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickEditEmailLink('last@example.com')
 
-    const enterEmailPage = Page.verifyOnPage(EnterEmailPage, 'Jones Mason')
+    const enterEmailPage = Page.verifyOnPage(EditEmailPage, 'Jones Mason')
     enterEmailPage.enterEmail(invalidEmail).clickContinue()
-    enterEmailPage.hasFieldInError('emailAddress', `The contact’s email address should be 240 characters or fewer`)
+    enterEmailPage.hasFieldInError('emailAddress', `Email address must be 240 characters or less`)
   })
 
-  it('Back link goes to manage contacts', () => {
+  it('Back link goes to manage contacts via edit contact methods', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
       .clickContactMethodsTab()
       .clickEditContactMethodsLink()
@@ -132,10 +178,9 @@ context('Edit Email Address', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickEditEmailLink('last@example.com')
 
-    Page.verifyOnPage(EnterEmailPage, 'Jones Mason') //
+    Page.verifyOnPage(EditEmailPage, 'Jones Mason') //
       .backTo(EditContactMethodsPage, 'Jones Mason')
       .backTo(ManageContactDetailsPage, 'Jones Mason')
-      .verifyOnContactsMethodsTab()
   })
 
   it('Cancel goes to manage contacts', () => {
@@ -146,9 +191,7 @@ context('Edit Email Address', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickEditEmailLink('last@example.com')
 
-    Page.verifyOnPage(EnterEmailPage, 'Jones Mason') //
-      .cancelTo(EditContactMethodsPage, 'Jones Mason')
+    Page.verifyOnPage(EditEmailPage, 'Jones Mason') //
       .cancelTo(ManageContactDetailsPage, 'Jones Mason')
-      .verifyOnContactsMethodsTab()
   })
 })

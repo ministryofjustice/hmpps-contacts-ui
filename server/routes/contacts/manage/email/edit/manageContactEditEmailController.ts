@@ -24,22 +24,31 @@ export default class ManageContactEditEmailController implements PageHandler {
   ): Promise<void> => {
     const { user } = res.locals
     const { prisonerNumber, contactId, prisonerContactId, contactEmailId } = req.params
-    const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
+    const id = Number(contactEmailId)
+    const contact: ContactDetails = await this.contactsService.getContact(Number(contactId), user)
     const email: ContactEmailDetails = contact.emailAddresses.find(
-      (emailAddress: ContactEmailDetails) => emailAddress.contactEmailId === parseInt(contactEmailId, 10),
+      (emailAddress: ContactEmailDetails) => emailAddress.contactEmailId === id,
     )
     if (!email) {
       throw new Error(
         `Couldn't find email with id ${contactEmailId} for contact ${contactId}. URL probably entered manually.`,
       )
     }
-    const navigation: Navigation = { backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId) }
+    const navigation: Navigation = {
+      backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
+      cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
+    }
+    const otherEmailAddresses = contact.emailAddresses //
+      .filter((other: ContactEmailDetails) => other.contactEmailId !== id)
+      .map((other: ContactEmailDetails) => other.emailAddress)
+
     const viewModel = {
       emailAddress: res.locals?.formResponses?.['emailAddress'] ?? email.emailAddress,
+      otherEmailAddresses,
       contact,
       navigation,
     }
-    res.render('pages/contacts/manage/contactMethods/addEditEmail', viewModel)
+    res.render('pages/contacts/manage/contactMethods/editEmail', viewModel)
   }
 
   POST = async (
@@ -57,9 +66,9 @@ export default class ManageContactEditEmailController implements PageHandler {
       emailAddress,
       updatedBy: user.name,
     }
-    await this.contactsService.updateContactEmail(parseInt(contactId, 10), parseInt(contactEmailId, 10), request, user)
     await this.contactsService
-      .getContactName(Number(contactId), user)
+      .updateContactEmail(Number(contactId), Number(contactEmailId), request, user)
+      .then(() => this.contactsService.getContactName(Number(contactId), user))
       .then(response =>
         req.flash(
           FLASH_KEY__SUCCESS_BANNER,

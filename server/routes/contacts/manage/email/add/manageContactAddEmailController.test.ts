@@ -69,7 +69,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'What is the email address for First Middle Last?',
+      'Update an email address for First Middle Last',
     )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',

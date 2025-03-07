@@ -1,7 +1,7 @@
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import Page from '../pages/page'
-import EnterEmailPage from '../pages/enterEmailPage'
+import EditEmailPage from '../pages/editEmailPage'
 import { CreateEmailRequest } from '../mockApis/contactsApi'
 import EditContactMethodsPage from '../pages/editContactMethodsPage'
 
@@ -49,7 +49,7 @@ context('Create Email Address', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickAddEmailLink()
 
-    Page.verifyOnPage(EnterEmailPage, 'Jones Mason').enterEmail('test@email.com').clickContinue()
+    Page.verifyOnPage(EditEmailPage, 'Jones Mason').enterEmail('test@email.com').clickContinue()
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').hasSuccessBanner(
       'You’ve updated the contact methods for Jones Mason.',
     )
@@ -73,9 +73,9 @@ context('Create Email Address', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickAddEmailLink()
 
-    const enterEmailPage = Page.verifyOnPage(EnterEmailPage, 'Jones Mason')
+    const enterEmailPage = Page.verifyOnPage(EditEmailPage, 'Jones Mason')
     enterEmailPage.clickContinue()
-    enterEmailPage.hasFieldInError('emailAddress', `Enter the contact’s email address`)
+    enterEmailPage.hasFieldInError('emailAddress', `Enter an email address`)
   })
 
   it(`should require email address in the correct format`, () => {
@@ -86,7 +86,7 @@ context('Create Email Address', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickAddEmailLink()
 
-    const enterEmailPage = Page.verifyOnPage(EnterEmailPage, 'Jones Mason')
+    const enterEmailPage = Page.verifyOnPage(EditEmailPage, 'Jones Mason')
     enterEmailPage.enterEmail('name@')
     enterEmailPage.clickContinue()
     enterEmailPage.hasFieldInError(
@@ -104,9 +104,9 @@ context('Create Email Address', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickAddEmailLink()
 
-    const enterEmailPage = Page.verifyOnPage(EnterEmailPage, 'Jones Mason')
+    const enterEmailPage = Page.verifyOnPage(EditEmailPage, 'Jones Mason')
     enterEmailPage.enterEmail(invalidEmail).clickContinue()
-    enterEmailPage.hasFieldInError('emailAddress', `The contact’s email address should be 240 characters or fewer`)
+    enterEmailPage.hasFieldInError('emailAddress', `Email address must be 240 characters or less`)
   })
 
   it('Back link goes to manage contacts', () => {
@@ -117,7 +117,7 @@ context('Create Email Address', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickAddEmailLink()
 
-    Page.verifyOnPage(EnterEmailPage, 'Jones Mason') //
+    Page.verifyOnPage(EditEmailPage, 'Jones Mason') //
       .backTo(EditContactMethodsPage, 'Jones Mason')
       .backTo(ManageContactDetailsPage, 'Jones Mason')
       .verifyOnContactsMethodsTab()
@@ -131,7 +131,7 @@ context('Create Email Address', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickAddEmailLink()
 
-    Page.verifyOnPage(EnterEmailPage, 'Jones Mason') //
+    Page.verifyOnPage(EditEmailPage, 'Jones Mason') //
       .cancelTo(EditContactMethodsPage, 'Jones Mason')
       .cancelTo(ManageContactDetailsPage, 'Jones Mason')
       .verifyOnContactsMethodsTab()

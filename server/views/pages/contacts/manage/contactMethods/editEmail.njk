@@ -4,25 +4,28 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% set pageTitle = applicationName + " - Create contact email" %}
-{% set title = "What is the email address for " + (contact | formatNameFirstNameFirst) + "?" %}
+{% set pageTitle = applicationName + " - Update an email address" %}
+{% set title = "Update an email address for " + (contact | formatNameFirstNameFirst) %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
     {% include 'partials/navigation.njk' %}
     {{ miniProfile(prisonerDetails) }}
     {% include 'partials/formErrorSummary.njk' %}
-    <span class="govuk-caption-l">Contacts</span>
-    <h1 class="govuk-heading-l" data-qa="main-heading"><label for="emailAddress">{{ title }}</label></h1>
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-half">
+        <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-caption-l">Edit contact methods</span>
+            <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                {% for other in otherEmailAddresses  %}
+                  <input type="hidden" name="otherEmailAddresses[{{ loop.index0 }}]" value="{{ other }}" />
+                {% endfor %}
 
                 {{ govukInput({
                     id: "emailAddress",
                     name: "emailAddress",
-                    classes: 'govuk-!-width-two-third',
+                    label: { text: "Email address" },
                     errorMessage: validationErrors | findError('emailAddress'),
                     value: emailAddress
                 }) }}
@@ -35,7 +38,9 @@
                         attributes: {"data-qa": "continue-button"},
                         preventDoubleClick: true
                     }) }}
-                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.backLink }}" data-qa="cancel-button">Cancel</a>
+                    {% if navigation.cancelButton %}
+                      <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
+                    {% endif %}
                 </div>
             </form>
 
