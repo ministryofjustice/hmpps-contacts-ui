@@ -6,7 +6,7 @@
         <div class="govuk-grid-column-two-thirds">
             {{ govukErrorSummary({
                 titleText: "There is a problem",
-                errorList: errorSummaryList,
+                errorList: (errorSummaryList | customErrorOrderBuilder(customErrorOrder)) if customErrorOrder else errorSummaryList,
                 classes: 'govuk-!-margin-bottom-0'
             }) }}
         </div>

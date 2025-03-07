@@ -17,7 +17,7 @@ import {
 } from './utils'
 import config from '../config'
 import logger from '../../logger'
-import { buildErrorSummaryList, findError } from '../middleware/validationMiddleware'
+import { buildErrorSummaryList, customErrorOrderBuilder, findError } from '../middleware/validationMiddleware'
 import { addressToLines, businessAddressToLines } from './addressToLines'
 import formatYesNo from './formatYesNo'
 import { formatNameLastNameFirst, formatNameFirstNameFirst } from './formatName'
@@ -98,6 +98,7 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('referenceCodesToRadios', referenceCodesToRadiosOrCheckboxes)
   njkEnv.addFilter('referenceCodesToCheckboxes', referenceCodesToRadiosOrCheckboxes)
   njkEnv.addFilter('sortLinkedPrisoners', sortLinkedPrisoners)
+  njkEnv.addFilter('customErrorOrderBuilder', customErrorOrderBuilder)
   njkEnv.addFilter(
     'setSelected',
     (items: { value: string; text: string }[], selected) =>
