@@ -87,6 +87,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
     expect($('input[type=radio]:checked').val()).toBeUndefined()
+    expect($('[data-qa=address-reference]').first().html()!.trim()).toMatch(/<strong>Address:<\/strong><br>\s+?England/)
+    expect(
+      $(
+        `p:contains("Setting this address as the primary or postal address for First Middle Last will remove these flags from any other addresses previously flagged.")`,
+      ).text(),
+    ).toBeTruthy()
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.SELECT_ADDRESS_FLAGS_PAGE, {
       who: user.username,
