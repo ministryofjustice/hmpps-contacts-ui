@@ -100,6 +100,23 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     })
   })
 
+  it('should back to CYA page when checking answers', async () => {
+    // Given
+    existingJourney.isCheckingAnswers = true
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/primary-or-postal/${journeyId}`,
+    )
+
+    // Then
+    expect(response.status).toEqual(200)
+    const $ = cheerio.load(response.text)
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/check-answers/${journeyId}`,
+    )
+  })
+
   it('should render previously entered details if no validation errors but there are session values', async () => {
     // Given
     existingJourney.addressMetadata = {
