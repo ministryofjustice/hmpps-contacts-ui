@@ -65,41 +65,41 @@ export const addressDatesSchema = createSchema({
       { errorMap: () => ({ message: END_YEAR_INVALID_MESSAGE }) },
     )
     .transform(val => val?.toString()),
-}).transform((val, ctx) => {
-  if (val.fromMonth && !val.fromYear) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, message: START_YEAR_REQUIRED_MESSAGE, path: ['fromYear'] })
-  } else if (!val.fromMonth && val.fromYear) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, message: START_MONTH_REQUIRED_MESSAGE, path: ['fromMonth'] })
-  } else if (!val.fromMonth && !val.fromYear) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, message: START_DATE_REQUIRED_MESSAGE, path: ['fromDate'] })
-  }
-  if (val.toMonth && !val.toYear) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, message: END_YEAR_REQUIRED_MESSAGE, path: ['toYear'] })
-  } else if (!val.toMonth && val.toYear) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, message: END_MONTH_REQUIRED_MESSAGE, path: ['toMonth'] })
-  }
+})
+  .superRefine((val, ctx) => {
+    if (val.fromMonth && !val.fromYear) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: START_YEAR_REQUIRED_MESSAGE, path: ['fromYear'] })
+    } else if (!val.fromMonth && val.fromYear) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: START_MONTH_REQUIRED_MESSAGE, path: ['fromMonth'] })
+    } else if (!val.fromMonth && !val.fromYear) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: START_DATE_REQUIRED_MESSAGE, path: ['fromDate'] })
+    }
+    if (val.toMonth && !val.toYear) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: END_YEAR_REQUIRED_MESSAGE, path: ['toYear'] })
+    } else if (!val.toMonth && val.toYear) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: END_MONTH_REQUIRED_MESSAGE, path: ['toMonth'] })
+    }
 
-  if (
-    val.fromMonth &&
-    val.fromYear &&
-    val.toMonth &&
-    val.toYear &&
-    fromDateIsAfterToDate(val.fromMonth, val.fromYear, val.toMonth, val.toYear)
-  ) {
-    const formattedFromDate = formatDate(new Date(`${val.fromYear}-${val.fromMonth}-01`), 'MMMM yyyy')
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: `End date must be the same as or after the start date ${formattedFromDate}`,
-      path: ['toDate'],
-    })
-  }
-
-  return {
+    if (
+      val.fromMonth &&
+      val.fromYear &&
+      val.toMonth &&
+      val.toYear &&
+      fromDateIsAfterToDate(val.fromMonth, val.fromYear, val.toMonth, val.toYear)
+    ) {
+      const formattedFromDate = formatDate(new Date(`${val.fromYear}-${val.fromMonth}-01`), 'MMMM yyyy')
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `End date must be the same as or after the start date ${formattedFromDate}`,
+        path: ['toDate'],
+      })
+    }
+  })
+  .transform(val => ({
     ...val,
     fromYear: val.fromYear!,
     fromMonth: val.fromMonth!,
-  }
-})
+  }))
 
 function fromDateIsAfterToDate(fromMonth: string, fromYear: string, toMonth: string, toYear: string): boolean {
   const fromDate = parse(`${fromYear}-${fromMonth}-01`, 'yyyy-MM-dd', new Date())
