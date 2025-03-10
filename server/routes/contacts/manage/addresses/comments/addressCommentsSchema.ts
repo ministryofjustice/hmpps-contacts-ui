@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { createSchema } from '../../../../../middleware/validationMiddleware'
 
-const COMMENTS_TOO_LONG_ERROR_MESSAGE = 'Address comment must be 240 characters or less'
+const COMMENTS_TOO_LONG_ERROR_MESSAGE = 'Address comments must be 240 characters or less'
 
 export const addressCommentsSchema = createSchema({
   comments: z

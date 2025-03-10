@@ -67,7 +67,7 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/comments/:journeyId', () => {
-  it('should render address dates page', async () => {
+  it('should render address comments page', async () => {
     // When
     const response = await request(app).get(
       `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/comments/${journeyId}`,
@@ -84,12 +84,30 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
-    expect($('input[type=radio]:checked').val()).toBeUndefined()
+    expect($('[data-qa=address-reference]').first().html()!.trim()).toMatch(/<strong>Address:<\/strong><br>\s+?England/)
+    expect($('#comments').val()).toEqual('')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ENTER_ADDRESS_COMMENTS_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })
+  })
+
+  it('should back to CYA page when checking answers', async () => {
+    // Given
+    existingJourney.isCheckingAnswers = true
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/comments/${journeyId}`,
+    )
+
+    // Then
+    expect(response.status).toEqual(200)
+    const $ = cheerio.load(response.text)
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/check-answers/${journeyId}`,
+    )
   })
 
   it('should render previously entered details if no validation errors but there are session values', async () => {
