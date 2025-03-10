@@ -482,16 +482,12 @@ context('Add Existing Contact', () => {
       .continueTo(RelationshipCommentsPage, 'Existing Contact') //
       .enterComments('Some comments about the relationship')
       .continueTo(LinkExistingContactCYAPage) //
-      .clickCancelLink()
+      .clickLink('Cancel')
 
-    Page.verifyOnPage(CancelAddContactPage, 'EXISTING', 'Existing Contact') // cancel cancelling
-      .clickCancelLink()
-
-    Page.verifyOnPage(LinkExistingContactCYAPage) //
-      .clickCancelLink()
-
-    Page.verifyOnPage(CancelAddContactPage, 'EXISTING', 'Existing Contact') // confirm cancelling
-      .clickContinue()
+    Page.verifyOnPage(CancelAddContactPage, 'EXISTING', 'Existing Contact') //
+      .clickButtonTo('No, return to check answers', LinkExistingContactCYAPage)
+      .clickLinkTo('Cancel', CancelAddContactPage, 'EXISTING', 'Existing Contact')
+      .clickButton('Yes, cancel')
 
     Page.verifyOnPage(ListContactsPage)
   })

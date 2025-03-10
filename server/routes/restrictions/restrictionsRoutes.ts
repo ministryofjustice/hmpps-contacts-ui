@@ -16,6 +16,7 @@ import RestrictionsService from '../../services/restrictionsService'
 import SuccessfullyAddedRestrictionController from './success/successfullyAddedRestrictionController'
 import { prepareStandaloneManageContactJourney } from '../contacts/manage/manageContactsMiddleware'
 import UpdateRestrictionController from './update-restriction/updateRestrictionController'
+import CancelAddRestrictionController from './cancel/cancelAddRestrictionController'
 
 const RestrictionsRoutes = (
   auditService: AuditService,
@@ -68,6 +69,20 @@ const RestrictionsRoutes = (
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, successController),
     asyncMiddleware(successController.GET),
+  )
+
+  const cancelAddingRestrictionController = new CancelAddRestrictionController()
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/cancel/:journeyId',
+    ensureInAddRestrictionJourney(),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    logPageViewMiddleware(auditService, cancelAddingRestrictionController),
+    asyncMiddleware(cancelAddingRestrictionController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/cancel/:journeyId',
+    ensureInAddRestrictionJourney(),
+    asyncMiddleware(cancelAddingRestrictionController.POST),
   )
 
   const updateRestrictionController = new UpdateRestrictionController(

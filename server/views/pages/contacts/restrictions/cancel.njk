@@ -1,0 +1,53 @@
+{% extends "partials/layout.njk" %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% set pageTitle = "Are you sure you want to cancel adding a restriction? - Manage contact restrictions - DPS" %}
+{% set title = "Are you sure you want to cancel adding a restriction? " %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+
+  {% include 'partials/navigation.njk' %}
+  {{ miniProfile(prisonerDetails) }}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-l">Manage contact restrictions</span>
+      <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+
+      <form method='POST'>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+        {{ govukWarningText({
+          text: "If you cancel, the information you’ve entered will not be saved and the restriction will not be added.",
+          iconFallbackText: "Warning"
+        }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Yes, cancel",
+            type: "submit",
+            name: "action",
+            value: "YES",
+            classes: 'govuk-button--warning',
+            attributes: {"data-qa": "continue-button"},
+            preventDoubleClick: true
+          }) }}
+          {{ govukButton({
+            text: "No, return to check answers",
+            type: "submit",
+            name: "action",
+            value: "NO",
+            classes: 'govuk-!-margin-top-6 govuk-button--secondary',
+            attributes: {"data-qa": "cancel-button"},
+            href: navigation.cancelButton,
+            preventDoubleClick: true
+          }) }}
+        </div>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

@@ -5,6 +5,7 @@ import EnterRestrictionPage from '../pages/enterRestrictionPage'
 import CreateRestrictionCheckYourAnswersPage from '../pages/createRestrictionCheckYourAnswersPage'
 import CreateRestrictionSuccessPage from '../pages/createRestrictionSuccessPage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
+import CancelAddRestrictionPage from '../pages/cancelAddRestrictionPage'
 
 context('Create Prisoner Contact Restriction', () => {
   const contactId = 654321
@@ -61,12 +62,12 @@ context('Create Prisoner Contact Restriction', () => {
     Page.verifyOnPage(EnterRestrictionPage, enterPageTitle) //
       .selectType('CCTV')
       .enterStartDate('15/06/1982')
-      .clickContinue()
+      .clickButton('Continue')
 
     Page.verifyOnPage(CreateRestrictionCheckYourAnswersPage, 'PRISONER_CONTACT') //
       .verifyShowExpiryDateAs('Not provided')
       .verifyShowCommentsAs('Not provided')
-      .clickContinue()
+      .clickButton('Confirm and save')
 
     Page.verifyOnPage(CreateRestrictionSuccessPage, 'PRISONER_CONTACT')
 
@@ -97,11 +98,10 @@ context('Create Prisoner Contact Restriction', () => {
       .enterStartDate('15/06/1982')
       .enterExpiryDate('25/12/2025')
       .enterComments('Some comments')
-      .clickContinue()
+      .clickButton('Continue')
 
     Page.verifyOnPage(CreateRestrictionCheckYourAnswersPage, 'PRISONER_CONTACT') //
-
-      .clickContinue()
+      .clickButton('Confirm and save')
 
     Page.verifyOnPage(CreateRestrictionSuccessPage, 'PRISONER_CONTACT')
 
@@ -134,7 +134,7 @@ context('Create Prisoner Contact Restriction', () => {
       .enterStartDate('15/06/1982')
       .enterExpiryDate('25/12/2025')
       .enterComments('Some comments')
-      .clickContinue()
+      .clickButton('Continue')
 
     Page.verifyOnPage(CreateRestrictionCheckYourAnswersPage, 'PRISONER_CONTACT') //
       .verifyShowsTypeAs('CCTV')
@@ -168,7 +168,7 @@ context('Create Prisoner Contact Restriction', () => {
       .enterComments('Different comments')
       .continueTo(CreateRestrictionCheckYourAnswersPage, 'PRISONER_CONTACT')
       .verifyShowCommentsAs('Different comments')
-      .clickContinue()
+      .clickButton('Confirm and save')
 
     Page.verifyOnPage(CreateRestrictionSuccessPage, 'PRISONER_CONTACT')
 
@@ -189,7 +189,7 @@ context('Create Prisoner Contact Restriction', () => {
 
   it('Type and start date are required', () => {
     const enterRestrictionPage = Page.verifyOnPage(EnterRestrictionPage, enterPageTitle)
-    enterRestrictionPage.clickContinue()
+    enterRestrictionPage.clickButton('Continue')
 
     enterRestrictionPage.hasFieldInError('type', 'Select the restriction type')
     enterRestrictionPage.hasFieldInError('startDate', 'Enter the start date')
@@ -201,7 +201,7 @@ context('Create Prisoner Contact Restriction', () => {
       .enterStartDate('foo')
       .enterExpiryDate('bar')
       .enterComments(''.padEnd(500, 'X'))
-      .clickContinue()
+      .clickButton('Continue')
 
     enterRestrictionPage.hasFieldInError('type', 'Select the restriction type')
     enterRestrictionPage.hasFieldInError('startDate', 'Start date must be a real date')
@@ -224,7 +224,7 @@ context('Create Prisoner Contact Restriction', () => {
       .enterStartDate('28/02/2024')
       .enterExpiryDate('27/02/2024')
       .enterComments(''.padEnd(20, 'X'))
-      .clickContinue()
+      .clickButton('Continue')
 
     enterRestrictionPage.hasFieldInError(
       'expiryDate',
@@ -239,7 +239,22 @@ context('Create Prisoner Contact Restriction', () => {
 
   it('Back link goes to manage contacts restrictions tab', () => {
     Page.verifyOnPage(EnterRestrictionPage, enterPageTitle) //
-      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .clickLinkTo('Back', ManageContactDetailsPage, 'First Middle Names Last')
       .verifyOnRestrictionsTab()
+  })
+
+  it('Cancelling asks for confirmation', () => {
+    Page.verifyOnPage(EnterRestrictionPage, enterPageTitle) //
+      .selectType('CCTV')
+      .enterStartDate('15/06/1982')
+      .clickButton('Continue')
+
+    Page.verifyOnPage(CreateRestrictionCheckYourAnswersPage, 'PRISONER_CONTACT') //
+      .clickLink('Cancel')
+
+    Page.verifyOnPage(CancelAddRestrictionPage) //
+      .clickButtonTo('No, return to check answers', CreateRestrictionCheckYourAnswersPage, 'PRISONER_CONTACT')
+      .clickLinkTo('Cancel', CancelAddRestrictionPage)
+      .clickButtonTo('Yes, cancel', ManageContactDetailsPage, 'First Middle Names Last')
   })
 })

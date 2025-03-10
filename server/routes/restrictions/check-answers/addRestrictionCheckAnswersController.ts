@@ -30,7 +30,7 @@ export default class AddRestrictionCheckAnswersController implements PageHandler
     const { user } = res.locals
     const journey = req.session.addRestrictionJourneys![journeyId]!
     const navigation: Navigation = {
-      cancelButton: journey.returnPoint.url,
+      cancelButton: `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/cancel/${journeyId}`,
     }
     const changeUrl = `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/enter-restriction/${journeyId}`
 

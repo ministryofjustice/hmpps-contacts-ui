@@ -5,6 +5,7 @@ import EnterRestrictionPage from '../pages/enterRestrictionPage'
 import CreateRestrictionCheckYourAnswersPage from '../pages/createRestrictionCheckYourAnswersPage'
 import CreateRestrictionSuccessPage from '../pages/createRestrictionSuccessPage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
+import CancelAddRestrictionPage from '../pages/cancelAddRestrictionPage'
 
 context('Create Contact Global Restriction', () => {
   const contactId = 654321
@@ -60,12 +61,12 @@ context('Create Contact Global Restriction', () => {
     Page.verifyOnPage(EnterRestrictionPage, enterPageTitle) //
       .selectType('CCTV')
       .enterStartDate('15/06/1982')
-      .clickContinue()
+      .clickButton('Continue')
 
     Page.verifyOnPage(CreateRestrictionCheckYourAnswersPage, 'CONTACT_GLOBAL') //
       .verifyShowExpiryDateAs('Not provided')
       .verifyShowCommentsAs('Not provided')
-      .clickContinue()
+      .clickButton('Confirm and save')
 
     Page.verifyOnPage(CreateRestrictionSuccessPage, 'CONTACT_GLOBAL')
 
@@ -96,11 +97,10 @@ context('Create Contact Global Restriction', () => {
       .enterStartDate('15/06/1982')
       .enterExpiryDate('25/12/2025')
       .enterComments('Some comments')
-      .clickContinue()
+      .clickButton('Continue')
 
     Page.verifyOnPage(CreateRestrictionCheckYourAnswersPage, 'CONTACT_GLOBAL') //
-
-      .clickContinue()
+      .clickButton('Confirm and save')
 
     Page.verifyOnPage(CreateRestrictionSuccessPage, 'CONTACT_GLOBAL')
 
@@ -133,7 +133,7 @@ context('Create Contact Global Restriction', () => {
       .enterStartDate('15/06/1982')
       .enterExpiryDate('25/12/2025')
       .enterComments('Some comments')
-      .clickContinue()
+      .clickButton('Continue')
 
     Page.verifyOnPage(CreateRestrictionCheckYourAnswersPage, 'CONTACT_GLOBAL') //
       .verifyShowsTypeAs('CCTV')
@@ -167,7 +167,7 @@ context('Create Contact Global Restriction', () => {
       .enterComments('Different comments')
       .continueTo(CreateRestrictionCheckYourAnswersPage, 'CONTACT_GLOBAL')
       .verifyShowCommentsAs('Different comments')
-      .clickContinue()
+      .clickButton('Confirm and save')
 
     Page.verifyOnPage(CreateRestrictionSuccessPage, 'CONTACT_GLOBAL')
 
@@ -188,7 +188,7 @@ context('Create Contact Global Restriction', () => {
 
   it('Type and start date are required', () => {
     const enterRestrictionPage = Page.verifyOnPage(EnterRestrictionPage, enterPageTitle)
-    enterRestrictionPage.clickContinue()
+    enterRestrictionPage.clickButton('Continue')
 
     enterRestrictionPage.hasFieldInError('type', 'Select the restriction type')
     enterRestrictionPage.hasFieldInError('startDate', 'Enter the start date')
@@ -200,7 +200,7 @@ context('Create Contact Global Restriction', () => {
       .enterStartDate('foo')
       .enterExpiryDate('bar')
       .enterComments(''.padEnd(500, 'X'))
-      .clickContinue()
+      .clickButton('Continue')
 
     enterRestrictionPage.hasFieldInError('type', 'Select the restriction type')
     enterRestrictionPage.hasFieldInError('startDate', 'Start date must be a real date')
@@ -223,7 +223,7 @@ context('Create Contact Global Restriction', () => {
       .enterStartDate('28/02/2024')
       .enterExpiryDate('27/02/2024')
       .enterComments(''.padEnd(20, 'X'))
-      .clickContinue()
+      .clickButton('Continue')
 
     enterRestrictionPage.hasFieldInError(
       'expiryDate',
@@ -238,7 +238,22 @@ context('Create Contact Global Restriction', () => {
 
   it('Back link goes to manage contacts restrictions tab', () => {
     Page.verifyOnPage(EnterRestrictionPage, enterPageTitle) //
-      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
+      .clickLinkTo('Back', ManageContactDetailsPage, 'First Middle Names Last')
       .verifyOnRestrictionsTab()
+  })
+
+  it('Cancel asks for confirmation', () => {
+    Page.verifyOnPage(EnterRestrictionPage, enterPageTitle) //
+      .selectType('CCTV')
+      .enterStartDate('15/06/1982')
+      .enterExpiryDate('25/12/2025')
+      .enterComments('Some comments')
+      .clickButtonTo('Continue', CreateRestrictionCheckYourAnswersPage, 'CONTACT_GLOBAL')
+      .clickLink('Cancel')
+
+    Page.verifyOnPage(CancelAddRestrictionPage) //
+      .clickButtonTo('No, return to check answers', CreateRestrictionCheckYourAnswersPage, 'CONTACT_GLOBAL')
+      .clickLinkTo('Cancel', CancelAddRestrictionPage)
+      .clickButtonTo('Yes, cancel', ManageContactDetailsPage, 'First Middle Names Last')
   })
 })

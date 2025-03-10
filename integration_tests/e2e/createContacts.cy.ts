@@ -506,16 +506,12 @@ context('Create Contacts', () => {
       .selectIsNextOfKin('YES')
       .continueTo(RelationshipCommentsPage, 'First Last')
       .continueTo(CreateContactCheckYourAnswersPage) //
-      .clickCancelLink()
+      .clickLink('Cancel')
 
-    Page.verifyOnPage(CancelAddContactPage, 'NEW', 'First Last') // cancel cancelling
-      .clickCancelLink()
-
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .clickCancelLink()
-
-    Page.verifyOnPage(CancelAddContactPage, 'NEW', 'First Last') // confirm cancelling
-      .clickContinue()
+    Page.verifyOnPage(CancelAddContactPage, 'NEW', 'First Last') //
+      .clickButtonTo('No, return to check answers', CreateContactCheckYourAnswersPage)
+      .clickLinkTo('Cancel', CancelAddContactPage, 'NEW', 'First Last') //
+      .clickButton('Yes, cancel')
 
     Page.verifyOnPage(ListContactsPage)
   })
