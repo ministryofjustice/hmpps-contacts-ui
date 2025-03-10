@@ -1,8 +1,8 @@
 import Page, { PageElement } from '../../page'
 
 export default class EnterAddressPage extends Page {
-  constructor(name: string) {
-    super(`Enter the address for ${name}`)
+  constructor(name: string, isEdit: boolean = false) {
+    super(isEdit ? `Change this address for ${name}` : `Enter the address for ${name}`)
   }
 
   verifyCanUsePrisonerAddress(): EnterAddressPage {

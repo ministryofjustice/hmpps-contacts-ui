@@ -41,7 +41,7 @@ const contact: ContactDetails = {
       property: 'My block',
       street: 'A street',
       area: 'Downtown',
-      cityCode: '1234',
+      cityCode: '25343',
       cityDescription: 'Exeter',
       countyCode: 'DEVON',
       countyDescription: 'Devon',
@@ -100,10 +100,48 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')
 
+    expect($('#noFixedAddressYes').attr('checked')).toBeTruthy()
+    expect($('#flat').val()).toStrictEqual('1a')
+    expect($('#premises').val()).toStrictEqual('My block')
+    expect($('#street').val()).toStrictEqual('A street')
+    expect($('#locality').val()).toStrictEqual('Downtown')
+    expect($('#town').val()).toStrictEqual('25343')
+    expect($('#county').val()).toStrictEqual('DEVON')
+    expect($('#postcode').val()).toStrictEqual('PC1 D3')
+    expect($('#country').val()).toStrictEqual('ENG')
+
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ENTER_ADDRESS_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })
+  })
+
+  it('should render previously entered details if validation errors even if values in the session', async () => {
+    // Given
+    const form = {
+      flat: 'a'.repeat(200),
+      premises: 'b',
+    }
+    flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/enter-address`,
+    )
+
+    // Then
+    expect(response.status).toEqual(200)
+    const $ = cheerio.load(response.text)
+    expect($('#flat').val()).toStrictEqual(form.flat)
+    expect($('#premises').val()).toStrictEqual(form.premises)
+
+    expect($('#noFixedAddressYes').attr('checked')).toBeTruthy()
+    expect($('#street').val()).toStrictEqual('A street')
+    expect($('#locality').val()).toStrictEqual('Downtown')
+    expect($('#town').val()).toStrictEqual('25343')
+    expect($('#county').val()).toStrictEqual('DEVON')
+    expect($('#postcode').val()).toStrictEqual('PC1 D3')
+    expect($('#country').val()).toStrictEqual('ENG')
   })
 })
 
@@ -134,6 +172,11 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       flat,
       street,
       country,
+      county: null,
+      locality: null,
+      postcode: null,
+      premises: null,
+      town: null,
     }
     expect(contactsService.updateContactAddress).toHaveBeenCalledWith(expected, user)
     expect(flashProvider).toHaveBeenCalledWith(

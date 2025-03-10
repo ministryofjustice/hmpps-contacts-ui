@@ -1,8 +1,8 @@
 import Page, { PageElement } from '../../page'
 
 export default class EnterAddressCommentsPage extends Page {
-  constructor() {
-    super(`Add any comments about this address (optional)`)
+  constructor(isEdit: boolean = false) {
+    super(isEdit ? 'Change the comments about this address' : 'Add any comments about this address (optional)')
   }
 
   hasComments(value: string) {

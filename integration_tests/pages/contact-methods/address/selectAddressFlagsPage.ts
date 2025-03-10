@@ -1,8 +1,12 @@
 import Page, { PageElement } from '../../page'
 
 export default class SelectAddressFlagsPage extends Page {
-  constructor(name: string) {
-    super(`Set this address as the primary or postal address for ${name} (optional)`)
+  constructor(name: string, isEdit: boolean = false) {
+    super(
+      isEdit
+        ? `Change if this is the primary or postal address for ${name}`
+        : `Set this address as the primary or postal address for ${name} (optional)`,
+    )
   }
 
   verifyIsPrimaryOrPostalAnswer(value: 'P' | 'M' | 'PM' | 'NONE' | null) {
