@@ -61,6 +61,14 @@ export default abstract class Page {
     this.cancelLink().click()
   }
 
+  clickButton(name: string) {
+    cy.findByRole('button', { name }).click()
+  }
+
+  clickLink(name: string) {
+    cy.findByRole('link', { name }).click()
+  }
+
   /* eslint-disable @typescript-eslint/no-explicit-any */
   continueTo<T>(constructor: new (...args: any) => T, ...args: any): T {
     this.clickContinue()
@@ -76,6 +84,18 @@ export default abstract class Page {
   /* eslint-disable @typescript-eslint/no-explicit-any */
   cancelTo<T>(constructor: new (...args: any) => T, ...args: any): T {
     this.clickCancelLink()
+    return new constructor(...args)
+  }
+
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  clickButtonTo<T>(name: string, constructor: new (...args: any) => T, ...args: any): T {
+    this.clickButton(name)
+    return new constructor(...args)
+  }
+
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  clickLinkTo<T>(name: string, constructor: new (...args: any) => T, ...args: any): T {
+    this.clickLink(name)
     return new constructor(...args)
   }
 

@@ -91,7 +91,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Check your answers before saving the new prisoner-contact restriction',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/PRISONER_CONTACT/cancel/${journeyId}`,
+    )
     expect($('[data-qa=prisoner-name-and-id]').first().text().trim()).toStrictEqual('John Smith (A1234BC)')
     expect($('[data-qa=contact-name-and-id]').first().text().trim()).toStrictEqual('Bar Foo (123)')
     expect($('[data-qa=back-link]')).toHaveLength(0)
@@ -123,7 +125,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Check your answers before saving the new global restriction',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/CONTACT_GLOBAL/cancel/${journeyId}`,
+    )
     expect($('[data-qa=prisoner-name-and-id]')).toHaveLength(0)
     expect($('[data-qa=contact-name-and-id]').first().text().trim()).toStrictEqual('Bar Foo (123)')
     expect($('[data-qa=back-link]')).toHaveLength(0)
@@ -157,7 +161,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Check your answers before saving the new prisoner-contact restriction',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/PRISONER_CONTACT/cancel/${journeyId}`,
+    )
     expect($('[data-qa=prisoner-name-and-id]').first().text().trim()).toStrictEqual('John Smith (A1234BC)')
     expect($('[data-qa=contact-name-and-id]').first().text().trim()).toStrictEqual('Bar Foo (123)')
     expect($('[data-qa=back-link]')).toHaveLength(0)
@@ -201,7 +207,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Check your answers before saving the new global restriction',
     )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/CONTACT_GLOBAL/cancel/${journeyId}`,
+    )
     expect($('[data-qa=prisoner-name-and-id]')).toHaveLength(0)
     expect($('[data-qa=contact-name-and-id]').first().text().trim()).toStrictEqual('Bar Foo (123)')
     expect($('[data-qa=back-link]')).toHaveLength(0)
@@ -243,16 +251,16 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     })
   })
 
-  it('should return to start if no journey in session', async () => {
+  it('should return not found if no journey in session', async () => {
     await request(app)
       .get(
         `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/CONTACT_GLOBAL/check-answers/${uuidv4()}`,
       )
-      .expect(302)
-      .expect(
-        'Location',
-        `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/CONTACT_GLOBAL/start`,
-      )
+      .expect(404)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Page not found')
+      })
   })
 })
 
@@ -281,7 +289,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
   )
 
   it.each([['PRISONER_CONTACT'], ['CONTACT_GLOBAL']])(
-    'should return to start if no journey in session',
+    'should return not found if no journey in session',
     async restrictionClass => {
       existingJourney.restrictionClass = restrictionClass as RestrictionClass
       await request(app)
@@ -290,11 +298,11 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
         )
         .type('form')
         .send({ firstName: 'first' })
-        .expect(302)
-        .expect(
-          'Location',
-          `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/start`,
-        )
+        .expect(404)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Page not found')
+        })
     },
   )
 })

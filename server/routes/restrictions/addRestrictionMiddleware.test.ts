@@ -21,16 +21,21 @@ describe('addRestrictionMiddleware', () => {
     const restrictionClass = 'PRISONER_CONTACT'
     let req: Request
     let res: Response
+    let status: jest.Mock
+    let render: jest.Mock
+    let next: jest.Mock
     beforeEach(() => {
+      status = jest.fn()
+      render = jest.fn()
+      next = jest.fn()
       req = {
         params: { journeyId, prisonerNumber, contactId, prisonerContactId, restrictionClass },
         session: {} as Partial<SessionData>,
       } as unknown as Request
-      res = { redirect: jest.fn(), locals: { user } } as unknown as Response
+      res = { status, render, locals: { user } } as unknown as Response
     })
 
     it('should proceed if the journey is in the session and update the last touched date', () => {
-      const next = jest.fn()
       const lastTouchedBeforeCall = new Date(2020, 1, 1)
       req.session.addRestrictionJourneys = {}
       req.session.addRestrictionJourneys[journeyId] = {
@@ -49,22 +54,20 @@ describe('addRestrictionMiddleware', () => {
         lastTouchedBeforeCall.getTime(),
       )
     })
-    it('should return to start if the journey is not in the session', () => {
-      const next = jest.fn()
+    it('should return not found if the journey is not in the session', () => {
+      status.mockReturnValue(res)
       req.session.addRestrictionJourneys = {}
       ensureInAddRestrictionJourney()(req, res, next)
       expect(next).toHaveBeenCalledTimes(0)
-      expect(res.redirect).toHaveBeenCalledWith(
-        `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/start`,
-      )
+      expect(status).toHaveBeenCalledWith(404)
+      expect(render).toHaveBeenCalledWith('pages/errors/notFound')
     })
-    it('should return to start if no journeys created at all', () => {
-      const next = jest.fn()
+    it('should return not found if no journeys created at all', () => {
+      status.mockReturnValue(res)
       ensureInAddRestrictionJourney()(req, res, next)
       expect(next).toHaveBeenCalledTimes(0)
-      expect(res.redirect).toHaveBeenCalledWith(
-        `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/start`,
-      )
+      expect(status).toHaveBeenCalledWith(404)
+      expect(render).toHaveBeenCalledWith('pages/errors/notFound')
     })
   })
 })

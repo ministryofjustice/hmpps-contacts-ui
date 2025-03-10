@@ -192,16 +192,16 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     expect($('#comments').val()).toStrictEqual('some comments updated')
   })
 
-  it('should return to start if no journey in session', async () => {
+  it('should return not found if no journey in session', async () => {
     await request(app)
       .get(
         `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/CONTACT_GLOBAL/enter-restriction/${uuidv4()}`,
       )
-      .expect(302)
-      .expect(
-        'Location',
-        `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/CONTACT_GLOBAL/start`,
-      )
+      .expect(404)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(res.text).toContain('Page not found')
+      })
   })
 })
 
@@ -250,7 +250,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
   )
 
   it.each([['PRISONER_CONTACT'], ['CONTACT_GLOBAL']])(
-    'should return to start if no journey in session',
+    'should return not found if no journey in session',
     async restrictionClass => {
       existingJourney.restrictionClass = restrictionClass as RestrictionClass
       await request(app)
@@ -259,11 +259,11 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
         )
         .type('form')
         .send({ firstName: 'first' })
-        .expect(302)
-        .expect(
-          'Location',
-          `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/start`,
-        )
+        .expect(404)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(res.text).toContain('Page not found')
+        })
     },
   )
 })

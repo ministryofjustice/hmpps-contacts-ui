@@ -16,7 +16,7 @@ const ensureInAddRestrictionJourney = () => {
       res,
       next,
     ) => {
-      const { journeyId, prisonerNumber, contactId, prisonerContactId, restrictionClass } = req.params
+      const { journeyId } = req.params
       if (!req.session.addRestrictionJourneys) {
         req.session.addRestrictionJourneys = {}
       }
@@ -24,9 +24,7 @@ const ensureInAddRestrictionJourney = () => {
         logger.warn(
           `Add restriction journey (${journeyId}) not found in session for user ${res.locals.user?.username}. Returning to start of journey.`,
         )
-        return res.redirect(
-          `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/start`,
-        )
+        return res.status(404).render('pages/errors/notFound')
       }
       req.session.addRestrictionJourneys[journeyId].lastTouched = new Date().toISOString()
 
