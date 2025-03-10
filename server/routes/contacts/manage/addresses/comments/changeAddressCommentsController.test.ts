@@ -113,6 +113,24 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       correlationId: expect.any(String),
     })
   })
+
+  it('should render previously entered details if validation errors even if values in the session', async () => {
+    // Given
+    const form = {
+      comments: 'a'.repeat(300),
+    }
+    flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/comments`,
+    )
+
+    // Then
+    expect(response.status).toEqual(200)
+    const $ = cheerio.load(response.text)
+    expect($('#comments').val()).toStrictEqual(form.comments)
+  })
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/comments', () => {

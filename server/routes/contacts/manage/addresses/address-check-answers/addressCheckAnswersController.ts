@@ -106,7 +106,7 @@ export default class AddressCheckAnswersController implements PageHandler {
   }
 
   private async getReferenceCodeDescriptionIfSet(
-    code: string | undefined,
+    code: string | undefined | null,
     type: ReferenceCodeType,
     user: Express.User,
   ): Promise<string | undefined> {

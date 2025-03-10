@@ -265,7 +265,12 @@ export default class ContactsService {
   }
 
   async updateContactAddress(
-    changes: Partial<AddressJourney & AddressMetadata & AddressLines> & { contactId: number; contactAddressId: number },
+    changes: Partial<AddressJourney & AddressMetadata & AddressLines> & {
+      contactId: number
+      contactAddressId: number
+      startDate?: Date
+      endDate?: Date | null
+    },
     user: Express.User,
   ) {
     const request: UpdateContactAddressRequest = {
@@ -282,9 +287,8 @@ export default class ContactsService {
       verified: false,
       primaryAddress: changes.primaryAddress,
       mailFlag: changes.mailAddress,
-      startDate:
-        changes.fromMonth && changes.fromYear ? new Date(`${changes.fromYear}-${changes.fromMonth}-01Z`) : undefined,
-      endDate: changes.toMonth && changes.toYear ? new Date(`${changes.toYear}-${changes.toMonth}-01Z`) : undefined,
+      startDate: changes.startDate,
+      endDate: changes.endDate,
       comments: changes.comments,
       updatedBy: user.username,
     }

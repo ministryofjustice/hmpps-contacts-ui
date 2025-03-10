@@ -149,13 +149,13 @@ declare namespace journeys {
 
   export interface AddressLines {
     noFixedAddress: boolean
-    flat?: string | undefined
-    premises?: string | undefined
-    street?: string | undefined
-    locality?: string | undefined
-    town?: string | undefined
-    county?: string | undefined
-    postcode?: string | undefined
+    flat?: string | undefined | null
+    premises?: string | undefined | null
+    street?: string | undefined | null
+    locality?: string | undefined | null
+    town?: string | undefined | null
+    county?: string | undefined | null
+    postcode?: string | undefined | null
     country: string
   }
 

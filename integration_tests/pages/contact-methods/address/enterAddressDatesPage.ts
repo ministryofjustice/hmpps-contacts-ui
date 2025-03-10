@@ -1,8 +1,12 @@
 import Page, { PageElement } from '../../page'
 
 export default class EnterAddressDatesPage extends Page {
-  constructor(name: string) {
-    super(`Enter the dates for ${name}’s use of this address`)
+  constructor(name: string, isEdit: boolean = false) {
+    super(
+      isEdit
+        ? `Change the dates for ${name}’s use of this address`
+        : `Enter the dates for ${name}’s use of this address`,
+    )
   }
 
   hasFromMonth(value: string) {

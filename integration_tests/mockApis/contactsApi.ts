@@ -814,11 +814,11 @@ export default {
   }): SuperAgentRequest => {
     return stubFor({
       request: {
-        method: 'PUT',
+        method: 'PATCH',
         urlPath: `/contact/${contactId}/address/${contactAddressId}`,
       },
       response: {
-        status: 201,
+        status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: updated,
       },

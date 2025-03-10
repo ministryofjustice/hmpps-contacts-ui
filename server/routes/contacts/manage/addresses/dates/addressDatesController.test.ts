@@ -94,6 +94,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('[data-qa=address-reference]').first().html()!.trim()).toMatch(
       /<strong>Address:<\/strong><br>\n\s+?1a<br>\s+?My block<br>\s+?A street<br>\s+?Downtown<br>\s+?Exeter<br>\s+?Devon<br>\s+?PC1 D3<br>\s+?England/,
     )
+    expect(
+      $(
+        'div:contains("This has been set to the current month and year. You can change this to a past or future date as required.")',
+      ).text(),
+    ).toBeTruthy()
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ENTER_ADDRESS_DATES_PAGE, {
       who: user.username,

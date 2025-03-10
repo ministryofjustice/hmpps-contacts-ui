@@ -108,6 +108,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')
+    expect(
+      $(
+        `p:contains("Setting this address as the primary or postal address for First Middle Last will remove these flags from any other addresses previously flagged.")`,
+      ).text(),
+    ).toBeTruthy()
 
     expect($('input[type=radio]:checked').val()).toEqual('NONE')
 

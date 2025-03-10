@@ -106,6 +106,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')
+    expect(
+      $(
+        'div:contains("This has been set to the current month and year. You can change this to a past or future date as required.")',
+      ).text(),
+    ).toBeFalsy()
 
     expect($('#fromMonth').val()).toStrictEqual('1')
     expect($('#fromYear').val()).toStrictEqual('1999')
@@ -116,6 +121,31 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       who: user.username,
       correlationId: expect.any(String),
     })
+  })
+
+  it('should render previously entered details if validation errors even if values in the session', async () => {
+    // Given
+    contact.addresses[0].startDate = '1999-01-01T00:00:00'
+    contact.addresses[0].endDate = '2077-12-25T00:00:00'
+    const form = {
+      fromMonth: '',
+      toYear: 'a',
+    }
+    flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/dates`,
+    )
+
+    // Then
+    expect(response.status).toEqual(200)
+    const $ = cheerio.load(response.text)
+    expect($('#fromMonth').val()).toStrictEqual(form.fromMonth)
+    expect($('#toYear').val()).toStrictEqual(form.toYear)
+
+    expect($('#fromYear').val()).toStrictEqual('1999')
+    expect($('#toMonth').val()).toStrictEqual('12')
   })
 })
 
@@ -140,8 +170,8 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     const expected = {
       contactId,
       contactAddressId,
-      fromMonth,
-      fromYear,
+      startDate: new Date('1999-01-01Z'),
+      endDate: null,
     }
     expect(contactsService.updateContactAddress).toHaveBeenCalledWith(expected, user)
     expect(flashProvider).toHaveBeenCalledWith(

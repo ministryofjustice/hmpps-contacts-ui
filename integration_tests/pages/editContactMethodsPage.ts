@@ -33,8 +33,24 @@ export default class EditContactMethodsPage extends Page {
     this.addAddressLink().click()
   }
 
-  clickChangeAddressLink(contactAddressId: number) {
-    this.changeAddressLink(contactAddressId).click()
+  clickChangeAddressTypeLink(contactAddressId: number) {
+    this.changeAddressLink(contactAddressId, 'type').click()
+  }
+
+  clickChangeAddressLinesLink(contactAddressId: number) {
+    this.changeAddressLink(contactAddressId, 'lines').click()
+  }
+
+  clickChangeAddressDatesLink(contactAddressId: number) {
+    this.changeAddressLink(contactAddressId, 'dates').click()
+  }
+
+  clickChangeAddressFlagsLink(contactAddressId: number) {
+    this.changeAddressLink(contactAddressId, 'primary-postal').click()
+  }
+
+  clickChangeAddressCommentsLink(contactAddressId: number) {
+    this.changeAddressLink(contactAddressId, 'comments').click()
   }
 
   clickViewPreviousAddresses(): EditContactMethodsPage {
@@ -73,10 +89,11 @@ export default class EditContactMethodsPage extends Page {
   private addAddressLink = (): PageElement => cy.findAllByText('Addresses').first().parent().next().find('a')
 
   private viewPreviousAddresses = (): PageElement => cy.findAllByText('View previous addresses').first()
-  // TODO: This is being replaced with individual bounce pages for each field, just use the type link for now
 
-  private changeAddressLink = (contactAddressId: number): PageElement =>
-    cy.get(`[data-qa=change-address-type-${contactAddressId}]`)
+  private changeAddressLink = (
+    contactAddressId: number,
+    subject: 'type' | 'lines' | 'dates' | 'primary-postal' | 'comments',
+  ): PageElement => cy.get(`[data-qa=change-address-${subject}-${contactAddressId}]`)
 
   private addAddressPhoneLink = (contactAddressId: number): PageElement =>
     cy.get(`[data-qa=add-address-phone-link-${contactAddressId}]`)

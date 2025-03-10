@@ -55,14 +55,14 @@ export default class ChangeAddressDatesController implements PageHandler {
   ): Promise<void> => {
     const { prisonerNumber, contactId, prisonerContactId, contactAddressId } = req.params
     const { user } = res.locals
+    const { fromMonth, fromYear, toMonth, toYear } = req.body
+
     await this.contactsService.updateContactAddress(
       {
         contactId: Number(contactId),
         contactAddressId: Number(contactAddressId),
-        fromMonth: req.body.fromMonth,
-        fromYear: req.body.fromYear,
-        toMonth: req.body.toMonth,
-        toYear: req.body.toYear,
+        startDate: new Date(`${fromYear}-${fromMonth}-01Z`),
+        endDate: toMonth && toYear ? new Date(`${toYear}-${toMonth}-01Z`) : null,
       },
       user,
     )

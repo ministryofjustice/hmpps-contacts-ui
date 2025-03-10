@@ -74,12 +74,19 @@ export default class ChangeAddressLinesController implements PageHandler {
   ): Promise<void> => {
     const { prisonerNumber, contactId, prisonerContactId, contactAddressId } = req.params
     const { user } = res.locals
-    const { noFixedAddress, _csrf, ...requestBody } = req.body
+    const { noFixedAddress, flat, premises, street, locality, town, county, postcode, country } = req.body
     await this.contactsService.updateContactAddress(
       {
         contactId: Number(contactId),
         contactAddressId: Number(contactAddressId),
-        ...requestBody,
+        flat: flat ?? null,
+        premises: premises ?? null,
+        street: street ?? null,
+        locality: locality ?? null,
+        town: town ?? null,
+        county: county ?? null,
+        postcode: postcode ?? null,
+        country: country ?? null,
         noFixedAddress: noFixedAddress === 'YES',
       },
       user,
