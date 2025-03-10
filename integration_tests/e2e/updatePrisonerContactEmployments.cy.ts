@@ -6,6 +6,7 @@ import DeleteEmploymentPage from '../pages/update-employments/deleteEmploymentPa
 import EmploymentStatusPage from '../pages/update-employments/employmentStatusPage'
 import OrganisationSearchPage from '../pages/update-employments/organisationSearchPage'
 import CheckEmployerPage from '../pages/update-employments/checkEmployerPage'
+import PageNotFoundPage from '../pages/pageNotFoundPage'
 
 context('Update Prisoner Contact Employments', () => {
   const contactId = 654321
@@ -192,6 +193,10 @@ context('Update Prisoner Contact Employments', () => {
         requestedBy: 'USER1',
       },
     )
+
+    // users are prevented from going 'back' into the completed journey
+    cy.go('back')
+    Page.verifyOnPage(PageNotFoundPage)
   })
 
   it('Cancel goes to manage contacts professional information tab', () => {

@@ -51,6 +51,7 @@ export default class UpdateEmploymentsController implements PageHandler {
       FLASH_KEY__SUCCESS_BANNER,
       `You’ve updated the professional information for ${formatNameFirstNameFirst(journey.contactNames)}.`,
     )
+    delete req.session.updateEmploymentsJourneys![journeyId]
 
     res.redirect(journey.returnPoint.url)
   }
