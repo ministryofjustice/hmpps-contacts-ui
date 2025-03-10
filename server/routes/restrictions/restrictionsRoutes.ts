@@ -100,6 +100,7 @@ const RestrictionsRoutes = (
   router.post(
     '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/update/:restrictionClass/enter-restriction/:restrictionId',
     prepareStandaloneManageContactJourney,
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     validate(restrictionSchema()),
     asyncMiddleware(updateRestrictionController.POST),
   )

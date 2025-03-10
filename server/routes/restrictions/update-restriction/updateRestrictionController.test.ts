@@ -175,6 +175,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/update/:restrictionClass/enter-restriction/:restrictionId', () => {
   it('should update restriction and pass to entry point with flash success for PRISONER_CONTACT if there are no validation errors', async () => {
     restrictionsService.updatePrisonerContactRestriction.mockResolvedValue({})
+    contactsService.getContactName.mockResolvedValue(contact)
     const form: RestrictionSchemaType = {
       type: 'BAN',
       startDate: '1/2/2024',
@@ -197,12 +198,13 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
     )
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
-      'You’ve updated a prisoner-contact restriction',
+      'You’ve updated the prisoner-contact restrictions for contact First Middle Last and prisoner John Smith.',
     )
   })
 
   it('should update restriction and pass to entry point with flash success for CONTACT_GLOBAL if there are no validation errors', async () => {
     restrictionsService.updateContactGlobalRestriction.mockResolvedValue({})
+    contactsService.getContactName.mockResolvedValue(contact)
     const form: RestrictionSchemaType = {
       type: 'BAN',
       startDate: '1/2/2024',
@@ -223,7 +225,10 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
       form,
       user,
     )
-    expect(flashProvider).toHaveBeenCalledWith(FLASH_KEY__SUCCESS_BANNER, 'You’ve updated a global restriction')
+    expect(flashProvider).toHaveBeenCalledWith(
+      FLASH_KEY__SUCCESS_BANNER,
+      'You’ve updated the global restrictions for First Middle Last.',
+    )
   })
 
   it.each([['PRISONER_CONTACT'], ['CONTACT_GLOBAL']])(
