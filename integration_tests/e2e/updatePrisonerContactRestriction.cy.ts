@@ -77,7 +77,9 @@ context('Update Prisoner Contact Restriction', () => {
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .hasSuccessBanner('You’ve updated a prisoner-contact restriction')
+      .hasSuccessBanner(
+        'You’ve updated the prisoner-contact restrictions for contact First Middle Names Last and prisoner John Smith.',
+      )
 
     cy.verifyLastAPICall(
       {
@@ -113,7 +115,9 @@ context('Update Prisoner Contact Restriction', () => {
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .hasSuccessBanner('You’ve updated a prisoner-contact restriction')
+      .hasSuccessBanner(
+        'You’ve updated the prisoner-contact restrictions for contact First Middle Names Last and prisoner John Smith.',
+      )
 
     cy.verifyLastAPICall(
       {

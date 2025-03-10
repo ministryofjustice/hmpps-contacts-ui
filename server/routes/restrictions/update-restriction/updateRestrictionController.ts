@@ -111,15 +111,27 @@ export default class UpdateRestrictionController implements PageHandler {
     res: Response,
   ): Promise<void> => {
     const { contactId, prisonerContactId, restrictionClass, restrictionId } = req.params
-    const { user, journey } = res.locals
+    const { user, journey, prisonerDetails } = res.locals
     if (restrictionClass === 'PRISONER_CONTACT') {
       await this.restrictionsService
         .updatePrisonerContactRestriction(Number(prisonerContactId), Number(restrictionId), req.body, user)
-        .then(_ => req.flash(FLASH_KEY__SUCCESS_BANNER, 'You’ve updated a prisoner-contact restriction'))
+        .then(_ => this.contactsService.getContactName(Number(contactId), user))
+        .then(contactName =>
+          req.flash(
+            FLASH_KEY__SUCCESS_BANNER,
+            `You’ve updated the prisoner-contact restrictions for contact ${formatNameFirstNameFirst(contactName)} and prisoner ${formatNameFirstNameFirst(prisonerDetails, { excludeMiddleNames: true })}.`,
+          ),
+        )
     } else {
       await this.restrictionsService
         .updateContactGlobalRestriction(Number(contactId), Number(restrictionId), req.body, user)
-        .then(_ => req.flash(FLASH_KEY__SUCCESS_BANNER, 'You’ve updated a global restriction'))
+        .then(_ => this.contactsService.getContactName(Number(contactId), user))
+        .then(contactName =>
+          req.flash(
+            FLASH_KEY__SUCCESS_BANNER,
+            `You’ve updated the global restrictions for ${formatNameFirstNameFirst(contactName)}.`,
+          ),
+        )
     }
     res.redirect(journey.returnPoint.url)
   }
