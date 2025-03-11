@@ -93,8 +93,10 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     // Then
     const $ = cheerio.load(response.text)
+
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact methods')
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Are you sure you want to delete this phone number?',
+      'Are you sure you want to delete a phone number for this address?',
     )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/987654/relationship/456789#contact-methods',
@@ -103,6 +105,11 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
     )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Yes, delete phone number')
+    expect($('[data-qa=address-reference]').first().html()!.trim()).toMatch(
+      /<strong>Address:<\/strong><br>\n\s+?24<br>\s+?Acacia Avenue<br>\s+?Bunting<br>\s+?Sheffield<br>\s+?South Yorkshire<br>\s+?S2 3LK<br>\s+?England/,
+    )
+
     expect($('.phone-number-value').text().trim()).toStrictEqual('07878 111111')
     expect($('.extension-value').text().trim()).toStrictEqual('123')
     expect($('.type-value').text().trim()).toStrictEqual('Mobile')
@@ -122,7 +129,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Are you sure you want to delete this phone number?',
+      'Are you sure you want to delete a phone number for this address?',
     )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/987654/relationship/456789#contact-methods',

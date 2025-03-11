@@ -1,8 +1,8 @@
-import Page, { PageElement } from './page'
+import Page, { PageElement } from '../../../page'
 
 export default class ConfirmDeleteAddressPhonePage extends Page {
   constructor() {
-    super(`Are you sure you want to delete this phone number?`)
+    super(`Are you sure you want to delete a phone number for this address?`)
   }
 
   hasPhoneNumber(value: string): ConfirmDeleteAddressPhonePage {

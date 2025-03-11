@@ -1,7 +1,7 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
-import ConfirmDeleteAddressPhonePage from '../pages/confirmDeleteAddressPhonePage'
+import ConfirmDeleteAddressPhonePage from '../pages/contact-methods/address/phone/confirmDeleteAddressPhonePage'
 import EditContactMethodsPage from '../pages/editContactMethodsPage'
 
 context('Delete Address Phones', () => {
