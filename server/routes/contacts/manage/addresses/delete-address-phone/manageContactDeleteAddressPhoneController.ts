@@ -3,8 +3,6 @@ import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { ContactsService } from '../../../../../services'
 import { Navigation } from '../../../common/navigation'
-import ContactDetails = contactsApiClientTypes.ContactDetails
-import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
