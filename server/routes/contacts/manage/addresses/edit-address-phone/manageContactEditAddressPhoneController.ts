@@ -1,19 +1,25 @@
 import { Request, Response } from 'express'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
+import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
+import ReferenceDataService from '../../../../../services/referenceDataService'
+import { PhoneNumberSchemaType } from '../../phone/phoneSchemas'
 import { ContactsService } from '../../../../../services'
 import { Navigation } from '../../../common/navigation'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
-import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
+import Urls from '../../../../urls'
 
-export default class ManageContactDeleteAddressPhoneController implements PageHandler {
-  constructor(private readonly contactsService: ContactsService) {}
+export default class ManageContactEditAddressPhoneController implements PageHandler {
+  constructor(
+    private readonly contactsService: ContactsService,
+    private readonly referenceDataService: ReferenceDataService,
+  ) {}
 
-  public PAGE_NAME = Page.DELETE_ADDRESS_PHONE_PAGE
+  public PAGE_NAME = Page.EDIT_ADDRESS_PHONE_PAGE
 
   GET = async (
     req: Request<{
@@ -27,8 +33,7 @@ export default class ManageContactDeleteAddressPhoneController implements PageHa
   ): Promise<void> => {
     const { user } = res.locals
     const { prisonerNumber, contactId, prisonerContactId, contactAddressId, contactAddressPhoneId } = req.params
-    const contactIdNumber = Number(contactId)
-    const contact: ContactDetails = await this.contactsService.getContact(contactIdNumber, user)
+    const contact: ContactDetails = await this.contactsService.getContact(Number(contactId), user)
     const address = contact.addresses.find(
       (item: ContactAddressDetails) => item.contactAddressId === Number(contactAddressId),
     )
@@ -40,34 +45,46 @@ export default class ManageContactDeleteAddressPhoneController implements PageHa
         `Couldn't find phone with id ${contactAddressPhoneId} for contact ${contactId} and address ${contactAddressId}. URL probably entered manually.`,
       )
     }
-    const navigation: Navigation = {
-      backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
-      cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId, 'contact-methods'),
+    const currentType = res.locals?.formResponses?.['type'] ?? phone.phoneType
+    const typeOptions = await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user)
+    const navigation: Navigation = { backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId) }
+    const viewModel = {
+      typeOptions,
+      phoneNumber: res.locals?.formResponses?.['phoneNumber'] ?? phone.phoneNumber,
+      type: currentType,
+      extension: res.locals?.formResponses?.['extension'] ?? phone.extNumber,
+      contact,
+      navigation,
+      address,
     }
-    res.render('pages/contacts/manage/contactMethods/confirmDeleteAddressPhone', { phone, navigation, address })
+    res.render('pages/contacts/manage/contactMethods/addEditAddressPhone', viewModel)
   }
 
   POST = async (
-    req: Request<{
-      prisonerNumber: string
-      contactId: string
-      prisonerContactId: string
-      contactAddressId: string
-      contactAddressPhoneId: string
-    }>,
+    req: Request<
+      {
+        prisonerNumber: string
+        contactId: string
+        prisonerContactId: string
+        contactAddressId: string
+        contactAddressPhoneId: string
+      },
+      unknown,
+      PhoneNumberSchemaType
+    >,
     res: Response,
   ): Promise<void> => {
     const { user } = res.locals
     const { prisonerNumber, contactId, prisonerContactId, contactAddressId, contactAddressPhoneId } = req.params
-    const contactIdNumber = Number(contactId)
-    const contactAddressIdNumber = Number(contactAddressId)
-    const contactPhoneIdNumber = Number(contactAddressPhoneId)
-
-    await this.contactsService.deleteContactAddressPhone(
-      contactIdNumber,
-      contactAddressIdNumber,
-      contactPhoneIdNumber,
+    const { phoneNumber, type, extension } = req.body
+    await this.contactsService.updateContactAddressPhone(
+      Number(contactId),
+      Number(contactAddressId),
+      Number(contactAddressPhoneId),
       user,
+      type,
+      phoneNumber,
+      extension,
     )
     await this.contactsService
       .getContactName(Number(contactId), user)

@@ -122,6 +122,7 @@ export const getUpdateAddressDetails = async (
   }
 
   return {
+    address: existingAddress,
     contact,
     addressType,
     addressLines,

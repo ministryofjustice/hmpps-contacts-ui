@@ -1,0 +1,75 @@
+{% extends "partials/layout.njk" %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set pageTitle = applicationName + " - Delete address phone number" %}
+{% set title = "Are you sure you want to delete a phone number for this address?" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+  {% include 'partials/navigation.njk' %}
+  {{ miniProfile(prisonerDetails) }}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+    <span class="govuk-caption-l">Edit contact methods</span>
+      <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+      <div data-qa="address-reference" class="govuk-body govuk-!-margin-bottom-7 govuk-!-margin-top-2">
+        <strong>Address:</strong><br/>
+        {{ formattedAddress | addressToLines | escape | nl2br | safe }}
+      </div>
+      <form method='POST'>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        {{ govukSummaryList({
+          rows: [
+            {
+              key: {
+              text: "Phone number type"
+            },
+              value: {
+              html: phone.phoneTypeDescription or 'Not provided',
+              classes: 'type-value'
+            }
+            },
+            {
+              key: {
+              text: "Phone number"
+            },
+              value: {
+              html: phone.phoneNumber,
+              classes: 'phone-number-value'
+            }
+            },
+            {
+              key: {
+              text: "Extension"
+            },
+              value: {
+              html: phone.extNumber if phone.extNumber else 'Not provided',
+              classes: 'extension-value'
+            }
+            }
+          ]
+        }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Yes, delete phone number",
+            type: "submit",
+            classes: 'govuk-!-margin-top-6 govuk-button--warning',
+            attributes: {"data-qa": "continue-button"},
+            preventDoubleClick: true
+          }) }}
+          {{ govukButton({
+            text: "No, do not delete",
+            type: "button",
+            classes: 'govuk-!-margin-top-6 govuk-button--secondary',
+            attributes: {"data-qa": "cancel-button"},
+            href: navigation.cancelButton,
+            preventDoubleClick: true
+          }) }}
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

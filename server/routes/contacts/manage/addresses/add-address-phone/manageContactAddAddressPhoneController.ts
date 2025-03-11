@@ -3,7 +3,7 @@ import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../../services/referenceDataService'
-import { PhoneNumberSchemaType } from '../phoneSchemas'
+import { PhoneNumberSchemaType } from '../../phone/phoneSchemas'
 import { ContactsService } from '../../../../../services'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import { Navigation } from '../../../common/navigation'
