@@ -8,8 +8,9 @@ import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import TestData from '../../../../testutils/testData'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import { MockedService } from '../../../../../testutils/mockedServices'
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 
-type CreateEmailRequest = components['schemas']['CreateEmailRequest']
+type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/referenceDataService')
@@ -68,11 +69,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Update an email address for First Middle Last',
-    )
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Add email addresses for First Middle Last')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789',
     )
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
@@ -99,7 +98,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
   it('should render previously entered details if validation errors', async () => {
     // Given
-    const form = { emailAddress: 'name@' }
+    const form = { emails: [{ emailAddress: 'name@' }] }
     contactsService.getContact.mockResolvedValue(contact)
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
@@ -111,38 +110,121 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
-    expect($('#emailAddress').val()).toStrictEqual('name@')
+    expect($('[data-qa=emails-0-email-address]').first().val()).toStrictEqual('name@')
   })
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/email/create', () => {
   it('should create email and pass to manage contact details page if there are no validation errors', async () => {
     contactsService.getContactName.mockResolvedValue(contact)
+    contactsService.createContactEmails.mockResolvedValue([])
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`)
       .type('form')
-      .send({ emailAddress: 'test@example.com' })
+      .send({ save: '', emails: [{ emailAddress: 'test@example.com' }] })
       .expect(302)
       .expect('Location', `/prisoner/A1234BC/contacts/manage/987654/relationship/456789`)
 
-    const requestBody: CreateEmailRequest = {
-      emailAddress: 'test@example.com',
+    const requestBody: CreateMultipleEmailsRequest = {
+      emailAddresses: [{ emailAddress: 'test@example.com' }],
       createdBy: user.name,
     }
 
-    expect(contactsService.createContactEmail).toHaveBeenCalledWith(contactId, requestBody, user)
+    expect(contactsService.createContactEmails).toHaveBeenCalledWith(contactId, requestBody, user)
+    expect(flashProvider).toHaveBeenCalledWith(
+      FLASH_KEY__SUCCESS_BANNER,
+      'You’ve updated the contact methods for First Middle Last.',
+    )
   })
 
   it('should return to input page with details kept if there are validation errors', async () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`)
       .type('form')
-      .send({ emailAddress: '' })
+      .send({ emails: [{ emailAddress: '' }] })
       .expect(302)
       .expect(
         'Location',
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`,
       )
-    expect(contactsService.createContactEmail).not.toHaveBeenCalled()
+    expect(contactsService.createContactEmails).not.toHaveBeenCalled()
+  })
+
+  describe('should work without javascript enabled', () => {
+    it('should return to input page without validating if we are adding an email', async () => {
+      const form = {
+        add: '',
+        emails: [{ emailAddress: 'invalidemail' }],
+      }
+
+      await request(app)
+        .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`)
+        .type('form')
+        .send(form)
+        .expect(302)
+        .expect(
+          'Location',
+          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`,
+        )
+      expect(contactsService.createContactIdentities).not.toHaveBeenCalled()
+      expect(flashProvider).toHaveBeenCalledWith(
+        'formResponses',
+        JSON.stringify({
+          emails: [{ emailAddress: 'invalidemail' }, { emailAddress: '' }],
+          add: '',
+        }),
+      )
+      expect(flashProvider).not.toHaveBeenCalledWith('validationErrors', expect.anything())
+    })
+
+    it('should return to input page without validating if we are removing an email', async () => {
+      const form = {
+        remove: '1',
+        emails: [{ emailAddress: 'invalidemail' }, { emailAddress: 'removeme@example.com' }],
+      }
+
+      await request(app)
+        .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`)
+        .type('form')
+        .send(form)
+        .expect(302)
+        .expect(
+          'Location',
+          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`,
+        )
+      expect(contactsService.createContactIdentities).not.toHaveBeenCalled()
+      expect(flashProvider).toHaveBeenCalledWith(
+        'formResponses',
+        JSON.stringify({
+          emails: [{ emailAddress: 'invalidemail' }],
+          remove: '1',
+        }),
+      )
+      expect(flashProvider).not.toHaveBeenCalledWith('validationErrors', expect.anything())
+    })
+
+    it('should return to input page without validating even if action is not save, add or remove', async () => {
+      const form = {
+        emails: [{ emailAddress: 'invalidemail' }],
+      }
+
+      await request(app)
+        .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`)
+        .type('form')
+        .send(form)
+        .expect(302)
+        .expect(
+          'Location',
+          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`,
+        )
+      expect(contactsService.createContactIdentities).not.toHaveBeenCalled()
+      expect(flashProvider).toHaveBeenCalledWith(
+        'formResponses',
+        JSON.stringify({
+          emails: [{ emailAddress: 'invalidemail' }],
+        }),
+      )
+      expect(flashProvider).not.toHaveBeenCalledWith('validationErrors', expect.anything())
+    })
   })
 })

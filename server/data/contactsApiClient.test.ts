@@ -30,7 +30,7 @@ import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAd
 import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAddressPhoneRequest
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
-type CreateEmailRequest = components['schemas']['CreateEmailRequest']
+type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 type AddContactRelationshipRequest = components['schemas']['AddContactRelationshipRequest']
@@ -753,27 +753,27 @@ describe('contactsApiClient', () => {
           updatedTime: new Date().toISOString(),
         }
 
-        const request: CreateEmailRequest = {
-          emailAddress: 'test@example.com',
+        const request: CreateMultipleEmailsRequest = {
+          emailAddresses: [{ emailAddress: 'test@example.com' }],
           createdBy: 'user1',
         }
 
         fakeContactsApi
-          .post('/contact/99/email', request)
+          .post('/contact/99/emails', request)
           .matchHeader('authorization', `Bearer systemToken`)
-          .reply(201, expectedContactEmailDetails)
+          .reply(201, [expectedContactEmailDetails])
 
         // When
-        const createdContact = await contactsApiClient.createContactEmail(99, request, user)
+        const createdContact = await contactsApiClient.createContactEmails(99, request, user)
 
         // Then
-        expect(createdContact).toEqual(expectedContactEmailDetails)
+        expect(createdContact).toEqual([expectedContactEmailDetails])
       })
 
       it.each([400, 401, 403, 500])('should propagate errors creating contact identity', async (errorCode: number) => {
         // Given
-        const request: CreateEmailRequest = {
-          emailAddress: 'test@example.com',
+        const request: CreateMultipleEmailsRequest = {
+          emailAddresses: [{ emailAddress: 'test@example.com' }],
           createdBy: 'user1',
         }
         const expectedErrorBody = {
@@ -783,13 +783,13 @@ describe('contactsApiClient', () => {
         }
 
         fakeContactsApi
-          .post('/contact/99/email', request)
+          .post('/contact/99/emails', request)
           .matchHeader('authorization', `Bearer systemToken`)
           .reply(errorCode, expectedErrorBody)
 
         // When
         try {
-          await contactsApiClient.createContactEmail(99, request, user)
+          await contactsApiClient.createContactEmails(99, request, user)
         } catch (error) {
           const e = error as { status: unknown; data: unknown }
           // Then

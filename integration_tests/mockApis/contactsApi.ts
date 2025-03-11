@@ -29,7 +29,7 @@ export type StubContactSearchResultItem = components['schemas']['ContactSearchRe
 export type StubPatchContactResponse = components['schemas']['PatchContactResponse']
 export type StubPrisonerContactRelationshipDetails = components['schemas']['PrisonerContactRelationshipDetails']
 export type StubPrisonerContactRestrictionsResponse = components['schemas']['PrisonerContactRestrictionsResponse']
-export type CreateEmailRequest = components['schemas']['CreateEmailRequest']
+export type StubContactEmailDetails = components['schemas']['ContactEmailDetails']
 export type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 export type ContactRestrictionDetails = components['schemas']['ContactRestrictionDetails']
 export type StubContactAddressDetails = components['schemas']['ContactAddressDetails']
@@ -644,17 +644,17 @@ export default {
       },
     })
   },
-  stubCreateContactEmail: ({
+  stubCreateContactEmails: ({
     contactId,
     created,
   }: {
     contactId: number
-    created: CreateEmailRequest
+    created: StubContactEmailDetails[]
   }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'POST',
-        urlPath: `/contact/${contactId}/email`,
+        urlPath: `/contact/${contactId}/emails`,
       },
       response: {
         status: 201,
