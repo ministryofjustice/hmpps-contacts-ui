@@ -11,6 +11,7 @@ import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import Urls from '../../../../urls'
+import { getUpdateAddressDetails } from '../common/utils'
 
 export default class ManageContactAddAddressPhoneController implements PageHandler {
   constructor(
@@ -25,23 +26,22 @@ export default class ManageContactAddAddressPhoneController implements PageHandl
     res: Response,
   ): Promise<void> => {
     const { user } = res.locals
-    const { prisonerNumber, contactId, prisonerContactId, contactAddressId } = req.params
-    const contact: ContactDetails = await this.contactsService.getContact(Number(contactId), user)
-    const address = contact.addresses.find(
-      (item: ContactAddressDetails) => item.contactAddressId === Number(contactAddressId),
-    )
+    const { prisonerNumber, contactId, prisonerContactId } = req.params
+    const { formattedAddress } = await getUpdateAddressDetails(this.contactsService, req, res)
     const typeOptions = await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user)
-    const navigation: Navigation = { backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId) }
-    const viewModel = {
-      typeOptions,
-      phoneNumber: res.locals?.formResponses?.['phoneNumber'],
-      type: res.locals?.formResponses?.['type'],
-      extension: res.locals?.formResponses?.['extension'],
-      contact,
-      address,
-      navigation,
+    const navigation: Navigation = {
+      backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
+      cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId, 'contact-methods'),
     }
-    res.render('pages/contacts/manage/contactMethods/addEditAddressPhone', viewModel)
+    const viewModel = {
+      isEdit: true,
+      continueButtonLabel: 'Confirm and save',
+      navigation,
+      typeOptions,
+      formattedAddress,
+      phones: res.locals?.formResponses?.['phones'] ?? [{ type: '', phoneNumber: '', extension: '' }],
+    }
+    res.render('pages/contacts/manage/contactMethods/address/phone/addAddressPhone', viewModel)
   }
 
   POST = async (

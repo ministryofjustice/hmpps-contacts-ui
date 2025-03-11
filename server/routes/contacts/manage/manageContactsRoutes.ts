@@ -96,6 +96,7 @@ import ChangeAddressFlagsController from './addresses/primary-or-postal/changeAd
 import AddressCommentsController from './addresses/comments/addressCommentsController'
 import { addressCommentsSchema } from './addresses/comments/addressCommentsSchema'
 import ChangeAddressCommentsController from './addresses/comments/changeAddressCommentsController'
+import { phonesSchema } from './addresses/add-address-phone/AddAddressPhonesSchema'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -443,7 +444,7 @@ const ManageContactsRoutes = (
   standAloneRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/phone/create',
     controller: new ManageContactAddAddressPhoneController(contactsService, referenceDataService),
-    schema: phoneNumberSchema,
+    schema: phonesSchema,
   })
 
   standAloneRoute({

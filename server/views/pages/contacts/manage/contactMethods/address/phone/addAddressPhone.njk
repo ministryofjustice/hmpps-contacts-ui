@@ -1,0 +1,113 @@
+{% extends "partials/layout.njk" %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
+{% set pageTitle = applicationName + " - Create contact phone number" %}
+{% set title = "Add phone numbers for this address" if isEdit else "Add phone numbers for this address (optional)" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+  {% include 'partials/navigation.njk' %}
+  {{ miniProfile(prisonerDetails) }}
+  {% include 'partials/formErrorSummary.njk' %}
+  <div class="govuk-grid-row reset-fieldset-count" data-module="moj-add-another">
+    <div class="govuk-grid-column-two-thirds">
+    <span class="govuk-caption-l">Edit contact methods</span>
+    <h1 class="govuk-heading-l moj-add-another__heading" data-qa="main-heading">{{ title }}</h1>
+      <div data-qa="address-reference" class="govuk-body govuk-!-margin-bottom-7 govuk-!-margin-top-2">
+        <strong>Address:</strong><br/>
+        {{ formattedAddress | addressToLines | escape | nl2br | safe }}
+      </div>
+      <form method='POST'>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        {% for phone in phones %}
+          {% call govukFieldset({
+            classes: "moj-add-another__item",
+            legend: {
+              text: "Phone number",
+              classes: "moj-add-another__title govuk-fieldset__legend--m append-fieldset-count",
+              isPageHeading: false
+            }
+          }) %}
+            {{ govukSelect({
+              id: "phones[" + loop.index0 + "].type",
+              name: "phones[" + loop.index0 + "][type]",
+              label: {
+                text: "Phone number type"
+              },
+              items: typeOptions | referenceCodesToSelect('Select phone number type') | setSelected(phone.type),
+              errorMessage: validationErrors | findError('phones[' + loop.index0 + '].type'),
+              attributes: {
+                "data-id": "phones[%index%].type",
+                "data-name": "phones[%index%][type]",
+                "data-qa": "phones-" + loop.index0 + "-type"
+              }
+            }) }}
+
+            {{ govukInput({
+              id: "phones[" + loop.index0 + "].phoneNumber",
+              name: "phones[" + loop.index0 + "][phoneNumber]",
+              label: { text: "Phone number" },
+              classes: 'govuk-!-width-one-third',
+              errorMessage: validationErrors | findError('phones[' + loop.index0 + '].phoneNumber'),
+              value: phone.phoneNumber,
+              attributes: {
+                "data-id": "phones[%index%].phoneNumber",
+                "data-name": "phones[%index%][phoneNumber]",
+                "data-qa": "phones-" + loop.index0 + "-phoneNumber"
+              }
+            }) }}
+
+            {{ govukInput({
+              id: "phones[" + loop.index0 + "].extension",
+              name: "phones[" + loop.index0 + "][extension]",
+              label: { text: "Extension (optional)" },
+              classes: 'govuk-!-width-one-third',
+              errorMessage: validationErrors | findError('phones[' + loop.index0 + '].extension'),
+              value: phone.extension,
+              attributes: {
+                "data-id": "phones[%index%].extension",
+                "data-name": "phones[%index%][extension]",
+                "data-qa": "phones-" + loop.index0 + "-extension"
+              }
+            }) }}
+
+            {% if phones.length > 1 %}
+              {{ govukButton({
+                name: "remove",
+                value: loop.index0,
+                text: "Remove",
+                classes: "govuk-button--secondary moj-add-another__remove-button"
+              }) }}
+            {% endif %}
+          {% endcall %}
+        {% endfor %}
+        <div class="moj-button-action">
+          {{ govukButton({
+            name: "add",
+            text: "Add another phone number",
+            classes: "govuk-button--secondary moj-add-another__add-button govuk-!-margin-bottom-4"
+          }) }}
+        </div>
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: continueButtonLabel,
+            name: "save",
+            type: "submit",
+            classes: 'govuk-!-margin-top-6',
+            attributes: {"data-qa": "continue-button"},
+            preventDoubleClick: true
+          }) }}
+          {% if navigation.cancelButton %}
+            <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
+          {% endif %}
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}
