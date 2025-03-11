@@ -22,7 +22,7 @@ import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDe
 import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAddressPhoneRequest
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
 
-type CreateEmailRequest = components['schemas']['CreateEmailRequest']
+type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 type AddContactRelationshipRequest = components['schemas']['AddContactRelationshipRequest']
@@ -551,12 +551,12 @@ describe('contactsService', () => {
   })
 
   describe('createContactEmail', () => {
-    const expectedRequest: CreateEmailRequest = {
-      emailAddress: 'test@example.com',
+    const expectedRequest: CreateMultipleEmailsRequest = {
+      emailAddresses: [{ emailAddress: 'test@example.com' }],
       createdBy: 'user1',
     }
 
-    it('should create a contact email with all fields', async () => {
+    it('should create contact emails with all fields', async () => {
       // Given
       const expectedCreated: ContactEmailDetails = {
         contactEmailId: 1,
@@ -567,19 +567,19 @@ describe('contactsService', () => {
         updatedBy: new Date().toISOString(),
         updatedTime: new Date().toISOString(),
       }
-      apiClient.createContactEmail.mockResolvedValue(expectedCreated)
+      apiClient.createContactEmails.mockResolvedValue([expectedCreated])
 
       // When
-      const created = await service.createContactEmail(99, expectedRequest, user)
+      const created = await service.createContactEmails(99, expectedRequest, user)
 
       // Then
-      expect(created).toStrictEqual(expectedCreated)
-      expect(apiClient.createContactEmail).toHaveBeenCalledWith(99, expectedRequest, user)
+      expect(created).toStrictEqual([expectedCreated])
+      expect(apiClient.createContactEmails).toHaveBeenCalledWith(99, expectedRequest, user)
     })
 
     it('should handle a bad request', async () => {
-      apiClient.createContactEmail.mockRejectedValue(createError.BadRequest())
-      await expect(service.createContactEmail(99, expectedRequest, user)).rejects.toBeInstanceOf(BadRequest)
+      apiClient.createContactEmails.mockRejectedValue(createError.BadRequest())
+      await expect(service.createContactEmails(99, expectedRequest, user)).rejects.toBeInstanceOf(BadRequest)
     })
   })
 

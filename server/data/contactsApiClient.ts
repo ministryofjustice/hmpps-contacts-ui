@@ -35,7 +35,7 @@ import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAd
 import PatchEmploymentsRequest = contactsApiClientTypes.PatchEmploymentsRequest
 
 type PageableObject = components['schemas']['PageableObject']
-type CreateEmailRequest = components['schemas']['CreateEmailRequest']
+type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 type AddContactRelationshipRequest = components['schemas']['AddContactRelationshipRequest']
@@ -238,14 +238,14 @@ export default class ContactsApiClient extends RestClient {
     )
   }
 
-  async createContactEmail(
+  async createContactEmails(
     contactId: number,
-    request: CreateEmailRequest,
+    request: CreateMultipleEmailsRequest,
     user: Express.User,
-  ): Promise<ContactEmailDetails> {
-    return this.post<ContactEmailDetails>(
+  ): Promise<ContactEmailDetails[]> {
+    return this.post<ContactEmailDetails[]>(
       {
-        path: `/contact/${contactId}/email`,
+        path: `/contact/${contactId}/emails`,
         data: request,
       },
       user,

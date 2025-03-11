@@ -1,16 +1,18 @@
 import { Request, Response } from 'express'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
-import { EmailSchemaType } from '../emailSchemas'
+import { EmailsSchemaType } from '../emailSchemas'
 import { ContactsService } from '../../../../../services'
 import { components } from '../../../../../@types/contactsApi'
-import ContactDetails = contactsApiClientTypes.ContactDetails
 import { Navigation } from '../../../common/navigation'
 import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
+import ContactDetails = contactsApiClientTypes.ContactDetails
+import ContactEmailDetails = contactsApiClientTypes.ContactEmailDetails
 
-type CreateEmailRequest = components['schemas']['CreateEmailRequest']
+type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
+type EmailAddress = components['schemas']['EmailAddress']
 export default class ManageContactAddEmailController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
 
@@ -23,38 +25,56 @@ export default class ManageContactAddEmailController implements PageHandler {
     const { user } = res.locals
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
+    const otherEmailAddresses = contact.emailAddresses?.map((other: ContactEmailDetails) => other.emailAddress) ?? []
+
     const navigation: Navigation = {
       backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
-      cancelButton: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
+      cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
     }
+
     const viewModel = {
-      emailAddress: res.locals?.formResponses?.['emailAddress'],
-      contact,
+      emails: res.locals?.formResponses?.['emails'] ?? [{ emailAddress: '' }],
+      names: contact,
+      otherEmailAddresses,
       navigation,
     }
-    res.render('pages/contacts/manage/contactMethods/editEmail', viewModel)
+    res.render('pages/contacts/manage/contactMethods/addEmails', viewModel)
   }
 
   POST = async (
-    req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }, unknown, EmailSchemaType>,
+    req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }, unknown, EmailsSchemaType>,
     res: Response,
   ): Promise<void> => {
     const { user } = res.locals
     const { prisonerNumber, contactId, prisonerContactId } = req.params
-    const { emailAddress } = req.body
-    const request: CreateEmailRequest = {
-      emailAddress,
-      createdBy: user.name,
-    }
-    await this.contactsService.createContactEmail(parseInt(contactId, 10), request, user)
-    await this.contactsService
-      .getContactName(Number(contactId), user)
-      .then(response =>
-        req.flash(
-          FLASH_KEY__SUCCESS_BANNER,
-          `You’ve updated the contact methods for ${formatNameFirstNameFirst(response)}.`,
-        ),
+    const { emails, save, add, remove } = req.body
+    if (typeof save !== 'undefined' && emails) {
+      const request: CreateMultipleEmailsRequest = {
+        emailAddresses: emails.map(email => ({ emailAddress: email.emailAddress }) as EmailAddress),
+        createdBy: user.name,
+      }
+      await this.contactsService
+        .createContactEmails(parseInt(contactId, 10), request, user)
+        .then(_ => this.contactsService.getContactName(Number(contactId), user))
+        .then(response =>
+          req.flash(
+            FLASH_KEY__SUCCESS_BANNER,
+            `You’ve updated the contact methods for ${formatNameFirstNameFirst(response)}.`,
+          ),
+        )
+      res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
+    } else {
+      if (typeof add !== 'undefined') {
+        emails.push({ emailAddress: '' })
+      } else if (typeof remove !== 'undefined') {
+        emails.splice(Number(remove), 1)
+      }
+      // Always redirect back to input even if we didn't find an action, which should be impossible but there is a small
+      // possibility if JS is disabled after a page load or the user somehow removes all emails.
+      req.flash('formResponses', JSON.stringify(req.body))
+      res.redirect(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`,
       )
-    res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
+    }
   }
 }

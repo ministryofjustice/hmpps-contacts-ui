@@ -1,0 +1,86 @@
+{% extends "partials/layout.njk" %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
+{% set pageTitle = "Add email addresses for the contact - Edit contact methods - DPS" %}
+{% set title = "Add email addresses for " + (names | formatNameFirstNameFirst) %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+
+    {% include 'partials/navigation.njk' %}
+    {{ miniProfile(prisonerDetails) }}
+    {% include 'partials/formErrorSummary.njk' %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+          <div data-module="moj-add-another">
+            <span class="govuk-caption-l">Edit contact methods</span>
+            <h1 class="govuk-heading-l moj-add-another__heading" data-qa="main-heading">{{ title }}</h1>
+            <form method="POST">
+              <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+              {% for other in otherEmailAddresses  %}
+                <input type="hidden" name="otherEmailAddresses[{{ loop.index0 }}]" value="{{ other }}" />
+              {% endfor %}
+
+              {% for email in emails %}
+                {% call govukFieldset({
+                  classes: "moj-add-another__item",
+                  legend: {
+                    classes: "moj-add-another__title govuk-fieldset__legend--m",
+                    isPageHeading: false
+                  }
+                }) %}
+
+                  {{ govukInput({
+                    id: "emails[" + loop.index0 + "].emailAddress",
+                    name: "emails[" + loop.index0 + "][emailAddress]",
+                    label: { text: "Email address", classes: 'govuk-fieldset__legend--m govuk-!-margin-bottom-8' },
+                    value: email.emailAddress,
+                    errorMessage: validationErrors | findError('emails[' + loop.index0 + '].emailAddress'),
+                    attributes: {
+                      "data-id": "emails[%index%].emailAddress",
+                      "data-name": "emails[%index%][emailAddress]",
+                      "data-qa": "emails-" + loop.index0 + "-email-address"
+                    }
+                  }) }}
+
+                  {% if emails.length > 1 %}
+                    {{ govukButton({
+                      name: "remove",
+                      value: loop.index0,
+                      text: "Remove",
+                      classes: "govuk-button--secondary moj-add-another__remove-button"
+                    }) }}
+                  {% endif %}
+                {% endcall %}
+              {% endfor %}
+
+                <div class="moj-button-action">
+                  {{ govukButton({
+                    name: "add",
+                    text: "Add another email address",
+                    classes: "govuk-button--secondary moj-add-another__add-button govuk-!-margin-bottom-4"
+                  }) }}
+                </div>
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                      text: "Confirm and save",
+                      name: "save",
+                      type: "submit",
+                      classes: 'govuk-!-margin-top-6',
+                      attributes: {"data-qa": "continue-button"},
+                      preventDoubleClick: true
+                    }) }}
+                    {% if navigation.cancelButton %}
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
+                    {% endif %}
+                </div>
+            </form>
+          </div>
+          </div>
+        </div>
+
+{% endblock %}

@@ -32,7 +32,7 @@ import ManageRelationshipCommentsController from './relationship/comments/manage
 import { restrictedEditingNameSchema } from '../common/name/nameSchemas'
 import ManageContactAddEmailController from './email/add/manageContactAddEmailController'
 import ManageContactEditEmailController from './email/edit/manageContactEditEmailController'
-import { emailSchema } from './email/emailSchemas'
+import { emailSchema, emailsSchema } from './email/emailSchemas'
 import ManageContactRelationshipToPrisonerController from './relationship/relationship-to-prisoner/manageContactRelationshipToPrisonerController'
 import { selectRelationshipSchemaFactory } from '../common/relationship/selectRelationshipSchemas'
 import ManageContactDeleteEmailController from './email/delete/manageContactDeleteEmailController'
@@ -333,7 +333,7 @@ const ManageContactsRoutes = (
   standAloneRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/email/create',
     controller: new ManageContactAddEmailController(contactsService),
-    schema: emailSchema,
+    schema: emailsSchema(),
   })
 
   standAloneRoute({

@@ -1,11 +1,11 @@
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import Page from '../pages/page'
-import EditEmailPage from '../pages/editEmailPage'
-import { CreateEmailRequest } from '../mockApis/contactsApi'
+import AddEmailsPage from '../pages/addEmailsPage'
 import EditContactMethodsPage from '../pages/editContactMethodsPage'
+import { StubContactEmailDetails } from '../mockApis/contactsApi'
 
-context('Create Email Address', () => {
+context('Create Email Addresses', () => {
   const contactId = 22
   const prisonerContactId = 987654
   beforeEach(() => {
@@ -36,12 +36,24 @@ context('Create Email Address', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
   })
 
-  it(`should pass validation and create email and address`, () => {
-    const created: CreateEmailRequest = {
-      emailAddress: 'mr.last@example.com',
-      createdBy: 'john smith',
-    }
-    cy.task('stubCreateContactEmail', { contactId, created })
+  it(`should pass validation and create email addresses`, () => {
+    const created: StubContactEmailDetails[] = [
+      {
+        contactId: 1,
+        contactEmailId: 1,
+        emailAddress: 'test@example.com',
+        createdBy: 'john smith',
+        createdTime: '2025-01-01',
+      },
+      {
+        contactId: 1,
+        contactEmailId: 2,
+        emailAddress: 'test3@example.com',
+        createdBy: 'john smith',
+        createdTime: '2025-01-01',
+      },
+    ]
+    cy.task('stubCreateContactEmails', { contactId, created })
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
       .clickContactMethodsTab()
       .clickEditContactMethodsLink()
@@ -49,17 +61,25 @@ context('Create Email Address', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickAddEmailLink()
 
-    Page.verifyOnPage(EditEmailPage, 'Jones Mason').enterEmail('test@email.com').clickContinue()
+    Page.verifyOnPage(AddEmailsPage, 'Jones Mason') //
+      .enterEmail(0, 'test@example.com')
+      .clickAddAnotherButton()
+      .enterEmail(1, 'test2@example.com')
+      .clickAddAnotherButton()
+      .enterEmail(2, 'test3@example.com')
+      .clickRemoveButton(1)
+      .clickContinue()
+
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').hasSuccessBanner(
       'You’ve updated the contact methods for Jones Mason.',
     )
     cy.verifyLastAPICall(
       {
         method: 'POST',
-        urlPath: `/contact/${contactId}/email`,
+        urlPath: `/contact/${contactId}/emails`,
       },
       {
-        emailAddress: 'test@email.com',
+        emailAddresses: [{ emailAddress: 'test@example.com' }, { emailAddress: 'test3@example.com' }],
         createdBy: 'john smith',
       },
     )
@@ -73,9 +93,9 @@ context('Create Email Address', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickAddEmailLink()
 
-    const enterEmailPage = Page.verifyOnPage(EditEmailPage, 'Jones Mason')
+    const enterEmailPage = Page.verifyOnPage(AddEmailsPage, 'Jones Mason')
     enterEmailPage.clickContinue()
-    enterEmailPage.hasFieldInError('emailAddress', `Enter an email address`)
+    enterEmailPage.hasFieldInError('emails[0].emailAddress', `Enter an email address`)
   })
 
   it(`should require email address in the correct format`, () => {
@@ -86,11 +106,11 @@ context('Create Email Address', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickAddEmailLink()
 
-    const enterEmailPage = Page.verifyOnPage(EditEmailPage, 'Jones Mason')
-    enterEmailPage.enterEmail('name@')
+    const enterEmailPage = Page.verifyOnPage(AddEmailsPage, 'Jones Mason')
+    enterEmailPage.enterEmail(0, 'name@')
     enterEmailPage.clickContinue()
     enterEmailPage.hasFieldInError(
-      'emailAddress',
+      'emails[0].emailAddress',
       'Enter an email address in the correct format, like name@example.com',
     )
   })
@@ -104,9 +124,9 @@ context('Create Email Address', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickAddEmailLink()
 
-    const enterEmailPage = Page.verifyOnPage(EditEmailPage, 'Jones Mason')
-    enterEmailPage.enterEmail(invalidEmail).clickContinue()
-    enterEmailPage.hasFieldInError('emailAddress', `Email address must be 240 characters or less`)
+    const enterEmailPage = Page.verifyOnPage(AddEmailsPage, 'Jones Mason')
+    enterEmailPage.enterEmail(0, invalidEmail).clickContinue()
+    enterEmailPage.hasFieldInError('emails[0].emailAddress', `Email address must be 240 characters or less`)
   })
 
   it('Back link goes to manage contacts', () => {
@@ -117,7 +137,7 @@ context('Create Email Address', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickAddEmailLink()
 
-    Page.verifyOnPage(EditEmailPage, 'Jones Mason') //
+    Page.verifyOnPage(AddEmailsPage, 'Jones Mason') //
       .backTo(EditContactMethodsPage, 'Jones Mason')
       .backTo(ManageContactDetailsPage, 'Jones Mason')
       .verifyOnContactsMethodsTab()
@@ -131,9 +151,7 @@ context('Create Email Address', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'Jones Mason') //
       .clickAddEmailLink()
 
-    Page.verifyOnPage(EditEmailPage, 'Jones Mason') //
-      .cancelTo(EditContactMethodsPage, 'Jones Mason')
+    Page.verifyOnPage(AddEmailsPage, 'Jones Mason') //
       .cancelTo(ManageContactDetailsPage, 'Jones Mason')
-      .verifyOnContactsMethodsTab()
   })
 })

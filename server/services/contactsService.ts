@@ -26,7 +26,6 @@ import AddressLines = journeys.AddressLines
 
 type PageableObject = components['schemas']['PageableObject']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
-type CreateEmailRequest = components['schemas']['CreateEmailRequest']
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 type CreateContactRequest = components['schemas']['CreateContactRequest']
 type AddContactRelationshipRequest = components['schemas']['AddContactRelationshipRequest']
@@ -34,7 +33,7 @@ type ContactNameDetails = components['schemas']['ContactNameDetails']
 type CreateMultipleIdentitiesRequest = components['schemas']['CreateMultipleIdentitiesRequest']
 type IdentityDocument = components['schemas']['IdentityDocument']
 type LinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
-
+type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
 export default class ContactsService {
   constructor(private readonly contactsApiClient: ContactsApiClient) {}
 
@@ -206,12 +205,12 @@ export default class ContactsService {
     return this.contactsApiClient.updateContactRelationshipById(prisonerContactId, request, user)
   }
 
-  async createContactEmail(
+  async createContactEmails(
     contactId: number,
-    request: CreateEmailRequest,
+    request: CreateMultipleEmailsRequest,
     user: Express.User,
-  ): Promise<ContactEmailDetails> {
-    return this.contactsApiClient.createContactEmail(contactId, request, user)
+  ): Promise<ContactEmailDetails[]> {
+    return this.contactsApiClient.createContactEmails(contactId, request, user)
   }
 
   async updateContactEmail(
