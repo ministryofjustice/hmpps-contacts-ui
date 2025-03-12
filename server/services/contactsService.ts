@@ -312,6 +312,23 @@ export default class ContactsService {
     return this.contactsApiClient.createContactAddressPhone(contactId, contactAddressId, request, user)
   }
 
+  async createContactAddressPhones(
+    contactId: number,
+    contactAddressId: number,
+    user: Express.User,
+    phones: { type: string; phoneNumber: string; extension?: string | undefined }[],
+  ) {
+    const request: CreateContactAddressPhoneRequest = {
+      phoneNumbers: phones.map(({ type, phoneNumber, extension }) => ({
+        phoneType: type,
+        phoneNumber,
+        extNumber: extension,
+      })),
+      createdBy: user.username,
+    }
+    return this.contactsApiClient.createContactAddressPhones(contactId, contactAddressId, request, user)
+  }
+
   async updateContactAddressPhone(
     contactId: number,
     contactAddressId: number,

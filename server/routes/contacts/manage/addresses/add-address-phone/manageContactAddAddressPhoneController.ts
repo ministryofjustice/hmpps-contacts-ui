@@ -3,15 +3,13 @@ import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../../services/referenceDataService'
-import { PhoneNumberSchemaType } from '../../phone/phoneSchemas'
 import { ContactsService } from '../../../../../services'
-import ContactDetails = contactsApiClientTypes.ContactDetails
 import { Navigation } from '../../../common/navigation'
-import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import Urls from '../../../../urls'
 import { getUpdateAddressDetails } from '../common/utils'
+import { PhonesSchemaType } from './AddAddressPhonesSchema'
 
 export default class ManageContactAddAddressPhoneController implements PageHandler {
   constructor(
@@ -48,29 +46,45 @@ export default class ManageContactAddAddressPhoneController implements PageHandl
     req: Request<
       { prisonerNumber: string; contactId: string; prisonerContactId: string; contactAddressId: string },
       unknown,
-      PhoneNumberSchemaType
+      PhonesSchemaType
     >,
     res: Response,
   ): Promise<void> => {
     const { user } = res.locals
     const { prisonerNumber, contactId, prisonerContactId, contactAddressId } = req.params
-    const { phoneNumber, type, extension } = req.body
-    await this.contactsService.createContactAddressPhone(
-      Number(contactId),
-      Number(contactAddressId),
-      user,
-      type,
-      phoneNumber,
-      extension,
-    )
-    await this.contactsService
-      .getContactName(Number(contactId), user)
-      .then(response =>
-        req.flash(
-          FLASH_KEY__SUCCESS_BANNER,
-          `You’ve updated the contact methods for ${formatNameFirstNameFirst(response)}.`,
-        ),
+    const { phones, save, add, remove } = req.body
+    if (save !== undefined) {
+      await this.contactsService.createContactAddressPhones(
+        parseInt(contactId, 10),
+        parseInt(contactAddressId, 10),
+        user,
+        phones.map(({ type, phoneNumber, extension }) => ({
+          type: type!,
+          phoneNumber: phoneNumber!,
+          extension,
+        })),
       )
-    res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
+      await this.contactsService
+        .getContactName(Number(contactId), user)
+        .then(response =>
+          req.flash(
+            FLASH_KEY__SUCCESS_BANNER,
+            `You’ve updated the contact methods for ${formatNameFirstNameFirst(response)}.`,
+          ),
+        )
+      res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
+    } else {
+      if (add !== undefined) {
+        phones.push({ type: '', phoneNumber: '', extension: '' })
+      } else if (remove !== undefined) {
+        phones.splice(Number(remove), 1)
+      }
+      // Always redirect back to input even if we didn't find an action, which should be impossible but there is a small
+      // possibility if JS is disabled after a page load or the user somehow removes all identities.
+      req.flash('formResponses', JSON.stringify(req.body))
+      res.redirect(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/phone/create`,
+      )
+    }
   }
 }

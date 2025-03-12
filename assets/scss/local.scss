@@ -44,15 +44,6 @@ div.contact-list {
   color: $govuk-secondary-text-colour;
 }
 
-.reset-fieldset-count {
-  counter-reset: fieldsetCount;
-}
-
-.append-fieldset-count:after {
-  counter-increment: fieldsetCount;
-  content: " " counter(fieldsetCount);
-}
-
 // DPS standard styling on top of GDS summary cards.
 .govuk-summary-card {
   border: 1px solid govuk-colour("dark-grey");

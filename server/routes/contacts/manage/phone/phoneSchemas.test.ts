@@ -131,8 +131,8 @@ describe('phoneNumberSchemaFactory', () => {
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(JSON.stringify(deduplicatedFieldErrors)).toBe(
         JSON.stringify({
-          phoneNumber: ['Enter a phone number'],
           type: ['Select the type of phone number'],
+          phoneNumber: ['Enter a phone number'],
           extension: ['Extension must be 7 characters or less'],
         }),
       )

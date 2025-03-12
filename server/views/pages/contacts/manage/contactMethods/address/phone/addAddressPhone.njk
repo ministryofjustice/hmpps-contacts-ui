@@ -13,7 +13,7 @@
   {% include 'partials/navigation.njk' %}
   {{ miniProfile(prisonerDetails) }}
   {% include 'partials/formErrorSummary.njk' %}
-  <div class="govuk-grid-row reset-fieldset-count" data-module="moj-add-another">
+  <div class="govuk-grid-row" data-module="moj-add-another">
     <div class="govuk-grid-column-two-thirds">
     <span class="govuk-caption-l">Edit contact methods</span>
     <h1 class="govuk-heading-l moj-add-another__heading" data-qa="main-heading">{{ title }}</h1>
@@ -28,7 +28,7 @@
             classes: "moj-add-another__item",
             legend: {
               text: "Phone number",
-              classes: "moj-add-another__title govuk-fieldset__legend--m append-fieldset-count",
+              classes: "moj-add-another__title govuk-fieldset__legend--m",
               isPageHeading: false
             }
           }) %}
