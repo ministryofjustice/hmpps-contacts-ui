@@ -43,6 +43,7 @@ type CreateContactRequest = components['schemas']['CreateContactRequest']
 type ContactNameDetails = components['schemas']['ContactNameDetails']
 type CreateMultipleIdentitiesRequest = components['schemas']['CreateMultipleIdentitiesRequest']
 type LinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
+type CreateMultiplePhoneNumbersRequest = components['schemas']['CreateMultiplePhoneNumbersRequest']
 
 export default class ContactsApiClient extends RestClient {
   constructor() {
@@ -386,6 +387,21 @@ export default class ContactsApiClient extends RestClient {
     return this.post<ContactAddressPhoneDetails>(
       {
         path: `/contact/${contactId}/address/${contactAddressId}/phone`,
+        data: request,
+      },
+      user,
+    )
+  }
+
+  async createContactAddressPhones(
+    contactId: number,
+    contactAddressId: number,
+    request: CreateMultiplePhoneNumbersRequest,
+    user: Express.User,
+  ): Promise<ContactAddressPhoneDetails[]> {
+    return this.post<ContactAddressPhoneDetails[]>(
+      {
+        path: `/contact/${contactId}/address/${contactAddressId}/phones`,
         data: request,
       },
       user,

@@ -503,6 +503,25 @@ export default {
       },
     })
   },
+  stubCreateAddressPhones: ({
+    contactId,
+    contactAddressId,
+  }: {
+    contactId: number
+    contactAddressId: number
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPath: `/contact/${contactId}/address/${contactAddressId}/phones`,
+      },
+      response: {
+        status: 201,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {},
+      },
+    })
+  },
   stubCreateContactIdentities: ({
     contactId,
     created,
