@@ -2,7 +2,7 @@ import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import { StubAddressPhoneDetails } from '../mockApis/contactsApi'
-import EnterAddressPhonePage from '../pages/enterAddressPhonePage'
+import EditAddressPhonePage from '../pages/contact-methods/address/phone/editAddressPhonePage'
 import EditContactMethodsPage from '../pages/editContactMethodsPage'
 
 context('Edit Address Phones', () => {
@@ -90,7 +90,7 @@ context('Edit Address Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickChangeAddressPhoneLink(phoneWithExt.contactAddressPhoneId)
 
-    Page.verifyOnPage(EnterAddressPhonePage) //
+    Page.verifyOnPage(EditAddressPhonePage) //
       .hasPhoneNumber('07878 111111')
       .enterPhoneNumber('999 888')
       .hasType('MOB')
@@ -136,7 +136,7 @@ context('Edit Address Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickChangeAddressPhoneLink(phoneWithoutExt.contactAddressPhoneId)
 
-    Page.verifyOnPage(EnterAddressPhonePage) //
+    Page.verifyOnPage(EditAddressPhonePage) //
       .hasPhoneNumber('01111 777777')
       .enterPhoneNumber('987654321')
       .hasExtension('')
@@ -163,22 +163,11 @@ context('Edit Address Phones', () => {
     )
   })
 
-  it('Should require type', () => {
-    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
-      .clickChangeAddressPhoneLink(phoneWithoutExt.contactAddressPhoneId)
-
-    const enterPhonePage = Page.verifyOnPage(EnterAddressPhonePage) //
-      .selectType('')
-      .enterPhoneNumber('01234 777777')
-    enterPhonePage.clickContinue()
-    enterPhonePage.hasFieldInError('type', 'Select the type of phone number')
-  })
-
   it('Should require phone number', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickChangeAddressPhoneLink(phoneWithoutExt.contactAddressPhoneId)
 
-    const enterPhonePage = Page.verifyOnPage(EnterAddressPhonePage) //
+    const enterPhonePage = Page.verifyOnPage(EditAddressPhonePage) //
       .clearPhoneNumber()
     enterPhonePage.clickContinue()
     enterPhonePage.hasFieldInError('phoneNumber', 'Enter a phone number')
@@ -188,7 +177,7 @@ context('Edit Address Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickChangeAddressPhoneLink(phoneWithoutExt.contactAddressPhoneId)
 
-    const enterPhonePage = Page.verifyOnPage(EnterAddressPhonePage) //
+    const enterPhonePage = Page.verifyOnPage(EditAddressPhonePage) //
       .enterPhoneNumber(''.padEnd(21, '0'))
     enterPhonePage.clickContinue()
     enterPhonePage.hasFieldInError('phoneNumber', 'Phone number must be 20 characters or less')
@@ -198,7 +187,7 @@ context('Edit Address Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickChangeAddressPhoneLink(phoneWithoutExt.contactAddressPhoneId)
 
-    const enterPhonePage = Page.verifyOnPage(EnterAddressPhonePage) //
+    const enterPhonePage = Page.verifyOnPage(EditAddressPhonePage) //
       .selectType('HOME')
       .enterPhoneNumber('0123')
       .enterExtension(''.padEnd(8, '0'))
@@ -211,19 +200,24 @@ context('Edit Address Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickChangeAddressPhoneLink(phoneWithoutExt.contactAddressPhoneId)
 
-    Page.verifyOnPage(EnterAddressPhonePage) //
+    Page.verifyOnPage(EditAddressPhonePage) //
       .backTo(EditContactMethodsPage, 'First Middle Names Last')
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
       .verifyOnContactsMethodsTab()
   })
 
-  it('Cancel goes to manage contact', () => {
+  it('goes to correct page on Back or Cancel', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
-      .clickChangeAddressPhoneLink(phoneWithoutExt.contactAddressPhoneId)
+      .clickChangeAddressPhoneLink(phoneWithExt.contactAddressPhoneId)
 
-    Page.verifyOnPage(EnterAddressPhonePage) //
-      .cancelTo(EditContactMethodsPage, 'First Middle Names Last')
-      .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
+    // Back to Edit Contact Methods
+    Page.verifyOnPage(EditAddressPhonePage) //
+      .backTo(EditContactMethodsPage, 'First Middle Names Last')
+      .clickChangeAddressPhoneLink(phoneWithExt.contactAddressPhoneId)
+
+    // Cancel to Contact Details page
+    Page.verifyOnPage(EditAddressPhonePage) //
+      .clickLinkTo('Cancel', ManageContactDetailsPage, 'First Middle Names Last')
       .verifyOnContactsMethodsTab()
   })
 })

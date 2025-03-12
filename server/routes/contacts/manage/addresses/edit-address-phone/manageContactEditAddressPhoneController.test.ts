@@ -76,16 +76,20 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'What is the phone number for this address?',
-    )
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact methods')
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Update a phone number for this address')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789#contact-methods',
     )
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
     )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')
+    expect($('[data-qa=address-reference]').first().html()!.trim()).toMatch(
+      /<strong>Address:<\/strong><br>\n\s+?24<br>\s+?Acacia Avenue<br>\s+?Bunting<br>\s+?Sheffield<br>\s+?South Yorkshire<br>\s+?S2 3LK<br>\s+?England/,
+    )
+
     expect($('#phoneNumber').val()).toStrictEqual('07878 111111')
     expect($('#type').val()).toStrictEqual('MOB')
     expect($('#extension').val()).toStrictEqual('123')
@@ -106,16 +110,6 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'What is the phone number for this address?',
-    )
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
-    )
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
-      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
-    )
-    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('#phoneNumber').val()).toStrictEqual('999999999999999999999999999')
     expect($('#type').val()).toStrictEqual('HOME')
     expect($('#extension').val()).toStrictEqual('123456897877987985')
