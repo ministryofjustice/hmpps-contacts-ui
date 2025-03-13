@@ -45,6 +45,7 @@ beforeEach(() => {
   })
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
+  contactsService.getContactName.mockResolvedValue(contact)
 })
 
 afterEach(() => {
@@ -53,9 +54,6 @@ afterEach(() => {
 
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/phone/create', () => {
   it('should render create phone page with navigation back to manage contact', async () => {
-    // Given
-    contactsService.getContact.mockResolvedValue(contact)
-
     // When
     const response = await request(app).get(
       `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/create`,
@@ -65,23 +63,20 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    // TODO temporarily sharing edit phone number template.
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Update a phone number for First Middle Last',
-    )
+
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact methods')
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Add phone numbers for First Middle Last')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789',
     )
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
     )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')
   })
 
   it('should call the audit service for the page view', async () => {
-    // Given
-    contactsService.getContact.mockResolvedValue(contact)
-
     // When
     const response = await request(app).get(
       `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/create`,
@@ -97,8 +92,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
   it('should render previously entered details if validation errors', async () => {
     // Given
-    const form = { type: 'MOB', phoneNumber: '123456789', extension: '000' }
-    contactsService.getContact.mockResolvedValue(contact)
+    const form = { phones: [{ type: 'MOB', phoneNumber: '123456789', extension: '000' }] }
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
@@ -109,47 +103,134 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
-    expect($('#type').val()).toStrictEqual('MOB')
-    expect($('#phoneNumber').val()).toStrictEqual('123456789')
-    expect($('#extension').val()).toStrictEqual('000')
+    expect($('[data-qa=phones-0-type]').val()).toStrictEqual('MOB')
+    expect($('[data-qa=phones-0-phoneNumber]').val()).toStrictEqual('123456789')
+    expect($('[data-qa=phones-0-extension]').val()).toStrictEqual('000')
   })
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/phone/create', () => {
-  it('should create phone with extension and pass to manage contact details page if there are no validation errors', async () => {
+  it('should create phones and pass to return point if there are no validation errors', async () => {
     contactsService.getContactName.mockResolvedValue(contact)
+
+    const form = {
+      save: '',
+      phones: [
+        { type: 'MOB', phoneNumber: '123456789', extension: '000' },
+        { type: 'HOME', phoneNumber: '987654321', extension: undefined },
+      ],
+    }
+
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/create`)
       .type('form')
-      .send({ type: 'MOB', phoneNumber: '123456789', extension: '000' })
+      .send(form)
       .expect(302)
       .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
 
-    expect(contactsService.createContactPhone).toHaveBeenCalledWith(contactId, user, 'MOB', '123456789', '000')
-  })
-
-  it('should create phone without extension  and pass to manage contact details page if there are no validation errors', async () => {
-    contactsService.getContactName.mockResolvedValue(contact)
-    await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/create`)
-      .type('form')
-      .send({ type: 'MOB', phoneNumber: '123456789', extension: '' })
-      .expect(302)
-      .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
-
-    expect(contactsService.createContactPhone).toHaveBeenCalledWith(contactId, user, 'MOB', '123456789', undefined)
+    expect(contactsService.createContactPhones).toHaveBeenCalledWith(contactId, user, [
+      { type: 'MOB', phoneNumber: '123456789', extension: '000' },
+      { type: 'HOME', phoneNumber: '987654321' },
+    ])
   })
 
   it('should return to input page with details kept if there are validation errors', async () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/create`)
       .type('form')
-      .send({ type: '' })
+      .send({})
       .expect(302)
       .expect(
         'Location',
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/create`,
       )
-    expect(contactsService.createContactPhone).not.toHaveBeenCalled()
+    expect(contactsService.createContactAddressPhones).not.toHaveBeenCalled()
+  })
+
+  describe('should work without javascript enabled', () => {
+    it('should return to input page without validating if we are adding a phone number', async () => {
+      const form = {
+        add: '',
+        phones: [{ type: 'MOB', phoneNumber: 'a123456789', extension: '000' }],
+      }
+
+      await request(app)
+        .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/create`)
+        .type('form')
+        .send(form)
+        .expect(302)
+        .expect(
+          'Location',
+          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/create`,
+        )
+
+      expect(contactsService.createContactAddressPhones).not.toHaveBeenCalled()
+      expect(flashProvider).toHaveBeenCalledWith(
+        'formResponses',
+        JSON.stringify({
+          phones: [
+            { type: 'MOB', phoneNumber: 'a123456789', extension: '000' },
+            { type: '', phoneNumber: '', extension: '' },
+          ],
+          add: '',
+        }),
+      )
+      expect(flashProvider).not.toHaveBeenCalledWith('validationErrors', expect.anything())
+    })
+
+    it('should return to input page without validating if we are removing a phone number', async () => {
+      const form = {
+        remove: '1',
+        phones: [
+          { type: 'MOB', phoneNumber: 'a123456789', extension: '000' },
+          { type: 'HOME', phoneNumber: 'b987654321', extension: 'b'.repeat(100) },
+        ],
+      }
+
+      await request(app)
+        .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/create`)
+        .type('form')
+        .send(form)
+        .expect(302)
+        .expect(
+          'Location',
+          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/create`,
+        )
+
+      expect(contactsService.createContactAddressPhones).not.toHaveBeenCalled()
+      expect(flashProvider).toHaveBeenCalledWith(
+        'formResponses',
+        JSON.stringify({
+          phones: [{ type: 'MOB', phoneNumber: 'a123456789', extension: '000' }],
+          remove: '1',
+        }),
+      )
+      expect(flashProvider).not.toHaveBeenCalledWith('validationErrors', expect.anything())
+    })
+
+    it('should return to input page without validating even if action is not save, add or remove', async () => {
+      const form = {
+        phones: [{ type: 'MOB', phoneNumber: 'a123456789', extension: '000' }],
+      }
+
+      await request(app)
+        .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/create`)
+        .type('form')
+        .send(form)
+        .expect(302)
+        .expect(
+          'Location',
+          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/create`,
+        )
+
+      expect(contactsService.createContactAddressPhones).not.toHaveBeenCalled()
+      expect(flashProvider).toHaveBeenCalledWith(
+        'formResponses',
+        JSON.stringify({
+          phones: [{ type: 'MOB', phoneNumber: 'a123456789', extension: '000' }],
+        }),
+      )
+      expect(flashProvider).not.toHaveBeenCalledWith('validationErrors', expect.anything())
+    })
   })
 })
