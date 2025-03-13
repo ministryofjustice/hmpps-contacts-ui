@@ -149,6 +149,20 @@ export default class ContactsApiClient extends RestClient {
     )
   }
 
+  async createContactPhones(
+    contactId: number,
+    request: CreateMultiplePhoneNumbersRequest,
+    user: Express.User,
+  ): Promise<ContactPhoneDetails[]> {
+    return this.post<ContactPhoneDetails[]>(
+      {
+        path: `/contact/${contactId}/phones`,
+        data: request,
+      },
+      user,
+    )
+  }
+
   async updateContactPhone(
     contactId: number,
     contactPhoneId: number,

@@ -1,9 +1,8 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
-import EditPhonePage from '../pages/editPhonePage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
-import { StubPhoneDetails } from '../mockApis/contactsApi'
 import EditContactMethodsPage from '../pages/editContactMethodsPage'
+import AddPhonesPage from '../pages/contact-methods/addPhonesPage'
 
 context('Create Contact Phones', () => {
   const contactId = 654321
@@ -45,178 +44,100 @@ context('Create Contact Phones', () => {
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
-  })
-
-  it('Can create a contact phone with minimal fields', () => {
-    const created: StubPhoneDetails = {
-      contactPhoneId: 99,
-      contactId,
-      phoneType: 'HOME',
-      phoneTypeDescription: 'Home',
-      phoneNumber: '01234 777777',
-      createdBy: 'USER1',
-      createdTime: new Date().toISOString(),
-    }
-    cy.task('stubCreateContactPhone', { contactId, created })
-
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickContactMethodsTab()
       .clickEditContactMethodsLink()
 
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddPhoneNumberLink()
 
-    Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
-      .enterPhoneNumber('01234 777777')
-      .selectType('HOME')
-      .clickContinue()
+    cy.task('stubCreateContactPhones', { contactId })
+  })
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
-      'You’ve updated the contact methods for First Middle Names Last.',
-    )
+  it('Can create multiple contact phone numbers', () => {
+    Page.verifyOnPage(AddPhonesPage, 'First Middle Names Last') //
+      .enterPhoneNumber(0, '01234 777777')
+      .enterExtension(0, '000')
+      .selectType(0, 'HOME')
+      .clickAddAnotherButton()
+      .enterPhoneNumber(1, 'to be deleted')
+      .clickAddAnotherButton()
+      .enterPhoneNumber(2, '01234 777776')
+      .selectType(2, 'HOME')
+      .clickRemoveButton(1)
+      .clickButtonTo('Confirm and save', ManageContactDetailsPage, 'First Middle Names Last')
+      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last.')
 
     cy.verifyLastAPICall(
       {
         method: 'POST',
-        urlPath: `/contact/${contactId}/phone`,
+        urlPath: `/contact/${contactId}/phones`,
       },
       {
-        phoneType: 'HOME',
-        phoneNumber: '01234 777777',
+        phoneNumbers: [
+          {
+            phoneType: 'HOME',
+            phoneNumber: '01234 777777',
+            extNumber: '000',
+          },
+          {
+            phoneType: 'HOME',
+            phoneNumber: '01234 777776',
+          },
+        ],
         createdBy: 'USER1',
       },
     )
   })
 
-  it('Can create a contact phone with all fields', () => {
-    const created: StubPhoneDetails = {
-      contactPhoneId: 99,
-      contactId,
-      phoneType: 'HOME',
-      phoneTypeDescription: 'Home',
-      phoneNumber: '01234 777777',
-      extNumber: '000',
-      createdBy: 'USER1',
-      createdTime: new Date().toISOString(),
-    }
-    cy.task('stubCreateContactPhone', { contactId, created })
+  it('Should keep details of other phone numbers if a different one has an error', () => {
+    const addPhonesPage = Page.verifyOnPage(AddPhonesPage, 'First Middle Names Last') //
+      .enterPhoneNumber(0, '01234 777777')
+      .enterExtension(0, '000')
+      .selectType(0, 'HOME')
+      .clickAddAnotherButton()
+      .enterPhoneNumber(1, 'a'.repeat(100))
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickContactMethodsTab()
-      .clickEditContactMethodsLink()
+    addPhonesPage.clickContinue()
+    addPhonesPage.hasFieldInError('phones[1].type', 'Select the type of phone number')
+    addPhonesPage.hasFieldInError('phones[1].phoneNumber', 'Phone number must be 20 characters or less')
 
-    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
-      .clickAddPhoneNumberLink()
-
-    Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
-      .enterPhoneNumber('01234 777777')
-      .enterExtension('000')
-      .selectType('HOME')
-      .clickContinue()
-
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
-      'You’ve updated the contact methods for First Middle Names Last.',
-    )
-
-    cy.verifyLastAPICall(
-      {
-        method: 'POST',
-        urlPath: `/contact/${contactId}/phone`,
-      },
-      {
-        phoneType: 'HOME',
-        phoneNumber: '01234 777777',
-        extNumber: '000',
-        createdBy: 'USER1',
-      },
-    )
+    addPhonesPage //
+      .hasType(0, 'HOME')
+      .hasPhoneNumber(0, '01234 777777')
+      .hasExtension(0, '000')
+      .hasType(1, '')
+      .hasPhoneNumber(1, 'a'.repeat(100))
+      .hasExtension(1, '')
   })
 
-  it('Should require type', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickContactMethodsTab()
-      .clickEditContactMethodsLink()
-
-    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
-      .clickAddPhoneNumberLink()
-
-    const enterPhonePage = Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
-      .enterPhoneNumber('01234 777777')
+  it('Should validate inputs', () => {
+    // require phone number type
+    const enterPhonePage = Page.verifyOnPage(AddPhonesPage, 'First Middle Names Last') //
+      .enterPhoneNumber(0, '01234 777777')
     enterPhonePage.clickContinue()
-    enterPhonePage.hasFieldInError('type', 'Select the type of phone number')
+    enterPhonePage.hasFieldInError('phones[0].type', 'Select the type of phone number')
+
+    // require phone number
+    enterPhonePage.clearPhoneNumber(0).selectType(0, 'HOME').clickContinue()
+    enterPhonePage.hasFieldInError('phones[0].phoneNumber', 'Enter a phone number')
+
+    // require phone number is 20 chars or fewer
+    enterPhonePage.enterPhoneNumber(0, ''.padEnd(21, '0')).clickContinue()
+    enterPhonePage.hasFieldInError('phones[0].phoneNumber', 'Phone number must be 20 characters or less')
+
+    // require extension is 7 chars or fewer
+    enterPhonePage.enterPhoneNumber(0, '0123').enterExtension(0, ''.padEnd(8, '0')).clickContinue()
+    enterPhonePage.hasFieldInError('phones[0].extension', 'Extension must be 7 characters or less')
   })
 
-  it('Should require phone number', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickContactMethodsTab()
-      .clickEditContactMethodsLink()
-
-    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
-      .clickAddPhoneNumberLink()
-
-    const enterPhonePage = Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
-      .selectType('HOME')
-    enterPhonePage.clickContinue()
-    enterPhonePage.hasFieldInError('phoneNumber', 'Enter a phone number')
-  })
-
-  it('Should require phone number is 20 chars or fewer', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickContactMethodsTab()
-      .clickEditContactMethodsLink()
-
-    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
-      .clickAddPhoneNumberLink()
-
-    const enterPhonePage = Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
-      .selectType('HOME')
-      .enterPhoneNumber(''.padEnd(21, '0'))
-    enterPhonePage.clickContinue()
-    enterPhonePage.hasFieldInError('phoneNumber', 'Phone number must be 20 characters or less')
-  })
-
-  it('Should require extension is 7 chars or fewer', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickContactMethodsTab()
-      .clickEditContactMethodsLink()
-
-    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
-      .clickAddPhoneNumberLink()
-
-    const enterPhonePage = Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
-      .selectType('HOME')
-      .enterPhoneNumber('0123')
-      .enterExtension(''.padEnd(8, '0'))
-
-    enterPhonePage.clickContinue()
-    enterPhonePage.hasFieldInError('extension', 'Extension must be 7 characters or less')
-  })
-
-  it('Back link goes to manage contacts', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickContactMethodsTab()
-      .clickEditContactMethodsLink()
-
-    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
-      .clickAddPhoneNumberLink()
-
-    Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
+  it('goes to correct page on Back or Cancel', () => {
+    // Back to Edit Contact Methods
+    Page.verifyOnPage(AddPhonesPage, 'First Middle Names Last') //
       .backTo(EditContactMethodsPage, 'First Middle Names Last')
-      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .verifyOnContactsMethodsTab()
-  })
-
-  it('Cancel goes to manage contacts', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickContactMethodsTab()
-      .clickEditContactMethodsLink()
-
-    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddPhoneNumberLink()
 
-    Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
-      .cancelTo(EditContactMethodsPage, 'First Middle Names Last')
-      .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .verifyOnContactsMethodsTab()
+    // Cancel to Contact Details page
+    Page.verifyOnPage(AddPhonesPage, 'First Middle Names Last') //
+      .clickLinkTo('Cancel', ManageContactDetailsPage, 'First Middle Names Last')
   })
 })

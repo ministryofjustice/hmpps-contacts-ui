@@ -34,6 +34,8 @@ type CreateMultipleIdentitiesRequest = components['schemas']['CreateMultipleIden
 type IdentityDocument = components['schemas']['IdentityDocument']
 type LinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
 type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
+type CreateMultiplePhoneNumbersRequest = components['schemas']['CreateMultiplePhoneNumbersRequest']
+
 export default class ContactsService {
   constructor(private readonly contactsApiClient: ContactsApiClient) {}
 
@@ -137,6 +139,22 @@ export default class ContactsService {
       createdBy: user.username,
     }
     return this.contactsApiClient.createContactPhone(contactId, request, user)
+  }
+
+  async createContactPhones(
+    contactId: number,
+    user: Express.User,
+    phones: { type: string; phoneNumber: string; extension?: string | undefined }[],
+  ) {
+    const request: CreateMultiplePhoneNumbersRequest = {
+      phoneNumbers: phones.map(({ type, phoneNumber, extension }) => ({
+        phoneType: type,
+        phoneNumber,
+        ...(extension === undefined ? {} : { extNumber: extension }),
+      })),
+      createdBy: user.username,
+    }
+    return this.contactsApiClient.createContactPhones(contactId, request, user)
   }
 
   async updateContactPhone(
@@ -318,11 +336,11 @@ export default class ContactsService {
     user: Express.User,
     phones: { type: string; phoneNumber: string; extension?: string | undefined }[],
   ) {
-    const request: CreateContactAddressPhoneRequest = {
+    const request: CreateMultiplePhoneNumbersRequest = {
       phoneNumbers: phones.map(({ type, phoneNumber, extension }) => ({
         phoneType: type,
         phoneNumber,
-        extNumber: extension,
+        ...(extension === undefined ? {} : { extNumber: extension }),
       })),
       createdBy: user.username,
     }

@@ -80,6 +80,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
     )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')
     expect($('[data-qa=address-reference]').first().html()!.trim()).toMatch(
       /<strong>Address:<\/strong><br>\n\s+?24<br>\s+?Acacia Avenue<br>\s+?Bunting<br>\s+?Sheffield<br>\s+?South Yorkshire<br>\s+?S2 3LK<br>\s+?England/,
     )

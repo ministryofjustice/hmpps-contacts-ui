@@ -241,7 +241,7 @@ const ManageContactsRoutes = (
   standAloneRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/phone/create',
     controller: new ManageContactAddPhoneController(contactsService, referenceDataService),
-    schema: phoneNumberSchema,
+    schema: phonesSchema,
   })
 
   standAloneRoute({
