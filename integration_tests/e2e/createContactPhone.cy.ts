@@ -1,11 +1,8 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
-import EditPhonePage from '../pages/editPhonePage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
-import { StubPhoneDetails } from '../mockApis/contactsApi'
 import EditContactMethodsPage from '../pages/editContactMethodsPage'
 import AddPhonesPage from '../pages/contact-methods/addPhonesPage'
-import AddAddressPhonesPage from '../pages/contact-methods/address/phone/addAddressPhonesPage'
 
 context('Create Contact Phones', () => {
   const contactId = 654321
