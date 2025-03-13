@@ -1,0 +1,74 @@
+{% extends "partials/layout.njk" %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
+{% set pageTitle = applicationName + " - Update contact phone number" %}
+{% set title = "Update a phone number for this address" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+  {% include 'partials/navigation.njk' %}
+  {{ miniProfile(prisonerDetails) }}
+  {% include 'partials/formErrorSummary.njk' %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-l">Edit contact methods</span>
+      <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+      <div data-qa="address-reference" class="govuk-body govuk-!-margin-bottom-7 govuk-!-margin-top-2">
+        <strong>Address:</strong><br/>
+        {{ formattedAddress | addressToLines | escape | nl2br | safe }}
+      </div>
+      <form method='POST'>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        {% call govukFieldset({
+          classes: "moj-add-another__item",
+          legend: {
+            text: "Phone number",
+            classes: "moj-add-another__title govuk-fieldset__legend--m",
+            isPageHeading: false
+          }
+        }) %}
+          {{ govukSelect({
+            id: "type",
+            name: "type",
+            label: {
+              text: "Phone number type"
+            },
+            items: typeOptions | referenceCodesToSelect(undefined, true) | setSelected(type),
+            errorMessage: validationErrors | findError('type')
+          }) }}
+          {{ govukInput({
+            id: "phoneNumber",
+            name: "phoneNumber",
+            label: { text: "Phone number" },
+            classes: 'govuk-!-width-one-third',
+            errorMessage: validationErrors | findError('phoneNumber'),
+            value: phoneNumber
+          }) }}
+          {{ govukInput({
+            id: "extension",
+            name: "extension",
+            label: { text: "Extension (optional)" },
+            classes: 'govuk-!-width-one-third',
+            errorMessage: validationErrors | findError('extension'),
+            value: extension
+          }) }}
+        {% endcall %}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Confirm and save",
+            type: "submit",
+            classes: 'govuk-!-margin-top-6',
+            attributes: {"data-qa": "continue-button"},
+            preventDoubleClick: true
+          }) }}
+          <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

@@ -149,12 +149,13 @@ export const isDateAndInThePast = (date?: string): boolean => {
 export const referenceCodesToSelect = (
   options: ReferenceCode[],
   defaultLabel?: string | undefined,
+  noDefaultOption: boolean = false,
 ): Array<{
   value: string
   text: string
   selected?: boolean
 }> => [
-  { text: defaultLabel ?? '', value: '' },
+  ...(noDefaultOption ? [] : [{ text: defaultLabel ?? '', value: '' }]),
   ...options.map((referenceCode: ReferenceCode) => ({
     text: referenceCode.description,
     value: referenceCode.code,
