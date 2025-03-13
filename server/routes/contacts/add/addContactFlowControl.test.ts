@@ -26,10 +26,14 @@ describe('addContactFlowControl', () => {
         [Page.SELECT_NEXT_OF_KIN, `/prisoner/A1234BC/contacts/create/select-emergency-contact/${journeyId}`, undefined],
         [
           Page.ENTER_RELATIONSHIP_COMMENTS,
-          `/prisoner/A1234BC/contacts/create/select-next-of-kin/${journeyId}`,
+          `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
           undefined,
         ],
-        [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, undefined, `/prisoner/A1234BC/contacts/add/cancel/${journeyId}`],
+        [
+          Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE,
+          `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
+          `/prisoner/A1234BC/contacts/add/cancel/${journeyId}`,
+        ],
         [Page.ADD_CONTACT_CANCEL_PAGE, `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`, undefined],
       ])(
         'Should go back to previous page: from %s to %s',
@@ -58,6 +62,40 @@ describe('addContactFlowControl', () => {
           expect(nav).toStrictEqual(expected)
         },
       )
+
+      it.each([
+        [Page.CREATE_CONTACT_NAME_PAGE],
+        [Page.CREATE_CONTACT_DOB_PAGE],
+        [Page.SELECT_RELATIONSHIP_TYPE],
+        [Page.SELECT_CONTACT_RELATIONSHIP],
+        [Page.SELECT_EMERGENCY_CONTACT],
+        [Page.SELECT_NEXT_OF_KIN],
+        [Page.ENTER_RELATIONSHIP_COMMENTS],
+        [Page.ADD_CONTACT_CANCEL_PAGE],
+      ])('Should go back to check answers from %s', (page: Page) => {
+        const journey: AddContactJourney = {
+          id: journeyId,
+          lastTouched: new Date().toISOString(),
+          prisonerNumber: 'A1234BC',
+          returnPoint: {
+            url: '/foo',
+          },
+          mode: 'NEW',
+          isCheckingAnswers: true,
+          dateOfBirth: {
+            isKnown: 'NO',
+          },
+        }
+        const expected: Navigation = {
+          backLink: `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
+          breadcrumbs: undefined,
+          cancelButton: undefined,
+        }
+
+        const nav = navigationForAddContactJourney(page, journey)
+
+        expect(nav).toStrictEqual(expected)
+      })
     })
 
     describe('getNextPageForAddContactJourney', () => {
@@ -74,8 +112,8 @@ describe('addContactFlowControl', () => {
         ],
         [Page.SELECT_CONTACT_RELATIONSHIP, `/prisoner/A1234BC/contacts/create/select-emergency-contact/${journeyId}`],
         [Page.SELECT_EMERGENCY_CONTACT, `/prisoner/A1234BC/contacts/create/select-next-of-kin/${journeyId}`],
-        [Page.SELECT_NEXT_OF_KIN, `/prisoner/A1234BC/contacts/create/enter-relationship-comments/${journeyId}`],
-        [Page.ENTER_RELATIONSHIP_COMMENTS, `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`],
+        [Page.SELECT_NEXT_OF_KIN, `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`],
+        [Page.ENTER_RELATIONSHIP_COMMENTS, `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`],
         [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, `/prisoner/A1234BC/contact/NEW/123456/654321/success`],
       ])('Should go to next page if not checking answers: from %s to %s', (page: Page, expectedNextUrl?: string) => {
         const journey: AddContactJourney = {
@@ -119,6 +157,7 @@ describe('addContactFlowControl', () => {
             isKnown: 'YES',
           },
           relationship: {
+            pendingNewRelationshipType: 'S',
             relationshipType: 'S',
             relationshipToPrisoner: 'MOT',
           },
@@ -154,7 +193,8 @@ describe('addContactFlowControl', () => {
             },
             mode: 'NEW',
             relationship: {
-              relationshipType: after,
+              relationshipType: before,
+              pendingNewRelationshipType: after,
               relationshipToPrisoner: 'MOT',
             },
             isCheckingAnswers: true,
@@ -196,7 +236,11 @@ describe('addContactFlowControl', () => {
           `/prisoner/A1234BC/contacts/create/select-next-of-kin/${journeyId}`,
           undefined,
         ],
-        [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, undefined, `/prisoner/A1234BC/contacts/add/cancel/${journeyId}`],
+        [
+          Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE,
+          `/prisoner/A1234BC/contacts/create/enter-relationship-comments/${journeyId}`,
+          `/prisoner/A1234BC/contacts/add/cancel/${journeyId}`,
+        ],
         [Page.ADD_CONTACT_CANCEL_PAGE, `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`, undefined],
       ])(
         'Should go back to previous page: from %s to %s',
@@ -222,6 +266,34 @@ describe('addContactFlowControl', () => {
           expect(nav).toStrictEqual(expected)
         },
       )
+      it.each([
+        [Page.SELECT_RELATIONSHIP_TYPE],
+        [Page.SELECT_CONTACT_RELATIONSHIP],
+        [Page.SELECT_EMERGENCY_CONTACT],
+        [Page.SELECT_NEXT_OF_KIN],
+        [Page.ENTER_RELATIONSHIP_COMMENTS],
+        [Page.ADD_CONTACT_CANCEL_PAGE],
+      ])('Should go back to check answers when checking answers from page %s', (page: Page) => {
+        const journey: AddContactJourney = {
+          id: journeyId,
+          lastTouched: new Date().toISOString(),
+          prisonerNumber: 'A1234BC',
+          returnPoint: {
+            url: '/foo',
+          },
+          mode: 'EXISTING',
+          isCheckingAnswers: true,
+        }
+        const expected: Navigation = {
+          backLink: `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
+          breadcrumbs: undefined,
+          cancelButton: undefined,
+        }
+
+        const nav = navigationForAddContactJourney(page, journey)
+
+        expect(nav).toStrictEqual(expected)
+      })
     })
 
     describe('getNextPageForAddContactJourney', () => {
@@ -275,6 +347,7 @@ describe('addContactFlowControl', () => {
           mode: 'EXISTING',
           relationship: {
             relationshipType: 'S',
+            pendingNewRelationshipType: 'S',
             relationshipToPrisoner: 'MOT',
           },
           isCheckingAnswers: true,
@@ -309,7 +382,8 @@ describe('addContactFlowControl', () => {
             },
             mode: 'EXISTING',
             relationship: {
-              relationshipType: after,
+              relationshipType: before,
+              pendingNewRelationshipType: after,
               relationshipToPrisoner: 'MOT',
             },
             isCheckingAnswers: true,

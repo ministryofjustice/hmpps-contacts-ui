@@ -27,11 +27,9 @@ export default class ManageRelationshipCommentsController implements PageHandler
     }
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
     const relationship = await this.contactsService.getPrisonerContactRelationship(Number(prisonerContactId), user)
-    return res.render('pages/contacts/manage/contactDetails/relationship/manageRelationshipComments', {
-      isOptional: false,
-      caption: 'Edit contact relationship information',
-      continueButtonLabel: 'Confirm and save',
-      contact,
+    return res.render('pages/contacts/manage/contactDetails/relationship/relationshipComments', {
+      isUpdateJourney: true,
+      names: contact,
       prisonerContactId,
       navigation,
       comments: res.locals.formResponses?.['comments'] ?? relationship.comments,

@@ -1,0 +1,49 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/task-list/macro.njk" import govukTaskList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+
+{% set title = "Enter additional information about " + journey.names | formatNameFirstNameFirst + " (optional)"%}
+{% set pageTitle = "Enter additional information about the contact - Add a contact - DPS" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+  {% include 'partials/navigation.njk' %}
+  {{ miniProfile(prisonerDetails) }}
+  {% include 'partials/formErrorSummary.njk' %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-l">{{ caption }}</span>
+      <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+      <form method='POST'>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+        <h2>More details about the contact</h2>
+        {{ govukTaskList({
+          idPrefix: "more-details",
+          items: [
+            {
+              title: {
+                text: "Comments on their relationship with " + journey.names | formatNameFirstNameFirst
+              },
+              href: "/prisoner/" + journey.prisonerNumber + "/contacts/create/enter-relationship-comments/" + journey.id,
+              status: journey.relationship.comments | taskStatus
+            }
+          ]
+        }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue",
+            type: "submit",
+            classes: 'govuk-!-margin-top-6',
+            attributes: {"data-qa": "continue-button"},
+            preventDoubleClick: true
+          }) }}
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

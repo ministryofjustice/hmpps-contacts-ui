@@ -27,6 +27,8 @@ import { formatBusinessPhoneNumber, formatPhoneNumber } from './formatPhoneNumbe
 import { formatTitleForAddress } from './addressUtils'
 import sortContactAddresses from './sortAddress'
 import { sortLinkedPrisoners } from './sortLinkedPrisoners'
+import { taskStatus } from './taskStatus'
+import captionForAddContactJourney from '../routes/contacts/add/addContactsUtils'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -99,6 +101,8 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('referenceCodesToCheckboxes', referenceCodesToRadiosOrCheckboxes)
   njkEnv.addFilter('sortLinkedPrisoners', sortLinkedPrisoners)
   njkEnv.addFilter('customErrorOrderBuilder', customErrorOrderBuilder)
+  njkEnv.addFilter('taskStatus', taskStatus)
+  njkEnv.addFilter('captionForAddContactJourney', captionForAddContactJourney)
   njkEnv.addFilter(
     'setSelected',
     (items: { value: string; text: string }[], selected) =>

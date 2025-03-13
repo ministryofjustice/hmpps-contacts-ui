@@ -6,11 +6,12 @@ import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import TestData from '../../server/routes/testutils/testData'
 import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
 import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
-import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
 import ListContactsPage from '../pages/listContacts'
 import SearchContactPage from '../pages/searchContactPage'
 import CreateContactSuccessPage from '../pages/createContactSuccessPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
+import RelationshipCommentsPage from '../pages/contact-details/relationship/relationshipCommentsPage'
+import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
 
 context('Create contact and update the relationship from check answers', () => {
   beforeEach(() => {
@@ -84,8 +85,16 @@ context('Create contact and update the relationship from check answers', () => {
       .selectIsEmergencyContact('NO')
       .continueTo(SelectNextOfKinPage, 'First Middle Last')
       .selectIsNextOfKin('NO')
-      .continueTo(RelationshipCommentsPage, 'First Middle Last')
+      .continueTo(AddContactAdditionalInfoPage, 'First Middle Last')
+      .clickLinkTo(
+        'Comments on their relationship with First Middle Last',
+        RelationshipCommentsPage,
+        'First Middle Last',
+        'John Smith',
+        true,
+      )
       .enterComments('Some comments about the relationship')
+      .continueTo(AddContactAdditionalInfoPage, 'First Middle Last')
       .continueTo(CreateContactCheckYourAnswersPage)
       .verifyShowsNameAs('Last, Mr First Middle')
       .verifyShowsDateOfBirthAs('15 June 1982')
@@ -192,6 +201,49 @@ context('Create contact and update the relationship from check answers', () => {
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowRelationshipTypeAs('Social')
+      .verifyShowRelationshipAs('Mother')
+      .continueTo(CreateContactSuccessPage)
+
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: '/contact',
+      },
+      {
+        titleCode: 'MR',
+        lastName: 'Last',
+        firstName: 'First',
+        middleNames: 'Middle',
+        createdBy: 'USER1',
+        dateOfBirth: '1982-06-15',
+        isStaff: false,
+        interpreterRequired: false,
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipTypeCode: 'S',
+          relationshipToPrisonerCode: 'MOT',
+          isNextOfKin: false,
+          isEmergencyContact: false,
+          isApprovedVisitor: false,
+          comments: 'Some comments about the relationship',
+        },
+      },
+    )
+  })
+
+  it('Can abandon changing the relationship by going back which leaves the relationship intact', () => {
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+      .verifyShowRelationshipTypeAs('Social')
+      .verifyShowRelationshipAs('Mother')
+      .clickChangeRelationshipTypeLink()
+
+    Page.verifyOnPage(SelectRelationshipTypePage, 'First Middle Last', 'John Smith') //
+      .selectRelationshipType('O')
+      .clickButtonTo('Continue', SelectRelationshipPage, 'First Middle Last', 'John Smith') //
+      .selectRelationship('DR')
+      .clickLinkTo('Back', SelectRelationshipTypePage, 'First Middle Last', 'John Smith')
+      .clickLinkTo('Back', CreateContactCheckYourAnswersPage, 'First Middle Last')
       .verifyShowRelationshipTypeAs('Social')
       .verifyShowRelationshipAs('Mother')
       .continueTo(CreateContactSuccessPage)

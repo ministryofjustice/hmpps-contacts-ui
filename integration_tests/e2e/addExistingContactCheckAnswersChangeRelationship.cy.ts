@@ -5,11 +5,11 @@ import ListContactsPage from '../pages/listContacts'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
 import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
-import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
 import SearchContactPage from '../pages/searchContactPage'
 import ContactConfirmationPage from '../pages/contactConfirmationPage'
 import AddContactSuccessPage from '../pages/addContactSuccessPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
+import RelationshipCommentsPage from '../pages/contact-details/relationship/relationshipCommentsPage'
 
 context('Add Existing Contact Check Answers', () => {
   const { prisonerNumber } = TestData.prisoner()
@@ -85,7 +85,7 @@ context('Add Existing Contact Check Answers', () => {
       .selectIsEmergencyContact('NO')
       .continueTo(SelectNextOfKinPage, 'Existing Contact') //
       .selectIsNextOfKin('YES')
-      .continueTo(RelationshipCommentsPage, 'Existing Contact') //
+      .continueTo(RelationshipCommentsPage, 'Existing Contact', 'John Smith', true) //
       .enterComments('Some comments about the relationship')
       .continueTo(LinkExistingContactCYAPage) //
       .verifyShowsNameAs('Existing Contact (654321)')
@@ -178,6 +178,43 @@ context('Add Existing Contact Check Answers', () => {
       .clickContinue()
 
     Page.verifyOnPage(LinkExistingContactCYAPage) //
+      .verifyShowRelationshipTypeAs('Social')
+      .verifyShowRelationshipAs('Mother')
+      .continueTo(AddContactSuccessPage)
+
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: '/prisoner-contact',
+      },
+      {
+        contactId,
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipTypeCode: 'S',
+          relationshipToPrisonerCode: 'MOT',
+          isNextOfKin: true,
+          isEmergencyContact: false,
+          isApprovedVisitor: false,
+          comments: 'Some comments about the relationship',
+        },
+        createdBy: 'USER1',
+      },
+    )
+  })
+
+  it('Can abandon changing the relationship by going back which leaves the relationship intact', () => {
+    Page.verifyOnPage(LinkExistingContactCYAPage, 'Existing Contact') //
+      .verifyShowRelationshipTypeAs('Social')
+      .verifyShowRelationshipAs('Mother')
+      .clickChangeRelationshipTypeLink()
+
+    Page.verifyOnPage(SelectRelationshipTypePage, 'Existing Contact', 'John Smith') //
+      .selectRelationshipType('O')
+      .clickButtonTo('Continue', SelectRelationshipPage, 'Existing Contact', 'John Smith') //
+      .selectRelationship('DR')
+      .clickLinkTo('Back', SelectRelationshipTypePage, 'Existing Contact', 'John Smith')
+      .clickLinkTo('Back', LinkExistingContactCYAPage, 'Existing Contact')
       .verifyShowRelationshipTypeAs('Social')
       .verifyShowRelationshipAs('Mother')
       .continueTo(AddContactSuccessPage)

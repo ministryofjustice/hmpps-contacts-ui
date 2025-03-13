@@ -5,13 +5,13 @@ import ListContactsPage from '../pages/listContacts'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
 import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
-import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
 import SearchContactPage from '../pages/searchContactPage'
 import ContactConfirmationPage from '../pages/contactConfirmationPage'
 import AddContactSuccessPage from '../pages/addContactSuccessPage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import CancelAddContactPage from '../pages/cancelAddContactPage'
+import RelationshipCommentsPage from '../pages/contact-details/relationship/relationshipCommentsPage'
 
 context('Add Existing Contact', () => {
   const { prisonerNumber } = TestData.prisoner()
@@ -112,7 +112,7 @@ context('Add Existing Contact', () => {
       .selectIsNextOfKin('YES')
       .clickContinue()
 
-    Page.verifyOnPage(RelationshipCommentsPage, 'Existing Contact') //
+    Page.verifyOnPage(RelationshipCommentsPage, 'Existing Contact', 'John Smith', true) //
       .enterComments('Some comments about the relationship')
       .clickContinue()
 
@@ -180,7 +180,7 @@ context('Add Existing Contact', () => {
       .selectIsNextOfKin('NO')
       .clickContinue()
 
-    Page.verifyOnPage(RelationshipCommentsPage, 'Existing Contact') //
+    Page.verifyOnPage(RelationshipCommentsPage, 'Existing Contact', 'John Smith', true) //
       .clickContinue()
 
     Page.verifyOnPage(LinkExistingContactCYAPage) //
@@ -245,7 +245,7 @@ context('Add Existing Contact', () => {
       .selectIsNextOfKin('NO')
       .clickContinue()
 
-    Page.verifyOnPage(RelationshipCommentsPage, 'Existing Contact') //
+    Page.verifyOnPage(RelationshipCommentsPage, 'Existing Contact', 'John Smith', true, 'John Smith', true) //
       .clickContinue()
 
     Page.verifyOnPage(LinkExistingContactCYAPage) //
@@ -384,11 +384,13 @@ context('Add Existing Contact', () => {
       .selectRelationshipType('S')
       .continueTo(SelectRelationshipPage, 'Existing Contact', 'John Smith')
       .selectRelationship('MOT')
-      .continueTo(SelectEmergencyContactPage, 'Existing Contact') //
+      .continueTo(SelectEmergencyContactPage, 'Existing Contact')
       .selectIsEmergencyContact('NO')
-      .continueTo(SelectNextOfKinPage, 'Existing Contact') //
+      .continueTo(SelectNextOfKinPage, 'Existing Contact')
       .selectIsNextOfKin('YES')
-      .continueTo(RelationshipCommentsPage, 'Existing Contact') //
+      .continueTo(RelationshipCommentsPage, 'Existing Contact', 'John Smith', true)
+      .continueTo(LinkExistingContactCYAPage)
+      .backTo(RelationshipCommentsPage, 'Existing Contact', 'John Smith', true)
       .backTo(SelectNextOfKinPage, 'Existing Contact')
       .backTo(SelectEmergencyContactPage, 'Existing Contact')
       .backTo(SelectRelationshipPage, 'Existing Contact', 'John Smith')
@@ -430,7 +432,7 @@ context('Add Existing Contact', () => {
       .selectIsNextOfKin('YES')
       .clickContinue()
 
-    Page.verifyOnPage(RelationshipCommentsPage, 'Deceased Contact') //
+    Page.verifyOnPage(RelationshipCommentsPage, 'Deceased Contact', 'John Smith', true) //
       .clickContinue()
 
     Page.verifyOnPage(LinkExistingContactCYAPage) //
@@ -479,7 +481,7 @@ context('Add Existing Contact', () => {
       .selectIsEmergencyContact('NO')
       .continueTo(SelectNextOfKinPage, 'Existing Contact') //
       .selectIsNextOfKin('YES')
-      .continueTo(RelationshipCommentsPage, 'Existing Contact') //
+      .continueTo(RelationshipCommentsPage, 'Existing Contact', 'John Smith', true) //
       .enterComments('Some comments about the relationship')
       .continueTo(LinkExistingContactCYAPage) //
       .clickLink('Cancel')

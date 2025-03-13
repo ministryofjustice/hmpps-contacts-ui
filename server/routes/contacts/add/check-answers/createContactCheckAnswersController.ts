@@ -19,16 +19,29 @@ export default class CreateContactCheckAnswersController implements PageHandler 
 
   public PAGE_NAME = Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE
 
-  GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
+  GET = async (
+    req: Request<PrisonerJourneyParams, unknown, unknown, { back?: string }>,
+    res: Response,
+  ): Promise<void> => {
     const { user } = res.locals
     const { journeyId } = req.params
+    const { back } = req.query
     const journey = req.session.addContactJourneys![journeyId]!
+    const navigation = navigationForAddContactJourney(this.PAGE_NAME, journey)
+    if (back && navigation.backLink) {
+      journey.isCheckingAnswers = false
+      delete journey.previousAnswers
+      return res.redirect(navigation.backLink!)
+    }
+    navigation.backLink = '?back=true'
     journey.isCheckingAnswers = true
     journey.previousAnswers = {
       names: journey.names,
       dateOfBirth: journey.dateOfBirth,
       relationship: journey.relationship,
     }
+    // reset this in case we came from "back" on change relationship type
+    delete journey.relationship?.pendingNewRelationshipType
     let dateOfBirth
     if (journey.dateOfBirth!.isKnown === 'YES') {
       dateOfBirth = new Date(`${journey.dateOfBirth!.year}-${journey.dateOfBirth!.month}-${journey.dateOfBirth!.day}Z`)
@@ -48,7 +61,6 @@ export default class CreateContactCheckAnswersController implements PageHandler 
     )
 
     const formattedFullName = await this.formattedFullName(journey, user)
-    const navigation = navigationForAddContactJourney(this.PAGE_NAME, journey)
     const caption = captionForAddContactJourney(journey)
 
     const view = {

@@ -14,6 +14,7 @@ type CreateContactPages =
   | Page.SELECT_NEXT_OF_KIN
   | Page.CREATE_CONTACT_DOB_PAGE
   | Page.ENTER_RELATIONSHIP_COMMENTS
+  | Page.ENTER_ADDITIONAL_INFORMATION_PAGE
   | Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE
   | Page.SUCCESSFULLY_ADDED_CONTACT_PAGE
   | Page.ADD_CONTACT_CANCEL_PAGE
@@ -66,6 +67,9 @@ const PAGES: Record<AllAddContactPages, { url: JourneyUrlProvider; breadcrumbs?:
   [Page.ENTER_RELATIONSHIP_COMMENTS]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/enter-relationship-comments/${journey.id}`,
   },
+  [Page.ENTER_ADDITIONAL_INFORMATION_PAGE]: {
+    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/add/enter-additional-info/${journey.id}`,
+  },
   [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/check-answers/${journey.id}`,
   },
@@ -92,37 +96,39 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   [Page.CONTACT_SEARCH_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CONTACT_SEARCH_PAGE.url },
   [Page.ADD_CONTACT_MODE_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CREATE_CONTACT_NAME_PAGE.url },
   [Page.CREATE_CONTACT_NAME_PAGE]: {
-    previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
+    previousUrl: checkAnswersOr(PAGES.CONTACT_SEARCH_PAGE.url),
     nextUrl: checkAnswersOr(PAGES.CREATE_CONTACT_DOB_PAGE.url),
   },
   [Page.CREATE_CONTACT_DOB_PAGE]: {
-    previousUrl: PAGES.CREATE_CONTACT_NAME_PAGE.url,
+    previousUrl: checkAnswersOr(PAGES.CREATE_CONTACT_NAME_PAGE.url),
     nextUrl: checkAnswersOr(PAGES.SELECT_RELATIONSHIP_TYPE.url),
   },
   [Page.SELECT_RELATIONSHIP_TYPE]: {
-    previousUrl: PAGES.CREATE_CONTACT_DOB_PAGE.url,
-    nextUrl: relationshipToPrisonerOrCheckAnswers(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
+    previousUrl: checkAnswersOr(PAGES.CREATE_CONTACT_DOB_PAGE.url),
+    nextUrl: forwardToRelationshipToPrisonerOrCheckAnswers(),
   },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
-    previousUrl: PAGES.SELECT_RELATIONSHIP_TYPE.url,
+    previousUrl: backToRelationshipTypeOrCheckAnswers(),
     nextUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT.url),
   },
   [Page.SELECT_EMERGENCY_CONTACT]: {
-    previousUrl: PAGES.SELECT_CONTACT_RELATIONSHIP.url,
+    previousUrl: checkAnswersOr(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
     nextUrl: checkAnswersOr(PAGES.SELECT_NEXT_OF_KIN.url),
   },
   [Page.SELECT_NEXT_OF_KIN]: {
-    previousUrl: PAGES.SELECT_EMERGENCY_CONTACT.url,
-    nextUrl: checkAnswersOr(PAGES.ENTER_RELATIONSHIP_COMMENTS.url),
+    previousUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT.url),
+    nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
+  },
+  [Page.ENTER_ADDITIONAL_INFORMATION_PAGE]: {
+    previousUrl: checkAnswersOr(PAGES.SELECT_NEXT_OF_KIN.url),
+    nextUrl: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url,
   },
   [Page.ENTER_RELATIONSHIP_COMMENTS]: {
-    previousUrl: journey => {
-      return PAGES.SELECT_NEXT_OF_KIN.url(journey)
-    },
-    nextUrl: checkAnswersOr(PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url),
+    previousUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
+    nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE]: {
-    previousUrl: _ => undefined,
+    previousUrl: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url,
     nextUrl: PAGES.SUCCESSFULLY_ADDED_CONTACT_PAGE.url,
     cancelUrl: PAGES.ADD_CONTACT_CANCEL_PAGE.url,
   },
@@ -148,27 +154,27 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
     nextUrl: checkAnswersOr(PAGES.SELECT_RELATIONSHIP_TYPE.url),
   },
   [Page.SELECT_RELATIONSHIP_TYPE]: {
-    previousUrl: PAGES.CONTACT_CONFIRMATION_PAGE.url,
-    nextUrl: relationshipToPrisonerOrCheckAnswers(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
+    previousUrl: checkAnswersOr(PAGES.CONTACT_CONFIRMATION_PAGE.url),
+    nextUrl: forwardToRelationshipToPrisonerOrCheckAnswers(),
   },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
-    previousUrl: PAGES.SELECT_RELATIONSHIP_TYPE.url,
+    previousUrl: backToRelationshipTypeOrCheckAnswers(),
     nextUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT.url),
   },
   [Page.SELECT_EMERGENCY_CONTACT]: {
-    previousUrl: PAGES.SELECT_CONTACT_RELATIONSHIP.url,
+    previousUrl: checkAnswersOr(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
     nextUrl: checkAnswersOr(PAGES.SELECT_NEXT_OF_KIN.url),
   },
   [Page.SELECT_NEXT_OF_KIN]: {
-    previousUrl: PAGES.SELECT_EMERGENCY_CONTACT.url,
+    previousUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT.url),
     nextUrl: checkAnswersOr(PAGES.ENTER_RELATIONSHIP_COMMENTS.url),
   },
   [Page.ENTER_RELATIONSHIP_COMMENTS]: {
-    previousUrl: PAGES.SELECT_NEXT_OF_KIN.url,
+    previousUrl: checkAnswersOr(PAGES.SELECT_NEXT_OF_KIN.url),
     nextUrl: checkAnswersOr(PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url),
   },
   [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE]: {
-    previousUrl: _ => undefined,
+    previousUrl: PAGES.ENTER_RELATIONSHIP_COMMENTS.url,
     nextUrl: PAGES.SUCCESSFULLY_ADDED_CONTACT_PAGE.url,
     cancelUrl: PAGES.ADD_CONTACT_CANCEL_PAGE.url,
   },
@@ -186,13 +192,23 @@ function checkAnswersOr(other: JourneyUrlProvider): JourneyUrlProvider {
   return journey => (journey.isCheckingAnswers ? PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey) : other(journey))
 }
 
-function relationshipToPrisonerOrCheckAnswers(other: JourneyUrlProvider): JourneyUrlProvider {
+function forwardToRelationshipToPrisonerOrCheckAnswers(): JourneyUrlProvider {
   return journey => {
     const relationshipTypeIsTheSame =
-      journey.relationship?.relationshipType === journey.previousAnswers?.relationship?.relationshipType
+      journey.relationship?.pendingNewRelationshipType === journey.previousAnswers?.relationship?.relationshipType
     return journey.isCheckingAnswers && relationshipTypeIsTheSame
       ? PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey)
-      : other(journey)
+      : PAGES.SELECT_CONTACT_RELATIONSHIP.url(journey)
+  }
+}
+
+function backToRelationshipTypeOrCheckAnswers(): JourneyUrlProvider {
+  return journey => {
+    const relationshipType = journey.relationship?.pendingNewRelationshipType ?? journey.relationship?.relationshipType
+    const relationshipTypeIsTheSame = relationshipType === journey.previousAnswers?.relationship?.relationshipType
+    return (journey.isCheckingAnswers && !relationshipTypeIsTheSame) || !journey.isCheckingAnswers
+      ? PAGES.SELECT_RELATIONSHIP_TYPE.url(journey)
+      : PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey)
   }
 }
 

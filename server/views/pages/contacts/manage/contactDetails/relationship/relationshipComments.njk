@@ -3,8 +3,21 @@
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 {% from "partials/miniProfile/macro.njk" import miniProfile %}
 
-{% set pageTitle = applicationName + " - relationship comments" %}
-{% set title = ("Add comments on the relationship between " + contact | formatNameFirstNameFirst + " and " + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) + " (optional)") if isOptional else ("Change the comments on the relationship between " + contact | formatNameFirstNameFirst + " and " + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) %}
+{% if isUpdateJourney %}
+  {% set pageTitle = "Change the comments on the relationship between the contact and the prisoner - Edit contact details - DPS" %}
+  {% set title = "Change the comments on the relationship between " + names | formatNameFirstNameFirst + " and " + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) %}
+  {% set caption = 'Edit contact relationship information' %}
+  {% set continueButtonLabel = 'Confirm and save' %}
+{% else %}
+  {% if journey.mode === 'NEW' %}
+    {% set pageTitle = "Add comments on the relationship between the contact and the prisoner - Add a contact - DPS" %}
+  {% else %}
+    {% set pageTitle = "Add comments on the relationship between the contact and the prisoner - Link a contact to a prisoner - DPS" %}
+  {% endif %}
+  {% set title = "Add comments on the relationship between " + names | formatNameFirstNameFirst + " and " + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) + " (optional)" %}
+  {% set caption = journey | captionForAddContactJourney %}
+  {% set continueButtonLabel = 'Continue' %}
+{% endif %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}

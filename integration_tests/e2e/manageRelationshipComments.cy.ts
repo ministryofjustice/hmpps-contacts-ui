@@ -2,7 +2,7 @@ import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import EditContactDetailsPage from '../pages/editContactDetailsPage'
-import ManageRelationshipCommentsPage from '../pages/contact-details/relationship/manageRelationshipCommentsPage'
+import RelationshipCommentsPage from '../pages/contact-details/relationship/relationshipCommentsPage'
 
 context('Manage contact update comments for a contact', () => {
   const contactId = 654321
@@ -55,7 +55,7 @@ context('Manage contact update comments for a contact', () => {
       .verifyShowCommentsAs('Some existing comments')
       .clickChangeCommentsLink()
 
-    Page.verifyOnPage(ManageRelationshipCommentsPage, 'First Middle Names Last', 'John Smith') //
+    Page.verifyOnPage(RelationshipCommentsPage, 'First Middle Names Last', 'John Smith') //
       .enterComments('my comments')
       .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
       .hasSuccessBanner(
@@ -78,7 +78,7 @@ context('Manage contact update comments for a contact', () => {
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .clickChangeCommentsLink()
 
-    Page.verifyOnPage(ManageRelationshipCommentsPage, 'First Middle Names Last', 'John Smith') //
+    Page.verifyOnPage(RelationshipCommentsPage, 'First Middle Names Last', 'John Smith') //
       .verifyComments('Some existing comments')
       .clearComments()
       .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
@@ -103,9 +103,9 @@ context('Manage contact update comments for a contact', () => {
       .verifyShowCommentsAs('Some existing comments')
       .clickChangeCommentsLink()
 
-    const commentsPage = Page.verifyOnPage(ManageRelationshipCommentsPage, 'First Middle Names Last', 'John Smith') //
+    const commentsPage = Page.verifyOnPage(RelationshipCommentsPage, 'First Middle Names Last', 'John Smith') //
       .enterComments(''.padEnd(241))
-      .continueTo(ManageRelationshipCommentsPage, 'First Middle Names Last', 'John Smith')
+      .continueTo(RelationshipCommentsPage, 'First Middle Names Last', 'John Smith')
     commentsPage.hasFieldInError('comments', 'Comments must be 240 characters or less')
   })
 
@@ -117,12 +117,12 @@ context('Manage contact update comments for a contact', () => {
       .clickChangeCommentsLink()
 
     // Back to Edit Contact Details
-    Page.verifyOnPage(ManageRelationshipCommentsPage, 'First Middle Names Last', 'John Smith') //
+    Page.verifyOnPage(RelationshipCommentsPage, 'First Middle Names Last', 'John Smith') //
       .backTo(EditContactDetailsPage, 'First Middle Names Last')
       .clickChangeCommentsLink()
 
     // Cancel to Contact Details page
-    Page.verifyOnPage(ManageRelationshipCommentsPage, 'First Middle Names Last', 'John Smith') //
+    Page.verifyOnPage(RelationshipCommentsPage, 'First Middle Names Last', 'John Smith') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 })

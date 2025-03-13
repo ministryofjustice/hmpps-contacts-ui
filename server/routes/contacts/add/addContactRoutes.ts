@@ -30,6 +30,7 @@ import SuccessfullyAddedContactController from './success/successfullyAddedConta
 import { selectRelationshipTypeSchema } from './relationship-type/relationshipTypeSchema'
 import RelationshipTypeController from './relationship-type/relationshipTypeController'
 import CancelAddContactController from './cancel/cancelAddContactController'
+import AddContactAdditionalInfoController from './additional-info/addContactAdditionalInfoController'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -226,6 +227,20 @@ const AddContactRoutes = (
     '/prisoner/:prisonerNumber/contacts/add/cancel/:journeyId',
     ensureInAddContactJourney(),
     asyncMiddleware(cancelAddContactController.POST),
+  )
+
+  const addContactAdditionalInfoController = new AddContactAdditionalInfoController()
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/add/enter-additional-info/:journeyId',
+    ensureInAddContactJourney(),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    logPageViewMiddleware(auditService, addContactAdditionalInfoController),
+    asyncMiddleware(addContactAdditionalInfoController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/add/enter-additional-info/:journeyId',
+    ensureInAddContactJourney(),
+    asyncMiddleware(addContactAdditionalInfoController.POST),
   )
   return router
 }
