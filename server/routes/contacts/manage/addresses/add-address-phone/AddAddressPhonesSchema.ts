@@ -20,3 +20,35 @@ export const phonesSchema = async (req: Request<unknown, unknown, { save?: strin
   })
 
 export type PhonesSchemaType = z.infer<Awaited<ReturnType<typeof phonesSchema>>>
+
+export const optionalPhonesSchema = async (
+  req: Request<
+    unknown,
+    unknown,
+    {
+      save?: string
+      phones?: {
+        type?: string
+        phoneNumber?: string
+        extension?: string
+      }[]
+    }
+  >,
+) =>
+  createSchema({
+    phones: z.array(
+      req.body.save === undefined ||
+        req.body.phones?.every(phone => phone.type === '' && phone.phoneNumber === '' && phone.extension === '')
+        ? createSchema({
+            type: z.string().optional(),
+            phoneNumber: z.string().optional(),
+            extension: z.string().optional(),
+          })
+        : phoneNumberSchema,
+    ),
+    save: z.string().optional(),
+    add: z.string().optional(),
+    remove: z.string().optional(),
+  })
+
+export type OptionalPhonesSchemaType = z.infer<Awaited<ReturnType<typeof optionalPhonesSchema>>>
