@@ -13,12 +13,10 @@ import AddressJourney = journeys.AddressJourney
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/referenceDataService')
 jest.mock('../../../../../services/prisonerSearchService')
-jest.mock('../../../../../services/contactsService')
 
 const auditService = MockedService.AuditService()
 const referenceDataService = MockedService.ReferenceDataService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
-const contactsService = MockedService.ContactsService()
 
 let app: Express
 let session: Partial<SessionData>
