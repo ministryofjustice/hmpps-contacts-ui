@@ -463,25 +463,6 @@ export default {
       },
     })
   },
-  stubCreateContactPhone: ({
-    contactId,
-    created,
-  }: {
-    contactId: number
-    created: StubPhoneDetails
-  }): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'POST',
-        urlPath: `/contact/${contactId}/phone`,
-      },
-      response: {
-        status: 201,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: created,
-      },
-    })
-  },
   stubCreateContactPhones: ({ contactId }: { contactId: number }): SuperAgentRequest => {
     return stubFor({
       request: {
