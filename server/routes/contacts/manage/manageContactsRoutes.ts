@@ -97,6 +97,7 @@ import AddressCommentsController from './addresses/comments/addressCommentsContr
 import { addressCommentsSchema } from './addresses/comments/addressCommentsSchema'
 import ChangeAddressCommentsController from './addresses/comments/changeAddressCommentsController'
 import { phonesSchema } from './addresses/add-address-phone/AddAddressPhonesSchema'
+import CancelAddAddressController from './addresses/cancel/cancelAddAddressController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -437,6 +438,13 @@ const ManageContactsRoutes = (
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/check-answers/:journeyId',
     controller: new AddressCheckAnswersController(referenceDataService, contactsService),
+    journeyEnsurer: ensureInAddressJourney,
+    noValidation: true,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/cancel/:journeyId',
+    controller: new CancelAddAddressController(),
     journeyEnsurer: ensureInAddressJourney,
     noValidation: true,
   })
