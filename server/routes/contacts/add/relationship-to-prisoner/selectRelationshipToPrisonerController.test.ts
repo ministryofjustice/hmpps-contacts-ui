@@ -32,7 +32,7 @@ beforeEach(() => {
     isCheckingAnswers: false,
     returnPoint: { url: '/foo-bar' },
     names: { firstName: 'First', middleNames: 'Middle', lastName: 'Last' },
-    relationship: { relationshipType: 'S' },
+    relationship: { pendingNewRelationshipType: 'S' },
     mode: 'NEW',
   }
   app = appWithAllRoutes({
@@ -100,6 +100,56 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-to-p
     async (relationshipType, expectedFirstOption: string, expectedHintText: string, expectedDefaultLabel: string) => {
       // Given
       existingJourney.relationship = { relationshipType }
+
+      // When
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/create/select-relationship-to-prisoner/${journeyId}`,
+      )
+
+      // Then
+      expect(response.status).toEqual(200)
+
+      const $ = cheerio.load(response.text)
+      expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
+        'What is First Middle Last’s relationship to John Smith?',
+      )
+      expect($('#relationship-hint').text().trim()).toStrictEqual(expectedHintText)
+      expect($('[data-qa=cancel-button]')).toHaveLength(0)
+      expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+      expect($('#relationship :nth-child(1)').text()).toStrictEqual(expectedDefaultLabel)
+      expect($('#relationship :nth-child(2)').text()).toStrictEqual(expectedFirstOption)
+    },
+  )
+
+  it.each([
+    [
+      'O',
+      'S',
+      'Mother',
+      'For example, if First Middle Last is the prisoner’s uncle, select ‘Uncle’.',
+      'Select social relationship',
+    ],
+    [
+      'S',
+      'O',
+      'Case Administrator',
+      'For example, if First Middle Last is the prisoner’s doctor, select ‘Doctor’.',
+      'Select official relationship',
+    ],
+  ])(
+    'should use correct reference group for different relationship types when we are pending a relationship type change %s',
+    async (
+      originalRelationshipType,
+      pendingNewRelationshipType,
+      expectedFirstOption: string,
+      expectedHintText: string,
+      expectedDefaultLabel: string,
+    ) => {
+      // Given
+      existingJourney.relationship = {
+        relationshipType: originalRelationshipType,
+        pendingNewRelationshipType,
+      }
 
       // When
       const response = await request(app).get(
@@ -194,9 +244,10 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship-to-
     })
   })
 
-  it('should pass to check answers page if there are no validation errors and journey is in check state', async () => {
+  it('should pass to check answers page if there are no validation errors and journey is in check state where we changed the relationship type', async () => {
     // Given
     existingJourney.relationship = {
+      pendingNewRelationshipType: 'S',
       relationshipToPrisoner: 'FA',
     }
     existingJourney.isCheckingAnswers = true
@@ -211,6 +262,30 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship-to-
 
     // Then
     expect(session.addContactJourneys![journeyId]!.relationship).toStrictEqual({
+      relationshipType: 'S',
+      relationshipToPrisoner: 'MOT',
+    })
+  })
+
+  it('should pass to check answers page if there are no validation errors and journey is in check state where we came directly to here', async () => {
+    // Given
+    existingJourney.relationship = {
+      relationshipType: 'S',
+      relationshipToPrisoner: 'FA',
+    }
+    existingJourney.isCheckingAnswers = true
+
+    // When
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/select-relationship-to-prisoner/${journeyId}`)
+      .type('form')
+      .send({ relationship: 'MOT' })
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+    // Then
+    expect(session.addContactJourneys![journeyId]!.relationship).toStrictEqual({
+      relationshipType: 'S',
       relationshipToPrisoner: 'MOT',
     })
   })

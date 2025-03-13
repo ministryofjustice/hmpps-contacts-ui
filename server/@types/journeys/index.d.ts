@@ -40,6 +40,7 @@ declare namespace journeys {
   }
 
   export interface PrisonerContactRelationship {
+    pendingNewRelationshipType?: string
     relationshipType?: string
     relationshipToPrisoner?: string
     isEmergencyContact?: YesOrNo

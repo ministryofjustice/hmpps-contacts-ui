@@ -17,17 +17,16 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
     const { journeyId } = req.params
     const { user } = res.locals
     const journey = req.session.addContactJourneys![journeyId]!
+    const relationshipType = journey.relationship!.pendingNewRelationshipType ?? journey.relationship!.relationshipType
     const groupCodeForRelationshipType =
-      journey.relationship!.relationshipType! === 'S'
-        ? ReferenceCodeType.SOCIAL_RELATIONSHIP
-        : ReferenceCodeType.OFFICIAL_RELATIONSHIP
+      relationshipType! === 'S' ? ReferenceCodeType.SOCIAL_RELATIONSHIP : ReferenceCodeType.OFFICIAL_RELATIONSHIP
 
     const relationshipOptions = await this.referenceDataService.getReferenceData(groupCodeForRelationshipType, user)
     const viewModel = {
       names: journey.names,
       caption: captionForAddContactJourney(journey),
       relationship: res.locals?.formResponses?.['relationship'] ?? journey?.relationship?.relationshipToPrisoner,
-      relationshipType: journey.relationship!.relationshipType!,
+      relationshipType,
       relationshipOptions,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
       continueButtonLabel: 'Continue',
@@ -46,6 +45,9 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
       journey.relationship = {}
     }
     journey.relationship.relationshipToPrisoner = relationship
+    journey.relationship.relationshipType = (journey.relationship.pendingNewRelationshipType ??
+      journey.relationship.relationshipType)!
+    delete journey.relationship.pendingNewRelationshipType
     res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
   }
 }

@@ -132,7 +132,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-next-of-kin', ()
       .type('form')
       .send({ isNextOfKin: 'YES' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`)
 
     // Then
     const expectedRelationship = { relationshipToPrisoner: 'MOT', isEmergencyContact: 'NO', isNextOfKin: 'YES' }

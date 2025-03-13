@@ -6,11 +6,12 @@ import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import TestData from '../../server/routes/testutils/testData'
 import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
 import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
-import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
 import ListContactsPage from '../pages/listContacts'
 import SearchContactPage from '../pages/searchContactPage'
 import CreateContactSuccessPage from '../pages/createContactSuccessPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
+import RelationshipCommentsPage from '../pages/contact-details/relationship/relationshipCommentsPage'
+import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
 
 context('Create contact and update from check answers', () => {
   beforeEach(() => {
@@ -84,8 +85,16 @@ context('Create contact and update from check answers', () => {
       .selectIsEmergencyContact('NO')
       .continueTo(SelectNextOfKinPage, 'First Middle Last')
       .selectIsNextOfKin('NO')
-      .continueTo(RelationshipCommentsPage, 'First Middle Last')
+      .continueTo(AddContactAdditionalInfoPage, 'First Middle Last')
+      .clickLinkTo(
+        'Comments on their relationship with First Middle Last',
+        RelationshipCommentsPage,
+        'First Middle Last',
+        'John Smith',
+        true,
+      )
       .enterComments('Some comments about the relationship')
+      .continueTo(AddContactAdditionalInfoPage, 'First Middle Last')
       .continueTo(CreateContactCheckYourAnswersPage)
       .verifyShowsNameAs('Last, Mr First Middle')
       .verifyShowsDateOfBirthAs('15 June 1982')
@@ -223,7 +232,7 @@ context('Create contact and update from check answers', () => {
       .verifyShowCommentsAs('Some comments about the relationship')
       .clickChangeCommentsLink()
 
-    Page.verifyOnPage(RelationshipCommentsPage, 'First Middle Last') //
+    Page.verifyOnPage(RelationshipCommentsPage, 'First Middle Last', 'John Smith', true) //
       .enterComments('Some new comments I entered')
       .clickContinue()
 

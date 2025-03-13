@@ -1,6 +1,6 @@
 import Page, { PageElement } from '../../page'
 
-export default class ManageRelationshipCommentsPage extends Page {
+export default class RelationshipCommentsPage extends Page {
   constructor(contactName: string, prisonerName: string, isOptional: boolean = false) {
     let title
     if (isOptional) {
@@ -11,17 +11,17 @@ export default class ManageRelationshipCommentsPage extends Page {
     super(title)
   }
 
-  verifyComments(value: string): ManageRelationshipCommentsPage {
+  verifyComments(value: string): RelationshipCommentsPage {
     this.commentsTextBox().should('have.value', value)
     return this
   }
 
-  clearComments(): ManageRelationshipCommentsPage {
+  clearComments(): RelationshipCommentsPage {
     this.commentsTextBox().clear()
     return this
   }
 
-  enterComments(value: string): ManageRelationshipCommentsPage {
+  enterComments(value: string): RelationshipCommentsPage {
     this.commentsTextBox().clear().type(value, { delay: 0 })
     return this
   }

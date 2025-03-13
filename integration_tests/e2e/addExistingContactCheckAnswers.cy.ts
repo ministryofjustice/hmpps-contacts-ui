@@ -5,11 +5,11 @@ import ListContactsPage from '../pages/listContacts'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
 import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
-import RelationshipCommentsPage from '../pages/relationshipCommentsPage'
 import SearchContactPage from '../pages/searchContactPage'
 import ContactConfirmationPage from '../pages/contactConfirmationPage'
 import AddContactSuccessPage from '../pages/addContactSuccessPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
+import RelationshipCommentsPage from '../pages/contact-details/relationship/relationshipCommentsPage'
 
 context('Add Existing Contact Check Answers', () => {
   const { prisonerNumber } = TestData.prisoner()
@@ -85,7 +85,7 @@ context('Add Existing Contact Check Answers', () => {
       .selectIsEmergencyContact('NO')
       .continueTo(SelectNextOfKinPage, 'Existing Contact') //
       .selectIsNextOfKin('YES')
-      .continueTo(RelationshipCommentsPage, 'Existing Contact') //
+      .continueTo(RelationshipCommentsPage, 'Existing Contact', 'John Smith', true) //
       .enterComments('Some comments about the relationship')
       .continueTo(LinkExistingContactCYAPage) //
       .verifyShowsNameAs('Existing Contact (654321)')
@@ -168,7 +168,7 @@ context('Add Existing Contact Check Answers', () => {
       .verifyShowCommentsAs('Some comments about the relationship')
       .clickChangeCommentsLink()
 
-    Page.verifyOnPage(RelationshipCommentsPage, 'Existing Contact') //
+    Page.verifyOnPage(RelationshipCommentsPage, 'Existing Contact', 'John Smith', true) //
       .enterComments('Some updated comments')
       .clickContinue()
 

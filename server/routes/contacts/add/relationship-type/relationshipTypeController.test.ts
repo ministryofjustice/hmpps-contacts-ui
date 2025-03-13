@@ -114,6 +114,21 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-type
     expect($('input[type=radio]:checked').val()).toStrictEqual('S')
   })
 
+  it('should render previously entered details if no validation errors but there are pending session values', async () => {
+    // Given
+    existingJourney.relationship = { pendingNewRelationshipType: 'O', relationshipType: 'S' }
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`,
+    )
+
+    // Then
+    expect(response.status).toEqual(200)
+    const $ = cheerio.load(response.text)
+    expect($('input[type=radio]:checked').val()).toStrictEqual('O')
+  })
+
   it('should return to start if no journey in session', async () => {
     await request(app)
       .get(`/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${uuidv4()}`)
@@ -123,7 +138,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-type
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship-type', () => {
-  it('should pass to next page if there are no validation errors and we are not checking answers', async () => {
+  it('should pass to next page with pending relationship type if there are no validation errors and we are not checking answers', async () => {
     // Given
     delete existingJourney.relationship
     existingJourney.isCheckingAnswers = false
@@ -137,7 +152,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship-typ
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship-to-prisoner/${journeyId}`)
 
     // Then
-    const expectedRelationship = { relationshipType: 'S' }
+    const expectedRelationship = { pendingNewRelationshipType: 'S' }
     expect(session.addContactJourneys![journeyId]!.relationship).toStrictEqual(expectedRelationship)
   })
 
@@ -161,7 +176,8 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship-typ
 
     // Then
     const expectedRelationship = {
-      relationshipType: 'O',
+      relationshipType: 'S',
+      pendingNewRelationshipType: 'O',
       relationshipToPrisoner: 'MOT',
       isEmergencyContact: 'NO',
       isNextOfKin: 'YES',
@@ -199,6 +215,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship-typ
     // Then
     const expectedRelationship = {
       relationshipType: 'S',
+      pendingNewRelationshipType: 'S',
       relationshipToPrisoner: 'MOT',
       isEmergencyContact: 'NO',
       isNextOfKin: 'YES',
