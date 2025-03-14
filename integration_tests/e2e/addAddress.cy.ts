@@ -9,9 +9,6 @@ import EditContactMethodsPage from '../pages/editContactMethodsPage'
 import EnterAddressDatesPage from '../pages/contact-methods/address/enterAddressDatesPage'
 import SelectAddressFlagsPage from '../pages/contact-methods/address/selectAddressFlagsPage'
 import EnterAddressCommentsPage from '../pages/contact-methods/address/enterAddressCommentsPage'
-import EnterRestrictionPage from '../pages/enterRestrictionPage'
-import CreateRestrictionCheckYourAnswersPage from '../pages/createRestrictionCheckYourAnswersPage'
-import CancelAddRestrictionPage from '../pages/cancelAddRestrictionPage'
 import CancelAddAddressPage from '../pages/contact-methods/address/cancelAddAddressPage'
 
 context('Add Address', () => {
