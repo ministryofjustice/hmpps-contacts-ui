@@ -174,7 +174,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       .get(
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/phone/${uuidv4()}`,
       )
-      .expect(200)
+      .expect(404)
       .expect(res => {
         expect(res.text).toContain('Page not found')
       })
