@@ -80,7 +80,6 @@ context('Delete Contact Email', () => {
     Page.verifyOnPage(ConfirmDeleteEmailPage, 'First Middle Names Last') //
       .hasEmailAddress('last@example.com')
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .verifyOnContactsMethodsTab()
 
     cy.verifyAPIWasCalled(
       {

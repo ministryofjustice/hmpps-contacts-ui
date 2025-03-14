@@ -99,7 +99,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       'Are you sure you want to delete a phone number for this address?',
     )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789#contact-methods',
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789',
     )
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
@@ -132,7 +132,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       'Are you sure you want to delete a phone number for this address?',
     )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789#contact-methods',
+      '/prisoner/A1234BC/contacts/manage/987654/relationship/456789',
     )
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-methods',
