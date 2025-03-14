@@ -424,6 +424,7 @@ context('Add Address', () => {
       .clickButtonTo('Continue', EnterAddressPage, 'First Middle Names Last') //
       .clickButtonTo('Continue', EnterAddressDatesPage, 'First Middle Names Last')
       .clickButtonTo('Continue', SelectAddressFlagsPage, 'First Middle Names Last')
+      .clickButtonTo('Continue', AddAddressPhonesPage)
       .clickButtonTo('Continue', EnterAddressCommentsPage)
       .clickButtonTo('Continue', AddressCheckYourAnswersPage, 'address', 'First Middle Names Last') //
       .clickButton('Cancel')
