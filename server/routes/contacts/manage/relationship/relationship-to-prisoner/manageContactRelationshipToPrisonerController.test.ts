@@ -85,21 +85,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
   })
 
   it.each([
-    [
-      'S',
-      'Mother',
-      'For example, if First Middle Last is the prisoner’s uncle, select ‘Uncle’.',
-      'Select social relationship',
-    ],
-    [
-      'O',
-      'Case Administrator',
-      'For example, if First Middle Last is the prisoner’s doctor, select ‘Doctor’.',
-      'Select official relationship',
-    ],
+    ['S', 'Mother', 'For example, if First Middle Last is the prisoner’s uncle, select ‘Uncle’.'],
+    ['O', 'Case Administrator', 'For example, if First Middle Last is the prisoner’s doctor, select ‘Doctor’.'],
   ])(
     'should use correct reference group for different relationship types %s',
-    async (relationshipType, expectedFirstOption: string, expectedHintText: string, expectedDefaultLabel: string) => {
+    async (relationshipType, expectedFirstOption: string, expectedHintText: string) => {
       // Given
       contactsService.getContactName.mockResolvedValue(contact)
       contactsService.getPrisonerContactRelationship.mockResolvedValue({
@@ -120,8 +110,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
         'What is First Middle Last’s relationship to John Smith?',
       )
       expect($('#relationship-hint').text().trim()).toStrictEqual(expectedHintText)
-      expect($('#relationship :nth-child(1)').text()).toStrictEqual(expectedDefaultLabel)
-      expect($('#relationship :nth-child(2)').text()).toStrictEqual(expectedFirstOption)
+      expect($('#relationship :nth-child(1)').text()).toStrictEqual(expectedFirstOption)
     },
   )
 

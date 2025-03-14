@@ -60,6 +60,7 @@ export default class ManageContactRelationshipToPrisonerController implements Pa
       names,
       caption: 'Edit contact relationship information',
       continueButtonLabel: 'Confirm and save',
+      noNullishSelectOption: true,
     }
     res.render('pages/contacts/manage/contactDetails/relationship/selectRelationship', viewModel)
   }
