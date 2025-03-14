@@ -64,7 +64,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Manage contacts')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-      '/prisoner/A1234BC/contacts/manage/1/relationship/99#contact-methods',
+      '/prisoner/A1234BC/contacts/manage/1/relationship/99',
     )
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/1/relationship/99#contact-methods',

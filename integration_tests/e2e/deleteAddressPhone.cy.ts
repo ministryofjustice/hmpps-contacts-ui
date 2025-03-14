@@ -105,7 +105,6 @@ context('Delete Address Phones', () => {
       .hasType('Home')
       .hasExtension('Not provided')
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .verifyOnContactsMethodsTab()
 
     cy.verifyAPIWasCalled(
       {

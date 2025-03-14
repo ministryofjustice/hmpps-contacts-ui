@@ -154,6 +154,5 @@ context('Create Address Phones', () => {
     // Cancel to Contact Details page
     Page.verifyOnPage(AddAddressPhonesPage, true) //
       .clickLinkTo('Cancel', ManageContactDetailsPage, 'First Middle Names Last')
-      .verifyOnContactsMethodsTab()
   })
 })

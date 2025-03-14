@@ -36,7 +36,7 @@ export default class ManageContactDeleteAddressPhoneController implements PageHa
     }
     const navigation: Navigation = {
       backLink: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
-      cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId, 'contact-methods'),
+      cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
     }
     res.render('pages/contacts/manage/contactMethods/address/phone/confirmDeleteAddressPhone', {
       phone,

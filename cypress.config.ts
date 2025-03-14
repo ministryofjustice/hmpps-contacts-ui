@@ -58,8 +58,8 @@ export default defineConfig({
         url: 'http://localhost:3007/__coverage__',
       },
     },
-    retries: {
-      runMode: 1,
-    },
+    // retries: {
+    //   runMode: 1,
+    // },
   },
 })
