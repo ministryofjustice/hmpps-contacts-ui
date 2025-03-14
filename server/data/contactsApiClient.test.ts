@@ -80,6 +80,7 @@ describe('contactsApiClient', () => {
         interpreterRequired: false,
         identities: [],
         addresses: [],
+        phoneNumbers: [],
         createdBy: 'user1',
       }
 
@@ -104,6 +105,7 @@ describe('contactsApiClient', () => {
         interpreterRequired: false,
         identities: [],
         addresses: [],
+        phoneNumbers: [],
         createdBy: 'user1',
       }
       const expectedErrorBody = {

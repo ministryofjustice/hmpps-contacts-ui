@@ -4,13 +4,12 @@ import { PageHandler } from '../../../../../interfaces/pageHandler'
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import { Navigation } from '../../../common/navigation'
-import { formatDate } from '../../../../../utils/utils'
 import { ContactsService } from '../../../../../services'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import Urls from '../../../../urls'
-import { getAddressJourneyAndUrl } from '../common/utils'
+import { getAddressJourneyAndUrl, getFormattedAddress } from '../common/utils'
 
 export default class AddressCheckAnswersController implements PageHandler {
   constructor(
@@ -28,53 +27,41 @@ export default class AddressCheckAnswersController implements PageHandler {
     const { journey, addressUrl } = getAddressJourneyAndUrl(req)
     journey.isCheckingAnswers = true
 
-    let addressTypeDescription
-    if (journey.addressType !== 'DO_NOT_KNOW') {
-      addressTypeDescription = await this.referenceDataService.getReferenceDescriptionForCode(
-        ReferenceCodeType.ADDRESS_TYPE,
-        journey.addressType!,
-        user,
-      )
-    }
-    const formattedAddress = {
-      flat: journey.addressLines!.flat,
-      premise: journey.addressLines!.premises,
-      street: journey.addressLines!.street,
-      area: journey.addressLines!.locality,
-      city: await this.getReferenceCodeDescriptionIfSet(journey.addressLines!.town, ReferenceCodeType.CITY, user),
-      county: await this.getReferenceCodeDescriptionIfSet(journey.addressLines!.county, ReferenceCodeType.COUNTY, user),
-      postalCode: journey.addressLines!.postcode,
-      country: await this.getReferenceCodeDescriptionIfSet(
-        journey.addressLines!.country,
-        ReferenceCodeType.COUNTRY,
-        user,
-      ),
-    }
-    const formattedFromDate = formatDate(
-      new Date(`${journey.addressMetadata!.fromYear}-${journey.addressMetadata!.fromMonth}-01Z`),
-      'MMMM yyyy',
-    )
-    let formattedToDate
-    if (journey.addressMetadata!.toMonth && journey.addressMetadata!.toYear) {
-      formattedToDate = formatDate(
-        new Date(`${journey.addressMetadata!.toYear}-${journey.addressMetadata!.toMonth}-01Z`),
-        'MMMM yyyy',
-      )
-    }
-    const typeLabel = addressTypeDescription?.toLowerCase() ?? 'address'
     const navigation: Navigation = {
-      breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'],
+      backLink: addressUrl({ subPath: 'comments' }),
       cancelButton: addressUrl({ subPath: 'cancel' }),
     }
+
+    const phoneTypeDescriptions = new Map(
+      (await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user)).map(refData => [
+        refData.code,
+        refData.description,
+      ]),
+    )
+
     const viewModel = {
       ...req.params,
-      journey,
       navigation,
-      addressTypeDescription,
-      typeLabel,
-      formattedAddress,
-      formattedFromDate,
-      formattedToDate,
+      contact: journey.contactNames,
+      address: {
+        ...journey,
+        ...journey.addressMetadata,
+        ...journey.addressLines,
+        addressTypeDescription:
+          journey.addressType !== 'DO_NOT_KNOW'
+            ? await this.referenceDataService.getReferenceDescriptionForCode(
+                ReferenceCodeType.ADDRESS_TYPE,
+                journey.addressType!,
+                user,
+              )
+            : undefined,
+        phoneNumbers: journey.phoneNumbers?.map(phone => ({
+          phoneNumber: phone.phoneNumber,
+          extNumber: phone.extension,
+          phoneTypeDescription: phoneTypeDescriptions.get(phone.type),
+        })),
+      },
+      formattedAddress: await getFormattedAddress(this.referenceDataService, journey, res.locals.user),
     }
     res.render('pages/contacts/manage/contactMethods/address/addressCheckAnswers', viewModel)
   }
@@ -103,16 +90,5 @@ export default class AddressCheckAnswersController implements PageHandler {
         ),
       )
     res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
-  }
-
-  private async getReferenceCodeDescriptionIfSet(
-    code: string | undefined | null,
-    type: ReferenceCodeType,
-    user: Express.User,
-  ): Promise<string | undefined> {
-    if (!code) {
-      return Promise.resolve(undefined)
-    }
-    return this.referenceDataService.getReferenceDescriptionForCode(type, code, user)
   }
 }
