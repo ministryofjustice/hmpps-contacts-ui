@@ -114,7 +114,7 @@
   {{ govukSummaryList({
     card: {
       title: {
-        text: ((params.address.primaryAddress and params.address.mailAddress and 'Primary and postal address') or (params.address.primaryAddress and 'Primary address') or (params.address.mailAddress and 'Postal address') or ((params.address.addressTypeDescription + ' address') if params.address.addressTypeDescription else 'Address')) + ((" " + params.titleSuffix) if params.titleSuffix else "")
+        text: (params.address | formatAddressCardTitle) + ((" " + params.titleSuffix) if params.titleSuffix else "")
       }
     },
     rows: rows

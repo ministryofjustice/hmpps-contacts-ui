@@ -3,7 +3,7 @@ import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import SelectAddressTypePage from '../pages/contact-methods/address/selectAddressTypePage'
 import EnterAddressPage from '../pages/contact-methods/address/enterAddressPage'
-import AddressCheckYourAnswersPage from '../pages/addressCheckYourAnswersPage'
+import AddressCheckYourAnswersPage from '../pages/contact-methods/address/addressCheckYourAnswersPage'
 import { StubPrisonApiAddress } from '../mockApis/prisonApi'
 import EditContactMethodsPage from '../pages/editContactMethodsPage'
 import EnterAddressDatesPage from '../pages/contact-methods/address/enterAddressDatesPage'
@@ -97,21 +97,21 @@ context('Add Address', () => {
       .enterPhoneNumber(1, 'to be deleted')
       .clickAddAnotherButton()
       .enterPhoneNumber(2, '01234 777776')
-      .selectType(2, 'HOME')
+      .selectType(2, 'MOB')
       .clickRemoveButton(1)
       .continueTo(EnterAddressCommentsPage)
       .enterComments('Something about the address')
       .clickContinue()
 
-    Page.verifyOnPage(AddressCheckYourAnswersPage, 'home address', 'First Middle Names Last') //
+    Page.verifyOnPage(AddressCheckYourAnswersPage, 'First Middle Names Last') //
       .verifyShowsAddressTypeAs('Home address')
       .verifyShowsAddressAs('1A<br>The Block<br>My Street<br>Downtown<br>Exeter<br>Devon<br>P05T C0D3<br>England')
       .verifyShowsNoFixedAddressAs('Yes')
-      .verifyShowsFromDateAs('September 2009')
-      .verifyShowsToDateAs('October 2010')
-      .verifyShowsPrimaryAddressAs('Yes')
-      .verifyShowsMailAddressAs('No')
+      .verifyShowsDatesAs('From September 2009 to October 2010')
+      .verifyShowsPrimaryOrPostalAddressAs('Primary address')
       .verifyShowsCommentsAs('Something about the address')
+      .verifyShowsPhoneNumber('Home', '01234 777777, ext. 000')
+      .verifyShowsPhoneNumber('Mobile', '01234 777776')
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
@@ -141,6 +141,10 @@ context('Add Address', () => {
         noFixedAddress: true,
         comments: 'Something about the address',
         createdBy: 'USER1',
+        phoneNumbers: [
+          { phoneType: 'HOME', phoneNumber: '01234 777777', extNumber: '000' },
+          { phoneType: 'MOB', phoneNumber: '01234 777776' },
+        ],
       },
     )
   })
@@ -172,15 +176,14 @@ context('Add Address', () => {
       .continueTo(EnterAddressCommentsPage)
       .clickContinue()
 
-    Page.verifyOnPage(AddressCheckYourAnswersPage, 'address', 'First Middle Names Last') //
+    Page.verifyOnPage(AddressCheckYourAnswersPage, 'First Middle Names Last') //
       .verifyShowsAddressTypeAs('Not provided')
       .verifyShowsAddressAs('England')
       .verifyShowsNoFixedAddressAs('No')
-      .verifyShowsFromDateAs('September 2009')
-      .verifyShowsToDateAs('Not provided')
-      .verifyShowsPrimaryAddressAs('Not provided')
-      .verifyShowsMailAddressAs('Not provided')
+      .verifyShowsDatesAs('From September 2009')
+      .verifyShowsPrimaryOrPostalAddressAs('No')
       .verifyShowsCommentsAs('Not provided')
+      .verifyNoPhoneNumbers()
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
@@ -198,6 +201,7 @@ context('Add Address', () => {
         startDate: '2009-09-01T00:00:00.000Z',
         noFixedAddress: false,
         createdBy: 'USER1',
+        phoneNumbers: [],
       },
     )
   })
@@ -295,21 +299,20 @@ context('Add Address', () => {
       .enterComments('Something about the address')
       .clickContinue()
 
-    Page.verifyOnPage(AddressCheckYourAnswersPage, 'home address', 'First Middle Names Last') //
+    Page.verifyOnPage(AddressCheckYourAnswersPage, 'First Middle Names Last') //
       .verifyShowsAddressTypeAs('Home address')
       .verifyShowsAddressAs('1A<br>The Block<br>My Street<br>Downtown<br>Exeter<br>Devon<br>P05T C0D3<br>England')
       .verifyShowsNoFixedAddressAs('Yes')
-      .verifyShowsFromDateAs('September 2009')
-      .verifyShowsToDateAs('October 2010')
-      .verifyShowsPrimaryAddressAs('Yes')
-      .verifyShowsMailAddressAs('No')
+      .verifyShowsDatesAs('From September 2009 to October 2010')
+      .verifyShowsPrimaryOrPostalAddressAs('Primary address')
       .verifyShowsCommentsAs('Something about the address')
+      .verifyNoPhoneNumbers()
       .clickChangeAddressTypeLink()
 
     Page.verifyOnPage(SelectAddressTypePage, 'First Middle Names Last') //
       .hasAddressType('HOME')
       .selectAddressType('WORK')
-      .continueTo(AddressCheckYourAnswersPage, 'work address', 'First Middle Names Last')
+      .continueTo(AddressCheckYourAnswersPage, 'First Middle Names Last')
       .verifyShowsAddressTypeAs('Work address')
       .clickChangeAddressLink()
 
@@ -330,49 +333,50 @@ context('Add Address', () => {
       .selectCounty('South Yorkshire')
       .enterPostcode('POBOX1')
       .selectCountry('Scotland')
-      .continueTo(AddressCheckYourAnswersPage, 'work address', 'First Middle Names Last')
+      .clickNoFixedAddress()
+      .continueTo(AddressCheckYourAnswersPage, 'First Middle Names Last')
       .verifyShowsAddressAs(
         '2B<br>Another Block<br>Another Street<br>Uptown<br>Sheffield<br>South Yorkshire<br>POBOX1<br>Scotland',
       )
-      .clickChangeNoFixedAddressLink()
-
-    Page.verifyOnPage(EnterAddressPage, 'First Middle Names Last') //
-      .clickNoFixedAddress()
-      .continueTo(AddressCheckYourAnswersPage, 'work address', 'First Middle Names Last')
       .verifyShowsNoFixedAddressAs('No')
-      .clickChangeFromDateLink()
+      .clickChangeDatesLink()
 
     Page.verifyOnPage(EnterAddressDatesPage, 'First Middle Names Last') //
       .hasFromMonth('9')
       .hasFromYear('2009')
       .enterFromMonth('10')
       .enterFromYear('2010')
-      .continueTo(AddressCheckYourAnswersPage, 'work address', 'First Middle Names Last')
-      .verifyShowsFromDateAs('October 2010')
-      .clickChangeToDateLink()
-
-    Page.verifyOnPage(EnterAddressDatesPage, 'First Middle Names Last') //
       .hasToMonth('10')
       .hasToYear('2010')
       .enterToMonth('11')
       .enterToYear('2011')
-      .continueTo(AddressCheckYourAnswersPage, 'work address', 'First Middle Names Last')
-      .verifyShowsToDateAs('November 2011')
-      .clickChangePrimaryAddressLink()
+      .continueTo(AddressCheckYourAnswersPage, 'First Middle Names Last')
+      .verifyShowsDatesAs('From October 2010 to November 2011')
+      .clickChangePrimaryOrPostalAddressLink()
 
     Page.verifyOnPage(SelectAddressFlagsPage, 'First Middle Names Last') //
       .verifyIsPrimaryOrPostalAnswer('P')
       .selectIsPrimaryOrPostal('M')
-      .continueTo(AddressCheckYourAnswersPage, 'work address', 'First Middle Names Last')
-      .verifyShowsPrimaryAddressAs('No')
-      .verifyShowsMailAddressAs('Yes')
+      .continueTo(AddressCheckYourAnswersPage, 'First Middle Names Last')
+      .verifyShowsPrimaryOrPostalAddressAs('Postal address')
       .clickChangeCommentsLink()
 
     Page.verifyOnPage(EnterAddressCommentsPage) //
       .hasComments('Something about the address')
       .enterComments('Updated comments')
-      .continueTo(AddressCheckYourAnswersPage, 'work address', 'First Middle Names Last')
+      .continueTo(AddressCheckYourAnswersPage, 'First Middle Names Last')
       .verifyShowsCommentsAs('Updated comments')
+      .clickChangePhoneNumbersLink()
+
+    Page.verifyOnPage(AddAddressPhonesPage) //
+      .hasType(0, '')
+      .hasPhoneNumber(0, '')
+      .hasExtension(0, '')
+      .enterPhoneNumber(0, '01234 777777')
+      .enterExtension(0, '000')
+      .selectType(0, 'HOME')
+      .continueTo(AddressCheckYourAnswersPage, 'First Middle Names Last')
+      .verifyShowsPhoneNumber('Home', '01234 777777, ext. 000')
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
@@ -402,6 +406,7 @@ context('Add Address', () => {
         noFixedAddress: false,
         comments: 'Updated comments',
         createdBy: 'USER1',
+        phoneNumbers: [{ phoneType: 'HOME', phoneNumber: '01234 777777', extNumber: '000' }],
       },
     )
   })
@@ -426,12 +431,12 @@ context('Add Address', () => {
       .clickButtonTo('Continue', SelectAddressFlagsPage, 'First Middle Names Last')
       .clickButtonTo('Continue', AddAddressPhonesPage)
       .clickButtonTo('Continue', EnterAddressCommentsPage)
-      .clickButtonTo('Continue', AddressCheckYourAnswersPage, 'address', 'First Middle Names Last') //
-      .clickButton('Cancel')
+      .clickButtonTo('Continue', AddressCheckYourAnswersPage, 'First Middle Names Last') //
+      .clickLink('Cancel')
 
     Page.verifyOnPage(CancelAddAddressPage, 'First Middle Names Last')
-      .clickButtonTo('No, return to check answers', AddressCheckYourAnswersPage, 'address', 'First Middle Names Last') //
-      .clickButtonTo('Cancel', CancelAddAddressPage, 'First Middle Names Last')
+      .clickButtonTo('No, return to check answers', AddressCheckYourAnswersPage, 'First Middle Names Last') //
+      .clickLinkTo('Cancel', CancelAddAddressPage, 'First Middle Names Last')
       .clickButtonTo('Yes, cancel', ManageContactDetailsPage, 'First Middle Names Last')
   })
 })

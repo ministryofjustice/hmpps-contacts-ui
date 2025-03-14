@@ -55,6 +55,7 @@ export default class ContactsService {
       },
       identities: [],
       addresses: [],
+      phoneNumbers: [],
       createdBy: user.username,
     }
     if (journey.dateOfBirth?.isKnown === 'YES') {
@@ -279,6 +280,12 @@ export default class ContactsService {
       noFixedAddress: journey.addressLines!.noFixedAddress,
       comments: journey.addressMetadata!.comments,
       createdBy: user.username,
+      phoneNumbers:
+        journey.phoneNumbers?.map(({ type, phoneNumber, extension }) => ({
+          phoneType: type,
+          phoneNumber,
+          ...(extension === undefined ? {} : { extNumber: extension }),
+        })) || [],
     }
     return this.contactsApiClient.createContactAddress(journey.contactId, request, user)
   }

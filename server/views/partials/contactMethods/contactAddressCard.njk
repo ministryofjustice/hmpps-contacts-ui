@@ -164,7 +164,7 @@
       text: 'Comments on this address'
     },
     value: {
-      text: address.comments if address.comments else 'Not provided'
+      html: (address.comments or 'Not provided') | escape | nl2br
     },
     actions: {
       items: [

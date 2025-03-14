@@ -103,6 +103,7 @@ describe('contactsService', () => {
           interpreterRequired: false,
           identities: [],
           addresses: [],
+          phoneNumbers: [],
           createdBy: 'user1',
           relationship: {
             prisonerNumber,
@@ -162,6 +163,7 @@ describe('contactsService', () => {
         interpreterRequired: false,
         identities: [],
         addresses: [],
+        phoneNumbers: [],
         relationship: {
           prisonerNumber,
           relationshipTypeCode: 'S',
@@ -693,6 +695,7 @@ describe('contactsService', () => {
         noFixedAddress: true,
         comments: 'My comments will be super useful',
         createdBy: user.username,
+        phoneNumbers: [],
       }
 
       // When
@@ -739,6 +742,7 @@ describe('contactsService', () => {
         noFixedAddress: false,
         comments: undefined,
         createdBy: user.username,
+        phoneNumbers: [],
       }
 
       // When
