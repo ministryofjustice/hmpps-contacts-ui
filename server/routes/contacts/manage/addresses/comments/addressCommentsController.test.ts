@@ -80,7 +80,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact methods')
     expect($('h1').first().text().trim()).toStrictEqual('Add any comments about this address (optional)')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/primary-or-postal/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/phone/${journeyId}`,
     )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
@@ -161,7 +161,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/comments/:journeyId', () => {
-  it('should update journey data and pass to next page and based on checking answers or not', async () => {
+  it('should update journey data and pass to next page', async () => {
     await request(app)
       .post(
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/comments/${journeyId}`,

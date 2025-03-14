@@ -18,7 +18,7 @@ export default class AddressCommentsController implements PageHandler {
   ): Promise<void> => {
     const { journey, checkAnswersOrAddressUrl } = getAddressJourneyAndUrl(req)
     const navigation: Navigation = {
-      backLink: checkAnswersOrAddressUrl({ subPath: 'primary-or-postal' }),
+      backLink: checkAnswersOrAddressUrl({ subPath: 'phone' }),
     }
     const viewModel = {
       caption: 'Edit contact methods',

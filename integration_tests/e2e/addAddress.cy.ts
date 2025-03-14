@@ -10,6 +10,7 @@ import EnterAddressDatesPage from '../pages/contact-methods/address/enterAddress
 import SelectAddressFlagsPage from '../pages/contact-methods/address/selectAddressFlagsPage'
 import EnterAddressCommentsPage from '../pages/contact-methods/address/enterAddressCommentsPage'
 import CancelAddAddressPage from '../pages/contact-methods/address/cancelAddAddressPage'
+import AddAddressPhonesPage from '../pages/contact-methods/address/phone/addAddressPhonesPage'
 
 context('Add Address', () => {
   const contactId = 654321
@@ -32,6 +33,7 @@ context('Add Address', () => {
     cy.task('stubCityReferenceData')
     cy.task('stubCountyReferenceData')
     cy.task('stubCountryReferenceData')
+    cy.task('stubPhoneTypeReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetContactById', contact)
     cy.task('stubGetContactNameById', contact)
@@ -87,6 +89,16 @@ context('Add Address', () => {
       .enterToYear('2010')
       .continueTo(SelectAddressFlagsPage, 'First Middle Names Last')
       .selectIsPrimaryOrPostal('P')
+      .continueTo(AddAddressPhonesPage)
+      .enterPhoneNumber(0, '01234 777777')
+      .enterExtension(0, '000')
+      .selectType(0, 'HOME')
+      .clickAddAnotherButton()
+      .enterPhoneNumber(1, 'to be deleted')
+      .clickAddAnotherButton()
+      .enterPhoneNumber(2, '01234 777776')
+      .selectType(2, 'HOME')
+      .clickRemoveButton(1)
       .continueTo(EnterAddressCommentsPage)
       .enterComments('Something about the address')
       .clickContinue()
@@ -156,6 +168,7 @@ context('Add Address', () => {
       .enterFromMonth('09')
       .enterFromYear('2009')
       .continueTo(SelectAddressFlagsPage, 'First Middle Names Last')
+      .continueTo(AddAddressPhonesPage)
       .continueTo(EnterAddressCommentsPage)
       .clickContinue()
 
@@ -277,6 +290,7 @@ context('Add Address', () => {
       .enterToYear('2010')
       .continueTo(SelectAddressFlagsPage, 'First Middle Names Last') //
       .selectIsPrimaryOrPostal('P')
+      .continueTo(AddAddressPhonesPage)
       .continueTo(EnterAddressCommentsPage) //
       .enterComments('Something about the address')
       .clickContinue()

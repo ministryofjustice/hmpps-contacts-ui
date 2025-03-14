@@ -58,11 +58,7 @@ export default class ManageContactAddAddressPhoneController implements PageHandl
         parseInt(contactId, 10),
         parseInt(contactAddressId, 10),
         user,
-        phones.map(({ type, phoneNumber, extension }) => ({
-          type: type!,
-          phoneNumber: phoneNumber!,
-          extension,
-        })),
+        phones,
       )
       await this.contactsService
         .getContactName(Number(contactId), user)
