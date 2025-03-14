@@ -205,6 +205,26 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     ])
   })
 
+  it('should pass to next page with all blank inputs', async () => {
+    const form = {
+      save: '',
+      phones: [
+        { type: '', phoneNumber: '', extension: '' },
+        { type: '', phoneNumber: '', extension: '' },
+      ],
+    }
+
+    await request(app)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/phone/${journeyId}`,
+      )
+      .type('form')
+      .send(form)
+      .expect(302)
+
+    expect(session.addressJourneys![journeyId]!.phoneNumbers).toBeUndefined()
+  })
+
   it.each([
     [
       false,

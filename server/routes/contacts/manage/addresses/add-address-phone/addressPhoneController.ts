@@ -44,19 +44,14 @@ export default class AddressPhoneController implements PageHandler {
     const { journey, checkAnswersOrAddressUrl, addressUrl } = getAddressJourneyAndUrl(req)
     const { phones, save, add, remove } = req.body
     if (save !== undefined) {
-      if (phones?.length >= 1 && phones.every(phone => phone.type && phone.phoneNumber)) {
-        journey.phoneNumbers = phones.map(({ type, phoneNumber, extension }) => ({
-          type: type!,
-          phoneNumber: phoneNumber!,
-          extension,
-        }))
-      }
+      journey.phoneNumbers = phones
       res.redirect(checkAnswersOrAddressUrl({ subPath: 'comments' }))
     } else {
+      req.body.phones ??= [{ type: '', phoneNumber: '', extension: '' }]
       if (add !== undefined) {
-        phones.push({ type: '', phoneNumber: '', extension: '' })
+        req.body.phones.push({ type: '', phoneNumber: '', extension: '' })
       } else if (remove !== undefined) {
-        phones.splice(Number(remove), 1)
+        req.body.phones.splice(Number(remove), 1)
       }
       // Always redirect back to input even if we didn't find an action, which should be impossible but there is a small
       // possibility if JS is disabled after a page load or the user somehow removes all identities.

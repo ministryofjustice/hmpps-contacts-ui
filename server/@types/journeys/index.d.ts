@@ -145,11 +145,13 @@ declare namespace journeys {
     addressType?: string | undefined
     addressLines?: AddressLines | undefined
     addressMetadata?: AddressMetadata | undefined
-    phoneNumbers?: {
-      type: string
-      phoneNumber: string
-      extension?: string | undefined
-    }[]
+    phoneNumbers?:
+      | {
+          type: string
+          phoneNumber: string
+          extension?: string | undefined
+        }[]
+      | undefined
   }
 
   export interface AddressLines {
