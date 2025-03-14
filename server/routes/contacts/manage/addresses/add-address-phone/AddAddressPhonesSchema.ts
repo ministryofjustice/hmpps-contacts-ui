@@ -17,7 +17,16 @@ export const phonesSchema = async (req: Request<unknown, unknown, { save?: strin
     save: z.string().optional(),
     add: z.string().optional(),
     remove: z.string().optional(),
-  })
+  }).transform(({ phones, save, add, remove }) => ({
+    phones: phones.map(({ type, phoneNumber, extension }) => ({
+      type: type!,
+      phoneNumber: phoneNumber!,
+      extension,
+    })),
+    save,
+    add,
+    remove,
+  }))
 
 export type PhonesSchemaType = z.infer<Awaited<ReturnType<typeof phonesSchema>>>
 
