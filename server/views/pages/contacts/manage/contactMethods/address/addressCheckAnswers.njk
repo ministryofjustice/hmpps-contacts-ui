@@ -4,7 +4,7 @@
 {% from "partials/miniProfile/macro.njk" import miniProfile %}
 
 {% set title = "Check your answers before adding a new address for " + (journey.contactNames | formatNameFirstNameFirst) %}
-{% set pageTitle = "Check your answers before adding a new address for the contact - Edit contact methods - DPS"
+{% set pageTitle = "Check your answers before adding a new address for the contact - Edit contact methods - DPS" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
@@ -27,7 +27,7 @@
                     rows: [
                         {
                             key: {
-                                text: "type"
+                                text: "Type"
                             },
                             value: {
                                 html: addressTypeDescription or 'Not provided',

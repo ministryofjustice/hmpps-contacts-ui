@@ -29,7 +29,6 @@ import sortContactAddresses from './sortAddress'
 import { sortLinkedPrisoners } from './sortLinkedPrisoners'
 import { taskStatus } from './taskStatus'
 import captionForAddContactJourney from '../routes/contacts/add/addContactsUtils'
-import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import AddressMetadata = journeys.AddressMetadata
 
 export default function nunjucksSetup(app: express.Express): void {

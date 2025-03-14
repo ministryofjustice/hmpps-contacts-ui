@@ -23,17 +23,6 @@
     country: address.countryDescription
   }
   %}
-  {% set primaryOrPostalText %}
-    {% if address.primaryAddress and address.mailFlag %}
-      Primary and postal address
-    {% elseif address.primaryAddress %}
-      Primary address
-    {% elseif address.mailFlag %}
-      Postal address
-    {% else %}
-      No
-    {% endif %}
-  {% endset -%}
   {% set rows = [
     {
       key: { text: 'Type' },
@@ -82,7 +71,7 @@
     },
     {
       key: { text: 'Primary or postal address' },
-      value: { text: primaryOrPostalText },
+      value: { text: address | formatPrimaryOrPostal },
       actions: {
         items: [
           {
