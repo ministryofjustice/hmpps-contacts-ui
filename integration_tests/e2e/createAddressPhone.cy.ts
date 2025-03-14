@@ -60,7 +60,7 @@ context('Create Address Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddAddressPhoneLink(contactAddressId)
 
-    Page.verifyOnPage(AddAddressPhonesPage) //
+    Page.verifyOnPage(AddAddressPhonesPage, true) //
       .enterPhoneNumber(0, '01234 777777')
       .enterExtension(0, '000')
       .selectType(0, 'HOME')
@@ -99,7 +99,7 @@ context('Create Address Phones', () => {
     Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
       .clickAddAddressPhoneLink(contactAddressId)
 
-    const addAddressPhonesPage = Page.verifyOnPage(AddAddressPhonesPage) //
+    const addAddressPhonesPage = Page.verifyOnPage(AddAddressPhonesPage, true) //
       .enterPhoneNumber(0, '01234 777777')
       .enterExtension(0, '000')
       .selectType(0, 'HOME')
@@ -124,7 +124,7 @@ context('Create Address Phones', () => {
       .clickAddAddressPhoneLink(contactAddressId)
 
     // require phone number type
-    const enterPhonePage = Page.verifyOnPage(AddAddressPhonesPage) //
+    const enterPhonePage = Page.verifyOnPage(AddAddressPhonesPage, true) //
       .enterPhoneNumber(0, '01234 777777')
     enterPhonePage.clickContinue()
     enterPhonePage.hasFieldInError('phones[0].type', 'Select the type of phone number')
@@ -147,12 +147,12 @@ context('Create Address Phones', () => {
       .clickAddAddressPhoneLink(contactAddressId)
 
     // Back to Edit Contact Methods
-    Page.verifyOnPage(AddAddressPhonesPage) //
+    Page.verifyOnPage(AddAddressPhonesPage, true) //
       .backTo(EditContactMethodsPage, 'First Middle Names Last')
       .clickAddAddressPhoneLink(contactAddressId)
 
     // Cancel to Contact Details page
-    Page.verifyOnPage(AddAddressPhonesPage) //
+    Page.verifyOnPage(AddAddressPhonesPage, true) //
       .clickLinkTo('Cancel', ManageContactDetailsPage, 'First Middle Names Last')
       .verifyOnContactsMethodsTab()
   })

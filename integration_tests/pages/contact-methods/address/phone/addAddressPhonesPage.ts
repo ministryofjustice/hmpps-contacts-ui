@@ -1,8 +1,8 @@
 import Page from '../../../page'
 
 export default class AddAddressPhonesPage extends Page {
-  constructor() {
-    super('Add phone numbers for this address')
+  constructor(isEdit: boolean = false) {
+    super(isEdit ? 'Add phone numbers for this address' : 'Add phone numbers for this address (optional)')
   }
 
   hasPhoneNumber(index: number, value: string) {

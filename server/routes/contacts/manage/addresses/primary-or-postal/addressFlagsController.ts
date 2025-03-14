@@ -51,6 +51,6 @@ export default class AddressFlagsController implements PageHandler {
       primaryAddress: req.body.primaryAddress,
       mailAddress: req.body.mailAddress,
     }
-    res.redirect(checkAnswersOrAddressUrl({ subPath: 'comments' }))
+    res.redirect(checkAnswersOrAddressUrl({ subPath: 'phone' }))
   }
 }
