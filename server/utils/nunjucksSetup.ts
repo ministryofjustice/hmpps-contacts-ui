@@ -29,6 +29,8 @@ import sortContactAddresses from './sortAddress'
 import { sortLinkedPrisoners } from './sortLinkedPrisoners'
 import { taskStatus } from './taskStatus'
 import captionForAddContactJourney from '../routes/contacts/add/addContactsUtils'
+import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
+import AddressMetadata = journeys.AddressMetadata
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -103,6 +105,18 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('customErrorOrderBuilder', customErrorOrderBuilder)
   njkEnv.addFilter('taskStatus', taskStatus)
   njkEnv.addFilter('captionForAddContactJourney', captionForAddContactJourney)
+  njkEnv.addFilter('formatPrimaryOrPostal', (address: AddressMetadata) => {
+    if (address.primaryAddress && address.mailAddress) {
+      return 'Primary and postal address'
+    }
+    if (address.primaryAddress) {
+      return 'Primary address'
+    }
+    if (address.mailAddress) {
+      return 'Postal address'
+    }
+    return 'No'
+  })
   njkEnv.addFilter(
     'setSelected',
     (items: { value: string; text: string }[], selected) =>
