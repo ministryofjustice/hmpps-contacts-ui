@@ -9,6 +9,10 @@ import EditContactMethodsPage from '../pages/editContactMethodsPage'
 import EnterAddressDatesPage from '../pages/contact-methods/address/enterAddressDatesPage'
 import SelectAddressFlagsPage from '../pages/contact-methods/address/selectAddressFlagsPage'
 import EnterAddressCommentsPage from '../pages/contact-methods/address/enterAddressCommentsPage'
+import EnterRestrictionPage from '../pages/enterRestrictionPage'
+import CreateRestrictionCheckYourAnswersPage from '../pages/createRestrictionCheckYourAnswersPage'
+import CancelAddRestrictionPage from '../pages/cancelAddRestrictionPage'
+import CancelAddAddressPage from '../pages/contact-methods/address/cancelAddAddressPage'
 
 context('Add Address', () => {
   const contactId = 654321
@@ -398,5 +402,24 @@ context('Add Address', () => {
     Page.verifyOnPage(SelectAddressTypePage, 'First Middle Names Last') //
       .backTo(EditContactMethodsPage, 'First Middle Names Last')
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
+  })
+
+  it('Cancel asks for confirmation', () => {
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
+      .clickAddAddressLink()
+
+    Page.verifyOnPage(SelectAddressTypePage, 'First Middle Names Last') //
+      .selectAddressType('DO_NOT_KNOW')
+      .clickButtonTo('Continue', EnterAddressPage, 'First Middle Names Last') //
+      .clickButtonTo('Continue', EnterAddressDatesPage, 'First Middle Names Last')
+      .clickButtonTo('Continue', SelectAddressFlagsPage, 'First Middle Names Last')
+      .clickButtonTo('Continue', EnterAddressCommentsPage)
+      .clickButtonTo('Continue', AddressCheckYourAnswersPage, 'address', 'First Middle Names Last') //
+      .clickButton('Cancel')
+
+    Page.verifyOnPage(CancelAddAddressPage, 'First Middle Names Last')
+      .clickButtonTo('No, return to check answers', AddressCheckYourAnswersPage, 'address', 'First Middle Names Last') //
+      .clickButtonTo('Cancel', CancelAddAddressPage, 'First Middle Names Last')
+      .clickButtonTo('Yes, cancel', ManageContactDetailsPage, 'First Middle Names Last')
   })
 })
