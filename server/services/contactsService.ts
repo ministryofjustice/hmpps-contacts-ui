@@ -53,6 +53,8 @@ export default class ContactsService {
         isEmergencyContact: journey.relationship!.isEmergencyContact === 'YES',
         isApprovedVisitor: false,
       },
+      identities: [],
+      addresses: [],
       createdBy: user.username,
     }
     if (journey.dateOfBirth?.isKnown === 'YES') {

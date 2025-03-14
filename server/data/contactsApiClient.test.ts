@@ -78,6 +78,8 @@ describe('contactsApiClient', () => {
         firstName: 'first',
         isStaff: false,
         interpreterRequired: false,
+        identities: [],
+        addresses: [],
         createdBy: 'user1',
       }
 
@@ -100,6 +102,8 @@ describe('contactsApiClient', () => {
         firstName: 'first',
         isStaff: false,
         interpreterRequired: false,
+        identities: [],
+        addresses: [],
         createdBy: 'user1',
       }
       const expectedErrorBody = {

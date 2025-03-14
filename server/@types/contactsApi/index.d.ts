@@ -1759,6 +1759,14 @@ export interface components {
        */
       createdTime: string
     }
+    ErrorResponse: {
+      /** Format: int32 */
+      status: number
+      errorCode?: string
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
+    }
     SyncPrisonerNumberOfChildrenResponse: {
       /**
        * Format: int64
@@ -1777,14 +1785,6 @@ export interface components {
       createdTime?: string
       /** @description Username of the creator */
       createdBy?: string
-    }
-    ErrorResponse: {
-      /** Format: int32 */
-      status: number
-      errorCode?: string
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
     }
     /** @description Request to update a prisoner's domestic status */
     SyncUpdatePrisonerDomesticStatusRequest: {
@@ -3769,6 +3769,8 @@ export interface components {
        * @example 123456
        */
       contactId: number
+      /** @description The IDs of the contact's address phone numbers */
+      phoneNumberIds: number[]
       /**
        * @description
        *           The type of address (optional).
@@ -5233,6 +5235,96 @@ export interface components {
       /** @description List of Nomis and DPS IDs for employments (official contact types only) */
       employments?: components['schemas']['IdPair'][]
     }
+    Address: {
+      /**
+       * @description
+       *           The type of address.
+       *           This is a coded value (from the group code ADDRESS_TYPE in reference data).
+       *           The known values are HOME, WORK or BUS (business address).
+       *
+       * @example HOME
+       */
+      addressType?: string
+      /**
+       * @description True if this is the primary address otherwise false
+       * @example true
+       */
+      primaryAddress: boolean
+      /**
+       * @description Flat number or name
+       * @example Flat 2B
+       */
+      flat?: string
+      /**
+       * @description Building or house number or name
+       * @example Mansion House
+       */
+      property?: string
+      /**
+       * @description Street or road name
+       * @example Acacia Avenue
+       */
+      street?: string
+      /**
+       * @description Area
+       * @example Morton Heights
+       */
+      area?: string
+      /**
+       * @description City code - from NOMIS
+       * @example 13232
+       */
+      cityCode?: string
+      /**
+       * @description County code - from NOMIS
+       * @example WMIDS
+       */
+      countyCode?: string
+      /**
+       * @description Postcode
+       * @example S13 4FH
+       */
+      postcode?: string
+      /**
+       * @description Country code - from NOMIS
+       * @example UK
+       */
+      countryCode?: string
+      /**
+       * @description Whether the address has been verified by postcode lookup
+       * @example false
+       */
+      verified?: boolean
+      /**
+       * @description Whether the address can be used for mailing
+       * @example false
+       */
+      mailFlag?: boolean
+      /**
+       * Format: date
+       * @description The start date when this address can be considered active from
+       * @example 2023-01-12
+       */
+      startDate?: string
+      /**
+       * Format: date
+       * @description The end date when this address can be considered active until
+       * @example 2023-01-12
+       */
+      endDate?: string
+      /**
+       * @description Flag to indicate this address should be considered as no fixed address
+       * @example false
+       */
+      noFixedAddress?: boolean
+      /** @description Any phone numbers that are specific to this address */
+      phoneNumbers: components['schemas']['PhoneNumber'][]
+      /**
+       * @description Any additional information or comments about the address
+       * @example Some additional information
+       */
+      comments?: string
+    }
     /** @description Request to create a new contact */
     CreateContactRequest: {
       /**
@@ -5298,12 +5390,52 @@ export interface components {
       genderCode?: string
       /** @description A description of the relationship if the contact should be linked to a prisoner */
       relationship?: components['schemas']['ContactRelationship']
+      /** @description Identity documents */
+      identities: components['schemas']['IdentityDocument'][]
+      /** @description Addresses */
+      addresses: components['schemas']['Address'][]
       /**
        * @description The id of the user creating the contact
        * @example JD000001
        */
       createdBy: string
       staff?: boolean
+    }
+    /** @description An identity document */
+    IdentityDocument: {
+      /**
+       * @description Type of identity
+       * @example DL
+       */
+      identityType: string
+      /**
+       * @description The identity value such as driving licence number
+       * @example DL123456789
+       */
+      identityValue: string
+      /**
+       * @description The authority who issued the identity
+       * @example DVLA
+       */
+      issuingAuthority?: string
+    }
+    /** @description A single contact or address phone number */
+    PhoneNumber: {
+      /**
+       * @description Type of phone
+       * @example MOB
+       */
+      phoneType: string
+      /**
+       * @description Phone number
+       * @example +1234567890
+       */
+      phoneNumber: string
+      /**
+       * @description Extension number
+       * @example 123
+       */
+      extNumber?: string
     }
     /** @description An address related to a contact with descriptions of all reference data */
     ContactAddressDetails: {
@@ -5618,24 +5750,6 @@ export interface components {
        */
       createdBy: string
     }
-    /** @description A single contact or address phone number */
-    PhoneNumber: {
-      /**
-       * @description Type of phone
-       * @example MOB
-       */
-      phoneType: string
-      /**
-       * @description Phone number
-       * @example +1234567890
-       */
-      phoneNumber: string
-      /**
-       * @description Extension number
-       * @example 123
-       */
-      extNumber?: string
-    }
     /** @description Request to create a new phone number */
     CreatePhoneRequest: {
       /**
@@ -5691,24 +5805,6 @@ export interface components {
        * @example admin
        */
       createdBy: string
-    }
-    /** @description An identity document */
-    IdentityDocument: {
-      /**
-       * @description Type of identity
-       * @example DL
-       */
-      identityType: string
-      /**
-       * @description The identity value such as driving licence number
-       * @example DL123456789
-       */
-      identityValue: string
-      /**
-       * @description The authority who issued the identity
-       * @example DVLA
-       */
-      issuingAuthority?: string
     }
     /** @description Request to create a new employment with an employer and whether it is active or inactive */
     CreateEmploymentRequest: {
@@ -5836,6 +5932,8 @@ export interface components {
        * @example false
        */
       noFixedAddress?: boolean
+      /** @description List of new address-specific phone numbers to create */
+      phoneNumbers: components['schemas']['PhoneNumber'][]
       /**
        * @description Any additional information or comments about the address
        * @example Some additional information
@@ -6288,11 +6386,11 @@ export interface components {
       /** Format: int64 */
       offset?: number
       sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      pageSize?: number
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
+      /** Format: int32 */
+      pageSize?: number
       unpaged?: boolean
     }
     /** @description Describes the details of a prisoner's contact */
@@ -6403,7 +6501,7 @@ export interface components {
        * @description Postal code
        * @example NW1 6XE
        */
-      postCode?: string
+      postcode?: string
       /**
        * @description Country code
        * @example ENG
@@ -6497,8 +6595,8 @@ export interface components {
     }
     SortObject: {
       empty?: boolean
-      sorted?: boolean
       unsorted?: boolean
+      sorted?: boolean
     }
     /** @description Restriction related to a specific relationship between a prisoner and contact */
     PrisonerContactRestrictionsResponse: {
@@ -6830,7 +6928,7 @@ export interface components {
        * @description The postcode of the contact address, if known
        * @example B42 2QJ
        */
-      postCode?: string
+      postcode?: string
       /**
        * @description The country code of the contact address, if known
        * @example ENG
@@ -6943,16 +7041,7 @@ export interface operations {
           'application/json': components['schemas']['SyncPrisonerNumberOfChildrenResponse']
         }
       }
-      /** @description Invalid input data */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description No number of children for that prisoner could be found */
+      /** @description Could not find the number of children for this prisoner */
       404: {
         headers: {
           [name: string]: unknown
@@ -7007,15 +7096,6 @@ export interface operations {
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Prisoner's number of children not found */
-      404: {
         headers: {
           [name: string]: unknown
         }
@@ -7107,7 +7187,7 @@ export interface operations {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
-      /** @description Domestic status not found */
+      /** @description Could not find the reference data for the supplied domestic status code */
       404: {
         headers: {
           [name: string]: unknown
@@ -8451,7 +8531,7 @@ export interface operations {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
-      /** @description Prisoner not found */
+      /** @description Could not find the number of children for this prisoner */
       404: {
         headers: {
           [name: string]: unknown
@@ -8484,6 +8564,15 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['PrisonerNumberOfChildrenResponse']
+        }
+      }
+      /** @description Invalid input data */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -8553,7 +8642,7 @@ export interface operations {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
-      /** @description Prisoner not found */
+      /** @description Could not find the active domestic status for prisoner. */
       404: {
         headers: {
           [name: string]: unknown
@@ -8588,6 +8677,15 @@ export interface operations {
           'application/json': components['schemas']['PrisonerDomesticStatusResponse']
         }
       }
+      /** @description Invalid input data */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
         headers: {
@@ -8606,7 +8704,7 @@ export interface operations {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
-      /** @description Prisoner not found */
+      /** @description Could not find the prisoner or an active domestic status value. */
       404: {
         headers: {
           [name: string]: unknown
@@ -10648,6 +10746,15 @@ export interface operations {
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find reference data for the supplied domestic status code */
+      404: {
         headers: {
           [name: string]: unknown
         }
