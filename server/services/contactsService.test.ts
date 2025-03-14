@@ -101,6 +101,8 @@ describe('contactsService', () => {
           dateOfBirth: '1982-06-01',
           isStaff: false,
           interpreterRequired: false,
+          identities: [],
+          addresses: [],
           createdBy: 'user1',
           relationship: {
             prisonerNumber,
@@ -158,6 +160,8 @@ describe('contactsService', () => {
         firstName: 'first',
         isStaff: false,
         interpreterRequired: false,
+        identities: [],
+        addresses: [],
         relationship: {
           prisonerNumber,
           relationshipTypeCode: 'S',
