@@ -120,8 +120,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
         'What is First Middle Last’s relationship to John Smith?',
       )
       expect($('#relationship-hint').text().trim()).toStrictEqual(expectedHintText)
-      expect($('#relationship :nth-child(1)').text()).toStrictEqual(expectedDefaultLabel)
-      expect($('#relationship :nth-child(2)').text()).toStrictEqual(expectedFirstOption)
+      expect($('#relationship :nth-child(1)').text()).toStrictEqual(expectedFirstOption)
     },
   )
 

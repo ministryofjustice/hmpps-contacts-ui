@@ -27,7 +27,7 @@
                     text: "Phone number type"
                   },
                   classes: 'govuk-!-width-one-quarter',
-                  items: typeOptions | referenceCodesToSelect('Select phone number type') | setSelected(type),
+                  items: typeOptions | referenceCodesToSelect(undefined, true) | setSelected(type),
                   errorMessage: validationErrors | findError('type')
                 }) }}
 
