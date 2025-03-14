@@ -10,6 +10,7 @@ import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import Urls from '../../../../urls'
+import { getAddressJourneyAndUrl } from '../common/utils'
 
 export default class AddressCheckAnswersController implements PageHandler {
   constructor(
@@ -23,9 +24,8 @@ export default class AddressCheckAnswersController implements PageHandler {
     req: Request<PrisonerJourneyParams & { contactId: string; prisonerContactId: string }>,
     res: Response,
   ): Promise<void> => {
-    const { prisonerNumber, contactId, prisonerContactId, journeyId } = req.params
     const { user } = res.locals
-    const journey = req.session.addressJourneys![journeyId]!
+    const { journey, addressUrl } = getAddressJourneyAndUrl(req)
     journey.isCheckingAnswers = true
 
     let addressTypeDescription
@@ -64,7 +64,7 @@ export default class AddressCheckAnswersController implements PageHandler {
     const typeLabel = addressTypeDescription?.toLowerCase() ?? 'address'
     const navigation: Navigation = {
       breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'],
-      cancelButton: Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId),
+      cancelButton: addressUrl({ subPath: 'cancel' }),
     }
     const viewModel = {
       ...req.params,

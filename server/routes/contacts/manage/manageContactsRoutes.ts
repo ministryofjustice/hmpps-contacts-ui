@@ -96,6 +96,7 @@ import ChangeAddressFlagsController from './addresses/primary-or-postal/changeAd
 import AddressCommentsController from './addresses/comments/addressCommentsController'
 import { addressCommentsSchema } from './addresses/comments/addressCommentsSchema'
 import ChangeAddressCommentsController from './addresses/comments/changeAddressCommentsController'
+import CancelAddAddressController from './addresses/cancel/cancelAddAddressController'
 import { optionalPhonesSchema, phonesSchema } from './addresses/add-address-phone/AddAddressPhonesSchema'
 import AddressPhoneController from './addresses/add-address-phone/addressPhoneController'
 
@@ -445,6 +446,13 @@ const ManageContactsRoutes = (
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/check-answers/:journeyId',
     controller: new AddressCheckAnswersController(referenceDataService, contactsService),
+    journeyEnsurer: ensureInAddressJourney,
+    noValidation: true,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/cancel/:journeyId',
+    controller: new CancelAddAddressController(),
     journeyEnsurer: ensureInAddressJourney,
     noValidation: true,
   })

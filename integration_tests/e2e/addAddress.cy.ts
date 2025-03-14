@@ -9,6 +9,7 @@ import EditContactMethodsPage from '../pages/editContactMethodsPage'
 import EnterAddressDatesPage from '../pages/contact-methods/address/enterAddressDatesPage'
 import SelectAddressFlagsPage from '../pages/contact-methods/address/selectAddressFlagsPage'
 import EnterAddressCommentsPage from '../pages/contact-methods/address/enterAddressCommentsPage'
+import CancelAddAddressPage from '../pages/contact-methods/address/cancelAddAddressPage'
 import AddAddressPhonesPage from '../pages/contact-methods/address/phone/addAddressPhonesPage'
 
 context('Add Address', () => {
@@ -412,5 +413,25 @@ context('Add Address', () => {
     Page.verifyOnPage(SelectAddressTypePage, 'First Middle Names Last') //
       .backTo(EditContactMethodsPage, 'First Middle Names Last')
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
+  })
+
+  it('Cancel asks for confirmation', () => {
+    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
+      .clickAddAddressLink()
+
+    Page.verifyOnPage(SelectAddressTypePage, 'First Middle Names Last') //
+      .selectAddressType('DO_NOT_KNOW')
+      .clickButtonTo('Continue', EnterAddressPage, 'First Middle Names Last') //
+      .clickButtonTo('Continue', EnterAddressDatesPage, 'First Middle Names Last')
+      .clickButtonTo('Continue', SelectAddressFlagsPage, 'First Middle Names Last')
+      .clickButtonTo('Continue', AddAddressPhonesPage)
+      .clickButtonTo('Continue', EnterAddressCommentsPage)
+      .clickButtonTo('Continue', AddressCheckYourAnswersPage, 'address', 'First Middle Names Last') //
+      .clickButton('Cancel')
+
+    Page.verifyOnPage(CancelAddAddressPage, 'First Middle Names Last')
+      .clickButtonTo('No, return to check answers', AddressCheckYourAnswersPage, 'address', 'First Middle Names Last') //
+      .clickButtonTo('Cancel', CancelAddAddressPage, 'First Middle Names Last')
+      .clickButtonTo('Yes, cancel', ManageContactDetailsPage, 'First Middle Names Last')
   })
 })

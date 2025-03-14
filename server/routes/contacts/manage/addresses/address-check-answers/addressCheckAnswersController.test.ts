@@ -110,7 +110,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       const $ = cheerio.load(response.text)
       expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(expectedTitle)
       expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/manage/123456/relationship/456789/edit-contact-methods',
+        `/prisoner/A1234BC/contacts/manage/123456/relationship/456789/address/cancel/${journeyId}`,
       )
       expect($('[data-qa=back-link]')).toHaveLength(0)
       const breadcrumbLinks = $('[data-qa=breadcrumbs] a')
@@ -217,7 +217,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       .get(
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/check-answers/${uuidv4()}`,
       )
-      .expect(200)
+      .expect(404)
       .expect(res => {
         expect(res.text).toContain('Page not found')
       })
@@ -251,7 +251,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       )
       .type('form')
       .send({})
-      .expect(200)
+      .expect(404)
       .expect(res => {
         expect(res.text).toContain('Page not found')
       })

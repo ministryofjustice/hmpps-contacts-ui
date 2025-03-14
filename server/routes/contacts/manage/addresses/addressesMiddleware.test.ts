@@ -12,14 +12,17 @@ describe('ensureInAddressJourney', () => {
   let req: Request
   let res: Response
   let next: jest.Mock
+  const resStatusRender = jest.fn()
+  const resStatus = jest.fn()
 
   beforeEach(() => {
     resetAllMocks()
+    resStatus.mockReturnValue({ render: resStatusRender })
     req = {
       params: { journeyId },
       session: {} as Partial<SessionData>,
     } as unknown as Request
-    res = { redirect: jest.fn(), render: jest.fn(), locals: { user } } as unknown as Response
+    res = { redirect: jest.fn(), render: jest.fn(), status: resStatus, locals: { user } } as unknown as Response
     next = jest.fn()
   })
   it('should proceed if the journey is in the session and update the last touched date', () => {
@@ -51,13 +54,15 @@ describe('ensureInAddressJourney', () => {
     ensureInAddressJourney(req, res, next)
 
     expect(next).toHaveBeenCalledTimes(0)
-    expect(res.render).toHaveBeenCalledWith('pages/errors/notFound')
+    expect(res.status).toHaveBeenCalledWith(404)
+    expect(resStatusRender).toHaveBeenCalledWith('pages/errors/notFound')
   })
 
   it('should redirect to start if the journey is not in the session and there are no journeys at all', () => {
     ensureInAddressJourney(req, res, next)
 
     expect(next).toHaveBeenCalledTimes(0)
-    expect(res.render).toHaveBeenCalledWith('pages/errors/notFound')
+    expect(res.status).toHaveBeenCalledWith(404)
+    expect(resStatusRender).toHaveBeenCalledWith('pages/errors/notFound')
   })
 })

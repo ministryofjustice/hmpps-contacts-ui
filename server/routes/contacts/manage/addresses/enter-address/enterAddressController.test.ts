@@ -202,7 +202,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       .get(
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/enter-address/${uuidv4()}`,
       )
-      .expect(200)
+      .expect(404)
       .expect(res => {
         expect(res.text).toContain('Page not found')
       })
@@ -314,7 +314,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       )
       .type('form')
       .send({})
-      .expect(200)
+      .expect(404)
       .expect(res => {
         expect(res.text).toContain('Page not found')
       })
