@@ -10,42 +10,32 @@ describe('addContactFlowControl', () => {
       const journeyId = uuidv4()
 
       it.each([
-        [Page.CREATE_CONTACT_NAME_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`, undefined, undefined],
-        [
-          Page.CREATE_CONTACT_DOB_PAGE,
-          `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`,
-          undefined,
-          undefined,
-        ],
-        [
-          Page.SELECT_RELATIONSHIP_TYPE,
-          `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`,
-          undefined,
-          undefined,
-        ],
+        [Page.CREATE_CONTACT_NAME_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`, undefined, 'Back'],
+        [Page.CREATE_CONTACT_DOB_PAGE, `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`, undefined, 'Back'],
+        [Page.SELECT_RELATIONSHIP_TYPE, `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`, undefined, 'Back'],
         [
           Page.SELECT_CONTACT_RELATIONSHIP,
           `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`,
           undefined,
-          undefined,
+          'Back',
         ],
         [
           Page.SELECT_EMERGENCY_CONTACT,
           `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`,
           undefined,
-          undefined,
+          'Back',
         ],
         [
           Page.SELECT_NEXT_OF_KIN,
           `/prisoner/A1234BC/contacts/create/select-emergency-contact/${journeyId}`,
           undefined,
-          undefined,
+          'Back',
         ],
         [
           Page.ENTER_RELATIONSHIP_COMMENTS,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
           undefined,
-          undefined,
+          'Back',
         ],
         [
           Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE,
@@ -57,7 +47,7 @@ describe('addContactFlowControl', () => {
           Page.ADD_CONTACT_CANCEL_PAGE,
           `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
           undefined,
-          undefined,
+          'Back',
         ],
       ])(
         'Should go back to previous page: from %s to %s',
@@ -113,7 +103,7 @@ describe('addContactFlowControl', () => {
         }
         const expected: Navigation = {
           backLink: `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
-          backLinkLabel: undefined,
+          backLinkLabel: 'Back',
           breadcrumbs: undefined,
           cancelButton: undefined,
         }
@@ -283,7 +273,7 @@ describe('addContactFlowControl', () => {
           }
           const expected: Navigation = {
             backLink: expectedBackUrl,
-            backLinkLabel: undefined,
+            backLinkLabel: 'Back',
             breadcrumbs: undefined,
             cancelButton: expectedCancelButton,
           }
@@ -313,7 +303,7 @@ describe('addContactFlowControl', () => {
         }
         const expected: Navigation = {
           backLink: `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
-          backLinkLabel: undefined,
+          backLinkLabel: 'Back',
           breadcrumbs: undefined,
           cancelButton: undefined,
         }
