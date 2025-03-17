@@ -31,7 +31,7 @@ describe('createContactMiddleware', () => {
         isCheckingAnswers: false,
         returnPoint: { url: '/foo-bar' },
       }
-      ensureInAddContactJourney()(req, res, next)
+      ensureInAddContactJourney(req, res, next)
       expect(next).toHaveBeenCalledTimes(1)
       expect(new Date(req.session.addContactJourneys[journeyId].lastTouched).getTime()).toBeGreaterThan(
         lastTouchedBeforeCall.getTime(),
@@ -40,13 +40,13 @@ describe('createContactMiddleware', () => {
     it('should return to start if the journey is not in the session', () => {
       const next = jest.fn()
       req.session.addContactJourneys = {}
-      ensureInAddContactJourney()(req, res, next)
+      ensureInAddContactJourney(req, res, next)
       expect(next).toHaveBeenCalledTimes(0)
       expect(res.redirect).toHaveBeenCalledWith(`/prisoner/${prisonerNumber}/contacts/create/start`)
     })
     it('should return to start if no journeys created at all', () => {
       const next = jest.fn()
-      ensureInAddContactJourney()(req, res, next)
+      ensureInAddContactJourney(req, res, next)
       expect(next).toHaveBeenCalledTimes(0)
       expect(res.redirect).toHaveBeenCalledWith(`/prisoner/${prisonerNumber}/contacts/create/start`)
     })

@@ -1,0 +1,54 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/task-list/macro.njk" import govukTaskList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "partials/contactMethods/contactAddressCard.njk" import contactAddressCard %}
+
+{% set caption = 'Add a contact and link to a prisoner' %}
+{% set title = "Add addresses for " + contact | formatNameFirstNameFirst + " (optional)" %}
+{% set pageTitle = "Add addresses for the contact - Add a contact - DPS" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+  {% include 'partials/navigation.njk' %}
+  {{ miniProfile(prisonerDetails) }}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-l">{{ caption }}</span>
+      <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+
+      {% if addresses.length %}
+        {% for address in addresses %}
+          {{ contactAddressCard({
+            address: address,
+            showActions: true
+          }) }}
+        {% endfor %}
+      {% else %}
+        <p class="govuk-body">No addresses recorded.</p>
+      {% endif %}
+
+      {{ govukButton({
+        text: "Add another address" if addresses.length else "Add address",
+        href: "/prisoner/" + prisonerNumber + "/contacts/create/addresses/new/select-type/" + journeyId,
+        classes: "govuk-button--secondary govuk-!-static-margin-top-5",
+        preventDoubleClick: true
+      }) }}
+
+      <form method='POST'>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue",
+            type: "submit",
+            classes: 'govuk-!-margin-top-6',
+            attributes: {"data-qa": "continue-button"},
+            preventDoubleClick: true
+          }) }}
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

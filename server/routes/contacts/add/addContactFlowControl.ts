@@ -18,6 +18,7 @@ type CreateContactPages =
   | Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE
   | Page.SUCCESSFULLY_ADDED_CONTACT_PAGE
   | Page.ADD_CONTACT_CANCEL_PAGE
+  | Page.ADD_ADDRESSES
 type ExistingContactPages =
   | Page.CREATE_CONTACT_START_PAGE
   | Page.CONTACT_SEARCH_PAGE
@@ -91,6 +92,9 @@ const PAGES: Record<AllAddContactPages, PageConfig> = {
   [Page.ADD_CONTACT_CANCEL_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/add/cancel/${journey.id}`,
   },
+  [Page.ADD_ADDRESSES]: {
+    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/addresses/${journey.id}`,
+  },
 }
 
 const PRE_MODE_SPEC: Record<PreModePages, Spec> = {
@@ -146,6 +150,10 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   },
   [Page.ADD_CONTACT_CANCEL_PAGE]: {
     ...backTo({ page: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE, canSkipToCheckAnswer: false }),
+    nextUrl: _ => undefined,
+  },
+  [Page.ADD_ADDRESSES]: {
+    ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE, canSkipToCheckAnswer: false }),
     nextUrl: _ => undefined,
   },
 }

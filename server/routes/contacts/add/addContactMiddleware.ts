@@ -2,8 +2,8 @@ import { Request } from 'express'
 import logger from '../../../../logger'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 
-const ensureInAddContactJourney = () => {
-  return asyncMiddleware(async (req: Request<{ journeyId: string; prisonerNumber: string }>, res, next) => {
+const ensureInAddContactJourney = asyncMiddleware(
+  async (req: Request<{ journeyId: string; prisonerNumber: string }>, res, next) => {
     const { journeyId, prisonerNumber } = req.params
     if (!req.session.addContactJourneys) {
       req.session.addContactJourneys = {}
@@ -17,7 +17,7 @@ const ensureInAddContactJourney = () => {
     req.session.addContactJourneys[journeyId].lastTouched = new Date().toISOString()
 
     return next()
-  })
-}
+  },
+)
 
 export default ensureInAddContactJourney

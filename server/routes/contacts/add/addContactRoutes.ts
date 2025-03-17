@@ -1,8 +1,9 @@
 import { Router } from 'express'
+import { z } from 'zod'
 import AuditService from '../../../services/auditService'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import EnterNameController from './enter-name/createContactEnterNameController'
-import { validate } from '../../../middleware/validationMiddleware'
+import { SchemaFactory, validate } from '../../../middleware/validationMiddleware'
 import { fullNameSchema } from '../common/name/nameSchemas'
 import CreateContactEnterDobController from './enter-dob/createContactEnterDobController'
 import StartAddContactJourneyController from './start/startAddContactJourneyController'
@@ -31,6 +32,9 @@ import { selectRelationshipTypeSchema } from './relationship-type/relationshipTy
 import RelationshipTypeController from './relationship-type/relationshipTypeController'
 import CancelAddContactController from './cancel/cancelAddContactController'
 import AddContactAdditionalInfoController from './additional-info/addContactAdditionalInfoController'
+import AddAddressesController from './addresses/addAddressesController'
+import { routerMethods } from '../../../utils/routerMethods'
+import { PageHandler } from '../../../interfaces/pageHandler'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -40,6 +44,34 @@ const AddContactRoutes = (
   restrictionsService: RestrictionsService,
 ) => {
   const router = Router({ mergeParams: true })
+  const { get, post } = routerMethods(router, auditService)
+
+  const journeyRoute = <P extends { [key: string]: string }>({
+    path,
+    controller,
+    schema,
+    noValidation,
+  }: {
+    path: string
+    controller: PageHandler
+    schema?: z.ZodTypeAny | SchemaFactory<P>
+    noValidation?: boolean
+  }) => {
+    if (!schema && !noValidation) {
+      throw Error('Missing validation schema for POST route')
+    }
+    get(
+      path,
+      controller,
+      ensureInAddContactJourney,
+      populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    )
+    if (schema && !noValidation) {
+      post(path, controller, ensureInAddContactJourney, validate(schema))
+    } else {
+      post(path, controller, ensureInAddContactJourney)
+    }
+  }
 
   const startController = new StartAddContactJourneyController()
   router.get(
@@ -51,7 +83,7 @@ const AddContactRoutes = (
   const contactsSearchController = new ContactSearchController(contactsService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/search/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, contactsSearchController),
     asyncMiddleware(contactsSearchController.GET),
@@ -59,7 +91,7 @@ const AddContactRoutes = (
 
   router.post(
     '/prisoner/:prisonerNumber/contacts/search/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     validate(contactSearchSchema()),
     asyncMiddleware(contactsSearchController.POST),
   )
@@ -67,7 +99,7 @@ const AddContactRoutes = (
   const contactConfirmationController = new ContactConfirmationController(contactsService, restrictionsService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/add/confirmation/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, contactConfirmationController),
     asyncMiddleware(contactConfirmationController.GET),
@@ -75,7 +107,7 @@ const AddContactRoutes = (
 
   router.post(
     '/prisoner/:prisonerNumber/contacts/add/confirmation/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     validate(selectToConfirmContactSchema()),
     asyncMiddleware(contactConfirmationController.POST),
   )
@@ -83,7 +115,7 @@ const AddContactRoutes = (
   const modeController = new AddContactModeController(contactsService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     logPageViewMiddleware(auditService, modeController),
     asyncMiddleware(modeController.GET),
   )
@@ -91,14 +123,14 @@ const AddContactRoutes = (
   const enterNameController = new EnterNameController(referenceDataService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, enterNameController),
     asyncMiddleware(enterNameController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     validate(fullNameSchema),
     asyncMiddleware(enterNameController.POST),
   )
@@ -106,14 +138,14 @@ const AddContactRoutes = (
   const selectRelationshipTypeController = new RelationshipTypeController()
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/select-relationship-type/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, selectRelationshipTypeController),
     asyncMiddleware(selectRelationshipTypeController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/create/select-relationship-type/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     validate(selectRelationshipTypeSchema()),
     asyncMiddleware(selectRelationshipTypeController.POST),
   )
@@ -121,14 +153,14 @@ const AddContactRoutes = (
   const selectRelationshipToPrisonerController = new SelectRelationshipToPrisonerController(referenceDataService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/select-relationship-to-prisoner/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, selectRelationshipToPrisonerController),
     asyncMiddleware(selectRelationshipToPrisonerController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/create/select-relationship-to-prisoner/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     validate(selectRelationshipSchemaFactory()),
     asyncMiddleware(selectRelationshipToPrisonerController.POST),
   )
@@ -136,14 +168,14 @@ const AddContactRoutes = (
   const selectEmergencyContact = new EmergencyContactController()
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/select-emergency-contact/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, selectEmergencyContact),
     asyncMiddleware(selectEmergencyContact.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/create/select-emergency-contact/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     validate(selectEmergencyContactSchema()),
     asyncMiddleware(selectEmergencyContact.POST),
   )
@@ -151,14 +183,14 @@ const AddContactRoutes = (
   const selectNextOfKinController = new NextOfKinController()
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/select-next-of-kin/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, selectNextOfKinController),
     asyncMiddleware(selectNextOfKinController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/create/select-next-of-kin/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     validate(selectNextOfKinSchema()),
     asyncMiddleware(selectNextOfKinController.POST),
   )
@@ -166,14 +198,14 @@ const AddContactRoutes = (
   const enterDobController = new CreateContactEnterDobController()
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, enterDobController),
     asyncMiddleware(enterDobController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     validate(enterDobSchema()),
     asyncMiddleware(enterDobController.POST),
   )
@@ -181,14 +213,14 @@ const AddContactRoutes = (
   const enterRelationshipCommentsController = new EnterRelationshipCommentsController()
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/enter-relationship-comments/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, enterRelationshipCommentsController),
     asyncMiddleware(enterRelationshipCommentsController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/create/enter-relationship-comments/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     validate(enterRelationshipCommentsSchema),
     asyncMiddleware(enterRelationshipCommentsController.POST),
   )
@@ -196,14 +228,14 @@ const AddContactRoutes = (
   const checkAnswersController = new CreateContactCheckAnswersController(contactsService, referenceDataService)
   router.get(
     '/prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, checkAnswersController),
     asyncMiddleware(checkAnswersController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     asyncMiddleware(checkAnswersController.POST),
   )
 
@@ -218,30 +250,36 @@ const AddContactRoutes = (
   const cancelAddContactController = new CancelAddContactController()
   router.get(
     '/prisoner/:prisonerNumber/contacts/add/cancel/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, cancelAddContactController),
     asyncMiddleware(cancelAddContactController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/add/cancel/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     asyncMiddleware(cancelAddContactController.POST),
   )
 
   const addContactAdditionalInfoController = new AddContactAdditionalInfoController()
   router.get(
     '/prisoner/:prisonerNumber/contacts/add/enter-additional-info/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, addContactAdditionalInfoController),
     asyncMiddleware(addContactAdditionalInfoController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/add/enter-additional-info/:journeyId',
-    ensureInAddContactJourney(),
+    ensureInAddContactJourney,
     asyncMiddleware(addContactAdditionalInfoController.POST),
   )
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/addresses/:journeyId',
+    controller: new AddAddressesController(referenceDataService),
+    noValidation: true,
+  })
   return router
 }
 
