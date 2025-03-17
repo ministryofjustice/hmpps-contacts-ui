@@ -93,6 +93,7 @@ describe('contactsService', () => {
             comments: 'Some comments about this relationship',
           },
         }
+        // @ts-expect-error missing phoneNumbers TODO: remove this ts annotation after updating API swagger
         const expectedRequest: CreateContactRequest = {
           titleCode: 'Mr',
           lastName: 'last',
@@ -103,7 +104,6 @@ describe('contactsService', () => {
           interpreterRequired: false,
           identities: [],
           addresses: [],
-          phoneNumbers: [],
           createdBy: 'user1',
           relationship: {
             prisonerNumber,
@@ -156,6 +156,7 @@ describe('contactsService', () => {
           isNextOfKin: 'NO',
         },
       }
+      // @ts-expect-error missing phoneNumbers TODO: remove this ts annotation after updating API swagger
       const expectedRequest: CreateContactRequest = {
         lastName: 'last',
         firstName: 'first',
@@ -163,7 +164,6 @@ describe('contactsService', () => {
         interpreterRequired: false,
         identities: [],
         addresses: [],
-        phoneNumbers: [],
         relationship: {
           prisonerNumber,
           relationshipTypeCode: 'S',
