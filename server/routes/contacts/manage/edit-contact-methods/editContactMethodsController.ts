@@ -19,6 +19,7 @@ export default class EditContactMethodsController implements PageHandler {
     const { user } = res.locals
     const contact: ContactDetails = await this.contactsService.getContact(Number(contactId), user)
     const navigation: Navigation = {
+      backLinkLabel: 'Back to contact record',
       backLink: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId, 'contact-methods'),
       cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
     }

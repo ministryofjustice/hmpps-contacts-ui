@@ -33,9 +33,15 @@ type ExistingContactPages =
   | Page.ADD_CONTACT_CANCEL_PAGE
 type AllAddContactPages = PreModePages | CreateContactPages | ExistingContactPages
 type JourneyUrlProvider = (journey: journeys.AddContactJourney) => string | undefined
-type Spec = { previousUrl: JourneyUrlProvider; nextUrl: JourneyUrlProvider; cancelUrl?: JourneyUrlProvider }
+type Spec = {
+  previousUrl: JourneyUrlProvider
+  previousUrlLabel?: JourneyUrlProvider
+  nextUrl: JourneyUrlProvider
+  cancelUrl?: JourneyUrlProvider
+}
+type PageConfig = { url: JourneyUrlProvider; pageName?: string; breadcrumbs?: BreadcrumbType[] }
 
-const PAGES: Record<AllAddContactPages, { url: JourneyUrlProvider; breadcrumbs?: BreadcrumbType[] }> = {
+const PAGES: Record<AllAddContactPages, PageConfig> = {
   [Page.CREATE_CONTACT_START_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/start`,
   },
@@ -69,6 +75,7 @@ const PAGES: Record<AllAddContactPages, { url: JourneyUrlProvider; breadcrumbs?:
   },
   [Page.ENTER_ADDITIONAL_INFORMATION_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/add/enter-additional-info/${journey.id}`,
+    pageName: 'additional information options',
   },
   [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/check-answers/${journey.id}`,
@@ -96,39 +103,40 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   [Page.CONTACT_SEARCH_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CONTACT_SEARCH_PAGE.url },
   [Page.ADD_CONTACT_MODE_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CREATE_CONTACT_NAME_PAGE.url },
   [Page.CREATE_CONTACT_NAME_PAGE]: {
-    previousUrl: checkAnswersOr(PAGES.CONTACT_SEARCH_PAGE.url),
+    ...backTo({ page: PAGES.CONTACT_SEARCH_PAGE }),
     nextUrl: checkAnswersOr(PAGES.CREATE_CONTACT_DOB_PAGE.url),
   },
   [Page.CREATE_CONTACT_DOB_PAGE]: {
-    previousUrl: checkAnswersOr(PAGES.CREATE_CONTACT_NAME_PAGE.url),
+    ...backTo({ page: PAGES.CREATE_CONTACT_NAME_PAGE }),
     nextUrl: checkAnswersOr(PAGES.SELECT_RELATIONSHIP_TYPE.url),
   },
   [Page.SELECT_RELATIONSHIP_TYPE]: {
-    previousUrl: checkAnswersOr(PAGES.CREATE_CONTACT_DOB_PAGE.url),
+    ...backTo({ page: PAGES.CREATE_CONTACT_DOB_PAGE }),
     nextUrl: forwardToRelationshipToPrisonerOrCheckAnswers(),
   },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
-    previousUrl: backToRelationshipTypeOrCheckAnswers(),
+    ...backToRelationshipTypeOrCheckAnswers(),
     nextUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT.url),
   },
   [Page.SELECT_EMERGENCY_CONTACT]: {
-    previousUrl: checkAnswersOr(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
+    ...backTo({ page: PAGES.SELECT_CONTACT_RELATIONSHIP }),
     nextUrl: checkAnswersOr(PAGES.SELECT_NEXT_OF_KIN.url),
   },
   [Page.SELECT_NEXT_OF_KIN]: {
-    previousUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT.url),
+    ...backTo({ page: PAGES.SELECT_EMERGENCY_CONTACT }),
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.ENTER_ADDITIONAL_INFORMATION_PAGE]: {
-    previousUrl: checkAnswersOr(PAGES.SELECT_NEXT_OF_KIN.url),
+    ...backTo({ page: PAGES.SELECT_NEXT_OF_KIN }),
     nextUrl: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url,
   },
   [Page.ENTER_RELATIONSHIP_COMMENTS]: {
-    previousUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
+    ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE }),
+    previousUrlLabel: _ => 'Back',
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE]: {
-    previousUrl: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url,
+    ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE, canSkipToCheckAnswer: false }),
     nextUrl: PAGES.SUCCESSFULLY_ADDED_CONTACT_PAGE.url,
     cancelUrl: PAGES.ADD_CONTACT_CANCEL_PAGE.url,
   },
@@ -137,7 +145,7 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
     nextUrl: _ => undefined,
   },
   [Page.ADD_CONTACT_CANCEL_PAGE]: {
-    previousUrl: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url,
+    ...backTo({ page: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE, canSkipToCheckAnswer: false }),
     nextUrl: _ => undefined,
   },
 }
@@ -150,31 +158,31 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
     nextUrl: checkAnswersOr(PAGES.CONTACT_CONFIRMATION_PAGE.url),
   },
   [Page.CONTACT_CONFIRMATION_PAGE]: {
-    previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
+    ...backTo({ page: PAGES.CONTACT_SEARCH_PAGE, canSkipToCheckAnswer: false }),
     nextUrl: checkAnswersOr(PAGES.SELECT_RELATIONSHIP_TYPE.url),
   },
   [Page.SELECT_RELATIONSHIP_TYPE]: {
-    previousUrl: checkAnswersOr(PAGES.CONTACT_CONFIRMATION_PAGE.url),
+    ...backTo({ page: PAGES.CONTACT_CONFIRMATION_PAGE }),
     nextUrl: forwardToRelationshipToPrisonerOrCheckAnswers(),
   },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
-    previousUrl: backToRelationshipTypeOrCheckAnswers(),
+    ...backToRelationshipTypeOrCheckAnswers(),
     nextUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT.url),
   },
   [Page.SELECT_EMERGENCY_CONTACT]: {
-    previousUrl: checkAnswersOr(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
+    ...backTo({ page: PAGES.SELECT_CONTACT_RELATIONSHIP }),
     nextUrl: checkAnswersOr(PAGES.SELECT_NEXT_OF_KIN.url),
   },
   [Page.SELECT_NEXT_OF_KIN]: {
-    previousUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT.url),
+    ...backTo({ page: PAGES.SELECT_EMERGENCY_CONTACT }),
     nextUrl: checkAnswersOr(PAGES.ENTER_RELATIONSHIP_COMMENTS.url),
   },
   [Page.ENTER_RELATIONSHIP_COMMENTS]: {
-    previousUrl: checkAnswersOr(PAGES.SELECT_NEXT_OF_KIN.url),
+    ...backTo({ page: PAGES.SELECT_NEXT_OF_KIN }),
     nextUrl: checkAnswersOr(PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url),
   },
   [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE]: {
-    previousUrl: PAGES.ENTER_RELATIONSHIP_COMMENTS.url,
+    ...backTo({ page: PAGES.ENTER_RELATIONSHIP_COMMENTS, canSkipToCheckAnswer: false }),
     nextUrl: PAGES.SUCCESSFULLY_ADDED_CONTACT_PAGE.url,
     cancelUrl: PAGES.ADD_CONTACT_CANCEL_PAGE.url,
   },
@@ -183,9 +191,24 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
     nextUrl: _ => undefined,
   },
   [Page.ADD_CONTACT_CANCEL_PAGE]: {
-    previousUrl: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url,
+    ...backTo({ page: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE, canSkipToCheckAnswer: false }),
     nextUrl: _ => undefined,
   },
+}
+
+function backTo({ page, canSkipToCheckAnswer = true }: { page: PageConfig; canSkipToCheckAnswer?: boolean }) {
+  const previousUrlLabel: JourneyUrlProvider = journey => {
+    const pageName =
+      canSkipToCheckAnswer && journey.isCheckingAnswers
+        ? PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.pageName
+        : page.pageName
+    return pageName ? `Back to ${pageName}` : 'Back'
+  }
+
+  return {
+    previousUrl: canSkipToCheckAnswer ? checkAnswersOr(page.url) : page.url,
+    previousUrlLabel,
+  }
 }
 
 function checkAnswersOr(other: JourneyUrlProvider): JourneyUrlProvider {
@@ -202,13 +225,22 @@ function forwardToRelationshipToPrisonerOrCheckAnswers(): JourneyUrlProvider {
   }
 }
 
-function backToRelationshipTypeOrCheckAnswers(): JourneyUrlProvider {
-  return journey => {
+function backToRelationshipTypeOrCheckAnswers() {
+  const getPreviousPage = (journey: journeys.AddContactJourney) => {
     const relationshipType = journey.relationship?.pendingNewRelationshipType ?? journey.relationship?.relationshipType
     const relationshipTypeIsTheSame = relationshipType === journey.previousAnswers?.relationship?.relationshipType
     return (journey.isCheckingAnswers && !relationshipTypeIsTheSame) || !journey.isCheckingAnswers
-      ? PAGES.SELECT_RELATIONSHIP_TYPE.url(journey)
-      : PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey)
+      ? PAGES.SELECT_RELATIONSHIP_TYPE
+      : PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE
+  }
+  const previousUrl: JourneyUrlProvider = journey => getPreviousPage(journey).url(journey)
+  const previousUrlLabel: JourneyUrlProvider = journey => {
+    const { pageName } = getPreviousPage(journey)
+    return pageName ? `Back to ${pageName}` : 'Back'
+  }
+  return {
+    previousUrl,
+    previousUrlLabel,
   }
 }
 
@@ -216,6 +248,7 @@ function navigationForAddContactJourney(currentPage: Page, journey: journeys.Add
   const spec = findSpec(journey, currentPage)
   if (spec) {
     return {
+      backLinkLabel: spec.previousUrlLabel ? spec.previousUrlLabel(journey) : undefined,
       backLink: spec.previousUrl(journey),
       breadcrumbs: PAGES[currentPage as AllAddContactPages].breadcrumbs,
       cancelButton: spec.cancelUrl?.(journey),

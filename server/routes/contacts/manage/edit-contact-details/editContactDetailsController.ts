@@ -24,6 +24,7 @@ export default class EditContactDetailsController implements PageHandler {
 
     const contactDetailsUrl = Urls.contactDetails(prisonerNumber, contactId, prisonerContactId)
     const navigation: Navigation = {
+      backLinkLabel: 'Back to contact record',
       backLink: contactDetailsUrl,
       cancelButton: contactDetailsUrl,
     }

@@ -28,6 +28,7 @@ export default class AddressCheckAnswersController implements PageHandler {
     journey.isCheckingAnswers = true
 
     const navigation: Navigation = {
+      backLinkLabel: 'Back to address comments',
       backLink: addressUrl({ subPath: 'comments' }),
       cancelButton: addressUrl({ subPath: 'cancel' }),
     }

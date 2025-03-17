@@ -102,6 +102,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Check your answers before adding a new address for First Middle Last',
     )
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back to address comments')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/comments/${journeyId}`,
     )
