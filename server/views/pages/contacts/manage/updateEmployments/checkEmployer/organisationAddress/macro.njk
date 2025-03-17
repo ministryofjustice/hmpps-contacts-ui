@@ -15,7 +15,7 @@
       text: "Address"
     },
       value: {
-      html: (params.address | businessAddressToLines or 'Not provided') | escape | nl2br
+      html: (params.address | addressToLines or 'Not provided') | escape | nl2br
     }
     },
     {

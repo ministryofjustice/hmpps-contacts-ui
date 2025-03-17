@@ -9,9 +9,9 @@
 {% set pageTitle = applicationName  + " - " + title %}
 {% set mainClasses = "app-container govuk-body" %}
 {% block meta %}
-  <meta name="autocompleteElements" content="town"/>
-  <meta name="autocompleteElements" content="county"/>
-  <meta name="autocompleteElements" content="country"/>
+  <meta name="autocompleteElements" content="cityCode"/>
+  <meta name="autocompleteElements" content="countyCode"/>
+  <meta name="autocompleteElements" content="countryCode"/>
 {% endblock %}
 {% block content %}
   {% include 'partials/navigation.njk' %}
@@ -51,13 +51,13 @@
           value: flat
         }) }}
         {{ govukInput({
-          id: "premises",
-          name: "premises",
+          id: "property",
+          name: "property",
           label: { text: "Building name (optional)" },
           hint: { text: "For example, ‘Dale House’." },
           classes: 'govuk-!-width-two-thirds',
-          errorMessage: validationErrors | findError('premises'),
-          value: premises
+          errorMessage: validationErrors | findError('property'),
+          value: property
         }) }}
 
         {{ govukInput({
@@ -71,32 +71,32 @@
         }) }}
 
         {{ govukInput({
-          id: "locality",
-          name: "locality",
+          id: "area",
+          name: "area",
           label: { text: "District or locality (optional)" },
           classes: 'govuk-!-width-two-thirds',
-          errorMessage: validationErrors | findError('locality'),
-          value: locality
+          errorMessage: validationErrors | findError('area'),
+          value: area
         }) }}
 
         {{ govukSelect({
-          id: "town",
-          name: "town",
+          id: "cityCode",
+          name: "cityCode",
           label: { text: "Town or city (optional)" },
           hint: { text: "Select the town or city from the suggestions that appear when you start to enter a name." },
           formGroup: { classes: 'govuk-!-width-two-thirds'},
-          items: townOptions | referenceCodesToSelect('') | setSelected(town),
-          errorMessage: validationErrors | findError('town')
+          items: townOptions | referenceCodesToSelect('') | setSelected(cityCode),
+          errorMessage: validationErrors | findError('cityCode')
         }) }}
 
         {{ govukSelect({
-          id: "county",
-          name: "county",
+          id: "countyCode",
+          name: "countyCode",
           label: { text: "County (optional)" },
           hint: { text: "Select the county from the suggestions that appear when you start to enter a name." },
           formGroup: { classes: 'govuk-!-width-two-thirds'},
-          items: countyOptions | referenceCodesToSelect('') | setSelected(county),
-          errorMessage: validationErrors | findError('county')
+          items: countyOptions | referenceCodesToSelect('') | setSelected(countyCode),
+          errorMessage: validationErrors | findError('countyCode')
         }) }}
 
         {{ govukInput({
@@ -109,13 +109,13 @@
         }) }}
 
         {{ govukSelect({
-          id: "country",
-          name: "country",
+          id: "countryCode",
+          name: "countryCode",
           label: {  text: "Country" },
           hint: { text: "Select the country from the suggestions that appear when you start to enter a name." },
           formGroup: { classes: 'govuk-!-width-two-thirds'},
-          items: countryOptions | referenceCodesToSelect('') | setSelected(country),
-          errorMessage: validationErrors | findError('country')
+          items: countryOptions | referenceCodesToSelect('') | setSelected(countryCode),
+          errorMessage: validationErrors | findError('countryCode')
         }) }}
         <div class="govuk-button-group">
           {{ govukButton({

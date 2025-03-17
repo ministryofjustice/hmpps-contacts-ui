@@ -102,13 +102,13 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     expect($('#noFixedAddressYes').attr('checked')).toBeTruthy()
     expect($('#flat').val()).toStrictEqual('1a')
-    expect($('#premises').val()).toStrictEqual('My block')
+    expect($('#property').val()).toStrictEqual('My block')
     expect($('#street').val()).toStrictEqual('A street')
-    expect($('#locality').val()).toStrictEqual('Downtown')
-    expect($('#town').val()).toStrictEqual('25343')
-    expect($('#county').val()).toStrictEqual('DEVON')
+    expect($('#area').val()).toStrictEqual('Downtown')
+    expect($('#cityCode').val()).toStrictEqual('25343')
+    expect($('#countyCode').val()).toStrictEqual('DEVON')
     expect($('#postcode').val()).toStrictEqual('PC1 D3')
-    expect($('#country').val()).toStrictEqual('ENG')
+    expect($('#countryCode').val()).toStrictEqual('ENG')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ENTER_ADDRESS_PAGE, {
       who: user.username,
@@ -120,7 +120,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Given
     const form = {
       flat: 'a'.repeat(200),
-      premises: 'b',
+      property: 'b',
     }
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
@@ -133,15 +133,15 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
     expect($('#flat').val()).toStrictEqual(form.flat)
-    expect($('#premises').val()).toStrictEqual(form.premises)
+    expect($('#property').val()).toStrictEqual(form.property)
 
     expect($('#noFixedAddressYes').attr('checked')).toBeTruthy()
     expect($('#street').val()).toStrictEqual('A street')
-    expect($('#locality').val()).toStrictEqual('Downtown')
-    expect($('#town').val()).toStrictEqual('25343')
-    expect($('#county').val()).toStrictEqual('DEVON')
+    expect($('#area').val()).toStrictEqual('Downtown')
+    expect($('#cityCode').val()).toStrictEqual('25343')
+    expect($('#countyCode').val()).toStrictEqual('DEVON')
     expect($('#postcode').val()).toStrictEqual('PC1 D3')
-    expect($('#country').val()).toStrictEqual('ENG')
+    expect($('#countryCode').val()).toStrictEqual('ENG')
   })
 })
 
@@ -152,7 +152,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     const noFixedAddress = false
     const flat = 'Flat 1'
     const street = 'Rocky Road'
-    const country = 'ENG'
+    const countryCode = 'ENG'
 
     // When
     await request(app)
@@ -160,7 +160,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/enter-address`,
       )
       .type('form')
-      .send({ noFixedAddress, flat, street, country })
+      .send({ noFixedAddress, flat, street, countryCode })
       .expect(302)
       .expect('Location', '/prisoner/A1234BC/contacts/manage/123456/relationship/456789')
 
@@ -171,12 +171,12 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       noFixedAddress,
       flat,
       street,
-      country,
-      county: null,
-      locality: null,
+      countryCode,
+      countyCode: null,
+      area: null,
       postcode: null,
-      premises: null,
-      town: null,
+      property: null,
+      cityCode: null,
     }
     expect(contactsService.updateContactAddress).toHaveBeenCalledWith(expected, user)
     expect(flashProvider).toHaveBeenCalledWith(

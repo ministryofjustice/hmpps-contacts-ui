@@ -42,13 +42,13 @@ beforeEach(() => {
     addressLines: {
       noFixedAddress: false,
       flat: '1a',
-      premises: 'My block',
+      property: 'My block',
       street: 'A street',
-      locality: 'Downtown',
-      town: '7375', // Exeter
-      county: 'DEVON', // Devon
+      area: 'Downtown',
+      cityCode: '7375', // Exeter
+      countyCode: 'DEVON', // Devon
       postcode: 'PC1 D3',
-      country: 'ENG',
+      countryCode: 'ENG',
     },
   }
   app = appWithAllRoutes({

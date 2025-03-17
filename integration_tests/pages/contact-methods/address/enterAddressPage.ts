@@ -149,19 +149,19 @@ export default class EnterAddressPage extends Page {
 
   private flatTextbox = (): PageElement => cy.get('#flat')
 
-  private premisesTextbox = (): PageElement => cy.get('#premises')
+  private premisesTextbox = (): PageElement => cy.get('#property')
 
   private streetTextbox = (): PageElement => cy.get('#street')
 
-  private localityTextbox = (): PageElement => cy.get('#locality')
+  private localityTextbox = (): PageElement => cy.get('#area')
 
-  private townSelect = (): PageElement => cy.get('#town')
+  private townSelect = (): PageElement => cy.get('#cityCode')
 
-  private countySelect = (): PageElement => cy.get('#county')
+  private countySelect = (): PageElement => cy.get('#countyCode')
 
   private postcodeTextbox = (): PageElement => cy.get('#postcode')
 
-  private countrySelect = (): PageElement => cy.get('#country')
+  private countrySelect = (): PageElement => cy.get('#countryCode')
 
   private usePrisonerAddressButton = (): PageElement =>
     cy.findByRole('link', { name: 'Automatically copy the prisoner’s primary address into this page' })

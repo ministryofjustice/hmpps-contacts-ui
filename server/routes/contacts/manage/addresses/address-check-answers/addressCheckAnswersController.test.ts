@@ -55,7 +55,7 @@ beforeEach(() => {
     addressType: 'DO_NOT_KNOW',
     addressLines: {
       noFixedAddress: false,
-      country: 'ENG',
+      countryCode: 'ENG',
     },
     addressMetadata: {
       fromMonth: '1',
@@ -117,7 +117,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     existingJourney.addressType = 'DO_NOT_KNOW'
     existingJourney.addressLines = {
       noFixedAddress: false,
-      country: 'ENG',
+      countryCode: 'ENG',
     }
     existingJourney.addressMetadata = {
       fromMonth: '1',
@@ -147,13 +147,13 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     existingJourney.addressLines = {
       noFixedAddress: true,
       flat: '1a',
-      premises: 'My block',
+      property: 'My block',
       street: 'A street',
-      locality: 'Downtown',
-      town: '1234',
-      county: 'DEVON',
+      area: 'Downtown',
+      cityCode: '1234',
+      countyCode: 'DEVON',
       postcode: 'PC1 D3',
-      country: 'ENG',
+      countryCode: 'ENG',
     }
     existingJourney.addressMetadata = {
       fromMonth: '1',

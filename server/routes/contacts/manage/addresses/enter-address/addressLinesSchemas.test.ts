@@ -5,16 +5,16 @@ describe('addressLinesSchemas', () => {
   type Form = {
     noFixedAddress?: string
     flat?: string
-    premises?: string
+    property?: string
     street?: string
-    locality?: string
-    town?: string
-    county?: string
+    area?: string
+    cityCode?: string
+    countyCode?: string
     postcode?: string
-    country?: string
+    countryCode?: string
   }
   describe('should validate a address lines form', () => {
-    it('should require country', async () => {
+    it('should require countryCode', async () => {
       // When
       const result = await doValidate({})
 
@@ -22,13 +22,13 @@ describe('addressLinesSchemas', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        country: ['Select a country'],
+        countryCode: ['Select a country'],
       })
     })
 
     it('flat max length', async () => {
       // When
-      const result = await doValidate({ country: 'ENG', flat: ''.padEnd(31, 'X') })
+      const result = await doValidate({ countryCode: 'ENG', flat: ''.padEnd(31, 'X') })
 
       // Then
       expect(result.success).toStrictEqual(false)
@@ -38,21 +38,21 @@ describe('addressLinesSchemas', () => {
       })
     })
 
-    it('premises max length', async () => {
+    it('property max length', async () => {
       // When
-      const result = await doValidate({ country: 'ENG', premises: ''.padEnd(51, 'X') })
+      const result = await doValidate({ countryCode: 'ENG', property: ''.padEnd(51, 'X') })
 
       // Then
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        premises: ['Premises must be 50 characters or less'],
+        property: ['Premises must be 50 characters or less'],
       })
     })
 
     it('street max length', async () => {
       // When
-      const result = await doValidate({ country: 'ENG', street: ''.padEnd(161, 'X') })
+      const result = await doValidate({ countryCode: 'ENG', street: ''.padEnd(161, 'X') })
 
       // Then
       expect(result.success).toStrictEqual(false)
@@ -62,21 +62,21 @@ describe('addressLinesSchemas', () => {
       })
     })
 
-    it('locality max length', async () => {
+    it('area max length', async () => {
       // When
-      const result = await doValidate({ country: 'ENG', locality: ''.padEnd(71, 'X') })
+      const result = await doValidate({ countryCode: 'ENG', area: ''.padEnd(71, 'X') })
 
       // Then
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        locality: ['Locality must be 70 characters or less'],
+        area: ['Locality must be 70 characters or less'],
       })
     })
 
     it('postcode max length', async () => {
       // When
-      const result = await doValidate({ country: 'ENG', postcode: ''.padEnd(13, 'X') })
+      const result = await doValidate({ countryCode: 'ENG', postcode: ''.padEnd(13, 'X') })
 
       // Then
       expect(result.success).toStrictEqual(false)
@@ -89,11 +89,11 @@ describe('addressLinesSchemas', () => {
     it('accepts fields at boundary length', async () => {
       // When
       const result = await doValidate({
-        country: 'ENG',
+        countryCode: 'ENG',
         flat: ''.padEnd(30, 'X'),
-        premises: ''.padEnd(50, 'X'),
+        property: ''.padEnd(50, 'X'),
         street: ''.padEnd(160, 'X'),
-        locality: ''.padEnd(70, 'X'),
+        area: ''.padEnd(70, 'X'),
         postcode: ''.padEnd(12, 'X'),
       })
 
@@ -106,13 +106,13 @@ describe('addressLinesSchemas', () => {
       const result = await doValidate({
         noFixedAddress: '',
         flat: '',
-        premises: '',
+        property: '',
         street: '',
-        locality: '',
-        town: '',
-        county: '',
+        area: '',
+        cityCode: '',
+        countyCode: '',
         postcode: '',
-        country: 'ENG',
+        countryCode: 'ENG',
       })
 
       // Then
@@ -120,13 +120,13 @@ describe('addressLinesSchemas', () => {
       expect(result.data).toStrictEqual({
         noFixedAddress: undefined,
         flat: undefined,
-        premises: undefined,
+        property: undefined,
         street: undefined,
-        locality: undefined,
-        town: undefined,
-        county: undefined,
+        area: undefined,
+        cityCode: undefined,
+        countyCode: undefined,
         postcode: undefined,
-        country: 'ENG',
+        countryCode: 'ENG',
       })
     })
 

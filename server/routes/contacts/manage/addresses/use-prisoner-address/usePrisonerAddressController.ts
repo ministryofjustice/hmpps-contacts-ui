@@ -22,13 +22,13 @@ export default class UsePrisonerAddressController implements PageHandler {
         journey.addressLines = {
           noFixedAddress: primaryAddress.noFixedAddress,
           flat: primaryAddress.flat,
-          premises: primaryAddress.premise,
+          property: primaryAddress.premise,
           street: primaryAddress.street,
-          locality: primaryAddress.locality,
-          town: primaryAddress.townCode,
-          county: primaryAddress.countyCode,
+          area: primaryAddress.locality,
+          cityCode: primaryAddress.townCode,
+          countyCode: primaryAddress.countyCode,
           postcode: primaryAddress.postalCode,
-          country: primaryAddress.countryCode ?? this.DEFAULT_COUNTRY,
+          countryCode: primaryAddress.countryCode ?? this.DEFAULT_COUNTRY,
         }
       }
     })
