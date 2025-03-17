@@ -68,6 +68,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/1/relationship/99',
     )
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back to contact record')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/1/relationship/99',
     )

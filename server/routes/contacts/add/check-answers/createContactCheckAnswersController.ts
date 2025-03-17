@@ -33,7 +33,6 @@ export default class CreateContactCheckAnswersController implements PageHandler 
       delete journey.previousAnswers
       return res.redirect(navigation.backLink!)
     }
-    navigation.backLink = '?back=true'
     journey.isCheckingAnswers = true
     journey.previousAnswers = {
       names: journey.names,

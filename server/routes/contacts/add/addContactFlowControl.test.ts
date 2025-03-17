@@ -10,34 +10,58 @@ describe('addContactFlowControl', () => {
       const journeyId = uuidv4()
 
       it.each([
-        [Page.CREATE_CONTACT_NAME_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`, undefined],
-        [Page.CREATE_CONTACT_DOB_PAGE, `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`, undefined],
-        [Page.SELECT_RELATIONSHIP_TYPE, `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`, undefined],
+        [Page.CREATE_CONTACT_NAME_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`, undefined, undefined],
+        [
+          Page.CREATE_CONTACT_DOB_PAGE,
+          `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`,
+          undefined,
+          undefined,
+        ],
+        [
+          Page.SELECT_RELATIONSHIP_TYPE,
+          `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`,
+          undefined,
+          undefined,
+        ],
         [
           Page.SELECT_CONTACT_RELATIONSHIP,
           `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`,
+          undefined,
           undefined,
         ],
         [
           Page.SELECT_EMERGENCY_CONTACT,
           `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`,
           undefined,
+          undefined,
         ],
-        [Page.SELECT_NEXT_OF_KIN, `/prisoner/A1234BC/contacts/create/select-emergency-contact/${journeyId}`, undefined],
+        [
+          Page.SELECT_NEXT_OF_KIN,
+          `/prisoner/A1234BC/contacts/create/select-emergency-contact/${journeyId}`,
+          undefined,
+          undefined,
+        ],
         [
           Page.ENTER_RELATIONSHIP_COMMENTS,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
+          undefined,
           undefined,
         ],
         [
           Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
           `/prisoner/A1234BC/contacts/add/cancel/${journeyId}`,
+          'Back to additional information options',
         ],
-        [Page.ADD_CONTACT_CANCEL_PAGE, `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`, undefined],
+        [
+          Page.ADD_CONTACT_CANCEL_PAGE,
+          `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
+          undefined,
+          undefined,
+        ],
       ])(
         'Should go back to previous page: from %s to %s',
-        (page: Page, expectedBackUrl?: string, expectedCancelButton?: string) => {
+        (page: Page, expectedBackUrl?: string, expectedCancelButton?: string, expectedBackLabel?: string) => {
           const journey: AddContactJourney = {
             id: journeyId,
             lastTouched: new Date().toISOString(),
@@ -53,6 +77,7 @@ describe('addContactFlowControl', () => {
           }
           const expected: Navigation = {
             backLink: expectedBackUrl,
+            backLinkLabel: expectedBackLabel,
             breadcrumbs: undefined,
             cancelButton: expectedCancelButton,
           }
@@ -88,6 +113,7 @@ describe('addContactFlowControl', () => {
         }
         const expected: Navigation = {
           backLink: `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
+          backLinkLabel: undefined,
           breadcrumbs: undefined,
           cancelButton: undefined,
         }
@@ -257,6 +283,7 @@ describe('addContactFlowControl', () => {
           }
           const expected: Navigation = {
             backLink: expectedBackUrl,
+            backLinkLabel: undefined,
             breadcrumbs: undefined,
             cancelButton: expectedCancelButton,
           }
@@ -286,6 +313,7 @@ describe('addContactFlowControl', () => {
         }
         const expected: Navigation = {
           backLink: `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
+          backLinkLabel: undefined,
           breadcrumbs: undefined,
           cancelButton: undefined,
         }
@@ -419,6 +447,7 @@ describe('addContactFlowControl', () => {
       }
       const expected: Navigation = {
         backLink: undefined,
+        backLinkLabel: undefined,
         breadcrumbs: breadcrumbs as BreadcrumbType[] | undefined,
         cancelButton: undefined,
       }

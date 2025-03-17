@@ -95,6 +95,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     expect($('.check-answers-dob-value').first().text().trim()).toStrictEqual('1 January 2024')
     expect($('.check-answers-comments-value').first().text().trim()).toStrictEqual('some comments')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    const backLink = $('.govuk-back-link')
+    expect(backLink.text().trim()).toStrictEqual('Back to additional information options')
+    expect(backLink.attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`,
+    )
   })
 
   it('should render alternative check answers page for mode EXISTING', async () => {
@@ -119,6 +124,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     expect($('.check-answers-comments-value').first().text().trim()).toStrictEqual('some comments')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('p > strong:contains("Contact:")').first().next().text().trim()).toStrictEqual('First Last (12345)')
+    const backLink = $('.govuk-back-link')
+    expect(backLink.text().trim()).toStrictEqual('Back')
+    expect(backLink.attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`,
+    )
   })
 
   it('should render check answers page without dob', async () => {

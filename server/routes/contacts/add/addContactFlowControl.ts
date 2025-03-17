@@ -33,9 +33,15 @@ type ExistingContactPages =
   | Page.ADD_CONTACT_CANCEL_PAGE
 type AllAddContactPages = PreModePages | CreateContactPages | ExistingContactPages
 type JourneyUrlProvider = (journey: journeys.AddContactJourney) => string | undefined
-type Spec = { previousUrl: JourneyUrlProvider; nextUrl: JourneyUrlProvider; cancelUrl?: JourneyUrlProvider }
+type Spec = {
+  previousUrl: JourneyUrlProvider
+  previousUrlLabel?: JourneyUrlProvider
+  nextUrl: JourneyUrlProvider
+  cancelUrl?: JourneyUrlProvider
+}
+type PageConfig = { url: JourneyUrlProvider; pageName?: string; breadcrumbs?: BreadcrumbType[] }
 
-const PAGES: Record<AllAddContactPages, { url: JourneyUrlProvider; breadcrumbs?: BreadcrumbType[] }> = {
+const PAGES: Record<AllAddContactPages, PageConfig> = {
   [Page.CREATE_CONTACT_START_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/start`,
   },
@@ -69,6 +75,7 @@ const PAGES: Record<AllAddContactPages, { url: JourneyUrlProvider; breadcrumbs?:
   },
   [Page.ENTER_ADDITIONAL_INFORMATION_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/add/enter-additional-info/${journey.id}`,
+    pageName: 'additional information options',
   },
   [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/check-answers/${journey.id}`,
@@ -128,7 +135,7 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE]: {
-    previousUrl: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url,
+    ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE, canSkipToCheckAnswer: false }),
     nextUrl: PAGES.SUCCESSFULLY_ADDED_CONTACT_PAGE.url,
     cancelUrl: PAGES.ADD_CONTACT_CANCEL_PAGE.url,
   },
@@ -188,6 +195,21 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
   },
 }
 
+function backTo({ page, canSkipToCheckAnswer = true }: { page: PageConfig; canSkipToCheckAnswer: boolean }) {
+  const previousUrlLabel: JourneyUrlProvider = journey => {
+    const pageName =
+      canSkipToCheckAnswer && journey.isCheckingAnswers
+        ? PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.pageName
+        : page.pageName
+    return pageName ? `Back to ${pageName}` : 'Back'
+  }
+
+  return {
+    previousUrl: canSkipToCheckAnswer ? checkAnswersOr(page.url) : page.url,
+    previousUrlLabel,
+  }
+}
+
 function checkAnswersOr(other: JourneyUrlProvider): JourneyUrlProvider {
   return journey => (journey.isCheckingAnswers ? PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey) : other(journey))
 }
@@ -216,6 +238,7 @@ function navigationForAddContactJourney(currentPage: Page, journey: journeys.Add
   const spec = findSpec(journey, currentPage)
   if (spec) {
     return {
+      backLinkLabel: spec.previousUrlLabel ? spec.previousUrlLabel(journey) : undefined,
       backLink: spec.previousUrl(journey),
       breadcrumbs: PAGES[currentPage as AllAddContactPages].breadcrumbs,
       cancelButton: spec.cancelUrl?.(journey),

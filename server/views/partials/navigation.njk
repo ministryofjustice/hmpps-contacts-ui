@@ -38,7 +38,7 @@
 {% endif %}
 {% if navigation.backLink %}
     {{ govukBackLink({
-        text: "Back",
+        text: navigation.backLinkLabel or "Back",
         href: navigation.backLink,
         attributes: {"data-qa": "back-link"}
     }) }}

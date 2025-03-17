@@ -1,5 +1,6 @@
 interface Navigation {
   backLink?: string | undefined
+  backLinkLabel?: string | undefined
   breadcrumbs?: BreadcrumbType[] | undefined
   cancelButton?: string | undefined
 }
