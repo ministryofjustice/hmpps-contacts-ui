@@ -218,6 +218,5 @@ context('Edit Address Phones', () => {
     // Cancel to Contact Details page
     Page.verifyOnPage(EditAddressPhonePage) //
       .clickLinkTo('Cancel', ManageContactDetailsPage, 'First Middle Names Last')
-      .verifyOnContactsMethodsTab()
   })
 })
