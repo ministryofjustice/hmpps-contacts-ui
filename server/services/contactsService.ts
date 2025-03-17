@@ -40,6 +40,7 @@ export default class ContactsService {
   constructor(private readonly contactsApiClient: ContactsApiClient) {}
 
   async createContact(journey: AddContactJourney, user: Express.User): Promise<ContactCreationResult> {
+    // @ts-expect-error missing phoneNumbers TODO: remove this ts annotation after updating API swagger
     const request: CreateContactRequest = {
       lastName: journey.names!.lastName!,
       firstName: journey.names!.firstName!,
@@ -279,6 +280,12 @@ export default class ContactsService {
       noFixedAddress: journey.addressLines!.noFixedAddress,
       comments: journey.addressMetadata!.comments,
       createdBy: user.username,
+      phoneNumbers:
+        journey.phoneNumbers?.map(({ type, phoneNumber, extension }) => ({
+          phoneType: type,
+          phoneNumber,
+          ...(extension === undefined ? {} : { extNumber: extension }),
+        })) || [],
     }
     return this.contactsApiClient.createContactAddress(journey.contactId, request, user)
   }

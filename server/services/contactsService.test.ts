@@ -93,6 +93,7 @@ describe('contactsService', () => {
             comments: 'Some comments about this relationship',
           },
         }
+        // @ts-expect-error missing phoneNumbers TODO: remove this ts annotation after updating API swagger
         const expectedRequest: CreateContactRequest = {
           titleCode: 'Mr',
           lastName: 'last',
@@ -155,6 +156,7 @@ describe('contactsService', () => {
           isNextOfKin: 'NO',
         },
       }
+      // @ts-expect-error missing phoneNumbers TODO: remove this ts annotation after updating API swagger
       const expectedRequest: CreateContactRequest = {
         lastName: 'last',
         firstName: 'first',
@@ -693,6 +695,7 @@ describe('contactsService', () => {
         noFixedAddress: true,
         comments: 'My comments will be super useful',
         createdBy: user.username,
+        phoneNumbers: [],
       }
 
       // When
@@ -739,6 +742,7 @@ describe('contactsService', () => {
         noFixedAddress: false,
         comments: undefined,
         createdBy: user.username,
+        phoneNumbers: [],
       }
 
       // When

@@ -1307,6 +1307,26 @@ export interface paths {
     patch: operations['patchContact']
     trace?: never
   }
+  '/sync/contact/reconcile': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Reconciliation endpoint
+     * @description Get a paged list of existing contact IDs to reconcile against
+     */
+    get: operations['reconcileOrganisations']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/reference-codes/group/{groupCode}': {
     parameters: {
       query?: never
@@ -5394,6 +5414,8 @@ export interface components {
       identities: components['schemas']['IdentityDocument'][]
       /** @description Addresses */
       addresses: components['schemas']['Address'][]
+      /** @description Phone numbers */
+      phoneNumbers: components['schemas']['PhoneNumber'][]
       /**
        * @description The id of the user creating the contact
        * @example JD000001
@@ -6320,6 +6342,49 @@ export interface components {
       /** Format: date-time */
       updatedTime?: string
     }
+    PageSyncContactId: {
+      /** Format: int64 */
+      totalElements?: number
+      /** Format: int32 */
+      totalPages?: number
+      first?: boolean
+      last?: boolean
+      /** Format: int32 */
+      size?: number
+      content?: components['schemas']['SyncContactId'][]
+      /** Format: int32 */
+      number?: number
+      sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      numberOfElements?: number
+      pageable?: components['schemas']['PageableObject']
+      empty?: boolean
+    }
+    PageableObject: {
+      /** Format: int64 */
+      offset?: number
+      sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      pageSize?: number
+      paged?: boolean
+      /** Format: int32 */
+      pageNumber?: number
+      unpaged?: boolean
+    }
+    SortObject: {
+      empty?: boolean
+      sorted?: boolean
+      unsorted?: boolean
+    }
+    /** @description Response object for sync reconciliation */
+    SyncContactId: {
+      /**
+       * Format: int64
+       * @description The ID for an contact
+       * @example 111111
+       */
+      contactId: number
+    }
     /** @enum {string} */
     ReferenceCodeGroup:
       | 'DOMESTIC_STS'
@@ -6381,17 +6446,6 @@ export interface components {
       /** Format: int32 */
       size?: number
       sort?: string[]
-    }
-    PageableObject: {
-      /** Format: int64 */
-      offset?: number
-      sort?: components['schemas']['SortObject']
-      paged?: boolean
-      /** Format: int32 */
-      pageNumber?: number
-      /** Format: int32 */
-      pageSize?: number
-      unpaged?: boolean
     }
     /** @description Describes the details of a prisoner's contact */
     PrisonerContactSummary: {
@@ -6592,11 +6646,6 @@ export interface components {
       /** Format: int32 */
       numberOfElements?: number
       empty?: boolean
-    }
-    SortObject: {
-      empty?: boolean
-      unsorted?: boolean
-      sorted?: boolean
     }
     /** @description Restriction related to a specific relationship between a prisoner and contact */
     PrisonerContactRestrictionsResponse: {
@@ -11982,6 +12031,51 @@ export interface operations {
       }
       /** @description No contact with that id could be found */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  reconcileOrganisations: {
+    parameters: {
+      query?: {
+        /** @description Zero-based page index (0..N) */
+        page?: number
+        /** @description The size of the page to be returned */
+        size?: number
+        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+        sort?: string[]
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Pageable contact IDs returned */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PageSyncContactId']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
         headers: {
           [name: string]: unknown
         }

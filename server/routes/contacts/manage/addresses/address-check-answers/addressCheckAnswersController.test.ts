@@ -88,37 +88,28 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/check-answers/:journeyId', () => {
-  it.each([
-    ['HOME', 'Check your answers before saving the new home address for First Middle Last'],
-    ['WORK', 'Check your answers before saving the new work address for First Middle Last'],
-    ['BUS', 'Check your answers before saving the new business address for First Middle Last'],
-    ['DO_NOT_KNOW', 'Check your answers before saving the new address for First Middle Last'],
-  ])(
-    'should render address check answers page with type %s and expected question %s',
-    async (addressType: string, expectedTitle: string) => {
-      // Given
-      existingJourney.addressType = addressType
+  it('should render address check answers page', async () => {
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/check-answers/${journeyId}`,
+    )
 
-      // When
-      const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/check-answers/${journeyId}`,
-      )
+    // Then
+    expect(response.status).toEqual(200)
 
-      // Then
-      expect(response.status).toEqual(200)
-
-      const $ = cheerio.load(response.text)
-      expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(expectedTitle)
-      expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-        `/prisoner/A1234BC/contacts/manage/123456/relationship/456789/address/cancel/${journeyId}`,
-      )
-      expect($('[data-qa=back-link]')).toHaveLength(0)
-      const breadcrumbLinks = $('[data-qa=breadcrumbs] a')
-      expect(breadcrumbLinks.eq(0).attr('href')).toStrictEqual('http://localhost:3001')
-      expect(breadcrumbLinks.eq(1).attr('href')).toStrictEqual('http://localhost:3001/prisoner/A1234BC')
-      expect(breadcrumbLinks.eq(2).attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/list')
-    },
-  )
+    const $ = cheerio.load(response.text)
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact methods')
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
+      'Check your answers before adding a new address for First Middle Last',
+    )
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/comments/${journeyId}`,
+    )
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      `/prisoner/A1234BC/contacts/manage/123456/relationship/456789/address/cancel/${journeyId}`,
+    )
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+  })
 
   it('should render address check answers page with minimal address details', async () => {
     // Given
@@ -143,12 +134,10 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     const $ = cheerio.load(response.text)
     expect($('.check-answers-type-value').text().trim()).toStrictEqual('Not provided')
     expect($('.check-answers-address-value').text().trim()).toStrictEqual('England')
-    expect($('.check-answers-nfa-value').text().trim()).toStrictEqual('No')
-    expect($('.check-answers-from-date-value').text().trim()).toStrictEqual('January 2001')
-    expect($('.check-answers-to-date-value').text().trim()).toStrictEqual('Not provided')
-    expect($('.check-answers-primary-value').text().trim()).toStrictEqual('Not provided')
-    expect($('.check-answers-mail-value').text().trim()).toStrictEqual('Not provided')
+    expect($('.check-answers-dates-value').text().trim()).toStrictEqual('From January 2001')
+    expect($('.check-answers-flags-value').text().trim()).toStrictEqual('No')
     expect($('.check-answers-comments-value').text().trim()).toStrictEqual('Not provided')
+    expect($('dt:contains("Address phone numbers")').next().text().trim()).toStrictEqual('Not provided')
   })
 
   it('should render address check answers page with all address details', async () => {
@@ -174,6 +163,13 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       mailAddress: false,
       comments: 'My comments will be super useful',
     }
+    existingJourney.phoneNumbers = [
+      {
+        type: 'HOME',
+        phoneNumber: '123456789',
+        extension: '123',
+      },
+    ]
 
     // When
     const response = await request(app).get(
@@ -186,14 +182,14 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     const $ = cheerio.load(response.text)
     expect($('.check-answers-type-value').text().trim()).toStrictEqual('Home address')
     expect($('.check-answers-address-value').html()!.trim()).toMatch(
-      /1a<br>\s+?My block<br>\s+?A street<br>\s+?Downtown<br>\s+?Devon<br>\s+?PC1 D3<br>\s+?England/,
+      /No fixed address<br>1a<br>\s+?My block<br>\s+?A street<br>\s+?Downtown<br>\s+?Devon<br>\s+?PC1 D3<br>\s+?England/,
     )
-    expect($('.check-answers-nfa-value').text().trim()).toStrictEqual('Yes')
-    expect($('.check-answers-from-date-value').text().trim()).toStrictEqual('January 2001')
-    expect($('.check-answers-to-date-value').text().trim()).toStrictEqual('December 2012')
-    expect($('.check-answers-primary-value').text().trim()).toStrictEqual('Yes')
-    expect($('.check-answers-mail-value').text().trim()).toStrictEqual('No')
+    expect($('.check-answers-dates-value').text().trim()).toStrictEqual('From January 2001 to December 2012')
+    expect($('.check-answers-flags-value').text().trim()).toStrictEqual('Primary address')
     expect($('.check-answers-comments-value').text().trim()).toStrictEqual('My comments will be super useful')
+    expect($('dt:contains("Address phone numbers")').parent().next().text().trim()).toMatch(
+      /Home(\s|\n)+?123456789, ext\. 123/,
+    )
   })
 
   it('should call the audit service for the page view', async () => {
