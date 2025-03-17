@@ -133,20 +133,6 @@ context('Edit Contact Identities', () => {
     )
   })
 
-  it('Should require type', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickEditContactDetailsLink()
-
-    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
-      .clickEditIdentityLink('LAST-8773671M')
-
-    const enterIdentityPage = Page.verifyOnPage(ChangeIdentityDocumentPage, 'First Middle Names Last') //
-      .selectType('')
-      .enterIdentity('425362965')
-    enterIdentityPage.clickContinue()
-    enterIdentityPage.hasFieldInError('type', 'Select the document type')
-  })
-
   it('Should require identity number', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()

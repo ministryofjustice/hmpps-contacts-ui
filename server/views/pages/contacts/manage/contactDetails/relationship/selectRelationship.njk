@@ -27,7 +27,7 @@
                         id: 'relationship-hint',
                         text: ('For example, if ' + names | formatNameFirstNameFirst + ' is the prisoner’s uncle, select ‘Uncle’.') if relationshipType === 'S' else ('For example, if ' + names | formatNameFirstNameFirst + ' is the prisoner’s doctor, select ‘Doctor’.')
                     },
-                    items: relationshipOptions | referenceCodesToSelect('Select social relationship' if relationshipType === 'S' else 'Select official relationship') | setSelected(relationship),
+                    items: relationshipOptions | referenceCodesToSelect('Select social relationship' if relationshipType === 'S' else 'Select official relationship', noNullishSelectOption) | setSelected(relationship),
                     errorMessage: validationErrors | findError('relationship')
                 }) }}
                 <div class="govuk-button-group">

@@ -144,21 +144,6 @@ context('Edit Contact Phones', () => {
     )
   })
 
-  it('Should require type', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickContactMethodsTab()
-      .clickEditContactMethodsLink()
-
-    Page.verifyOnPage(EditContactMethodsPage, 'First Middle Names Last') //
-      .clickEditPhoneNumberLink('01111 777777')
-
-    const enterPhonePage = Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
-      .selectType('')
-      .enterPhoneNumber('01234 777777')
-    enterPhonePage.clickContinue()
-    enterPhonePage.hasFieldInError('type', 'Select the type of phone number')
-  })
-
   it('Should require phone number', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickContactMethodsTab()

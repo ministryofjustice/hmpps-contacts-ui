@@ -130,33 +130,6 @@ context('Change Relationship To Prisoner', () => {
     )
   })
 
-  it('Relationship must be selected', () => {
-    cy.task('stubGetPrisonerContactRelationshipById', {
-      id: prisonerContactId,
-      response: TestData.prisonerContactRelationship({
-        prisonerContactId,
-        relationshipToPrisonerCode: 'OTHER',
-        relationshipToPrisonerDescription: 'Other',
-      }),
-    })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
-
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickEditContactDetailsLink()
-
-    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
-      .verifyShowRelationshipToPrisonerAs('Other')
-      .clickChangeRelationshipToPrisonerLink()
-
-    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last', 'John Smith') //
-      .hasRelationshipSelected('OTHER')
-      .selectRelationship('')
-      .clickContinue()
-
-    const enterNamePage = Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last', 'John Smith')
-    enterNamePage.hasFieldInError('relationship', 'Select the contact’s relationship to the prisoner')
-  })
-
   it('Back link goes back to edit contact details', () => {
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
