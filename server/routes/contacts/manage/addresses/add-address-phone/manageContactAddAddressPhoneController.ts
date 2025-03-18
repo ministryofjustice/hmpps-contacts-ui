@@ -33,6 +33,7 @@ export default class ManageContactAddAddressPhoneController implements PageHandl
     }
     const viewModel = {
       isEdit: true,
+      caption: 'Edit contact methods',
       continueButtonLabel: 'Confirm and save',
       navigation,
       typeOptions,

@@ -4,49 +4,43 @@ import { PageHandler } from '../../../../../interfaces/pageHandler'
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import { Navigation } from '../../../common/navigation'
-import { getAddressJourneyAndUrl, getFormattedAddress } from '../common/utils'
-import { OptionalPhonesSchemaType } from './AddAddressPhonesSchema'
+import { CreateContactAddressParam, getAddressFormAndUrl } from '../common/utils'
+import { getFormattedAddress } from '../../../manage/addresses/common/utils'
+import { OptionalPhonesSchemaType } from '../../../manage/addresses/add-address-phone/AddAddressPhonesSchema'
 
-export default class AddressPhoneController implements PageHandler {
+export default class ContactAddressPhoneController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
   public PAGE_NAME = Page.ADD_ADDRESS_PHONE_PAGE
 
-  GET = async (
-    req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string; journeyId: string }>,
-    res: Response,
-  ): Promise<void> => {
+  GET = async (req: Request<CreateContactAddressParam>, res: Response): Promise<void> => {
     const { user } = res.locals
-    const { journey, checkAnswersOrAddressUrl } = getAddressJourneyAndUrl(req)
+    const { addressForm, bounceBackOrAddressUrl } = getAddressFormAndUrl(req)
     const navigation: Navigation = {
-      backLink: checkAnswersOrAddressUrl({ subPath: 'primary-or-postal' }),
+      backLink: bounceBackOrAddressUrl({ subPath: 'primary-or-postal' }),
     }
     const viewModel = {
       isEdit: false,
-      caption: 'Edit contact methods',
+      caption: 'Add a contact and link to a prisoner',
       continueButtonLabel: 'Continue',
       navigation,
       typeOptions: await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user),
-      formattedAddress: await getFormattedAddress(this.referenceDataService, journey, res.locals.user),
+      formattedAddress: await getFormattedAddress(this.referenceDataService, addressForm, res.locals.user),
       phones: res.locals?.formResponses?.['phones'] ??
-        journey.phoneNumbers ?? [{ type: '', phoneNumber: '', extension: '' }],
+        addressForm.phoneNumbers ?? [{ type: '', phoneNumber: '', extension: '' }],
     }
     res.render('pages/contacts/manage/contactMethods/address/phone/addAddressPhone', viewModel)
   }
 
   POST = async (
-    req: Request<
-      { prisonerNumber: string; contactId: string; prisonerContactId: string; journeyId: string },
-      unknown,
-      OptionalPhonesSchemaType
-    >,
+    req: Request<CreateContactAddressParam, unknown, OptionalPhonesSchemaType>,
     res: Response,
   ): Promise<void> => {
-    const { journey, checkAnswersOrAddressUrl, addressUrl } = getAddressJourneyAndUrl(req)
+    const { addressForm, addressUrl, bounceBackOrAddressUrl } = getAddressFormAndUrl(req)
     const { phones, save, add, remove } = req.body
     if (save !== undefined) {
-      journey.phoneNumbers = phones
-      res.redirect(checkAnswersOrAddressUrl({ subPath: 'comments' }))
+      addressForm.phoneNumbers = phones
+      res.redirect(bounceBackOrAddressUrl({ subPath: 'comments' }))
     } else {
       req.body.phones ??= [{ type: '', phoneNumber: '', extension: '' }]
       if (add !== undefined) {

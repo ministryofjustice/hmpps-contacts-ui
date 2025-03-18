@@ -6,8 +6,8 @@ import AddressLines = journeys.AddressLines
 import AddressMetadata = journeys.AddressMetadata
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
-import AddressJourney = journeys.AddressJourney
 import ReferenceDataService from '../../../../../services/referenceDataService'
+import AddressForm = journeys.AddressForm
 
 export const getAddressJourneyAndUrl = (
   req: Request<{
@@ -38,7 +38,7 @@ export const getAddressJourneyAndUrl = (
 
 export const getFormattedAddress = async (
   referenceDataService: ReferenceDataService,
-  journey: AddressJourney,
+  journey: AddressForm,
   user: Express.User,
 ) => {
   return {

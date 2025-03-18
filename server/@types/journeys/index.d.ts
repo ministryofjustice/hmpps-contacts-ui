@@ -24,6 +24,8 @@ declare namespace journeys {
       deceasedDate?: string
     }
     addresses?: AddressForm[] | undefined
+    addressesToSave?: AddressForm[] | undefined
+    newAddress?: AddressForm | undefined
   }
 
   export interface ContactNames {

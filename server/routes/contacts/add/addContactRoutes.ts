@@ -8,7 +8,7 @@ import { fullNameSchema } from '../common/name/nameSchemas'
 import CreateContactEnterDobController from './enter-dob/createContactEnterDobController'
 import StartAddContactJourneyController from './start/startAddContactJourneyController'
 import ensureInAddContactJourney from './addContactMiddleware'
-import { ContactsService, PrisonerSearchService, RestrictionsService } from '../../../services'
+import { ContactsService, PrisonerAddressService, PrisonerSearchService, RestrictionsService } from '../../../services'
 import CreateContactCheckAnswersController from './check-answers/createContactCheckAnswersController'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import ReferenceDataService from '../../../services/referenceDataService'
@@ -35,6 +35,21 @@ import AddContactAdditionalInfoController from './additional-info/addContactAddi
 import AddAddressesController from './addresses/addAddressesController'
 import { routerMethods } from '../../../utils/routerMethods'
 import { PageHandler } from '../../../interfaces/pageHandler'
+import ContactAddressTypeController from './addresses/select-type/contactAddressTypeController'
+import { addressTypeSchema } from '../manage/addresses/address-type/addressTypeSchemas'
+import ContactUsePrisonerAddressController from './addresses/use-prisoner-address/contactUsePrisonerAddressController'
+import ContactEnterAddressController from './addresses/enter-address/contactEnterAddressController'
+import { addressLinesSchema } from '../manage/addresses/enter-address/addressLinesSchemas'
+import ContactAddressDatesController from './addresses/dates/contactAddressDatesController'
+import { addressDatesSchema } from '../manage/addresses/dates/addressDatesSchemas'
+import ContactAddressFlagsController from './addresses/primary-or-postal/contactAddressFlagsController'
+import { addressFlagsSchema } from '../manage/addresses/primary-or-postal/addressFlagsSchemas'
+import ContactAddressPhoneController from './addresses/add-address-phone/contactAddressPhoneController'
+import { optionalPhonesSchema } from '../manage/addresses/add-address-phone/AddAddressPhonesSchema'
+import ContactAddressCommentsController from './addresses/comments/contactAddressCommentsController'
+import { addressCommentsSchema } from '../manage/addresses/comments/addressCommentsSchema'
+import ContactDeleteAddressController from './addresses/delete/contactDeleteAddressController'
+import ContactDeleteAddressPhoneController from './addresses/delete-address-phone/contactDeleteAddressPhoneController'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -42,6 +57,7 @@ const AddContactRoutes = (
   referenceDataService: ReferenceDataService,
   prisonerSearchService: PrisonerSearchService,
   restrictionsService: RestrictionsService,
+  prisonerAddressService: PrisonerAddressService,
 ) => {
   const router = Router({ mergeParams: true })
   const { get, post } = routerMethods(router, auditService)
@@ -280,6 +296,61 @@ const AddContactRoutes = (
     controller: new AddAddressesController(referenceDataService),
     noValidation: true,
   })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/select-type/:journeyId',
+    controller: new ContactAddressTypeController(referenceDataService),
+    schema: addressTypeSchema,
+  })
+
+  get(
+    '/prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/use-prisoner-address/:journeyId',
+    new ContactUsePrisonerAddressController(prisonerAddressService),
+    ensureInAddContactJourney,
+  )
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/enter-address/:journeyId',
+    controller: new ContactEnterAddressController(referenceDataService),
+    schema: addressLinesSchema,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/dates/:journeyId',
+    controller: new ContactAddressDatesController(referenceDataService),
+    schema: addressDatesSchema,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/primary-or-postal/:journeyId',
+    controller: new ContactAddressFlagsController(referenceDataService),
+    schema: addressFlagsSchema(true),
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/phone/create/:journeyId',
+    controller: new ContactAddressPhoneController(referenceDataService),
+    schema: optionalPhonesSchema,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/comments/:journeyId',
+    controller: new ContactAddressCommentsController(referenceDataService),
+    schema: addressCommentsSchema,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/delete/:journeyId',
+    controller: new ContactDeleteAddressController(referenceDataService),
+    noValidation: true,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/phone/:phoneIdx/delete/:journeyId',
+    controller: new ContactDeleteAddressPhoneController(referenceDataService),
+    noValidation: true,
+  })
+
   return router
 }
 

@@ -21,7 +21,14 @@ export default function routes({
 
   router.use(
     '',
-    AddContactRoutes(auditService, contactsService, referenceDataService, prisonerSearchService, restrictionsService),
+    AddContactRoutes(
+      auditService,
+      contactsService,
+      referenceDataService,
+      prisonerSearchService,
+      restrictionsService,
+      prisonerAddressService,
+    ),
   )
   router.use(
     '/',
