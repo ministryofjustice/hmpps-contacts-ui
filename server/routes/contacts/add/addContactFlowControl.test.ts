@@ -49,6 +49,18 @@ describe('addContactFlowControl', () => {
           undefined,
           'Back',
         ],
+        [
+          Page.ADD_CONTACT_ADD_PHONE_PAGE,
+          `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
+          undefined,
+          'Back',
+        ],
+        [
+          Page.ADD_CONTACT_DELETE_PHONE_PAGE,
+          `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
+          `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
+          'Back',
+        ],
       ])(
         'Should go back to previous page: from %s to %s',
         (page: Page, expectedBackUrl?: string, expectedCancelButton?: string, expectedBackLabel?: string) => {
@@ -79,15 +91,17 @@ describe('addContactFlowControl', () => {
       )
 
       it.each([
-        [Page.CREATE_CONTACT_NAME_PAGE],
-        [Page.CREATE_CONTACT_DOB_PAGE],
-        [Page.SELECT_RELATIONSHIP_TYPE],
-        [Page.SELECT_CONTACT_RELATIONSHIP],
-        [Page.SELECT_EMERGENCY_CONTACT],
-        [Page.SELECT_NEXT_OF_KIN],
-        [Page.ENTER_RELATIONSHIP_COMMENTS],
-        [Page.ADD_CONTACT_CANCEL_PAGE],
-      ])('Should go back to check answers from %s', (page: Page) => {
+        [Page.CREATE_CONTACT_NAME_PAGE, undefined],
+        [Page.CREATE_CONTACT_DOB_PAGE, undefined],
+        [Page.SELECT_RELATIONSHIP_TYPE, undefined],
+        [Page.SELECT_CONTACT_RELATIONSHIP, undefined],
+        [Page.SELECT_EMERGENCY_CONTACT, undefined],
+        [Page.SELECT_NEXT_OF_KIN, undefined],
+        [Page.ENTER_RELATIONSHIP_COMMENTS, undefined],
+        [Page.ADD_CONTACT_CANCEL_PAGE, undefined],
+        [Page.ADD_CONTACT_ADD_PHONE_PAGE, undefined],
+        [Page.ADD_CONTACT_DELETE_PHONE_PAGE, `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`],
+      ])('Should go back to check answers from %s', (page: Page, cancelButton) => {
         const journey: AddContactJourney = {
           id: journeyId,
           lastTouched: new Date().toISOString(),
@@ -105,7 +119,7 @@ describe('addContactFlowControl', () => {
           backLink: `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
           backLinkLabel: 'Back',
           breadcrumbs: undefined,
-          cancelButton: undefined,
+          cancelButton,
         }
 
         const nav = navigationForAddContactJourney(page, journey)
@@ -131,6 +145,8 @@ describe('addContactFlowControl', () => {
         [Page.SELECT_NEXT_OF_KIN, `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`],
         [Page.ENTER_RELATIONSHIP_COMMENTS, `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`],
         [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, `/prisoner/A1234BC/contact/NEW/123456/654321/success`],
+        [Page.ADD_CONTACT_ADD_PHONE_PAGE, `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`],
+        [Page.ADD_CONTACT_DELETE_PHONE_PAGE, `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`],
       ])('Should go to next page if not checking answers: from %s to %s', (page: Page, expectedNextUrl?: string) => {
         const journey: AddContactJourney = {
           id: journeyId,
@@ -161,6 +177,8 @@ describe('addContactFlowControl', () => {
         [Page.SELECT_NEXT_OF_KIN],
         [Page.CREATE_CONTACT_DOB_PAGE],
         [Page.ENTER_RELATIONSHIP_COMMENTS],
+        [Page.ADD_CONTACT_ADD_PHONE_PAGE],
+        [Page.ADD_CONTACT_DELETE_PHONE_PAGE],
       ])('Should go back to checking answer page: from %s', (page: Page) => {
         const journey: AddContactJourney = {
           id: journeyId,

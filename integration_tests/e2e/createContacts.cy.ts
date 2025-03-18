@@ -24,6 +24,7 @@ context('Create Contacts', () => {
     cy.task('stubComponentsMeta')
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.task('stubTitlesReferenceData')
+    cy.task('stubPhoneTypeReferenceData')
     cy.task('stubRelationshipReferenceData')
     cy.task('stubOfficialRelationshipReferenceData')
     cy.task('stubRelationshipTypeReferenceData')
@@ -135,8 +136,6 @@ context('Create Contacts', () => {
         firstName: 'First',
         isStaff: false,
         interpreterRequired: false,
-        identities: [],
-        addresses: [],
         createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',
@@ -219,8 +218,6 @@ context('Create Contacts', () => {
         dateOfBirth: '1982-06-15',
         isStaff: false,
         interpreterRequired: false,
-        identities: [],
-        addresses: [],
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipTypeCode: 'S',
@@ -286,8 +283,6 @@ context('Create Contacts', () => {
         firstName: 'First',
         isStaff: false,
         interpreterRequired: false,
-        identities: [],
-        addresses: [],
         createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',

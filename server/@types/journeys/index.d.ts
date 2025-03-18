@@ -24,6 +24,7 @@ declare namespace journeys {
       deceasedDate?: string
     }
     addresses?: AddressForm[] | undefined
+    phoneNumbers?: PhoneNumberForm[] | undefined
   }
 
   export interface ContactNames {
@@ -141,13 +142,7 @@ declare namespace journeys {
     addressType?: string | undefined
     addressLines?: AddressLines | undefined
     addressMetadata?: AddressMetadata | undefined
-    phoneNumbers?:
-      | {
-          type: string
-          phoneNumber: string
-          extension?: string | undefined
-        }[]
-      | undefined
+    phoneNumbers?: PhoneNumberForm[] | undefined
   }
 
   export interface AddressJourney extends AddressForm {
@@ -187,6 +182,12 @@ declare namespace journeys {
     contactNames?: ContactNames
     restrictionClass?: RestrictionClass
     contactId?: string
+  }
+
+  export interface PhoneNumberForm {
+    type: string
+    phoneNumber: string
+    extension?: string | undefined
   }
 
   type YesOrNo = 'YES' | 'NO'

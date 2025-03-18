@@ -71,10 +71,22 @@ export default class CreateContactCheckAnswersController implements PageHandler 
       navigation,
     }
     if (journey.mode === 'NEW') {
+      const phoneTypeDescriptions = new Map(
+        (await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user)).map(refData => [
+          refData.code,
+          refData.description,
+        ]),
+      )
+
       return res.render('pages/contacts/add/new/checkAnswers', {
         ...view,
         dateOfBirth,
         formattedFullName,
+        phoneNumbers: journey.phoneNumbers?.map(phone => ({
+          phoneNumber: phone.phoneNumber,
+          extNumber: phone.extension,
+          phoneTypeDescription: phoneTypeDescriptions.get(phone.type),
+        })),
       })
     }
     // Add existing

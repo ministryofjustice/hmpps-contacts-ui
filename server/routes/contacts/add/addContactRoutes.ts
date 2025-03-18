@@ -35,6 +35,9 @@ import AddContactAdditionalInfoController from './additional-info/addContactAddi
 import AddAddressesController from './addresses/addAddressesController'
 import { routerMethods } from '../../../utils/routerMethods'
 import { PageHandler } from '../../../interfaces/pageHandler'
+import AddContactAddPhoneController from './phone/addContactAddPhoneController'
+import { optionalPhonesSchema } from '../manage/addresses/add-address-phone/AddAddressPhonesSchema'
+import AddContactConfirmDeletePhoneController from './phone/addContactConfirmDeletePhoneController'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -273,6 +276,35 @@ const AddContactRoutes = (
     '/prisoner/:prisonerNumber/contacts/add/enter-additional-info/:journeyId',
     ensureInAddContactJourney,
     asyncMiddleware(addContactAdditionalInfoController.POST),
+  )
+
+  const addPhoneController = new AddContactAddPhoneController(referenceDataService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/create/add-phone-numbers/:journeyId',
+    ensureInAddContactJourney,
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    logPageViewMiddleware(auditService, addPhoneController),
+    asyncMiddleware(addPhoneController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/create/add-phone-numbers/:journeyId',
+    ensureInAddContactJourney,
+    validate(optionalPhonesSchema),
+    asyncMiddleware(addPhoneController.POST),
+  )
+
+  const removePhoneController = new AddContactConfirmDeletePhoneController(referenceDataService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/create/delete-phone-number/:index/:journeyId',
+    ensureInAddContactJourney,
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    logPageViewMiddleware(auditService, removePhoneController),
+    asyncMiddleware(removePhoneController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/create/delete-phone-number/:index/:journeyId',
+    ensureInAddContactJourney,
+    asyncMiddleware(removePhoneController.POST),
   )
 
   journeyRoute({

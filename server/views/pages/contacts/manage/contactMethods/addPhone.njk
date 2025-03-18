@@ -5,8 +5,18 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 
-{% set pageTitle = applicationName + " - Update contact phone number" %}
-{% set title = "Add phone numbers for " + contact | formatNameFirstNameFirst %}
+{% if isNewContact %}
+  {% set pageTitle = "Add phone numbers for the contact - Add a contact - DPS" %}
+  {% set title = "Add phone numbers for " + journey.names | formatNameFirstNameFirst + " (optional)"%}
+  {% set caption =  journey | captionForAddContactJourney %}
+  {% set continueButtonLabel = "Continue" %}
+{% else %}
+  {% set pageTitle = "Add phone numbers for the contact - Edit contact methods - DPS" %}
+  {% set title = "Add phone numbers for " + contact | formatNameFirstNameFirst %}
+  {% set caption = "Edit contact methods" %}
+  {% set continueButtonLabel = "Confirm and save" %}
+{% endif %}
+
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
@@ -15,7 +25,7 @@
   {% include 'partials/formErrorSummary.njk' %}
   <div class="govuk-grid-row" data-module="moj-add-another">
     <div class="govuk-grid-column-two-thirds">
-      <span class="govuk-caption-l">Edit contact methods</span>
+      <span class="govuk-caption-l">{{ caption }}</span>
       <h1 class="govuk-heading-l moj-add-another__heading" data-qa="main-heading">{{ title }}</h1>
       <form method='POST'>
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
@@ -90,14 +100,16 @@
         </div>
         <div class="govuk-button-group">
           {{ govukButton({
-            text: "Confirm and save",
+            text: continueButtonLabel,
             name: "save",
             type: "submit",
             classes: 'govuk-!-margin-top-6',
             attributes: {"data-qa": "continue-button"},
             preventDoubleClick: true
           }) }}
+          {% if navigation.cancelButton %}
           <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
+          {% endif %}
         </div>
       </form>
 
