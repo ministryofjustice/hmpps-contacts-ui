@@ -193,7 +193,55 @@
                         }
                     ]
                 }) }}
-                {% set buttonLabel = "Create prisoner contact" %}
+
+              <div class="moj-page-header-actions">
+                <div class="moj-page-header-actions__title">
+                  <h2 class="govuk-heading-l govuk-!-font-size-24">Phone numbers</h2>
+                </div>
+                <div class="moj-page-header-actions__actions">
+                  <div class="moj-button-group moj-button-group--inline">
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold" data-qa="add-address-link" href="{{ baseChangeUrl + "/add-phone-numbers/" + journey.id }}">Add phone number</a>
+                  </div>
+                </div>
+              </div>
+              {% set phoneNumberRows = [] %}
+              {% for phoneNumber in phoneNumbers %}
+                {% set phoneNumberRows = (phoneNumberRows.push(
+                  {
+                    key: {
+                      text: phoneNumber.phoneTypeDescription
+                    },
+                    value: {
+                      text: phoneNumber | formatPhoneNumber
+                    },
+                    actions: {
+                      items: [
+                        {
+                          href: baseChangeUrl + "/add-phone-numbers/" + journey.id,
+                          text: "Change",
+                          visuallyHiddenText: "the information about this " + phoneNumber.phoneTypeDescription + " phone number",
+                          attributes: {"data-qa": "edit-phone-number-" + loop.index0},
+                          classes: "govuk-link--no-visited-state"
+                        },
+                        {
+                          href: baseChangeUrl + "/delete-phone-number/" + loop.index0 + "/" + journey.id,
+                          text: "Delete",
+                          visuallyHiddenText: "the information about this " + phoneNumber.phoneTypeDescription + " phone number",
+                          attributes: {"data-qa": "delete-phone-number-" + loop.index0},
+                          classes: "govuk-link--no-visited-state"
+                        }
+                      ]
+                    }
+                  }
+                ), phoneNumberRows) %}
+              {% endfor %}
+              {% if phoneNumberRows.length > 0 %}
+              {{ govukSummaryList({ rows: phoneNumberRows }) }}
+              {% else %}
+              <p class="govuk-body">No phone numbers provided.</p>
+              {% endif %}
+
+              {% set buttonLabel = "Create prisoner contact" %}
                 <div class="govuk-button-group">
                     {{ govukButton({
                         text: buttonLabel,

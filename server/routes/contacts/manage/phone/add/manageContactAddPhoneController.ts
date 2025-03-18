@@ -33,6 +33,7 @@ export default class ManageContactAddPhoneController implements PageHandler {
       typeOptions: await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user),
       phones: res.locals?.formResponses?.['phones'] ?? [{ type: '', phoneNumber: '', extension: '' }],
       navigation,
+      isNewContact: false,
     }
     res.render('pages/contacts/manage/contactMethods/addPhone', viewModel)
   }

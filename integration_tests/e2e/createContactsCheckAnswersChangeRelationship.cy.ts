@@ -19,6 +19,7 @@ context('Create contact and update the relationship from check answers', () => {
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.task('stubComponentsMeta')
     cy.task('stubTitlesReferenceData')
+    cy.task('stubPhoneTypeReferenceData')
     cy.task('stubRelationshipReferenceData')
     cy.task('stubOfficialRelationshipReferenceData')
     cy.task('stubRelationshipTypeReferenceData')
@@ -131,8 +132,6 @@ context('Create contact and update the relationship from check answers', () => {
         dateOfBirth: '1982-06-15',
         isStaff: false,
         interpreterRequired: false,
-        identities: [],
-        addresses: [],
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipTypeCode: 'S',
@@ -179,8 +178,6 @@ context('Create contact and update the relationship from check answers', () => {
         dateOfBirth: '1982-06-15',
         isStaff: false,
         interpreterRequired: false,
-        identities: [],
-        addresses: [],
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipTypeCode: 'O',
@@ -223,8 +220,6 @@ context('Create contact and update the relationship from check answers', () => {
         dateOfBirth: '1982-06-15',
         isStaff: false,
         interpreterRequired: false,
-        identities: [],
-        addresses: [],
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipTypeCode: 'S',
@@ -268,8 +263,6 @@ context('Create contact and update the relationship from check answers', () => {
         dateOfBirth: '1982-06-15',
         isStaff: false,
         interpreterRequired: false,
-        identities: [],
-        addresses: [],
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipTypeCode: 'S',

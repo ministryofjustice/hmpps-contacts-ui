@@ -24,10 +24,17 @@
           items: [
             {
               title: {
-              text: "Addresses"
-            },
+                text: "Addresses"
+              },
               href: "/prisoner/" + journey.prisonerNumber + "/contacts/create/addresses/" + journey.id,
               status: journey.addresses | taskStatus
+            },
+            {
+              title: {
+                text: "Phone numbers"
+              },
+              href: "/prisoner/" + journey.prisonerNumber + "/contacts/create/add-phone-numbers/" + journey.id,
+              status: journey.phoneNumbers | taskStatus
             }
           ]
         }) }}

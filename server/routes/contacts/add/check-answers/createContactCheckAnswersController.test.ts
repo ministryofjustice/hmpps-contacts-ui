@@ -6,7 +6,7 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
-import { mockedGetReferenceDescriptionForCode } from '../../../testutils/stubReferenceData'
+import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../testutils/stubReferenceData'
 import AddContactJourney = journeys.AddContactJourney
 import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
@@ -68,6 +68,7 @@ beforeEach(() => {
     },
   })
   referenceDataService.getReferenceDescriptionForCode.mockImplementation(mockedGetReferenceDescriptionForCode)
+  referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
 
@@ -217,6 +218,38 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     expect(journey.isCheckingAnswers).toStrictEqual(true)
     const $ = cheerio.load(response.text)
     expect($('.check-answers-deceased-value').first().text().trim()).toStrictEqual('25 December 2020')
+  })
+
+  it('should render check answers page with a phone numbers', async () => {
+    // Given
+    journey.phoneNumbers = [
+      { type: 'MOB', phoneNumber: '0123456789' },
+      { type: 'HOME', phoneNumber: '987654321', extension: '#123' },
+    ]
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect(journey.isCheckingAnswers).toStrictEqual(true)
+    const $ = cheerio.load(response.text)
+    const mobileHeading = $('dt:contains("Mobile")')
+    expect(mobileHeading.next().text().trim()).toStrictEqual('0123456789')
+    expect(mobileHeading.next().next().find('a').first().attr('href')).toStrictEqual(
+      `/prisoner/A1234BC/contacts/create/add-phone-numbers/${journeyId}`,
+    )
+    expect(mobileHeading.next().next().find('a').last().attr('href')).toStrictEqual(
+      `/prisoner/A1234BC/contacts/create/delete-phone-number/0/${journeyId}`,
+    )
+    const homeHeading = $('dt:contains("Home")')
+    expect(homeHeading.next().text().trim()).toStrictEqual('987654321, ext. #123')
+    expect(homeHeading.next().next().find('a').first().attr('href')).toStrictEqual(
+      `/prisoner/A1234BC/contacts/create/add-phone-numbers/${journeyId}`,
+    )
+    expect(homeHeading.next().next().find('a').last().attr('href')).toStrictEqual(
+      `/prisoner/A1234BC/contacts/create/delete-phone-number/1/${journeyId}`,
+    )
   })
 
   it('should call the audit service for the page view', async () => {
