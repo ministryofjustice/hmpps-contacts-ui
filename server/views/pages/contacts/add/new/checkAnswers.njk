@@ -20,24 +20,44 @@
                 {% set baseChangeUrl = "/prisoner/" + journey.prisonerNumber + "/contacts/create" %}
                 {% set  formattedDateOfBirth %}{% if journey.dateOfBirth.isKnown === 'YES' %}{{ dateOfBirth | formatDate }}{% else %}Not provided{% endif %}{% endset %}
                 {% set contactDetailsRows = [
+                  {
+                     key: {
+                       text: "Title"
+                     },
+                     value: {
+                       html: titleDescription or 'Not provided',
+                       classes: 'check-answers-title-value'
+                     },
+                     actions: {
+                       items: [
+                         {
+                            href: baseChangeUrl + "/enter-name/"  + journey.id + "#title",
+                            text: "Change",
+                            visuallyHiddenText: "the contact’s title",
+                            attributes: {"data-qa": "change-title-link"},
+                            classes: "govuk-link--no-visited-state"
+                         }
+                       ]
+                      }
+                    },
                     {
                         key: {
                             text: "Name"
                         },
                         value: {
-                            html: formattedFullName,
+                            html: journey.names | formatNameFirstNameFirst,
                             classes: 'check-answers-name-value'
                         },
                         actions: {
                             items: [
                                 {
-                                    href: baseChangeUrl + "/enter-name/"  + journey.id,
+                                    href: baseChangeUrl + "/enter-name/"  + journey.id + "#firstName",
                                     text: "Change",
-                                    visuallyHiddenText: "name",
+                                    visuallyHiddenText: "the contact’s name",
                                     attributes: {"data-qa": "change-name-link"},
                                     classes: "govuk-link--no-visited-state"
                                 }
-                            ] if journey.mode === 'NEW'
+                            ]
                         }
                     },
                     {
@@ -53,43 +73,39 @@
                                 {
                                     href: baseChangeUrl + "/enter-dob/"  + journey.id,
                                     text: "Change",
-                                    visuallyHiddenText: "date of birth",
+                                    visuallyHiddenText: "the contact’s date of birth",
                                     attributes: {"data-qa": "change-dob-link"},
                                     classes: "govuk-link--no-visited-state"
-                                } if journey.mode === 'NEW'
+                                }
                             ]
                         }
+                    },
+                    {
+                      key: {
+                        text: "Gender"
+                      },
+                      value: {
+                        html: genderDescription or 'Not provided',
+                        classes: 'check-answers-gender-value'
+                      },
+                      actions: {
+                        items: [
+                          {
+                            href: baseChangeUrl + "/enter-gender/"  + journey.id,
+                            text: "Change",
+                            visuallyHiddenText: "the contact’s gender",
+                            attributes: {"data-qa": "change-gender-link"},
+                            classes: "govuk-link--no-visited-state"
+                          }
+                        ]
+                      }
                     }
                 ] %}
-                {% if journey.existingContact.deceasedDate %}
-                    {% set contactDetailsRows = (contactDetailsRows.push(
-                        {
-                            key: {
-                                text: "Deceased date"
-                            },
-                            value: {
-                                html: journey.existingContact.deceasedDate | formatDate,
-                                classes: 'check-answers-deceased-value'
-                            }
-                        }
-                    ), contactDetailsRows) %}
-                {% endif %}
 
+                <h2>Personal information</h2>
+                {{ govukSummaryList({ rows: contactDetailsRows }) }}
+                <h2>Relationship details</h2>
                 {{ govukSummaryList({
-                    card: {
-                        title: {
-                            text: "Contact details"
-                        }
-                    },
-                    rows: contactDetailsRows
-                }) }}
-
-                {{ govukSummaryList({
-                    card: {
-                        title: {
-                            text: "Relationship details"
-                        }
-                    },
                     rows: [
                         {
                             key: {
@@ -104,7 +120,7 @@
                                     {
                                         href: baseChangeUrl + "/select-relationship-type/"  + journey.id,
                                         text: "Change",
-                                        visuallyHiddenText: " relationship type",
+                                        visuallyHiddenText: "relationship type",
                                         attributes: {"data-qa": "change-relationship-type-link"},
                                         classes: "govuk-link--no-visited-state"
                                     }
@@ -124,7 +140,7 @@
                                     {
                                         href: baseChangeUrl + "/select-relationship-to-prisoner/"  + journey.id,
                                         text: "Change",
-                                        visuallyHiddenText: " the relationship to the prisoner",
+                                        visuallyHiddenText: "the relationship to the prisoner",
                                         attributes: {"data-qa": "change-relationship-to-prisoner-link"},
                                         classes: "govuk-link--no-visited-state"
                                     }
@@ -144,7 +160,7 @@
                                     {
                                         href: baseChangeUrl + "/select-emergency-contact/"  + journey.id,
                                         text: "Change",
-                                        visuallyHiddenText: "whether contact is an emergency contact",
+                                        visuallyHiddenText: "if the contact is the prisoner’s emergency contact",
                                         attributes: {"data-qa": "change-emergency-contact-link"},
                                         classes: "govuk-link--no-visited-state"
                                     }
@@ -164,7 +180,7 @@
                                     {
                                         href: baseChangeUrl + "/select-next-of-kin/"  + journey.id,
                                         text: "Change",
-                                        visuallyHiddenText: "whether contact is next of kin",
+                                        visuallyHiddenText: "if the contact is the prisoner’s next of kin",
                                         attributes: {"data-qa": "change-next-of-kin-link"},
                                         classes: "govuk-link--no-visited-state"
                                     }
@@ -173,7 +189,7 @@
                         },
                         {
                             key: {
-                                text: "Comments"
+                                text: "Comments on this relationship"
                             },
                             value: {
                                 html: journey.relationship.comments or "Not provided",
@@ -184,7 +200,7 @@
                                     {
                                         href: baseChangeUrl + "/enter-relationship-comments/"  + journey.id,
                                         text: "Change",
-                                        visuallyHiddenText: "comments about the relationship",
+                                        visuallyHiddenText: "the comments on the relationship",
                                         attributes: {"data-qa": "change-comments-link"},
                                         classes: "govuk-link--no-visited-state"
                                     }

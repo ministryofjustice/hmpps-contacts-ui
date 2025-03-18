@@ -5,7 +5,6 @@ import { ContactsService } from '../../../../services'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
-import { formatNameLastNameFirst } from '../../../../utils/formatName'
 import captionForAddContactJourney from '../addContactsUtils'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
@@ -60,7 +59,6 @@ export default class CreateContactCheckAnswersController implements PageHandler 
       user,
     )
 
-    const formattedFullName = await this.formattedFullName(journey, user)
     const caption = captionForAddContactJourney(journey)
 
     const view = {
@@ -71,17 +69,19 @@ export default class CreateContactCheckAnswersController implements PageHandler 
       navigation,
     }
     if (journey.mode === 'NEW') {
-      const phoneTypeDescriptions = new Map(
-        (await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user)).map(refData => [
-          refData.code,
-          refData.description,
-        ]),
-      )
-
+      const phoneTypeDescriptions = journey.phoneNumbers
+        ? new Map(
+            (await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user)).map(refData => [
+              refData.code,
+              refData.description,
+            ]),
+          )
+        : new Map()
       return res.render('pages/contacts/add/new/checkAnswers', {
         ...view,
         dateOfBirth,
-        formattedFullName,
+        titleDescription: await this.getDescriptionIfSet(journey.names!.title, ReferenceCodeType.TITLE, user),
+        genderDescription: await this.getDescriptionIfSet(journey.gender, ReferenceCodeType.GENDER, user),
         phoneNumbers: journey.phoneNumbers?.map(phone => ({
           phoneNumber: phone.phoneNumber,
           extNumber: phone.extension,
@@ -116,15 +116,15 @@ export default class CreateContactCheckAnswersController implements PageHandler 
     res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
   }
 
-  private async formattedFullName(journey: journeys.AddContactJourney, user: Express.User) {
-    let titleDescription: string | undefined
-    if (journey.names!.title) {
-      titleDescription = await this.referenceDataService.getReferenceDescriptionForCode(
-        ReferenceCodeType.TITLE,
-        journey.names!.title,
-        user,
-      )
+  private async getDescriptionIfSet(
+    value: string | undefined,
+    type: ReferenceCodeType,
+    user: Express.User,
+  ): Promise<string | undefined> {
+    let description: string | undefined
+    if (value) {
+      description = await this.referenceDataService.getReferenceDescriptionForCode(type, value, user)
     }
-    return formatNameLastNameFirst(journey.names!, { customTitle: titleDescription })
+    return description
   }
 }

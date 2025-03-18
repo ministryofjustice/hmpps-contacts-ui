@@ -97,7 +97,8 @@ context('Create contact and update from check answers', () => {
       .enterComments('Some comments about the relationship')
       .continueTo(AddContactAdditionalInfoPage, 'First Middle Last')
       .continueTo(CreateContactCheckYourAnswersPage)
-      .verifyShowsNameAs('Last, Mr First Middle')
+      .verifyShowsTitleAs('Mr')
+      .verifyShowsNameAs('First Middle Last')
       .verifyShowsDateOfBirthAs('15 June 1982')
       .verifyShowRelationshipAs('Mother')
       .verifyShowIsEmergencyContactAs('No')
@@ -107,18 +108,18 @@ context('Create contact and update from check answers', () => {
 
   it('Can change a contacts names when creating a new contact', () => {
     Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowsNameAs('Last, Mr First Middle')
-      .clickChangeNameLink()
-
-    Page.verifyOnPage(EnterNamePage) //
+      .verifyShowsTitleAs('Mr')
+      .verifyShowsNameAs('First Middle Last')
+      .clickLinkTo('Change the contact’s title', EnterNamePage)
       .selectTitle('DR')
+      .clickButtonTo('Continue', CreateContactCheckYourAnswersPage)
+      .verifyShowsTitleAs('Dr')
+      .clickLinkTo('Change the contact’s title', EnterNamePage)
       .enterLastName('Last Updated')
       .enterMiddleNames('Middle Updated')
       .enterFirstName('First Updated')
-      .clickContinue()
-
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
-      .verifyShowsNameAs('Last Updated, Dr First Updated Middle Updated')
+      .clickButtonTo('Continue', CreateContactCheckYourAnswersPage) //
+      .verifyShowsNameAs('First Updated Middle Updated Last Updated')
       .continueTo(CreateContactSuccessPage)
 
     cy.verifyLastAPICall(

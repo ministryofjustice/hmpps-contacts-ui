@@ -38,6 +38,7 @@ import { PageHandler } from '../../../interfaces/pageHandler'
 import AddContactAddPhoneController from './phone/addContactAddPhoneController'
 import { optionalPhonesSchema } from '../manage/addresses/add-address-phone/AddAddressPhonesSchema'
 import AddContactConfirmDeletePhoneController from './phone/addContactConfirmDeletePhoneController'
+import AddContactGenderController from './gender/addContactGenderController'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -306,6 +307,12 @@ const AddContactRoutes = (
     ensureInAddContactJourney,
     asyncMiddleware(removePhoneController.POST),
   )
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/enter-gender/:journeyId',
+    controller: new AddContactGenderController(referenceDataService),
+    noValidation: true,
+  })
 
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/create/addresses/:journeyId',

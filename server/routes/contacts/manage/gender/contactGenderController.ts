@@ -37,9 +37,7 @@ export default class ManageGenderController implements PageHandler {
       cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
     }
     return res.render('pages/contacts/manage/contactDetails/manageGender', {
-      caption: 'Edit contact details',
-      isOptional: false,
-      continueButtonLabel: 'Confirm and save',
+      isNewContact: false,
       contact,
       gender: contact.genderCode,
       genderOptions,
