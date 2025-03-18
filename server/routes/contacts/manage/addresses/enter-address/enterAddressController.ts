@@ -44,13 +44,14 @@ export default class EnterAddressController implements PageHandler {
       noFixedAddress:
         res.locals?.formResponses?.['noFixedAddress'] ?? (journey.addressLines?.noFixedAddress ? 'YES' : 'NO'),
       flat: res.locals?.formResponses?.['flat'] ?? journey.addressLines?.flat,
-      premises: res.locals?.formResponses?.['premises'] ?? journey.addressLines?.premises,
+      property: res.locals?.formResponses?.['property'] ?? journey.addressLines?.property,
       street: res.locals?.formResponses?.['street'] ?? journey.addressLines?.street,
-      locality: res.locals?.formResponses?.['locality'] ?? journey.addressLines?.locality,
-      town: res.locals?.formResponses?.['town'] ?? journey.addressLines?.town,
-      county: res.locals?.formResponses?.['county'] ?? journey.addressLines?.county,
+      area: res.locals?.formResponses?.['area'] ?? journey.addressLines?.area,
+      cityCode: res.locals?.formResponses?.['cityCode'] ?? journey.addressLines?.cityCode,
+      countyCode: res.locals?.formResponses?.['countyCode'] ?? journey.addressLines?.countyCode,
       postcode: res.locals?.formResponses?.['postcode'] ?? journey.addressLines?.postcode,
-      country: res.locals?.formResponses?.['country'] ?? journey.addressLines?.country ?? this.DEFAULT_COUNTRY,
+      countryCode:
+        res.locals?.formResponses?.['countryCode'] ?? journey.addressLines?.countryCode ?? this.DEFAULT_COUNTRY,
     }
     res.render('pages/contacts/manage/contactMethods/address/enterAddress', viewModel)
   }

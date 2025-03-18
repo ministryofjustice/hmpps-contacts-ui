@@ -33,18 +33,6 @@
         </thead>
         <tbody class="govuk-table__body">
         {% for item in contactsList %}
-        {%
-            set address = {
-                flat: item.flat,
-                premise: item.property,
-                street: item.street,
-                area: item.area,
-                city: item.cityDescription,
-                county: item.countyDescription,
-                postalCode: item.postcode,
-                country: item.countryDescription
-            }
-        %}
         <tr class="govuk-table__row">
             <td class="govuk-table__cell"><a href="/prisoner/{{prisonerNumber}}/contacts/manage/{{item.contactId}}/relationship/{{ item.prisonerContactId }}" data-qa="contact-{{item.contactId}}-link" class="govuk-link--no-visited-state">{{ item | formatNameLastNameFirst }}</a></td>
             <td class="govuk-table__cell"  data-qa="contact-{{ item.prisonerContactId }}-dob">
@@ -56,7 +44,7 @@
                 {% endif %}
             </td>
             <td class="govuk-table__cell">
-                {{ convertAddressToLines(address) }}
+                {{ convertAddressToLines(item) }}
             </td>
             <td class="govuk-table__cell">{{ item.relationshipToPrisonerDescription }}</td>
             <td class="govuk-table__cell">{{ 'Yes' if item.isEmergencyContact else 'No' }}</td>

@@ -41,7 +41,7 @@ beforeEach(() => {
     addressType: 'DO_NOT_KNOW',
     addressLines: {
       noFixedAddress: false,
-      country: 'ENG',
+      countryCode: 'ENG',
     },
   }
   app = appWithAllRoutes({

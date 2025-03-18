@@ -73,13 +73,13 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     existingJourney.addressLines = {
       noFixedAddress: false,
       flat: 'My Flat',
-      premises: 'My Premises',
+      property: 'My Premises',
       street: 'My Street',
-      locality: 'My Locality',
-      town: '7375',
-      county: 'DEVON',
+      area: 'My Locality',
+      cityCode: '7375',
+      countyCode: 'DEVON',
       postcode: 'My Postcode',
-      country: 'SCOT',
+      countryCode: 'SCOT',
     }
     const prisonerAddress: PrisonApiAddress = {
       addressId: 1,
@@ -111,13 +111,13 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(existingJourney.addressLines).toStrictEqual({
       noFixedAddress: true,
       flat: 'Prisoner Flat',
-      premises: 'Prisoner Premises',
+      property: 'Prisoner Premises',
       street: 'Prisoner Street',
-      locality: 'Prisoner Locality',
-      town: '9999',
-      county: 'CORNWALL',
+      area: 'Prisoner Locality',
+      cityCode: '9999',
+      countyCode: 'CORNWALL',
       postcode: 'Prisoner Postcode',
-      country: 'WALES',
+      countryCode: 'WALES',
     })
   })
 
@@ -125,13 +125,13 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     existingJourney.addressLines = {
       noFixedAddress: false,
       flat: 'My Flat',
-      premises: 'My Premises',
+      property: 'My Premises',
       street: 'My Street',
-      locality: 'My Locality',
-      town: '7375',
-      county: 'DEVON',
+      area: 'My Locality',
+      cityCode: '7375',
+      countyCode: 'DEVON',
       postcode: 'My Postcode',
-      country: 'SCOT',
+      countryCode: 'SCOT',
     }
     prisonerAddressService.getPrimaryAddress.mockResolvedValue(undefined)
 
@@ -145,13 +145,13 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(existingJourney.addressLines).toStrictEqual({
       noFixedAddress: false,
       flat: 'My Flat',
-      premises: 'My Premises',
+      property: 'My Premises',
       street: 'My Street',
-      locality: 'My Locality',
-      town: '7375',
-      county: 'DEVON',
+      area: 'My Locality',
+      cityCode: '7375',
+      countyCode: 'DEVON',
       postcode: 'My Postcode',
-      country: 'SCOT',
+      countryCode: 'SCOT',
     })
   })
 

@@ -76,7 +76,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('#country').val()).toStrictEqual('ENG')
+    expect($('#countryCode').val()).toStrictEqual('ENG')
 
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact methods')
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Enter the address for First Middle Last')
@@ -117,13 +117,13 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       existingJourney.addressLines = {
         noFixedAddress,
         flat: 'My Flat',
-        premises: 'My Premises',
+        property: 'My Premises',
         street: 'My Street',
-        locality: 'My Locality',
-        town: '7375',
-        county: 'DEVON',
+        area: 'My Locality',
+        cityCode: '7375',
+        countyCode: 'DEVON',
         postcode: 'My Postcode',
-        country: 'SCOT',
+        countryCode: 'SCOT',
       }
 
       // When
@@ -135,13 +135,13 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       expect(response.status).toEqual(200)
       const $ = cheerio.load(response.text)
       expect($('#flat').val()).toStrictEqual('My Flat')
-      expect($('#premises').val()).toStrictEqual('My Premises')
+      expect($('#property').val()).toStrictEqual('My Premises')
       expect($('#street').val()).toStrictEqual('My Street')
-      expect($('#locality').val()).toStrictEqual('My Locality')
-      expect($('#town').val()).toStrictEqual('7375')
-      expect($('#county').val()).toStrictEqual('DEVON')
+      expect($('#area').val()).toStrictEqual('My Locality')
+      expect($('#cityCode').val()).toStrictEqual('7375')
+      expect($('#countyCode').val()).toStrictEqual('DEVON')
       expect($('#postcode').val()).toStrictEqual('My Postcode')
-      expect($('#country').val()).toStrictEqual('SCOT')
+      expect($('#countryCode').val()).toStrictEqual('SCOT')
       expect($('input[type=checkbox]:checked').val()).toStrictEqual(expectedChecked)
     },
   )
@@ -156,25 +156,25 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       const form = {
         noFixedAddress: noFixedAddressForm,
         flat: 'My Flat 2',
-        premises: 'My Premises 2',
+        property: 'My Premises 2',
         street: 'My Street 2',
-        locality: 'My Locality 2',
-        town: '25343',
-        county: 'S.YORKSHIRE',
+        area: 'My Locality 2',
+        cityCode: '25343',
+        countyCode: 'S.YORKSHIRE',
         postcode: 'My Postcode 2',
-        country: 'NI',
+        countryCode: 'NI',
       }
       flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
       existingJourney.addressLines = {
         noFixedAddress: noFixedAddressSession,
         flat: 'My Flat',
-        premises: 'My Premises',
+        property: 'My Premises',
         street: 'My Street',
-        locality: 'My Locality',
-        town: '7375',
-        county: 'DEVON',
+        area: 'My Locality',
+        cityCode: '7375',
+        countyCode: 'DEVON',
         postcode: 'My Postcode',
-        country: 'SCOT',
+        countryCode: 'SCOT',
       }
 
       // When
@@ -186,13 +186,13 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       expect(response.status).toEqual(200)
       const $ = cheerio.load(response.text)
       expect($('#flat').val()).toStrictEqual('My Flat 2')
-      expect($('#premises').val()).toStrictEqual('My Premises 2')
+      expect($('#property').val()).toStrictEqual('My Premises 2')
       expect($('#street').val()).toStrictEqual('My Street 2')
-      expect($('#locality').val()).toStrictEqual('My Locality 2')
-      expect($('#town').val()).toStrictEqual('25343')
-      expect($('#county').val()).toStrictEqual('S.YORKSHIRE')
+      expect($('#area').val()).toStrictEqual('My Locality 2')
+      expect($('#cityCode').val()).toStrictEqual('25343')
+      expect($('#countyCode').val()).toStrictEqual('S.YORKSHIRE')
       expect($('#postcode').val()).toStrictEqual('My Postcode 2')
-      expect($('#country').val()).toStrictEqual('NI')
+      expect($('#countryCode').val()).toStrictEqual('NI')
       expect($('input[type=checkbox]:checked').val()).toStrictEqual(expectedChecked)
     },
   )
@@ -228,13 +228,13 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         .send({
           noFixedAddress: formNFA,
           flat: 'My Flat',
-          premises: 'My Premises',
+          property: 'My Premises',
           street: 'My Street',
-          locality: 'My Locality',
-          town: '7375',
-          county: 'DEVON',
+          area: 'My Locality',
+          cityCode: '7375',
+          countyCode: 'DEVON',
           postcode: 'My Postcode',
-          country: 'ENG',
+          countryCode: 'ENG',
         })
         .expect(302)
         .expect(
@@ -246,13 +246,13 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       const expected: AddressLines = {
         noFixedAddress: expectedNFA,
         flat: 'My Flat',
-        premises: 'My Premises',
+        property: 'My Premises',
         street: 'My Street',
-        locality: 'My Locality',
-        town: '7375',
-        county: 'DEVON',
+        area: 'My Locality',
+        cityCode: '7375',
+        countyCode: 'DEVON',
         postcode: 'My Postcode',
-        country: 'ENG',
+        countryCode: 'ENG',
       }
       expect(session.addressJourneys![journeyId]!.addressLines).toStrictEqual(expected)
     },
@@ -280,13 +280,13 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         .send({
           noFixedAddress: 'YES',
           flat: 'My Flat',
-          premises: 'My Premises',
+          property: 'My Premises',
           street: 'My Street',
-          locality: 'My Locality',
-          town: '7375',
-          county: 'DEVON',
+          area: 'My Locality',
+          cityCode: '7375',
+          countyCode: 'DEVON',
           postcode: 'My Postcode',
-          country: 'ENG',
+          countryCode: 'ENG',
         })
         .expect(302)
         .expect('Location', expectedRedirect)

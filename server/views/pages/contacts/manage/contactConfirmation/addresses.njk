@@ -11,20 +11,6 @@
             %}
         {% endfor %}
     {% endif %}
-
-        {%
-            set address = {
-                flat: mostRelevantAddress.flat,
-                premise: mostRelevantAddress.property,
-                street: mostRelevantAddress.street,
-                area: mostRelevantAddress.area,
-                city: mostRelevantAddress.cityDescription,
-                county: mostRelevantAddress.countyDescription,
-                postalCode: mostRelevantAddress.postcode,
-                country: mostRelevantAddress.countryDescription
-            }
-        %}
-
         {% if mostRelevantAddressLabel %}
             {% set mostRelevantAddressRow = (
                 mostRelevantAddressRow.push(
@@ -45,7 +31,7 @@
                         text: "Address"
                     },
                     value: {
-                        html: address | addressToLines | escape | nl2br,
+                        html: mostRelevantAddress | addressToLines | escape | nl2br,
                         classes: 'confirm-address-value'
                     }
                 }

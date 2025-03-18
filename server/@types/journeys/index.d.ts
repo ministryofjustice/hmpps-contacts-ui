@@ -23,6 +23,7 @@ declare namespace journeys {
     existingContact?: {
       deceasedDate?: string
     }
+    addresses?: AddressForm[] | undefined
   }
 
   export interface ContactNames {
@@ -136,13 +137,7 @@ declare namespace journeys {
     comments?: string | undefined
   }
 
-  export interface AddressJourney {
-    id: string
-    lastTouched: string
-    contactId: number
-    prisonerNumber?: string
-    isCheckingAnswers: boolean
-    contactNames: ContactNames
+  export interface AddressForm {
     addressType?: string | undefined
     addressLines?: AddressLines | undefined
     addressMetadata?: AddressMetadata | undefined
@@ -155,16 +150,25 @@ declare namespace journeys {
       | undefined
   }
 
+  export interface AddressJourney extends AddressForm {
+    id: string
+    lastTouched: string
+    contactId: number
+    prisonerNumber?: string
+    isCheckingAnswers: boolean
+    contactNames: ContactNames
+  }
+
   export interface AddressLines {
     noFixedAddress: boolean
     flat?: string | undefined | null
-    premises?: string | undefined | null
+    property?: string | undefined | null
     street?: string | undefined | null
-    locality?: string | undefined | null
-    town?: string | undefined | null
-    county?: string | undefined | null
+    area?: string | undefined | null
+    cityCode?: string | undefined | null
+    countyCode?: string | undefined | null
     postcode?: string | undefined | null
-    country: string
+    countryCode: string
   }
 
   export interface AddressMetadata {

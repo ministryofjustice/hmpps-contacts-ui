@@ -94,6 +94,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('a:contains("Addresses")').parent().next().text().trim()).toStrictEqual('Not entered')
     expect(
       $('a:contains("Comments on their relationship with First Middle Last")').parent().next().text().trim(),
     ).toStrictEqual('Not entered')
@@ -101,6 +102,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
 
   it('should render entered for optional info that has been completed', async () => {
     // When
+    existingJourney.addresses = [{ addressType: 'HOME' }]
     existingJourney.relationship!.comments = 'Some comments'
     const response = await request(app).get(
       `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`,
@@ -110,6 +112,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('a:contains("Addresses")').parent().next().text().trim()).toStrictEqual('Entered')
     expect(
       $('a:contains("Comments on their relationship with First Middle Last")').parent().next().text().trim(),
     ).toStrictEqual('Entered')

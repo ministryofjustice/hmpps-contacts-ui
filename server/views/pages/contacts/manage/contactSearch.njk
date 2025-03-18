@@ -117,19 +117,6 @@
         <div class="govuk-grid-column-full govuk-!-padding-left-3 govuk-!-padding-right-3 contact-list" id="contact-search-results">
             {% set rows = [] %}
             {% for result in results.content %}
-                {%
-                    set address = {
-                        flat: result.flat,
-                        premise: result.property,
-                        street: result.street,
-                        area: result.area,
-                        city: result.cityDescription,
-                        county: result.countyDescription,
-                        postalCode: result.postcode,
-                        country: result.countryDescription
-                    }
-                %}
-
                 {% set contactNameHtml %}
                     <a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/add/mode/EXISTING/{{ journey.id }}?contactId={{ result.id }}" class="govuk-link govuk-link--no-visited-state bapv-result-row" data-qa="add-contact-{{ result.id }}-link">
                         {{ (result.lastName + ", " + result.firstName) | capitaliseName }}
@@ -139,7 +126,7 @@
                 {% set rows = (rows.push([
                     { html: contactNameHtml },
                     { text: result.dateOfBirth | formatDate('dd/MM/yyyy') },
-                    { html: convertAddressToLines(address) }
+                    { html: convertAddressToLines(result) }
                 ]), rows) %}
             {% else %}
                 {% set rows = (rows.push([

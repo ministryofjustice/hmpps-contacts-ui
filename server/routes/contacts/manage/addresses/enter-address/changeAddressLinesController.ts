@@ -47,13 +47,13 @@ export default class ChangeAddressLinesController implements PageHandler {
       usePrisonerAddress: { enabled: false },
       noFixedAddress: res.locals?.formResponses?.['noFixedAddress'] ?? (addressLines.noFixedAddress ? 'YES' : 'NO'),
       flat: res.locals?.formResponses?.['flat'] ?? addressLines.flat,
-      premises: res.locals?.formResponses?.['premises'] ?? addressLines.premises,
+      property: res.locals?.formResponses?.['property'] ?? addressLines.property,
       street: res.locals?.formResponses?.['street'] ?? addressLines.street,
-      locality: res.locals?.formResponses?.['locality'] ?? addressLines.locality,
-      town: res.locals?.formResponses?.['town'] ?? addressLines.town,
-      county: res.locals?.formResponses?.['county'] ?? addressLines.county,
+      area: res.locals?.formResponses?.['area'] ?? addressLines.area,
+      cityCode: res.locals?.formResponses?.['cityCode'] ?? addressLines.cityCode,
+      countyCode: res.locals?.formResponses?.['countyCode'] ?? addressLines.countyCode,
       postcode: res.locals?.formResponses?.['postcode'] ?? addressLines.postcode,
-      country: res.locals?.formResponses?.['country'] ?? addressLines.country,
+      countryCode: res.locals?.formResponses?.['countryCode'] ?? addressLines.countryCode,
       navigation,
     }
     res.render('pages/contacts/manage/contactMethods/address/enterAddress', viewModel)
@@ -74,19 +74,19 @@ export default class ChangeAddressLinesController implements PageHandler {
   ): Promise<void> => {
     const { prisonerNumber, contactId, prisonerContactId, contactAddressId } = req.params
     const { user } = res.locals
-    const { noFixedAddress, flat, premises, street, locality, town, county, postcode, country } = req.body
+    const { noFixedAddress, flat, property, street, area, cityCode, countyCode, postcode, countryCode } = req.body
     await this.contactsService.updateContactAddress(
       {
         contactId: Number(contactId),
         contactAddressId: Number(contactAddressId),
         flat: flat ?? null,
-        premises: premises ?? null,
+        property: property ?? null,
         street: street ?? null,
-        locality: locality ?? null,
-        town: town ?? null,
-        county: county ?? null,
+        area: area ?? null,
+        cityCode: cityCode ?? null,
+        countyCode: countyCode ?? null,
         postcode: postcode ?? null,
-        country: country ?? null,
+        countryCode: countryCode ?? null,
         noFixedAddress: noFixedAddress === 'YES',
       },
       user,

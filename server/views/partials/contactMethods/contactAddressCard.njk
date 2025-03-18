@@ -11,18 +11,6 @@
   {% set changeAddressLink = '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + "/relationship/" + prisonerContactId + '/address/edit/' + address.contactAddressId + '/start' %}
   {% set updateAddressBaseLink = '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + "/relationship/" + prisonerContactId + '/address/' + address.contactAddressId %}
 
-  {%
-    set addressLines = {
-    flat: address.flat,
-    premise: address.property,
-    street: address.street,
-    area: address.area,
-    city: address.cityDescription,
-    county: address.countyDescription,
-    postalCode: address.postcode,
-    country: address.countryDescription
-  }
-  %}
   {% set rows = [
     {
       key: { text: 'Type' },
@@ -41,7 +29,7 @@
     },
     {
       key: { text: 'Address' },
-      value: { html: ('No fixed address<br/>' if address.noFixedAddress ) + addressLines | addressToLines | escape | nl2br },
+      value: { html: ('No fixed address<br/>' if address.noFixedAddress ) + address | addressToLines | escape | nl2br },
       actions: {
       items: [
           {

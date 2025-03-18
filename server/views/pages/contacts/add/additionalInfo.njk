@@ -18,6 +18,20 @@
       <form method='POST'>
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
+        <h2>Contact methods</h2>
+        {{ govukTaskList({
+          idPrefix: "contact-methods",
+          items: [
+            {
+              title: {
+              text: "Addresses"
+            },
+              href: "/prisoner/" + journey.prisonerNumber + "/contacts/create/addresses/" + journey.id,
+              status: journey.addresses | taskStatus
+            }
+          ]
+        }) }}
+
         <h2>More details about the contact</h2>
         {{ govukTaskList({
           idPrefix: "more-details",

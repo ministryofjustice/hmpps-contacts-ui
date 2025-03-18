@@ -42,30 +42,26 @@ export const getFormattedAddress = async (
   user: Express.User,
 ) => {
   return {
-    flat: journey.addressLines!.flat,
-    premise: journey.addressLines!.premises,
-    street: journey.addressLines!.street,
-    area: journey.addressLines!.locality,
-    city:
-      journey.addressLines!.town &&
+    ...journey.addressLines!,
+    cityDescription:
+      journey.addressLines!.cityCode &&
       (await referenceDataService.getReferenceDescriptionForCode(
         ReferenceCodeType.CITY,
-        journey.addressLines!.town,
+        journey.addressLines!.cityCode,
         user,
       )),
-    county:
-      journey.addressLines!.county &&
+    countyDescription:
+      journey.addressLines!.countyCode &&
       (await referenceDataService.getReferenceDescriptionForCode(
         ReferenceCodeType.COUNTY,
-        journey.addressLines!.county,
+        journey.addressLines!.countyCode,
         user,
       )),
-    postalCode: journey.addressLines!.postcode,
-    country:
-      journey.addressLines!.country &&
+    countryDescription:
+      journey.addressLines!.countryCode &&
       (await referenceDataService.getReferenceDescriptionForCode(
         ReferenceCodeType.COUNTRY,
-        journey.addressLines!.country,
+        journey.addressLines!.countryCode,
         user,
       )),
   }
@@ -90,23 +86,13 @@ export const getUpdateAddressDetails = async (
   const addressLines: AddressLines = {
     noFixedAddress: existingAddress.noFixedAddress,
     flat: existingAddress.flat,
-    premises: existingAddress.property,
-    street: existingAddress.street,
-    locality: existingAddress.area,
-    town: existingAddress.cityCode,
-    county: existingAddress.countyCode,
-    postcode: existingAddress.postcode,
-    country: existingAddress.countryCode,
-  }
-  const formattedAddress = {
-    flat: existingAddress.flat,
-    premise: existingAddress.property,
+    property: existingAddress.property,
     street: existingAddress.street,
     area: existingAddress.area,
-    city: existingAddress.cityDescription,
-    county: existingAddress.countyDescription,
-    postalCode: existingAddress.postcode,
-    country: existingAddress.countryDescription,
+    cityCode: existingAddress.cityCode,
+    countyCode: existingAddress.countyCode,
+    postcode: existingAddress.postcode,
+    countryCode: existingAddress.countryCode,
   }
   const fromDate = existingAddress.startDate ? parseISO(existingAddress.startDate) : undefined
   const toDate = existingAddress.endDate ? parseISO(existingAddress.endDate) : undefined
@@ -123,10 +109,10 @@ export const getUpdateAddressDetails = async (
 
   return {
     address: existingAddress,
+    formattedAddress: existingAddress,
     contact,
     addressType,
     addressLines,
     addressMetadata,
-    formattedAddress,
   }
 }

@@ -2,7 +2,6 @@ import { RequestHandler, Router } from 'express'
 import { z } from 'zod'
 import { SchemaFactory, validate } from '../../../middleware/validationMiddleware'
 import AuditService from '../../../services/auditService'
-import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import { ensureInManageContactsJourney } from './manageContactsMiddleware'
 import StartManageContactsJourneyController from './start/startManageContactsJourneyController'
 import PrisonerSearchController from './prisoner-search/prisonerSearchController'
@@ -99,6 +98,7 @@ import ChangeAddressCommentsController from './addresses/comments/changeAddressC
 import CancelAddAddressController from './addresses/cancel/cancelAddAddressController'
 import { optionalPhonesSchema, phonesSchema } from './addresses/add-address-phone/AddAddressPhonesSchema'
 import AddressPhoneController from './addresses/add-address-phone/addressPhoneController'
+import { routerMethods } from '../../../utils/routerMethods'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -110,17 +110,7 @@ const ManageContactsRoutes = (
   organisationsService: OrganisationsService,
 ) => {
   const router = Router({ mergeParams: true })
-
-  const get = <P extends { [key: string]: string }>(
-    path: string,
-    controller: PageHandler,
-    ...handlers: (RequestHandler | RequestHandler<P>)[]
-  ) => router.get(path, ...handlers, logPageViewMiddleware(auditService, controller), asyncMiddleware(controller.GET))
-  const post = <P extends { [key: string]: string }>(
-    path: string,
-    controller: PageHandler,
-    ...handlers: (RequestHandler<P> | RequestHandler<journeys.PrisonerJourneyParams>)[]
-  ) => router.post(path, ...(handlers as RequestHandler[]), asyncMiddleware(controller.POST!))
+  const { get, post } = routerMethods(router, auditService)
 
   const standAloneRoute = <P extends { [key: string]: string }>({
     path,
