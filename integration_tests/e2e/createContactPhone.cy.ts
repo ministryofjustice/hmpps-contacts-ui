@@ -54,7 +54,7 @@ context('Create Contact Phones', () => {
   })
 
   it('Can create multiple contact phone numbers', () => {
-    Page.verifyOnPage(AddPhonesPage, 'First Middle Names Last') //
+    Page.verifyOnPage(AddPhonesPage, 'First Middle Names Last', false) //
       .enterPhoneNumber(0, '01234 777777')
       .enterExtension(0, '000')
       .selectType(0, 'HOME')
@@ -90,7 +90,7 @@ context('Create Contact Phones', () => {
   })
 
   it('Should keep details of other phone numbers if a different one has an error', () => {
-    const addPhonesPage = Page.verifyOnPage(AddPhonesPage, 'First Middle Names Last') //
+    const addPhonesPage = Page.verifyOnPage(AddPhonesPage, 'First Middle Names Last', false) //
       .enterPhoneNumber(0, '01234 777777')
       .enterExtension(0, '000')
       .selectType(0, 'HOME')
@@ -112,7 +112,7 @@ context('Create Contact Phones', () => {
 
   it('Should validate inputs', () => {
     // require phone number type
-    const enterPhonePage = Page.verifyOnPage(AddPhonesPage, 'First Middle Names Last') //
+    const enterPhonePage = Page.verifyOnPage(AddPhonesPage, 'First Middle Names Last', false) //
       .enterPhoneNumber(0, '01234 777777')
     enterPhonePage.clickContinue()
     enterPhonePage.hasFieldInError('phones[0].type', 'Select the type of phone number')
@@ -132,8 +132,8 @@ context('Create Contact Phones', () => {
 
   it('goes to correct page on Back or Cancel', () => {
     // Back to Edit Contact Methods
-    Page.verifyOnPage(AddPhonesPage, 'First Middle Names Last') //
-      .backTo(EditContactMethodsPage, 'First Middle Names Last')
+    Page.verifyOnPage(AddPhonesPage, 'First Middle Names Last', false) //
+      .backTo(EditContactMethodsPage, 'First Middle Names Last', false)
       .clickAddPhoneNumberLink()
 
     // Cancel to Contact Details page

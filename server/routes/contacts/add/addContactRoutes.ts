@@ -50,6 +50,9 @@ import ContactAddressCommentsController from './addresses/comments/contactAddres
 import { addressCommentsSchema } from '../manage/addresses/comments/addressCommentsSchema'
 import ContactDeleteAddressController from './addresses/delete/contactDeleteAddressController'
 import ContactDeleteAddressPhoneController from './addresses/delete-address-phone/contactDeleteAddressPhoneController'
+import AddContactAddPhoneController from './phone/addContactAddPhoneController'
+import { optionalPhonesSchema } from '../manage/addresses/add-address-phone/AddAddressPhonesSchema'
+import AddContactConfirmDeletePhoneController from './phone/addContactConfirmDeletePhoneController'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -289,6 +292,35 @@ const AddContactRoutes = (
     '/prisoner/:prisonerNumber/contacts/add/enter-additional-info/:journeyId',
     ensureInAddContactJourney,
     asyncMiddleware(addContactAdditionalInfoController.POST),
+  )
+
+  const addPhoneController = new AddContactAddPhoneController(referenceDataService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/create/add-phone-numbers/:journeyId',
+    ensureInAddContactJourney,
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    logPageViewMiddleware(auditService, addPhoneController),
+    asyncMiddleware(addPhoneController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/create/add-phone-numbers/:journeyId',
+    ensureInAddContactJourney,
+    validate(optionalPhonesSchema),
+    asyncMiddleware(addPhoneController.POST),
+  )
+
+  const removePhoneController = new AddContactConfirmDeletePhoneController(referenceDataService)
+  router.get(
+    '/prisoner/:prisonerNumber/contacts/create/delete-phone-number/:index/:journeyId',
+    ensureInAddContactJourney,
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    logPageViewMiddleware(auditService, removePhoneController),
+    asyncMiddleware(removePhoneController.GET),
+  )
+  router.post(
+    '/prisoner/:prisonerNumber/contacts/create/delete-phone-number/:index/:journeyId',
+    ensureInAddContactJourney,
+    asyncMiddleware(removePhoneController.POST),
   )
 
   journeyRoute({

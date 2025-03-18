@@ -52,6 +52,7 @@ const STUBBED_RELATIONSHIP_TYPE_OPTIONS: StubReferenceData[] = [
 const STUBBED_PHONE_TYPE_OPTIONS: StubReferenceData[] = [
   { code: 'MOB', description: 'Mobile', groupCode: 'PHONE_TYPE' },
   { code: 'HOME', description: 'Home', groupCode: 'PHONE_TYPE' },
+  { code: 'BUS', description: 'Business', groupCode: 'PHONE_TYPE' },
 ]
 const STUBBED_IDENTITY_OPTIONS: StubReferenceData[] = [
   { code: 'DL', description: 'Driving licence', groupCode: 'ID_TYPE' },

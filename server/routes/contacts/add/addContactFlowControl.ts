@@ -19,6 +19,8 @@ type CreateContactPages =
   | Page.SUCCESSFULLY_ADDED_CONTACT_PAGE
   | Page.ADD_CONTACT_CANCEL_PAGE
   | Page.ADD_ADDRESSES
+  | Page.ADD_CONTACT_ADD_PHONE_PAGE
+  | Page.ADD_CONTACT_DELETE_PHONE_PAGE
 type ExistingContactPages =
   | Page.CREATE_CONTACT_START_PAGE
   | Page.CONTACT_SEARCH_PAGE
@@ -95,6 +97,13 @@ const PAGES: Record<AllAddContactPages, PageConfig> = {
   [Page.ADD_ADDRESSES]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/addresses/${journey.id}`,
   },
+  [Page.ADD_CONTACT_ADD_PHONE_PAGE]: {
+    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/add-phone-numbers/${journey.id}`,
+  },
+  [Page.ADD_CONTACT_DELETE_PHONE_PAGE]: {
+    // this page can only be access by check answers
+    url: _ => '#',
+  },
 }
 
 const PRE_MODE_SPEC: Record<PreModePages, Spec> = {
@@ -138,6 +147,17 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
     ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE }),
     previousUrlLabel: _ => 'Back',
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
+  },
+  [Page.ADD_CONTACT_ADD_PHONE_PAGE]: {
+    ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE }),
+    previousUrlLabel: _ => 'Back',
+    nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
+  },
+  [Page.ADD_CONTACT_DELETE_PHONE_PAGE]: {
+    ...backTo({ page: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE }),
+    previousUrlLabel: _ => 'Back',
+    nextUrl: checkAnswersOr(PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url),
+    cancelUrl: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url,
   },
   [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE]: {
     ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE, canSkipToCheckAnswer: false }),

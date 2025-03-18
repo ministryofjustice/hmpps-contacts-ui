@@ -7,13 +7,16 @@ import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
+import { mockedGetReferenceDescriptionForCode } from '../../../testutils/stubReferenceData'
 import AddContactJourney = journeys.AddContactJourney
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
+jest.mock('../../../../services/referenceDataService')
 
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
+const referenceDataService = MockedService.ReferenceDataService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -26,7 +29,7 @@ beforeEach(() => {
     id: journeyId,
     lastTouched: new Date().toISOString(),
     prisonerNumber,
-    isCheckingAnswers: false,
+    isCheckingAnswers: true,
     returnPoint: { url: '/foo-bar' },
     names: {
       lastName: 'last',
@@ -41,12 +44,17 @@ beforeEach(() => {
       isEmergencyContact: 'YES',
       isNextOfKin: 'YES',
     },
+    phoneNumbers: [
+      { type: 'MOB', phoneNumber: '0123456789' },
+      { type: 'HOME', phoneNumber: '987654321', extension: '#123' },
+    ],
     mode: 'NEW',
   }
   app = appWithAllRoutes({
     services: {
       auditService,
       prisonerSearchService,
+      referenceDataService,
     },
     userSupplier: () => user,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -56,81 +64,45 @@ beforeEach(() => {
     },
   })
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
+  referenceDataService.getReferenceDescriptionForCode.mockImplementation(mockedGetReferenceDescriptionForCode)
 })
 
 afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:journeyId', () => {
-  it('should render enter additional info page', async () => {
-    // When
+describe('GET /prisoner/:prisonerNumber/contacts/create/delete-phone-number/:index/:journeyId', () => {
+  it('should render navigation and correct phone numbers details', async () => {
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/create/delete-phone-number/1/${journeyId}`,
     )
 
-    // Then
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Enter additional information about First Middle Last (optional)',
+      'Are you sure you want to delete this phone number for First Middle Last?',
     )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
-      `/prisoner/${prisonerNumber}/contacts/create/select-next-of-kin/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`,
     )
-    expect($('[data-qa=cancel-button]')).toHaveLength(0)
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`,
+    )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-  })
-
-  it('should render not entered for optional info that has not been completed yet', async () => {
-    // When
-    const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`,
-    )
-
-    // Then
-    expect(response.status).toEqual(200)
-
-    const $ = cheerio.load(response.text)
-    expect($('a:contains("Addresses")').parent().next().text().trim()).toStrictEqual('Not entered')
-    expect(
-      $('a:contains("Comments on their relationship with First Middle Last")').parent().next().text().trim(),
-    ).toStrictEqual('Not entered')
-    expect($('a:contains("Phone numbers")').parent().next().text().trim()).toStrictEqual('Not entered')
-  })
-
-  it('should render entered for optional info that has been completed', async () => {
-    // When
-    existingJourney.addresses = [{ addressType: 'HOME' }]
-    existingJourney.relationship!.comments = 'Some comments'
-    existingJourney.phoneNumbers = [
-      { type: 'MOB', phoneNumber: '0123456789' },
-      { type: 'HOME', phoneNumber: '987654321', extension: '#123' },
-    ]
-    const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`,
-    )
-
-    // Then
-    expect(response.status).toEqual(200)
-
-    const $ = cheerio.load(response.text)
-    expect($('a:contains("Addresses")').parent().next().text().trim()).toStrictEqual('Entered')
-    expect(
-      $('a:contains("Comments on their relationship with First Middle Last")').parent().next().text().trim(),
-    ).toStrictEqual('Entered')
-    expect($('a:contains("Phone numbers")').parent().next().text().trim()).toStrictEqual('Entered')
+    expect($('.phone-number-value').text().trim()).toStrictEqual('987654321')
+    expect($('.extension-value').text().trim()).toStrictEqual('#123')
+    expect($('.type-value').text().trim()).toStrictEqual('Home')
   })
 
   it('should call the audit service for the page view', async () => {
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/create/delete-phone-number/1/${journeyId}`,
     )
 
     expect(response.status).toEqual(200)
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.ENTER_ADDITIONAL_INFORMATION_PAGE, {
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADD_CONTACT_DELETE_PHONE_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })
@@ -138,25 +110,28 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${uuidv4()}`)
+      .get(`/prisoner/${prisonerNumber}/contacts/create/delete-phone-number/1/${uuidv4()}`)
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/add/enter-additional-info', () => {
-  it('should pass to check answers', async () => {
+describe('POST /prisoner/:prisonerNumber/contacts/create/delete-phone-number/:index/:journeyId', () => {
+  it('should pass to check answers with the phone number removed', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/delete-phone-number/1/${journeyId}`)
       .type('form')
-      .send({})
+      .send({ comments: 'Foo' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+    const expected = [{ type: 'MOB', phoneNumber: '0123456789' }]
+    expect(session.addContactJourneys![journeyId]!.phoneNumbers).toStrictEqual(expected)
   })
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${uuidv4()}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/delete-phone-number/1/${uuidv4()}`)
       .type('form')
       .send({})
       .expect(302)

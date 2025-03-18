@@ -19,6 +19,7 @@ context('Create contact and update from check answers', () => {
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.task('stubComponentsMeta')
     cy.task('stubTitlesReferenceData')
+    cy.task('stubPhoneTypeReferenceData')
     cy.task('stubRelationshipReferenceData')
     cy.task('stubOfficialRelationshipReferenceData')
     cy.task('stubRelationshipTypeReferenceData')
@@ -134,8 +135,6 @@ context('Create contact and update from check answers', () => {
         dateOfBirth: '1982-06-15',
         isStaff: false,
         interpreterRequired: false,
-        identities: [],
-        addresses: [],
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipTypeCode: 'S',
@@ -176,8 +175,6 @@ context('Create contact and update from check answers', () => {
         dateOfBirth: '1982-06-15',
         isStaff: false,
         interpreterRequired: false,
-        identities: [],
-        addresses: [],
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipTypeCode: 'S',
@@ -218,8 +215,6 @@ context('Create contact and update from check answers', () => {
         dateOfBirth: '1982-06-15',
         isStaff: false,
         interpreterRequired: false,
-        identities: [],
-        addresses: [],
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipTypeCode: 'S',
@@ -260,8 +255,6 @@ context('Create contact and update from check answers', () => {
         dateOfBirth: '1982-06-15',
         isStaff: false,
         interpreterRequired: false,
-        identities: [],
-        addresses: [],
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipTypeCode: 'S',
@@ -304,8 +297,6 @@ context('Create contact and update from check answers', () => {
         middleNames: 'Middle',
         isStaff: false,
         interpreterRequired: false,
-        identities: [],
-        addresses: [],
         createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',
@@ -353,8 +344,6 @@ context('Create contact and update from check answers', () => {
         dateOfBirth: '2010-12-28',
         isStaff: false,
         interpreterRequired: false,
-        identities: [],
-        addresses: [],
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipTypeCode: 'S',

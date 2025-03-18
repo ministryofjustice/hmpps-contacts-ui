@@ -696,6 +696,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/sync/prisoner-contact/merge': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Removes and recreates relationships and restrictions after an offender merge.
+     * @description Removes and recreates relationships and restrictions after an offender merge.
+     */
+    post: operations['mergePrisonerContacts']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/sync/prisoner-contact-restriction': {
     parameters: {
       query?: never
@@ -1779,14 +1799,6 @@ export interface components {
        */
       createdTime: string
     }
-    ErrorResponse: {
-      /** Format: int32 */
-      status: number
-      errorCode?: string
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
-    }
     SyncPrisonerNumberOfChildrenResponse: {
       /**
        * Format: int64
@@ -1805,6 +1817,14 @@ export interface components {
       createdTime?: string
       /** @description Username of the creator */
       createdBy?: string
+    }
+    ErrorResponse: {
+      /** Format: int32 */
+      status: number
+      errorCode?: string
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
     }
     /** @description Request to update a prisoner's domestic status */
     SyncUpdatePrisonerDomesticStatusRequest: {
@@ -4083,6 +4103,212 @@ export interface components {
        */
       createdAtPrison?: string
     }
+    CodedValue: {
+      /**
+       * @description A coded value from NOMIS reference data
+       * @example CODE
+       */
+      code: string
+      /**
+       * @description The description for this coded value in NOMIS
+       * @example Description
+       */
+      description: string
+    }
+    /** @description The request to replace the relationships for a prisoner */
+    MergePrisonerContactRequest: {
+      /** @description The prisoner number that was retained in NOMIS */
+      retainedPrisonerNumber: string
+      /** @description The list of relationships to create */
+      prisonerContacts: components['schemas']['SyncPrisonerRelationship'][]
+      /** @description The prisoner number that was removed from NOMIS */
+      removedPrisonerNumber: string
+    }
+    /** @description A single prisoner relationship */
+    SyncPrisonerRelationship: {
+      /**
+       * Format: int64
+       * @description The ID for this relationship in NOMIS
+       * @example 123
+       */
+      id: number
+      /**
+       * Format: int64
+       * @description The contactId which this relationship is with
+       */
+      contactId: number
+      /**
+       * @description
+       *           Coded value indicating either a social or official contact (mandatory).
+       *           This is a coded value (from the group code CONTACT_TYPE in reference data).
+       *           Known values are (S) Social or (O) official.
+       *
+       * @example S
+       */
+      contactType: components['schemas']['CodedValue']
+      /** @description Coded value indicating the type of relationship - from reference data */
+      relationshipType: components['schemas']['CodedValue']
+      /**
+       * @description True if this relationship applies to the latest or current term in prison, false if a previous term
+       * @example true
+       */
+      currentTerm: boolean
+      /**
+       * @description The relationship is active
+       * @example true
+       */
+      active: boolean
+      /**
+       * Format: date
+       * @description The date that this relationship expired
+       * @example 2024-03-01
+       */
+      expiryDate?: string
+      /**
+       * @description Approved visitor
+       * @example true
+       */
+      approvedVisitor: boolean
+      /**
+       * @description Next of kin
+       * @example true
+       */
+      nextOfKin: boolean
+      /**
+       * @description Emergency contact
+       * @example true
+       */
+      emergencyContact: boolean
+      /**
+       * @description Comment on this relationship
+       * @example This is an optional comment
+       */
+      comment?: string
+      /**
+       * @description The prisoner number (NOMS ID) related
+       * @example A1234AA
+       */
+      prisonerNumber: string
+      /** @description The restrictions for this prisoner contact relationship */
+      restrictions: components['schemas']['SyncRelationshipRestriction'][]
+      /** Format: date-time */
+      createDateTime?: string
+      createUsername?: string
+      /** Format: date-time */
+      modifyDateTime?: string
+      modifyUsername?: string
+    }
+    SyncRelationshipRestriction: {
+      /**
+       * Format: int64
+       * @description The ID of this restriction in NOMIS
+       * @example 123
+       */
+      id: number
+      /** @description Coded value indicating the restriction type from reference data */
+      restrictionType: components['schemas']['CodedValue']
+      /**
+       * @description Comment on this restriction
+       * @example Comment on restriction
+       */
+      comment?: string
+      /**
+       * Format: date
+       * @description The date that this restriction took effect
+       * @example 2024-03-01
+       */
+      startDate: string
+      /**
+       * Format: date
+       * @description The date that this restriction expires
+       * @example 2024-03-01
+       */
+      expiryDate?: string
+      /** Format: date-time */
+      createDateTime?: string
+      createUsername?: string
+      /** Format: date-time */
+      modifyDateTime?: string
+      modifyUsername?: string
+    }
+    IdPair: {
+      /**
+       * @description The category of information returned
+       * @example PHONE
+       * @enum {string}
+       */
+      elementType:
+        | 'CONTACT'
+        | 'PHONE'
+        | 'EMAIL'
+        | 'ADDRESS'
+        | 'ADDRESS_PHONE'
+        | 'IDENTITY'
+        | 'RESTRICTION'
+        | 'PRISONER_CONTACT'
+        | 'PRISONER_CONTACT_RESTRICTION'
+        | 'EMPLOYMENT'
+        | 'ORGANISATION'
+        | 'WEB_ADDRESS'
+      /**
+       * Format: int64
+       * @description The unique ID for this piece of data provided in the request
+       * @example 123435
+       */
+      nomisId: number
+      /**
+       * Format: int64
+       * @description The unique ID created in the DPS contacts service
+       * @example 1234
+       */
+      dpsId: number
+    }
+    /** @description The response object for a prisoner merge request */
+    MergePrisonerContactResponse: {
+      relationshipsCreated: components['schemas']['PrisonerContactAndRestrictionIds'][]
+      relationshipsRemoved: components['schemas']['PrisonerRelationshipIds'][]
+    }
+    /** @description Contains the IDs of the contact, relationships and restrictions created during a prisoner merge */
+    PrisonerContactAndRestrictionIds: {
+      /**
+       * Format: int64
+       * @description The contactId that this relationship is with
+       */
+      contactId: number
+      /** @description The unique IDs in NOMIS and DPS for this relationship or prisoner contact */
+      relationship: components['schemas']['IdPair']
+      /** @description The pairs of IDs in NOMIS and DPS for relationship-specific restrictions */
+      restrictions: components['schemas']['IdPair'][]
+    }
+    /** @description Contains the details of the relationships and restrictions removed during a prisoner merge */
+    PrisonerRelationshipIds: {
+      /**
+       * @description The prisoner number in NOMIS
+       * @example A1234AA
+       */
+      prisonerNumber: string
+      /**
+       * Format: int64
+       * @description The ID of the contact this relationship is with
+       * @example 12345
+       */
+      contactId: number
+      /**
+       * Format: int64
+       * @description The ID of relationship
+       * @example 12345
+       */
+      prisonerContactId: number
+      /**
+       * @description A list of relationship restriction IDs
+       * @example [
+       *       1234,
+       *       2345,
+       *       3456
+       *     ]
+       */
+      prisonerContactRestrictionIds: number[]
+    }
     /** @description Request object to create a prisoner contact restriction */
     SyncCreatePrisonerContactRestrictionRequest: {
       /**
@@ -4777,18 +5003,6 @@ export interface components {
       /** @description Historical domestic status records */
       history: number[]
     }
-    CodedValue: {
-      /**
-       * @description A coded value from NOMIS reference data
-       * @example CODE
-       */
-      code: string
-      /**
-       * @description The description for this coded value in NOMIS
-       * @example Description
-       */
-      description: string
-    }
     Corporate: {
       /**
        * Format: int64
@@ -5190,38 +5404,6 @@ export interface components {
       /** @description The pairs of IDs in NOMIS and DPS for relationship-specific restrictions */
       restrictions: components['schemas']['IdPair'][]
     }
-    IdPair: {
-      /**
-       * @description The category of information returned
-       * @example PHONE
-       * @enum {string}
-       */
-      elementType:
-        | 'CONTACT'
-        | 'PHONE'
-        | 'EMAIL'
-        | 'ADDRESS'
-        | 'ADDRESS_PHONE'
-        | 'IDENTITY'
-        | 'RESTRICTION'
-        | 'PRISONER_CONTACT'
-        | 'PRISONER_CONTACT_RESTRICTION'
-        | 'EMPLOYMENT'
-        | 'ORGANISATION'
-        | 'WEB_ADDRESS'
-      /**
-       * Format: int64
-       * @description The unique ID for this piece of data provided in the request
-       * @example 123435
-       */
-      nomisId: number
-      /**
-       * Format: int64
-       * @description The unique ID created in the DPS contacts service
-       * @example 1234
-       */
-      dpsId: number
-    }
     /** @description The migration response for a contact/person and all of its sub-entities */
     MigrateContactResponse: {
       /**
@@ -5411,17 +5593,36 @@ export interface components {
       /** @description A description of the relationship if the contact should be linked to a prisoner */
       relationship?: components['schemas']['ContactRelationship']
       /** @description Identity documents */
-      identities: components['schemas']['IdentityDocument'][]
+      identities?: components['schemas']['IdentityDocument'][]
       /** @description Addresses */
-      addresses: components['schemas']['Address'][]
+      addresses?: components['schemas']['Address'][]
       /** @description Phone numbers */
-      phoneNumbers: components['schemas']['PhoneNumber'][]
+      phoneNumbers?: components['schemas']['PhoneNumber'][]
+      /** @description Email addresses */
+      emailAddresses?: components['schemas']['EmailAddress'][]
+      /** @description Employments */
+      employments?: components['schemas']['Employment'][]
       /**
        * @description The id of the user creating the contact
        * @example JD000001
        */
       createdBy: string
       staff?: boolean
+    }
+    /** @description A single email address */
+    EmailAddress: {
+      emailAddress: string
+    }
+    /** @description Request to create a new employment with an employer and whether it is active or inactive */
+    Employment: {
+      /**
+       * Format: int64
+       * @description The organisation id
+       * @example 123456789
+       */
+      organisationId: number
+      /** @description Whether this is a current employment or not */
+      isActive: boolean
     }
     /** @description An identity document */
     IdentityDocument: {
@@ -5854,10 +6055,6 @@ export interface components {
        */
       createdBy: string
     }
-    /** @description A single email address */
-    EmailAddress: {
-      emailAddress: string
-    }
     /** @description Request to create a new email address */
     CreateEmailRequest: {
       /**
@@ -6193,21 +6390,10 @@ export interface components {
       updatedTime?: string
       staff?: boolean
     }
-    /** @description Request to create a new employment with an employer and whether it is active or inactive */
-    PatchEmploymentsNewEmployment: {
-      /**
-       * Format: int64
-       * @description The organisation id
-       * @example 123456789
-       */
-      organisationId: number
-      /** @description Whether this is a current employment or not */
-      isActive: boolean
-    }
     /** @description Request allowing several changes to employments in a single request. */
     PatchEmploymentsRequest: {
       /** @description List of new employments to create */
-      createEmployments: components['schemas']['PatchEmploymentsNewEmployment'][]
+      createEmployments: components['schemas']['Employment'][]
       /** @description List of updates to apply to existing employments */
       updateEmployments: components['schemas']['PatchEmploymentsUpdateEmployment'][]
       /** @description List of ids for employments to delete */
@@ -10135,6 +10321,57 @@ export interface operations {
         }
       }
       /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  mergePrisonerContacts: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MergePrisonerContactRequest']
+      }
+    }
+    responses: {
+      /** @description The relationships and restrictions were successfully replaced */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['MergePrisonerContactResponse']
+        }
+      }
+      /** @description The request failed validation with invalid or missing data supplied */
       400: {
         headers: {
           [name: string]: unknown
