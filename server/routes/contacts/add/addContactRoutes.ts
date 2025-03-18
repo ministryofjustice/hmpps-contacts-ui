@@ -45,7 +45,6 @@ import { addressDatesSchema } from '../manage/addresses/dates/addressDatesSchema
 import ContactAddressFlagsController from './addresses/primary-or-postal/contactAddressFlagsController'
 import { addressFlagsSchema } from '../manage/addresses/primary-or-postal/addressFlagsSchemas'
 import ContactAddressPhoneController from './addresses/add-address-phone/contactAddressPhoneController'
-import { optionalPhonesSchema } from '../manage/addresses/add-address-phone/AddAddressPhonesSchema'
 import ContactAddressCommentsController from './addresses/comments/contactAddressCommentsController'
 import { addressCommentsSchema } from '../manage/addresses/comments/addressCommentsSchema'
 import ContactDeleteAddressController from './addresses/delete/contactDeleteAddressController'
