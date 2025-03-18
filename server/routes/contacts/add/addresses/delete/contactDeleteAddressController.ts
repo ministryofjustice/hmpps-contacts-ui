@@ -6,6 +6,7 @@ import ReferenceDataService from '../../../../../services/referenceDataService'
 import { Navigation } from '../../../common/navigation'
 import { CreateContactAddressParam, getAddressFormAndUrl } from '../common/utils'
 import { AddressTypeSchema } from '../../../manage/addresses/address-type/addressTypeSchemas'
+import { getFormattedAddress } from '../../../manage/addresses/common/utils'
 
 export default class ContactDeleteAddressController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
@@ -45,6 +46,7 @@ export default class ContactDeleteAddressController implements PageHandler {
           extNumber: phone.extension,
           phoneTypeDescription: phoneTypeDescriptions.get(phone.type),
         })),
+        ...(await getFormattedAddress(this.referenceDataService, addressForm, res.locals.user)),
       },
       navigation,
     }
@@ -54,6 +56,7 @@ export default class ContactDeleteAddressController implements PageHandler {
   POST = async (req: Request<CreateContactAddressParam, unknown, AddressTypeSchema>, res: Response): Promise<void> => {
     const { journey, addressForm, bounceBackUrl } = getAddressFormAndUrl(req)
     journey.addressesToSave = journey.addressesToSave!.filter(address => address !== addressForm)
+    if (journey.addressesToSave.length === 0) delete journey.addressesToSave
     res.redirect(bounceBackUrl)
   }
 }

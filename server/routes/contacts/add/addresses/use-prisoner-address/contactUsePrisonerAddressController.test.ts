@@ -8,8 +8,8 @@ import PrisonerAddressService from '../../../../../services/prisonerAddressServi
 import TestData from '../../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import { PrisonApiAddress } from '../../../../../data/prisonApiTypes'
-import AddressJourney = journeys.AddressJourney
 import { MockedService } from '../../../../../testutils/mockedServices'
+import AddContactJourney = journeys.AddContactJourney
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -26,24 +26,31 @@ let app: Express
 let session: Partial<SessionData>
 const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
-const contactId = 123456
-const prisonerContactId = 456789
 
-let existingJourney: AddressJourney
+let existingJourney: AddContactJourney
 
 beforeEach(() => {
   existingJourney = {
     id: journeyId,
     lastTouched: new Date().toISOString(),
     prisonerNumber,
-    contactId,
     isCheckingAnswers: false,
-    contactNames: {
+    returnPoint: { url: '/foo-bar' },
+    names: {
       lastName: 'last',
-      middleNames: 'middle',
+      middleNames: 'Middle',
       firstName: 'first',
     },
-    addressType: 'DO_NOT_KNOW',
+    dateOfBirth: {
+      isKnown: 'NO',
+    },
+    relationship: {
+      relationshipToPrisoner: 'MOT',
+      isEmergencyContact: 'YES',
+      isNextOfKin: 'YES',
+    },
+    mode: 'NEW',
+    newAddress: { addressLines: { noFixedAddress: false, countryCode: 'ENG' } },
   }
   app = appWithAllRoutes({
     services: {
@@ -55,8 +62,8 @@ beforeEach(() => {
     userSupplier: () => user,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
-      session.addressJourneys = {}
-      session.addressJourneys[journeyId] = existingJourney
+      session.addContactJourneys = {}
+      session.addContactJourneys[journeyId] = existingJourney
     },
   })
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
@@ -68,9 +75,9 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/use-prisoner-address/:journeyId`, () => {
+describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/use-prisoner-address/:journeyId`, () => {
   it('should replace the address lines with prisoner address primary address if found', async () => {
-    existingJourney.addressLines = {
+    existingJourney.newAddress!.addressLines = {
       noFixedAddress: false,
       flat: 'My Flat',
       property: 'My Premises',
@@ -102,13 +109,11 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     prisonerAddressService.getPrimaryAddress.mockResolvedValue(prisonerAddress)
 
     await request(app)
-      .get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/use-prisoner-address/${journeyId}?returnUrl=/foo`,
-      )
+      .get(`/prisoner/${prisonerNumber}/contacts/create/addresses/new/use-prisoner-address/${journeyId}?returnUrl=/foo`)
       .expect(302)
       .expect('Location', `/foo`)
 
-    expect(existingJourney.addressLines).toStrictEqual({
+    expect(existingJourney.newAddress!.addressLines).toStrictEqual({
       noFixedAddress: true,
       flat: 'Prisoner Flat',
       property: 'Prisoner Premises',
@@ -122,7 +127,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
   })
 
   it('should not replace the address if the primary address is not found', async () => {
-    existingJourney.addressLines = {
+    existingJourney.newAddress!.addressLines = {
       noFixedAddress: false,
       flat: 'My Flat',
       property: 'My Premises',
@@ -136,13 +141,11 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     prisonerAddressService.getPrimaryAddress.mockResolvedValue(undefined)
 
     await request(app)
-      .get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/use-prisoner-address/${journeyId}?returnUrl=/foo`,
-      )
+      .get(`/prisoner/${prisonerNumber}/contacts/create/addresses/new/use-prisoner-address/${journeyId}?returnUrl=/foo`)
       .expect(302)
       .expect('Location', `/foo`)
 
-    expect(existingJourney.addressLines).toStrictEqual({
+    expect(existingJourney.newAddress!.addressLines).toStrictEqual({
       noFixedAddress: false,
       flat: 'My Flat',
       property: 'My Premises',
@@ -161,9 +164,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     // When
     await request(app)
-      .get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/use-prisoner-address/${journeyId}?returnUrl=/foo`,
-      )
+      .get(`/prisoner/${prisonerNumber}/contacts/create/addresses/new/use-prisoner-address/${journeyId}?returnUrl=/foo`)
       .expect(302)
       .expect('Location', `/foo`)
 
@@ -172,16 +173,5 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       who: user.username,
       correlationId: expect.any(String),
     })
-  })
-
-  it('should render not found if there is no journey in the session', async () => {
-    await request(app)
-      .get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/use-prisoner-address/${uuidv4()}`,
-      )
-      .expect(404)
-      .expect(res => {
-        expect(res.text).toContain('Page not found')
-      })
   })
 })

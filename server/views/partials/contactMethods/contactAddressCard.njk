@@ -166,11 +166,10 @@
       ] if showActions else []
     }
   }]) %}
-
   {{ govukSummaryList({
     card: {
       title: {
-        text: address | formatTitleForAddress
+        text: (address | formatTitleForAddress) or "Address"
       },
       actions: {
         items: [

@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { NotFound } from 'http-errors'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { Navigation } from '../../../common/navigation'
@@ -7,6 +8,7 @@ import { CreateContactAddressParam, getAddressFormAndUrl } from '../common/utils
 import { getFormattedAddress } from '../../../manage/addresses/common/utils'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
+import logger from '../../../../../../logger'
 
 export default class ContactDeleteAddressPhoneController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
@@ -19,9 +21,10 @@ export default class ContactDeleteAddressPhoneController implements PageHandler 
 
     const phone = addressForm.phoneNumbers?.[Number(phoneIdx) - 1]
     if (!phone) {
-      throw new Error(
+      logger.error(
         `Couldn't find phone at index ${phoneIdx} for and address ${addressIdx}. URL probably entered manually.`,
       )
+      throw new NotFound()
     }
     const navigation: Navigation = {
       backLink: bounceBackUrl,
@@ -51,12 +54,14 @@ export default class ContactDeleteAddressPhoneController implements PageHandler 
 
     const phone: ContactAddressPhoneDetails = addressForm.phoneNumbers?.[Number(phoneIdx) - 1]
     if (!phone) {
-      throw new Error(
+      logger.error(
         `Couldn't find phone at index ${phoneIdx} for and address ${addressIdx}. URL probably entered manually.`,
       )
+      throw new NotFound()
     }
 
     addressForm.phoneNumbers = addressForm.phoneNumbers?.filter(itm => itm !== phone)
+    if (addressForm.phoneNumbers?.length === 0) delete addressForm.phoneNumbers
     res.redirect(bounceBackUrl)
   }
 }

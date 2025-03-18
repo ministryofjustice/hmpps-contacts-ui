@@ -42,26 +42,26 @@ export const getFormattedAddress = async (
   user: Express.User,
 ) => {
   return {
-    ...journey.addressLines!,
+    ...journey.addressLines,
     cityDescription:
-      journey.addressLines!.cityCode &&
+      journey.addressLines?.cityCode &&
       (await referenceDataService.getReferenceDescriptionForCode(
         ReferenceCodeType.CITY,
-        journey.addressLines!.cityCode,
+        journey.addressLines.cityCode,
         user,
       )),
     countyDescription:
-      journey.addressLines!.countyCode &&
+      journey.addressLines?.countyCode &&
       (await referenceDataService.getReferenceDescriptionForCode(
         ReferenceCodeType.COUNTY,
-        journey.addressLines!.countyCode,
+        journey.addressLines.countyCode,
         user,
       )),
     countryDescription:
-      journey.addressLines!.countryCode &&
+      journey.addressLines?.countryCode &&
       (await referenceDataService.getReferenceDescriptionForCode(
         ReferenceCodeType.COUNTRY,
-        journey.addressLines!.countryCode,
+        journey.addressLines.countryCode,
         user,
       )),
   }
