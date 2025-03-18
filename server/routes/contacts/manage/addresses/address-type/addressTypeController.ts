@@ -49,7 +49,7 @@ export default class AddressTypeController implements PageHandler {
         journeyId: string
       },
       unknown,
-      AddressTypeSchema
+      { addressType?: string }
     >,
     res: Response,
   ): Promise<void> => {

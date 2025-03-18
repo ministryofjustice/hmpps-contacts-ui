@@ -75,7 +75,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     const $ = cheerio.load(response.text)
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact methods')
     expect($('.main-heading').first().text().trim()).toStrictEqual(
-      'What type of address are you adding for First Middle Last?',
+      'What type of address are you adding for First Middle Last? (optional)',
     )
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/123456/relationship/456789/edit-contact-methods',
@@ -101,9 +101,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     })
   })
 
-  it.each(['HOME', 'WORK', 'BUS', 'DO_NOT_KNOW'])(
+  it.each(['HOME', 'WORK', 'BUS', 'DO_NOT_KNOW', undefined])(
     'should render previously entered details if no validation errors but there are session values (%s)',
-    async (addressType: string) => {
+    async (addressType: string | undefined) => {
       // Given
       existingJourney.addressType = addressType
 
@@ -163,7 +163,11 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     },
   )
 
-  it('should return to enter page if there are validation errors', async () => {
+  it('should accept empty form', async () => {
+    // Given
+    delete existingJourney.addressType
+    existingJourney.isCheckingAnswers = false
+
     await request(app)
       .post(
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/select-type/${journeyId}`,
@@ -173,8 +177,11 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .expect(302)
       .expect(
         'Location',
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/select-type/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/enter-address/${journeyId}`,
       )
+
+    // Then
+    expect(session.addressJourneys![journeyId]!.addressType).toBeUndefined()
   })
 
   it('should return not found page if no journey in session', async () => {

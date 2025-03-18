@@ -36,7 +36,6 @@ import AddAddressesController from './addresses/addAddressesController'
 import { routerMethods } from '../../../utils/routerMethods'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import ContactAddressTypeController from './addresses/select-type/contactAddressTypeController'
-import { addressTypeSchema } from '../manage/addresses/address-type/addressTypeSchemas'
 import ContactUsePrisonerAddressController from './addresses/use-prisoner-address/contactUsePrisonerAddressController'
 import ContactEnterAddressController from './addresses/enter-address/contactEnterAddressController'
 import { addressLinesSchema } from '../manage/addresses/enter-address/addressLinesSchemas'
@@ -331,7 +330,7 @@ const AddContactRoutes = (
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/select-type/:journeyId',
     controller: new ContactAddressTypeController(referenceDataService),
-    schema: addressTypeSchema,
+    noValidation: true,
   })
 
   get(

@@ -49,13 +49,14 @@ export default class AddressCheckAnswersController implements PageHandler {
         ...journey.addressMetadata,
         ...journey.addressLines,
         addressTypeDescription:
-          journey.addressType !== 'DO_NOT_KNOW'
+          journey.addressType &&
+          (journey.addressType !== 'DO_NOT_KNOW'
             ? await this.referenceDataService.getReferenceDescriptionForCode(
                 ReferenceCodeType.ADDRESS_TYPE,
                 journey.addressType!,
                 user,
               )
-            : undefined,
+            : undefined),
         phoneNumbers: journey.phoneNumbers?.map(phone => ({
           phoneNumber: phone.phoneNumber,
           extNumber: phone.extension,
