@@ -27,12 +27,12 @@ export default class ManageContactStaffController implements PageHandler {
       cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
     }
     const viewModel = {
-      caption: 'Edit contact details',
-      continueButtonLabel: 'Confirm and save',
-      contact,
       navigation,
+      contact,
+      isNewContact: false,
+      isStaff: contact.isStaff ? 'YES' : 'NO',
     }
-    res.render('pages/contacts/manage/contactDetails/manageStaff', viewModel)
+    res.render('pages/contacts/manage/contactDetails/isStaff', viewModel)
   }
 
   POST = async (

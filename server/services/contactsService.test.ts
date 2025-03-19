@@ -86,6 +86,7 @@ describe('contactsService', () => {
             year: 1982,
           },
           gender: 'M',
+          isStaff: 'YES',
           relationship: {
             relationshipType,
             relationshipToPrisoner,
@@ -104,7 +105,7 @@ describe('contactsService', () => {
           firstName: 'first',
           middleNames: 'middle',
           dateOfBirth: '1982-06-01',
-          isStaff: false,
+          isStaff: true,
           interpreterRequired: false,
           genderCode: 'M',
           phoneNumbers: [

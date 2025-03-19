@@ -3,8 +3,8 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "partials/miniProfile/macro.njk" import miniProfile %}
 
-{% set pageTitle = applicationName + " - Enter date of birth" %}
-{% set title = "Check your answers" %}
+{% set pageTitle = "Check your answers before linking the contact to the prisoner - Add a contact - DPS" %}
+{% set title = "Check your answers before linking the contact to " + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
@@ -13,7 +13,7 @@
 {% include 'partials/formErrorSummary.njk' %}
  <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <span class="govuk-caption-l">{{ caption or 'Contacts' }}</span>
+            <span class="govuk-caption-l">{{ journey | captionForAddContactJourney }}</span>
             <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
@@ -25,7 +25,7 @@
                        text: "Title"
                      },
                      value: {
-                       html: titleDescription or 'Not provided',
+                       text: titleDescription or 'Not provided',
                        classes: 'check-answers-title-value'
                      },
                      actions: {
@@ -45,7 +45,7 @@
                             text: "Name"
                         },
                         value: {
-                            html: journey.names | formatNameFirstNameFirst,
+                            text: journey.names | formatNameFirstNameFirst,
                             classes: 'check-answers-name-value'
                         },
                         actions: {
@@ -65,7 +65,7 @@
                             text: "Date of birth"
                         },
                         value: {
-                            html: formattedDateOfBirth,
+                            text: formattedDateOfBirth,
                             classes: 'check-answers-dob-value'
                         },
                         actions: {
@@ -85,7 +85,7 @@
                         text: "Gender"
                       },
                       value: {
-                        html: genderDescription or 'Not provided',
+                        text: genderDescription or 'Not provided',
                         classes: 'check-answers-gender-value'
                       },
                       actions: {
@@ -99,12 +99,32 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      key: {
+                        text: "Staff member"
+                      },
+                      value: {
+                        text: "Not provided" if not journey.isStaff else (journey.isStaff | formatYesNo),
+                        classes: 'check-answers-is-staff-value'
+                      },
+                      actions: {
+                        items: [
+                          {
+                            href: baseChangeUrl + "/is-staff/"  + journey.id,
+                            text: "Change",
+                            visuallyHiddenText: "if the contact is a member of staff",
+                            attributes: {"data-qa": "change-is-staff-link"},
+                            classes: "govuk-link--no-visited-state"
+                          }
+                        ]
+                      }
                     }
                 ] %}
 
                 <h2>Personal information</h2>
                 {{ govukSummaryList({ rows: contactDetailsRows }) }}
-                <h2>Relationship details</h2>
+                <h2>Relationship to prisoner {{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }}</h2>
                 {{ govukSummaryList({
                     rows: [
                         {
@@ -112,7 +132,7 @@
                                 text: "Relationship type"
                             },
                             value: {
-                                html: relationshipTypeDescription,
+                                text: relationshipTypeDescription,
                                 classes: 'check-answers-relationship-type-value'
                             },
                             actions: {
@@ -132,7 +152,7 @@
                                 text: "Relationship to prisoner"
                             },
                             value: {
-                                html: relationshipToPrisonerDescription,
+                                text: relationshipToPrisonerDescription,
                                 classes: 'check-answers-relationship-to-prisoner-value'
                             },
                             actions: {
@@ -152,7 +172,7 @@
                                 text: "Emergency contact"
                             },
                             value: {
-                                html: journey.relationship.isEmergencyContact | formatYesNo,
+                                text: journey.relationship.isEmergencyContact | formatYesNo,
                                 classes: 'check-answers-emergency-contact-value'
                             },
                             actions: {
@@ -172,7 +192,7 @@
                                 text: "Next of kin"
                             },
                             value: {
-                                html: journey.relationship.isNextOfKin | formatYesNo,
+                                text: journey.relationship.isNextOfKin | formatYesNo,
                                 classes: 'check-answers-next-of-kin-value'
                             },
                             actions: {
@@ -192,7 +212,7 @@
                                 text: "Comments on this relationship"
                             },
                             value: {
-                                html: journey.relationship.comments or "Not provided",
+                                text: journey.relationship.comments or "Not provided",
                                 classes: 'check-answers-comments-value'
                             },
                             actions: {

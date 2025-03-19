@@ -1,16 +1,8 @@
 import Page, { PageElement } from './page'
 
 export default class CreateContactCheckYourAnswersPage extends Page {
-  constructor() {
-    super(`Check your answers`)
-  }
-
-  clickChangeTitleLink() {
-    this.changeTitleLink().click()
-  }
-
-  clickChangeNameLink() {
-    this.changeNameLink().click()
+  constructor(prisonerName: string) {
+    super(`Check your answers before linking the contact to ${prisonerName}`)
   }
 
   clickChangeDateOfBirthLink() {
@@ -82,6 +74,11 @@ export default class CreateContactCheckYourAnswersPage extends Page {
     return this
   }
 
+  verifyShowIsStaffAs(expected: string): CreateContactCheckYourAnswersPage {
+    this.checkAnswersStaffValue().should('contain.text', expected)
+    return this
+  }
+
   private checkAnswersTitleValue = (): PageElement => cy.get('.check-answers-title-value')
 
   private checkAnswersNameValue = (): PageElement => cy.get('.check-answers-name-value')
@@ -100,9 +97,7 @@ export default class CreateContactCheckYourAnswersPage extends Page {
 
   private checkAnswersGenderValue = (): PageElement => cy.get('.check-answers-gender-value')
 
-  private changeTitleLink = (): PageElement => cy.get('[data-qa=change-title-link]')
-
-  private changeNameLink = (): PageElement => cy.get('[data-qa=change-name-link]')
+  private checkAnswersStaffValue = (): PageElement => cy.get('.check-answers-is-staff-value')
 
   private changeDateOfBirthLink = (): PageElement => cy.get('[data-qa=change-dob-link]')
 

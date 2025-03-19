@@ -116,11 +116,11 @@ context('Create Contact and Enter Gender', () => {
       .clickContinue()
 
     // Change to include a gender
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowGenderAs('Not provided')
       .clickLinkTo('Change the contact’s gender', SelectGenderPage, 'First Last', true)
       .selectGender('M')
-      .continueTo(CreateContactCheckYourAnswersPage)
+      .continueTo(CreateContactCheckYourAnswersPage, 'John Smith')
       .verifyShowGenderAs('Male')
       .continueTo(CreateContactSuccessPage)
 

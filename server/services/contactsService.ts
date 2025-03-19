@@ -46,7 +46,7 @@ export default class ContactsService {
       ...(journey?.names?.middleNames === undefined ? {} : { middleNames: journey.names.middleNames }),
       firstName: journey.names!.firstName!,
       interpreterRequired: false,
-      isStaff: false,
+      isStaff: journey.isStaff === 'YES',
       ...(journey.gender === undefined ? {} : { genderCode: journey.gender }),
       relationship: {
         prisonerNumber: journey.prisonerNumber,

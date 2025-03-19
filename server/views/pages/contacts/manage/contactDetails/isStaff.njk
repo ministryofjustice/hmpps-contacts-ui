@@ -3,8 +3,18 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-{% set pageTitle = applicationName + " - Staff status" %}
-{% set title = "Is " + (contact | formatNameFirstNameFirst) + " a member of staff?" %}
+{% if isNewContact %}
+  {% set pageTitle = "Is the contact a member of staff? - Edit contact details - DPS" %}
+  {% set title = "Is " + (journey.names | formatNameFirstNameFirst) + " a member of staff? (optional)" %}
+  {% set continueButtonLabel = "Continue" %}
+  {% set caption = journey | captionForAddContactJourney %}
+{% else %}
+  {% set pageTitle = "Is the contact a member of staff? - Edit contact details - DPS" %}
+  {% set title = "Is " + (contact | formatNameFirstNameFirst) + " a member of staff?" %}
+  {% set continueButtonLabel = "Confirm and save" %}
+  {% set caption = "Edit contact details" %}
+{% endif %}
+
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
@@ -30,12 +40,12 @@
               {
                 value: 'YES',
                 text: 'YES' | formatYesNo,
-                checked: contact.isStaff === true
+                checked: isStaff === 'YES'
               },
               {
                 value: 'NO',
                 text: 'NO' | formatYesNo,
-                checked: contact.isStaff === false
+                checked: isStaff === 'NO'
               }
             ]
           }) }}

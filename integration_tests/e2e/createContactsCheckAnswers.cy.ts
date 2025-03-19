@@ -96,7 +96,7 @@ context('Create contact and update from check answers', () => {
       )
       .enterComments('Some comments about the relationship')
       .continueTo(AddContactAdditionalInfoPage, 'First Middle Last')
-      .continueTo(CreateContactCheckYourAnswersPage)
+      .continueTo(CreateContactCheckYourAnswersPage, 'John Smith')
       .verifyShowsTitleAs('Mr')
       .verifyShowsNameAs('First Middle Last')
       .verifyShowsDateOfBirthAs('15 June 1982')
@@ -107,18 +107,18 @@ context('Create contact and update from check answers', () => {
   })
 
   it('Can change a contacts names when creating a new contact', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowsTitleAs('Mr')
       .verifyShowsNameAs('First Middle Last')
       .clickLinkTo('Change the contact’s title', EnterNamePage)
       .selectTitle('DR')
-      .clickButtonTo('Continue', CreateContactCheckYourAnswersPage)
+      .clickButtonTo('Continue', CreateContactCheckYourAnswersPage, 'John Smith')
       .verifyShowsTitleAs('Dr')
       .clickLinkTo('Change the contact’s title', EnterNamePage)
       .enterLastName('Last Updated')
       .enterMiddleNames('Middle Updated')
       .enterFirstName('First Updated')
-      .clickButtonTo('Continue', CreateContactCheckYourAnswersPage) //
+      .clickButtonTo('Continue', CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowsNameAs('First Updated Middle Updated Last Updated')
       .continueTo(CreateContactSuccessPage)
 
@@ -150,7 +150,7 @@ context('Create contact and update from check answers', () => {
   })
 
   it('Can change a contacts emergency contact status when creating a new contact', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowIsEmergencyContactAs('No')
       .clickChangeEmergencyContactLink()
 
@@ -158,7 +158,7 @@ context('Create contact and update from check answers', () => {
       .selectIsEmergencyContact('YES')
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowIsEmergencyContactAs('Yes')
       .continueTo(CreateContactSuccessPage)
 
@@ -190,7 +190,7 @@ context('Create contact and update from check answers', () => {
   })
 
   it('Can change a contacts next of kin status when creating a new contact', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowIsNextOfKinAs('No')
       .clickChangeNextOfKinLink()
 
@@ -198,7 +198,7 @@ context('Create contact and update from check answers', () => {
       .selectIsNextOfKin('YES')
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowIsNextOfKinAs('Yes')
       .continueTo(CreateContactSuccessPage)
 
@@ -230,7 +230,7 @@ context('Create contact and update from check answers', () => {
   })
 
   it('Can change the comments when creating a new contact', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowCommentsAs('Some comments about the relationship')
       .clickChangeCommentsLink()
 
@@ -238,7 +238,7 @@ context('Create contact and update from check answers', () => {
       .enterComments('Some new comments I entered')
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowCommentsAs('Some new comments I entered')
       .continueTo(CreateContactSuccessPage)
 
@@ -270,7 +270,7 @@ context('Create contact and update from check answers', () => {
   })
 
   it('Can change the date of birth to unknown when creating a new contact', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowCommentsAs('Some comments about the relationship')
       .clickChangeDateOfBirthLink()
 
@@ -282,7 +282,7 @@ context('Create contact and update from check answers', () => {
       .selectIsKnown('NO')
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowsDateOfBirthAs('Not provided')
       .continueTo(CreateContactSuccessPage)
 
@@ -313,7 +313,7 @@ context('Create contact and update from check answers', () => {
   })
 
   it('Can change the date of birth to unknown when creating a new contact', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowCommentsAs('Some comments about the relationship')
       .clickChangeDateOfBirthLink()
 
@@ -327,7 +327,7 @@ context('Create contact and update from check answers', () => {
       .enterYear('2010')
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowsDateOfBirthAs('28 December 2010')
       .continueTo(CreateContactSuccessPage)
 

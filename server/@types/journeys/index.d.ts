@@ -17,6 +17,7 @@ declare namespace journeys {
     names?: ContactNames
     dateOfBirth?: DateOfBirth
     gender?: string | undefined
+    isStaff?: YesOrNo | undefined
     relationship?: PrisonerContactRelationship
     previousAnswers?: CreateContactJourneyPreviousAnswers | undefined
     contactId?: number

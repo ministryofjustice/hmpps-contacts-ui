@@ -111,7 +111,7 @@ context('Create Contacts', () => {
     Page.verifyOnPage(AddContactAdditionalInfoPage, 'First Last') //
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowsTitleAs('Not provided')
       .verifyShowsNameAs('First Last')
       .verifyShowsDateOfBirthAs('Not provided')
@@ -191,7 +191,7 @@ context('Create Contacts', () => {
     Page.verifyOnPage(AddContactAdditionalInfoPage, 'First Middle Last') //
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowsTitleAs('Mr')
       .verifyShowsNameAs('First Middle Last')
       .verifyShowsDateOfBirthAs('15 June 1982')
@@ -262,7 +262,7 @@ context('Create Contacts', () => {
     Page.verifyOnPage(AddContactAdditionalInfoPage, 'First Last') //
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowsTitleAs('Not provided')
       .verifyShowsNameAs('First Last')
       .verifyShowsDateOfBirthAs('Not provided')
@@ -504,7 +504,7 @@ context('Create Contacts', () => {
         true,
       )
       .backTo(AddContactAdditionalInfoPage, 'First Last')
-      .continueTo(CreateContactCheckYourAnswersPage)
+      .continueTo(CreateContactCheckYourAnswersPage, 'John Smith')
 
     relationshipCommentsPage //
       .backTo(AddContactAdditionalInfoPage, 'First Last')
@@ -531,11 +531,11 @@ context('Create Contacts', () => {
       .continueTo(SelectNextOfKinPage, 'First Last') //
       .selectIsNextOfKin('YES')
       .continueTo(AddContactAdditionalInfoPage, 'First Last')
-      .continueTo(CreateContactCheckYourAnswersPage) //
+      .continueTo(CreateContactCheckYourAnswersPage, 'John Smith') //
       .clickLink('Cancel')
 
     Page.verifyOnPage(CancelAddContactPage, 'NEW', 'First Last') //
-      .clickButtonTo('No, return to check answers', CreateContactCheckYourAnswersPage)
+      .clickButtonTo('No, return to check answers', CreateContactCheckYourAnswersPage, 'John Smith')
       .clickLinkTo('Cancel', CancelAddContactPage, 'NEW', 'First Last') //
       .clickButton('Yes, cancel')
 

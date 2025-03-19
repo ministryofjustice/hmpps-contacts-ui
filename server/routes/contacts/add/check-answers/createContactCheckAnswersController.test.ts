@@ -11,6 +11,7 @@ import AddContactJourney = journeys.AddContactJourney
 import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 import { MockedService } from '../../../../testutils/mockedServices'
+import YesOrNo = journeys.YesOrNo
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/contactsService')
@@ -88,7 +89,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     expect(response.status).toEqual(200)
     expect(journey.isCheckingAnswers).toStrictEqual(true)
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Check your answers')
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
+      'Check your answers before linking the contact to John Smith',
+    )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
       `/prisoner/A1234BC/contacts/add/cancel/${journeyId}`,
@@ -139,7 +142,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     expect(response.status).toEqual(200)
     expect(journey.isCheckingAnswers).toStrictEqual(true)
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Check your answers')
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
+      'Check your answers before linking the contact to John Smith',
+    )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
       `/prisoner/A1234BC/contacts/add/cancel/${journeyId}`,
     )
@@ -202,6 +207,24 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
       expect($('.check-answers-gender-value').first().text().trim()).toStrictEqual(displayedGender)
     },
   )
+
+  it.each([
+    [undefined, 'Not provided'],
+    ['YES', 'Yes'],
+    ['NO', 'No'],
+  ])('should render check answers page with is staff (journey: %s, display: %s)', async (journeyIsStaff, displayed) => {
+    // Given
+    journey.isStaff = journeyIsStaff as YesOrNo
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect(journey.isCheckingAnswers).toStrictEqual(true)
+    const $ = cheerio.load(response.text)
+    expect($('.check-answers-is-staff-value').first().text().trim()).toStrictEqual(displayed)
+  })
 
   it.each([
     ['REV', 'First', 'Middle Names', 'Last', 'First Middle Names Last', 'Reverend'],

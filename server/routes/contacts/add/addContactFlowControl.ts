@@ -22,6 +22,7 @@ type CreateContactPages =
   | Page.ADD_CONTACT_ADD_PHONE_PAGE
   | Page.ADD_CONTACT_DELETE_PHONE_PAGE
   | Page.ADD_CONTACT_ENTER_GENDER_PAGE
+  | Page.ADD_CONTACT_IS_STAFF_PAGE
 type ExistingContactPages =
   | Page.CREATE_CONTACT_START_PAGE
   | Page.CONTACT_SEARCH_PAGE
@@ -102,11 +103,14 @@ const PAGES: Record<AllAddContactPages, PageConfig> = {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/add-phone-numbers/${journey.id}`,
   },
   [Page.ADD_CONTACT_DELETE_PHONE_PAGE]: {
-    // this page can only be access by check answers
+    // this page can only be accessed by check answers
     url: _ => '#',
   },
   [Page.ADD_CONTACT_ENTER_GENDER_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/enter-gender/${journey.id}`,
+  },
+  [Page.ADD_CONTACT_IS_STAFF_PAGE]: {
+    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/is-staff/${journey.id}`,
   },
 }
 
@@ -181,6 +185,11 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
     nextUrl: _ => undefined,
   },
   [Page.ADD_CONTACT_ENTER_GENDER_PAGE]: {
+    ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE }),
+    previousUrlLabel: _ => 'Back',
+    nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
+  },
+  [Page.ADD_CONTACT_IS_STAFF_PAGE]: {
     ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE }),
     previousUrlLabel: _ => 'Back',
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
