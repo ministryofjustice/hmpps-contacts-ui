@@ -21,6 +21,7 @@ type CreateContactPages =
   | Page.ADD_ADDRESSES
   | Page.ADD_CONTACT_ADD_PHONE_PAGE
   | Page.ADD_CONTACT_DELETE_PHONE_PAGE
+  | Page.ADD_CONTACT_ENTER_GENDER_PAGE
 type ExistingContactPages =
   | Page.CREATE_CONTACT_START_PAGE
   | Page.CONTACT_SEARCH_PAGE
@@ -104,6 +105,9 @@ const PAGES: Record<AllAddContactPages, PageConfig> = {
     // this page can only be access by check answers
     url: _ => '#',
   },
+  [Page.ADD_CONTACT_ENTER_GENDER_PAGE]: {
+    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/enter-gender/${journey.id}`,
+  },
 }
 
 const PRE_MODE_SPEC: Record<PreModePages, Spec> = {
@@ -175,6 +179,11 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   [Page.ADD_ADDRESSES]: {
     ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE, canSkipToCheckAnswer: false }),
     nextUrl: _ => undefined,
+  },
+  [Page.ADD_CONTACT_ENTER_GENDER_PAGE]: {
+    ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE }),
+    previousUrlLabel: _ => 'Back',
+    nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
 }
 

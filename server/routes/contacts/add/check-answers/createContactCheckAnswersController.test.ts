@@ -184,12 +184,32 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
   })
 
   it.each([
-    ['REV', 'First', 'Middle Names', 'Last', 'Last, Reverend First Middle Names'],
-    [undefined, 'First', 'Middle Names', 'Last', 'Last, First Middle Names'],
-    [undefined, 'First', undefined, 'Last', 'Last, First'],
+    [undefined, 'Not provided'],
+    ['M', 'Male'],
   ])(
-    'should render the full name with optional values and reference data',
-    async (title, firstName, middleNames, lastName, expected) => {
+    'should render check answers page with gender (journey: %s, display: %s)',
+    async (journeyGender, displayedGender) => {
+      // Given
+      journey.gender = journeyGender
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+      // Then
+      expect(response.status).toEqual(200)
+      expect(journey.isCheckingAnswers).toStrictEqual(true)
+      const $ = cheerio.load(response.text)
+      expect($('.check-answers-gender-value').first().text().trim()).toStrictEqual(displayedGender)
+    },
+  )
+
+  it.each([
+    ['REV', 'First', 'Middle Names', 'Last', 'First Middle Names Last', 'Reverend'],
+    [undefined, 'First', 'Middle Names', 'Last', 'First Middle Names Last', 'Not provided'],
+    [undefined, 'First', undefined, 'Last', 'First Last', 'Not provided'],
+  ])(
+    'should render the title and name with optional values',
+    async (title, firstName, middleNames, lastName, expectedName, expectedTitle) => {
       // Given
       journey.names = { title, firstName, middleNames, lastName }
 
@@ -200,25 +220,10 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
       expect(response.status).toEqual(200)
       expect(journey.isCheckingAnswers).toStrictEqual(true)
       const $ = cheerio.load(response.text)
-      expect($('.check-answers-name-value').first().text().trim()).toStrictEqual(expected)
+      expect($('.check-answers-name-value').first().text().trim()).toStrictEqual(expectedName)
+      expect($('.check-answers-title-value').first().text().trim()).toStrictEqual(expectedTitle)
     },
   )
-
-  it('should render check answers page with a deceased date', async () => {
-    // Given
-    journey.existingContact = {
-      deceasedDate: '2020-12-25',
-    }
-
-    // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
-
-    // Then
-    expect(response.status).toEqual(200)
-    expect(journey.isCheckingAnswers).toStrictEqual(true)
-    const $ = cheerio.load(response.text)
-    expect($('.check-answers-deceased-value').first().text().trim()).toStrictEqual('25 December 2020')
-  })
 
   it('should render check answers page with a phone numbers', async () => {
     // Given

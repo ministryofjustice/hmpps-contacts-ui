@@ -41,10 +41,13 @@ export default class ContactsService {
 
   async createContact(journey: AddContactJourney, user: Express.User): Promise<ContactCreationResult> {
     const request: CreateContactRequest = {
+      ...(journey?.names?.title === undefined ? {} : { titleCode: journey.names.title }),
       lastName: journey.names!.lastName!,
+      ...(journey?.names?.middleNames === undefined ? {} : { middleNames: journey.names.middleNames }),
       firstName: journey.names!.firstName!,
       interpreterRequired: false,
       isStaff: false,
+      ...(journey.gender === undefined ? {} : { genderCode: journey.gender }),
       relationship: {
         prisonerNumber: journey.prisonerNumber,
         relationshipTypeCode: journey.relationship!.relationshipType!,
@@ -52,6 +55,7 @@ export default class ContactsService {
         isNextOfKin: journey.relationship!.isNextOfKin === 'YES',
         isEmergencyContact: journey.relationship!.isEmergencyContact === 'YES',
         isApprovedVisitor: false,
+        ...(journey?.relationship?.comments === undefined ? {} : { comments: journey.relationship.comments }),
       },
       createdBy: user.username,
     }
@@ -61,15 +65,6 @@ export default class ContactsService {
       )
         .toISOString()
         .substring(0, 10)
-    }
-    if (journey.relationship!.comments) {
-      request.relationship!.comments = journey.relationship!.comments
-    }
-    if (journey.names!.title) {
-      request.titleCode = journey.names!.title
-    }
-    if (journey.names!.middleNames) {
-      request.middleNames = journey.names!.middleNames
     }
     if (journey.phoneNumbers && journey.phoneNumbers.length > 0) {
       request.phoneNumbers = journey.phoneNumbers.map(({ type, phoneNumber, extension }) => ({

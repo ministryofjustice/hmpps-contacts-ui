@@ -49,6 +49,13 @@
               },
               href: "/prisoner/" + journey.prisonerNumber + "/contacts/create/enter-relationship-comments/" + journey.id,
               status: journey.relationship.comments | taskStatus
+            },
+            {
+              title: {
+                text: "Gender"
+              },
+              href: "/prisoner/" + journey.prisonerNumber + "/contacts/create/enter-gender/" + journey.id,
+              status: journey.gender | taskStatus
             }
           ]
         }) }}

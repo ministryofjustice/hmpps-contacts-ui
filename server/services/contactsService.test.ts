@@ -85,6 +85,7 @@ describe('contactsService', () => {
             month: 6,
             year: 1982,
           },
+          gender: 'M',
           relationship: {
             relationshipType,
             relationshipToPrisoner,
@@ -105,6 +106,7 @@ describe('contactsService', () => {
           dateOfBirth: '1982-06-01',
           isStaff: false,
           interpreterRequired: false,
+          genderCode: 'M',
           phoneNumbers: [
             { phoneType: 'MOB', phoneNumber: '0123456789' },
             { phoneType: 'HOME', phoneNumber: '987654321', extNumber: '#123' },

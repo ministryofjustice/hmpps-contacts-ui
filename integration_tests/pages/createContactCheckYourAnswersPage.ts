@@ -5,6 +5,10 @@ export default class CreateContactCheckYourAnswersPage extends Page {
     super(`Check your answers`)
   }
 
+  clickChangeTitleLink() {
+    this.changeTitleLink().click()
+  }
+
   clickChangeNameLink() {
     this.changeNameLink().click()
   }
@@ -33,6 +37,11 @@ export default class CreateContactCheckYourAnswersPage extends Page {
     this.changeCommentsLink().click()
   }
 
+  verifyShowsTitleAs(expected: string): CreateContactCheckYourAnswersPage {
+    this.checkAnswersTitleValue().should('contain.text', expected)
+    return this
+  }
+
   verifyShowsNameAs(expected: string): CreateContactCheckYourAnswersPage {
     this.checkAnswersNameValue().should('contain.text', expected)
     return this
@@ -40,16 +49,6 @@ export default class CreateContactCheckYourAnswersPage extends Page {
 
   verifyShowsDateOfBirthAs(expected: string): CreateContactCheckYourAnswersPage {
     this.checkAnswersDobValue().should('contain.text', expected)
-    return this
-  }
-
-  verifyShowDeceasedDate(expected: string): CreateContactCheckYourAnswersPage {
-    this.checkAnswersDeceasedValue().should('contain.text', expected)
-    return this
-  }
-
-  verifyNoDeceasedDate(): CreateContactCheckYourAnswersPage {
-    this.checkAnswersDeceasedValue().should('not.exist')
     return this
   }
 
@@ -78,21 +77,16 @@ export default class CreateContactCheckYourAnswersPage extends Page {
     return this
   }
 
-  verifyNameIsNotChangeable(): CreateContactCheckYourAnswersPage {
-    this.changeNameLink().should('not.exist')
+  verifyShowGenderAs(expected: string): CreateContactCheckYourAnswersPage {
+    this.checkAnswersGenderValue().should('contain.text', expected)
     return this
   }
 
-  verifyDateOfBirthIsNotChangeable(): CreateContactCheckYourAnswersPage {
-    this.changeDateOfBirthLink().should('not.exist')
-    return this
-  }
+  private checkAnswersTitleValue = (): PageElement => cy.get('.check-answers-title-value')
 
   private checkAnswersNameValue = (): PageElement => cy.get('.check-answers-name-value')
 
   private checkAnswersDobValue = (): PageElement => cy.get('.check-answers-dob-value')
-
-  private checkAnswersDeceasedValue = (): PageElement => cy.get('.check-answers-deceased-value')
 
   private checkAnswersRelationshipValue = (): PageElement => cy.get('.check-answers-relationship-to-prisoner-value')
 
@@ -103,6 +97,10 @@ export default class CreateContactCheckYourAnswersPage extends Page {
   private checkAnswersNextOfKinValue = (): PageElement => cy.get('.check-answers-next-of-kin-value')
 
   private checkAnswersCommentsValue = (): PageElement => cy.get('.check-answers-comments-value')
+
+  private checkAnswersGenderValue = (): PageElement => cy.get('.check-answers-gender-value')
+
+  private changeTitleLink = (): PageElement => cy.get('[data-qa=change-title-link]')
 
   private changeNameLink = (): PageElement => cy.get('[data-qa=change-name-link]')
 
