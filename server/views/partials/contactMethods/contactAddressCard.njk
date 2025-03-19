@@ -4,12 +4,11 @@
 
   {% set address = opts.address %}
   {% set showActions = opts.showActions %}
-  {% set prisonerNumber = opts.prisonerNumber %}
-  {% set contactId = opts.contactId %}
-  {% set prisonerContactId = opts.prisonerContactId %}
-
-  {% set changeAddressLink = '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + "/relationship/" + prisonerContactId + '/address/edit/' + address.contactAddressId + '/start' %}
-  {% set updateAddressBaseLink = '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + "/relationship/" + prisonerContactId + '/address/' + address.contactAddressId %}
+  {% set updateAddressBaseLink = opts.updateAddressBaseLink %}
+  {% set journeyIdSuffix = ('/' + opts.journeyId) if opts.journeyId else '' %}
+  {% set deleteAddressLink = opts.deleteAddressLink %}
+  {% set enumeratedPhones = opts.enumeratedPhones %}
+  {% set editPhoneWithCreateLink = opts.editPhoneWithCreateLink %}
 
   {% set rows = [
     {
@@ -18,7 +17,7 @@
       actions: {
         items: [
           {
-            href: updateAddressBaseLink + '/select-type',
+            href: updateAddressBaseLink + '/select-type' + journeyIdSuffix,
             text: "Change",
             visuallyHiddenText: "the address type",
             attributes: { 'data-qa': 'change-address-type-' + address.contactAddressId },
@@ -33,7 +32,7 @@
       actions: {
       items: [
           {
-            href: updateAddressBaseLink + '/enter-address',
+            href: updateAddressBaseLink + '/enter-address' + journeyIdSuffix,
             text: "Change",
             visuallyHiddenText: "the address",
             attributes: { 'data-qa': 'change-address-lines-' + address.contactAddressId },
@@ -48,7 +47,7 @@
       actions: {
         items: [
           {
-            href: updateAddressBaseLink + '/dates',
+            href: updateAddressBaseLink + '/dates' + journeyIdSuffix,
             text: "Change",
             visuallyHiddenText: "the dates for the prisoner’s use of the address",
             attributes: { 'data-qa': 'change-address-dates-' + address.contactAddressId },
@@ -63,7 +62,7 @@
       actions: {
         items: [
           {
-            href: updateAddressBaseLink + '/primary-or-postal',
+            href: updateAddressBaseLink + '/primary-or-postal' + journeyIdSuffix,
             text: "Change",
             visuallyHiddenText: "if this address is set as the primary or postal address for the contact",
             attributes: { 'data-qa': 'change-address-primary-postal-' + address.contactAddressId },
@@ -85,7 +84,7 @@
       actions: {
         items: [
           {
-            href: updateAddressBaseLink + '/phone/create',
+            href: updateAddressBaseLink + '/phone/create' + journeyIdSuffix,
             text: "Add address phone number",
             attributes: { 'data-qa': 'add-address-phone-link-' + address.contactAddressId },
             classes: 'govuk-link--no-visited-state'
@@ -96,6 +95,7 @@
       classes: 'govuk-summary-list__row--no-border'
     }]) %}
     {% for val in address.phoneNumbers | sort(attribute = 'phoneNumber') | sort(attribute = 'phoneTypeDescription') %}
+      {% set contactAddressPhoneId = loop.index if enumeratedPhones else val.contactAddressPhoneId %}
       {% set rows = rows.concat([{
         key: {
           text: val.phoneTypeDescription,
@@ -107,14 +107,14 @@
         actions: {
           items: [
             {
-              href: '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + "/relationship/" + prisonerContactId + '/address/' + address.contactAddressId + '/phone/' + val.contactAddressPhoneId + '/edit',
+              href: (updateAddressBaseLink + '/phone/create' + journeyIdSuffix + '#phones[' + loop.index0 + '].phoneNumber') if editPhoneWithCreateLink else (updateAddressBaseLink + '/phone/' + contactAddressPhoneId + '/edit' + journeyIdSuffix),
               text: "Change",
               visuallyHiddenText: 'the information about the ' + val.phoneTypeDescription + ' phone number for this address',
               attributes: { 'data-qa': 'change-address-phone-' + val.contactAddressPhoneId },
               classes: 'govuk-link--no-visited-state'
             },
             {
-              href: '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + "/relationship/" + prisonerContactId + '/address/' + address.contactAddressId + '/phone/' + val.contactAddressPhoneId + '/delete',
+              href: updateAddressBaseLink + '/phone/' + contactAddressPhoneId + '/delete' + journeyIdSuffix,
               text: "Delete",
               visuallyHiddenText: 'the information about the ' + val.phoneTypeDescription + ' phone number for this address',
               attributes: { 'data-qa': 'delete-address-phone-' + val.contactAddressPhoneId },
@@ -136,7 +136,7 @@
       actions: {
         items: [
           {
-            href: '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + "/relationship/" + prisonerContactId + '/address/' + address.contactAddressId + '/phone/create',
+            href: updateAddressBaseLink + '/phone/create' + journeyIdSuffix,
             text: "Change",
             visuallyHiddenText: 'the information about the phone number for this address',
             attributes: { 'data-qa': 'add-address-phone-link-' + address.contactAddressId },
@@ -157,7 +157,7 @@
     actions: {
       items: [
         {
-          href: updateAddressBaseLink + '/comments',
+          href: updateAddressBaseLink + '/comments' + journeyIdSuffix,
           text: "Change",
           visuallyHiddenText: "the comments on this address",
           attributes: { 'data-qa': 'change-address-comments-' + address.contactAddressId },
@@ -166,15 +166,22 @@
       ] if showActions else []
     }
   }]) %}
-
-  {{  govukSummaryList({
-        card: {
-          title: {
-            text: address | formatTitleForAddress
+  {{ govukSummaryList({
+    card: {
+      title: {
+        text: (address | formatTitleForAddress) or "Address"
+      },
+      actions: {
+        items: [
+          {
+            href: deleteAddressLink + journeyIdSuffix,
+            text: "Delete address",
+            attributes: { 'data-qa': 'delete-address-link-' + address.contactAddressId },
+            classes: 'govuk-link--no-visited-state'
           }
-        },
-        rows: rows
-      })
-  }}
-
+        ] if deleteAddressLink else []
+      }
+    },
+    rows: rows
+  }) }}
 {% endmacro %}

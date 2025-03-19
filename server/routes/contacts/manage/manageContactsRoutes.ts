@@ -389,7 +389,7 @@ const ManageContactsRoutes = (
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/select-type/:journeyId',
     controller: new AddressTypeController(referenceDataService),
     journeyEnsurer: ensureInAddressJourney,
-    schema: addressTypeSchema,
+    noValidation: true,
   })
 
   journeyRoute({

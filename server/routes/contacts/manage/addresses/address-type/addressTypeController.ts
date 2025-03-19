@@ -4,7 +4,6 @@ import { PageHandler } from '../../../../../interfaces/pageHandler'
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import { Navigation } from '../../../common/navigation'
-import { AddressTypeSchema } from './addressTypeSchemas'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import Urls from '../../../../urls'
 import { getAddressJourneyAndUrl } from '../common/utils'
@@ -49,7 +48,7 @@ export default class AddressTypeController implements PageHandler {
         journeyId: string
       },
       unknown,
-      AddressTypeSchema
+      { addressType?: string }
     >,
     res: Response,
   ): Promise<void> => {

@@ -133,12 +133,93 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/addresses/:journeyId', (
 
     const addressCard = $(`h2:contains("Primary address")`).last().parent().parent()
     expect(addressCard).toHaveLength(1)
-    expectSummaryListItem(addressCard, 'Type', 'Home address')
-    expectSummaryListItem(addressCard, 'Address', /No fixed addressEngland/)
-    expectSummaryListItem(addressCard, 'Dates', 'From December 2011')
-    expectSummaryListItem(addressCard, 'Primary or postal address', 'Primary address')
-    expectSummaryListItem(addressCard, 'Address phone numbers', 'Not provided')
-    expectSummaryListItem(addressCard, 'Comments on this address', 'some text')
+
+    const expectedTitle = 'Primary address'
+    expectSummaryListItem(
+      addressCard,
+      'Type',
+      'Home address',
+      `/prisoner/A1234BC/contacts/create/addresses/1/select-type/${journeyId}`,
+      `Change the address type (${expectedTitle})`,
+    )
+    expectSummaryListItem(
+      addressCard,
+      'Address',
+      /No fixed addressEngland/,
+      `/prisoner/A1234BC/contacts/create/addresses/1/enter-address/${journeyId}`,
+      `Change the address (${expectedTitle})`,
+    )
+    expectSummaryListItem(
+      addressCard,
+      'Date',
+      'From December 2011',
+      `/prisoner/A1234BC/contacts/create/addresses/1/dates/${journeyId}`,
+      `Change the dates for the prisoner’s use of the address (${expectedTitle})`,
+    )
+    expectSummaryListItem(
+      addressCard,
+      'Primary or postal address',
+      'Primary address',
+      `/prisoner/A1234BC/contacts/create/addresses/1/primary-or-postal/${journeyId}`,
+      `Change if this address is set as the primary or postal address for the contact (${expectedTitle})`,
+    )
+    expectSummaryListItem(
+      addressCard,
+      'Address phone numbers',
+      'Not provided',
+      `/prisoner/A1234BC/contacts/create/addresses/1/phone/create/${journeyId}`,
+      `Change the information about the phone number for this address (${expectedTitle})`,
+    )
+    expectSummaryListItem(
+      addressCard,
+      'Comments on this address',
+      'some text',
+      `/prisoner/A1234BC/contacts/create/addresses/1/comments/${journeyId}`,
+      `Change the comments on this address (${expectedTitle})`,
+    )
+
+    expect($('a:contains("Delete address")').attr('href')).toEqual(
+      `/prisoner/A1234BC/contacts/create/addresses/1/delete/${journeyId}`,
+    )
+  })
+
+  it('should render edit/delete phone links', async () => {
+    // Given
+    existingJourney.addresses = [
+      {
+        addressType: 'HOME',
+        addressLines: {
+          noFixedAddress: true,
+          countryCode: 'ENG',
+        },
+        addressMetadata: {
+          fromMonth: '12',
+          fromYear: '2011',
+          comments: 'some text',
+          primaryAddress: true,
+          mailAddress: false,
+        },
+        phoneNumbers: [
+          {
+            type: 'HOME',
+            phoneNumber: '1234',
+          },
+        ],
+      },
+    ]
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/addresses/${journeyId}`)
+
+    // Then
+    expect(response.status).toEqual(200)
+    const $ = cheerio.load(response.text)
+    expect($('[data-qa=add-address-phone-link-undefined]').attr('href')).toStrictEqual(
+      `/prisoner/A1234BC/contacts/create/addresses/1/phone/create/${journeyId}`,
+    )
+    expect($('[data-qa=delete-address-phone-undefined]').attr('href')).toStrictEqual(
+      `/prisoner/A1234BC/contacts/create/addresses/1/phone/1/delete/${journeyId}`,
+    )
   })
 
   it('should return to start if no journey in session', async () => {

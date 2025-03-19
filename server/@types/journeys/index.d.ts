@@ -25,6 +25,8 @@ declare namespace journeys {
       deceasedDate?: string
     }
     addresses?: AddressForm[] | undefined
+    pendingAddresses?: AddressForm[] | undefined
+    newAddress?: AddressForm | undefined
     phoneNumbers?: PhoneNumberForm[] | undefined
   }
 

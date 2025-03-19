@@ -4,7 +4,7 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% set pageTitle = applicationName  + " - " + title %}
-{% set title = ("Change the address type for this address for " + (contact | formatNameFirstNameFirst)) if isEdit else ("What type of address are you adding for " + (contact | formatNameFirstNameFirst) + "?") %}
+{% set title = ("Change the address type for this address for " + (contact | formatNameFirstNameFirst)) if isEdit else ("What type of address are you adding for " + (contact | formatNameFirstNameFirst) + "? (optional)") %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% if formattedAddress %}

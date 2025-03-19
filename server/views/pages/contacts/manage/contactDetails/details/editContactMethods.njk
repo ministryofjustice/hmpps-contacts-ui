@@ -52,9 +52,7 @@
         {% for item in contact.addresses | sortContactAddresses %}
           {% set summaryCard = contactAddressCard({
               address: item,
-              prisonerNumber: prisonerNumber,
-              contactId: contact.id,
-              prisonerContactId: prisonerContactId,
+              updateAddressBaseLink: '/prisoner/' + prisonerNumber + '/contacts/manage/' + contact.id + "/relationship/" + prisonerContactId + '/address/' + item.contactAddressId,
               showActions: true
             })
           %}
