@@ -54,6 +54,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     expect(response.status).toEqual(200)
     expect($('input[type=radio]:checked').val()).toStrictEqual(isStaff)
+    expect($('[data-qa=continue-button]').text().trim()).toStrictEqual('Confirm and save')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/22/relationship/987654',
     )

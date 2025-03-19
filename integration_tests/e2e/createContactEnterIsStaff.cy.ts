@@ -11,10 +11,9 @@ import SearchContactPage from '../pages/searchContactPage'
 import CreateContactSuccessPage from '../pages/createContactSuccessPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
-import AddPhonesPage from '../pages/contact-methods/addPhonesPage'
-import ConfirmDeletePhonePage from '../pages/confirmDeletePhonePage'
+import SelectStaffStatusPage from '../pages/contact-details/selectStaffStatus'
 
-context('Create Contact With Phone Numbers', () => {
+context('Create Contact and Select Staff Status', () => {
   const contactId = 654321
   const prisonerContactId = 987654
 
@@ -23,9 +22,9 @@ context('Create Contact With Phone Numbers', () => {
     cy.task('stubComponentsMeta')
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.task('stubTitlesReferenceData')
+    cy.task('stubPhoneTypeReferenceData')
     cy.task('stubRelationshipReferenceData')
     cy.task('stubOfficialRelationshipReferenceData')
-    cy.task('stubPhoneTypeReferenceData')
     cy.task('stubRelationshipTypeReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', TestData.prisoner().prisonerNumber)
@@ -79,9 +78,7 @@ context('Create Contact With Phone Numbers', () => {
     Page.verifyOnPage(SearchContactPage) //
       .verifyShowsTheContactIsNotListedAs('The contact is not listed')
       .clickTheContactIsNotListed()
-  })
 
-  it('Can create a contact with some phone numbers', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
@@ -106,51 +103,61 @@ context('Create Contact With Phone Numbers', () => {
     Page.verifyOnPage(SelectNextOfKinPage, 'First Last') //
       .selectIsNextOfKin('YES')
       .clickContinue()
+  })
 
-    // Can submit without entering a phone number and also go back to additional info
+  it('Can create a contact with and select staff status', () => {
+    // Gender is optional
     Page.verifyOnPage(AddContactAdditionalInfoPage, 'First Last') //
-      .clickLinkTo('Phone numbers', AddPhonesPage, 'First Last', true)
-      .clickButtonTo('Continue', AddContactAdditionalInfoPage, 'First Last')
-      .clickLinkTo('Phone numbers', AddPhonesPage, 'First Last', true)
-      .clickLink('Back')
-
-    // Can enter some phone numbers
-    Page.verifyOnPage(AddContactAdditionalInfoPage, 'First Last') //
-      .clickLinkTo('Phone numbers', AddPhonesPage, 'First Last', true)
-      .selectType(0, 'MOB')
-      .enterPhoneNumber(0, '11111')
-      .enterExtension(0, '000')
-      .clickAddAnotherButton()
-      .selectType(1, 'BUS')
-      .enterPhoneNumber(1, '222222')
-      .clickAddAnotherButton()
-      .selectType(2, 'HOME')
-      .enterPhoneNumber(2, '33333')
+      .clickLinkTo('If the contact is a member of staff', SelectStaffStatusPage, 'First Last', true)
+      .clickLinkTo('Back', AddContactAdditionalInfoPage, 'First Last')
+      .clickLinkTo('If the contact is a member of staff', SelectStaffStatusPage, 'First Last', true)
       .clickButtonTo('Continue', AddContactAdditionalInfoPage, 'First Last')
       .clickContinue()
 
-    // Edit some phone numbers and check we can go back
+    // Change to include a gender
     Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
-      .clickLinkTo('Change the information about this Mobile phone number', AddPhonesPage, 'First Last', true)
-      .clickLinkTo('Back', CreateContactCheckYourAnswersPage, 'John Smith')
-      .clickLinkTo('Change the information about this Home phone number', AddPhonesPage, 'First Last', true)
-      .clearPhoneNumber(0)
-      .enterPhoneNumber(0, '0123456789')
-      .clearExtension(0)
-      .clearPhoneNumber(2)
-      .enterPhoneNumber(2, '987654321')
-      .enterExtension(2, '#123')
+      .verifyShowIsStaffAs('Not provided')
+      .clickLinkTo('Change if the contact is a member of staff', SelectStaffStatusPage, 'First Last', true)
+      .selectStaffStatus('NO')
+      .continueTo(CreateContactCheckYourAnswersPage, 'John Smith')
+      .verifyShowIsStaffAs('No')
+      .clickLinkTo('Change if the contact is a member of staff', SelectStaffStatusPage, 'First Last', true)
+      .selectStaffStatus('YES')
+      .continueTo(CreateContactCheckYourAnswersPage, 'John Smith')
+      .verifyShowIsStaffAs('Yes')
+      .continueTo(CreateContactSuccessPage)
+
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: '/contact',
+      },
+      {
+        lastName: 'Last',
+        firstName: 'First',
+        isStaff: true,
+        interpreterRequired: false,
+        createdBy: 'USER1',
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipTypeCode: 'S',
+          relationshipToPrisonerCode: 'MOT',
+          isNextOfKin: true,
+          isEmergencyContact: false,
+          isApprovedVisitor: false,
+        },
+      },
+    )
+  })
+
+  it('Can create a contact with staff status defaults to no if not answered', () => {
+    // Gender is optional
+    Page.verifyOnPage(AddContactAdditionalInfoPage, 'First Last') //
       .clickContinue()
 
-    // Can delete phone numbers or cancel deleting them
+    // Change to include a gender
     Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
-      .clickLinkTo('Delete the information about this Mobile phone number', ConfirmDeletePhonePage, 'First Last')
-      .clickButtonTo('No, do not delete', CreateContactCheckYourAnswersPage, 'John Smith')
-      .clickLinkTo('Delete the information about this Business phone number', ConfirmDeletePhonePage, 'First Last')
-      .hasType('Business')
-      .hasPhoneNumber('222222')
-      .hasExtension('Not provided')
-      .clickButtonTo('Yes, delete', CreateContactCheckYourAnswersPage, 'John Smith')
+      .verifyShowIsStaffAs('Not provided')
       .continueTo(CreateContactSuccessPage)
 
     cy.verifyLastAPICall(
@@ -163,10 +170,6 @@ context('Create Contact With Phone Numbers', () => {
         firstName: 'First',
         isStaff: false,
         interpreterRequired: false,
-        phoneNumbers: [
-          { phoneType: 'MOB', phoneNumber: '0123456789' },
-          { phoneType: 'HOME', phoneNumber: '987654321', extNumber: '#123' },
-        ],
         createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',

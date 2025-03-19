@@ -52,6 +52,7 @@ import AddContactAddPhoneController from './phone/addContactAddPhoneController'
 import { optionalPhonesSchema } from '../manage/addresses/add-address-phone/AddAddressPhonesSchema'
 import AddContactConfirmDeletePhoneController from './phone/addContactConfirmDeletePhoneController'
 import AddContactGenderController from './gender/addContactGenderController'
+import CreateContactIsStaffController from './is-staff/createContactIsStaffController'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -325,6 +326,12 @@ const AddContactRoutes = (
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/create/enter-gender/:journeyId',
     controller: new AddContactGenderController(referenceDataService),
+    noValidation: true,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/is-staff/:journeyId',
+    controller: new CreateContactIsStaffController(),
     noValidation: true,
   })
 

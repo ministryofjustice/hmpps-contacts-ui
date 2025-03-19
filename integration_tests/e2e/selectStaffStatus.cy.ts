@@ -51,7 +51,9 @@ context('Select Staff Status', () => {
       .verifyShowStaffStatusValueAs('No')
       .clickChangeStaffStatusLink()
 
-    Page.verifyOnPage(SelectStaffStatusPage, 'Jones Mason').selectStaffStatus().clickContinue()
+    Page.verifyOnPage(SelectStaffStatusPage, 'Jones Mason', false) //
+      .selectStaffStatus('YES')
+      .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
       .hasSuccessBanner('You’ve updated the personal information for Jones Mason.')
@@ -78,12 +80,12 @@ context('Select Staff Status', () => {
       .clickChangeStaffStatusLink()
 
     // Back to Edit Contact Details
-    Page.verifyOnPage(SelectStaffStatusPage, 'Jones Mason') //
+    Page.verifyOnPage(SelectStaffStatusPage, 'Jones Mason', false) //
       .backTo(EditContactDetailsPage, 'Jones Mason')
       .clickChangeStaffStatusLink()
 
     // Cancel to Contact Details page
-    Page.verifyOnPage(SelectStaffStatusPage, 'Jones Mason') //
+    Page.verifyOnPage(SelectStaffStatusPage, 'Jones Mason', false) //
       .cancelTo(ManageContactDetailsPage, 'Jones Mason')
   })
 })

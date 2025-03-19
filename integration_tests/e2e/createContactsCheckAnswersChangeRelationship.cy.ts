@@ -96,7 +96,7 @@ context('Create contact and update the relationship from check answers', () => {
       )
       .enterComments('Some comments about the relationship')
       .continueTo(AddContactAdditionalInfoPage, 'First Middle Last')
-      .continueTo(CreateContactCheckYourAnswersPage)
+      .continueTo(CreateContactCheckYourAnswersPage, 'John Smith')
       .verifyShowsTitleAs('Mr')
       .verifyShowsNameAs('First Middle Last')
       .verifyShowsDateOfBirthAs('15 June 1982')
@@ -107,7 +107,7 @@ context('Create contact and update the relationship from check answers', () => {
   })
 
   it('Can change a contacts relationship to prisoner directly when creating a new contact', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowRelationshipAs('Mother')
       .clickChangeRelationshipLink()
 
@@ -115,7 +115,7 @@ context('Create contact and update the relationship from check answers', () => {
       .selectRelationship('FA')
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowRelationshipAs('Father')
       .continueTo(CreateContactSuccessPage)
 
@@ -147,7 +147,7 @@ context('Create contact and update the relationship from check answers', () => {
   })
 
   it('Can change a contacts relationship type to prisoner which requires updating relationship to prisoner when creating a new contact', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowRelationshipTypeAs('Social')
       .verifyShowRelationshipAs('Mother')
       .clickChangeRelationshipTypeLink()
@@ -160,7 +160,7 @@ context('Create contact and update the relationship from check answers', () => {
       .selectRelationship('DR')
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowRelationshipTypeAs('Official')
       .verifyShowRelationshipAs('Doctor')
       .continueTo(CreateContactSuccessPage)
@@ -193,7 +193,7 @@ context('Create contact and update the relationship from check answers', () => {
   })
 
   it('Re-selecting the same relationship type does not require re-entry of relationship to prisoner', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowRelationshipTypeAs('Social')
       .verifyShowRelationshipAs('Mother')
       .clickChangeRelationshipTypeLink()
@@ -202,7 +202,7 @@ context('Create contact and update the relationship from check answers', () => {
       .selectRelationshipType('S')
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowRelationshipTypeAs('Social')
       .verifyShowRelationshipAs('Mother')
       .continueTo(CreateContactSuccessPage)
@@ -235,7 +235,7 @@ context('Create contact and update the relationship from check answers', () => {
   })
 
   it('Can abandon changing the relationship by going back which leaves the relationship intact', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage) //
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowRelationshipTypeAs('Social')
       .verifyShowRelationshipAs('Mother')
       .clickChangeRelationshipTypeLink()
@@ -245,7 +245,7 @@ context('Create contact and update the relationship from check answers', () => {
       .clickButtonTo('Continue', SelectRelationshipPage, 'First Middle Last', 'John Smith') //
       .selectRelationship('DR')
       .clickLinkTo('Back', SelectRelationshipTypePage, 'First Middle Last', 'John Smith')
-      .clickLinkTo('Back', CreateContactCheckYourAnswersPage, 'First Middle Last')
+      .clickLinkTo('Back', CreateContactCheckYourAnswersPage, 'John Smith')
       .verifyShowRelationshipTypeAs('Social')
       .verifyShowRelationshipAs('Mother')
       .continueTo(CreateContactSuccessPage)

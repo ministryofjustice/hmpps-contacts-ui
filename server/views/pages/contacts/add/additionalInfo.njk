@@ -56,6 +56,13 @@
               },
               href: "/prisoner/" + journey.prisonerNumber + "/contacts/create/enter-gender/" + journey.id,
               status: journey.gender | taskStatus
+            },
+            {
+              title: {
+                text: "If the contact is a member of staff"
+              },
+              href: "/prisoner/" + journey.prisonerNumber + "/contacts/create/is-staff/" + journey.id,
+              status: journey.isStaff | taskStatus
             }
           ]
         }) }}
