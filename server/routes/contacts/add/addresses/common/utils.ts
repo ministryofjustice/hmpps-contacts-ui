@@ -1,6 +1,8 @@
 import { Request } from 'express'
 import { NotFound } from 'http-errors'
 import AddressForm = journeys.AddressForm
+import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
+import ReferenceDataService from '../../../../../services/referenceDataService'
 
 export type CreateContactAddressParam = {
   prisonerNumber: string
@@ -41,4 +43,59 @@ export const getAddressFormAndUrl = (req: Request<CreateContactAddressParam>) =>
     bounceBackUrl,
     bounceBackOrAddressUrl,
   }
+}
+
+export const formatAddresses = async (
+  addresses: AddressForm[] | undefined,
+  referenceDataService: ReferenceDataService,
+  user: Express.User,
+) => {
+  if (!addresses?.length) {
+    return addresses
+  }
+
+  const addressTypeDescriptions = new Map(
+    (await referenceDataService.getReferenceData(ReferenceCodeType.ADDRESS_TYPE, user)).map(refData => [
+      refData.code,
+      refData.description,
+    ]),
+  )
+  const cityDescriptions = new Map(
+    (await referenceDataService.getReferenceData(ReferenceCodeType.CITY, user)).map(refData => [
+      refData.code,
+      refData.description,
+    ]),
+  )
+  const countyDescriptions = new Map(
+    (await referenceDataService.getReferenceData(ReferenceCodeType.COUNTY, user)).map(refData => [
+      refData.code,
+      refData.description,
+    ]),
+  )
+  const countryDescriptions = new Map(
+    (await referenceDataService.getReferenceData(ReferenceCodeType.COUNTRY, user)).map(refData => [
+      refData.code,
+      refData.description,
+    ]),
+  )
+  const phoneTypeDescriptions = new Map(
+    (await referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user)).map(refData => [
+      refData.code,
+      refData.description,
+    ]),
+  )
+
+  return addresses.map(address => ({
+    ...address.addressLines,
+    ...address.addressMetadata,
+    addressTypeDescription: address.addressType && addressTypeDescriptions.get(address.addressType),
+    cityDescription: address.addressLines?.cityCode && cityDescriptions.get(address.addressLines.cityCode),
+    countyDescription: address.addressLines?.countyCode && countyDescriptions.get(address.addressLines.countyCode),
+    countryDescription: address.addressLines?.countryCode && countryDescriptions.get(address.addressLines.countryCode),
+    phoneNumbers: address.phoneNumbers?.map(phone => ({
+      phoneNumber: phone.phoneNumber,
+      extNumber: phone.extension,
+      phoneTypeDescription: phoneTypeDescriptions.get(phone.type),
+    })),
+  }))
 }

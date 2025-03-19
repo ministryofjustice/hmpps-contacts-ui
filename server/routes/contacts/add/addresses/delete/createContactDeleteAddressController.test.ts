@@ -161,7 +161,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/addresses/${journeyId}`)
 
-    expect(session.addContactJourneys![journeyId]!.pendingAddresses).toBeUndefined()
+    expect(session.addContactJourneys![journeyId]!.pendingAddresses).toHaveLength(0)
   })
 
   it('should return not found page if index is out of range', async () => {
