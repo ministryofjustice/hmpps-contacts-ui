@@ -83,7 +83,7 @@ export default class ContactsService {
           startDate: new Date(`${item.addressMetadata!.fromYear}-${item.addressMetadata!.fromMonth}-01Z`).toISOString(),
           noFixedAddress: item.addressLines!.noFixedAddress,
           phoneNumbers:
-            journey.phoneNumbers?.map(({ type, phoneNumber, extension }) => ({
+            item.phoneNumbers?.map(({ type, phoneNumber, extension }) => ({
               phoneType: type,
               phoneNumber,
               ...(extension === undefined ? {} : { extNumber: extension }),

@@ -106,6 +106,7 @@ jobs:
           command: ./node_modules/wait-on/bin/wait-on -t 30s http://localhost:3007/ping
       - run:
           name: integration tests
+          no_output_timeout: 15m
           command: circleci tests glob "**/*.cy.ts" | circleci tests run --command="xargs npx cypress run --reporter cypress-circleci-reporter --spec" --verbose --split-by=timings
       - store_test_results:
           path: test_results
