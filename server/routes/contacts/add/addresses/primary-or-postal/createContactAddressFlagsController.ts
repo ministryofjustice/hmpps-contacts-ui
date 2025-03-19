@@ -7,10 +7,10 @@ import { CreateContactAddressParam, getAddressFormAndUrl } from '../common/utils
 import { getFormattedAddress } from '../../../manage/addresses/common/utils'
 import { AddressFlagsSchemaType } from '../../../manage/addresses/primary-or-postal/addressFlagsSchemas'
 
-export default class ContactAddressFlagsController implements PageHandler {
+export default class CreateContactAddressFlagsController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
-  public PAGE_NAME = Page.SELECT_ADDRESS_FLAGS_PAGE
+  public PAGE_NAME = Page.CREATE_CONTACT_SELECT_ADDRESS_FLAGS_PAGE
 
   GET = async (req: Request<CreateContactAddressParam>, res: Response): Promise<void> => {
     const { journey, addressForm, bounceBackOrAddressUrl } = getAddressFormAndUrl(req)
@@ -42,7 +42,7 @@ export default class ContactAddressFlagsController implements PageHandler {
 
     if (!isNew) {
       if (addressForm.addressMetadata.primaryAddress) {
-        journey.addressesToSave = journey.addressesToSave!.map(address =>
+        journey.pendingAddresses = journey.pendingAddresses!.map(address =>
           address === addressForm
             ? address
             : {
@@ -55,7 +55,7 @@ export default class ContactAddressFlagsController implements PageHandler {
         )
       }
       if (addressForm.addressMetadata.mailAddress) {
-        journey.addressesToSave = journey.addressesToSave!.map(address =>
+        journey.pendingAddresses = journey.pendingAddresses!.map(address =>
           address === addressForm
             ? address
             : {

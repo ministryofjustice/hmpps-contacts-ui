@@ -44,7 +44,7 @@ beforeEach(() => {
       isNextOfKin: 'YES',
     },
     mode: 'NEW',
-    addressesToSave: [
+    pendingAddresses: [
       {
         addressType: 'HOME',
         addressLines: {
@@ -100,11 +100,11 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/new/select-type/:journeyId`, () => {
-  it('should render enter address type page', async () => {
+describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/phone/:phoneIdx/delete/:journeyId`, () => {
+  it('should render delete page', async () => {
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/create/addresses/new/select-type/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/create/addresses/1/phone/1/delete/${journeyId}`,
     )
 
     // Then
@@ -113,65 +113,33 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/new/select-typ
     const $ = cheerio.load(response.text)
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
     expect($('h1').first().text().trim()).toStrictEqual(
-      'What type of address are you adding for First Middle Last? (optional)',
+      'Are you sure you want to delete a phone number for this address?',
     )
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/create/addresses/${journeyId}`,
     )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.SELECT_ADDRESS_TYPE_PAGE, {
-      who: user.username,
-      correlationId: expect.any(String),
-    })
-  })
-
-  it('should render previously entered details if no validation errors but there are session values', async () => {
-    // Given
-    existingJourney.newAddress!.addressType = 'WORK'
-
-    // When
-    const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/create/addresses/new/select-type/${journeyId}`,
-    )
-
-    // Then
-    expect(response.status).toEqual(200)
-    const $ = cheerio.load(response.text)
-    expect($('input[type=radio]:checked').val()).toEqual('WORK')
-  })
-})
-
-describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/select-type/:journeyId`, () => {
-  it('should render enter address type page', async () => {
-    // When
-    const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/create/addresses/1/select-type/${journeyId}`,
-    )
-
-    // Then
-    expect(response.status).toEqual(200)
-
-    const $ = cheerio.load(response.text)
-    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
-    expect($('h1').first().text().trim()).toStrictEqual(
-      'What type of address are you adding for First Middle Last? (optional)',
-    )
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Yes, delete phone number')
+    expect($('a:contains("No, do not delete")').attr('href')).toEqual(
       `/prisoner/${prisonerNumber}/contacts/create/addresses/${journeyId}`,
     )
-    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.SELECT_ADDRESS_TYPE_PAGE, {
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_DELETE_ADDRESS_PHONE_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })
-    expect($('input[type=radio]:checked').val()).toEqual('HOME')
+
+    expect($('[data-qa=address-reference]').first().html()!.trim()).toMatch(
+      /<strong>Address:<\/strong><br>\n\s+?1a<br>\s+?My block<br>\s+?A street<br>\s+?Downtown<br>\s+?Exeter<br>\s+?Devon<br>\s+?PC1 D3<br>\s+?England/,
+    )
+
+    expect($('.phone-number-value').text().trim()).toStrictEqual('4321')
+    expect($('.extension-value').text().trim()).toStrictEqual('99')
+    expect($('.type-value').text().trim()).toStrictEqual('Home')
   })
 
   it('should render not found if index is out of range', async () => {
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/create/addresses/2/select-type/${journeyId}`)
+      .get(`/prisoner/${prisonerNumber}/contacts/create/addresses/1/phone/99/delete/${journeyId}`)
       .expect(404)
       .expect(res => {
         expect(res.text).toContain('Page not found')
@@ -179,32 +147,21 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/se
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/select-type/:journeyId', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/phone/:phoneIdx/delete/:journeyId', () => {
   it('should update journey data and pass to next page', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/addresses/new/select-type/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/addresses/1/phone/1/delete/${journeyId}`)
       .type('form')
-      .send({ addressType: 'HOME' })
-      .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/addresses/new/enter-address/${journeyId}`)
-
-    expect(session.addContactJourneys![journeyId]!.newAddress!.addressType).toEqual('HOME')
-  })
-
-  it('should update journey data and bounce back', async () => {
-    await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/addresses/1/select-type/${journeyId}`)
-      .type('form')
-      .send({ addressType: 'WORK' })
+      .send({ comments: 'text' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/addresses/${journeyId}`)
 
-    expect(session.addContactJourneys![journeyId]!.addressesToSave![0]!.addressType).toEqual('WORK')
+    expect(session.addContactJourneys![journeyId]!.pendingAddresses![0]!.phoneNumbers).toBeUndefined()
   })
 
   it('should return not found page if index is out of range', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/addresses/99/select-type/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/addresses/1/phone/99/delete/${journeyId}`)
       .type('form')
       .send({})
       .expect(404)

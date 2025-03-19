@@ -7,9 +7,9 @@ import { Page } from '../../../../../services/auditService'
 import PrisonerAddressService from '../../../../../services/prisonerAddressService'
 import TestData from '../../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
-import { PrisonApiAddress } from '../../../../../data/prisonApiTypes'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import AddContactJourney = journeys.AddContactJourney
+import AddressLines = journeys.AddressLines
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -75,7 +75,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/use-prisoner-address/:journeyId`, () => {
+describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/use-prisoner-address/:journeyId`, () => {
   it('should replace the address lines with prisoner address primary address if found', async () => {
     existingJourney.newAddress!.addressLines = {
       noFixedAddress: false,
@@ -88,22 +88,15 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/us
       postcode: 'My Postcode',
       countryCode: 'SCOT',
     }
-    const prisonerAddress: PrisonApiAddress = {
-      addressId: 1,
-      addressType: 'foo',
-      primary: true,
-      mail: true,
+    const prisonerAddress: AddressLines = {
       noFixedAddress: true,
       flat: 'Prisoner Flat',
-      premise: 'Prisoner Premises',
+      property: 'Prisoner Premises',
       street: 'Prisoner Street',
-      locality: 'Prisoner Locality',
-      town: 'Falmouth',
-      townCode: '9999',
-      county: 'Cornwall',
+      area: 'Prisoner Locality',
+      cityCode: '9999',
       countyCode: 'CORNWALL',
-      postalCode: 'Prisoner Postcode',
-      country: 'Wales',
+      postcode: 'Prisoner Postcode',
       countryCode: 'WALES',
     }
     prisonerAddressService.getPrimaryAddress.mockResolvedValue(prisonerAddress)
@@ -169,7 +162,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/us
       .expect('Location', `/foo`)
 
     // Then
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.USE_PRISONER_ADDRESS_PAGE, {
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_USE_PRISONER_ADDRESS_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })

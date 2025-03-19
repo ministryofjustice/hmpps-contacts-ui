@@ -44,7 +44,7 @@ beforeEach(() => {
       isNextOfKin: 'YES',
     },
     mode: 'NEW',
-    addressesToSave: [
+    pendingAddresses: [
       {
         addressType: 'HOME',
         addressLines: {
@@ -121,7 +121,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/new/phone/crea
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
     expect($('[data-qa=address-reference]').first().html()!.trim()).toMatch(/<strong>Address:<\/strong><br>\s+?England/)
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADD_ADDRESS_PHONE_PAGE, {
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_ADD_ADDRESS_PHONE_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })
@@ -188,7 +188,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/new/phone/crea
   })
 })
 
-describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/phone/create/:journeyId`, () => {
+describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/phone/create/:journeyId`, () => {
   it('should render enter address phone page', async () => {
     // When
     const response = await request(app).get(
@@ -211,7 +211,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/ph
     expect($('[data-qa=address-reference]').first().html()!.trim()).toMatch(
       /<strong>Address:<\/strong><br>\n\s+?1a<br>\s+?My block<br>\s+?A street<br>\s+?Downtown<br>\s+?Exeter<br>\s+?Devon<br>\s+?PC1 D3<br>\s+?England/,
     )
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADD_ADDRESS_PHONE_PAGE, {
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_ADD_ADDRESS_PHONE_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })
@@ -257,7 +257,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/ph
   })
 })
 
-describe(`POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/phone/create/:journeyId`, () => {
+describe(`POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/phone/create/:journeyId`, () => {
   it('should update journey data and pass to next page', async () => {
     const form = {
       save: '',
@@ -296,7 +296,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/p
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/addresses/${journeyId}`)
 
-    expect(session.addContactJourneys![journeyId]!.addressesToSave![0]!.phoneNumbers).toStrictEqual([
+    expect(session.addContactJourneys![journeyId]!.pendingAddresses![0]!.phoneNumbers).toStrictEqual([
       { type: 'MOB', phoneNumber: '123456789', extension: '000' },
       { type: 'HOME', phoneNumber: '987654321', extension: undefined },
     ])

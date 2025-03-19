@@ -44,7 +44,7 @@ beforeEach(() => {
       isNextOfKin: 'YES',
     },
     mode: 'NEW',
-    addressesToSave: [
+    pendingAddresses: [
       {
         addressType: 'HOME',
         addressLines: {
@@ -119,7 +119,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/new/dates/:jou
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
     expect($('[data-qa=address-reference]').first().html()!.trim()).toMatch(/<strong>Address:<\/strong><br>\s+?England/)
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.ENTER_ADDRESS_DATES_PAGE, {
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_ENTER_ADDRESS_DATES_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })
@@ -179,7 +179,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/new/dates/:jou
   })
 })
 
-describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/dates/:journeyId`, () => {
+describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/dates/:journeyId`, () => {
   it('should render enter address dates page', async () => {
     // When
     const response = await request(app).get(
@@ -200,14 +200,14 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/da
     expect($('[data-qa=address-reference]').first().html()!.trim()).toMatch(
       /<strong>Address:<\/strong><br>\n\s+?1a<br>\s+?My block<br>\s+?A street<br>\s+?Downtown<br>\s+?Exeter<br>\s+?Devon<br>\s+?PC1 D3<br>\s+?England/,
     )
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.ENTER_ADDRESS_DATES_PAGE, {
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_ENTER_ADDRESS_DATES_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })
-    expect($('#fromMonth').val()).toStrictEqual(existingJourney.addressesToSave![0]!.addressMetadata!.fromMonth)
-    expect($('#fromYear').val()).toStrictEqual(existingJourney.addressesToSave![0]!.addressMetadata!.fromYear)
-    expect($('#toMonth').val()).toStrictEqual(existingJourney.addressesToSave![0]!.addressMetadata!.toMonth)
-    expect($('#toYear').val()).toStrictEqual(existingJourney.addressesToSave![0]!.addressMetadata!.toYear)
+    expect($('#fromMonth').val()).toStrictEqual(existingJourney.pendingAddresses![0]!.addressMetadata!.fromMonth)
+    expect($('#fromYear').val()).toStrictEqual(existingJourney.pendingAddresses![0]!.addressMetadata!.fromYear)
+    expect($('#toMonth').val()).toStrictEqual(existingJourney.pendingAddresses![0]!.addressMetadata!.toMonth)
+    expect($('#toYear').val()).toStrictEqual(existingJourney.pendingAddresses![0]!.addressMetadata!.toYear)
   })
 
   it('should render previously entered details if validation errors even if values in the session', async () => {
@@ -244,7 +244,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/da
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/dates/:journeyId', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/dates/:journeyId', () => {
   it('should update journey data and pass to next page', async () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/addresses/new/dates/${journeyId}`)
@@ -265,8 +265,10 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/d
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/addresses/${journeyId}`)
 
-    expect(session.addContactJourneys![journeyId]!.addressesToSave![0]!.addressMetadata!.fromMonth).toStrictEqual('11')
-    expect(session.addContactJourneys![journeyId]!.addressesToSave![0]!.addressMetadata!.fromYear).toStrictEqual('1999')
+    expect(session.addContactJourneys![journeyId]!.pendingAddresses![0]!.addressMetadata!.fromMonth).toStrictEqual('11')
+    expect(session.addContactJourneys![journeyId]!.pendingAddresses![0]!.addressMetadata!.fromYear).toStrictEqual(
+      '1999',
+    )
   })
 
   it('should return to enter page if there are validation errors', async () => {

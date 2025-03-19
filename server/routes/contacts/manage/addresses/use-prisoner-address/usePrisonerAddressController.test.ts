@@ -7,9 +7,9 @@ import { Page } from '../../../../../services/auditService'
 import PrisonerAddressService from '../../../../../services/prisonerAddressService'
 import TestData from '../../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
-import { PrisonApiAddress } from '../../../../../data/prisonApiTypes'
 import AddressJourney = journeys.AddressJourney
 import { MockedService } from '../../../../../testutils/mockedServices'
+import AddressLines = journeys.AddressLines
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -81,22 +81,15 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       postcode: 'My Postcode',
       countryCode: 'SCOT',
     }
-    const prisonerAddress: PrisonApiAddress = {
-      addressId: 1,
-      addressType: 'foo',
-      primary: true,
-      mail: true,
+    const prisonerAddress: AddressLines = {
       noFixedAddress: true,
       flat: 'Prisoner Flat',
-      premise: 'Prisoner Premises',
+      property: 'Prisoner Premises',
       street: 'Prisoner Street',
-      locality: 'Prisoner Locality',
-      town: 'Falmouth',
-      townCode: '9999',
-      county: 'Cornwall',
+      area: 'Prisoner Locality',
+      cityCode: '9999',
       countyCode: 'CORNWALL',
-      postalCode: 'Prisoner Postcode',
-      country: 'Wales',
+      postcode: 'Prisoner Postcode',
       countryCode: 'WALES',
     }
     prisonerAddressService.getPrimaryAddress.mockResolvedValue(prisonerAddress)

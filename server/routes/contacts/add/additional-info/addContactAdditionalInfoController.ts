@@ -11,7 +11,7 @@ export default class AddContactAdditionalInfoController implements PageHandler {
   GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    delete journey.addressesToSave
+    delete journey.pendingAddresses
     const view = {
       journey,
       caption: captionForAddContactJourney(journey),

@@ -44,7 +44,7 @@ beforeEach(() => {
       isNextOfKin: 'YES',
     },
     mode: 'NEW',
-    addressesToSave: [
+    pendingAddresses: [
       {
         addressType: 'HOME',
         addressLines: {
@@ -100,7 +100,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/delete/:journeyId`, () => {
+describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/delete/:journeyId`, () => {
   it('should render delete page', async () => {
     // When
     const response = await request(app).get(
@@ -121,7 +121,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/de
     expect($('a:contains("No, do not delete")').attr('href')).toEqual(
       `/prisoner/${prisonerNumber}/contacts/create/addresses/${journeyId}`,
     )
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.DELETE_ADDRESS_PAGE, {
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_DELETE_ADDRESS_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
     })
@@ -152,7 +152,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/de
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/delete/:journeyId', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/delete/:journeyId', () => {
   it('should update journey data and pass to next page', async () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/addresses/1/delete/${journeyId}`)
@@ -161,7 +161,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIdx/d
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/addresses/${journeyId}`)
 
-    expect(session.addContactJourneys![journeyId]!.addressesToSave).toBeUndefined()
+    expect(session.addContactJourneys![journeyId]!.pendingAddresses).toBeUndefined()
   })
 
   it('should return not found page if index is out of range', async () => {

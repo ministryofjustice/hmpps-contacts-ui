@@ -7,10 +7,10 @@ import { CreateContactAddressParam, getAddressFormAndUrl } from '../common/utils
 import { getFormattedAddress } from '../../../manage/addresses/common/utils'
 import { AddressCommentsSchemaType } from '../../../manage/addresses/comments/addressCommentsSchema'
 
-export default class ContactAddressCommentsController implements PageHandler {
+export default class CreateContactAddressCommentsController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
-  public PAGE_NAME = Page.ENTER_ADDRESS_COMMENTS_PAGE
+  public PAGE_NAME = Page.CREATE_CONTACT_ENTER_ADDRESS_COMMENTS_PAGE
 
   GET = async (req: Request<CreateContactAddressParam>, res: Response): Promise<void> => {
     const { journey, addressForm, bounceBackOrAddressUrl } = getAddressFormAndUrl(req)
@@ -39,9 +39,9 @@ export default class ContactAddressCommentsController implements PageHandler {
     }
 
     if (isNew) {
-      journey.addressesToSave ??= []
+      journey.pendingAddresses ??= []
       if (addressForm.addressMetadata.primaryAddress) {
-        journey.addressesToSave = journey.addressesToSave.map(address => ({
+        journey.pendingAddresses = journey.pendingAddresses.map(address => ({
           ...address,
           addressMetadata: {
             ...address.addressMetadata,
@@ -50,7 +50,7 @@ export default class ContactAddressCommentsController implements PageHandler {
         }))
       }
       if (addressForm.addressMetadata.mailAddress) {
-        journey.addressesToSave = journey.addressesToSave.map(address => ({
+        journey.pendingAddresses = journey.pendingAddresses.map(address => ({
           ...address,
           addressMetadata: {
             ...address.addressMetadata,
@@ -58,7 +58,7 @@ export default class ContactAddressCommentsController implements PageHandler {
           },
         }))
       }
-      journey.addressesToSave.push(addressForm)
+      journey.pendingAddresses.push(addressForm)
     }
 
     res.redirect(bounceBackUrl)

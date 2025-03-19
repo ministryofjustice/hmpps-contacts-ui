@@ -7,10 +7,10 @@ import { Navigation } from '../../../common/navigation'
 import { CreateContactAddressParam, getAddressFormAndUrl } from '../common/utils'
 import { AddressLinesSchema } from '../../../manage/addresses/enter-address/addressLinesSchemas'
 
-export default class ContactEnterAddressController implements PageHandler {
+export default class CreateContactEnterAddressController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
-  public PAGE_NAME = Page.ENTER_ADDRESS_PAGE
+  public PAGE_NAME = Page.CREATE_CONTACT_ENTER_ADDRESS_PAGE
 
   private DEFAULT_COUNTRY = 'ENG'
 

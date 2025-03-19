@@ -8,10 +8,10 @@ import { CreateContactAddressParam, getAddressFormAndUrl } from '../common/utils
 import { getFormattedAddress } from '../../../manage/addresses/common/utils'
 import { OptionalPhonesSchemaType } from '../../../manage/addresses/add-address-phone/AddAddressPhonesSchema'
 
-export default class ContactAddressPhoneController implements PageHandler {
+export default class CreateContactAddressPhoneController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
-  public PAGE_NAME = Page.ADD_ADDRESS_PHONE_PAGE
+  public PAGE_NAME = Page.CREATE_CONTACT_ADD_ADDRESS_PHONE_PAGE
 
   GET = async (req: Request<CreateContactAddressParam>, res: Response): Promise<void> => {
     const { user } = res.locals

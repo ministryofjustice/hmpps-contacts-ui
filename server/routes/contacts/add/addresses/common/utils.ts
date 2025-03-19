@@ -5,31 +5,31 @@ import AddressForm = journeys.AddressForm
 export type CreateContactAddressParam = {
   prisonerNumber: string
   journeyId: string
-  addressIdx: string
+  addressIndex: string
 }
 
 export const getAddressFormAndUrl = (req: Request<CreateContactAddressParam>) => {
-  const { prisonerNumber, addressIdx, journeyId } = req.params
+  const { prisonerNumber, addressIndex, journeyId } = req.params
   const journey = req.session.addContactJourneys![journeyId]!
 
   let addressForm: AddressForm
-  const isNew = addressIdx === 'new'
+  const isNew = addressIndex === 'new'
 
   if (isNew) {
     journey.newAddress ??= {}
     addressForm = journey.newAddress
   } else {
-    const idx = Number(addressIdx) - 1
-    if (Number.isNaN(idx) || !journey.addressesToSave?.[idx]) {
+    const idx = Number(addressIndex) - 1
+    if (Number.isNaN(idx) || !journey.pendingAddresses?.[idx]) {
       throw new NotFound()
     }
-    addressForm = journey.addressesToSave[idx]
+    addressForm = journey.pendingAddresses[idx]
   }
 
   const bounceBackUrl = `/prisoner/${prisonerNumber}/contacts/create/addresses/${journeyId}`
 
   const addressUrl = ({ subPath }: { subPath: string }) =>
-    `/prisoner/${prisonerNumber}/contacts/create/addresses/${addressIdx}/${subPath}/${journeyId}`
+    `/prisoner/${prisonerNumber}/contacts/create/addresses/${addressIndex}/${subPath}/${journeyId}`
 
   const bounceBackOrAddressUrl = ({ subPath }: { subPath: string }) => (isNew ? addressUrl({ subPath }) : bounceBackUrl)
 

@@ -7,10 +7,10 @@ import { Navigation } from '../../../common/navigation'
 import { CreateContactAddressParam, getAddressFormAndUrl } from '../common/utils'
 import { AddressTypeSchema } from '../../../manage/addresses/address-type/addressTypeSchemas'
 
-export default class ContactAddressTypeController implements PageHandler {
+export default class CreateContactAddressTypeController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
-  public PAGE_NAME = Page.SELECT_ADDRESS_TYPE_PAGE
+  public PAGE_NAME = Page.CREATE_CONTACT_SELECT_ADDRESS_TYPE_PAGE
 
   GET = async (req: Request<CreateContactAddressParam>, res: Response): Promise<void> => {
     const { user } = res.locals

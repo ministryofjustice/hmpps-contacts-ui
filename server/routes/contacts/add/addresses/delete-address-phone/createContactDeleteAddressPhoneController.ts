@@ -10,19 +10,19 @@ import ReferenceDataService from '../../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import logger from '../../../../../../logger'
 
-export default class ContactDeleteAddressPhoneController implements PageHandler {
+export default class CreateContactDeleteAddressPhoneController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
-  public PAGE_NAME = Page.DELETE_ADDRESS_PHONE_PAGE
+  public PAGE_NAME = Page.CREATE_CONTACT_DELETE_ADDRESS_PHONE_PAGE
 
   GET = async (req: Request<CreateContactAddressParam & { phoneIdx: string }>, res: Response): Promise<void> => {
-    const { addressIdx, phoneIdx } = req.params
+    const { addressIndex, phoneIdx } = req.params
     const { addressForm, bounceBackUrl } = getAddressFormAndUrl(req)
 
     const phone = addressForm.phoneNumbers?.[Number(phoneIdx) - 1]
     if (!phone) {
       logger.error(
-        `Couldn't find phone at index ${phoneIdx} for and address ${addressIdx}. URL probably entered manually.`,
+        `Couldn't find phone at index ${phoneIdx} for and address ${addressIndex}. URL probably entered manually.`,
       )
       throw new NotFound()
     }
@@ -49,13 +49,13 @@ export default class ContactDeleteAddressPhoneController implements PageHandler 
   }
 
   POST = async (req: Request<CreateContactAddressParam & { phoneIdx: string }>, res: Response): Promise<void> => {
-    const { addressIdx, phoneIdx } = req.params
+    const { addressIndex, phoneIdx } = req.params
     const { addressForm, bounceBackUrl } = getAddressFormAndUrl(req)
 
     const phone: ContactAddressPhoneDetails = addressForm.phoneNumbers?.[Number(phoneIdx) - 1]
     if (!phone) {
       logger.error(
-        `Couldn't find phone at index ${phoneIdx} for and address ${addressIdx}. URL probably entered manually.`,
+        `Couldn't find phone at index ${phoneIdx} for and address ${addressIndex}. URL probably entered manually.`,
       )
       throw new NotFound()
     }

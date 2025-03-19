@@ -76,9 +76,12 @@ describe('Prisoner address service', () => {
         street: 'Prisoner Street',
         locality: 'Prisoner Locality',
         town: '9999',
+        townCode: '9999',
         county: 'CORNWALL',
+        countyCode: 'CORNWALL',
         postalCode: 'Prisoner Postcode',
         country: 'WALES',
+        countryCode: 'WALES',
       }
       const nonPrimaryAddress: PrisonApiAddress = {
         addressId: 2,
@@ -100,7 +103,17 @@ describe('Prisoner address service', () => {
       }
       prisonApiClient.getOffenderAddresses.mockResolvedValue([primaryPrisonerAddress, nonPrimaryAddress])
       const primaryAddress = await prisonerAddressService.getPrimaryAddress('ABC123', user)
-      expect(primaryAddress).toStrictEqual(primaryPrisonerAddress)
+      expect(primaryAddress).toStrictEqual({
+        noFixedAddress: true,
+        flat: 'Prisoner Flat',
+        property: 'Prisoner Premises',
+        street: 'Prisoner Street',
+        area: 'Prisoner Locality',
+        cityCode: '9999',
+        countyCode: 'CORNWALL',
+        postcode: 'Prisoner Postcode',
+        countryCode: 'WALES',
+      })
       expect(prisonApiClient.getOffenderAddresses).toHaveBeenCalledWith('ABC123', user)
     })
   })

@@ -8,10 +8,10 @@ import { CreateContactAddressParam, getAddressFormAndUrl } from '../common/utils
 import { AddressTypeSchema } from '../../../manage/addresses/address-type/addressTypeSchemas'
 import { getFormattedAddress } from '../../../manage/addresses/common/utils'
 
-export default class ContactDeleteAddressController implements PageHandler {
+export default class CreateContactDeleteAddressController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
-  public PAGE_NAME = Page.DELETE_ADDRESS_PAGE
+  public PAGE_NAME = Page.CREATE_CONTACT_DELETE_ADDRESS_PAGE
 
   GET = async (req: Request<CreateContactAddressParam>, res: Response): Promise<void> => {
     const { user } = res.locals
@@ -55,8 +55,8 @@ export default class ContactDeleteAddressController implements PageHandler {
 
   POST = async (req: Request<CreateContactAddressParam, unknown, AddressTypeSchema>, res: Response): Promise<void> => {
     const { journey, addressForm, bounceBackUrl } = getAddressFormAndUrl(req)
-    journey.addressesToSave = journey.addressesToSave!.filter(address => address !== addressForm)
-    if (journey.addressesToSave.length === 0) delete journey.addressesToSave
+    journey.pendingAddresses = journey.pendingAddresses!.filter(address => address !== addressForm)
+    if (journey.pendingAddresses.length === 0) delete journey.pendingAddresses
     res.redirect(bounceBackUrl)
   }
 }

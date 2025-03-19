@@ -7,10 +7,10 @@ import { CreateContactAddressParam, getAddressFormAndUrl } from '../common/utils
 import { getFormattedAddress } from '../../../manage/addresses/common/utils'
 import { AddressDatesSchemaType } from '../../../manage/addresses/dates/addressDatesSchemas'
 
-export default class ContactAddressDatesController implements PageHandler {
+export default class CreateContactAddressDatesController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
-  public PAGE_NAME = Page.ENTER_ADDRESS_DATES_PAGE
+  public PAGE_NAME = Page.CREATE_CONTACT_ENTER_ADDRESS_DATES_PAGE
 
   GET = async (req: Request<CreateContactAddressParam>, res: Response): Promise<void> => {
     const { journey, addressForm, bounceBackOrAddressUrl } = getAddressFormAndUrl(req)
