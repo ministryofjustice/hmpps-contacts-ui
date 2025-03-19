@@ -18,6 +18,7 @@ declare namespace journeys {
     dateOfBirth?: DateOfBirth
     gender?: string | undefined
     isStaff?: YesOrNo | undefined
+    languageAndInterpreter?: LanguageAndInterpreterRequiredForm | undefined
     relationship?: PrisonerContactRelationship
     previousAnswers?: CreateContactJourneyPreviousAnswers | undefined
     contactId?: number
@@ -192,6 +193,11 @@ declare namespace journeys {
     type: string
     phoneNumber: string
     extension?: string | undefined
+  }
+
+  export interface LanguageAndInterpreterRequiredForm {
+    language?: string | undefined
+    interpreterRequired?: YesOrNo | undefined
   }
 
   type YesOrNo = 'YES' | 'NO'

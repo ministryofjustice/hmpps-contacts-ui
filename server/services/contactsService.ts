@@ -45,9 +45,12 @@ export default class ContactsService {
       lastName: journey.names!.lastName!,
       ...(journey?.names?.middleNames === undefined ? {} : { middleNames: journey.names.middleNames }),
       firstName: journey.names!.firstName!,
-      interpreterRequired: false,
+      interpreterRequired: journey.languageAndInterpreter?.interpreterRequired === 'YES',
       isStaff: journey.isStaff === 'YES',
       ...(journey.gender === undefined ? {} : { genderCode: journey.gender }),
+      ...(journey?.languageAndInterpreter?.language === undefined
+        ? {}
+        : { languageCode: journey?.languageAndInterpreter?.language }),
       relationship: {
         prisonerNumber: journey.prisonerNumber,
         relationshipTypeCode: journey.relationship!.relationshipType!,
