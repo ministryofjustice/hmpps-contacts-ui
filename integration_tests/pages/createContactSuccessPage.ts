@@ -9,11 +9,5 @@ export default class CreateContactSuccessPage extends Page {
     this.viewContactInfoLink().click()
   }
 
-  clickContactListLink() {
-    this.viewContactListLink().click()
-  }
-
   private viewContactInfoLink = (): PageElement => cy.get(`[data-qa=go-to-contact-info-link]`)
-
-  private viewContactListLink = (): PageElement => cy.get(`[data-qa=go-to-contacts-list-link]`)
 }

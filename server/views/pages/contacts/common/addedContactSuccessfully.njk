@@ -1,0 +1,60 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% if mode === 'NEW' %}
+  {% set successMessage = 'New contact added and linked to prisoner' %}
+{% else %}
+  {% set successMessage = 'Contact linked to prisoner' %}
+{% endif %}
+{% set pageTitle = applicationName + " - Success" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+{% include 'partials/navigation.njk' %}
+{{ miniProfile(prisonerDetails) }}
+ <div class="govuk-grid-row">
+
+        {% set contactRecordLink = "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contactId + "/relationship/" + prisonerContactId %}
+        <div class="govuk-grid-column-two-thirds">
+            {{ govukPanel({
+                titleText: successMessage,
+                attributes: {"data-qa": "success-message"},
+                html: (
+                    '<div><strong>Prisoner: </strong><span data-qa="prisoner-name">' + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) + '</span></div>' +
+                    '<div><strong>Contact: </strong><span data-qa="contact-name">' + names | formatNameFirstNameFirst(excludeMiddleNames = true) + '</span></div>'
+                )
+            }) }}
+
+              <div>
+                <h2 class="govuk-heading-l govuk-!-font-size-24 govuk-!-margin-bottom-3">Add restrictions</h2>
+                {{ govukWarningText({
+                  html: 'If any restrictions apply to the relationship between the prisoner and the contact or to the contact individually, <a href="' + contactRecordLink + '" class="govuk-body govuk-link--no-visited-state govuk-!-font-weight-bold" data-qa="go-to-restrictions-link">add the restrictions now</a>.',
+                  iconFallbackText: "Warning",
+                  classes: 'govuk-!-margin-bottom-3'
+                }) }}
+                <p class="govuk-body">Restrictions that must be recorded are:</p>
+                  <ul>
+                    <li>access requirements</li>
+                    <li>bans on visits or other contact methods</li>
+                    <li>CCTV requirements</li>
+                    <li>child visitor vetting requirements</li>
+                    <li>closed visit requirements</li>
+                    <li>disability or health concerns</li>
+                    <li>non-contact requirements</li>
+                    <li>previous information received about this relationship or the contact</li>
+                    <li>any other restriction applying to this relationship or the contact</li>
+                  </ul>
+                {% if mode === 'EXISTING' %}
+                <h2 class="govuk-heading-l govuk-!-font-size-24 govuk-!-margin-bottom-3">Check the contact information is up to date</h2>
+                <p class="govuk-body">It’s also important to make sure the information in the contact record is accurate and up to date.</p>
+                <a href="{{ contactRecordLink }}" class="govuk-body govuk-link--no-visited-state" data-qa="go-to-contact-info-link">
+                    View {{ names | formatNameFirstNameFirst(excludeMiddleNames = true) }}’s contact information
+                </a>
+                {% endif %}
+              </div>
+        </div>
+    </div>
+
+{% endblock %}
