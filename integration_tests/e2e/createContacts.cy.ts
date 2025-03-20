@@ -123,7 +123,7 @@ context('Create Contacts', () => {
       .clickContinue()
 
     Page.verifyOnPage(CreateContactSuccessPage) //
-      .clickContactInfoLink()
+      .clickLink('add the restrictions now')
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Last')
 
@@ -201,10 +201,7 @@ context('Create Contacts', () => {
       .verifyShowCommentsAs('Some comments about this relationship')
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactSuccessPage) //
-      .clickContactListLink()
-
-    Page.verifyOnPage(ListContactsPage)
+    Page.verifyOnPage(CreateContactSuccessPage)
 
     cy.verifyLastAPICall(
       {
@@ -272,7 +269,7 @@ context('Create Contacts', () => {
       .clickContinue()
 
     Page.verifyOnPage(CreateContactSuccessPage) //
-      .clickContactInfoLink()
+      .clickLink('add the restrictions now')
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Last')
 

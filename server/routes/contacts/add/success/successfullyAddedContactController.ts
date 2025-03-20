@@ -29,28 +29,15 @@ export default class SuccessfullyAddedContactController implements PageHandler {
       firstName: contact.firstName,
       middleNames: contact.middleNames,
     }
-    let successMessage
-    switch (mode) {
-      case 'EXISTING':
-        successMessage = 'Existing contact linked to prisoner'
-        break
-      case 'NEW':
-        successMessage = 'New contact added and linked to prisoner'
-        break
-      default:
-        break
-    }
     const view = {
-      journey: { names },
-      successMessage,
+      names,
+      mode,
       contactId,
       prisonerContactId,
-      showPrisonerNameInSuccessPanel: true,
       navigation: {
         breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'],
       },
-      caption: 'Contacts',
     }
-    res.render('pages/contacts/common/success', view)
+    res.render('pages/contacts/common/addedContactSuccessfully', view)
   }
 }
