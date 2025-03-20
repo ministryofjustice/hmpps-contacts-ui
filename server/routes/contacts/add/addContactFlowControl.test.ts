@@ -79,6 +79,12 @@ describe('addContactFlowControl', () => {
           undefined,
           'Back',
         ],
+        [
+          Page.ADD_CONTACT_DOMESTIC_STATUS_PAGE,
+          `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
+          undefined,
+          'Back',
+        ],
       ])(
         'Should go back to previous page: from %s to %s',
         (page: Page, expectedBackUrl?: string, expectedCancelButton?: string, expectedBackLabel?: string) => {
@@ -122,6 +128,7 @@ describe('addContactFlowControl', () => {
         [Page.ADD_CONTACT_ENTER_GENDER_PAGE, undefined],
         [Page.ADD_CONTACT_IS_STAFF_PAGE, undefined],
         [Page.ADD_CONTACT_LANGUAGE_INTERPRETER_PAGE, undefined],
+        [Page.ADD_CONTACT_DOMESTIC_STATUS_PAGE, undefined],
       ])('Should go back to check answers from %s', (page: Page, cancelButton) => {
         const journey: AddContactJourney = {
           id: journeyId,
@@ -174,6 +181,7 @@ describe('addContactFlowControl', () => {
           Page.ADD_CONTACT_LANGUAGE_INTERPRETER_PAGE,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
         ],
+        [Page.ADD_CONTACT_DOMESTIC_STATUS_PAGE, `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`],
       ])('Should go to next page if not checking answers: from %s to %s', (page: Page, expectedNextUrl?: string) => {
         const journey: AddContactJourney = {
           id: journeyId,
@@ -209,6 +217,7 @@ describe('addContactFlowControl', () => {
         [Page.ADD_CONTACT_ENTER_GENDER_PAGE],
         [Page.ADD_CONTACT_IS_STAFF_PAGE],
         [Page.ADD_CONTACT_LANGUAGE_INTERPRETER_PAGE],
+        [Page.ADD_CONTACT_DOMESTIC_STATUS_PAGE],
       ])('Should go back to checking answer page: from %s', (page: Page) => {
         const journey: AddContactJourney = {
           id: journeyId,
