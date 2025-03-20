@@ -231,13 +231,43 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/addresses/:journeyId', (
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/create/addresses', () => {
-  it('should pass to task list', async () => {
+  it('should save addresses and redirect to task list', async () => {
+    existingJourney.pendingAddresses = [{ addressType: 'HOME' }]
+    delete existingJourney.addresses
+
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/addresses/${journeyId}`)
       .type('form')
       .send({})
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`)
+
+    expect(session.addContactJourneys![journeyId]!.addresses).toEqual(existingJourney.pendingAddresses)
+  })
+
+  it('should delete addresses on empty list', async () => {
+    existingJourney.pendingAddresses = []
+    existingJourney.addresses = [{ addressType: 'HOME' }]
+
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/addresses/${journeyId}`)
+      .type('form')
+      .send({})
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`)
+
+    expect(session.addContactJourneys![journeyId]!.addresses).toBeUndefined()
+  })
+
+  it('should bounce back to check answers', async () => {
+    existingJourney.isCheckingAnswers = true
+
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/addresses/${journeyId}`)
+      .type('form')
+      .send({})
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
   })
 
   it('should return to start if no journey in session', async () => {

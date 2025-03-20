@@ -9,6 +9,7 @@ import captionForAddContactJourney from '../addContactsUtils'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
+import { formatAddresses } from '../addresses/common/utils'
 
 export default class CreateContactCheckAnswersController implements PageHandler {
   constructor(
@@ -41,6 +42,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
     }
     // reset this in case we came from "back" on change relationship type
     delete journey.relationship?.pendingNewRelationshipType
+    delete journey.pendingAddresses
     let dateOfBirth
     if (journey.dateOfBirth!.isKnown === 'YES') {
       dateOfBirth = new Date(`${journey.dateOfBirth!.year}-${journey.dateOfBirth!.month}-${journey.dateOfBirth!.day}Z`)
@@ -82,11 +84,17 @@ export default class CreateContactCheckAnswersController implements PageHandler 
         dateOfBirth,
         titleDescription: await this.getDescriptionIfSet(journey.names!.title, ReferenceCodeType.TITLE, user),
         genderDescription: await this.getDescriptionIfSet(journey.gender, ReferenceCodeType.GENDER, user),
+        languageDescription: await this.getDescriptionIfSet(
+          journey.languageAndInterpreter?.language,
+          ReferenceCodeType.LANGUAGE,
+          user,
+        ),
         phoneNumbers: journey.phoneNumbers?.map(phone => ({
           phoneNumber: phone.phoneNumber,
           extNumber: phone.extension,
           phoneTypeDescription: phoneTypeDescriptions.get(phone.type),
         })),
+        addresses: await formatAddresses(journey.addresses, this.referenceDataService, user),
       })
     }
     // Add existing

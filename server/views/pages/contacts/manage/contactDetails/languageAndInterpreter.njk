@@ -9,8 +9,19 @@
   <meta name="autocompleteElements" content="language"/>
 {% endblock %}
 
-{% set pageTitle = applicationName + " - Enter spoken language" %}
-{% set title = "Enter language and interpretation requirements" + (" (optional)" if isOptional else "") %}
+{% if isNewContact %}
+  {% set pageTitle = "Enter language and interpretation requirements - Add a contact - DPS" %}
+  {% set title = "Enter language and interpretation requirements (optional)" %}
+  {% set continueButtonLabel = "Continue" %}
+  {% set caption = journey | captionForAddContactJourney %}
+  {% set names = journey.names %}
+{% else %}
+  {% set pageTitle = "Enter language and interpretation requirements - Edit contact details - DPS" %}
+  {% set title = "Enter language and interpretation requirements" %}
+  {% set continueButtonLabel = "Confirm and save" %}
+  {% set caption = "Edit additional information for a contact" %}
+  {% set names = contact %}
+{% endif %}
 
 {% block content %}
 
@@ -25,7 +36,7 @@
              <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
              {{ govukSelect({
                 label: {
-                  text: "What is " + contact | formatNameFirstNameFirst(possessiveSuffix = true) + " first language?",
+                  text: "What is " + names | formatNameFirstNameFirst(possessiveSuffix = true) + " first language?",
                   classes: "govuk-fieldset__legend--m"
                  },
                  hint: {
@@ -40,7 +51,7 @@
             {{ govukRadios({
               fieldset: {
                 legend: {
-                  text: 'Does ' + contact | formatNameFirstNameFirst + ' require an interpreter?',
+                  text: 'Does ' + names | formatNameFirstNameFirst + ' require an interpreter?',
                   classes: "govuk-fieldset__legend--m"
                 }
               },
@@ -50,12 +61,12 @@
                 {
                   value: "YES",
                   text: 'YES' | formatYesNo,
-                  checked: interpreterRequired === true
+                  checked: interpreterRequired === 'YES'
                 },
                 {
                   value: "NO",
                   text: 'NO' | formatYesNo,
-                  checked: interpreterRequired === false
+                  checked: interpreterRequired === 'NO'
                 }
               ]
             })

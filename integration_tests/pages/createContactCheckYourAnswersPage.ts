@@ -79,6 +79,16 @@ export default class CreateContactCheckYourAnswersPage extends Page {
     return this
   }
 
+  verifyShowLanguageAs(expected: string): CreateContactCheckYourAnswersPage {
+    this.checkAnswersLanguageValue().should('contain.text', expected)
+    return this
+  }
+
+  verifyShowInterpreterRequiredAs(expected: string): CreateContactCheckYourAnswersPage {
+    this.checkAnswersInterpreterValue().should('contain.text', expected)
+    return this
+  }
+
   private checkAnswersTitleValue = (): PageElement => cy.get('.check-answers-title-value')
 
   private checkAnswersNameValue = (): PageElement => cy.get('.check-answers-name-value')
@@ -98,6 +108,10 @@ export default class CreateContactCheckYourAnswersPage extends Page {
   private checkAnswersGenderValue = (): PageElement => cy.get('.check-answers-gender-value')
 
   private checkAnswersStaffValue = (): PageElement => cy.get('.check-answers-is-staff-value')
+
+  private checkAnswersLanguageValue = (): PageElement => cy.get('.check-answers-language-value')
+
+  private checkAnswersInterpreterValue = (): PageElement => cy.get('.check-answers-interpreter-value')
 
   private changeDateOfBirthLink = (): PageElement => cy.get('[data-qa=change-dob-link]')
 

@@ -45,9 +45,12 @@ export default class ContactsService {
       lastName: journey.names!.lastName!,
       ...(journey?.names?.middleNames === undefined ? {} : { middleNames: journey.names.middleNames }),
       firstName: journey.names!.firstName!,
-      interpreterRequired: false,
+      interpreterRequired: journey.languageAndInterpreter?.interpreterRequired === 'YES',
       isStaff: journey.isStaff === 'YES',
       ...(journey.gender === undefined ? {} : { genderCode: journey.gender }),
+      ...(journey?.languageAndInterpreter?.language === undefined
+        ? {}
+        : { languageCode: journey?.languageAndInterpreter?.language }),
       relationship: {
         prisonerNumber: journey.prisonerNumber,
         relationshipTypeCode: journey.relationship!.relationshipType!,
@@ -72,6 +75,46 @@ export default class ContactsService {
         phoneNumber,
         ...(extension === undefined ? {} : { extNumber: extension }),
       }))
+    }
+    if (journey.addresses?.length) {
+      request.addresses = journey.addresses.map(item => {
+        const { flat, property, street, area, cityCode, countyCode, postcode, countryCode } = item.addressLines!
+        const address: Exclude<CreateContactRequest['addresses'], undefined>[number] = {
+          verified: false,
+          countryCode,
+          primaryAddress: item.addressMetadata!.primaryAddress || false,
+          startDate: new Date(`${item.addressMetadata!.fromYear}-${item.addressMetadata!.fromMonth}-01Z`).toISOString(),
+          noFixedAddress: item.addressLines!.noFixedAddress,
+          phoneNumbers:
+            item.phoneNumbers?.map(({ type, phoneNumber, extension }) => ({
+              phoneType: type,
+              phoneNumber,
+              ...(extension === undefined ? {} : { extNumber: extension }),
+            })) || [],
+        }
+        if (flat) address.flat = flat
+        if (property) address.property = property
+        if (street) address.street = street
+        if (area) address.area = area
+        if (cityCode) address.cityCode = cityCode
+        if (countyCode) address.countyCode = countyCode
+        if (postcode) address.postcode = postcode
+        if (item.addressType !== 'DO_NOT_KNOW' && item.addressType !== undefined) {
+          address.addressType = item.addressType
+        }
+        if (item.addressMetadata!.mailAddress !== undefined) {
+          address.mailFlag = item.addressMetadata!.mailAddress
+        }
+        if (item.addressMetadata!.toMonth && item.addressMetadata!.toYear) {
+          address.endDate = new Date(
+            `${item.addressMetadata!.toYear}-${item.addressMetadata!.toMonth}-01Z`,
+          ).toISOString()
+        }
+        if (item.addressMetadata!.comments !== undefined && item.addressMetadata!.comments !== null) {
+          address.comments = item.addressMetadata!.comments
+        }
+        return address
+      })
     }
     return this.contactsApiClient.createContact(request, user)
   }

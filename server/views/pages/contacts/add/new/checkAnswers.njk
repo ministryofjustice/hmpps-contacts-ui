@@ -2,6 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "partials/contactMethods/contactAddressCard.njk" import contactAddressCard %}
 
 {% set pageTitle = "Check your answers before linking the contact to the prisoner - Add a contact - DPS" %}
 {% set title = "Check your answers before linking the contact to " + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) %}
@@ -122,9 +123,9 @@
                     }
                 ] %}
 
-                <h2>Personal information</h2>
+                <h2 class="govuk-heading-l govuk-!-font-size-24">Personal information</h2>
                 {{ govukSummaryList({ rows: contactDetailsRows }) }}
-                <h2>Relationship to prisoner {{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }}</h2>
+                <h2 class="govuk-heading-l govuk-!-font-size-24">Relationship to prisoner {{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }}</h2>
                 {{ govukSummaryList({
                     rows: [
                         {
@@ -277,10 +278,79 @@
               <p class="govuk-body">No phone numbers provided.</p>
               {% endif %}
 
-              {% set buttonLabel = "Create prisoner contact" %}
+              <div class="moj-page-header-actions">
+                <div class="moj-page-header-actions__title">
+                  <h2 class="govuk-heading-l govuk-!-font-size-24">Addresses</h2>
+                </div>
+                <div class="moj-page-header-actions__actions">
+                  <div class="moj-button-group moj-button-group--inline">
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold" data-qa="add-address-link" href="{{ baseChangeUrl + "/addresses/" + journey.id }}">
+                      {% if addresses.length %}
+                        Add, change or delete addresses
+                      {% else %}
+                        Add address
+                      {% endif %}
+                    </a>
+                  </div>
+                </div>
+              </div>
+              {% if addresses.length > 0 %}
+                {% for address in addresses %}
+                  {{ contactAddressCard({
+                    address: address,
+                    showActions: false
+                  }) }}
+                {% endfor %}
+              {% else %}
+                <p class="govuk-body">No addresses provided.</p>
+              {% endif %}
+
+              <h2 class="govuk-heading-l govuk-!-font-size-24">Additional information</h2>
+              {{ govukSummaryList({ rows: [
+                {
+                  key: {
+                    text: "Contact’s first language"
+                  },
+                  value: {
+                    text: languageDescription or 'Not provided',
+                    classes: 'check-answers-language-value'
+                  },
+                  actions: {
+                    items: [
+                      {
+                        href: baseChangeUrl + "/language-and-interpreter/"  + journey.id + "#language",
+                        text: "Change",
+                        visuallyHiddenText: "the contact’s first language",
+                        attributes: {"data-qa": "change-language-link"},
+                        classes: "govuk-link--no-visited-state"
+                      }
+                    ]
+                  }
+                },
+                {
+                  key: {
+                    text: "Interpreter required"
+                  },
+                  value: {
+                    text: (journey.languageAndInterpreter.interpreterRequired | formatYesNo if journey.languageAndInterpreter and journey.languageAndInterpreter.interpreterRequired) or 'Not provided',
+                    classes: 'check-answers-interpreter-value'
+                  },
+                  actions: {
+                    items: [
+                      {
+                        href: baseChangeUrl + "/language-and-interpreter/"  + journey.id + "#interpreterRequired",
+                        text: "Change",
+                        visuallyHiddenText: "if an interpreter is required",
+                        attributes: {"data-qa": "change-interpreter-link"},
+                        classes: "govuk-link--no-visited-state"
+                      }
+                    ]
+                  }
+                }
+              ] }) }}
                 <div class="govuk-button-group">
                     {{ govukButton({
-                        text: buttonLabel,
+                        text: "Create prisoner contact",
                         type: "submit",
                         classes: 'govuk-!-margin-top-6',
                         attributes: {"data-qa": "continue-button"},

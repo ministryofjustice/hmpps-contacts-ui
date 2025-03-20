@@ -104,6 +104,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
     expect($('a:contains("If the contact is a member of staff")').parent().next().text().trim()).toStrictEqual(
       'Not entered',
     )
+    expect($('a:contains("Language and interpretation requirements")').parent().next().text().trim()).toStrictEqual(
+      'Not entered',
+    )
   })
 
   it('should render entered for optional info that has been completed', async () => {
@@ -117,6 +120,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
     existingJourney.gender = 'M'
     existingJourney.identities = [{ identityType: '', identityValue: '' }]
     existingJourney.isStaff = 'YES'
+    existingJourney.languageAndInterpreter = { language: 'ENG' }
     const response = await request(app).get(
       `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`,
     )
@@ -133,6 +137,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
     expect($('a:contains("Gender")').parent().next().text().trim()).toStrictEqual('Entered')
     expect($('a:contains("Identity documents")').parent().next().text().trim()).toStrictEqual('Entered')
     expect($('a:contains("If the contact is a member of staff")').parent().next().text().trim()).toStrictEqual(
+      'Entered',
+    )
+    expect($('a:contains("Language and interpretation requirements")').parent().next().text().trim()).toStrictEqual(
       'Entered',
     )
   })

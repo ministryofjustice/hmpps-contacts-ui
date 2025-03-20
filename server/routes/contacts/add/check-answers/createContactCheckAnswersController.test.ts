@@ -12,6 +12,7 @@ import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 import { MockedService } from '../../../../testutils/mockedServices'
 import YesOrNo = journeys.YesOrNo
+import LanguageAndInterpreterRequiredForm = journeys.LanguageAndInterpreterRequiredForm
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/contactsService')
@@ -225,6 +226,30 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     const $ = cheerio.load(response.text)
     expect($('.check-answers-is-staff-value').first().text().trim()).toStrictEqual(displayed)
   })
+
+  it.each([
+    [undefined, 'Not provided', 'Not provided'],
+    [{ language: 'ENG' }, 'English', 'Not provided'],
+    [{ language: 'ENG', interpreterRequired: 'YES' }, 'English', 'Yes'],
+    [{ language: 'ENG', interpreterRequired: 'NO' }, 'English', 'No'],
+    [{ interpreterRequired: 'NO' }, 'Not provided', 'No'],
+  ])(
+    'should render check answers page with is staff (journey: %s, display lang: %s, display interpreter: %s)',
+    async (languageAndInterpreter, displayedLanguage, displayedInterpreter) => {
+      // Given
+      journey.languageAndInterpreter = languageAndInterpreter as LanguageAndInterpreterRequiredForm
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+      // Then
+      expect(response.status).toEqual(200)
+      expect(journey.isCheckingAnswers).toStrictEqual(true)
+      const $ = cheerio.load(response.text)
+      expect($('.check-answers-language-value').first().text().trim()).toStrictEqual(displayedLanguage)
+      expect($('.check-answers-interpreter-value').first().text().trim()).toStrictEqual(displayedInterpreter)
+    },
+  )
 
   it.each([
     ['REV', 'First', 'Middle Names', 'Last', 'First Middle Names Last', 'Reverend'],

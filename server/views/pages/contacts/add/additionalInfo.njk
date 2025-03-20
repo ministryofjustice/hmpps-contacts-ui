@@ -70,6 +70,13 @@
               },
               href: "/prisoner/" + journey.prisonerNumber + "/contacts/create/is-staff/" + journey.id,
               status: journey.isStaff | taskStatus
+            },
+            {
+              title: {
+                text: "Language and interpretation requirements"
+              },
+              href: "/prisoner/" + journey.prisonerNumber + "/contacts/create/language-and-interpreter/" + journey.id,
+              status: journey.languageAndInterpreter | taskStatus
             }
           ]
         }) }}

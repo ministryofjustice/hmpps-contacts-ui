@@ -23,6 +23,7 @@ type CreateContactPages =
   | Page.ADD_CONTACT_DELETE_PHONE_PAGE
   | Page.ADD_CONTACT_ENTER_GENDER_PAGE
   | Page.ADD_CONTACT_IS_STAFF_PAGE
+  | Page.ADD_CONTACT_LANGUAGE_INTERPRETER_PAGE
   | Page.ADD_CONTACT_ADD_IDENTITY_PAGE
 type ExistingContactPages =
   | Page.CREATE_CONTACT_START_PAGE
@@ -113,6 +114,9 @@ const PAGES: Record<AllAddContactPages, PageConfig> = {
   [Page.ADD_CONTACT_IS_STAFF_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/is-staff/${journey.id}`,
   },
+  [Page.ADD_CONTACT_LANGUAGE_INTERPRETER_PAGE]: {
+    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/language-and-interpreter/${journey.id}`,
+  },
   [Page.ADD_CONTACT_ADD_IDENTITY_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/identities/${journey.id}`,
   },
@@ -185,8 +189,8 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
     nextUrl: _ => undefined,
   },
   [Page.ADD_ADDRESSES]: {
-    ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE, canSkipToCheckAnswer: false }),
-    nextUrl: _ => undefined,
+    ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE, canSkipToCheckAnswer: true }),
+    nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.ADD_CONTACT_ENTER_GENDER_PAGE]: {
     ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE }),
@@ -194,6 +198,11 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.ADD_CONTACT_IS_STAFF_PAGE]: {
+    ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE }),
+    previousUrlLabel: _ => 'Back',
+    nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
+  },
+  [Page.ADD_CONTACT_LANGUAGE_INTERPRETER_PAGE]: { 
     ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE }),
     previousUrlLabel: _ => 'Back',
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
