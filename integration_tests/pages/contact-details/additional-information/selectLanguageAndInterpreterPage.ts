@@ -1,8 +1,11 @@
 import Page from '../../page'
 
 export default class SelectLanguageAndInterpreterPage extends Page {
-  constructor(private name: string) {
-    super(`Enter language and interpretation requirements`)
+  constructor(
+    private name: string,
+    optional: boolean,
+  ) {
+    super(`Enter language and interpretation requirements${optional ? ' (optional)' : ''}`)
   }
 
   verifyFirstLanguage(value: string) {

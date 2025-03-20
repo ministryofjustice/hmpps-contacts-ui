@@ -11,7 +11,7 @@ import SearchContactPage from '../pages/searchContactPage'
 import CreateContactSuccessPage from '../pages/createContactSuccessPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
-import SelectStaffStatusPage from '../pages/contact-details/selectStaffStatus'
+import SelectLanguageAndInterpreterPage from '../pages/contact-details/additional-information/selectLanguageAndInterpreterPage'
 
 context('Create Contact and Select Staff Status', () => {
   const contactId = 654321
@@ -25,6 +25,7 @@ context('Create Contact and Select Staff Status', () => {
     cy.task('stubPhoneTypeReferenceData')
     cy.task('stubRelationshipReferenceData')
     cy.task('stubOfficialRelationshipReferenceData')
+    cy.task('stubLanguagesReferenceData')
     cy.task('stubRelationshipTypeReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', TestData.prisoner().prisonerNumber)
@@ -105,59 +106,29 @@ context('Create Contact and Select Staff Status', () => {
       .clickContinue()
   })
 
-  it('Can create a contact with and select staff status', () => {
-    // Gender is optional
+  it('Can create a contact with and enter language and interpreter requirements', () => {
+    // Fields are optional
     Page.verifyOnPage(AddContactAdditionalInfoPage, 'First Last') //
-      .clickLinkTo('If the contact is a member of staff', SelectStaffStatusPage, 'First Last', true)
+      .clickLinkTo('Language and interpretation requirements', SelectLanguageAndInterpreterPage, 'First Last', true)
       .clickLinkTo('Back', AddContactAdditionalInfoPage, 'First Last')
-      .clickLinkTo('If the contact is a member of staff', SelectStaffStatusPage, 'First Last', true)
+      .clickLinkTo('Language and interpretation requirements', SelectLanguageAndInterpreterPage, 'First Last', true)
       .clickButtonTo('Continue', AddContactAdditionalInfoPage, 'First Last')
       .clickContinue()
 
-    // Change to include a gender
+    // Change to include all fields
     Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
-      .verifyShowIsStaffAs('Not provided')
-      .clickLinkTo('Change if the contact is a member of staff', SelectStaffStatusPage, 'First Last', true)
-      .selectStaffStatus('NO')
+      .verifyShowLanguageAs('Not provided')
+      .verifyShowInterpreterRequiredAs('Not provided')
+      .clickLinkTo('Change the contact’s first language', SelectLanguageAndInterpreterPage, 'First Last', true)
+      .selectFirstLanguage('ENG')
       .continueTo(CreateContactCheckYourAnswersPage, 'John Smith')
-      .verifyShowIsStaffAs('No')
-      .clickLinkTo('Change if the contact is a member of staff', SelectStaffStatusPage, 'First Last', true)
-      .selectStaffStatus('YES')
+      .verifyShowLanguageAs('English')
+      .verifyShowInterpreterRequiredAs('Not provided')
+      .clickLinkTo('Change if an interpreter is required', SelectLanguageAndInterpreterPage, 'First Last', true)
+      .selectIsInterpreterNeeded('YES')
       .continueTo(CreateContactCheckYourAnswersPage, 'John Smith')
-      .verifyShowIsStaffAs('Yes')
-      .continueTo(CreateContactSuccessPage)
-
-    cy.verifyLastAPICall(
-      {
-        method: 'POST',
-        urlPath: '/contact',
-      },
-      {
-        lastName: 'Last',
-        firstName: 'First',
-        isStaff: true,
-        interpreterRequired: false,
-        createdBy: 'USER1',
-        relationship: {
-          prisonerNumber: 'A1234BC',
-          relationshipTypeCode: 'S',
-          relationshipToPrisonerCode: 'MOT',
-          isNextOfKin: true,
-          isEmergencyContact: false,
-          isApprovedVisitor: false,
-        },
-      },
-    )
-  })
-
-  it('Can create a contact with staff status defaults to no if not answered', () => {
-    // Staff status is optional
-    Page.verifyOnPage(AddContactAdditionalInfoPage, 'First Last') //
-      .clickContinue()
-
-    // Change to include staff status
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
-      .verifyShowIsStaffAs('Not provided')
+      .verifyShowLanguageAs('English')
+      .verifyShowInterpreterRequiredAs('Yes')
       .continueTo(CreateContactSuccessPage)
 
     cy.verifyLastAPICall(
@@ -169,7 +140,8 @@ context('Create Contact and Select Staff Status', () => {
         lastName: 'Last',
         firstName: 'First',
         isStaff: false,
-        interpreterRequired: false,
+        interpreterRequired: true,
+        languageCode: 'ENG',
         createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',

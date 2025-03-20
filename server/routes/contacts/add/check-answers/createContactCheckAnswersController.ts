@@ -82,6 +82,11 @@ export default class CreateContactCheckAnswersController implements PageHandler 
         dateOfBirth,
         titleDescription: await this.getDescriptionIfSet(journey.names!.title, ReferenceCodeType.TITLE, user),
         genderDescription: await this.getDescriptionIfSet(journey.gender, ReferenceCodeType.GENDER, user),
+        languageDescription: await this.getDescriptionIfSet(
+          journey.languageAndInterpreter?.language,
+          ReferenceCodeType.LANGUAGE,
+          user,
+        ),
         phoneNumbers: journey.phoneNumbers?.map(phone => ({
           phoneNumber: phone.phoneNumber,
           extNumber: phone.extension,

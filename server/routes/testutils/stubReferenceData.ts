@@ -76,6 +76,11 @@ const STUBBED_LANGUAGE_OPTIONS: StubReferenceData[] = [
     description: 'Arabic',
     groupCode: 'LANGUAGE',
   },
+  {
+    code: 'ENG',
+    description: 'English',
+    groupCode: 'LANGUAGE',
+  },
 ]
 const STUBBED_RESTRICTION_OPTIONS: StubReferenceData[] = [
   {

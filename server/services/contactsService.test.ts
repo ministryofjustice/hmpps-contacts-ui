@@ -21,6 +21,8 @@ import PatchContactAddressRequest = contactsApiClientTypes.PatchContactAddressRe
 import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAddressPhoneRequest
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
+import YesOrNo = journeys.YesOrNo
+import LanguageAndInterpreterRequiredForm = journeys.LanguageAndInterpreterRequiredForm
 
 type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
@@ -122,6 +124,131 @@ describe('contactsService', () => {
             isApprovedVisitor: false,
             comments: 'Some comments about this relationship',
           },
+        }
+
+        // When
+        const created = await service.createContact(journey, user)
+
+        // Then
+        expect(created).toStrictEqual(expectedCreated)
+        expect(apiClient.createContact).toHaveBeenCalledWith(expectedRequest, user)
+      },
+    )
+
+    it.each([
+      ['YES', true],
+      ['NO', false],
+      [undefined, false],
+    ])(
+      'should create a contact from the journey dto with all staff options',
+      async (isStaffJourney: string | undefined, isStaffRequest: boolean) => {
+        // Given
+        const expectedCreated: ContactCreationResult = {
+          createdContact: {
+            id: 2136718213,
+          },
+          createdRelationship: {
+            prisonerContactId: 987654,
+          },
+        }
+        apiClient.createContact.mockResolvedValue(expectedCreated)
+        const journey: AddContactJourney = {
+          id: '1',
+          lastTouched: new Date().toISOString(),
+          prisonerNumber,
+          isCheckingAnswers: false,
+          returnPoint: { url: '/foo-bar' },
+          names: {
+            lastName: 'last',
+            firstName: 'first',
+          },
+          relationship: {
+            relationshipType: 'S',
+            relationshipToPrisoner: 'MOT',
+            isEmergencyContact: 'NO',
+            isNextOfKin: 'YES',
+          },
+          isStaff: isStaffJourney as YesOrNo,
+        }
+        const expectedRequest: CreateContactRequest = {
+          lastName: 'last',
+          firstName: 'first',
+          isStaff: isStaffRequest,
+          interpreterRequired: false,
+          relationship: {
+            prisonerNumber,
+            relationshipTypeCode: 'S',
+            relationshipToPrisonerCode: 'MOT',
+            isNextOfKin: true,
+            isEmergencyContact: false,
+            isApprovedVisitor: false,
+          },
+          createdBy: 'user1',
+        }
+
+        // When
+        const created = await service.createContact(journey, user)
+
+        // Then
+        expect(created).toStrictEqual(expectedCreated)
+        expect(apiClient.createContact).toHaveBeenCalledWith(expectedRequest, user)
+      },
+    )
+
+    it.each([
+      [{ language: 'ENG', interpreterRequired: 'YES' }, 'ENG', true],
+      [{ language: 'ENG', interpreterRequired: 'NO' }, 'ENG', false],
+      [{ language: 'ENG' }, 'ENG', false],
+      [{ interpreterRequired: 'YES' }, undefined, true],
+      [undefined, undefined, false],
+    ])(
+      'should create a contact from the journey dto with all staff options',
+      async (languageAndInterpreterJourney, expectedLanguage, expectedInterpreter) => {
+        // Given
+        const expectedCreated: ContactCreationResult = {
+          createdContact: {
+            id: 2136718213,
+          },
+          createdRelationship: {
+            prisonerContactId: 987654,
+          },
+        }
+        apiClient.createContact.mockResolvedValue(expectedCreated)
+        const journey: AddContactJourney = {
+          id: '1',
+          lastTouched: new Date().toISOString(),
+          prisonerNumber,
+          isCheckingAnswers: false,
+          returnPoint: { url: '/foo-bar' },
+          names: {
+            lastName: 'last',
+            firstName: 'first',
+          },
+          relationship: {
+            relationshipType: 'S',
+            relationshipToPrisoner: 'MOT',
+            isEmergencyContact: 'NO',
+            isNextOfKin: 'YES',
+          },
+          languageAndInterpreter: languageAndInterpreterJourney as LanguageAndInterpreterRequiredForm,
+        }
+        const expectedRequest: CreateContactRequest = {
+          lastName: 'last',
+          firstName: 'first',
+          isStaff: false,
+          interpreterRequired: expectedInterpreter,
+          relationship: {
+            prisonerNumber,
+            relationshipTypeCode: 'S',
+            relationshipToPrisonerCode: 'MOT',
+            isNextOfKin: true,
+            isEmergencyContact: false,
+            isApprovedVisitor: false,
+          },
+          createdBy: 'user1',
+        }
+        if (expectedLanguage) {
+          expectedRequest.languageCode = expectedLanguage
         }
 
         // When
