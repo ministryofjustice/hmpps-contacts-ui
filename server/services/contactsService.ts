@@ -48,6 +48,7 @@ export default class ContactsService {
       interpreterRequired: journey.languageAndInterpreter?.interpreterRequired === 'YES',
       isStaff: journey.isStaff === 'YES',
       ...(journey.gender === undefined ? {} : { genderCode: journey.gender }),
+      ...(journey.domesticStatusCode === undefined ? {} : { domesticStatusCode: journey.domesticStatusCode }),
       ...(journey?.languageAndInterpreter?.language === undefined
         ? {}
         : { languageCode: journey?.languageAndInterpreter?.language }),

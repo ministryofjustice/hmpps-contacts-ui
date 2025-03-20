@@ -4,8 +4,17 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "partials/miniProfile/macro.njk" import miniProfile %}
 
-{% set pageTitle = applicationName + " - Enter domestic status" %}
-{% set title = "What is " + contact | formatNameFirstNameFirst(possessiveSuffix = true) + " domestic status?" + (" (optional)" if isOptional else "") %}
+{% if isNewContact %}
+  {% set pageTitle = "What is the contact’s domestic status? - Add a contact - DPS" %}
+  {% set title =  "What is " + journey.names | formatNameFirstNameFirst(possessiveSuffix = true) + " domestic status? (optional)" %}
+  {% set continueButtonLabel = "Continue" %}
+  {% set caption = journey | captionForAddContactJourney %}
+{% else %}
+  {% set pageTitle = "What is the contact’s domestic status? - Edit contact details - DPS" %}
+  {% set title =  "What is " + contact | formatNameFirstNameFirst(possessiveSuffix = true) + " domestic status?"%}
+  {% set continueButtonLabel = "Confirm and save" %}
+  {% set caption = "Edit additional information for a contact" %}
+{% endif %}
 
 {% block content %}
 

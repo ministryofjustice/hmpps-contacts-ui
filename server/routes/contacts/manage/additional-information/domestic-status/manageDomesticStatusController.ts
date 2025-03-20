@@ -36,10 +36,8 @@ export default class ManageDomesticStatusController implements PageHandler {
       backLink: Urls.editContactDetails(prisonerNumber, contactId, prisonerContactId),
       cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
     }
-    return res.render('pages/contacts/manage/contactDetails/manageDomesticStatus', {
-      isOptional: false,
-      caption: 'Edit additional information for a contact',
-      continueButtonLabel: 'Confirm and save',
+    return res.render('pages/contacts/manage/contactDetails/domesticStatus', {
+      isNewContact: false,
       contact,
       domesticStatusOptions,
       domesticStatusCode: contact.domesticStatusCode,

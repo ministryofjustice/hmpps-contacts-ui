@@ -74,6 +74,11 @@ export default class CreateContactCheckYourAnswersPage extends Page {
     return this
   }
 
+  verifyShowDomesticStatusAs(expected: string): CreateContactCheckYourAnswersPage {
+    this.checkAnswersDomesticStatusValue().should('contain.text', expected)
+    return this
+  }
+
   verifyShowIsStaffAs(expected: string): CreateContactCheckYourAnswersPage {
     this.checkAnswersStaffValue().should('contain.text', expected)
     return this
@@ -106,6 +111,8 @@ export default class CreateContactCheckYourAnswersPage extends Page {
   private checkAnswersCommentsValue = (): PageElement => cy.get('.check-answers-comments-value')
 
   private checkAnswersGenderValue = (): PageElement => cy.get('.check-answers-gender-value')
+
+  private checkAnswersDomesticStatusValue = (): PageElement => cy.get('.check-answers-domestic-status-value')
 
   private checkAnswersStaffValue = (): PageElement => cy.get('.check-answers-is-staff-value')
 

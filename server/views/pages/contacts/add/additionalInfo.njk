@@ -52,6 +52,13 @@
             },
             {
               title: {
+                text: "Domestic status"
+              },
+              href: "/prisoner/" + journey.prisonerNumber + "/contacts/create/domestic-status/" + journey.id,
+              status: journey.domesticStatusCode | taskStatus
+            },
+            {
+              title: {
                 text: "Gender"
               },
               href: "/prisoner/" + journey.prisonerNumber + "/contacts/create/enter-gender/" + journey.id,
