@@ -305,7 +305,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     )
   })
 
-
   it('should render check answers page with identity documents', async () => {
     // Given
     journey.identities = [
@@ -316,7 +315,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
         issuingAuthority: 'Authority',
       },
     ]
-    
+
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
 
