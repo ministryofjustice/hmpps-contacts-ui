@@ -41,7 +41,7 @@
                                 text: "Issuing authority"
                             },
                             value: {
-                                html: identityDocument.issuingAuthority if identityDocument.issuingAuthority else 'Not provided',
+                                html: identityDocument.issuingAuthority or 'Not provided',
                                 classes: 'issuing-authority-value'
                             }
                         }

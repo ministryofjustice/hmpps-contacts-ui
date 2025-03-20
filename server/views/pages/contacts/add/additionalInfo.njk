@@ -59,6 +59,13 @@
             },
             {
               title: {
+                text: "Identity documents"
+              },
+              href: "/prisoner/" + journey.prisonerNumber + "/contacts/create/identities/" + journey.id,
+              status: journey.identities | taskStatus
+            },
+            {
+              title: {
                 text: "If the contact is a member of staff"
               },
               href: "/prisoner/" + journey.prisonerNumber + "/contacts/create/is-staff/" + journey.id,

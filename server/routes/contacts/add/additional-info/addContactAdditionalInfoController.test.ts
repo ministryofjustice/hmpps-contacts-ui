@@ -100,6 +100,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
     ).toStrictEqual('Not entered')
     expect($('a:contains("Phone numbers")').parent().next().text().trim()).toStrictEqual('Not entered')
     expect($('a:contains("Gender")').parent().next().text().trim()).toStrictEqual('Not entered')
+    expect($('a:contains("Identity documents")').parent().next().text().trim()).toStrictEqual('Not entered')
     expect($('a:contains("If the contact is a member of staff")').parent().next().text().trim()).toStrictEqual(
       'Not entered',
     )
@@ -114,6 +115,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
       { type: 'HOME', phoneNumber: '987654321', extension: '#123' },
     ]
     existingJourney.gender = 'M'
+    existingJourney.identities = [{ identityType: '', identityValue: '' }]
     existingJourney.isStaff = 'YES'
     const response = await request(app).get(
       `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`,
@@ -129,6 +131,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
     ).toStrictEqual('Entered')
     expect($('a:contains("Phone numbers")').parent().next().text().trim()).toStrictEqual('Entered')
     expect($('a:contains("Gender")').parent().next().text().trim()).toStrictEqual('Entered')
+    expect($('a:contains("Identity documents")').parent().next().text().trim()).toStrictEqual('Entered')
     expect($('a:contains("If the contact is a member of staff")').parent().next().text().trim()).toStrictEqual(
       'Entered',
     )

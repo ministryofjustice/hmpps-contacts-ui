@@ -4,20 +4,20 @@ import { identitiesSchema, identitySchema } from './IdentitySchemas'
 
 describe('identitySchemaFactory', () => {
   type Form = {
-    type: string
-    identity: string
+    identityType: string
+    identityValue: string
     issuingAuthority: string
   }
   const baseForm: Form = {
-    type: '',
-    identity: '',
+    identityType: '',
+    identityValue: '',
     issuingAuthority: '',
   }
 
   describe('should validate a identity number form', () => {
     it('should require type', async () => {
       // Given
-      const form = { ...baseForm, identity: '123456' }
+      const form = { ...baseForm, identityValue: '123456' }
 
       // When
       const result = await doValidate(form)
@@ -25,12 +25,12 @@ describe('identitySchemaFactory', () => {
       // Then
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
-      expect(deduplicatedFieldErrors).toStrictEqual({ type: ['Select the document type'] })
+      expect(deduplicatedFieldErrors).toStrictEqual({ identityType: ['Select the document type'] })
     })
 
     it('should require identity number', async () => {
       // Given
-      const form = { ...baseForm, type: 'PASS' }
+      const form = { ...baseForm, identityType: 'PASS' }
 
       // When
       const result = await doValidate(form)
@@ -38,14 +38,14 @@ describe('identitySchemaFactory', () => {
       // Then
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
-      expect(deduplicatedFieldErrors).toStrictEqual({ identity: ['Enter the document number'] })
+      expect(deduplicatedFieldErrors).toStrictEqual({ identityValue: ['Enter the document number'] })
     })
 
     it('identity number should be limited to 20 chars', async () => {
       // Given
       const form = {
-        type: 'PASS',
-        identity: ''.padEnd(21, '1'),
+        identityType: 'PASS',
+        identityValue: ''.padEnd(21, '1'),
         issuingAuthority: '',
       }
 
@@ -56,15 +56,15 @@ describe('identitySchemaFactory', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        identity: ['Document number must be 20 characters or less'],
+        identityValue: ['Document number must be 20 characters or less'],
       })
     })
 
     it('issuing authority should be limited to 40 chars', async () => {
       // Given
       const form = {
-        type: 'PASS',
-        identity: 'LAST-87736799M',
+        identityType: 'PASS',
+        identityValue: 'LAST-87736799M',
         issuingAuthority: ''.padEnd(41, '1'),
       }
 
@@ -81,7 +81,7 @@ describe('identitySchemaFactory', () => {
 
     it('should require PNC numbers in required format', async () => {
       // Given
-      const form = { ...baseForm, type: 'PNC', identity: '1923/1Z34567A' }
+      const form = { ...baseForm, identityType: 'PNC', identityValue: '1923/1Z34567A' }
 
       // When
       const result = await doValidate(form)
@@ -90,13 +90,13 @@ describe('identitySchemaFactory', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        identity: ['Enter a PNC number in the correct format – for example, ‘22/1234567A’'],
+        identityValue: ['Enter a PNC number in the correct format – for example, ‘22/1234567A’'],
       })
     })
 
     it('should accept PNC numbers in required format', async () => {
       // Given
-      const form = { ...baseForm, type: 'PNC', identity: '2008/0056560Z' }
+      const form = { ...baseForm, identityType: 'PNC', identityValue: '2008/0056560Z' }
 
       // When
       const result = await doValidate(form)
@@ -108,8 +108,8 @@ describe('identitySchemaFactory', () => {
     it('should present errors in field order', async () => {
       // Given
       const form = {
-        identity: '',
-        type: '',
+        identityValue: '',
+        identityType: '',
         issuingAuthority: ''.padEnd(41, '1'),
       }
 
@@ -121,8 +121,8 @@ describe('identitySchemaFactory', () => {
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(JSON.stringify(deduplicatedFieldErrors)).toBe(
         JSON.stringify({
-          type: ['Select the document type'],
-          identity: ['Enter the document number'],
+          identityType: ['Select the document type'],
+          identityValue: ['Enter the document number'],
           issuingAuthority: ['Issuing authority must be 40 characters or less'],
         }),
       )
@@ -139,8 +139,8 @@ describe('identitySchemaFactory', () => {
       const form = {
         identities: [
           {
-            type: '',
-            identity: '132',
+            identityType: '',
+            identityValue: '132',
           } as Form,
         ],
         save: '',
@@ -153,7 +153,7 @@ describe('identitySchemaFactory', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
 
-      expect(deduplicatedFieldErrors).toStrictEqual({ 'identities[0].type': ['Select the document type'] })
+      expect(deduplicatedFieldErrors).toStrictEqual({ 'identities[0].identityType': ['Select the document type'] })
     })
 
     it('should require identity number', async () => {
@@ -161,8 +161,8 @@ describe('identitySchemaFactory', () => {
       const form = {
         identities: [
           {
-            type: 'DL',
-            identity: '',
+            identityType: 'DL',
+            identityValue: '',
           } as Form,
         ],
         save: '',
@@ -174,7 +174,7 @@ describe('identitySchemaFactory', () => {
       // Then
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
-      expect(deduplicatedFieldErrors).toStrictEqual({ 'identities[0].identity': ['Enter the document number'] })
+      expect(deduplicatedFieldErrors).toStrictEqual({ 'identities[0].identityValue': ['Enter the document number'] })
     })
 
     it('identity number should be limited to 20 chars', async () => {
@@ -182,8 +182,8 @@ describe('identitySchemaFactory', () => {
       const form = {
         identities: [
           {
-            type: 'DL',
-            identity: ''.padEnd(21, '1'),
+            identityType: 'DL',
+            identityValue: ''.padEnd(21, '1'),
           } as Form,
         ],
         save: '',
@@ -196,7 +196,7 @@ describe('identitySchemaFactory', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        'identities[0].identity': ['Document number must be 20 characters or less'],
+        'identities[0].identityValue': ['Document number must be 20 characters or less'],
       })
     })
 
@@ -205,8 +205,8 @@ describe('identitySchemaFactory', () => {
       const form = {
         identities: [
           {
-            type: 'PASS',
-            identity: 'LAST-87736799M',
+            identityType: 'PASS',
+            identityValue: 'LAST-87736799M',
             issuingAuthority: ''.padEnd(41, '1'),
           } as Form,
         ],
@@ -229,8 +229,8 @@ describe('identitySchemaFactory', () => {
       const form = {
         identities: [
           {
-            type: 'PNC',
-            identity: '1923/1Z34567A',
+            identityType: 'PNC',
+            identityValue: '1923/1Z34567A',
           } as Form,
         ],
         save: '',
@@ -243,7 +243,7 @@ describe('identitySchemaFactory', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        'identities[0].identity': ['Enter a PNC number in the correct format – for example, ‘22/1234567A’'],
+        'identities[0].identityValue': ['Enter a PNC number in the correct format – for example, ‘22/1234567A’'],
       })
     })
 
@@ -252,8 +252,8 @@ describe('identitySchemaFactory', () => {
       const form = {
         identities: [
           {
-            type: 'PNC',
-            identity: '2008/0056560Z',
+            identityType: 'PNC',
+            identityValue: '2008/0056560Z',
           } as Form,
         ],
         save: '',
@@ -271,17 +271,17 @@ describe('identitySchemaFactory', () => {
       const form = {
         identities: [
           {
-            type: 'PASS',
-            identity: 'LAST-87736799M',
+            identityType: 'PASS',
+            identityValue: 'LAST-87736799M',
             issuingAuthority: ''.padEnd(41, '1'),
           } as Form,
           {
-            type: '',
-            identity: 'LAST-87736799M',
+            identityType: '',
+            identityValue: 'LAST-87736799M',
           } as Form,
           {
-            type: 'DL',
-            identity: '',
+            identityType: 'DL',
+            identityValue: '',
           } as Form,
         ],
         save: '',
@@ -295,8 +295,8 @@ describe('identitySchemaFactory', () => {
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
         'identities[0].issuingAuthority': ['Issuing authority must be 40 characters or less'],
-        'identities[1].type': ['Select the document type'],
-        'identities[2].identity': ['Enter the document number'],
+        'identities[1].identityType': ['Select the document type'],
+        'identities[2].identityValue': ['Enter the document number'],
       })
     })
 
@@ -305,8 +305,8 @@ describe('identitySchemaFactory', () => {
       const form = {
         identities: [
           {
-            type: '',
-            identity: '',
+            identityType: '',
+            identityValue: '',
           } as Form,
         ],
         add: '',
@@ -324,8 +324,8 @@ describe('identitySchemaFactory', () => {
       const form = {
         identities: [
           {
-            type: '',
-            identity: '',
+            identityType: '',
+            identityValue: '',
           } as Form,
         ],
         remove: '1',
@@ -343,8 +343,8 @@ describe('identitySchemaFactory', () => {
       const form = {
         identities: [
           {
-            type: '',
-            identity: '',
+            identityType: '',
+            identityValue: '',
           } as Form,
         ],
       }

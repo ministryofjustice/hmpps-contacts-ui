@@ -45,9 +45,9 @@ export default class ChangeIdentityDocumentPage extends Page {
     return this
   }
 
-  private identityTextBox = (): PageElement => cy.get('#identity')
+  private identityTextBox = (): PageElement => cy.get('#identityValue')
 
   private issuingAuthorityTextBox = (): PageElement => cy.get('#issuingAuthority')
 
-  private typeSelect = (): PageElement => cy.get('#type')
+  private typeSelect = (): PageElement => cy.get('#identityType')
 }

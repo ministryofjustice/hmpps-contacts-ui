@@ -124,7 +124,7 @@ context('Create Contact Identity', () => {
     const enterIdentityPage = Page.verifyOnPage(AddIdentityDocumentsPage, 'First Middle Names Last') //
       .enterIdentity(0, '425362965')
     enterIdentityPage.clickContinue()
-    enterIdentityPage.hasFieldInError('identities[0].type', 'Select the document type')
+    enterIdentityPage.hasFieldInError('identities[0].identityType', 'Select the document type')
   })
 
   it('Should require identity number', () => {
@@ -137,7 +137,7 @@ context('Create Contact Identity', () => {
     const enterIdentityPage = Page.verifyOnPage(AddIdentityDocumentsPage, 'First Middle Names Last') //
       .selectType(0, 'NINO')
     enterIdentityPage.clickContinue()
-    enterIdentityPage.hasFieldInError('identities[0].identity', 'Enter the document number')
+    enterIdentityPage.hasFieldInError('identities[0].identityValue', 'Enter the document number')
   })
 
   it('Should require identity number is 20 chars or fewer', () => {
@@ -151,7 +151,7 @@ context('Create Contact Identity', () => {
       .selectType(0, 'NINO')
       .enterIdentity(0, ''.padEnd(21, '0'))
     enterIdentityPage.clickContinue()
-    enterIdentityPage.hasFieldInError('identities[0].identity', 'Document number must be 20 characters or less')
+    enterIdentityPage.hasFieldInError('identities[0].identityValue', 'Document number must be 20 characters or less')
   })
 
   it('Should require Issuing authority is 40 chars or fewer', () => {
@@ -188,7 +188,7 @@ context('Create Contact Identity', () => {
       .enterIdentity(1, '425362965')
 
     enterIdentityPage.clickContinue()
-    enterIdentityPage.hasFieldInError('identities[1].type', 'Select the document type')
+    enterIdentityPage.hasFieldInError('identities[1].identityType', 'Select the document type')
 
     enterIdentityPage //
       .hasType(0, 'DL')

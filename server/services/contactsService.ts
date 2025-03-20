@@ -272,6 +272,7 @@ export default class ContactsService {
       noFixedAddress: journey.addressLines!.noFixedAddress,
       comments: journey.addressMetadata!.comments,
       createdBy: user.username,
+
       phoneNumbers:
         journey.phoneNumbers?.map(({ type, phoneNumber, extension }) => ({
           phoneType: type,

@@ -21,23 +21,23 @@
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
                 {{ govukSelect({
-                  id: "type",
-                  name: "type",
+                  id: "identityType",
+                  name: "identityType",
                   label: {
                     text: "Document type"
                   },
                   classes: 'govuk-!-width-one-quarter',
-                  items: typeOptions | referenceCodesToSelect(undefined, true) | setSelected(type),
-                  errorMessage: validationErrors | findError('type')
+                  items: typeOptions | referenceCodesToSelect(undefined, true) | setSelected(identityType),
+                  errorMessage: validationErrors | findError('identityType')
                 }) }}
 
                 {{ govukInput({
-                    id: "identity",
-                    name: "identity",
+                    id: "identityValue",
+                    name: "identityValue",
                     label: { text: "Document number" },
                     classes: 'govuk-!-width-one-third',
-                    errorMessage: validationErrors | findError('identity'),
-                    value: identity
+                    errorMessage: validationErrors | findError('identityValue'),
+                    value: identityValue
                 }) }}
 
                 {{ govukInput({
