@@ -305,6 +305,42 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     )
   })
 
+  it('should render check answers page with identity documents', async () => {
+    // Given
+    journey.identities = [
+      { identityType: 'DL', identityValue: '0123456789' },
+      {
+        identityType: 'PASS',
+        identityValue: '987654321',
+        issuingAuthority: 'Authority',
+      },
+    ]
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect(journey.isCheckingAnswers).toStrictEqual(true)
+    const $ = cheerio.load(response.text)
+    const dlHeading = $('dt:contains("Driving licence")')
+    expect(dlHeading.next().text().trim()).toStrictEqual('0123456789')
+    expect(dlHeading.next().next().find('a').first().attr('href')).toStrictEqual(
+      `/prisoner/A1234BC/contacts/create/identities/${journeyId}#identities[0].identityValue`,
+    )
+    expect(dlHeading.next().next().find('a').last().attr('href')).toStrictEqual(
+      `/prisoner/A1234BC/contacts/create/delete-identity/1/${journeyId}`,
+    )
+    const ppHeading = $('dt:contains("Passport number")')
+    expect(ppHeading.next().text().trim()).toStrictEqual('987654321Issued by Authority')
+    expect(ppHeading.next().next().find('a').first().attr('href')).toStrictEqual(
+      `/prisoner/A1234BC/contacts/create/identities/${journeyId}#identities[1].identityValue`,
+    )
+    expect(ppHeading.next().next().find('a').last().attr('href')).toStrictEqual(
+      `/prisoner/A1234BC/contacts/create/delete-identity/2/${journeyId}`,
+    )
+  })
+
   it('should call the audit service for the page view', async () => {
     // Given
 

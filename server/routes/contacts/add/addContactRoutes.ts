@@ -56,6 +56,7 @@ import CreateContactIsStaffController from './is-staff/createContactIsStaffContr
 import CreateContactLanguageAndInterpreterController from './language-interpreter/createContactLanguageAndInterpreterController'
 import AddContactAddIdentitiesController from './identities/addContactAddIdentitiesController'
 import { optionalIdentitiesSchema } from '../manage/identities/IdentitySchemas'
+import AddContactConfirmDeleteIdentityController from './identities/addContactConfirmDeleteIdentityController'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -408,6 +409,12 @@ const AddContactRoutes = (
     path: '/prisoner/:prisonerNumber/contacts/create/identities/:journeyId',
     controller: new AddContactAddIdentitiesController(referenceDataService),
     schema: optionalIdentitiesSchema,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/delete-identity/:index/:journeyId',
+    controller: new AddContactConfirmDeleteIdentityController(referenceDataService),
+    noValidation: true,
   })
 
   return router

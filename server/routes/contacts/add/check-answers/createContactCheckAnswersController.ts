@@ -79,6 +79,14 @@ export default class CreateContactCheckAnswersController implements PageHandler 
             ]),
           )
         : new Map()
+      const identityTypeDescriptions = journey.identities
+        ? new Map(
+            (await this.referenceDataService.getReferenceData(ReferenceCodeType.ID_TYPE, user)).map(refData => [
+              refData.code,
+              refData.description,
+            ]),
+          )
+        : new Map()
       return res.render('pages/contacts/add/new/checkAnswers', {
         ...view,
         dateOfBirth,
@@ -93,6 +101,10 @@ export default class CreateContactCheckAnswersController implements PageHandler 
           phoneNumber: phone.phoneNumber,
           extNumber: phone.extension,
           phoneTypeDescription: phoneTypeDescriptions.get(phone.type),
+        })),
+        identities: journey.identities?.map(identity => ({
+          ...identity,
+          identityTypeDescription: identityTypeDescriptions.get(identity.identityType),
         })),
         addresses: await formatAddresses(journey.addresses, this.referenceDataService, user),
       })

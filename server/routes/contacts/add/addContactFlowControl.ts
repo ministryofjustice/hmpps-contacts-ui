@@ -25,6 +25,7 @@ type CreateContactPages =
   | Page.ADD_CONTACT_IS_STAFF_PAGE
   | Page.ADD_CONTACT_LANGUAGE_INTERPRETER_PAGE
   | Page.ADD_CONTACT_ADD_IDENTITY_PAGE
+  | Page.ADD_CONTACT_DELETE_IDENTITY_PAGE
 type ExistingContactPages =
   | Page.CREATE_CONTACT_START_PAGE
   | Page.CONTACT_SEARCH_PAGE
@@ -120,6 +121,10 @@ const PAGES: Record<AllAddContactPages, PageConfig> = {
   [Page.ADD_CONTACT_ADD_IDENTITY_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/identities/${journey.id}`,
   },
+  [Page.ADD_CONTACT_DELETE_IDENTITY_PAGE]: {
+    // this page can only be accessed by check answers
+    url: _ => '#',
+  },
 }
 
 const PRE_MODE_SPEC: Record<PreModePages, Spec> = {
@@ -211,6 +216,12 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
     ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE }),
     previousUrlLabel: _ => 'Back',
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
+  },
+  [Page.ADD_CONTACT_DELETE_IDENTITY_PAGE]: {
+    ...backTo({ page: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE }),
+    previousUrlLabel: _ => 'Back',
+    nextUrl: checkAnswersOr(PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url),
+    cancelUrl: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url,
   },
 }
 

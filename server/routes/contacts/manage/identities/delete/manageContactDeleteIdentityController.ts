@@ -35,7 +35,12 @@ export default class ManageContactDeleteIdentityController implements PageHandle
       backLink: Urls.editContactDetails(prisonerNumber, contactId, prisonerContactId),
       cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
     }
-    res.render('pages/contacts/manage/contactMethods/confirmDeleteIdentity', { contact, identityDocument, navigation })
+    res.render('pages/contacts/manage/contactDetails/confirmDeleteIdentity', {
+      caption: 'Edit identity documentation for a contact',
+      contact,
+      identityDocument,
+      navigation,
+    })
   }
 
   POST = async (
