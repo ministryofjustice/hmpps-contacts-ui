@@ -55,7 +55,7 @@ context('Select Language and interpretation requirements', () => {
       .verifyShowLanguageAs('Albanian')
       .clickChangeLanguageLink()
 
-    Page.verifyOnPage(SelectLanguageAndInterpreterPage, 'Jones Mason')
+    Page.verifyOnPage(SelectLanguageAndInterpreterPage, 'Jones Mason', false)
       .verifyFirstLanguage('Albanian')
       .verifyIsInterpreterNeeded('NO')
       .selectFirstLanguage('Arabic')
@@ -91,10 +91,9 @@ context('Select Language and interpretation requirements', () => {
     Page.verifyOnPage(EditContactDetailsPage, 'Jones Mason') //
       .clickChangeInterpreterRequiredLink()
 
-    Page.verifyOnPage(SelectLanguageAndInterpreterPage, 'Jones Mason')
-      .continueTo(SelectLanguageAndInterpreterPage, 'Jones Mason')
+    Page.verifyOnPage(SelectLanguageAndInterpreterPage, 'Jones Mason', false)
+      .continueTo(SelectLanguageAndInterpreterPage, 'Jones Mason', false)
       .hasFieldInError('language', 'Select the contact’s first language')
-      .hasFieldInError('interpreterRequired', 'Select whether the contact requires an interpreter')
   })
 
   it('goes to correct page on Back or Cancel', () => {
@@ -107,12 +106,12 @@ context('Select Language and interpretation requirements', () => {
       .clickChangeLanguageLink()
 
     // Back to Edit Contact Details
-    Page.verifyOnPage(SelectLanguageAndInterpreterPage, 'Jones Mason') //
+    Page.verifyOnPage(SelectLanguageAndInterpreterPage, 'Jones Mason', false) //
       .backTo(EditContactDetailsPage, 'Jones Mason')
       .clickChangeInterpreterRequiredLink()
 
     // Cancel to Contact Details page
-    Page.verifyOnPage(SelectLanguageAndInterpreterPage, 'Jones Mason') //
+    Page.verifyOnPage(SelectLanguageAndInterpreterPage, 'Jones Mason', false) //
       .cancelTo(ManageContactDetailsPage, 'Jones Mason')
   })
 

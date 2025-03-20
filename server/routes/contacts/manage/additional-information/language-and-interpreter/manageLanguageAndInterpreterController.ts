@@ -39,13 +39,12 @@ export default class ManageLanguageAndInterpreterController implements PageHandl
       backLink: Urls.editContactDetails(prisonerNumber, contactId, prisonerContactId),
       cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
     }
-    return res.render('pages/contacts/manage/contactDetails/manageLanguageAndInterpreter', {
-      isOptional: false,
-      caption: 'Edit additional information for a contact',
-      continueButtonLabel: 'Confirm and save',
+    return res.render('pages/contacts/manage/contactDetails/languageAndInterpreter', {
+      isNewContact: false,
       contact,
       language: res.locals.formResponses?.['language'] ?? contact.languageCode,
-      interpreterRequired: res.locals.formResponses?.['interpreterRequired'] ?? contact.interpreterRequired,
+      interpreterRequired:
+        res.locals.formResponses?.['interpreterRequired'] ?? (contact.interpreterRequired ? 'YES' : 'NO'),
       spokenLanguages,
       navigation,
     })
@@ -66,7 +65,7 @@ export default class ManageLanguageAndInterpreterController implements PageHandl
       interpreterRequired: req.body.interpreterRequired === 'YES',
       updatedBy: user.username,
     }
-    await this.contactsService.updateContactById(parseInt(contactId, 10), request, user)
+    await this.contactsService.updateContactById(Number(contactId), request, user)
     await this.contactsService.getContactName(Number(contactId), user).then(response => {
       req.flash(
         FLASH_KEY__SUCCESS_BANNER,

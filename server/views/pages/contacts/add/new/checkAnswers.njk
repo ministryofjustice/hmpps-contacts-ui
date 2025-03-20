@@ -123,9 +123,9 @@
                     }
                 ] %}
 
-                <h2>Personal information</h2>
+                <h2 class="govuk-heading-l govuk-!-font-size-24">Personal information</h2>
                 {{ govukSummaryList({ rows: contactDetailsRows }) }}
-                <h2>Relationship to prisoner {{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }}</h2>
+                <h2 class="govuk-heading-l govuk-!-font-size-24">Relationship to prisoner {{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }}</h2>
                 {{ govukSummaryList({
                     rows: [
                         {
@@ -305,10 +305,52 @@
                 <p class="govuk-body">No addresses provided.</p>
               {% endif %}
 
-              {% set buttonLabel = "Create prisoner contact" %}
+              <h2 class="govuk-heading-l govuk-!-font-size-24">Additional information</h2>
+              {{ govukSummaryList({ rows: [
+                {
+                  key: {
+                    text: "Contact’s first language"
+                  },
+                  value: {
+                    text: languageDescription or 'Not provided',
+                    classes: 'check-answers-language-value'
+                  },
+                  actions: {
+                    items: [
+                      {
+                        href: baseChangeUrl + "/language-and-interpreter/"  + journey.id + "#language",
+                        text: "Change",
+                        visuallyHiddenText: "the contact’s first language",
+                        attributes: {"data-qa": "change-language-link"},
+                        classes: "govuk-link--no-visited-state"
+                      }
+                    ]
+                  }
+                },
+                {
+                  key: {
+                    text: "Interpreter required"
+                  },
+                  value: {
+                    text: (journey.languageAndInterpreter.interpreterRequired | formatYesNo if journey.languageAndInterpreter and journey.languageAndInterpreter.interpreterRequired) or 'Not provided',
+                    classes: 'check-answers-interpreter-value'
+                  },
+                  actions: {
+                    items: [
+                      {
+                        href: baseChangeUrl + "/language-and-interpreter/"  + journey.id + "#interpreterRequired",
+                        text: "Change",
+                        visuallyHiddenText: "if an interpreter is required",
+                        attributes: {"data-qa": "change-interpreter-link"},
+                        classes: "govuk-link--no-visited-state"
+                      }
+                    ]
+                  }
+                }
+              ] }) }}
                 <div class="govuk-button-group">
                     {{ govukButton({
-                        text: buttonLabel,
+                        text: "Create prisoner contact",
                         type: "submit",
                         classes: 'govuk-!-margin-top-6',
                         attributes: {"data-qa": "continue-button"},
