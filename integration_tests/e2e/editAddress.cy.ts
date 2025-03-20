@@ -60,7 +60,7 @@ context('Edit Address', () => {
       primaryAddress: false,
       mailFlag: false,
       startDate: '2020-01-02',
-      endDate: '2025-04-06',
+      endDate: '2076-04-06',
       noFixedAddress: false,
       comments: 'Some comments',
     })
@@ -212,7 +212,7 @@ context('Edit Address', () => {
       .hasFromMonth('1')
       .hasFromYear('2020')
       .hasToMonth('4')
-      .hasToYear('2025')
+      .hasToYear('2076')
       .enterFromMonth('09')
       .enterFromYear('2009')
       .enterToMonth('12')
@@ -242,7 +242,7 @@ context('Edit Address', () => {
       .hasFromMonth('1')
       .hasFromYear('2020')
       .hasToMonth('4')
-      .hasToYear('2025')
+      .hasToYear('2076')
       .clearToMonth()
       .clearToYear()
       .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
