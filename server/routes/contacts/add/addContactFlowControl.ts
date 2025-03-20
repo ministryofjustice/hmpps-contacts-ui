@@ -202,7 +202,7 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
     previousUrlLabel: _ => 'Back',
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
-  [Page.ADD_CONTACT_LANGUAGE_INTERPRETER_PAGE]: { 
+  [Page.ADD_CONTACT_LANGUAGE_INTERPRETER_PAGE]: {
     ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE }),
     previousUrlLabel: _ => 'Back',
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
