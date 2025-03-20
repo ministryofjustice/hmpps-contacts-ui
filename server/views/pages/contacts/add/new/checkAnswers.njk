@@ -2,6 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "partials/contactMethods/contactAddressCard.njk" import contactAddressCard %}
 
 {% set pageTitle = "Check your answers before linking the contact to the prisoner - Add a contact - DPS" %}
 {% set title = "Check your answers before linking the contact to " + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) %}
@@ -277,6 +278,33 @@
               <p class="govuk-body">No phone numbers provided.</p>
               {% endif %}
 
+              <div class="moj-page-header-actions">
+                <div class="moj-page-header-actions__title">
+                  <h2 class="govuk-heading-l govuk-!-font-size-24">Addresses</h2>
+                </div>
+                <div class="moj-page-header-actions__actions">
+                  <div class="moj-button-group moj-button-group--inline">
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold" data-qa="add-address-link" href="{{ baseChangeUrl + "/addresses/" + journey.id }}">
+                      {% if addresses.length %}
+                        Add, change or delete addresses
+                      {% else %}
+                        Add address
+                      {% endif %}
+                    </a>
+                  </div>
+                </div>
+              </div>
+              {% if addresses.length > 0 %}
+                {% for address in addresses %}
+                  {{ contactAddressCard({
+                    address: address,
+                    showActions: false
+                  }) }}
+                {% endfor %}
+              {% else %}
+                <p class="govuk-body">No addresses provided.</p>
+              {% endif %}
+
               <h2 class="govuk-heading-l govuk-!-font-size-24">Additional information</h2>
               {{ govukSummaryList({ rows: [
                 {
@@ -320,7 +348,6 @@
                   }
                 }
               ] }) }}
-
                 <div class="govuk-button-group">
                     {{ govukButton({
                         text: "Create prisoner contact",

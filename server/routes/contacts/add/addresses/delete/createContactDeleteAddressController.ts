@@ -56,7 +56,6 @@ export default class CreateContactDeleteAddressController implements PageHandler
   POST = async (req: Request<CreateContactAddressParam, unknown, AddressTypeSchema>, res: Response): Promise<void> => {
     const { journey, addressForm, bounceBackUrl } = getAddressFormAndUrl(req)
     journey.pendingAddresses = journey.pendingAddresses!.filter(address => address !== addressForm)
-    if (journey.pendingAddresses.length === 0) delete journey.pendingAddresses
     res.redirect(bounceBackUrl)
   }
 }
