@@ -393,6 +393,26 @@
                       }
                     ]
                   }
+                },
+                {
+                  key: {
+                    text: "Contact’s domestic status"
+                  },
+                  value: {
+                    text: domesticStatusDescription or 'Not provided',
+                    classes: 'check-answers-domestic-status-value'
+                  },
+                  actions: {
+                    items: [
+                      {
+                        href: baseChangeUrl + "/domestic-status/"  + journey.id,
+                        text: "Change",
+                        visuallyHiddenText: "the contact’s domestic status",
+                        attributes: {"data-qa": "change-domestic-status-link"},
+                        classes: "govuk-link--no-visited-state"
+                      }
+                    ]
+                  }
                 }
               ] }) }}
                 <div class="govuk-button-group">

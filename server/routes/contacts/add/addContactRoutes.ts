@@ -57,6 +57,7 @@ import CreateContactLanguageAndInterpreterController from './language-interprete
 import AddContactAddIdentitiesController from './identities/addContactAddIdentitiesController'
 import { optionalIdentitiesSchema } from '../manage/identities/IdentitySchemas'
 import AddContactConfirmDeleteIdentityController from './identities/addContactConfirmDeleteIdentityController'
+import AddContactDomesticStatusController from './domestic-status/addContactDomesticStatusController'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -342,6 +343,12 @@ const AddContactRoutes = (
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/create/language-and-interpreter/:journeyId',
     controller: new CreateContactLanguageAndInterpreterController(referenceDataService),
+    noValidation: true,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/domestic-status/:journeyId',
+    controller: new AddContactDomesticStatusController(referenceDataService),
     noValidation: true,
   })
 

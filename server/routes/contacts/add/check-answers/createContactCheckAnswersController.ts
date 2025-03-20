@@ -97,6 +97,11 @@ export default class CreateContactCheckAnswersController implements PageHandler 
           ReferenceCodeType.LANGUAGE,
           user,
         ),
+        domesticStatusDescription: await this.getDescriptionIfSet(
+          journey.domesticStatusCode,
+          ReferenceCodeType.DOMESTIC_STS,
+          user,
+        ),
         phoneNumbers: journey.phoneNumbers?.map(phone => ({
           phoneNumber: phone.phoneNumber,
           extNumber: phone.extension,

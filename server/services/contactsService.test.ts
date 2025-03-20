@@ -89,6 +89,7 @@ describe('contactsService', () => {
           },
           gender: 'M',
           isStaff: 'YES',
+          domesticStatusCode: 'S',
           relationship: {
             relationshipType,
             relationshipToPrisoner,
@@ -110,6 +111,7 @@ describe('contactsService', () => {
           isStaff: true,
           interpreterRequired: false,
           genderCode: 'M',
+          domesticStatusCode: 'S',
           phoneNumbers: [
             { phoneType: 'MOB', phoneNumber: '0123456789' },
             { phoneType: 'HOME', phoneNumber: '987654321', extNumber: '#123' },

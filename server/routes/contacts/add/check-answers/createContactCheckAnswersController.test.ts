@@ -305,6 +305,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     )
   })
 
+
   it('should render check answers page with identity documents', async () => {
     // Given
     journey.identities = [
@@ -315,7 +316,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
         issuingAuthority: 'Authority',
       },
     ]
-
+    
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
 
@@ -339,6 +340,23 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     expect(ppHeading.next().next().find('a').last().attr('href')).toStrictEqual(
       `/prisoner/A1234BC/contacts/create/delete-identity/2/${journeyId}`,
     )
+  })
+
+  it.each([
+    ['S', 'Single-not married/in civil partnership'],
+    [undefined, 'Not provided'],
+  ])('should render the title and name with optional values', async (domesticStatusCode, displayValue) => {
+    // Given
+    journey.domesticStatusCode = domesticStatusCode
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect(journey.isCheckingAnswers).toStrictEqual(true)
+    const $ = cheerio.load(response.text)
+    expect($('.check-answers-domestic-status-value').first().text().trim()).toStrictEqual(displayValue)
   })
 
   it('should call the audit service for the page view', async () => {

@@ -49,6 +49,7 @@ export default class ContactsService {
       isStaff: journey.isStaff === 'YES',
       ...(journey.gender === undefined ? {} : { genderCode: journey.gender }),
       ...(journey.identities === undefined ? {} : { identities: journey.identities }),
+      ...(journey.domesticStatusCode === undefined ? {} : { domesticStatusCode: journey.domesticStatusCode }),
       ...(journey?.languageAndInterpreter?.language === undefined
         ? {}
         : { languageCode: journey?.languageAndInterpreter?.language }),
