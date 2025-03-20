@@ -1,8 +1,8 @@
 import Page, { PageElement } from './page'
 
 export default class AddIdentityDocumentsPage extends Page {
-  constructor(name: string) {
-    super(`Add identity documents for ${name}`)
+  constructor(name: string, isOptional: boolean = false) {
+    super(`Add identity documents for ${name}${isOptional ? ' (optional)' : ''}`)
   }
 
   hasIdentity(index: number, value: string): AddIdentityDocumentsPage {
@@ -27,6 +27,11 @@ export default class AddIdentityDocumentsPage extends Page {
 
   enterIssuingAuthority(index: number, value: string): AddIdentityDocumentsPage {
     this.issuingAuthorityTextBox(index).clear().type(value, { delay: 0 })
+    return this
+  }
+
+  clearIssuingAuthority(index: number): AddIdentityDocumentsPage {
+    this.issuingAuthorityTextBox(index).clear()
     return this
   }
 

@@ -6,7 +6,7 @@
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 
 {% set pageTitle = applicationName + " - Create Identity number" %}
-{% set title = "Add identity documents for " + (contact | formatNameFirstNameFirst) %}
+{% set title = ("Add identity documents for " + contact | formatNameFirstNameFirst + " (optional)") if isNewContact else ("Add identity documents for " + contact | formatNameFirstNameFirst) %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
@@ -17,7 +17,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
           <div data-module="moj-add-another">
-            <span class="govuk-caption-l">Edit identity documentation for a contact</span>
+            <span class="govuk-caption-l">{{ caption }}</span>
             <h1 class="govuk-heading-l moj-add-another__heading" data-qa="main-heading">{{ title }}</h1>
             <form method="POST">
               <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
@@ -33,32 +33,32 @@
                 }) %}
 
                   {{ govukSelect({
-                    id: "identities[" + loop.index0 + "].type",
-                    name: "identities[" + loop.index0 + "][type]",
+                    id: "identities[" + loop.index0 + "].identityType",
+                    name: "identities[" + loop.index0 + "][identityType]",
                     label: {
                       text: "Document type"
                     },
                     classes: 'govuk-!-width-one-quarter',
-                    items: typeOptions | referenceCodesToSelect('Select document type') | setSelected(identity.type),
-                    errorMessage: validationErrors | findError('identities[' + loop.index0 + '].type'),
+                    items: typeOptions | referenceCodesToSelect('Select document type') | setSelected(identity.identityType),
+                    errorMessage: validationErrors | findError('identities[' + loop.index0 + '].identityType'),
                     attributes: {
-                      "data-id": "identities[%index%].type",
-                      "data-name": "identities[%index%][type]",
-                      "data-qa": "identities-" + loop.index0 + "-type"
+                      "data-id": "identities[%index%].identityType",
+                      "data-name": "identities[%index%][identityType]",
+                      "data-qa": "identities-" + loop.index0 + "-identityType"
                     }
                   }) }}
 
                   {{ govukInput({
-                    id: "identities[" + loop.index0 + "].identity",
-                    name: "identities[" + loop.index0 + "][identity]",
+                    id: "identities[" + loop.index0 + "].identityValue",
+                    name: "identities[" + loop.index0 + "][identityValue]",
                     label: { text: "Document number" },
                     classes: 'govuk-!-width-one-third',
-                    errorMessage: validationErrors | findError('identities[' + loop.index0 + '].identity'),
-                    value: identity.identity,
+                    errorMessage: validationErrors | findError('identities[' + loop.index0 + '].identityValue'),
+                    value: identity.identityValue,
                     attributes: {
-                      "data-id": "identities[%index%].identity",
-                      "data-name": "identities[%index%][identity]",
-                      "data-qa": "identities-" + loop.index0 + "-identity"
+                      "data-id": "identities[%index%].identityValue",
+                      "data-name": "identities[%index%][identityValue]",
+                      "data-qa": "identities-" + loop.index0 + "-identityValue"
                     }
                   }) }}
 
@@ -96,7 +96,7 @@
                 </div>
                 <div class="govuk-button-group">
                     {{ govukButton({
-                      text: "Confirm and save",
+                      text: continueButtonLabel,
                       name: "save",
                       type: "submit",
                       classes: 'govuk-!-margin-top-6',

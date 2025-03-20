@@ -43,8 +43,8 @@ export default class ManageContactEditIdentityController implements PageHandler 
     }
     const viewModel = {
       typeOptions,
-      identity: res.locals?.formResponses?.['identity'] ?? identity.identityValue,
-      type: res.locals?.formResponses?.['type'] ?? identity.identityType,
+      identityValue: res.locals?.formResponses?.['identityValue'] ?? identity.identityValue,
+      identityType: res.locals?.formResponses?.['identityType'] ?? identity.identityType,
       issuingAuthority: res.locals?.formResponses?.['issuingAuthority'] ?? identity.issuingAuthority,
       contact,
       navigation,
@@ -62,14 +62,14 @@ export default class ManageContactEditIdentityController implements PageHandler 
   ): Promise<void> => {
     const { user } = res.locals
     const { prisonerNumber, contactId, prisonerContactId, contactIdentityId } = req.params
-    const { identity, type, issuingAuthority } = req.body
+    const { identityType, identityValue, issuingAuthority } = req.body
     await this.contactsService
       .updateContactIdentity(
         parseInt(contactId, 10),
         parseInt(contactIdentityId, 10),
         user,
-        type,
-        identity,
+        identityType,
+        identityValue,
         issuingAuthority,
       )
       .then(_ => this.contactsService.getContactName(Number(contactId), user))

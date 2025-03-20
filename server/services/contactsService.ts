@@ -48,6 +48,7 @@ export default class ContactsService {
       interpreterRequired: journey.languageAndInterpreter?.interpreterRequired === 'YES',
       isStaff: journey.isStaff === 'YES',
       ...(journey.gender === undefined ? {} : { genderCode: journey.gender }),
+      ...(journey.identities === undefined ? {} : { identities: journey.identities }),
       ...(journey.domesticStatusCode === undefined ? {} : { domesticStatusCode: journey.domesticStatusCode }),
       ...(journey?.languageAndInterpreter?.language === undefined
         ? {}
@@ -316,6 +317,7 @@ export default class ContactsService {
       noFixedAddress: journey.addressLines!.noFixedAddress,
       comments: journey.addressMetadata!.comments,
       createdBy: user.username,
+
       phoneNumbers:
         journey.phoneNumbers?.map(({ type, phoneNumber, extension }) => ({
           phoneType: type,

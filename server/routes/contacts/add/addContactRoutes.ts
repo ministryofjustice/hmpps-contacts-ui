@@ -54,6 +54,9 @@ import AddContactConfirmDeletePhoneController from './phone/addContactConfirmDel
 import AddContactGenderController from './gender/addContactGenderController'
 import CreateContactIsStaffController from './is-staff/createContactIsStaffController'
 import CreateContactLanguageAndInterpreterController from './language-interpreter/createContactLanguageAndInterpreterController'
+import AddContactAddIdentitiesController from './identities/addContactAddIdentitiesController'
+import { optionalIdentitiesSchema } from '../manage/identities/IdentitySchemas'
+import AddContactConfirmDeleteIdentityController from './identities/addContactConfirmDeleteIdentityController'
 import AddContactDomesticStatusController from './domestic-status/addContactDomesticStatusController'
 
 const AddContactRoutes = (
@@ -406,6 +409,18 @@ const AddContactRoutes = (
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/phone/:phoneIdx/delete/:journeyId',
     controller: new CreateContactDeleteAddressPhoneController(referenceDataService),
+    noValidation: true,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/identities/:journeyId',
+    controller: new AddContactAddIdentitiesController(referenceDataService),
+    schema: optionalIdentitiesSchema,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/delete-identity/:index/:journeyId',
+    controller: new AddContactConfirmDeleteIdentityController(referenceDataService),
     noValidation: true,
   })
 

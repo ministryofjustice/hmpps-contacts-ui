@@ -74,6 +74,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-details',
     )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')
   })
 
   it('should call the audit service for the page view', async () => {
@@ -98,13 +99,13 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     const form = {
       identities: [
         {
-          type: 'DL',
-          identity: '123456789',
+          identityType: 'DL',
+          identityValue: '123456789',
           issuingAuthority: '000',
         },
         {
-          type: '',
-          identity: '',
+          identityType: '',
+          identityValue: '',
           issuingAuthority: '',
         },
       ],
@@ -120,11 +121,11 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=identities-0-type]').val()).toStrictEqual('DL')
-    expect($('[data-qa=identities-0-identity]').val()).toStrictEqual('123456789')
+    expect($('[data-qa=identities-0-identityType]').val()).toStrictEqual('DL')
+    expect($('[data-qa=identities-0-identityValue]').val()).toStrictEqual('123456789')
     expect($('[data-qa=identities-0-issuing-authority]').val()).toStrictEqual('000')
-    expect($('[data-qa=identities-1-type]').val()).toStrictEqual('')
-    expect($('[data-qa=identities-1-identity]').val()).toStrictEqual('')
+    expect($('[data-qa=identities-1-identityType]').val()).toStrictEqual('')
+    expect($('[data-qa=identities-1-identityValue]').val()).toStrictEqual('')
     expect($('[data-qa=identities-1-issuing-authority]').val()).toStrictEqual('')
   })
 })
@@ -137,8 +138,8 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     const form = {
       save: '',
       identities: [
-        { type: 'DL', identity: '123456789', issuingAuthority: '000' },
-        { type: 'PASS', identity: '987564321', issuingAuthority: '' },
+        { identityType: 'DL', identityValue: '123456789', issuingAuthority: '000' },
+        { identityType: 'PASS', identityValue: '987564321', issuingAuthority: '' },
       ],
     }
     await request(app)
@@ -165,7 +166,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   it('should return to input page with details kept if there are validation errors', async () => {
     const form = {
       save: '',
-      identities: [{ type: '', identity: '', issuingAuthority: '' }],
+      identities: [{ identityType: '', identityValue: '', issuingAuthority: '' }],
     }
 
     await request(app)
@@ -189,8 +190,8 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         add: '',
         identities: [
           {
-            type: 'DL',
-            identity: 'VALUE',
+            identityType: 'DL',
+            identityValue: 'VALUE',
             issuingAuthority:
               'A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR!',
           },
@@ -214,12 +215,12 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         JSON.stringify({
           identities: [
             {
-              type: 'DL',
-              identity: 'VALUE',
+              identityType: 'DL',
+              identityValue: 'VALUE',
               issuingAuthority:
                 'A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR!',
             },
-            { type: '', identity: '', issuingAuthority: '' },
+            { identityType: '', identityValue: '', issuingAuthority: '' },
           ],
           add: '',
         }),
@@ -232,14 +233,14 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         remove: '1',
         identities: [
           {
-            type: 'DL',
-            identity: 'VALUE',
+            identityType: 'DL',
+            identityValue: 'VALUE',
             issuingAuthority:
               'A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR!',
           },
           {
-            type: 'DL',
-            identity: 'TO BE REMOVED',
+            identityType: 'DL',
+            identityValue: 'TO BE REMOVED',
             issuingAuthority: '',
           },
         ],
@@ -262,8 +263,8 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         JSON.stringify({
           identities: [
             {
-              type: 'DL',
-              identity: 'VALUE',
+              identityType: 'DL',
+              identityValue: 'VALUE',
               issuingAuthority:
                 'A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR!',
             },
@@ -278,8 +279,8 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       const form = {
         identities: [
           {
-            type: 'DL',
-            identity: 'VALUE',
+            identityType: 'DL',
+            identityValue: 'VALUE',
             issuingAuthority:
               'A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR!',
           },
@@ -303,8 +304,8 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         JSON.stringify({
           identities: [
             {
-              type: 'DL',
-              identity: 'VALUE',
+              identityType: 'DL',
+              identityValue: 'VALUE',
               issuingAuthority:
                 'A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR!',
             },

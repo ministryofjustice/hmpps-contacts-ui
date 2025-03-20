@@ -305,6 +305,53 @@
                 <p class="govuk-body">No addresses provided.</p>
               {% endif %}
 
+              <div class="moj-page-header-actions">
+                <div class="moj-page-header-actions__title">
+                  <h2 class="govuk-heading-l govuk-!-font-size-24">Identity documentation</h2>
+                </div>
+                <div class="moj-page-header-actions__actions">
+                  <div class="moj-button-group moj-button-group--inline">
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold" data-qa="add-identities-link" href="{{ baseChangeUrl + "/identities/" + journey.id }}">Add identity document</a>
+                  </div>
+                </div>
+              </div>
+              {% set identityRows = [] %}
+              {% for identity in identities %}
+                {% set identityRows = (identityRows.push(
+                  {
+                    key: {
+                    text: identity.identityTypeDescription
+                  },
+                    value: {
+                    html: identity.identityValue | escape + ( ('<br/>Issued by ' + identity.issuingAuthority) if identity.issuingAuthority )
+                  },
+                    actions: {
+                    items: [
+                      {
+                        href: baseChangeUrl + "/identities/" + journey.id + '#identities[' + loop.index0 + '].identityValue',
+                        text: "Change",
+                        visuallyHiddenText: "the information about this " + identity.identityTypeDescription,
+                        attributes: {"data-qa": "edit-identity-" + loop.index0},
+                        classes: "govuk-link--no-visited-state"
+                      },
+                      {
+                        href: baseChangeUrl + "/delete-identity/" + loop.index + "/" + journey.id,
+                        text: "Delete",
+                        visuallyHiddenText: "the information about this " + identity.identityTypeDescription,
+                        attributes: {"data-qa": "delete-identity-" + loop.index0},
+                        classes: "govuk-link--no-visited-state"
+                      }
+                    ]
+                  }
+                  }
+                ), identityRows) %}
+              {% endfor %}
+              {% if identityRows.length > 0 %}
+                {{ govukSummaryList({ rows: identityRows }) }}
+              {% else %}
+                <p class="govuk-body">No identity documents provided.</p>
+              {% endif %}
+
               <h2 class="govuk-heading-l govuk-!-font-size-24">Additional information</h2>
               {{ govukSummaryList({ rows: [
                 {

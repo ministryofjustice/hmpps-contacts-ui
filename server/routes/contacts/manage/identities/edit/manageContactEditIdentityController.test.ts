@@ -80,15 +80,15 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-details',
     )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-    expect($('#type').val()).toStrictEqual('DL')
-    expect($('#identity').val()).toStrictEqual('LAST-87736799M')
+    expect($('#identityType').val()).toStrictEqual('DL')
+    expect($('#identityValue').val()).toStrictEqual('LAST-87736799M')
     expect($('#issuingAuthority').val()).toStrictEqual('UK')
   })
 
   it('should render edited answers instead of original if there is a validation error', async () => {
     // Given
     contactsService.getContact.mockResolvedValue(contact)
-    const form = { identity: '425362965', type: 'PASS', issuingAuthority: 'UK' }
+    const form = { identityValue: '425362965', identityType: 'PASS', issuingAuthority: 'UK' }
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
@@ -100,8 +100,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('#identity').val()).toStrictEqual('425362965')
-    expect($('#type').val()).toStrictEqual('PASS')
+    expect($('#identityValue').val()).toStrictEqual('425362965')
+    expect($('#identityType').val()).toStrictEqual('PASS')
     expect($('#issuingAuthority').val()).toStrictEqual('UK')
   })
 
@@ -146,7 +146,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/999/edit`,
       )
       .type('form')
-      .send({ type: 'MOB', identity: '123456789', issuingAuthority: '000' })
+      .send({ identityType: 'MOB', identityValue: '123456789', issuingAuthority: '000' })
       .expect(302)
       .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
 
@@ -166,7 +166,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/999/edit`,
       )
       .type('form')
-      .send({ type: 'MOB', identity: '123456789', issuingAuthority: '' })
+      .send({ identityType: 'MOB', identityValue: '123456789', issuingAuthority: '' })
       .expect(302)
       .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
 
@@ -190,7 +190,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/999/edit`,
       )
       .type('form')
-      .send({ type: '' })
+      .send({ identityType: '' })
       .expect(302)
       .expect(
         'Location',

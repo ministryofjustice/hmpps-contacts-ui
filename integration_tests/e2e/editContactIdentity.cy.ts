@@ -143,7 +143,7 @@ context('Edit Contact Identities', () => {
     const enterIdentityPage = Page.verifyOnPage(ChangeIdentityDocumentPage, 'First Middle Names Last') //
       .clearIdentity()
     enterIdentityPage.clickContinue()
-    enterIdentityPage.hasFieldInError('identity', 'Enter the document number')
+    enterIdentityPage.hasFieldInError('identityValue', 'Enter the document number')
   })
 
   it('Should require identity is 20 chars or fewer', () => {
@@ -156,7 +156,7 @@ context('Edit Contact Identities', () => {
     const enterIdentityPage = Page.verifyOnPage(ChangeIdentityDocumentPage, 'First Middle Names Last') //
       .enterIdentity(''.padEnd(21, '0'))
     enterIdentityPage.clickContinue()
-    enterIdentityPage.hasFieldInError('identity', 'Document number must be 20 characters or less')
+    enterIdentityPage.hasFieldInError('identityValue', 'Document number must be 20 characters or less')
   })
 
   it('Should require issuing authority is 7 chars or fewer', () => {

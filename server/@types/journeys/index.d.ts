@@ -31,6 +31,7 @@ declare namespace journeys {
     pendingAddresses?: AddressForm[] | undefined
     newAddress?: AddressForm | undefined
     phoneNumbers?: PhoneNumberForm[] | undefined
+    identities?: IdentityForm[] | undefined
   }
 
   export interface ContactNames {
@@ -194,6 +195,12 @@ declare namespace journeys {
     type: string
     phoneNumber: string
     extension?: string | undefined
+  }
+
+  interface IdentityForm {
+    identityType: string
+    identityValue: string
+    issuingAuthority?: string
   }
 
   export interface LanguageAndInterpreterRequiredForm {

@@ -13,10 +13,10 @@ const ISSUING_AUTHORITY_TOO_LONG_ERROR_MSG = 'Issuing authority must be 40 chara
 const PNC_INVALID_MSG = 'Enter a PNC number in the correct format – for example, ‘22/1234567A’'
 
 export const identitySchema = createSchema({
-  type: z
+  identityType: z
     .string({ message: TYPE_REQUIRED_MESSAGE })
     .refine(val => val?.trim().length > 0, { message: TYPE_REQUIRED_MESSAGE }),
-  identity: z
+  identityValue: z
     .string({ message: IDENTITY_NUMBER_REQUIRED_MESSAGE })
     .max(20, IDENTITY_NUMBER_TOO_LONG_ERROR_MSG)
     .refine(val => val?.trim().length > 0, { message: IDENTITY_NUMBER_REQUIRED_MESSAGE }),
@@ -26,14 +26,14 @@ export const identitySchema = createSchema({
     .optional()
     .transform(val => (val?.trim()?.length ? val?.trim() : undefined)),
 }).superRefine((val, ctx) => {
-  if (val.type === 'PNC' && !isValidPNC(val.identity)) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, message: PNC_INVALID_MSG, path: ['identity'] })
+  if (val.identityType === 'PNC' && !isValidPNC(val.identityValue)) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: PNC_INVALID_MSG, path: ['identityValue'] })
   }
 })
 
 const blankIdentitySchema = createSchema({
-  type: z.string().optional(),
-  identity: z.string().optional(),
+  identityType: z.string().optional(),
+  identityValue: z.string().optional(),
   issuingAuthority: z.string().optional(),
 })
 
@@ -44,8 +44,55 @@ export const identitiesSchema = () => async (request: Request<unknown, unknown, 
     save: z.string().optional(),
     add: z.string().optional(),
     remove: z.string().optional(),
-  })
+  }).transform(({ identities, save, add, remove }) => ({
+    identities: identities.map(({ identityType, identityValue, issuingAuthority }) => ({
+      identityType: identityType!,
+      identityValue: identityValue!,
+      ...(issuingAuthority === undefined ? {} : { issuingAuthority }),
+    })),
+    save,
+    add,
+    remove,
+  }))
+}
+
+export const optionalIdentitiesSchema = async (
+  request: Request<
+    unknown,
+    unknown,
+    {
+      save?: string
+      identities?: {
+        identityType?: string
+        identityValue?: string
+        issuingAuthority?: string
+      }[]
+    }
+  >,
+) => {
+  const isAllBlank = request.body.identities?.every(
+    identity => identity.identityType === '' && identity.identityValue === '' && identity.issuingAuthority === '',
+  )
+  const childSchema = request.body.save === undefined || isAllBlank ? blankIdentitySchema : identitySchema
+  return createSchema({
+    identities: z.array(childSchema),
+    save: z.string().optional(),
+    add: z.string().optional(),
+    remove: z.string().optional(),
+  }).transform(({ identities, save, add, remove }) => ({
+    identities: isAllBlank
+      ? undefined
+      : identities.map(({ identityType, identityValue, issuingAuthority }) => ({
+          identityType: identityType!,
+          identityValue: identityValue!,
+          ...(issuingAuthority === undefined ? {} : { issuingAuthority }),
+        })),
+    save,
+    add,
+    remove,
+  }))
 }
 
 export type IdentitySchemaType = z.infer<typeof identitySchema>
 export type IdentitiesSchemaType = z.infer<Awaited<ReturnType<ReturnType<typeof identitiesSchema>>>>
+export type OptionalIdentitiesSchemaType = z.infer<Awaited<ReturnType<typeof optionalIdentitiesSchema>>>

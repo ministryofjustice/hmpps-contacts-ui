@@ -3,16 +3,13 @@ import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../../services/referenceDataService'
-import { IdentitiesSchemaType, IdentitySchemaType } from '../IdentitySchemas'
+import { IdentitiesSchemaType } from '../IdentitySchemas'
 import { ContactsService } from '../../../../../services'
 import { Navigation } from '../../../common/navigation'
 import Urls from '../../../../urls'
-import { components } from '../../../../../@types/contactsApi'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import ContactDetails = contactsApiClientTypes.ContactDetails
-
-type IdentityDocument = components['schemas']['IdentityDocument']
 
 export default class ManageContactAddIdentityController implements PageHandler {
   constructor(
@@ -39,8 +36,11 @@ export default class ManageContactAddIdentityController implements PageHandler {
       cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
     }
     const viewModel = {
+      caption: 'Edit identity documentation for a contact',
+      isNewContact: false,
+      continueButtonLabel: 'Confirm and save',
       typeOptions,
-      identities: res.locals?.formResponses?.['identities'] ?? [{ type: '', identity: '', issuingAuthority: '' }],
+      identities: res.locals?.formResponses?.['identities'] ?? [this.blankItem()],
       contact,
       navigation,
     }
@@ -64,11 +64,7 @@ export default class ManageContactAddIdentityController implements PageHandler {
     const { user } = res.locals
     if (typeof save !== 'undefined' && identities) {
       await this.contactsService
-        .createContactIdentities(
-          parseInt(contactId, 10),
-          user,
-          identities.map(identityForm => this.mapFormToDocument(identityForm as IdentitySchemaType)),
-        )
+        .createContactIdentities(parseInt(contactId, 10), user, identities)
         .then(_ => this.contactsService.getContactName(Number(contactId), user))
         .then(response =>
           req.flash(
@@ -92,18 +88,7 @@ export default class ManageContactAddIdentityController implements PageHandler {
     }
   }
 
-  private mapFormToDocument(identityForm: IdentitySchemaType) {
-    const identity: IdentityDocument = {
-      identityType: identityForm.type,
-      identityValue: identityForm.identity,
-    }
-    if (identityForm.issuingAuthority) {
-      identity.issuingAuthority = identityForm.issuingAuthority
-    }
-    return identity
-  }
-
-  private blankItem = (): { type: string; identity: string; issuingAuthority?: string } => {
-    return { type: '', identity: '', issuingAuthority: '' }
+  private blankItem = (): { identityType: string; identityValue: string; issuingAuthority?: string } => {
+    return { identityType: '', identityValue: '', issuingAuthority: '' }
   }
 }
