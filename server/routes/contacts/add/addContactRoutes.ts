@@ -58,6 +58,9 @@ import AddContactAddIdentitiesController from './identities/addContactAddIdentit
 import { optionalIdentitiesSchema } from '../manage/identities/IdentitySchemas'
 import AddContactConfirmDeleteIdentityController from './identities/addContactConfirmDeleteIdentityController'
 import AddContactDomesticStatusController from './domestic-status/addContactDomesticStatusController'
+import AddContactAddEmailsController from './emails/addContactAddEmailsController'
+import AddContactConfirmDeleteEmailController from './emails/addContactConfirmDeleteEmailController'
+import { optionalEmailsSchema } from '../manage/email/emailSchemas'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -421,6 +424,18 @@ const AddContactRoutes = (
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/create/delete-identity/:index/:journeyId',
     controller: new AddContactConfirmDeleteIdentityController(referenceDataService),
+    noValidation: true,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/emails/:journeyId',
+    controller: new AddContactAddEmailsController(),
+    schema: optionalEmailsSchema,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/delete-email/:index/:journeyId',
+    controller: new AddContactConfirmDeleteEmailController(),
     noValidation: true,
   })
 

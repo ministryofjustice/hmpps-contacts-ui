@@ -107,6 +107,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
           extNumber: phone.extension,
           phoneTypeDescription: phoneTypeDescriptions.get(phone.type),
         })),
+        emailAddresses: journey.emailAddresses,
         identities: journey.identities?.map(identity => ({
           ...identity,
           identityTypeDescription: identityTypeDescriptions.get(identity.identityType),

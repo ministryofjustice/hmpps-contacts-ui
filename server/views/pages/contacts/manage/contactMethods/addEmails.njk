@@ -5,9 +5,19 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 
-{% set pageTitle = "Add email addresses for the contact - Edit contact methods - DPS" %}
-{% set title = "Add email addresses for " + (names | formatNameFirstNameFirst) %}
 {% set mainClasses = "app-container govuk-body" %}
+
+{% if isNewContact %}
+  {% set pageTitle = "Add email addresses for the contact - Add a contact - DPS" %}
+  {% set title = "Add email addresses for " + (names | formatNameFirstNameFirst) + " (optional)" %}
+  {% set continueButtonLabel = "Continue" %}
+  {% set caption = "Add a contact and link to a prisoner" %}
+{% else %}
+  {% set pageTitle = "Add email addresses for the contact - Edit contact methods - DPS" %}
+  {% set title = "Add email addresses for " + (names | formatNameFirstNameFirst) %}
+  {% set continueButtonLabel = "Confirm and save" %}
+  {% set caption = "Edit contact details" %}
+{% endif %}
 
 {% block content %}
 
@@ -17,7 +27,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
           <div data-module="moj-add-another">
-            <span class="govuk-caption-l">Edit contact methods</span>
+            <span class="govuk-caption-l">{{ caption }}</span>
             <h1 class="govuk-heading-l moj-add-another__heading" data-qa="main-heading">{{ title }}</h1>
             <form method="POST">
               <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
@@ -67,7 +77,7 @@
                 </div>
                 <div class="govuk-button-group">
                     {{ govukButton({
-                      text: "Confirm and save",
+                      text: continueButtonLabel,
                       name: "save",
                       type: "submit",
                       classes: 'govuk-!-margin-top-6',

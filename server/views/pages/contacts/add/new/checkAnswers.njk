@@ -280,6 +280,54 @@
 
               <div class="moj-page-header-actions">
                 <div class="moj-page-header-actions__title">
+                  <h2 class="govuk-heading-l govuk-!-font-size-24">Email addresses</h2>
+                </div>
+                <div class="moj-page-header-actions__actions">
+                  <div class="moj-button-group moj-button-group--inline">
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold" data-qa="add-emails-link" href="{{ baseChangeUrl + "/emails/" + journey.id }}">Add email address</a>
+                  </div>
+                </div>
+              </div>
+              {% set emailAddressesRows = [] %}
+              {% for email in emailAddresses %}
+                {% set emailAddressesRows = (emailAddressesRows.push(
+                  {
+                    classes: "govuk-summary-list__row--no-border" if loop.index != emailAddresses.length else null,
+                    key: {
+                    text: 'Email addresses' if loop.index === 1 else ''
+                  },
+                    value: {
+                    text: email.emailAddress
+                  },
+                    actions: {
+                    items: [
+                      {
+                        href: baseChangeUrl + "/emails/" + journey.id + '#emails[' + loop.index0 + '].emailAddress',
+                        text: "Change",
+                        visuallyHiddenText: "this email address",
+                        attributes: {"data-qa": "edit-email-" + loop.index0},
+                        classes: "govuk-link--no-visited-state"
+                      },
+                      {
+                        href: baseChangeUrl + "/delete-email/" + loop.index + "/" + journey.id,
+                        text: "Delete",
+                        visuallyHiddenText: "this email address",
+                        attributes: {"data-qa": "delete-email-" + loop.index0},
+                        classes: "govuk-link--no-visited-state"
+                      }
+                    ]
+                  }
+                  }
+                ), emailAddressesRows) %}
+              {% endfor %}
+              {% if emailAddressesRows.length > 0 %}
+                {{ govukSummaryList({ rows: emailAddressesRows }) }}
+              {% else %}
+                <p class="govuk-body">No email addresses provided.</p>
+              {% endif %}
+
+              <div class="moj-page-header-actions">
+                <div class="moj-page-header-actions__title">
                   <h2 class="govuk-heading-l govuk-!-font-size-24">Addresses</h2>
                 </div>
                 <div class="moj-page-header-actions__actions">
