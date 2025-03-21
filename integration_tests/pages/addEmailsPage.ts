@@ -1,8 +1,8 @@
 import Page, { PageElement } from './page'
 
 export default class AddEmailsPage extends Page {
-  constructor(name: string) {
-    super(`Add email addresses for ${name}`)
+  constructor(name: string, isOptional: boolean = false) {
+    super(`Add email addresses for ${name}${isOptional ? ' (optional)' : ''}`)
   }
 
   enterEmail(index: number, value: string | ''): AddEmailsPage {

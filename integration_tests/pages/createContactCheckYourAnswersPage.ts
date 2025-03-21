@@ -29,6 +29,16 @@ export default class CreateContactCheckYourAnswersPage extends Page {
     this.changeCommentsLink().click()
   }
 
+  clickChangeEmailLinkTo<T>(index: number, constructor: new (...args: unknown[]) => T, ...args: unknown[]): T {
+    cy.findAllByRole('link', { name: 'Change this email address' }).eq(index).click()
+    return new constructor(...args)
+  }
+
+  clickDeleteEmailLinkTo<T>(index: number, constructor: new (...args: unknown[]) => T, ...args: unknown[]): T {
+    cy.findAllByRole('link', { name: 'Delete this email address' }).eq(index).click()
+    return new constructor(...args)
+  }
+
   verifyShowsTitleAs(expected: string): CreateContactCheckYourAnswersPage {
     this.checkAnswersTitleValue().should('contain.text', expected)
     return this

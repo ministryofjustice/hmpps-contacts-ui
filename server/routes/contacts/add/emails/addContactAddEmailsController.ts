@@ -47,6 +47,6 @@ export default class AddContactAddEmailsController implements PageHandler {
     // Always redirect back to input even if we didn't find an action, which should be impossible but there is a small
     // possibility if JS is disabled after a page load or the user somehow removes all identities.
     req.flash('formResponses', JSON.stringify(req.body))
-    return res.redirect(`/prisoner/${prisonerNumber}/contacts/create/identities/${journeyId}`)
+    return res.redirect(`/prisoner/${prisonerNumber}/contacts/create/emails/${journeyId}`)
   }
 }
