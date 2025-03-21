@@ -3,9 +3,16 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% set pageTitle = applicationName + " - Delete contact email address" %}
 {% set title = "Are you sure you want to delete this email address for " + (contact | formatNameFirstNameFirst) + "?" %}
 {% set mainClasses = "app-container govuk-body" %}
+
+{% if isNewContact %}
+  {% set pageTitle = "Are you sure you want to delete an email address for the contact? - Add a contact - DPS" %}
+  {% set caption = "Add a contact and link to a prisoner" %}
+{% else %}
+  {% set pageTitle = "Are you sure you want to delete an email address for the contact? - Edit contact methods - DPS" %}
+  {% set caption = "Edit contact details" %}
+{% endif %}
 
 {% block content %}
 

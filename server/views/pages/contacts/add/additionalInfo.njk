@@ -35,6 +35,13 @@
               },
               href: "/prisoner/" + journey.prisonerNumber + "/contacts/create/add-phone-numbers/" + journey.id,
               status: journey.phoneNumbers | taskStatus
+            },
+            {
+              title: {
+              text: "Email addresses"
+            },
+              href: "/prisoner/" + journey.prisonerNumber + "/contacts/create/emails/" + journey.id,
+              status: journey.emailAddresses | taskStatus
             }
           ]
         }) }}

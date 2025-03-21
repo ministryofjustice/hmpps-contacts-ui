@@ -341,6 +341,35 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     )
   })
 
+  it('should render check answers page with email addresses', async () => {
+    // Given
+    journey.emailAddresses = [{ emailAddress: 'a@b.cd' }, { emailAddress: 'z@y.xx' }]
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect(journey.isCheckingAnswers).toStrictEqual(true)
+    const $ = cheerio.load(response.text)
+    const heading = $('dt:contains("Email addresses")')
+    expect(heading.next().text().trim()).toStrictEqual('a@b.cd')
+    expect(heading.next().next().find('a').first().attr('href')).toStrictEqual(
+      `/prisoner/A1234BC/contacts/create/emails/${journeyId}#emails[0].emailAddress`,
+    )
+    expect(heading.next().next().find('a').last().attr('href')).toStrictEqual(
+      `/prisoner/A1234BC/contacts/create/delete-email/1/${journeyId}`,
+    )
+    const nextRowHeading = heading.parent().next().find('dt')
+    expect(nextRowHeading.next().text().trim()).toStrictEqual('z@y.xx')
+    expect(nextRowHeading.next().next().find('a').first().attr('href')).toStrictEqual(
+      `/prisoner/A1234BC/contacts/create/emails/${journeyId}#emails[1].emailAddress`,
+    )
+    expect(nextRowHeading.next().next().find('a').last().attr('href')).toStrictEqual(
+      `/prisoner/A1234BC/contacts/create/delete-email/2/${journeyId}`,
+    )
+  })
+
   it.each([
     ['S', 'Single-not married/in civil partnership'],
     [undefined, 'Not provided'],

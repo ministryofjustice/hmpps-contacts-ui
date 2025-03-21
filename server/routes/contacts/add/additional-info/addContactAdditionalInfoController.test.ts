@@ -99,6 +99,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
       $('a:contains("Comments on their relationship with First Middle Last")').parent().next().text().trim(),
     ).toStrictEqual('Not entered')
     expect($('a:contains("Phone numbers")').parent().next().text().trim()).toStrictEqual('Not entered')
+    expect($('a:contains("Email addresses")').parent().next().text().trim()).toStrictEqual('Not entered')
     expect($('a:contains("Gender")').parent().next().text().trim()).toStrictEqual('Not entered')
     expect($('a:contains("Identity documents")').parent().next().text().trim()).toStrictEqual('Not entered')
     expect($('a:contains("If the contact is a member of staff")').parent().next().text().trim()).toStrictEqual(
@@ -118,6 +119,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
       { type: 'MOB', phoneNumber: '0123456789' },
       { type: 'HOME', phoneNumber: '987654321', extension: '#123' },
     ]
+    existingJourney.emailAddresses = [{ emailAddress: '' }]
     existingJourney.gender = 'M'
     existingJourney.identities = [{ identityType: '', identityValue: '' }]
     existingJourney.isStaff = 'YES'
@@ -136,6 +138,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
       $('a:contains("Comments on their relationship with First Middle Last")').parent().next().text().trim(),
     ).toStrictEqual('Entered')
     expect($('a:contains("Phone numbers")').parent().next().text().trim()).toStrictEqual('Entered')
+    expect($('a:contains("Email addresses")').parent().next().text().trim()).toStrictEqual('Entered')
     expect($('a:contains("Gender")').parent().next().text().trim()).toStrictEqual('Entered')
     expect($('a:contains("Identity documents")').parent().next().text().trim()).toStrictEqual('Entered')
     expect($('a:contains("If the contact is a member of staff")').parent().next().text().trim()).toStrictEqual(
