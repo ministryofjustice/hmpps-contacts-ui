@@ -272,6 +272,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         expectAddAddressLink($)
 
         expect($(`span:contains("View previous addresses")`)).toHaveLength(0)
+        expect(
+          $('p:contains("To edit a previous address, you’ll first need to make that address active.")').text(),
+        ).toBeFalsy()
 
         const addressCard = $(`h2:contains("${expectedTitle}")`).last().parent().parent()
         expect(addressCard).toHaveLength(1)
@@ -343,7 +346,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
       [false, false, 'Business address', 'Previous business address', 'Business address', 'No'],
       [false, false, undefined, 'Previous address', 'Not provided', 'No'],
     ])(
-      'should render an expired address with all details and the correct title and change links (primary %s, mail %s, type %s, expected title %s)',
+      'should render an expired address with all details and the correct title and change dates link (primary %s, mail %s, type %s, expected title %s)',
       async (primary, mail, type, expectedTitle, expectedType, expectedPrimaryOrPostal) => {
         contactsService.getContact.mockResolvedValue(
           TestData.contact({
@@ -390,24 +393,19 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         const $ = cheerio.load(response.text)
 
         expectAddAddressLink($)
+        expect(
+          $('p:contains("To edit a previous address, you’ll first need to make that address active.")').text(),
+        ).toBeTruthy()
 
         expect($(`span:contains("View previous addresses")`)).toHaveLength(1)
 
         const addressCard = $(`h2:contains("${expectedTitle}")`).last().parent().parent()
         expect(addressCard).toHaveLength(1)
-        expectSummaryListItem(
-          addressCard,
-          'Type',
-          expectedType,
-          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/select-type',
-          `Change the address type (${expectedTitle})`,
-        )
+        expectSummaryListItem(addressCard, 'Type', expectedType)
         expectSummaryListItem(
           addressCard,
           'Address',
           /1a\s+?Property\s+?Street\s+?Area\s+?City\s+?County\s+?Postcode\s+?England/,
-          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/enter-address',
-          `Change the address (${expectedTitle})`,
         )
         expectSummaryListItem(
           addressCard,
@@ -416,36 +414,10 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
           '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/dates',
           `Change the dates for the prisoner’s use of the address (${expectedTitle})`,
         )
-        expectSummaryListItem(
-          addressCard,
-          'Primary or postal address',
-          expectedPrimaryOrPostal,
-          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/primary-or-postal',
-          `Change if this address is set as the primary or postal address for the contact (${expectedTitle})`,
-        )
-        expectChangeAndDeleteItem(
-          $(addressCard).find('dt:contains("Mobile phone")'),
-          '07878 111111, ext. 123',
-          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/phone/123/edit',
-          `Change the information about the Mobile phone phone number for this address (${expectedTitle})`,
-          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/phone/123/delete',
-          `Delete the information about the Mobile phone phone number for this address (${expectedTitle})`,
-        )
-        expectChangeAndDeleteItem(
-          $(addressCard).find('dt:contains("Business phone")'),
-          '999',
-          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/phone/321/edit',
-          `Change the information about the Business phone phone number for this address (${expectedTitle})`,
-          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/phone/321/delete',
-          `Delete the information about the Business phone phone number for this address (${expectedTitle})`,
-        )
-        expectSummaryListItem(
-          addressCard,
-          'Comments on this address',
-          'Some comments',
-          '/prisoner/A1234BC/contacts/manage/22/relationship/99/address/1/comments',
-          `Change the comments on this address (${expectedTitle})`,
-        )
+        expectSummaryListItem(addressCard, 'Primary or postal address', expectedPrimaryOrPostal)
+        expectChangeAndDeleteItem($(addressCard).find('dt:contains("Mobile phone")'), '07878 111111, ext. 123')
+        expectChangeAndDeleteItem($(addressCard).find('dt:contains("Business phone")'), '999')
+        expectSummaryListItem(addressCard, 'Comments on this address', 'Some comments')
       },
     )
 
@@ -559,8 +531,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
     card: Cheerio<Element>,
     label: string,
     value: string | RegExp,
-    changeLink: string,
-    changeLabel: string,
+    changeLink?: string,
+    changeLabel?: string,
   ) => {
     const summaryCardFirstColumn = card.find(`dt:contains("${label}")`).first()
     if (value instanceof RegExp) {
@@ -568,25 +540,31 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
     } else {
       expect(summaryCardFirstColumn.next().text().trim()).toStrictEqual(value)
     }
-    const link = summaryCardFirstColumn.next().next().find('a')
-    expect(link.attr('href')).toStrictEqual(changeLink)
-    expect(link.text().trim()).toStrictEqual(changeLabel)
+    if (changeLink && changeLabel) {
+      const link = summaryCardFirstColumn.next().next().find('a')
+      expect(link.attr('href')).toStrictEqual(changeLink)
+      expect(link.text().trim()).toStrictEqual(changeLabel)
+    }
   }
 
   const expectChangeAndDeleteItem = (
     heading: Cheerio<Element>,
     value: string,
-    changeLink: string,
-    changeLabel: string,
-    deleteLink: string,
-    deleteLabel: string,
+    changeLink?: string,
+    changeLabel?: string,
+    deleteLink?: string,
+    deleteLabel?: string,
   ) => {
     expect(heading.next().text().trim()).toStrictEqual(value)
     const links = heading.next().next().find('a')
-    expect(links.first().attr('href')).toStrictEqual(changeLink)
-    expect(links.first().text().trim()).toStrictEqual(changeLabel)
-    expect(links.last().attr('href')).toStrictEqual(deleteLink)
-    expect(links.last().text().trim()).toStrictEqual(deleteLabel)
+    if (changeLink && changeLabel) {
+      expect(links.first().attr('href')).toStrictEqual(changeLink)
+      expect(links.first().text().trim()).toStrictEqual(changeLabel)
+    }
+    if (deleteLink && deleteLabel) {
+      expect(links.last().attr('href')).toStrictEqual(deleteLink)
+      expect(links.last().text().trim()).toStrictEqual(deleteLabel)
+    }
   }
 
   const expectAddAddressLink = ($: CheerioAPI) => {

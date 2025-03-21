@@ -48,7 +48,16 @@
       </div>
       {% if contact.addresses and contact.addresses.length > 0 %}
         {% set hasInactive = false %}
-        {% set inactiveHtml = '' %}
+        {% set inactiveHtml %}
+          <div class="govuk-body">
+            <p>To edit a previous address, you’ll first need to make that address active.</p>
+            <p>You can do this by either:</p>
+            <ul>
+              <li>changing the address end date to a future date</li>
+              <li>removing the address end date</li>
+            </ul>
+          </div>
+        {% endset -%}
         {% for item in contact.addresses | sortContactAddresses %}
           {% set summaryCard = contactAddressCard({
               address: item,
