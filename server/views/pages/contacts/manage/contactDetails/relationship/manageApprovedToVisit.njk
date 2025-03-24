@@ -3,7 +3,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-{% set pageTitle = applicationName + " - Staff status" %}
+{% set pageTitle = "Is the contact approved to visit the prisoner? - " + caption + " - DPS" %}
 {% set title = "Is " + (contact | formatNameFirstNameFirst) + " approved to visit " + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) + "?" + (" (optional)" if isOptional else "") %}
 {% set mainClasses = "app-container govuk-body" %}
 

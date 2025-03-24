@@ -12,6 +12,7 @@ import CreateContactSuccessPage from '../pages/createContactSuccessPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
 import SelectGenderPage from '../pages/selectGenderPage'
+import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
 
 context('Create Contact and Enter Gender', () => {
   const contactId = 654321
@@ -103,6 +104,10 @@ context('Create Contact and Enter Gender', () => {
 
     Page.verifyOnPage(SelectNextOfKinPage, 'First Last') //
       .selectIsNextOfKin('YES')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectApprovedVisitorPage, 'First Last', 'John Smith', true) //
+      .selectIsApprovedVisitor('NO')
       .clickContinue()
   })
 

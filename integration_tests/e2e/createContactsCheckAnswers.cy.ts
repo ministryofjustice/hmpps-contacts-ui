@@ -12,6 +12,7 @@ import CreateContactSuccessPage from '../pages/createContactSuccessPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import RelationshipCommentsPage from '../pages/contact-details/relationship/relationshipCommentsPage'
 import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
+import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
 
 context('Create contact and update from check answers', () => {
   beforeEach(() => {
@@ -86,6 +87,8 @@ context('Create contact and update from check answers', () => {
       .selectIsEmergencyContact('NO')
       .continueTo(SelectNextOfKinPage, 'First Middle Last')
       .selectIsNextOfKin('NO')
+      .continueTo(SelectApprovedVisitorPage, 'First Middle Last', 'John Smith', true) //
+      .selectIsApprovedVisitor('NO')
       .continueTo(AddContactAdditionalInfoPage, 'First Middle Last')
       .clickLinkTo(
         'Comments on their relationship with First Middle Last',

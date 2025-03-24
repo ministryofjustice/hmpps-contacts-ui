@@ -14,6 +14,7 @@ import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import CancelAddContactPage from '../pages/cancelAddContactPage'
 import RelationshipCommentsPage from '../pages/contact-details/relationship/relationshipCommentsPage'
 import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
+import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
 
 context('Create Contacts', () => {
   const contactId = 654321
@@ -108,6 +109,10 @@ context('Create Contacts', () => {
       .selectIsNextOfKin('YES')
       .clickContinue()
 
+    Page.verifyOnPage(SelectApprovedVisitorPage, 'First Last', 'John Smith', true) //
+      .selectIsApprovedVisitor('NO')
+      .clickContinue()
+
     Page.verifyOnPage(AddContactAdditionalInfoPage, 'First Last') //
       .clickContinue()
 
@@ -179,6 +184,10 @@ context('Create Contacts', () => {
 
     Page.verifyOnPage(SelectNextOfKinPage, 'First Middle Last') //
       .selectIsNextOfKin('NO')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectApprovedVisitorPage, 'First Middle Last', 'John Smith', true) //
+      .selectIsApprovedVisitor('NO')
       .clickContinue()
 
     Page.verifyOnPage(AddContactAdditionalInfoPage, 'First Middle Last') //
@@ -254,6 +263,10 @@ context('Create Contacts', () => {
 
     Page.verifyOnPage(SelectNextOfKinPage, 'First Last') //
       .selectIsNextOfKin('YES')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectApprovedVisitorPage, 'First Last', 'John Smith', true) //
+      .selectIsApprovedVisitor('NO')
       .clickContinue()
 
     Page.verifyOnPage(AddContactAdditionalInfoPage, 'First Last') //
@@ -468,6 +481,8 @@ context('Create Contacts', () => {
       .selectIsEmergencyContact('NO')
       .continueTo(SelectNextOfKinPage, 'First Last') //
       .selectIsNextOfKin('YES')
+      .continueTo(SelectApprovedVisitorPage, 'First Last', 'John Smith', true) //
+      .selectIsApprovedVisitor('NO')
       .continueTo(AddContactAdditionalInfoPage, 'First Last')
       .clickLink('Comments on their relationship with First Last')
 
@@ -492,6 +507,8 @@ context('Create Contacts', () => {
       .selectIsEmergencyContact('NO')
       .continueTo(SelectNextOfKinPage, 'First Last')
       .selectIsNextOfKin('YES')
+      .continueTo(SelectApprovedVisitorPage, 'First Last', 'John Smith', true) //
+      .selectIsApprovedVisitor('NO')
       .continueTo(AddContactAdditionalInfoPage, 'First Last')
       .clickLinkTo(
         'Comments on their relationship with First Last',
@@ -527,6 +544,8 @@ context('Create Contacts', () => {
       .selectIsEmergencyContact('NO')
       .continueTo(SelectNextOfKinPage, 'First Last') //
       .selectIsNextOfKin('YES')
+      .continueTo(SelectApprovedVisitorPage, 'First Last', 'John Smith', true) //
+      .selectIsApprovedVisitor('NO')
       .continueTo(AddContactAdditionalInfoPage, 'First Last')
       .continueTo(CreateContactCheckYourAnswersPage, 'John Smith') //
       .clickLink('Cancel')

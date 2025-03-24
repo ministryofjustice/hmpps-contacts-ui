@@ -11,6 +11,7 @@ import AddContactSuccessPage from '../pages/addContactSuccessPage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import RelationshipCommentsPage from '../pages/contact-details/relationship/relationshipCommentsPage'
+import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
 
 context('Add Existing Contact', () => {
   const { prisonerNumber } = TestData.prisoner()
@@ -111,6 +112,10 @@ context('Add Existing Contact', () => {
       .selectIsNextOfKin('YES')
       .clickContinue()
 
+    Page.verifyOnPage(SelectApprovedVisitorPage, 'Existing Contact', 'John Smith', true) //
+      .selectIsApprovedVisitor('YES')
+      .clickContinue()
+
     Page.verifyOnPage(RelationshipCommentsPage, 'Existing Contact', 'John Smith', true) //
       .enterComments('Some comments about the relationship')
       .clickContinue()
@@ -141,7 +146,7 @@ context('Add Existing Contact', () => {
           relationshipToPrisonerCode: 'MOT',
           isNextOfKin: true,
           isEmergencyContact: false,
-          isApprovedVisitor: false,
+          isApprovedVisitor: true,
           comments: 'Some comments about the relationship',
         },
         createdBy: 'USER1',
@@ -178,6 +183,9 @@ context('Add Existing Contact', () => {
 
     Page.verifyOnPage(SelectNextOfKinPage, 'Existing Contact') //
       .selectIsNextOfKin('NO')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectApprovedVisitorPage, 'Existing Contact', 'John Smith', true) //
       .clickContinue()
 
     Page.verifyOnPage(RelationshipCommentsPage, 'Existing Contact', 'John Smith', true) //

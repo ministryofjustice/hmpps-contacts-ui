@@ -61,6 +61,7 @@ import AddContactDomesticStatusController from './domestic-status/addContactDome
 import AddContactAddEmailsController from './emails/addContactAddEmailsController'
 import AddContactConfirmDeleteEmailController from './emails/addContactConfirmDeleteEmailController'
 import { optionalEmailsSchema } from '../manage/email/emailSchemas'
+import ApprovedToVisitController from './approved-to-visit/approvedToVisitController'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -221,6 +222,12 @@ const AddContactRoutes = (
     validate(selectNextOfKinSchema()),
     asyncMiddleware(selectNextOfKinController.POST),
   )
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/approved-to-visit/:journeyId',
+    controller: new ApprovedToVisitController(),
+    noValidation: true,
+  })
 
   const enterDobController = new CreateContactEnterDobController()
   router.get(

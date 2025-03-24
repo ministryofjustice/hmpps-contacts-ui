@@ -13,6 +13,7 @@ import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
 import ConfirmDeleteEmailPage from '../pages/confirmDeleteEmailPage'
 import AddEmailsPage from '../pages/addEmailsPage'
+import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
 
 context('Create Contact With Email addresses', () => {
   const contactId = 654321
@@ -104,6 +105,10 @@ context('Create Contact With Email addresses', () => {
 
     Page.verifyOnPage(SelectNextOfKinPage, 'First Last') //
       .selectIsNextOfKin('YES')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectApprovedVisitorPage, 'First Last', 'John Smith', true) //
+      .selectIsApprovedVisitor('NO')
       .clickContinue()
 
     // Can submit without entering an email address and also go back to additional info

@@ -20,6 +20,7 @@ import SelectAddressFlagsPage from '../pages/contact-methods/address/selectAddre
 import EnterAddressCommentsPage from '../pages/contact-methods/address/enterAddressCommentsPage'
 import ConfirmDeleteAddressPhonePage from '../pages/contact-methods/address/phone/confirmDeleteAddressPhonePage'
 import ConfirmDeleteContactAddressPage from '../pages/confirmDeleteContactAddressPage'
+import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
 
 context('Create Contact With Addresses', () => {
   const contactId = 654321
@@ -116,6 +117,10 @@ context('Create Contact With Addresses', () => {
 
     Page.verifyOnPage(SelectNextOfKinPage, 'First Last') //
       .selectIsNextOfKin('YES')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectApprovedVisitorPage, 'First Last', 'John Smith', true) //
+      .selectIsApprovedVisitor('NO')
       .clickContinue()
 
     // Can submit without entering a phone number and also go back to additional info
