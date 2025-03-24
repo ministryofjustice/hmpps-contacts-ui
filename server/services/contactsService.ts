@@ -60,7 +60,7 @@ export default class ContactsService {
         relationshipToPrisonerCode: journey.relationship!.relationshipToPrisoner!,
         isNextOfKin: journey.relationship!.isNextOfKin === 'YES',
         isEmergencyContact: journey.relationship!.isEmergencyContact === 'YES',
-        isApprovedVisitor: false,
+        isApprovedVisitor: journey.relationship?.isApprovedVisitor ?? false,
         ...(journey?.relationship?.comments === undefined ? {} : { comments: journey.relationship.comments }),
       },
       createdBy: user.username,
@@ -131,7 +131,7 @@ export default class ContactsService {
         relationshipToPrisonerCode: journey.relationship!.relationshipToPrisoner!,
         isNextOfKin: journey.relationship!.isNextOfKin === 'YES',
         isEmergencyContact: journey.relationship!.isEmergencyContact === 'YES',
-        isApprovedVisitor: false,
+        isApprovedVisitor: journey.relationship?.isApprovedVisitor ?? false,
       },
       createdBy: user.username,
     }

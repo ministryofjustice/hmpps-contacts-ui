@@ -108,17 +108,17 @@
                   ]
                 }
                 },
-                null and {
+                {
                   key: {
                   text: "Approved for visits"
                 },
                   value: {
-                  html: "Not provided" if journey.relationship.isApprovedForVisits == undefined else (journey.relationship.isApprovedForVisits | formatYesNo)
+                  html: "Not provided" if journey.relationship.isApprovedVisitor == undefined else (journey.relationship.isApprovedVisitor | formatYesNo)
                 },
                   actions: {
                   items: [
                     {
-                      href: baseChangeUrl + "/select-approved-for-visits/"  + journey.id,
+                      href: baseChangeUrl + "/approved-to-visit/"  + journey.id,
                       text: "Change",
                       visuallyHiddenText: "if the contact is approved to visit the prisoner",
                       classes: "govuk-link--no-visited-state"

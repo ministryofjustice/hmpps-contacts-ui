@@ -55,6 +55,7 @@ declare namespace journeys {
     relationshipToPrisoner?: string
     isEmergencyContact?: YesOrNo
     isNextOfKin?: YesOrNo
+    isApprovedVisitor?: boolean
     comments?: string | undefined
   }
 

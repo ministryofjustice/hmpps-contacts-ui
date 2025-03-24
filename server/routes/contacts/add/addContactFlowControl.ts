@@ -12,6 +12,7 @@ type CreateContactPages =
   | Page.SELECT_CONTACT_RELATIONSHIP
   | Page.SELECT_EMERGENCY_CONTACT
   | Page.SELECT_NEXT_OF_KIN
+  | Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE
   | Page.CREATE_CONTACT_DOB_PAGE
   | Page.ENTER_RELATIONSHIP_COMMENTS
   | Page.ENTER_ADDITIONAL_INFORMATION_PAGE
@@ -38,6 +39,7 @@ type ExistingContactPages =
   | Page.SELECT_CONTACT_RELATIONSHIP
   | Page.SELECT_EMERGENCY_CONTACT
   | Page.SELECT_NEXT_OF_KIN
+  | Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE
   | Page.ENTER_RELATIONSHIP_COMMENTS
   | Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE
   | Page.SUCCESSFULLY_ADDED_CONTACT_PAGE
@@ -77,6 +79,9 @@ const PAGES: Record<AllAddContactPages, PageConfig> = {
   },
   [Page.SELECT_NEXT_OF_KIN]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/select-next-of-kin/${journey.id}`,
+  },
+  [Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE]: {
+    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/approved-to-visit/${journey.id}`,
   },
   [Page.CREATE_CONTACT_DOB_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/enter-dob/${journey.id}`,
@@ -171,6 +176,10 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   },
   [Page.SELECT_NEXT_OF_KIN]: {
     ...backTo({ page: PAGES.SELECT_EMERGENCY_CONTACT }),
+    nextUrl: checkAnswersOr(PAGES.ADD_CONTACT_APPROVED_TO_VISIT_PAGE.url),
+  },
+  [Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE]: {
+    ...backTo({ page: PAGES.SELECT_NEXT_OF_KIN }),
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.ENTER_ADDITIONAL_INFORMATION_PAGE]: {
@@ -279,6 +288,10 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
   },
   [Page.SELECT_NEXT_OF_KIN]: {
     ...backTo({ page: PAGES.SELECT_EMERGENCY_CONTACT }),
+    nextUrl: checkAnswersOr(PAGES.ADD_CONTACT_APPROVED_TO_VISIT_PAGE.url),
+  },
+  [Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE]: {
+    ...backTo({ page: PAGES.SELECT_NEXT_OF_KIN }),
     nextUrl: checkAnswersOr(PAGES.ENTER_RELATIONSHIP_COMMENTS.url),
   },
   [Page.ENTER_RELATIONSHIP_COMMENTS]: {

@@ -12,6 +12,7 @@ import CreateContactSuccessPage from '../pages/createContactSuccessPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
 import SelectDomesticStatusPage from '../pages/contact-details/additional-information/selectDomesticStatusPage'
+import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
 
 context('Create Contact and Enter Domestic Status', () => {
   const contactId = 654321
@@ -103,6 +104,10 @@ context('Create Contact and Enter Domestic Status', () => {
 
     Page.verifyOnPage(SelectNextOfKinPage, 'First Last') //
       .selectIsNextOfKin('YES')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectApprovedVisitorPage, 'First Last', 'John Smith', true) //
+      .selectIsApprovedVisitor('NO')
       .clickContinue()
   })
 
