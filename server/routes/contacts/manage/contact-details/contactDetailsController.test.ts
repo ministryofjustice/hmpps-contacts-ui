@@ -80,8 +80,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
       // Then
       const $ = cheerio.load(response.text)
-      expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('Contact details - Jones Mason')
-      expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Contacts')
+      expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('Information on linked contact Jones Mason')
 
       expect($('[data-qa=breadcrumbs]')).toHaveLength(1)
       const breadcrumbLinks = $('[data-qa=breadcrumbs] a')
@@ -106,8 +105,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
       // Then
       const $ = cheerio.load(response.text)
-      expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('Contact details - Jones Mason (deceased)')
-      expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Contacts')
+      expect($('.govuk-heading-l').first().text().trim()).toStrictEqual(
+        'Information on linked contact Jones Mason (deceased)',
+      )
 
       expect($('[data-qa=breadcrumbs]')).toHaveLength(1)
       const breadcrumbLinks = $('[data-qa=breadcrumbs] a')
@@ -569,6 +569,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         expect(
           $(relationshipInformationCard).find('dt:contains("Comments on the relationship")').next().text().trim(),
         ).toStrictEqual('Some comments')
+        expect($('.next-of-kin-tag')).toHaveLength(1)
+        expect($('.emergency-contact-tag')).toHaveLength(1)
       })
 
       it('should render without optional relationship details', async () => {
@@ -611,6 +613,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         expect(
           $(relationshipInformationCard).find('dt:contains("Comments on the relationship")').next().text().trim(),
         ).toStrictEqual('Not provided')
+        expect($('.next-of-kin-tag')).toHaveLength(0)
+        expect($('.emergency-contact-tag')).toHaveLength(0)
       })
     })
 

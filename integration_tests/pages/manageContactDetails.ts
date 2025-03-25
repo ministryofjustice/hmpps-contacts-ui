@@ -2,7 +2,7 @@ import Page, { PageElement } from './page'
 
 export default class ManageContactDetailsPage extends Page {
   constructor(name: string) {
-    super(`Contact details - ${name}`)
+    super(`Information on linked contact ${name}`)
   }
 
   clickEditContactDetailsLink() {

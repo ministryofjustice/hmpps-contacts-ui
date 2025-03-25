@@ -64,3 +64,26 @@ div.contact-list {
 .govuk-summary-card__actions {
   margin: 10px 0;
 }
+
+.contact-record-banner-bottom{
+  border-bottom: 2px solid govuk-colour("mid-grey");
+  padding: 8px 12px 8px 10px;
+}
+
+.emergency-contact-tag {
+  background: url('/assets/images/emergencycontact.svg') 8px 8px no-repeat;
+  width: 170px;
+  padding: 3px 3px 3px 33px;
+  border: 2px solid govuk-colour("mid-grey");
+  border-radius: 100px;
+  margin-bottom: 5px;
+}
+
+.next-of-kin-tag {
+  background: url('/assets/images/nextofkin.svg') 8px 8px no-repeat;
+  width: 100px;
+  padding: 3px 3px 3px 33px;
+  border: 2px solid govuk-colour("mid-grey");
+  border-radius: 100px;
+  margin-bottom: 5px;
+}

@@ -2,63 +2,79 @@
 {% from "partials/miniProfile/macro.njk" import miniProfile %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "partials/linkedPrisonersTable.njk" import linkedPrisonersTable %}
+{% set pageTitle = "Information on a contact linked to a prisoner - DPS" %}
+
 {% block content %}
-{% include 'partials/navigation.njk' %}
-{{ miniProfile(prisonerDetails) }}
-{% include 'partials/successNotificationBanner.njk' %}
-<div class="govuk-grid-row govuk-!-static-margin-bottom-5">
+  {% include 'partials/navigation.njk' %}
+  {{ miniProfile(prisonerDetails) }}
+  {% include 'partials/successNotificationBanner.njk' %}
+  <div class="govuk-grid-row govuk-!-static-margin-bottom-5">
     <div class="govuk-grid-column-full">
-      <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-          <span class="govuk-caption-l">Contacts</span>
-          <h1 class="govuk-heading-l">Contact details - {{ contact | formatNameFirstNameFirst }}{{ ' (deceased)' if contact.deceasedDate }}</h1>
+      <div class="govuk-grid-row govuk-!-margin-bottom-6">
+        <div class="moj-page-header-actions contact-record-banner-bottom govuk-!-margin-bottom-6 govuk-!-padding-bottom-2">
+          <div class="moj-page-header-actions__title">
+            <h1 class="govuk-heading-l">Information on linked contact {{ contact | formatNameFirstNameFirst }}{{ ' (deceased)' if contact.deceasedDate }}</h1>
+          </div>
+          <div class="moj-page-header-actions__actions">
+            <div class="moj-button-group moj-button-group--inline">
+            </div>
+          </div>
+        </div>
+        <div>
+          <p class="govuk-body"><strong>Person ID:</strong> {{ contact.id }}</p>
+        </div>
+        <div>
+          {% if prisonerContactRelationship.isNextOfKin %}<p class="next-of-kin-tag">Next of kin</p>{% endif %}
+          {% if prisonerContactRelationship.isEmergencyContact %}<p class="emergency-contact-tag">Emergency contact</p>{% endif %}
         </div>
       </div>
-             <div class="govuk-tabs" data-module="govuk-tabs">
-                <ul class="govuk-tabs__list">
-                  <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
-                      <a class="govuk-tabs__tab" href="#contact-details">
-                          Contact details
-                      </a>
-                  </li>
-                  <li class="govuk-tabs__list-item">
-                      <a class="govuk-tabs__tab" href="#contact-methods">
-                          Contact methods
-                      </a>
-                  </li>
-                  <li class="govuk-tabs__list-item">
-                    <a class="govuk-tabs__tab" href="#professional-information">
-                      Professional information
-                    </a>
-                  </li>
-                    <li class="govuk-tabs__list-item">
-                        <a class="govuk-tabs__tab restrictions-tab-title" href="#restrictions">
-                            Restrictions ({{ globalRestrictions.length + prisonerContactRestrictions.length }})
-                        </a>
-                    </li>
-                    <li class="govuk-tabs__list-item">
-                      <a class="govuk-tabs__tab linked-prisoners-tab-title" href="#linked-prisoners">
-                        Linked prisoners ({{ linkedPrisonerCount }})
-                      </a>
-                    </li>
-                </ul>
+      <div class="govuk-tabs" data-module="govuk-tabs">
+        <ul class="govuk-tabs__list">
+          <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+            <a class="govuk-tabs__tab" href="#contact-details">
+              Contact details
+            </a>
+          </li>
+          <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab" href="#contact-methods">
+              Contact methods
+            </a>
+          </li>
+          <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab" href="#professional-information">
+              Professional information
+            </a>
+          </li>
+          <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab restrictions-tab-title" href="#restrictions">
+              Restrictions ({{ globalRestrictions.length + prisonerContactRestrictions.length }})
+            </a>
+          </li>
+          <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab linked-prisoners-tab-title" href="#linked-prisoners">
+              Linked prisoners ({{ linkedPrisonerCount }})
+            </a>
+          </li>
+        </ul>
 
-               <div class="govuk-tabs__panel govuk-!-static-padding-top-7" id="contact-details">
-                  {%- include "./contactDetailsTab.njk" -%}
-               </div>
-               <div class="govuk-tabs__panel govuk-!-static-padding-top-7" id="contact-methods">
-                  {%- include "./contactMethodsTab.njk" -%}
-               </div>
-               <div class="govuk-tabs__panel govuk-!-static-padding-top-7" id="professional-information">
-                  {%- include "./professionalInformationTab.njk" -%}
-               </div>
-                <div class="govuk-tabs__panel govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" data-qa="restrictions-result-message" id="restrictions">
-                  {%- include "./restrictionsTab.njk" -%}
-                </div>
-                <div class="govuk-tabs__panel govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" data-qa="linked-prisoner-tab-message" id="linked-prisoners">
-                    {{ linkedPrisonersTable({ linkedPrisoners: linkedPrisoners, contact: contact }) }}
-                </div>
-             </div>
+        <div class="govuk-tabs__panel govuk-!-static-padding-top-7" id="contact-details">
+          {%- include "./contactDetailsTab.njk" -%}
+        </div>
+        <div class="govuk-tabs__panel govuk-!-static-padding-top-7" id="contact-methods">
+          {%- include "./contactMethodsTab.njk" -%}
+        </div>
+        <div class="govuk-tabs__panel govuk-!-static-padding-top-7" id="professional-information">
+          {%- include "./professionalInformationTab.njk" -%}
+        </div>
+        <div class="govuk-tabs__panel govuk-!-static-padding-top-7 govuk-tabs__panel--hidden"
+             data-qa="restrictions-result-message" id="restrictions">
+          {%- include "./restrictionsTab.njk" -%}
+        </div>
+        <div class="govuk-tabs__panel govuk-!-static-padding-top-7 govuk-tabs__panel--hidden"
+             data-qa="linked-prisoner-tab-message" id="linked-prisoners">
+          {{ linkedPrisonersTable({ linkedPrisoners: linkedPrisoners, contact: contact }) }}
+        </div>
+      </div>
     </div>
-</div>
+  </div>
 {% endblock %}

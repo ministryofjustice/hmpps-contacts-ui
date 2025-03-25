@@ -5,10 +5,11 @@
 
 {% if mode === 'NEW' %}
   {% set successMessage = 'New contact added and linked to prisoner' %}
+  {% set pageTitle = "New contact added and linked to a prisoner - DPS" %}
 {% else %}
   {% set successMessage = 'Contact linked to prisoner' %}
+  {% set pageTitle = "Contact linked to prisoner - DPS" %}
 {% endif %}
-{% set pageTitle = applicationName + " - Success" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
