@@ -38,8 +38,8 @@ beforeEach(() => {
     },
     relationship: {
       relationshipToPrisoner: 'MOT',
-      isEmergencyContact: 'YES',
-      isNextOfKin: 'YES',
+      isEmergencyContact: true,
+      isNextOfKin: true,
     },
     mode: 'NEW',
   }
@@ -78,7 +78,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
     )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
-      `/prisoner/${prisonerNumber}/contacts/create/select-next-of-kin/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/create/approved-to-visit/${journeyId}`,
     )
     expect($('[data-qa=cancel-button]')).toHaveLength(0)
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)

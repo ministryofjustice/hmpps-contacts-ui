@@ -80,7 +80,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/approved-to-visit/:journ
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual(expectedCaption)
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
-      `/prisoner/A1234BC/contacts/create/select-next-of-kin/${journeyId}`,
+      `/prisoner/A1234BC/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
     )
     expect($('[data-qa=cancel-button]')).toHaveLength(0)
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)

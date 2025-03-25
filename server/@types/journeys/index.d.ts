@@ -53,8 +53,8 @@ declare namespace journeys {
     pendingNewRelationshipType?: string
     relationshipType?: string
     relationshipToPrisoner?: string
-    isEmergencyContact?: YesOrNo
-    isNextOfKin?: YesOrNo
+    isEmergencyContact?: boolean | undefined
+    isNextOfKin?: boolean | undefined
     isApprovedVisitor?: boolean
     comments?: string | undefined
   }

@@ -5,8 +5,6 @@ import CreateContactCheckYourAnswersPage from '../pages/createContactCheckYourAn
 import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
-import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
-import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 import SearchContactPage from '../pages/searchContactPage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import CreateContactSuccessPage from '../pages/createContactSuccessPage'
@@ -15,6 +13,7 @@ import CancelAddContactPage from '../pages/cancelAddContactPage'
 import RelationshipCommentsPage from '../pages/contact-details/relationship/relationshipCommentsPage'
 import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
 import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
+import SelectEmergencyContactOrNextOfKinPage from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
 
 context('Create Contacts', () => {
   const contactId = 654321
@@ -101,12 +100,8 @@ context('Create Contacts', () => {
       .selectRelationship('MOT')
       .clickContinue()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'First Last') //
-      .selectIsEmergencyContact('NO')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectNextOfKinPage, 'First Last') //
-      .selectIsNextOfKin('YES')
+    Page.verifyOnPage(SelectEmergencyContactOrNextOfKinPage, 'First Last', 'John Smith', true) //
+      .selectIsEmergencyContactOrNextOfKin('NOK')
       .clickContinue()
 
     Page.verifyOnPage(SelectApprovedVisitorPage, 'First Last', 'John Smith', true) //
@@ -178,12 +173,8 @@ context('Create Contacts', () => {
       .selectRelationship('MOT')
       .clickContinue()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'First Middle Last') //
-      .selectIsEmergencyContact('YES')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectNextOfKinPage, 'First Middle Last') //
-      .selectIsNextOfKin('NO')
+    Page.verifyOnPage(SelectEmergencyContactOrNextOfKinPage, 'First Middle Last', 'John Smith', true) //
+      .selectIsEmergencyContactOrNextOfKin('EC')
       .clickContinue()
 
     Page.verifyOnPage(SelectApprovedVisitorPage, 'First Middle Last', 'John Smith', true) //
@@ -257,12 +248,8 @@ context('Create Contacts', () => {
       .selectRelationship('DR')
       .clickContinue()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'First Last') //
-      .selectIsEmergencyContact('NO')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectNextOfKinPage, 'First Last') //
-      .selectIsNextOfKin('YES')
+    Page.verifyOnPage(SelectEmergencyContactOrNextOfKinPage, 'First Last', 'John Smith', true) //
+      .selectIsEmergencyContactOrNextOfKin('NOK')
       .clickContinue()
 
     Page.verifyOnPage(SelectApprovedVisitorPage, 'First Last', 'John Smith', true) //
@@ -364,55 +351,6 @@ context('Create Contacts', () => {
     selectRelationshipPage.hasFieldInError('relationship', 'Select the contact’s relationship to the prisoner')
   })
 
-  it('Must select contact relationship', () => {
-    Page.verifyOnPage(EnterNamePage) //
-      .enterLastName('Last')
-      .enterFirstName('First')
-      .continueTo(EnterContactDateOfBirthPage, 'First Last')
-      .selectIsKnown('NO')
-      .continueTo(SelectRelationshipTypePage, 'First Last', 'John Smith') //
-      .selectRelationshipType('S')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectRelationshipPage, 'First Last', 'John Smith') //
-      .selectRelationship('MOT')
-      .clickContinue()
-
-    const selectEmergencyContactPage = Page.verifyOnPage(SelectEmergencyContactPage, 'First Last')
-    selectEmergencyContactPage.clickContinue()
-
-    selectEmergencyContactPage.hasFieldInError(
-      'isEmergencyContact',
-      'Select whether the contact is an emergency contact for the prisoner',
-    )
-  })
-
-  it('Must select whether contact is an emergency contact', () => {
-    Page.verifyOnPage(EnterNamePage) //
-      .enterLastName('Last')
-      .enterFirstName('First')
-      .continueTo(EnterContactDateOfBirthPage, 'First Last')
-      .selectIsKnown('NO')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectRelationshipTypePage, 'First Last', 'John Smith') //
-      .selectRelationshipType('S')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectRelationshipPage, 'First Last', 'John Smith') //
-      .selectRelationship('MOT')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectEmergencyContactPage, 'First Last') //
-      .selectIsEmergencyContact('NO')
-      .clickContinue()
-
-    const selectNextOfKinPage = Page.verifyOnPage(SelectNextOfKinPage, 'First Last')
-    selectNextOfKinPage.clickContinue()
-
-    selectNextOfKinPage.hasFieldInError('isNextOfKin', 'Select whether the contact is next of kin for the prisoner')
-  })
-
   it('Must select whether dob is known', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
@@ -477,10 +415,8 @@ context('Create Contacts', () => {
       .selectRelationshipType('S')
       .continueTo(SelectRelationshipPage, 'First Last', 'John Smith') //
       .selectRelationship('MOT')
-      .continueTo(SelectEmergencyContactPage, 'First Last') //
-      .selectIsEmergencyContact('NO')
-      .continueTo(SelectNextOfKinPage, 'First Last') //
-      .selectIsNextOfKin('YES')
+      .continueTo(SelectEmergencyContactOrNextOfKinPage, 'First Last', 'John Smith', true) //
+      .selectIsEmergencyContactOrNextOfKin('NOK')
       .continueTo(SelectApprovedVisitorPage, 'First Last', 'John Smith', true) //
       .selectIsApprovedVisitor('NO')
       .continueTo(AddContactAdditionalInfoPage, 'First Last')
@@ -503,10 +439,8 @@ context('Create Contacts', () => {
       .selectRelationshipType('S')
       .continueTo(SelectRelationshipPage, 'First Last', 'John Smith')
       .selectRelationship('MOT')
-      .continueTo(SelectEmergencyContactPage, 'First Last')
-      .selectIsEmergencyContact('NO')
-      .continueTo(SelectNextOfKinPage, 'First Last')
-      .selectIsNextOfKin('YES')
+      .continueTo(SelectEmergencyContactOrNextOfKinPage, 'First Last', 'John Smith', true) //
+      .selectIsEmergencyContactOrNextOfKin('NOK')
       .continueTo(SelectApprovedVisitorPage, 'First Last', 'John Smith', true) //
       .selectIsApprovedVisitor('NO')
       .continueTo(AddContactAdditionalInfoPage, 'First Last')
@@ -522,8 +456,8 @@ context('Create Contacts', () => {
 
     relationshipCommentsPage //
       .backTo(AddContactAdditionalInfoPage, 'First Last')
-      .backTo(SelectNextOfKinPage, 'First Last')
-      .backTo(SelectEmergencyContactPage, 'First Last')
+      .backTo(SelectApprovedVisitorPage, 'First Last', 'John Smith', true)
+      .backTo(SelectEmergencyContactOrNextOfKinPage, 'First Last', 'John Smith', true)
       .backTo(SelectRelationshipPage, 'First Last', 'John Smith')
       .backTo(SelectRelationshipTypePage, 'First Last', 'John Smith')
       .backTo(EnterContactDateOfBirthPage, 'First Last')
@@ -540,10 +474,8 @@ context('Create Contacts', () => {
       .selectRelationshipType('S')
       .continueTo(SelectRelationshipPage, 'First Last', 'John Smith') //
       .selectRelationship('MOT')
-      .continueTo(SelectEmergencyContactPage, 'First Last') //
-      .selectIsEmergencyContact('NO')
-      .continueTo(SelectNextOfKinPage, 'First Last') //
-      .selectIsNextOfKin('YES')
+      .continueTo(SelectEmergencyContactOrNextOfKinPage, 'First Last', 'John Smith', true) //
+      .selectIsEmergencyContactOrNextOfKin('NOK')
       .continueTo(SelectApprovedVisitorPage, 'First Last', 'John Smith', true) //
       .selectIsApprovedVisitor('NO')
       .continueTo(AddContactAdditionalInfoPage, 'First Last')

@@ -3,14 +3,13 @@ import LinkExistingContactCYAPage from '../pages/linkExistingContactCYAPage'
 import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
-import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
-import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 import SearchContactPage from '../pages/searchContactPage'
 import ContactConfirmationPage from '../pages/contactConfirmationPage'
 import AddContactSuccessPage from '../pages/addContactSuccessPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import RelationshipCommentsPage from '../pages/contact-details/relationship/relationshipCommentsPage'
 import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
+import SelectEmergencyContactOrNextOfKinPage from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
 
 context('Add Existing Contact Check Answers', () => {
   const { prisonerNumber } = TestData.prisoner()
@@ -82,10 +81,8 @@ context('Add Existing Contact Check Answers', () => {
       .selectRelationshipType('S')
       .continueTo(SelectRelationshipPage, 'Existing Contact', 'John Smith') //
       .selectRelationship('MOT')
-      .continueTo(SelectEmergencyContactPage, 'Existing Contact') //
-      .selectIsEmergencyContact('NO')
-      .continueTo(SelectNextOfKinPage, 'Existing Contact') //
-      .selectIsNextOfKin('YES')
+      .continueTo(SelectEmergencyContactOrNextOfKinPage, 'Existing Contact', 'John Smith', true) //
+      .selectIsEmergencyContactOrNextOfKin('NOK')
       .continueTo(SelectApprovedVisitorPage, 'Existing Contact', 'John Smith', true) //
       .selectIsApprovedVisitor('NO')
       .continueTo(RelationshipCommentsPage, 'Existing Contact', 'John Smith', true) //

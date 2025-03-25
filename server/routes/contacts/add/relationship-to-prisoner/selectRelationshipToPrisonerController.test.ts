@@ -236,7 +236,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship-to-
       .type('form')
       .send({ relationship: 'MOT' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`)
 
     expect(session.addContactJourneys![journeyId]!.relationship).toStrictEqual({
       relationshipType: 'S',

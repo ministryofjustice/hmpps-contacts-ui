@@ -93,8 +93,8 @@ describe('contactsService', () => {
           relationship: {
             relationshipType,
             relationshipToPrisoner,
-            isEmergencyContact: 'NO',
-            isNextOfKin: 'YES',
+            isEmergencyContact: false,
+            isNextOfKin: true,
             comments: 'Some comments about this relationship',
           },
           phoneNumbers: [
@@ -167,8 +167,8 @@ describe('contactsService', () => {
           relationship: {
             relationshipType: 'S',
             relationshipToPrisoner: 'MOT',
-            isEmergencyContact: 'NO',
-            isNextOfKin: 'YES',
+            isEmergencyContact: false,
+            isNextOfKin: true,
           },
           isStaff: isStaffJourney as YesOrNo,
         }
@@ -229,8 +229,8 @@ describe('contactsService', () => {
           relationship: {
             relationshipType: 'S',
             relationshipToPrisoner: 'MOT',
-            isEmergencyContact: 'NO',
-            isNextOfKin: 'YES',
+            isEmergencyContact: false,
+            isNextOfKin: true,
           },
           languageAndInterpreter: languageAndInterpreterJourney as LanguageAndInterpreterRequiredForm,
         }
@@ -289,8 +289,8 @@ describe('contactsService', () => {
         relationship: {
           relationshipType: 'S',
           relationshipToPrisoner: 'MOT',
-          isEmergencyContact: 'YES',
-          isNextOfKin: 'NO',
+          isEmergencyContact: true,
+          isNextOfKin: false,
         },
       }
       const expectedRequest: CreateContactRequest = {
@@ -329,7 +329,7 @@ describe('contactsService', () => {
             returnPoint: { url: '/foo-bar' },
             names: { firstName: 'first', lastName: 'last' },
             dateOfBirth: { isKnown: 'NO' },
-            relationship: { relationshipToPrisoner: 'MOT', isEmergencyContact: 'YES', isNextOfKin: 'NO' },
+            relationship: { relationshipToPrisoner: 'MOT', isEmergencyContact: true, isNextOfKin: false },
           },
           user,
         ),
@@ -453,8 +453,8 @@ describe('contactsService', () => {
           relationship: {
             relationshipType,
             relationshipToPrisoner,
-            isEmergencyContact: 'NO',
-            isNextOfKin: 'YES',
+            isEmergencyContact: false,
+            isNextOfKin: true,
             comments: 'Some comments about this relationship',
           },
           contactId: 123456,
@@ -504,8 +504,8 @@ describe('contactsService', () => {
         relationship: {
           relationshipType: 'S',
           relationshipToPrisoner: 'MOT',
-          isEmergencyContact: 'YES',
-          isNextOfKin: 'NO',
+          isEmergencyContact: true,
+          isNextOfKin: false,
         },
         contactId: 123456,
       }
@@ -542,7 +542,7 @@ describe('contactsService', () => {
             returnPoint: { url: '/foo-bar' },
             names: { firstName: 'first', lastName: 'last' },
             dateOfBirth: { isKnown: 'NO' },
-            relationship: { relationshipToPrisoner: 'MOT', isEmergencyContact: 'YES', isNextOfKin: 'NO' },
+            relationship: { relationshipToPrisoner: 'MOT', isEmergencyContact: true, isNextOfKin: false },
             contactId: 123456,
           },
           user,

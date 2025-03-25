@@ -232,8 +232,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
     beforeEach(() => {
       existingJourney.relationship = {
         relationshipToPrisoner: 'MOT',
-        isEmergencyContact: 'YES',
-        isNextOfKin: 'YES',
+        isEmergencyContact: true,
+        isNextOfKin: true,
         comments: 'Some comments',
       }
       existingJourney.names = {

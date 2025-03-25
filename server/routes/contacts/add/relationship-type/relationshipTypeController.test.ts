@@ -161,8 +161,8 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship-typ
     existingJourney.relationship = {
       relationshipType: 'S',
       relationshipToPrisoner: 'MOT',
-      isEmergencyContact: 'NO',
-      isNextOfKin: 'YES',
+      isEmergencyContact: false,
+      isNextOfKin: true,
     }
     existingJourney.isCheckingAnswers = true
 
@@ -179,8 +179,8 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship-typ
       relationshipType: 'S',
       pendingNewRelationshipType: 'O',
       relationshipToPrisoner: 'MOT',
-      isEmergencyContact: 'NO',
-      isNextOfKin: 'YES',
+      isEmergencyContact: false,
+      isNextOfKin: true,
     }
     expect(session.addContactJourneys![journeyId]!.relationship).toStrictEqual(expectedRelationship)
   })
@@ -190,15 +190,15 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship-typ
     existingJourney.relationship = {
       relationshipType: 'S',
       relationshipToPrisoner: 'MOT',
-      isEmergencyContact: 'NO',
-      isNextOfKin: 'YES',
+      isEmergencyContact: false,
+      isNextOfKin: true,
     }
     existingJourney.previousAnswers = {
       relationship: {
         relationshipType: 'S',
         relationshipToPrisoner: 'MOT',
-        isEmergencyContact: 'NO',
-        isNextOfKin: 'YES',
+        isEmergencyContact: false,
+        isNextOfKin: true,
       },
     }
 
@@ -217,8 +217,8 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship-typ
       relationshipType: 'S',
       pendingNewRelationshipType: 'S',
       relationshipToPrisoner: 'MOT',
-      isEmergencyContact: 'NO',
-      isNextOfKin: 'YES',
+      isEmergencyContact: false,
+      isNextOfKin: true,
     }
     expect(session.addContactJourneys![journeyId]!.relationship).toStrictEqual(expectedRelationship)
   })

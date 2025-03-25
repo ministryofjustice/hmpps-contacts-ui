@@ -38,8 +38,8 @@ beforeEach(() => {
     },
     relationship: {
       relationshipToPrisoner: 'MOT',
-      isEmergencyContact: 'YES',
-      isNextOfKin: 'YES',
+      isEmergencyContact: true,
+      isNextOfKin: true,
     },
     mode: 'NEW',
   }
@@ -107,8 +107,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-relationship-comme
     // Given
     existingJourney.relationship = {
       relationshipToPrisoner: 'MOT',
-      isEmergencyContact: 'NO',
-      isNextOfKin: 'YES',
+      isEmergencyContact: false,
+      isNextOfKin: true,
       comments: 'Foo',
     }
 
@@ -131,8 +131,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-relationship-comme
     )
     existingJourney.relationship = {
       relationshipToPrisoner: 'MOT',
-      isEmergencyContact: 'NO',
-      isNextOfKin: 'YES',
+      isEmergencyContact: false,
+      isNextOfKin: true,
     }
 
     // When
@@ -154,8 +154,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-relationship-comme
     )
     existingJourney.relationship = {
       relationshipToPrisoner: 'MOT',
-      isEmergencyContact: 'NO',
-      isNextOfKin: 'YES',
+      isEmergencyContact: false,
+      isNextOfKin: true,
       comments: 'Foo',
     }
 
@@ -186,7 +186,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-relationship-comm
     'should pass to next page if there are no validation errors and we are not checking answers',
     async (mode, expectedUrl) => {
       // Given
-      existingJourney.relationship = { relationshipToPrisoner: 'MOT', isEmergencyContact: 'NO', isNextOfKin: 'YES' }
+      existingJourney.relationship = { relationshipToPrisoner: 'MOT', isEmergencyContact: false, isNextOfKin: true }
       existingJourney.isCheckingAnswers = false
       existingJourney.mode = mode as 'NEW' | 'EXISTING'
 
@@ -201,8 +201,8 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-relationship-comm
       // Then
       const expectedRelationship = {
         relationshipToPrisoner: 'MOT',
-        isEmergencyContact: 'NO',
-        isNextOfKin: 'YES',
+        isEmergencyContact: false,
+        isNextOfKin: true,
         comments: 'Foo',
       }
       expect(session.addContactJourneys![journeyId]!.relationship).toStrictEqual(expectedRelationship)
