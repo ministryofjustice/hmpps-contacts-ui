@@ -64,6 +64,12 @@ export default class AddressCheckYourAnswersPage extends Page {
     cy.findByRole('link', { name: /Change the information about the phone number for this address/ }).click()
   }
 
+  clickDeletePhoneNumberLink(typeDescription: string) {
+    cy.findByRole('link', {
+      name: new RegExp(`Delete the information about the ${typeDescription} phone number for this address`),
+    }).click()
+  }
+
   verifyNoPhoneNumbers() {
     cy.get('dt:contains("Address phone numbers")').next().should('contain.text', 'Not provided')
     return this

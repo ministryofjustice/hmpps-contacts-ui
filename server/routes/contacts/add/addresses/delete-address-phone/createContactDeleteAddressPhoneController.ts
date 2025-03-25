@@ -22,7 +22,7 @@ export default class CreateContactDeleteAddressPhoneController implements PageHa
     const phone = addressForm.phoneNumbers?.[Number(phoneIdx) - 1]
     if (!phone) {
       logger.error(
-        `Couldn't find phone at index ${phoneIdx} for and address ${addressIndex}. URL probably entered manually.`,
+        `Couldn't find phone at index ${phoneIdx} for an address ${addressIndex}. URL probably entered manually.`,
       )
       throw new NotFound()
     }
@@ -55,7 +55,7 @@ export default class CreateContactDeleteAddressPhoneController implements PageHa
     const phone: ContactAddressPhoneDetails = addressForm.phoneNumbers?.[Number(phoneIdx) - 1]
     if (!phone) {
       logger.error(
-        `Couldn't find phone at index ${phoneIdx} for and address ${addressIndex}. URL probably entered manually.`,
+        `Couldn't find phone at index ${phoneIdx} for an address ${addressIndex}. URL probably entered manually.`,
       )
       throw new NotFound()
     }
