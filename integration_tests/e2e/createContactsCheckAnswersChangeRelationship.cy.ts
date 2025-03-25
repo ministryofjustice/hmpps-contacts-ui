@@ -4,8 +4,6 @@ import EnterContactDateOfBirthPage from '../pages/enterContactDateOfBirthPage'
 import CreateContactCheckYourAnswersPage from '../pages/createContactCheckYourAnswersPage'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import TestData from '../../server/routes/testutils/testData'
-import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
-import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 import ListContactsPage from '../pages/listContacts'
 import SearchContactPage from '../pages/searchContactPage'
 import CreateContactSuccessPage from '../pages/createContactSuccessPage'
@@ -13,6 +11,8 @@ import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import RelationshipCommentsPage from '../pages/contact-details/relationship/relationshipCommentsPage'
 import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
 import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
+import SelectEmergencyContactOrNextOfKinPage
+  from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
 
 context('Create contact and update the relationship from check answers', () => {
   beforeEach(() => {
@@ -83,10 +83,8 @@ context('Create contact and update the relationship from check answers', () => {
       .selectRelationshipType('S')
       .continueTo(SelectRelationshipPage, 'First Middle Last', 'John Smith')
       .selectRelationship('MOT')
-      .continueTo(SelectEmergencyContactPage, 'First Middle Last')
-      .selectIsEmergencyContact('NO')
-      .continueTo(SelectNextOfKinPage, 'First Middle Last')
-      .selectIsNextOfKin('NO')
+      .continueTo(SelectEmergencyContactOrNextOfKinPage, 'First Middle Last', 'John Smith', true)
+      .selectIsEmergencyContactOrNextOfKin('NONE')
       .continueTo(SelectApprovedVisitorPage, 'First Middle Last', 'John Smith', true) //
       .selectIsApprovedVisitor('NO')
       .continueTo(AddContactAdditionalInfoPage, 'First Middle Last')

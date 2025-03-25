@@ -3,14 +3,14 @@ import LinkExistingContactCYAPage from '../pages/linkExistingContactCYAPage'
 import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
-import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
-import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 import SearchContactPage from '../pages/searchContactPage'
 import ContactConfirmationPage from '../pages/contactConfirmationPage'
 import AddContactSuccessPage from '../pages/addContactSuccessPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import RelationshipCommentsPage from '../pages/contact-details/relationship/relationshipCommentsPage'
 import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
+import SelectEmergencyContactOrNextOfKinPage
+  from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
 
 context('Add Existing Contact Check Answers', () => {
   const { prisonerNumber } = TestData.prisoner()
@@ -82,10 +82,8 @@ context('Add Existing Contact Check Answers', () => {
       .selectRelationshipType('S')
       .continueTo(SelectRelationshipPage, 'Existing Contact', 'John Smith') //
       .selectRelationship('MOT')
-      .continueTo(SelectEmergencyContactPage, 'Existing Contact') //
-      .selectIsEmergencyContact('NO')
-      .continueTo(SelectNextOfKinPage, 'Existing Contact') //
-      .selectIsNextOfKin('YES')
+      .continueTo(SelectEmergencyContactOrNextOfKinPage, 'Existing Contact', 'John Smith', true) //
+      .selectIsEmergencyContactOrNextOfKin('NOK')
       .continueTo(SelectApprovedVisitorPage, 'Existing Contact', 'John Smith', true) //
       .selectIsApprovedVisitor('NO')
       .continueTo(RelationshipCommentsPage, 'Existing Contact', 'John Smith', true) //
@@ -98,50 +96,17 @@ context('Add Existing Contact Check Answers', () => {
       .verifyShowCommentsAs('Some comments about the relationship')
   })
 
-  it('Can change emergency contact from check answers', () => {
+  it('Can change emergency contact or next of kin from check answers', () => {
     Page.verifyOnPage(LinkExistingContactCYAPage, 'Existing Contact') //
       .verifyShowIsEmergencyContactAs('No')
       .clickChangeEmergencyContactLink()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'Existing Contact') //
-      .selectIsEmergencyContact('YES')
+    Page.verifyOnPage(SelectEmergencyContactOrNextOfKinPage, 'Existing Contact', 'John Smith', true) //
+      .selectIsEmergencyContactOrNextOfKin('EC')
       .clickContinue()
 
     Page.verifyOnPage(LinkExistingContactCYAPage) //
       .verifyShowIsEmergencyContactAs('Yes')
-      .continueTo(AddContactSuccessPage)
-
-    cy.verifyLastAPICall(
-      {
-        method: 'POST',
-        urlPath: '/prisoner-contact',
-      },
-      {
-        contactId,
-        relationship: {
-          prisonerNumber: 'A1234BC',
-          relationshipTypeCode: 'S',
-          relationshipToPrisonerCode: 'MOT',
-          isNextOfKin: true,
-          isEmergencyContact: true,
-          isApprovedVisitor: false,
-          comments: 'Some comments about the relationship',
-        },
-        createdBy: 'USER1',
-      },
-    )
-  })
-
-  it('Can change next of kin from check answers', () => {
-    Page.verifyOnPage(LinkExistingContactCYAPage, 'Existing Contact') //
-      .verifyShowIsNextOfKinAs('Yes')
-      .clickChangeNextOfKinLink()
-
-    Page.verifyOnPage(SelectNextOfKinPage, 'Existing Contact') //
-      .selectIsNextOfKin('NO')
-      .clickContinue()
-
-    Page.verifyOnPage(LinkExistingContactCYAPage) //
       .verifyShowIsNextOfKinAs('No')
       .continueTo(AddContactSuccessPage)
 
@@ -157,7 +122,7 @@ context('Add Existing Contact Check Answers', () => {
           relationshipTypeCode: 'S',
           relationshipToPrisonerCode: 'MOT',
           isNextOfKin: false,
-          isEmergencyContact: false,
+          isEmergencyContact: true,
           isApprovedVisitor: false,
           comments: 'Some comments about the relationship',
         },

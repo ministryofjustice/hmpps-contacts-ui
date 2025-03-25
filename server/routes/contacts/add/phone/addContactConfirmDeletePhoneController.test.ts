@@ -41,8 +41,8 @@ beforeEach(() => {
     },
     relationship: {
       relationshipToPrisoner: 'MOT',
-      isEmergencyContact: 'YES',
-      isNextOfKin: 'YES',
+      isEmergencyContact: true,
+      isNextOfKin: true,
     },
     phoneNumbers: [
       { type: 'MOB', phoneNumber: '0123456789' },

@@ -41,8 +41,8 @@ beforeEach(() => {
     },
     relationship: {
       relationshipToPrisoner: 'MOT',
-      isEmergencyContact: 'YES',
-      isNextOfKin: 'YES',
+      isEmergencyContact: true,
+      isNextOfKin: true,
     },
     identities: [
       { identityType: 'DL', identityValue: '0123456789' },

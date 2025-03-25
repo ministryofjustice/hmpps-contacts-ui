@@ -73,13 +73,13 @@
                   text: "Emergency contact"
                 },
                   value: {
-                  html: journey.relationship.isEmergencyContact | formatYesNo,
+                  text: "Not provided" if journey.relationship.isEmergencyContact == undefined else (journey.relationship.isEmergencyContact | formatYesNo),
                   classes: 'check-answers-emergency-contact-value'
                 },
                   actions: {
                   items: [
                     {
-                      href: baseChangeUrl + "/select-emergency-contact/"  + journey.id,
+                      href: baseChangeUrl + "/emergency-contact-or-next-of-kin/"  + journey.id,
                       text: "Change",
                       visuallyHiddenText: "if the contact is the prisoner’s emergency contact",
                       attributes: {"data-qa": "change-emergency-contact-link"},
@@ -93,13 +93,13 @@
                   text: "Next of kin"
                 },
                   value: {
-                  html: journey.relationship.isNextOfKin | formatYesNo,
+                  text: "Not provided" if journey.relationship.isNextOfKin == undefined else (journey.relationship.isNextOfKin | formatYesNo),
                   classes: 'check-answers-next-of-kin-value'
                 },
                   actions: {
                   items: [
                     {
-                      href: baseChangeUrl + "/select-next-of-kin/"  + journey.id,
+                      href: baseChangeUrl + "/emergency-contact-or-next-of-kin/"  + journey.id,
                       text: "Change",
                       visuallyHiddenText: "if the contact is the prisoner’s next of kin",
                       attributes: {"data-qa": "change-next-of-kin-link"},

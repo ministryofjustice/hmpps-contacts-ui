@@ -21,10 +21,6 @@ export default class CreateContactCheckYourAnswersPage extends Page {
     this.changeEmergencyContactLink().click()
   }
 
-  clickChangeNextOfKinLink() {
-    this.changeNextOfKinLink().click()
-  }
-
   clickChangeCommentsLink() {
     this.changeCommentsLink().click()
   }
@@ -137,8 +133,6 @@ export default class CreateContactCheckYourAnswersPage extends Page {
   private changeRelationshipTypeLink = (): PageElement => cy.get('[data-qa=change-relationship-type-link]')
 
   private changeEmergencyContactLink = (): PageElement => cy.get('[data-qa=change-emergency-contact-link]')
-
-  private changeNextOfKinLink = (): PageElement => cy.get('[data-qa=change-next-of-kin-link]')
 
   private changeCommentsLink = (): PageElement => cy.get('[data-qa=change-comments-link]')
 }

@@ -4,8 +4,6 @@ import EnterContactDateOfBirthPage from '../pages/enterContactDateOfBirthPage'
 import CreateContactCheckYourAnswersPage from '../pages/createContactCheckYourAnswersPage'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import TestData from '../../server/routes/testutils/testData'
-import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
-import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 import ListContactsPage from '../pages/listContacts'
 import SearchContactPage from '../pages/searchContactPage'
 import CreateContactSuccessPage from '../pages/createContactSuccessPage'
@@ -13,6 +11,8 @@ import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import RelationshipCommentsPage from '../pages/contact-details/relationship/relationshipCommentsPage'
 import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
 import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
+import SelectEmergencyContactOrNextOfKinPage
+  from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
 
 context('Create contact and update from check answers', () => {
   beforeEach(() => {
@@ -83,10 +83,8 @@ context('Create contact and update from check answers', () => {
       .selectRelationshipType('S')
       .continueTo(SelectRelationshipPage, 'First Middle Last', 'John Smith')
       .selectRelationship('MOT')
-      .continueTo(SelectEmergencyContactPage, 'First Middle Last')
-      .selectIsEmergencyContact('NO')
-      .continueTo(SelectNextOfKinPage, 'First Middle Last')
-      .selectIsNextOfKin('NO')
+      .continueTo(SelectEmergencyContactOrNextOfKinPage, 'First Middle Last', 'John Smith', true)
+      .selectIsEmergencyContactOrNextOfKin('NONE')
       .continueTo(SelectApprovedVisitorPage, 'First Middle Last', 'John Smith', true) //
       .selectIsApprovedVisitor('NO')
       .continueTo(AddContactAdditionalInfoPage, 'First Middle Last')
@@ -152,56 +150,18 @@ context('Create contact and update from check answers', () => {
     )
   })
 
-  it('Can change a contacts emergency contact status when creating a new contact', () => {
+  it('Can change a contacts emergency contact or next of kin status when creating a new contact', () => {
     Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowIsEmergencyContactAs('No')
+      .verifyShowIsNextOfKinAs('No')
       .clickChangeEmergencyContactLink()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'First Middle Last') //
-      .selectIsEmergencyContact('YES')
+    Page.verifyOnPage(SelectEmergencyContactOrNextOfKinPage, 'First Middle Last', 'John Smith', true) //
+      .selectIsEmergencyContactOrNextOfKin('ECNOK')
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowIsEmergencyContactAs('Yes')
-      .continueTo(CreateContactSuccessPage)
-
-    cy.verifyLastAPICall(
-      {
-        method: 'POST',
-        urlPath: '/contact',
-      },
-      {
-        titleCode: 'MR',
-        lastName: 'Last',
-        firstName: 'First',
-        middleNames: 'Middle',
-        createdBy: 'USER1',
-        dateOfBirth: '1982-06-15',
-        isStaff: false,
-        interpreterRequired: false,
-        relationship: {
-          prisonerNumber: 'A1234BC',
-          relationshipTypeCode: 'S',
-          relationshipToPrisonerCode: 'MOT',
-          isNextOfKin: false,
-          isEmergencyContact: true,
-          isApprovedVisitor: false,
-          comments: 'Some comments about the relationship',
-        },
-      },
-    )
-  })
-
-  it('Can change a contacts next of kin status when creating a new contact', () => {
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
-      .verifyShowIsNextOfKinAs('No')
-      .clickChangeNextOfKinLink()
-
-    Page.verifyOnPage(SelectNextOfKinPage, 'First Middle Last') //
-      .selectIsNextOfKin('YES')
-      .clickContinue()
-
-    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowIsNextOfKinAs('Yes')
       .continueTo(CreateContactSuccessPage)
 
@@ -224,7 +184,7 @@ context('Create contact and update from check answers', () => {
           relationshipTypeCode: 'S',
           relationshipToPrisonerCode: 'MOT',
           isNextOfKin: true,
-          isEmergencyContact: false,
+          isEmergencyContact: true,
           isApprovedVisitor: false,
           comments: 'Some comments about the relationship',
         },

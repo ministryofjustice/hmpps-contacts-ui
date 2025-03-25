@@ -39,7 +39,8 @@ beforeEach(() => {
     },
     relationship: {
       relationshipToPrisoner: 'MOT',
-      isEmergencyContact: 'YES',
+      isEmergencyContact: true,
+      isNextOfKin: true,
     },
     mode: 'NEW',
   }

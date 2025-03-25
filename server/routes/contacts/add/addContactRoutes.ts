@@ -15,10 +15,6 @@ import ReferenceDataService from '../../../services/referenceDataService'
 import SelectRelationshipToPrisonerController from './relationship-to-prisoner/selectRelationshipToPrisonerController'
 import { selectRelationshipSchemaFactory } from '../common/relationship/selectRelationshipSchemas'
 import populatePrisonerDetailsIfInCaseload from '../../../middleware/populatePrisonerDetailsIfInCaseload'
-import EmergencyContactController from './emergency-contact/emergencyContactController'
-import { selectEmergencyContactSchema } from './emergency-contact/emergencyContactSchemas'
-import { selectNextOfKinSchema } from './next-of-kin/nextOfKinSchemas'
-import NextOfKinController from './next-of-kin/nextOfKinController'
 import EnterRelationshipCommentsController from './relationship-comments/enterRelationshipCommentsController'
 import { enterRelationshipCommentsSchema } from './relationship-comments/enterRelationshipCommentsSchemas'
 import ContactSearchController from './contact-search/contactSearchController'
@@ -62,6 +58,8 @@ import AddContactAddEmailsController from './emails/addContactAddEmailsControlle
 import AddContactConfirmDeleteEmailController from './emails/addContactConfirmDeleteEmailController'
 import { optionalEmailsSchema } from '../manage/email/emailSchemas'
 import ApprovedToVisitController from './approved-to-visit/approvedToVisitController'
+import EmergencyContactOrNextOfKinController from './emergency-contact-or-next-of-kin/emergencyContactOrNextOfKinController'
+import { optionalEmergencyContactOrNextOfKinSchema } from '../manage/relationship/emergency-contact-or-next-of-kin/manageEmergencyContactOrNextOfKinSchema'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -193,35 +191,11 @@ const AddContactRoutes = (
     asyncMiddleware(selectRelationshipToPrisonerController.POST),
   )
 
-  const selectEmergencyContact = new EmergencyContactController()
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/create/select-emergency-contact/:journeyId',
-    ensureInAddContactJourney,
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, selectEmergencyContact),
-    asyncMiddleware(selectEmergencyContact.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/create/select-emergency-contact/:journeyId',
-    ensureInAddContactJourney,
-    validate(selectEmergencyContactSchema()),
-    asyncMiddleware(selectEmergencyContact.POST),
-  )
-
-  const selectNextOfKinController = new NextOfKinController()
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/create/select-next-of-kin/:journeyId',
-    ensureInAddContactJourney,
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, selectNextOfKinController),
-    asyncMiddleware(selectNextOfKinController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/create/select-next-of-kin/:journeyId',
-    ensureInAddContactJourney,
-    validate(selectNextOfKinSchema()),
-    asyncMiddleware(selectNextOfKinController.POST),
-  )
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/emergency-contact-or-next-of-kin/:journeyId',
+    controller: new EmergencyContactOrNextOfKinController(),
+    schema: optionalEmergencyContactOrNextOfKinSchema,
+  })
 
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/create/approved-to-visit/:journeyId',

@@ -5,14 +5,14 @@ import CreateContactCheckYourAnswersPage from '../pages/createContactCheckYourAn
 import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
-import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
-import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 import SearchContactPage from '../pages/searchContactPage'
 import CreateContactSuccessPage from '../pages/createContactSuccessPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
 import SelectStaffStatusPage from '../pages/contact-details/selectStaffStatus'
 import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
+import SelectEmergencyContactOrNextOfKinPage
+  from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
 
 context('Create Contact and Select Staff Status', () => {
   const contactId = 654321
@@ -97,12 +97,8 @@ context('Create Contact and Select Staff Status', () => {
       .selectRelationship('MOT')
       .clickContinue()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'First Last') //
-      .selectIsEmergencyContact('NO')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectNextOfKinPage, 'First Last') //
-      .selectIsNextOfKin('YES')
+    Page.verifyOnPage(SelectEmergencyContactOrNextOfKinPage, 'First Last', 'John Smith', true) //
+      .selectIsEmergencyContactOrNextOfKin('NOK')
       .clickContinue()
 
     Page.verifyOnPage(SelectApprovedVisitorPage, 'First Last', 'John Smith', true) //

@@ -20,14 +20,14 @@ describe('addContactFlowControl', () => {
           'Back',
         ],
         [
-          Page.SELECT_EMERGENCY_CONTACT,
+          Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN,
           `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`,
           undefined,
           'Back',
         ],
         [
-          Page.SELECT_NEXT_OF_KIN,
-          `/prisoner/A1234BC/contacts/create/select-emergency-contact/${journeyId}`,
+          Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE,
+          `/prisoner/A1234BC/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
           undefined,
           'Back',
         ],
@@ -119,8 +119,8 @@ describe('addContactFlowControl', () => {
         [Page.CREATE_CONTACT_DOB_PAGE, undefined],
         [Page.SELECT_RELATIONSHIP_TYPE, undefined],
         [Page.SELECT_CONTACT_RELATIONSHIP, undefined],
-        [Page.SELECT_EMERGENCY_CONTACT, undefined],
-        [Page.SELECT_NEXT_OF_KIN, undefined],
+        [Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN, undefined],
+        [Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE, undefined],
         [Page.ENTER_RELATIONSHIP_COMMENTS, undefined],
         [Page.ADD_CONTACT_CANCEL_PAGE, undefined],
         [Page.ADD_CONTACT_ADD_PHONE_PAGE, undefined],
@@ -168,9 +168,14 @@ describe('addContactFlowControl', () => {
           Page.SELECT_RELATIONSHIP_TYPE,
           `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`,
         ],
-        [Page.SELECT_CONTACT_RELATIONSHIP, `/prisoner/A1234BC/contacts/create/select-emergency-contact/${journeyId}`],
-        [Page.SELECT_EMERGENCY_CONTACT, `/prisoner/A1234BC/contacts/create/select-next-of-kin/${journeyId}`],
-        [Page.SELECT_NEXT_OF_KIN, `/prisoner/A1234BC/contacts/create/approved-to-visit/${journeyId}`],
+        [
+          Page.SELECT_CONTACT_RELATIONSHIP,
+          `/prisoner/A1234BC/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
+        ],
+        [
+          Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN,
+          `/prisoner/A1234BC/contacts/create/approved-to-visit/${journeyId}`,
+        ],
         [Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE, `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`],
         [Page.ENTER_RELATIONSHIP_COMMENTS, `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`],
         [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, `/prisoner/A1234BC/contact/NEW/123456/654321/success`],
@@ -209,8 +214,8 @@ describe('addContactFlowControl', () => {
         [Page.CREATE_CONTACT_NAME_PAGE],
         [Page.SELECT_RELATIONSHIP_TYPE],
         [Page.SELECT_CONTACT_RELATIONSHIP],
-        [Page.SELECT_EMERGENCY_CONTACT],
-        [Page.SELECT_NEXT_OF_KIN],
+        [Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN],
+        [Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE],
         [Page.CREATE_CONTACT_DOB_PAGE],
         [Page.ENTER_RELATIONSHIP_COMMENTS],
         [Page.ADD_CONTACT_ADD_PHONE_PAGE],
@@ -300,14 +305,18 @@ describe('addContactFlowControl', () => {
           undefined,
         ],
         [
-          Page.SELECT_EMERGENCY_CONTACT,
+          Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN,
           `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`,
           undefined,
         ],
-        [Page.SELECT_NEXT_OF_KIN, `/prisoner/A1234BC/contacts/create/select-emergency-contact/${journeyId}`, undefined],
+        [
+          Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE,
+          `/prisoner/A1234BC/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
+          undefined,
+        ],
         [
           Page.ENTER_RELATIONSHIP_COMMENTS,
-          `/prisoner/A1234BC/contacts/create/select-next-of-kin/${journeyId}`,
+          `/prisoner/A1234BC/contacts/create/approved-to-visit/${journeyId}`,
           undefined,
         ],
         [
@@ -344,8 +353,8 @@ describe('addContactFlowControl', () => {
       it.each([
         [Page.SELECT_RELATIONSHIP_TYPE],
         [Page.SELECT_CONTACT_RELATIONSHIP],
-        [Page.SELECT_EMERGENCY_CONTACT],
-        [Page.SELECT_NEXT_OF_KIN],
+        [Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN],
+        [Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE],
         [Page.ENTER_RELATIONSHIP_COMMENTS],
         [Page.ADD_CONTACT_CANCEL_PAGE],
       ])('Should go back to check answers when checking answers from page %s', (page: Page) => {
@@ -382,9 +391,14 @@ describe('addContactFlowControl', () => {
           Page.SELECT_RELATIONSHIP_TYPE,
           `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`,
         ],
-        [Page.SELECT_CONTACT_RELATIONSHIP, `/prisoner/A1234BC/contacts/create/select-emergency-contact/${journeyId}`],
-        [Page.SELECT_EMERGENCY_CONTACT, `/prisoner/A1234BC/contacts/create/select-next-of-kin/${journeyId}`],
-        [Page.SELECT_NEXT_OF_KIN, `/prisoner/A1234BC/contacts/create/approved-to-visit/${journeyId}`],
+        [
+          Page.SELECT_CONTACT_RELATIONSHIP,
+          `/prisoner/A1234BC/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
+        ],
+        [
+          Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN,
+          `/prisoner/A1234BC/contacts/create/approved-to-visit/${journeyId}`,
+        ],
         [
           Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE,
           `/prisoner/A1234BC/contacts/create/enter-relationship-comments/${journeyId}`,
@@ -413,8 +427,8 @@ describe('addContactFlowControl', () => {
       it.each([
         [Page.SELECT_RELATIONSHIP_TYPE],
         [Page.SELECT_CONTACT_RELATIONSHIP],
-        [Page.SELECT_EMERGENCY_CONTACT],
-        [Page.SELECT_NEXT_OF_KIN],
+        [Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN],
+        [Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE],
         [Page.ENTER_RELATIONSHIP_COMMENTS],
       ])('Should go back to checking answer page: from %s', (page: Page) => {
         const journey: AddContactJourney = {

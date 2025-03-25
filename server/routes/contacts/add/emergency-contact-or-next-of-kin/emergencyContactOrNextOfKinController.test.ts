@@ -30,7 +30,7 @@ beforeEach(() => {
     returnPoint: { url: '/foo-bar' },
     names: {
       lastName: 'last',
-      middleNames: 'Middle',
+      middleNames: 'middle',
       firstName: 'first',
     },
     relationship: {
@@ -57,17 +57,17 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/create/select-emergency-contact/:journeyId', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/create/emergency-contact-or-next-of-kin/:journeyId', () => {
   it.each([
     ['NEW', 'Add a contact and link to a prisoner'],
     ['EXISTING', 'Link a contact to a prisoner'],
-  ])('should render enter emergency contact page for all modes %s', async (mode, expectedCaption: string) => {
+  ])('should render emergency contact or next of kin page for each mode %s', async (mode, expectedCaption: string) => {
     // Given
     existingJourney.mode = mode as 'NEW' | 'EXISTING'
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
     )
 
     // Then
@@ -75,11 +75,17 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-emergency-contact
 
     const $ = cheerio.load(response.text)
     expect($('.main-heading').first().text().trim()).toStrictEqual(
-      'Is First Middle Last an emergency contact for the prisoner?',
+      'Is First Middle Last an emergency contact or next of kin for John Smith? (optional)',
     )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual(expectedCaption)
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`,
+    )
+    expect($('[data-qa=cancel-button]')).toHaveLength(0)
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+
+    expect($('input[type=radio]:checked').val()).toBeUndefined()
   })
 
   it('should call the audit service for the page view', async () => {
@@ -87,12 +93,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-emergency-contact
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
     )
 
     // Then
     expect(response.status).toEqual(200)
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.SELECT_EMERGENCY_CONTACT, {
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN, {
       who: user.username,
       correlationId: expect.any(String),
     })
@@ -100,76 +106,88 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-emergency-contact
 
   it('should render previously entered details if no validation errors but there are session values', async () => {
     // Given
-    existingJourney.relationship = { relationshipToPrisoner: 'MOT', isEmergencyContact: 'YES' }
+    existingJourney.relationship = { relationshipToPrisoner: 'MOT', isEmergencyContact: false, isNextOfKin: true }
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
     )
 
     // Then
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
-    expect($('input[type=radio]:checked').val()).toStrictEqual('YES')
+    expect($('input[type=radio]:checked').val()).toStrictEqual('NOK')
   })
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${uuidv4()}`)
+      .get(`/prisoner/${prisonerNumber}/contacts/create/emergency-contact-or-next-of-kin/${uuidv4()}`)
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/create/select-emergency-contact', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/create/emergency-contact-or-next-of-kin', () => {
   it('should pass to next page if there are no validation errors and we are not checking answers', async () => {
     // Given
-    existingJourney.relationship = { relationshipToPrisoner: 'MOT', isEmergencyContact: 'NO' }
+    existingJourney.relationship = { relationshipToPrisoner: 'MOT' }
     existingJourney.isCheckingAnswers = false
 
     // When
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`)
       .type('form')
-      .send({ isEmergencyContact: 'YES' })
+      .send({ isEmergencyContactOrNextOfKin: 'NOK' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-next-of-kin/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/approved-to-visit/${journeyId}`)
 
     // Then
-    const expectedRelationship = { relationshipToPrisoner: 'MOT', isEmergencyContact: 'YES' }
+    const expectedRelationship = { relationshipToPrisoner: 'MOT', isEmergencyContact: false, isNextOfKin: true }
     expect(session.addContactJourneys![journeyId]!.relationship).toStrictEqual(expectedRelationship)
   })
 
   it('should pass to check answers if there are no validation errors and we are checking answers', async () => {
     // Given
-    existingJourney.relationship = { relationshipToPrisoner: 'MOT', isEmergencyContact: 'NO' }
+    existingJourney.relationship = { relationshipToPrisoner: 'MOT' }
     existingJourney.isCheckingAnswers = true
 
     // When
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`)
       .type('form')
-      .send({ isEmergencyContact: 'YES' })
+      .send({ isEmergencyContactOrNextOfKin: 'NOK' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
 
     // Then
-    const expectedRelationship = { relationshipToPrisoner: 'MOT', isEmergencyContact: 'YES' }
+    const expectedRelationship = { relationshipToPrisoner: 'MOT', isEmergencyContact: false, isNextOfKin: true }
     expect(session.addContactJourneys![journeyId]!.relationship).toStrictEqual(expectedRelationship)
   })
 
-  it('should return to enter page if there are validation errors', async () => {
+  it('should accept blank input', async () => {
+    // Given
+    existingJourney.relationship = { relationshipToPrisoner: 'MOT', isEmergencyContact: true, isNextOfKin: false }
+
+    // When
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`)
       .type('form')
       .send({})
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/approved-to-visit/${journeyId}`)
+
+    // Then
+    const expectedRelationship = {
+      relationshipToPrisoner: 'MOT',
+      isEmergencyContact: undefined,
+      isNextOfKin: undefined,
+    }
+    expect(session.addContactJourneys![journeyId]!.relationship).toStrictEqual(expectedRelationship)
   })
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/select-emergency-contact/${uuidv4()}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/emergency-contact-or-next-of-kin/${uuidv4()}`)
       .type('form')
       .send({})
       .expect(302)

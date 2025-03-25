@@ -48,8 +48,8 @@ beforeEach(() => {
     },
     relationship: {
       relationshipToPrisoner: 'MOT',
-      isNextOfKin: 'YES',
-      isEmergencyContact: 'YES',
+      isEmergencyContact: true,
+      isNextOfKin: true,
       comments: 'some comments',
     },
     mode: 'NEW',

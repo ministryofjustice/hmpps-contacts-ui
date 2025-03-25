@@ -3,8 +3,6 @@ import LinkExistingContactCYAPage from '../pages/linkExistingContactCYAPage'
 import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
-import SelectEmergencyContactPage from '../pages/selectEmergencyContactPage'
-import SelectNextOfKinPage from '../pages/selectNextOfKinPage'
 import SearchContactPage from '../pages/searchContactPage'
 import ContactConfirmationPage from '../pages/contactConfirmationPage'
 import AddContactSuccessPage from '../pages/addContactSuccessPage'
@@ -12,6 +10,8 @@ import ManageContactDetailsPage from '../pages/manageContactDetails'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import RelationshipCommentsPage from '../pages/contact-details/relationship/relationshipCommentsPage'
 import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
+import SelectEmergencyContactOrNextOfKinPage
+  from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
 
 context('Add Existing Contact', () => {
   const { prisonerNumber } = TestData.prisoner()
@@ -104,12 +104,8 @@ context('Add Existing Contact', () => {
       .selectRelationship('MOT')
       .clickContinue()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'Existing Contact') //
-      .selectIsEmergencyContact('NO')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectNextOfKinPage, 'Existing Contact') //
-      .selectIsNextOfKin('YES')
+    Page.verifyOnPage(SelectEmergencyContactOrNextOfKinPage, 'Existing Contact', 'John Smith', true) //
+      .selectIsEmergencyContactOrNextOfKin('NOK')
       .clickContinue()
 
     Page.verifyOnPage(SelectApprovedVisitorPage, 'Existing Contact', 'John Smith', true) //
@@ -177,12 +173,7 @@ context('Add Existing Contact', () => {
       .selectRelationship('MOT')
       .clickContinue()
 
-    Page.verifyOnPage(SelectEmergencyContactPage, 'Existing Contact') //
-      .selectIsEmergencyContact('YES')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectNextOfKinPage, 'Existing Contact') //
-      .selectIsNextOfKin('NO')
+    Page.verifyOnPage(SelectEmergencyContactOrNextOfKinPage, 'Existing Contact', 'John Smith', true) //
       .clickContinue()
 
     Page.verifyOnPage(SelectApprovedVisitorPage, 'Existing Contact', 'John Smith', true) //
@@ -194,8 +185,8 @@ context('Add Existing Contact', () => {
     Page.verifyOnPage(LinkExistingContactCYAPage) //
       .verifyShowsNameAs('Existing Contact (654321)')
       .verifyShowRelationshipAs('Mother')
-      .verifyShowIsEmergencyContactAs('Yes')
-      .verifyShowIsNextOfKinAs('No')
+      .verifyShowIsEmergencyContactAs('Not provided')
+      .verifyShowIsNextOfKinAs('Not provided')
       .clickContinue()
 
     Page.verifyOnPage(AddContactSuccessPage) //
@@ -215,7 +206,7 @@ context('Add Existing Contact', () => {
           relationshipTypeCode: 'S',
           relationshipToPrisonerCode: 'MOT',
           isNextOfKin: false,
-          isEmergencyContact: true,
+          isEmergencyContact: false,
           isApprovedVisitor: false,
         },
         createdBy: 'USER1',

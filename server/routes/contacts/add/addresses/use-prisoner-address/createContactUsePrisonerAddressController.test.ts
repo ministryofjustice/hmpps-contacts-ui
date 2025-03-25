@@ -46,8 +46,8 @@ beforeEach(() => {
     },
     relationship: {
       relationshipToPrisoner: 'MOT',
-      isEmergencyContact: 'YES',
-      isNextOfKin: 'YES',
+      isEmergencyContact: true,
+      isNextOfKin: true,
     },
     mode: 'NEW',
     newAddress: { addressLines: { noFixedAddress: false, countryCode: 'ENG' } },

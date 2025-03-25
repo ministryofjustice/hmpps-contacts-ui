@@ -41,8 +41,8 @@ beforeEach(() => {
     },
     relationship: {
       relationshipToPrisoner: 'MOT',
-      isEmergencyContact: 'YES',
-      isNextOfKin: 'YES',
+      isEmergencyContact: true,
+      isNextOfKin: true,
     },
     emailAddresses: [{ emailAddress: 'a@b.cd' }, { emailAddress: 'z@y.xx' }],
     mode: 'NEW',

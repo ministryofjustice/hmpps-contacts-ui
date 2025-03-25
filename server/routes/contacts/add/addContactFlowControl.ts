@@ -10,8 +10,7 @@ type CreateContactPages =
   | Page.CREATE_CONTACT_NAME_PAGE
   | Page.SELECT_RELATIONSHIP_TYPE
   | Page.SELECT_CONTACT_RELATIONSHIP
-  | Page.SELECT_EMERGENCY_CONTACT
-  | Page.SELECT_NEXT_OF_KIN
+  | Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN
   | Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE
   | Page.CREATE_CONTACT_DOB_PAGE
   | Page.ENTER_RELATIONSHIP_COMMENTS
@@ -37,8 +36,7 @@ type ExistingContactPages =
   | Page.CONTACT_CONFIRMATION_PAGE
   | Page.SELECT_RELATIONSHIP_TYPE
   | Page.SELECT_CONTACT_RELATIONSHIP
-  | Page.SELECT_EMERGENCY_CONTACT
-  | Page.SELECT_NEXT_OF_KIN
+  | Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN
   | Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE
   | Page.ENTER_RELATIONSHIP_COMMENTS
   | Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE
@@ -74,11 +72,9 @@ const PAGES: Record<AllAddContactPages, PageConfig> = {
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/select-relationship-to-prisoner/${journey.id}`,
   },
-  [Page.SELECT_EMERGENCY_CONTACT]: {
-    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/select-emergency-contact/${journey.id}`,
-  },
-  [Page.SELECT_NEXT_OF_KIN]: {
-    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/select-next-of-kin/${journey.id}`,
+  [Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN]: {
+    url: journey =>
+      `/prisoner/${journey.prisonerNumber}/contacts/create/emergency-contact-or-next-of-kin/${journey.id}`,
   },
   [Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/approved-to-visit/${journey.id}`,
@@ -168,22 +164,18 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
     ...backToRelationshipTypeOrCheckAnswers(),
-    nextUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT.url),
+    nextUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN.url),
   },
-  [Page.SELECT_EMERGENCY_CONTACT]: {
+  [Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN]: {
     ...backTo({ page: PAGES.SELECT_CONTACT_RELATIONSHIP }),
-    nextUrl: checkAnswersOr(PAGES.SELECT_NEXT_OF_KIN.url),
-  },
-  [Page.SELECT_NEXT_OF_KIN]: {
-    ...backTo({ page: PAGES.SELECT_EMERGENCY_CONTACT }),
     nextUrl: checkAnswersOr(PAGES.ADD_CONTACT_APPROVED_TO_VISIT_PAGE.url),
   },
   [Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE]: {
-    ...backTo({ page: PAGES.SELECT_NEXT_OF_KIN }),
+    ...backTo({ page: PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN }),
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.ENTER_ADDITIONAL_INFORMATION_PAGE]: {
-    ...backTo({ page: PAGES.SELECT_NEXT_OF_KIN }),
+    ...backTo({ page: PAGES.ADD_CONTACT_APPROVED_TO_VISIT_PAGE }),
     nextUrl: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url,
   },
   [Page.ENTER_RELATIONSHIP_COMMENTS]: {
@@ -280,22 +272,18 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
   },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
     ...backToRelationshipTypeOrCheckAnswers(),
-    nextUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT.url),
+    nextUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN.url),
   },
-  [Page.SELECT_EMERGENCY_CONTACT]: {
+  [Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN]: {
     ...backTo({ page: PAGES.SELECT_CONTACT_RELATIONSHIP }),
-    nextUrl: checkAnswersOr(PAGES.SELECT_NEXT_OF_KIN.url),
-  },
-  [Page.SELECT_NEXT_OF_KIN]: {
-    ...backTo({ page: PAGES.SELECT_EMERGENCY_CONTACT }),
     nextUrl: checkAnswersOr(PAGES.ADD_CONTACT_APPROVED_TO_VISIT_PAGE.url),
   },
   [Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE]: {
-    ...backTo({ page: PAGES.SELECT_NEXT_OF_KIN }),
+    ...backTo({ page: PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN }),
     nextUrl: checkAnswersOr(PAGES.ENTER_RELATIONSHIP_COMMENTS.url),
   },
   [Page.ENTER_RELATIONSHIP_COMMENTS]: {
-    ...backTo({ page: PAGES.SELECT_NEXT_OF_KIN }),
+    ...backTo({ page: PAGES.ADD_CONTACT_APPROVED_TO_VISIT_PAGE }),
     nextUrl: checkAnswersOr(PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url),
   },
   [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE]: {
