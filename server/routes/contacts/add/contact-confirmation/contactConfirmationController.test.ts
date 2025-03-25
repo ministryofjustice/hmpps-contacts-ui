@@ -6,8 +6,11 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
-import AddContactJourney = journeys.AddContactJourney
 import { MockedService } from '../../../../testutils/mockedServices'
+import AddContactJourney = journeys.AddContactJourney
+import { components } from '../../../../@types/contactsApi'
+
+type LinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -67,6 +70,7 @@ beforeEach(() => {
   })
   referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mr')
   restrictionsService.getGlobalRestrictionsEnriched.mockResolvedValue([])
+  contactsService.getLinkedPrisoners.mockResolvedValue({ content: [], total: 0 })
 })
 
 afterEach(() => {
@@ -496,7 +500,7 @@ describe('Restrictions', () => {
   describe('Linked prisoners tab', () => {
     it('should render linked prisoners tab with no results', async () => {
       // Given
-      contactsService.getLinkedPrisoners.mockResolvedValue([])
+      contactsService.getLinkedPrisoners.mockResolvedValue({ content: [], total: 0 })
 
       // When
       const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
@@ -509,37 +513,108 @@ describe('Restrictions', () => {
 
     it('should render linked prisoners', async () => {
       // Given
-      contactsService.getLinkedPrisoners.mockResolvedValue([
-        TestData.getLinkedPrisonerDetails(),
-        TestData.getLinkedPrisonerDetails({
+      const linkedPrisoners: LinkedPrisonerDetails[] = [
+        {
+          prisonerNumber: 'A1234BC',
+          lastName: 'Last',
+          firstName: 'First',
+          prisonId: 'BXI',
+          prisonName: 'Brixton (HMP)',
+          prisonerContactId: 2,
+          relationshipTypeCode: 'S',
+          relationshipTypeDescription: 'Social/Family',
+          relationshipToPrisonerCode: 'MOT',
+          relationshipToPrisonerDescription: 'Mother',
+          isRelationshipActive: true,
+        },
+        {
+          prisonerNumber: 'A1234BC',
+          lastName: 'Last',
+          firstName: 'First',
+          prisonId: 'BXI',
+          prisonName: 'Brixton (HMP)',
+          prisonerContactId: 3,
+          relationshipTypeCode: 'O',
+          relationshipTypeDescription: 'Official',
+          relationshipToPrisonerCode: 'DR',
+          relationshipToPrisonerDescription: 'Doctor',
+          isRelationshipActive: false,
+        },
+        {
           prisonerNumber: 'X7896YZ',
           lastName: 'Smith',
           firstName: 'John',
           middleNames: 'Middle Names',
-          relationships: [
-            TestData.getLinkedPrisonerRelationshipDetails({
-              prisonerContactId: 3,
-            }),
-          ],
-        }),
-      ])
+          prisonId: 'EXE',
+          prisonName: 'Exeter (HMP)',
+          prisonerContactId: 1,
+          relationshipTypeCode: 'S',
+          relationshipTypeDescription: 'Social/Family',
+          relationshipToPrisonerCode: 'FRI',
+          relationshipToPrisonerDescription: 'Friend',
+          isRelationshipActive: true,
+        },
+        {
+          prisonerNumber: 'Z7896YZ',
+          lastName: 'Smith',
+          firstName: 'John',
+          middleNames: 'Middle Names',
+          prisonId: 'EXE',
+          prisonName: 'Exeter (HMP)',
+          prisonerContactId: 4,
+          relationshipTypeCode: 'S',
+          relationshipTypeDescription: 'Social/Family',
+          relationshipToPrisonerCode: 'UNC',
+          relationshipToPrisonerDescription: 'Uncle',
+          isRelationshipActive: true,
+        },
+      ]
+
+      contactsService.getLinkedPrisoners.mockResolvedValue({
+        content: linkedPrisoners,
+        total: 4,
+      })
 
       // When
       const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
 
       // Then
       const $ = cheerio.load(response.text)
-      expect($('.linked-prisoners-tab-title').text().trim()).toStrictEqual('Linked prisoners (2)')
 
-      expect($('.linked-prisoner-A1234BC-card-title').text().trim()).toStrictEqual('Last, First')
-      expect($('.linked-prisoner-A1234BC-noms-value').text().trim()).toStrictEqual('A1234BC')
-      expect($('.linked-prisoner-A1234BC-relationship-value').text().trim()).toStrictEqual(
-        'Social/Family - FriendOfficial - Doctor',
-      )
+      // Should include all relationships in the count if a prisoner has more than one relationship to the contact
+      expect($('.linked-prisoners-tab-title').text().trim()).toStrictEqual('Linked prisoners (4)')
+      const tableBody = $('caption:contains(Prisoners linked to contact Jones Mason)').next().next()
+      const firstRowColumns = $($(tableBody).find('tr').eq(0)).find('td')
+      expect(firstRowColumns.eq(0).text()).toContain('Last, First')
+      expect(firstRowColumns.eq(0).text()).toContain('A1234BC')
+      expect(firstRowColumns.eq(1).text()).toStrictEqual('Brixton (HMP)')
+      expect(firstRowColumns.eq(2).text()).toStrictEqual('Social/Family')
+      expect(firstRowColumns.eq(3).text()).toStrictEqual('Mother')
+      expect(firstRowColumns.eq(4).text()).toStrictEqual('Active')
 
-      expect($('.linked-prisoner-X7896YZ-card-title').text().trim()).toStrictEqual('Smith, John Middle Names')
-      expect($('.linked-prisoner-X7896YZ-noms-value').text().trim()).toStrictEqual('X7896YZ')
-      expect($('.linked-prisoner-X7896YZ-relationship-value').text().trim()).toStrictEqual('Social/Family - Friend')
+      const secondRowColumns = $($(tableBody).find('tr').eq(1)).find('td')
+      expect(secondRowColumns.eq(0).text()).toContain('Last, First')
+      expect(secondRowColumns.eq(0).text()).toContain('A1234BC')
+      expect(secondRowColumns.eq(1).text()).toStrictEqual('Brixton (HMP)')
+      expect(secondRowColumns.eq(2).text()).toStrictEqual('Official')
+      expect(secondRowColumns.eq(3).text()).toStrictEqual('Doctor')
+      expect(secondRowColumns.eq(4).text()).toStrictEqual('Inactive')
+
+      const thirdRowColumns = $($(tableBody).find('tr').eq(2)).find('td')
+      expect(thirdRowColumns.eq(0).text()).toContain('Smith, John Middle Names')
+      expect(thirdRowColumns.eq(0).text()).toContain('X7896YZ')
+      expect(thirdRowColumns.eq(1).text()).toStrictEqual('Exeter (HMP)')
+      expect(thirdRowColumns.eq(2).text()).toStrictEqual('Social/Family')
+      expect(thirdRowColumns.eq(3).text()).toStrictEqual('Friend')
+      expect(thirdRowColumns.eq(4).text()).toStrictEqual('Active')
+
+      const fourthRowColumns = $($(tableBody).find('tr').eq(3)).find('td')
+      expect(fourthRowColumns.eq(0).text()).toContain('Smith, John Middle Names')
+      expect(fourthRowColumns.eq(0).text()).toContain('Z7896YZ')
+      expect(fourthRowColumns.eq(1).text()).toStrictEqual('Exeter (HMP)')
+      expect(fourthRowColumns.eq(2).text()).toStrictEqual('Social/Family')
+      expect(fourthRowColumns.eq(3).text()).toStrictEqual('Uncle')
+      expect(fourthRowColumns.eq(4).text()).toStrictEqual('Active')
     })
   })
 })

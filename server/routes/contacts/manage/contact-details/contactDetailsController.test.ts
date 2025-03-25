@@ -41,7 +41,7 @@ beforeEach(() => {
     prisonerContactRestrictions: [],
     contactGlobalRestrictions: [],
   })
-  contactsService.getLinkedPrisoners.mockResolvedValue([])
+  contactsService.getLinkedPrisoners.mockResolvedValue({ content: [] })
 })
 
 afterEach(() => {
@@ -1034,22 +1034,17 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
     it('should show linked prisoners table with count in the heading', async () => {
       const linkedPrisoners: LinkedPrisonerDetails[] = [
         {
-          prisonerNumber: 'X7896YZ',
-          lastName: 'Smith',
-          firstName: 'John',
-          middleNames: 'Middle Names',
-          prisonId: 'EXE',
-          prisonName: 'Exeter (HMP)',
-          relationships: [
-            {
-              prisonerContactId: 1,
-              relationshipTypeCode: 'S',
-              relationshipTypeDescription: 'Social/Family',
-              relationshipToPrisonerCode: 'FRI',
-              relationshipToPrisonerDescription: 'Friend',
-              isRelationshipActive: true,
-            },
-          ],
+          prisonerNumber: 'A1234BC',
+          lastName: 'Last',
+          firstName: 'First',
+          prisonId: 'BXI',
+          prisonName: 'Brixton (HMP)',
+          prisonerContactId: 2,
+          relationshipTypeCode: 'S',
+          relationshipTypeDescription: 'Social/Family',
+          relationshipToPrisonerCode: 'MOT',
+          relationshipToPrisonerDescription: 'Mother',
+          isRelationshipActive: true,
         },
         {
           prisonerNumber: 'A1234BC',
@@ -1057,26 +1052,27 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           firstName: 'First',
           prisonId: 'BXI',
           prisonName: 'Brixton (HMP)',
-          relationships: [
-            {
-              prisonerContactId: 2,
-              relationshipTypeCode: 'S',
-              relationshipTypeDescription: 'Social/Family',
-              relationshipToPrisonerCode: 'MOT',
-              relationshipToPrisonerDescription: 'Mother',
-              isRelationshipActive: true,
-            },
-            {
-              prisonerContactId: 3,
-              relationshipTypeCode: 'O',
-              relationshipTypeDescription: 'Official',
-              relationshipToPrisonerCode: 'DR',
-              relationshipToPrisonerDescription: 'Doctor',
-              isRelationshipActive: true,
-            },
-          ],
+          prisonerContactId: 3,
+          relationshipTypeCode: 'O',
+          relationshipTypeDescription: 'Official',
+          relationshipToPrisonerCode: 'DR',
+          relationshipToPrisonerDescription: 'Doctor',
+          isRelationshipActive: false,
         },
-        // Same name but alphabetically later prisoner number
+        {
+          prisonerNumber: 'X7896YZ',
+          lastName: 'Smith',
+          firstName: 'John',
+          middleNames: 'Middle Names',
+          prisonId: 'EXE',
+          prisonName: 'Exeter (HMP)',
+          prisonerContactId: 1,
+          relationshipTypeCode: 'S',
+          relationshipTypeDescription: 'Social/Family',
+          relationshipToPrisonerCode: 'FRI',
+          relationshipToPrisonerDescription: 'Friend',
+          isRelationshipActive: true,
+        },
         {
           prisonerNumber: 'Z7896YZ',
           lastName: 'Smith',
@@ -1084,19 +1080,15 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           middleNames: 'Middle Names',
           prisonId: 'EXE',
           prisonName: 'Exeter (HMP)',
-          relationships: [
-            {
-              prisonerContactId: 4,
-              relationshipTypeCode: 'S',
-              relationshipTypeDescription: 'Social/Family',
-              relationshipToPrisonerCode: 'UNC',
-              relationshipToPrisonerDescription: 'Uncle',
-              isRelationshipActive: true,
-            },
-          ],
+          prisonerContactId: 4,
+          relationshipTypeCode: 'S',
+          relationshipTypeDescription: 'Social/Family',
+          relationshipToPrisonerCode: 'UNC',
+          relationshipToPrisonerDescription: 'Uncle',
+          isRelationshipActive: true,
         },
       ]
-      contactsService.getLinkedPrisoners.mockResolvedValue(linkedPrisoners)
+      contactsService.getLinkedPrisoners.mockResolvedValue({ content: linkedPrisoners, total: 4 })
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(TestData.contact())
       contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
@@ -1113,9 +1105,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect(firstRowColumns.eq(1).text()).toStrictEqual('Brixton (HMP)')
       expect(firstRowColumns.eq(2).text()).toStrictEqual('Social/Family')
       expect(firstRowColumns.eq(3).text()).toStrictEqual('Mother')
-      expect($('[data-qa=linked-prisoner-profile-link-2]').attr('href')).toStrictEqual(
-        'http://localhost:3001/prisoner/A1234BC',
-      )
+      expect(firstRowColumns.eq(4).text()).toStrictEqual('Active')
 
       const secondRowColumns = $($(tableBody).find('tr').eq(1)).find('td')
       expect(secondRowColumns.eq(0).text()).toContain('Last, First')
@@ -1123,9 +1113,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect(secondRowColumns.eq(1).text()).toStrictEqual('Brixton (HMP)')
       expect(secondRowColumns.eq(2).text()).toStrictEqual('Official')
       expect(secondRowColumns.eq(3).text()).toStrictEqual('Doctor')
-      expect($('[data-qa=linked-prisoner-profile-link-3]').attr('href')).toStrictEqual(
-        'http://localhost:3001/prisoner/A1234BC',
-      )
+      expect(secondRowColumns.eq(4).text()).toStrictEqual('Inactive')
 
       const thirdRowColumns = $($(tableBody).find('tr').eq(2)).find('td')
       expect(thirdRowColumns.eq(0).text()).toContain('Smith, John Middle Names')
@@ -1133,9 +1121,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect(thirdRowColumns.eq(1).text()).toStrictEqual('Exeter (HMP)')
       expect(thirdRowColumns.eq(2).text()).toStrictEqual('Social/Family')
       expect(thirdRowColumns.eq(3).text()).toStrictEqual('Friend')
-      expect($('[data-qa=linked-prisoner-profile-link-1]').attr('href')).toStrictEqual(
-        'http://localhost:3001/prisoner/X7896YZ',
-      )
+      expect(thirdRowColumns.eq(4).text()).toStrictEqual('Active')
 
       const fourthRowColumns = $($(tableBody).find('tr').eq(3)).find('td')
       expect(fourthRowColumns.eq(0).text()).toContain('Smith, John Middle Names')
@@ -1143,9 +1129,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect(fourthRowColumns.eq(1).text()).toStrictEqual('Exeter (HMP)')
       expect(fourthRowColumns.eq(2).text()).toStrictEqual('Social/Family')
       expect(fourthRowColumns.eq(3).text()).toStrictEqual('Uncle')
-      expect($('[data-qa=linked-prisoner-profile-link-4]').attr('href')).toStrictEqual(
-        'http://localhost:3001/prisoner/Z7896YZ',
-      )
+      expect(fourthRowColumns.eq(4).text()).toStrictEqual('Active')
     })
   })
 })

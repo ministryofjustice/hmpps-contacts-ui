@@ -17,7 +17,6 @@ type ContactRestrictionDetails = components['schemas']['ContactRestrictionDetail
 type PrisonerContactRestrictionDetails = components['schemas']['PrisonerContactRestrictionDetails']
 type ContactAddressPhoneDetails = components['schemas']['ContactAddressPhoneDetails']
 type LinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
-type LinkedPrisonerRelationshipDetails = components['schemas']['LinkedPrisonerRelationshipDetails']
 type OrganisationSummary = components['schemas']['OrganisationSummary']
 export default class TestData {
   static address = ({
@@ -510,39 +509,25 @@ export default class TestData {
     lastName = 'Last',
     firstName = 'First',
     middleNames = undefined,
-    relationships = [
-      TestData.getLinkedPrisonerRelationshipDetails(),
-      TestData.getLinkedPrisonerRelationshipDetails({
-        prisonerContactId: 2,
-        relationshipTypeCode: 'O',
-        relationshipTypeDescription: 'Official',
-        relationshipToPrisonerCode: 'DR',
-        relationshipToPrisonerDescription: 'Doctor',
-      }),
-    ],
+    prisonerContactId = 1,
+    relationshipTypeCode = 'S',
+    relationshipTypeDescription = 'Social/Family',
+    relationshipToPrisonerCode = 'FRI',
+    relationshipToPrisonerDescription = 'Friend',
+    isRelationshipActive = true,
   }: Partial<LinkedPrisonerDetails> = {}): LinkedPrisonerDetails =>
     ({
       prisonerNumber,
       lastName,
       firstName,
       middleNames,
-      relationships,
-    }) as LinkedPrisonerDetails
-
-  static getLinkedPrisonerRelationshipDetails = ({
-    prisonerContactId = 1,
-    relationshipTypeCode = 'S',
-    relationshipTypeDescription = 'Social/Family',
-    relationshipToPrisonerCode = 'FRI',
-    relationshipToPrisonerDescription = 'Friend',
-  }: Partial<LinkedPrisonerRelationshipDetails> = {}): LinkedPrisonerRelationshipDetails =>
-    ({
       prisonerContactId,
       relationshipTypeCode,
       relationshipTypeDescription,
       relationshipToPrisonerCode,
       relationshipToPrisonerDescription,
-    }) as LinkedPrisonerRelationshipDetails
+      isRelationshipActive,
+    }) as LinkedPrisonerDetails
 
   static organisation = ({
     organisationId = 0,

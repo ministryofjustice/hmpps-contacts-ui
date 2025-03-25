@@ -46,8 +46,8 @@ export default class ContactDetailsController implements PageHandler {
       prisonerContactRelationship,
       manageContactRelationshipUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
       navigation,
-      linkedPrisoners,
-      linkedPrisonerCount: linkedPrisoners.flatMap(linkedPrisoner => linkedPrisoner.relationships).length,
+      linkedPrisoners: linkedPrisoners.content,
+      linkedPrisonerCount: linkedPrisoners.total,
     })
   }
 }
