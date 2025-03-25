@@ -140,7 +140,7 @@
                  classes: 'govuk-link--no-visited-state'
                },
                {
-                 href: baseChangeUrl + "/phone/"  + journeyId,
+                 href: baseChangeUrl + "/phone/" + loop.index + "/delete/" + journeyId,
                  text: "Delete",
                  visuallyHiddenText: 'the information about the ' + val.phoneTypeDescription + ' phone number for this address',
                  attributes: { 'data-qa': 'delete-address-phone-' + val.contactAddressPhoneId },

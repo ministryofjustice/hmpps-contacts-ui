@@ -11,6 +11,7 @@ import SelectAddressFlagsPage from '../pages/contact-methods/address/selectAddre
 import EnterAddressCommentsPage from '../pages/contact-methods/address/enterAddressCommentsPage'
 import CancelAddAddressPage from '../pages/contact-methods/address/cancelAddAddressPage'
 import AddAddressPhonesPage from '../pages/contact-methods/address/phone/addAddressPhonesPage'
+import ConfirmDeleteAddressPhonePage from '../pages/contact-methods/address/phone/confirmDeleteAddressPhonePage'
 
 context('Add Address', () => {
   const contactId = 654321
@@ -375,8 +376,19 @@ context('Add Address', () => {
       .enterPhoneNumber(0, '01234 777777')
       .enterExtension(0, '000')
       .selectType(0, 'HOME')
+      .clickAddAnotherButton()
+      .enterPhoneNumber(1, '07099 777777')
+      .selectType(1, 'MOB')
       .continueTo(AddressCheckYourAnswersPage, 'First Middle Names Last')
       .verifyShowsPhoneNumber('Home', '01234 777777, ext. 000')
+      .verifyShowsPhoneNumber('Mobile', '07099 777777')
+      .clickDeletePhoneNumberLink('Mobile')
+
+    Page.verifyOnPage(ConfirmDeleteAddressPhonePage)
+      .hasType('Mobile')
+      .hasPhoneNumber('07099 777777')
+      .hasExtension('Not provided')
+      .continueTo(AddressCheckYourAnswersPage, 'First Middle Names Last')
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(

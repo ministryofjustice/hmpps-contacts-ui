@@ -99,6 +99,7 @@ import CancelAddAddressController from './addresses/cancel/cancelAddAddressContr
 import { optionalPhonesSchema, phonesSchema } from './addresses/add-address-phone/AddAddressPhonesSchema'
 import AddressPhoneController from './addresses/add-address-phone/addressPhoneController'
 import { routerMethods } from '../../../utils/routerMethods'
+import DeleteAddressPhoneController from './addresses/delete-address-phone/deleteAddressPhoneController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -424,6 +425,13 @@ const ManageContactsRoutes = (
     controller: new AddressPhoneController(referenceDataService),
     journeyEnsurer: ensureInAddressJourney,
     schema: optionalPhonesSchema,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/phone/:phoneIdx/delete/:journeyId',
+    controller: new DeleteAddressPhoneController(referenceDataService),
+    journeyEnsurer: ensureInAddressJourney,
+    noValidation: true,
   })
 
   journeyRoute({
