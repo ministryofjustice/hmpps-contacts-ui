@@ -12,8 +12,7 @@ import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
 import AddIdentityDocumentsPage from '../pages/addIdentityDocumentsPage'
 import ConfirmDeleteIdentityPage from '../pages/contact-details/confirmDeleteIdentityPage'
 import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
-import SelectEmergencyContactOrNextOfKinPage
-  from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
+import SelectEmergencyContactOrNextOfKinPage from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
 
 context('Create Contact With Identity documents', () => {
   const contactId = 654321

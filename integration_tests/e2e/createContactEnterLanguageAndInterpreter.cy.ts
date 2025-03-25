@@ -11,8 +11,7 @@ import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
 import SelectLanguageAndInterpreterPage from '../pages/contact-details/additional-information/selectLanguageAndInterpreterPage'
 import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
-import SelectEmergencyContactOrNextOfKinPage
-  from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
+import SelectEmergencyContactOrNextOfKinPage from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
 
 context('Create Contact and Select Staff Status', () => {
   const contactId = 654321

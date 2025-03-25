@@ -12,8 +12,7 @@ import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
 import AddPhonesPage from '../pages/contact-methods/addPhonesPage'
 import ConfirmDeletePhonePage from '../pages/confirmDeletePhonePage'
 import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
-import SelectEmergencyContactOrNextOfKinPage
-  from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
+import SelectEmergencyContactOrNextOfKinPage from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
 
 context('Create Contact With Phone Numbers', () => {
   const contactId = 654321

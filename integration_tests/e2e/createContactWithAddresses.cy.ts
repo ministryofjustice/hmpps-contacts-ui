@@ -19,8 +19,7 @@ import EnterAddressCommentsPage from '../pages/contact-methods/address/enterAddr
 import ConfirmDeleteAddressPhonePage from '../pages/contact-methods/address/phone/confirmDeleteAddressPhonePage'
 import ConfirmDeleteContactAddressPage from '../pages/confirmDeleteContactAddressPage'
 import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
-import SelectEmergencyContactOrNextOfKinPage
-  from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
+import SelectEmergencyContactOrNextOfKinPage from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
 
 context('Create Contact With Addresses', () => {
   const contactId = 654321

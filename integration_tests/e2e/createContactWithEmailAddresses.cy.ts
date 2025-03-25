@@ -12,8 +12,7 @@ import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
 import ConfirmDeleteEmailPage from '../pages/confirmDeleteEmailPage'
 import AddEmailsPage from '../pages/addEmailsPage'
 import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
-import SelectEmergencyContactOrNextOfKinPage
-  from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
+import SelectEmergencyContactOrNextOfKinPage from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
 
 context('Create Contact With Email addresses', () => {
   const contactId = 654321

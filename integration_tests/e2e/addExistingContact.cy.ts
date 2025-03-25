@@ -10,8 +10,7 @@ import ManageContactDetailsPage from '../pages/manageContactDetails'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import RelationshipCommentsPage from '../pages/contact-details/relationship/relationshipCommentsPage'
 import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
-import SelectEmergencyContactOrNextOfKinPage
-  from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
+import SelectEmergencyContactOrNextOfKinPage from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
 
 context('Add Existing Contact', () => {
   const { prisonerNumber } = TestData.prisoner()

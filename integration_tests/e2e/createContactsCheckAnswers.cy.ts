@@ -11,8 +11,7 @@ import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import RelationshipCommentsPage from '../pages/contact-details/relationship/relationshipCommentsPage'
 import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
 import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
-import SelectEmergencyContactOrNextOfKinPage
-  from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
+import SelectEmergencyContactOrNextOfKinPage from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
 
 context('Create contact and update from check answers', () => {
   beforeEach(() => {
