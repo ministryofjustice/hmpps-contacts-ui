@@ -101,6 +101,12 @@ describe('contactsService', () => {
             { type: 'MOB', phoneNumber: '0123456789' },
             { type: 'HOME', phoneNumber: '987654321', extension: '#123' },
           ],
+          employments: [
+            {
+              employer: { organisationId: 123 },
+              isActive: true,
+            },
+          ],
         }
         const expectedRequest: CreateContactRequest = {
           titleCode: 'Mr',
@@ -133,7 +139,17 @@ describe('contactsService', () => {
 
         // Then
         expect(created).toStrictEqual(expectedCreated)
-        expect(apiClient.createContact).toHaveBeenCalledWith(expectedRequest, user)
+        if (relationshipType === 'O') {
+          expect(apiClient.createContact).toHaveBeenCalledWith(
+            {
+              ...expectedRequest,
+              employments: [{ organisationId: 123, isActive: true }],
+            },
+            user,
+          )
+        } else {
+          expect(apiClient.createContact).toHaveBeenCalledWith(expectedRequest, user)
+        }
       },
     )
 
