@@ -11,7 +11,7 @@ export default class DeleteEmploymentController implements PageHandler {
     const journey = req.session.updateEmploymentsJourneys![journeyId]!
     const employment = journey.employments[Number(employmentIdx) - 1]
 
-    return res.render('pages/contacts/manage/updateEmployments/deleteEmployment/index', {
+    return res.render('pages/contacts/manage/employments/deleteEmployment/index', {
       navigation: {
         backLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${journeyId}`,
       },

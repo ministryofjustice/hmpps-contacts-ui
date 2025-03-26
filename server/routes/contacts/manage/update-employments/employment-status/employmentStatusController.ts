@@ -12,7 +12,7 @@ export default class EmploymentStatusController implements PageHandler {
     const journey = req.session.updateEmploymentsJourneys![journeyId]!
     const employment = journey.employments[Number(employmentIdx) - 1]!
 
-    return res.render('pages/contacts/manage/updateEmployments/employmentStatus/index', {
+    return res.render('pages/contacts/manage/employments/employmentStatus/index', {
       navigation: {
         backLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${journeyId}`,
       },

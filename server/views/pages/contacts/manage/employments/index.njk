@@ -4,15 +4,26 @@
 
 {% extends "partials/layout.njk" %}§
 
-{% set pageTitle = "Edit employment information for contact - Contacts - DPS" %}
+{% if isNewContact %}
+  {% set pageTitle = "Record employment information for the contact - Add a contact - DPS" %}
+  {% set title = "Record employment information for " + contactNames | formatNameFirstNameFirst + " (optional)" %}
+  {% set continueButtonLabel = "Continue" %}
+  {% set caption = journey | captionForAddContactJourney %}
+{% else %}
+  {% set pageTitle = "Edit employment information for a contact linked to a prisoner - DPS " %}
+  {% set title = "Edit employment information for " + contactNames | formatNameFirstNameFirst %}
+  {% set continueButtonLabel = "Confirm and save" %}
+  {% set caption = "Edit professional information" %}
+{% endif %}
 
 {% block content %}
+  {% include 'partials/navigation.njk' %}
   {{ miniProfile(prisonerDetails) }}
   <div class="govuk-grid-row govuk-!-static-margin-bottom-5">
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-!-static-margin-bottom-7">
-        <span class="govuk-caption-l">Edit professional information</span>
-        <h1 class="govuk-heading-l">Edit employment information for {{ contactNames | formatNameFirstNameFirst }}</h1>
+        <span class="govuk-caption-l">{{ caption }}</span>
+        <h1 class="govuk-heading-l">{{ title }}</h1>
       </div>
 
       {% if employments.length %}
@@ -25,7 +36,7 @@
               actions: {
                 items: [
                   {
-                    href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contactId + "/update-employments/" + loop.index + "/delete-employment/" + journeyId,
+                    href: updateEmploymentBaseLink + loop.index + "/delete-employment/" + journeyId,
                     text: "Delete employer",
                     classes: "govuk-link--no-visited-state"
                   }
@@ -43,7 +54,7 @@
                 actions: {
                 items: [
                   {
-                    href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contactId + "/update-employments/" + loop.index + "/organisation-search/" + journeyId,
+                    href: updateEmploymentBaseLink + loop.index + "/organisation-search/" + journeyId,
                     text: "Change organisation",
                     classes: "govuk-link--no-visited-state"
                   }
@@ -76,7 +87,7 @@
                 actions: {
                 items: [
                   {
-                    href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contactId + "/update-employments/" + loop.index + "/employment-status/" + journeyId,
+                    href: updateEmploymentBaseLink + loop.index + "/employment-status/" + journeyId,
                     text: "Change status",
                     classes: "govuk-link--no-visited-state",
                     visuallyHiddenText: "of the employment with"
@@ -93,7 +104,7 @@
 
       {{ govukButton({
         text: "Add another employer" if employments.length else "Add employer",
-        href: "/prisoner/" + prisonerNumber + "/contacts/manage/" + contactId + "/update-employments/new/organisation-search/" + journeyId,
+        href: updateEmploymentBaseLink + "new/organisation-search/" + journeyId,
         classes: "govuk-button--secondary govuk-!-static-margin-top-5",
         preventDoubleClick: true
       }) }}
@@ -102,10 +113,12 @@
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
         <div class="govuk-button-group">
           {{ govukButton({
-            text: "Confirm and save",
+            text: continueButtonLabel,
             preventDoubleClick: true
           }) }}
-          <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ returnPoint.url }}#professional-information" data-qa="cancel-button">Cancel</a>
+          {% if navigation.cancelButton %}
+            <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
+          {% endif %}
         </div>
       </form>
     </div>

@@ -7,6 +7,7 @@ import { ContactsService } from '../../../../services'
 import PatchEmploymentsRequest = contactsApiClientTypes.PatchEmploymentsRequest
 import { formatNameFirstNameFirst } from '../../../../utils/formatName'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
+import { Navigation } from '../../common/navigation'
 
 export default class UpdateEmploymentsController implements PageHandler {
   constructor(private readonly contactService: ContactsService) {}
@@ -17,13 +18,17 @@ export default class UpdateEmploymentsController implements PageHandler {
     const { prisonerNumber, contactId, journeyId } = req.params
     const { contactNames, employments, returnPoint } = req.session.updateEmploymentsJourneys![journeyId]!
     employments.sort(employmentSorter)
-    res.render('pages/contacts/manage/updateEmployments/index', {
-      prisonerNumber,
-      contactId,
+    const navigation: Navigation = {
+      backLinkLabel: 'Back to contact record',
+      backLink: returnPoint.url,
+      cancelButton: `${returnPoint.url}#professional-information`,
+    }
+    res.render('pages/contacts/manage/employments/index', {
+      updateEmploymentBaseLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/`,
       journeyId,
       contactNames,
       employments,
-      returnPoint,
+      navigation,
     })
   }
 
