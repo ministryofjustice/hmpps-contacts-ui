@@ -36,7 +36,8 @@ export default class ContactConfirmationController implements PageHandler {
     const mostRelevantAddressLabel = getLabelForAddress(mostRelevantAddress)
     return res.render('pages/contacts/manage/contactConfirmation/confirmation', {
       contact,
-      linkedPrisoners,
+      linkedPrisoners: linkedPrisoners.content,
+      linkedPrisonersCount: linkedPrisoners.total,
       globalRestrictions,
       formattedFullName,
       prisonerDetails,

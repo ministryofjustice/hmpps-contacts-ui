@@ -32,7 +32,7 @@ type AddContactRelationshipRequest = components['schemas']['AddContactRelationsh
 type ContactNameDetails = components['schemas']['ContactNameDetails']
 type CreateMultipleIdentitiesRequest = components['schemas']['CreateMultipleIdentitiesRequest']
 type IdentityDocument = components['schemas']['IdentityDocument']
-type LinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
+type LinkedPrisonerPage = components['schemas']['LinkedPrisonerPage']
 type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
 type CreateMultiplePhoneNumbersRequest = components['schemas']['CreateMultiplePhoneNumbersRequest']
 
@@ -422,7 +422,7 @@ export default class ContactsService {
     return this.contactsApiClient.deleteContactAddressPhone(contactId, contactAddressId, contactPhoneId, user)
   }
 
-  async getLinkedPrisoners(contactId: number, user: Express.User): Promise<LinkedPrisonerDetails[]> {
+  async getLinkedPrisoners(contactId: number, user: Express.User): Promise<LinkedPrisonerPage> {
     return this.contactsApiClient.getLinkedPrisoners(contactId, user)
   }
 

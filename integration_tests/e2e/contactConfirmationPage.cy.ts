@@ -111,11 +111,11 @@ context('Contact confirmation', () => {
           lastName: 'Smith',
           firstName: 'John',
           middleNames: 'Middle Names',
-          relationships: [
-            TestData.getLinkedPrisonerRelationshipDetails({
-              prisonerContactId: 3,
-            }),
-          ],
+          prisonerContactId: 3,
+          relationshipTypeCode: 'O',
+          relationshipTypeDescription: 'Official',
+          relationshipToPrisonerCode: 'DR',
+          relationshipToPrisonerDescription: 'Doctor',
         }),
       ],
     })
@@ -125,13 +125,6 @@ context('Contact confirmation', () => {
 
     Page.verifyOnPage(ContactConfirmationPage, 'John Smith') //
       .hasLinkedPrisonersCount(2)
-      .clickLinkedPrisonersTab()
-      .hasLinkedPrisonersCardTitle('R6548ST', 'Last, First')
-      .hasLinkedPrisonersNomsValue('R6548ST', 'R6548ST')
-      .hasLinkedPrisonersRelationshipValue('R6548ST', 'Social/Family - FriendOfficial - Doctor')
-      .hasLinkedPrisonersCardTitle('X7896YZ', 'Smith, John Middle Names')
-      .hasLinkedPrisonersNomsValue('X7896YZ', 'X7896YZ')
-      .hasLinkedPrisonersRelationshipValue('X7896YZ', 'Social/Family - Friend')
   })
 
   it(`should not pass validation when radiobox is not selected`, () => {

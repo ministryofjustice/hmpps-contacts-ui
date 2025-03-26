@@ -26,7 +26,6 @@ import { formatDateRange } from './formatDateRange'
 import { formatBusinessPhoneNumber, formatPhoneNumber } from './formatPhoneNumber'
 import { formatTitleForAddress } from './addressUtils'
 import sortContactAddresses from './sortAddress'
-import { sortLinkedPrisoners } from './sortLinkedPrisoners'
 import { taskStatus } from './taskStatus'
 import captionForAddContactJourney from '../routes/contacts/add/addContactsUtils'
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
@@ -99,7 +98,6 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('referenceCodesToSelect', referenceCodesToSelect)
   njkEnv.addFilter('referenceCodesToRadios', referenceCodesToRadiosOrCheckboxes)
   njkEnv.addFilter('referenceCodesToCheckboxes', referenceCodesToRadiosOrCheckboxes)
-  njkEnv.addFilter('sortLinkedPrisoners', sortLinkedPrisoners)
   njkEnv.addFilter('customErrorOrderBuilder', customErrorOrderBuilder)
   njkEnv.addFilter('taskStatus', taskStatus)
   njkEnv.addFilter('captionForAddContactJourney', captionForAddContactJourney)

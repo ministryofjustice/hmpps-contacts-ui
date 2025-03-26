@@ -42,7 +42,7 @@ type AddContactRelationshipRequest = components['schemas']['AddContactRelationsh
 type CreateContactRequest = components['schemas']['CreateContactRequest']
 type ContactNameDetails = components['schemas']['ContactNameDetails']
 type CreateMultipleIdentitiesRequest = components['schemas']['CreateMultipleIdentitiesRequest']
-type LinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
+type LinkedPrisonerPage = components['schemas']['LinkedPrisonerPage']
 type CreateMultiplePhoneNumbersRequest = components['schemas']['CreateMultiplePhoneNumbersRequest']
 
 export default class ContactsApiClient extends RestClient {
@@ -452,8 +452,8 @@ export default class ContactsApiClient extends RestClient {
     )
   }
 
-  async getLinkedPrisoners(contactId: number, user: Express.User): Promise<LinkedPrisonerDetails[]> {
-    return this.get<LinkedPrisonerDetails[]>({ path: `/contact/${contactId}/linked-prisoners` }, user)
+  async getLinkedPrisoners(contactId: number, user: Express.User): Promise<LinkedPrisonerPage> {
+    return this.get<LinkedPrisonerPage>({ path: `/contact/${contactId}/linked-prisoners` }, user)
   }
 
   async patchEmployments(contactId: number, request: PatchEmploymentsRequest, user: Express.User) {
