@@ -22,13 +22,13 @@
     ]), rows) %}
   {% endfor %}
 
-  {% if paginationParams.totalPages > 1 %}
+  {% if linkedPrisoners.length %}
     {{ simplePagination(paginationParams) }}
   {% endif %}
 
   {{ govukTable({
     firstCellIsHeader: false,
-    classes: 'govuk-!-margin-top-6' if paginationParams.totalPages > 1 else '',
+    classes: 'govuk-!-margin-top-6',
     head: [
       {
         text: "Name and prison number"
@@ -49,7 +49,7 @@
     rows: rows
   }) }}
 
-  {% if paginationParams.totalPages > 1 %}
+  {% if linkedPrisoners.length %}
     {{ simplePagination(paginationParams) }}
   {% endif %}
 {% endmacro %}

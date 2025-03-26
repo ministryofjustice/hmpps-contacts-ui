@@ -1132,7 +1132,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect(fourthRowColumns.eq(3).text()).toStrictEqual('Uncle')
       expect(fourthRowColumns.eq(4).text()).toStrictEqual('Active')
 
-      expect($('.moj-pagination')).toHaveLength(0)
+      expect($('.moj-pagination__list').find('li')).toHaveLength(0)
     })
 
     it('should show pagination if more than 50', async () => {
@@ -1172,7 +1172,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           .find('td')
         expect(rowColumns.eq(0).text()).toContain(linkedPrisoner.prisonerNumber)
       })
-      expect($('.moj-pagination')).toHaveLength(2)
+      expect($('.moj-pagination__list')).toHaveLength(2)
       expect(contactsService.getLinkedPrisoners).toHaveBeenCalledWith(1, 0, 50, user)
     })
 
@@ -1215,7 +1215,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           .find('td')
         expect(rowColumns.eq(0).text()).toContain(linkedPrisoner.prisonerNumber)
       })
-      expect($('.moj-pagination')).toHaveLength(2)
+      expect($('.moj-pagination__list').find('li').length).toBeGreaterThan(0)
       expect(contactsService.getLinkedPrisoners).toHaveBeenCalledWith(
         1,
         1 /* page number is 0 indexed so page 2 = page 1 API */,
