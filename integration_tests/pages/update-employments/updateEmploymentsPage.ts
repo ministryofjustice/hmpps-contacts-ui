@@ -1,8 +1,8 @@
 import Page from '../page'
 
 export default class UpdateEmploymentsPage extends Page {
-  constructor() {
-    super('Edit employment information')
+  constructor(isNewContact: boolean = false) {
+    super(isNewContact ? 'Record employment information' : 'Edit employment information')
   }
 
   toHaveNumberOfEmployments(count: number) {

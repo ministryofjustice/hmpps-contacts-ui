@@ -371,6 +371,72 @@
                 <p class="govuk-body">No addresses provided.</p>
               {% endif %}
 
+              {% if journey.relationship.relationshipType === 'O' %}
+                <div class="moj-page-header-actions">
+                  <div class="moj-page-header-actions__title">
+                    <h2 class="govuk-heading-l govuk-!-font-size-24">Employers</h2>
+                  </div>
+                  <div class="moj-page-header-actions__actions">
+                    <div class="moj-button-group moj-button-group--inline">
+                      <a class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold" data-qa="add-address-link" href="{{ baseChangeUrl + "/employments/" + journey.id }}">
+                        {% if journey.employments.length %}
+                          Add, change or delete employers
+                        {% else %}
+                          Add employer
+                        {% endif %}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                {% if journey.employments.length > 0 %}
+                  {% for employment in journey.employments %}
+                    {{ govukSummaryList({
+                      card: {
+                        title: {
+                          text: ("Active employer: " if employment.isActive else "Past employer: ") + employment.employer.organisationName
+                        }
+                      },
+                      rows: [
+                        {
+                          key: {
+                            text: "Employer name"
+                          },
+                          value: {
+                            text: employment.employer.organisationName
+                          }
+                        },
+                        {
+                          key: {
+                            text: "Employer’s primary address"
+                          },
+                          value: {
+                            html: (employment.employer | addressToLines or 'Not provided') | escape | nl2br
+                          }
+                        },
+                        {
+                          key: {
+                            text: "Business phone number at primary address"
+                          },
+                          value: {
+                            text: employment.employer | formatBusinessPhoneNumber or "Not provided"
+                          }
+                        },
+                        {
+                          key: {
+                            text: "Employment status"
+                          },
+                          value: {
+                            text: "Active" if employment.isActive else "Inactive"
+                          }
+                        }
+                      ]
+                    }) }}
+                  {% endfor %}
+                {% else %}
+                  <p class="govuk-body">No addresses provided.</p>
+                {% endif %}
+              {% endif %}
+
               <div class="moj-page-header-actions">
                 <div class="moj-page-header-actions__title">
                   <h2 class="govuk-heading-l govuk-!-font-size-24">Identity documentation</h2>
