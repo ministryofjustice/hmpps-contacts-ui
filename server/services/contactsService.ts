@@ -79,6 +79,12 @@ export default class ContactsService {
         ...(extension === undefined ? {} : { extNumber: extension }),
       }))
     }
+    if (journey.employments?.length && journey.relationship?.relationshipType === 'O') {
+      request.employments = journey.employments.map(employment => ({
+        organisationId: employment.employer.organisationId,
+        isActive: employment.isActive!,
+      }))
+    }
     if (journey.addresses?.length) {
       request.addresses = journey.addresses.map(item => {
         const { flat, property, street, area, cityCode, countyCode, postcode, countryCode } = item.addressLines!

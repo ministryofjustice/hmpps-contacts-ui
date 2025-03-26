@@ -60,6 +60,7 @@ import { optionalEmailsSchema } from '../manage/email/emailSchemas'
 import ApprovedToVisitController from './approved-to-visit/approvedToVisitController'
 import EmergencyContactOrNextOfKinController from './emergency-contact-or-next-of-kin/emergencyContactOrNextOfKinController'
 import { optionalEmergencyContactOrNextOfKinSchema } from '../manage/relationship/emergency-contact-or-next-of-kin/manageEmergencyContactOrNextOfKinSchema'
+import AddEmploymentsController from './employments/addEmploymentsController'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -333,6 +334,12 @@ const AddContactRoutes = (
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/create/domestic-status/:journeyId',
     controller: new AddContactDomesticStatusController(referenceDataService),
+    noValidation: true,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/employments/:journeyId',
+    controller: new AddEmploymentsController(),
     noValidation: true,
   })
 

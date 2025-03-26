@@ -42,6 +42,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
     }
     // reset this in case we came from "back" on change relationship type
     delete journey.relationship?.pendingNewRelationshipType
+    delete journey.pendingEmployments
     delete journey.pendingAddresses
     let dateOfBirth
     if (journey.dateOfBirth!.isKnown === 'YES') {

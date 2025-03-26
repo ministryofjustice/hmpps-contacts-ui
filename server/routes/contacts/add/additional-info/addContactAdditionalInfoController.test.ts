@@ -37,6 +37,7 @@ beforeEach(() => {
       isKnown: 'NO',
     },
     relationship: {
+      relationshipType: 'O',
       relationshipToPrisoner: 'MOT',
       isEmergencyContact: true,
       isNextOfKin: true,
@@ -94,6 +95,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('a:contains("Employers")').parent().next().text().trim()).toStrictEqual('Not entered')
     expect($('a:contains("Addresses")').parent().next().text().trim()).toStrictEqual('Not entered')
     expect(
       $('a:contains("Comments on their relationship with First Middle Last")').parent().next().text().trim(),
@@ -113,6 +115,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
 
   it('should render entered for optional info that has been completed', async () => {
     // When
+    existingJourney.employments = [{ employer: {} }]
     existingJourney.addresses = [{ addressType: 'HOME' }]
     existingJourney.relationship!.comments = 'Some comments'
     existingJourney.phoneNumbers = [
@@ -133,6 +136,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('a:contains("Employers")').parent().next().text().trim()).toStrictEqual('Entered')
     expect($('a:contains("Addresses")').parent().next().text().trim()).toStrictEqual('Entered')
     expect(
       $('a:contains("Comments on their relationship with First Middle Last")').parent().next().text().trim(),
@@ -145,6 +149,21 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
       'Entered',
     )
     expect($('a:contains("Domestic status")').parent().next().text().trim()).toStrictEqual('Entered')
+  })
+
+  it('should not show employers for social contact', async () => {
+    // When
+    existingJourney.relationship!.relationshipType = 'S'
+
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`,
+    )
+
+    // Then
+    expect(response.status).toEqual(200)
+
+    const $ = cheerio.load(response.text)
+    expect($('a:contains("Employers")').text()).toBeFalsy()
   })
 
   it('should call the audit service for the page view', async () => {

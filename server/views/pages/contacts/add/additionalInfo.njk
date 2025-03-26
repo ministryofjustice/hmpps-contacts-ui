@@ -46,6 +46,22 @@
           ]
         }) }}
 
+        {% if journey.relationship.relationshipType === 'O' %}
+          <h2>Professional information</h2>
+          {{ govukTaskList({
+            idPrefix: "employments",
+            items: [
+              {
+                title: {
+                  text: "Employers"
+                },
+                href: "/prisoner/" + journey.prisonerNumber + "/contacts/create/employments/" + journey.id,
+                status: journey.employments | taskStatus
+              }
+            ]
+          }) }}
+        {% endif %}
+
         <h2>More details about the contact</h2>
         {{ govukTaskList({
           idPrefix: "more-details",

@@ -43,7 +43,7 @@ export default class CheckEmployerController implements PageHandler {
       return res.status(404).render('pages/errors/notFound')
     }
 
-    return res.render('pages/contacts/manage/updateEmployments/checkEmployer/index', {
+    return res.render('pages/contacts/manage/employments/checkEmployer/index', {
       navigation: {
         backLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/organisation-search/${journeyId}`,
       },
