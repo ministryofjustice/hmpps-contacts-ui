@@ -40,7 +40,8 @@ export default class ContactDetailsController implements PageHandler {
       Number(prisonerContactId),
       user,
     )
-    const linkedPrisonerPageNumber = linkedPrisonerPage ? Number(linkedPrisonerPage) : 1
+    const linkedPrisonerPageNumber =
+      linkedPrisonerPage && !Number.isNaN(Number(linkedPrisonerPage)) ? Number(linkedPrisonerPage) : 1
 
     const linkedPrisoners = await this.contactsService.getLinkedPrisoners(
       contact.id,

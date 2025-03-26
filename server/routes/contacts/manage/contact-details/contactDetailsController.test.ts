@@ -11,6 +11,7 @@ import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerConta
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 
 type LinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
+
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
