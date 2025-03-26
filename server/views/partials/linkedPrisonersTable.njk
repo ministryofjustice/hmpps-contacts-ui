@@ -1,46 +1,55 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "partials/simplePagination/macro.njk" import simplePagination %}
 
 {% macro linkedPrisonersTable(opts) %}
 
-    {% set linkedPrisoners = opts.linkedPrisoners %}
-    {% set contact = opts.contact %}
+  {% set linkedPrisoners = opts.linkedPrisoners %}
+  {% set paginationParams = opts.paginationParams %}
 
-    {% set rows = [] %}
-    {% for linkedPrisoner in linkedPrisoners  %}
-        {% set prisonerNameAndNumberHtml %}
-          {{ linkedPrisoner | formatNameLastNameFirst }}<br/>
-          <span class="govuk-hint">{{ linkedPrisoner.prisonerNumber }}</span>
-        {% endset %}
-        {% set rows = (rows.push([
-          { html: prisonerNameAndNumberHtml },
-          { text: linkedPrisoner.prisonName },
-          { text: linkedPrisoner.relationshipTypeDescription },
-          { text: linkedPrisoner.relationshipToPrisonerDescription },
-          { text: 'Active' if linkedPrisoner.isRelationshipActive else 'Inactive'  }
-        ]), rows) %}
-    {% endfor %}
+  {% set rows = [] %}
+  {% for linkedPrisoner in linkedPrisoners %}
+    {% set prisonerNameAndNumberHtml %}
+      {{ linkedPrisoner | formatNameLastNameFirst }}<br />
+      <span class="govuk-hint">{{ linkedPrisoner.prisonerNumber }}</span>
+    {% endset %}
+    {% set classes = 'light-grey' if not linkedPrisoner.isRelationshipActive else '' %}
+    {% set rows = (rows.push([
+      { html: prisonerNameAndNumberHtml, classes: classes },
+      { text: linkedPrisoner.prisonName, classes: classes },
+      { text: linkedPrisoner.relationshipTypeDescription, classes: classes },
+      { text: linkedPrisoner.relationshipToPrisonerDescription, classes: classes },
+      { text: 'Active' if linkedPrisoner.isRelationshipActive else 'Inactive', classes: classes }
+    ]), rows) %}
+  {% endfor %}
 
-    {{ govukTable({
-      caption: "Prisoners linked to contact " + (contact | formatNameFirstNameFirst),
-      captionClasses: "govuk-table__caption--l govuk-!-margin-bottom-6",
-      firstCellIsHeader: false,
-      head: [
-        {
-          text: "Name and prison number"
-        },
-        {
-          text: "Establishment"
-        },
-        {
-          text: "Relationship type"
-        },
-        {
-          text: "Contact’s relationship to the prisoner"
-        },
-        {
-          text: "Relationship status"
-        }
-      ],
-      rows: rows
-    }) }}
+  {% if paginationParams.totalPages > 1 %}
+    {{ simplePagination(paginationParams) }}
+  {% endif %}
+
+  {{ govukTable({
+    firstCellIsHeader: false,
+    classes: 'govuk-!-margin-top-6' if paginationParams.totalPages > 1 else '',
+    head: [
+      {
+        text: "Name and prison number"
+      },
+      {
+        text: "Establishment"
+      },
+      {
+        text: "Relationship type"
+      },
+      {
+        text: "Contact’s relationship to the prisoner"
+      },
+      {
+        text: "Relationship status"
+      }
+    ],
+    rows: rows
+  }) }}
+
+  {% if paginationParams.totalPages > 1 %}
+    {{ simplePagination(paginationParams) }}
+  {% endif %}
 {% endmacro %}

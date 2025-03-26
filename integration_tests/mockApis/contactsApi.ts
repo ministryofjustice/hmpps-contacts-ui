@@ -820,18 +820,25 @@ export default {
   stubGetLinkedPrisoners: (args: {
     contactId: number
     linkedPrisoners: StubLinkedPrisonerDetails[]
+    pageNumber?: number
+    totalElements?: number
   }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
         urlPath: `/contact/${args.contactId}/linked-prisoners`,
+        queryParameters: {
+          page: {
+            equalTo: `${args.pageNumber ?? 0}`,
+          },
+        },
       },
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
           content: args.linkedPrisoners,
-          total: args.linkedPrisoners.length,
+          totalElements: args.totalElements ?? args.linkedPrisoners.length,
         },
       },
     })

@@ -9,6 +9,7 @@ import { findMostRelevantAddress, getLabelForAddress } from '../../../../utils/f
 import sortRestrictions from '../../../../utils/sortGlobalRstrictions'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import ContactDetails = contactsApiClientTypes.ContactDetails
+import { setPaginationLocals } from '../../../../views/partials/simplePagination/utils'
 
 export default class ContactConfirmationController implements PageHandler {
   constructor(
@@ -18,8 +19,10 @@ export default class ContactConfirmationController implements PageHandler {
 
   public PAGE_NAME = Page.CONTACT_CONFIRMATION_PAGE
 
+  private LINKED_PRISONER_ITEMS_PER_PAGE = 10
+
   GET = async (
-    req: Request<PrisonerJourneyParams, unknown, unknown, { contactId?: string }>,
+    req: Request<PrisonerJourneyParams, unknown, unknown, { linkedPrisonerPage?: string }>,
     res: Response,
   ): Promise<void> => {
     const { journeyId } = req.params
@@ -28,8 +31,24 @@ export default class ContactConfirmationController implements PageHandler {
     const contact: ContactDetails = await this.contactsService.getContact(journey.contactId!, user)
     const globalRestrictionsEnriched = await this.restrictionsService.getGlobalRestrictionsEnriched(contact, user)
     const globalRestrictions = sortRestrictions(globalRestrictionsEnriched)
+    const { linkedPrisonerPage } = req.query
 
-    const linkedPrisoners = await this.contactsService.getLinkedPrisoners(contact.id, user)
+    const linkedPrisonerPageNumber = linkedPrisonerPage ? Number(linkedPrisonerPage) : 1
+
+    const linkedPrisoners = await this.contactsService.getLinkedPrisoners(
+      contact.id,
+      linkedPrisonerPageNumber - 1,
+      this.LINKED_PRISONER_ITEMS_PER_PAGE,
+      user,
+    )
+    setPaginationLocals(
+      res,
+      this.LINKED_PRISONER_ITEMS_PER_PAGE,
+      linkedPrisonerPageNumber,
+      linkedPrisoners?.totalElements ?? 0,
+      linkedPrisoners?.content?.length ?? 0,
+      '?linkedPrisonerPage={page}#linked-prisoners',
+    )
 
     const formattedFullName = await formatNameLastNameFirst(contact, { customTitle: contact.titleDescription })
     const mostRelevantAddress = findMostRelevantAddress(contact, false)
@@ -37,7 +56,7 @@ export default class ContactConfirmationController implements PageHandler {
     return res.render('pages/contacts/manage/contactConfirmation/confirmation', {
       contact,
       linkedPrisoners: linkedPrisoners.content,
-      linkedPrisonersCount: linkedPrisoners.total,
+      linkedPrisonersCount: linkedPrisoners.totalElements,
       globalRestrictions,
       formattedFullName,
       prisonerDetails,

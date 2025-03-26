@@ -428,8 +428,13 @@ export default class ContactsService {
     return this.contactsApiClient.deleteContactAddressPhone(contactId, contactAddressId, contactPhoneId, user)
   }
 
-  async getLinkedPrisoners(contactId: number, user: Express.User): Promise<LinkedPrisonerPage> {
-    return this.contactsApiClient.getLinkedPrisoners(contactId, user)
+  async getLinkedPrisoners(
+    contactId: number,
+    page: number,
+    size: number,
+    user: Express.User,
+  ): Promise<LinkedPrisonerPage> {
+    return this.contactsApiClient.getLinkedPrisoners(contactId, page, size, user)
   }
 
   async patchEmployments(contactId: number, request: PatchEmploymentsRequest, user: Express.User) {

@@ -1,7 +1,7 @@
 import Page, { PageElement } from './page'
 
 export default class ContactConfirmationPage extends Page {
-  constructor(name: string) {
+  constructor(private name: string) {
     super(`Is this the right person to add as a contact for ${name}?`)
   }
 
@@ -156,9 +156,26 @@ export default class ContactConfirmationPage extends Page {
     return this
   }
 
+  clickLinkedPrisonerTab(): ContactConfirmationPage {
+    this.linkedPrisonersTab().click()
+    return this
+  }
+
+  hasLinkedPrisonerRow(rowNumber: number, prisonerNumber: string): ContactConfirmationPage {
+    this.linkedPrisonerRow(rowNumber).should('contain.text', prisonerNumber)
+    return this
+  }
+
+  clickPaginationLink(name: string): ContactConfirmationPage {
+    cy.findAllByRole('link', { name }).first().click()
+    return Page.verifyOnPage(ContactConfirmationPage, this.name)
+  }
+
   private getRestrictionsTab = (): PageElement => cy.get('#tab_restrictions')
 
   private linkedPrisonersTab = (): PageElement => cy.get('#tab_linked-prisoners')
+
+  private linkedPrisonerRow = (rowNumber: number): PageElement => cy.get('.govuk-table__row').eq(rowNumber)
 
   private getRestrictionCard = (): PageElement =>
     cy.get(
