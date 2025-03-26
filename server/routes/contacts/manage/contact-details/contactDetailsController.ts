@@ -7,6 +7,7 @@ import RestrictionsService from '../../../../services/restrictionsService'
 import { employmentSorter } from '../../../../utils/sorters'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
+import { setPaginationLocals } from '../../../../views/partials/simplePagination/utils'
 
 export default class ContactDetailsController implements PageHandler {
   constructor(
@@ -16,11 +17,19 @@ export default class ContactDetailsController implements PageHandler {
 
   public PAGE_NAME = Page.CONTACT_DETAILS_PAGE
 
+  private LINKED_PRISONER_ITEMS_PER_PAGE = 50
+
   GET = async (
-    req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId?: string }, unknown, unknown>,
+    req: Request<
+      { prisonerNumber: string; contactId: string; prisonerContactId?: string },
+      unknown,
+      unknown,
+      { linkedPrisonerPage?: string }
+    >,
     res: Response,
   ): Promise<void> => {
     const { prisonerNumber, contactId, prisonerContactId } = req.params
+    const { linkedPrisonerPage } = req.query
     const { user } = res.locals
     const contact: ContactDetails = await this.contactsService.getContact(Number(contactId), user)
     const prisonerContactRelationship: PrisonerContactRelationshipDetails =
@@ -31,8 +40,23 @@ export default class ContactDetailsController implements PageHandler {
       Number(prisonerContactId),
       user,
     )
+    const linkedPrisonerPageNumber =
+      linkedPrisonerPage && !Number.isNaN(Number(linkedPrisonerPage)) ? Number(linkedPrisonerPage) : 1
 
-    const linkedPrisoners = await this.contactsService.getLinkedPrisoners(contact.id, user)
+    const linkedPrisoners = await this.contactsService.getLinkedPrisoners(
+      contact.id,
+      linkedPrisonerPageNumber - 1,
+      this.LINKED_PRISONER_ITEMS_PER_PAGE,
+      user,
+    )
+    setPaginationLocals(
+      res,
+      this.LINKED_PRISONER_ITEMS_PER_PAGE,
+      linkedPrisonerPageNumber,
+      linkedPrisoners?.totalElements ?? 0,
+      linkedPrisoners?.content?.length ?? 0,
+      '?linkedPrisonerPage={page}#linked-prisoners',
+    )
 
     contact.employments = contact.employments.sort(employmentSorter)
 
@@ -47,7 +71,7 @@ export default class ContactDetailsController implements PageHandler {
       manageContactRelationshipUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
       navigation,
       linkedPrisoners: linkedPrisoners.content,
-      linkedPrisonerCount: linkedPrisoners.total,
+      linkedPrisonerCount: linkedPrisoners.totalElements,
     })
   }
 }

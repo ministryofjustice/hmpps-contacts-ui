@@ -70,7 +70,7 @@ beforeEach(() => {
   })
   referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mr')
   restrictionsService.getGlobalRestrictionsEnriched.mockResolvedValue([])
-  contactsService.getLinkedPrisoners.mockResolvedValue({ content: [], total: 0 })
+  contactsService.getLinkedPrisoners.mockResolvedValue({ content: [], totalElements: 0 })
 })
 
 afterEach(() => {
@@ -500,7 +500,7 @@ describe('Restrictions', () => {
   describe('Linked prisoners tab', () => {
     it('should render linked prisoners tab with no results', async () => {
       // Given
-      contactsService.getLinkedPrisoners.mockResolvedValue({ content: [], total: 0 })
+      contactsService.getLinkedPrisoners.mockResolvedValue({ content: [], totalElements: 0 })
 
       // When
       const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
@@ -572,7 +572,7 @@ describe('Restrictions', () => {
 
       contactsService.getLinkedPrisoners.mockResolvedValue({
         content: linkedPrisoners,
-        total: 4,
+        totalElements: 4,
       })
 
       // When
@@ -583,8 +583,8 @@ describe('Restrictions', () => {
 
       // Should include all relationships in the count if a prisoner has more than one relationship to the contact
       expect($('.linked-prisoners-tab-title').text().trim()).toStrictEqual('Linked prisoners (4)')
-      const tableBody = $('caption:contains(Prisoners linked to contact Jones Mason)').next().next()
-      const firstRowColumns = $($(tableBody).find('tr').eq(0)).find('td')
+      const tableRows = $('.govuk-table__row')
+      const firstRowColumns = tableRows.eq(1).find('td')
       expect(firstRowColumns.eq(0).text()).toContain('Last, First')
       expect(firstRowColumns.eq(0).text()).toContain('A1234BC')
       expect(firstRowColumns.eq(1).text()).toStrictEqual('Brixton (HMP)')
@@ -592,7 +592,7 @@ describe('Restrictions', () => {
       expect(firstRowColumns.eq(3).text()).toStrictEqual('Mother')
       expect(firstRowColumns.eq(4).text()).toStrictEqual('Active')
 
-      const secondRowColumns = $($(tableBody).find('tr').eq(1)).find('td')
+      const secondRowColumns = tableRows.eq(2).find('td')
       expect(secondRowColumns.eq(0).text()).toContain('Last, First')
       expect(secondRowColumns.eq(0).text()).toContain('A1234BC')
       expect(secondRowColumns.eq(1).text()).toStrictEqual('Brixton (HMP)')
@@ -600,7 +600,7 @@ describe('Restrictions', () => {
       expect(secondRowColumns.eq(3).text()).toStrictEqual('Doctor')
       expect(secondRowColumns.eq(4).text()).toStrictEqual('Inactive')
 
-      const thirdRowColumns = $($(tableBody).find('tr').eq(2)).find('td')
+      const thirdRowColumns = tableRows.eq(3).find('td')
       expect(thirdRowColumns.eq(0).text()).toContain('Smith, John Middle Names')
       expect(thirdRowColumns.eq(0).text()).toContain('X7896YZ')
       expect(thirdRowColumns.eq(1).text()).toStrictEqual('Exeter (HMP)')
@@ -608,7 +608,7 @@ describe('Restrictions', () => {
       expect(thirdRowColumns.eq(3).text()).toStrictEqual('Friend')
       expect(thirdRowColumns.eq(4).text()).toStrictEqual('Active')
 
-      const fourthRowColumns = $($(tableBody).find('tr').eq(3)).find('td')
+      const fourthRowColumns = tableRows.eq(4).find('td')
       expect(fourthRowColumns.eq(0).text()).toContain('Smith, John Middle Names')
       expect(fourthRowColumns.eq(0).text()).toContain('Z7896YZ')
       expect(fourthRowColumns.eq(1).text()).toStrictEqual('Exeter (HMP)')
@@ -616,6 +616,95 @@ describe('Restrictions', () => {
       expect(fourthRowColumns.eq(3).text()).toStrictEqual('Uncle')
       expect(fourthRowColumns.eq(4).text()).toStrictEqual('Active')
     })
+  })
+
+  it('should show pagination if more than 10', async () => {
+    const linkedPrisoners: LinkedPrisonerDetails[] = Array(10)
+      .fill(0)
+      .map(
+        (_, i) =>
+          ({
+            prisonerNumber: `A${i}BC`,
+            lastName: `Last`,
+            firstName: 'First',
+            prisonId: 'BXI',
+            prisonName: 'Brixton (HMP)',
+            prisonerContactId: i,
+            relationshipTypeCode: 'S',
+            relationshipTypeDescription: 'Social/Family',
+            relationshipToPrisonerCode: 'MOT',
+            relationshipToPrisonerDescription: 'Mother',
+            isRelationshipActive: true,
+          }) as LinkedPrisonerDetails,
+      )
+
+    contactsService.getLinkedPrisoners.mockResolvedValue({ content: linkedPrisoners, totalElements: 240 })
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.getContact.mockResolvedValue(TestData.contact({ id: 1 }))
+    contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
+
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
+    const $ = cheerio.load(response.text)
+
+    // Should include all relationships in the count if a prisoner has more than one relationship to the contact
+    expect($('.linked-prisoners-tab-title').text().trim()).toStrictEqual('Linked prisoners (240)')
+
+    linkedPrisoners.forEach(linkedPrisoner => {
+      const rowColumns = $('.govuk-table__row')
+        .eq(linkedPrisoner.prisonerContactId + 1)
+        .find('td')
+      expect(rowColumns.eq(0).text()).toContain(linkedPrisoner.prisonerNumber)
+    })
+    expect($('.moj-pagination')).toHaveLength(2)
+    expect(contactsService.getLinkedPrisoners).toHaveBeenCalledWith(1, 0, 10, user)
+  })
+
+  it('should load the relevant page if not default', async () => {
+    const linkedPrisoners: LinkedPrisonerDetails[] = Array(10)
+      .fill(0)
+      .map(
+        (_, i) =>
+          ({
+            prisonerNumber: `A${i}BC`,
+            lastName: `Last`,
+            firstName: 'First',
+            prisonId: 'BXI',
+            prisonName: 'Brixton (HMP)',
+            prisonerContactId: i + 50,
+            relationshipTypeCode: 'S',
+            relationshipTypeDescription: 'Social/Family',
+            relationshipToPrisonerCode: 'MOT',
+            relationshipToPrisonerDescription: 'Mother',
+            isRelationshipActive: true,
+          }) as LinkedPrisonerDetails,
+      )
+
+    contactsService.getLinkedPrisoners.mockResolvedValue({ content: linkedPrisoners, totalElements: 240 })
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.getContact.mockResolvedValue(TestData.contact({ id: 1 }))
+    contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
+
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}?linkedPrisonerPage=2`,
+    )
+    const $ = cheerio.load(response.text)
+
+    // Should include all relationships in the count if a prisoner has more than one relationship to the contact
+    expect($('.linked-prisoners-tab-title').text().trim()).toStrictEqual('Linked prisoners (240)')
+
+    linkedPrisoners.forEach(linkedPrisoner => {
+      const rowColumns = $('.govuk-table__row')
+        .eq(linkedPrisoner.prisonerContactId - 49)
+        .find('td')
+      expect(rowColumns.eq(0).text()).toContain(linkedPrisoner.prisonerNumber)
+    })
+    expect($('.moj-pagination')).toHaveLength(2)
+    expect(contactsService.getLinkedPrisoners).toHaveBeenCalledWith(
+      1,
+      1 /* page number is 0 indexed so page 2 = page 1 API */,
+      10,
+      user,
+    )
   })
 })
 

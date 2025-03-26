@@ -72,7 +72,8 @@
         </div>
         <div class="govuk-tabs__panel govuk-!-static-padding-top-7 govuk-tabs__panel--hidden"
              data-qa="linked-prisoner-tab-message" id="linked-prisoners">
-          {{ linkedPrisonersTable({ linkedPrisoners: linkedPrisoners, contact: contact }) }}
+          <h1 class="govuk-heading-l">Prisoners linked to contact {{ contact | formatNameFirstNameFirst }}</h1>
+          {{ linkedPrisonersTable({ linkedPrisoners: linkedPrisoners, paginationParams: paginationParams }) }}
         </div>
       </div>
     </div>

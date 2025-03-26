@@ -87,8 +87,8 @@
                 </div>
                 <div class="govuk-tabs__panel govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" id="linked-prisoners">
                     {% if linkedPrisoners.length > 0 %}
-                        <h1 class="govuk-heading-l" data-qa="confirm-global-restriction-title">Linked prisoners for contact {{ contact | formatNameFirstNameFirst(excludeMiddleNames = true) }}</h1>
-                        {{ linkedPrisonersTable({ linkedPrisoners: linkedPrisoners, contact: contact }) }}
+                        <h1 class="govuk-heading-l" data-qa="confirm-global-restriction-title">Prisoners linked to contact {{ contact | formatNameFirstNameFirst }}</h1>
+                        {{ linkedPrisonersTable({ linkedPrisoners: linkedPrisoners, paginationParams: paginationParams }) }}
                     {% else %}
                         <p data-qa="no-linked-prisoners-message">No linked prisoners recorded.</p>
                     {% endif %}
