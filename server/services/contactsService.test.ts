@@ -6,7 +6,7 @@ import TestData from '../routes/testutils/testData'
 import { components } from '../@types/contactsApi'
 import AddContactJourney = journeys.AddContactJourney
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
-import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
+import PagedModelContactSearchResultItem = contactsApiClientTypes.PagedModelContactSearchResultItem
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
 import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
@@ -358,7 +358,7 @@ describe('contactsService', () => {
 
     it('Retrieves search contact details matching the search criteria', async () => {
       // Given
-      const contactResults: ContactSearchResultItemPage = {
+      const contactResults: PagedModelContactSearchResultItem = {
         totalPages: 1,
         totalElements: 1,
         first: true,

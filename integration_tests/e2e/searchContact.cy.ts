@@ -36,8 +36,10 @@ context('Search contact', () => {
     })
     cy.task('stubContactSearch', {
       results: {
-        totalPages: 1,
-        totalElements: 1,
+        page: {
+          totalPages: 1,
+          totalElements: 1,
+        },
         content: [TestData.contactSearchResultItem()],
       },
       lastName: 'Mason',
@@ -183,8 +185,10 @@ context('Search contact', () => {
   it(`should pass validation when all the fields are entered`, () => {
     cy.task('stubContactSearch', {
       results: {
-        totalPages: 1,
-        totalElements: 1,
+        page: {
+          totalPages: 1,
+          totalElements: 1,
+        },
         content: [TestData.contactSearchResultItem()],
       },
       lastName: 'Mason',
@@ -213,8 +217,10 @@ context('Search contact', () => {
   it(`should pass validation when day and month starts with 0`, () => {
     cy.task('stubContactSearch', {
       results: {
-        totalPages: 1,
-        totalElements: 1,
+        page: {
+          totalPages: 1,
+          totalElements: 1,
+        },
         content: [TestData.contactSearchResultItem()],
       },
       lastName: 'Mason',

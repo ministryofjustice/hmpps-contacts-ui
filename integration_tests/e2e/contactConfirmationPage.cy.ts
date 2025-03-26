@@ -42,8 +42,10 @@ context('Contact confirmation', () => {
 
     cy.task('stubContactSearch', {
       results: {
-        totalPages: 1,
-        totalElements: 1,
+        page: {
+          totalPages: 1,
+          totalElements: 1,
+        },
         content: [searchResult],
       },
       lastName: 'Contact',

@@ -42,11 +42,12 @@ export default class ContactConfirmationController implements PageHandler {
       this.LINKED_PRISONER_ITEMS_PER_PAGE,
       user,
     )
+    const linkedPrisonersCount = linkedPrisoners?.page?.totalElements ?? 0
     setPaginationLocals(
       res,
       this.LINKED_PRISONER_ITEMS_PER_PAGE,
       linkedPrisonerPageNumber,
-      linkedPrisoners?.totalElements ?? 0,
+      linkedPrisonersCount,
       linkedPrisoners?.content?.length ?? 0,
       '?linkedPrisonerPage={page}#linked-prisoners',
     )
@@ -57,7 +58,7 @@ export default class ContactConfirmationController implements PageHandler {
     return res.render('pages/contacts/manage/contactConfirmation/confirmation', {
       contact,
       linkedPrisoners: linkedPrisoners.content,
-      linkedPrisonersCount: linkedPrisoners.totalElements,
+      linkedPrisonersCount,
       globalRestrictions,
       formattedFullName,
       prisonerDetails,

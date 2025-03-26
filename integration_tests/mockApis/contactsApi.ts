@@ -316,8 +316,10 @@ export default {
   },
   stubContactSearch: ({
     results = {
-      totalPages: 0,
-      totalElements: 0,
+      page: {
+        totalPages: 0,
+        totalElements: 0,
+      },
       content: [],
     },
     lastName,
@@ -327,7 +329,7 @@ export default {
     page = '0',
     size = '10',
   }: {
-    results: { totalPages: number; totalElements: number; content: StubContactSearchResultItem[] }
+    results: { page: { totalPages: number; totalElements: number }; content: StubContactSearchResultItem[] }
     lastName: string
     middleNames: string
     firstName: string
@@ -838,7 +840,7 @@ export default {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
           content: args.linkedPrisoners,
-          totalElements: args.totalElements ?? args.linkedPrisoners.length,
+          page: { totalElements: args.totalElements ?? args.linkedPrisoners.length },
         },
       },
     })

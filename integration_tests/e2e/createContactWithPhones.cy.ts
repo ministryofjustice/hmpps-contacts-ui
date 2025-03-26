@@ -48,8 +48,10 @@ context('Create Contact With Phone Numbers', () => {
     })
     cy.task('stubContactSearch', {
       results: {
-        totalPages: 0,
-        totalElements: 0,
+        page: {
+          totalPages: 0,
+          totalElements: 0,
+        },
         content: [],
       },
       lastName: 'FOO',

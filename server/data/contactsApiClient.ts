@@ -6,8 +6,7 @@ import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import Pageable = contactsApiClientTypes.Pageable
 import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
-import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
-import PrisonerContactSummaryPage = contactsApiClientTypes.PrisonerContactSummaryPage
+import PagedModelPrisonerContactSummary = contactsApiClientTypes.PagedModelPrisonerContactSummary
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
 import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
@@ -32,8 +31,8 @@ import PatchContactAddressRequest = contactsApiClientTypes.PatchContactAddressRe
 import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAddressPhoneRequest
 import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
+import PagedModelContactSearchResultItem = contactsApiClientTypes.PagedModelContactSearchResultItem
 
-type PageableObject = components['schemas']['PageableObject']
 type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
@@ -41,7 +40,7 @@ type AddContactRelationshipRequest = components['schemas']['AddContactRelationsh
 type CreateContactRequest = components['schemas']['CreateContactRequest']
 type ContactNameDetails = components['schemas']['ContactNameDetails']
 type CreateMultipleIdentitiesRequest = components['schemas']['CreateMultipleIdentitiesRequest']
-type LinkedPrisonerPage = components['schemas']['LinkedPrisonerPage']
+type PagedModelLinkedPrisonerDetails = components['schemas']['PagedModelLinkedPrisonerDetails']
 type CreateMultiplePhoneNumbersRequest = components['schemas']['CreateMultiplePhoneNumbersRequest']
 
 export default class ContactsApiClient extends RestClient {
@@ -76,11 +75,15 @@ export default class ContactsApiClient extends RestClient {
     prisonerNumber: string,
     activeOnly: boolean,
     user: Express.User,
-    pagination?: PageableObject,
-  ): Promise<PrisonerContactSummaryPage> {
+    pagination?: {
+      page: number
+      size: number
+      sort?: string[]
+    },
+  ): Promise<PagedModelPrisonerContactSummary> {
     const paginationParameters = pagination ?? { page: 0, size: config.apis.contactsApi.pageSize || 10 }
 
-    return this.get<PrisonerContactSummaryPage>(
+    return this.get<PagedModelPrisonerContactSummary>(
       {
         path: `/prisoner/${prisonerNumber}/contact`,
         query: { active: activeOnly, ...paginationParameters },
@@ -102,7 +105,7 @@ export default class ContactsApiClient extends RestClient {
     contactSearchRequest: ContactSearchRequest,
     user: Express.User,
     pagination?: Pageable,
-  ): Promise<ContactSearchResultItemPage> {
+  ): Promise<PagedModelContactSearchResultItem> {
     const paginationParameters = pagination ?? { page: 0, size: config.apis.contactsApi.pageSize || 10 }
     return this.get(
       {
@@ -456,8 +459,8 @@ export default class ContactsApiClient extends RestClient {
     page: number,
     size: number,
     user: Express.User,
-  ): Promise<LinkedPrisonerPage> {
-    return this.get<LinkedPrisonerPage>(
+  ): Promise<PagedModelLinkedPrisonerDetails> {
+    return this.get<PagedModelLinkedPrisonerDetails>(
       {
         path: `/contact/${contactId}/linked-prisoners?page=${page}&size=${size}`,
       },

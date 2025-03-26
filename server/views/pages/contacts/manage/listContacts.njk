@@ -86,7 +86,7 @@
     <div class="govuk-tabs__panel" id="active-contacts">
         {% if activeContacts.content.length > 0 %}
             {{ createTable(activeContacts.content) }}
-            {{ addPagination(activeContacts, 'active-contacts') }}
+            {{ addPagination(activeContacts.page, 'active-contacts') }}
         {% else %}
         <div class="govuk-!-static-margin-top-4">{{ prisonerDoesNotHaveAnyContactsMessage(prisonerDetails, 'active') }}</div>
         {% endif %}
@@ -94,7 +94,7 @@
     <div class="govuk-tabs__panel govuk-tabs__panel--hidden contact-list" id="inactive-contacts">
         {% if inactiveContacts.content.length > 0 %}
             {{ createTable(inactiveContacts.content) }}
-            {{ addPagination(inactiveContacts, 'inactive-contacts') }}
+            {{ addPagination(inactiveContacts.page, 'inactive-contacts') }}
         {% else %}
             <div class="govuk-!-static-margin-top-4">{{ prisonerDoesNotHaveAnyContactsMessage(prisonerDetails, 'inactive') }}</div>
         {% endif %}

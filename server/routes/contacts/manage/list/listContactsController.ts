@@ -3,11 +3,8 @@ import config from '../../../../config'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
-import { components } from '../../../../@types/contactsApi'
 import { Navigation } from '../../common/navigation'
-import PrisonerContactSummaryPage = contactsApiClientTypes.PrisonerContactSummaryPage
-
-type PageableObject = components['schemas']['PageableObject']
+import PagedModelPrisonerContactSummary = contactsApiClientTypes.PagedModelPrisonerContactSummary
 
 export default class ListContactsController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -21,18 +18,18 @@ export default class ListContactsController implements PageHandler {
     const page = Number(req.query['page'] as unknown) || 0
     const pageSize = config.apis.contactsApi.pageSize || 10
 
-    const activeContacts: PrisonerContactSummaryPage[] = await this.contactsService.getPrisonerContacts(
+    const activeContacts: PagedModelPrisonerContactSummary[] = await this.contactsService.getPrisonerContacts(
       prisonerNumber as string,
       true,
       user,
-      { page, size: pageSize } as PageableObject,
+      { page, size: pageSize },
     )
 
-    const inactiveContacts: PrisonerContactSummaryPage[] = await this.contactsService.getPrisonerContacts(
+    const inactiveContacts: PagedModelPrisonerContactSummary[] = await this.contactsService.getPrisonerContacts(
       prisonerNumber as string,
       false,
       user,
-      { page, size: pageSize } as PageableObject,
+      { page, size: pageSize },
     )
     const navigation: Navigation = { breadcrumbs: ['DPS_HOME', 'DPS_PROFILE'] }
     res.render('pages/contacts/manage/listContacts', {

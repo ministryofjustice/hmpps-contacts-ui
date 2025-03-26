@@ -8,7 +8,7 @@ type ContactAddressDetails = components['schemas']['ContactAddressDetails']
 type ContactPhoneDetails = components['schemas']['ContactPhoneDetails']
 type ContactPhoneNumberDetails = components['schemas']['ContactPhoneDetails']
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
-type PrisonerContactSummaryPage = components['schemas']['PrisonerContactSummaryPage']
+type PagedModelPrisonerContactSummary = components['schemas']['PagedModelPrisonerContactSummary']
 type PrisonerContactSummary = components['schemas']['PrisonerContactSummary']
 type ContactIdentityDetails = components['schemas']['ContactIdentityDetails']
 type PatchContactResponse = components['schemas']['PatchContactResponse']
@@ -382,32 +382,17 @@ export default class TestData {
 
   static prisonerContactSummaryPage = ({
     content = [this.getPrisonerContact()],
-    pageable = {
-      pageNumber: 3,
-      pageSize: 10,
-      offset: 0,
-      paged: true,
-      unpaged: false,
+    page = {
+      size: 10,
+      totalElements: 542,
+      number: 3,
+      totalPages: 55,
     },
-    totalElements = 542,
-    totalPages = 55,
-    first = false,
-    size = 10,
-    number = 3,
-    numberOfElements = 10,
-    empty = false,
-  }: Partial<PrisonerContactSummaryPage> = {}): PrisonerContactSummaryPage =>
+  }: Partial<PagedModelPrisonerContactSummary> = {}): PagedModelPrisonerContactSummary =>
     ({
       content,
-      pageable,
-      totalElements,
-      totalPages,
-      first,
-      size,
-      number,
-      numberOfElements,
-      empty,
-    }) as PrisonerContactSummaryPage
+      page,
+    }) as PagedModelPrisonerContactSummary
 
   static patchContact = ({
     id = 22,

@@ -1703,7 +1703,7 @@ export interface paths {
     }
     /**
      * Get linked prisoners
-     * @description Gets a list of prisoners that have an active relationship with the contact
+     * @description Gets a list of prisoners that have an active relationship with the contact. Sorted by prisoner lastName, firstName, middleNames and the prisoner number.
      */
     get: operations['getContactLinkedPrisoners']
     put?: never
@@ -6560,39 +6560,19 @@ export interface components {
       /** Format: date-time */
       updatedTime?: string
     }
-    PageSyncContactId: {
+    PageMetadata: {
+      /** Format: int64 */
+      size?: number
+      /** Format: int64 */
+      number?: number
       /** Format: int64 */
       totalElements?: number
-      /** Format: int32 */
-      totalPages?: number
-      first?: boolean
-      last?: boolean
-      /** Format: int32 */
-      size?: number
-      content?: components['schemas']['SyncContactId'][]
-      /** Format: int32 */
-      number?: number
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      numberOfElements?: number
-      pageable?: components['schemas']['PageableObject']
-      empty?: boolean
-    }
-    PageableObject: {
       /** Format: int64 */
-      offset?: number
-      sort?: components['schemas']['SortObject']
-      unpaged?: boolean
-      paged?: boolean
-      /** Format: int32 */
-      pageNumber?: number
-      /** Format: int32 */
-      pageSize?: number
+      totalPages?: number
     }
-    SortObject: {
-      empty?: boolean
-      unsorted?: boolean
-      sorted?: boolean
+    PagedModelSyncContactId: {
+      content?: components['schemas']['SyncContactId'][]
+      page?: components['schemas']['PageMetadata']
     }
     /** @description Response object for sync reconciliation */
     SyncContactId: {
@@ -6657,6 +6637,10 @@ export interface components {
        * @example true
        */
       isActive: boolean
+    }
+    PagedModelPrisonerContactSummary: {
+      content?: components['schemas']['PrisonerContactSummary'][]
+      page?: components['schemas']['PageMetadata']
     }
     /** @description Describes the details of a prisoner's contact */
     PrisonerContactSummary: {
@@ -6839,26 +6823,6 @@ export interface components {
       comments?: string
       restrictionSummary: components['schemas']['RestrictionsSummary']
     }
-    PrisonerContactSummaryPage: {
-      content?: components['schemas']['PrisonerContactSummary'][]
-      pageable?: components['schemas']['PageableObject']
-      /** Format: int64 */
-      total?: number
-      last?: boolean
-      /** Format: int64 */
-      totalElements?: number
-      /** Format: int32 */
-      totalPages?: number
-      first?: boolean
-      /** Format: int32 */
-      size?: number
-      /** Format: int32 */
-      number?: number
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      numberOfElements?: number
-      empty?: boolean
-    }
     RestrictionTypeDetails: {
       restrictionType: string
       restrictionTypeDescription: string
@@ -7019,13 +6983,6 @@ export interface components {
        */
       middleNames?: string
     }
-    Pageable: {
-      /** Format: int32 */
-      page?: number
-      /** Format: int32 */
-      size?: number
-      sort?: string[]
-    }
     /** @description The details of a single relationship between a prisoner and a contact */
     LinkedPrisonerDetails: {
       /**
@@ -7094,49 +7051,9 @@ export interface components {
        */
       isRelationshipActive: boolean
     }
-    LinkedPrisonerPage: {
+    PagedModelLinkedPrisonerDetails: {
       content?: components['schemas']['LinkedPrisonerDetails'][]
-      pageable?: components['schemas']['PageableObject']
-      /** Format: int64 */
-      total?: number
-      last?: boolean
-      /** Format: int64 */
-      totalElements?: number
-      /** Format: int32 */
-      totalPages?: number
-      first?: boolean
-      /** Format: int32 */
-      size?: number
-      /** Format: int32 */
-      number?: number
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      numberOfElements?: number
-      empty?: boolean
-    }
-    /** @description Contact Search Request */
-    ContactSearchRequest: {
-      /**
-       * @description Last name of the contact
-       * @example Jones
-       */
-      lastName: string
-      /**
-       * @description First name of the contact
-       * @example Elton
-       */
-      firstName?: string
-      /**
-       * @description Middle names of the contact
-       * @example Simon
-       */
-      middleNames?: string
-      /**
-       * Format: dd/MM/yyyy
-       * @description Date of Birth of the contact in ISO format
-       * @example 30/12/2010
-       */
-      dateOfBirth?: string
+      page?: components['schemas']['PageMetadata']
     }
     /** @description The details of a contact as an individual */
     ContactSearchResultItem: {
@@ -7261,25 +7178,9 @@ export interface components {
        */
       comments?: string
     }
-    ContactSearchResultItemPage: {
+    PagedModelContactSearchResultItem: {
       content?: components['schemas']['ContactSearchResultItem'][]
-      pageable?: components['schemas']['PageableObject']
-      /** Format: int64 */
-      total?: number
-      last?: boolean
-      /** Format: int64 */
-      totalElements?: number
-      /** Format: int32 */
-      totalPages?: number
-      first?: boolean
-      /** Format: int32 */
-      size?: number
-      /** Format: int32 */
-      number?: number
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      numberOfElements?: number
-      empty?: boolean
+      page?: components['schemas']['PageMetadata']
     }
     /** @description City reference entity */
     City: {
@@ -12409,7 +12310,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PageSyncContactId']
+          'application/json': components['schemas']['PagedModelSyncContactId']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -12519,7 +12420,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PrisonerContactSummaryPage']
+          'application/json': components['schemas']['PagedModelPrisonerContactSummary']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -13210,15 +13111,11 @@ export interface operations {
   }
   getContactLinkedPrisoners: {
     parameters: {
-      query: {
-        /** @description Pageable configurations */
-        pageable: components['schemas']['Pageable']
+      query?: {
         /** @description Zero-based page index (0..N) */
         page?: number
         /** @description The size of the page to be returned */
         size?: number
-        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-        sort?: string[]
       }
       header?: never
       path: {
@@ -13238,7 +13135,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['LinkedPrisonerPage']
+          'application/json': components['schemas']['PagedModelLinkedPrisonerDetails']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -13273,10 +13170,16 @@ export interface operations {
   searchContacts: {
     parameters: {
       query: {
-        /** @description Pageable configurations */
-        pageable: components['schemas']['Pageable']
-        /** @description Contact search criteria */
-        request: components['schemas']['ContactSearchRequest']
+        lastName: string
+        firstName?: string
+        middleNames?: string
+        dateOfBirth?: string
+        /** @description Zero-based page index (0..N) */
+        page?: number
+        /** @description The size of the page to be returned */
+        size?: number
+        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+        sort?: string[]
       }
       header?: never
       path?: never
@@ -13290,7 +13193,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ContactSearchResultItemPage']
+          'application/json': components['schemas']['PagedModelContactSearchResultItem']
         }
       }
       /** @description Invalid request */

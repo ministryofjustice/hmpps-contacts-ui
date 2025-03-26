@@ -44,8 +44,10 @@ context('Create contact and update the relationship from check answers', () => {
     })
     cy.task('stubContactSearch', {
       results: {
-        totalPages: 0,
-        totalElements: 0,
+        page: {
+          totalPages: 0,
+          totalElements: 0,
+        },
         content: [],
       },
       lastName: 'FOO',

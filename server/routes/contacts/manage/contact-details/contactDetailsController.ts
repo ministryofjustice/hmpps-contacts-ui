@@ -49,11 +49,12 @@ export default class ContactDetailsController implements PageHandler {
       this.LINKED_PRISONER_ITEMS_PER_PAGE,
       user,
     )
+    const linkedPrisonersCount = linkedPrisoners?.page?.totalElements ?? 0
     setPaginationLocals(
       res,
       this.LINKED_PRISONER_ITEMS_PER_PAGE,
       linkedPrisonerPageNumber,
-      linkedPrisoners?.totalElements ?? 0,
+      linkedPrisonersCount,
       linkedPrisoners?.content?.length ?? 0,
       '?linkedPrisonerPage={page}#linked-prisoners',
     )
@@ -71,7 +72,7 @@ export default class ContactDetailsController implements PageHandler {
       manageContactRelationshipUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
       navigation,
       linkedPrisoners: linkedPrisoners.content,
-      linkedPrisonerCount: linkedPrisoners.totalElements,
+      linkedPrisonersCount,
     })
   }
 }
