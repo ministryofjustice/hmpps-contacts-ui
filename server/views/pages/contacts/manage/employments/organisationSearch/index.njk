@@ -7,7 +7,13 @@
 
 {% extends "partials/layout.njk" %}§
 
-{% set pageTitle = "Check if the employer organisation is already on the system - Contacts - DPS" %}
+{% if isNewContact %}
+  {% set pageTitle = "Check if the employer organisation is already on the system - Add a contact - DPS" %}
+  {% set caption = journey | captionForAddContactJourney %}
+{% else %}
+  {% set pageTitle = "Check if the employer organisation is already on the system - Edit professional information - DPS" %}
+  {% set caption = "Edit professional information" %}
+{% endif %}
 
 {% block content %}
   {% include 'partials/navigation.njk' %}
@@ -15,7 +21,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-!-static-margin-bottom-7">
-        <span class="govuk-caption-l">Edit professional information</span>
+        <span class="govuk-caption-l">{{ caption }}</span>
         <h1 class="govuk-heading-l">Check if the employer organisation is already on the system</h1>
       </div>
       {{ govukWarningText({
@@ -70,7 +76,7 @@
               },
               {
                 classes: 'govuk-link govuk-link--no-visited-state',
-                html: '<a href="/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/update-employments/' + employmentIdx + '/check-employer/' + journeyId + '?organisationId=' + organisation.organisationId + '">Check if this is the correct employer<span class="govuk-visually-hidden"> (' + (organisation.organisationName | escape) + ')</span></a>',
+                html: '<a href="' + baseEmploymentLink + 'check-employer/' + journeyId + '?organisationId=' + organisation.organisationId + '">Check if this is the correct employer<span class="govuk-visually-hidden"> (' + (organisation.organisationName | escape) + ')</span></a>',
                 format: "numeric"
               }
             ]), organisationRows) %}
@@ -85,7 +91,7 @@
                 key: 'organisationName'
               },
               {
-                text: "Primary or default address"
+                text: "Primary address"
               },
               {
                 text: "Business phone number"

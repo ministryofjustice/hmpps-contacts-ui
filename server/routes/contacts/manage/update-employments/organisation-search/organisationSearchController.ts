@@ -62,6 +62,7 @@ export default class OrganisationSearchController implements PageHandler {
       navigation: {
         backLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${journeyId}`,
       },
+      baseEmploymentLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/`,
       ...req.params,
       organisationName: journey.organisationSearch.searchTerm ?? '',
       organisations: searchResult?.content ?? [],

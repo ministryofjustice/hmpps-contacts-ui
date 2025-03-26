@@ -32,6 +32,15 @@ declare namespace journeys {
     newAddress?: AddressForm | undefined
     employments?: EmploymentDetails[] | undefined
     pendingEmployments?: EmploymentDetails[] | undefined
+    newEmployment?: {
+      organisationId?: number
+      employer?: OrganisationDetails
+    }
+    organisationSearch?: {
+      page: number
+      searchTerm?: string
+      sort?: string
+    }
     phoneNumbers?: PhoneNumberForm[] | undefined
     identities?: IdentityForm[] | undefined
     emailAddresses?: EmailAddressForm[] | undefined
