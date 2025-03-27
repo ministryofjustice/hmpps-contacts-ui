@@ -113,7 +113,7 @@
         </form>
     </div>
 
-    {% if results.totalElements > 0 %}
+    {% if results.page.totalElements > 0 %}
         <div class="govuk-grid-column-full govuk-!-padding-left-3 govuk-!-padding-right-3 contact-list" id="contact-search-results">
             {% set rows = [] %}
             {% for result in results.content %}
@@ -147,7 +147,7 @@
                 rows: rows
             }) }}
 
-            {{ addPagination(results) }}
+            {{ addPagination(results.page) }}
 
         </div>
 

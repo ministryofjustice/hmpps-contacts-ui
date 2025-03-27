@@ -70,7 +70,7 @@ beforeEach(() => {
   })
   referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mr')
   restrictionsService.getGlobalRestrictionsEnriched.mockResolvedValue([])
-  contactsService.getLinkedPrisoners.mockResolvedValue({ content: [], totalElements: 0 })
+  contactsService.getLinkedPrisoners.mockResolvedValue({ content: [], page: { totalElements: 0 } })
 })
 
 afterEach(() => {
@@ -500,7 +500,7 @@ describe('Restrictions', () => {
   describe('Linked prisoners tab', () => {
     it('should render linked prisoners tab with no results', async () => {
       // Given
-      contactsService.getLinkedPrisoners.mockResolvedValue({ content: [], totalElements: 0 })
+      contactsService.getLinkedPrisoners.mockResolvedValue({ content: [], page: { totalElements: 0 } })
 
       // When
       const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
@@ -572,7 +572,7 @@ describe('Restrictions', () => {
 
       contactsService.getLinkedPrisoners.mockResolvedValue({
         content: linkedPrisoners,
-        totalElements: 4,
+        page: { totalElements: 4 },
       })
 
       // When
@@ -638,7 +638,7 @@ describe('Restrictions', () => {
           }) as LinkedPrisonerDetails,
       )
 
-    contactsService.getLinkedPrisoners.mockResolvedValue({ content: linkedPrisoners, totalElements: 240 })
+    contactsService.getLinkedPrisoners.mockResolvedValue({ content: linkedPrisoners, page: { totalElements: 240 } })
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.getContact.mockResolvedValue(TestData.contact({ id: 1 }))
     contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
@@ -679,7 +679,7 @@ describe('Restrictions', () => {
           }) as LinkedPrisonerDetails,
       )
 
-    contactsService.getLinkedPrisoners.mockResolvedValue({ content: linkedPrisoners, totalElements: 240 })
+    contactsService.getLinkedPrisoners.mockResolvedValue({ content: linkedPrisoners, page: { totalElements: 240 } })
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.getContact.mockResolvedValue(TestData.contact({ id: 1 }))
     contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())

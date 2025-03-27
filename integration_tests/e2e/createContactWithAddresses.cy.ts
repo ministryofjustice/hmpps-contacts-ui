@@ -59,8 +59,10 @@ context('Create Contact With Addresses', () => {
     })
     cy.task('stubContactSearch', {
       results: {
-        totalPages: 0,
-        totalElements: 0,
+        page: {
+          totalPages: 0,
+          totalElements: 0,
+        },
         content: [],
       },
       lastName: 'FOO',

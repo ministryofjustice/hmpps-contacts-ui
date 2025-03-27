@@ -7,7 +7,7 @@ import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import AddContactJourney = journeys.AddContactJourney
-import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
+import ContactSearchResultItemPage = contactsApiClientTypes.PagedModelContactSearchResultItem
 import { MockedService } from '../../../../testutils/mockedServices'
 
 jest.mock('../../../../services/auditService')
@@ -193,31 +193,12 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
 describe('Contact seaarch results', () => {
   let results: ContactSearchResultItemPage = {
     content: [TestData.contactSearchResultItem()],
-    pageable: {
-      pageNumber: 0,
-      pageSize: 20,
-      sort: {
-        empty: false,
-        sorted: true,
-        unsorted: false,
-      },
-      offset: 0,
-      unpaged: false,
-      paged: true,
+    page: {
+      number: 0,
+      size: 20,
+      totalElements: 25,
+      totalPages: 3,
     },
-    last: true,
-    totalElements: 25,
-    totalPages: 3,
-    first: true,
-    size: 20,
-    number: 0,
-    sort: {
-      empty: false,
-      sorted: true,
-      unsorted: false,
-    },
-    numberOfElements: 1,
-    empty: false,
   }
   it('should display contact search results table', async () => {
     // Given
@@ -275,11 +256,11 @@ describe('Contact seaarch results', () => {
       results = {
         ...results,
         content: contactsArray,
-        totalElements: 50,
-        totalPages: 5,
-        number: 1,
-        first: false,
-        last: false,
+        page: {
+          totalElements: 50,
+          totalPages: 5,
+          number: 1,
+        },
       }
       contactsService.searchContact.mockResolvedValue(results)
 
@@ -304,11 +285,11 @@ describe('Contact seaarch results', () => {
       results = {
         ...results,
         content: contactsArray,
-        totalElements: 50,
-        totalPages: 5,
-        first: true,
-        last: false,
-        number: 0,
+        page: {
+          totalElements: 50,
+          totalPages: 5,
+          number: 0,
+        },
       }
       contactsService.searchContact.mockResolvedValue(results)
 
@@ -331,11 +312,11 @@ describe('Contact seaarch results', () => {
       results = {
         ...results,
         content: contactsArray,
-        totalElements: 50,
-        totalPages: 5,
-        first: false,
-        last: true,
-        number: 1,
+        page: {
+          totalElements: 50,
+          totalPages: 5,
+          number: 1,
+        },
       }
       contactsService.searchContact.mockResolvedValue(results)
 

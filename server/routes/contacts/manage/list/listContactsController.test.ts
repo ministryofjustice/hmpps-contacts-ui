@@ -7,7 +7,7 @@ import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
-import PrisonerContactSummaryPage = contactsApiClientTypes.PrisonerContactSummaryPage
+import PagedModelPrisonerContactSummary = contactsApiClientTypes.PagedModelPrisonerContactSummary
 import { MockedService } from '../../../../testutils/mockedServices'
 
 jest.mock('../../../../services/auditService')
@@ -97,7 +97,9 @@ describe('listContactsController', () => {
           lastName: 'Last',
         }),
       )
-      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList } as PrisonerContactSummaryPage)
+      contactsService.getPrisonerContacts.mockResolvedValue({
+        content: contactsList,
+      } as PagedModelPrisonerContactSummary)
 
       const response = await request(app).get(`/prisoner/A462DZ/contacts/list`)
       const $ = cheerio.load(response.text)
@@ -178,7 +180,9 @@ describe('listContactsController', () => {
       ]
 
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList } as PrisonerContactSummaryPage)
+      contactsService.getPrisonerContacts.mockResolvedValue({
+        content: contactsList,
+      } as PagedModelPrisonerContactSummary)
 
       const response = await request(app).get(`/prisoner/A462DZ/contacts/list`)
       const $ = cheerio.load(response.text)
@@ -194,7 +198,7 @@ describe('listContactsController', () => {
     })
 
     it('should render a message that the prisoner does not have any active/inactive contacts', async () => {
-      const contactsList: PrisonerContactSummaryPage = {
+      const contactsList: PagedModelPrisonerContactSummary = {
         content: [],
       }
 
@@ -245,7 +249,9 @@ describe('listContactsController', () => {
       ]
 
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList } as PrisonerContactSummaryPage)
+      contactsService.getPrisonerContacts.mockResolvedValue({
+        content: contactsList,
+      } as PagedModelPrisonerContactSummary)
 
       const response = await request(app).get(`/prisoner/A462DZ/contacts/list`)
 
@@ -287,38 +293,21 @@ describe('listContactsController', () => {
 
     const contactListResponse = {
       content: contactsList,
-      pageable: {
-        pageNumber: 0,
-        pageSize: 10,
-        sort: {
-          empty: true,
-          sorted: false,
-          unsorted: true,
-        },
-        offset: 0,
-        paged: true,
-        unpaged: false,
+      page: {
+        number: 0,
+        size: 10,
+        totalElements: 542,
+        totalPages: 55,
       },
-      last: false,
-      totalElements: 542,
-      totalPages: 55,
-      first: true,
-      size: 10,
-      number: 0,
-      sort: {
-        empty: true,
-        sorted: false,
-        unsorted: true,
-      },
-      numberOfElements: 10,
-      empty: false,
     }
 
     describe('Active', () => {
       it('should render pagination for active contacts list', async () => {
         // Given
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-        contactsService.getPrisonerContacts.mockResolvedValue({ ...contactListResponse } as PrisonerContactSummaryPage)
+        contactsService.getPrisonerContacts.mockResolvedValue({
+          ...contactListResponse,
+        } as PagedModelPrisonerContactSummary)
 
         // When
         const response = await request(app).get(
@@ -342,14 +331,16 @@ describe('listContactsController', () => {
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         const actviveResponseList = {
           ...contactListResponse,
-          numberOfElements: 50,
-          totalElements: 5,
-          totalPages: 5,
-          first: true,
-          last: false,
-          number: 0,
+          page: {
+            totalElements: 5,
+            totalPages: 5,
+            number: 0,
+            size: 10,
+          },
         }
-        contactsService.getPrisonerContacts.mockResolvedValue({ ...actviveResponseList } as PrisonerContactSummaryPage)
+        contactsService.getPrisonerContacts.mockResolvedValue({
+          ...actviveResponseList,
+        } as PagedModelPrisonerContactSummary)
 
         // When
         const response = await request(app).get(
@@ -374,14 +365,16 @@ describe('listContactsController', () => {
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         const actviveResponseList = {
           ...contactListResponse,
-          numberOfElements: 50,
-          totalElements: 50,
-          totalPages: 5,
-          first: false,
-          last: true,
-          number: 1,
+          page: {
+            totalElements: 50,
+            totalPages: 5,
+            number: 1,
+            size: 10,
+          },
         }
-        contactsService.getPrisonerContacts.mockResolvedValue({ ...actviveResponseList } as PrisonerContactSummaryPage)
+        contactsService.getPrisonerContacts.mockResolvedValue({
+          ...actviveResponseList,
+        } as PagedModelPrisonerContactSummary)
 
         // When
         const response = await request(app).get(
@@ -407,7 +400,9 @@ describe('listContactsController', () => {
       it('should render pagination for inactive contacts list', async () => {
         // Given
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-        contactsService.getPrisonerContacts.mockResolvedValue({ ...contactListResponse } as PrisonerContactSummaryPage)
+        contactsService.getPrisonerContacts.mockResolvedValue({
+          ...contactListResponse,
+        } as PagedModelPrisonerContactSummary)
 
         // When
         const response = await request(app).get(
@@ -431,16 +426,16 @@ describe('listContactsController', () => {
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         const inactviveResponseList = {
           ...contactListResponse,
-          numberOfElements: 50,
-          totalElements: 50,
-          totalPages: 5,
-          first: true,
-          last: false,
-          number: 0,
+          page: {
+            totalElements: 50,
+            totalPages: 5,
+            number: 0,
+            size: 10,
+          },
         }
         contactsService.getPrisonerContacts.mockResolvedValue({
           ...inactviveResponseList,
-        } as PrisonerContactSummaryPage)
+        } as PagedModelPrisonerContactSummary)
 
         // When
         const response = await request(app).get(
@@ -465,16 +460,16 @@ describe('listContactsController', () => {
         prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
         const inactviveResponseList = {
           ...contactListResponse,
-          numberOfElements: 50,
-          totalElements: 50,
-          totalPages: 5,
-          first: false,
-          last: true,
-          number: 1,
+          page: {
+            totalElements: 50,
+            totalPages: 5,
+            number: 1,
+            size: 10,
+          },
         }
         contactsService.getPrisonerContacts.mockResolvedValue({
           ...inactviveResponseList,
-        } as PrisonerContactSummaryPage)
+        } as PagedModelPrisonerContactSummary)
 
         // When
         const response = await request(app).get(
@@ -531,7 +526,9 @@ describe('listContactsController', () => {
       ]
 
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.getPrisonerContacts.mockResolvedValue({ content: contactsList } as PrisonerContactSummaryPage)
+      contactsService.getPrisonerContacts.mockResolvedValue({
+        content: contactsList,
+      } as PagedModelPrisonerContactSummary)
 
       const response = await request(app).get(`/prisoner/A462DZ/contacts/list`)
       const $ = cheerio.load(response.text)

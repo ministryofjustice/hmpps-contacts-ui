@@ -42,7 +42,7 @@ beforeEach(() => {
     prisonerContactRestrictions: [],
     contactGlobalRestrictions: [],
   })
-  contactsService.getLinkedPrisoners.mockResolvedValue({ content: [], totalElements: 0 })
+  contactsService.getLinkedPrisoners.mockResolvedValue({ content: [], page: { totalElements: 0 } })
 })
 
 afterEach(() => {
@@ -1089,7 +1089,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           isRelationshipActive: true,
         },
       ]
-      contactsService.getLinkedPrisoners.mockResolvedValue({ content: linkedPrisoners, totalElements: 4 })
+      contactsService.getLinkedPrisoners.mockResolvedValue({ content: linkedPrisoners, page: { totalElements: 4 } })
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(TestData.contact())
       contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
@@ -1155,7 +1155,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
             }) as LinkedPrisonerDetails,
         )
 
-      contactsService.getLinkedPrisoners.mockResolvedValue({ content: linkedPrisoners, totalElements: 240 })
+      contactsService.getLinkedPrisoners.mockResolvedValue({ content: linkedPrisoners, page: { totalElements: 240 } })
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(TestData.contact({ id: 1 }))
       contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
@@ -1196,7 +1196,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
             }) as LinkedPrisonerDetails,
         )
 
-      contactsService.getLinkedPrisoners.mockResolvedValue({ content: linkedPrisoners, totalElements: 240 })
+      contactsService.getLinkedPrisoners.mockResolvedValue({ content: linkedPrisoners, page: { totalElements: 240 } })
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(TestData.contact({ id: 1 }))
       contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())

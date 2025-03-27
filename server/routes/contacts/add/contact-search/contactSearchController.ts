@@ -8,7 +8,7 @@ import { formatDateForApi } from '../../../../utils/utils'
 import config from '../../../../config'
 import { navigationForAddContactJourney } from '../addContactFlowControl'
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
-import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
+import PagedModelContactSearchResultItem = contactsApiClientTypes.PagedModelContactSearchResultItem
 
 export default class ContactSearchController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -33,7 +33,7 @@ export default class ContactSearchController implements PageHandler {
       }
 
       results = validationErrors
-        ? ({ totalPages: 0, totalElements: 0, content: [] } as ContactSearchResultItemPage)
+        ? ({ page: { totalPages: 0, totalElements: 0 }, content: [] } as PagedModelContactSearchResultItem)
         : await this.contactsService.searchContact(
             contactSearchRequest,
             { page, size: pageSize } as PaginationRequest,

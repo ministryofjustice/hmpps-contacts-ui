@@ -16,21 +16,21 @@
                 {% set paginationItems = (paginationItems.push({ type: 'dots' }), paginationItems) %}
             {% endif %}
         {% endfor %}
-        
+
         {% set to = (results.number * results.size) + results.size %}
         {% if to > results.totalElements %}
-            {% set to = results.totalElements %} 
+            {% set to = results.totalElements %}
         {% endif %}
 
         {{ mojPagination({
             previous: {
                 text: 'Previous',
                 href: ("?page=" + (results.number - 1) + '&tab=' + section + '#' + section) if section else "?page=" + (results.number - 1)
-            } if not results.first,
+            } if results.number > 0,
             next: {
                 text: 'Next',
                 href: ("?page=" + (results.number + 1) + '&tab=' + section + '#' + section) if section else "?page=" + (results.number + 1)
-            } if not results.last,
+            } if results.number < (results.totalPages - 1),
             items: paginationItems,
             results: {
                 count: results.totalElements,

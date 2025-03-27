@@ -6,7 +6,7 @@ import ReferenceCodeType from '../enumeration/referenceCodeType'
 import { components } from '../@types/contactsApi'
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
-import ContactSearchResultItemPage = contactsApiClientTypes.ContactSearchResultItemPage
+import PagedModelContactSearchResultItem = contactsApiClientTypes.PagedModelContactSearchResultItem
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
 import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
@@ -267,7 +267,7 @@ describe('contactsApiClient', () => {
         dateOfBirth: '1980-12-10T00:00:00.000Z',
       }
 
-      const results: ContactSearchResultItemPage = {
+      const results: PagedModelContactSearchResultItem = {
         totalPage: 1,
         totalElements: 1,
         content: [

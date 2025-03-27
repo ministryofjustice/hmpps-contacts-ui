@@ -44,8 +44,10 @@ context('Add Existing Contact Check Answers', () => {
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
     cy.task('stubContactSearch', {
       results: {
-        totalPages: 1,
-        totalElements: 1,
+        page: {
+          totalPages: 1,
+          totalElements: 1,
+        },
         content: [searchResult],
       },
       lastName: 'FOO',
