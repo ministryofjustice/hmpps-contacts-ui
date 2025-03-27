@@ -1,40 +1,37 @@
 import { Request, Response } from 'express'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { Page } from '../../../../../services/auditService'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
-import UpdateEmploymentJourneyParams = journeys.UpdateEmploymentJourneyParams
 import OrganisationSummaryResultItemPage = contactsApiClientTypes.OrganisationSummaryResultItemPage
 import { setPaginationLocals } from '../../../../../views/partials/simplePagination/utils'
 import OrganisationsService from '../../../../../services/organisationsService'
+import { CreateContactEmploymentParam, getEmploymentAndUrl } from '../common/utils'
 
-export default class OrganisationSearchController implements PageHandler {
+export default class CreateContactOrganisationSearchController implements PageHandler {
   constructor(private readonly organisationsService: OrganisationsService) {}
 
-  public PAGE_NAME = Page.MANAGE_CONTACT_SEARCH_ORGANISATION_PAGE
+  public PAGE_NAME = Page.CREATE_CONTACT_SEARCH_ORGANISATION_PAGE
 
   private TABLE_ROW_COUNT = 10
 
   GET = async (
-    req: Request<UpdateEmploymentJourneyParams, unknown, unknown, { page?: string; sort?: string }>,
+    req: Request<CreateContactEmploymentParam, unknown, unknown, { page?: string; sort?: string }>,
     res: Response,
   ) => {
-    const { prisonerNumber, contactId, employmentIdx, journeyId } = req.params
-    const journey = req.session.updateEmploymentsJourneys![journeyId]!
+    const { journey, employmentUrl, bounceBackUrl } = getEmploymentAndUrl(req)
+    const { prisonerNumber, employmentIdx } = req.params
+
     const { page, sort } = req.query
+    journey.organisationSearch ??= { page: 1 }
 
     if (sort) {
       journey.organisationSearch.sort = sort
       journey.organisationSearch.page = 1
-      return res.redirect(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/organisation-search/${journeyId}`,
-      )
+      return res.redirect(employmentUrl({ subPath: 'organisation-search' }))
     }
     if (page) {
       const pageNumber = Number(page)
       journey.organisationSearch.page = Number.isNaN(pageNumber) ? 0 : pageNumber
-      return res.redirect(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/organisation-search/${journeyId}`,
-      )
+      return res.redirect(employmentUrl({ subPath: 'organisation-search' }))
     }
 
     let searchResult: OrganisationSummaryResultItemPage | undefined
@@ -60,9 +57,11 @@ export default class OrganisationSearchController implements PageHandler {
 
     return res.render('pages/contacts/manage/employments/organisationSearch/index', {
       navigation: {
-        backLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${journeyId}`,
+        backLink: bounceBackUrl,
       },
-      baseEmploymentLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/`,
+      isNewContact: true,
+      baseEmploymentLink: `/prisoner/${prisonerNumber}/contacts/create/employments/${employmentIdx}/`,
+      journey,
       ...req.params,
       organisationName: journey.organisationSearch.searchTerm ?? '',
       organisations: searchResult?.content ?? [],
@@ -70,14 +69,17 @@ export default class OrganisationSearchController implements PageHandler {
     })
   }
 
-  POST = async (req: Request<PrisonerJourneyParams, unknown, { organisationName?: string }>, res: Response) => {
-    const journey = req.session.updateEmploymentsJourneys![req.params.journeyId]!
+  POST = async (req: Request<CreateContactEmploymentParam, unknown, { organisationName?: string }>, res: Response) => {
+    const { journey, employmentUrl } = getEmploymentAndUrl(req)
+    journey.organisationSearch ??= { page: 1 }
+
     if (req.body.organisationName) {
       journey.organisationSearch.searchTerm = req.body.organisationName
     } else {
       delete journey.organisationSearch.searchTerm
     }
     journey.organisationSearch.page = 1
-    res.redirect(req.originalUrl)
+
+    res.redirect(employmentUrl({ subPath: 'organisation-search' }))
   }
 }

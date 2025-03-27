@@ -4,10 +4,7 @@ import { Page } from '../../../../../services/auditService'
 import UpdateEmploymentJourneyParams = journeys.UpdateEmploymentJourneyParams
 import OrganisationsService from '../../../../../services/organisationsService'
 import { IsCorrectEmployerSchema } from './checkEmployerSchema'
-import OrganisationDetails = organisationsApiClientTypes.OrganisationDetails
-import OrganisationSummary = contactsApiClientTypes.OrganisationSummary
-import OrganisationAddressDetails = organisationsApiClientTypes.OrganisationAddressDetails
-import { organisationAddressSorter } from '../../../../../utils/sorters'
+import { EmploymentUtils } from '../../../add/employments/common/utils'
 
 export default class CheckEmployerController implements PageHandler {
   constructor(private readonly organisationsService: OrganisationsService) {}
@@ -47,15 +44,14 @@ export default class CheckEmployerController implements PageHandler {
       navigation: {
         backLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/organisation-search/${journeyId}`,
       },
-      ...req.params,
       contactNames: journey.contactNames,
       organisation: journey.changeOrganisation,
       organisationTypes: journey.changeOrganisation.organisationTypes
         .map(({ organisationTypeDescription }: { organisationTypeDescription: string }) => organisationTypeDescription)
         .sort((a: string, b: string) => a.localeCompare(b))
         .join('\n'),
-      activeAddresses: this.getActiveAddresses(journey.changeOrganisation),
-      inactiveAddresses: this.getInactiveAddresses(journey.changeOrganisation),
+      activeAddresses: EmploymentUtils.getActiveAddresses(journey.changeOrganisation),
+      inactiveAddresses: EmploymentUtils.getInactiveAddresses(journey.changeOrganisation),
       emailAddresses: journey.changeOrganisation.emailAddresses
         .map(({ emailAddress }: { emailAddress: string }) => emailAddress)
         .join('\n'),
@@ -79,75 +75,15 @@ export default class CheckEmployerController implements PageHandler {
 
     if (employmentIdx === 'new') {
       journey.employments.push({
-        employer: this.summariseOrganisationDetails(journey.changeOrganisation),
+        employer: EmploymentUtils.summariseOrganisationDetails(journey.changeOrganisation),
         isActive: true,
       })
     } else {
       const idx = Number(employmentIdx) - 1
-      journey.employments[idx]!.employer = this.summariseOrganisationDetails(journey.changeOrganisation)
+      journey.employments[idx]!.employer = EmploymentUtils.summariseOrganisationDetails(journey.changeOrganisation)
     }
     journey.organisationSearch = { page: 1 }
 
     return res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${journeyId}`)
-  }
-
-  private getActiveAddresses = (organisation: OrganisationDetails) =>
-    organisation.addresses
-      .filter(({ endDate }: OrganisationAddressDetails) => !endDate || endDate > new Date().toISOString())
-      .sort(organisationAddressSorter)
-
-  private getInactiveAddresses = (organisation: OrganisationDetails) =>
-    organisation.addresses
-      .filter(({ endDate }: OrganisationAddressDetails) => endDate && endDate < new Date().toISOString())
-      .sort(organisationAddressSorter)
-
-  private summariseOrganisationDetails = ({
-    organisationId,
-    organisationName,
-    organisationActive,
-    addresses,
-  }: OrganisationDetails): OrganisationSummary => {
-    const activePrimaryAddress = addresses.find(
-      ({ primaryAddress, endDate }: OrganisationAddressDetails) =>
-        primaryAddress && (!endDate || endDate > new Date().toISOString()),
-    )
-    const phoneNumber = activePrimaryAddress?.phoneNumbers.find(
-      ({ phoneType }: { phoneType: string }) => phoneType === 'BUS',
-    )
-
-    const {
-      flat,
-      property,
-      street,
-      area,
-      cityCode,
-      cityDescription,
-      countyCode,
-      countyDescription,
-      postcode,
-      countryCode,
-      countryDescription,
-    } = activePrimaryAddress || {}
-
-    const { phoneNumber: businessPhoneNumber, extNumber: businessPhoneNumberExtension } = phoneNumber || {}
-
-    return {
-      organisationId,
-      organisationName,
-      organisationActive,
-      flat,
-      property,
-      street,
-      area,
-      cityCode,
-      cityDescription,
-      countyCode,
-      countyDescription,
-      postcode,
-      countryCode,
-      countryDescription,
-      businessPhoneNumber,
-      businessPhoneNumberExtension,
-    }
   }
 }

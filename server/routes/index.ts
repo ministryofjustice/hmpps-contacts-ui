@@ -28,6 +28,7 @@ export default function routes({
       prisonerSearchService,
       restrictionsService,
       prisonerAddressService,
+      organisationsService,
     ),
   )
   router.use(

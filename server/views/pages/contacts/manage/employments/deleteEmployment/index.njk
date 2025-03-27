@@ -4,7 +4,13 @@
 
 {% extends "partials/layout.njk" %}§
 
-{% set pageTitle = "Are you sure you want to delete this employer - Contacts - DPS" %}
+{% if isNewContact %}
+  {% set pageTitle = "Are you sure you want to delete an employer? - Add a contact - DPS" %}
+  {% set caption = journey | captionForAddContactJourney %}
+{% else %}
+  {% set pageTitle = "Are you sure you want to delete an employer? - Edit professional information - DPS" %}
+  {% set caption = "Edit professional information" %}
+{% endif %}
 
 {% block content %}
   {% include 'partials/navigation.njk' %}
@@ -12,7 +18,7 @@
   <div class="govuk-grid-row govuk-!-static-margin-bottom-5">
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-!-static-margin-bottom-7">
-        <span class="govuk-caption-l">Edit professional information</span>
+        <span class="govuk-caption-l">{{ caption }}</span>
         <h1 class="govuk-heading-l">Are you sure you want to delete this employer from {{ contactNames | formatNameFirstNameFirst(possessiveSuffix = true) }} contact record?</h1>
       </div>
       {{ govukSummaryList({

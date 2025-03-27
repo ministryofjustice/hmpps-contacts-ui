@@ -61,6 +61,13 @@ import ApprovedToVisitController from './approved-to-visit/approvedToVisitContro
 import EmergencyContactOrNextOfKinController from './emergency-contact-or-next-of-kin/emergencyContactOrNextOfKinController'
 import { optionalEmergencyContactOrNextOfKinSchema } from '../manage/relationship/emergency-contact-or-next-of-kin/manageEmergencyContactOrNextOfKinSchema'
 import AddEmploymentsController from './employments/addEmploymentsController'
+import CreateContactOrganisationSearchController from './employments/organisation-search/createContactOrganisationSearchController'
+import OrganisationsService from '../../../services/organisationsService'
+import CreateContactCheckEmployerController from './employments/check-employer/createContactCheckEmployerController'
+import { checkEmployerSchema } from '../manage/update-employments/check-employer/checkEmployerSchema'
+import CreateContactEmploymentStatusController from './employments/employment-status/createContactEmploymentStatusController'
+import { employmentStatusSchema } from '../manage/update-employments/employment-status/employmentStatusSchema'
+import CreateContactDeleteEmploymentController from './employments/delete-employment/createContactDeleteEmploymentController'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -69,6 +76,7 @@ const AddContactRoutes = (
   prisonerSearchService: PrisonerSearchService,
   restrictionsService: RestrictionsService,
   prisonerAddressService: PrisonerAddressService,
+  organisationsService: OrganisationsService,
 ) => {
   const router = Router({ mergeParams: true })
   const { get, post } = routerMethods(router, auditService)
@@ -340,6 +348,30 @@ const AddContactRoutes = (
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/create/employments/:journeyId',
     controller: new AddEmploymentsController(),
+    noValidation: true,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/employments/:employmentIdx/organisation-search/:journeyId',
+    controller: new CreateContactOrganisationSearchController(organisationsService),
+    noValidation: true,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/employments/:employmentIdx/check-employer/:journeyId',
+    controller: new CreateContactCheckEmployerController(organisationsService),
+    schema: checkEmployerSchema,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/employments/:employmentIdx/employment-status/:journeyId',
+    controller: new CreateContactEmploymentStatusController(),
+    schema: employmentStatusSchema,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/employments/:employmentIdx/delete-employment/:journeyId',
+    controller: new CreateContactDeleteEmploymentController(),
     noValidation: true,
   })
 

@@ -4,7 +4,13 @@
 
 {% extends "partials/layout.njk" %}§
 
-{% set pageTitle = "What is the current employment status - Contacts - DPS" %}
+{% if isNewContact %}
+  {% set pageTitle = "What is the contact’s current employment status at the employer? - Add a contact - DPS" %}
+  {% set caption = journey | captionForAddContactJourney %}
+{% else %}
+  {% set pageTitle = "What is the contact’s current employment status at the employer? - Edit professional information - DPS" %}
+  {% set caption = "Edit professional information" %}
+{% endif %}
 
 {% block content %}
   {% include 'partials/navigation.njk' %}
@@ -12,7 +18,7 @@
   {% include 'partials/formErrorSummary.njk' %}
   <div class="govuk-grid-row govuk-!-static-margin-bottom-5">
     <div class="govuk-grid-column-two-thirds">
-      <span class="govuk-caption-l">Edit professional information</span>
+      <span class="govuk-caption-l">{{ caption }}</span>
       <form method='POST'>
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
         {{ govukRadios({
