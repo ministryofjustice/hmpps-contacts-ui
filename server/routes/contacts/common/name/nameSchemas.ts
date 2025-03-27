@@ -27,15 +27,6 @@ export const fullNameSchema = createSchema({
     .optional()
     .transform(val => (val?.trim()?.length ? val?.trim() : undefined))
     .transform(val => val?.trim()),
-  lastName: z
-    .string(
-      makeErrorMap({
-        invalid_string: value => LAST_NAME_INVALID_PREFIX + getUniqueInvalidChars(value?.toString()),
-      }),
-    )
-    .max(35, LAST_NAME_TOO_LONG_ERROR_MSG)
-    .regex(NAME_REGEX)
-    .refine(val => val?.trim().length > 0, { message: LAST_NAME_REQUIRED_MESSAGE }),
   firstName: z
     .string(
       makeErrorMap({
@@ -56,6 +47,15 @@ export const fullNameSchema = createSchema({
     .regex(NAME_REGEX)
     .optional()
     .transform(val => (val?.trim()?.length ? val?.trim() : undefined)),
+  lastName: z
+    .string(
+      makeErrorMap({
+        invalid_string: value => LAST_NAME_INVALID_PREFIX + getUniqueInvalidChars(value?.toString()),
+      }),
+    )
+    .max(35, LAST_NAME_TOO_LONG_ERROR_MSG)
+    .regex(NAME_REGEX)
+    .refine(val => val?.trim().length > 0, { message: LAST_NAME_REQUIRED_MESSAGE }),
 })
 
 export const restrictedEditingNameSchema = createSchema({
@@ -64,7 +64,6 @@ export const restrictedEditingNameSchema = createSchema({
     .optional()
     .transform(val => (val?.trim()?.length ? val?.trim() : undefined))
     .transform(val => val?.trim()),
-  lastName: z.string().optional(),
   firstName: z.string().optional(),
   middleNames: z
     .string(
@@ -76,6 +75,7 @@ export const restrictedEditingNameSchema = createSchema({
     .regex(NAME_REGEX)
     .optional()
     .transform(val => (val?.trim()?.length ? val?.trim() : undefined)),
+  lastName: z.string().optional(),
 })
 
 export type FullNameSchemaType = z.infer<typeof fullNameSchema>
