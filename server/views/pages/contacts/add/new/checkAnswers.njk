@@ -231,7 +231,7 @@
                                 text: "Comments on this relationship"
                             },
                             value: {
-                                text: journey.relationship.comments or "Not provided",
+                                html: (journey.relationship.comments or "Not provided") | escape | nl2br,
                                 classes: 'check-answers-comments-value'
                             },
                             actions: {
@@ -433,7 +433,7 @@
                     }) }}
                   {% endfor %}
                 {% else %}
-                  <p class="govuk-body">No addresses provided.</p>
+                  <p class="govuk-body">No employment information provided.</p>
                 {% endif %}
               {% endif %}
 
@@ -549,7 +549,7 @@
               ] }) }}
                 <div class="govuk-button-group">
                     {{ govukButton({
-                        text: "Create prisoner contact",
+                        text: "Confirm and link contact",
                         type: "submit",
                         classes: 'govuk-!-margin-top-6',
                         attributes: {"data-qa": "continue-button"},

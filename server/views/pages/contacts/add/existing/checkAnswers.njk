@@ -4,7 +4,7 @@
 {% from "partials/miniProfile/macro.njk" import miniProfile %}
 
 {% set title = "Check your answers before linking the contact to " + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) %}
-{% set pageTitle = "Check your answers before linking the contact to the prisoner - Contacts - DPS" %}
+{% set pageTitle = "Check your answers before linking the contact to the prisoner - Add a contact - DPS" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
@@ -15,7 +15,7 @@
         <div class="govuk-grid-column-full">
           <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
-              <span class="govuk-caption-l">{{ caption or 'Contacts' }}</span>
+              <span class="govuk-caption-l">{{ journey | captionForAddContactJourney }}</span>
               <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
             </div>
           </div>
@@ -150,10 +150,9 @@
           }) }}
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-                {% set buttonLabel = "Confirm and link contact" %}
                 <div class="govuk-button-group">
                     {{ govukButton({
-                        text: buttonLabel,
+                        text: "Confirm and link contact",
                         type: "submit",
                         classes: 'govuk-!-margin-top-6',
                         attributes: {"data-qa": "continue-button"},
