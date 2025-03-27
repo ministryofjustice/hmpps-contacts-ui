@@ -5,7 +5,6 @@ import { ContactsService } from '../../../../services'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
-import captionForAddContactJourney from '../addContactsUtils'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
@@ -62,11 +61,8 @@ export default class CreateContactCheckAnswersController implements PageHandler 
       user,
     )
 
-    const caption = captionForAddContactJourney(journey)
-
     const view = {
       journey,
-      caption,
       relationshipToPrisonerDescription,
       relationshipTypeDescription,
       navigation,
