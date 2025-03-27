@@ -3,7 +3,7 @@
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "../../restrictions/manageRestrictions.njk" import restrictionCard %}
+{% from "partials/restrictionsTable.njk" import restrictionsTable %}
 {% from "partials/linkedPrisonersTable.njk" import linkedPrisonersTable %}
 {% from "../../common/notProvided.njk" import notProvided %}
 
@@ -76,14 +76,14 @@
                     {{ contactDetailsHtml() }}
                 </div>
                 <div class="govuk-tabs__panel govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" data-qa="restrictions-result-message" id="restrictions">
-
-                    {% if globalRestrictions.length >0 %}
-                        <h1 class="govuk-heading-l" data-qa="confirm-global-restriction-title">Global restrictions for contact {{ contact | formatNameFirstNameFirst(excludeMiddleNames = true) }}</h1>
-                        {{ restrictionCard(globalRestrictions, contact, prisonerNumber, prisonerContactId, 'NONE') }}
-                    {% else %}
-                        No global restrictions recorded.
-                    {% endif %}
-
+                  {{ restrictionsTable( {
+                    restrictions: globalRestrictions,
+                    title: 'Global restrictions',
+                    caption: 'These restrictions apply to contact ' + (contact | formatNameFirstNameFirst(excludeMiddleNames = true)) + ' across the whole prison estate.',
+                    emptyCaption: 'No restrictions apply to contact ' + (contact | formatNameFirstNameFirst(excludeMiddleNames = true)) + ' across the whole prison estate.',
+                    restrictionClass: 'CONTACT_GLOBAL',
+                    showActions: false
+                  } ) }}
                 </div>
                 <div class="govuk-tabs__panel govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" id="linked-prisoners">
                     {% if linkedPrisoners.length > 0 %}

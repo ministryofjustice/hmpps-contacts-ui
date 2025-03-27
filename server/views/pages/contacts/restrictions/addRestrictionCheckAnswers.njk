@@ -92,7 +92,7 @@
                                 text: "Comments"
                             },
                             value: {
-                                html: journey.restriction.comments or 'Not provided',
+                                html: (journey.restriction.comments or 'Not provided') | escape | nl2br,
                                 classes: 'check-answers-comments-value'
                             },
                             actions: {

@@ -143,9 +143,8 @@ declare namespace journeys {
     id: string
     lastTouched: string
     contactId: number
-    prisonerContactId?: number
-    prisonerNumber?: string
-    returnPoint: ReturnPoint
+    prisonerContactId: number
+    prisonerNumber: string
     restrictionClass: RestrictionClass
     contactNames: ContactNames
     restriction?: Restriction

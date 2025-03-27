@@ -195,9 +195,9 @@ context('Contact confirmation', () => {
     Page.verifyOnPage(ContactConfirmationPage, 'John Smith') //
       .hasLinkedPrisonersCount(35)
       .clickLinkedPrisonerTab()
-      .hasLinkedPrisonerRow(1, 'A0BC')
+      .hasLinkedPrisonerRow(0, 'A0BC')
       .clickPaginationLink('Page 2 of 4')
-      .hasLinkedPrisonerRow(1, 'A10BC')
+      .hasLinkedPrisonerRow(0, 'A10BC')
   })
 
   it(`should not pass validation when radiobox is not selected`, () => {

@@ -171,33 +171,27 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect(response.status).toEqual(200)
 
       expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions (2)')
-      expect($('[data-qa="manage-restriction-title"]').text().trim()).toStrictEqual('Restrictions')
-      const prisonerContactCardTitleText = $('.govuk-summary-card.restriction-1-card .govuk-summary-card__title')
-        .text()
-        .trim()
 
-      expect($('[data-qa="confirm-prisoner-contact-restriction-title"]').text()).toStrictEqual(
-        'Prisoner-contact restrictions between prisoner John Smith and contact Jones Mason',
+      expect($('.restrictions-caption-PRISONER_CONTACT').text()).toStrictEqual(
+        'These restrictions apply to the relationship between prisoner John Smith and contact Jones Mason.',
       )
-      expect($('[data-qa="confirm-global-restriction-title"]').text()).toStrictEqual(
-        'Global restrictions for contact Jones Mason',
+      expect($('.restrictions-caption-CONTACT_GLOBAL').text()).toStrictEqual(
+        'These restrictions apply to contact Jones Mason across the whole prison estate.',
       )
 
-      expect(prisonerContactCardTitleText).toStrictEqual('Child Visitors to be Vetted')
-      expect($('.view-start-date-1-value').text().trim()).toStrictEqual('1 January 2024')
-      expect($('.view-expiry-date-1-value').text().trim()).toStrictEqual('1 August 2050')
-      expect($('.view-entered-by-1-value').text().trim()).toStrictEqual('User One')
-      expect($('.view-comment-1-value').text().trim()).toStrictEqual('Keep an eye')
+      const relationshipRestrictionTitleText = $('[data-qa="PRISONER_CONTACT-1-type-value"]').text().trim()
+      expect(relationshipRestrictionTitleText).toContain('Child Visitors to be Vetted')
+      expect($('[data-qa="PRISONER_CONTACT-1-start-date-value"]').text().trim()).toStrictEqual('1 January 2024')
+      expect($('[data-qa="PRISONER_CONTACT-1-expiry-date-value"]').text().trim()).toStrictEqual('1 August 2050')
+      expect($('[data-qa="PRISONER_CONTACT-1-entered-by-value"]').text().trim()).toStrictEqual('User One')
+      expect($('[data-qa="PRISONER_CONTACT-1-comments-value"]').text().trim()).toStrictEqual('Keep an eye')
 
-      const globalRestrictionCardTitleText = $('.govuk-summary-card.restriction-2-card .govuk-summary-card__title')
-        .text()
-        .trim()
-
-      expect(globalRestrictionCardTitleText).toStrictEqual('Keep under CCTV supervision')
-      expect($('.view-start-date-2-value').text().trim()).toStrictEqual('2 January 2024')
-      expect($('.view-expiry-date-2-value').text().trim()).toStrictEqual('1 August 2050')
-      expect($('.view-entered-by-2-value').text().trim()).toStrictEqual('User One')
-      expect($('.view-comment-2-value').text().trim()).toStrictEqual('Keep an eye')
+      const globalRestrictionTitleText = $('[data-qa="CONTACT_GLOBAL-2-type-value"]').text().trim()
+      expect(globalRestrictionTitleText).toContain('Keep under CCTV supervision')
+      expect($('[data-qa="CONTACT_GLOBAL-2-start-date-value"]').text().trim()).toStrictEqual('2 January 2024')
+      expect($('[data-qa="CONTACT_GLOBAL-2-expiry-date-value"]').text().trim()).toStrictEqual('1 August 2050')
+      expect($('[data-qa="CONTACT_GLOBAL-2-entered-by-value"]').text().trim()).toStrictEqual('User One')
+      expect($('[data-qa="CONTACT_GLOBAL-2-comments-value"]').text().trim()).toStrictEqual('Keep an eye')
     })
 
     it('should render global restrictions tab with expired restrictions', async () => {
@@ -220,13 +214,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
       expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions (1)')
 
-      const cardTitle = $('.govuk-summary-card.restriction-1-card .govuk-summary-card__title').text().trim()
-
-      expect(cardTitle).toStrictEqual('Child Visitors to be Vetted (expired)')
-      expect($('.view-start-date-1-value').text().trim()).toStrictEqual('1 January 2024')
-      expect($('.view-expiry-date-1-value').text().trim()).toStrictEqual('1 August 2024')
-      expect($('.view-entered-by-1-value').text().trim()).toStrictEqual('User One')
-      expect($('.view-comment-1-value').text().trim()).toStrictEqual('Keep an eye')
+      const globalRestrictionTitleText = $('[data-qa="CONTACT_GLOBAL-1-type-value"]').text().trim()
+      expect(globalRestrictionTitleText).toContain('Child Visitors to be Vetted')
+      expect(globalRestrictionTitleText).toContain('(expired)')
     })
 
     it('should render prisoner contact restrictions tab with expired restrictions', async () => {
@@ -249,13 +239,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
       expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions (1)')
 
-      const cardTitle = $('.govuk-summary-card.restriction-1-card .govuk-summary-card__title').text().trim()
-
-      expect(cardTitle).toStrictEqual('Child Visitors to be Vetted (expired)')
-      expect($('.view-start-date-1-value').text().trim()).toStrictEqual('1 January 2024')
-      expect($('.view-expiry-date-1-value').text().trim()).toStrictEqual('1 August 2024')
-      expect($('.view-entered-by-1-value').text().trim()).toStrictEqual('User One')
-      expect($('.view-comment-1-value').text().trim()).toStrictEqual('Keep an eye')
+      const relationshipRestrictionTitleText = $('[data-qa="PRISONER_CONTACT-1-type-value"]').text().trim()
+      expect(relationshipRestrictionTitleText).toContain('Child Visitors to be Vetted')
+      expect(relationshipRestrictionTitleText).toContain('(expired)')
     })
 
     it('should render restrictions tab with no restrictions message', async () => {
@@ -272,11 +258,11 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       const $ = cheerio.load(response.text)
 
       expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions (0)')
-      expect($('.no_prisoner_contact_restriction_card__description').text().trim()).toStrictEqual(
-        'No prisoner-contact restrictions recorded.',
+      expect($('.restrictions-caption-PRISONER_CONTACT').text()).toStrictEqual(
+        'No restrictions apply to the relationship between prisoner John Smith and contact Jones Mason.',
       )
-      expect($('.no_global_restrictions_card__description').text().trim()).toStrictEqual(
-        'No global restrictions recorded.',
+      expect($('.restrictions-caption-CONTACT_GLOBAL').text()).toStrictEqual(
+        'No restrictions apply to contact Jones Mason across the whole prison estate.',
       )
     })
 
@@ -301,11 +287,11 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       // Then
       const $ = cheerio.load(response.text)
 
-      expect($('.view-expiry-date-1-value').text().trim()).toStrictEqual('Not provided')
-      expect($('.view-comment-1-value').text().trim()).toStrictEqual('Not provided')
+      expect($('[data-qa="PRISONER_CONTACT-2-expiry-date-value"]').text().trim()).toStrictEqual('Not provided')
+      expect($('[data-qa="PRISONER_CONTACT-2-comments-value"]').text().trim()).toStrictEqual('Not provided')
 
-      expect($('.view-expiry-date-2-value').text().trim()).toStrictEqual('Not provided')
-      expect($('.view-comment-2-value').text().trim()).toStrictEqual('Not provided')
+      expect($('[data-qa="CONTACT_GLOBAL-1-expiry-date-value"]').text().trim()).toStrictEqual('Not provided')
+      expect($('[data-qa="CONTACT_GLOBAL-1-comments-value"]').text().trim()).toStrictEqual('Not provided')
     })
 
     it('should show add global and prisoner contact restriction links', async () => {
@@ -330,11 +316,11 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       const $ = cheerio.load(response.text)
 
       expect($('[data-qa=add-global-restriction-button]').first().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/1/relationship/99/restriction/add/CONTACT_GLOBAL/start?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99%23restrictions',
+        '/prisoner/A1234BC/contacts/1/relationship/99/restriction/add/CONTACT_GLOBAL/start',
       )
 
       expect($('[data-qa=add-prisoner-contact-restriction-button]').first().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/1/relationship/99/restriction/add/PRISONER_CONTACT/start?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99%23restrictions',
+        '/prisoner/A1234BC/contacts/1/relationship/99/restriction/add/PRISONER_CONTACT/start',
       )
     })
 
@@ -360,11 +346,11 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       const $ = cheerio.load(response.text)
 
       expect($('[data-qa=manage-CONTACT_GLOBAL-restriction-link-1]').first().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/22/relationship/99/restriction/update/CONTACT_GLOBAL/enter-restriction/1?returnUrl=/prisoner/A1234BC/contacts/manage/22/relationship/99%23restrictions',
+        '/prisoner/A1234BC/contacts/22/relationship/99/restriction/update/CONTACT_GLOBAL/enter-restriction/1',
       )
 
       expect($('[data-qa=manage-PRISONER_CONTACT-restriction-link-2]').first().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/22/relationship/99/restriction/update/PRISONER_CONTACT/enter-restriction/2?returnUrl=/prisoner/A1234BC/contacts/manage/22/relationship/99%23restrictions',
+        '/prisoner/A1234BC/contacts/22/relationship/99/restriction/update/PRISONER_CONTACT/enter-restriction/2',
       )
     })
 

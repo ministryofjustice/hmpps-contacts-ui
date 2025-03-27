@@ -21,7 +21,6 @@ describe('restrictionsService', () => {
     id: uuidv4(),
     lastTouched: new Date().toISOString(),
     restrictionClass: 'PRISONER_CONTACT',
-    returnPoint: { url: '/foo' },
     prisonerNumber: 'A1234BC',
     contactId: Number(99),
     prisonerContactId: Number(66),

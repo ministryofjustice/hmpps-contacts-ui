@@ -39,7 +39,6 @@ beforeEach(() => {
       lastName: 'foo',
       firstName: 'bar',
     },
-    returnPoint: { url: '/foo-bar' },
   }
   app = appWithAllRoutes({
     services: {
@@ -77,7 +76,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Add a new prisoner-contact restriction')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}#restrictions`,
+    )
     expect($('[data-qa=prisoner-name-and-id]').first().text().trim()).toStrictEqual('John Smith (A1234BC)')
     expect($('[data-qa=contact-name-and-id]').first().text().trim()).toStrictEqual('Bar Foo (123)')
     expect($('[data-qa=cancel-button]')).toHaveLength(0)
@@ -98,7 +99,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Add a new global restriction for Bar Foo')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}#restrictions`,
+    )
     expect($('[data-qa=prisoner-name-and-id]')).toHaveLength(0)
     expect($('[data-qa=contact-name-and-id]')).toHaveLength(0)
     expect($('[data-qa=cancel-button]')).toHaveLength(0)

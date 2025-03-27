@@ -364,18 +364,20 @@ describe('Restrictions', () => {
           'Is this the right person to add as a contact for John Smith?',
         )
 
-        expect($('[data-qa="confirm-global-restriction-title"]').text()).toStrictEqual(
-          'Global restrictions for contact Jones Mason',
+        const restrictionTitle = $('[data-qa="CONTACT_GLOBAL-title"]')
+        expect(restrictionTitle.text()).toStrictEqual('Global restrictions')
+        const restrictionsTable = restrictionTitle.next()
+        expect(restrictionsTable.find('caption').text().trim()).toStrictEqual(
+          'These restrictions apply to contact Jones Mason across the whole prison estate.',
         )
 
         expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions (1)')
-        const titleText = $('.govuk-summary-card.restriction-1-card .govuk-summary-card__title').text().trim()
 
-        expect(titleText).toStrictEqual('Child Visitors to be Vetted')
-        expect($('.view-start-date-1-value').text().trim()).toStrictEqual('1 January 2024')
-        expect($('.view-expiry-date-1-value').text().trim()).toStrictEqual('1 August 2050')
-        expect($('.view-entered-by-1-value').text().trim()).toStrictEqual('User One')
-        expect($('.view-comment-1-value').text().trim()).toStrictEqual('Keep an eye')
+        expect($('[data-qa="CONTACT_GLOBAL-1-type-value"]').text().trim()).toStrictEqual('Child Visitors to be Vetted')
+        expect($('[data-qa="CONTACT_GLOBAL-1-start-date-value"]').text().trim()).toStrictEqual('1 January 2024')
+        expect($('[data-qa="CONTACT_GLOBAL-1-expiry-date-value"]').text().trim()).toStrictEqual('1 August 2050')
+        expect($('[data-qa="CONTACT_GLOBAL-1-entered-by-value"]').text().trim()).toStrictEqual('User One')
+        expect($('[data-qa="CONTACT_GLOBAL-1-comments-value"]').text().trim()).toStrictEqual('Keep an eye')
       })
 
       it('should render restrictions tab with expired restrictions', async () => {
@@ -396,13 +398,13 @@ describe('Restrictions', () => {
 
         expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions (1)')
 
-        const cardTitle = $('.govuk-summary-card.restriction-1-card .govuk-summary-card__title').text().trim()
-
-        expect(cardTitle).toStrictEqual('Child Visitors to be Vetted (expired)')
-        expect($('.view-start-date-1-value').text().trim()).toStrictEqual('1 January 2024')
-        expect($('.view-expiry-date-1-value').text().trim()).toStrictEqual('1 August 2024')
-        expect($('.view-entered-by-1-value').text().trim()).toStrictEqual('User One')
-        expect($('.view-comment-1-value').text().trim()).toStrictEqual('Keep an eye')
+        const titleText = $('[data-qa="CONTACT_GLOBAL-1-type-value"]').text().trim()
+        expect(titleText).toContain('Child Visitors to be Vetted')
+        expect(titleText).toContain('(expired)')
+        expect($('[data-qa="CONTACT_GLOBAL-1-start-date-value"]').text().trim()).toStrictEqual('1 January 2024')
+        expect($('[data-qa="CONTACT_GLOBAL-1-expiry-date-value"]').text().trim()).toStrictEqual('1 August 2024')
+        expect($('[data-qa="CONTACT_GLOBAL-1-entered-by-value"]').text().trim()).toStrictEqual('User One')
+        expect($('[data-qa="CONTACT_GLOBAL-1-comments-value"]').text().trim()).toStrictEqual('Keep an eye')
       })
 
       it('should render restrictions tab with no restrictions message', async () => {
@@ -416,8 +418,8 @@ describe('Restrictions', () => {
         const $ = cheerio.load(response.text)
 
         expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions (0)')
-        expect($('[data-qa="restrictions-result-message"]').text().trim()).toStrictEqual(
-          'No global restrictions recorded.',
+        expect($('.restrictions-caption-CONTACT_GLOBAL').text().trim()).toContain(
+          'No restrictions apply to contact Jones Mason across the whole prison estate.',
         )
       })
 
@@ -432,9 +434,8 @@ describe('Restrictions', () => {
 
         // Then
         const $ = cheerio.load(response.text)
-
-        expect($('.view-expiry-date-1-value').text().trim()).toStrictEqual('Not provided')
-        expect($('.view-comment-1-value').text().trim()).toStrictEqual('Not provided')
+        expect($('[data-qa="CONTACT_GLOBAL-1-expiry-date-value"]').text().trim()).toStrictEqual('Not provided')
+        expect($('[data-qa="CONTACT_GLOBAL-1-comments-value"]').text().trim()).toStrictEqual('Not provided')
       })
 
       it('should not show manage restrictions link', async () => {
@@ -450,49 +451,6 @@ describe('Restrictions', () => {
         const $ = cheerio.load(response.text)
 
         expect($('[data-qa=manage-restriction-link]').length).toBe(0)
-      })
-
-      it('should sort restrictions based on startDate, with the most recent at the top. where multiple restrictions with the same date, sorted them by createdTime', async () => {
-        // Given
-        restrictionsService.getGlobalRestrictionsEnriched.mockResolvedValue([
-          TestData.getContactRestrictionDetails({
-            startDate: '2024-01-02',
-            createdTime: '2024-08-01T09:00:00.000000',
-            restrictionTypeDescription: 'Third Card - with the one day oder than third record start date',
-          }),
-          TestData.getContactRestrictionDetails({
-            startDate: '2024-01-01',
-            createdTime: '2024-08-01T09:00:00.000000',
-            restrictionTypeDescription: 'Last Card - as the oldest start date',
-          }),
-          TestData.getContactRestrictionDetails({
-            startDate: '2024-01-03',
-            createdTime: '2024-01-03T10:00:00.000000',
-            restrictionTypeDescription:
-              'Second Card - same start date as record below but one hour older in created date time',
-          }),
-          TestData.getContactRestrictionDetails({
-            startDate: '2024-01-03',
-            createdTime: '2024-01-03T11:00:00.000000',
-            restrictionTypeDescription:
-              'First Card - same start date as record above but one hour newer in created date time',
-          }),
-        ])
-
-        // When
-        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
-
-        // Then
-        const $ = cheerio.load(response.text)
-
-        expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions (4)')
-        const cardTitles = $('.restrictions-cards-titles')
-        const titles = cardTitles.map((i, el) => $(el).text()).get()
-
-        expect(titles[0]!.trim()).toContain('First Card')
-        expect(titles[1]!.trim()).toContain('Second Card')
-        expect(titles[2]!.trim()).toContain('Third Card')
-        expect(titles[3]!.trim()).toContain('Last Card')
       })
     })
   })

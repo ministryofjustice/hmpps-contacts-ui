@@ -101,10 +101,14 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Update a prisoner-contact restriction')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}#restrictions`,
+    )
     expect($('[data-qa=prisoner-name-and-id]').first().text().trim()).toStrictEqual('John Smith (A1234BC)')
     expect($('[data-qa=contact-name-and-id]').first().text().trim()).toStrictEqual('First Middle Last (123)')
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}#restrictions`,
+    )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
 
     expect($('#type').val()).toStrictEqual('BAN')
@@ -126,10 +130,14 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Update a global restriction for contact First Last',
     )
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}#restrictions`,
+    )
     expect($('[data-qa=prisoner-name-and-id]')).toHaveLength(0)
     expect($('[data-qa=contact-name-and-id]')).toHaveLength(0)
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}#restrictions`,
+    )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
 
     expect($('#type').val()).toStrictEqual('BAN')
@@ -189,7 +197,10 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
       .type('form')
       .send(form)
       .expect(302)
-      .expect('Location', '/foo-bar')
+      .expect(
+        'Location',
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}#restrictions`,
+      )
     expect(restrictionsService.updatePrisonerContactRestriction).toHaveBeenCalledWith(
       prisonerContactId,
       restrictionId,
@@ -218,7 +229,10 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
       .type('form')
       .send(form)
       .expect(302)
-      .expect('Location', `/foo-bar`)
+      .expect(
+        'Location',
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}#restrictions`,
+      )
     expect(restrictionsService.updateContactGlobalRestriction).toHaveBeenCalledWith(
       contactId,
       restrictionId,

@@ -81,8 +81,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
         `/prisoner/A1234BC/contacts/123/relationship/321/restriction/add/${restrictionClass}/enter-restriction/`,
       )
       expect(Object.entries(session.addRestrictionJourneys!)).toHaveLength(1)
-      const journey = Object.values(session.addRestrictionJourneys!)[0]!
-      expect(journey.returnPoint).toStrictEqual({ url: '/foo' })
     },
   )
 
@@ -93,7 +91,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
       {
         id: uuidv4(),
         lastTouched: new Date().toISOString(),
-        returnPoint: { url: '/foo-bar' },
         prisonerNumber,
         contactId,
         prisonerContactId,
@@ -134,7 +131,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
           lastName: 'foo',
           firstName: 'bar',
         },
-        returnPoint: { url: '/foo-bar' },
       },
       {
         id: 'middle-aged',
@@ -147,7 +143,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
           lastName: 'foo',
           firstName: 'bar',
         },
-        returnPoint: { url: '/foo-bar' },
       },
       {
         id: 'youngest',
@@ -160,7 +155,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
           lastName: 'foo',
           firstName: 'bar',
         },
-        returnPoint: { url: '/foo-bar' },
       },
       {
         id: 'oldest',
@@ -173,7 +167,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
           lastName: 'foo',
           firstName: 'bar',
         },
-        returnPoint: { url: '/foo-bar' },
       },
       {
         id: 'young',
@@ -186,7 +179,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
           lastName: 'foo',
           firstName: 'bar',
         },
-        returnPoint: { url: '/foo-bar' },
       },
     ]
 
