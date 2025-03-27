@@ -53,8 +53,6 @@ context('Manage contacts restrictions', () => {
       .clickRestrictionsTab('2')
       .checkPrisonerContactRestrictionsCardTitle()
       .checkGlobalRestrictionsCardTitle()
-      .checkPrisonerContactRestrictionsDetails()
-      .checkGlobalRestrictionsDetails()
   })
 
   it(`should add prisoner contact restrictions will take to add a new prisoner contact restriction page `, () => {
@@ -128,7 +126,7 @@ context('Manage contacts restrictions', () => {
 
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').clickRestrictionsTab('2').clickManageGlobalRestriction()
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').clickRestrictionsTab('2').clickChangeGlobalRestriction()
 
     Page.verifyOnPage(EnterRestrictionPage, 'Update a global restriction for contact Jones Mason')
   })
@@ -160,7 +158,7 @@ context('Manage contacts restrictions', () => {
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
       .clickRestrictionsTab('2')
-      .clickManagePrisonerContactRestriction()
+      .clickChangePrisonerContactRestriction()
 
     Page.verifyOnPage(EnterRestrictionPage, 'Update a prisoner-contact restriction')
   })

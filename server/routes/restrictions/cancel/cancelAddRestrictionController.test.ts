@@ -42,7 +42,6 @@ beforeEach(() => {
       type: 'BAN',
       startDate: '01/02/2008',
     },
-    returnPoint: { url: '/foo-bar' },
   }
 
   app = appWithAllRoutes({

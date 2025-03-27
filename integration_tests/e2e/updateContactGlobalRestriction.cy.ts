@@ -54,7 +54,7 @@ context('Update Contact Global Restriction', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickRestrictionsTab('1')
       .verifyOnRestrictionsTab()
-      .clickManageGlobalRestriction(globalRestriction.contactRestrictionId)
+      .clickChangeGlobalRestriction(globalRestriction.contactRestrictionId)
   })
 
   it('Can update a global restriction for a contact with minimal fields', () => {

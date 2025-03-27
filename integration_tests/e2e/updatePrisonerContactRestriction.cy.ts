@@ -53,7 +53,7 @@ context('Update Prisoner Contact Restriction', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickRestrictionsTab('1')
       .verifyOnRestrictionsTab()
-      .clickManagePrisonerContactRestriction(prisonerContactRestriction.prisonerContactRestrictionId)
+      .clickChangePrisonerContactRestriction(prisonerContactRestriction.prisonerContactRestrictionId)
   })
 
   it('Can update a prisoner contact restriction with minimal fields', () => {

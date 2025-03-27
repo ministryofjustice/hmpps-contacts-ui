@@ -8,10 +8,11 @@ import { Navigation } from '../../contacts/common/navigation'
 import { maxLengthForRestrictionClass, RestrictionSchemaType } from '../schema/restrictionSchema'
 import { formatNameFirstNameFirst } from '../../../utils/formatName'
 import { ContactsService, RestrictionsService } from '../../../services'
+import { FLASH_KEY__SUCCESS_BANNER } from '../../../middleware/setUpSuccessNotificationBanner'
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import RestrictionClass = journeys.RestrictionClass
 import PrisonerContactRestrictionDetails = contactsApiClientTypes.PrisonerContactRestrictionDetails
-import { FLASH_KEY__SUCCESS_BANNER } from '../../../middleware/setUpSuccessNotificationBanner'
+import Urls from '../../urls'
 
 export default class UpdateRestrictionController implements PageHandler {
   constructor(
@@ -32,18 +33,20 @@ export default class UpdateRestrictionController implements PageHandler {
     }>,
     res: Response,
   ): Promise<void> => {
-    const { contactId, prisonerContactId, restrictionId, restrictionClass } = req.params
-    const { user, journey } = res.locals
-    await this.contactsService.getContactName(Number(contactId), user).then(contact => {
-      journey.contactNames = {
-        title: contact.titleDescription,
-        lastName: contact.lastName,
-        firstName: contact.firstName,
-        middleNames: contact.middleNames,
+    const { prisonerNumber, contactId, prisonerContactId, restrictionId, restrictionClass } = req.params
+    const { user } = res.locals
+    const journey = await this.contactsService.getContactName(Number(contactId), user).then(contact => {
+      return {
+        contactNames: {
+          title: contact.titleDescription,
+          lastName: contact.lastName,
+          firstName: contact.firstName,
+          middleNames: contact.middleNames,
+        },
+        restrictionClass,
+        contactId,
       }
     })
-    journey.restrictionClass = restrictionClass
-    journey.contactId = contactId
     let title
     let existingRestriction
     if (restrictionClass === 'PRISONER_CONTACT') {
@@ -74,8 +77,8 @@ export default class UpdateRestrictionController implements PageHandler {
       )
 
     const navigation: Navigation = {
-      backLink: journey.returnPoint.url,
-      cancelButton: journey.returnPoint.url,
+      backLink: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId, 'restrictions'),
+      cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId, 'restrictions'),
     }
 
     const viewModel = {
@@ -110,8 +113,8 @@ export default class UpdateRestrictionController implements PageHandler {
     >,
     res: Response,
   ): Promise<void> => {
-    const { contactId, prisonerContactId, restrictionClass, restrictionId } = req.params
-    const { user, journey, prisonerDetails } = res.locals
+    const { contactId, prisonerNumber, prisonerContactId, restrictionClass, restrictionId } = req.params
+    const { user, prisonerDetails } = res.locals
     if (restrictionClass === 'PRISONER_CONTACT') {
       await this.restrictionsService
         .updatePrisonerContactRestriction(Number(prisonerContactId), Number(restrictionId), req.body, user)
@@ -133,7 +136,7 @@ export default class UpdateRestrictionController implements PageHandler {
           ),
         )
     }
-    res.redirect(journey.returnPoint.url)
+    res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId, 'restrictions'))
   }
 
   private getSelectedOptions(

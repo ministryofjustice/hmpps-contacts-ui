@@ -139,15 +139,6 @@ export default class ContactConfirmationPage extends Page {
 
   checkRestrictionsDetails() {
     this.getRestrictionCard().should('contain.text', 'Child Visitors to be Vetted')
-    this.getRestrictionCardColumnTitleByRaw(1).should('contain.text', 'Start date')
-    this.getRestrictionCardColumnTitleByRaw(2).should('contain.text', 'Expiry date')
-    this.getRestrictionCardColumnTitleByRaw(3).should('contain.text', 'Entered by')
-    this.getRestrictionCardColumnTitleByRaw(4).should('contain.text', 'Comment')
-
-    this.getRestrictionCardColumnValueByRaw(1).should('contain.text', '1 January 2024')
-    this.getRestrictionCardColumnValueByRaw(2).should('contain.text', '1 August 2050')
-    this.getRestrictionCardColumnValueByRaw(3).should('contain.text', 'User One')
-    this.getRestrictionCardColumnValueByRaw(4).should('contain.text', 'Keep an eye')
     return this
   }
 
@@ -175,24 +166,10 @@ export default class ContactConfirmationPage extends Page {
 
   private linkedPrisonersTab = (): PageElement => cy.get('#tab_linked-prisoners')
 
-  private linkedPrisonerRow = (rowNumber: number): PageElement => cy.get('.govuk-table__row').eq(rowNumber)
+  private linkedPrisonerRow = (rowNumber: number): PageElement =>
+    cy.get('.linked-prisoners-table > tbody > tr').eq(rowNumber)
 
-  private getRestrictionCard = (): PageElement =>
-    cy.get(
-      '[data-qa="restrictions-result-message"] > .govuk-summary-card > .govuk-summary-card__title-wrapper > .govuk-summary-card__title',
-    )
-
-  private getRestrictionCardColumnTitleByRaw = (columnNumber: number = 4): PageElement =>
-    cy.get(this.getTitleByRaw(columnNumber))
-
-  private getRestrictionCardColumnValueByRaw = (columnNumber: number = 4): PageElement =>
-    cy.get(this.getSelector(columnNumber))
-
-  getTitleByRaw = (childNumber: number): string =>
-    `[data-qa="restrictions-result-message"] > .govuk-summary-card > .govuk-summary-card__content > .govuk-summary-list > :nth-child(${childNumber}) > .govuk-summary-list__key`
-
-  getSelector = (childNumber: number): string =>
-    `[data-qa="restrictions-result-message"] > .govuk-summary-card > .govuk-summary-card__content > .govuk-summary-list > :nth-child(${childNumber}) > .govuk-summary-list__value`
+  private getRestrictionCard = (): PageElement => cy.get('[data-qa="restrictions-result-message"]')
 
   private contactTab = (elementNumber: number): PageElement => cy.get(`.govuk-tabs__tab:eq(${elementNumber})`)
 

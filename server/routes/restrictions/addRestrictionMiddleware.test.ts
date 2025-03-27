@@ -46,7 +46,6 @@ describe('addRestrictionMiddleware', () => {
         prisonerContactId,
         restrictionClass,
         contactNames: { lastName: 'Last', firstName: 'First' },
-        returnPoint: { url: '/foo-bar' },
       }
       ensureInAddRestrictionJourney()(req, res, next)
       expect(next).toHaveBeenCalledTimes(1)

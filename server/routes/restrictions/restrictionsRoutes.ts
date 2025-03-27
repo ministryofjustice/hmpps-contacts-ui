@@ -14,7 +14,6 @@ import { restrictionSchema } from './schema/restrictionSchema'
 import AddRestrictionCheckAnswersController from './check-answers/addRestrictionCheckAnswersController'
 import RestrictionsService from '../../services/restrictionsService'
 import SuccessfullyAddedRestrictionController from './success/successfullyAddedRestrictionController'
-import { prepareStandaloneManageContactJourney } from '../contacts/manage/manageContactsMiddleware'
 import UpdateRestrictionController from './update-restriction/updateRestrictionController'
 import CancelAddRestrictionController from './cancel/cancelAddRestrictionController'
 
@@ -92,14 +91,12 @@ const RestrictionsRoutes = (
   )
   router.get(
     '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/update/:restrictionClass/enter-restriction/:restrictionId',
-    prepareStandaloneManageContactJourney,
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     logPageViewMiddleware(auditService, updateRestrictionController),
     asyncMiddleware(updateRestrictionController.GET),
   )
   router.post(
     '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/update/:restrictionClass/enter-restriction/:restrictionId',
-    prepareStandaloneManageContactJourney,
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
     validate(restrictionSchema()),
     asyncMiddleware(updateRestrictionController.POST),

@@ -21,7 +21,7 @@ import { buildErrorSummaryList, customErrorOrderBuilder, findError } from '../mi
 import { addressToLines } from './addressToLines'
 import formatYesNo from './formatYesNo'
 import { formatNameLastNameFirst, formatNameFirstNameFirst } from './formatName'
-import formatRestrictionCardTitle from './formatRestrictionCardTitle'
+import restrictionTagColour from './restrictionTagColour'
 import { formatDateRange } from './formatDateRange'
 import { formatBusinessPhoneNumber, formatPhoneNumber } from './formatPhoneNumber'
 import { formatTitleForAddress } from './addressUtils'
@@ -29,6 +29,7 @@ import sortContactAddresses from './sortAddress'
 import { taskStatus } from './taskStatus'
 import captionForAddContactJourney from '../routes/contacts/add/addContactsUtils'
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
+import sortRestrictions from './sortRestrictions'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -87,7 +88,7 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('formatYesNo', formatYesNo)
   njkEnv.addFilter('formatNameLastNameFirst', formatNameLastNameFirst)
   njkEnv.addFilter('formatNameFirstNameFirst', formatNameFirstNameFirst)
-  njkEnv.addFilter('formatRestrictionCardTitle', formatRestrictionCardTitle)
+  njkEnv.addFilter('restrictionTagColour', restrictionTagColour)
   njkEnv.addFilter('capitalizeFirstLetter', capitalizeFirstLetter)
   njkEnv.addFilter('convertToSortableColumns', convertToSortableColumns)
   njkEnv.addFilter('formatDateRange', formatDateRange)
@@ -143,4 +144,5 @@ export default function nunjucksSetup(app: express.Express): void {
         checked: entry && (Array.isArray(checked) ? checked.includes(String(entry.value)) : entry.value === checked),
       })),
   )
+  njkEnv.addFilter('sortRestrictions', sortRestrictions)
 }

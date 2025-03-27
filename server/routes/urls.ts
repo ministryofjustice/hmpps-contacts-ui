@@ -7,7 +7,7 @@ export default class Urls {
     prisonerNumber: string,
     contactId: string | number,
     prisonerContactId: string | number,
-    tab?: 'contact-details' | 'contact-methods' | undefined,
+    tab?: 'contact-details' | 'contact-methods' | 'restrictions' | undefined,
   ) => {
     return `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}${tab ? `#${tab}` : ''}`
   }
