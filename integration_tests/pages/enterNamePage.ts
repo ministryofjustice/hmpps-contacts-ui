@@ -2,7 +2,7 @@ import Page, { PageElement } from './page'
 
 export default class EnterNamePage extends Page {
   constructor() {
-    super('What is the contact’s name?')
+    super('What’s the name of the contact you want to link to')
   }
 
   hasLastName(lastName: string): EnterNamePage {

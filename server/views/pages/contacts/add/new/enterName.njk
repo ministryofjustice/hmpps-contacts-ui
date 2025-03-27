@@ -3,8 +3,8 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "partials/miniProfile/macro.njk" import miniProfile %}
-{% set pageTitle = applicationName + " - Enter name" %}
-{% set title = "What is the contact’s name?" %}
+{% set pageTitle = "What's the name of the contact you want to link to the prisoner? - Add a contact - DPS" %}
+{% set title = "What’s the name of the contact you want to link to " + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) + "?" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
@@ -14,7 +14,7 @@
 {% include 'partials/formErrorSummary.njk' %}
  <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <span class="govuk-caption-l">{{ caption or 'Contacts' }}</span>
+            <span class="govuk-caption-l">{{ caption }}</span>
             <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
@@ -23,7 +23,7 @@
                     id: "title",
                     name: "title",
                     label: {
-                        text: "Title"
+                        text: "Title (optional)"
                     },
                     items: titleOptions | referenceCodesToSelect('') | setSelected(titleCode)
                 }) }}
@@ -40,7 +40,7 @@
                 {{ govukInput({
                     id: "middleNames",
                     name: "middleNames",
-                    label: { text: "Middle names" },
+                    label: { text: "Middle names (optional)" },
                     classes: 'govuk-!-width-one-third',
                     errorMessage: validationErrors | findError('middleNames'),
                     value: middleNames
@@ -63,7 +63,6 @@
                         attributes: {"data-qa": "continue-button"},
                         preventDoubleClick: true
                     }) }}
-                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ journey.returnPoint.url }}" data-qa="cancel-button">Cancel</a>
                 </div>
             </form>
 
