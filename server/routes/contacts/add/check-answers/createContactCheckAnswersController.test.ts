@@ -103,6 +103,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     const backLink = $('.govuk-back-link')
     expect(backLink.text().trim()).toStrictEqual('Back to additional information options')
     expect(backLink.attr('href')).toStrictEqual('?back=true')
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and link contact')
   })
 
   it('should render alternative check answers page for mode EXISTING', async () => {
@@ -130,6 +131,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     const backLink = $('.govuk-back-link')
     expect(backLink.text().trim()).toStrictEqual('Back')
     expect(backLink.attr('href')).toStrictEqual('?back=true')
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and link contact')
   })
 
   it('should render check answers page without dob', async () => {
