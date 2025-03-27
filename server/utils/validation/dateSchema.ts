@@ -14,10 +14,12 @@ export const createDateInputSchema = ({
   inputId,
   inputDescription,
   additionalRule,
+  isOptional,
 }: {
   inputId: string
   inputDescription: string
   additionalRule?: DateInputSchemaRule
+  isOptional: boolean
 }) => {
   const DATE_IS_REQUIRED_MESSAGE = `Enter the ${sentenceCase(inputDescription, false)}`
   const SINGLE_FIELD_MISSING_ERROR = (field: string) =>
@@ -39,7 +41,9 @@ export const createDateInputSchema = ({
   })
     .superRefine((val, ctx) => {
       if (!val.day && !val.month && !val.year) {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, message: DATE_IS_REQUIRED_MESSAGE, path: [inputId] })
+        if (!isOptional) {
+          ctx.addIssue({ code: z.ZodIssueCode.custom, message: DATE_IS_REQUIRED_MESSAGE, path: [inputId] })
+        }
       } else {
         const missing: string[] = []
         if (!val.day) {
@@ -115,7 +119,8 @@ export const createDateInputSchema = ({
         }
       }
     })
-    .transform((val): { month: number; year: number; day: number } => {
+    .transform((val): { month?: number; year?: number; day?: number } => {
+      if (isOptional && !val.day && !val.month && !val.year) return {}
       return {
         day: Number(val.day),
         month: Number(val.month),

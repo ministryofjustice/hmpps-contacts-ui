@@ -1,6 +1,5 @@
 import Page from '../pages/page'
 import EnterNamePage from '../pages/enterNamePage'
-import EnterContactDateOfBirthPage from '../pages/enterContactDateOfBirthPage'
 import CreateContactCheckYourAnswersPage from '../pages/createContactCheckYourAnswersPage'
 import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
@@ -16,6 +15,7 @@ import OrganisationSearchPage from '../pages/update-employments/organisationSear
 import CheckEmployerPage from '../pages/update-employments/checkEmployerPage'
 import DeleteEmploymentPage from '../pages/update-employments/deleteEmploymentPage'
 import EmploymentStatusPage from '../pages/update-employments/employmentStatusPage'
+import ManageDobPage from '../pages/contact-details/dobPage'
 
 context('Create Contact With Addresses', () => {
   const contactId = 654321
@@ -110,8 +110,7 @@ context('Create Contact With Addresses', () => {
       .enterFirstName('First')
       .clickContinue()
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Last') //
-      .selectIsKnown('NO')
+    Page.verifyOnPage(ManageDobPage, 'First Last', true) //
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipTypePage, 'First Last', 'John Smith') //

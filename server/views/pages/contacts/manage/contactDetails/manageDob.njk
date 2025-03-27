@@ -3,8 +3,17 @@
 {% from "partials/miniProfile/macro.njk" import miniProfile %}
 {% from "partials/validatedDateInput/macro.njk" import validatedDateInput %}
 
-{% set pageTitle = applicationName + " - Enter date of birth" %}
-{% set title = "What is " + contact | formatNameFirstNameFirst(possessiveSuffix = true) + " date of birth?" + (" (optional)" if isOptional else "") %}
+{% if isNewContact %}
+  {% set pageTitle = "What is the contact’s date of birth? - Add a contact - DPS" %}
+  {% set title = "What is " + contact | formatNameFirstNameFirst(possessiveSuffix = true) + " date of birth? (optional)" %}
+  {% set continueButtonLabel = "Continue" %}
+  {% set caption = journey | captionForAddContactJourney %}
+{% else %}
+  {% set pageTitle = "What is the contact’s date of birth? - Edit contact details - DPS" %}
+  {% set title = "What is " + contact | formatNameFirstNameFirst(possessiveSuffix = true) + " date of birth?" %}
+  {% set continueButtonLabel = "Confirm and save" %}
+  {% set caption = "Edit contact details" %}
+{% endif %}
 
 {% block content %}
 

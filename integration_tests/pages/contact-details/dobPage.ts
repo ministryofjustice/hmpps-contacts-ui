@@ -1,6 +1,6 @@
 import Page, { PageElement } from '../page'
 
-export default class ContactDetailsDobPage extends Page {
+export default class ManageDobPage extends Page {
   constructor(name: string, isOptional: boolean = false) {
     let title = `What is ${name}’s date of birth?`
     if (isOptional) {
@@ -10,7 +10,8 @@ export default class ContactDetailsDobPage extends Page {
   }
 
   enterDay(day: string) {
-    this.dayTextBox().clear().type(day, { delay: 0 })
+    const input = this.dayTextBox().clear()
+    if (day) input.type(day, { delay: 0 })
     return this
   }
 
@@ -20,7 +21,8 @@ export default class ContactDetailsDobPage extends Page {
   }
 
   enterMonth(month: string) {
-    this.monthTextBox().clear().type(month, { delay: 0 })
+    const input = this.monthTextBox().clear()
+    if (month) input.type(month, { delay: 0 })
     return this
   }
 
@@ -30,7 +32,8 @@ export default class ContactDetailsDobPage extends Page {
   }
 
   enterYear(year: string) {
-    this.yearTextBox().clear().type(year, { delay: 0 })
+    const input = this.yearTextBox().clear()
+    if (year) input.type(year, { delay: 0 })
     return this
   }
 
