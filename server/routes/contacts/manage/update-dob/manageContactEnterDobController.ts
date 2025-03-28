@@ -39,9 +39,7 @@ export default class ManageContactEnterDobController implements PageHandler {
     }
 
     const view = {
-      isOptional: false,
-      caption: 'Edit contact details',
-      continueButtonLabel: 'Confirm and save',
+      isNewContact: false,
       contact,
       day: res.locals?.formResponses?.['day'] ?? dateOfBirth?.day,
       month: res.locals?.formResponses?.['month'] ?? dateOfBirth?.month,

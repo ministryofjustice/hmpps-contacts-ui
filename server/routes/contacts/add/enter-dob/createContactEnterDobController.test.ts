@@ -65,9 +65,15 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId', (
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('.main-heading').first().text().trim()).toStrictEqual('Do you know First Middle Last’s date of birth?')
+    expect($('.main-heading').first().text().trim()).toStrictEqual(
+      'What is First Middle Last’s date of birth? (optional)',
+    )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
-    expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual('/foo-bar')
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`,
+    )
+    expect($('[data-qa=cancel-button]')).toHaveLength(0)
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
   })
 
@@ -87,7 +93,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId', (
 
   it('should render previously entered details if validation errors', async () => {
     // Given
-    const form = { isKnown: 'YES', day: '01', month: '06', year: '1982' }
+    const form = { day: '01', month: '06', year: '1982' }
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
@@ -99,24 +105,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId', (
     expect($('#day').val()).toStrictEqual('01')
     expect($('#month').val()).toStrictEqual('06')
     expect($('#year').val()).toStrictEqual('1982')
-    expect($('input[type=radio]:checked').val()).toStrictEqual('YES')
-  })
-
-  it('should render previously entered details if validation errors with unknown dob', async () => {
-    // Given
-    const form = { isKnown: 'NO' }
-    flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
-
-    // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
-
-    // Then
-    expect(response.status).toEqual(200)
-    const $ = cheerio.load(response.text)
-    expect($('#day').val()).toBeUndefined()
-    expect($('#month').val()).toBeUndefined()
-    expect($('#year').val()).toBeUndefined()
-    expect($('input[type=radio]:checked').val()).toStrictEqual('NO')
   })
 
   it('should render previously entered details if no validation errors but there are session values', async () => {
@@ -132,29 +120,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId', (
     expect($('#day').val()).toStrictEqual('1')
     expect($('#month').val()).toStrictEqual('6')
     expect($('#year').val()).toStrictEqual('1982')
-    expect($('input[type=radio]:checked').val()).toStrictEqual('YES')
-  })
-
-  it('should render previously entered details if no validation errors but there are session values with unknown dob', async () => {
-    // Given
-    existingJourney.dateOfBirth = { isKnown: 'NO' }
-
-    // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
-
-    // Then
-    expect(response.status).toEqual(200)
-    const $ = cheerio.load(response.text)
-    expect($('#day').val()).toBeUndefined()
-    expect($('#month').val()).toBeUndefined()
-    expect($('#year').val()).toBeUndefined()
-    expect($('input[type=radio]:checked').val()).toStrictEqual('NO')
   })
 
   it('should render submitted options on validation error even if there is a version in the session', async () => {
     // Given
     existingJourney.dateOfBirth = { isKnown: 'YES', day: 1, month: 6, year: 1982 }
-    const form = { isKnown: 'NO' }
+    const form = { day: 'a', month: 'b', year: '1999' }
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
 
     // When
@@ -163,10 +134,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId', (
     // Then
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
-    expect($('#day').val()).toStrictEqual('1')
-    expect($('#month').val()).toStrictEqual('6')
-    expect($('#year').val()).toStrictEqual('1982')
-    expect($('input[type=radio]:checked').val()).toStrictEqual('NO')
+    expect($('#day').val()).toStrictEqual('a')
+    expect($('#month').val()).toStrictEqual('b')
+    expect($('#year').val()).toStrictEqual('1999')
   })
 
   it('should return to start if no journey in session', async () => {
@@ -182,7 +152,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
       .type('form')
-      .send({ isKnown: 'NO' })
+      .send({ day: '', month: '', year: '' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`)
 
@@ -197,7 +167,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
       .type('form')
-      .send({ isKnown: 'YES', day, month, year })
+      .send({ day, month, year })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`)
 
@@ -218,7 +188,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
       .type('form')
-      .send({ isKnown: 'YES', day: '1', month: '6', year: '1982' })
+      .send({ day: '1', month: '6', year: '1982' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
 
@@ -236,7 +206,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
       .type('form')
-      .send({})
+      .send({ day: ' ' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
   })

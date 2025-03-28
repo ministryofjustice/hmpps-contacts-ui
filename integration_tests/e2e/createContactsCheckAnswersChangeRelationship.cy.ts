@@ -1,6 +1,5 @@
 import Page from '../pages/page'
 import EnterNamePage from '../pages/enterNamePage'
-import EnterContactDateOfBirthPage from '../pages/enterContactDateOfBirthPage'
 import CreateContactCheckYourAnswersPage from '../pages/createContactCheckYourAnswersPage'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import TestData from '../../server/routes/testutils/testData'
@@ -12,6 +11,7 @@ import RelationshipCommentsPage from '../pages/contact-details/relationship/rela
 import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
 import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
 import SelectEmergencyContactOrNextOfKinPage from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
+import ManageDobPage from '../pages/contact-details/dobPage'
 
 context('Create contact and update the relationship from check answers', () => {
   beforeEach(() => {
@@ -75,8 +75,7 @@ context('Create contact and update the relationship from check answers', () => {
       .enterLastName('Last')
       .enterMiddleNames('Middle')
       .enterFirstName('First')
-      .continueTo(EnterContactDateOfBirthPage, 'First Middle Last')
-      .selectIsKnown('YES')
+      .continueTo(ManageDobPage, 'First Middle Last', true)
       .enterDay('15')
       .enterMonth('06')
       .enterYear('1982')

@@ -1,6 +1,5 @@
 import Page from '../pages/page'
 import EnterNamePage from '../pages/enterNamePage'
-import EnterContactDateOfBirthPage from '../pages/enterContactDateOfBirthPage'
 import CreateContactCheckYourAnswersPage from '../pages/createContactCheckYourAnswersPage'
 import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
@@ -14,6 +13,7 @@ import RelationshipCommentsPage from '../pages/contact-details/relationship/rela
 import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
 import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
 import SelectEmergencyContactOrNextOfKinPage from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
+import ManageDobPage from '../pages/contact-details/dobPage'
 
 context('Create Contacts', () => {
   const contactId = 654321
@@ -90,8 +90,7 @@ context('Create Contacts', () => {
       .enterFirstName('First')
       .clickContinue()
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Last') //
-      .selectIsKnown('NO')
+    Page.verifyOnPage(ManageDobPage, 'First Last', true) //
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipTypePage, 'First Last', 'John Smith') //
@@ -160,8 +159,7 @@ context('Create Contacts', () => {
       .enterMiddleNames('Middle')
       .clickContinue()
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Last') //
-      .selectIsKnown('YES')
+    Page.verifyOnPage(ManageDobPage, 'First Middle Last', true) //
       .enterDay('15')
       .enterMonth('06')
       .enterYear('1982')
@@ -238,8 +236,7 @@ context('Create Contacts', () => {
       .enterFirstName('First')
       .clickContinue()
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Last') //
-      .selectIsKnown('NO')
+    Page.verifyOnPage(ManageDobPage, 'First Last', true) //
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipTypePage, 'First Last', 'John Smith') //
@@ -339,8 +336,7 @@ context('Create Contacts', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
-      .continueTo(EnterContactDateOfBirthPage, 'First Last')
-      .selectIsKnown('NO')
+      .continueTo(ManageDobPage, 'First Last', true)
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipTypePage, 'First Last', 'John Smith') //
@@ -353,30 +349,19 @@ context('Create Contacts', () => {
     selectRelationshipPage.hasFieldInError('relationship', 'Select the contact’s relationship to the prisoner')
   })
 
-  it('Must select whether dob is known', () => {
-    Page.verifyOnPage(EnterNamePage) //
-      .enterLastName('Last')
-      .enterFirstName('First')
-      .clickContinue()
-
-    const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Last')
-    enterDobPage.clickContinue()
-
-    enterDobPage.hasFieldInError('isKnown', 'Select whether the date of birth is known')
-  })
-
   it('Must enter dob if it is known', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
       .clickContinue()
 
-    const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Last')
-    enterDobPage.selectIsKnown('YES').clickContinue()
-    enterDobPage.hasFieldInError('dob', 'Enter the contact’s date of birth')
+    const enterDobPage = Page.verifyOnPage(ManageDobPage, 'First Last', true)
+    enterDobPage.enterYear(' ').clickContinue()
+    enterDobPage.hasFieldInError('dob', 'Date of birth must include a day and a month')
     enterDobPage.errorSummaryItems.spread((...$lis) => {
-      expect($lis).to.have.lengthOf(1)
-      expect($lis[0]).to.contain('Enter the contact’s date of birth')
+      expect($lis).to.have.lengthOf(2)
+      expect($lis[0]).to.contain('Date of birth must include a day and a month')
+      expect($lis[1]).to.contain('Year must include 4 numbers')
     })
   })
 
@@ -386,24 +371,13 @@ context('Create Contacts', () => {
       .enterFirstName('First')
       .clickContinue()
 
-    const enterDobPage = Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Last')
-    enterDobPage
-      .selectIsKnown('YES') //
-      .enterDay('aa')
-      .enterMonth('bb')
-      .enterYear('cc')
-      .clickContinue()
+    const enterDobPage = Page.verifyOnPage(ManageDobPage, 'First Last', true)
+    enterDobPage.enterDay('aa').enterMonth('bb').enterYear('cccc').clickContinue()
 
-    enterDobPage.hasFieldInError('dob', 'Enter a valid day of the month (1-31)')
-    enterDobPage.hasFieldInError('dob', 'Enter a valid month (1-12)')
-    enterDobPage.hasFieldInError('dob', 'Enter a valid year. Must be at least 1900')
-    enterDobPage.hasFieldInError('dob', 'The date of birth is invalid')
+    enterDobPage.hasFieldInError('dob', 'Date of birth must be a real date')
     enterDobPage.errorSummaryItems.spread((...$lis) => {
-      expect($lis).to.have.lengthOf(4)
-      expect($lis[0]).to.contain('Enter a valid day of the month (1-31)')
-      expect($lis[1]).to.contain('Enter a valid month (1-12)')
-      expect($lis[2]).to.contain('Enter a valid year. Must be at least 1900')
-      expect($lis[3]).to.contain('The date of birth is invalid')
+      expect($lis).to.have.lengthOf(1)
+      expect($lis[0]).to.contain('Date of birth must be a real date')
     })
   })
 
@@ -411,8 +385,7 @@ context('Create Contacts', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
-      .continueTo(EnterContactDateOfBirthPage, 'First Last') //
-      .selectIsKnown('NO')
+      .continueTo(ManageDobPage, 'First Last', true) //
       .continueTo(SelectRelationshipTypePage, 'First Last', 'John Smith')
       .selectRelationshipType('S')
       .continueTo(SelectRelationshipPage, 'First Last', 'John Smith') //
@@ -435,8 +408,7 @@ context('Create Contacts', () => {
     const relationshipCommentsPage = Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
-      .continueTo(EnterContactDateOfBirthPage, 'First Last')
-      .selectIsKnown('NO')
+      .continueTo(ManageDobPage, 'First Last', true)
       .continueTo(SelectRelationshipTypePage, 'First Last', 'John Smith')
       .selectRelationshipType('S')
       .continueTo(SelectRelationshipPage, 'First Last', 'John Smith')
@@ -462,7 +434,7 @@ context('Create Contacts', () => {
       .backTo(SelectEmergencyContactOrNextOfKinPage, 'First Last', 'John Smith', true)
       .backTo(SelectRelationshipPage, 'First Last', 'John Smith')
       .backTo(SelectRelationshipTypePage, 'First Last', 'John Smith')
-      .backTo(EnterContactDateOfBirthPage, 'First Last')
+      .backTo(ManageDobPage, 'First Last', true)
       .backTo(EnterNamePage)
   })
 
@@ -470,8 +442,7 @@ context('Create Contacts', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
-      .continueTo(EnterContactDateOfBirthPage, 'First Last') //
-      .selectIsKnown('NO')
+      .continueTo(ManageDobPage, 'First Last', true) //
       .continueTo(SelectRelationshipTypePage, 'First Last', 'John Smith') //
       .selectRelationshipType('S')
       .continueTo(SelectRelationshipPage, 'First Last', 'John Smith') //

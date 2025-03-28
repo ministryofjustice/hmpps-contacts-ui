@@ -3,7 +3,7 @@ import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import { StubPatchContactResponse } from '../mockApis/contactsApi'
 import EditContactDetailsPage from '../pages/editContactDetailsPage'
-import ContactDetailsDobPage from '../pages/contact-details/dobPage'
+import ManageDobPage from '../pages/contact-details/dobPage'
 
 context('Change Contact Date Of Birth', () => {
   const contactId = 654321
@@ -58,7 +58,7 @@ context('Change Contact Date Of Birth', () => {
       .verifyShowDOBValueAs('15 June 1982')
       .clickChangeDateOfBirthLink()
 
-    Page.verifyOnPage(ContactDetailsDobPage, 'First Middle Names Last') //
+    Page.verifyOnPage(ManageDobPage, 'First Middle Names Last') //
       .hasDay('15')
       .hasMonth('6')
       .hasYear('1982')
@@ -114,7 +114,7 @@ context('Change Contact Date Of Birth', () => {
       .verifyShowDOBValueAs('Not provided')
       .clickChangeDateOfBirthLink()
 
-    Page.verifyOnPage(ContactDetailsDobPage, 'First Middle Names Last') //
+    Page.verifyOnPage(ManageDobPage, 'First Middle Names Last') //
       .enterDay('25')
       .enterMonth('12')
       .enterYear('2000')
@@ -161,7 +161,7 @@ context('Change Contact Date Of Birth', () => {
       .verifyShowDOBValueAs('Not provided')
       .clickChangeDateOfBirthLink()
 
-    const enterDobPage = Page.verifyOnPage(ContactDetailsDobPage, 'First Middle Names Last')
+    const enterDobPage = Page.verifyOnPage(ManageDobPage, 'First Middle Names Last')
 
     // Must enter dob
     enterDobPage.clickContinue()
@@ -222,13 +222,13 @@ context('Change Contact Date Of Birth', () => {
     editDetailsPage.clickChangeDateOfBirthLink()
 
     // Back to Edit Contact Details
-    Page.verifyOnPage(ContactDetailsDobPage, 'First Middle Names Last') //
+    Page.verifyOnPage(ManageDobPage, 'First Middle Names Last') //
       .backTo(EditContactDetailsPage, 'First Middle Names Last')
 
     editDetailsPage.clickChangeDateOfBirthLink()
 
     // Cancel to Contact Details page
-    Page.verifyOnPage(ContactDetailsDobPage, 'First Middle Names Last') //
+    Page.verifyOnPage(ManageDobPage, 'First Middle Names Last') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 })

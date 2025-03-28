@@ -5,6 +5,7 @@ export const dateOfDeathSchema = createDateInputSchema({
   inputId: 'dateOfDeath',
   inputDescription: 'date of death',
   additionalRule: DateInputSchemaRule.MUST_BE_TODAY_OR_PAST,
+  isOptional: false,
 })
 
 export type DateOfDeathSchemaType = z.infer<typeof dateOfDeathSchema>

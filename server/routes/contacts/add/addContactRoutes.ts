@@ -22,7 +22,7 @@ import { contactSearchSchema } from './contact-search/contactSearchSchema'
 import { selectToConfirmContactSchema } from './contact-confirmation/contactConfirmationSchema'
 import AddContactModeController from './mode/addContactModeController'
 import ContactConfirmationController from './contact-confirmation/contactConfirmationController'
-import { enterDobSchema } from '../common/enter-dob/enterDobSchemas'
+import { optionalDobSchema } from './enter-dob/enterDobSchemas'
 import SuccessfullyAddedContactController from './success/successfullyAddedContactController'
 import { selectRelationshipTypeSchema } from './relationship-type/relationshipTypeSchema'
 import RelationshipTypeController from './relationship-type/relationshipTypeController'
@@ -223,7 +223,7 @@ const AddContactRoutes = (
   router.post(
     '/prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId',
     ensureInAddContactJourney,
-    validate(enterDobSchema()),
+    validate(optionalDobSchema),
     asyncMiddleware(enterDobController.POST),
   )
 

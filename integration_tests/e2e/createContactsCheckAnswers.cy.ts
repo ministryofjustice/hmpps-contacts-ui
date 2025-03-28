@@ -1,6 +1,5 @@
 import Page from '../pages/page'
 import EnterNamePage from '../pages/enterNamePage'
-import EnterContactDateOfBirthPage from '../pages/enterContactDateOfBirthPage'
 import CreateContactCheckYourAnswersPage from '../pages/createContactCheckYourAnswersPage'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import TestData from '../../server/routes/testutils/testData'
@@ -12,6 +11,7 @@ import RelationshipCommentsPage from '../pages/contact-details/relationship/rela
 import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
 import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
 import SelectEmergencyContactOrNextOfKinPage from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
+import ManageDobPage from '../pages/contact-details/dobPage'
 
 context('Create contact and update from check answers', () => {
   beforeEach(() => {
@@ -75,8 +75,7 @@ context('Create contact and update from check answers', () => {
       .enterLastName('Last')
       .enterMiddleNames('Middle')
       .enterFirstName('First')
-      .continueTo(EnterContactDateOfBirthPage, 'First Middle Last')
-      .selectIsKnown('YES')
+      .continueTo(ManageDobPage, 'First Middle Last', true)
       .enterDay('15')
       .enterMonth('06')
       .enterYear('1982')
@@ -238,12 +237,13 @@ context('Create contact and update from check answers', () => {
       .verifyShowCommentsAs('Some comments about the relationship')
       .clickChangeDateOfBirthLink()
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Last') //
-      .hasIsKnown('YES')
+    Page.verifyOnPage(ManageDobPage, 'First Middle Last', true) //
       .hasDay('15')
       .hasMonth('6')
       .hasYear('1982')
-      .selectIsKnown('NO')
+      .enterDay('')
+      .enterMonth('')
+      .enterYear('')
       .clickContinue()
 
     Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
@@ -276,13 +276,12 @@ context('Create contact and update from check answers', () => {
     )
   })
 
-  it('Can change the date of birth to unknown when creating a new contact', () => {
+  it('Can change the date of birth when creating a new contact', () => {
     Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
       .verifyShowCommentsAs('Some comments about the relationship')
       .clickChangeDateOfBirthLink()
 
-    Page.verifyOnPage(EnterContactDateOfBirthPage, 'First Middle Last') //
-      .hasIsKnown('YES')
+    Page.verifyOnPage(ManageDobPage, 'First Middle Last', true) //
       .hasDay('15')
       .hasMonth('6')
       .hasYear('1982')
