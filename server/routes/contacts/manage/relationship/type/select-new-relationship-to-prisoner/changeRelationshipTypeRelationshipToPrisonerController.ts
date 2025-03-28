@@ -38,12 +38,12 @@ export default class ChangeRelationshipTypeRelationshipToPrisonerController impl
       cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
     }
     const viewModel = {
+      isNewContact: false,
       navigation,
       relationshipOptions,
       relationshipType: journey.relationshipType,
       relationship: currentRelationship,
       names: journey.names,
-      caption: 'Edit contact relationship information',
       continueButtonLabel: 'Confirm and save',
     }
     res.render('pages/contacts/manage/contactDetails/relationship/selectRelationship', viewModel)
