@@ -192,6 +192,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect($('[data-qa="CONTACT_GLOBAL-2-expiry-date-value"]').text().trim()).toStrictEqual('01/08/2050')
       expect($('[data-qa="CONTACT_GLOBAL-2-entered-by-value"]').text().trim()).toStrictEqual('User One')
       expect($('[data-qa="CONTACT_GLOBAL-2-comments-value"]').text().trim()).toStrictEqual('Keep an eye')
+
+      expect($('[data-qa=edit-restrictions-link]').text().trim()).toStrictEqual('Add or update restrictions')
     })
 
     it('should render global restrictions tab with expired restrictions', async () => {
@@ -217,6 +219,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       const globalRestrictionTitleText = $('[data-qa="CONTACT_GLOBAL-1-type-value"]').text().trim()
       expect(globalRestrictionTitleText).toContain('Child Visitors to be Vetted')
       expect(globalRestrictionTitleText).toContain('(expired)')
+      expect($('[data-qa=edit-restrictions-link]').text().trim()).toStrictEqual('Add or update restrictions')
     })
 
     it('should render prisoner contact restrictions tab with expired restrictions', async () => {
@@ -264,6 +267,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect($('.restrictions-caption-CONTACT_GLOBAL').text()).toStrictEqual(
         'No restrictions apply to contact Jones Mason across the whole prison estate.',
       )
+
+      expect($('[data-qa=edit-restrictions-link]').text().trim()).toStrictEqual('Add restrictions')
     })
 
     it('should show not entered text for expiry date and comments when not available', async () => {

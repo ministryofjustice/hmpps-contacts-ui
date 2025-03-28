@@ -48,7 +48,7 @@ context('Create Prisoner Contact Restriction', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickRestrictionsTab('0')
       .verifyOnRestrictionsTab()
-      .clickLinkTo('Add or update restrictions', EditRestrictionsPage, 'First Middle Names Last')
+      .clickLinkTo('Add restrictions', EditRestrictionsPage, 'First Middle Names Last')
       .clickButton('Add relationship restriction')
   })
 

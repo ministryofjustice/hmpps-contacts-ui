@@ -7,7 +7,12 @@
   </div>
   <div class="moj-page-header-actions__actions">
     <div class="moj-button-group moj-button-group--inline">
-       <a class="govuk-link govuk-link--no-visited-state" href="{{ "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contactId + "/relationship/" + prisonerContactId + "/edit-restrictions" }}">Add or update restrictions</a>
+       {% if prisonerContactRestrictions.length or contactGlobalRestrictions.length %}
+          {% set editLinkText = 'Add or update restrictions' %}
+        {% else %}
+          {% set editLinkText = 'Add restrictions' %}
+        {% endif %}
+       <a class="govuk-link govuk-link--no-visited-state" data-qa="edit-restrictions-link" href="{{ "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contactId + "/relationship/" + prisonerContactId + "/edit-restrictions" }}">{{ editLinkText }}</a>
     </div>
   </div>
 </div>
