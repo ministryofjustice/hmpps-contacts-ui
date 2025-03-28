@@ -69,7 +69,7 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/check-answers/:journeyId', () => {
-  it('should render enter restriction page for prisoner-contact with minimal details', async () => {
+  it('should render CYA restriction page for prisoner-contact with minimal details', async () => {
     // Given
     referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Banned')
     existingJourney.restrictionClass = 'PRISONER_CONTACT'
@@ -88,14 +88,16 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Check your answers before saving the new prisoner-contact restriction',
+      'Check your answers before saving the new relationship restriction',
     )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/PRISONER_CONTACT/cancel/${journeyId}`,
     )
     expect($('[data-qa=prisoner-name-and-id]').first().text().trim()).toStrictEqual('John Smith (A1234BC)')
     expect($('[data-qa=contact-name-and-id]').first().text().trim()).toStrictEqual('Bar Foo (123)')
-    expect($('[data-qa=back-link]')).toHaveLength(0)
+    expect($('[data-qa=back-link]').attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/PRISONER_CONTACT/enter-restriction/${journeyId}`,
+    )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('.check-answers-type-value').text().trim()).toStrictEqual('Banned')
     expect($('.check-answers-start-date-value').text().trim()).toStrictEqual('1 February 2024')
@@ -103,7 +105,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     expect($('.check-answers-comments-value').text().trim()).toStrictEqual('Not provided')
   })
 
-  it('should render enter restriction page for estate wide with minimal details', async () => {
+  it('should render CYA restriction page for estate wide with minimal details', async () => {
     // Given
     referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Banned')
     existingJourney.restrictionClass = 'CONTACT_GLOBAL'
@@ -129,7 +131,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     )
     expect($('[data-qa=prisoner-name-and-id]')).toHaveLength(0)
     expect($('[data-qa=contact-name-and-id]').first().text().trim()).toStrictEqual('Bar Foo (123)')
-    expect($('[data-qa=back-link]')).toHaveLength(0)
+    expect($('[data-qa=back-link]').attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/CONTACT_GLOBAL/enter-restriction/${journeyId}`,
+    )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('.check-answers-type-value').text().trim()).toStrictEqual('Banned')
     expect($('.check-answers-start-date-value').text().trim()).toStrictEqual('1 February 2024')
@@ -137,7 +141,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     expect($('.check-answers-comments-value').text().trim()).toStrictEqual('Not provided')
   })
 
-  it('should render enter restriction page for prisoner-contact with all details', async () => {
+  it('should render CYA restriction page for prisoner-contact with all details', async () => {
     // Given
     referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Banned')
     existingJourney.restrictionClass = 'PRISONER_CONTACT'
@@ -158,14 +162,16 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Check your answers before saving the new prisoner-contact restriction',
+      'Check your answers before saving the new relationship restriction',
     )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/PRISONER_CONTACT/cancel/${journeyId}`,
     )
     expect($('[data-qa=prisoner-name-and-id]').first().text().trim()).toStrictEqual('John Smith (A1234BC)')
     expect($('[data-qa=contact-name-and-id]').first().text().trim()).toStrictEqual('Bar Foo (123)')
-    expect($('[data-qa=back-link]')).toHaveLength(0)
+    expect($('[data-qa=back-link]').attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/PRISONER_CONTACT/enter-restriction/${journeyId}`,
+    )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('.check-answers-type-value').text().trim()).toStrictEqual('Banned')
     expect($('.check-answers-start-date-value').text().trim()).toStrictEqual('1 February 2024')
@@ -183,7 +189,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     expect($('[data-qa=change-comments-link]').first().attr('href')).toStrictEqual(`${expectedBaseChangeLink}#comments`)
   })
 
-  it('should render enter restriction page for estate wide with all details', async () => {
+  it('should render CYA restriction page for estate wide with all details', async () => {
     // Given
     referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Banned')
     existingJourney.restrictionClass = 'CONTACT_GLOBAL'
@@ -211,7 +217,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     )
     expect($('[data-qa=prisoner-name-and-id]')).toHaveLength(0)
     expect($('[data-qa=contact-name-and-id]').first().text().trim()).toStrictEqual('Bar Foo (123)')
-    expect($('[data-qa=back-link]')).toHaveLength(0)
+    expect($('[data-qa=back-link]').attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/CONTACT_GLOBAL/enter-restriction/${journeyId}`,
+    )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
 
     expect($('.check-answers-type-value').text().trim()).toStrictEqual('Banned')

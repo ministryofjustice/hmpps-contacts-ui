@@ -203,7 +203,6 @@ context('Edit Address Phones', () => {
     Page.verifyOnPage(EditAddressPhonePage) //
       .backTo(EditContactMethodsPage, 'First Middle Names Last')
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .verifyOnContactsMethodsTab()
   })
 
   it('goes to correct page on Back or Cancel', () => {

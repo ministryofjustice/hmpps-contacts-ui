@@ -84,7 +84,6 @@ context('Delete Contact Phones', () => {
     Page.verifyOnPage(ConfirmDeletePhonePage, 'First Middle Names Last') //
       .backTo(EditContactMethodsPage, 'First Middle Names Last')
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .verifyOnContactsMethodsTab()
 
     cy.verifyAPIWasCalled(
       {

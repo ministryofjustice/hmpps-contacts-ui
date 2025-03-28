@@ -36,10 +36,9 @@ export default class ContactDetailsController implements PageHandler {
       await this.contactsService.getPrisonerContactRelationship(Number(prisonerContactId), user)
     const navigation: Navigation = { breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'] }
 
-    const prisonerContactRestrictionsEnriched = await this.restrictionsService.getPrisonerContactRestrictions(
-      Number(prisonerContactId),
-      user,
-    )
+    const { prisonerContactRestrictions, contactGlobalRestrictions } =
+      await this.restrictionsService.getRelationshipAndGlobalRestrictions(Number(prisonerContactId), user)
+
     const linkedPrisonerPageNumber =
       linkedPrisonerPage && !Number.isNaN(Number(linkedPrisonerPage)) ? Number(linkedPrisonerPage) : 1
 
@@ -63,8 +62,8 @@ export default class ContactDetailsController implements PageHandler {
 
     return res.render('pages/contacts/manage/contactDetails/details/index', {
       contact,
-      globalRestrictions: prisonerContactRestrictionsEnriched.contactGlobalRestrictions,
-      prisonerContactRestrictions: prisonerContactRestrictionsEnriched.prisonerContactRestrictions,
+      contactGlobalRestrictions,
+      prisonerContactRestrictions,
       prisonerNumber,
       contactId,
       prisonerContactId,

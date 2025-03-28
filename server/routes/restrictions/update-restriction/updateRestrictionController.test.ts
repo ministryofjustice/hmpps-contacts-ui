@@ -93,21 +93,21 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/PRISONER_CONTACT/enter-restriction/${restrictionId}?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/PRISONER_CONTACT/enter-restriction/${restrictionId}`,
     )
 
     // Then
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Update a prisoner-contact restriction')
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Update a relationship restriction')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}#restrictions`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-restrictions`,
     )
     expect($('[data-qa=prisoner-name-and-id]').first().text().trim()).toStrictEqual('John Smith (A1234BC)')
     expect($('[data-qa=contact-name-and-id]').first().text().trim()).toStrictEqual('First Middle Last (123)')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}#restrictions`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
     )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
 
@@ -120,7 +120,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
   it('should render enter restriction page for CONTACT_GLOBAL', async () => {
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/CONTACT_GLOBAL/enter-restriction/${restrictionId}?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/CONTACT_GLOBAL/enter-restriction/${restrictionId}`,
     )
 
     // Then
@@ -128,15 +128,15 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Update a global restriction for contact First Last',
+      'Update a global restriction for contact First Middle Last',
     )
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}#restrictions`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-restrictions`,
     )
     expect($('[data-qa=prisoner-name-and-id]')).toHaveLength(0)
     expect($('[data-qa=contact-name-and-id]')).toHaveLength(0)
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}#restrictions`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
     )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
 
@@ -149,7 +149,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
   it('should call the audit service for the page view', async () => {
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/CONTACT_GLOBAL/enter-restriction/${restrictionId}?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/CONTACT_GLOBAL/enter-restriction/${restrictionId}`,
     )
 
     // Then
@@ -167,7 +167,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/CONTACT_GLOBAL/enter-restriction/${restrictionId}?returnUrl=/foo-bar`,
+      `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/CONTACT_GLOBAL/enter-restriction/${restrictionId}`,
     )
 
     // Then
@@ -192,15 +192,12 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
     }
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/PRISONER_CONTACT/enter-restriction/${restrictionId}?returnUrl=/foo-bar`,
+        `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/PRISONER_CONTACT/enter-restriction/${restrictionId}`,
       )
       .type('form')
       .send(form)
       .expect(302)
-      .expect(
-        'Location',
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}#restrictions`,
-      )
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
     expect(restrictionsService.updatePrisonerContactRestriction).toHaveBeenCalledWith(
       prisonerContactId,
       restrictionId,
@@ -209,7 +206,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
     )
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
-      'You’ve updated the prisoner-contact restrictions for contact First Middle Last and prisoner John Smith.',
+      'You’ve updated the relationship restrictions between contact First Middle Last and prisoner John Smith.',
     )
   })
 
@@ -224,15 +221,12 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
     }
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/CONTACT_GLOBAL/enter-restriction/${restrictionId}?returnUrl=/foo-bar`,
+        `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/CONTACT_GLOBAL/enter-restriction/${restrictionId}`,
       )
       .type('form')
       .send(form)
       .expect(302)
-      .expect(
-        'Location',
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}#restrictions`,
-      )
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
     expect(restrictionsService.updateContactGlobalRestriction).toHaveBeenCalledWith(
       contactId,
       restrictionId,
@@ -250,14 +244,14 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
     async restrictionClass => {
       await request(app)
         .post(
-          `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/${restrictionClass}/enter-restriction/${restrictionId}?returnUrl=/foo-bar`,
+          `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/${restrictionClass}/enter-restriction/${restrictionId}`,
         )
         .type('form')
         .send({})
         .expect(302)
         .expect(
           'Location',
-          `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/${restrictionClass}/enter-restriction/${restrictionId}?returnUrl=/foo-bar`,
+          `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/${restrictionClass}/enter-restriction/${restrictionId}`,
         )
     },
   )

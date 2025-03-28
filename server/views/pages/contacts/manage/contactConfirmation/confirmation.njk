@@ -78,9 +78,8 @@
                 <div class="govuk-tabs__panel govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" data-qa="restrictions-result-message" id="restrictions">
                   {{ restrictionsTable( {
                     restrictions: globalRestrictions,
-                    title: 'Global restrictions',
-                    caption: 'These restrictions apply to contact ' + (contact | formatNameFirstNameFirst(excludeMiddleNames = true)) + ' across the whole prison estate.',
-                    emptyCaption: 'No restrictions apply to contact ' + (contact | formatNameFirstNameFirst(excludeMiddleNames = true)) + ' across the whole prison estate.',
+                    contact: contact,
+                    prisonerDetails: prisonerDetails,
                     restrictionClass: 'CONTACT_GLOBAL',
                     showActions: false
                   } ) }}

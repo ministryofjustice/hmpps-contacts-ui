@@ -9,10 +9,9 @@ import { maxLengthForRestrictionClass, RestrictionSchemaType } from '../schema/r
 import { formatNameFirstNameFirst } from '../../../utils/formatName'
 import { ContactsService, RestrictionsService } from '../../../services'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../middleware/setUpSuccessNotificationBanner'
-import ReferenceCode = contactsApiClientTypes.ReferenceCode
+import Urls from '../../urls'
 import RestrictionClass = journeys.RestrictionClass
 import PrisonerContactRestrictionDetails = contactsApiClientTypes.PrisonerContactRestrictionDetails
-import Urls from '../../urls'
 
 export default class UpdateRestrictionController implements PageHandler {
   constructor(
@@ -47,10 +46,8 @@ export default class UpdateRestrictionController implements PageHandler {
         contactId,
       }
     })
-    let title
     let existingRestriction
     if (restrictionClass === 'PRISONER_CONTACT') {
-      title = 'Update a prisoner-contact restriction'
       existingRestriction = await this.contactsService
         .getPrisonerContactRestrictions(Number(prisonerContactId), user)
         .then(restrictions =>
@@ -60,9 +57,6 @@ export default class UpdateRestrictionController implements PageHandler {
           ),
         )
     } else {
-      title = `Update a global restriction for contact ${formatNameFirstNameFirst(journey.contactNames!, {
-        excludeMiddleNames: true,
-      })}`
       existingRestriction = await this.contactsService
         .getGlobalContactRestrictions(Number(contactId), user)
         .then(restrictions =>
@@ -70,21 +64,17 @@ export default class UpdateRestrictionController implements PageHandler {
         )
     }
 
-    const typeOptions = await this.referenceDataService
-      .getReferenceData(ReferenceCodeType.RESTRICTION, user)
-      .then(val =>
-        this.getSelectedOptions(val, res.locals?.formResponses?.['type'] ?? existingRestriction?.restrictionType),
-      )
+    const types = await this.referenceDataService.getReferenceData(ReferenceCodeType.RESTRICTION, user)
 
     const navigation: Navigation = {
-      backLink: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId, 'restrictions'),
-      cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId, 'restrictions'),
+      backLink: Urls.editRestrictions(prisonerNumber, contactId, prisonerContactId),
+      cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
     }
 
     const viewModel = {
       journey,
-      typeOptions,
-      title,
+      types,
+      isNewRestriction: false,
       type: res.locals?.formResponses?.['type'] ?? existingRestriction?.restrictionType,
       startDate:
         res.locals?.formResponses?.['startDate'] ?? this.formatDateForDatePicker(existingRestriction?.startDate),
@@ -93,7 +83,6 @@ export default class UpdateRestrictionController implements PageHandler {
       comments: res.locals?.formResponses?.['comments'] ?? existingRestriction?.comments,
       navigation,
       maxCommentLength: maxLengthForRestrictionClass(restrictionClass),
-      continueButtonLabel: 'Continue',
     }
     res.render('pages/contacts/restrictions/enterRestriction', viewModel)
   }
@@ -122,7 +111,7 @@ export default class UpdateRestrictionController implements PageHandler {
         .then(contactName =>
           req.flash(
             FLASH_KEY__SUCCESS_BANNER,
-            `You’ve updated the prisoner-contact restrictions for contact ${formatNameFirstNameFirst(contactName)} and prisoner ${formatNameFirstNameFirst(prisonerDetails, { excludeMiddleNames: true })}.`,
+            `You’ve updated the relationship restrictions between contact ${formatNameFirstNameFirst(contactName)} and prisoner ${formatNameFirstNameFirst(prisonerDetails, { excludeMiddleNames: true })}.`,
           ),
         )
     } else {
@@ -136,25 +125,7 @@ export default class UpdateRestrictionController implements PageHandler {
           ),
         )
     }
-    res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId, 'restrictions'))
-  }
-
-  private getSelectedOptions(
-    options: ReferenceCode[],
-    selectedOption?: string,
-  ): Array<{
-    value: string
-    text: string
-    selected?: boolean
-  }> {
-    const mappedOptions = options.map((referenceCode: ReferenceCode) => {
-      return {
-        text: referenceCode.description,
-        value: referenceCode.code,
-        selected: referenceCode.code === selectedOption,
-      }
-    })
-    return [{ text: 'Select restriction type', value: '' }, ...mappedOptions]
+    res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
   }
 
   private formatDateForDatePicker(date: string | undefined): string | undefined {

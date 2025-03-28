@@ -5,30 +5,44 @@
 
   {% set restrictions = opts.restrictions %}
   {% set restrictionClass = opts.restrictionClass %}
-  {% set title = opts.title %}
-  {% set caption = opts.caption %}
-  {% set emptyCaption = opts.emptyCaption %}
-  {% set contactId = opts.contactId %}
+  {% set contact = opts.contact %}
+  {% set prisonerDetails = opts.prisonerDetails %}
+  {% set contactId = contact.id %}
   {% set prisonerContactId = opts.prisonerContactId %}
-  {% set prisonerNumber = opts.prisonerNumber %}
+  {% set prisonerNumber = prisonerDetails.prisonerNumber %}
   {% set showActions = opts.showActions %}
-
   {% set rows = [] %}
   {% for restriction in restrictions | sortRestrictions %}
+    {% if restrictionClass === 'PRISONER_CONTACT' %}
+      {% set visuallyHiddenText = ' this ' + restriction.restrictionTypeDescription + ' relationship restriction' %}
+    {% else %}
+      {% set visuallyHiddenText = ' this ' + restriction.restrictionTypeDescription + ' global restriction' %}
+    {% endif %}
     {% set restrictionId = restriction.contactRestrictionId or restriction.prisonerContactRestrictionId %}
     {% set retrictionTypeHtml %}
       {% set tagColour = 'govuk-tag--grey' %}
       {{ govukTag({ text: restriction.restrictionTypeDescription, classes: 'wide-tag ' + restriction.restrictionType | restrictionTagColour }) }}{{ ' (expired)' if (restriction.expiryDate | isDateAndInThePast) }}
     {% endset %}
+    {% set changeUrl = '/prisoner/' +  prisonerNumber + '/contacts/' +  contactId + '/relationship/' +  prisonerContactId + '/restriction/update/' +  restrictionClass + '/enter-restriction/' +  restrictionId %}
     {% set rows = (rows.push([
       { html: retrictionTypeHtml, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-type-value"} },
       { html: (restriction.comments or 'Not provided') | escape | nl2br, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-comments-value"} },
-      { text: restriction.startDate | formatDate, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-start-date-value"} },
-      { text: restriction.expiryDate | formatDate if restriction.expiryDate else 'Not provided', attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-expiry-date-value"} },
+      { text: restriction.startDate | formatDate('dd/MM/yyyy'), attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-start-date-value"} },
+      { text: restriction.expiryDate | formatDate('dd/MM/yyyy') if restriction.expiryDate else 'Not provided', attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-expiry-date-value"} },
       { text: restriction.enteredByDisplayName or restriction.enteredByUsername, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-entered-by-value"} },
-      { html: '<a href="/prisoner/' +  prisonerNumber + '/contacts/' +  contactId + '/relationship/' +  prisonerContactId + '/restriction/update/' +  restrictionClass + '/enter-restriction/' +  restrictionId + '" data-qa="manage-' + restrictionClass + '-restriction-link-' + restrictionId + '">Change</a>' } if showActions
+      { html: '<a href="' + changeUrl + '" data-qa="manage-' + restrictionClass + '-restriction-link-' + restrictionId + '">Change<span class="govuk-visually-hidden">' + visuallyHiddenText + '</span></a>' } if showActions
     ]), rows) %}
   {% endfor %}
+
+  {% if restrictionClass === 'PRISONER_CONTACT' %}
+    {% set title = 'Relationship restrictions' %}
+    {% set caption = 'These restrictions apply to the relationship between prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' and contact ' + (contact | formatNameFirstNameFirst(excludeMiddleNames = true)) + '.' %}
+    {% set emptyCaption = 'No restrictions apply to the relationship between prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' and contact ' + (contact | formatNameFirstNameFirst(excludeMiddleNames = true)) + '.' %}
+  {% else %}
+    {% set title = 'Global restrictions' %}
+    {% set caption = 'These restrictions apply to contact ' + (contact | formatNameFirstNameFirst(excludeMiddleNames = true)) + ' across the whole prison estate.' %}
+    {% set emptyCaption = 'No restrictions apply to contact ' + (contact | formatNameFirstNameFirst(excludeMiddleNames = true)) + ' across the whole prison estate.' %}
+  {% endif %}
 
   <h2 class="govuk-heading-m govuk-!-margin-bottom-6" data-qa="{{ restrictionClass }}-title">{{ title }}</h2>
   {% if restrictions.length %}

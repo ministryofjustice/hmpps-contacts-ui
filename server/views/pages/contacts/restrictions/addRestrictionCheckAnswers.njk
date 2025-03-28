@@ -2,9 +2,9 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
-{% set restrictionClassName = "prisoner-contact" if journey.restrictionClass === 'PRISONER_CONTACT' else "global" %}
+{% set restrictionClassName = "relationship" if journey.restrictionClass === 'PRISONER_CONTACT' else "global" %}
 {% set title = "Check your answers before saving the new " + restrictionClassName + " restriction" %}
-{% set pageTitle = applicationName + " - " + title %}
+{% set pageTitle = "Check your answers before saving a new " + restrictionClassName + " restriction - Manage contact restrictions - DPS" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}

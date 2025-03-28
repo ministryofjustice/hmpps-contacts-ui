@@ -6,6 +6,7 @@ import CreateRestrictionCheckYourAnswersPage from '../pages/createRestrictionChe
 import CreateRestrictionSuccessPage from '../pages/createRestrictionSuccessPage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import CancelAddRestrictionPage from '../pages/cancelAddRestrictionPage'
+import EditRestrictionsPage from '../pages/editRestrictionsPage'
 
 context('Create Prisoner Contact Restriction', () => {
   const contactId = 654321
@@ -18,7 +19,7 @@ context('Create Prisoner Contact Restriction', () => {
   })
   const prisoner = TestData.prisoner()
   const { prisonerNumber } = prisoner
-  const enterPageTitle = `Add a new prisoner-contact restriction`
+  const enterPageTitle = `Add a new relationship restriction`
 
   beforeEach(() => {
     cy.task('reset')
@@ -47,7 +48,8 @@ context('Create Prisoner Contact Restriction', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickRestrictionsTab('0')
       .verifyOnRestrictionsTab()
-      .clickAddPrisonerContactRestriction()
+      .clickLinkTo('Add restrictions', EditRestrictionsPage, 'First Middle Names Last')
+      .clickButton('Add relationship restriction')
   })
 
   it('Can create a new prisoner contact restriction for a contact with minimal fields', () => {
@@ -237,10 +239,14 @@ context('Create Prisoner Contact Restriction', () => {
     })
   })
 
-  it('Back link goes to manage contacts restrictions tab', () => {
+  it('Back link goes to manage contact', () => {
     Page.verifyOnPage(EnterRestrictionPage, enterPageTitle) //
-      .clickLinkTo('Back', ManageContactDetailsPage, 'First Middle Names Last')
-      .verifyOnRestrictionsTab()
+      .selectType('CCTV')
+      .enterStartDate('28/02/2024')
+      .clickButtonTo('Continue', CreateRestrictionCheckYourAnswersPage, 'PRISONER_CONTACT')
+      .clickLinkTo('Back', EnterRestrictionPage, enterPageTitle)
+      .clickLinkTo('Back', EditRestrictionsPage, 'First Middle Names Last')
+      .clickLinkTo('Back to contact record', ManageContactDetailsPage, 'First Middle Names Last')
   })
 
   it('Cancelling asks for confirmation', () => {
