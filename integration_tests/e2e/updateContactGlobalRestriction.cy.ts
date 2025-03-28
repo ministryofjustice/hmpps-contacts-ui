@@ -3,6 +3,7 @@ import TestData from '../../server/routes/testutils/testData'
 import { StubContactRestrictionDetails } from '../mockApis/contactsApi'
 import EnterRestrictionPage from '../pages/enterRestrictionPage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
+import EditRestrictionsPage from '../pages/editRestrictionsPage'
 
 context('Update Contact Global Restriction', () => {
   const contactId = 654321
@@ -17,14 +18,15 @@ context('Update Contact Global Restriction', () => {
   const globalRestriction = TestData.getContactRestrictionDetails({
     contactRestrictionId: restrictionId,
     contactId: contact.id,
-    restrictionType: 'CHILD',
+    restrictionType: 'BAN',
+    restrictionTypeDescription: 'Banned',
     startDate: '2024-01-01',
     expiryDate: '2050-08-01',
     comments: 'Keep an eye',
   })
   const prisoner = TestData.prisoner()
   const { prisonerNumber } = prisoner
-  const enterPageTitle = 'Update a global restriction for contact First Last'
+  const enterPageTitle = 'Update a global restriction for contact First Middle Names Last'
 
   beforeEach(() => {
     cy.task('reset')
@@ -54,7 +56,8 @@ context('Update Contact Global Restriction', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickRestrictionsTab('1')
       .verifyOnRestrictionsTab()
-      .clickChangeGlobalRestriction(globalRestriction.contactRestrictionId)
+      .clickLinkTo('Add or update restrictions', EditRestrictionsPage, 'First Middle Names Last')
+      .clickLink('Change this Banned global restriction')
   })
 
   it('Can update a global restriction for a contact with minimal fields', () => {
@@ -67,7 +70,7 @@ context('Update Contact Global Restriction', () => {
     cy.task('stubUpdateContactRestriction', { contactId, restrictionId, updated })
 
     Page.verifyOnPage(EnterRestrictionPage, enterPageTitle) //
-      .hasType('CHILD')
+      .hasType('BAN')
       .hasStartDate('01/01/2024')
       .hasExpiryDate('01/08/2050')
       .hasComments('Keep an eye')
@@ -103,7 +106,7 @@ context('Update Contact Global Restriction', () => {
     cy.task('stubUpdateContactRestriction', { contactId, restrictionId, updated })
 
     Page.verifyOnPage(EnterRestrictionPage, enterPageTitle) //
-      .hasType('CHILD')
+      .hasType('BAN')
       .hasStartDate('01/01/2024')
       .hasExpiryDate('01/08/2050')
       .hasComments('Keep an eye')
@@ -130,16 +133,14 @@ context('Update Contact Global Restriction', () => {
       },
     )
   })
-  it('Type and start date are required', () => {
+  it('Start date is required', () => {
     const enterRestrictionPage = Page.verifyOnPage(EnterRestrictionPage, enterPageTitle)
     enterRestrictionPage //
-      .selectType('')
       .clearStartDate()
       .clearExpiryDate()
       .clearComments()
       .clickContinue()
 
-    enterRestrictionPage.hasFieldInError('type', 'Select the restriction type')
     enterRestrictionPage.hasFieldInError('startDate', 'Enter the start date')
   })
 
@@ -163,15 +164,14 @@ context('Update Contact Global Restriction', () => {
     })
   })
 
-  it('Back link goes to manage contacts restrictions tab', () => {
+  it('Back link goes to manage contact', () => {
     Page.verifyOnPage(EnterRestrictionPage, enterPageTitle) //
+      .backTo(EditRestrictionsPage, 'First Middle Names Last')
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .verifyOnRestrictionsTab()
   })
 
-  it('Cancel goes to manage contacts restrictions tab', () => {
+  it('Cancel goes to manage contacts', () => {
     Page.verifyOnPage(EnterRestrictionPage, enterPageTitle) //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .verifyOnRestrictionsTab()
   })
 })

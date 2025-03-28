@@ -34,26 +34,6 @@ export default class ManageContactDetailsPage extends Page {
     return this
   }
 
-  clickAddPrisonerContactRestriction() {
-    this.getAddPrisonerContactRestriction().should('contain.text', `Add prisoner-contact restriction`).click()
-    return this
-  }
-
-  clickAddGlobalRestriction() {
-    this.getAddGlobalRestriction().should('contain.text', `Add global restriction`).click()
-    return this
-  }
-
-  clickChangeGlobalRestriction(id: number = 1) {
-    this.getChangeGlobalRestriction(id).should('contain.text', `Change`).click()
-    return this
-  }
-
-  clickChangePrisonerContactRestriction(id: number = 1) {
-    this.getChangePrisonerContactRestriction(id).should('contain.text', `Change`).click()
-    return this
-  }
-
   clickEditEmployers() {
     cy.findByRole('link', { name: 'Edit employers' }).click()
   }
@@ -80,24 +60,8 @@ export default class ManageContactDetailsPage extends Page {
 
   private recordDateOfDeathLink = (): PageElement => cy.findByRole('link', { name: 'Record the death of this contact' })
 
-  private getAddPrisonerContactRestriction = (): PageElement =>
-    cy.get('[data-qa="add-prisoner-contact-restriction-button"]')
-
-  private getAddGlobalRestriction = (): PageElement => cy.get('[data-qa="add-global-restriction-button"]')
-
-  private getChangeGlobalRestriction = (id: number): PageElement =>
-    cy.get(`[data-qa="manage-CONTACT_GLOBAL-restriction-link-${id}"]`)
-
-  private getChangePrisonerContactRestriction = (id: number): PageElement =>
-    cy.get(`[data-qa="manage-PRISONER_CONTACT-restriction-link-${id}"]`)
-
   verifyOnRestrictionsTab(): ManageContactDetailsPage {
     this.restrictionsTabHeading().should('be.visible')
-    return this
-  }
-
-  verifyOnContactsMethodsTab(): ManageContactDetailsPage {
-    this.contactMethodsTabHeading().should('be.visible')
     return this
   }
 
@@ -109,6 +73,4 @@ export default class ManageContactDetailsPage extends Page {
   private restrictionsTabHeading = (): PageElement => cy.get('[data-qa="manage-contact-restrictions-title"]')
 
   private contactMethodsTab = (): PageElement => cy.get('#tab_contact-methods')
-
-  private contactMethodsTabHeading = (): PageElement => cy.get('[data-qa="contact-methods-tab-title"]')
 }

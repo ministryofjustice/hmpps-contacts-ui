@@ -30,31 +30,17 @@ export default class SuccessfullyAddedRestrictionController implements PageHandl
       firstName: contact.firstName,
       middleNames: contact.middleNames,
     }
-    let successMessage
-    let showPrisonerNameInSuccessPanel
-    switch (restrictionClass) {
-      case 'CONTACT_GLOBAL':
-        successMessage = 'New global restriction recorded'
-        showPrisonerNameInSuccessPanel = false
-        break
-      case 'PRISONER_CONTACT':
-        successMessage = 'New prisoner-contact restriction recorded'
-        showPrisonerNameInSuccessPanel = true
-        break
-      default:
-        break
-    }
+
     const view = {
       journey: { names },
-      successMessage,
+      restrictionClass,
       contactId,
       prisonerContactId,
-      showPrisonerNameInSuccessPanel,
       navigation: {
         breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'],
       },
       caption: 'Manage contact restrictions',
     }
-    res.render('pages/contacts/common/success', view)
+    res.render('pages/contacts/restrictions/success', view)
   }
 }

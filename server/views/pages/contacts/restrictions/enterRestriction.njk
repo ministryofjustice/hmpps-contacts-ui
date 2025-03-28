@@ -5,7 +5,28 @@
 {% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
 {% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
 
-{% set pageTitle = applicationName + " - " + title %}
+  {% if isNewRestriction %}
+    {% set typeOptions = types | referenceCodesToSelect('Select restriction type') | setSelected(type) %}
+    {% set continueButtonLabel = 'Continue' %}
+    {% if journey.restrictionClass === 'PRISONER_CONTACT' %}
+      {% set title = 'Add a new relationship restriction' %}
+      {% set pageTitle = 'Add a new relationship restriction - Manage contact restrictions - DPS' %}
+    {% else %}
+      {% set title = 'Add a new global restriction for ' + journey.contactNames | formatNameFirstNameFirst %}
+      {% set pageTitle = 'Add a new global restriction for the contact - Manage contact restrictions - DPS' %}
+    {% endif %}
+  {% else %}
+    {% set typeOptions = types | referenceCodesToSelect(undefined, true) | setSelected(type) %}
+    {% set continueButtonLabel = 'Confirm and save' %}
+    {% if journey.restrictionClass === 'PRISONER_CONTACT' %}
+      {% set title = 'Update a relationship restriction' %}
+      {% set pageTitle = 'Update a relationship restriction - Manage contact restrictions - DPS' %}
+    {% else %}
+      {% set title = 'Update a global restriction for contact ' + journey.contactNames | formatNameFirstNameFirst %}
+      {% set pageTitle = 'Update a global restriction for the contact - Manage contact restrictions - DPS' %}
+    {% endif %}
+  {% endif %}
+
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}

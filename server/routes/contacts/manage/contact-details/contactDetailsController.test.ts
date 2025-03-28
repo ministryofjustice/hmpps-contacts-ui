@@ -38,7 +38,7 @@ beforeEach(() => {
     },
   })
   referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mr')
-  restrictionsService.getPrisonerContactRestrictions.mockResolvedValue({
+  restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({
     prisonerContactRestrictions: [],
     contactGlobalRestrictions: [],
   })
@@ -145,7 +145,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
     })
     it('should render restrictions tab with global and prisoner-contact restrictions', async () => {
-      restrictionsService.getPrisonerContactRestrictions.mockResolvedValue({
+      restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({
         prisonerContactRestrictions: [TestData.getPrisonerContactRestrictionDetails()],
         contactGlobalRestrictions: [
           TestData.getContactRestrictionDetails({
@@ -181,22 +181,22 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
       const relationshipRestrictionTitleText = $('[data-qa="PRISONER_CONTACT-1-type-value"]').text().trim()
       expect(relationshipRestrictionTitleText).toContain('Child Visitors to be Vetted')
-      expect($('[data-qa="PRISONER_CONTACT-1-start-date-value"]').text().trim()).toStrictEqual('1 January 2024')
-      expect($('[data-qa="PRISONER_CONTACT-1-expiry-date-value"]').text().trim()).toStrictEqual('1 August 2050')
+      expect($('[data-qa="PRISONER_CONTACT-1-start-date-value"]').text().trim()).toStrictEqual('01/01/2024')
+      expect($('[data-qa="PRISONER_CONTACT-1-expiry-date-value"]').text().trim()).toStrictEqual('01/08/2050')
       expect($('[data-qa="PRISONER_CONTACT-1-entered-by-value"]').text().trim()).toStrictEqual('User One')
       expect($('[data-qa="PRISONER_CONTACT-1-comments-value"]').text().trim()).toStrictEqual('Keep an eye')
 
       const globalRestrictionTitleText = $('[data-qa="CONTACT_GLOBAL-2-type-value"]').text().trim()
       expect(globalRestrictionTitleText).toContain('Keep under CCTV supervision')
-      expect($('[data-qa="CONTACT_GLOBAL-2-start-date-value"]').text().trim()).toStrictEqual('2 January 2024')
-      expect($('[data-qa="CONTACT_GLOBAL-2-expiry-date-value"]').text().trim()).toStrictEqual('1 August 2050')
+      expect($('[data-qa="CONTACT_GLOBAL-2-start-date-value"]').text().trim()).toStrictEqual('02/01/2024')
+      expect($('[data-qa="CONTACT_GLOBAL-2-expiry-date-value"]').text().trim()).toStrictEqual('01/08/2050')
       expect($('[data-qa="CONTACT_GLOBAL-2-entered-by-value"]').text().trim()).toStrictEqual('User One')
       expect($('[data-qa="CONTACT_GLOBAL-2-comments-value"]').text().trim()).toStrictEqual('Keep an eye')
     })
 
     it('should render global restrictions tab with expired restrictions', async () => {
       // Given
-      restrictionsService.getPrisonerContactRestrictions.mockResolvedValue({
+      restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({
         prisonerContactRestrictions: [],
         contactGlobalRestrictions: [
           TestData.getContactRestrictionDetails({
@@ -221,7 +221,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
     it('should render prisoner contact restrictions tab with expired restrictions', async () => {
       // Given
-      restrictionsService.getPrisonerContactRestrictions.mockResolvedValue({
+      restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({
         contactGlobalRestrictions: [],
         prisonerContactRestrictions: [
           TestData.getPrisonerContactRestrictionDetails({
@@ -246,7 +246,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
     it('should render restrictions tab with no restrictions message', async () => {
       // Given
-      restrictionsService.getPrisonerContactRestrictions.mockResolvedValue({
+      restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({
         contactGlobalRestrictions: [],
         prisonerContactRestrictions: [],
       })
@@ -268,7 +268,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
     it('should show not entered text for expiry date and comments when not available', async () => {
       // Given
-      restrictionsService.getPrisonerContactRestrictions.mockResolvedValue({
+      restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({
         contactGlobalRestrictions: [
           TestData.getContactRestrictionDetails({ contactRestrictionId: 1, expiryDate: '', comments: '' }),
         ],
@@ -294,39 +294,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect($('[data-qa="CONTACT_GLOBAL-1-comments-value"]').text().trim()).toStrictEqual('Not provided')
     })
 
-    it('should show add global and prisoner contact restriction links', async () => {
+    it('should show not show manage restriction link', async () => {
       // Given
-      restrictionsService.getPrisonerContactRestrictions.mockResolvedValue({
-        contactGlobalRestrictions: [
-          TestData.getContactRestrictionDetails({ contactRestrictionId: 1, expiryDate: '', comments: '' }),
-        ],
-        prisonerContactRestrictions: [
-          TestData.getPrisonerContactRestrictionDetails({
-            prisonerContactRestrictionId: 2,
-            expiryDate: '',
-            comments: '',
-          }),
-        ],
-      })
-
-      // When
-      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
-
-      // Then
-      const $ = cheerio.load(response.text)
-
-      expect($('[data-qa=add-global-restriction-button]').first().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/1/relationship/99/restriction/add/CONTACT_GLOBAL/start',
-      )
-
-      expect($('[data-qa=add-prisoner-contact-restriction-button]').first().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/1/relationship/99/restriction/add/PRISONER_CONTACT/start',
-      )
-    })
-
-    it('should show manage restriction link', async () => {
-      // Given
-      restrictionsService.getPrisonerContactRestrictions.mockResolvedValue({
+      restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({
         contactGlobalRestrictions: [
           TestData.getContactRestrictionDetails({ contactRestrictionId: 1, expiryDate: '', comments: '' }),
         ],
@@ -345,13 +315,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       // Then
       const $ = cheerio.load(response.text)
 
-      expect($('[data-qa=manage-CONTACT_GLOBAL-restriction-link-1]').first().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/22/relationship/99/restriction/update/CONTACT_GLOBAL/enter-restriction/1',
-      )
-
-      expect($('[data-qa=manage-PRISONER_CONTACT-restriction-link-2]').first().attr('href')).toStrictEqual(
-        '/prisoner/A1234BC/contacts/22/relationship/99/restriction/update/PRISONER_CONTACT/enter-restriction/2',
-      )
+      expect($('[data-qa=manage-CONTACT_GLOBAL-restriction-link-1]')).toHaveLength(0)
+      expect($('[data-qa=manage-PRISONER_CONTACT-restriction-link-2]')).toHaveLength(0)
     })
 
     it('should render professional information tab with no employment record', async () => {

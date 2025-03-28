@@ -6,6 +6,7 @@ import CreateRestrictionCheckYourAnswersPage from '../pages/createRestrictionChe
 import CreateRestrictionSuccessPage from '../pages/createRestrictionSuccessPage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import CancelAddRestrictionPage from '../pages/cancelAddRestrictionPage'
+import EditRestrictionsPage from '../pages/editRestrictionsPage'
 
 context('Create Contact Global Restriction', () => {
   const contactId = 654321
@@ -18,7 +19,7 @@ context('Create Contact Global Restriction', () => {
   })
   const prisoner = TestData.prisoner()
   const { prisonerNumber } = prisoner
-  const enterPageTitle = `Add a new global restriction for First Last`
+  const enterPageTitle = `Add a new global restriction for First Middle Names Last`
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
@@ -46,7 +47,8 @@ context('Create Contact Global Restriction', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickRestrictionsTab('0')
       .verifyOnRestrictionsTab()
-      .clickAddGlobalRestriction()
+      .clickLinkTo('Add or update restrictions', EditRestrictionsPage, 'First Middle Names Last')
+      .clickButton('Add global restriction')
   })
 
   it('Can create a new global restriction for a contact with minimal fields', () => {
@@ -236,10 +238,14 @@ context('Create Contact Global Restriction', () => {
     })
   })
 
-  it('Back link goes to manage contacts restrictions tab', () => {
+  it('Back link goes to manage contact', () => {
     Page.verifyOnPage(EnterRestrictionPage, enterPageTitle) //
-      .clickLinkTo('Back', ManageContactDetailsPage, 'First Middle Names Last')
-      .verifyOnRestrictionsTab()
+      .selectType('CCTV')
+      .enterStartDate('28/02/2024')
+      .clickButtonTo('Continue', CreateRestrictionCheckYourAnswersPage, 'CONTACT_GLOBAL')
+      .clickLinkTo('Back', EnterRestrictionPage, enterPageTitle)
+      .clickLinkTo('Back', EditRestrictionsPage, 'First Middle Names Last')
+      .clickLinkTo('Back to contact record', ManageContactDetailsPage, 'First Middle Names Last')
   })
 
   it('Cancel asks for confirmation', () => {

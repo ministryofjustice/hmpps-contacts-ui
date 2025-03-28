@@ -29,10 +29,11 @@ export default class AddRestrictionCheckAnswersController implements PageHandler
     const { journeyId, prisonerNumber, contactId, prisonerContactId, restrictionClass } = req.params
     const { user } = res.locals
     const journey = req.session.addRestrictionJourneys![journeyId]!
+    const changeUrl = `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/enter-restriction/${journeyId}`
     const navigation: Navigation = {
+      backLink: changeUrl,
       cancelButton: `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/cancel/${journeyId}`,
     }
-    const changeUrl = `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/enter-restriction/${journeyId}`
 
     const restrictionDescription = await this.referenceDataService.getReferenceDescriptionForCode(
       ReferenceCodeType.RESTRICTION,

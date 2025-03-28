@@ -1,56 +1,31 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "partials/restrictionsTable.njk" import restrictionsTable %}
 
-{% set heading = 'Prisoner-contact restrictions between prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' and contact ' + (contact | formatNameFirstNameFirst(excludeMiddleNames = true)) %}
 <div class="moj-page-header-actions">
   <div class="moj-page-header-actions__title">
     <h1 class="govuk-heading-l" data-qa="manage-contact-restrictions-title">Restrictions</h1>
   </div>
   <div class="moj-page-header-actions__actions">
     <div class="moj-button-group moj-button-group--inline">
-      {# TODO <a class="govuk-link govuk-link--no-visited-state" href="{{ "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/" }}">Add or update restrictions</a> #}
+       <a class="govuk-link govuk-link--no-visited-state" href="{{ "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contactId + "/relationship/" + prisonerContactId + "/edit-restrictions" }}">Add or update restrictions</a>
     </div>
   </div>
 </div>
 
 {{ restrictionsTable( {
-  restrictions: prisonerContactRestrictions,
-  title: 'Relationship restrictions',
-  caption: 'These restrictions apply to the relationship between prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' and contact ' + (contact | formatNameFirstNameFirst(excludeMiddleNames = true)) + '.',
-  emptyCaption: 'No restrictions apply to the relationship between prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' and contact ' + (contact | formatNameFirstNameFirst(excludeMiddleNames = true)) + '.',
   restrictionClass: 'PRISONER_CONTACT',
-  contactId: contact.id,
-  prisonerContactId: prisonerContactId,
-  prisonerNumber: prisonerNumber,
-  showActions: true
+  restrictions: prisonerContactRestrictions,
+  contact: contact,
+  prisonerDetails: prisonerDetails,
+  showActions: false
 } ) }}
-
- {{ govukButton({
-   text: "Add prisoner-contact restriction",
-   href: "/prisoner/" + prisonerNumber + "/contacts/" + contactId + "/relationship/" + prisonerContactId+ "/restriction/add/PRISONER_CONTACT/start" ,
-   classes: 'govuk-!-margin-top-6 govuk-button--secondary',
-   attributes: {"data-qa": "add-prisoner-contact-restriction-button"},
-   preventDoubleClick: true
- }) }}
 
 <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
 
 {{ restrictionsTable( {
-  restrictions: globalRestrictions,
-  title: 'Global restrictions',
-  caption: 'These restrictions apply to contact ' + (contact | formatNameFirstNameFirst(excludeMiddleNames = true)) + ' across the whole prison estate.',
-  emptyCaption: 'No restrictions apply to contact ' + (contact | formatNameFirstNameFirst(excludeMiddleNames = true)) + ' across the whole prison estate.',
   restrictionClass: 'CONTACT_GLOBAL',
-  contactId: contact.id,
-  prisonerContactId: prisonerContactId,
-  prisonerNumber: prisonerNumber,
-  showActions: true
+  restrictions: contactGlobalRestrictions,
+  contact: contact,
+  prisonerDetails: prisonerDetails,
+  showActions: false
 } ) }}
-
- {{ govukButton({
-   text: "Add global restriction",
-   href: "/prisoner/" + prisonerNumber + "/contacts/" + contactId + "/relationship/" + prisonerContactId+ "/restriction/add/CONTACT_GLOBAL/start",
-   classes: 'govuk-!-margin-top-6 govuk-button--secondary',
-   attributes: {"data-qa": "add-global-restriction-button"},
-   preventDoubleClick: true
- }) }}

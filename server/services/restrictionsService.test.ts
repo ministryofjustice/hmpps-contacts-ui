@@ -328,7 +328,7 @@ describe('restrictionsService', () => {
       apiClient.getGlobalContactRestrictions.mockResolvedValue(expectedResponse)
 
       // Act
-      const result = await service.getGlobalRestrictionsEnriched(expectedContact, user)
+      const result = await service.getGlobalRestrictions(expectedContact, user)
 
       // Assert
       expect(apiClient.getGlobalContactRestrictions).toHaveBeenCalledWith(contactId, user)
@@ -373,7 +373,7 @@ describe('restrictionsService', () => {
       apiClient.getPrisonerContactRestrictions.mockResolvedValue(mockRestrictionsResponse)
 
       // Act
-      const result = await service.getPrisonerContactRestrictions(prisonerContactId, user)
+      const result = await service.getRelationshipAndGlobalRestrictions(prisonerContactId, user)
 
       // Assert
       expect(apiClient.getPrisonerContactRestrictions).toHaveBeenCalledWith(prisonerContactId, user)

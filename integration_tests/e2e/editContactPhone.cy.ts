@@ -200,7 +200,6 @@ context('Edit Contact Phones', () => {
     Page.verifyOnPage(EditPhonePage, 'First Middle Names Last') //
       .backTo(EditContactMethodsPage, 'First Middle Names Last')
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .verifyOnContactsMethodsTab()
   })
 
   it('Cancel goes to manage contact', () => {
