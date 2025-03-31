@@ -69,7 +69,7 @@ beforeEach(() => {
     },
   })
   referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mr')
-  restrictionsService.getGlobalRestrictionsEnriched.mockResolvedValue([])
+  restrictionsService.getGlobalRestrictions.mockResolvedValue([])
   contactsService.getLinkedPrisoners.mockResolvedValue({ content: [], page: { totalElements: 0 } })
 })
 
@@ -347,7 +347,7 @@ describe('Restrictions', () => {
     describe('GET /prisoner/:prisonerNumber/contacts/add/confirmation/:journeyId?#restrictions', () => {
       it('should render restrictions tab', async () => {
         // Given
-        restrictionsService.getGlobalRestrictionsEnriched.mockResolvedValue([TestData.getContactRestrictionDetails()])
+        restrictionsService.getGlobalRestrictions.mockResolvedValue([TestData.getContactRestrictionDetails()])
 
         // When
         const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
@@ -374,15 +374,15 @@ describe('Restrictions', () => {
         expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions (1)')
 
         expect($('[data-qa="CONTACT_GLOBAL-1-type-value"]').text().trim()).toStrictEqual('Child Visitors to be Vetted')
-        expect($('[data-qa="CONTACT_GLOBAL-1-start-date-value"]').text().trim()).toStrictEqual('1 January 2024')
-        expect($('[data-qa="CONTACT_GLOBAL-1-expiry-date-value"]').text().trim()).toStrictEqual('1 August 2050')
+        expect($('[data-qa="CONTACT_GLOBAL-1-start-date-value"]').text().trim()).toStrictEqual('01/01/2024')
+        expect($('[data-qa="CONTACT_GLOBAL-1-expiry-date-value"]').text().trim()).toStrictEqual('01/08/2050')
         expect($('[data-qa="CONTACT_GLOBAL-1-entered-by-value"]').text().trim()).toStrictEqual('User One')
         expect($('[data-qa="CONTACT_GLOBAL-1-comments-value"]').text().trim()).toStrictEqual('Keep an eye')
       })
 
       it('should render restrictions tab with expired restrictions', async () => {
         // Given
-        restrictionsService.getGlobalRestrictionsEnriched.mockResolvedValue([
+        restrictionsService.getGlobalRestrictions.mockResolvedValue([
           TestData.getContactRestrictionDetails({
             restrictionTypeDescription: 'Child Visitors to be Vetted',
             enteredByDisplayName: 'User One',
@@ -401,15 +401,15 @@ describe('Restrictions', () => {
         const titleText = $('[data-qa="CONTACT_GLOBAL-1-type-value"]').text().trim()
         expect(titleText).toContain('Child Visitors to be Vetted')
         expect(titleText).toContain('(expired)')
-        expect($('[data-qa="CONTACT_GLOBAL-1-start-date-value"]').text().trim()).toStrictEqual('1 January 2024')
-        expect($('[data-qa="CONTACT_GLOBAL-1-expiry-date-value"]').text().trim()).toStrictEqual('1 August 2024')
+        expect($('[data-qa="CONTACT_GLOBAL-1-start-date-value"]').text().trim()).toStrictEqual('01/01/2024')
+        expect($('[data-qa="CONTACT_GLOBAL-1-expiry-date-value"]').text().trim()).toStrictEqual('01/08/2024')
         expect($('[data-qa="CONTACT_GLOBAL-1-entered-by-value"]').text().trim()).toStrictEqual('User One')
         expect($('[data-qa="CONTACT_GLOBAL-1-comments-value"]').text().trim()).toStrictEqual('Keep an eye')
       })
 
       it('should render restrictions tab with no restrictions message', async () => {
         // Given
-        restrictionsService.getGlobalRestrictionsEnriched.mockResolvedValue([])
+        restrictionsService.getGlobalRestrictions.mockResolvedValue([])
 
         // When
         const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/confirmation/${journeyId}`)
@@ -425,7 +425,7 @@ describe('Restrictions', () => {
 
       it('should show not entered text for expiry date and comments when not available', async () => {
         // Given
-        restrictionsService.getGlobalRestrictionsEnriched.mockResolvedValue([
+        restrictionsService.getGlobalRestrictions.mockResolvedValue([
           TestData.getContactRestrictionDetails({ expiryDate: '', comments: '' }),
         ])
 
@@ -440,7 +440,7 @@ describe('Restrictions', () => {
 
       it('should not show manage restrictions link', async () => {
         // Given
-        restrictionsService.getGlobalRestrictionsEnriched.mockResolvedValue([
+        restrictionsService.getGlobalRestrictions.mockResolvedValue([
           TestData.getContactRestrictionDetails({ expiryDate: '', comments: '' }),
         ])
 

@@ -37,7 +37,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
   it('should render success for restriction class PRISONER_CONTACT', async () => {
     // Given
     const restrictionClass: RestrictionClass = 'PRISONER_CONTACT'
-    const message: string = 'New prisoner-contact restriction recorded'
+    const message: string = 'New relationship restriction recorded'
     const contactDetails = TestData.contact()
     contactsService.getContactName.mockResolvedValue(contactDetails)
 

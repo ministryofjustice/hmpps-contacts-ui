@@ -5,9 +5,7 @@ import ReferenceCodeType from '../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../services/referenceDataService'
 import { Navigation } from '../../contacts/common/navigation'
 import { maxLengthForRestrictionClass, RestrictionSchemaType } from '../schema/restrictionSchema'
-import { formatNameFirstNameFirst } from '../../../utils/formatName'
 import Urls from '../../urls'
-import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import RestrictionClass = journeys.RestrictionClass
 
 export default class EnterNewRestrictionController implements PageHandler {
@@ -28,31 +26,21 @@ export default class EnterNewRestrictionController implements PageHandler {
     const { journeyId, prisonerNumber, contactId, prisonerContactId, restrictionClass } = req.params
     const { user } = res.locals
     const journey = req.session.addRestrictionJourneys![journeyId]!
-    const typeOptions = await this.referenceDataService
-      .getReferenceData(ReferenceCodeType.RESTRICTION, user)
-      .then(val => this.getSelectedOptions(val, res.locals?.formResponses?.['type'] ?? journey?.restriction?.type))
+    const types = await this.referenceDataService.getReferenceData(ReferenceCodeType.RESTRICTION, user)
     const navigation: Navigation = {
-      backLink: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId, 'restrictions'),
+      backLink: Urls.editRestrictions(prisonerNumber, contactId, prisonerContactId),
     }
-    let title
-    if (restrictionClass === 'PRISONER_CONTACT') {
-      title = 'Add a new prisoner-contact restriction'
-    } else {
-      title = `Add a new global restriction for ${formatNameFirstNameFirst(journey.contactNames, {
-        excludeMiddleNames: true,
-      })}`
-    }
+
     const viewModel = {
       journey,
-      typeOptions,
-      title,
+      types,
+      isNewRestriction: true,
       type: res.locals?.formResponses?.['type'] ?? journey?.restriction?.type,
       startDate: res.locals?.formResponses?.['startDate'] ?? journey?.restriction?.startDate,
       expiryDate: res.locals?.formResponses?.['expiryDate'] ?? journey?.restriction?.expiryDate,
       comments: res.locals?.formResponses?.['comments'] ?? journey?.restriction?.comments,
       navigation,
       maxCommentLength: maxLengthForRestrictionClass(restrictionClass),
-      continueButtonLabel: 'Continue',
     }
     res.render('pages/contacts/restrictions/enterRestriction', viewModel)
   }
@@ -78,23 +66,5 @@ export default class EnterNewRestrictionController implements PageHandler {
     res.redirect(
       `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/check-answers/${journeyId}`,
     )
-  }
-
-  private getSelectedOptions(
-    options: ReferenceCode[],
-    selectedOption?: string,
-  ): Array<{
-    value: string
-    text: string
-    selected?: boolean
-  }> {
-    const mappedOptions = options.map((referenceCode: ReferenceCode) => {
-      return {
-        text: referenceCode.description,
-        value: referenceCode.code,
-        selected: referenceCode.code === selectedOption,
-      }
-    })
-    return [{ text: 'Select restriction type', value: '' }, ...mappedOptions]
   }
 }

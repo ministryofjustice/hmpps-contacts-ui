@@ -4,12 +4,11 @@ import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import EnterRestrictionPage from '../pages/enterRestrictionPage'
+import EditRestrictionsPage from '../pages/editRestrictionsPage'
 
 context('Manage contacts restrictions', () => {
   const { prisonerNumber } = TestData.prisoner()
   const contact = TestData.contact()
-  const prisonerContactId = 987654
-  const restrictionId = 555333
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
@@ -70,11 +69,12 @@ context('Manage contacts restrictions', () => {
 
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
       .clickRestrictionsTab('2')
-      .clickAddPrisonerContactRestriction()
+      .clickLinkTo('Add or update restrictions', EditRestrictionsPage, 'Jones Mason')
+      .clickButton('Add another relationship restriction')
 
-    Page.verifyOnPage(EnterRestrictionPage, 'Add a new prisoner-contact restriction')
+    Page.verifyOnPage(EnterRestrictionPage, 'Add a new relationship restriction')
   })
 
   it(`should add global restrictions will take to add a new global restriction page `, () => {
@@ -91,75 +91,11 @@ context('Manage contacts restrictions', () => {
 
     Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').clickRestrictionsTab('2').clickAddGlobalRestriction()
+    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
+      .clickRestrictionsTab('2')
+      .clickLinkTo('Add or update restrictions', EditRestrictionsPage, 'Jones Mason')
+      .clickButton('Add another global restriction')
 
     Page.verifyOnPage(EnterRestrictionPage, 'Add a new global restriction for Jones Mason')
-  })
-
-  it(`should manage global restrictions will take to update a global restriction page `, () => {
-    const globalRestriction = TestData.getContactRestrictionDetails({
-      contactRestrictionId: restrictionId,
-      contactId: contact.id,
-      restrictionType: 'CHILD',
-      startDate: '2024-01-01',
-      expiryDate: '2050-08-01',
-      comments: 'Keep an eye',
-    })
-    cy.task('stubTitlesReferenceData')
-    cy.task('stubRestrictionTypeReferenceData')
-
-    cy.task('stubGetPrisonerContactRelationshipById', { id: 31, response: TestData.prisonerContactRelationship() })
-    cy.task('stubGetPrisonerContactRestrictions', {
-      prisonerContactId: 31,
-      response: {
-        prisonerContactRestrictions: [TestData.getPrisonerContactRestrictionDetails({ contactId: contact.id })],
-        contactGlobalRestrictions: [TestData.getContactRestrictionDetails()],
-      },
-    })
-    cy.task('stubGetPrisonerContactRelationshipById', {
-      id: prisonerContactId,
-      response: TestData.prisonerContactRelationship(),
-    })
-    cy.task('stubGetGlobalRestrictions', [globalRestriction])
-
-    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
-
-    Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
-
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').clickRestrictionsTab('2').clickChangeGlobalRestriction()
-
-    Page.verifyOnPage(EnterRestrictionPage, 'Update a global restriction for contact Jones Mason')
-  })
-
-  it(`should manage prisoner contact restrictions will take to update a prisoner contact restriction page `, () => {
-    const globalRestriction = TestData.getContactRestrictionDetails({
-      contactRestrictionId: restrictionId,
-      contactId: contact.id,
-      restrictionType: 'CHILD',
-      startDate: '2024-01-01',
-      expiryDate: '2050-08-01',
-      comments: 'Keep an eye',
-    })
-    cy.task('stubTitlesReferenceData')
-    cy.task('stubRestrictionTypeReferenceData')
-
-    cy.task('stubGetPrisonerContactRestrictions', {
-      prisonerContactId: 31,
-      response: {
-        prisonerContactRestrictions: [TestData.getPrisonerContactRestrictionDetails({ contactId: contact.id })],
-        contactGlobalRestrictions: [TestData.getContactRestrictionDetails()],
-      },
-    })
-    cy.task('stubGetGlobalRestrictions', [globalRestriction])
-
-    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
-
-    Page.verifyOnPage(ListContactsPage).clickContactNamesLink(22)
-
-    Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
-      .clickRestrictionsTab('2')
-      .clickChangePrisonerContactRestriction()
-
-    Page.verifyOnPage(EnterRestrictionPage, 'Update a prisoner-contact restriction')
   })
 })

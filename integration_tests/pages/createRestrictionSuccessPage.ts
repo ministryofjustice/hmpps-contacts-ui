@@ -5,7 +5,7 @@ export default class CreateRestrictionSuccessPage extends Page {
     super(
       restrictionClass === 'CONTACT_GLOBAL'
         ? 'New global restriction recorded'
-        : `New prisoner-contact restriction recorded`,
+        : `New relationship restriction recorded`,
     )
   }
 

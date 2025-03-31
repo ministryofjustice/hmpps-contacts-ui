@@ -6,7 +6,6 @@ import { navigationForAddContactJourney, nextPageForAddContactJourney } from '..
 import { ContactsService, RestrictionsService } from '../../../../services'
 import { formatNameLastNameFirst } from '../../../../utils/formatName'
 import { findMostRelevantAddress, getLabelForAddress } from '../../../../utils/findMostRelevantAddressAndLabel'
-import sortRestrictions from '../../../../utils/sortGlobalRstrictions'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import { setPaginationLocals } from '../../../../views/partials/simplePagination/utils'
@@ -29,8 +28,8 @@ export default class ContactConfirmationController implements PageHandler {
     const { prisonerDetails, user } = res.locals
     const journey = req.session.addContactJourneys![journeyId]!
     const contact: ContactDetails = await this.contactsService.getContact(journey.contactId!, user)
-    const globalRestrictionsEnriched = await this.restrictionsService.getGlobalRestrictionsEnriched(contact, user)
-    const globalRestrictions = sortRestrictions(globalRestrictionsEnriched)
+    const globalRestrictions = await this.restrictionsService.getGlobalRestrictions(contact, user)
+
     const { linkedPrisonerPage } = req.query
 
     const linkedPrisonerPageNumber =

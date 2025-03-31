@@ -100,6 +100,7 @@ import { optionalPhonesSchema, phonesSchema } from './addresses/add-address-phon
 import AddressPhoneController from './addresses/add-address-phone/addressPhoneController'
 import { routerMethods } from '../../../utils/routerMethods'
 import DeleteAddressPhoneController from './addresses/delete-address-phone/deleteAddressPhoneController'
+import EditRestrictionsController from './edit-restrictions/editRestrictionsController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -522,6 +523,11 @@ const ManageContactsRoutes = (
   get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-contact-methods',
     new EditContactMethodsController(contactsService),
+  )
+
+  get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-restrictions',
+    new EditRestrictionsController(contactsService, restrictionsService),
   )
 
   // Relationship type mini journey

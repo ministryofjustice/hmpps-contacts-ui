@@ -5,7 +5,7 @@ export default class CreateRestrictionCheckYourAnswersPage extends Page {
     super(
       restrictionClass === 'CONTACT_GLOBAL'
         ? 'Check your answers before saving the new global restriction'
-        : 'Check your answers before saving the new prisoner-contact restriction',
+        : 'Check your answers before saving the new relationship restriction',
     )
   }
 

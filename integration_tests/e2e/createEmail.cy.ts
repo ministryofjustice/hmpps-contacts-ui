@@ -140,7 +140,6 @@ context('Create Email Addresses', () => {
     Page.verifyOnPage(AddEmailsPage, 'Jones Mason') //
       .backTo(EditContactMethodsPage, 'Jones Mason')
       .backTo(ManageContactDetailsPage, 'Jones Mason')
-      .verifyOnContactsMethodsTab()
   })
 
   it('Cancel goes to manage contacts', () => {

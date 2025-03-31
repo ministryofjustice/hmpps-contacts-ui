@@ -1,0 +1,68 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "partials/restrictionsTable.njk" import restrictionsTable %}
+
+{% extends "partials/layout.njk" %}§
+
+{% set pageTitle = "Add or update restrictions for a contact linked to a prisoner - DPS" %}
+
+{% block content %}
+  {% include 'partials/navigation.njk' %}
+  {{ miniProfile(prisonerDetails) }}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-!-static-margin-bottom-7">
+      <span class="govuk-caption-l">Manage contacts</span>
+      <h1 class="govuk-heading-l">Add or update restrictions for {{ contact | formatNameFirstNameFirst }}</h1>
+    </div>
+  </div>
+</div>
+<div class="govuk-grid-row govuk-!-static-margin-bottom-5">
+  <div class="govuk-grid-column-full">
+    <div class="govuk-!-static-margin-bottom-7">
+
+      {{ restrictionsTable( {
+        restrictionClass: 'PRISONER_CONTACT',
+        restrictions: prisonerContactRestrictions,
+        contact: contact,
+        prisonerDetails: prisonerDetails,
+        prisonerContactId: prisonerContactId,
+        showActions: true
+      } ) }}
+
+      {{ govukButton({
+        text: "Add another relationship restriction" if prisonerContactRestrictions.length else "Add relationship restriction",
+        href: "/prisoner/" + prisonerNumber + "/contacts/" + contactId + "/relationship/" + prisonerContactId+ "/restriction/add/PRISONER_CONTACT/start" ,
+        classes: 'govuk-!-margin-top-6 govuk-button--secondary',
+        attributes: {"data-qa": "add-prisoner-contact-restriction-button"},
+        preventDoubleClick: true
+      }) }}
+
+      <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+      {{ restrictionsTable( {
+        restrictionClass: 'CONTACT_GLOBAL',
+        restrictions: contactGlobalRestrictions,
+        contact: contact,
+        prisonerDetails: prisonerDetails,
+        prisonerContactId: prisonerContactId,
+        showActions: true
+      } ) }}
+
+      {{ govukButton({
+        text: "Add another global restriction" if contactGlobalRestrictions.length else "Add global restriction",
+        href: "/prisoner/" + prisonerNumber + "/contacts/" + contactId + "/relationship/" + prisonerContactId+ "/restriction/add/CONTACT_GLOBAL/start",
+        classes: 'govuk-!-margin-top-6 govuk-button--secondary',
+        attributes: {"data-qa": "add-global-restriction-button"},
+        preventDoubleClick: true
+      }) }}
+
+      <div class="govuk-button-group">
+        {% if navigation.cancelButton %}
+          <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}"
+             data-qa="cancel-button">Cancel</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endblock %}
