@@ -181,15 +181,15 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
       const relationshipRestrictionTitleText = $('[data-qa="PRISONER_CONTACT-1-type-value"]').text().trim()
       expect(relationshipRestrictionTitleText).toContain('Child Visitors to be Vetted')
-      expect($('[data-qa="PRISONER_CONTACT-1-start-date-value"]').text().trim()).toStrictEqual('01/01/2024')
-      expect($('[data-qa="PRISONER_CONTACT-1-expiry-date-value"]').text().trim()).toStrictEqual('01/08/2050')
+      expect($('[data-qa="PRISONER_CONTACT-1-start-date-value"]').text().trim()).toStrictEqual('1/1/2024')
+      expect($('[data-qa="PRISONER_CONTACT-1-expiry-date-value"]').text().trim()).toStrictEqual('1/8/2050')
       expect($('[data-qa="PRISONER_CONTACT-1-entered-by-value"]').text().trim()).toStrictEqual('User One')
       expect($('[data-qa="PRISONER_CONTACT-1-comments-value"]').text().trim()).toStrictEqual('Keep an eye')
 
       const globalRestrictionTitleText = $('[data-qa="CONTACT_GLOBAL-2-type-value"]').text().trim()
       expect(globalRestrictionTitleText).toContain('Keep under CCTV supervision')
-      expect($('[data-qa="CONTACT_GLOBAL-2-start-date-value"]').text().trim()).toStrictEqual('02/01/2024')
-      expect($('[data-qa="CONTACT_GLOBAL-2-expiry-date-value"]').text().trim()).toStrictEqual('01/08/2050')
+      expect($('[data-qa="CONTACT_GLOBAL-2-start-date-value"]').text().trim()).toStrictEqual('2/1/2024')
+      expect($('[data-qa="CONTACT_GLOBAL-2-expiry-date-value"]').text().trim()).toStrictEqual('1/8/2050')
       expect($('[data-qa="CONTACT_GLOBAL-2-entered-by-value"]').text().trim()).toStrictEqual('User One')
       expect($('[data-qa="CONTACT_GLOBAL-2-comments-value"]').text().trim()).toStrictEqual('Keep an eye')
 

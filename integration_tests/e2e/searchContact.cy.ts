@@ -176,7 +176,7 @@ context('Search contact', () => {
     searchContactPage.checkOnPage()
 
     searchContactPage.verifyShowsNameAs('Mason')
-    searchContactPage.verifyShowsDobAs('14/01/1990')
+    searchContactPage.verifyShowsDobAs('14/1/1990')
     searchContactPage.verifyShowsAddressAs(
       '32<br>Acacia Avenue<br>Bunting<br>Sheffield<br>South Yorkshire<br>S2 3LK<br>England',
     )
@@ -207,7 +207,7 @@ context('Search contact', () => {
     searchContactPage.checkOnPage()
 
     searchContactPage.verifyShowsNameAs('Mason')
-    searchContactPage.verifyShowsDobAs('14/01/1990')
+    searchContactPage.verifyShowsDobAs('14/1/1990')
     searchContactPage.verifyShowsAddressAs(
       '32<br>Acacia Avenue<br>Bunting<br>Sheffield<br>South Yorkshire<br>S2 3LK<br>England',
     )

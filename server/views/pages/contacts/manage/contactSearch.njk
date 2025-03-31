@@ -125,7 +125,7 @@
 
                 {% set rows = (rows.push([
                     { html: contactNameHtml },
-                    { text: result.dateOfBirth | formatDate('dd/MM/yyyy') },
+                    { text: result.dateOfBirth | formatDate('d/M/yyyy') },
                     { html: convertAddressToLines(result) }
                 ]), rows) %}
             {% else %}

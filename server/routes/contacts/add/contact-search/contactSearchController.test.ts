@@ -224,7 +224,7 @@ describe('Contact seaarch results', () => {
     expect($('table .govuk-table__header:eq(2)').text().trim()).toStrictEqual('Address')
 
     expect($('table .govuk-table__cell:eq(0) a').text().trim()).toStrictEqual('Mason, Jones')
-    expect($('table .govuk-table__cell:eq(1)').text().trim()).toStrictEqual('14/01/1990')
+    expect($('table .govuk-table__cell:eq(1)').text().trim()).toStrictEqual('14/1/1990')
     expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('32')
     expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('Acacia Avenue')
     expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('Bunting')
