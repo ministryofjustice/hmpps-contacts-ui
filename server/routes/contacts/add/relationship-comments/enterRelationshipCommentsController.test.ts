@@ -85,6 +85,26 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-relationship-comme
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual(expectedCaption)
     expect($('[data-qa=cancel-button]')).toHaveLength(0)
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
+  })
+
+  it.each([
+    ['NEW', `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`],
+    ['EXISTING', `/prisoner/${prisonerNumber}/contacts/create/approved-to-visit/${journeyId}`],
+  ])('should go back to corresponding previous page for each mode %s', async (mode, previousUrl: string) => {
+    // Given
+    existingJourney.mode = mode as 'NEW' | 'EXISTING'
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`,
+    )
+
+    // Then
+    expect(response.status).toEqual(200)
+
+    const $ = cheerio.load(response.text)
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(previousUrl)
   })
 
   it('should call the audit service for the page view', async () => {
