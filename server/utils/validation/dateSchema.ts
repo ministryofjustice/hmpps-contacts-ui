@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { isValid, parse } from 'date-fns'
 import { createSchema } from '../../middleware/validationMiddleware'
-import { sentenceCase } from '../utils'
+import { formatDate, sentenceCase } from '../utils'
 
 export enum DateInputSchemaRule {
   MUST_BE_TODAY_OR_PAST,
@@ -74,7 +74,10 @@ export const createDateInputSchema = ({
             ctx.addIssue({ code: z.ZodIssueCode.custom, message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: ['month'] })
             ctx.addIssue({ code: z.ZodIssueCode.custom, message: BLANK_MESSAGE_SO_FIELD_HIGHLIGHTED, path: ['year'] })
           } else {
-            const inputDateStr = parsed.toISOString().substring(0, 10)
+            const inputDateStr = formatDate(
+              `${val.year}-${val.month?.padStart(2, '0')}-${val.day?.padStart(2, '0')}`,
+              'yyyy-MM-dd',
+            )!
             const todayStr = new Date().toISOString().substring(0, 10)
             if (additionalRule === DateInputSchemaRule.MUST_BE_TODAY_OR_PAST && inputDateStr > todayStr) {
               ctx.addIssue({ code: z.ZodIssueCode.custom, message: NOT_TODAY_OR_PAST_ERROR, path: ['day'] })
