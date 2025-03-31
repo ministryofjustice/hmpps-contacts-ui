@@ -53,12 +53,12 @@ export default class ManageContactRelationshipToPrisonerController implements Pa
       cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
     }
     const viewModel = {
+      isNewContact: false,
       navigation,
       relationshipOptions,
       relationshipType: relationship.relationshipTypeCode,
       relationship: currentRelationship,
       names,
-      caption: 'Edit contact relationship information',
       continueButtonLabel: 'Confirm and save',
       noNullishSelectOption: true,
     }

@@ -4,7 +4,6 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import { SelectRelationshipSchema } from '../../common/relationship/selectRelationshipSchemas'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
-import captionForAddContactJourney from '../addContactsUtils'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 
@@ -23,11 +22,12 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
 
     const relationshipOptions = await this.referenceDataService.getReferenceData(groupCodeForRelationshipType, user)
     const viewModel = {
+      isNewContact: true,
       names: journey.names,
-      caption: captionForAddContactJourney(journey),
       relationship: res.locals?.formResponses?.['relationship'] ?? journey?.relationship?.relationshipToPrisoner,
       relationshipType,
       relationshipOptions,
+      journey,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
       continueButtonLabel: 'Continue',
     }
