@@ -1,8 +1,11 @@
 import Page, { PageElement } from './page'
 
 export default class ContactConfirmationPage extends Page {
-  constructor(private name: string) {
-    super(`Is this the right person to add as a contact for ${name}?`)
+  constructor(
+    private contactName: string,
+    private prisonerName: string,
+  ) {
+    super(`Check and confirm if you want to link contact ${contactName} to prisoner ${prisonerName}`)
   }
 
   verifyShowsTabTitleAs(expected: string, index: number): ContactConfirmationPage {
@@ -20,8 +23,13 @@ export default class ContactConfirmationPage extends Page {
     return this
   }
 
-  selectIsTheRightPersonNoRadio(): ContactConfirmationPage {
+  selectIsTheRightPersonNoSearchAgainRadio(): ContactConfirmationPage {
     this.checkRadio(1).check()
+    return this
+  }
+
+  selectIsTheRightPersonNoCreateNewRadio(): ContactConfirmationPage {
+    this.checkRadio(2).check()
     return this
   }
 
@@ -96,11 +104,6 @@ export default class ContactConfirmationPage extends Page {
     return this
   }
 
-  verifyShowTitleHeaderValueAs(expected: string, position: string): ContactConfirmationPage {
-    this.titleHeader(position).should('contain.text', expected)
-    return this
-  }
-
   verifyShowGenderValueAs(expected: string): ContactConfirmationPage {
     this.genderValue().should('contain.text', expected)
     return this
@@ -159,7 +162,7 @@ export default class ContactConfirmationPage extends Page {
 
   clickPaginationLink(name: string): ContactConfirmationPage {
     cy.findAllByRole('link', { name }).first().click()
-    return Page.verifyOnPage(ContactConfirmationPage, this.name)
+    return Page.verifyOnPage(ContactConfirmationPage, this.contactName, this.prisonerName)
   }
 
   private getRestrictionsTab = (): PageElement => cy.get('#tab_restrictions')
@@ -217,8 +220,6 @@ export default class ContactConfirmationPage extends Page {
   private identityNumbersNotProvided = (): PageElement => cy.get('.identity-numbers-not-provided')
 
   private addressFromToDate = (): PageElement => cy.get('[data-qa=from-to-date]')
-
-  private titleHeader = (position: string): PageElement => cy.get(`[data-qa=confim-title-value-${position}]`)
 
   private genderValue = (): PageElement => cy.get('.confirm-gender-value')
 }

@@ -9,11 +9,13 @@ declare namespace journeys {
     isCheckingAnswers: boolean
     returnPoint: ReturnPoint
     mode?: 'EXISTING' | 'NEW' | undefined
-    searchContact?: {
-      contact?: Partial<ContactNames>
-      dateOfBirth?: Partial<DateOfBirth>
-    }
-    isContactConfirmed?: YesOrNo
+    searchContact?:
+      | {
+          contact?: Partial<ContactNames>
+          dateOfBirth?: Partial<DateOfBirth>
+        }
+      | undefined
+    isContactMatched?: 'YES' | 'NO_SEARCH_AGAIN' | 'NO_CREATE_NEW'
     names?: ContactNames
     dateOfBirth?: DateOfBirth
     gender?: string | undefined
@@ -22,7 +24,8 @@ declare namespace journeys {
     languageAndInterpreter?: LanguageAndInterpreterRequiredForm | undefined
     relationship?: PrisonerContactRelationship
     previousAnswers?: CreateContactJourneyPreviousAnswers | undefined
-    contactId?: number
+    contactId?: number | undefined
+    matchingContactId?: number | undefined
     prisonerContactId?: number
     existingContact?: {
       deceasedDate?: string

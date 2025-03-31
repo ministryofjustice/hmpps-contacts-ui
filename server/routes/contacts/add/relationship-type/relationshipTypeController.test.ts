@@ -19,6 +19,7 @@ let app: Express
 let session: Partial<SessionData>
 const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
+const matchingContactId = 897654
 let existingJourney: AddContactJourney
 
 beforeEach(() => {
@@ -27,6 +28,7 @@ beforeEach(() => {
     lastTouched: new Date().toISOString(),
     prisonerNumber,
     isCheckingAnswers: false,
+    matchingContactId,
     returnPoint: { url: '/foo-bar' },
     names: {
       lastName: 'last',
@@ -57,7 +59,11 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-type/:journeyId', () => {
   it.each([
     ['NEW', `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`, 'Add a contact and link to a prisoner'],
-    ['EXISTING', `/prisoner/A1234BC/contacts/add/confirmation/${journeyId}`, 'Link a contact to a prisoner'],
+    [
+      'EXISTING',
+      `/prisoner/A1234BC/contacts/add/match/${matchingContactId}/${journeyId}`,
+      'Link a contact to a prisoner',
+    ],
   ])(
     'should render relationship type page for each mode %s',
     async (mode, expectedBackLink: string, expectedCaption: string) => {
