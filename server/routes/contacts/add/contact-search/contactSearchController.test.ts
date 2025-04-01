@@ -67,7 +67,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
 
     // Then
     expect(response.status).toEqual(200)
-    expect($('h1.govuk-heading-l').text()).toContain('Search for a contact')
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Link a contact to a prisoner')
+    expect($('h1.govuk-heading-l').text()).toContain('Check if the contact is already on the system')
     expect($('input#firstName')).toBeDefined()
     expect($('input#middleNames')).toBeDefined()
     expect($('input#lastName')).toBeDefined()
@@ -97,77 +98,101 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       .type('form')
-      .send({ lastName: 'last', middleNames: '', firstName: '', day: '', month: '', year: '' })
+      .send({ lastName: 'last', middleNames: '', firstName: '' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
     expect(session.addContactJourneys![journeyId]!.searchContact).toStrictEqual({
       contact: {
-        firstName: '',
+        firstName: undefined,
         middleNames: undefined,
         lastName: 'last',
       },
-      dateOfBirth: {
-        day: '',
-        month: '',
-        year: '',
-      },
+      page: 1,
     })
   })
 
-  it('should not pass to result page when last name is not provided', async () => {
+  it('should pass to result page when last name is not provided', async () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       .type('form')
-      .send({ lastName: '', middleNames: '', firstName: '', day: '', month: '', year: '' })
+      .send({ lastName: '', middleNames: 'middle', firstName: 'first' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
-    expect(session.addContactJourneys![journeyId]!.searchContact).toBeUndefined()
+    expect(session.addContactJourneys![journeyId]!.searchContact).toStrictEqual({
+      contact: {
+        firstName: 'first',
+        middleNames: 'middle',
+        lastName: undefined,
+      },
+      page: 1,
+    })
   })
 
-  it('should not pass to result page when rest of the form is completed except last name', async () => {
+  it('should save DoB to session when search names are in session', async () => {
+    existingJourney.searchContact = { contact: { lastName: 'last' } }
+
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       .type('form')
-      .send({ lastName: '', middleNames: 'mid', firstName: 'first', day: '01', month: '12', year: '1970' })
+      .send({ day: '01', month: '12', year: '1999' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
-    expect(session.addContactJourneys![journeyId]!.searchContact).toBeUndefined()
+    expect(session.addContactJourneys![journeyId]!.searchContact!.dateOfBirth).toStrictEqual({
+      day: 1,
+      month: 12,
+      year: 1999,
+    })
   })
 
-  it('should not pass to result page when month and year are not provided', async () => {
+  it('should not save DoB to session when search names are not in session', async () => {
+    existingJourney.searchContact = {}
+
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       .type('form')
-      .send({ lastName: 'last', middleNames: '', firstName: '', day: '01', month: '', year: '' })
+      .send({ day: '01', month: '12', year: '1999' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
-    expect(session.addContactJourneys![journeyId]!.searchContact).toBeUndefined()
+    expect(session.addContactJourneys![journeyId]!.searchContact!.dateOfBirth).toBeUndefined()
   })
 
-  it('should not pass to result page when year is not provided', async () => {
+  it('should not save DoB to session when month and year are not provided', async () => {
+    existingJourney.searchContact = { contact: { lastName: 'last' } }
+
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       .type('form')
-      .send({ lastName: 'last', middleNames: '', firstName: '', day: '01', month: '12', year: '' })
+      .send({ day: '01', month: '', year: '' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
-    expect(session.addContactJourneys![journeyId]!.searchContact).toBeUndefined()
+    expect(session.addContactJourneys![journeyId]!.searchContact!.dateOfBirth).toBeUndefined()
   })
 
-  it('should not pass to result page when date is in the future', async () => {
+  it('should not save DoB to session when year is not provided', async () => {
+    existingJourney.searchContact = { contact: { lastName: 'last' } }
+
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      .type('form')
+      .send({ day: '01', month: '12', year: '' })
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+
+    expect(session.addContactJourneys![journeyId]!.searchContact!.dateOfBirth).toBeUndefined()
+  })
+
+  it('should not save DoB to session when date is in the future', async () => {
+    existingJourney.searchContact = { contact: { lastName: 'last' } }
     const date = new Date(Date.now())
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       .type('form')
       .send({
-        lastName: '',
-        middleNames: '',
-        firstName: '',
         day: '01',
         month: '12',
         year: date.setDate(date.getDate() + 1),
@@ -175,23 +200,12 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
 
-    expect(session.addContactJourneys![journeyId]!.searchContact).toBeUndefined()
-  })
-
-  it('should not pass to result page when last name contains special characters', async () => {
-    await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
-      .type('form')
-      .send({ lastName: '&^^^$%%', middleNames: '&^^^$%%', firstName: '&^^^$%%', day: '', month: '', year: '' })
-      .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
-
-    expect(session.addContactJourneys![journeyId]!.searchContact).toBeUndefined()
+    expect(session.addContactJourneys![journeyId]!.searchContact!.dateOfBirth).toBeUndefined()
   })
 })
 
 describe('Contact seaarch results', () => {
-  let results: ContactSearchResultItemPage = {
+  const results: ContactSearchResultItemPage = {
     content: [TestData.contactSearchResultItem()],
     page: {
       number: 0,
@@ -219,11 +233,12 @@ describe('Contact seaarch results', () => {
     // Then
     expect(response.status).toEqual(200)
     expect($('table')).toBeDefined()
-    expect($('table .govuk-table__header:eq(0)').text().trim()).toStrictEqual('Name')
+    expect($('table .govuk-table__header:eq(0)').text().trim()).toStrictEqual('Contact name and person ID')
     expect($('table .govuk-table__header:eq(1)').text().trim()).toStrictEqual('Date of birth')
-    expect($('table .govuk-table__header:eq(2)').text().trim()).toStrictEqual('Address')
+    expect($('table .govuk-table__header:eq(2)').text().trim()).toStrictEqual('Primary or default address')
+    expect($('table .govuk-table__header:eq(3)').text().trim()).toStrictEqual('Action')
 
-    expect($('table .govuk-table__cell:eq(0) a').text().trim()).toStrictEqual('Mason, Jones')
+    expect($('table .govuk-table__cell:eq(0)').text().trim()).toContain('Mason, Jones')
     expect($('table .govuk-table__cell:eq(1)').text().trim()).toStrictEqual('14/1/1990')
     expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('32')
     expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('Acacia Avenue')
@@ -234,109 +249,7 @@ describe('Contact seaarch results', () => {
     expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('England')
   })
 
-  describe('Pagination', () => {
-    const contactsArray: Array<Record<string, unknown>> = []
-    beforeEach(() => {
-      existingJourney = {
-        ...existingJourney,
-        searchContact: {
-          contact: { lastName: 'last', middleNames: '', firstName: '' },
-          dateOfBirth: {},
-        },
-      }
-
-      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-
-      for (let i = 0; i < 15; i += 1) {
-        contactsArray.push(TestData.contactSearchResultItem({ id: i }))
-      }
-    })
-    it('should display the pagination when total pages are more than 1', async () => {
-      // Given
-      results = {
-        ...results,
-        content: contactsArray,
-        page: {
-          totalElements: 50,
-          totalPages: 5,
-          number: 1,
-        },
-      }
-      contactsService.searchContact.mockResolvedValue(results)
-
-      // When
-      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
-      const $ = cheerio.load(response.text)
-
-      // Then
-      expect(response.status).toEqual(200)
-      expect($('.moj-pagination')).toBeDefined()
-      expect($('.moj-pagination__link:eq(0)').text().trim()).toContain('Previous')
-      expect($('.moj-pagination__link:eq(1)').text().trim()).toStrictEqual('1')
-      expect($('.moj-pagination__item--active').text().trim()).toStrictEqual('2')
-      expect($('.moj-pagination__link:eq(2)').text().trim()).toStrictEqual('3')
-      expect($('.moj-pagination__item--dots').text().trim()).toStrictEqual('…')
-      expect($('.moj-pagination__link:eq(3)').text().trim()).toStrictEqual('5')
-      expect($('.moj-pagination__link:eq(4)').text().trim()).toContain('Next')
-    })
-
-    it('should hide previous link when page equal or greater than 1 is selected', async () => {
-      // Given
-      results = {
-        ...results,
-        content: contactsArray,
-        page: {
-          totalElements: 50,
-          totalPages: 5,
-          number: 0,
-        },
-      }
-      contactsService.searchContact.mockResolvedValue(results)
-
-      // When
-      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
-      const $ = cheerio.load(response.text)
-
-      // Then
-      expect(response.status).toEqual(200)
-      expect($('.moj-pagination')).toBeDefined()
-      expect($('.moj-pagination__item--active').text().trim()).toStrictEqual('1')
-      expect($('.moj-pagination__link:eq(0)').text().trim()).toStrictEqual('2')
-      expect($('.moj-pagination__item--dots').text().trim()).toStrictEqual('…')
-      expect($('.moj-pagination__link:eq(1)').text().trim()).toStrictEqual('5')
-      expect($('.moj-pagination__link:eq(2)').text().trim()).toContain('Next')
-    })
-
-    it('should hide next link when last page is selected', async () => {
-      // Given
-      results = {
-        ...results,
-        content: contactsArray,
-        page: {
-          totalElements: 50,
-          totalPages: 5,
-          number: 1,
-        },
-      }
-      contactsService.searchContact.mockResolvedValue(results)
-
-      // When
-      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
-      const $ = cheerio.load(response.text)
-
-      // Then
-      expect(response.status).toEqual(200)
-      expect($('.moj-pagination')).toBeDefined()
-      expect($('.moj-pagination__link:eq(0)').text().trim()).toContain('Prev')
-      expect($('.moj-pagination__link:eq(1)').text().trim()).toStrictEqual('1')
-      expect($('.moj-pagination__item--active').text().trim()).toStrictEqual('2')
-      expect($('.moj-pagination__link:eq(2)').text().trim()).toStrictEqual('3')
-      expect($('.moj-pagination__item--dots').text().trim()).toStrictEqual('…')
-      expect($('.moj-pagination__link:eq(3)').text().trim()).toStrictEqual('5')
-    })
-  })
-
-  it('should display "contact not listed" link when contact searched is not included in the contact search results', async () => {
+  it('should display "no contact records" when there is no search results', async () => {
     // Given
     existingJourney = {
       ...existingJourney,
@@ -346,7 +259,15 @@ describe('Contact seaarch results', () => {
       },
     }
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-    contactsService.searchContact.mockResolvedValue(results)
+    contactsService.searchContact.mockResolvedValue({
+      content: [],
+      page: {
+        number: 0,
+        size: 10,
+        totalElements: 0,
+        totalPages: 0,
+      },
+    })
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
@@ -354,6 +275,6 @@ describe('Contact seaarch results', () => {
 
     // Then
     expect(response.status).toEqual(200)
-    expect($('[data-qa=contact-not-listed-link]').text()).toContain('The contact is not listed')
+    expect($('p:contains("No contact records match your search")').text()).toBeTruthy()
   })
 })

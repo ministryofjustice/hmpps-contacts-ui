@@ -10,7 +10,6 @@ declare namespace contactsApiClientTypes {
   export type ReferenceCode = components['schemas']['ReferenceCode']
   export type ContactSearchRequest = components['schemas']['ContactSearchRequest']
   export type PagedModelContactSearchResultItem = components['schemas']['PagedModelContactSearchResultItem']
-  export type Pageable = components['schemas']['Pageable']
   export type CreatePhoneRequest = components['schemas']['CreatePhoneRequest']
   export type UpdatePhoneRequest = components['schemas']['UpdatePhoneRequest']
   export type ContactPhoneDetails = components['schemas']['ContactPhoneDetails']

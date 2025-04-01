@@ -127,7 +127,7 @@ const AddContactRoutes = (
   router.post(
     '/prisoner/:prisonerNumber/contacts/search/:journeyId',
     ensureInAddContactJourney,
-    validate(contactSearchSchema()),
+    validate(contactSearchSchema),
     asyncMiddleware(contactsSearchController.POST),
   )
 

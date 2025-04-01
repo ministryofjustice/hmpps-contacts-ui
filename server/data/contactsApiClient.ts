@@ -3,7 +3,6 @@ import RestClient from './restClient'
 import ReferenceCodeType from '../enumeration/referenceCodeType'
 import { components } from '../@types/contactsApi'
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
-import Pageable = contactsApiClientTypes.Pageable
 import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import PagedModelPrisonerContactSummary = contactsApiClientTypes.PagedModelPrisonerContactSummary
@@ -42,6 +41,12 @@ type ContactNameDetails = components['schemas']['ContactNameDetails']
 type CreateMultipleIdentitiesRequest = components['schemas']['CreateMultipleIdentitiesRequest']
 type PagedModelLinkedPrisonerDetails = components['schemas']['PagedModelLinkedPrisonerDetails']
 type CreateMultiplePhoneNumbersRequest = components['schemas']['CreateMultiplePhoneNumbersRequest']
+
+export type Pagination = {
+  page: number
+  size: number
+  sort?: string | string[]
+}
 
 export default class ContactsApiClient extends RestClient {
   constructor() {
@@ -104,9 +109,14 @@ export default class ContactsApiClient extends RestClient {
   async searchContact(
     contactSearchRequest: ContactSearchRequest,
     user: Express.User,
-    pagination?: Pageable,
+    pagination?: Pagination,
   ): Promise<PagedModelContactSearchResultItem> {
     const paginationParameters = pagination ?? { page: 0, size: config.apis.contactsApi.pageSize || 10 }
+    if (paginationParameters.sort === 'lastName,asc') {
+      paginationParameters.sort = ['lastName,asc', 'firstName,asc', 'middleNames,asc', 'id,asc']
+    } else if (paginationParameters.sort === 'lastName,desc') {
+      paginationParameters.sort = ['lastName,desc', 'firstName,desc', 'middleNames,desc', 'id,desc']
+    }
     return this.get(
       {
         path: `/contact/search`,

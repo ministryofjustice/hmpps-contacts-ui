@@ -12,6 +12,8 @@ declare namespace journeys {
     searchContact?: {
       contact?: Partial<ContactNames>
       dateOfBirth?: Partial<DateOfBirth>
+      page?: number
+      sort?: string
     }
     isContactConfirmed?: YesOrNo
     names?: ContactNames

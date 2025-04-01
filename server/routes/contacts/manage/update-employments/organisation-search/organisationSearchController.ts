@@ -31,7 +31,7 @@ export default class OrganisationSearchController implements PageHandler {
     }
     if (page) {
       const pageNumber = Number(page)
-      journey.organisationSearch.page = Number.isNaN(pageNumber) ? 0 : pageNumber
+      journey.organisationSearch.page = Number.isNaN(pageNumber) ? 1 : pageNumber
       return res.redirect(
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/organisation-search/${journeyId}`,
       )

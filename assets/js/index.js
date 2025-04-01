@@ -7,6 +7,7 @@ window.$ = $
 govukFrontend.initAll()
 mojFrontend.initAll()
 ContactsFrontend.initAll()
+window.MojFrontend = mojFrontend
 
 export default {
   ...ContactsFrontend,

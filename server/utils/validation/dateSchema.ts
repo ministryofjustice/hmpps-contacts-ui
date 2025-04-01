@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z, ZodType } from 'zod'
 import { isValid, parse } from 'date-fns'
 import { createSchema } from '../../middleware/validationMiddleware'
 import { formatDate, sentenceCase } from '../utils'
@@ -15,11 +15,13 @@ export const createDateInputSchema = ({
   inputDescription,
   additionalRule,
   isOptional,
+  additionalParams,
 }: {
   inputId: string
   inputDescription: string
   additionalRule?: DateInputSchemaRule
   isOptional: boolean
+  additionalParams?: { [_: string]: ZodType }
 }) => {
   const DATE_IS_REQUIRED_MESSAGE = `Enter the ${sentenceCase(inputDescription, false)}`
   const SINGLE_FIELD_MISSING_ERROR = (field: string) =>
@@ -38,6 +40,7 @@ export const createDateInputSchema = ({
     day: z.string().optional(),
     month: z.string().optional(),
     year: z.string().optional(),
+    ...(additionalParams ?? {}),
   })
     .superRefine((val, ctx) => {
       if (!val.day && !val.month && !val.year) {
@@ -122,12 +125,16 @@ export const createDateInputSchema = ({
         }
       }
     })
-    .transform((val): { month?: number; year?: number; day?: number } => {
-      if (isOptional && !val.day && !val.month && !val.year) return {}
-      return {
-        day: Number(val.day),
-        month: Number(val.month),
-        year: Number(val.year),
-      }
+    .transform(val => {
+      const { day, month, year, ...others } = val
+      const date =
+        isOptional && !day && !month && !year
+          ? {}
+          : {
+              day: Number(day),
+              month: Number(month),
+              year: Number(year),
+            }
+      return { ...others, ...date }
     })
 }

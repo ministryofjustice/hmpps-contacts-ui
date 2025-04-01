@@ -1,164 +1,240 @@
-{% extends "../../../partials/layout.njk" %}
+{% extends "partials/layout.njk" %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
-{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
-{% from "../../../partials/address.njk" import convertAddressToLines %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "moj/components/filter/macro.njk" import mojFilter %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "partials/address.njk" import convertAddressToLines %}
+{% from "partials/validatedDateInput/macro.njk" import validatedDateInput %}
+{% from "partials/simplePagination/macro.njk" import simplePagination %}
 {% from "../partials/addPagination.njk" import addPagination %}
 
-{% set pageTitle = applicationName + " - Search for a contact" %}
-{% set title = "Search for a contact" %}
+{% set pageTitle = "Check if the contact is already on the system - Manage contacts - DPS" %}
+{% set title = "Check if the contact is already on the system" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-{% include '../../../partials/navigation.njk' %}
-
+{% include 'partials/navigation.njk' %}
 {{ miniProfile(prisonerDetails) }}
+{% include 'partials/formErrorSummary.njk' %}
 
-{% include '../../../partials/formErrorSummary.njk' %}
- <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-!-static-margin-bottom-7">
         <span class="govuk-caption-l">Link a contact to a prisoner</span>
         <h1 class="govuk-heading-l">{{ title }}</h1>
-        <form method='POST'>
-            <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-
-            {{ govukInput({
-                id: "firstName",
-                name: "firstName",
-                label: { text: "First name" },
-                classes: 'govuk-!-width-one-third',
-                errorMessage: validationErrors | findError('firstName'),
-                value: view.firstName
-            }) }}
-
-            {{ govukInput({
-                id: "middleNames",
-                name: "middleNames",
-                label: { text: "Middle names" },
-                classes: 'govuk-!-width-one-third',
-                errorMessage: validationErrors | findError('middleNames'),
-                value: view.middleNames
-            }) }}
-
-            {{ govukInput({
-                id: "lastName",
-                name: "lastName",
-                label: { text: "Last name" },
-                classes: 'govuk-!-width-one-third',
-                errorMessage: validationErrors | findError('lastName'),
-                value: view.lastName
-            }) }}
-
-            {% if validationErrors %}
-                {% set dayError = validationErrors['day'] if validationErrors['day'] else '' %}
-                {% set monthError = validationErrors['month'] if validationErrors['month'] else '' %}
-                {% set yearError = validationErrors['year']  if validationErrors['year'] else '' %}
-                {% set dobError = validationErrors['dob'] if validationErrors['dob'] else '' %}
-            {% endif %}
-
-            {{ govukDateInput({
-                id: "dob",
-                name: "dob",
-                fieldset: {
-                    legend: {
-                        text: "Date of birth"
-                    }
-                },
-                hint: {
-                    text: "For example, 15 6 2000"
-                },
-                errorMessage: {
-                    html: '<span class="govuk-error-message">' + dayError + '</span>
-                            <span class="govuk-error-message">' + monthError + '</span>
-                            <span class="govuk-error-message">' + yearError + '</span>
-                            <span class="govuk-error-message">' + dobError + '</span>'
-                } if dayError or monthError or yearError or dobError,
-                items: [
-                    {
-                        id: 'day',
-                        label: 'Day',
-                        name: "day",
-                        classes: 'govuk-input--width-2' + (' govuk-input--error' if dayError or dobError),
-                        value: view.day
-                    },
-                    {
-                        id: 'month',
-                        label: 'Month',
-                        name: "month",
-                        classes: 'govuk-input--width-2' + (' govuk-input--error' if monthError or dobError),
-                        value: view.month
-                    },
-                    {
-                        id: 'year',
-                        label: 'Year',
-                        name: "year",
-                        classes: 'govuk-input--width-4' + (' govuk-input--error' if yearError or dobError),
-                        value: view.year
-                    }
-                ]
-            }) }}
-
-            <div class="govuk-button-group">
-                {{ govukButton({
-                    text: "Search",
-                    type: "submit",
-                    classes: 'govuk-!-margin-top-6',
-                    attributes: {"data-qa": "search-button"},
-                    preventDoubleClick: true
-                }) }}
-            </div>
-        </form>
+      </div>
+      {{ govukWarningText({
+        html: 'Duplicate contact records are a safety and security risk. You should only <a href="/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/add/mode/NEW/' + journey.id + '" class="govuk-body govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold">add a new contact</a> if you cannot find the person on the system.',
+        iconFallbackText: "Warning"
+      }) }}
     </div>
+  </div>
+ <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <div class="block-background govuk-!-padding-6 govuk-!-margin-bottom-7">
+        <div class="moj-search govuk-!-width-three-quarters">
+          <h2 class="govuk-heading-m">Search by contact name</h2>
+          <form class="contact-search" method='POST'>
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+            {{ govukInput({
+              classes: "moj-search__input",
+              id: "firstName",
+              name: "firstName",
+              value: firstName,
+              label: {
+                text: 'First name (optional)'
+              }
+            }) }}
 
-    {% if results.page.totalElements > 0 %}
-        <div class="govuk-grid-column-full govuk-!-padding-left-3 govuk-!-padding-right-3 contact-list" id="contact-search-results">
-            {% set rows = [] %}
-            {% for result in results.content %}
-                {% set contactNameHtml %}
-                    <a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/add/mode/EXISTING/{{ journey.id }}?contactId={{ result.id }}" class="govuk-link govuk-link--no-visited-state bapv-result-row" data-qa="add-contact-{{ result.id }}-link">
-                        {{ (result.lastName + ", " + result.firstName) | capitaliseName }}
-                    </a>
-                {% endset %}
+            {{ govukInput({
+              id: "middleNames",
+              name: "middleNames",
+              label: { text: "Middle names (optional)" },
+              value: middleNames
+            }) }}
 
-                {% set rows = (rows.push([
-                    { html: contactNameHtml },
-                    { text: result.dateOfBirth | formatDate('d/M/yyyy') },
-                    { html: convertAddressToLines(result) }
-                ]), rows) %}
-            {% else %}
-                {% set rows = (rows.push([
-                    {
-                        text: 'No results found',
-                        attributes: { colspan:3 },
-                        classes: 'govuk-!-text-align-centre'
-                    }
-                ]), rows) %}
+            {{ govukInput({
+              id: "lastName",
+              name: "lastName",
+              label: { text: "Last name" },
+              value: lastName
+            }) }}
+
+            {{ govukButton({
+              classes: "moj-search__button",
+              text: "Search",
+              attributes: {"data-qa": "search-button"},
+              preventDoubleClick: true
+            }) }}
+          </form>
+          {{ govukDetails({
+            classes: "govuk-!-margin-top-6 govuk-!-margin-bottom-0",
+            summaryText: "How to use advanced search and filters",
+            text: "[Placeholder content - needs to tell user about how to access these features on NOMIS]"
+          }) }}
+        </div>
+      </div>
+
+      {% set filterOptionsHtml %}
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        {{ validatedDateInput({
+          id: "dob",
+          title: {
+            text: "Date of birth",
+            isPageHeading: false,
+            classes: "govuk-fieldset__legend--m"
+          },
+          hintText: "For example, 27 3 1980.",
+          validationErrors: validationErrors,
+          day: day,
+          month: month,
+          year: year
+        }) }}
+      {% endset %}
+
+      <div class="moj-filter-layout">
+
+        <form class="moj-filter-layout__filter" method='POST'>
+
+          {{ mojFilter({
+            heading: {
+              text: "Filter"
+            },
+            selectedFilters: {
+              heading: {
+                text: "Selected filters"
+              },
+              clearLink: {
+                href: "?clear=filter",
+                text: "Clear filters"
+              },
+              categories: [
+                {
+                  heading: {
+                  text: "Date of birth"
+                },
+                  items: [{
+                  href: "?clear=filter",
+                  text: filter
+                }]
+                }
+              ]
+            } if filter else undefined,
+            optionsHtml: filterOptionsHtml
+          }) }}
+
+        </form>
+
+        <div class="moj-filter-layout__content">
+          <div class="moj-action-bar">
+            <div class="moj-action-bar__filter"></div>
+          </div>
+
+          {% if results.content.length %}
+            {{ simplePagination(paginationParams)  }}
+          {% endif %}
+
+          {% if results.content.length %}
+            {% set contactRows = [] %}
+            {% for contact in results.content %}
+              {% set contactRows = (contactRows.push([
+                {
+                  html: ((contact.lastName + ", " + contact.firstName) | capitaliseName) + '<br/><span class="govuk-hint">' + contact.id + '</span>'
+                },
+                {
+                  text: contact.dateOfBirth | formatDate('d/M/yyyy')
+                },
+                {
+                  html: (contact | addressToLines or 'Not provided') | escape | nl2br
+                },
+                {
+                  html: '<a href="/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/add/mode/EXISTING/' + journey.id + '?contactId=' + contact.id + '" class="govuk-link" data-qa="add-contact-' + contact.id + '-link">Check if this is the correct contact</a>',
+                  format: "numeric"
+                }
+              ]), contactRows) %}
             {% endfor %}
 
             {{ govukTable({
-                head: [
-                    { text: "Name" },
-                    { text: "Date of birth" },
-                    { text: "Address" }
-                ],
-                rows: rows
+              firstCellIsHeader: false,
+              classes: 'table-vertical-align-middle govuk-!-margin-top-6',
+              head: [
+                {
+                  text: 'Contact name and person ID',
+                  key: 'lastName'
+                },
+                {
+                  text: "Date of birth",
+                  key: 'dateOfBirth'
+                },
+                {
+                  text: "Primary or default address"
+                },
+                {
+                  text: "Action",
+                  format: "numeric"
+                }
+              ] | convertToSortableColumns(sort or 'lastName,asc'),
+              rows: contactRows
             }) }}
+          {% else %}
+            {% if dobError %}
+              <div class="govuk-body govuk-!-margin-bottom-6">
+                <p><strong>There is a problem with the date of birth filter</strong></p>
+                <p>You can either:</p>
+                <ul>
+                  <li>correct the problem and apply the filter again</li>
+                  <li>clear the filter and return to your search results</li>
+                </ul>
+              </div>
+            {% elseif not results %}
+              <p class="govuk-!-margin-bottom-6"><strong>Start a search to view contact records.</strong></p>
+            {% else %}
+              <div class="govuk-body govuk-!-margin-bottom-6">
+                <p><strong>No contact records match your search.</strong></p>
+                <p>You may:</p>
+                <ul>
+                  <li>try searching again</li>
+                  <li><a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/add/mode/NEW/{{ journey.id }}" class="govuk-body govuk-link govuk-link--no-visited-state">add a new contact</a> if you cannot find the person on the system</li>
+                </ul>
+              </div>
+            {% endif %}
 
-            {{ addPagination(results.page) }}
+          {% endif %}
 
+          {% if results.content.length %}
+            {{ simplePagination(paginationParams)  }}
+          {% endif %}
         </div>
-
-    {% endif %}
-     {% if results %}
-         <div class="govuk-grid-column-full govuk-!-margin-top-4">
-             <a  href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/add/mode/NEW/{{ journey.id }}" class="govuk-body govuk-link--no-visited-state" data-qa="contact-not-listed-link" id="contact-not-listed-link">
-                 The contact is not listed
-             </a>
-         </div>
-     {% endif %}
+    </div>
 </div>
 
+{% endblock %}
+
+{% block pageScripts %}
+    <script nonce="{{ cspNonce }}">
+      window.onload = function () {
+        new window.MojFrontend.FilterToggleButton({
+          bigModeMediaQuery: '(min-width: 48.063em)',
+          startHidden: {{ 'false' if (day or month or year) else 'true' }},
+          toggleButton: {
+            container: document.querySelector('.moj-action-bar__filter'),
+            showText: 'Show filter',
+            hideText: 'Hide filter',
+            classes: 'govuk-button--secondary'
+          },
+          closeButton: {
+            container: document.querySelector('.moj-filter__header-action'),
+            text: 'Close'
+          },
+          filter: {
+            container: document.querySelector('.moj-filter')
+          }
+        })
+      }
+    </script>
 {% endblock %}
