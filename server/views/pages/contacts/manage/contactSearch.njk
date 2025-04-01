@@ -153,7 +153,7 @@
                   html: (contact | addressToLines or 'Not provided') | escape | nl2br
                 },
                 {
-                  html: '<a href="/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/add/mode/EXISTING/' + journey.id + '?contactId=' + contact.id + '" class="govuk-link" data-qa="add-contact-' + contact.id + '-link">Check if this is the correct contact</a>',
+                  html: '<a href="/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/add/match/' + contact.id + '/' + journey.id + '" class="govuk-link" data-qa="add-contact-' + contact.id + '-link">Check if this is the correct contact</a>',
                   format: "numeric"
                 }
               ]), contactRows) %}

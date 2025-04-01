@@ -7,7 +7,6 @@ import { SchemaFactory, validate } from '../../../middleware/validationMiddlewar
 import { fullNameSchema } from '../common/name/nameSchemas'
 import CreateContactEnterDobController from './enter-dob/createContactEnterDobController'
 import StartAddContactJourneyController from './start/startAddContactJourneyController'
-import ensureInAddContactJourney from './addContactMiddleware'
 import { ContactsService, PrisonerAddressService, PrisonerSearchService, RestrictionsService } from '../../../services'
 import CreateContactCheckAnswersController from './check-answers/createContactCheckAnswersController'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
@@ -19,9 +18,9 @@ import EnterRelationshipCommentsController from './relationship-comments/enterRe
 import { enterRelationshipCommentsSchema } from './relationship-comments/enterRelationshipCommentsSchemas'
 import ContactSearchController from './contact-search/contactSearchController'
 import { contactSearchSchema } from './contact-search/contactSearchSchema'
-import { selectToConfirmContactSchema } from './contact-confirmation/contactConfirmationSchema'
+import { contactMatchSchema } from './contact-match/contactMatchSchema'
 import AddContactModeController from './mode/addContactModeController'
-import ContactConfirmationController from './contact-confirmation/contactConfirmationController'
+import ContactMatchController from './contact-match/contactMatchController'
 import { optionalDobSchema } from './enter-dob/enterDobSchemas'
 import SuccessfullyAddedContactController from './success/successfullyAddedContactController'
 import { selectRelationshipTypeSchema } from './relationship-type/relationshipTypeSchema'
@@ -68,6 +67,7 @@ import { checkEmployerSchema } from '../manage/update-employments/check-employer
 import CreateContactEmploymentStatusController from './employments/employment-status/createContactEmploymentStatusController'
 import { employmentStatusSchema } from '../manage/update-employments/employment-status/employmentStatusSchema'
 import CreateContactDeleteEmploymentController from './employments/delete-employment/createContactDeleteEmploymentController'
+import { ensureInAddContactJourney, resetAddContactJourney } from './addContactMiddleware'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -86,21 +86,25 @@ const AddContactRoutes = (
     controller,
     schema,
     noValidation,
+    resetJourney,
   }: {
     path: string
     controller: PageHandler
     schema?: z.ZodTypeAny | SchemaFactory<P>
     noValidation?: boolean
+    resetJourney?: boolean
   }) => {
     if (!schema && !noValidation) {
       throw Error('Missing validation schema for POST route')
     }
-    get(
-      path,
-      controller,
+    const getMiddleware = [
       ensureInAddContactJourney,
       populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    )
+    ]
+    if (resetJourney) {
+      getMiddleware.push(resetAddContactJourney)
+    }
+    get(path, controller, ...getMiddleware)
     if (schema && !noValidation) {
       post(path, controller, ensureInAddContactJourney, validate(schema))
     } else {
@@ -115,37 +119,19 @@ const AddContactRoutes = (
     asyncMiddleware(startController.GET),
   )
 
-  const contactsSearchController = new ContactSearchController(contactsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/search/:journeyId',
-    ensureInAddContactJourney,
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, contactsSearchController),
-    asyncMiddleware(contactsSearchController.GET),
-  )
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/search/:journeyId',
+    controller: new ContactSearchController(contactsService),
+    schema: contactSearchSchema,
+    resetJourney: true,
+  })
 
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/search/:journeyId',
-    ensureInAddContactJourney,
-    validate(contactSearchSchema),
-    asyncMiddleware(contactsSearchController.POST),
-  )
-
-  const contactConfirmationController = new ContactConfirmationController(contactsService, restrictionsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/add/confirmation/:journeyId',
-    ensureInAddContactJourney,
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, contactConfirmationController),
-    asyncMiddleware(contactConfirmationController.GET),
-  )
-
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/add/confirmation/:journeyId',
-    ensureInAddContactJourney,
-    validate(selectToConfirmContactSchema()),
-    asyncMiddleware(contactConfirmationController.POST),
-  )
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/add/match/:matchingContactId/:journeyId',
+    controller: new ContactMatchController(contactsService, restrictionsService),
+    schema: contactMatchSchema,
+    resetJourney: true,
+  })
 
   const modeController = new AddContactModeController(contactsService)
   router.get(

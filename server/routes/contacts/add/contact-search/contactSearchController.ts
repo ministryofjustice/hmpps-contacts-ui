@@ -24,6 +24,7 @@ export default class ContactSearchController implements PageHandler {
     const { user } = res.locals
     const journey = req.session.addContactJourneys![journeyId]!
 
+    delete journey.isContactMatched
     if (journey.searchContact) {
       const { clear, sort, page } = req.query
 

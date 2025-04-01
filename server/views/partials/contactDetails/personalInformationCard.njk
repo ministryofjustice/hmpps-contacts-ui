@@ -5,6 +5,7 @@
   {% set contact = opts.contact %}
   {% set prisonerContactId = opts.prisonerContactId %}
   {% set showActions = opts.showActions %}
+  {% set showRecordDateOfDeath = opts.showRecordDateOfDeath %}
   {% set prisonerNumber = opts.prisonerNumber %}
 
   {% set  formattedDateOfBirth %}{% if contact.dateOfBirth %}{{ contact.dateOfBirth | formatDate }}{% else %}Not provided{% endif %}{% endset %}
@@ -140,7 +141,7 @@
         key: {
           html: '<a data-qa="record-date-of-death-link" class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-regular" href="/prisoner/' + prisonerNumber + '/contacts/manage/' + contact.id + '/relationship/' + prisonerContactId + '/enter-date-of-death?backTo=' + ('edit-contact-details' if showActions else 'contact-details')  + '">Record the death of this contact</a>'
         }
-      } if not contact.deceasedDate
+      } if not contact.deceasedDate and showRecordDateOfDeath
     ]
   }) }}
 {% endmacro %}
