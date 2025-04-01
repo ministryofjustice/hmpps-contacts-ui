@@ -57,19 +57,6 @@ context('Create Contact With Addresses', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship(),
     })
-    cy.task('stubContactSearch', {
-      results: {
-        page: {
-          totalPages: 0,
-          totalElements: 0,
-        },
-        content: [],
-      },
-      lastName: 'FOO',
-      firstName: '',
-      middleNames: '',
-      dateOfBirth: '',
-    })
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId,
       response: {
@@ -86,12 +73,7 @@ context('Create Contact With Addresses', () => {
       .clickAddNewContactButton()
 
     Page.verifyOnPage(SearchContactPage) //
-      .enterLastName('FOO')
-      .clickSearchButton()
-
-    Page.verifyOnPage(SearchContactPage) //
-      .verifyShowsTheContactIsNotListedAs('The contact is not listed')
-      .clickTheContactIsNotListed()
+      .clickAddNewContactLink()
   })
 
   it('Can create a contact with some phone numbers', () => {

@@ -1,6 +1,9 @@
-import { format, isValid, parseISO } from 'date-fns'
+import { differenceInYears, format, isValid, parseISO } from 'date-fns'
 import DateOfBirth = journeys.DateOfBirth
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
+import { components } from '../@types/contactsApi'
+
+type ContactSearchResultItem = components['schemas']['ContactSearchResultItem']
 
 const isBlank = (str?: string): boolean => !str || /^\s*$/.test(str)
 
@@ -173,3 +176,21 @@ export const referenceCodesToRadiosOrCheckboxes = (
     text: referenceCode.description,
     value: referenceCode.code,
   }))
+
+export const formatDob = (contact: ContactSearchResultItem & { deceasedDate?: string }) => {
+  if (!contact.dateOfBirth) return 'Not provided'
+  const richDate = parseISO(contact.dateOfBirth)
+  if (!isValid(richDate)) return 'Not provided'
+  const age = differenceInYears(new Date(), richDate)
+  let ageString: string
+  if (contact.deceasedDate) {
+    ageString = '(Deceased)'
+  } else if (age < 1) {
+    ageString = '(Less than a year old)'
+  } else if (age < 2) {
+    ageString = '(1 year old)'
+  } else {
+    ageString = `(${Math.floor(age)} years old)`
+  }
+  return `${format(richDate, 'd/M/yyyy')}<br/><span class="govuk-hint">${ageString}</span>`
+}

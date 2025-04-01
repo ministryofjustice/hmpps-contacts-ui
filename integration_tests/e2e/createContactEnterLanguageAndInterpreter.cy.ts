@@ -46,19 +46,6 @@ context('Create Contact and Select Staff Status', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship(),
     })
-    cy.task('stubContactSearch', {
-      results: {
-        page: {
-          totalPages: 0,
-          totalElements: 0,
-        },
-        content: [],
-      },
-      lastName: 'FOO',
-      firstName: '',
-      middleNames: '',
-      dateOfBirth: '',
-    })
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId,
       response: {
@@ -75,12 +62,7 @@ context('Create Contact and Select Staff Status', () => {
       .clickAddNewContactButton()
 
     Page.verifyOnPage(SearchContactPage) //
-      .enterLastName('FOO')
-      .clickSearchButton()
-
-    Page.verifyOnPage(SearchContactPage) //
-      .verifyShowsTheContactIsNotListedAs('The contact is not listed')
-      .clickTheContactIsNotListed()
+      .clickAddNewContactLink()
 
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')

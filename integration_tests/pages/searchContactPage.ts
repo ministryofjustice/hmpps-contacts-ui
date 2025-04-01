@@ -2,7 +2,7 @@ import Page, { PageElement } from './page'
 
 export default class SearchContactPage extends Page {
   constructor() {
-    super('Search for a contact')
+    super('Check if the contact is already on the system')
   }
 
   enterFirstName(value: string): SearchContactPage {
@@ -60,8 +60,8 @@ export default class SearchContactPage extends Page {
     return this
   }
 
-  clickTheContactIsNotListed() {
-    this.theContactIsNotListedLink().click()
+  clickAddNewContactLink() {
+    cy.findAllByRole('link', { name: 'add a new contact' }).eq(0).click()
   }
 
   clickTheContactLink(contactId: number) {

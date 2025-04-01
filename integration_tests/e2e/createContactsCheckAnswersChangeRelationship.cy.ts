@@ -42,19 +42,6 @@ context('Create contact and update the relationship from check answers', () => {
       id: 654321,
       response: TestData.prisonerContactRelationship(),
     })
-    cy.task('stubContactSearch', {
-      results: {
-        page: {
-          totalPages: 0,
-          totalElements: 0,
-        },
-        content: [],
-      },
-      lastName: 'FOO',
-      firstName: '',
-      middleNames: '',
-      dateOfBirth: '',
-    })
 
     const { prisonerNumber } = TestData.prisoner()
     cy.signIn()
@@ -64,12 +51,7 @@ context('Create contact and update the relationship from check answers', () => {
       .clickAddNewContactButton()
 
     Page.verifyOnPage(SearchContactPage) //
-      .enterLastName('FOO')
-      .clickSearchButton()
-
-    Page.verifyOnPage(SearchContactPage) //
-      .verifyShowsTheContactIsNotListedAs('The contact is not listed')
-      .clickTheContactIsNotListed()
+      .clickAddNewContactLink()
     Page.verifyOnPage(EnterNamePage) //
       .selectTitle('MR')
       .enterLastName('Last')

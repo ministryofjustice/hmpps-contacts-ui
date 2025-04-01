@@ -52,7 +52,7 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
-  it('should render contact page', async () => {
+  it('should render contact page without filter when there is no search', async () => {
     // Given
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.searchContact.mockResolvedValue({
@@ -72,14 +72,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     expect($('input#firstName')).toBeDefined()
     expect($('input#middleNames')).toBeDefined()
     expect($('input#lastName')).toBeDefined()
-    expect($('input#day')).toBeDefined()
-    expect($('input#month')).toBeDefined()
-    expect($('input#year')).toBeDefined()
 
     expect($('.govuk-form-group .govuk-label').eq(0).text()).toContain('First name')
     expect($('.govuk-form-group .govuk-label').eq(1).text()).toContain('Middle names')
     expect($('.govuk-form-group .govuk-label').eq(2).text()).toContain('Last name')
-    expect($('.govuk-fieldset__legend').text()).toContain('Date of birth')
+    expect($('.govuk-fieldset__legend:contains("Date of birth")').text()).toBeFalsy()
     expect($('[data-qa=search-button]').text()).toContain('Search')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(1)
     expect($('[data-qa=breadcrumbs] a').eq(0).attr('href')).toStrictEqual('http://localhost:3001')
@@ -90,6 +87,31 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       who: user.username,
       correlationId: expect.any(String),
     })
+  })
+
+  it('should render contact page with filter when there is a search', async () => {
+    // Given
+    existingJourney.searchContact = {
+      contact: { lastName: 'name' },
+    }
+
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.searchContact.mockResolvedValue({
+      totalPages: 0,
+      totalElements: 0,
+      content: [TestData.contactSearchResultItem()],
+    })
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+    const $ = cheerio.load(response.text)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect($('.govuk-fieldset__legend:contains("Date of birth")').text()).toBeTruthy()
+    expect($('input#day')).toBeDefined()
+    expect($('input#month')).toBeDefined()
+    expect($('input#year')).toBeDefined()
   })
 })
 
@@ -239,7 +261,7 @@ describe('Contact seaarch results', () => {
     expect($('table .govuk-table__header:eq(3)').text().trim()).toStrictEqual('Action')
 
     expect($('table .govuk-table__cell:eq(0)').text().trim()).toContain('Mason, Jones')
-    expect($('table .govuk-table__cell:eq(1)').text().trim()).toStrictEqual('14/1/1990')
+    expect($('table .govuk-table__cell:eq(1)').text().trim()).toContain('14/1/1990')
     expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('32')
     expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('Acacia Avenue')
     expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('Bunting')
