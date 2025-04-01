@@ -7,16 +7,6 @@ import IndexPage from '../pages'
 
 const { prisonerNumber } = TestData.prisoner()
 
-const ENTER_THE_CONTACTS_LAST_NAME = `Enter the contact’s last name`
-const CONTACTS_LAST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS = `Contact’s last name must not contain special characters`
-const CONTACTS_MIDDLE_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS = `Contact’s middle names must not contain special characters`
-const CONTACTS_FIRST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS = `Contact’s first name must not contain special characters`
-const ENTER_A_VALID_DAY_OF_THE_MONTH = `Enter a valid day of the month (1-31)`
-const ENTER_A_VALID_MONTH = `Enter a valid month (1-12)`
-const ENTER_A_VALID_YEAR = `Enter a valid year. Must be at least 1900`
-const THE_DATE_OF_BIRTH_MUST_NOT_BE_IN_THE_FUTURE = `The date of birth must not be in the future`
-const DOB_IS_INVALID = 'The date of birth is invalid'
-
 context('Search contact', () => {
   beforeEach(() => {
     cy.task('reset')
@@ -63,109 +53,80 @@ context('Search contact', () => {
     Page.verifyOnPage(SearchContactPage)
   })
 
-  it(`should not pass validation when last name is not entered`, () => {
+  it(`should not search when last name is not entered`, () => {
     const searchContactPage = Page.verifyOnPage(SearchContactPage)
     searchContactPage.enterFirstName('Firstname')
     searchContactPage.enterMiddleNames('Middlename')
     searchContactPage.clickSearchButton()
 
-    searchContactPage.hasFieldInError('lastName', ENTER_THE_CONTACTS_LAST_NAME)
+    cy.verifyAPIWasCalled(
+      {
+        method: 'GET',
+        urlPattern: '/contact/search.+',
+      },
+      0,
+    )
   })
 
-  it(`should not pass validation when special characters are entered`, () => {
-    const searchContactPage = Page.verifyOnPage(SearchContactPage)
-    searchContactPage.enterFirstName('^%&*(££')
-    searchContactPage.enterMiddleNames('^%&*(££')
-    searchContactPage.enterLastName('^%&*(££')
-    searchContactPage.enterDay('^%&*(££')
-    searchContactPage.enterMonth('^%&*(££')
-    searchContactPage.enterYear('^%&*(££')
-    searchContactPage.clickSearchButton()
-
-    searchContactPage.hasFieldInError('lastName', CONTACTS_LAST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
-    searchContactPage.hasFieldInError('firstName', CONTACTS_FIRST_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
-    searchContactPage.hasFieldInError('middleNames', CONTACTS_MIDDLE_NAME_MUST_NOT_CONTAIN_SPECIAL_CHARACTERS)
-    searchContactPage.hasFieldInError('dob', ENTER_A_VALID_DAY_OF_THE_MONTH)
-    searchContactPage.hasFieldInError('dob', ENTER_A_VALID_MONTH)
-    searchContactPage.hasFieldInError('dob', ENTER_A_VALID_YEAR)
-  })
-
-  it(`should not pass validation when lastname and day are entered`, () => {
+  it(`should not pass validation when lastname and dob is incomplete`, () => {
     const searchContactPage = Page.verifyOnPage(SearchContactPage)
     searchContactPage.enterLastName('Lastname')
-    searchContactPage.enterDay('10')
     searchContactPage.clickSearchButton()
 
-    searchContactPage.hasFieldInError('dob', ENTER_A_VALID_MONTH)
-    searchContactPage.hasFieldInError('dob', ENTER_A_VALID_YEAR)
-
-    searchContactPage.errorSummaryItems.spread((...$lis) => {
-      expect($lis).to.have.lengthOf(2)
-      expect($lis[0]).to.contain(ENTER_A_VALID_MONTH)
-      expect($lis[1]).to.contain(ENTER_A_VALID_YEAR)
-    })
-  })
-
-  it(`should not pass validation when lastname, day, and month are entered`, () => {
-    const searchContactPage = Page.verifyOnPage(SearchContactPage)
-    searchContactPage.enterLastName('Lastname')
     searchContactPage.enterDay('10')
-    searchContactPage.enterMonth('02')
-    searchContactPage.clickSearchButton()
-
-    searchContactPage.hasFieldInError('dob', ENTER_A_VALID_YEAR)
+    searchContactPage.clickFilterButton()
 
     searchContactPage.errorSummaryItems.spread((...$lis) => {
       expect($lis).to.have.lengthOf(1)
-      expect($lis[0]).to.contain(ENTER_A_VALID_YEAR)
+      expect($lis[0]).to.contain('Date of birth must include a month and a year')
     })
   })
 
   it(`should not pass validation when year is invalid`, () => {
     const searchContactPage = Page.verifyOnPage(SearchContactPage)
     searchContactPage.enterLastName('Lastname')
-    searchContactPage.enterDay('10')
-    searchContactPage.enterMonth('02')
-    searchContactPage.enterYear('100')
     searchContactPage.clickSearchButton()
 
-    searchContactPage.hasFieldInError('dob', ENTER_A_VALID_YEAR)
+    searchContactPage.enterDay('10')
+    searchContactPage.enterMonth('02')
+    searchContactPage.enterYear('99')
+    searchContactPage.clickFilterButton()
 
     searchContactPage.errorSummaryItems.spread((...$lis) => {
       expect($lis).to.have.lengthOf(1)
-      expect($lis[0]).to.contain(ENTER_A_VALID_YEAR)
+      expect($lis[0]).to.contain('Year must include 4 numbers')
     })
   })
 
   it(`should not pass validation when dob is in the future`, () => {
     const searchContactPage = Page.verifyOnPage(SearchContactPage)
     searchContactPage.enterLastName('Lastname')
+    searchContactPage.clickSearchButton()
+
     searchContactPage.enterDay('10')
     searchContactPage.enterMonth('02')
     searchContactPage.enterYear('2090')
-    searchContactPage.clickSearchButton()
-
-    searchContactPage.hasFieldInError('dob', THE_DATE_OF_BIRTH_MUST_NOT_BE_IN_THE_FUTURE)
+    searchContactPage.clickFilterButton()
 
     searchContactPage.errorSummaryItems.spread((...$lis) => {
       expect($lis).to.have.lengthOf(1)
-      expect($lis[0]).to.contain(THE_DATE_OF_BIRTH_MUST_NOT_BE_IN_THE_FUTURE)
+      expect($lis[0]).to.contain('Date of birth must be in the past')
     })
   })
 
   it(`should not pass validation when dob is not valid`, () => {
     const searchContactPage = Page.verifyOnPage(SearchContactPage)
     searchContactPage.enterLastName('Lastname')
+    searchContactPage.clickSearchButton()
+
     searchContactPage.enterDay('29')
     searchContactPage.enterMonth('02')
     searchContactPage.enterYear('1990')
-    searchContactPage.clickSearchButton()
-
-    searchContactPage.hasFieldInError('dob', DOB_IS_INVALID)
+    searchContactPage.clickFilterButton()
 
     searchContactPage.errorSummaryItems.spread((...$lis) => {
       expect($lis).to.have.lengthOf(1)
-      expect($lis[0]).to.contain(DOB_IS_INVALID)
+      expect($lis[0]).to.contain('Date of birth must be a real date')
     })
   })
 
@@ -175,6 +136,14 @@ context('Search contact', () => {
     searchContactPage.clickSearchButton()
     searchContactPage.checkOnPage()
 
+    cy.verifyAPIWasCalled(
+      {
+        method: 'GET',
+        urlPattern: '/contact/search.+',
+      },
+      1,
+    )
+
     searchContactPage.verifyShowsNameAs('Mason')
     searchContactPage.verifyShowsDobAs('14/1/1990')
     searchContactPage.verifyShowsAddressAs(
@@ -183,59 +152,44 @@ context('Search contact', () => {
   })
 
   it(`should pass validation when all the fields are entered`, () => {
-    cy.task('stubContactSearch', {
-      results: {
-        page: {
-          totalPages: 1,
-          totalElements: 1,
-        },
-        content: [TestData.contactSearchResultItem()],
-      },
-      lastName: 'Mason',
-      firstName: 'Jones',
-      middleNames: 'middle',
-      dateOfBirth: '1990-01-14',
-    })
     const searchContactPage = Page.verifyOnPage(SearchContactPage)
     searchContactPage.enterFirstName('Jones')
     searchContactPage.enterLastName('Mason')
     searchContactPage.enterMiddleNames('middle')
+    searchContactPage.clickSearchButton()
+
     searchContactPage.enterDay('14')
     searchContactPage.enterMonth('1')
     searchContactPage.enterYear('1990')
-    searchContactPage.clickSearchButton()
+    searchContactPage.clickFilterButton()
     searchContactPage.checkOnPage()
+
+    cy.verifyAPIWasCalled(
+      {
+        method: 'GET',
+        urlPattern: '/contact/search.+',
+      },
+      2,
+    )
 
     searchContactPage.verifyShowsNameAs('Mason')
     searchContactPage.verifyShowsDobAs('14/1/1990')
     searchContactPage.verifyShowsAddressAs(
       '32<br>Acacia Avenue<br>Bunting<br>Sheffield<br>South Yorkshire<br>S2 3LK<br>England',
     )
-    searchContactPage.verifyShowsTheContactIsNotListedAs('The contact is not listed')
   })
 
   it(`should pass validation when day and month starts with 0`, () => {
-    cy.task('stubContactSearch', {
-      results: {
-        page: {
-          totalPages: 1,
-          totalElements: 1,
-        },
-        content: [TestData.contactSearchResultItem()],
-      },
-      lastName: 'Mason',
-      firstName: 'Jones',
-      middleNames: 'middle',
-      dateOfBirth: '1990-01-01',
-    })
     const searchContactPage = Page.verifyOnPage(SearchContactPage)
     searchContactPage.enterFirstName('Jones')
     searchContactPage.enterLastName('Mason')
     searchContactPage.enterMiddleNames('middle')
+    searchContactPage.clickSearchButton()
+
     searchContactPage.enterDay('01')
     searchContactPage.enterMonth('01')
     searchContactPage.enterYear('1990')
-    searchContactPage.clickSearchButton()
+    searchContactPage.clickFilterButton()
     searchContactPage.checkOnPage()
   })
 })

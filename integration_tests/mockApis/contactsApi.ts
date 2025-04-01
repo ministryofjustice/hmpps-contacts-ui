@@ -322,52 +322,13 @@ export default {
       },
       content: [],
     },
-    lastName,
-    middleNames,
-    firstName,
-    dateOfBirth,
-    page = '0',
-    size = '10',
   }: {
     results: { page: { totalPages: number; totalElements: number }; content: StubContactSearchResultItem[] }
-    lastName: string
-    middleNames: string
-    firstName: string
-    dateOfBirth: string
-    page: string
-    size: string
   }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',
-        urlPath: `/contact/search`,
-        queryParameters: {
-          lastName: {
-            equalTo: lastName,
-          },
-          firstName: {
-            equalTo: firstName,
-          },
-          middleNames: {
-            or: [
-              {
-                equalTo: middleNames,
-              },
-              {
-                absent: true,
-              },
-            ],
-          },
-          dateOfBirth: {
-            equalTo: dateOfBirth,
-          },
-          page: {
-            equalTo: page,
-          },
-          size: {
-            equalTo: size,
-          },
-        },
+        urlPattern: '/contact/search.+',
       },
       response: {
         status: 200,

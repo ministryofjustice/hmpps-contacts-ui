@@ -39,6 +39,10 @@ export default class SearchContactPage extends Page {
     this.searchButton().click()
   }
 
+  clickFilterButton() {
+    cy.findByRole('button', { name: 'Apply filters' }).click()
+  }
+
   verifyShowsNameAs(expected: string): SearchContactPage {
     this.checkContactSearchTableNameValue().should('contain.text', expected)
     return this
@@ -52,11 +56,6 @@ export default class SearchContactPage extends Page {
   verifyShowsAddressAs(expected: string): SearchContactPage {
     const regex = new RegExp(expected.split('<br>').join('<br>\\n?\\s+?'))
     this.checkContactSearchTableAddressValue().then(element => expect(element.html()).match(regex))
-    return this
-  }
-
-  verifyShowsTheContactIsNotListedAs(expected: string): SearchContactPage {
-    this.theContactIsNotListedLink().should('contain.text', expected)
     return this
   }
 
