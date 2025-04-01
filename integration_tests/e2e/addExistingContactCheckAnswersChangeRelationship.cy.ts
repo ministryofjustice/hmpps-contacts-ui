@@ -75,7 +75,7 @@ context('Add Existing Contact Check Answers', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'John Smith') //
+    Page.verifyOnPage(ContactConfirmationPage, 'Existing Contact', 'John Smith') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 

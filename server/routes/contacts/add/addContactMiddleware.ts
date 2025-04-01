@@ -1,8 +1,8 @@
-import { Request } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import logger from '../../../../logger'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 
-const ensureInAddContactJourney = asyncMiddleware(
+export const ensureInAddContactJourney = asyncMiddleware(
   async (req: Request<{ journeyId: string; prisonerNumber: string }>, res, next) => {
     const { journeyId, prisonerNumber } = req.params
     if (!req.session.addContactJourneys) {
@@ -20,4 +20,22 @@ const ensureInAddContactJourney = asyncMiddleware(
   },
 )
 
-export default ensureInAddContactJourney
+// remove entered details from the journey to prevent mixing up details from new and existing contacts but keep
+// the search params so we get back to the same search if going back to the start of the journey.
+export const resetAddContactJourney = async (
+  req: Request<{ journeyId: string }>,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { journeyId } = req.params
+  const existingJourney = req.session.addContactJourneys![journeyId]!
+  req.session.addContactJourneys![journeyId] = {
+    id: existingJourney.id,
+    lastTouched: existingJourney.lastTouched,
+    isCheckingAnswers: false,
+    prisonerNumber: existingJourney.prisonerNumber,
+    returnPoint: existingJourney.returnPoint,
+    searchContact: existingJourney.searchContact,
+  }
+  return next()
+}

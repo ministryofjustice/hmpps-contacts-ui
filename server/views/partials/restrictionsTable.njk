@@ -11,6 +11,7 @@
   {% set prisonerContactId = opts.prisonerContactId %}
   {% set prisonerNumber = prisonerDetails.prisonerNumber %}
   {% set showActions = opts.showActions %}
+  {% set hideTableTitle = opts.hideTableTitle %}
   {% set rows = [] %}
   {% for restriction in restrictions | sortRestrictions %}
     {% if restrictionClass === 'PRISONER_CONTACT' %}
@@ -44,7 +45,9 @@
     {% set emptyCaption = 'No restrictions apply to contact ' + (contact | formatNameFirstNameFirst(excludeMiddleNames = true)) + ' across the whole prison estate.' %}
   {% endif %}
 
+  {% if not hideTableTitle %}
   <h2 class="govuk-heading-m govuk-!-margin-bottom-6" data-qa="{{ restrictionClass }}-title">{{ title }}</h2>
+  {% endif %}
   {% if restrictions.length %}
   {{ govukTable({
     firstCellIsHeader: false,

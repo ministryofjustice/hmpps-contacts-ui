@@ -134,7 +134,7 @@ context('Create Contact With Addresses', () => {
       .clickLinkTo('Employers', UpdateEmploymentsPage, true)
       .clickButtonTo('Continue', AddContactAdditionalInfoPage, 'First Last')
       .clickLinkTo('Employers', UpdateEmploymentsPage, true)
-      .clickLink('Back to additional information options')
+      .clickLink('Back')
 
     // Can enter some employment records
     Page.verifyOnPage(AddContactAdditionalInfoPage, 'First Last') //

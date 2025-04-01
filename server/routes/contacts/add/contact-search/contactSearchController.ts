@@ -23,7 +23,7 @@ export default class ContactSearchController implements PageHandler {
     const page = Number(req.query['page'] as unknown) || 0
     const pageSize = config.apis.contactsApi.pageSize || 10
     let results = null
-
+    delete journey.isContactMatched
     if (journey.searchContact) {
       const contactSearchRequest: ContactSearchRequest = {
         lastName: journey.searchContact.contact?.lastName,

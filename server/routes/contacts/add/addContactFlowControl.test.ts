@@ -10,32 +10,42 @@ describe('addContactFlowControl', () => {
       const journeyId = uuidv4()
 
       it.each([
-        [Page.CREATE_CONTACT_NAME_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`, undefined, 'Back'],
-        [Page.CREATE_CONTACT_DOB_PAGE, `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`, undefined, 'Back'],
-        [Page.SELECT_RELATIONSHIP_TYPE, `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`, undefined, 'Back'],
+        [Page.CREATE_CONTACT_NAME_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`, undefined, undefined],
+        [
+          Page.CREATE_CONTACT_DOB_PAGE,
+          `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`,
+          undefined,
+          undefined,
+        ],
+        [
+          Page.SELECT_RELATIONSHIP_TYPE,
+          `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`,
+          undefined,
+          undefined,
+        ],
         [
           Page.SELECT_CONTACT_RELATIONSHIP,
           `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`,
           undefined,
-          'Back',
+          undefined,
         ],
         [
           Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN,
           `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`,
           undefined,
-          'Back',
+          undefined,
         ],
         [
           Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE,
           `/prisoner/A1234BC/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
           undefined,
-          'Back',
+          undefined,
         ],
         [
           Page.ENTER_RELATIONSHIP_COMMENTS,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
           undefined,
-          'Back',
+          undefined,
         ],
         [
           Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE,
@@ -47,43 +57,43 @@ describe('addContactFlowControl', () => {
           Page.ADD_CONTACT_CANCEL_PAGE,
           `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
           undefined,
-          'Back',
+          undefined,
         ],
         [
           Page.ADD_CONTACT_ADD_PHONE_PAGE,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
           undefined,
-          'Back',
+          undefined,
         ],
         [
           Page.ADD_CONTACT_DELETE_PHONE_PAGE,
           `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
           `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
-          'Back',
+          undefined,
         ],
         [
           Page.ADD_CONTACT_ENTER_GENDER_PAGE,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
           undefined,
-          'Back',
+          undefined,
         ],
         [
           Page.ADD_CONTACT_IS_STAFF_PAGE,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
           undefined,
-          'Back',
+          undefined,
         ],
         [
           Page.ADD_CONTACT_LANGUAGE_INTERPRETER_PAGE,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
           undefined,
-          'Back',
+          undefined,
         ],
         [
           Page.ADD_CONTACT_DOMESTIC_STATUS_PAGE,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
           undefined,
-          'Back',
+          undefined,
         ],
       ])(
         'Should go back to previous page: from %s to %s',
@@ -145,7 +155,7 @@ describe('addContactFlowControl', () => {
         }
         const expected: Navigation = {
           backLink: `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
-          backLinkLabel: 'Back',
+          backLinkLabel: undefined,
           breadcrumbs: undefined,
           cancelButton,
         }
@@ -297,8 +307,8 @@ describe('addContactFlowControl', () => {
     describe('getNavigationForAddContactJourney', () => {
       const journeyId = uuidv4()
       it.each([
-        [Page.CONTACT_CONFIRMATION_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`, undefined],
-        [Page.SELECT_RELATIONSHIP_TYPE, `/prisoner/A1234BC/contacts/add/confirmation/${journeyId}`, undefined],
+        [Page.CONTACT_MATCH_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`, undefined],
+        [Page.SELECT_RELATIONSHIP_TYPE, `/prisoner/A1234BC/contacts/add/match/12346789/${journeyId}`, undefined],
         [
           Page.SELECT_CONTACT_RELATIONSHIP,
           `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`,
@@ -336,11 +346,12 @@ describe('addContactFlowControl', () => {
               url: '/foo',
             },
             mode: 'EXISTING',
+            matchingContactId: 12346789,
             isCheckingAnswers: false,
           }
           const expected: Navigation = {
             backLink: expectedBackUrl,
-            backLinkLabel: 'Back',
+            backLinkLabel: undefined,
             breadcrumbs: undefined,
             cancelButton: expectedCancelButton,
           }
@@ -370,7 +381,7 @@ describe('addContactFlowControl', () => {
         }
         const expected: Navigation = {
           backLink: `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
-          backLinkLabel: 'Back',
+          backLinkLabel: undefined,
           breadcrumbs: undefined,
           cancelButton: undefined,
         }
@@ -385,8 +396,8 @@ describe('addContactFlowControl', () => {
       const journeyId = uuidv4()
       it.each([
         [Page.CREATE_CONTACT_START_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`],
-        [Page.ADD_CONTACT_MODE_PAGE, `/prisoner/A1234BC/contacts/add/confirmation/${journeyId}`],
-        [Page.CONTACT_CONFIRMATION_PAGE, `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`],
+        [Page.CONTACT_MATCH_PAGE, `/prisoner/A1234BC/contacts/add/mode/EXISTING/${journeyId}`],
+        [Page.ADD_CONTACT_MODE_PAGE, `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`],
         [
           Page.SELECT_RELATIONSHIP_TYPE,
           `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`,

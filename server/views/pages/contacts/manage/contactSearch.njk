@@ -118,7 +118,7 @@
             {% set rows = [] %}
             {% for result in results.content %}
                 {% set contactNameHtml %}
-                    <a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/add/mode/EXISTING/{{ journey.id }}?contactId={{ result.id }}" class="govuk-link govuk-link--no-visited-state bapv-result-row" data-qa="add-contact-{{ result.id }}-link">
+                    <a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/add/match/{{ result.id }}/{{ journey.id }}" class="govuk-link govuk-link--no-visited-state bapv-result-row" data-qa="add-contact-{{ result.id }}-link">
                         {{ (result.lastName + ", " + result.firstName) | capitaliseName }}
                     </a>
                 {% endset %}

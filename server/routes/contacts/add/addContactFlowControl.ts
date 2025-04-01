@@ -2,10 +2,11 @@ import AddContactJourney = journeys.AddContactJourney
 import { Page } from '../../../services/auditService'
 import { BreadcrumbType, Navigation } from '../common/navigation'
 
-type PreModePages = Page.CREATE_CONTACT_START_PAGE | Page.CONTACT_SEARCH_PAGE
+type PreModePages = Page.CREATE_CONTACT_START_PAGE | Page.CONTACT_SEARCH_PAGE | Page.CONTACT_MATCH_PAGE
 type CreateContactPages =
   | Page.CREATE_CONTACT_START_PAGE
   | Page.CONTACT_SEARCH_PAGE
+  | Page.CONTACT_MATCH_PAGE
   | Page.ADD_CONTACT_MODE_PAGE
   | Page.CREATE_CONTACT_NAME_PAGE
   | Page.SELECT_RELATIONSHIP_TYPE
@@ -33,8 +34,8 @@ type CreateContactPages =
 type ExistingContactPages =
   | Page.CREATE_CONTACT_START_PAGE
   | Page.CONTACT_SEARCH_PAGE
+  | Page.CONTACT_MATCH_PAGE
   | Page.ADD_CONTACT_MODE_PAGE
-  | Page.CONTACT_CONFIRMATION_PAGE
   | Page.SELECT_RELATIONSHIP_TYPE
   | Page.SELECT_CONTACT_RELATIONSHIP
   | Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN
@@ -62,7 +63,7 @@ const PAGES: Record<AllAddContactPages, PageConfig> = {
     breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'],
   },
   [Page.ADD_CONTACT_MODE_PAGE]: {
-    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/mode/${journey.mode}/${journey.id}`,
+    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/add/mode/${journey.mode}/${journey.id}`,
   },
   [Page.CREATE_CONTACT_NAME_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/enter-name/${journey.id}`,
@@ -88,13 +89,12 @@ const PAGES: Record<AllAddContactPages, PageConfig> = {
   },
   [Page.ENTER_ADDITIONAL_INFORMATION_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/add/enter-additional-info/${journey.id}`,
-    pageName: 'additional information options',
   },
   [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/check-answers/${journey.id}`,
   },
-  [Page.CONTACT_CONFIRMATION_PAGE]: {
-    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/add/confirmation/${journey.id}`,
+  [Page.CONTACT_MATCH_PAGE]: {
+    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/add/match/${journey.matchingContactId}/${journey.id}`,
   },
   [Page.SUCCESSFULLY_ADDED_CONTACT_PAGE]: {
     url: journey =>
@@ -148,58 +148,64 @@ const PAGES: Record<AllAddContactPages, PageConfig> = {
 const PRE_MODE_SPEC: Record<PreModePages, Spec> = {
   [Page.CREATE_CONTACT_START_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CONTACT_SEARCH_PAGE.url },
   [Page.CONTACT_SEARCH_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CONTACT_SEARCH_PAGE.url },
+  [Page.CONTACT_MATCH_PAGE]: {
+    previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
+    nextUrl: journey => PAGES.ADD_CONTACT_MODE_PAGE.url(journey),
+  },
 }
 
 const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   [Page.CREATE_CONTACT_START_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CONTACT_SEARCH_PAGE.url },
   [Page.CONTACT_SEARCH_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CONTACT_SEARCH_PAGE.url },
+  [Page.CONTACT_MATCH_PAGE]: {
+    previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
+    nextUrl: journey => PAGES.ADD_CONTACT_MODE_PAGE.url(journey),
+  },
   [Page.ADD_CONTACT_MODE_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CREATE_CONTACT_NAME_PAGE.url },
   [Page.CREATE_CONTACT_NAME_PAGE]: {
-    ...backTo({ page: PAGES.CONTACT_SEARCH_PAGE }),
+    previousUrl: checkAnswersOr(PAGES.CONTACT_SEARCH_PAGE.url),
     nextUrl: checkAnswersOr(PAGES.CREATE_CONTACT_DOB_PAGE.url),
   },
   [Page.CREATE_CONTACT_DOB_PAGE]: {
-    ...backTo({ page: PAGES.CREATE_CONTACT_NAME_PAGE }),
+    previousUrl: checkAnswersOr(PAGES.CREATE_CONTACT_NAME_PAGE.url),
     nextUrl: checkAnswersOr(PAGES.SELECT_RELATIONSHIP_TYPE.url),
   },
   [Page.SELECT_RELATIONSHIP_TYPE]: {
-    ...backTo({ page: PAGES.CREATE_CONTACT_DOB_PAGE }),
+    previousUrl: checkAnswersOr(PAGES.CREATE_CONTACT_DOB_PAGE.url),
     nextUrl: forwardToRelationshipToPrisonerOrCheckAnswers(),
   },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
-    ...backToRelationshipTypeOrCheckAnswers(),
+    previousUrl: journey => backToRelationshipTypeOrCheckAnswers(journey),
     nextUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN.url),
   },
   [Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN]: {
-    ...backTo({ page: PAGES.SELECT_CONTACT_RELATIONSHIP }),
+    previousUrl: checkAnswersOr(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
     nextUrl: checkAnswersOr(PAGES.ADD_CONTACT_APPROVED_TO_VISIT_PAGE.url),
   },
   [Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE]: {
-    ...backTo({ page: PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN }),
+    previousUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN.url),
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.ENTER_ADDITIONAL_INFORMATION_PAGE]: {
-    ...backTo({ page: PAGES.ADD_CONTACT_APPROVED_TO_VISIT_PAGE }),
+    previousUrl: checkAnswersOr(PAGES.ADD_CONTACT_APPROVED_TO_VISIT_PAGE.url),
     nextUrl: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url,
   },
   [Page.ENTER_RELATIONSHIP_COMMENTS]: {
-    ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE }),
-    previousUrlLabel: _ => 'Back',
+    previousUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.ADD_CONTACT_ADD_PHONE_PAGE]: {
-    ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE }),
-    previousUrlLabel: _ => 'Back',
+    previousUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.ADD_CONTACT_DELETE_PHONE_PAGE]: {
-    ...backTo({ page: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE }),
-    previousUrlLabel: _ => 'Back',
+    previousUrl: checkAnswersOr(PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url),
     nextUrl: checkAnswersOr(PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url),
     cancelUrl: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url,
   },
   [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE]: {
-    ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE, canSkipToCheckAnswer: false }),
+    previousUrl: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url,
+    previousUrlLabel: _ => 'Back to additional information options',
     nextUrl: PAGES.SUCCESSFULLY_ADDED_CONTACT_PAGE.url,
     cancelUrl: PAGES.ADD_CONTACT_CANCEL_PAGE.url,
   },
@@ -208,57 +214,50 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
     nextUrl: _ => undefined,
   },
   [Page.ADD_CONTACT_CANCEL_PAGE]: {
-    ...backTo({ page: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE, canSkipToCheckAnswer: false }),
+    previousUrl: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url,
     nextUrl: _ => undefined,
   },
   [Page.ADD_EMPLOYMENTS]: {
-    ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE, canSkipToCheckAnswer: true }),
+    previousUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.ADD_ADDRESSES]: {
-    ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE, canSkipToCheckAnswer: true }),
+    previousUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
+    previousUrlLabel: _ => 'Back to additional information options',
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.ADD_CONTACT_ENTER_GENDER_PAGE]: {
-    ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE }),
-    previousUrlLabel: _ => 'Back',
+    previousUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.ADD_CONTACT_IS_STAFF_PAGE]: {
-    ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE }),
-    previousUrlLabel: _ => 'Back',
+    previousUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.ADD_CONTACT_LANGUAGE_INTERPRETER_PAGE]: {
-    ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE }),
-    previousUrlLabel: _ => 'Back',
+    previousUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.ADD_CONTACT_ADD_IDENTITY_PAGE]: {
-    ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE }),
-    previousUrlLabel: _ => 'Back',
+    previousUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.ADD_CONTACT_DELETE_IDENTITY_PAGE]: {
-    ...backTo({ page: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE }),
-    previousUrlLabel: _ => 'Back',
+    previousUrl: checkAnswersOr(PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url),
     nextUrl: checkAnswersOr(PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url),
     cancelUrl: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url,
   },
   [Page.ADD_CONTACT_ADD_EMAIL_PAGE]: {
-    ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE }),
-    previousUrlLabel: _ => 'Back',
+    previousUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.ADD_CONTACT_DELETE_EMAIL_PAGE]: {
-    ...backTo({ page: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE }),
-    previousUrlLabel: _ => 'Back',
+    previousUrl: checkAnswersOr(PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url),
     nextUrl: checkAnswersOr(PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url),
     cancelUrl: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url,
   },
   [Page.ADD_CONTACT_DOMESTIC_STATUS_PAGE]: {
-    ...backTo({ page: PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE }),
-    previousUrlLabel: _ => 'Back',
+    previousUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
 }
@@ -266,36 +265,36 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
 const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
   [Page.CREATE_CONTACT_START_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CONTACT_SEARCH_PAGE.url },
   [Page.CONTACT_SEARCH_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CONTACT_SEARCH_PAGE.url },
+  [Page.CONTACT_MATCH_PAGE]: {
+    previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
+    nextUrl: PAGES.ADD_CONTACT_MODE_PAGE.url,
+  },
   [Page.ADD_CONTACT_MODE_PAGE]: {
     previousUrl: _ => undefined,
-    nextUrl: checkAnswersOr(PAGES.CONTACT_CONFIRMATION_PAGE.url),
-  },
-  [Page.CONTACT_CONFIRMATION_PAGE]: {
-    ...backTo({ page: PAGES.CONTACT_SEARCH_PAGE, canSkipToCheckAnswer: false }),
-    nextUrl: checkAnswersOr(PAGES.SELECT_RELATIONSHIP_TYPE.url),
+    nextUrl: PAGES.SELECT_RELATIONSHIP_TYPE.url,
   },
   [Page.SELECT_RELATIONSHIP_TYPE]: {
-    ...backTo({ page: PAGES.CONTACT_CONFIRMATION_PAGE }),
+    previousUrl: checkAnswersOr(PAGES.CONTACT_MATCH_PAGE.url),
     nextUrl: forwardToRelationshipToPrisonerOrCheckAnswers(),
   },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
-    ...backToRelationshipTypeOrCheckAnswers(),
+    previousUrl: journey => backToRelationshipTypeOrCheckAnswers(journey),
     nextUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN.url),
   },
   [Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN]: {
-    ...backTo({ page: PAGES.SELECT_CONTACT_RELATIONSHIP }),
+    previousUrl: checkAnswersOr(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
     nextUrl: checkAnswersOr(PAGES.ADD_CONTACT_APPROVED_TO_VISIT_PAGE.url),
   },
   [Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE]: {
-    ...backTo({ page: PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN }),
+    previousUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN.url),
     nextUrl: checkAnswersOr(PAGES.ENTER_RELATIONSHIP_COMMENTS.url),
   },
   [Page.ENTER_RELATIONSHIP_COMMENTS]: {
-    ...backTo({ page: PAGES.ADD_CONTACT_APPROVED_TO_VISIT_PAGE }),
+    previousUrl: checkAnswersOr(PAGES.ADD_CONTACT_APPROVED_TO_VISIT_PAGE.url),
     nextUrl: checkAnswersOr(PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url),
   },
   [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE]: {
-    ...backTo({ page: PAGES.ENTER_RELATIONSHIP_COMMENTS, canSkipToCheckAnswer: false }),
+    previousUrl: PAGES.ENTER_RELATIONSHIP_COMMENTS.url,
     nextUrl: PAGES.SUCCESSFULLY_ADDED_CONTACT_PAGE.url,
     cancelUrl: PAGES.ADD_CONTACT_CANCEL_PAGE.url,
   },
@@ -304,24 +303,9 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
     nextUrl: _ => undefined,
   },
   [Page.ADD_CONTACT_CANCEL_PAGE]: {
-    ...backTo({ page: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE, canSkipToCheckAnswer: false }),
+    previousUrl: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url,
     nextUrl: _ => undefined,
   },
-}
-
-function backTo({ page, canSkipToCheckAnswer = true }: { page: PageConfig; canSkipToCheckAnswer?: boolean }) {
-  const previousUrlLabel: JourneyUrlProvider = journey => {
-    const pageName =
-      canSkipToCheckAnswer && journey.isCheckingAnswers
-        ? PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.pageName
-        : page.pageName
-    return pageName ? `Back to ${pageName}` : 'Back'
-  }
-
-  return {
-    previousUrl: canSkipToCheckAnswer ? checkAnswersOr(page.url) : page.url,
-    previousUrlLabel,
-  }
 }
 
 function checkAnswersOr(other: JourneyUrlProvider): JourneyUrlProvider {
@@ -338,23 +322,12 @@ function forwardToRelationshipToPrisonerOrCheckAnswers(): JourneyUrlProvider {
   }
 }
 
-function backToRelationshipTypeOrCheckAnswers() {
-  const getPreviousPage = (journey: journeys.AddContactJourney) => {
-    const relationshipType = journey.relationship?.pendingNewRelationshipType ?? journey.relationship?.relationshipType
-    const relationshipTypeIsTheSame = relationshipType === journey.previousAnswers?.relationship?.relationshipType
-    return (journey.isCheckingAnswers && !relationshipTypeIsTheSame) || !journey.isCheckingAnswers
-      ? PAGES.SELECT_RELATIONSHIP_TYPE
-      : PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE
-  }
-  const previousUrl: JourneyUrlProvider = journey => getPreviousPage(journey).url(journey)
-  const previousUrlLabel: JourneyUrlProvider = journey => {
-    const { pageName } = getPreviousPage(journey)
-    return pageName ? `Back to ${pageName}` : 'Back'
-  }
-  return {
-    previousUrl,
-    previousUrlLabel,
-  }
+function backToRelationshipTypeOrCheckAnswers(journey: AddContactJourney) {
+  const relationshipType = journey.relationship?.pendingNewRelationshipType ?? journey.relationship?.relationshipType
+  const relationshipTypeIsTheSame = relationshipType === journey.previousAnswers?.relationship?.relationshipType
+  return (journey.isCheckingAnswers && !relationshipTypeIsTheSame) || !journey.isCheckingAnswers
+    ? PAGES.SELECT_RELATIONSHIP_TYPE.url(journey)
+    : PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey)
 }
 
 function navigationForAddContactJourney(currentPage: Page, journey: journeys.AddContactJourney): Navigation {
