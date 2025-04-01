@@ -78,10 +78,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     expect($('.govuk-form-group .govuk-label').eq(2).text()).toContain('Last name')
     expect($('.govuk-fieldset__legend:contains("Date of birth")').text()).toBeFalsy()
     expect($('[data-qa=search-button]').text()).toContain('Search')
-    expect($('[data-qa=breadcrumbs]')).toHaveLength(1)
-    expect($('[data-qa=breadcrumbs] a').eq(0).attr('href')).toStrictEqual('http://localhost:3001')
-    expect($('[data-qa=breadcrumbs] a').eq(1).attr('href')).toStrictEqual('http://localhost:3001/prisoner/A1234BC')
-    expect($('[data-qa=breadcrumbs] a').eq(2).attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/list')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(`/prisoner/${prisonerNumber}/contacts/list`)
+    expect($('[data-qa=back-link]').first().text()).toStrictEqual('Back to prisoner’s contact list')
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CONTACT_SEARCH_PAGE, {
       who: user.username,

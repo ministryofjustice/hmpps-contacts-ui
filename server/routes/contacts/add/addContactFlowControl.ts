@@ -60,7 +60,6 @@ const PAGES: Record<AllAddContactPages, PageConfig> = {
   },
   [Page.CONTACT_SEARCH_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/search/${journey.id}`,
-    breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'],
   },
   [Page.ADD_CONTACT_MODE_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/add/mode/${journey.mode}/${journey.id}`,
@@ -147,7 +146,11 @@ const PAGES: Record<AllAddContactPages, PageConfig> = {
 
 const PRE_MODE_SPEC: Record<PreModePages, Spec> = {
   [Page.CREATE_CONTACT_START_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CONTACT_SEARCH_PAGE.url },
-  [Page.CONTACT_SEARCH_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CONTACT_SEARCH_PAGE.url },
+  [Page.CONTACT_SEARCH_PAGE]: {
+    previousUrl: journey => `/prisoner/${journey.prisonerNumber}/contacts/list`,
+    previousUrlLabel: _ => 'Back to prisoner’s contact list',
+    nextUrl: PAGES.CONTACT_SEARCH_PAGE.url,
+  },
   [Page.CONTACT_MATCH_PAGE]: {
     previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
     previousUrlLabel: _ => 'Back to contact search',

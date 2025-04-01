@@ -555,7 +555,7 @@ describe('addContactFlowControl', () => {
     const journeyId = uuidv4()
     it.each([
       [Page.CREATE_CONTACT_START_PAGE, undefined, undefined, undefined],
-      [Page.CONTACT_SEARCH_PAGE, ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'], undefined, undefined],
+      [Page.CONTACT_SEARCH_PAGE, undefined, '/prisoner/A1234BC/contacts/list', 'Back to prisoner’s contact list'],
       [Page.CONTACT_MATCH_PAGE, undefined, `/prisoner/A1234BC/contacts/search/${journeyId}`, 'Back to contact search'],
     ])('Should have no back for initial pages', (page: Page, breadcrumbs, backLink, backLinkLabel) => {
       const journey: AddContactJourney = {

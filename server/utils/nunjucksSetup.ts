@@ -13,7 +13,8 @@ import {
   sentenceCase,
   isDateAndInThePast,
   referenceCodesToSelect,
-  referenceCodesToRadiosOrCheckboxes, formatDob,
+  referenceCodesToRadiosOrCheckboxes,
+  formatDob,
 } from './utils'
 import config from '../config'
 import logger from '../../logger'
