@@ -150,6 +150,7 @@ const PRE_MODE_SPEC: Record<PreModePages, Spec> = {
   [Page.CONTACT_SEARCH_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CONTACT_SEARCH_PAGE.url },
   [Page.CONTACT_MATCH_PAGE]: {
     previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
+    previousUrlLabel: _ => 'Back to contact search',
     nextUrl: journey => PAGES.ADD_CONTACT_MODE_PAGE.url(journey),
   },
 }
@@ -159,6 +160,7 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   [Page.CONTACT_SEARCH_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CONTACT_SEARCH_PAGE.url },
   [Page.CONTACT_MATCH_PAGE]: {
     previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
+    previousUrlLabel: _ => 'Back to contact search',
     nextUrl: journey => PAGES.ADD_CONTACT_MODE_PAGE.url(journey),
   },
   [Page.ADD_CONTACT_MODE_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CREATE_CONTACT_NAME_PAGE.url },
@@ -188,6 +190,7 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   },
   [Page.ENTER_ADDITIONAL_INFORMATION_PAGE]: {
     previousUrl: checkAnswersOr(PAGES.ADD_CONTACT_APPROVED_TO_VISIT_PAGE.url),
+    previousUrlLabel: _ => 'Back to visits approval',
     nextUrl: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url,
   },
   [Page.ENTER_RELATIONSHIP_COMMENTS]: {
@@ -219,11 +222,12 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   },
   [Page.ADD_EMPLOYMENTS]: {
     previousUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
+    previousUrlLabel: backIfCheckAnswersOr(_ => 'Back to additional information options'),
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.ADD_ADDRESSES]: {
     previousUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
-    previousUrlLabel: _ => 'Back to additional information options',
+    previousUrlLabel: backIfCheckAnswersOr(_ => 'Back to additional information options'),
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.ADD_CONTACT_ENTER_GENDER_PAGE]: {
@@ -267,6 +271,7 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
   [Page.CONTACT_SEARCH_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CONTACT_SEARCH_PAGE.url },
   [Page.CONTACT_MATCH_PAGE]: {
     previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
+    previousUrlLabel: _ => 'Back to contact search',
     nextUrl: PAGES.ADD_CONTACT_MODE_PAGE.url,
   },
   [Page.ADD_CONTACT_MODE_PAGE]: {
@@ -310,6 +315,10 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
 
 function checkAnswersOr(other: JourneyUrlProvider): JourneyUrlProvider {
   return journey => (journey.isCheckingAnswers ? PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey) : other(journey))
+}
+
+function backIfCheckAnswersOr(other: JourneyUrlProvider): JourneyUrlProvider {
+  return journey => (journey.isCheckingAnswers ? `Back` : other(journey))
 }
 
 function forwardToRelationshipToPrisonerOrCheckAnswers(): JourneyUrlProvider {
