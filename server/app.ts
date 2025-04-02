@@ -49,7 +49,7 @@ export default function createApp(services: Services): express.Application {
   app.use(authorisationMiddleware([AuthorisedRoles.ROLE_PRISON]))
   app.use(setUpCsrf())
   app.get(
-    '*',
+    '*any',
     dpsComponents.getPageComponents({
       includeSharedData: true,
       dpsUrl: config.serviceUrls.digitalPrison,
