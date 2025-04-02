@@ -55,11 +55,10 @@ export const extractPrisonerNumber = (search?: string): string | false => {
 }
 
 export const ageInYears = (date: string | Date, now: Date = new Date()) => {
-  const dateOfBirth = new Date(date)
-  let age = now.getFullYear() - dateOfBirth.getFullYear()
-  const monthDiff = now.getMonth() - dateOfBirth.getMonth()
-  if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < dateOfBirth.getDate())) {
-    age -= 1
+  const dateOfBirth = typeof date === 'string' ? new Date(date) : date
+  const age = differenceInYears(now, dateOfBirth)
+  if (age < 1) {
+    return 'Less than a year'
   }
   if (age === 1) {
     return '1 year'
@@ -177,20 +176,11 @@ export const referenceCodesToRadiosOrCheckboxes = (
     value: referenceCode.code,
   }))
 
-export const formatDob = (contact: ContactSearchResultItem & { deceasedDate?: string }) => {
+export const formatDob = (contact: ContactSearchResultItem) => {
   if (!contact.dateOfBirth) return 'Not provided'
   const richDate = parseISO(contact.dateOfBirth)
   if (!isValid(richDate)) return 'Not provided'
-  const age = differenceInYears(new Date(), richDate)
-  let ageString: string
-  if (contact.deceasedDate) {
-    ageString = '(Deceased)'
-  } else if (age < 1) {
-    ageString = '(Less than a year old)'
-  } else if (age < 2) {
-    ageString = '(1 year old)'
-  } else {
-    ageString = `(${Math.floor(age)} years old)`
-  }
+
+  const ageString = contact.deceasedDate ? '(Deceased)' : `(${ageInYears(richDate)} old)`
   return `${format(richDate, 'd/M/yyyy')}<br/><span class="govuk-hint">${ageString}</span>`
 }

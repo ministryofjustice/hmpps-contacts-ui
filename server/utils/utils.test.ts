@@ -1,3 +1,4 @@
+import { format } from 'date-fns'
 import {
   formatDate,
   initialiseName,
@@ -9,7 +10,9 @@ import {
   capitaliseName,
   ageInYears,
   isDateAndInThePast,
+  formatDob,
 } from './utils'
+import PagedModelContactSearchResultItem = contactsApiClientTypes.PagedModelContactSearchResultItem
 
 describe('convert to title case', () => {
   it.each([
@@ -129,8 +132,8 @@ describe('ageInYears', () => {
     ['1973-01-10', '2025-01-06', '51 years'],
     ['1982-06-15', '2024-12-25', '42 years'],
     ['2024-01-01', '2025-01-01', '1 year'],
-    ['2024-01-02', '2025-01-01', '0 years'],
-    ['2024-02-29', '2025-02-28', '0 years'],
+    ['2024-01-02', '2025-01-01', 'Less than a year'],
+    ['2024-02-29', '2025-02-28', 'Less than a year'],
     ['2024-02-29', '2025-03-01', '1 year'],
   ])(
     'should calculate years correctly with date input',
@@ -190,4 +193,38 @@ describe('isDateAndInThePast', () => {
   it('should be true if date is in the past', () => {
     expect(isDateAndInThePast('2025-01-01')).toStrictEqual(true)
   })
+})
+
+describe('formatDob', () => {
+  const halfYearAgo = new Date()
+  halfYearAgo.setMonth(halfYearAgo.getMonth() - 5)
+  const oneYearAgo = new Date()
+  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
+  oneYearAgo.setDate(oneYearAgo.getDate() - 1) // deduct a day so the test does not fail on 29-Feb
+  const fiftyYearsAgo = new Date()
+  fiftyYearsAgo.setFullYear(fiftyYearsAgo.getFullYear() - 50)
+  fiftyYearsAgo.setDate(fiftyYearsAgo.getDate() - 1) // deduct a day so the test does not fail on 29-Feb
+
+  it.each([
+    [halfYearAgo, false, 'Less than a year old'],
+    [halfYearAgo, true, 'Deceased'],
+    [oneYearAgo, false, '1 year old'],
+    [oneYearAgo, true, 'Deceased'],
+    [fiftyYearsAgo, false, '50 years old'],
+    [fiftyYearsAgo, true, 'Deceased'],
+  ])(
+    'should render Date of Birth label correctly with dateOfBirth and deceasedDate',
+    (dateOfBirth: Date, deceased: boolean, expectedAgeLabel: string) => {
+      // When
+      const results = formatDob({
+        dateOfBirth: dateOfBirth.toISOString().substring(0, 10),
+        deceasedDate: deceased ? '1999-01-01' : undefined,
+      } as PagedModelContactSearchResultItem)
+
+      // Then
+      expect(results).toEqual(
+        `${format(dateOfBirth, 'd/M/yyyy')}<br/><span class="govuk-hint">(${expectedAgeLabel})</span>`,
+      )
+    },
+  )
 })
