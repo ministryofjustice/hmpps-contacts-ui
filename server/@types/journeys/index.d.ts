@@ -13,6 +13,8 @@ declare namespace journeys {
       | {
           contact?: Partial<ContactNames>
           dateOfBirth?: Partial<DateOfBirth>
+          page?: number
+          sort?: string
         }
       | undefined
     isContactMatched?: 'YES' | 'NO_SEARCH_AGAIN' | 'NO_CREATE_NEW'

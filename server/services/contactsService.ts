@@ -1,8 +1,7 @@
-import ContactsApiClient from '../data/contactsApiClient'
+import ContactsApiClient, { Pagination } from '../data/contactsApiClient'
 import { components } from '../@types/contactsApi'
 import AddContactJourney = journeys.AddContactJourney
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
-import Pageable = contactsApiClientTypes.Pageable
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
 import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
@@ -161,7 +160,7 @@ export default class ContactsService {
 
   async searchContact(
     contactSearchRequest: ContactSearchRequest,
-    pagination: Pageable,
+    pagination: Pagination,
     user: Express.User,
   ): Promise<PagedModelContactSearchResultItem> {
     return this.contactsApiClient.searchContact(contactSearchRequest, user, pagination)

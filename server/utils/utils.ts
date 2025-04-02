@@ -1,6 +1,9 @@
-import { format, isValid, parseISO } from 'date-fns'
+import { differenceInYears, format, isValid, parseISO } from 'date-fns'
 import DateOfBirth = journeys.DateOfBirth
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
+import { components } from '../@types/contactsApi'
+
+type ContactSearchResultItem = components['schemas']['ContactSearchResultItem']
 
 const isBlank = (str?: string): boolean => !str || /^\s*$/.test(str)
 
@@ -52,11 +55,10 @@ export const extractPrisonerNumber = (search?: string): string | false => {
 }
 
 export const ageInYears = (date: string | Date, now: Date = new Date()) => {
-  const dateOfBirth = new Date(date)
-  let age = now.getFullYear() - dateOfBirth.getFullYear()
-  const monthDiff = now.getMonth() - dateOfBirth.getMonth()
-  if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < dateOfBirth.getDate())) {
-    age -= 1
+  const dateOfBirth = typeof date === 'string' ? new Date(date) : date
+  const age = differenceInYears(now, dateOfBirth)
+  if (age < 1) {
+    return 'Less than a year'
   }
   if (age === 1) {
     return '1 year'
@@ -173,3 +175,12 @@ export const referenceCodesToRadiosOrCheckboxes = (
     text: referenceCode.description,
     value: referenceCode.code,
   }))
+
+export const formatDob = (contact: ContactSearchResultItem) => {
+  if (!contact.dateOfBirth) return 'Not provided'
+  const richDate = parseISO(contact.dateOfBirth)
+  if (!isValid(richDate)) return 'Not provided'
+
+  const ageString = contact.deceasedDate ? '(Deceased)' : `(${ageInYears(richDate)} old)`
+  return `${format(richDate, 'd/M/yyyy')}<br/><span class="govuk-hint">${ageString}</span>`
+}

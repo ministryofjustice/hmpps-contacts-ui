@@ -481,6 +481,29 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/merge/keep/{keepingPrisonerNumber}/remove/{removedPrisonerNumber}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Handle the details of a prisoner when merging prisoner records
+     * @description
+     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     *           Used to merge a prisoner's records.
+     *
+     */
+    put: operations['merge']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/contact/{contactId}/restriction/{contactRestrictionId}': {
     parameters: {
       query?: never
@@ -6683,6 +6706,12 @@ export interface components {
        */
       dateOfBirth?: string
       /**
+       * Format: date
+       * @description The date the contact deceased, if known
+       * @example 1980-01-01
+       */
+      deceasedDate?: string
+      /**
        * @description
        *           Coded value indicating either a social or official contact (mandatory).
        *           This is a coded value from the group code CONTACT_TYPE in reference data.
@@ -7084,6 +7113,12 @@ export interface components {
        * @example 1980-01-01
        */
       dateOfBirth?: string
+      /**
+       * Format: date
+       * @description The date the contact deceased, if known
+       * @example 1980-01-01
+       */
+      deceasedDate?: string
       /**
        * @description The id of the user who created the contact
        * @example JD000001
@@ -8972,6 +9007,47 @@ export interface operations {
       }
       /** @description Could not find the the prisoner contact relationship or prisoner contact restriction */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  merge: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        keepingPrisonerNumber: string
+        removedPrisonerNumber: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successfully merged Prisoner's records */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': unknown
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
         headers: {
           [name: string]: unknown
         }
