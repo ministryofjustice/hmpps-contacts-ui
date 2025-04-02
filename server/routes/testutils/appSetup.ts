@@ -14,6 +14,7 @@ import setUpWebSession from '../../middleware/setUpWebSession'
 import populateValidationErrors from '../../middleware/populateValidationErrors'
 import setUpAuth from '../../middleware/setUpAuthentication'
 import { MockedService } from '../../testutils/mockedServices'
+import { auditPageViewMiddleware } from '../../middleware/auditPageViewMiddleware'
 
 jest.mock('../../services/auditService')
 
@@ -44,6 +45,9 @@ function appSetup(
 
   nunjucksSetup(app)
   app.use(setUpWebSession())
+  if (services.auditService) {
+    app.get('*any', auditPageViewMiddleware(services.auditService))
+  }
   app.use(setUpAuth())
   app.use((req, res, next) => {
     req.user = userSupplier() as Express.User
