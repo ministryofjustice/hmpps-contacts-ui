@@ -135,6 +135,8 @@ describe('ageInYears', () => {
     ['2024-01-02', '2025-01-01', 'Less than a year'],
     ['2024-02-29', '2025-02-28', 'Less than a year'],
     ['2024-02-29', '2025-03-01', '1 year'],
+    ['2003-03-01', '2024-02-29', '20 years'],
+    ['2003-02-28', '2024-02-29', '21 years'],
   ])(
     'should calculate years correctly with date input',
     (dateOfBirth: string, currentDate: string, expected: string) => {
@@ -156,6 +158,8 @@ describe('ageInYears', () => {
     ['2024-01-02', '2025-01-01', 'Less than a year'],
     ['2024-02-29', '2025-02-28', 'Less than a year'],
     ['2024-02-29', '2025-03-01', '1 year'],
+    ['2003-03-01', '2024-02-29', '20 years'],
+    ['2003-02-28', '2024-02-29', '21 years'],
   ])(
     'should calculate years correctly with string input',
     (dateOfBirth: string, currentDate: string, expected: string) => {
