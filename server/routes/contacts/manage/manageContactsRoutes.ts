@@ -174,7 +174,7 @@ const ManageContactsRoutes = (
     post(path, controller, ...postMiddleware)
   }
 
-  router.get('/prisoner/:prisonerNumber/*', populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService))
+  router.get('/prisoner/:prisonerNumber/*any', populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService))
 
   // Part 1: Start manage contacts
   get('/contacts/manage/start', new StartManageContactsJourneyController())

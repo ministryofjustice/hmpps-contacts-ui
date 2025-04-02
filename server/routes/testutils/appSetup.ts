@@ -84,7 +84,7 @@ function appSetup(
   app.use(errorHandler(production))
 
   app.get(
-    '*',
+    '*any',
     dpsComponents.getPageComponents({
       dpsUrl: config.serviceUrls.digitalPrison,
     }),
