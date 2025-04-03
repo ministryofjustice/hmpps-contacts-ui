@@ -211,7 +211,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       updatedBy: user.username,
     }
 
-    expect(contactsService.updateContactById).toHaveBeenCalledWith(contactId, expectedRequest, user)
+    expect(contactsService.updateContactById).toHaveBeenCalledWith(contactId, expectedRequest, user, expect.any(String))
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
       'You’ve updated the personal information for First Mid Last.',

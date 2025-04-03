@@ -51,7 +51,7 @@ export default class ManageContactDeleteEmailController implements PageHandler {
     const contactIdNumber = Number(contactId)
     const contactEmailIdNumber = Number(contactEmailId)
 
-    await this.contactsService.deleteContactEmail(contactIdNumber, contactEmailIdNumber, user)
+    await this.contactsService.deleteContactEmail(contactIdNumber, contactEmailIdNumber, user, req.id)
     await this.contactsService
       .getContactName(Number(contactId), user)
       .then(response =>

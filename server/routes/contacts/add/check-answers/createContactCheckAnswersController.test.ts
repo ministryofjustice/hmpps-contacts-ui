@@ -433,7 +433,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
       .expect('Location', '/prisoner/A1234BC/contact/NEW/123456/654321/success')
 
     // Then
-    expect(contactsService.createContact).toHaveBeenCalledWith(journey, user)
+    expect(contactsService.createContact).toHaveBeenCalledWith(journey, user, expect.any(String))
     expect(session.addContactJourneys![journeyId]).toBeUndefined()
   })
 
@@ -454,7 +454,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
       .expect('Location', '/prisoner/A1234BC/contact/EXISTING/123456/654321/success')
 
     // Then
-    expect(contactsService.addContact).toHaveBeenCalledWith(journey, user)
+    expect(contactsService.addContact).toHaveBeenCalledWith(journey, user, expect.any(String))
     expect(session.addContactJourneys![journeyId]).toBeUndefined()
   })
 

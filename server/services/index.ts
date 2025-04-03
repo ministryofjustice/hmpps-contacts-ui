@@ -20,10 +20,10 @@ export const services = () => {
 
   const auditService = new AuditService(hmppsAuditClient)
   const prisonerSearchService = new PrisonerSearchService(prisonerSearchApiClient)
-  const contactsService = new ContactsService(contactsApiClient)
+  const contactsService = new ContactsService(contactsApiClient, auditService)
   const prisonerImageService = new PrisonerImageService(prisonApiClient)
   const referenceDataService = new ReferenceDataService(contactsApiClient)
-  const restrictionsService = new RestrictionsService(contactsApiClient)
+  const restrictionsService = new RestrictionsService(contactsApiClient, auditService)
   const prisonerAddressService = new PrisonerAddressService(prisonApiClient)
   const organisationsService = new OrganisationsService(organisationsApiClient)
 

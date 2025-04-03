@@ -106,7 +106,7 @@ export default class UpdateRestrictionController implements PageHandler {
     const { user, prisonerDetails } = res.locals
     if (restrictionClass === 'PRISONER_CONTACT') {
       await this.restrictionsService
-        .updatePrisonerContactRestriction(Number(prisonerContactId), Number(restrictionId), req.body, user)
+        .updatePrisonerContactRestriction(Number(prisonerContactId), Number(restrictionId), req.body, user, req.id)
         .then(_ => this.contactsService.getContactName(Number(contactId), user))
         .then(contactName =>
           req.flash(
@@ -116,7 +116,7 @@ export default class UpdateRestrictionController implements PageHandler {
         )
     } else {
       await this.restrictionsService
-        .updateContactGlobalRestriction(Number(contactId), Number(restrictionId), req.body, user)
+        .updateContactGlobalRestriction(Number(contactId), Number(restrictionId), req.body, user, req.id)
         .then(_ => this.contactsService.getContactName(Number(contactId), user))
         .then(contactName =>
           req.flash(

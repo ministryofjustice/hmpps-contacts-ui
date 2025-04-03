@@ -81,7 +81,7 @@ export default class AddressCheckAnswersController implements PageHandler {
     const { user } = res.locals
     const journey = req.session.addressJourneys![journeyId]!
     await this.contactsService
-      .createContactAddress(journey, user)
+      .createContactAddress(journey, user, req.id)
       .then(_ => delete req.session.addressJourneys![journeyId])
     await this.contactsService
       .getContactName(Number(contactId), user)

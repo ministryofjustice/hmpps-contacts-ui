@@ -9,7 +9,6 @@ import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import PagedModelContactSearchResultItem = contactsApiClientTypes.PagedModelContactSearchResultItem
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
-import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
 import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
 import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
 import ContactIdentityDetails = contactsApiClientTypes.ContactIdentityDetails
@@ -27,7 +26,6 @@ import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import PatchContactAddressRequest = contactsApiClientTypes.PatchContactAddressRequest
 import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
-import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAddressPhoneRequest
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
@@ -388,64 +386,6 @@ describe('contactsApiClient', () => {
       // When
       try {
         await contactsApiClient.getPrisonerContactRelationship(123456, user)
-      } catch (error) {
-        const e = error as { status: unknown; data: unknown }
-        // Then
-        expect(e.status).toEqual(errorCode)
-        expect(e.data).toEqual(expectedErrorBody)
-      }
-    })
-  })
-
-  describe('createContactPhone', () => {
-    it('should create the contact and return the response', async () => {
-      // Given
-      const expectedContactPhoneDetails: ContactPhoneDetails = {
-        id: 1,
-        phoneType: 'MOB',
-        phoneNumber: '0123456789',
-        createdBy: 'user1',
-        createdTime: new Date().toISOString(),
-      }
-      const request: CreatePhoneRequest = {
-        type: 'MOB',
-        phoneNumber: '0123456789',
-        createdBy: 'user1',
-      }
-
-      fakeContactsApi
-        .post('/contact/99/phone', request)
-        .matchHeader('authorization', `Bearer systemToken`)
-        .reply(201, expectedContactPhoneDetails)
-
-      // When
-      const createdContact = await contactsApiClient.createContactPhone(99, request, user)
-
-      // Then
-      expect(createdContact).toEqual(expectedContactPhoneDetails)
-    })
-
-    it.each([400, 401, 403, 500])('should propagate errors creating contact phone', async (errorCode: number) => {
-      // Given
-      const request: CreatePhoneRequest = {
-        type: 'MOB',
-        phoneNumber: '0123456789',
-        createdBy: 'user1',
-      }
-      const expectedErrorBody = {
-        status: errorCode,
-        userMessage: 'Some error',
-        developerMessage: 'Some error',
-      }
-
-      fakeContactsApi
-        .post('/contact/99/phone', request)
-        .matchHeader('authorization', `Bearer systemToken`)
-        .reply(errorCode, expectedErrorBody)
-
-      // When
-      try {
-        await contactsApiClient.createContactPhone(99, request, user)
       } catch (error) {
         const e = error as { status: unknown; data: unknown }
         // Then
@@ -1220,67 +1160,6 @@ describe('contactsApiClient', () => {
         expect(e.data).toEqual(expectedErrorBody)
       }
     })
-  })
-
-  describe('createContactAddressPhone', () => {
-    it('should create the contact address phone and return the response', async () => {
-      // Given
-      const expectedContactAddressPhoneDetails: ContactAddressPhoneDetails = {
-        id: 1,
-        phoneType: 'MOB',
-        phoneNumber: '0123456789',
-        createdBy: 'user1',
-        createdTime: new Date().toISOString(),
-      }
-      const request: CreateContactAddressPhoneRequest = {
-        type: 'MOB',
-        phoneNumber: '0123456789',
-        createdBy: 'user1',
-      }
-
-      fakeContactsApi
-        .post('/contact/99/address/123456/phone', request)
-        .matchHeader('authorization', `Bearer systemToken`)
-        .reply(201, expectedContactAddressPhoneDetails)
-
-      // When
-      const createdContact = await contactsApiClient.createContactAddressPhone(99, 123456, request, user)
-
-      // Then
-      expect(createdContact).toEqual(expectedContactAddressPhoneDetails)
-    })
-
-    it.each([400, 401, 403, 500])(
-      'should propagate errors creating contact address phone',
-      async (errorCode: number) => {
-        // Given
-        const request: CreateContactAddressPhoneRequest = {
-          type: 'MOB',
-          phoneNumber: '0123456789',
-          createdBy: 'user1',
-        }
-        const expectedErrorBody = {
-          status: errorCode,
-          userMessage: 'Some error',
-          developerMessage: 'Some error',
-        }
-
-        fakeContactsApi
-          .post('/contact/99/address/123456/phone', request)
-          .matchHeader('authorization', `Bearer systemToken`)
-          .reply(errorCode, expectedErrorBody)
-
-        // When
-        try {
-          await contactsApiClient.createContactAddressPhone(99, 123456, request, user)
-        } catch (error) {
-          const e = error as { status: unknown; data: unknown }
-          // Then
-          expect(e.status).toEqual(errorCode)
-          expect(e.data).toEqual(expectedErrorBody)
-        }
-      },
-    )
   })
 
   describe('updateContactAddressPhone', () => {

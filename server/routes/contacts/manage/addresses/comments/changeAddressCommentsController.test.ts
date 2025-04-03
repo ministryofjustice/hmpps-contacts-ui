@@ -155,7 +155,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       contactAddressId,
       comments,
     }
-    expect(contactsService.updateContactAddress).toHaveBeenCalledWith(expected, user)
+    expect(contactsService.updateContactAddress).toHaveBeenCalledWith(expected, user, expect.any(String))
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
       'You’ve updated the contact methods for First Middle Last.',
@@ -183,7 +183,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       contactAddressId,
       comments: null,
     }
-    expect(contactsService.updateContactAddress).toHaveBeenCalledWith(expected, user)
+    expect(contactsService.updateContactAddress).toHaveBeenCalledWith(expected, user, expect.any(String))
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
       'You’ve updated the contact methods for First Middle Last.',
@@ -211,7 +211,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       contactAddressId,
       comments,
     }
-    expect(contactsService.updateContactAddress).toHaveBeenCalledWith(expected, user)
+    expect(contactsService.updateContactAddress).toHaveBeenCalledWith(expected, user, expect.any(String))
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
       'You’ve updated the contact methods for First Middle Last.',

@@ -130,6 +130,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       contactId,
       { deceasedDate: null, updatedBy: 'user1' },
       user,
+      expect.any(String),
     )
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,

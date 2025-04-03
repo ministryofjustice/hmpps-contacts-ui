@@ -85,7 +85,7 @@ export default class ManageContactRelationshipToPrisonerController implements Pa
       updatedBy: user.username,
     }
     await this.contactsService
-      .updateContactRelationshipById(Number(prisonerContactId), request, user)
+      .updateContactRelationshipById(Number(prisonerContactId), request, user, req.id)
       .then(_ => this.contactsService.getContactName(Number(contactId), user))
       .then(response =>
         req.flash(

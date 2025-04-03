@@ -74,7 +74,7 @@ export default class ChangeTitleOrMiddleNamesController implements PageHandler {
       updatedBy: user.username,
     }
     await this.contactService
-      .updateContactById(Number(contactId), request, user)
+      .updateContactById(Number(contactId), request, user, req.id)
       .then(response =>
         req.flash(
           FLASH_KEY__SUCCESS_BANNER,

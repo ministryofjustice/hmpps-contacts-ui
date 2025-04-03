@@ -64,7 +64,7 @@ export default class ManageContactEnterDobController implements PageHandler {
       dateOfBirth: new Date(`${year}-${month}-${day}Z`),
       updatedBy: user.username,
     }
-    await this.contactsService.updateContactById(Number(contactId), request, user)
+    await this.contactsService.updateContactById(Number(contactId), request, user, req.id)
     await this.contactsService
       .getContactName(Number(contactId), user)
       .then(response =>

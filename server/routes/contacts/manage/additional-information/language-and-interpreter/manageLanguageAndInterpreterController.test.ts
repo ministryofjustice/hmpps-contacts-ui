@@ -95,6 +95,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       10,
       { languageCode: 'ENG', interpreterRequired: false, updatedBy: 'user1' },
       user,
+      expect.any(String),
     )
   })
 

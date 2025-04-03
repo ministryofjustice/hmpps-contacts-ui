@@ -90,6 +90,7 @@ export default class ChangeAddressLinesController implements PageHandler {
         noFixedAddress: noFixedAddress === 'YES',
       },
       user,
+      req.id,
     )
     await this.contactsService
       .getContactName(Number(contactId), user)

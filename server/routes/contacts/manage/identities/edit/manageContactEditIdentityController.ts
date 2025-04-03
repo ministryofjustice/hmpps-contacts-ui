@@ -68,6 +68,7 @@ export default class ManageContactEditIdentityController implements PageHandler 
         parseInt(contactId, 10),
         parseInt(contactIdentityId, 10),
         user,
+        req.id,
         identityType,
         identityValue,
         issuingAuthority,

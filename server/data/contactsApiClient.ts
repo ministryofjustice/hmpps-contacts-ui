@@ -7,7 +7,6 @@ import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import PagedModelPrisonerContactSummary = contactsApiClientTypes.PagedModelPrisonerContactSummary
 import ContactDetails = contactsApiClientTypes.ContactDetails
-import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
 import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
 import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
 import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
@@ -27,10 +26,10 @@ import PrisonerContactRestrictionsResponse = contactsApiClientTypes.PrisonerCont
 import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import PatchContactAddressRequest = contactsApiClientTypes.PatchContactAddressRequest
-import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAddressPhoneRequest
 import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
 import PagedModelContactSearchResultItem = contactsApiClientTypes.PagedModelContactSearchResultItem
+import PatchEmploymentsRequest = contactsApiClientTypes.PatchEmploymentsRequest
 
 type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
@@ -153,20 +152,6 @@ export default class ContactsApiClient extends RestClient {
     user: Express.User,
   ): Promise<PrisonerContactRelationshipDetails> {
     return this.get<PrisonerContactRelationshipDetails>({ path: `/prisoner-contact/${prisonerContactId}` }, user)
-  }
-
-  async createContactPhone(
-    contactId: number,
-    request: CreatePhoneRequest,
-    user: Express.User,
-  ): Promise<ContactPhoneDetails> {
-    return this.post<ContactPhoneDetails>(
-      {
-        path: `/contact/${contactId}/phone`,
-        data: request,
-      },
-      user,
-    )
   }
 
   async createContactPhones(
@@ -412,21 +397,6 @@ export default class ContactsApiClient extends RestClient {
     )
   }
 
-  async createContactAddressPhone(
-    contactId: number,
-    contactAddressId: number,
-    request: CreateContactAddressPhoneRequest,
-    user: Express.User,
-  ): Promise<ContactAddressPhoneDetails> {
-    return this.post<ContactAddressPhoneDetails>(
-      {
-        path: `/contact/${contactId}/address/${contactAddressId}/phone`,
-        data: request,
-      },
-      user,
-    )
-  }
-
   async createContactAddressPhones(
     contactId: number,
     contactAddressId: number,
@@ -481,6 +451,16 @@ export default class ContactsApiClient extends RestClient {
     return this.get<PagedModelLinkedPrisonerDetails>(
       {
         path: `/contact/${contactId}/linked-prisoners?page=${page}&size=${size}`,
+      },
+      user,
+    )
+  }
+
+  async patchEmployments(contactId: number, request: PatchEmploymentsRequest, user: Express.User) {
+    return this.patch(
+      {
+        path: `/contact/${contactId}/employment`,
+        data: request,
       },
       user,
     )

@@ -67,7 +67,7 @@ export default class ManageContactEditEmailController implements PageHandler {
       updatedBy: user.name,
     }
     await this.contactsService
-      .updateContactEmail(Number(contactId), Number(contactEmailId), request, user)
+      .updateContactEmail(Number(contactId), Number(contactEmailId), request, user, req.id)
       .then(() => this.contactsService.getContactName(Number(contactId), user))
       .then(response =>
         req.flash(

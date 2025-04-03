@@ -19,10 +19,10 @@ import AddressJourney = journeys.AddressJourney
 import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
 import PatchContactAddressRequest = contactsApiClientTypes.PatchContactAddressRequest
 import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
-import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAddressPhoneRequest
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
 import YesOrNo = journeys.YesOrNo
 import LanguageAndInterpreterRequiredForm = journeys.LanguageAndInterpreterRequiredForm
+import { MockedService } from '../testutils/mockedServices'
 
 type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
@@ -31,6 +31,7 @@ type AddContactRelationshipRequest = components['schemas']['AddContactRelationsh
 type CreateContactRequest = components['schemas']['CreateContactRequest']
 
 jest.mock('../data/contactsApiClient')
+jest.mock('../services/auditService')
 const searchResult = TestData.contactSearchResultItem()
 const contactSearchRequest: ContactSearchRequest = {
   lastName: 'last',
@@ -39,6 +40,8 @@ const contactSearchRequest: ContactSearchRequest = {
   dateOfBirth: '1980-12-10T00:00:00.000Z',
 }
 
+const auditService = MockedService.AuditService()
+
 describe('contactsService', () => {
   const user = { token: 'userToken', username: 'user1' } as Express.User
   const prisonerNumber = 'A1234BC'
@@ -46,7 +49,7 @@ describe('contactsService', () => {
   let service: ContactsService
   beforeEach(() => {
     apiClient = new ContactsApiClient() as jest.Mocked<ContactsApiClient>
-    service = new ContactsService(apiClient)
+    service = new ContactsService(apiClient, auditService)
   })
 
   afterEach(() => {
@@ -135,7 +138,7 @@ describe('contactsService', () => {
         }
 
         // When
-        const created = await service.createContact(journey, user)
+        const created = await service.createContact(journey, user, 'correlationId')
 
         // Then
         expect(created).toStrictEqual(expectedCreated)
@@ -150,6 +153,13 @@ describe('contactsService', () => {
         } else {
           expect(apiClient.createContact).toHaveBeenCalledWith(expectedRequest, user)
         }
+        expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+          what: 'API_POST_CONTACT',
+          who: 'user1',
+          subjectType: 'CONTACT',
+          correlationId: 'correlationId',
+          details: { prisonNumber: 'A1234BC' },
+        })
       },
     )
 
@@ -205,7 +215,7 @@ describe('contactsService', () => {
         }
 
         // When
-        const created = await service.createContact(journey, user)
+        const created = await service.createContact(journey, user, 'correlationId')
 
         // Then
         expect(created).toStrictEqual(expectedCreated)
@@ -270,7 +280,7 @@ describe('contactsService', () => {
         }
 
         // When
-        const created = await service.createContact(journey, user)
+        const created = await service.createContact(journey, user, 'correlationId')
 
         // Then
         expect(created).toStrictEqual(expectedCreated)
@@ -326,7 +336,7 @@ describe('contactsService', () => {
       }
 
       // When
-      const created = await service.createContact(journey, user)
+      const created = await service.createContact(journey, user, 'correlationId')
 
       // Then
       expect(created).toStrictEqual(expectedCreated)
@@ -348,8 +358,17 @@ describe('contactsService', () => {
             relationship: { relationshipToPrisoner: 'MOT', isEmergencyContact: true, isNextOfKin: false },
           },
           user,
+          'correlationId',
         ),
       ).rejects.toBeInstanceOf(BadRequest)
+
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_POST_CONTACT',
+        who: 'user1',
+        subjectType: 'CONTACT',
+        correlationId: 'correlationId',
+        details: { prisonNumber: 'A1234BC', statusCode: 400 },
+      })
     })
   })
 
@@ -490,11 +509,18 @@ describe('contactsService', () => {
         }
 
         // When
-        const created = await service.addContact(journey, user)
+        const created = await service.addContact(journey, user, 'correlationId')
 
         // Then
         expect(created).toStrictEqual(expectedCreated)
         expect(apiClient.addContactRelationship).toHaveBeenCalledWith(expectedRequest, user)
+        expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+          what: 'API_POST_CONTACT_RELATIONSHIP',
+          who: 'user1',
+          subjectType: 'CONTACT_RELATIONSHIP',
+          correlationId: 'correlationId',
+          details: { prisonNumber: 'A1234BC', contactId: 123456 },
+        })
       },
     )
 
@@ -539,7 +565,7 @@ describe('contactsService', () => {
       }
 
       // When
-      const created = await service.addContact(journey, user)
+      const created = await service.addContact(journey, user, 'correlationId')
 
       // Then
       expect(created).toStrictEqual(expectedCreated)
@@ -562,58 +588,17 @@ describe('contactsService', () => {
             contactId: 123456,
           },
           user,
+          'correlationId',
         ),
       ).rejects.toBeInstanceOf(BadRequest)
-    })
-  })
 
-  describe('createContactPhone', () => {
-    it('should create a contact phone with all fields', async () => {
-      // Given
-      const expectedCreated: ContactPhoneDetails = {
-        contactPhoneId: 999,
-      }
-      apiClient.createContactPhone.mockResolvedValue(expectedCreated)
-      const expectedRequest: CreatePhoneRequest = {
-        phoneType: 'MOB',
-        phoneNumber: '0123456789',
-        extNumber: '000',
-        createdBy: 'user1',
-      }
-
-      // When
-      const created = await service.createContactPhone(99, user, 'MOB', '0123456789', '000')
-
-      // Then
-      expect(created).toStrictEqual(expectedCreated)
-      expect(apiClient.createContactPhone).toHaveBeenCalledWith(99, expectedRequest, user)
-    })
-
-    it('should create a contact phone with only required fields', async () => {
-      // Given
-      const expectedCreated: ContactPhoneDetails = {
-        contactPhoneId: 999,
-      }
-      apiClient.createContactPhone.mockResolvedValue(expectedCreated)
-      const expectedRequest: CreatePhoneRequest = {
-        phoneType: 'MOB',
-        phoneNumber: '0123456789',
-        createdBy: 'user1',
-      }
-
-      // When
-      const created = await service.createContactPhone(99, user, 'MOB', '0123456789', undefined)
-
-      // Then
-      expect(created).toStrictEqual(expectedCreated)
-      expect(apiClient.createContactPhone).toHaveBeenCalledWith(99, expectedRequest, user)
-    })
-
-    it('should handle a bad request', async () => {
-      apiClient.createContactPhone.mockRejectedValue(createError.BadRequest())
-      await expect(service.createContactPhone(99, user, 'MOB', '0123456789', undefined)).rejects.toBeInstanceOf(
-        BadRequest,
-      )
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_POST_CONTACT_RELATIONSHIP',
+        who: 'user1',
+        subjectType: 'CONTACT_RELATIONSHIP',
+        correlationId: 'correlationId',
+        details: { prisonNumber: 'A1234BC', contactId: 123456, statusCode: 400 },
+      })
     })
   })
 
@@ -632,11 +617,19 @@ describe('contactsService', () => {
       }
 
       // When
-      const updated = await service.updateContactPhone(99, 77, user, 'MOB', '0123456789', '000')
+      const updated = await service.updateContactPhone(99, 77, user, 'correlationId', 'MOB', '0123456789', '000')
 
       // Then
       expect(updated).toStrictEqual(expected)
       expect(apiClient.updateContactPhone).toHaveBeenCalledWith(99, 77, expectedRequest, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_PUT_CONTACT_PHONE',
+        who: 'user1',
+        subjectType: 'CONTACT_PHONE',
+        subjectId: '77',
+        correlationId: 'correlationId',
+        details: { contactId: 99 },
+      })
     })
 
     it('should update a contact phone with only required fields', async () => {
@@ -652,7 +645,7 @@ describe('contactsService', () => {
       }
 
       // When
-      const updated = await service.updateContactPhone(99, 77, user, 'MOB', '0123456789', undefined)
+      const updated = await service.updateContactPhone(99, 77, user, 'correlationId', 'MOB', '0123456789', undefined)
 
       // Then
       expect(updated).toStrictEqual(expected)
@@ -661,9 +654,17 @@ describe('contactsService', () => {
 
     it('should handle a bad request', async () => {
       apiClient.updateContactPhone.mockRejectedValue(createError.BadRequest())
-      await expect(service.updateContactPhone(99, 77, user, 'MOB', '0123456789', undefined)).rejects.toBeInstanceOf(
-        BadRequest,
-      )
+      await expect(
+        service.updateContactPhone(99, 77, user, 'correlationId', 'MOB', '0123456789', undefined),
+      ).rejects.toBeInstanceOf(BadRequest)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_PUT_CONTACT_PHONE',
+        who: 'user1',
+        subjectType: 'CONTACT_PHONE',
+        subjectId: '77',
+        correlationId: 'correlationId',
+        details: { contactId: 99, statusCode: 400 },
+      })
     })
   })
 
@@ -676,16 +677,31 @@ describe('contactsService', () => {
     it('Should update the language reference', async () => {
       // When
       apiClient.updateContactById.mockResolvedValue(TestData.patchContact())
-      const contact = await service.updateContactById(23, request, user)
+      const contact = await service.updateContactById(23, request, user, 'correlationId')
 
       // Then
       expect(contact).toStrictEqual(TestData.patchContact())
       expect(apiClient.updateContactById).toHaveBeenCalledWith(23, request, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_PATCH_CONTACT',
+        who: 'user1',
+        subjectType: 'CONTACT',
+        subjectId: '23',
+        correlationId: 'correlationId',
+      })
     })
 
     it('Propagates errors', async () => {
-      apiClient.updateContactById.mockRejectedValue(new Error('some error'))
-      await expect(apiClient.updateContactById(23, request, user)).rejects.toEqual(new Error('some error'))
+      apiClient.updateContactById.mockRejectedValue(createError.BadRequest())
+      await expect(service.updateContactById(23, request, user, 'correlationId')).rejects.toBeInstanceOf(BadRequest)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_PATCH_CONTACT',
+        who: 'user1',
+        subjectType: 'CONTACT',
+        subjectId: '23',
+        correlationId: 'correlationId',
+        details: { statusCode: 400 },
+      })
     })
   })
 
@@ -694,15 +710,31 @@ describe('contactsService', () => {
     it('should delete the contact phone', async () => {
       // When
       apiClient.deleteContactPhone.mockResolvedValue()
-      await service.deleteContactPhone(23, 77, user)
+      await service.deleteContactPhone(23, 77, user, 'correlationId')
 
       // Then
       expect(apiClient.deleteContactPhone).toHaveBeenCalledWith(23, 77, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_DELETE_CONTACT_PHONE',
+        who: 'user1',
+        subjectType: 'CONTACT_PHONE',
+        subjectId: '77',
+        correlationId: 'correlationId',
+        details: { contactId: 23 },
+      })
     })
 
     it('Propagates errors', async () => {
       apiClient.deleteContactPhone.mockRejectedValue(new Error('some error'))
-      await expect(apiClient.deleteContactPhone(23, 77, user)).rejects.toEqual(new Error('some error'))
+      await expect(service.deleteContactPhone(23, 77, user, 'correlationId')).rejects.toEqual(new Error('some error'))
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_DELETE_CONTACT_PHONE',
+        who: 'user1',
+        subjectType: 'CONTACT_PHONE',
+        subjectId: '77',
+        correlationId: 'correlationId',
+        details: { contactId: 23, statusCode: undefined },
+      })
     })
   })
 
@@ -726,16 +758,32 @@ describe('contactsService', () => {
       apiClient.createContactEmails.mockResolvedValue([expectedCreated])
 
       // When
-      const created = await service.createContactEmails(99, expectedRequest, user)
+      const created = await service.createContactEmails(99, expectedRequest, user, 'correlationId')
 
       // Then
       expect(created).toStrictEqual([expectedCreated])
       expect(apiClient.createContactEmails).toHaveBeenCalledWith(99, expectedRequest, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_POST_CONTACT_EMAILS',
+        who: 'user1',
+        subjectType: 'CONTACT_EMAIL',
+        correlationId: 'correlationId',
+        details: { contactId: 99 },
+      })
     })
 
     it('should handle a bad request', async () => {
       apiClient.createContactEmails.mockRejectedValue(createError.BadRequest())
-      await expect(service.createContactEmails(99, expectedRequest, user)).rejects.toBeInstanceOf(BadRequest)
+      await expect(service.createContactEmails(99, expectedRequest, user, 'correlationId')).rejects.toBeInstanceOf(
+        BadRequest,
+      )
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_POST_CONTACT_EMAILS',
+        who: 'user1',
+        subjectType: 'CONTACT_EMAIL',
+        correlationId: 'correlationId',
+        details: { contactId: 99, statusCode: 400 },
+      })
     })
   })
 
@@ -760,16 +808,32 @@ describe('contactsService', () => {
       apiClient.updateContactEmail.mockResolvedValue(expected)
 
       // When
-      const updated = await service.updateContactEmail(99, 1, request, user)
+      const updated = await service.updateContactEmail(99, 1, request, user, 'correlationId')
 
       // Then
       expect(updated).toStrictEqual(expected)
       expect(apiClient.updateContactEmail).toHaveBeenCalledWith(99, 1, request, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_PUT_CONTACT_EMAIL',
+        who: 'user1',
+        subjectType: 'CONTACT_EMAIL',
+        subjectId: '1',
+        correlationId: 'correlationId',
+        details: { contactId: 99 },
+      })
     })
 
     it('should handle a bad request', async () => {
       apiClient.updateContactEmail.mockRejectedValue(createError.BadRequest())
-      await expect(service.updateContactEmail(99, 1, request, user)).rejects.toBeInstanceOf(BadRequest)
+      await expect(service.updateContactEmail(99, 1, request, user, 'correlationId')).rejects.toBeInstanceOf(BadRequest)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_PUT_CONTACT_EMAIL',
+        who: 'user1',
+        subjectType: 'CONTACT_EMAIL',
+        subjectId: '1',
+        correlationId: 'correlationId',
+        details: { contactId: 99, statusCode: 400 },
+      })
     })
   })
 
@@ -778,15 +842,31 @@ describe('contactsService', () => {
     it('should delete the contact email', async () => {
       // When
       apiClient.deleteContactEmail.mockResolvedValue()
-      await service.deleteContactEmail(23, 77, user)
+      await service.deleteContactEmail(23, 77, user, 'correlationId')
 
       // Then
       expect(apiClient.deleteContactEmail).toHaveBeenCalledWith(23, 77, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_DELETE_CONTACT_EMAIL',
+        who: 'user1',
+        subjectType: 'CONTACT_EMAIL',
+        subjectId: '77',
+        correlationId: 'correlationId',
+        details: { contactId: 23 },
+      })
     })
 
     it('Propagates errors', async () => {
       apiClient.deleteContactEmail.mockRejectedValue(new Error('some error'))
-      await expect(apiClient.deleteContactEmail(23, 77, user)).rejects.toEqual(new Error('some error'))
+      await expect(service.deleteContactEmail(23, 77, user, 'correlationId')).rejects.toEqual(new Error('some error'))
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_DELETE_CONTACT_EMAIL',
+        who: 'user1',
+        subjectType: 'CONTACT_EMAIL',
+        subjectId: '77',
+        correlationId: 'correlationId',
+        details: { contactId: 23, statusCode: undefined },
+      })
     })
   })
 
@@ -849,11 +929,18 @@ describe('contactsService', () => {
       }
 
       // When
-      const created = await service.createContactAddress(journey, user)
+      const created = await service.createContactAddress(journey, user, 'correlationId')
 
       // Then
       expect(created).toStrictEqual(expectedCreated)
       expect(apiClient.createContactAddress).toHaveBeenCalledWith(999, expectedRequest, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_POST_CONTACT_ADDRESSES',
+        who: 'user1',
+        subjectType: 'CONTACT_ADDRESS',
+        correlationId: 'correlationId',
+        details: { contactId: 999 },
+      })
     })
 
     it('should create a contact address from the journey dto with only optional fields', async () => {
@@ -896,7 +983,7 @@ describe('contactsService', () => {
       }
 
       // When
-      const created = await service.createContactAddress(journey, user)
+      const created = await service.createContactAddress(journey, user, 'correlationId')
 
       // Then
       expect(created).toStrictEqual(expectedCreated)
@@ -919,8 +1006,16 @@ describe('contactsService', () => {
             addressMetadata: { fromMonth: '01', fromYear: '2000' },
           },
           user,
+          'correlationId',
         ),
       ).rejects.toBeInstanceOf(BadRequest)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_POST_CONTACT_ADDRESSES',
+        who: 'user1',
+        subjectType: 'CONTACT_ADDRESS',
+        correlationId: 'correlationId',
+        details: { contactId: 999, statusCode: 400 },
+      })
     })
   })
 
@@ -972,11 +1067,19 @@ describe('contactsService', () => {
       }
 
       // When
-      const updated = await service.updateContactAddress(journey, user)
+      const updated = await service.updateContactAddress(journey, user, 'correlationId')
 
       // Then
       expect(updated).toStrictEqual(expectedUpdated)
       expect(apiClient.updateContactAddress).toHaveBeenCalledWith(999, 123456, expectedRequest, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_PATCH_CONTACT_ADDRESS',
+        who: 'user1',
+        subjectType: 'CONTACT_ADDRESS',
+        subjectId: '123456',
+        correlationId: 'correlationId',
+        details: { contactId: 999 },
+      })
     })
 
     it('should update a contact address from the journey dto with partial fields', async () => {
@@ -1013,7 +1116,7 @@ describe('contactsService', () => {
       }
 
       // When
-      const updated = await service.updateContactAddress(journey, user)
+      const updated = await service.updateContactAddress(journey, user, 'correlationId')
 
       // Then
       expect(updated).toStrictEqual(expectedUpdated)
@@ -1037,62 +1140,17 @@ describe('contactsService', () => {
             addressMetadata: { fromMonth: '01', fromYear: '2000' },
           },
           user,
+          'correlationId',
         ),
       ).rejects.toBeInstanceOf(BadRequest)
-    })
-  })
-
-  describe('createContactAddressPhone', () => {
-    it('should create a contact address phone with all fields', async () => {
-      // Given
-      const expectedCreated: ContactAddressPhoneDetails = {
-        contactAddressPhoneId: 123,
-        contactAddressId: 321,
-      }
-      apiClient.createContactAddressPhone.mockResolvedValue(expectedCreated)
-      const expectedRequest: CreateContactAddressPhoneRequest = {
-        contactAddressId: 321,
-        phoneType: 'MOB',
-        phoneNumber: '0123456789',
-        extNumber: '000',
-        createdBy: 'user1',
-      }
-
-      // When
-      const created = await service.createContactAddressPhone(99, 321, user, 'MOB', '0123456789', '000')
-
-      // Then
-      expect(created).toStrictEqual(expectedCreated)
-      expect(apiClient.createContactAddressPhone).toHaveBeenCalledWith(99, 321, expectedRequest, user)
-    })
-
-    it('should create a contact address phone with only required fields', async () => {
-      // Given
-      const expectedCreated: ContactAddressPhoneDetails = {
-        contactAddressPhoneId: 123,
-        contactAddressId: 321,
-      }
-      apiClient.createContactAddressPhone.mockResolvedValue(expectedCreated)
-      const expectedRequest: CreateContactAddressPhoneRequest = {
-        contactAddressId: 321,
-        phoneType: 'MOB',
-        phoneNumber: '0123456789',
-        createdBy: 'user1',
-      }
-
-      // When
-      const created = await service.createContactAddressPhone(99, 321, user, 'MOB', '0123456789', undefined)
-
-      // Then
-      expect(created).toStrictEqual(expectedCreated)
-      expect(apiClient.createContactAddressPhone).toHaveBeenCalledWith(99, 321, expectedRequest, user)
-    })
-
-    it('should handle a bad request', async () => {
-      apiClient.createContactAddressPhone.mockRejectedValue(createError.BadRequest())
-      await expect(
-        service.createContactAddressPhone(99, 321, user, 'MOB', '0123456789', undefined),
-      ).rejects.toBeInstanceOf(BadRequest)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_PATCH_CONTACT_ADDRESS',
+        who: 'user1',
+        subjectType: 'CONTACT_ADDRESS',
+        subjectId: '123456',
+        correlationId: 'correlationId',
+        details: { contactId: 999, statusCode: 400 },
+      })
     })
   })
 
@@ -1112,11 +1170,28 @@ describe('contactsService', () => {
       }
 
       // When
-      const updated = await service.updateContactAddressPhone(99, 321, 77, user, 'MOB', '0123456789', '000')
+      const updated = await service.updateContactAddressPhone(
+        99,
+        321,
+        77,
+        user,
+        'correlationId',
+        'MOB',
+        '0123456789',
+        '000',
+      )
 
       // Then
       expect(updated).toStrictEqual(expected)
       expect(apiClient.updateContactAddressPhone).toHaveBeenCalledWith(99, 321, 77, expectedRequest, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_PUT_CONTACT_ADDRESS_PHONE',
+        who: 'user1',
+        subjectType: 'CONTACT_ADDRESS_PHONE',
+        subjectId: '77',
+        correlationId: 'correlationId',
+        details: { contactId: 99, contactAddressId: 321 },
+      })
     })
 
     it('should update a contact address phone with only required fields', async () => {
@@ -1133,7 +1208,16 @@ describe('contactsService', () => {
       }
 
       // When
-      const updated = await service.updateContactAddressPhone(99, 321, 77, user, 'MOB', '0123456789', undefined)
+      const updated = await service.updateContactAddressPhone(
+        99,
+        321,
+        77,
+        user,
+        'correlationId',
+        'MOB',
+        '0123456789',
+        undefined,
+      )
 
       // Then
       expect(updated).toStrictEqual(expected)
@@ -1143,8 +1227,16 @@ describe('contactsService', () => {
     it('should handle a bad request', async () => {
       apiClient.updateContactAddressPhone.mockRejectedValue(createError.BadRequest())
       await expect(
-        service.updateContactAddressPhone(99, 321, 77, user, 'MOB', '0123456789', undefined),
+        service.updateContactAddressPhone(99, 321, 77, user, 'correlationId', 'MOB', '0123456789', undefined),
       ).rejects.toBeInstanceOf(BadRequest)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_PUT_CONTACT_ADDRESS_PHONE',
+        who: 'user1',
+        subjectType: 'CONTACT_ADDRESS_PHONE',
+        subjectId: '77',
+        correlationId: 'correlationId',
+        details: { contactId: 99, contactAddressId: 321, statusCode: 400 },
+      })
     })
   })
 })

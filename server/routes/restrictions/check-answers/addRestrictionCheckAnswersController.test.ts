@@ -290,7 +290,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
           `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/success`,
         )
 
-      expect(restrictionsService.createRestriction).toHaveBeenCalledWith(existingJourney, user)
+      expect(restrictionsService.createRestriction).toHaveBeenCalledWith(existingJourney, user, expect.any(String))
       expect(session.addRestrictionJourneys![journeyId]).toBeUndefined()
     },
   )

@@ -130,7 +130,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       createdBy: user.name,
     }
 
-    expect(contactsService.createContactEmails).toHaveBeenCalledWith(contactId, requestBody, user)
+    expect(contactsService.createContactEmails).toHaveBeenCalledWith(contactId, requestBody, user, expect.any(String))
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
       'You’ve updated the contact methods for First Middle Last.',

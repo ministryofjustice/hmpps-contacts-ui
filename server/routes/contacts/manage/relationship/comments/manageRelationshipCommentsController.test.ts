@@ -83,6 +83,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       1,
       { comments: 'comment added', updatedBy: 'user1' },
       user,
+      expect.any(String),
     )
   })
 

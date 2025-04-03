@@ -144,10 +144,16 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .expect(302)
       .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
 
-    expect(contactsService.createContactAddressPhones).toHaveBeenCalledWith(contactId, contactAddressId, user, [
-      { type: 'MOB', phoneNumber: '123456789', extension: '000' },
-      { type: 'HOME', phoneNumber: '987654321' },
-    ])
+    expect(contactsService.createContactAddressPhones).toHaveBeenCalledWith(
+      contactId,
+      contactAddressId,
+      user,
+      [
+        { type: 'MOB', phoneNumber: '123456789', extension: '000' },
+        { type: 'HOME', phoneNumber: '987654321' },
+      ],
+      expect.any(String),
+    )
   })
 
   it('should return to input page with details kept if there are validation errors', async () => {
@@ -162,7 +168,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         'Location',
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/phone/create`,
       )
-    expect(contactsService.createContactAddressPhone).not.toHaveBeenCalled()
+    expect(contactsService.createContactAddressPhones).not.toHaveBeenCalled()
   })
 
   describe('should work without javascript enabled', () => {

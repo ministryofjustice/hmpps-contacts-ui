@@ -150,7 +150,12 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       relationshipToPrisonerCode: 'MOT',
       updatedBy: 'user1',
     }
-    expect(contactsService.updateContactRelationshipById).toHaveBeenCalledWith(prisonerContactId, expected, user)
+    expect(contactsService.updateContactRelationshipById).toHaveBeenCalledWith(
+      prisonerContactId,
+      expected,
+      user,
+      expect.any(String),
+    )
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
       'You’ve updated the relationship information for contact First Middle Last and prisoner John Smith.',

@@ -63,7 +63,15 @@ export default class ManageContactEditPhoneController implements PageHandler {
     const { prisonerNumber, contactId, prisonerContactId, contactPhoneId } = req.params
     const { phoneNumber, type, extension } = req.body
     await this.contactsService
-      .updateContactPhone(parseInt(contactId, 10), parseInt(contactPhoneId, 10), user, type, phoneNumber, extension)
+      .updateContactPhone(
+        parseInt(contactId, 10),
+        parseInt(contactPhoneId, 10),
+        user,
+        req.id,
+        type,
+        phoneNumber,
+        extension,
+      )
       .then(_ => this.contactsService.getContactName(Number(contactId), user))
       .then(response =>
         req.flash(

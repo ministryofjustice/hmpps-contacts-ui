@@ -238,7 +238,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
 
     // Then
     expect(session.addressJourneys![journeyId]).toBeUndefined()
-    expect(contactsService.createContactAddress).toHaveBeenCalledWith(existingJourney, user)
+    expect(contactsService.createContactAddress).toHaveBeenCalledWith(existingJourney, user, expect.any(String))
   })
 
   it('should return not found page if no journey in session', async () => {

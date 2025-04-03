@@ -153,7 +153,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       emailAddress: 'test@example.com',
       updatedBy: 'FIRST LAST',
     }
-    expect(contactsService.updateContactEmail).toHaveBeenCalledWith(contactId, 6, requestBody, user)
+    expect(contactsService.updateContactEmail).toHaveBeenCalledWith(contactId, 6, requestBody, user, expect.any(String))
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
       'You’ve updated the contact methods for First Middle Last.',

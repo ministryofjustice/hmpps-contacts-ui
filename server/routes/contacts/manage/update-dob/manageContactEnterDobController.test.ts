@@ -131,6 +131,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         contactId,
         { dateOfBirth: new Date('1982-06-01Z'), updatedBy: 'user1' },
         user,
+        expect.any(String),
       )
     },
   )

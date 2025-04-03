@@ -45,7 +45,7 @@ export default class ManageContactDeleteDateOfDeathController implements PageHan
       updatedBy: user.username,
     }
     await this.contactsService
-      .updateContactById(Number(contactId), request, user)
+      .updateContactById(Number(contactId), request, user, req.id)
       .then(response =>
         req.flash(
           FLASH_KEY__SUCCESS_BANNER,

@@ -51,7 +51,7 @@ export default class ManageRelationshipCommentsController implements PageHandler
       updatedBy: user.username,
     }
 
-    await this.contactsService.updateContactRelationshipById(Number(prisonerContactId), request, user)
+    await this.contactsService.updateContactRelationshipById(Number(prisonerContactId), request, user, req.id)
     await this.contactsService.getContactName(Number(contactId), user).then(response => {
       req.flash(
         FLASH_KEY__SUCCESS_BANNER,

@@ -55,6 +55,7 @@ export default class ManageContactAddPhoneController implements PageHandler {
           phoneNumber: phoneNumber!,
           extension,
         })),
+        req.id,
       )
       await this.contactsService
         .getContactName(Number(contactId), user)

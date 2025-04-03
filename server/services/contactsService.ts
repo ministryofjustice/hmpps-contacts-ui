@@ -3,7 +3,6 @@ import { components } from '../@types/contactsApi'
 import AddContactJourney = journeys.AddContactJourney
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import ContactDetails = contactsApiClientTypes.ContactDetails
-import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
 import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
 import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
 import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
@@ -15,13 +14,14 @@ import PrisonerContactRestrictionsResponse = contactsApiClientTypes.PrisonerCont
 import AddressJourney = journeys.AddressJourney
 import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
 import UpdateContactAddressRequest = contactsApiClientTypes.PatchContactAddressRequest
-import CreateContactAddressPhoneRequest = contactsApiClientTypes.CreateContactAddressPhoneRequest
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
 import PatchEmploymentsRequest = contactsApiClientTypes.PatchEmploymentsRequest
 import AddressMetadata = journeys.AddressMetadata
 import AddressLines = journeys.AddressLines
 import PagedModelPrisonerContactSummary = contactsApiClientTypes.PagedModelPrisonerContactSummary
 import PagedModelContactSearchResultItem = contactsApiClientTypes.PagedModelContactSearchResultItem
+import AuditService from './auditService'
+import AuditedService from './auditedService'
 
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
@@ -34,10 +34,19 @@ type PagedModelLinkedPrisonerDetails = components['schemas']['PagedModelLinkedPr
 type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
 type CreateMultiplePhoneNumbersRequest = components['schemas']['CreateMultiplePhoneNumbersRequest']
 
-export default class ContactsService {
-  constructor(private readonly contactsApiClient: ContactsApiClient) {}
+export default class ContactsService extends AuditedService {
+  constructor(
+    private readonly contactsApiClient: ContactsApiClient,
+    override readonly auditService: AuditService,
+  ) {
+    super(auditService)
+  }
 
-  async createContact(journey: AddContactJourney, user: Express.User): Promise<ContactCreationResult> {
+  async createContact(
+    journey: AddContactJourney,
+    user: Express.User,
+    correlationId: string,
+  ): Promise<ContactCreationResult> {
     const request: CreateContactRequest = {
       ...(journey?.names?.title === undefined ? {} : { titleCode: journey.names.title }),
       lastName: journey.names!.lastName!,
@@ -123,10 +132,22 @@ export default class ContactsService {
         return address
       })
     }
-    return this.contactsApiClient.createContact(request, user)
+    return this.handleAuditEvent(this.contactsApiClient.createContact(request, user), {
+      what: 'API_POST_CONTACT',
+      who: user.username,
+      subjectType: 'CONTACT',
+      details: {
+        prisonNumber: journey.prisonerNumber,
+      },
+      correlationId,
+    })
   }
 
-  async addContact(journey: AddContactJourney, user: Express.User): Promise<PrisonerContactRelationshipDetails> {
+  async addContact(
+    journey: AddContactJourney,
+    user: Express.User,
+    correlationId: string,
+  ): Promise<PrisonerContactRelationshipDetails> {
     const request: AddContactRelationshipRequest = {
       contactId: journey.contactId!,
       relationship: {
@@ -142,7 +163,16 @@ export default class ContactsService {
     if (journey.relationship!.comments) {
       request.relationship!.comments = journey.relationship!.comments
     }
-    return this.contactsApiClient.addContactRelationship(request, user)
+    return this.handleAuditEvent(this.contactsApiClient.addContactRelationship(request, user), {
+      what: 'API_POST_CONTACT_RELATIONSHIP',
+      who: user.username,
+      subjectType: 'CONTACT_RELATIONSHIP',
+      details: {
+        contactId: journey.contactId,
+        prisonNumber: journey.prisonerNumber,
+      },
+      correlationId,
+    })
   }
 
   async getPrisonerContacts(
@@ -181,26 +211,11 @@ export default class ContactsService {
     return this.contactsApiClient.getPrisonerContactRelationship(prisonerContactId, user)
   }
 
-  async createContactPhone(
-    contactId: number,
-    user: Express.User,
-    type: string,
-    phoneNumber: string,
-    extension?: string,
-  ) {
-    const request: CreatePhoneRequest = {
-      phoneType: type,
-      phoneNumber,
-      extNumber: extension,
-      createdBy: user.username,
-    }
-    return this.contactsApiClient.createContactPhone(contactId, request, user)
-  }
-
   async createContactPhones(
     contactId: number,
     user: Express.User,
     phones: { type: string; phoneNumber: string; extension?: string | undefined }[],
+    correlationId: string,
   ) {
     const request: CreateMultiplePhoneNumbersRequest = {
       phoneNumbers: phones.map(({ type, phoneNumber, extension }) => ({
@@ -210,13 +225,20 @@ export default class ContactsService {
       })),
       createdBy: user.username,
     }
-    return this.contactsApiClient.createContactPhones(contactId, request, user)
+    return this.handleAuditEvent(this.contactsApiClient.createContactPhones(contactId, request, user), {
+      what: 'API_POST_CONTACT_PHONES',
+      who: user.username,
+      subjectType: 'CONTACT_PHONE',
+      details: { contactId },
+      correlationId,
+    })
   }
 
   async updateContactPhone(
     contactId: number,
     contactPhoneId: number,
     user: Express.User,
+    correlationId: string,
     type: string,
     phoneNumber: string,
     extension?: string,
@@ -227,25 +249,51 @@ export default class ContactsService {
       extNumber: extension,
       updatedBy: user.username,
     }
-    return this.contactsApiClient.updateContactPhone(contactId, contactPhoneId, request, user)
+    return this.handleAuditEvent(this.contactsApiClient.updateContactPhone(contactId, contactPhoneId, request, user), {
+      what: 'API_PUT_CONTACT_PHONE',
+      who: user.username,
+      subjectType: 'CONTACT_PHONE',
+      subjectId: String(contactPhoneId),
+      details: { contactId },
+      correlationId,
+    })
   }
 
-  async deleteContactPhone(contactId: number, contactPhoneId: number, user: Express.User) {
-    return this.contactsApiClient.deleteContactPhone(contactId, contactPhoneId, user)
+  async deleteContactPhone(contactId: number, contactPhoneId: number, user: Express.User, correlationId: string) {
+    return this.handleAuditEvent(this.contactsApiClient.deleteContactPhone(contactId, contactPhoneId, user), {
+      what: 'API_DELETE_CONTACT_PHONE',
+      who: user.username,
+      subjectType: 'CONTACT_PHONE',
+      subjectId: String(contactPhoneId),
+      details: { contactId },
+      correlationId,
+    })
   }
 
-  async createContactIdentities(contactId: number, user: Express.User, identities: IdentityDocument[]) {
+  async createContactIdentities(
+    contactId: number,
+    user: Express.User,
+    identities: IdentityDocument[],
+    correlationId: string,
+  ) {
     const request: CreateMultipleIdentitiesRequest = {
       identities,
       createdBy: user.username,
     }
-    return this.contactsApiClient.createContactIdentities(contactId, request, user)
+    return this.handleAuditEvent(this.contactsApiClient.createContactIdentities(contactId, request, user), {
+      what: 'API_POST_CONTACT_IDENTITIES',
+      who: user.username,
+      subjectType: 'CONTACT_IDENTITY',
+      details: { contactId },
+      correlationId,
+    })
   }
 
   async updateContactIdentity(
     contactId: number,
     contactIdentityId: number,
     user: Express.User,
+    correlationId: string,
     identityType: string,
     identityValue: string,
     issuingAuthority?: string,
@@ -256,35 +304,76 @@ export default class ContactsService {
       issuingAuthority,
       updatedBy: user.username,
     }
-    return this.contactsApiClient.updateContactIdentity(contactId, contactIdentityId, request, user)
+    return this.handleAuditEvent(
+      this.contactsApiClient.updateContactIdentity(contactId, contactIdentityId, request, user),
+      {
+        what: 'API_PUT_CONTACT_IDENTITY',
+        who: user.username,
+        subjectType: 'CONTACT_IDENTITY',
+        subjectId: String(contactIdentityId),
+        details: { contactId },
+        correlationId,
+      },
+    )
   }
 
-  async deleteContactIdentity(contactId: number, contactIdentityId: number, user: Express.User) {
-    return this.contactsApiClient.deleteContactIdentity(contactId, contactIdentityId, user)
+  async deleteContactIdentity(contactId: number, contactIdentityId: number, user: Express.User, correlationId: string) {
+    return this.handleAuditEvent(this.contactsApiClient.deleteContactIdentity(contactId, contactIdentityId, user), {
+      what: 'API_DELETE_CONTACT_IDENTITY',
+      who: user.username,
+      subjectType: 'CONTACT_IDENTITY',
+      subjectId: String(contactIdentityId),
+      details: { contactId },
+      correlationId,
+    })
   }
 
   async updateContactById(
     contactId: number,
     request: PatchContactRequest,
     user: Express.User,
+    correlationId: string,
   ): Promise<PatchContactResponse> {
-    return this.contactsApiClient.updateContactById(contactId, request, user)
+    return this.handleAuditEvent(this.contactsApiClient.updateContactById(contactId, request, user), {
+      what: 'API_PATCH_CONTACT',
+      who: user.username,
+      subjectType: 'CONTACT',
+      subjectId: String(contactId),
+      correlationId,
+    })
   }
 
   async updateContactRelationshipById(
     prisonerContactId: number,
     request: contactsApiClientTypes.PatchRelationshipRequest,
     user: Express.User,
+    correlationId: string,
   ): Promise<void> {
-    return this.contactsApiClient.updateContactRelationshipById(prisonerContactId, request, user)
+    return this.handleAuditEvent(
+      this.contactsApiClient.updateContactRelationshipById(prisonerContactId, request, user),
+      {
+        what: 'API_PATCH_CONTACT_RELATIONSHIP',
+        who: user.username,
+        subjectType: 'CONTACT_RELATIONSHIP',
+        subjectId: String(prisonerContactId),
+        correlationId,
+      },
+    )
   }
 
   async createContactEmails(
     contactId: number,
     request: CreateMultipleEmailsRequest,
     user: Express.User,
+    correlationId: string,
   ): Promise<ContactEmailDetails[]> {
-    return this.contactsApiClient.createContactEmails(contactId, request, user)
+    return this.handleAuditEvent(this.contactsApiClient.createContactEmails(contactId, request, user), {
+      what: 'API_POST_CONTACT_EMAILS',
+      who: user.username,
+      subjectType: 'CONTACT_EMAIL',
+      details: { contactId },
+      correlationId,
+    })
   }
 
   async updateContactEmail(
@@ -292,12 +381,27 @@ export default class ContactsService {
     contactEmailId: number,
     request: UpdateEmailRequest,
     user: Express.User,
+    correlationId: string,
   ): Promise<ContactEmailDetails> {
-    return this.contactsApiClient.updateContactEmail(contactId, contactEmailId, request, user)
+    return this.handleAuditEvent(this.contactsApiClient.updateContactEmail(contactId, contactEmailId, request, user), {
+      what: 'API_PUT_CONTACT_EMAIL',
+      who: user.username,
+      subjectType: 'CONTACT_EMAIL',
+      subjectId: String(contactEmailId),
+      details: { contactId },
+      correlationId,
+    })
   }
 
-  async deleteContactEmail(contactId: number, contactEmailId: number, user: Express.User) {
-    return this.contactsApiClient.deleteContactEmail(contactId, contactEmailId, user)
+  async deleteContactEmail(contactId: number, contactEmailId: number, user: Express.User, correlationId: string) {
+    return this.handleAuditEvent(this.contactsApiClient.deleteContactEmail(contactId, contactEmailId, user), {
+      what: 'API_DELETE_CONTACT_EMAIL',
+      who: user.username,
+      subjectType: 'CONTACT_EMAIL',
+      subjectId: String(contactEmailId),
+      details: { contactId },
+      correlationId,
+    })
   }
 
   async getGlobalContactRestrictions(contactId: number, user: Express.User): Promise<ContactRestrictionDetails[]> {
@@ -311,7 +415,7 @@ export default class ContactsService {
     return this.contactsApiClient.getPrisonerContactRestrictions(prisonerContactId, user)
   }
 
-  async createContactAddress(journey: AddressJourney, user: Express.User) {
+  async createContactAddress(journey: AddressJourney, user: Express.User, correlationId: string) {
     const request: CreateContactAddressRequest = {
       addressType: journey.addressType === 'DO_NOT_KNOW' ? undefined : journey.addressType,
       ...journey.addressLines!,
@@ -334,7 +438,13 @@ export default class ContactsService {
           ...(extension === undefined ? {} : { extNumber: extension }),
         })) || [],
     }
-    return this.contactsApiClient.createContactAddress(journey.contactId, request, user)
+    return this.handleAuditEvent(this.contactsApiClient.createContactAddress(journey.contactId, request, user), {
+      what: 'API_POST_CONTACT_ADDRESSES',
+      who: user.username,
+      subjectType: 'CONTACT_ADDRESS',
+      details: { contactId: journey.contactId },
+      correlationId,
+    })
   }
 
   async updateContactAddress(
@@ -345,6 +455,7 @@ export default class ContactsService {
       endDate?: Date | null
     },
     user: Express.User,
+    correlationId: string,
   ) {
     const request: UpdateContactAddressRequest = {
       addressType: changes.addressType === 'DO_NOT_KNOW' ? undefined : changes.addressType,
@@ -365,25 +476,17 @@ export default class ContactsService {
       comments: changes.comments,
       updatedBy: user.username,
     }
-    return this.contactsApiClient.updateContactAddress(changes.contactId, changes.contactAddressId!, request, user)
-  }
-
-  async createContactAddressPhone(
-    contactId: number,
-    contactAddressId: number,
-    user: Express.User,
-    type: string,
-    phoneNumber: string,
-    extension?: string,
-  ) {
-    const request: CreateContactAddressPhoneRequest = {
-      contactAddressId,
-      phoneType: type,
-      phoneNumber,
-      extNumber: extension,
-      createdBy: user.username,
-    }
-    return this.contactsApiClient.createContactAddressPhone(contactId, contactAddressId, request, user)
+    return this.handleAuditEvent(
+      this.contactsApiClient.updateContactAddress(changes.contactId, changes.contactAddressId!, request, user),
+      {
+        what: 'API_PATCH_CONTACT_ADDRESS',
+        who: user.username,
+        subjectType: 'CONTACT_ADDRESS',
+        subjectId: String(changes.contactAddressId),
+        details: { contactId: changes.contactId },
+        correlationId,
+      },
+    )
   }
 
   async createContactAddressPhones(
@@ -391,6 +494,7 @@ export default class ContactsService {
     contactAddressId: number,
     user: Express.User,
     phones: { type: string; phoneNumber: string; extension?: string | undefined }[],
+    correlationId: string,
   ) {
     const request: CreateMultiplePhoneNumbersRequest = {
       phoneNumbers: phones.map(({ type, phoneNumber, extension }) => ({
@@ -400,14 +504,24 @@ export default class ContactsService {
       })),
       createdBy: user.username,
     }
-    return this.contactsApiClient.createContactAddressPhones(contactId, contactAddressId, request, user)
+    return this.handleAuditEvent(
+      this.contactsApiClient.createContactAddressPhones(contactId, contactAddressId, request, user),
+      {
+        what: 'API_POST_CONTACT_ADDRESS_PHONES',
+        who: user.username,
+        subjectType: 'CONTACT_ADDRESS_PHONE',
+        details: { contactId, contactAddressId },
+        correlationId,
+      },
+    )
   }
 
   async updateContactAddressPhone(
     contactId: number,
     contactAddressId: number,
-    contactPhoneId: number,
+    contactAddressPhoneId: number,
     user: Express.User,
+    correlationId: string,
     type: string,
     phoneNumber: string,
     extension?: string,
@@ -418,16 +532,43 @@ export default class ContactsService {
       extNumber: extension,
       updatedBy: user.username,
     }
-    return this.contactsApiClient.updateContactAddressPhone(contactId, contactAddressId, contactPhoneId, request, user)
+    return this.handleAuditEvent(
+      this.contactsApiClient.updateContactAddressPhone(
+        contactId,
+        contactAddressId,
+        contactAddressPhoneId,
+        request,
+        user,
+      ),
+      {
+        what: 'API_PUT_CONTACT_ADDRESS_PHONE',
+        who: user.username,
+        subjectType: 'CONTACT_ADDRESS_PHONE',
+        subjectId: String(contactAddressPhoneId),
+        details: { contactId, contactAddressId },
+        correlationId,
+      },
+    )
   }
 
   async deleteContactAddressPhone(
     contactId: number,
     contactAddressId: number,
-    contactPhoneId: number,
+    contactAddressPhoneId: number,
     user: Express.User,
+    correlationId: string,
   ) {
-    return this.contactsApiClient.deleteContactAddressPhone(contactId, contactAddressId, contactPhoneId, user)
+    return this.handleAuditEvent(
+      this.contactsApiClient.deleteContactAddressPhone(contactId, contactAddressId, contactAddressPhoneId, user),
+      {
+        what: 'API_DELETE_CONTACT_ADDRESS_PHONE',
+        who: user.username,
+        subjectType: 'CONTACT_ADDRESS_PHONE',
+        subjectId: String(contactAddressPhoneId),
+        details: { contactId, contactAddressId },
+        correlationId,
+      },
+    )
   }
 
   async getLinkedPrisoners(
@@ -439,13 +580,18 @@ export default class ContactsService {
     return this.contactsApiClient.getLinkedPrisoners(contactId, page, size, user)
   }
 
-  async patchEmployments(contactId: number, request: PatchEmploymentsRequest, user: Express.User) {
-    await this.contactsApiClient.patch(
-      {
-        path: `/contact/${contactId}/employment`,
-        data: request,
-      },
-      user,
-    )
+  async patchEmployments(
+    contactId: number,
+    request: PatchEmploymentsRequest,
+    user: Express.User,
+    correlationId: string,
+  ) {
+    await this.handleAuditEvent(this.contactsApiClient.patchEmployments(contactId, request, user), {
+      what: 'API_PATCH_CONTACT_EMPLOYMENTS',
+      who: user.username,
+      subjectType: 'CONTACT_EMPLOYMENT',
+      details: { contactId },
+      correlationId,
+    })
   }
 }

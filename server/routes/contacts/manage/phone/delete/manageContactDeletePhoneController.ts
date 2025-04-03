@@ -47,7 +47,7 @@ export default class ManageContactDeletePhoneController implements PageHandler {
     const contactIdNumber = Number(contactId)
     const contactPhoneIdNumber = Number(contactPhoneId)
 
-    await this.contactsService.deleteContactPhone(contactIdNumber, contactPhoneIdNumber, user)
+    await this.contactsService.deleteContactPhone(contactIdNumber, contactPhoneIdNumber, user, req.id)
     await this.contactsService
       .getContact(contactIdNumber, user)
       .then(response =>

@@ -54,7 +54,7 @@ export default class ManageContactAddEmailController implements PageHandler {
         createdBy: user.name,
       }
       await this.contactsService
-        .createContactEmails(parseInt(contactId, 10), request, user)
+        .createContactEmails(parseInt(contactId, 10), request, user, req.id)
         .then(_ => this.contactsService.getContactName(Number(contactId), user))
         .then(response =>
           req.flash(
