@@ -20,7 +20,7 @@ generic-service:
     COMMON_COMPONENTS_ENABLED: true
     ENVIRONMENT_NAME: DEV
     SENTRY_ENVIRONMENT: DEV
-    AUDIT_ENABLED: 'true'
+    AUDIT_ENABLED: 'false'
 
 generic-prometheus-alerts:
   alertSeverity: hmpps-contacts-ui-dev
