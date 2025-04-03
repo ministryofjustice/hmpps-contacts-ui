@@ -25,6 +25,7 @@ import populateValidationErrors from './middleware/populateValidationErrors'
 import setUpSuccessNotificationBanner from './middleware/setUpSuccessNotificationBanner'
 import sentryMiddleware from './middleware/sentryMiddleware'
 import logger from '../logger'
+import { auditPageViewMiddleware } from './middleware/auditPageViewMiddleware'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -45,6 +46,7 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpWebRequestParsing())
   app.use(setUpStaticResources())
   nunjucksSetup(app)
+  app.get('*any', auditPageViewMiddleware(services.auditService))
   app.use(setUpAuthentication())
   app.use(authorisationMiddleware([AuthorisedRoles.ROLE_PRISON]))
   app.use(setUpCsrf())
