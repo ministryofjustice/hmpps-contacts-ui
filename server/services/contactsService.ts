@@ -458,7 +458,7 @@ export default class ContactsService extends AuditedService {
     correlationId: string,
   ) {
     const request: UpdateContactAddressRequest = {
-      addressType: changes.addressType === 'DO_NOT_KNOW' ? undefined : changes.addressType,
+      addressType: changes.addressType === 'DO_NOT_KNOW' ? null : changes.addressType,
       flat: changes.flat,
       property: changes.property,
       street: changes.street,
