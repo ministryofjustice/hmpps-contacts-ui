@@ -51,7 +51,7 @@ export default class UpdateEmploymentsController implements PageHandler {
       requestedBy: res.locals.user.username,
     }
 
-    await this.contactService.patchEmployments(Number(contactId), request, res.locals.user)
+    await this.contactService.patchEmployments(Number(contactId), request, res.locals.user, req.id)
     req.flash(
       FLASH_KEY__SUCCESS_BANNER,
       `You’ve updated the professional information for ${formatNameFirstNameFirst(journey.contactNames)}.`,

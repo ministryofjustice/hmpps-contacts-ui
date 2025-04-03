@@ -210,6 +210,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
         requestedBy: user.username,
       },
       user,
+      expect.any(String),
     )
 
     expect(flashProvider).toHaveBeenCalledWith(
@@ -255,6 +256,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
         requestedBy: user.username,
       },
       user,
+      expect.any(String),
     )
     expect(response.status).toEqual(302)
   })
@@ -295,6 +297,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
         requestedBy: user.username,
       },
       user,
+      expect.any(String),
     )
     expect(response.status).toEqual(302)
   })
@@ -322,6 +325,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
         requestedBy: user.username,
       },
       user,
+      expect.any(String),
     )
     expect(response.status).toEqual(302)
   })

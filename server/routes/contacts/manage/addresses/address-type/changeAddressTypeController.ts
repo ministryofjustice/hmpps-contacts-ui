@@ -68,6 +68,7 @@ export default class ChangeAddressTypeController implements PageHandler {
         addressType: req.body.addressType,
       },
       user,
+      req.id,
     )
     await this.contactsService
       .getContactName(Number(contactId), user)

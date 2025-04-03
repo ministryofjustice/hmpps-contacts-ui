@@ -113,6 +113,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       10,
       { domesticStatusCode: 'S', updatedBy: 'user1' },
       user,
+      expect.any(String),
     )
   })
 

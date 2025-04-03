@@ -67,6 +67,7 @@ export default class ManageContactDeleteAddressPhoneController implements PageHa
       contactAddressIdNumber,
       contactPhoneIdNumber,
       user,
+      req.id,
     )
     await this.contactsService
       .getContactName(Number(contactId), user)

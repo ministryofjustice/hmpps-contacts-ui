@@ -59,6 +59,7 @@ export default class ChangeAddressCommentsController implements PageHandler {
         comments: req.body.comments ?? null,
       },
       user,
+      req.id,
     )
     await this.contactsService
       .getContactName(Number(contactId), user)

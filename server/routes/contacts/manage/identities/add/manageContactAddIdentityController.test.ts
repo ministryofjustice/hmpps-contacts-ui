@@ -156,7 +156,12 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       { identityType: 'PASS', identityValue: '987564321' },
     ]
 
-    expect(contactsService.createContactIdentities).toHaveBeenCalledWith(contactId, user, expectedIdentities)
+    expect(contactsService.createContactIdentities).toHaveBeenCalledWith(
+      contactId,
+      user,
+      expectedIdentities,
+      expect.any(String),
+    )
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
       'You’ve updated the identity documentation for Jones Middle Names Mason.',

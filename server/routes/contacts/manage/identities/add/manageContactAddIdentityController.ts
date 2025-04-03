@@ -64,7 +64,7 @@ export default class ManageContactAddIdentityController implements PageHandler {
     const { user } = res.locals
     if (typeof save !== 'undefined' && identities) {
       await this.contactsService
-        .createContactIdentities(parseInt(contactId, 10), user, identities)
+        .createContactIdentities(parseInt(contactId, 10), user, identities, req.id)
         .then(_ => this.contactsService.getContactName(Number(contactId), user))
         .then(response =>
           req.flash(

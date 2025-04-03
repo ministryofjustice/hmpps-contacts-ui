@@ -160,7 +160,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
 
     // Then
-    expect(contactsService.deleteContactPhone).toHaveBeenCalledWith(contactId, 123, user)
+    expect(contactsService.deleteContactPhone).toHaveBeenCalledWith(contactId, 123, user, expect.any(String))
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
       'You’ve updated the contact methods for First Middle Last.',

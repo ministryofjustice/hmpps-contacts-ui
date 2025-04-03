@@ -61,6 +61,7 @@ export default class ChangeAddressFlagsController implements PageHandler {
         mailAddress: req.body.mailAddress,
       },
       user,
+      req.id,
     )
     await this.contactsService
       .getContactName(Number(contactId), user)

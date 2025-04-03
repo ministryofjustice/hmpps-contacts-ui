@@ -49,7 +49,7 @@ export default class ManageContactStaffController implements PageHandler {
       isStaff: req.body.isStaff === 'YES',
       updatedBy: user.username,
     }
-    await this.contactsService.updateContactById(parseInt(contactId, 10), request, user)
+    await this.contactsService.updateContactById(parseInt(contactId, 10), request, user, req.id)
     await this.contactsService
       .getContactName(Number(contactId), user)
       .then(response =>

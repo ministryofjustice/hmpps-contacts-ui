@@ -122,7 +122,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
     const journey = req.session.addContactJourneys![journeyId]!
     if (journey.mode === 'NEW') {
       await this.contactService
-        .createContact(journey, user)
+        .createContact(journey, user, req.id)
         .then((createdContact: ContactCreationResult) => {
           journey.contactId = createdContact.createdContact.id
           journey.prisonerContactId = createdContact.createdRelationship.prisonerContactId
@@ -130,7 +130,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
         .then(() => delete req.session.addContactJourneys![journeyId])
     } else if (journey.mode === 'EXISTING') {
       await this.contactService
-        .addContact(journey, user)
+        .addContact(journey, user, req.id)
         .then((createdContact: PrisonerContactRelationshipDetails) => {
           journey.prisonerContactId = createdContact.prisonerContactId
         })

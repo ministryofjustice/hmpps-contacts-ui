@@ -171,6 +171,12 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
 
     // Then
-    expect(contactsService.deleteContactAddressPhone).toHaveBeenCalledWith(contactId, contactAddressId, 123, user)
+    expect(contactsService.deleteContactAddressPhone).toHaveBeenCalledWith(
+      contactId,
+      contactAddressId,
+      123,
+      user,
+      expect.any(String),
+    )
   })
 })

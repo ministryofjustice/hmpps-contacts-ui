@@ -53,7 +53,7 @@ export default class ManageApprovedToVisitController implements PageHandler {
       isApprovedVisitor: req.body.isApprovedToVisit === 'YES',
       updatedBy: user.username,
     }
-    await this.contactsService.updateContactRelationshipById(parseInt(prisonerContactId, 10), request, user)
+    await this.contactsService.updateContactRelationshipById(parseInt(prisonerContactId, 10), request, user, req.id)
     await this.contactsService.getContactName(Number(contactId), user).then(response => {
       req.flash(
         FLASH_KEY__SUCCESS_BANNER,

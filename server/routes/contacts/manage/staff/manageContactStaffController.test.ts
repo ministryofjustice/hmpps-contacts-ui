@@ -84,7 +84,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         .expect(302)
         .expect('Location', '/prisoner/A1234BC/contacts/manage/10/relationship/987654')
 
-      expect(contactsService.updateContactById).toHaveBeenCalledWith(10, expectedPayload, user)
+      expect(contactsService.updateContactById).toHaveBeenCalledWith(10, expectedPayload, user, expect.any(String))
     })
   })
 

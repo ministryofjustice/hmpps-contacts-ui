@@ -52,7 +52,7 @@ export default class ManageContactDeleteIdentityController implements PageHandle
     const contactIdNumber = Number(contactId)
     const contactIdentityNumber = Number(contactIdentityId)
 
-    await this.contactsService.deleteContactIdentity(contactIdNumber, contactIdentityNumber, user)
+    await this.contactsService.deleteContactIdentity(contactIdNumber, contactIdentityNumber, user, req.id)
     await this.contactsService
       .getContact(contactIdNumber, user)
       .then(response =>

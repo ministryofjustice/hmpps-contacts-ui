@@ -65,7 +65,7 @@ export default class ManageLanguageAndInterpreterController implements PageHandl
       interpreterRequired: req.body.interpreterRequired === 'YES',
       updatedBy: user.username,
     }
-    await this.contactsService.updateContactById(Number(contactId), request, user)
+    await this.contactsService.updateContactById(Number(contactId), request, user, req.id)
     await this.contactsService.getContactName(Number(contactId), user).then(response => {
       req.flash(
         FLASH_KEY__SUCCESS_BANNER,

@@ -65,6 +65,7 @@ export default class ChangeAddressDatesController implements PageHandler {
         endDate: toMonth && toYear ? new Date(`${toYear}-${toMonth}-01Z`) : null,
       },
       user,
+      req.id,
     )
     await this.contactsService
       .getContactName(Number(contactId), user)

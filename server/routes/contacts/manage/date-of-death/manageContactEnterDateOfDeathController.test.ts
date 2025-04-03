@@ -193,6 +193,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         contactId,
         { deceasedDate: new Date('1982-06-01Z'), updatedBy: 'user1' },
         user,
+        expect.any(String),
       )
       expect(flashProvider).toHaveBeenCalledWith(
         FLASH_KEY__SUCCESS_BANNER,
