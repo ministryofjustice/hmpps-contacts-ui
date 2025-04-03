@@ -10,13 +10,21 @@ import UpdateContactRestrictionRequest = contactsApiClientTypes.UpdateContactRes
 import UpdatePrisonerContactRestrictionRequest = contactsApiClientTypes.UpdatePrisonerContactRestrictionRequest
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import PrisonerContactRestrictionsResponse = contactsApiClientTypes.PrisonerContactRestrictionsResponse
+import AuditService from './auditService'
+import AuditedService from './auditedService'
 
-export default class RestrictionsService {
-  constructor(private readonly contactsApiClient: ContactsApiClient) {}
+export default class RestrictionsService extends AuditedService {
+  constructor(
+    private readonly contactsApiClient: ContactsApiClient,
+    override readonly auditService: AuditService,
+  ) {
+    super(auditService)
+  }
 
   async createRestriction(
     journey: AddRestrictionJourney,
     user: Express.User,
+    correlationId: string,
   ): Promise<ContactRestrictionDetails | PrisonerContactRestrictionDetails> {
     const { type, startDate, expiryDate, comments } = journey.restriction!
     const request: CreatePrisonerContactRestrictionRequest & CreateContactRestrictionRequest = {
@@ -30,9 +38,31 @@ export default class RestrictionsService {
     }
     switch (journey.restrictionClass) {
       case 'CONTACT_GLOBAL':
-        return this.contactsApiClient.createContactGlobalRestriction(journey.contactId, request, user)
+        return this.handleAuditEvent(
+          this.contactsApiClient.createContactGlobalRestriction(journey.contactId, request, user),
+          {
+            what: 'API_POST_CONTACT_RESTRICTION',
+            who: user.username,
+            subjectType: 'CONTACT_RESTRICTION',
+            details: { contactId: journey.contactId },
+            correlationId,
+          },
+        )
       case 'PRISONER_CONTACT':
-        return this.contactsApiClient.createPrisonerContactRestriction(journey.prisonerContactId!, request, user)
+        return this.handleAuditEvent(
+          this.contactsApiClient.createPrisonerContactRestriction(journey.prisonerContactId!, request, user),
+          {
+            what: 'API_POST_CONTACT_RELATIONSHIP_RESTRICTION',
+            who: user.username,
+            subjectType: 'CONTACT_RELATIONSHIP_RESTRICTION',
+            details: {
+              contactId: journey.contactId,
+              prisonNumber: journey.prisonerNumber,
+              prisonerContactId: journey.prisonerContactId,
+            },
+            correlationId,
+          },
+        )
       default:
         return Promise.reject()
     }
@@ -43,6 +73,7 @@ export default class RestrictionsService {
     contactRestrictionId: number,
     form: RestrictionSchemaType,
     user: Express.User,
+    correlationId: string,
   ): Promise<ContactRestrictionDetails> {
     const { type, startDate, expiryDate, comments } = form
     const request: UpdateContactRestrictionRequest = {
@@ -54,14 +85,25 @@ export default class RestrictionsService {
       comments,
       updatedBy: user.username,
     }
-    return this.contactsApiClient.updateContactGlobalRestriction(contactId, contactRestrictionId, request, user)
+    return this.handleAuditEvent(
+      this.contactsApiClient.updateContactGlobalRestriction(contactId, contactRestrictionId, request, user),
+      {
+        what: 'API_PUT_CONTACT_RESTRICTION',
+        who: user.username,
+        subjectType: 'CONTACT_RESTRICTION',
+        subjectId: String(contactRestrictionId),
+        details: { contactId },
+        correlationId,
+      },
+    )
   }
 
   async updatePrisonerContactRestriction(
-    contactId: number,
+    prisonerContactId: number,
     prisonerContactRestrictionId: number,
     form: RestrictionSchemaType,
     user: Express.User,
+    correlationId: string,
   ): Promise<PrisonerContactRestrictionDetails> {
     const { type, startDate, expiryDate, comments } = form
     const request: UpdatePrisonerContactRestrictionRequest = {
@@ -73,11 +115,21 @@ export default class RestrictionsService {
       comments,
       updatedBy: user.username,
     }
-    return this.contactsApiClient.updatePrisonerContactRestriction(
-      contactId,
-      prisonerContactRestrictionId,
-      request,
-      user,
+    return this.handleAuditEvent(
+      this.contactsApiClient.updatePrisonerContactRestriction(
+        prisonerContactId,
+        prisonerContactRestrictionId,
+        request,
+        user,
+      ),
+      {
+        what: 'API_PUT_CONTACT_RELATIONSHIP_RESTRICTION',
+        who: user.username,
+        subjectType: 'CONTACT_RELATIONSHIP_RESTRICTION',
+        subjectId: String(prisonerContactRestrictionId),
+        details: { prisonerContactId },
+        correlationId,
+      },
     )
   }
 

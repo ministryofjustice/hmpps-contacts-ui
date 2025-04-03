@@ -203,6 +203,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
       restrictionId,
       form,
       user,
+      expect.any(String),
     )
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
@@ -232,6 +233,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
       restrictionId,
       form,
       user,
+      expect.any(String),
     )
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,

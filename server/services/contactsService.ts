@@ -21,8 +21,7 @@ import AddressLines = journeys.AddressLines
 import PagedModelPrisonerContactSummary = contactsApiClientTypes.PagedModelPrisonerContactSummary
 import PagedModelContactSearchResultItem = contactsApiClientTypes.PagedModelContactSearchResultItem
 import AuditService from './auditService'
-import { SanitisedError } from '../sanitisedError'
-import { AuditEvent } from '../data/hmppsAuditClient'
+import AuditedService from './auditedService'
 
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
@@ -35,28 +34,12 @@ type PagedModelLinkedPrisonerDetails = components['schemas']['PagedModelLinkedPr
 type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
 type CreateMultiplePhoneNumbersRequest = components['schemas']['CreateMultiplePhoneNumbersRequest']
 
-export default class ContactsService {
+export default class ContactsService extends AuditedService {
   constructor(
     private readonly contactsApiClient: ContactsApiClient,
-    private readonly auditService: AuditService,
-  ) {}
-
-  async handleAuditEvent<T>(apiPromise: Promise<T>, event: AuditEvent) {
-    try {
-      const res = await apiPromise
-      this.auditService.logAuditEvent(event)
-      return res
-    } catch (ex: unknown) {
-      this.auditService.logAuditEvent({
-        ...event,
-        what: `FAILURE_${event.what}`,
-        details: {
-          ...(event.details ?? {}),
-          statusCode: (ex as SanitisedError).status,
-        },
-      })
-      throw ex
-    }
+    override readonly auditService: AuditService,
+  ) {
+    super(auditService)
   }
 
   async createContact(
@@ -267,7 +250,7 @@ export default class ContactsService {
       updatedBy: user.username,
     }
     return this.handleAuditEvent(this.contactsApiClient.updateContactPhone(contactId, contactPhoneId, request, user), {
-      what: 'API_PATCH_CONTACT_PHONE',
+      what: 'API_PUT_CONTACT_PHONE',
       who: user.username,
       subjectType: 'CONTACT_PHONE',
       subjectId: String(contactPhoneId),
@@ -324,7 +307,7 @@ export default class ContactsService {
     return this.handleAuditEvent(
       this.contactsApiClient.updateContactIdentity(contactId, contactIdentityId, request, user),
       {
-        what: 'API_PATCH_CONTACT_IDENTITY',
+        what: 'API_PUT_CONTACT_IDENTITY',
         who: user.username,
         subjectType: 'CONTACT_IDENTITY',
         subjectId: String(contactIdentityId),
@@ -401,7 +384,7 @@ export default class ContactsService {
     correlationId: string,
   ): Promise<ContactEmailDetails> {
     return this.handleAuditEvent(this.contactsApiClient.updateContactEmail(contactId, contactEmailId, request, user), {
-      what: 'API_PATCH_CONTACT_EMAIL',
+      what: 'API_PUT_CONTACT_EMAIL',
       who: user.username,
       subjectType: 'CONTACT_EMAIL',
       subjectId: String(contactEmailId),
@@ -558,7 +541,7 @@ export default class ContactsService {
         user,
       ),
       {
-        what: 'API_PATCH_CONTACT_ADDRESS_PHONE',
+        what: 'API_PUT_CONTACT_ADDRESS_PHONE',
         who: user.username,
         subjectType: 'CONTACT_ADDRESS_PHONE',
         subjectId: String(contactAddressPhoneId),

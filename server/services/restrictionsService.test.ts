@@ -10,8 +10,12 @@ import PrisonerContactRestrictionDetails = contactsApiClientTypes.PrisonerContac
 import CreatePrisonerContactRestrictionRequest = contactsApiClientTypes.CreatePrisonerContactRestrictionRequest
 import UpdateContactRestrictionRequest = contactsApiClientTypes.UpdateContactRestrictionRequest
 import ContactDetails = contactsApiClientTypes.ContactDetails
+import { MockedService } from '../testutils/mockedServices'
 
 jest.mock('../data/contactsApiClient')
+jest.mock('../services/auditService')
+
+const auditService = MockedService.AuditService()
 
 describe('restrictionsService', () => {
   const user = { token: 'userToken', username: 'user1' } as Express.User
@@ -29,7 +33,7 @@ describe('restrictionsService', () => {
 
   beforeEach(() => {
     apiClient = new ContactsApiClient() as jest.Mocked<ContactsApiClient>
-    service = new RestrictionsService(apiClient)
+    service = new RestrictionsService(apiClient, auditService)
   })
 
   afterEach(() => {
@@ -44,7 +48,7 @@ describe('restrictionsService', () => {
       journey.restriction = { type: 'BAN', startDate: '1/2/2009' }
 
       // When
-      const created = await service.createRestriction(journey, user)
+      const created = await service.createRestriction(journey, user, 'correlationId')
 
       // Then
       const expectedRequest: CreateContactRestrictionRequest = {
@@ -56,6 +60,13 @@ describe('restrictionsService', () => {
       }
       expect(created).toStrictEqual(expectedResponse)
       expect(apiClient.createContactGlobalRestriction).toHaveBeenCalledWith(99, expectedRequest, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_POST_CONTACT_RESTRICTION',
+        who: 'user1',
+        subjectType: 'CONTACT_RESTRICTION',
+        correlationId: 'correlationId',
+        details: { contactId: 99 },
+      })
     })
 
     it('should create global restriction with full details', async () => {
@@ -66,7 +77,7 @@ describe('restrictionsService', () => {
       journey.restriction = { type: 'BAN', startDate: '1/2/2009', expiryDate: '02/03/2020', comments: 'Some comments' }
 
       // When
-      const created = await service.createRestriction(journey, user)
+      const created = await service.createRestriction(journey, user, 'correlationId')
 
       // Then
       const expectedRequest: CreateContactRestrictionRequest = {
@@ -84,7 +95,14 @@ describe('restrictionsService', () => {
       apiClient.createContactGlobalRestriction.mockRejectedValue(createError.BadRequest())
       journey.restrictionClass = 'CONTACT_GLOBAL'
       journey.restriction = { type: 'BAN', startDate: '1/2/2009' }
-      await expect(service.createRestriction(journey, user)).rejects.toBeInstanceOf(BadRequest)
+      await expect(service.createRestriction(journey, user, 'correlationId')).rejects.toBeInstanceOf(BadRequest)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_POST_CONTACT_RESTRICTION',
+        who: 'user1',
+        subjectType: 'CONTACT_RESTRICTION',
+        correlationId: 'correlationId',
+        details: { contactId: 99, statusCode: 400 },
+      })
     })
 
     it('should create prisoner-contact restriction with minimal details', async () => {
@@ -95,7 +113,7 @@ describe('restrictionsService', () => {
       journey.restriction = { type: 'BAN', startDate: '1/2/2009' }
 
       // When
-      const created = await service.createRestriction(journey, user)
+      const created = await service.createRestriction(journey, user, 'correlationId')
 
       // Then
       const expectedRequest: CreatePrisonerContactRestrictionRequest = {
@@ -107,6 +125,13 @@ describe('restrictionsService', () => {
       }
       expect(created).toStrictEqual(expectedResponse)
       expect(apiClient.createPrisonerContactRestriction).toHaveBeenCalledWith(66, expectedRequest, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_POST_CONTACT_RELATIONSHIP_RESTRICTION',
+        who: 'user1',
+        subjectType: 'CONTACT_RELATIONSHIP_RESTRICTION',
+        correlationId: 'correlationId',
+        details: { prisonNumber: 'A1234BC', contactId: 99, prisonerContactId: 66 },
+      })
     })
 
     it('should create global restriction with full details', async () => {
@@ -117,7 +142,7 @@ describe('restrictionsService', () => {
       journey.restriction = { type: 'BAN', startDate: '1/2/2009', expiryDate: '02/03/2020', comments: 'Some comments' }
 
       // When
-      const created = await service.createRestriction(journey, user)
+      const created = await service.createRestriction(journey, user, 'correlationId')
 
       // Then
       const expectedRequest: CreatePrisonerContactRestrictionRequest = {
@@ -135,7 +160,14 @@ describe('restrictionsService', () => {
       apiClient.createPrisonerContactRestriction.mockRejectedValue(createError.BadRequest())
       journey.restrictionClass = 'PRISONER_CONTACT'
       journey.restriction = { type: 'BAN', startDate: '1/2/2009' }
-      await expect(service.createRestriction(journey, user)).rejects.toBeInstanceOf(BadRequest)
+      await expect(service.createRestriction(journey, user, 'correlationId')).rejects.toBeInstanceOf(BadRequest)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_POST_CONTACT_RELATIONSHIP_RESTRICTION',
+        who: 'user1',
+        subjectType: 'CONTACT_RELATIONSHIP_RESTRICTION',
+        correlationId: 'correlationId',
+        details: { prisonNumber: 'A1234BC', contactId: 99, prisonerContactId: 66, statusCode: 400 },
+      })
     })
   })
 
@@ -154,7 +186,13 @@ describe('restrictionsService', () => {
       apiClient.updateContactGlobalRestriction.mockResolvedValue(expectedResponse)
 
       // When
-      const updated = await service.updateContactGlobalRestriction(contactId, restrictionId, form, user)
+      const updated = await service.updateContactGlobalRestriction(
+        contactId,
+        restrictionId,
+        form,
+        user,
+        'correlationId',
+      )
 
       // Then
       const expectedRequest: UpdateContactRestrictionRequest = {
@@ -171,6 +209,14 @@ describe('restrictionsService', () => {
         expectedRequest,
         user,
       )
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_PUT_CONTACT_RESTRICTION',
+        who: 'user1',
+        subjectType: 'CONTACT_RESTRICTION',
+        subjectId: '555',
+        correlationId: 'correlationId',
+        details: { contactId: 999 },
+      })
     })
 
     it('should update global restriction with full details', async () => {
@@ -185,7 +231,13 @@ describe('restrictionsService', () => {
       apiClient.updateContactGlobalRestriction.mockResolvedValue(expectedResponse)
 
       // When
-      const updated = await service.updateContactGlobalRestriction(contactId, restrictionId, form, user)
+      const updated = await service.updateContactGlobalRestriction(
+        contactId,
+        restrictionId,
+        form,
+        user,
+        'correlationId',
+      )
 
       // Then
       const expectedRequest: UpdateContactRestrictionRequest = {
@@ -213,9 +265,17 @@ describe('restrictionsService', () => {
       }
 
       apiClient.updateContactGlobalRestriction.mockRejectedValue(createError.BadRequest())
-      await expect(service.updateContactGlobalRestriction(contactId, restrictionId, form, user)).rejects.toBeInstanceOf(
-        BadRequest,
-      )
+      await expect(
+        service.updateContactGlobalRestriction(contactId, restrictionId, form, user, 'correlationId'),
+      ).rejects.toBeInstanceOf(BadRequest)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_PUT_CONTACT_RESTRICTION',
+        who: 'user1',
+        subjectType: 'CONTACT_RESTRICTION',
+        subjectId: '555',
+        correlationId: 'correlationId',
+        details: { contactId: 999, statusCode: 400 },
+      })
     })
   })
 
@@ -234,7 +294,13 @@ describe('restrictionsService', () => {
       apiClient.updatePrisonerContactRestriction.mockResolvedValue(expectedResponse)
 
       // When
-      const updated = await service.updatePrisonerContactRestriction(contactId, restrictionId, form, user)
+      const updated = await service.updatePrisonerContactRestriction(
+        contactId,
+        restrictionId,
+        form,
+        user,
+        'correlationId',
+      )
 
       // Then
       const expectedRequest: UpdateContactRestrictionRequest = {
@@ -251,6 +317,14 @@ describe('restrictionsService', () => {
         expectedRequest,
         user,
       )
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_PUT_CONTACT_RELATIONSHIP_RESTRICTION',
+        who: 'user1',
+        subjectType: 'CONTACT_RELATIONSHIP_RESTRICTION',
+        subjectId: '555',
+        correlationId: 'correlationId',
+        details: { prisonerContactId: 999 },
+      })
     })
 
     it('should update prisoner-contact restriction with full details', async () => {
@@ -265,7 +339,13 @@ describe('restrictionsService', () => {
       apiClient.updatePrisonerContactRestriction.mockResolvedValue(expectedResponse)
 
       // When
-      const updated = await service.updatePrisonerContactRestriction(contactId, restrictionId, form, user)
+      const updated = await service.updatePrisonerContactRestriction(
+        contactId,
+        restrictionId,
+        form,
+        user,
+        'correlationId',
+      )
 
       // Then
       const expectedRequest: UpdateContactRestrictionRequest = {
@@ -294,8 +374,16 @@ describe('restrictionsService', () => {
 
       apiClient.updatePrisonerContactRestriction.mockRejectedValue(createError.BadRequest())
       await expect(
-        service.updatePrisonerContactRestriction(contactId, restrictionId, form, user),
+        service.updatePrisonerContactRestriction(contactId, restrictionId, form, user, 'correlationId'),
       ).rejects.toBeInstanceOf(BadRequest)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_PUT_CONTACT_RELATIONSHIP_RESTRICTION',
+        who: 'user1',
+        subjectType: 'CONTACT_RELATIONSHIP_RESTRICTION',
+        subjectId: '555',
+        correlationId: 'correlationId',
+        details: { prisonerContactId: 999, statusCode: 400 },
+      })
     })
   })
 

@@ -153,6 +153,13 @@ describe('contactsService', () => {
         } else {
           expect(apiClient.createContact).toHaveBeenCalledWith(expectedRequest, user)
         }
+        expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+          what: 'API_POST_CONTACT',
+          who: 'user1',
+          subjectType: 'CONTACT',
+          correlationId: 'correlationId',
+          details: { prisonNumber: 'A1234BC' },
+        })
       },
     )
 
@@ -354,6 +361,14 @@ describe('contactsService', () => {
           'correlationId',
         ),
       ).rejects.toBeInstanceOf(BadRequest)
+
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_POST_CONTACT',
+        who: 'user1',
+        subjectType: 'CONTACT',
+        correlationId: 'correlationId',
+        details: { prisonNumber: 'A1234BC', statusCode: 400 },
+      })
     })
   })
 
@@ -499,6 +514,13 @@ describe('contactsService', () => {
         // Then
         expect(created).toStrictEqual(expectedCreated)
         expect(apiClient.addContactRelationship).toHaveBeenCalledWith(expectedRequest, user)
+        expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+          what: 'API_POST_CONTACT_RELATIONSHIP',
+          who: 'user1',
+          subjectType: 'CONTACT_RELATIONSHIP',
+          correlationId: 'correlationId',
+          details: { prisonNumber: 'A1234BC', contactId: 123456 },
+        })
       },
     )
 
@@ -569,6 +591,14 @@ describe('contactsService', () => {
           'correlationId',
         ),
       ).rejects.toBeInstanceOf(BadRequest)
+
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_POST_CONTACT_RELATIONSHIP',
+        who: 'user1',
+        subjectType: 'CONTACT_RELATIONSHIP',
+        correlationId: 'correlationId',
+        details: { prisonNumber: 'A1234BC', contactId: 123456, statusCode: 400 },
+      })
     })
   })
 
@@ -592,6 +622,14 @@ describe('contactsService', () => {
       // Then
       expect(updated).toStrictEqual(expected)
       expect(apiClient.updateContactPhone).toHaveBeenCalledWith(99, 77, expectedRequest, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_PUT_CONTACT_PHONE',
+        who: 'user1',
+        subjectType: 'CONTACT_PHONE',
+        subjectId: '77',
+        correlationId: 'correlationId',
+        details: { contactId: 99 },
+      })
     })
 
     it('should update a contact phone with only required fields', async () => {
@@ -619,6 +657,14 @@ describe('contactsService', () => {
       await expect(
         service.updateContactPhone(99, 77, user, 'correlationId', 'MOB', '0123456789', undefined),
       ).rejects.toBeInstanceOf(BadRequest)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_PUT_CONTACT_PHONE',
+        who: 'user1',
+        subjectType: 'CONTACT_PHONE',
+        subjectId: '77',
+        correlationId: 'correlationId',
+        details: { contactId: 99, statusCode: 400 },
+      })
     })
   })
 
@@ -636,11 +682,26 @@ describe('contactsService', () => {
       // Then
       expect(contact).toStrictEqual(TestData.patchContact())
       expect(apiClient.updateContactById).toHaveBeenCalledWith(23, request, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_PATCH_CONTACT',
+        who: 'user1',
+        subjectType: 'CONTACT',
+        subjectId: '23',
+        correlationId: 'correlationId',
+      })
     })
 
     it('Propagates errors', async () => {
-      apiClient.updateContactById.mockRejectedValue(new Error('some error'))
-      await expect(apiClient.updateContactById(23, request, user)).rejects.toEqual(new Error('some error'))
+      apiClient.updateContactById.mockRejectedValue(createError.BadRequest())
+      await expect(service.updateContactById(23, request, user, 'correlationId')).rejects.toBeInstanceOf(BadRequest)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_PATCH_CONTACT',
+        who: 'user1',
+        subjectType: 'CONTACT',
+        subjectId: '23',
+        correlationId: 'correlationId',
+        details: { statusCode: 400 },
+      })
     })
   })
 
@@ -653,11 +714,27 @@ describe('contactsService', () => {
 
       // Then
       expect(apiClient.deleteContactPhone).toHaveBeenCalledWith(23, 77, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_DELETE_CONTACT_PHONE',
+        who: 'user1',
+        subjectType: 'CONTACT_PHONE',
+        subjectId: '77',
+        correlationId: 'correlationId',
+        details: { contactId: 23 },
+      })
     })
 
     it('Propagates errors', async () => {
       apiClient.deleteContactPhone.mockRejectedValue(new Error('some error'))
-      await expect(apiClient.deleteContactPhone(23, 77, user)).rejects.toEqual(new Error('some error'))
+      await expect(service.deleteContactPhone(23, 77, user, 'correlationId')).rejects.toEqual(new Error('some error'))
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_DELETE_CONTACT_PHONE',
+        who: 'user1',
+        subjectType: 'CONTACT_PHONE',
+        subjectId: '77',
+        correlationId: 'correlationId',
+        details: { contactId: 23, statusCode: undefined },
+      })
     })
   })
 
@@ -686,6 +763,13 @@ describe('contactsService', () => {
       // Then
       expect(created).toStrictEqual([expectedCreated])
       expect(apiClient.createContactEmails).toHaveBeenCalledWith(99, expectedRequest, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_POST_CONTACT_EMAILS',
+        who: 'user1',
+        subjectType: 'CONTACT_EMAIL',
+        correlationId: 'correlationId',
+        details: { contactId: 99 },
+      })
     })
 
     it('should handle a bad request', async () => {
@@ -693,6 +777,13 @@ describe('contactsService', () => {
       await expect(service.createContactEmails(99, expectedRequest, user, 'correlationId')).rejects.toBeInstanceOf(
         BadRequest,
       )
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_POST_CONTACT_EMAILS',
+        who: 'user1',
+        subjectType: 'CONTACT_EMAIL',
+        correlationId: 'correlationId',
+        details: { contactId: 99, statusCode: 400 },
+      })
     })
   })
 
@@ -722,11 +813,27 @@ describe('contactsService', () => {
       // Then
       expect(updated).toStrictEqual(expected)
       expect(apiClient.updateContactEmail).toHaveBeenCalledWith(99, 1, request, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_PUT_CONTACT_EMAIL',
+        who: 'user1',
+        subjectType: 'CONTACT_EMAIL',
+        subjectId: '1',
+        correlationId: 'correlationId',
+        details: { contactId: 99 },
+      })
     })
 
     it('should handle a bad request', async () => {
       apiClient.updateContactEmail.mockRejectedValue(createError.BadRequest())
       await expect(service.updateContactEmail(99, 1, request, user, 'correlationId')).rejects.toBeInstanceOf(BadRequest)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_PUT_CONTACT_EMAIL',
+        who: 'user1',
+        subjectType: 'CONTACT_EMAIL',
+        subjectId: '1',
+        correlationId: 'correlationId',
+        details: { contactId: 99, statusCode: 400 },
+      })
     })
   })
 
@@ -739,11 +846,27 @@ describe('contactsService', () => {
 
       // Then
       expect(apiClient.deleteContactEmail).toHaveBeenCalledWith(23, 77, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_DELETE_CONTACT_EMAIL',
+        who: 'user1',
+        subjectType: 'CONTACT_EMAIL',
+        subjectId: '77',
+        correlationId: 'correlationId',
+        details: { contactId: 23 },
+      })
     })
 
     it('Propagates errors', async () => {
       apiClient.deleteContactEmail.mockRejectedValue(new Error('some error'))
-      await expect(apiClient.deleteContactEmail(23, 77, user)).rejects.toEqual(new Error('some error'))
+      await expect(service.deleteContactEmail(23, 77, user, 'correlationId')).rejects.toEqual(new Error('some error'))
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_DELETE_CONTACT_EMAIL',
+        who: 'user1',
+        subjectType: 'CONTACT_EMAIL',
+        subjectId: '77',
+        correlationId: 'correlationId',
+        details: { contactId: 23, statusCode: undefined },
+      })
     })
   })
 
@@ -811,6 +934,13 @@ describe('contactsService', () => {
       // Then
       expect(created).toStrictEqual(expectedCreated)
       expect(apiClient.createContactAddress).toHaveBeenCalledWith(999, expectedRequest, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_POST_CONTACT_ADDRESSES',
+        who: 'user1',
+        subjectType: 'CONTACT_ADDRESS',
+        correlationId: 'correlationId',
+        details: { contactId: 999 },
+      })
     })
 
     it('should create a contact address from the journey dto with only optional fields', async () => {
@@ -879,6 +1009,13 @@ describe('contactsService', () => {
           'correlationId',
         ),
       ).rejects.toBeInstanceOf(BadRequest)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_POST_CONTACT_ADDRESSES',
+        who: 'user1',
+        subjectType: 'CONTACT_ADDRESS',
+        correlationId: 'correlationId',
+        details: { contactId: 999, statusCode: 400 },
+      })
     })
   })
 
@@ -935,6 +1072,14 @@ describe('contactsService', () => {
       // Then
       expect(updated).toStrictEqual(expectedUpdated)
       expect(apiClient.updateContactAddress).toHaveBeenCalledWith(999, 123456, expectedRequest, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_PATCH_CONTACT_ADDRESS',
+        who: 'user1',
+        subjectType: 'CONTACT_ADDRESS',
+        subjectId: '123456',
+        correlationId: 'correlationId',
+        details: { contactId: 999 },
+      })
     })
 
     it('should update a contact address from the journey dto with partial fields', async () => {
@@ -998,6 +1143,14 @@ describe('contactsService', () => {
           'correlationId',
         ),
       ).rejects.toBeInstanceOf(BadRequest)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_PATCH_CONTACT_ADDRESS',
+        who: 'user1',
+        subjectType: 'CONTACT_ADDRESS',
+        subjectId: '123456',
+        correlationId: 'correlationId',
+        details: { contactId: 999, statusCode: 400 },
+      })
     })
   })
 
@@ -1031,6 +1184,14 @@ describe('contactsService', () => {
       // Then
       expect(updated).toStrictEqual(expected)
       expect(apiClient.updateContactAddressPhone).toHaveBeenCalledWith(99, 321, 77, expectedRequest, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_PUT_CONTACT_ADDRESS_PHONE',
+        who: 'user1',
+        subjectType: 'CONTACT_ADDRESS_PHONE',
+        subjectId: '77',
+        correlationId: 'correlationId',
+        details: { contactId: 99, contactAddressId: 321 },
+      })
     })
 
     it('should update a contact address phone with only required fields', async () => {
@@ -1068,6 +1229,14 @@ describe('contactsService', () => {
       await expect(
         service.updateContactAddressPhone(99, 321, 77, user, 'correlationId', 'MOB', '0123456789', undefined),
       ).rejects.toBeInstanceOf(BadRequest)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_PUT_CONTACT_ADDRESS_PHONE',
+        who: 'user1',
+        subjectType: 'CONTACT_ADDRESS_PHONE',
+        subjectId: '77',
+        correlationId: 'correlationId',
+        details: { contactId: 99, contactAddressId: 321, statusCode: 400 },
+      })
     })
   })
 })
