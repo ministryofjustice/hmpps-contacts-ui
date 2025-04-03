@@ -79,45 +79,6 @@ export const capitalizeFirstLetter = (val: string) => {
   return val && val.toLowerCase().replace(/^./, val[0]!.toUpperCase())
 }
 
-// add aria-sort attributes to govukTable head row, so that moj-sortable-table css will be applied
-export const convertToSortableColumns = (headings: { text: string; key?: string }[], sort: string) => {
-  const [sortingKey, sortingDirection] = sort.split(',')
-
-  return headings.map(heading => {
-    const { text, key, ...others } = heading
-    if (!key) {
-      return heading
-    }
-    if (key === sortingKey) {
-      if (sortingDirection === 'asc') {
-        return {
-          attributes: {
-            'aria-sort': 'ascending',
-          },
-          html: `<a href="?sort=${key},desc"><button>${text}</button></a>`,
-          ...others,
-        }
-      }
-      if (sortingDirection === 'desc') {
-        return {
-          attributes: {
-            'aria-sort': 'descending',
-          },
-          html: `<a href="?sort=${key},asc"><button>${text}</button></a>`,
-          ...others,
-        }
-      }
-    }
-    return {
-      attributes: {
-        'aria-sort': 'none',
-      },
-      html: `<a href="?sort=${key},asc"><button>${text}</button></a>`,
-      ...others,
-    }
-  })
-}
-
 const isLowerCase = (val: string): boolean => /^[a-z]*$/.test(val)
 
 const lowercaseExceptAcronym = (val: string): string => {
@@ -177,10 +138,17 @@ export const referenceCodesToRadiosOrCheckboxes = (
   }))
 
 export const formatDob = (contact: ContactSearchResultItem) => {
-  if (!contact.dateOfBirth) return 'Not provided'
-  const richDate = parseISO(contact.dateOfBirth)
-  if (!isValid(richDate)) return 'Not provided'
-
-  const ageString = contact.deceasedDate ? '(Deceased)' : `(${ageInYears(richDate)} old)`
-  return `${format(richDate, 'd/M/yyyy')}<br/><span class="govuk-hint">${ageString}</span>`
+  let dateOfBirth = 'Not provided'
+  let hint
+  if (contact.dateOfBirth) {
+    const richDate = parseISO(contact.dateOfBirth)
+    if (isValid(richDate)) {
+      dateOfBirth = format(richDate, 'd/M/yyyy')
+      hint = `(${ageInYears(richDate)} old)`
+    }
+  }
+  if (contact.deceasedDate) {
+    hint = '(Deceased)'
+  }
+  return `${dateOfBirth}${hint ? `<br/><span class="govuk-hint">${hint}</span>` : ''}`
 }

@@ -59,7 +59,7 @@ context('Create Contacts', () => {
     const { prisonerNumber } = TestData.prisoner()
     cy.visit(`/prisoner/${prisonerNumber}/contacts/list`)
 
-    Page.verifyOnPage(ListContactsPage) //
+    Page.verifyOnPage(ListContactsPage, 'John Smith') //
       .clickAddNewContactButton()
 
     Page.verifyOnPage(SearchContactPage) //
@@ -442,6 +442,6 @@ context('Create Contacts', () => {
       .clickLinkTo('Cancel', CancelAddContactPage, 'NEW', 'First Last') //
       .clickButton('Yes, cancel')
 
-    Page.verifyOnPage(ListContactsPage)
+    Page.verifyOnPage(ListContactsPage, 'John Smith')
   })
 })

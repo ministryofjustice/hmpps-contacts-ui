@@ -231,4 +231,14 @@ describe('formatDob', () => {
       )
     },
   )
+
+  it('should render Date of Birth label correctly with dateOfBirth undefined', () => {
+    expect(formatDob({ dateOfBirth: undefined } as PagedModelContactSearchResultItem)).toEqual(`Not provided`)
+  })
+
+  it('should render Date of Birth label correctly with dateOfBirth undefined but with a deceased date', () => {
+    expect(
+      formatDob({ dateOfBirth: undefined, deceasedDate: '2010-01-01' } as PagedModelContactSearchResultItem),
+    ).toEqual(`Not provided<br/><span class="govuk-hint">(Deceased)</span>`)
+  })
 })

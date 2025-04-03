@@ -1,4 +1,4 @@
-import ContactsPage from '../pages/listContacts'
+import ListContactsPage from '../pages/listContacts'
 import AuthSignInPage from '../pages/authSignIn'
 import Page from '../pages/page'
 import AuthManageDetailsPage from '../pages/authManageDetails'
@@ -30,7 +30,7 @@ context('Sign In', () => {
 
   it('User can sign out', () => {
     cy.signIn()
-    const contactsPage = Page.verifyOnPage(ContactsPage)
+    const contactsPage = Page.verifyOnPage(IndexPage)
     contactsPage.signOut().click()
     Page.verifyOnPage(AuthSignInPage)
   })
@@ -38,7 +38,7 @@ context('Sign In', () => {
   xit('User can manage their details', () => {
     cy.signIn()
     cy.task('stubAuthManageDetails')
-    const contactsPage = Page.verifyOnPage(ContactsPage)
+    const contactsPage = Page.verifyOnPage(ListContactsPage, 'John Smith')
 
     contactsPage.manageDetails().get('a').invoke('removeAttr', 'target')
     contactsPage.manageDetails().click()
@@ -47,7 +47,7 @@ context('Sign In', () => {
 
   it('Token verification failure takes user to sign in page', () => {
     cy.signIn()
-    Page.verifyOnPage(ContactsPage)
+    Page.verifyOnPage(IndexPage)
     cy.task('stubVerifyToken', false)
 
     // can't do a visit here as cypress requires only one domain

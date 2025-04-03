@@ -203,7 +203,11 @@ const ManageContactsRoutes = (
   })
 
   // Part 4: List contacts for a prisoner
-  get('/prisoner/:prisonerNumber/contacts/list', new ListContactsController(contactsService))
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/list',
+    controller: new ListContactsController(contactsService),
+    noValidation: true,
+  })
 
   // Part 5: View one contact
   get(

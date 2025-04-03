@@ -26,6 +26,10 @@ import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import PatchContactAddressRequest = contactsApiClientTypes.PatchContactAddressRequest
 import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
+import PagedModelPrisonerContactSummary = contactsApiClientTypes.PagedModelPrisonerContactSummary
+import TestData from '../routes/testutils/testData'
+import PrisonerContactFilter = contactsApiClientTypes.PrisonerContactFilter
+import PrisonerContactPagination = contactsApiClientTypes.PrisonerContactPagination
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
@@ -1260,6 +1264,82 @@ describe('contactsApiClient', () => {
         expect(e.status).toEqual(errorCode)
         expect(e.data).toEqual(expectedErrorBody)
       }
+    })
+  })
+
+  describe('filterPrisonerContacts', () => {
+    it('should omit optional query parameters', async () => {
+      // Given
+
+      const page: PagedModelPrisonerContactSummary = {
+        content: [TestData.getPrisonerContact()],
+        page: {
+          totalElements: 99,
+          totalPages: 2,
+          number: 2,
+          size: 98,
+        },
+      }
+      fakeContactsApi
+        .get('/prisoner/AB1234BC/contact')
+        .query({
+          page: 1,
+          size: 98,
+        })
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, page)
+
+      // When
+      const createdContact = await contactsApiClient.filterPrisonerContacts('AB1234BC', {}, { page: 1, size: 98 }, user)
+
+      // Then
+      expect(createdContact).toEqual(page)
+    })
+
+    it('should include optional query parameters if defined', async () => {
+      // Given
+
+      const page: PagedModelPrisonerContactSummary = {
+        content: [TestData.getPrisonerContact()],
+        page: {
+          totalElements: 99,
+          totalPages: 2,
+          number: 2,
+          size: 98,
+        },
+      }
+      fakeContactsApi
+        .get('/prisoner/AB1234BC/contact')
+        .query({
+          active: true,
+          relationshipType: 'S',
+          emergencyContact: true,
+          nextOfKin: true,
+          emergencyContactOrNextOfKin: true,
+          page: 1,
+          size: 98,
+          sort: ['lastName,desc', 'firstName,asc'],
+        })
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, page)
+
+      // When
+      const filter: PrisonerContactFilter = {
+        active: true,
+        relationshipType: 'S',
+        emergencyContact: true,
+        nextOfKin: true,
+        emergencyContactOrNextOfKin: true,
+      }
+      const pagination: PrisonerContactPagination = {
+        page: 1,
+        size: 98,
+        sort: ['lastName,desc', 'firstName,asc'],
+      }
+      const createdContact = await contactsApiClient.filterPrisonerContacts('AB1234BC', filter, pagination, user)
+
+      // Then
+      expect(createdContact).toEqual(page)
     })
   })
 })

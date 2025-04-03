@@ -3,7 +3,6 @@ import RestClient from './restClient'
 import ReferenceCodeType from '../enumeration/referenceCodeType'
 import { components } from '../@types/contactsApi'
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
-import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
 import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import PagedModelPrisonerContactSummary = contactsApiClientTypes.PagedModelPrisonerContactSummary
 import ContactDetails = contactsApiClientTypes.ContactDetails
@@ -29,6 +28,8 @@ import PatchContactAddressRequest = contactsApiClientTypes.PatchContactAddressRe
 import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
 import PagedModelContactSearchResultItem = contactsApiClientTypes.PagedModelContactSearchResultItem
+import PrisonerContactFilter = contactsApiClientTypes.PrisonerContactFilter
+import PrisonerContactPagination = contactsApiClientTypes.PrisonerContactPagination
 import PatchEmploymentsRequest = contactsApiClientTypes.PatchEmploymentsRequest
 
 type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
@@ -79,11 +80,7 @@ export default class ContactsApiClient extends RestClient {
     prisonerNumber: string,
     activeOnly: boolean,
     user: Express.User,
-    pagination?: {
-      page: number
-      size: number
-      sort?: string[]
-    },
+    pagination?: PrisonerContactPagination,
   ): Promise<PagedModelPrisonerContactSummary> {
     const paginationParameters = pagination ?? { page: 0, size: config.apis.contactsApi.pageSize || 10 }
 
@@ -96,8 +93,24 @@ export default class ContactsApiClient extends RestClient {
     )
   }
 
+  async filterPrisonerContacts(
+    prisonerNumber: string,
+    filter: PrisonerContactFilter,
+    pagination: PrisonerContactPagination,
+    user: Express.User,
+  ): Promise<PagedModelPrisonerContactSummary> {
+    const paginationParameters = pagination ?? { page: 0, size: config.apis.contactsApi.pageSize || 10 }
+    return this.get<PagedModelPrisonerContactSummary>(
+      {
+        path: `/prisoner/${prisonerNumber}/contact`,
+        query: { ...paginationParameters, ...filter },
+      },
+      user,
+    )
+  }
+
   async getReferenceCodes(type: ReferenceCodeType, user: Express.User): Promise<ReferenceCode[]> {
-    return this.get<PrisonerContactSummary[]>(
+    return this.get<ReferenceCode[]>(
       {
         path: `/reference-codes/group/${type}`,
       },

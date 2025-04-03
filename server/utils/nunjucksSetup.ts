@@ -9,7 +9,6 @@ import {
   ageInYears,
   capitalizeFirstLetter,
   capitaliseName,
-  convertToSortableColumns,
   sentenceCase,
   isDateAndInThePast,
   referenceCodesToSelect,
@@ -31,6 +30,7 @@ import { taskStatus } from './taskStatus'
 import captionForAddContactJourney from '../routes/contacts/add/addContactsUtils'
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import sortRestrictions from './sortRestrictions'
+import { convertToSortableColumns } from './convertToSortableColumns'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')

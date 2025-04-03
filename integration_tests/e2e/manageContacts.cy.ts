@@ -56,24 +56,7 @@ context('Manage contacts ', () => {
 
     Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
 
-    Page.verifyOnPage(ListContactsPage)
-      .clickActiveSectionTabButton()
-      .verifyShowPaginationNavigationValueAs('Next')
-      .verifyShowPaginationNavigationValueAs('Previous')
-      .verifyShowPaginationPageLinkValueAs('1', 1)
-      .verifyShowPaginationPageValueAs('…')
-      .verifyShowPaginationPageLinkValueAs('3', 2)
-      .verifyShowPaginationActivePageValueAs('4')
-      .verifyShowPaginationPageLinkValueAs('5', 3)
-      .verifyShowPaginationPageLinkValueAs('5', 4)
-      .clickInactiveSectionTabButton()
-      .verifyShowPaginationNavigationValueAs('Next')
-      .verifyShowPaginationNavigationValueAs('Previous')
-      .verifyShowPaginationPageLinkValueAs('1', 1)
-      .verifyShowPaginationPageValueAs('…')
-      .verifyShowPaginationPageLinkValueAs('3', 2)
-      .verifyShowPaginationActivePageValueAs('4')
-      .verifyShowPaginationPageLinkValueAs('5', 4)
+    Page.verifyOnPage(ListContactsPage, 'John Smith')
   })
 
   it('should show a message that no contacts match the criteria', () => {

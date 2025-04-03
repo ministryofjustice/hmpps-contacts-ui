@@ -47,7 +47,7 @@ context('Create contact and update the relationship from check answers', () => {
     cy.signIn()
     cy.visit(`/prisoner/${prisonerNumber}/contacts/list`)
 
-    Page.verifyOnPage(ListContactsPage) //
+    Page.verifyOnPage(ListContactsPage, 'John Smith') //
       .clickAddNewContactButton()
 
     Page.verifyOnPage(SearchContactPage) //
