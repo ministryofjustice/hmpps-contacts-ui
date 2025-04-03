@@ -5,13 +5,12 @@ import asyncMiddleware from './asyncMiddleware'
 
 export default function logPageViewMiddleware(auditService: AuditService, pageHandler: PageHandler): RequestHandler {
   return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    const { prisonerNumber,contactId,prisonerContactId } = req.params
-    let eventDetails = {
+    const { prisonerNumber, contactId, prisonerContactId } = req.params
+    const eventDetails = {
       who: res.locals.user.username,
       correlationId: req.id,
       details: Object.fromEntries(
-        Object.entries({ prisonerNumber, contactId, prisonerContactId })
-          .filter(([_, value]) => value !== undefined)
+        Object.entries({ prisonerNumber, contactId, prisonerContactId }).filter(([_, value]) => value !== undefined),
       ),
     }
     await auditService.logPageView(pageHandler.PAGE_NAME, eventDetails)
