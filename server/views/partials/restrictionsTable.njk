@@ -21,7 +21,6 @@
     {% endif %}
     {% set restrictionId = restriction.contactRestrictionId or restriction.prisonerContactRestrictionId %}
     {% set retrictionTypeHtml %}
-      {% set tagColour = 'govuk-tag--grey' %}
       {{ govukTag({ text: restriction.restrictionTypeDescription, classes: 'wide-tag ' + restriction.restrictionType | restrictionTagColour }) }}{{ ' (expired)' if (restriction.expiryDate | isDateAndInThePast) }}
     {% endset %}
     {% set changeUrl = '/prisoner/' +  prisonerNumber + '/contacts/' +  contactId + '/relationship/' +  prisonerContactId + '/restriction/update/' +  restrictionClass + '/enter-restriction/' +  restrictionId %}

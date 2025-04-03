@@ -20,6 +20,8 @@ import AddressMetadata = journeys.AddressMetadata
 import AddressLines = journeys.AddressLines
 import PagedModelPrisonerContactSummary = contactsApiClientTypes.PagedModelPrisonerContactSummary
 import PagedModelContactSearchResultItem = contactsApiClientTypes.PagedModelContactSearchResultItem
+import PrisonerContactFilter = contactsApiClientTypes.PrisonerContactFilter
+import PrisonerContactPagination = contactsApiClientTypes.PrisonerContactPagination
 import AuditService from './auditService'
 import AuditedService from './auditedService'
 
@@ -184,8 +186,17 @@ export default class ContactsService extends AuditedService {
       size: number
       sort?: string[]
     },
-  ): Promise<PagedModelPrisonerContactSummary[]> {
+  ): Promise<PagedModelPrisonerContactSummary> {
     return this.contactsApiClient.getPrisonerContacts(prisonerNumber, active, user, pagination)
+  }
+
+  async filterPrisonerContacts(
+    prisonerNumber: string,
+    filter: PrisonerContactFilter,
+    pagination: PrisonerContactPagination,
+    user: Express.User,
+  ): Promise<PagedModelPrisonerContactSummary> {
+    return this.contactsApiClient.filterPrisonerContacts(prisonerNumber, filter, pagination, user)
   }
 
   async searchContact(

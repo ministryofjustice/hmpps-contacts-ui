@@ -5,7 +5,6 @@ declare namespace contactsApiClientTypes {
   export type ContactCreationResult = components['schemas']['ContactCreationResult']
   export type PrisonerContactRelationshipDetails = components['schemas']['PrisonerContactRelationshipDetails']
   export type ContactAddressDetails = components['schemas']['ContactAddressDetails']
-  export type PrisonerContactSummary = components['schemas']['PrisonerContactSummary']
   export type PagedModelPrisonerContactSummary = components['schemas']['PagedModelPrisonerContactSummary']
   export type ReferenceCode = components['schemas']['ReferenceCode']
   export type ContactSearchRequest = components['schemas']['ContactSearchRequest']
@@ -33,4 +32,18 @@ declare namespace contactsApiClientTypes {
   export type OrganisationSummary = components['schemas']['OrganisationSummary']
   export type OrganisationSummaryResultItemPage = components['schemas']['OrganisationSummaryResultItemPage']
   export type PatchEmploymentsRequest = components['schemas']['PatchEmploymentsRequest']
+
+  export type PrisonerContactFilter = {
+    active?: boolean
+    relationshipType?: 'O' | 'S'
+    emergencyContact?: boolean
+    nextOfKin?: boolean
+    emergencyContactOrNextOfKin?: boolean
+  }
+
+  export type PrisonerContactPagination = {
+    page: number
+    size: number
+    sort?: string[]
+  }
 }

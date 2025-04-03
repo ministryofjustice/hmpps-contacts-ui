@@ -66,8 +66,8 @@ div.contact-list {
 }
 
 .contact-record-banner-bottom{
-  border-bottom: 2px solid govuk-colour("mid-grey");
-  padding: 8px 12px 8px 10px;
+  border-bottom: 1px solid govuk-colour("mid-grey");
+  padding: 10px 0 10px 0;
 }
 
 .emergency-contact-tag {
@@ -89,6 +89,10 @@ div.contact-list {
 }
 
 .light-grey {
+  background-color: govuk-colour("light-grey");
+}
+
+.prisoner-contact-filter {
   background-color: govuk-colour("light-grey");
 }
 

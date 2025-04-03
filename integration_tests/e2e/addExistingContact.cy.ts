@@ -74,7 +74,7 @@ context('Add Existing Contact', () => {
     cy.signIn()
     cy.visit(`/prisoner/${prisonerNumber}/contacts/list`)
 
-    Page.verifyOnPage(ListContactsPage) //
+    Page.verifyOnPage(ListContactsPage, 'John Smith') //
       .clickAddNewContactButton()
 
     Page.verifyOnPage(SearchContactPage) //
@@ -428,6 +428,6 @@ context('Add Existing Contact', () => {
       .clickLinkTo('Cancel', CancelAddContactPage, 'Existing Contact')
       .clickButton('Yes, cancel')
 
-    Page.verifyOnPage(ListContactsPage)
+    Page.verifyOnPage(ListContactsPage, 'John Smith')
   })
 })

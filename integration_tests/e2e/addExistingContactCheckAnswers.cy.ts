@@ -65,7 +65,7 @@ context('Add Existing Contact Check Answers', () => {
     cy.signIn()
     cy.visit(`/prisoner/${prisonerNumber}/contacts/list`)
 
-    Page.verifyOnPage(ListContactsPage) //
+    Page.verifyOnPage(ListContactsPage, 'John Smith') //
       .clickAddNewContactButton()
 
     Page.verifyOnPage(SearchContactPage) //

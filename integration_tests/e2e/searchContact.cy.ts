@@ -48,7 +48,7 @@ context('Search contact', () => {
 
     Page.verifyOnPage(SearchPrisonerPage).clickPrisonerLink('A1234BC')
 
-    Page.verifyOnPage(ListContactsPage).clickAddNewContactButton()
+    Page.verifyOnPage(ListContactsPage, 'John Smith').clickAddNewContactButton()
 
     Page.verifyOnPage(SearchContactPage)
   })

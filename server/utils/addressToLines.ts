@@ -1,5 +1,7 @@
-import PrisonerContactSummary = contactsApiClientTypes.PrisonerContactSummary
 import OrganisationSummary = contactsApiClientTypes.OrganisationSummary
+import { components } from '../@types/contactsApi'
+
+type PrisonerContactSummary = components['schemas']['PrisonerContactSummary']
 
 export const addressToLines = ({
   flat,

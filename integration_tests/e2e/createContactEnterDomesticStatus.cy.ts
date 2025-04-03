@@ -58,7 +58,7 @@ context('Create Contact and Enter Domestic Status', () => {
     const { prisonerNumber } = TestData.prisoner()
     cy.visit(`/prisoner/${prisonerNumber}/contacts/list`)
 
-    Page.verifyOnPage(ListContactsPage) //
+    Page.verifyOnPage(ListContactsPage, 'John Smith') //
       .clickAddNewContactButton()
 
     Page.verifyOnPage(SearchContactPage) //

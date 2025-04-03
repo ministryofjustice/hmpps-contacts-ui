@@ -4,100 +4,222 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
-{% from "govuk/components/table/macro.njk" import govukTable %}
-{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
-{% from "../../../partials/address.njk" import convertAddressToLines %}
-{% from "../partials/addPagination.njk" import addPagination %}
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "partials/simplePagination/macro.njk" import simplePagination %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
 
-{% set pageTitle = applicationName + " - List contacts" %}
-{% set title = "List contacts" %}
+{% set pageTitle = "View and manage contacts linked to a prisoner - DPS" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
 
-{% include '../../../partials/navigation.njk' %}
-{{ miniProfile(prisonerDetails) }}
+  {% include '../../../partials/navigation.njk' %}
+  {{ miniProfile(prisonerDetails) }}
 
-{% macro createTable(contactsList) %}
-    <table class="govuk-table">
-        <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">Name</th>
-            <th scope="col" class="govuk-table__header">Date of birth</th>
-            <th scope="col" class="govuk-table__header">Address</th>
-            <th scope="col" class="govuk-table__header">Relationship to prisoner</th>
-            <th scope="col" class="govuk-table__header">Emergency contact</th>
-            <th scope="col" class="govuk-table__header">Next of kin</th>
-            <th scope="col" class="govuk-table__header">Approved</th>
-        </tr>
-        </thead>
-        <tbody class="govuk-table__body">
-        {% for item in contactsList %}
-        <tr class="govuk-table__row">
-            <td class="govuk-table__cell"><a href="/prisoner/{{prisonerNumber}}/contacts/manage/{{item.contactId}}/relationship/{{ item.prisonerContactId }}" data-qa="contact-{{item.contactId}}-link" class="govuk-link--no-visited-state">{{ item | formatNameLastNameFirst }}</a></td>
-            <td class="govuk-table__cell"  data-qa="contact-{{ item.prisonerContactId }}-dob">
-                {% if item.dateOfBirth %}
-                    {{ item.dateOfBirth | formatDate }}<br />
-                    ({{ item.dateOfBirth | ageInYears }} old)
-                {% else %}
-                    Not provided
-                {% endif %}
-            </td>
-            <td class="govuk-table__cell">
-                {{ convertAddressToLines(item) }}
-            </td>
-            <td class="govuk-table__cell">{{ item.relationshipToPrisonerDescription }}</td>
-            <td class="govuk-table__cell">{{ 'Yes' if item.isEmergencyContact else 'No' }}</td>
-            <td class="govuk-table__cell">{{ 'Yes' if item.isNextOfKin else 'No'}}</td>
-            <td class="govuk-table__cell">{{ 'Yes' if item.isApprovedVisitor else 'No'}}</td>
-        </tr>
+  <div class="moj-page-header-actions contact-record-banner-bottom">
+    <div class="moj-page-header-actions__title">
+      <h1 class="govuk-heading-l">View and manage contacts linked to {{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }}</h1>
+    </div>
+    <div class="moj-page-header-actions__actions">
+      <div class="moj-button-group moj-button-group--inline">
+        {{ govukButton({
+          text: "Link another contact" if hasAnyContactsAtAll else "Link contact",
+          href: "/prisoner/" + prisonerNumber + "/contacts/create/start",
+          attributes: {"data-qa": "add-contact-button"},
+          preventDoubleClick: true
+        }) }}
+      </div>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row prisoner-contact-filter">
+    <div class="govuk-grid-column-fukk">
+      <h2 class="govuk-heading-s govuk-!-padding-6 govuk-!-margin-0">Filter by</h2>
+    </div>
+    <form method='POST'>
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+      <div class="govuk-grid-column-one-quarter">
+      {{ govukRadios({
+        name: "relationshipStatus",
+        fieldset: {
+          legend: {
+            text: 'Relationship status'
+          }
+        },
+        items: [
+          {
+            value: 'ACTIVE_ONLY',
+            text: 'Active only',
+            checked: relationshipStatus !== 'ACTIVE_AND_INACTIVE'
+          },
+          {
+            value: 'ACTIVE_AND_INACTIVE',
+            text: 'Active and inactive',
+            checked: relationshipStatus === 'ACTIVE_AND_INACTIVE'
+          }
+        ],
+        classes: "govuk-radios--small"
+      }) }}
+      </div>
+      <div class="govuk-grid-column-one-quarter">
+      {{ govukCheckboxes({
+        name: "relationshipType",
+        fieldset: {
+          legend: {
+            text: 'Relationship type'
+          }
+        },
+        items: [
+          {
+            value: "O",
+            text: "Official",
+            id: 'relationshipTypeOfficial'
+          },
+          {
+            value: "S",
+            text: "Social",
+            id: 'relationshipTypeSocial'
+          }
+        ] | setChecked(relationshipType),
+        classes: "govuk-checkboxes--small"
+      }) }}
+      </div>
+
+      <div class="govuk-grid-column-one-quarter">
+        {{ govukCheckboxes({
+          name: "flag",
+          fieldset: {
+            legend: {
+              text: 'Flags'
+            }
+          },
+          items: [
+            {
+              value: "EC",
+              text: "Emergency contact",
+              id: 'flagsEmergencyContact'
+            },
+            {
+              value: "NOK",
+              text: "Next of kin",
+              id: 'flagsNextOfKin'
+            }
+          ] | setChecked(flag),
+          classes: "govuk-checkboxes--small"
+        }) }}
+      </div>
+
+      <div class="govuk-button-group govuk-grid-column-one-quarter">
+        {{ govukButton({
+          text: "Apply filters",
+          type: "submit",
+          attributes: {"data-qa": "apply-filter-button"},
+          preventDoubleClick: true
+        }) }}
+        <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/list?relationshipStatus=ACTIVE_ONLY" data-qa="clear-button">Clear filters</a>
+      </div>
+    </form>
+  </div>
+  <div class="govuk-grid-row govuk-!-margin-top-6">
+    <div class="govuk-grid-column-full">
+      {% if contacts.length > 0 %}
+        {{ simplePagination(paginationParams) }}
+
+        {% set rows = [] %}
+        {% for contact in contacts %}
+          {% set contactNameAndNumber %}
+            <a href="/prisoner/{{ prisonerNumber }}/contacts/manage/{{ contact.contactId }}/relationship/{{ contact.prisonerContactId }}"
+              data-qa="contact-{{ contact.contactId }}-link"
+              class="govuk-link--no-visited-state">{{ contact | formatNameLastNameFirst }}</a><br />
+            <span class="govuk-hint">{{ contact.contactId }}</span>
+            {% if contact.isNextOfKin %}<p class="next-of-kin-tag govuk-!-margin-top-1">Next of kin</p>{% endif %}
+            {% if contact.isEmergencyContact %}<p class="emergency-contact-tag {{ 'govuk-!-margin-top-1' if not contact.isNextOfKin }}">Emergency contact</p>{% endif %}
+          {% endset %}
+
+          {% set relationshipHtml %}
+            {% if not contact.isRelationshipActive %}Inactive relationship: {% endif %}{{ contact.relationshipToPrisonerDescription }}
+            {% if contact.isStaff %}<br/><span class="govuk-hint">(Staff)</span>{% endif %}
+          {% endset %}
+
+          {% set restrictionsHtml %}
+            {% set restrictionSummary = contact.restrictionSummary %}
+            {% if restrictionSummary.totalActive === 0 and restrictionSummary.totalExpired === 0 %}
+            No restrictions
+            {% elseif restrictionSummary.totalActive > 0 %}
+              {% for restriction in restrictionSummary.active | sort(attribute = 'restrictionTypeDescription') %}
+                {{ govukTag({ text: restriction.restrictionTypeDescription, classes: 'govuk-!-margin-1 ' + restriction.restrictionType | restrictionTagColour }) }}
+                {% if not loop.last %}<br/>{% endif %}
+              {% endfor %}
+            {% else %}
+            No active restrictions
+            {% endif %}
+            {% if restrictionSummary.totalExpired > 0 %}
+              <br> <span class="govuk-hint">(Contact has {{ restrictionSummary.totalExpired }} expired restriction{{ 's' if restrictionSummary.totalExpired !== 1 }})</span>
+            {% endif %}
+          {% endset %}
+
+          {% set classes = 'light-grey' if not contact.isRelationshipActive else '' %}
+          {% set rows = (rows.push([
+            { html: contactNameAndNumber, classes: classes },
+            { html: contact | formatDob, classes: classes },
+            { html: relationshipHtml, classes: classes },
+            { html: (contact | addressToLines or 'Not provided') | escape | nl2br, classes: classes },
+            { text: 'Approved' if contact.isApprovedVisitor else 'Not approved or has not been checked', classes: classes },
+            { html: restrictionsHtml, classes: classes }
+          ]), rows) %}
         {% endfor %}
-        </tbody>
-    </table>
-{% endmacro %}
 
-{% macro prisonerDoesNotHaveAnyContactsMessage(prisonerDetails, contactListType) %}
-    <p>{{ prisonerDetails.firstName | capitaliseName }} {{ prisonerDetails.lastName | capitaliseName }} does not have any {{ contactListType }} contacts</p>
-{% endmacro %}
+        {{ govukTable({
+          firstCellIsHeader: false,
+          classes: 'govuk-!-margin-top-6',
+          attributes: { id: 'prisoner-contact-list' },
+          head: [
+            {
+              text: "Contact name and person ID",
+              key: 'name'
+            },
+            {
+              text: "Date of birth",
+              key: 'dob'
+            },
+            {
+              text: "Relationship to prisoner"
+            },
+            {
+              text: "Primary or default address"
+            },
+            {
+              text: "Visit approval status"
+            },
+            {
+              text: "Relationship and global restrictions"
+            }
+          ] | convertToSortableColumns(sort, '?' + queryParamsWithFilters + '&sort={sortKey},{sortDirection}'),
+          rows: rows
+        }) }}
 
-<span class="govuk-caption-l">Contacts</span>
-<h1 class="govuk-heading-l">Contacts for {{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }}</h1>
-
-    {{ govukButton({
-        text: "Add prisoner contact",
-        href: "/prisoner/" + prisonerNumber + "/contacts/create/start",
-        attributes: {"data-qa": "add-contact-button"},
-        preventDoubleClick: true
-    }) }}
-
-<div class="govuk-tabs contact-list" data-module="govuk-tabs">
-    <ul class="govuk-tabs__list">
-      <li class="{{ 'govuk-tabs__list-item govuk-tabs__list-item--selected' if tab === 'active-contacts' else 'govuk-tabs__list-item' }}" data-qa="active-list">
-        <a class="govuk-tabs__tab" href="#active-contacts">
-            Active contacts
-        </a>
-      </li>
-      <li class="{{ 'govuk-tabs__list-item govuk-tabs__list-item--selected' if tab === 'inactive-contacts' else 'govuk-tabs__list-item' }}" data-qa="inactive-list">
-        <a class="govuk-tabs__tab" href="#inactive-contacts">
-            Inactive contacts
-        </a>
-      </li>
-    </ul>
-    <div class="govuk-tabs__panel" id="active-contacts">
-        {% if activeContacts.content.length > 0 %}
-            {{ createTable(activeContacts.content) }}
-            {{ addPagination(activeContacts.page, 'active-contacts') }}
+        {{ simplePagination(paginationParams) }}
+      {% else %}
+        <div data-qa="no-results-content">
+        {% if not hasAnyContactsAtAll %}
+          <p class="govuk-body">{{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }} does not have any linked contacts.</p>
+          <a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/create/start" class="govuk-body govuk-link--no-visited-state" data-qa="no-results-link-a-contact">Link a contact to this prisoner</a>
+        {% elseif not hasAnyFiltersApplied %}
+          <p class="govuk-body">{{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }} does not have any contacts with active relationship status.</p>
+          <a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/list?relationshipStatus=ACTIVE_AND_INACTIVE" class="govuk-body govuk-link--no-visited-state" data-qa="no-results-include-inactive">View contacts with inactive relationship status</a>
         {% else %}
-        <div class="govuk-!-static-margin-top-4">{{ prisonerDoesNotHaveAnyContactsMessage(prisonerDetails, 'active') }}</div>
+          <h2 class="govuk-heading-l govuk-!-font-size-24 govuk-!-margin-bottom-3">No contact records match your filter</h2>
+          <p class="govuk-body">You can:</p>
+          <ul>
+            <li>change the filters and apply them again</li>
+            <li><a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/list" class="govuk-body govuk-link--no-visited-state" data-qa="no-results-clear-filters">clear the filters</a> to view contacts with active relationship status</li>
+            <li><a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/create/start" class="govuk-body govuk-link--no-visited-state" data-qa="no-results-link-a-contact">link another contact</a> if you cannot find the correct person in the prisoner’s contact list</li>
+          </ul>
         {% endif %}
+        </div>
+      {% endif %}
     </div>
-    <div class="govuk-tabs__panel govuk-tabs__panel--hidden contact-list" id="inactive-contacts">
-        {% if inactiveContacts.content.length > 0 %}
-            {{ createTable(inactiveContacts.content) }}
-            {{ addPagination(inactiveContacts.page, 'inactive-contacts') }}
-        {% else %}
-            <div class="govuk-!-static-margin-top-4">{{ prisonerDoesNotHaveAnyContactsMessage(prisonerDetails, 'inactive') }}</div>
-        {% endif %}
-    </div>
-</div>
+  </div>
 {% endblock %}
