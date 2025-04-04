@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
-import captionForAddContactJourney from '../addContactsUtils'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 
@@ -12,9 +11,8 @@ export default class ApprovedToVisitController implements PageHandler {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
     const viewModel = {
-      isOptional: true,
-      caption: captionForAddContactJourney(journey),
-      continueButtonLabel: 'Continue',
+      isNewContact: true,
+      journey,
       contact: journey.names,
       isApprovedVisitor: journey.relationship?.isApprovedVisitor,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),

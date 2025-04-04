@@ -81,8 +81,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
       // Then
       const $ = cheerio.load(response.text)
+      expect($('title').text()).toStrictEqual('Information on a contact linked to a prisoner - DPS')
       expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('Information on linked contact Jones Mason')
-
       expect($('[data-qa=breadcrumbs]')).toHaveLength(1)
       const breadcrumbLinks = $('[data-qa=breadcrumbs] a')
       expect(breadcrumbLinks.eq(0).attr('href')).toStrictEqual('http://localhost:3001')

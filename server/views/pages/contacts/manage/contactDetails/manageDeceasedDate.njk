@@ -3,7 +3,13 @@
 {% from "partials/miniProfile/macro.njk" import miniProfile %}
 {% from "partials/validatedDateInput/macro.njk" import validatedDateInput %}
 
-{% set pageTitle = applicationName + " - Enter date of death" %}
+{% if contact.deceasedDate %}
+  {% set pageTitle = "Change the date of death for the contact - Edit contact details - DPS" %}
+  {% set title = 'Change the date of death for ' + contact | formatNameFirstNameFirst %}
+{% else %}
+  {% set pageTitle = "Record the date of death for the contact - Edit contact details - DPS" %}
+  {% set title = 'Record the date of death for ' + contact | formatNameFirstNameFirst %}
+{% endif %}
 
 {% block content %}
 

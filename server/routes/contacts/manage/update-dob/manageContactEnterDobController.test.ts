@@ -56,9 +56,15 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual('What is the contact’s date of birth? - Edit contact details - DPS')
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact details')
     expect($('.main-heading').first().text().trim()).toStrictEqual('What is First Middle Last’s date of birth?')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/99/relationship/987654',
+    )
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/99/relationship/987654/edit-contact-details',
     )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('#day').val()).toStrictEqual('15')

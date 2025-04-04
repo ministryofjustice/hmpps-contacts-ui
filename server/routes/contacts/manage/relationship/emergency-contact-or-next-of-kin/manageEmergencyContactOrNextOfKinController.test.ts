@@ -57,6 +57,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
       // Then
       expect(response.status).toEqual(200)
+      expect($('title').text()).toStrictEqual(
+        'Is this person an emergency contact or next of kin for the prisoner? - Edit contact details - DPS',
+      )
       expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact relationship information')
       expect($('.main-heading').text().trim()).toBe(
         'Is Jones Mason an emergency contact or next of kin for John Smith?',
@@ -65,6 +68,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
         '/prisoner/A1234BC/contacts/manage/22/relationship/12232',
       )
+      expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
       expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
         '/prisoner/A1234BC/contacts/manage/22/relationship/12232/edit-contact-details',
       )

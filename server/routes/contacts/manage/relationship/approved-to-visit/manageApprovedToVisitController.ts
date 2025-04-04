@@ -28,11 +28,7 @@ export default class ManageApprovedToVisitController implements PageHandler {
       cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
     }
     const viewModel = {
-      isOptional: false,
-      caption: 'Edit contact relationship information',
-      continueButtonLabel: 'Confirm and save',
       contact,
-      prisonerContactId,
       isApprovedVisitor: relationship.isApprovedVisitor,
       navigation,
     }

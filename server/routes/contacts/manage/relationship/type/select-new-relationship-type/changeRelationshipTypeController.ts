@@ -23,7 +23,6 @@ export default class ChangeRelationshipTypeController implements PageHandler {
     }
     const view = {
       journey,
-      caption: 'Edit contact relationship information',
       relationshipType: res.locals?.formResponses?.['relationshipType'] ?? journey?.relationshipType,
       navigation,
     }

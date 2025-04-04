@@ -69,6 +69,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual('Update an identity document for the contact - Edit contact details - DPS')
     expect($('.govuk-heading-l').first().text().trim()).toStrictEqual(
       'Update an identity document for First Middle Last',
     )
@@ -76,9 +77,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/987654/relationship/456789',
     )
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/987654/relationship/456789/edit-contact-details',
     )
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('#identityType').val()).toStrictEqual('DL')
     expect($('#identityValue').val()).toStrictEqual('LAST-87736799M')

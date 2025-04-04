@@ -57,6 +57,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(
+      'Are you sure you want to delete the date of death for the contact? - Edit contact details - DPS',
+    )
     expect($('.govuk-heading-l').first().text().trim()).toStrictEqual(
       'Are you sure you want to delete the date of death for First Middle Last?',
     )

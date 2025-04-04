@@ -62,6 +62,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
       `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details`,
     )
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual('Edit contact details for a contact linked to a prisoner - DPS')
     expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('Edit contact details for Jones Mason')
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Manage contacts')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)

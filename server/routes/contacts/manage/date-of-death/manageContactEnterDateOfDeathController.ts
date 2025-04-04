@@ -30,10 +30,6 @@ export default class ManageContactEnterDateOfDeathController implements PageHand
     }
 
     const contact = await this.contactsService.getContact(Number(contactId), user)
-    let title = `Record the date of death for ${formatNameFirstNameFirst(contact)}`
-    if (contact.deceasedDate) {
-      title = `Change the date of death for ${formatNameFirstNameFirst(contact)}`
-    }
 
     let deceasedDate
     // Only set from the contact if the form has not been submitted and returned with an error.
@@ -47,7 +43,7 @@ export default class ManageContactEnterDateOfDeathController implements PageHand
     }
 
     const view = {
-      title,
+      contact,
       day: res.locals?.formResponses?.['day'] ?? deceasedDate?.day,
       month: res.locals?.formResponses?.['month'] ?? deceasedDate?.month,
       year: res.locals?.formResponses?.['year'] ?? deceasedDate?.year,
