@@ -69,6 +69,10 @@ export default abstract class Page {
     cy.findByRole('link', { name }).click()
   }
 
+  clickIndexedLink(index: number, name: string) {
+    cy.findAllByRole('link', { name }).eq(index).click()
+  }
+
   /* eslint-disable @typescript-eslint/no-explicit-any */
   continueTo<T>(constructor: new (...args: any) => T, ...args: any): T {
     this.clickContinue()
@@ -96,6 +100,12 @@ export default abstract class Page {
   /* eslint-disable @typescript-eslint/no-explicit-any */
   clickLinkTo<T>(name: string, constructor: new (...args: any) => T, ...args: any): T {
     this.clickLink(name)
+    return new constructor(...args)
+  }
+
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  clickIndexedLinkTo<T>(index: number, name: string, constructor: new (...args: any) => T, ...args: any): T {
+    this.clickIndexedLink(index, name)
     return new constructor(...args)
   }
 

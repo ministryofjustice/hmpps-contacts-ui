@@ -34,6 +34,8 @@ export type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
 export type ContactRestrictionDetails = components['schemas']['ContactRestrictionDetails']
 export type StubContactAddressDetails = components['schemas']['ContactAddressDetails']
 type StubLinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
+export type StubPagedModelPrisonerContactSummary = components['schemas']['PagedModelPrisonerContactSummary']
+export type StubPrisonerContactSummary = components['schemas']['PrisonerContactSummary']
 
 export default {
   stubCreateContact: (result: StubContactCreationResult): SuperAgentRequest => {
@@ -81,16 +83,28 @@ export default {
     })
   },
 
-  stubEmptyContactList: (prisonerNumber: string): SuperAgentRequest => {
+  stubFilteredContactList: (args: {
+    prisonerNumber: string
+    page: StubPagedModelPrisonerContactSummary
+    matchQueryParams: { [key: string]: { equalTo: string } }
+  }): SuperAgentRequest => {
+    const queryParameters = {
+      ...args.matchQueryParams,
+      page: {
+        equalTo: `${args.page.page.number}`,
+      },
+    }
+
     return stubFor({
       request: {
         method: 'GET',
-        urlPath: `/prisoner/${prisonerNumber}/contact`,
+        urlPath: `/prisoner/${args.prisonerNumber}/contact`,
+        queryParameters,
       },
       response: {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: { content: [] },
+        jsonBody: args.page,
       },
     })
   },

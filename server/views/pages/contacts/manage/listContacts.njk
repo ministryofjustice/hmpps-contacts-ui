@@ -35,8 +35,8 @@
   </div>
 
   <div class="govuk-grid-row prisoner-contact-filter">
-    <div class="govuk-grid-column-fukk">
-      <h2 class="govuk-heading-s govuk-!-padding-6 govuk-!-margin-0">Filter by</h2>
+    <div class="govuk-grid-column-full">
+      <h2 class="govuk-heading-s">Filter by</h2>
     </div>
     <form method='POST'>
       <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
@@ -132,7 +132,7 @@
           {% set contactNameAndNumber %}
             <a href="/prisoner/{{ prisonerNumber }}/contacts/manage/{{ contact.contactId }}/relationship/{{ contact.prisonerContactId }}"
               data-qa="contact-{{ contact.contactId }}-link"
-              class="govuk-link--no-visited-state">{{ contact | formatNameLastNameFirst }}</a><br />
+              class="govuk-link--no-visited-state pcl-contact-name-link">{{ contact | formatNameLastNameFirst }}</a><br />
             <span class="govuk-hint">{{ contact.contactId }}</span>
             {% if contact.isNextOfKin %}<p class="next-of-kin-tag govuk-!-margin-top-1">Next of kin</p>{% endif %}
             {% if contact.isEmergencyContact %}<p class="emergency-contact-tag {{ 'govuk-!-margin-top-1' if not contact.isNextOfKin }}">Emergency contact</p>{% endif %}
