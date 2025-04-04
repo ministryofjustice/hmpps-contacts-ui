@@ -94,6 +94,11 @@ div.contact-list {
 
 .prisoner-contact-filter {
   background-color: govuk-colour("light-grey");
+  h2 {
+    margin: 0;
+    @include govuk-responsive-padding(6, "top");
+    @include govuk-responsive-padding(6, "bottom");
+  }
 }
 
 .wide-tag {
