@@ -54,6 +54,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     // Then
     expect(response.status).toEqual(200)
+    expect($('title').text()).toStrictEqual(
+      'Enter language and interpretation requirements - Edit contact details - DPS',
+    )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit additional information for a contact')
     expect($('.govuk-heading-l').text().trim()).toBe('Enter language and interpretation requirements')
     expect($('.govuk-fieldset__legend--m:contains("What is Jones Mason’s first language?")').text()).toBeTruthy()
@@ -65,6 +68,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/10/relationship/987654',
     )
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/10/relationship/987654/edit-contact-details',
     )

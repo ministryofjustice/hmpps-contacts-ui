@@ -63,6 +63,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(
+      'Change the title or middle name for the contact - Edit contact details - DPS',
+    )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact details')
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Change the title or middle name for First Middle Names Last',

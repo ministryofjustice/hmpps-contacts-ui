@@ -57,11 +57,18 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual('Change the date of death for the contact - Edit contact details - DPS')
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact details')
     expect($('.main-heading').first().text().trim()).toStrictEqual('Change the date of death for First Middle Last')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/99/relationship/987654',
     )
+    expect($('[data-qa=continue-button]').text().trim()).toStrictEqual('Confirm and save')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      '/prisoner/A1234BC/contacts/manage/99/relationship/987654/edit-contact-details',
+    )
     expect($('#day').val()).toStrictEqual('15')
     expect($('#month').val()).toStrictEqual('12')
     expect($('#year').val()).toStrictEqual('2010')
@@ -86,6 +93,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual('Record the date of death for the contact - Edit contact details - DPS')
     expect($('.main-heading').first().text().trim()).toStrictEqual('Record the date of death for First Middle Last')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/99/relationship/987654',

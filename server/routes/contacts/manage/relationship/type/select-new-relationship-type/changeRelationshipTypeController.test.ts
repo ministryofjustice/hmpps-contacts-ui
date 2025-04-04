@@ -68,13 +68,18 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(
+      'Is this a social or official contact for the prisoner? - Edit contact details - DPS ',
+    )
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact relationship information')
     expect($('.main-heading').first().text().trim()).toStrictEqual(
       'Is First Middle Last a social or official contact for John Smith?',
     )
+    expect($('[data-qa=continue-button]').text().trim()).toStrictEqual('Continue')
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-contact-details`,
     )
-    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact relationship information')
     expect($('[data-qa=cancel-button]')).toHaveLength(0)
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
   })

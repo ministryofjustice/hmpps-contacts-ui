@@ -66,9 +66,13 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       who: user.username,
       correlationId: expect.any(String),
     })
+    expect($('title').text()).toStrictEqual('What is the contact’s gender? - Edit contact details - DPS')
+    expect($('h1').first().text().trim()).toStrictEqual('What is Jones Mason’s gender?')
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact details')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/10/relationship/987654',
     )
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/10/relationship/987654/edit-contact-details',
     )

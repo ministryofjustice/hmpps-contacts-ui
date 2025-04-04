@@ -4,7 +4,6 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { RelationshipTypeSchema } from './relationshipTypeSchema'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
-import captionForAddContactJourney from '../addContactsUtils'
 
 export default class RelationshipTypeController implements PageHandler {
   public PAGE_NAME = Page.SELECT_RELATIONSHIP_TYPE
@@ -13,8 +12,8 @@ export default class RelationshipTypeController implements PageHandler {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
     const view = {
+      isNewContact: true,
       journey,
-      caption: captionForAddContactJourney(journey),
       relationshipType:
         res.locals?.formResponses?.['relationshipType'] ??
         journey?.relationship?.pendingNewRelationshipType ??
