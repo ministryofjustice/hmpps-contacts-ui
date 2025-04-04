@@ -128,13 +128,21 @@ export default class ContactsApiClient extends RestClient {
       paginationParameters.sort = ['lastName,asc', 'firstName,asc', 'middleNames,asc', 'id,asc']
     } else if (paginationParameters.sort === 'lastName,desc') {
       paginationParameters.sort = ['lastName,desc', 'firstName,desc', 'middleNames,desc', 'id,desc']
-    } else if (paginationParameters.sort === 'dateOfBirth,asc' || paginationParameters.sort === 'dateOfBirth,desc') {
+    } else if (paginationParameters.sort === 'dateOfBirth,asc') {
       paginationParameters.sort = [
         paginationParameters.sort,
         'lastName,asc',
         'firstName,asc',
         'middleNames,asc',
         'id,asc',
+      ]
+    } else if (paginationParameters.sort === 'dateOfBirth,desc') {
+      paginationParameters.sort = [
+        paginationParameters.sort,
+        'lastName,desc',
+        'firstName,desc',
+        'middleNames,desc',
+        'id,desc',
       ]
     }
     return this.get(
