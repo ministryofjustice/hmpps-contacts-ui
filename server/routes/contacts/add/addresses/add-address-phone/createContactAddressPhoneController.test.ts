@@ -124,6 +124,9 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/new/phone/crea
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_ADD_ADDRESS_PHONE_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
 
     expect($('[data-qa=phones-0-type]').val()).toStrictEqual('')
@@ -214,6 +217,9 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_ADD_ADDRESS_PHONE_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
 
     expect($('[data-qa=phones-0-type]').val()).toStrictEqual('HOME')

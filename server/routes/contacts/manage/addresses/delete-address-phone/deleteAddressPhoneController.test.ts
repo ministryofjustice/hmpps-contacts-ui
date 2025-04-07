@@ -98,6 +98,10 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.DELETE_ADDRESS_PHONE_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        contactId: 123456,
+        prisonerNumber: 'A1234BC',
+      },
     })
 
     expect($('.phone-number-value').text().trim()).toStrictEqual('1234')

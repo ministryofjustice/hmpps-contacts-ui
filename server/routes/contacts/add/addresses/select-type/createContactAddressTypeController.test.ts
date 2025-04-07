@@ -123,6 +123,9 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/new/select-typ
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_SELECT_ADDRESS_TYPE_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
   })
 
@@ -165,6 +168,9 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_SELECT_ADDRESS_TYPE_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
     expect($('input[type=radio]:checked').val()).toEqual('HOME')
   })
