@@ -82,6 +82,9 @@ describe('Contact details', () => {
       expect(auditService.logPageView).toHaveBeenCalledWith(Page.CONTACT_MATCH_PAGE, {
         who: user.username,
         correlationId: expect.any(String),
+        details: {
+          prisonerNumber: 'A1234BC',
+        },
       })
       const $ = cheerio.load(response.text)
 

@@ -198,6 +198,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/employments/:employmentI
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_SEARCH_ORGANISATION_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
   })
 

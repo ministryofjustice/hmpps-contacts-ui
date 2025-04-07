@@ -100,6 +100,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/employments/:journeyId',
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADD_EMPLOYMENTS, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
   })
 

@@ -102,6 +102,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CANCEL_RESTRICTION_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        contactId: 123456,
+        prisonerContactId: 987564,
+        prisonerNumber: 'A1234BC',
+      },
     })
   })
 
