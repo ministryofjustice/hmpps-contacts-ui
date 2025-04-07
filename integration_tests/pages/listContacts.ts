@@ -14,8 +14,70 @@ export default class ListContactsPage extends Page {
     return this
   }
 
-  private addNewContactButton = (): PageElement => cy.get('[data-qa=add-contact-button]')
+  expectNames(expectedNames: string[]): ListContactsPage {
+    const items = []
+    cy.get('.pcl-contact-name-link').each($li => items.push($li.text()))
+    cy.wrap(items).should('deep.equal', expectedNames)
+    return this
+  }
 
-  private contactNames = (contactId: number): PageElement =>
-    cy.get(`#active-contacts [data-qa="contact-${contactId}-link"]`)
+  clickSocialContacts(): ListContactsPage {
+    this.social().check()
+    return this
+  }
+
+  hasSocialContacts(): ListContactsPage {
+    this.social().should('be.checked')
+    return this
+  }
+
+  clickOfficialContacts(): ListContactsPage {
+    this.official().check()
+    return this
+  }
+
+  hasOfficialContacts(): ListContactsPage {
+    this.official().should('be.checked')
+    return this
+  }
+
+  clickEmergencyContact(): ListContactsPage {
+    this.emergencyContact().check()
+    return this
+  }
+
+  hasEmergencyContact(): ListContactsPage {
+    this.emergencyContact().should('be.checked')
+    return this
+  }
+
+  clickNextOfKin(): ListContactsPage {
+    this.nextOfKin().check()
+    return this
+  }
+
+  hasNextOfKin(): ListContactsPage {
+    this.nextOfKin().should('be.checked')
+    return this
+  }
+
+  clickIncludeInactive(): ListContactsPage {
+    this.includeInactive().check()
+    return this
+  }
+
+  hasIncludeInactive(): ListContactsPage {
+    this.includeInactive().should('be.checked')
+    return this
+  }
+
+  private official = (): PageElement => cy.get('#relationshipTypeOfficial')
+
+  private social = (): PageElement => cy.get('#relationshipTypeSocial')
+
+  private emergencyContact = (): PageElement => cy.get('#flagsEmergencyContact')
+
+  private nextOfKin = (): PageElement => cy.get('#flagsNextOfKin')
+
+  private includeInactive = (): PageElement => cy.get(`.govuk-radios__input[value='ACTIVE_AND_INACTIVE']`)
 }
