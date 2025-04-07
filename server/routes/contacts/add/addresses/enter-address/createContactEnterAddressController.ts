@@ -26,8 +26,8 @@ export default class CreateContactEnterAddressController implements PageHandler 
       backLink: bounceBackOrAddressUrl({ subPath: 'select-type' }),
     }
     const viewModel = {
-      caption: 'Add a contact and link to a prisoner',
-      continueButtonLabel: 'Continue',
+      isNewContact: true,
+      journey,
       contact: journey.names,
       navigation,
       townOptions,

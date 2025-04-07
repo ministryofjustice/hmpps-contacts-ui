@@ -5,8 +5,25 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% set title = ("Change this address for " + contact | formatNameFirstNameFirst) if isEdit else ("Enter the address for " + contact | formatNameFirstNameFirst) %}
-{% set pageTitle = applicationName  + " - " + title %}
+{% if isNewContact %}
+  {% set pageTitle = "Enter an address for the contact - Add a contact - DPS" %}
+  {% set title = "Enter the address for " + contact | formatNameFirstNameFirst %}
+  {% set caption =  journey | captionForAddContactJourney %}
+  {% set continueButtonLabel = "Continue" %}
+{% else %}
+  {% if isEdit %}
+    {% set pageTitle = "Change an address for a contact - Edit contact methods - DPS" %}
+    {% set title = "Change this address for " + contact | formatNameFirstNameFirst %}
+    {% set caption = "Edit contact methods" %}
+    {% set continueButtonLabel = "Confirm and save" %}
+  {% else %}
+    {% set pageTitle = "Enter an address for the contact - Edit contact methods - DPS" %}
+    {% set title = "Enter the address for " + contact | formatNameFirstNameFirst %}
+    {% set caption = "Edit contact methods" %}
+    {% set continueButtonLabel = "Continue" %}
+  {% endif %}
+{% endif %}
+
 {% set mainClasses = "app-container govuk-body" %}
 {% block meta %}
   <meta name="autocompleteElements" content="cityCode"/>

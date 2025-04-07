@@ -77,10 +77,14 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(
+      'Set an address as the primary or postal address for the contact - Edit contact methods - DPS',
+    )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact methods')
     expect($('h1').first().text().trim()).toStrictEqual(
       'Set this address as the primary or postal address for First Middle Last (optional)',
     )
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/dates/${journeyId}`,
     )

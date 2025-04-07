@@ -20,8 +20,8 @@ export default class CreateContactAddressTypeController implements PageHandler {
       backLink: bounceBackUrl,
     }
     const viewModel = {
-      caption: 'Add a contact and link to a prisoner',
-      continueButtonLabel: 'Continue',
+      isNewContact: true,
+      journey,
       contact: journey.names,
       addressType: res.locals?.formResponses?.['type'] ?? addressForm.addressType,
       typeOptions: await this.referenceDataService.getReferenceData(ReferenceCodeType.ADDRESS_TYPE, user),

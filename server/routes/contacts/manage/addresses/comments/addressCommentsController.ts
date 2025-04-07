@@ -21,8 +21,6 @@ export default class AddressCommentsController implements PageHandler {
       backLink: checkAnswersOrAddressUrl({ subPath: 'phone' }),
     }
     const viewModel = {
-      caption: 'Edit contact methods',
-      continueButtonLabel: 'Continue',
       contact: journey.contactNames,
       navigation,
       formattedAddress: await getFormattedAddress(this.referenceDataService, journey, res.locals.user),

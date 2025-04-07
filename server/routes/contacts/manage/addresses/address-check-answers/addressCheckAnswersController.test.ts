@@ -98,6 +98,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(
+      'Check your answers before adding a new address for the contact - Edit contact methods - DPS',
+    )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact methods')
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Check your answers before adding a new address for First Middle Last',

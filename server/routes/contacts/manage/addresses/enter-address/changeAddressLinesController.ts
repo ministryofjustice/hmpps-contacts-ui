@@ -37,8 +37,6 @@ export default class ChangeAddressLinesController implements PageHandler {
     }
     const viewModel = {
       isEdit: true,
-      caption: 'Edit contact methods',
-      continueButtonLabel: 'Confirm and save',
       contact,
       formattedAddress,
       townOptions,

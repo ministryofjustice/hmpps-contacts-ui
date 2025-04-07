@@ -22,9 +22,6 @@ export default class AddressPhoneController implements PageHandler {
       backLink: checkAnswersOrAddressUrl({ subPath: 'primary-or-postal' }),
     }
     const viewModel = {
-      isEdit: false,
-      caption: 'Edit contact methods',
-      continueButtonLabel: 'Continue',
       navigation,
       typeOptions: await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user),
       formattedAddress: await getFormattedAddress(this.referenceDataService, journey, res.locals.user),

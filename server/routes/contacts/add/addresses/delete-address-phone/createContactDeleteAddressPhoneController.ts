@@ -31,7 +31,7 @@ export default class CreateContactDeleteAddressPhoneController implements PageHa
       cancelButton: bounceBackUrl,
     }
     res.render('pages/contacts/manage/contactMethods/address/phone/confirmDeleteAddressPhone', {
-      caption: 'Add a contact and link to a prisoner',
+      isNewContact: true,
       phone: {
         ...phone,
         extNumber: phone.extension,

@@ -30,8 +30,6 @@ export default class EnterAddressController implements PageHandler {
       backLink: checkAnswersOrAddressUrl({ subPath: 'select-type' }),
     }
     const viewModel = {
-      caption: 'Edit contact methods',
-      continueButtonLabel: 'Continue',
       contact: journey.contactNames,
       navigation,
       townOptions,

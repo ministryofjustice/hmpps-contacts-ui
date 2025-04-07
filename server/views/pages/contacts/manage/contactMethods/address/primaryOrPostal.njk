@@ -3,8 +3,25 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% set title = ("Change if this is the primary or postal address for " + contact | formatNameFirstNameFirst) if isEdit else ("Set this address as the primary or postal address for " + contact | formatNameFirstNameFirst + " (optional)") %}
-{% set pageTitle = applicationName  + " - " + title %}
+{% if isNewContact %}
+  {% set pageTitle = "Set an address as the primary or postal address for the contact - Add a contact - DPS" %}
+  {% set title = "Set this address as the primary or postal address for " + contact | formatNameFirstNameFirst + " (optional)" %}
+  {% set caption =  journey | captionForAddContactJourney %}
+  {% set continueButtonLabel = "Continue" %}
+{% else %}
+  {% if isEdit %}
+    {% set pageTitle = "Change if an address is the primary or postal address for the contact - Edit contact methods - DPS" %}
+    {% set title = "Change if this is the primary or postal address for " + contact | formatNameFirstNameFirst %}
+    {% set caption = "Edit contact methods" %}
+    {% set continueButtonLabel = "Confirm and save" %}
+  {% else %}
+    {% set pageTitle = "Set an address as the primary or postal address for the contact - Edit contact methods - DPS" %}
+    {% set title = "Set this address as the primary or postal address for " + contact | formatNameFirstNameFirst + " (optional)" %}
+    {% set caption = "Edit contact methods" %}
+    {% set continueButtonLabel = "Continue" %}
+  {% endif %}
+{% endif %}
+
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}

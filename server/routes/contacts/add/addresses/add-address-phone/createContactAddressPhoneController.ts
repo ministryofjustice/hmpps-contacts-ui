@@ -20,9 +20,7 @@ export default class CreateContactAddressPhoneController implements PageHandler 
       backLink: bounceBackOrAddressUrl({ subPath: 'primary-or-postal' }),
     }
     const viewModel = {
-      isEdit: false,
-      caption: 'Add a contact and link to a prisoner',
-      continueButtonLabel: 'Continue',
+      isNewContact: true,
       navigation,
       typeOptions: await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user),
       formattedAddress: await getFormattedAddress(this.referenceDataService, addressForm, res.locals.user),

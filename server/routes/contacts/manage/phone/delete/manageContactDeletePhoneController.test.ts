@@ -87,6 +87,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     // Then
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(
+      'Are you sure you want to delete a phone number for the contact? - Edit contact methods - DPS',
+    )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact methods')
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Are you sure you want to delete this phone number for First Middle Last?',
@@ -94,6 +97,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
     )
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-contact-methods`,
     )

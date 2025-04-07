@@ -3,8 +3,25 @@
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% set title = ("Change the dates for " + contact | formatNameFirstNameFirst(possessiveSuffix = true) + " use of this address") if isEdit else ("Enter the dates for " + contact | formatNameFirstNameFirst(possessiveSuffix = true) + " use of this address") %}
-{% set pageTitle = applicationName  + " - " + title %}
+{% if isNewContact %}
+  {% set pageTitle = "Enter the dates for the contact’s use of an address - Add a contact - DPS" %}
+  {% set title = "Enter the dates for " + contact | formatNameFirstNameFirst(possessiveSuffix = true) + " use of this address" %}
+  {% set caption =  journey | captionForAddContactJourney %}
+  {% set continueButtonLabel = "Continue" %}
+{% else %}
+  {% if isEdit %}
+    {% set pageTitle = "Change the dates for the contact’s use of an address - Edit contact methods - DPS" %}
+    {% set title = "Change the dates for " + contact | formatNameFirstNameFirst(possessiveSuffix = true) + " use of this address" %}
+    {% set caption = "Edit contact methods" %}
+    {% set continueButtonLabel = "Confirm and save" %}
+  {% else %}
+    {% set pageTitle = "Enter the dates for the contact’s use of an address - Edit contact methods - DPS" %}
+    {% set title = "Enter the dates for " + contact | formatNameFirstNameFirst(possessiveSuffix = true) + " use of this address" %}
+    {% set caption = "Edit contact methods" %}
+    {% set continueButtonLabel = "Continue" %}
+  {% endif %}
+{% endif %}
+
 {% set mainClasses = "app-container govuk-body" %}
 
 {% set customErrorOrder = ['fromDate', 'fromMonth', 'fromYear', 'toDate', 'toMonth', 'toYear'] %}
