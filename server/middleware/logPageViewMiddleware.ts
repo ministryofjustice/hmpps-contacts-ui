@@ -4,44 +4,36 @@ import AuditService from '../services/auditService'
 import asyncMiddleware from './asyncMiddleware'
 
 export default function logPageViewMiddleware(auditService: AuditService, pageHandler: PageHandler): RequestHandler {
-  const JOURNEY_TYPES = {
-    ADD_CONTACT: 'addContactJourneys',
-    MANAGE_CONTACTS: 'manageContactsJourneys',
-    ADD_RESTRICTION: 'addRestrictionJourneys',
-    ADDRESS: 'addressJourneys',
-    UPDATE_EMPLOYMENTS: 'updateEmploymentsJourneys',
-    CHANGE_RELATIONSHIP_TYPE: 'changeRelationshipTypeJourneys',
-  } as const
+  const CONTACT_ID_REGEX = /(contacts\/manage\/|contacts\/add\/match\/)([0-9]+)\//
+  const PRISON_NUMBER_REGEX = /prisoner\/([0-9A-z]+)\//
+  const PRISONER_CONTACT_NUMBER_REGEX = /prisoner-contact\/([0-9A-z]+)\//
 
   return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    if (!(res.statusCode >= 400 && res.statusCode < 600) || !res.statusCode === 302) {
-      const { journeyId } = req.params
-
-      const journey = Object.values(JOURNEY_TYPES).find(type => req.session?.[type]?.[journeyId])
-
-      const details = (() => {
-        if (!journey) return undefined
-
-        const journeyData = req.session[journey]?.[journeyId]
-        if (!journeyData) return undefined
-
-        const result = {}
-        const { prisonerNumber, contactId, prisonerContactId } = journeyData
-
-        if (prisonerNumber !== undefined) result['prisonerNumber'] = prisonerNumber
-        if (contactId !== undefined) result['contactId'] = contactId
-        if (prisonerContactId !== undefined) result['prisonerContactId'] = prisonerContactId
-
-        return Object.keys(result).length > 0 ? result : undefined
-      })()
-
-      const eventDetails = {
-        who: res.locals.user.username,
-        correlationId: req.id,
-        details,
-      }
-      await auditService.logPageView(pageHandler.PAGE_NAME, eventDetails)
+    // Fix the status code condition logic
+    if ((res.statusCode >= 400 && res.statusCode < 600) || res.statusCode === 302) {
+      return next()
     }
+
+    const details = (() => {
+      const contactId = req.originalUrl.match(CONTACT_ID_REGEX)?.[2]
+      const prisonerNumber = req.originalUrl.match(PRISON_NUMBER_REGEX)?.[1]
+      const prisonerContactId = req.originalUrl.match(PRISONER_CONTACT_NUMBER_REGEX)?.[1]
+      const result: Record<string, unknown> = {}
+
+      if (prisonerNumber !== undefined) result['prisonerNumber'] = prisonerNumber
+      if (contactId !== undefined) result['contactId'] = contactId
+      if (prisonerContactId !== undefined) result['prisonerContactId'] = prisonerContactId
+
+      return result
+    })()
+
+    const eventDetails = {
+      who: res.locals.user.username,
+      correlationId: req.id,
+      details,
+    }
+
+    await auditService.logPageView(pageHandler.PAGE_NAME, eventDetails)
     return next()
   })
 }
