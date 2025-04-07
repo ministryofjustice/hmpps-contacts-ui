@@ -42,9 +42,10 @@ context('Create Prisoner Contact Restriction', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
-    cy.signIn()
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickRestrictionsTab('0')
       .verifyOnRestrictionsTab()

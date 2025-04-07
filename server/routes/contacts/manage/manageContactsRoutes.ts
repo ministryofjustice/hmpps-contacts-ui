@@ -2,11 +2,6 @@ import { RequestHandler, Router } from 'express'
 import { z } from 'zod'
 import { SchemaFactory, validate } from '../../../middleware/validationMiddleware'
 import AuditService from '../../../services/auditService'
-import { ensureInManageContactsJourney } from './manageContactsMiddleware'
-import StartManageContactsJourneyController from './start/startManageContactsJourneyController'
-import PrisonerSearchController from './prisoner-search/prisonerSearchController'
-import PrisonerSearchResultsController from './prisoner-search/prisonerSearchResultsController'
-import { prisonerSearchSchema } from './prisoner-search/prisonerSearchSchema'
 import ListContactsController from './list/listContactsController'
 import { ContactsService, PrisonerSearchService } from '../../../services'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
@@ -176,46 +171,20 @@ const ManageContactsRoutes = (
 
   router.get('/prisoner/:prisonerNumber/*any', populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService))
 
-  // Part 1: Start manage contacts
-  get('/contacts/manage/start', new StartManageContactsJourneyController())
-
-  // Part 2: Prisoner search
-  journeyRoute({
-    path: '/contacts/manage/prisoner-search/:journeyId',
-    controller: new PrisonerSearchController(),
-    journeyEnsurer: ensureInManageContactsJourney,
-    schema: prisonerSearchSchema,
-  })
-
-  // Part 3: Prisoner search results
-  journeyRoute({
-    path: '/contacts/manage/prisoner-search/:journeyId',
-    controller: new PrisonerSearchController(),
-    journeyEnsurer: ensureInManageContactsJourney,
-    schema: prisonerSearchSchema,
-  })
-
-  journeyRoute({
-    path: '/contacts/manage/prisoner-search-results/:journeyId',
-    controller: new PrisonerSearchResultsController(prisonerSearchService),
-    journeyEnsurer: ensureInManageContactsJourney,
-    schema: prisonerSearchSchema,
-  })
-
-  // Part 4: List contacts for a prisoner
+  // List contacts for a prisoner
   standAloneRoute({
     path: '/prisoner/:prisonerNumber/contacts/list',
     controller: new ListContactsController(contactsService),
     noValidation: true,
   })
 
-  // Part 5: View one contact
+  // View one contact
   get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId',
     new ContactDetailsController(contactsService, restrictionsService),
   )
 
-  // Part 6: Manage the attribute of one contact (phones, addresses, IDs, emails, restrictions)
+  // Manage the attribute of one contact (phones, addresses, IDs, emails, restrictions)
   standAloneRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/language-and-interpreter',
     controller: new ManageLanguageAndInterpreterController(contactsService, referenceDataService),

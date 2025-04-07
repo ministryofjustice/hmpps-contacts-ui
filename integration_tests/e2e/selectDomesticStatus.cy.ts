@@ -36,7 +36,6 @@ context('Select Domestic Status', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
-    cy.signIn()
   })
 
   it(`should update contact details domestic status`, () => {
@@ -131,7 +130,9 @@ context('Select Domestic Status', () => {
     cy.task('stubGetContactById', contact)
     cy.task('stubGetContactNameById', contact)
     const { prisonerNumber } = TestData.prisoner()
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
   }

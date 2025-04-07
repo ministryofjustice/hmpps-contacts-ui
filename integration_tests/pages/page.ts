@@ -31,6 +31,8 @@ export default abstract class Page {
 
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
 
+  headerUserName = (): PageElement => cy.get('[data-qa=connect-dps-common-header-user-name]')
+
   hasFieldInError(field: string, expectedError: string) {
     cy.get(`#${Cypress.$.escapeSelector(field)}-error`).should('contain.text', expectedError)
     return this

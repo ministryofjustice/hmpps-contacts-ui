@@ -24,7 +24,6 @@ context('Change Contact Title Or Middle Names', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
-    cy.signIn()
   })
 
   it('Can edit a contact with new title and middle names', () => {
@@ -43,7 +42,9 @@ context('Change Contact Title Or Middle Names', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     const updated: StubPatchContactResponse = {
       ...contact,
@@ -102,7 +103,9 @@ context('Change Contact Title Or Middle Names', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     const updated: StubPatchContactResponse = {
       ...contact,
@@ -161,7 +164,9 @@ context('Change Contact Title Or Middle Names', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     const updated: StubPatchContactResponse = {
       ...contact,
@@ -220,7 +225,9 @@ context('Change Contact Title Or Middle Names', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
@@ -254,7 +261,9 @@ context('Change Contact Title Or Middle Names', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
@@ -284,7 +293,9 @@ context('Change Contact Title Or Middle Names', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()

@@ -33,7 +33,6 @@ context('Select Staff Status', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
-    cy.signIn()
   })
 
   it(`should render manage contact details staff status`, () => {
@@ -43,7 +42,9 @@ context('Select Staff Status', () => {
     }
     cy.task('stubPatchContactById', { contactId, request })
 
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
       .clickEditContactDetailsLink()
 
@@ -71,7 +72,9 @@ context('Select Staff Status', () => {
   })
 
   it('goes to correct page on Back or Cancel', () => {
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
       .clickEditContactDetailsLink()
 

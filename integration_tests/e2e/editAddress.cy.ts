@@ -36,7 +36,6 @@ context('Edit Address', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
-    cy.signIn()
 
     const address = TestData.address({
       contactId,
@@ -82,7 +81,9 @@ context('Edit Address', () => {
       },
     })
 
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickContactMethodsTab()

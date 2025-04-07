@@ -36,9 +36,9 @@ afterEach(() => {
   preExistingJourneysToAddToSession = []
 })
 
-describe('GET /contacts/manage/start', () => {
+describe('GET /prisoner-search', () => {
   it('should create the journey and redirect to the prisoner search page', async () => {
-    const response = await request(app).get('/contacts/manage/start')
+    const response = await request(app).get('/prisoner-search')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACTS_START_PAGE, {
       who: user.username,
@@ -60,7 +60,7 @@ describe('GET /contacts/manage/start', () => {
       },
     ]
 
-    const response = await request(app).get('/contacts/manage/start')
+    const response = await request(app).get('/prisoner-search')
 
     // Get the redirect location from the response headers
     const { location } = response.headers
@@ -90,7 +90,7 @@ describe('GET /contacts/manage/start', () => {
       },
     ]
 
-    const response = await request(app).get('/contacts/manage/start')
+    const response = await request(app).get('/prisoner-search')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACTS_START_PAGE, {
       who: user.username,
@@ -110,7 +110,7 @@ describe('GET /contacts/manage/start', () => {
       { id: 'young', lastTouched: new Date(2024, 1, 1, 13, 30).toISOString() },
     ]
 
-    const response = await request(app).get('/contacts/manage/start')
+    const response = await request(app).get('/prisoner-search')
     const { location } = response.headers
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACTS_START_PAGE, {

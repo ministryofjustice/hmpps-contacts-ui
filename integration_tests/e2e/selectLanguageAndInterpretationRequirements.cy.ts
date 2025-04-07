@@ -29,7 +29,6 @@ context('Select Language and interpretation requirements', () => {
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
     cy.task('stubLanguagesReferenceData')
     cy.task('stubTitlesReferenceData')
-    cy.signIn()
   })
 
   it(`should render manage contact details language and interpretation requirements`, () => {
@@ -124,7 +123,9 @@ context('Select Language and interpretation requirements', () => {
     cy.task('stubGetContactById', contact)
     cy.task('stubGetContactNameById', contact)
     const { prisonerNumber } = TestData.prisoner()
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason')
   }

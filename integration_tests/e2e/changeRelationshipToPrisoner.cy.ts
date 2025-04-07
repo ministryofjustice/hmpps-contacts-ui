@@ -35,7 +35,6 @@ context('Change Relationship To Prisoner', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
-    cy.signIn()
   })
 
   it('Can select a new social relationship', () => {
@@ -50,7 +49,9 @@ context('Change Relationship To Prisoner', () => {
       id: prisonerContactId,
       response: relationship,
     })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     cy.task('stubUpdateContactRelationshipById', {
       prisonerContactId,
@@ -96,7 +97,9 @@ context('Change Relationship To Prisoner', () => {
       id: prisonerContactId,
       response: relationship,
     })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     cy.task('stubUpdateContactRelationshipById', {
       prisonerContactId,
@@ -135,7 +138,9 @@ context('Change Relationship To Prisoner', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
@@ -153,7 +158,9 @@ context('Change Relationship To Prisoner', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()

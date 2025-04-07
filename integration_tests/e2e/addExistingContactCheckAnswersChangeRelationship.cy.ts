@@ -62,8 +62,7 @@ context('Add Existing Contact Check Answers', () => {
       dateOfBirth: '1990-01-14',
     })
 
-    cy.signIn()
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/list`)
+    cy.signIn({ startUrl: `/prisoner/${prisonerNumber}/contacts/list` })
 
     Page.verifyOnPage(ListContactsPage, 'John Smith') //
       .clickAddNewContactButton()
