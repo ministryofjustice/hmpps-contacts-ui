@@ -64,29 +64,35 @@ afterEach(() => {
 
 describe('GET /prisoner/:prisonerNumber/contacts/create/enter-relationship-comments/:journeyId', () => {
   it.each([
-    ['NEW', 'Add a contact and link to a prisoner'],
-    ['EXISTING', 'Link a contact to a prisoner'],
-  ])('should render enter relationship comments page for each mode %s', async (mode, expectedCaption: string) => {
-    // Given
-    existingJourney.mode = mode as 'NEW' | 'EXISTING'
+    ['NEW', 'Add a contact and link to a prisoner', 'Add a contact - DPS'],
+    ['EXISTING', 'Link a contact to a prisoner', 'Link a contact to a prisoner - DPS'],
+  ])(
+    'should render enter relationship comments page for each mode %s',
+    async (mode, expectedCaption: string, titleSuffix) => {
+      // Given
+      existingJourney.mode = mode as 'NEW' | 'EXISTING'
 
-    // When
-    const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`,
-    )
+      // When
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`,
+      )
 
-    // Then
-    expect(response.status).toEqual(200)
+      // Then
+      expect(response.status).toEqual(200)
 
-    const $ = cheerio.load(response.text)
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Add comments on the relationship between First Middle Last and John Smith (optional)',
-    )
-    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual(expectedCaption)
-    expect($('[data-qa=cancel-button]')).toHaveLength(0)
-    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
-  })
+      const $ = cheerio.load(response.text)
+      expect($('title').text()).toStrictEqual(
+        `Add comments on the relationship between the contact and the prisoner - ${titleSuffix}`,
+      )
+      expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
+        'Add comments on the relationship between First Middle Last and John Smith (optional)',
+      )
+      expect($('.govuk-caption-l').first().text().trim()).toStrictEqual(expectedCaption)
+      expect($('[data-qa=cancel-button]')).toHaveLength(0)
+      expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+      expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
+    },
+  )
 
   it.each([
     ['NEW', `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`],
@@ -104,6 +110,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-relationship-comme
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(previousUrl)
   })
 

@@ -10,7 +10,12 @@ describe('addContactFlowControl', () => {
       const journeyId = uuidv4()
 
       it.each([
-        [Page.CREATE_CONTACT_NAME_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`, undefined, undefined],
+        [
+          Page.CREATE_CONTACT_NAME_PAGE,
+          `/prisoner/A1234BC/contacts/search/${journeyId}`,
+          undefined,
+          'Back to contact search',
+        ],
         [
           Page.CREATE_CONTACT_DOB_PAGE,
           `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`,
@@ -143,7 +148,7 @@ describe('addContactFlowControl', () => {
       )
 
       it.each([
-        [Page.CREATE_CONTACT_NAME_PAGE, undefined, undefined],
+        [Page.CREATE_CONTACT_NAME_PAGE, undefined, 'Back to contact search'],
         [Page.CREATE_CONTACT_DOB_PAGE, undefined, undefined],
         [Page.SELECT_RELATIONSHIP_TYPE, undefined, undefined],
         [Page.SELECT_CONTACT_RELATIONSHIP, undefined, undefined],

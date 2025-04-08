@@ -34,9 +34,9 @@ afterEach(() => {
 
 describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId', () => {
   it.each([
-    ['NEW', 'New contact added and linked to prisoner'],
-    ['EXISTING', 'Contact linked to prisoner'],
-  ])('should render check answers page with dob for mode %s', async (mode, message: string) => {
+    ['NEW', 'New contact added and linked to prisoner', 'New contact added and linked to a prisoner - DPS'],
+    ['EXISTING', 'Contact linked to prisoner', 'Contact linked to prisoner - DPS'],
+  ])('should render check answers page with dob for mode %s', async (mode, message: string, title) => {
     // Given
     contactsService.getContactName.mockResolvedValue(TestData.contact())
 
@@ -45,6 +45,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
 
     // Then
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(title)
+    expect($('a:contains("Back")').text()).toBeFalsy()
     expect($('.govuk-panel__title').text().trim()).toStrictEqual(message)
     expect($('[data-qa=prisoner-name]').text().trim()).toContain('John Smith')
     expect($('[data-qa=contact-name]').text().trim()).toContain('Jones Mason')

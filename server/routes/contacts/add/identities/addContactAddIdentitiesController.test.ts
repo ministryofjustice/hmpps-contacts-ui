@@ -73,10 +73,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/identities/:journeyId', 
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual('Add identity documents - Add a contact - DPS')
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Add identity documents for First Middle Last (optional)',
     )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`,
     )

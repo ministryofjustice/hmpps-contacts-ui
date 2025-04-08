@@ -58,9 +58,9 @@ afterEach(() => {
 
 describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-to-prisoner', () => {
   it.each([
-    ['NEW', 'Add a contact and link to a prisoner'],
-    ['EXISTING', 'Link a contact to a prisoner'],
-  ])('should render select relationship page for mode %s', async (mode, expectedCaption) => {
+    ['NEW', 'Add a contact and link to a prisoner', 'Add a contact - DPS'],
+    ['EXISTING', 'Link a contact to a prisoner', 'Link a contact to a prisoner - DPS'],
+  ])('should render select relationship page for mode %s', async (mode, expectedCaption, titleSuffix) => {
     // Given
     existingJourney.mode = mode as 'NEW' | 'EXISTING'
 
@@ -73,11 +73,16 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-to-p
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(`What is the contact’s relationship to the prisoner? - ${titleSuffix}`)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'What is First Middle Last’s relationship to John Smith?',
     )
     expect($('[data-qa=cancel-button]')).toHaveLength(0)
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`,
+    )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual(expectedCaption)
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
   })

@@ -69,9 +69,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/is-staff/:journeyId', ()
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual('Is the contact a member of staff? - Add a contact - DPS')
     expect($('.main-heading').first().text().trim()).toStrictEqual('Is First Middle Last a member of staff? (optional)')
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
     expect($('[data-qa=continue-button]').text().trim()).toStrictEqual('Continue')
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
     )

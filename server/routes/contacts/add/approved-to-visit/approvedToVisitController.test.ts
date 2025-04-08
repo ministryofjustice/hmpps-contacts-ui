@@ -59,32 +59,37 @@ afterEach(() => {
 
 describe('GET /prisoner/:prisonerNumber/contacts/create/approved-to-visit/:journeyId', () => {
   it.each([
-    ['NEW', 'Add a contact and link to a prisoner'],
-    ['EXISTING', 'Link a contact to a prisoner'],
-  ])('should render enter emergency contact page for all modes %s', async (mode, expectedCaption: string) => {
-    // Given
-    existingJourney.mode = mode as 'NEW' | 'EXISTING'
+    ['NEW', 'Add a contact and link to a prisoner', 'Add a contact - DPS'],
+    ['EXISTING', 'Link a contact to a prisoner', 'Link a contact to a prisoner - DPS'],
+  ])(
+    'should render enter emergency contact page for all modes %s',
+    async (mode, expectedCaption: string, titleSuffix) => {
+      // Given
+      existingJourney.mode = mode as 'NEW' | 'EXISTING'
 
-    // When
-    const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/create/approved-to-visit/${journeyId}`,
-    )
+      // When
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/create/approved-to-visit/${journeyId}`,
+      )
 
-    // Then
-    expect(response.status).toEqual(200)
+      // Then
+      expect(response.status).toEqual(200)
 
-    const $ = cheerio.load(response.text)
-    expect($('.main-heading').first().text().trim()).toStrictEqual(
-      'Is First Middle Last approved to visit John Smith? (optional)',
-    )
-    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual(expectedCaption)
-    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
-      `/prisoner/A1234BC/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
-    )
-    expect($('[data-qa=cancel-button]')).toHaveLength(0)
-    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-  })
+      const $ = cheerio.load(response.text)
+      expect($('title').text()).toStrictEqual(`Is the contact approved to visit the prisoner? - ${titleSuffix}`)
+      expect($('.main-heading').first().text().trim()).toStrictEqual(
+        'Is First Middle Last approved to visit John Smith? (optional)',
+      )
+      expect($('.govuk-caption-l').first().text().trim()).toStrictEqual(expectedCaption)
+      expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
+      expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
+      expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+        `/prisoner/A1234BC/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
+      )
+      expect($('[data-qa=cancel-button]')).toHaveLength(0)
+      expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    },
+  )
 
   it('should call the audit service for the page view', async () => {
     // Given

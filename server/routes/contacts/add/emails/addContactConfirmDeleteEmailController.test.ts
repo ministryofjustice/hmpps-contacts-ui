@@ -75,10 +75,14 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/delete-email/:index/:jou
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(
+      'Are you sure you want to delete an email address for the contact? - Add a contact - DPS',
+    )
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Are you sure you want to delete this email address for First Middle Last?',
     )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`,
     )

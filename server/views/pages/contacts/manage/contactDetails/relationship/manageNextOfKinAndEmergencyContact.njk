@@ -3,7 +3,16 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-{% set pageTitle = 'Is this person an emergency contact or next of kin for the prisoner? - Add a contact - DPS' if isOptional else 'Is this person an emergency contact or next of kin for the prisoner? - Edit contact details - DPS' %}
+{% if isOptional %}
+  {% if journey.mode === 'NEW' %}
+    {% set pageTitle = "Is this person an emergency contact or next of kin for the prisoner? - Add a contact - DPS" %}
+  {% else %}
+    {% set pageTitle = "Is this person an emergency contact or next of kin for the prisoner? - Link a contact to a prisoner - DPS" %}
+  {% endif %}
+{% else %}
+  {% set pageTitle = "Is this person an emergency contact or next of kin for the prisoner? - Edit contact details - DPS" %}
+{% endif %}
+
 {% set title = "Is " + (contact | formatNameFirstNameFirst) + " an emergency contact or next of kin for " + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) + "?" + (" (optional)" if isOptional else "") %}
 {% set mainClasses = "app-container govuk-body" %}
 

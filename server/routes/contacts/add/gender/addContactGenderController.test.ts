@@ -76,9 +76,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-gender/:journeyId'
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual('What is the contact’s gender? - Add a contact - DPS')
     expect($('.main-heading').first().text().trim()).toStrictEqual('What is First Middle Last’s gender? (optional)')
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
     )

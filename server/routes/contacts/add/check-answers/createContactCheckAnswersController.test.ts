@@ -90,6 +90,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     expect(response.status).toEqual(200)
     expect(journey.isCheckingAnswers).toStrictEqual(true)
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(
+      'Check your answers before linking the contact to the prisoner - Add a contact - DPS',
+    )
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Check your answers before linking the contact to John Smith',
     )
@@ -118,6 +121,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     expect(response.status).toEqual(200)
     expect(journey.isCheckingAnswers).toStrictEqual(true)
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(
+      'Check your answers before linking the contact to the prisoner - Link a contact to a prisoner - DPS',
+    )
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Check your answers before linking the contact to John Smith',
     )

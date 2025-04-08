@@ -118,6 +118,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/employments/:employmentI
 
     // Then
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual('Are you sure you want to delete an employer? - Add a contact - DPS')
+    expect($('.govuk-caption-l').text().trim()).toStrictEqual('Add a contact and link to a prisoner')
     expect($('a:contains("Back")').attr('href')).toEqual(`/prisoner/A1234BC/contacts/create/employments/${journeyId}`)
     expect($('a:contains("No, do not delete")').attr('href')).toEqual(
       `/prisoner/A1234BC/contacts/create/employments/${journeyId}`,
