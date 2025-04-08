@@ -73,10 +73,15 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(
+      'Are you sure you want to cancel adding a restriction? - Manage contact restrictions - DPS',
+    )
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Manage contact restrictions')
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Are you sure you want to cancel adding a restriction?',
     )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Manage contact restrictions')
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/PRISONER_CONTACT/check-answers/${journeyId}`,
     )

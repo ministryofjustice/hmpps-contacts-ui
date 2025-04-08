@@ -48,6 +48,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
     // Then
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual('New relationship restriction recorded - Manage contact restrictions - DPS')
     expect($('.govuk-panel__title').text().trim()).toStrictEqual(message)
     expect($('[data-qa=prisoner-name]').text().trim()).toContain('John Smith')
     expect($('[data-qa=contact-name]').text().trim()).toContain('Jones Mason')
@@ -62,6 +63,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
       '/prisoner/A1234BC/contacts/list',
     )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Manage contact restrictions')
+    expect($('a:contains("Back")').text()).toBeFalsy()
   })
 
   it('should render success for restriction class CONTACT_GLOBAL', async () => {
@@ -78,6 +80,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
     // Then
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual('New global restriction recorded - Manage contact restrictions - DPS')
     expect($('.govuk-panel__title').text().trim()).toStrictEqual(message)
     expect($('[data-qa=prisoner-name]')).toHaveLength(0)
     expect($('[data-qa=contact-name]').text().trim()).toContain('Jones Mason')
@@ -92,6 +95,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
       '/prisoner/A1234BC/contacts/list',
     )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Manage contact restrictions')
+    expect($('a:contains("Back")').text()).toBeFalsy()
   })
 
   it('should call the audit service for the page view', async () => {
