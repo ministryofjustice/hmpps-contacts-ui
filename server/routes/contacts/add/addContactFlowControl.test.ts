@@ -375,7 +375,7 @@ describe('addContactFlowControl', () => {
           Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE,
           `/prisoner/A1234BC/contacts/create/enter-relationship-comments/${journeyId}`,
           `/prisoner/A1234BC/contacts/add/cancel/${journeyId}`,
-          undefined,
+          'Back to relationship comments',
         ],
         [
           Page.ADD_CONTACT_CANCEL_PAGE,

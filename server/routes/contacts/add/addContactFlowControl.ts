@@ -304,6 +304,7 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
   },
   [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE]: {
     previousUrl: PAGES.ENTER_RELATIONSHIP_COMMENTS.url,
+    previousUrlLabel: _ => 'Back to relationship comments',
     nextUrl: PAGES.SUCCESSFULLY_ADDED_CONTACT_PAGE.url,
     cancelUrl: PAGES.ADD_CONTACT_CANCEL_PAGE.url,
   },
