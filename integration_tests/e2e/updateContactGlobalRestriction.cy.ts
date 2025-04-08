@@ -50,9 +50,10 @@ context('Update Contact Global Restriction', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
-    cy.signIn()
 
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickRestrictionsTab('1')
       .verifyOnRestrictionsTab()

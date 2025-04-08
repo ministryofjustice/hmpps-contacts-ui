@@ -4,7 +4,7 @@ import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import ManageContactsJourney = journeys.ManageContactsJourney
 
-export default class StartManageContactsJourneyController implements PageHandler {
+export default class StartPrisonerSearchJourneyController implements PageHandler {
   public PAGE_NAME = Page.MANAGE_CONTACTS_START_PAGE
 
   private MAX_JOURNEYS = 5

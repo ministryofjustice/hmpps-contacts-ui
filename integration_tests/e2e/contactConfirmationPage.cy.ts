@@ -54,8 +54,7 @@ context('Contact confirmation', () => {
       dateOfBirth: '',
     })
 
-    cy.signIn()
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+    cy.signIn({ startUrl: `/prisoner/${prisonerNumber}/contacts/search/${journeyId}` })
 
     Page.verifyOnPage(SearchContactPage) //
       .enterLastName('Contact')

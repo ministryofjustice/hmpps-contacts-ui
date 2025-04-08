@@ -36,7 +36,6 @@ context('Change Relationship Type', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
-    cy.signIn()
   })
 
   it('Can change from social to official', () => {
@@ -51,7 +50,9 @@ context('Change Relationship Type', () => {
       id: prisonerContactId,
       response: relationship,
     })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     cy.task('stubUpdateContactRelationshipById', {
       prisonerContactId,
@@ -104,7 +105,9 @@ context('Change Relationship Type', () => {
       id: prisonerContactId,
       response: relationship,
     })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     cy.task('stubUpdateContactRelationshipById', {
       prisonerContactId,
@@ -156,7 +159,9 @@ context('Change Relationship Type', () => {
       id: prisonerContactId,
       response: relationship,
     })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     cy.task('stubUpdateContactRelationshipById', {
       prisonerContactId,
@@ -205,7 +210,9 @@ context('Change Relationship Type', () => {
         relationshipToPrisonerDescription: 'Other',
       }),
     })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
@@ -233,7 +240,9 @@ context('Change Relationship Type', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()
@@ -253,7 +262,9 @@ context('Change Relationship Type', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickEditContactDetailsLink()

@@ -55,9 +55,8 @@ context('Create Contacts', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
-    cy.signIn()
     const { prisonerNumber } = TestData.prisoner()
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/list`)
+    cy.signIn({ startUrl: `/prisoner/${prisonerNumber}/contacts/list` })
 
     Page.verifyOnPage(ListContactsPage, 'John Smith') //
       .clickAddNewContactButton()

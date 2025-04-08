@@ -19,7 +19,6 @@ context('Ensure Prisoner Is In Caseload', () => {
       },
     })
 
-    cy.signIn()
     const prisoner = TestData.prisoner({
       prisonerNumber,
       prisonId: 'NOT HEI',
@@ -40,14 +39,17 @@ context('Ensure Prisoner Is In Caseload', () => {
     })
   })
 
-  it('Manage contacts page not accessible if prisoner not in caseload', () => {
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/list`, { failOnStatusCode: false })
+  it('Contacts page not accessible if prisoner not in caseload', () => {
+    cy.signIn({ startUrl: `/prisoner/${prisonerNumber}/contacts/list`, failOnStatusCode: false })
 
     Page.verifyOnPage(PageNotFoundPage)
   })
 
   it('Manage contacts page not accessible if prisoner not in caseload', () => {
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/99`, { failOnStatusCode: false })
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/99`,
+      failOnStatusCode: false,
+    })
 
     Page.verifyOnPage(PageNotFoundPage)
   })

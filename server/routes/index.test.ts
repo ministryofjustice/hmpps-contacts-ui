@@ -1,7 +1,6 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { appWithAllRoutes, user } from './testutils/appSetup'
-import { Page } from '../services/auditService'
 import { MockedService } from '../testutils/mockedServices'
 
 jest.mock('../services/auditService')
@@ -24,18 +23,12 @@ afterEach(() => {
 })
 
 describe('GET /', () => {
-  it('should render index page', async () => {
-    // Given
-
-    // When
-    const response = await request(app).get('/')
-
-    // Then
-    expect(response.text).toContain('Contacts')
-    expect(response.text).toContain('Hmpps Contacts Ui')
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.CONTACTS_HOME_PAGE, {
-      who: user.username,
-      correlationId: expect.any(String),
-    })
+  it('The entry point is contact list so default page should show a 404', async () => {
+    await request(app)
+      .get('/')
+      .expect(404)
+      .expect(res => {
+        expect(res.text).toContain('Page not found')
+      })
   })
 })

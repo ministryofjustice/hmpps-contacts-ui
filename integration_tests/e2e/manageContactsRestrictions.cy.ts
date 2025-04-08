@@ -1,4 +1,3 @@
-import SearchPrisonerPage from '../pages/searchPrisoner'
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
@@ -13,8 +12,6 @@ context('Manage contacts restrictions', () => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
     cy.task('stubSignIn', { roles: ['PRISON'] })
-    cy.signIn()
-    cy.visit('/contacts/manage/prisoner-search/start')
     cy.task('stubGetGenders')
     cy.task('stubTitlesReferenceData')
     cy.task('stubComponentsMeta')
@@ -44,8 +41,7 @@ context('Manage contacts restrictions', () => {
     })
     cy.task('stubLanguagesReferenceData')
 
-    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
-
+    cy.signIn({ startUrl: `/prisoner/${prisonerNumber}/contacts/list` })
     Page.verifyOnPage(ListContactsPage, 'John Smith').clickContactNamesLink('Davis, Daniel M.')
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Daniel M. Davis')
@@ -65,7 +61,7 @@ context('Manage contacts restrictions', () => {
       },
     })
 
-    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
+    cy.signIn({ startUrl: `/prisoner/${prisonerNumber}/contacts/list` })
 
     Page.verifyOnPage(ListContactsPage, 'John Smith').clickContactNamesLink('Davis, Daniel M.')
 
@@ -87,7 +83,7 @@ context('Manage contacts restrictions', () => {
       },
     })
 
-    Page.verifyOnPage(SearchPrisonerPage).enterPrisoner(prisonerNumber).clickSearchButton().clickPrisonerLink('A1234BC')
+    cy.signIn({ startUrl: `/prisoner/${prisonerNumber}/contacts/list` })
 
     Page.verifyOnPage(ListContactsPage, 'John Smith').clickContactNamesLink('Davis, Daniel M.')
 

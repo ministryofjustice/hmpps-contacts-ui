@@ -8,8 +8,7 @@ context('Manage contacts ', () => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
     cy.task('stubSignIn', { roles: ['PRISON'] })
-    cy.signIn()
-    cy.visit('/contacts/manage/prisoner-search/start')
+    cy.signIn({ startUrl: '/prisoner-search' })
   })
 
   it('Start of journey prompts for search', () => {

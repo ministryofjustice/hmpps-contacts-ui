@@ -92,9 +92,9 @@ context('Update Prisoner Contact Employments', () => {
       organisationTypes: [],
     })
     cy.task('stubPatchEmployments')
-    cy.signIn()
-
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickProfessionalInformationTab()
       .verifyOnProfessionalInformationTab()

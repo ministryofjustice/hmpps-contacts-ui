@@ -48,7 +48,6 @@ context('List contacts ', () => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
     cy.task('stubSignIn', { roles: ['PRISON'] })
-    cy.signIn()
     cy.task('stubPrisonerById', prisoner)
   })
 
@@ -102,7 +101,7 @@ context('List contacts ', () => {
       matchQueryParams: filtered,
     })
 
-    cy.visit(`/prisoner/${prisoner.prisonerNumber}/contacts/list`)
+    cy.signIn({ startUrl: `/prisoner/${prisoner.prisonerNumber}/contacts/list` })
 
     Page.verifyOnPage(ListContactsPage, 'Test Prisoner')
       .expectNames(['One, Contact', 'Two, Contact', 'Three, Contact', 'Four, Contact', 'Five, Contact'])

@@ -1,9 +1,7 @@
 import Page from '../pages/page'
-import SearchPrisonerPage from '../pages/searchPrisoner'
 import TestData from '../../server/routes/testutils/testData'
 import SearchContactPage from '../pages/searchContactPage'
 import ListContactsPage from '../pages/listContacts'
-import IndexPage from '../pages'
 
 const { prisonerNumber } = TestData.prisoner()
 
@@ -38,15 +36,7 @@ context('Search contact', () => {
       dateOfBirth: '',
     })
 
-    cy.signIn()
-    cy.visit(`/`)
-    Page.verifyOnPage(IndexPage).manageContactsCard().click()
-
-    const searchPrisonerPage = Page.verifyOnPage(SearchPrisonerPage)
-    searchPrisonerPage.prisonerSearchFormField().clear().type(prisonerNumber)
-    searchPrisonerPage.prisonerSearchSearchButton().click()
-
-    Page.verifyOnPage(SearchPrisonerPage).clickPrisonerLink('A1234BC')
+    cy.signIn({ startUrl: `/prisoner/${prisonerNumber}/contacts/list` })
 
     Page.verifyOnPage(ListContactsPage, 'John Smith').clickAddNewContactButton()
 

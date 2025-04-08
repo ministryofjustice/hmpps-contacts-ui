@@ -62,9 +62,10 @@ context('Edit Address Phones', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
-    cy.signIn()
     const { prisonerNumber } = TestData.prisoner()
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickContactMethodsTab()

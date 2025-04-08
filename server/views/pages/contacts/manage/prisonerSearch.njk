@@ -8,28 +8,10 @@
 {% set pageTitle = applicationName + " - Home" %}
 {% set title = "Search for a prisoner" %}
 {% set mainClasses = "app-container govuk-body" %}
-{% set backLinkHref = "/" %}
 
 {% block content %}
 
-<div class="govuk-grid-row govuk-!-static-margin-bottom-5">
-    <div class="govuk-grid-column-full">
-        {{ govukBreadcrumbs({
-        items: [
-            {
-                text: "Digital Prison Services",
-                href: DPS_HOME_PAGE_URL
-            },
-            {
-                text: "Contacts",
-                href: "/"
-            }
-        ]
-        }) }}
-    </div>
-</div>
-
-{% include '../../../partials/formErrorSummary.njk' %}
+{% include 'partials/formErrorSummary.njk' %}
 
 <span class="govuk-caption-l">Contacts</span>
 <h1 class="govuk-heading-l">{{ title }}</h1>

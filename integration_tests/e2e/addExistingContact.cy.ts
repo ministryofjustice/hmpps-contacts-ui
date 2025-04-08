@@ -71,8 +71,7 @@ context('Add Existing Contact', () => {
       dateOfBirth: '',
     })
 
-    cy.signIn()
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/list`)
+    cy.signIn({ startUrl: `/prisoner/${prisonerNumber}/contacts/list` })
 
     Page.verifyOnPage(ListContactsPage, 'John Smith') //
       .clickAddNewContactButton()

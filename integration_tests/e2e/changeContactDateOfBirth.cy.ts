@@ -24,7 +24,6 @@ context('Change Contact Date Of Birth', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
-    cy.signIn()
   })
 
   it('Can edit a contact with an existing date of birth to another date of birth', () => {
@@ -41,7 +40,9 @@ context('Change Contact Date Of Birth', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
 
@@ -97,7 +98,9 @@ context('Change Contact Date Of Birth', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
 
@@ -150,7 +153,9 @@ context('Change Contact Date Of Birth', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
 
@@ -210,7 +215,9 @@ context('Change Contact Date Of Birth', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship({ prisonerContactId }),
     })
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
+    cy.signIn({
+      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last')
 

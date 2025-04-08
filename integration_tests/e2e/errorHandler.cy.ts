@@ -17,11 +17,11 @@ context('Ensure Prisoner Is In Caseload', () => {
         contactGlobalRestrictions: [],
       },
     })
-    cy.signIn()
   })
 
   it('Should show not found page if root cause is 404', () => {
     cy.task('stubPrisonerByIdReturnsError', { prisonerNumber, httpStatusCode: 404 })
+    cy.signIn({ startUrl: '/', failOnStatusCode: false })
     cy.visit(`/prisoner/${prisonerNumber}/contacts/list`, { failOnStatusCode: false })
 
     Page.verifyOnPage(PageNotFoundPage)
@@ -29,6 +29,7 @@ context('Ensure Prisoner Is In Caseload', () => {
 
   it('Should show not found page if root cause is 400', () => {
     cy.task('stubPrisonerByIdReturnsError', { prisonerNumber, httpStatusCode: 400 })
+    cy.signIn({ startUrl: '/', failOnStatusCode: false })
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/99`, { failOnStatusCode: false })
 
     Page.verifyOnPage(SorryPage)
@@ -36,6 +37,7 @@ context('Ensure Prisoner Is In Caseload', () => {
 
   it('Should show not found page if root cause is 500', () => {
     cy.task('stubPrisonerByIdReturnsError', { prisonerNumber, httpStatusCode: 500 })
+    cy.signIn({ startUrl: '/', failOnStatusCode: false })
     cy.visit(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/99`, { failOnStatusCode: false })
 
     Page.verifyOnPage(SorryPage)

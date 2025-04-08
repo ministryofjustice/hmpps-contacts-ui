@@ -77,9 +77,8 @@ context('Create Contact With Addresses', () => {
       emailAddresses: [],
       organisationTypes: [],
     })
-    cy.signIn()
     const { prisonerNumber } = TestData.prisoner()
-    cy.visit(`/prisoner/${prisonerNumber}/contacts/list`)
+    cy.signIn({ startUrl: `/prisoner/${prisonerNumber}/contacts/list` })
 
     Page.verifyOnPage(ListContactsPage, 'John Smith') //
       .clickAddNewContactButton()
