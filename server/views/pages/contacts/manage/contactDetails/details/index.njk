@@ -24,8 +24,8 @@
           <p class="govuk-body"><strong>Person ID:</strong> {{ contact.id }}</p>
         </div>
         <div>
-          {% if prisonerContactRelationship.isNextOfKin %}<p class="next-of-kin-tag">Next of kin</p>{% endif %}
           {% if prisonerContactRelationship.isEmergencyContact %}<p class="emergency-contact-tag">Emergency contact</p>{% endif %}
+          {% if prisonerContactRelationship.isNextOfKin %}<p class="next-of-kin-tag">Next of kin</p>{% endif %}
         </div>
       </div>
       <div class="govuk-tabs" data-module="govuk-tabs">

@@ -14,11 +14,11 @@
     {% endset %}
     {% set classes = 'light-grey' if not linkedPrisoner.isRelationshipActive else '' %}
     {% set rows = (rows.push([
-      { html: prisonerNameAndNumberHtml, classes: classes },
+      { html: prisonerNameAndNumberHtml, classes: classes + ' govuk-!-padding-left-1' },
       { text: linkedPrisoner.prisonName, classes: classes },
       { text: linkedPrisoner.relationshipTypeDescription, classes: classes },
       { text: linkedPrisoner.relationshipToPrisonerDescription, classes: classes },
-      { text: 'Active' if linkedPrisoner.isRelationshipActive else 'Inactive', classes: classes }
+      { text: 'Active' if linkedPrisoner.isRelationshipActive else 'Inactive', classes: classes + ' govuk-!-padding-right-1', format: "numeric" }
     ]), rows) %}
   {% endfor %}
 
@@ -31,19 +31,25 @@
     classes: 'govuk-!-margin-top-6 linked-prisoners-table',
     head: [
       {
-        text: "Name and prison number"
+        text: 'Name and prison number',
+        classes: 'contacts-!-width-one-fifth'
       },
       {
-        text: "Establishment"
+        text: 'Establishment',
+        classes: 'contacts-!-width-one-fifth'
       },
       {
-        text: "Relationship type"
+        text: 'Relationship type',
+        classes: 'contacts-!-width-one-fifth'
       },
       {
-        text: "Contact’s relationship to the prisoner"
+        text: 'Contact’s relationship to the prisoner',
+        classes: 'contacts-!-width-one-fifth'
       },
       {
-        text: "Relationship status"
+        text: 'Relationship status',
+        classes: 'contacts-!-width-one-fifth',
+        format: 'numeric'
       }
     ],
     rows: rows
