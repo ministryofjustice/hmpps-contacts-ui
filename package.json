@@ -106,7 +106,7 @@
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.777.0",
     "@cypress/code-coverage": "^3.14.0",
-    "@ministryofjustice/frontend": "^5.1.0",
+    "@ministryofjustice/frontend": "^5.1.1",
     "@ministryofjustice/hmpps-connect-dps-components": "^2.1.0",
     "@ministryofjustice/hmpps-monitoring": "^0.0.1-beta.2",
     "@sentry/node": "^9.10.0",

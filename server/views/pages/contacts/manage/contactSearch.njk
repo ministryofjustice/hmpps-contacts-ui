@@ -212,7 +212,8 @@
 {% block pageScripts %}
     <script nonce="{{ cspNonce }}">
       window.onload = function () {
-        new window.MojFrontend.FilterToggleButton(document.querySelector('[data-module="moj-filter"]'), {
+        const filter = document.querySelector('[data-module="moj-filter"]')
+        filter && new window.MojFrontend.FilterToggleButton(filter, {
           bigModeMediaQuery: '(min-width: 48.063em)',
           startHidden: false,
           toggleButton: {
