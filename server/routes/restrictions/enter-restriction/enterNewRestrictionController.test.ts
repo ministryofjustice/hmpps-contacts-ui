@@ -75,7 +75,10 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual('Add a new relationship restriction - Manage contact restrictions - DPS')
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Manage contact restrictions')
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Add a new relationship restriction')
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-restrictions`,
     )
@@ -98,7 +101,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(
+      'Add a new global restriction for the contact - Manage contact restrictions - DPS',
+    )
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Manage contact restrictions')
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Add a new global restriction for Bar Foo')
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-restrictions`,
     )

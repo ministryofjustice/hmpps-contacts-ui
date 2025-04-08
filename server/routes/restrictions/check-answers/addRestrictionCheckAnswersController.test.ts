@@ -87,6 +87,10 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(
+      'Check your answers before saving a new relationship restriction - Manage contact restrictions - DPS',
+    )
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Manage contact restrictions')
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Check your answers before saving the new relationship restriction',
     )
@@ -95,6 +99,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     )
     expect($('[data-qa=prisoner-name-and-id]').first().text().trim()).toStrictEqual('John Smith (A1234BC)')
     expect($('[data-qa=contact-name-and-id]').first().text().trim()).toStrictEqual('Bar Foo (123)')
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/PRISONER_CONTACT/enter-restriction/${journeyId}`,
     )
@@ -123,6 +128,10 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(
+      'Check your answers before saving a new global restriction - Manage contact restrictions - DPS',
+    )
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Manage contact restrictions')
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Check your answers before saving the new global restriction',
     )
@@ -131,6 +140,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     )
     expect($('[data-qa=prisoner-name-and-id]')).toHaveLength(0)
     expect($('[data-qa=contact-name-and-id]').first().text().trim()).toStrictEqual('Bar Foo (123)')
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/CONTACT_GLOBAL/enter-restriction/${journeyId}`,
     )
