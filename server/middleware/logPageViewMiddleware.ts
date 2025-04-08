@@ -4,12 +4,11 @@ import AuditService from '../services/auditService'
 import asyncMiddleware from './asyncMiddleware'
 
 export default function logPageViewMiddleware(auditService: AuditService, pageHandler: PageHandler): RequestHandler {
-  const CONTACT_ID_REGEX = /(contacts\/manage\/|contacts\/add\/match\/)([0-9]+)\//
+  const CONTACT_ID_REGEX = /(contacts\/|contacts\/manage\/|contacts\/add\/match\/)([0-9]+)\//
   const PRISON_NUMBER_REGEX = /prisoner\/([0-9A-z]+)\//
-  const PRISONER_CONTACT_NUMBER_REGEX = /prisoner-contact\/([0-9A-z]+)\//
+  const PRISONER_CONTACT_NUMBER_REGEX = /(?:relationship|prisoner-contact)\/([^/]+)/
 
   return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
-    // Fix the status code condition logic
     if ((res.statusCode >= 400 && res.statusCode < 600) || res.statusCode === 302) {
       return next()
     }

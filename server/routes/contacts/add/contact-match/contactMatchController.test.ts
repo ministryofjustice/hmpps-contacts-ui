@@ -83,6 +83,7 @@ describe('Contact details', () => {
         who: user.username,
         correlationId: expect.any(String),
         details: {
+          contactId: '22',
           prisonerNumber: 'A1234BC',
         },
       })

@@ -150,7 +150,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       who: user.username,
       correlationId: expect.any(String),
       details: {
-        contactId: 123456,
         prisonerNumber: 'A1234BC',
       },
     })
@@ -194,10 +193,10 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       who: user.username,
       correlationId: expect.any(String),
       details: {
-        contactId: 123456,
         prisonerNumber: 'A1234BC',
       },
     })
+
     expect(response.headers['location']).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`,
     )

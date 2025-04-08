@@ -98,8 +98,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       who: user.username,
       correlationId: expect.any(String),
       details: {
-        contactId: 123,
-        prisonerContactId: 897,
+        contactId: '123',
+        prisonerContactId: '897',
         prisonerNumber: 'A1234BC',
       },
     })

@@ -60,6 +60,11 @@ describe('auditPageViewMiddleware', () => {
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CONTACT_DETAILS_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        contactId: '1',
+        prisonerContactId: '99',
+        prisonerNumber: 'A1234BC',
+      },
     })
     expect(auditService.logAuditEvent).not.toHaveBeenCalled()
   })
