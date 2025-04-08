@@ -114,3 +114,108 @@ You can re-generate the hmpps-contacts-api types with
 ## Change log
 
 A changelog for the service is available [here](./CHANGELOG.md)
+
+### Run locally for prabash
+`docker-compose -f docker-compose-local.yml up`
+
+Install dependencies using `npm install`, ensuring you are using `node v20`
+
+then run application
+
+`npm run start:dev`
+
+### Run api tests locally for prabash
+
+For local running, start a test db and wiremock instance by:
+
+`docker compose -f docker-compose-test.yml up`
+
+Then run the server in test mode by:
+
+`npm run start-feature` (or `npm run start-feature:dev` to run with auto-restart on changes)
+
+Or run tests with the cypress UI:
+
+`npm run int-test-ui`
+
+### Run locally for prabash env settings
+HMPPS_AUTH_URL=https://sign-in-dev.hmpps.service.justice.gov.uk/auth
+TOKEN_VERIFICATION_API_URL=https://token-verification-api-dev.prison.service.justice.gov.uk
+TOKEN_VERIFICATION_ENABLED=false
+COMPONENT_API_URL=https://frontend-components-dev.hmpps.service.justice.gov.uk
+PRISONER_SEARCH_API_URL=https://prisoner-search-dev.prison.service.justice.gov.uk
+PRISON_API_URL=https://prison-api-dev.prison.service.justice.gov.uk
+CONTACTS_API_URL=https://contacts-api-dev.hmpps.service.justice.gov.uk
+SESSION_SECRET=316360c316fbd8e36815
+SIGN_IN_CLIENT_ID=hmpps-contacts-ui-1
+SIGN_IN_CLIENT_SECRET=DSVI+i2OS:u&yD=h,IVABKHXkOOzJ9(.zD)&vNrUjjLwO4YMQo;FHNvDTc0O
+SYSTEM_CLIENT_ID=hmpps-contacts-ui-system-2
+SYSTEM_CLIENT_SECRET=LIfqmZ2VLuzhhagjt=!(ZCP!,8etUWYaeHNM&V.YIY7aZ$RRXvGr.odz5K6K
+APPINSIGHTS_INSTRUMENTATIONKEY=b44af8fc-1647-443d-8cea-55c5cfbd4518
+APPLICATIONINSIGHTS_CONNECTION_STRING=InstrumentationKey=b44af8fc-1647-443d-8cea-55c5cfbd4518
+
+
+### fix LInt issue
+`npm run lint -- --fix`
+
+### npm clean install
+`npm ci`
+
+### connect to dev db pod
+`kubectl -n hmpps-contacts-dev port-forward port-forward-pod 5433:5432`
+
+### Run locally for prabash
+`docker-compose -f docker-compose-local.yml up`
+
+Install dependencies using `npm install`, ensuring you are using `node v20`
+
+then run application
+
+`npm run start:dev`
+
+### Run api tests locally for prabash
+
+For local running, start a test db and wiremock instance by:
+
+`docker compose -f docker-compose-test.yml up`
+
+Then run the server in test mode by:
+
+`npm run start-feature` (or `npm run start-feature:dev` to run with auto-restart on changes)
+
+Or run tests with the cypress UI:
+
+`npm run int-test-ui`
+
+### Run locally for prabash env settings
+HMPPS_AUTH_URL=https://sign-in-dev.hmpps.service.justice.gov.uk/auth
+TOKEN_VERIFICATION_API_URL=https://token-verification-api-dev.prison.service.justice.gov.uk
+TOKEN_VERIFICATION_ENABLED=false
+COMPONENT_API_URL=https://frontend-components-dev.hmpps.service.justice.gov.uk
+PRISONER_SEARCH_API_URL=https://prisoner-search-dev.prison.service.justice.gov.uk
+PRISON_API_URL=https://prison-api-dev.prison.service.justice.gov.uk
+CONTACTS_API_URL=https://contacts-api-dev.hmpps.service.justice.gov.uk
+SESSION_SECRET=316360c316fbd8e36815
+SIGN_IN_CLIENT_ID=hmpps-contacts-ui-1
+SIGN_IN_CLIENT_SECRET=DSVI+i2OS:u&yD=h,IVABKHXkOOzJ9(.zD)&vNrUjjLwO4YMQo;FHNvDTc0O
+SYSTEM_CLIENT_ID=hmpps-contacts-ui-system-2
+SYSTEM_CLIENT_SECRET=LIfqmZ2VLuzhhagjt=!(ZCP!,8etUWYaeHNM&V.YIY7aZ$RRXvGr.odz5K6K
+APPINSIGHTS_INSTRUMENTATIONKEY=b44af8fc-1647-443d-8cea-55c5cfbd4518
+APPLICATIONINSIGHTS_CONNECTION_STRING=InstrumentationKey=b44af8fc-1647-443d-8cea-55c5cfbd4518
+
+
+### fix LInt issue
+`npm run lint -- --fix`
+
+### npm clean install
+`npm ci`
+
+### connect to dev db pod
+`kubectl -n hmpps-contacts-dev port-forward port-forward-pod 5433:5432`
+
+### to debug cypress tests
+### start server in debug mode
+`npm run start-feature`
+
+### then start with debug mode
+`npm run int-test-ui`

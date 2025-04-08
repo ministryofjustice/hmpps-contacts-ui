@@ -115,6 +115,9 @@ describe('listContactsController', () => {
       expect(auditService.logPageView).toHaveBeenCalledWith(Page.LIST_CONTACTS_PAGE, {
         who: user.username,
         correlationId: expect.any(String),
+        details: {
+          prisonerNumber: 'A1234BC',
+        },
       })
     })
 
