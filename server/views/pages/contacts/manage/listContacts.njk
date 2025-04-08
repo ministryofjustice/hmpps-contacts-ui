@@ -134,8 +134,8 @@
               data-qa="contact-{{ contact.contactId }}-link"
               class="govuk-link--no-visited-state pcl-contact-name-link">{{ contact | formatNameLastNameFirst }}</a><br />
             <span class="govuk-hint">{{ contact.contactId }}</span>
-            {% if contact.isNextOfKin %}<p class="next-of-kin-tag govuk-!-margin-top-1">Next of kin</p>{% endif %}
-            {% if contact.isEmergencyContact %}<p class="emergency-contact-tag {{ 'govuk-!-margin-top-1' if not contact.isNextOfKin }}">Emergency contact</p>{% endif %}
+            {% if contact.isEmergencyContact %}<p class="emergency-contact-tag govuk-!-margin-top-1">Emergency contact</p>{% endif %}
+            {% if contact.isNextOfKin %}<p class="next-of-kin-tag {{ 'govuk-!-margin-top-1' if not contact.isEmergencyContact }}">Next of kin</p>{% endif %}
           {% endset %}
 
           {% set relationshipHtml %}

@@ -166,8 +166,8 @@ describe('listContactsController', () => {
           isNextOfKin: true,
         },
         'Last, First',
+        'Emergency contact',
         'Next of kin',
-        undefined,
         2,
       ],
     ])(

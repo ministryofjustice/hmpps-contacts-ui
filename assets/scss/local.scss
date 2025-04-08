@@ -112,3 +112,7 @@ div.contact-list {
 div.moj-action-bar__filter::after { content: none !important; }
 .moj-filter-layout__content { overflow: hidden; overflow-x: auto; -ms-overflow-style: none; scrollbar-width: none; }
 .moj-filter-layout__content::-webkit-scrollbar { display: none; }
+
+.contacts-\!-width-one-fifth {
+  width: 20% !important;
+}
