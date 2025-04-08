@@ -83,6 +83,14 @@ describe('Contact details', () => {
       })
       const $ = cheerio.load(response.text)
 
+      expect($('title').text()).toStrictEqual(
+        'Check and confirm if you want to link a contact to a prisoner - Manage contacts - DPS',
+      )
+      expect($('.govuk-caption-l').text()).toStrictEqual('Link a contact to a prisoner')
+      expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+      expect($('a:contains("Back to contact search")').attr('href')).toEqual(
+        `/prisoner/A1234BC/contacts/search/${journeyId}`,
+      )
       expect($('[data-qa=confim-title-value-top]').text().trim()).toStrictEqual(
         'Check and confirm if you want to link contact Jones Mason to prisoner John Smith',
       )

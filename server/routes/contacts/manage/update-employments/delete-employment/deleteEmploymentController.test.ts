@@ -118,6 +118,11 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/dele
 
     // Then
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(
+      'Are you sure you want to delete an employer? - Edit professional information - DPS',
+    )
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit professional information')
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('a:contains("Back")').attr('href')).toEqual(
       `/prisoner/A1234BC/contacts/manage/1/update-employments/${journeyId}`,
     )

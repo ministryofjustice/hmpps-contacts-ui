@@ -67,6 +67,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
 
     // Then
     expect(response.status).toEqual(200)
+    expect($('title').text()).toStrictEqual('Check if the contact is already on the system - Manage contacts - DPS')
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Link a contact to a prisoner')
     expect($('h1.govuk-heading-l').text()).toContain('Check if the contact is already on the system')
     expect($('input#firstName')).toBeDefined()

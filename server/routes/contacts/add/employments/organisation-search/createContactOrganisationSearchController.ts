@@ -57,6 +57,7 @@ export default class CreateContactOrganisationSearchController implements PageHa
 
     return res.render('pages/contacts/manage/employments/organisationSearch/index', {
       navigation: {
+        backLinkLabel: 'Back to employment information',
         backLink: bounceBackUrl,
       },
       isNewContact: true,

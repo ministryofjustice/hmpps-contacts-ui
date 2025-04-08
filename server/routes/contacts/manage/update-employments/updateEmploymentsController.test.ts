@@ -91,7 +91,11 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
 
     // Then
     const $ = cheerio.load(response.text)
-
+    expect($('title').text()).toStrictEqual('Edit employment information for a contact linked to a prisoner - DPS')
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit professional information')
+    expect($('h1').text()).toStrictEqual('Edit employment information for Jones Mason')
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('a:contains("Back to contact record")').attr('href')).toEqual('/foo/bar')
     expect($('dt:contains("Employer name")').next().text()).toMatch(/Big Corp/)
     expect($('dt:contains("Employer’s primary address")').next().text()).toMatch(/Some House(\s+)England/)
     expect($('dt:contains("Business phone number at primary address")').next().text()).toMatch(/60511, ext\. 123/)

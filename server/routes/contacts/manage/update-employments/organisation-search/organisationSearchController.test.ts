@@ -181,7 +181,12 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
 
     // Then
     const $ = cheerio.load(response.text)
-    expect($('a:contains("Back")').attr('href')).toEqual(
+    expect($('title').text()).toStrictEqual(
+      'Check if the employer organisation is already on the system - Edit professional information - DPS',
+    )
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit professional information')
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('a:contains("Back to employment information")').attr('href')).toEqual(
       `/prisoner/A1234BC/contacts/manage/1/update-employments/${journeyId}`,
     )
     expect($('input#organisationName').val()).toEqual('test')
