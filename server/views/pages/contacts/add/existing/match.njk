@@ -14,7 +14,7 @@
 {% from "partials/contactMethods/contactAddressCard.njk" import contactAddressCard %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% set pageTitle = "Is this a social or official contact for the prisoner? - Link a contact to a prisoner - DPS" %}
+{% set pageTitle = "Check and confirm if you want to link a contact to a prisoner - Manage contacts - DPS" %}
 {% set title = 'Check and confirm if you want to link contact ' + (contact | formatNameFirstNameFirst ) +' to prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) %}
 
 {% block content %}

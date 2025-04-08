@@ -168,6 +168,11 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/chec
 
     // Then
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(
+      'Check and confirm if it’s the correct employer for the contact - Edit professional information - DPS',
+    )
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit professional information')
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('a:contains("Back")').attr('href')).toEqual(
       `/prisoner/A1234BC/contacts/manage/1/update-employments/new/organisation-search/${journeyId}`,
     )
