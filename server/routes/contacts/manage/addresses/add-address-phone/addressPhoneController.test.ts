@@ -77,10 +77,12 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual('Add phone numbers for an address - Edit contact methods - DPS')
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact methods')
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Add phone numbers for this address (optional)',
     )
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/primary-or-postal/${journeyId}`,
     )

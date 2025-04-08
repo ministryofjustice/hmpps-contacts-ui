@@ -29,8 +29,6 @@ export default class AddressTypeController implements PageHandler {
       }),
     }
     const viewModel = {
-      caption: 'Edit contact methods',
-      continueButtonLabel: 'Continue',
       contact: journey.contactNames,
       addressType: res.locals?.formResponses?.['type'] ?? journey.addressType,
       typeOptions,

@@ -27,8 +27,6 @@ export default class ChangeAddressCommentsController implements PageHandler {
     }
     const viewModel = {
       isEdit: true,
-      caption: 'Edit contact methods',
-      continueButtonLabel: 'Confirm and save',
       contact,
       formattedAddress,
       navigation,

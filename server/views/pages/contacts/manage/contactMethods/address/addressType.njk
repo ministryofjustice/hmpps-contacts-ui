@@ -3,8 +3,25 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-{% set pageTitle = applicationName  + " - " + title %}
-{% set title = ("Change the address type for this address for " + (contact | formatNameFirstNameFirst)) if isEdit else ("What type of address are you adding for " + (contact | formatNameFirstNameFirst) + "? (optional)") %}
+{% if isNewContact %}
+  {% set pageTitle = "What type of address are you adding for the contact? - Add a contact - DPS" %}
+  {% set title = "What type of address are you adding for " + (contact | formatNameFirstNameFirst) + "? (optional)" %}
+  {% set caption =  journey | captionForAddContactJourney %}
+  {% set continueButtonLabel = "Continue" %}
+{% else %}
+  {% if isEdit %}
+    {% set pageTitle = "Change the address type for an address for the contact - Edit contact methods - DPS" %}
+    {% set title = "Change the address type for this address for " + contact | formatNameFirstNameFirst %}
+    {% set caption = "Edit contact methods" %}
+    {% set continueButtonLabel = "Confirm and save" %}
+  {% else %}
+    {% set pageTitle = "What type of address are you adding for the contact? - Edit contact methods - DPS" %}
+    {% set title = "What type of address are you adding for " + (contact | formatNameFirstNameFirst) + "? (optional)" %}
+    {% set caption = "Edit contact methods" %}
+    {% set continueButtonLabel = "Continue" %}
+  {% endif %}
+{% endif %}
+
 {% set mainClasses = "app-container govuk-body" %}
 
 {% if formattedAddress %}

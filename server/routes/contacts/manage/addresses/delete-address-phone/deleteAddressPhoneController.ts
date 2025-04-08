@@ -35,7 +35,6 @@ export default class DeleteAddressPhoneController implements PageHandler {
       cancelButton: addressUrl({ subPath: 'check-answers' }),
     }
     const viewModel = {
-      caption: 'Edit contact methods',
       navigation,
       formattedAddress: await getFormattedAddress(this.referenceDataService, journey, res.locals.user),
       phone: {

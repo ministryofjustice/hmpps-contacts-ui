@@ -35,8 +35,6 @@ export default class ChangeAddressTypeController implements PageHandler {
     }
     const viewModel = {
       isEdit: true,
-      caption: 'Edit contact methods',
-      continueButtonLabel: 'Confirm and save',
       contact,
       formattedAddress,
       addressType: res.locals?.formResponses?.['type'] ?? addressType,

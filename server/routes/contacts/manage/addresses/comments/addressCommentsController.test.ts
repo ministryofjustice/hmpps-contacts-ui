@@ -77,8 +77,10 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual('Add any comments about an address - Edit contact methods - DPS')
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact methods')
     expect($('h1').first().text().trim()).toStrictEqual('Add any comments about this address (optional)')
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/phone/${journeyId}`,
     )

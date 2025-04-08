@@ -18,8 +18,7 @@ export default class CreateContactAddressCommentsController implements PageHandl
       backLink: bounceBackOrAddressUrl({ subPath: 'phone/create' }),
     }
     const viewModel = {
-      caption: 'Add a contact and link to a prisoner',
-      continueButtonLabel: 'Continue',
+      isNewContact: true,
       contact: journey.names,
       navigation,
       formattedAddress: await getFormattedAddress(this.referenceDataService, addressForm, res.locals.user),

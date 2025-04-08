@@ -18,8 +18,8 @@ export default class CreateContactAddressFlagsController implements PageHandler 
       backLink: bounceBackOrAddressUrl({ subPath: 'dates' }),
     }
     const viewModel = {
-      caption: 'Add a contact and link to a prisoner',
-      continueButtonLabel: 'Continue',
+      isNewContact: true,
+      journey,
       contact: journey.names,
       navigation,
       formattedAddress: await getFormattedAddress(this.referenceDataService, addressForm, res.locals.user),
