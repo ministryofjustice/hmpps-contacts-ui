@@ -6,7 +6,11 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% if isNewContact %}
-  {% set pageTitle = "Is the contact approved to visit the prisoner? - Add a contact - DPS" %}
+  {% if journey.mode === 'NEW' %}
+    {% set pageTitle = "Is the contact approved to visit the prisoner? - Add a contact - DPS" %}
+  {% else %}
+    {% set pageTitle = "Is the contact approved to visit the prisoner? - Link a contact to a prisoner - DPS" %}
+  {% endif %}
   {% set title = "Is " + (contact | formatNameFirstNameFirst) + " approved to visit " + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) + "? (optional)" %}
   {% set continueButtonLabel = "Continue" %}
   {% set caption = journey | captionForAddContactJourney %}

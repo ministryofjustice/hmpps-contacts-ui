@@ -65,14 +65,17 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(
+      'What’s the name of the contact you want to link to the prisoner? - Add a contact - DPS',
+    )
+    expect($('a:contains("Back to contact search")').attr('href')).toEqual(
+      `/prisoner/A1234BC/contacts/search/${journeyId}`,
+    )
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'What’s the name of the contact you want to link to John Smith?',
     )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
-      `/prisoner/A1234BC/contacts/search/${journeyId}`,
-    )
     expect($('[data-qa=cancel-button]')).toHaveLength(0)
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
   })

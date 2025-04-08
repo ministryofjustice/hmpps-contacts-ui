@@ -4,7 +4,11 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 
-{% set pageTitle = applicationName + " - Cancel adding a contact" %}
+{% if journey.mode === 'NEW' %}
+  {% set pageTitle = "Are you sure you want to cancel adding the contact? - Add a contact - DPS" %}
+{% else %}
+  {% set pageTitle = "Are you sure you want to cancel linking the prisoner and the contact? - Link a contact to a prisoner - DPS" %}
+{% endif %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}

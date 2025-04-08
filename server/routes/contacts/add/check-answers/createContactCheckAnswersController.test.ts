@@ -90,6 +90,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     expect(response.status).toEqual(200)
     expect(journey.isCheckingAnswers).toStrictEqual(true)
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(
+      'Check your answers before linking the contact to the prisoner - Add a contact - DPS',
+    )
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Check your answers before linking the contact to John Smith',
     )
@@ -118,6 +121,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     expect(response.status).toEqual(200)
     expect(journey.isCheckingAnswers).toStrictEqual(true)
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(
+      'Check your answers before linking the contact to the prisoner - Link a contact to a prisoner - DPS',
+    )
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Check your answers before linking the contact to John Smith',
     )
@@ -129,7 +135,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('p > strong:contains("Contact:")').first().next().text().trim()).toStrictEqual('First Last (12345)')
     const backLink = $('.govuk-back-link')
-    expect(backLink.text().trim()).toStrictEqual('Back')
+    expect(backLink.text().trim()).toStrictEqual('Back to relationship comments')
     expect(backLink.attr('href')).toStrictEqual('?back=true')
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and link contact')
   })

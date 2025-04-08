@@ -80,10 +80,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/employments/:journeyId',
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual('Record employment information for the contact - Add a contact - DPS')
     expect($('h1').first().text().trim()).toStrictEqual(
       'Record employment information for First Middle Last (optional)',
     )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back to additional information options')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`,
     )

@@ -79,11 +79,13 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/language-and-interpreter
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual('Enter language and interpretation requirements - Add a contact - DPS')
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Enter language and interpretation requirements (optional)',
     )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
     )

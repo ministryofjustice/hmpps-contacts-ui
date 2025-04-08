@@ -121,6 +121,10 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/employments/:employmentI
 
     // Then
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(
+      'What is the contact’s current employment status at the employer? - Add a contact - DPS',
+    )
+    expect($('.govuk-caption-l').text().trim()).toStrictEqual('Add a contact and link to a prisoner')
     expect($('a:contains("Back")').attr('href')).toEqual(`/prisoner/A1234BC/contacts/create/employments/${journeyId}`)
     expect($('h1:contains("What is the current employment status")').text()).toBeTruthy()
     expect($('label:contains("Active")').prev('input').attr('checked')).toBeFalsy()

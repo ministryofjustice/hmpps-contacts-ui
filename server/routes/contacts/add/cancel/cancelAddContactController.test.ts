@@ -84,10 +84,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/cancel/:journeyId', () => {
     // Then
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual('Are you sure you want to cancel adding the contact? - Add a contact - DPS')
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Are you sure you want to cancel adding First Last as a contact?',
     )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
     )
@@ -106,10 +108,14 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/cancel/:journeyId', () => {
     // Then
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(
+      'Are you sure you want to cancel linking the prisoner and the contact? - Link a contact to a prisoner - DPS',
+    )
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'Are you sure you want to cancel linking the prisoner and the contact?',
     )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Link a contact to a prisoner')
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
     )

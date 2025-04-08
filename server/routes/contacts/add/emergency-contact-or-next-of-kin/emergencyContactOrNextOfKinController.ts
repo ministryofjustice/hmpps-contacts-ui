@@ -14,6 +14,7 @@ export default class EmergencyContactOrNextOfKinController implements PageHandle
     const journey = req.session.addContactJourneys![journeyId]!
     const view = {
       isOptional: true,
+      journey,
       caption: captionForAddContactJourney(journey),
       contact: journey.names,
       continueButtonLabel: 'Continue',
