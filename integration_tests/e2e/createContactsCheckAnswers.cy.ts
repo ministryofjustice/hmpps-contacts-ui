@@ -70,7 +70,7 @@ context('Create contact and update from check answers', () => {
       .selectIsApprovedVisitor('NO')
       .continueTo(AddContactAdditionalInfoPage, 'First Middle Last')
       .clickLinkTo(
-        'Comments on their relationship with First Middle Last',
+        'Comments on their relationship with John Smith',
         RelationshipCommentsPage,
         'First Middle Last',
         'John Smith',

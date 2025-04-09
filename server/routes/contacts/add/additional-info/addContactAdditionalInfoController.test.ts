@@ -56,7 +56,9 @@ beforeEach(() => {
       session.addContactJourneys[journeyId] = { ...existingJourney }
     },
   })
-  prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
+  prisonerSearchService.getByPrisonerNumber.mockResolvedValue(
+    TestData.prisoner({ prisonerNumber, firstName: 'Prisoner', lastName: 'Name', middleNames: 'Not Shown' }),
+  )
 })
 
 afterEach(() => {
@@ -100,7 +102,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
     expect($('a:contains("Employers")').parent().next().text().trim()).toStrictEqual('Not entered')
     expect($('a:contains("Addresses")').parent().next().text().trim()).toStrictEqual('Not entered')
     expect(
-      $('a:contains("Comments on their relationship with First Middle Last")').parent().next().text().trim(),
+      $('a:contains("Comments on their relationship with Prisoner Name")').parent().next().text().trim(),
     ).toStrictEqual('Not entered')
     expect($('a:contains("Phone numbers")').parent().next().text().trim()).toStrictEqual('Not entered')
     expect($('a:contains("Email addresses")').parent().next().text().trim()).toStrictEqual('Not entered')
@@ -141,7 +143,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
     expect($('a:contains("Employers")').parent().next().text().trim()).toStrictEqual('Entered')
     expect($('a:contains("Addresses")').parent().next().text().trim()).toStrictEqual('Entered')
     expect(
-      $('a:contains("Comments on their relationship with First Middle Last")').parent().next().text().trim(),
+      $('a:contains("Comments on their relationship with Prisoner Name")').parent().next().text().trim(),
     ).toStrictEqual('Entered')
     expect($('a:contains("Phone numbers")').parent().next().text().trim()).toStrictEqual('Entered')
     expect($('a:contains("Email addresses")').parent().next().text().trim()).toStrictEqual('Entered')

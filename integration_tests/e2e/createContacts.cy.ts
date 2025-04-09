@@ -163,7 +163,7 @@ context('Create Contacts', () => {
       .clickContinue()
 
     Page.verifyOnPage(AddContactAdditionalInfoPage, 'First Middle Last') //
-      .clickLink('Comments on their relationship with First Middle Last')
+      .clickLink('Comments on their relationship with John Smith')
 
     Page.verifyOnPage(RelationshipCommentsPage, 'First Middle Last', 'John Smith', true) //
       .enterComments('Some comments about this relationship')
@@ -376,7 +376,7 @@ context('Create Contacts', () => {
       .continueTo(SelectApprovedVisitorPage, 'First Last', 'John Smith', true) //
       .selectIsApprovedVisitor('NO')
       .continueTo(AddContactAdditionalInfoPage, 'First Last')
-      .clickLink('Comments on their relationship with First Last')
+      .clickLink('Comments on their relationship with John Smith')
 
     const commentsPage = Page.verifyOnPage(RelationshipCommentsPage, 'First Last', 'John Smith', true) //
       .enterComments(''.padEnd(241))
@@ -400,7 +400,7 @@ context('Create Contacts', () => {
       .selectIsApprovedVisitor('NO')
       .continueTo(AddContactAdditionalInfoPage, 'First Last')
       .clickLinkTo(
-        'Comments on their relationship with First Last',
+        'Comments on their relationship with John Smith',
         RelationshipCommentsPage,
         'First Last',
         'John Smith',

@@ -68,7 +68,7 @@
           items: [
             {
               title: {
-                text: "Comments on their relationship with " + journey.names | formatNameFirstNameFirst
+                text: "Comments on their relationship with " + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)
               },
               href: "/prisoner/" + journey.prisonerNumber + "/contacts/create/enter-relationship-comments/" + journey.id,
               status: journey.relationship.comments | taskStatus
