@@ -12,6 +12,8 @@ export default class AddEmploymentsController implements PageHandler {
     const journey = req.session.addContactJourneys![journeyId]!
 
     journey.pendingEmployments ??= journey.employments
+    // clear search term whenever user comes back to this page
+    journey.organisationSearch = { page: 1 }
 
     const view = {
       journey,

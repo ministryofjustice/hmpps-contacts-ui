@@ -1,8 +1,8 @@
 import Page from '../page'
 
 export default class OrganisationSearchPage extends Page {
-  constructor() {
-    super('Check if the employer organisation is already on the system')
+  constructor(name: string) {
+    super(`Search for ${name}’s employer`)
   }
 
   searchTerm() {

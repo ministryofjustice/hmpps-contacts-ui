@@ -76,7 +76,6 @@ export default class CreateContactCheckEmployerController implements PageHandler
     } else if (employment) {
       employment.employer = EmploymentUtils.summariseOrganisationDetails(journey.newEmployment!.employer)
     }
-    journey.organisationSearch = { page: 1 }
 
     return res.redirect(bounceBackUrl)
   }
