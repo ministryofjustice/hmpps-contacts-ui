@@ -125,7 +125,7 @@ context('Create Contact With Addresses', () => {
       .clickAddEmployer()
 
     // enter first address
-    const searchPage = Page.verifyOnPage(OrganisationSearchPage)
+    const searchPage = Page.verifyOnPage(OrganisationSearchPage, 'First Last')
     searchPage.searchTerm().type('Corp', { delay: 0 })
     searchPage.clickSearch()
     searchPage.toHaveNumberOfResults(2)
@@ -140,7 +140,7 @@ context('Create Contact With Addresses', () => {
 
     // enter second address
     employmentsPage.clickAddEmployer()
-    Page.verifyOnPage(OrganisationSearchPage)
+    Page.verifyOnPage(OrganisationSearchPage, 'First Last')
     searchPage.searchTerm().type('Corp', { delay: 0 })
     searchPage.clickSearch()
     searchPage.selectEmployer('Corp B')
@@ -161,7 +161,7 @@ context('Create Contact With Addresses', () => {
     statusPage.inactiveRadio().click()
     statusPage.clickContinue()
     employmentsPage.clickChangeEmployer('Corp B', false)
-    Page.verifyOnPage(OrganisationSearchPage)
+    Page.verifyOnPage(OrganisationSearchPage, 'First Last')
     searchPage.searchTerm().type('Corp', { delay: 0 })
     searchPage.clickSearch()
     searchPage.selectEmployer('Corp A')

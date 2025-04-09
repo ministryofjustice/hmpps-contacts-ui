@@ -1,17 +1,17 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
-{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "partials/miniProfile/macro.njk" import miniProfile %}
 {% from "partials/simplePagination/macro.njk" import simplePagination %}
 
 {% extends "partials/layout.njk" %}§
 
 {% if isNewContact %}
-  {% set pageTitle = "Check if the employer organisation is already on the system - Add a contact - DPS" %}
+  {% set pageTitle = "Search for the contact’s employer - Add a contact - DPS" %}
   {% set caption = journey | captionForAddContactJourney %}
 {% else %}
-  {% set pageTitle = "Check if the employer organisation is already on the system - Edit professional information - DPS" %}
+  {% set pageTitle = "Search for the contact’s employer - Edit professional information - DPS" %}
   {% set caption = "Edit professional information" %}
 {% endif %}
 
@@ -22,11 +22,12 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-!-static-margin-bottom-7">
         <span class="govuk-caption-l">{{ caption }}</span>
-        <h1 class="govuk-heading-l">Check if the employer organisation is already on the system</h1>
+        <h1 class="govuk-heading-l">Search for {{ contact | formatNameFirstNameFirst(possessiveSuffix = true) }} employer</h1>
       </div>
-      {{ govukWarningText({
-        html: "[Placeholder text - If you can’t find the correct employer on the system, {insert instructions on adding org in NOMIS and returning to this process. Possibly use body text / reveal for the location directions.}]",
-        iconFallbackText: "Warning"
+      <p>If you cannot find the correct employer, you’ll need to use NOMIS to add the employer organisation onto the system.</p>
+      {{ govukDetails({
+        summaryText: "How to add the employer organisation into NOMIS",
+        html: "<ol><li>Log into NOMIS.</li><li>Enter and save the organisation details using the ‘Maintain external agencies’ page. (You might need to ask your LSA for access.)</li><li>Return to this page in DPS and search again. </li><li>Find the newly added organisation in the search results and select ‘Check if this is the correct employer’. </li><li>Check the organisation information and confirm that it’s the correct employer for the contact.</li></ol>"
       }) }}
     </div>
   </div>

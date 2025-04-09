@@ -18,6 +18,10 @@ export default class UpdateEmploymentsController implements PageHandler {
     const { prisonerNumber, contactId, journeyId } = req.params
     const { contactNames, employments, returnPoint } = req.session.updateEmploymentsJourneys![journeyId]!
     employments.sort(employmentSorter)
+
+    // clear search term whenever user comes back to this page
+    req.session.updateEmploymentsJourneys![journeyId]!.organisationSearch = { page: 1 }
+
     const navigation: Navigation = {
       backLinkLabel: 'Back to contact record',
       backLink: returnPoint.url,

@@ -177,10 +177,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/employments/:employmentI
 
     // Then
     const $ = cheerio.load(response.text)
-    expect($('title').text()).toStrictEqual(
-      'Check if the employer organisation is already on the system - Add a contact - DPS',
-    )
-    expect($('h1:contains("Check if the employer organisation is already on the system")').text()).toBeTruthy()
+    expect($('title').text()).toStrictEqual('Search for the contact’s employer - Add a contact - DPS')
+    expect($('h1').text()).toEqual('Search for First Middle Last’s employer')
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
     expect($('a:contains("Back to employment information")').attr('href')).toEqual(
       `/prisoner/A1234BC/contacts/create/employments/${journeyId}`,

@@ -82,7 +82,6 @@ export default class CheckEmployerController implements PageHandler {
       const idx = Number(employmentIdx) - 1
       journey.employments[idx]!.employer = EmploymentUtils.summariseOrganisationDetails(journey.changeOrganisation)
     }
-    journey.organisationSearch = { page: 1 }
 
     return res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${journeyId}`)
   }

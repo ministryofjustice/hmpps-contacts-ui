@@ -23,12 +23,16 @@
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-!-static-margin-bottom-7">
         <span class="govuk-caption-l">{{ caption }}</span>
-        <h1 class="govuk-heading-l">Check and confirm if this is the correct employer for contact {{ contactNames | formatNameFirstNameFirst }}</h1>
+        <h1 class="govuk-heading-l">Check and confirm if this is the correct employer for {{ contactNames | formatNameFirstNameFirst }}</h1>
       </div>
 
       <p>
-        If this is the correct organisation record but some of the information needs to be updated, you can make updates after you link the contact to the prisoner.
+        If this is the correct organisation record but the information needs to be updated, you can make changes on NOMIS after linking the employer to the contact.
       </p>
+      {{ govukDetails({
+        summaryText: "How to update an organisation record in NOMIS",
+        html: "<ol><li>Log into NOMIS.</li><li>Search for the organisation using the ‘Maintain external agencies’ page. (You might need to ask your LSA for access.)</li><li>Enter and save your updates. The changes will sync back into DPS automatically.</li></ol>"
+      }) }}
 
       {{ govukSummaryList({
         card: {
@@ -223,9 +227,6 @@
               classes: "govuk-fieldset__legend--m"
             }
           },
-          hint: {
-            text: "[Placeholder text - If you can’t find the correct employer on the system, {insert instructions on adding org in NOMIS and returning to this process.}]"
-          },
           id: 'isCorrectEmployer',
           name: "isCorrectEmployer",
           items: [
@@ -235,7 +236,10 @@
             },
             {
               value: "NO",
-              text: 'No, take me back to the organisation search'
+              text: 'No, take me back to the organisation search',
+              hint: {
+                text: "If you cannot find the correct employer, you’ll need to use NOMIS to add the employer organisation onto the system."
+              }
             }
           ],
           errorMessage: validationErrors | findError('isCorrectEmployer')

@@ -147,7 +147,7 @@ context('Update Prisoner Contact Employments', () => {
 
     // test change employer
     page.clickChangeEmployer('Another Corp', true)
-    const searchPage = Page.verifyOnPage(OrganisationSearchPage)
+    const searchPage = Page.verifyOnPage(OrganisationSearchPage, 'First Middle Names Last')
     searchPage.searchTerm().type('Corp', { delay: 0 })
     searchPage.clickSearch()
     searchPage.toHaveNumberOfResults(2)
@@ -162,7 +162,7 @@ context('Update Prisoner Contact Employments', () => {
 
     // test add employer
     page.clickAddEmployer()
-    Page.verifyOnPage(OrganisationSearchPage)
+    Page.verifyOnPage(OrganisationSearchPage, 'First Middle Names Last')
     searchPage.searchTerm().type('Corp', { delay: 0 })
     searchPage.clickSearch()
     searchPage.selectEmployer('Corp B')

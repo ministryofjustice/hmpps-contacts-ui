@@ -181,16 +181,14 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
 
     // Then
     const $ = cheerio.load(response.text)
-    expect($('title').text()).toStrictEqual(
-      'Check if the employer organisation is already on the system - Edit professional information - DPS',
-    )
+    expect($('title').text()).toStrictEqual('Search for the contact’s employer - Edit professional information - DPS')
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit professional information')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('a:contains("Back to employment information")').attr('href')).toEqual(
       `/prisoner/A1234BC/contacts/manage/1/update-employments/${journeyId}`,
     )
     expect($('input#organisationName').val()).toEqual('test')
-    expect($('h1:contains("Check if the employer organisation is already on the system")').text()).toBeTruthy()
+    expect($('h1').text()).toEqual('Search for Jones Mason’s employer')
     expect($('p:contains("Showing 11 to 11 of 11 results")').text()).toBeTruthy()
     expect($('p:contains("No organisation records match your search.")').text()).toBeFalsy()
     expect($('td:contains("Some Corp")').first().text()).toEqual('Some Corp111')
