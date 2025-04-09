@@ -76,23 +76,6 @@ export default class ContactsApiClient extends RestClient {
     )
   }
 
-  async getPrisonerContacts(
-    prisonerNumber: string,
-    activeOnly: boolean,
-    user: Express.User,
-    pagination?: PrisonerContactPagination,
-  ): Promise<PagedModelPrisonerContactSummary> {
-    const paginationParameters = pagination ?? { page: 0, size: config.apis.contactsApi.pageSize || 10 }
-
-    return this.get<PagedModelPrisonerContactSummary>(
-      {
-        path: `/prisoner/${prisonerNumber}/contact`,
-        query: { active: activeOnly, ...paginationParameters },
-      },
-      user,
-    )
-  }
-
   async filterPrisonerContacts(
     prisonerNumber: string,
     filter: PrisonerContactFilter,

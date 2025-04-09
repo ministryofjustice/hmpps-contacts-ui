@@ -140,6 +140,7 @@ export default class ContactsService extends AuditedService {
       subjectType: 'CONTACT',
       details: {
         prisonNumber: journey.prisonerNumber,
+        isApprovedVisitor: request.relationship?.isApprovedVisitor ?? false,
       },
       correlationId,
     })
@@ -172,22 +173,10 @@ export default class ContactsService extends AuditedService {
       details: {
         contactId: journey.contactId,
         prisonNumber: journey.prisonerNumber,
+        isApprovedVisitor: request.relationship.isApprovedVisitor,
       },
       correlationId,
     })
-  }
-
-  async getPrisonerContacts(
-    prisonerNumber: string,
-    active: boolean,
-    user: Express.User,
-    pagination: {
-      page: number
-      size: number
-      sort?: string[]
-    },
-  ): Promise<PagedModelPrisonerContactSummary> {
-    return this.contactsApiClient.getPrisonerContacts(prisonerNumber, active, user, pagination)
   }
 
   async filterPrisonerContacts(
@@ -360,6 +349,7 @@ export default class ContactsService extends AuditedService {
     user: Express.User,
     correlationId: string,
   ): Promise<void> {
+    const { comments, updatedBy, ...detailsToAudit } = request
     return this.handleAuditEvent(
       this.contactsApiClient.updateContactRelationshipById(prisonerContactId, request, user),
       {
@@ -368,6 +358,7 @@ export default class ContactsService extends AuditedService {
         subjectType: 'CONTACT_RELATIONSHIP',
         subjectId: String(prisonerContactId),
         correlationId,
+        details: { prisonerContactId, ...detailsToAudit },
       },
     )
   }

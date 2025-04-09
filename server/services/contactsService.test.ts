@@ -4,6 +4,7 @@ import ContactsService from './contactsService'
 import { PaginationRequest } from '../data/prisonerOffenderSearchTypes'
 import TestData from '../routes/testutils/testData'
 import { components } from '../@types/contactsApi'
+import { MockedService } from '../testutils/mockedServices'
 import AddContactJourney = journeys.AddContactJourney
 import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
 import PagedModelContactSearchResultItem = contactsApiClientTypes.PagedModelContactSearchResultItem
@@ -22,7 +23,7 @@ import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDe
 import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
 import YesOrNo = journeys.YesOrNo
 import LanguageAndInterpreterRequiredForm = journeys.LanguageAndInterpreterRequiredForm
-import { MockedService } from '../testutils/mockedServices'
+import PatchRelationshipRequest = contactsApiClientTypes.PatchRelationshipRequest
 
 type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
@@ -98,6 +99,7 @@ describe('contactsService', () => {
             relationshipToPrisoner,
             isEmergencyContact: false,
             isNextOfKin: true,
+            isApprovedVisitor: true,
             comments: 'Some comments about this relationship',
           },
           phoneNumbers: [
@@ -132,7 +134,7 @@ describe('contactsService', () => {
             relationshipToPrisonerCode: relationshipToPrisoner,
             isNextOfKin: true,
             isEmergencyContact: false,
-            isApprovedVisitor: false,
+            isApprovedVisitor: true,
             comments: 'Some comments about this relationship',
           },
         }
@@ -158,7 +160,7 @@ describe('contactsService', () => {
           who: 'user1',
           subjectType: 'CONTACT',
           correlationId: 'correlationId',
-          details: { prisonNumber: 'A1234BC' },
+          details: { prisonNumber: 'A1234BC', isApprovedVisitor: true },
         })
       },
     )
@@ -355,7 +357,12 @@ describe('contactsService', () => {
             returnPoint: { url: '/foo-bar' },
             names: { firstName: 'first', lastName: 'last' },
             dateOfBirth: { isKnown: 'NO' },
-            relationship: { relationshipToPrisoner: 'MOT', isEmergencyContact: true, isNextOfKin: false },
+            relationship: {
+              relationshipToPrisoner: 'MOT',
+              isEmergencyContact: true,
+              isNextOfKin: false,
+              isApprovedVisitor: false,
+            },
           },
           user,
           'correlationId',
@@ -367,7 +374,7 @@ describe('contactsService', () => {
         who: 'user1',
         subjectType: 'CONTACT',
         correlationId: 'correlationId',
-        details: { prisonNumber: 'A1234BC', statusCode: 400 },
+        details: { prisonNumber: 'A1234BC', statusCode: 400, isApprovedVisitor: false },
       })
     })
   })
@@ -519,7 +526,7 @@ describe('contactsService', () => {
           who: 'user1',
           subjectType: 'CONTACT_RELATIONSHIP',
           correlationId: 'correlationId',
-          details: { prisonNumber: 'A1234BC', contactId: 123456 },
+          details: { prisonNumber: 'A1234BC', contactId: 123456, isApprovedVisitor: false },
         })
       },
     )
@@ -584,7 +591,12 @@ describe('contactsService', () => {
             returnPoint: { url: '/foo-bar' },
             names: { firstName: 'first', lastName: 'last' },
             dateOfBirth: { isKnown: 'NO' },
-            relationship: { relationshipToPrisoner: 'MOT', isEmergencyContact: true, isNextOfKin: false },
+            relationship: {
+              relationshipToPrisoner: 'MOT',
+              isEmergencyContact: true,
+              isNextOfKin: false,
+              isApprovedVisitor: true,
+            },
             contactId: 123456,
           },
           user,
@@ -597,7 +609,7 @@ describe('contactsService', () => {
         who: 'user1',
         subjectType: 'CONTACT_RELATIONSHIP',
         correlationId: 'correlationId',
-        details: { prisonNumber: 'A1234BC', contactId: 123456, statusCode: 400 },
+        details: { prisonNumber: 'A1234BC', contactId: 123456, statusCode: 400, isApprovedVisitor: true },
       })
     })
   })
@@ -1236,6 +1248,62 @@ describe('contactsService', () => {
         subjectId: '77',
         correlationId: 'correlationId',
         details: { contactId: 99, contactAddressId: 321, statusCode: 400 },
+      })
+    })
+  })
+  describe('updateContactRelationshipById', () => {
+    it('should audit all details excluding comments as those may contain PII or be large', async () => {
+      apiClient.updateContactRelationshipById.mockResolvedValue(undefined)
+      const request: PatchRelationshipRequest = {
+        relationshipTypeCode: 'S',
+        relationshipToPrisonerCode: 'FRO',
+        isEmergencyContact: true,
+        isApprovedVisitor: true,
+        isNextOfKin: true,
+        isRelationshipActive: true,
+        comments: 'SOME COMMENTS',
+        updatedBy: 'USER1',
+      }
+      await expect(service.updateContactRelationshipById(99, request, user, 'correlationId')).resolves.toStrictEqual(
+        undefined,
+      )
+
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_PATCH_CONTACT_RELATIONSHIP',
+        who: 'user1',
+        subjectType: 'CONTACT_RELATIONSHIP',
+        subjectId: '99',
+        correlationId: 'correlationId',
+        details: {
+          prisonerContactId: 99,
+          relationshipTypeCode: 'S',
+          relationshipToPrisonerCode: 'FRO',
+          isEmergencyContact: true,
+          isApprovedVisitor: true,
+          isNextOfKin: true,
+          isRelationshipActive: true,
+        },
+      })
+    })
+
+    it('should audit only provided details when doing an update', async () => {
+      apiClient.updateContactRelationshipById.mockResolvedValue(undefined)
+      const request: PatchRelationshipRequest = {
+        updatedBy: 'USER1',
+      }
+      await expect(service.updateContactRelationshipById(99, request, user, 'correlationId')).resolves.toStrictEqual(
+        undefined,
+      )
+
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_PATCH_CONTACT_RELATIONSHIP',
+        who: 'user1',
+        subjectType: 'CONTACT_RELATIONSHIP',
+        subjectId: '99',
+        correlationId: 'correlationId',
+        details: {
+          prisonerContactId: 99,
+        },
       })
     })
   })
