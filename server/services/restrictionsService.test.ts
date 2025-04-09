@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import ContactsApiClient from '../data/contactsApiClient'
 import RestrictionsService from './restrictionsService'
 import { RestrictionSchemaType } from '../routes/restrictions/schema/restrictionSchema'
+import { MockedService } from '../testutils/mockedServices'
 import AddRestrictionJourney = journeys.AddRestrictionJourney
 import ContactRestrictionDetails = contactsApiClientTypes.ContactRestrictionDetails
 import CreateContactRestrictionRequest = contactsApiClientTypes.CreateContactRestrictionRequest
@@ -10,7 +11,6 @@ import PrisonerContactRestrictionDetails = contactsApiClientTypes.PrisonerContac
 import CreatePrisonerContactRestrictionRequest = contactsApiClientTypes.CreatePrisonerContactRestrictionRequest
 import UpdateContactRestrictionRequest = contactsApiClientTypes.UpdateContactRestrictionRequest
 import ContactDetails = contactsApiClientTypes.ContactDetails
-import { MockedService } from '../testutils/mockedServices'
 
 jest.mock('../data/contactsApiClient')
 jest.mock('../services/auditService')
@@ -65,7 +65,7 @@ describe('restrictionsService', () => {
         who: 'user1',
         subjectType: 'CONTACT_RESTRICTION',
         correlationId: 'correlationId',
-        details: { contactId: 99 },
+        details: { contactId: 99, type: 'BAN', startDate: '2009-02-01', expiryDate: null },
       })
     })
 
@@ -89,6 +89,13 @@ describe('restrictionsService', () => {
       }
       expect(created).toStrictEqual(expectedResponse)
       expect(apiClient.createContactGlobalRestriction).toHaveBeenCalledWith(99, expectedRequest, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_POST_CONTACT_RESTRICTION',
+        who: 'user1',
+        subjectType: 'CONTACT_RESTRICTION',
+        correlationId: 'correlationId',
+        details: { contactId: 99, type: 'BAN', startDate: '2009-02-01', expiryDate: '2020-03-02' },
+      })
     })
 
     it('should handle a bad request creating global restriction', async () => {
@@ -101,7 +108,7 @@ describe('restrictionsService', () => {
         who: 'user1',
         subjectType: 'CONTACT_RESTRICTION',
         correlationId: 'correlationId',
-        details: { contactId: 99, statusCode: 400 },
+        details: { contactId: 99, statusCode: 400, type: 'BAN', startDate: '2009-02-01', expiryDate: null },
       })
     })
 
@@ -130,7 +137,14 @@ describe('restrictionsService', () => {
         who: 'user1',
         subjectType: 'CONTACT_RELATIONSHIP_RESTRICTION',
         correlationId: 'correlationId',
-        details: { prisonNumber: 'A1234BC', contactId: 99, prisonerContactId: 66 },
+        details: {
+          prisonNumber: 'A1234BC',
+          contactId: 99,
+          prisonerContactId: 66,
+          type: 'BAN',
+          startDate: '2009-02-01',
+          expiryDate: null,
+        },
       })
     })
 
@@ -154,6 +168,20 @@ describe('restrictionsService', () => {
       }
       expect(created).toStrictEqual(expectedResponse)
       expect(apiClient.createPrisonerContactRestriction).toHaveBeenCalledWith(66, expectedRequest, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_POST_CONTACT_RELATIONSHIP_RESTRICTION',
+        who: 'user1',
+        subjectType: 'CONTACT_RELATIONSHIP_RESTRICTION',
+        correlationId: 'correlationId',
+        details: {
+          prisonNumber: 'A1234BC',
+          contactId: 99,
+          prisonerContactId: 66,
+          type: 'BAN',
+          startDate: '2009-02-01',
+          expiryDate: '2020-03-02',
+        },
+      })
     })
 
     it('should handle a bad request creating prisoner-contact restriction', async () => {
@@ -166,7 +194,15 @@ describe('restrictionsService', () => {
         who: 'user1',
         subjectType: 'CONTACT_RELATIONSHIP_RESTRICTION',
         correlationId: 'correlationId',
-        details: { prisonNumber: 'A1234BC', contactId: 99, prisonerContactId: 66, statusCode: 400 },
+        details: {
+          prisonNumber: 'A1234BC',
+          contactId: 99,
+          prisonerContactId: 66,
+          statusCode: 400,
+          type: 'BAN',
+          startDate: '2009-02-01',
+          expiryDate: null,
+        },
       })
     })
   })
@@ -215,7 +251,12 @@ describe('restrictionsService', () => {
         subjectType: 'CONTACT_RESTRICTION',
         subjectId: '555',
         correlationId: 'correlationId',
-        details: { contactId: 999 },
+        details: {
+          contactId: 999,
+          type: 'BAN',
+          startDate: '1999-02-01',
+          expiryDate: null,
+        },
       })
     })
 
@@ -254,6 +295,19 @@ describe('restrictionsService', () => {
         expectedRequest,
         user,
       )
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_PUT_CONTACT_RESTRICTION',
+        who: 'user1',
+        subjectType: 'CONTACT_RESTRICTION',
+        subjectId: '555',
+        correlationId: 'correlationId',
+        details: {
+          contactId: 999,
+          type: 'BAN',
+          startDate: '1999-02-01',
+          expiryDate: '2099-03-02',
+        },
+      })
     })
 
     it('should handle a bad request updating global restriction', async () => {
@@ -274,7 +328,13 @@ describe('restrictionsService', () => {
         subjectType: 'CONTACT_RESTRICTION',
         subjectId: '555',
         correlationId: 'correlationId',
-        details: { contactId: 999, statusCode: 400 },
+        details: {
+          contactId: 999,
+          statusCode: 400,
+          type: 'BAN',
+          startDate: '1999-02-01',
+          expiryDate: null,
+        },
       })
     })
   })
@@ -323,7 +383,12 @@ describe('restrictionsService', () => {
         subjectType: 'CONTACT_RELATIONSHIP_RESTRICTION',
         subjectId: '555',
         correlationId: 'correlationId',
-        details: { prisonerContactId: 999 },
+        details: {
+          prisonerContactId: 999,
+          type: 'BAN',
+          startDate: '1999-02-01',
+          expiryDate: null,
+        },
       })
     })
 
@@ -362,6 +427,19 @@ describe('restrictionsService', () => {
         expectedRequest,
         user,
       )
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_PUT_CONTACT_RELATIONSHIP_RESTRICTION',
+        who: 'user1',
+        subjectType: 'CONTACT_RELATIONSHIP_RESTRICTION',
+        subjectId: '555',
+        correlationId: 'correlationId',
+        details: {
+          prisonerContactId: 999,
+          type: 'BAN',
+          startDate: '1999-02-01',
+          expiryDate: '2099-03-02',
+        },
+      })
     })
 
     it('should handle a bad request creating global restriction', async () => {
@@ -382,7 +460,13 @@ describe('restrictionsService', () => {
         subjectType: 'CONTACT_RELATIONSHIP_RESTRICTION',
         subjectId: '555',
         correlationId: 'correlationId',
-        details: { prisonerContactId: 999, statusCode: 400 },
+        details: {
+          prisonerContactId: 999,
+          statusCode: 400,
+          type: 'BAN',
+          startDate: '1999-02-01',
+          expiryDate: null,
+        },
       })
     })
   })

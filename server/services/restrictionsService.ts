@@ -27,15 +27,18 @@ export default class RestrictionsService extends AuditedService {
     correlationId: string,
   ): Promise<ContactRestrictionDetails | PrisonerContactRestrictionDetails> {
     const { type, startDate, expiryDate, comments } = journey.restriction!
+    const parsedStartDate = formatISO(parse(startDate!, 'dd/MM/yyyy', new Date()), { representation: 'date' })
+    const parsedExpiryDate = expiryDate
+      ? formatISO(parse(expiryDate, 'dd/MM/yyyy', new Date()), { representation: 'date' })
+      : undefined
     const request: CreatePrisonerContactRestrictionRequest & CreateContactRestrictionRequest = {
       restrictionType: type,
-      startDate: formatISO(parse(startDate!, 'dd/MM/yyyy', new Date()), { representation: 'date' }),
-      expiryDate: expiryDate
-        ? formatISO(parse(expiryDate, 'dd/MM/yyyy', new Date()), { representation: 'date' })
-        : undefined,
+      startDate: parsedStartDate,
+      expiryDate: parsedExpiryDate,
       comments,
       createdBy: user.username,
     }
+
     switch (journey.restrictionClass) {
       case 'CONTACT_GLOBAL':
         return this.handleAuditEvent(
@@ -44,7 +47,12 @@ export default class RestrictionsService extends AuditedService {
             what: 'API_POST_CONTACT_RESTRICTION',
             who: user.username,
             subjectType: 'CONTACT_RESTRICTION',
-            details: { contactId: journey.contactId },
+            details: {
+              contactId: journey.contactId,
+              type,
+              startDate: parsedStartDate,
+              expiryDate: parsedExpiryDate ?? null,
+            },
             correlationId,
           },
         )
@@ -59,6 +67,9 @@ export default class RestrictionsService extends AuditedService {
               contactId: journey.contactId,
               prisonNumber: journey.prisonerNumber,
               prisonerContactId: journey.prisonerContactId,
+              type,
+              startDate: parsedStartDate,
+              expiryDate: parsedExpiryDate ?? null,
             },
             correlationId,
           },
@@ -76,12 +87,14 @@ export default class RestrictionsService extends AuditedService {
     correlationId: string,
   ): Promise<ContactRestrictionDetails> {
     const { type, startDate, expiryDate, comments } = form
+    const parsedStartDate = formatISO(parse(startDate, 'dd/MM/yyyy', new Date()), { representation: 'date' })
+    const parsedExpiryDate = expiryDate
+      ? formatISO(parse(expiryDate, 'dd/MM/yyyy', new Date()), { representation: 'date' })
+      : undefined
     const request: UpdateContactRestrictionRequest = {
       restrictionType: type,
-      startDate: formatISO(parse(startDate, 'dd/MM/yyyy', new Date()), { representation: 'date' }),
-      expiryDate: expiryDate
-        ? formatISO(parse(expiryDate, 'dd/MM/yyyy', new Date()), { representation: 'date' })
-        : undefined,
+      startDate: parsedStartDate,
+      expiryDate: parsedExpiryDate,
       comments,
       updatedBy: user.username,
     }
@@ -92,7 +105,7 @@ export default class RestrictionsService extends AuditedService {
         who: user.username,
         subjectType: 'CONTACT_RESTRICTION',
         subjectId: String(contactRestrictionId),
-        details: { contactId },
+        details: { contactId, type, startDate: parsedStartDate, expiryDate: parsedExpiryDate ?? null },
         correlationId,
       },
     )
@@ -106,12 +119,14 @@ export default class RestrictionsService extends AuditedService {
     correlationId: string,
   ): Promise<PrisonerContactRestrictionDetails> {
     const { type, startDate, expiryDate, comments } = form
+    const parsedStartDate = formatISO(parse(startDate, 'dd/MM/yyyy', new Date()), { representation: 'date' })
+    const parsedExpiryDate = expiryDate
+      ? formatISO(parse(expiryDate, 'dd/MM/yyyy', new Date()), { representation: 'date' })
+      : undefined
     const request: UpdatePrisonerContactRestrictionRequest = {
       restrictionType: type,
-      startDate: formatISO(parse(startDate, 'dd/MM/yyyy', new Date()), { representation: 'date' }),
-      expiryDate: expiryDate
-        ? formatISO(parse(expiryDate, 'dd/MM/yyyy', new Date()), { representation: 'date' })
-        : undefined,
+      startDate: parsedStartDate,
+      expiryDate: parsedExpiryDate,
       comments,
       updatedBy: user.username,
     }
@@ -127,7 +142,7 @@ export default class RestrictionsService extends AuditedService {
         who: user.username,
         subjectType: 'CONTACT_RELATIONSHIP_RESTRICTION',
         subjectId: String(prisonerContactRestrictionId),
-        details: { prisonerContactId },
+        details: { prisonerContactId, type, startDate: parsedStartDate, expiryDate: parsedExpiryDate ?? null },
         correlationId,
       },
     )
