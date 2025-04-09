@@ -63,6 +63,7 @@ export default class CreateContactOrganisationSearchController implements PageHa
       isNewContact: true,
       baseEmploymentLink: `/prisoner/${prisonerNumber}/contacts/create/employments/${employmentIdx}/`,
       journey,
+      contact: journey.names,
       ...req.params,
       organisationName: journey.organisationSearch.searchTerm ?? '',
       organisations: searchResult?.content ?? [],

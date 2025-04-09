@@ -176,9 +176,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/chec
     expect($('a:contains("Back")').attr('href')).toEqual(
       `/prisoner/A1234BC/contacts/manage/1/update-employments/new/organisation-search/${journeyId}`,
     )
-    expect(
-      $('h1:contains("Check and confirm if this is the correct employer for contact Jones Mason")').text(),
-    ).toBeTruthy()
+    expect($('h1:contains("Check and confirm if this is the correct employer for Jones Mason")').text()).toBeTruthy()
     expect($('dt:contains("Organisation name")').next().text()).toMatch(/Some Corp/)
     expect($('dt:contains("Organisation type")').next().text()).toMatch(/Another Type\s+?Org Type/)
     expect($('dt:contains("Caseload")').next().text()).toMatch(/TEST/)
@@ -233,9 +231,7 @@ it('should render result with minimal mandatory data', async () => {
 
   // Then
   const $ = cheerio.load(response.text)
-  expect(
-    $('h1:contains("Check and confirm if this is the correct employer for contact Jones Mason")').text(),
-  ).toBeTruthy()
+  expect($('h1:contains("Check and confirm if this is the correct employer for Jones Mason")').text()).toBeTruthy()
   expect($('dt:contains("Organisation name")').next().text()).toMatch(/Some Corp/)
   expect($('dt:contains("Organisation type")').next().text()).toMatch(/Not provided/)
   expect($('dt:contains("Caseload")').next().text()).toMatch(/Not provided/)
