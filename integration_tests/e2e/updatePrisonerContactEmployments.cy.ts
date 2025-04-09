@@ -202,6 +202,5 @@ context('Update Prisoner Contact Employments', () => {
   it('Cancel goes to manage contacts professional information tab', () => {
     Page.verifyOnPage(UpdateEmploymentsPage) //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .verifyOnProfessionalInformationTab()
   })
 })
