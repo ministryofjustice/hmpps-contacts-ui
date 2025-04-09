@@ -113,7 +113,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
     expect($('a:contains("Add another employer")').attr('href')).toEqual(
       `/prisoner/A1234BC/contacts/manage/1/update-employments/new/organisation-search/${journeyId}`,
     )
-    expect($('a:contains("Cancel")').attr('href')).toEqual('/foo/bar#professional-information')
+    expect($('a:contains("Cancel")').attr('href')).toEqual('/foo/bar')
   })
 
   it('should handle no employment record', async () => {

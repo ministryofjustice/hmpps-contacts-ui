@@ -25,7 +25,7 @@ export default class UpdateEmploymentsController implements PageHandler {
     const navigation: Navigation = {
       backLinkLabel: 'Back to contact record',
       backLink: returnPoint.url,
-      cancelButton: `${returnPoint.url}#professional-information`,
+      cancelButton: returnPoint.url,
     }
     res.render('pages/contacts/manage/employments/index', {
       updateEmploymentBaseLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/`,

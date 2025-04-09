@@ -34,6 +34,7 @@
                 text: ("Active employer: " if employment.isActive else "Past employer: ") + employment.employer.organisationName
               },
               actions: {
+                classes: "remove-width-limit",
                 items: [
                   {
                     href: updateEmploymentBaseLink + loop.index + "/delete-employment/" + journeyId,
@@ -52,6 +53,7 @@
                 text: employment.employer.organisationName
               },
                 actions: {
+                classes: "remove-width-limit",
                 items: [
                   {
                     href: updateEmploymentBaseLink + loop.index + "/organisation-search/" + journeyId,
