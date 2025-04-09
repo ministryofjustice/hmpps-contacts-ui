@@ -117,6 +117,15 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/empl
     )
 
     // Then
+    expect(auditService.logPageView).toHaveBeenCalledWith('MANAGE_CONTACT_EMPLOYMENT_STATUS_PAGE', {
+      who: 'user1',
+      correlationId: expect.any(String),
+      details: {
+        contactId: '1',
+        prisonerNumber,
+        employerId: '1',
+      },
+    })
     const $ = cheerio.load(response.text)
     expect($('a:contains("Back")').attr('href')).toEqual(
       `/prisoner/A1234BC/contacts/manage/1/update-employments/${journeyId}`,

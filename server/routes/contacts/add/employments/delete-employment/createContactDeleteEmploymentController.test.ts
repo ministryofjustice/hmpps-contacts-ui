@@ -134,6 +134,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/employments/:employmentI
       correlationId: expect.any(String),
       details: {
         prisonerNumber: 'A1234BC',
+        employerId: journeyId,
       },
     })
   })

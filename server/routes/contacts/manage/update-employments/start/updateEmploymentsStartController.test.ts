@@ -67,6 +67,7 @@ describe('GET /contacts/manage/:contactId/update-employments', () => {
 
     // Then
     expect(response.status).toEqual(302)
+    expect(auditService.logPageView).not.toHaveBeenCalled()
     expect(response.headers['location']).toMatch(/contacts\/manage\/1\/update-employments\/[a-f0-9-]{36}/)
     const responseJourneyId = response.headers['location']!.split('/').slice(-1)[0]
     const journeyData = session.updateEmploymentsJourneys![responseJourneyId!]!
