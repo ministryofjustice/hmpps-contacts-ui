@@ -90,6 +90,15 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
     )
 
     // Then
+    expect(auditService.logPageView).toHaveBeenCalledWith('MANAGE_CONTACT_UPDATE_EMPLOYMENTS_PAGE', {
+      who: 'user1',
+      correlationId: expect.any(String),
+      details: {
+        contactId: '1',
+        prisonerNumber,
+        employerId: journeyId,
+      },
+    })
     const $ = cheerio.load(response.text)
     expect($('title').text()).toStrictEqual('Edit employment information for a contact linked to a prisoner - DPS')
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit professional information')
