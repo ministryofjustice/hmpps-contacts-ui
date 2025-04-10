@@ -298,7 +298,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     const mobileHeading = $('dt:contains("Mobile")')
     expect(mobileHeading.next().text().trim()).toStrictEqual('0123456789')
     expect(mobileHeading.next().next().find('a').first().attr('href')).toStrictEqual(
-      `/prisoner/A1234BC/contacts/create/add-phone-numbers/${journeyId}`,
+      `/prisoner/A1234BC/contacts/create/add-phone-numbers/${journeyId}#phones[0].phoneNumber`,
     )
     expect(mobileHeading.next().next().find('a').last().attr('href')).toStrictEqual(
       `/prisoner/A1234BC/contacts/create/delete-phone-number/0/${journeyId}`,
@@ -306,7 +306,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     const homeHeading = $('dt:contains("Home")')
     expect(homeHeading.next().text().trim()).toStrictEqual('987654321, ext. #123')
     expect(homeHeading.next().next().find('a').first().attr('href')).toStrictEqual(
-      `/prisoner/A1234BC/contacts/create/add-phone-numbers/${journeyId}`,
+      `/prisoner/A1234BC/contacts/create/add-phone-numbers/${journeyId}#phones[1].phoneNumber`,
     )
     expect(homeHeading.next().next().find('a').last().attr('href')).toStrictEqual(
       `/prisoner/A1234BC/contacts/create/delete-phone-number/1/${journeyId}`,

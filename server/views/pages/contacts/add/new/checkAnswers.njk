@@ -272,7 +272,7 @@
                     actions: {
                       items: [
                         {
-                          href: baseChangeUrl + "/add-phone-numbers/" + journey.id,
+                          href: baseChangeUrl + "/add-phone-numbers/" + journey.id + '#phones[' + loop.index0 + '].phoneNumber',
                           text: "Change",
                           visuallyHiddenText: "the information about this " + phoneNumber.phoneTypeDescription + " phone number",
                           attributes: {"data-qa": "edit-phone-number-" + loop.index0},
