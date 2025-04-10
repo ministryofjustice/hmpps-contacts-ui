@@ -32,7 +32,7 @@
     <div class="govuk-grid-column-two-thirds">
         <span class="govuk-caption-l">{{ caption }}</span>
         <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
-        <form method='POST'>
+        <form method='POST' class="govuk-body">
              <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
              {{ govukSelect({
                 label: {
