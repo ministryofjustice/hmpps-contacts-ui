@@ -212,7 +212,7 @@
         {% else %}
           <h2 class="govuk-heading-l govuk-!-font-size-24 govuk-!-margin-bottom-3">No contact records match your filter</h2>
           <p class="govuk-body">You can:</p>
-          <ul>
+          <ul class="govuk-list govuk-list--bullet">
             <li>change the filters and apply them again</li>
             <li><a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/list" class="govuk-body govuk-link--no-visited-state" data-qa="no-results-clear-filters">clear the filters</a> to view contacts with active relationship status</li>
             <li><a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/create/start" class="govuk-body govuk-link--no-visited-state" data-qa="no-results-link-a-contact">link another contact</a> if you cannot find the correct person in the prisoner’s contact list</li>
