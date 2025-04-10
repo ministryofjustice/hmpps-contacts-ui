@@ -24,7 +24,7 @@
                 attributes: {"data-qa": "success-message"},
                 html: (
                     '<div><strong>Prisoner: </strong><span data-qa="prisoner-name">' + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) + '</span></div>' +
-                    '<div><strong>Contact: </strong><span data-qa="contact-name">' + names | formatNameFirstNameFirst(excludeMiddleNames = true) + '</span></div>'
+                    '<div><strong>Contact: </strong><span data-qa="contact-name">' + names | formatNameFirstNameFirst + '</span></div>'
                 )
             }) }}
 
@@ -36,7 +36,7 @@
                   classes: 'govuk-!-margin-bottom-3'
                 }) }}
                 <p class="govuk-body">Restrictions that must be recorded are:</p>
-                  <ul>
+                  <ul class="govuk-list govuk-list--bullet">
                     <li>access requirements</li>
                     <li>bans on visits or other contact methods</li>
                     <li>CCTV requirements</li>
@@ -51,7 +51,7 @@
                 <h2 class="govuk-heading-l govuk-!-font-size-24 govuk-!-margin-bottom-3">Check the contact information is up to date</h2>
                 <p class="govuk-body">It’s also important to make sure the information in the contact record is accurate and up to date.</p>
                 <a href="{{ contactRecordLink }}" class="govuk-body govuk-link--no-visited-state" data-qa="go-to-contact-info-link">
-                    View {{ names | formatNameFirstNameFirst(excludeMiddleNames = true) }}’s contact information
+                    View {{ names | formatNameFirstNameFirst }}’s contact information
                 </a>
                 {% endif %}
               </div>
