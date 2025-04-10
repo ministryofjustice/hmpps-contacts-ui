@@ -14,11 +14,13 @@
   {% set title = "Is " + (contact | formatNameFirstNameFirst) + " approved to visit " + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) + "? (optional)" %}
   {% set continueButtonLabel = "Continue" %}
   {% set caption = journey | captionForAddContactJourney %}
+  {% set isOptional = true %}
 {% else %}
   {% set pageTitle = "Is the contact approved to visit the prisoner? - Edit contact details - DPS" %}
   {% set title = "Is " + (contact | formatNameFirstNameFirst) + " approved to visit " + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) + "?" %}
   {% set continueButtonLabel = "Confirm and save" %}
   {% set caption = "Edit contact relationship information" %}
+  {% set isOptional = false %}
 {% endif %}
 
 {% block content %}
