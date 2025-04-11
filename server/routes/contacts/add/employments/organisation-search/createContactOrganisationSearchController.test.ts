@@ -188,7 +188,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/employments/:employmentI
     expect($('p:contains("No organisation records match your search.")').text()).toBeFalsy()
     expect($('td:contains("Some Corp")').first().text()).toEqual('Some Corp111')
     expect($('td:contains("1234 1234, ext. 222")').text()).toBeTruthy()
-    expect($('a:contains("Check if this is the correct employer")').attr('href')).toEqual(
+    const checkEmployerLink = $('a:contains("Check if this is the")')
+    expect(checkEmployerLink.text()).toEqual('Check if this is the correct employer (Some Corp)')
+    expect(checkEmployerLink.attr('href')).toEqual(
       `/prisoner/A1234BC/contacts/create/employments/1/check-employer/${journeyId}?organisationId=111`,
     )
     expect($('.moj-pagination__list').text()).toBeTruthy()
