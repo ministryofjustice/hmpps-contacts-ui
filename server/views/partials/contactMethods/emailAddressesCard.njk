@@ -36,7 +36,8 @@
         },
         actions: {
           items: actions if showActions else []
-        }
+        },
+        classes: ('govuk-summary-list__row--no-border') if not loop.last
       }]) %}
     {% endfor %}
   {% else %}
