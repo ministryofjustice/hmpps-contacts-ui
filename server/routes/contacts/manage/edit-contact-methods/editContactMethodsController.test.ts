@@ -523,7 +523,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-methods`,
       )
       const $ = cheerio.load(response.text)
-      expect($('h2:contains("Addresses")').first().parent().parent().next().text()).toMatch(/No addresses provided./)
+      expect($('h2:contains("Addresses")').first().parent().parent().next().text()).toMatch(
+        /No current address provided./,
+      )
       expectAddAddressLink($)
     })
   })
