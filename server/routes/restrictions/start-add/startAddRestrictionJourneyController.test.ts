@@ -75,6 +75,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
       expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADD_RESTRICTION_START_PAGE, {
         who: user.username,
         correlationId: expect.any(String),
+        details: {
+          contactId: '123',
+          prisonerContactId: '321',
+          prisonerNumber: 'A1234BC',
+        },
       })
       expect(response.status).toEqual(302)
       expect(response.headers['location']).toContain(

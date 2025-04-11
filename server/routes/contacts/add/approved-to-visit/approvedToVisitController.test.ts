@@ -104,6 +104,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/approved-to-visit/:journ
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
   })
 

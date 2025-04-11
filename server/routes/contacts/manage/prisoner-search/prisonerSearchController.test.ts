@@ -46,6 +46,7 @@ describe('GET /contacts/manage/prisoner-search', () => {
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.PRISONER_SEARCH_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {},
     })
   })
 

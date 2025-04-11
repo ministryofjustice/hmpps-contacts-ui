@@ -123,6 +123,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/add-phone-numbers/:journ
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADD_CONTACT_ADD_PHONE_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
   })
 

@@ -90,6 +90,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId', (
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_DOB_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
   })
 

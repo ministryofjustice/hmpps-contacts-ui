@@ -112,6 +112,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.UPDATE_CONTACT_CONFIRM_DELETE_DATE_OF_DEATH_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        contactId: '99',
+        prisonerContactId: '987654',
+        prisonerNumber: 'A1234BC',
+      },
     })
   })
 })

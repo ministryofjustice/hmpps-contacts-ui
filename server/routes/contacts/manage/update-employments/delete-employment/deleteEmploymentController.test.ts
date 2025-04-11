@@ -116,6 +116,16 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/dele
       `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/delete-employment/${journeyId}`,
     )
 
+    expect(auditService.logPageView).toHaveBeenCalledWith('MANAGE_CONTACT_DELETE_EMPLOYMENT_PAGE', {
+      who: 'user1',
+      correlationId: expect.any(String),
+      details: {
+        contactId: '1',
+        prisonerNumber,
+        employerId: '1',
+      },
+    })
+
     // Then
     const $ = cheerio.load(response.text)
     expect($('title').text()).toStrictEqual(

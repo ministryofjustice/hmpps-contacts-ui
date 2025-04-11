@@ -69,6 +69,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.SUCCESSFULLY_ADDED_CONTACT_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
   })
 })

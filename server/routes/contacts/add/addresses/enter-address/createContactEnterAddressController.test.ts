@@ -125,6 +125,9 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/new/enter-addr
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_ENTER_ADDRESS_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
     expect($('a:contains("Automatically copy the prisoner’s primary address into this page")').attr('href')).toEqual(
       `/prisoner/${prisonerNumber}/contacts/create/addresses/new/use-prisoner-address/${journeyId}?returnUrl=/prisoner/${prisonerNumber}/contacts/create/addresses/new/enter-address/${journeyId}`,
@@ -196,6 +199,9 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_ENTER_ADDRESS_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
 
     expect($('a:contains("Automatically copy the prisoner’s primary address into this page")').text()).toBeFalsy()

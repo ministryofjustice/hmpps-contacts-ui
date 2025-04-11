@@ -127,6 +127,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-relationship-comme
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ENTER_RELATIONSHIP_COMMENTS, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
   })
 

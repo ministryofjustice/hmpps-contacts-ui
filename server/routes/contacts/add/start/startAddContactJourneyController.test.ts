@@ -50,6 +50,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_START_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
     expect(response.status).toEqual(302)
     expect(response.headers['location']).toContain('/contacts/search/')
@@ -69,6 +72,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_START_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
     expect(response.status).toEqual(302)
     expect(response.headers['location']).toContain('/contacts/search/')
@@ -100,6 +106,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_START_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
     expect(response.status).toEqual(302)
     expect(location).toContain('/contacts/search/')
@@ -157,6 +166,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_START_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
     expect(response.status).toEqual(302)
     expect(location).toContain('/contacts/search/')

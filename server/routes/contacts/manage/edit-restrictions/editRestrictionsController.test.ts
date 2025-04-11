@@ -55,6 +55,11 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-r
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.EDIT_RESTRICTIONS_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        contactId: '1',
+        prisonerContactId: '99',
+        prisonerNumber: 'A1234BC',
+      },
     })
     expect(contactsService.getContact).toHaveBeenCalledWith(1, user)
   })
