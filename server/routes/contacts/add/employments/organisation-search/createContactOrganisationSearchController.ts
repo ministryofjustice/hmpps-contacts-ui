@@ -26,12 +26,12 @@ export default class CreateContactOrganisationSearchController implements PageHa
     if (sort) {
       journey.organisationSearch.sort = sort
       journey.organisationSearch.page = 1
-      return res.redirect(employmentUrl({ subPath: 'organisation-search' }))
+      return res.redirect(`${employmentUrl({ subPath: 'organisation-search' })}#pagination`)
     }
     if (page) {
       const pageNumber = Number(page)
       journey.organisationSearch.page = Number.isNaN(pageNumber) ? 0 : pageNumber
-      return res.redirect(employmentUrl({ subPath: 'organisation-search' }))
+      return res.redirect(`${employmentUrl({ subPath: 'organisation-search' })}#pagination`)
     }
 
     let searchResult: OrganisationSummaryResultItemPage | undefined
@@ -65,7 +65,7 @@ export default class CreateContactOrganisationSearchController implements PageHa
       journey,
       contact: journey.names,
       ...req.params,
-      organisationName: journey.organisationSearch.searchTerm ?? '',
+      organisationName: journey.organisationSearch.searchTerm,
       organisations: searchResult?.content ?? [],
       sort: journey.organisationSearch.sort,
     })
@@ -75,11 +75,7 @@ export default class CreateContactOrganisationSearchController implements PageHa
     const { journey, employmentUrl } = getEmploymentAndUrl(req)
     journey.organisationSearch ??= { page: 1 }
 
-    if (req.body.organisationName) {
-      journey.organisationSearch.searchTerm = req.body.organisationName
-    } else {
-      delete journey.organisationSearch.searchTerm
-    }
+    journey.organisationSearch.searchTerm = req.body.organisationName ?? ''
     journey.organisationSearch.page = 1
 
     res.redirect(employmentUrl({ subPath: 'organisation-search' }))
