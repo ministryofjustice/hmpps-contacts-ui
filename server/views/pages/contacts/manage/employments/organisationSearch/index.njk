@@ -42,7 +42,7 @@
               classes: "moj-search__input",
               id: "organisationName",
               name: "organisationName",
-              value: organisationName,
+              value: organisationName or '',
               label: {
                 text: 'Name of organisation'
               }
@@ -56,10 +56,11 @@
           </form>
         </div>
       </div>
-
-      {% if organisationName %}
+      {% if organisationName === undefined %}
+        <p class="govuk-!-margin-bottom-6"><strong>Start a search to view organisation records.</strong></p>
+      {% else %}
         {% if organisations.length %}
-          {{ simplePagination(paginationParams)  }}
+          <div id="pagination">{{ simplePagination(paginationParams)  }}</div>
         {% endif %}
 
         {% if organisations.length %}

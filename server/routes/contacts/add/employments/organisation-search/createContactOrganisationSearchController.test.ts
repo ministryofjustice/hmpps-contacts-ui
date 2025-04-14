@@ -123,7 +123,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/employments/:employmentI
     // Then
     expect(response.status).toEqual(302)
     expect(response.headers['location']).toStrictEqual(
-      `/prisoner/${prisonerNumber}/contacts/create/employments/1/organisation-search/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/create/employments/1/organisation-search/${journeyId}#pagination`,
     )
 
     const journeyData = session.addContactJourneys![journeyId]!
@@ -145,7 +145,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/employments/:employmentI
     // Then
     expect(response.status).toEqual(302)
     expect(response.headers['location']).toStrictEqual(
-      `/prisoner/${prisonerNumber}/contacts/create/employments/1/organisation-search/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/create/employments/1/organisation-search/${journeyId}#pagination`,
     )
 
     const journeyData = session.addContactJourneys![journeyId]!

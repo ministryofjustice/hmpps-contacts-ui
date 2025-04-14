@@ -26,14 +26,14 @@ export default class OrganisationSearchController implements PageHandler {
       journey.organisationSearch.sort = sort
       journey.organisationSearch.page = 1
       return res.redirect(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/organisation-search/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/organisation-search/${journeyId}#pagination`,
       )
     }
     if (page) {
       const pageNumber = Number(page)
       journey.organisationSearch.page = Number.isNaN(pageNumber) ? 1 : pageNumber
       return res.redirect(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/organisation-search/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/organisation-search/${journeyId}#pagination`,
       )
     }
 
@@ -66,7 +66,7 @@ export default class OrganisationSearchController implements PageHandler {
       baseEmploymentLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/`,
       ...req.params,
       contact: journey.contactNames,
-      organisationName: journey.organisationSearch.searchTerm ?? '',
+      organisationName: journey.organisationSearch.searchTerm,
       organisations: searchResult?.content ?? [],
       sort: journey.organisationSearch.sort,
     })
@@ -74,11 +74,7 @@ export default class OrganisationSearchController implements PageHandler {
 
   POST = async (req: Request<PrisonerJourneyParams, unknown, { organisationName?: string }>, res: Response) => {
     const journey = req.session.updateEmploymentsJourneys![req.params.journeyId]!
-    if (req.body.organisationName) {
-      journey.organisationSearch.searchTerm = req.body.organisationName
-    } else {
-      delete journey.organisationSearch.searchTerm
-    }
+    journey.organisationSearch.searchTerm = req.body.organisationName ?? ''
     journey.organisationSearch.page = 1
     res.redirect(req.originalUrl)
   }
