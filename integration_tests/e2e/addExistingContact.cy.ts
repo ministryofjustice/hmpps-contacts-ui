@@ -39,6 +39,7 @@ context('Add Existing Contact', () => {
     cy.task('stubRelationshipReferenceData')
     cy.task('stubOfficialRelationshipReferenceData')
     cy.task('stubRelationshipTypeReferenceData')
+    cy.task('stubPhoneTypeReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', prisonerNumber)
     cy.task('stubGetContactById', contact)

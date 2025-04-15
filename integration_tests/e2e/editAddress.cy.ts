@@ -23,6 +23,7 @@ context('Edit Address', () => {
     cy.task('stubCityReferenceData')
     cy.task('stubCountyReferenceData')
     cy.task('stubCountryReferenceData')
+    cy.task('stubPhoneTypeReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,

@@ -5,9 +5,15 @@ import { ContactsService } from '../../../../services'
 import { Navigation } from '../../common/navigation'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import Urls from '../../../urls'
+import { getReferenceDataOrderDictionary } from '../../../../utils/sortPhoneNumbers'
+import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
+import ReferenceDataService from '../../../../services/referenceDataService'
 
 export default class EditContactMethodsController implements PageHandler {
-  constructor(private readonly contactsService: ContactsService) {}
+  constructor(
+    private readonly contactsService: ContactsService,
+    private readonly referenceDataService: ReferenceDataService,
+  ) {}
 
   public PAGE_NAME = Page.EDIT_CONTACT_METHODS_PAGE
 
@@ -30,6 +36,9 @@ export default class EditContactMethodsController implements PageHandler {
       contactId,
       prisonerContactId,
       navigation,
+      phoneTypeOrderDictionary: getReferenceDataOrderDictionary(
+        await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user),
+      ),
     })
   }
 }

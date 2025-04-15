@@ -8,14 +8,17 @@ import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { Page } from '../../../../services/auditService'
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
+import { mockedReferenceData } from '../../../testutils/stubReferenceData'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
+jest.mock('../../../../services/referenceDataService')
 
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const contactsService = MockedService.ContactsService()
+const referenceDataService = MockedService.ReferenceDataService()
 
 let app: Express
 const prisonerNumber = 'A1234BC'
@@ -26,6 +29,7 @@ beforeEach(() => {
       auditService,
       prisonerSearchService,
       contactsService,
+      referenceDataService,
     },
   })
 })
@@ -41,6 +45,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
     )
     contactsService.getContact.mockResolvedValue(TestData.contact())
     contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
+    referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   })
 
   it('should audit page view', async () => {
@@ -98,21 +103,22 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
 
       const phoneNumbersCard = $('h2:contains("Phone numbers")').first().parent().parent()
       expect(phoneNumbersCard).toHaveLength(1)
+
       expectChangeAndDeleteItem(
         $(phoneNumbersCard).find('dt:contains("Business")').first(),
-        '1234, ext. 999',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/phone/3/edit',
+        '5555',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/phone/2/edit',
         'Change the information about this Business phone number (Phone numbers)',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/phone/3/delete',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/phone/2/delete',
         'Delete the information about this Business phone number (Phone numbers)',
       )
 
       expectChangeAndDeleteItem(
         $(phoneNumbersCard).find('dt:contains("Business")').last(),
-        '5555',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/phone/2/edit',
+        '1234, ext. 999',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/phone/3/edit',
         'Change the information about this Business phone number (Phone numbers)',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/phone/2/delete',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/phone/3/delete',
         'Delete the information about this Business phone number (Phone numbers)',
       )
 

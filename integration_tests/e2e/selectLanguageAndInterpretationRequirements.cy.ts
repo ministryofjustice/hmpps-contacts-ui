@@ -13,6 +13,7 @@ context('Select Language and interpretation requirements', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
+    cy.task('stubPhoneTypeReferenceData')
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetPrisonerContactRelationshipById', {

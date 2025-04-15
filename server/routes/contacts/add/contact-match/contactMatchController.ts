@@ -7,11 +7,15 @@ import { ContactsService, RestrictionsService } from '../../../../services'
 import { setPaginationLocals } from '../../../../views/partials/simplePagination/utils'
 import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import ContactDetails = contactsApiClientTypes.ContactDetails
+import { getReferenceDataOrderDictionary } from '../../../../utils/sortPhoneNumbers'
+import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
+import ReferenceDataService from '../../../../services/referenceDataService'
 
 export default class ContactMatchController implements PageHandler {
   constructor(
     private readonly contactsService: ContactsService,
     private readonly restrictionsService: RestrictionsService,
+    private readonly referenceDataService: ReferenceDataService,
   ) {}
 
   public PAGE_NAME = Page.CONTACT_MATCH_PAGE
@@ -65,6 +69,9 @@ export default class ContactMatchController implements PageHandler {
       linkedPrisonersCount,
       isContactConfirmed: res.locals?.formResponses?.['isContactMatched'] ?? journey?.isContactMatched,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      phoneTypeOrderDictionary: getReferenceDataOrderDictionary(
+        await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user),
+      ),
     })
   }
 

@@ -6,10 +6,11 @@
   {% set showActions = opts.showActions %}
   {% set prisonerNumber = opts.prisonerNumber %}
   {% set prisonerContactId = opts.prisonerContactId %}
+  {% set phoneTypeOrderDictionary = opts.phoneTypeOrderDictionary %}
 
   {% set phoneNumbers = [] %}
   {% if contact.phoneNumbers and contact.phoneNumbers.length > 0 %}
-    {% for item in contact.phoneNumbers | sort(attribute = 'phoneNumber') | sort(attribute = 'phoneTypeDescription') %}
+    {% for item in contact.phoneNumbers | sortPhoneNumbers(phoneTypeOrderDictionary) %}
       {% set phoneNumbers = phoneNumbers.concat([{
         key: {
           text: item.phoneTypeDescription

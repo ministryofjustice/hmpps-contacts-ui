@@ -15,6 +15,7 @@ context('Change Contact Title Or Middle Names', () => {
     cy.task('stubComponentsMeta')
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.task('stubTitlesReferenceData')
+    cy.task('stubPhoneTypeReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId,

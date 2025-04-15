@@ -31,6 +31,7 @@ import captionForAddContactJourney from '../routes/contacts/add/addContactsUtils
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import sortRestrictions from './sortRestrictions'
 import { convertToSortableColumns } from './convertToSortableColumns'
+import { sortPhoneNumbers } from './sortPhoneNumbers'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -147,4 +148,5 @@ export default function nunjucksSetup(app: express.Express): void {
       })),
   )
   njkEnv.addFilter('sortRestrictions', sortRestrictions)
+  njkEnv.addFilter('sortPhoneNumbers', sortPhoneNumbers)
 }

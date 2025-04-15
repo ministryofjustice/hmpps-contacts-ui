@@ -181,7 +181,7 @@ const ManageContactsRoutes = (
   // View one contact
   get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId',
-    new ContactDetailsController(contactsService, restrictionsService),
+    new ContactDetailsController(contactsService, restrictionsService, referenceDataService),
   )
 
   // Manage the attribute of one contact (phones, addresses, IDs, emails, restrictions)
@@ -495,7 +495,7 @@ const ManageContactsRoutes = (
 
   get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-contact-methods',
-    new EditContactMethodsController(contactsService),
+    new EditContactMethodsController(contactsService, referenceDataService),
   )
 
   get(

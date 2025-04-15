@@ -27,6 +27,7 @@ context('Create Prisoner Contact Restriction', () => {
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.task('stubRestrictionTypeReferenceData')
     cy.task('stubTitlesReferenceData')
+    cy.task('stubPhoneTypeReferenceData')
     cy.task('stubPrisonerById', prisoner)
     cy.task('stubGetContactById', contact)
     cy.task('stubGetContactNameById', contact)

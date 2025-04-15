@@ -18,6 +18,7 @@ context('Select Staff Status', () => {
     cy.task('stubComponentsMeta')
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.task('stubTitlesReferenceData')
+    cy.task('stubPhoneTypeReferenceData')
     cy.task('stubPrisonerById', prisoner)
     cy.task('stubGetContactById', TestData.contact({ id: contactId }))
     cy.task('stubGetContactNameById', TestData.contact())

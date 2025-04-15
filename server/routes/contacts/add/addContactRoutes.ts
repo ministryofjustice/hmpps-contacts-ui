@@ -128,7 +128,7 @@ const AddContactRoutes = (
 
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/add/match/:matchingContactId/:journeyId',
-    controller: new ContactMatchController(contactsService, restrictionsService),
+    controller: new ContactMatchController(contactsService, restrictionsService, referenceDataService),
     schema: contactMatchSchema,
     resetJourney: true,
   })

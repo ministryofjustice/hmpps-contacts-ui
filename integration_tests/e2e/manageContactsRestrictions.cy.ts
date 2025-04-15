@@ -14,6 +14,7 @@ context('Manage contacts restrictions', () => {
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.task('stubGetGenders')
     cy.task('stubTitlesReferenceData')
+    cy.task('stubPhoneTypeReferenceData')
     cy.task('stubComponentsMeta')
     cy.task('stubPrisoners', {
       results: {
