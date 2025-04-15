@@ -5,6 +5,7 @@ import { appWithAllRoutes, user } from '../routes/testutils/appSetup'
 import { Page } from '../services/auditService'
 import TestData from '../routes/testutils/testData'
 import { MockedService } from '../testutils/mockedServices'
+import { mockedReferenceData } from '../routes/testutils/stubReferenceData'
 
 jest.mock('../services/auditService')
 jest.mock('../services/prisonerSearchService')
@@ -31,6 +32,7 @@ beforeEach(() => {
       restrictionsService,
     },
   })
+  referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mr')
   restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({
     prisonerContactRestrictions: [],

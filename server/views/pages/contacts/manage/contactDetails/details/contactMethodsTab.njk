@@ -23,7 +23,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      {{  phoneNumbersCard({ contact: contact, showActions: false }) }}
+      {{  phoneNumbersCard({ contact: contact, showActions: false, phoneTypeOrderDictionary: phoneTypeOrderDictionary }) }}
 
       {{  emailAddressesCard({ contact: contact, showActions: false }) }}
 
@@ -32,7 +32,7 @@
         {% set hasInactive = false %}
         {% set inactiveHtml = '' %}
         {% for item in contact.addresses | sortContactAddresses %}
-          {% set summaryCard = contactAddressCard({ address: item, showActions: false }) %}
+          {% set summaryCard = contactAddressCard({ address: item, showActions: false, phoneTypeOrderDictionary: phoneTypeOrderDictionary }) %}
           {% if (item.endDate | isDateAndInThePast) %}
             {% set inactiveHtml = inactiveHtml + summaryCard %}
             {% set hasInactive = true %}

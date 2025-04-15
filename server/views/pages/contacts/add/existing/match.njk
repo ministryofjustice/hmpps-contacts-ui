@@ -71,7 +71,7 @@
           <div class="govuk-tabs__panel govuk-!-static-padding-top-7" id="contact-methods">
             <div class="govuk-!-width-two-thirds">
               <h1 class="govuk-heading-l">Contact methods</h1>
-              {{  phoneNumbersCard({ contact: contact, showActions: false }) }}
+              {{  phoneNumbersCard({ contact: contact, showActions: false, phoneTypeOrderDictionary: phoneTypeOrderDictionary }) }}
 
               {{  emailAddressesCard({ contact: contact, showActions: false }) }}
 
@@ -80,7 +80,7 @@
                 {% set hasInactive = false %}
                 {% set inactiveHtml = '' %}
                 {% for item in contact.addresses | sortContactAddresses %}
-                  {% set summaryCard = contactAddressCard({ address: item, showActions: false }) %}
+                  {% set summaryCard = contactAddressCard({ address: item, showActions: false, phoneTypeOrderDictionary: phoneTypeOrderDictionary }) %}
                   {% if (item.endDate | isDateAndInThePast) %}
                     {% set inactiveHtml = inactiveHtml + summaryCard %}
                     {% set hasInactive = true %}

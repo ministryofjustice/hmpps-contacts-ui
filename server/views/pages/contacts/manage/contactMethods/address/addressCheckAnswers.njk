@@ -121,7 +121,7 @@
          },
          classes: 'govuk-summary-list__row--no-border'
        }]) %}
-       {% for val in address.phoneNumbers | sort(attribute = 'phoneNumber') | sort(attribute = 'phoneTypeDescription') %}
+       {% for val in address.phoneNumbers %}
          {% set rows = rows.concat([{
            key: {
              text: val.phoneTypeDescription,

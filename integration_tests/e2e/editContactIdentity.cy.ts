@@ -26,6 +26,7 @@ context('Edit Contact Identities', () => {
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.task('stubIdentityTypeReferenceData')
     cy.task('stubTitlesReferenceData')
+    cy.task('stubPhoneTypeReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetContactById', contact)
     cy.task('stubGetContactNameById', contact)

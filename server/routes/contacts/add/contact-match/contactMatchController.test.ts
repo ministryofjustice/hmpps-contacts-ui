@@ -11,6 +11,7 @@ import { components } from '../../../../@types/contactsApi'
 import AddContactJourney = journeys.AddContactJourney
 import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import ContactDetails = contactsApiClientTypes.ContactDetails
+import { mockedReferenceData } from '../../../testutils/stubReferenceData'
 
 type LinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
 
@@ -55,6 +56,7 @@ beforeEach(() => {
       session.addContactJourneys[journeyId] = existingJourney
     },
   })
+  referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mr')
   restrictionsService.getGlobalRestrictions.mockResolvedValue([])
   contactsService.getLinkedPrisoners.mockResolvedValue({ content: [], page: { totalElements: 0 } })
@@ -302,10 +304,10 @@ describe('Contact details', () => {
 
         const phoneNumbersCard = $('h2:contains("Phone numbers")').first().parent().parent()
         expect(phoneNumbersCard).toHaveLength(1)
-        expect($(phoneNumbersCard).find('dt:contains("Business")').first().next().text().trim()).toStrictEqual(
+        expect($(phoneNumbersCard).find('dt:contains("Business")').first().next().text().trim()).toStrictEqual('5555')
+        expect($(phoneNumbersCard).find('dt:contains("Business")').last().next().text().trim()).toStrictEqual(
           '1234, ext. 999',
         )
-        expect($(phoneNumbersCard).find('dt:contains("Business")').last().next().text().trim()).toStrictEqual('5555')
         expect($(phoneNumbersCard).find('dt:contains("Mobile")').next().text().trim()).toStrictEqual('4321')
       })
 

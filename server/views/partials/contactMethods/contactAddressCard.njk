@@ -9,6 +9,7 @@
   {% set deleteAddressLink = opts.deleteAddressLink %}
   {% set enumeratedPhones = opts.enumeratedPhones %}
   {% set editPhoneWithCreateLink = opts.editPhoneWithCreateLink %}
+  {% set phoneTypeOrderDictionary = opts.phoneTypeOrderDictionary %}
 
   {% set isActiveAddress = not address.endDate or not (address.endDate | isDateAndInThePast) %}
 
@@ -96,7 +97,7 @@
       },
       classes: 'govuk-summary-list__row--no-border'
     }]) %}
-    {% for val in address.phoneNumbers | sort(attribute = 'phoneNumber') | sort(attribute = 'phoneTypeDescription') %}
+    {% for val in address.phoneNumbers | sortPhoneNumbers(phoneTypeOrderDictionary) %}
       {% set contactAddressPhoneId = loop.index if enumeratedPhones else val.contactAddressPhoneId %}
       {% set rows = rows.concat([{
         key: {

@@ -24,7 +24,8 @@
           contact: contact,
           prisonerNumber: prisonerNumber,
           prisonerContactId: prisonerContactId,
-          showActions: true
+          showActions: true,
+          phoneTypeOrderDictionary: phoneTypeOrderDictionary
         })
       }}
 
@@ -62,7 +63,8 @@
           {% set summaryCard = contactAddressCard({
               address: item,
               updateAddressBaseLink: '/prisoner/' + prisonerNumber + '/contacts/manage/' + contact.id + "/relationship/" + prisonerContactId + '/address/' + item.contactAddressId,
-              showActions: true
+              showActions: true,
+              phoneTypeOrderDictionary: phoneTypeOrderDictionary
             })
           %}
           {% if (item.endDate | isDateAndInThePast) %}

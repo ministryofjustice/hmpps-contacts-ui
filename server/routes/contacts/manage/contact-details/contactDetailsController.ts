@@ -5,14 +5,18 @@ import { ContactsService } from '../../../../services'
 import { Navigation } from '../../common/navigation'
 import RestrictionsService from '../../../../services/restrictionsService'
 import { employmentSorter } from '../../../../utils/sorters'
+import { setPaginationLocals } from '../../../../views/partials/simplePagination/utils'
+import ReferenceDataService from '../../../../services/referenceDataService'
+import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import ContactDetails = contactsApiClientTypes.ContactDetails
 import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
-import { setPaginationLocals } from '../../../../views/partials/simplePagination/utils'
+import { getReferenceDataOrderDictionary } from '../../../../utils/sortPhoneNumbers'
 
 export default class ContactDetailsController implements PageHandler {
   constructor(
     private readonly contactsService: ContactsService,
     private readonly restrictionsService: RestrictionsService,
+    private readonly referenceDataService: ReferenceDataService,
   ) {}
 
   public PAGE_NAME = Page.CONTACT_DETAILS_PAGE
@@ -72,6 +76,9 @@ export default class ContactDetailsController implements PageHandler {
       navigation,
       linkedPrisoners: linkedPrisoners.content,
       linkedPrisonersCount,
+      phoneTypeOrderDictionary: getReferenceDataOrderDictionary(
+        await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user),
+      ),
     })
   }
 }

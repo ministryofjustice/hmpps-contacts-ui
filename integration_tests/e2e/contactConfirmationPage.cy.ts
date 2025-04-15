@@ -33,6 +33,7 @@ context('Contact confirmation', () => {
     cy.task('stubSignIn', { roles: ['PRISON'] })
     cy.task('stubTitlesReferenceData')
     cy.task('stubRelationshipReferenceData')
+    cy.task('stubPhoneTypeReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', prisonerNumber)
     cy.task('stubGetContactById', contact)
