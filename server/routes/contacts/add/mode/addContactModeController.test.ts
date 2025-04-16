@@ -58,6 +58,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADD_CONTACT_MODE_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
     expect(response.status).toEqual(302)
   })
@@ -146,6 +149,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADD_CONTACT_MODE_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
     expect(response.status).toEqual(302)
     expect(response.headers['location']).toStrictEqual(
@@ -183,6 +189,14 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
 
     // Then
     expect(response.status).toEqual(302)
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADD_CONTACT_MODE_PAGE, {
+      who: user.username,
+      correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
+    })
+
     expect(response.headers['location']).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`,
     )

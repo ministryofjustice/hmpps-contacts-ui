@@ -124,6 +124,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/domestic-status/:journey
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADD_CONTACT_DOMESTIC_STATUS_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
   })
 

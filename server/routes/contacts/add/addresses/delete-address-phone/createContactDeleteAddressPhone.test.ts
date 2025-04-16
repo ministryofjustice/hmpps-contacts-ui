@@ -130,6 +130,9 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_DELETE_ADDRESS_PHONE_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
 
     expect($('[data-qa=address-reference]').first().html()!.trim()).toMatch(

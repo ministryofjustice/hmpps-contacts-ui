@@ -65,6 +65,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_GENDER_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        contactId: '10',
+        prisonerContactId: '987654',
+        prisonerNumber: 'A1234BC',
+      },
     })
     expect($('title').text()).toStrictEqual('What is the contact’s gender? - Edit contact details - DPS')
     expect($('h1').first().text().trim()).toStrictEqual('What is Jones Mason’s gender?')

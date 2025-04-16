@@ -179,6 +179,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ENTER_ADDITIONAL_INFORMATION_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
   })
 

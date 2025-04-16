@@ -80,6 +80,16 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/chec
     const journeyData = session.updateEmploymentsJourneys![journeyId]!
 
     expect(journeyData.changeOrganisationId).toEqual(222)
+    expect(auditService.logPageView).toHaveBeenCalledWith('MANAGE_CONTACT_CHECK_EMPLOYER_PAGE', {
+      who: 'user1',
+      correlationId: expect.any(String),
+      details: {
+        contactId: '1',
+        prisonerNumber,
+        employerId: 'new',
+        organisationId: '222',
+      },
+    })
   })
 
   it('should show not found error when no organisationId is set', async () => {

@@ -131,6 +131,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/language-and-interpreter
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADD_CONTACT_LANGUAGE_INTERPRETER_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
   })
 

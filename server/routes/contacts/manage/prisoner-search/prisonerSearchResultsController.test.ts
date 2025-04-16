@@ -164,6 +164,7 @@ describe('GET /contacts/manage/prisoner-search-results', () => {
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.PRISONER_SEARCH_RESULTS_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {},
     })
     expect(prisonerSearchService.searchInCaseload).toHaveBeenCalledWith(
       'test',
@@ -189,6 +190,7 @@ describe('GET /contacts/manage/prisoner-search-results', () => {
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.PRISONER_SEARCH_RESULTS_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {},
     })
 
     expect(prisonerSearchService.searchInCaseload).toHaveBeenCalledWith(

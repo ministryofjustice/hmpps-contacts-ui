@@ -67,6 +67,11 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect(auditService.logPageView).toHaveBeenCalledWith(Page.CONTACT_DETAILS_PAGE, {
         who: user.username,
         correlationId: expect.any(String),
+        details: {
+          contactId: '1',
+          prisonerContactId: '99',
+          prisonerNumber: 'A1234BC',
+        },
       })
       expect(contactsService.getContact).toHaveBeenCalledWith(1, user)
       expect(contactsService.getPrisonerContactRelationship).toHaveBeenCalledWith(99, user)
@@ -167,6 +172,11 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect(auditService.logPageView).toHaveBeenCalledWith(Page.CONTACT_DETAILS_PAGE, {
         who: user.username,
         correlationId: expect.any(String),
+        details: {
+          contactId: '1',
+          prisonerContactId: '99',
+          prisonerNumber: 'A1234BC',
+        },
       })
 
       const $ = cheerio.load(response.text)

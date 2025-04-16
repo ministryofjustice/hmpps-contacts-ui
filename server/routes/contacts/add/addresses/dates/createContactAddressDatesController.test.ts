@@ -124,6 +124,9 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/new/dates/:jou
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_ENTER_ADDRESS_DATES_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
   })
 
@@ -205,6 +208,9 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_ENTER_ADDRESS_DATES_PAGE, {
       who: user.username,
       correlationId: expect.any(String),
+      details: {
+        prisonerNumber: 'A1234BC',
+      },
     })
     expect($('#fromMonth').val()).toStrictEqual(existingJourney.pendingAddresses![0]!.addressMetadata!.fromMonth)
     expect($('#fromYear').val()).toStrictEqual(existingJourney.pendingAddresses![0]!.addressMetadata!.fromYear)
