@@ -4,6 +4,396 @@
  */
 
 export interface paths {
+  '/sync/organisation/{organisationId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns the data for one organisation by organisationId
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to get the details for one organisation.
+     *
+     */
+    get: operations['syncGetOrganisationById']
+    /**
+     * Updates an organisation with altereed or additional details
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to update an organisation.
+     *
+     */
+    put: operations['syncUpdateOrganisation']
+    post?: never
+    /**
+     * Deletes one organisation by internal ID
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to delete an organisation.
+     *
+     */
+    delete: operations['syncDeleteOrganisationById']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/sync/organisation-web/{organisationWebId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns the data for one organisation web address by ID
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to get the details for one organisation web address.
+     *
+     */
+    get: operations['syncGetWebById']
+    /**
+     * Updates an organisation web address with altered or additional details
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to update an organisation's web address.
+     *
+     */
+    put: operations['syncUpdateWeb']
+    post?: never
+    /**
+     * Deletes one organisation organisation web address by internal ID
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to delete an organisation web address.
+     *
+     */
+    delete: operations['syncDeleteWebById']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/sync/organisation-types/{organisationId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns the organisation types for an organisation by ID
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to get the organisation types for this organisation.
+     *
+     */
+    get: operations['syncGetTypesByOrganisationId']
+    /**
+     * Updates the organisation types for a given organisation ID
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to update an organisation's types.
+     *
+     */
+    put: operations['syncUpdateWeb_1']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/sync/organisation-phone/{organisationPhoneId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns the data for one organisation phone number by ID
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to get the details for one organisation phone number.
+     *
+     */
+    get: operations['syncGetPhoneById']
+    /**
+     * Updates an organisation phone number with altered or additional details
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to update an organisation's phone number.
+     *
+     */
+    put: operations['syncUpdatePhone']
+    post?: never
+    /**
+     * Deletes one organisation organisation phone by internal ID
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to delete an organisation phone number.
+     *
+     */
+    delete: operations['syncDeletePhoneById']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/sync/organisation-email/{organisationEmailId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns the data for one organisation email address by ID
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to get the details for one organisation email address.
+     *
+     */
+    get: operations['syncGetEmailById']
+    /**
+     * Updates an organisation email address with altered or additional details
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to update an organisation's email address.
+     *
+     */
+    put: operations['syncUpdateEmail']
+    post?: never
+    /**
+     * Deletes one organisation organisation email address by internal ID
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to delete an organisation email address.
+     *
+     */
+    delete: operations['syncDeleteEmailById']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/sync/organisation-address/{organisationAddressId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns the data for one organisation address by ID
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to get the details for one organisation address.
+     *
+     */
+    get: operations['syncGetAddressById']
+    /**
+     * Updates an organisation address with altered or additional details
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to update an organisation's address.
+     *
+     */
+    put: operations['syncUpdateAddress']
+    post?: never
+    /**
+     * Deletes one organisation organisation address by internal ID
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to delete an organisation address.
+     *
+     */
+    delete: operations['syncDeleteAddressById']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/sync/organisation-address-phone/{organisationAddressPhoneId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns the data for one organisation address phone number by ID
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to get the details for one organisation address phone number by ID.
+     *
+     */
+    get: operations['syncGetAddressPhoneById']
+    /**
+     * Updates an organisation address-linked phone number with altered or additional details
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to update an organisation's address-linked phone number.
+     *
+     */
+    put: operations['syncUpdateAddressPhone']
+    post?: never
+    /**
+     * Deletes one organisation address-linked phone number by internal ID
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to delete an organisation's address-linked phone number by internal ID.
+     *
+     */
+    delete: operations['syncDeleteAddressPhoneById']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/sync/organisation': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Creates a new organisation with a specified ID
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to create a new organisation.
+     *
+     */
+    post: operations['syncCreateOrganisation']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/sync/organisation-web': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Creates a new web address and links it to an organisation
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to create a new organisation web address.
+     *
+     */
+    post: operations['syncCreateWeb']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/sync/organisation-phone': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Creates a new phone number and links it to an organisation
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to create a new organisation phone number.
+     *
+     */
+    post: operations['syncCreatePhone']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/sync/organisation-email': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Creates a new email address and links it to an organisation
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to create a new organisation email address.
+     *
+     */
+    post: operations['syncCreateEmail']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/sync/organisation-address': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Creates a new address and links it to an organisation
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to create a new organisation address.
+     *
+     */
+    post: operations['syncCreateAddress']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/sync/organisation-address-phone': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Creates a new address-linked phone number for an organisation
+     * @description
+     *           Requires role: ROLE_ORGANISATIONS_MIGRATION.
+     *           Used to create a new address-linked phone number for an organisation.
+     *
+     */
+    post: operations['syncCreateAddressPhone']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/organisation': {
     parameters: {
       query?: never
@@ -15,7 +405,8 @@ export interface paths {
     put?: never
     /**
      * Create new organisation
-     * @description Creates a new organisation
+     * @deprecated
+     * @description Creates a new organisation in DPS but does not currently synchronise to NOMIS. Deprecated until this 2-way sync is in place.
      */
     post: operations['createOrganisation']
     delete?: never
@@ -38,6 +429,26 @@ export interface paths {
      * @description Migrate an organisation from NOMIS with all of its associated data. If an organisation with the same id id already exists it will be replaced
      */
     post: operations['migrateOrganisation']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/sync/organisations/reconcile': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Reconciliation endpoint
+     * @description Get a paged list of existing organisation IDs to reconcile against
+     */
+    get: operations['reconcileOrganisations']
+    put?: never
+    post?: never
     delete?: never
     options?: never
     head?: never
@@ -84,6 +495,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/organisation/{organisationId}/summary': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get organisation summary
+     * @description Gets a summary of an organisation by their id. Includes primary address and any business phone number for that address.
+     */
+    get: operations['getOrganisationSummaryById']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/organisation/search': {
     parameters: {
       query?: never
@@ -108,6 +539,1056 @@ export interface paths {
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
+    SyncUpdateOrganisationRequest: {
+      /**
+       * Format: int64
+       * @description The organisation ID AKA the corporate ID from NOMIS
+       * @example 1233323
+       */
+      organisationId: number
+      /**
+       * @description The name of the organisation
+       * @example Example Limited
+       */
+      organisationName: string
+      /**
+       * @description The programme number for the organisation, stored as FEI_NUMBER in NOMIS
+       * @example 1
+       */
+      programmeNumber?: string
+      /**
+       * @description The VAT number for the organisation, if known
+       * @example 123456
+       */
+      vatNumber?: string
+      /**
+       * @description The id of the caseload for this organisation, this is an agency id in NOMIS
+       * @example BXI
+       */
+      caseloadId?: string
+      /**
+       * @description Any comments on the organisation
+       * @example Some additional info
+       */
+      comments?: string
+      /**
+       * @description Whether the organisation is active or not
+       * @example true
+       */
+      active: boolean
+      /**
+       * Format: date
+       * @description The date the organisation was deactivated, EXPIRY_DATE in NOMIS
+       * @example 2010-12-30
+       */
+      deactivatedDate?: string
+      /**
+       * @description User who updated the entry
+       * @example admin2
+       */
+      updatedBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was updated
+       * @example 2023-09-24T12:00:00
+       */
+      updatedTime: string
+    }
+    ErrorResponse: {
+      /** Format: int32 */
+      status: number
+      errorCode?: string
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
+    }
+    SyncOrganisationResponse: {
+      /**
+       * Format: int64
+       * @description The id of the organisation
+       * @example 123456
+       */
+      organisationId: number
+      /**
+       * @description Organisation name
+       * @example Supplier Services plc
+       */
+      organisationName?: string
+      /**
+       * @description Programme number
+       * @example 8765
+       */
+      programmeNumber?: string
+      /**
+       * @description VAT number
+       * @example GB 55 55 55 55
+       */
+      vatNumber?: string
+      /**
+       * @description Caseload ID (a specific prison)
+       * @example HEI
+       */
+      caseloadId?: string
+      /**
+       * @description Comments related to this organisation
+       * @example Notes
+       */
+      comments?: string
+      /**
+       * @description Active flag
+       * @example true
+       */
+      active: boolean
+      /**
+       * Format: date
+       * @description The date this organisation was deactivated
+       * @example 2019-01-01
+       */
+      deactivatedDate?: string
+      /**
+       * @description User who created the organisation
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the organisation was created
+       * @example 2023-09-23T10:15:30
+       */
+      createdTime: string
+      /**
+       * @description User who updated the organisation
+       * @example admin2
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the organisation was last updated
+       * @example 2023-09-24T12:00:00
+       */
+      updatedTime?: string
+    }
+    /** @description Request to update a web address for an organisation */
+    SyncUpdateWebRequest: {
+      /**
+       * Format: int64
+       * @description The organisation ID linked to
+       * @example 1233323
+       */
+      organisationId: number
+      /**
+       * @description Web address
+       * @example www.example.com
+       */
+      webAddress: string
+      /**
+       * @description User who updated the entry
+       * @example admin
+       */
+      updatedBy: string
+      /**
+       * Format: date-time
+       * @description The update timestamp
+       * @example 2024-01-01T00:00:00Z
+       */
+      updatedTime: string
+    }
+    /** @description Response object for web address changes via sync */
+    SyncWebResponse: {
+      /**
+       * Format: int64
+       * @description The ID for this web address
+       * @example 111111
+       */
+      organisationWebAddressId: number
+      /**
+       * Format: int64
+       * @description The organisation ID it is linked to
+       * @example 1234
+       */
+      organisationId: number
+      /**
+       * @description Web address
+       * @example www.example.com
+       */
+      webAddress: string
+      /**
+       * @description Username who created
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description The timestamp created
+       * @example 2024-01-01T00:00:00Z
+       */
+      createdTime: string
+      /**
+       * @description Username who last updated
+       * @example admin2
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp last updated
+       * @example 2023-09-24T12:00:00
+       */
+      updatedTime?: string
+    }
+    /** @description An organisation type */
+    SyncOrganisationType: {
+      /**
+       * @description Organisation type
+       * @example SUPPLIER
+       */
+      type: string
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description The created timestamp
+       * @example 2024-01-01T00:00:00Z
+       */
+      createdTime: string
+      /**
+       * @description User who updated the entry
+       * @example admin
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description The updated timestamp
+       * @example 2024-01-01T00:00:00Z
+       */
+      updatedTime?: string
+    }
+    /** @description Request to update the list of types assigned to an organisation */
+    SyncUpdateTypesRequest: {
+      /**
+       * Format: int64
+       * @description The organisation ID to update
+       * @example 1233323
+       */
+      organisationId: number
+      /** @description The list of organisation types (will replace the current types) */
+      types: components['schemas']['SyncOrganisationType'][]
+    }
+    /** @description Response object for an organisation types update */
+    SyncTypesResponse: {
+      /**
+       * Format: int64
+       * @description The organisation ID the updates refer to
+       * @example 1234
+       */
+      organisationId: number
+      /** @description The list of types updated on the organisation */
+      types: components['schemas']['SyncOrganisationType'][]
+    }
+    /** @description Request to update a phone number for an organisation */
+    SyncUpdatePhoneRequest: {
+      /**
+       * Format: int64
+       * @description The organisation ID this this number is linked to
+       * @example 1233323
+       */
+      organisationId: number
+      /**
+       * @description Type of phone number
+       * @example MOB
+       */
+      phoneType: string
+      /**
+       * @description Phone number
+       * @example +1234567890
+       */
+      phoneNumber: string
+      /**
+       * @description Extension number
+       * @example 123
+       */
+      extNumber?: string
+      /**
+       * @description User who updated the entry
+       * @example admin
+       */
+      updatedBy: string
+      /**
+       * Format: date-time
+       * @description The timestamp the phone number was updated
+       * @example 2024-01-01T00:00:00Z
+       */
+      updatedTime: string
+    }
+    /** @description Response object for phone number changes via sync */
+    SyncPhoneResponse: {
+      /**
+       * Format: int64
+       * @description The ID for this telephone number
+       * @example 111111
+       */
+      organisationPhoneId: number
+      /**
+       * Format: int64
+       * @description The organisation ID this telephone number is linked with
+       * @example 1234
+       */
+      organisationId: number
+      /**
+       * @description Type of phone number
+       * @example MOB
+       */
+      phoneType: string
+      /**
+       * @description Phone number
+       * @example +1234567890
+       */
+      phoneNumber: string
+      /**
+       * @description Extension number
+       * @example 123
+       */
+      extNumber?: string
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description The timestamp of when this phone number was created
+       * @example 2024-01-01T00:00:00Z
+       */
+      createdTime: string
+      /**
+       * @description User who last updated this phone number
+       * @example admin2
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp last updated
+       * @example 2023-09-24T12:00:00
+       */
+      updatedTime?: string
+    }
+    /** @description Request to update an email address for an organisation */
+    SyncUpdateEmailRequest: {
+      /**
+       * Format: int64
+       * @description The organisation ID linked to
+       * @example 1233323
+       */
+      organisationId: number
+      /**
+       * @description Email address
+       * @example name@example.com
+       */
+      emailAddress: string
+      /**
+       * @description User who updated the entry
+       * @example admin
+       */
+      updatedBy: string
+      /**
+       * Format: date-time
+       * @description The update timestamp
+       * @example 2024-01-01T00:00:00Z
+       */
+      updatedTime: string
+    }
+    /** @description Response object for email address changes via sync */
+    SyncEmailResponse: {
+      /**
+       * Format: int64
+       * @description The ID for this email address
+       * @example 111111
+       */
+      organisationEmailId: number
+      /**
+       * Format: int64
+       * @description The organisation ID it is linked to
+       * @example 1234
+       */
+      organisationId: number
+      /**
+       * @description Email address
+       * @example name@example.com
+       */
+      emailAddress: string
+      /**
+       * @description Username who created
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description The timestamp created
+       * @example 2024-01-01T00:00:00Z
+       */
+      createdTime: string
+      /**
+       * @description Username who last updated
+       * @example admin2
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp last updated
+       * @example 2023-09-24T12:00:00
+       */
+      updatedTime?: string
+    }
+    /** @description Request to update an address for an organisation */
+    SyncUpdateAddressRequest: {
+      /**
+       * Format: int64
+       * @description The organisation ID linked with
+       * @example 1233323
+       */
+      organisationId: number
+      /**
+       * @description Type of address
+       * @example HOME
+       */
+      addressType?: string
+      /**
+       * @description Primary address flag
+       * @example true
+       */
+      primaryAddress: boolean
+      /**
+       * @description Mail address flag
+       * @example true
+       */
+      mailAddress: boolean
+      /**
+       * @description Service address flag
+       * @example true
+       */
+      serviceAddress: boolean
+      /**
+       * @description No fixed address flag
+       * @example false
+       */
+      noFixedAddress: boolean
+      /**
+       * @description Flat number
+       * @example 4A
+       */
+      flat?: string
+      /**
+       * @description Property
+       * @example Claremont House
+       */
+      property?: string
+      /**
+       * @description Street or road
+       * @example Clarendon Road
+       */
+      street?: string
+      /**
+       * @description Area
+       * @example West Mosely
+       */
+      area?: string
+      /**
+       * @description City code
+       * @example 123456
+       */
+      cityCode?: string
+      /**
+       * @description County code
+       * @example YORKS
+       */
+      countyCode?: string
+      /**
+       * @description Postcode
+       * @example B25 1JH
+       */
+      postcode?: string
+      /**
+       * @description Country code
+       * @example GB
+       */
+      countryCode?: string
+      /**
+       * @description Special needs code
+       * @example NEEDS
+       */
+      specialNeedsCode?: string
+      /**
+       * @description Contact name
+       * @example Mr Jones
+       */
+      contactPersonName?: string
+      /**
+       * @description Business hours description
+       * @example 9am - 5pm
+       */
+      businessHours?: string
+      /**
+       * @description Notes on this address
+       * @example A comment
+       */
+      comments?: string
+      /**
+       * Format: date
+       * @description The start date for occupation
+       * @example 2024-01-01
+       */
+      startDate?: string
+      /**
+       * Format: date
+       * @description The end date for occupation
+       * @example 2024-01-01
+       */
+      endDate?: string
+      /**
+       * @description User who updated the entry
+       * @example admin
+       */
+      updatedBy: string
+      /**
+       * Format: date-time
+       * @description The update timestamp
+       * @example 2024-01-01T00:00:00Z
+       */
+      updatedTime: string
+    }
+    /** @description Response object for organisation address changes via sync */
+    SyncAddressResponse: {
+      /**
+       * Format: int64
+       * @description The ID for this address
+       * @example 111111
+       */
+      organisationAddressId: number
+      /**
+       * Format: int64
+       * @description The organisation ID it is linked to
+       * @example 1234
+       */
+      organisationId: number
+      /**
+       * @description Type of address
+       * @example HOME
+       */
+      addressType?: string
+      /**
+       * @description Primary address flag
+       * @example true
+       */
+      primaryAddress: boolean
+      /**
+       * @description Mail address flag
+       * @example true
+       */
+      mailAddress: boolean
+      /**
+       * @description Service address flag
+       * @example true
+       */
+      serviceAddress: boolean
+      /**
+       * @description No fixed address flag
+       * @example false
+       */
+      noFixedAddress: boolean
+      /**
+       * @description Flat number
+       * @example 4A
+       */
+      flat?: string
+      /**
+       * @description Property
+       * @example Claremont House
+       */
+      property?: string
+      /**
+       * @description Street or road
+       * @example Clarendon Road
+       */
+      street?: string
+      /**
+       * @description Area
+       * @example West Mosely
+       */
+      area?: string
+      /**
+       * @description City code
+       * @example 123456
+       */
+      cityCode?: string
+      /**
+       * @description County code
+       * @example YORKS
+       */
+      countyCode?: string
+      /**
+       * @description Postcode
+       * @example B25 1JH
+       */
+      postcode?: string
+      /**
+       * @description Country code
+       * @example GB
+       */
+      countryCode?: string
+      /**
+       * @description Special needs code
+       * @example NEEDS
+       */
+      specialNeedsCode?: string
+      /**
+       * @description Contact name
+       * @example Mr Jones
+       */
+      contactPersonName?: string
+      /**
+       * @description Business hours description
+       * @example 9am - 5pm
+       */
+      businessHours?: string
+      /**
+       * @description Notes on this address
+       * @example A comment
+       */
+      comments?: string
+      /**
+       * Format: date
+       * @description The start date for occupation
+       * @example 2024-01-01
+       */
+      startDate?: string
+      /**
+       * Format: date
+       * @description The end date for occupation
+       * @example 2024-01-01
+       */
+      endDate?: string
+      /**
+       * @description Username who created
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description The timestamp created
+       * @example 2024-01-01T00:00:00Z
+       */
+      createdTime: string
+      /**
+       * @description Username who last updated
+       * @example admin2
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp last updated
+       * @example 2023-09-24T12:00:00
+       */
+      updatedTime?: string
+    }
+    /** @description Request to update an organisation's address-specific phone number */
+    SyncUpdateAddressPhoneRequest: {
+      /**
+       * @description Type of phone
+       * @example MOB
+       */
+      phoneType: string
+      /**
+       * @description Phone number
+       * @example +1234567890
+       */
+      phoneNumber: string
+      /**
+       * @description Extension number
+       * @example 123
+       */
+      extNumber?: string
+      /**
+       * @description The username of the person who made the update
+       * @example JD000001
+       */
+      updatedBy: string
+      /**
+       * Format: date-time
+       * @description The time when the update was made
+       * @example 2024-01-01T00:00:00Z
+       */
+      updatedTime: string
+    }
+    /** @description An organisation's address-specific phone number */
+    SyncAddressPhoneResponse: {
+      /**
+       * Format: int64
+       * @description Unique identifier for the address-specific phone number
+       * @example 1
+       */
+      organisationAddressPhoneId: number
+      /**
+       * Format: int64
+       * @description Unique identifier for the address to which this phone number is linked
+       * @example 1
+       */
+      organisationAddressId: number
+      /**
+       * Format: int64
+       * @description Unique identifier for the phone record
+       * @example 1
+       */
+      organisationPhoneId: number
+      /**
+       * Format: int64
+       * @description Unique identifier for the organisation linked to this address
+       * @example 1
+       */
+      organisationId: number
+      /**
+       * @description Type of phone
+       * @example MOB
+       */
+      phoneType: string
+      /**
+       * @description Phone number
+       * @example +1234567890
+       */
+      phoneNumber: string
+      /**
+       * @description Extension number
+       * @example 123
+       */
+      extNumber?: string
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was created
+       * @example 2023-09-23T10:15:30
+       */
+      createdTime: string
+      /**
+       * @description User who updated the entry
+       * @example admin2
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was updated
+       * @example 2023-09-24T12:00:00
+       */
+      updatedTime?: string
+    }
+    /** @description Request to create a new organisation */
+    SyncCreateOrganisationRequest: {
+      /**
+       * Format: int64
+       * @description The organisation ID AKA the corporate ID from NOMIS
+       * @example 1233323
+       */
+      organisationId: number
+      /**
+       * @description The name of the organisation
+       * @example Example Limited
+       */
+      organisationName: string
+      /**
+       * @description The programme number for the organisation, stored as FEI_NUMBER in NOMIS
+       * @example 1
+       */
+      programmeNumber?: string
+      /**
+       * @description The VAT number for the organisation, if known
+       * @example 123456
+       */
+      vatNumber?: string
+      /**
+       * @description The id of the caseload for this organisation, this is an agency id in NOMIS
+       * @example BXI
+       */
+      caseloadId?: string
+      /**
+       * @description Any comments on the organisation
+       * @example Some additional info
+       */
+      comments?: string
+      /**
+       * @description Whether the organisation is active or not
+       * @example true
+       */
+      active: boolean
+      /**
+       * Format: date
+       * @description The date the organisation was deactivated, EXPIRY_DATE in NOMIS
+       * @example 2010-12-30
+       */
+      deactivatedDate?: string
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was created
+       * @example 2023-09-23T10:15:30
+       */
+      createdTime: string
+      /**
+       * @description User who updated the entry
+       * @example admin2
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the entry was updated
+       * @example 2023-09-24T12:00:00
+       */
+      updatedTime?: string
+    }
+    /** @description Request to create a new web address for an organisation */
+    SyncCreateWebRequest: {
+      /**
+       * Format: int64
+       * @description The organisation ID linked to
+       * @example 1233323
+       */
+      organisationId: number
+      /**
+       * @description Web address
+       * @example www.example.com
+       */
+      webAddress: string
+      /**
+       * @description Username who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description The creation timestamp
+       * @example 2024-01-01T00:00:00Z
+       */
+      createdTime: string
+    }
+    /** @description Request to create a new phone number for an organisation */
+    SyncCreatePhoneRequest: {
+      /**
+       * Format: int64
+       * @description The organisation ID this telephone number is linked with
+       * @example 1233323
+       */
+      organisationId: number
+      /**
+       * @description Type of phone number
+       * @example MOB
+       */
+      phoneType: string
+      /**
+       * @description Phone number
+       * @example +1234567890
+       */
+      phoneNumber: string
+      /**
+       * @description Extension number
+       * @example 123
+       */
+      extNumber?: string
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description The timestamp of when this phone number was created
+       * @example 2024-01-01T00:00:00Z
+       */
+      createdTime: string
+    }
+    /** @description Request to create a new email address for an organisation */
+    SyncCreateEmailRequest: {
+      /**
+       * Format: int64
+       * @description The organisation ID linked to
+       * @example 1233323
+       */
+      organisationId: number
+      /**
+       * @description Email address
+       * @example name@example.com
+       */
+      emailAddress: string
+      /**
+       * @description Username who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description The creation timestamp
+       * @example 2024-01-01T00:00:00Z
+       */
+      createdTime: string
+    }
+    /** @description Request to create a new address for an organisation */
+    SyncCreateAddressRequest: {
+      /**
+       * Format: int64
+       * @description The organisation ID linked with
+       * @example 1233323
+       */
+      organisationId: number
+      /**
+       * @description Type of address
+       * @example HOME
+       */
+      addressType?: string
+      /**
+       * @description Primary address flag
+       * @example true
+       */
+      primaryAddress: boolean
+      /**
+       * @description Mail address flag
+       * @example true
+       */
+      mailAddress: boolean
+      /**
+       * @description Service address flag
+       * @example true
+       */
+      serviceAddress: boolean
+      /**
+       * @description No fixed address flag
+       * @example false
+       */
+      noFixedAddress: boolean
+      /**
+       * @description Flat number
+       * @example 4A
+       */
+      flat?: string
+      /**
+       * @description Property
+       * @example Claremont House
+       */
+      property?: string
+      /**
+       * @description Street or road
+       * @example Clarendon Road
+       */
+      street?: string
+      /**
+       * @description Area
+       * @example West Mosely
+       */
+      area?: string
+      /**
+       * @description City code
+       * @example 123456
+       */
+      cityCode?: string
+      /**
+       * @description County code
+       * @example YORKS
+       */
+      countyCode?: string
+      /**
+       * @description Postcode
+       * @example B25 1JH
+       */
+      postcode?: string
+      /**
+       * @description Country code
+       * @example GB
+       */
+      countryCode?: string
+      /**
+       * @description Special needs code
+       * @example NEEDS
+       */
+      specialNeedsCode?: string
+      /**
+       * @description Contact name
+       * @example Mr Jones
+       */
+      contactPersonName?: string
+      /**
+       * @description Business hours description
+       * @example 9am - 5pm
+       */
+      businessHours?: string
+      /**
+       * @description Notes on this address
+       * @example A comment
+       */
+      comments?: string
+      /**
+       * Format: date
+       * @description The start date for occupation
+       * @example 2024-01-01
+       */
+      startDate?: string
+      /**
+       * Format: date
+       * @description The end date for occupation
+       * @example 2024-01-01
+       */
+      endDate?: string
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description The creation timestamp
+       * @example 2024-01-01T00:00:00Z
+       */
+      createdTime: string
+    }
+    /** @description Request to create an address-linked phone number for an organisation */
+    SyncCreateAddressPhoneRequest: {
+      /**
+       * Format: int64
+       * @description Unique identifier for the address to link this number with
+       * @example 123
+       */
+      organisationAddressId: number
+      /**
+       * @description Type of phone
+       * @example MOB
+       */
+      phoneType: string
+      /**
+       * @description Phone number
+       * @example +1234567890
+       */
+      phoneNumber: string
+      /**
+       * @description Extension number
+       * @example 123
+       */
+      extNumber?: string
+      /**
+       * @description User who created the entry
+       * @example admin
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description The timestamp of when the phone was created
+       * @example 2024-01-01T00:00:00Z
+       */
+      createdTime: string
+    }
     /** @description Request to create an new organisation */
     CreateOrganisationRequest: {
       /**
@@ -432,6 +1913,11 @@ export interface components {
        */
       caseloadId?: string
       /**
+       * @description The name of the prison that the caseloadId references
+       * @example Brixton (HMP)
+       */
+      caseloadPrisonName?: string
+      /**
        * @description Any comments on the organisation
        * @example Some additional info
        */
@@ -652,14 +2138,6 @@ export interface components {
        * @example 2023-09-24T12:00:00
        */
       updatedTime?: string
-    }
-    ErrorResponse: {
-      /** Format: int32 */
-      status: number
-      errorCode?: string
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
     }
     MigrateOrganisationAddress: {
       /**
@@ -940,6 +2418,49 @@ export interface components {
       /** @description List of Nomis and DPS IDs for email addresses */
       phoneNumbers: components['schemas']['IdPair'][]
     }
+    PageSyncOrganisationId: {
+      /** Format: int64 */
+      totalElements?: number
+      /** Format: int32 */
+      totalPages?: number
+      first?: boolean
+      last?: boolean
+      /** Format: int32 */
+      size?: number
+      content?: components['schemas']['SyncOrganisationId'][]
+      /** Format: int32 */
+      number?: number
+      sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      numberOfElements?: number
+      pageable?: components['schemas']['PageableObject']
+      empty?: boolean
+    }
+    PageableObject: {
+      /** Format: int64 */
+      offset?: number
+      sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      pageSize?: number
+      paged?: boolean
+      /** Format: int32 */
+      pageNumber?: number
+      unpaged?: boolean
+    }
+    SortObject: {
+      empty?: boolean
+      sorted?: boolean
+      unsorted?: boolean
+    }
+    /** @description Response object for sync reconciliation */
+    SyncOrganisationId: {
+      /**
+       * Format: int64
+       * @description The ID for an organisation
+       * @example 111111
+       */
+      organisationId: number
+    }
     /** @enum {string} */
     ReferenceCodeGroup:
       | 'CITY'
@@ -988,21 +2509,6 @@ export interface components {
        * @example true
        */
       isActive: boolean
-    }
-    /** @description Organisation search request query parameters */
-    OrganisationSearchRequest: {
-      /**
-       * @description Full or partial name of the organisation
-       * @example NHS
-       */
-      name: string
-    }
-    Pageable: {
-      /** Format: int32 */
-      page?: number
-      /** Format: int32 */
-      size?: number
-      sort?: string[]
     }
     /** @description The high level details of an organisation, it's primary address and any business phone number associated with that address. */
     OrganisationSummary: {
@@ -1088,6 +2594,21 @@ export interface components {
        */
       businessPhoneNumberExtension?: string
     }
+    /** @description Organisation search request query parameters */
+    OrganisationSearchRequest: {
+      /**
+       * @description Full or partial name of the organisation
+       * @example NHS
+       */
+      name: string
+    }
+    Pageable: {
+      /** Format: int32 */
+      page?: number
+      /** Format: int32 */
+      size?: number
+      sort?: string[]
+    }
     OrganisationSummaryResultItemPage: {
       content?: components['schemas']['OrganisationSummary'][]
       pageable?: components['schemas']['PageableObject']
@@ -1108,22 +2629,6 @@ export interface components {
       numberOfElements?: number
       empty?: boolean
     }
-    PageableObject: {
-      /** Format: int64 */
-      offset?: number
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      pageSize?: number
-      paged?: boolean
-      /** Format: int32 */
-      pageNumber?: number
-      unpaged?: boolean
-    }
-    SortObject: {
-      empty?: boolean
-      sorted?: boolean
-      unsorted?: boolean
-    }
   }
   responses: never
   parameters: never
@@ -1133,6 +2638,1439 @@ export interface components {
 }
 export type $defs = Record<string, never>
 export interface operations {
+  syncGetOrganisationById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for an organisation. */
+        organisationId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returning the details of the organisation */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncOrganisationResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No organisation with the requested ID was found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncUpdateOrganisation: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the organisation. */
+        organisationId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SyncUpdateOrganisationRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully updated the organisation */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncOrganisationResponse']
+        }
+      }
+      /** @description Invalid request data */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The organisation was not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncDeleteOrganisationById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the organisation. */
+        organisationId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successfully deleted the organisation */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncOrganisationResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No organisation with the requested ID was found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncGetWebById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for an organisation web address. */
+        organisationWebId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returning the details of the organisation web address */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncWebResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No organisation web address with the requested ID was found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncUpdateWeb: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the organisation web address. */
+        organisationWebId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SyncUpdateWebRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully updated the organisation's web address */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncWebResponse']
+        }
+      }
+      /** @description Invalid request data */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The organisation web address was not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncDeleteWebById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the organisation web address. */
+        organisationWebId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successfully deleted the organisation web address */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncWebResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No organisation web address with the requested ID was found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncGetTypesByOrganisationId: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal organisation ID. */
+        organisationId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returning the details of the organisation types */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncTypesResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No organisation with the requested ID was found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncUpdateWeb_1: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal organisation ID. */
+        organisationId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SyncUpdateTypesRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully updated the organisation's types */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncTypesResponse']
+        }
+      }
+      /** @description Invalid request data */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The organisation ID was not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncGetPhoneById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for an organisation phone number. */
+        organisationPhoneId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returning the details of the organisation phone number */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncPhoneResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No organisation phone number with the requested ID was found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncUpdatePhone: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the organisation phone number. */
+        organisationPhoneId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SyncUpdatePhoneRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully updated the organisation's phone number */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncPhoneResponse']
+        }
+      }
+      /** @description Invalid request data */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The organisation phone number was not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncDeletePhoneById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the organisation phone number. */
+        organisationPhoneId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successfully deleted the organisation phone number */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncPhoneResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No organisation phone number with the requested ID was found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncGetEmailById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for an organisation email address. */
+        organisationEmailId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returning the details of the organisation email address */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncEmailResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No organisation email address with the requested ID was found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncUpdateEmail: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the organisation email address. */
+        organisationEmailId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SyncUpdateEmailRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully updated the organisation's email address */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncEmailResponse']
+        }
+      }
+      /** @description Invalid request data */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The organisation email address was not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncDeleteEmailById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the organisation email address. */
+        organisationEmailId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successfully deleted the organisation email address */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncEmailResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No organisation email address with the requested ID was found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncGetAddressById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for an organisation address */
+        organisationAddressId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returning the details of the organisation address */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncAddressResponse']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No organisation address with the requested ID was found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncUpdateAddress: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the organisation address. */
+        organisationAddressId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SyncUpdateAddressRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully updated the organisation's address */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncAddressResponse']
+        }
+      }
+      /** @description Invalid request data */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The organisation address was not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncDeleteAddressById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the organisation address. */
+        organisationAddressId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successfully deleted the organisation address */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncAddressResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No organisation address with the requested ID was found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncGetAddressPhoneById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for an organisation address-linked phone number */
+        organisationAddressPhoneId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Returning the details of the organisation address-linked phone number */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncAddressPhoneResponse']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No organisation address number with the requested ID was found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncUpdateAddressPhone: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the organisation address-linked phone number. */
+        organisationAddressPhoneId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SyncUpdateAddressPhoneRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully updated the organisation's address-linked phone number */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncAddressPhoneResponse']
+        }
+      }
+      /** @description Invalid request data */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The organisation, address or phone number was not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncDeleteAddressPhoneById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the organisation address-linked phone number. */
+        organisationAddressPhoneId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successfully deleted the organisation address phone number */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncAddressPhoneResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No organisation address-linked phone number with the requested ID was found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncCreateOrganisation: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SyncCreateOrganisationRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully created the organisation */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncOrganisationResponse']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Conflict. The organisation ID provided in the request already exists */
+      409: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncCreateWeb: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SyncCreateWebRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully created the organisation web address */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncWebResponse']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncCreatePhone: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SyncCreatePhoneRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully created the organisation phone number */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncPhoneResponse']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncCreateEmail: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SyncCreateEmailRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully created the organisation email address */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncEmailResponse']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncCreateAddress: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SyncCreateAddressRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully created the organisation address */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncAddressResponse']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncCreateAddressPhone: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SyncCreateAddressPhoneRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully created the address-linked phone number for an organisation */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncAddressPhoneResponse']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The organisation or address was not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   createOrganisation: {
     parameters: {
       query?: never
@@ -1213,6 +4151,51 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  reconcileOrganisations: {
+    parameters: {
+      query?: {
+        /** @description Zero-based page index (0..N) */
+        page?: number
+        /** @description The size of the page to be returned */
+        size?: number
+        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+        sort?: string[]
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Pageable organisation IDs returned */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PageSyncOrganisationId']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -1328,7 +4311,56 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['OrganisationDetails']
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getOrganisationSummaryById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        organisationId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the organisation */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['OrganisationSummary']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No organisation with that id could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
         }
       }
     }

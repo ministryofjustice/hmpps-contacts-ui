@@ -39,7 +39,6 @@ declare namespace journeys {
     pendingEmployments?: EmploymentDetails[] | undefined
     newEmployment?: {
       organisationId?: number
-      employer?: OrganisationDetails
     }
     organisationSearch?: {
       page: number
@@ -104,7 +103,6 @@ declare namespace journeys {
     employmentIdsToDelete?: number[]
     returnPoint: ReturnPoint
     changeOrganisationId?: number
-    changeOrganisation?: OrganisationDetails
     organisationSearch: {
       page: number
       searchTerm?: string

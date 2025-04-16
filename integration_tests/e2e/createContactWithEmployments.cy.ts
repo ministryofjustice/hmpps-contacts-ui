@@ -68,6 +68,10 @@ context('Create Contact With Addresses', () => {
       emailAddresses: [],
       organisationTypes: [],
     })
+    cy.task('stubGetOrganisationSummary', {
+      organisationId: 201,
+      organisationName: 'Corp A',
+    })
     cy.task('stubGetOrganisation', {
       organisationId: 202,
       organisationName: 'Corp B',
@@ -77,6 +81,10 @@ context('Create Contact With Addresses', () => {
       webAddresses: [],
       emailAddresses: [],
       organisationTypes: [],
+    })
+    cy.task('stubGetOrganisationSummary', {
+      organisationId: 202,
+      organisationName: 'Corp B',
     })
     const { prisonerNumber } = TestData.prisoner()
     cy.signIn({ startUrl: `/prisoner/${prisonerNumber}/contacts/list` })

@@ -135,6 +135,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/employments/:employmentI
       active: false,
       deactivatedDate: '2020-12-25',
       caseloadId: 'TEST',
+      caseloadPrisonName: 'TEST',
       programmeNumber: 123,
       vatNumber: 123456,
       comments: 'some words',
@@ -195,7 +196,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/employments/:employmentI
     expect($('dt:contains("Comments on this organisation")').next().text()).toMatch(/some words/)
     expect($('dt:contains("Organisation status")').next().text()).toMatch(/Inactive/)
     expect($('dt:contains("Expiry date")').next().text()).toMatch(/December 2020/)
-    expect($('dt:contains("Alt-business TRA phone number")').next().text()).toMatch(/1234 1234, ext\. 222/)
+    expect($('dt:contains("Alt-business TRA")').next().text()).toMatch(/1234 1234, ext\. 222/)
     expect($('dt:contains("Email address")').next().text()).toMatch(/a@b\.c/)
     expect($('dt:contains("Web address")').next().text()).toMatch(/a\.b\.c/)
 
@@ -207,7 +208,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/employments/:employmentI
     expect($('dt:contains("Business hours")').next().text()).toMatch(/9-5/)
     expect($('dt:contains("Special needs provision")').next().text()).toMatch(/Hearing Impaired Translation/)
     expect($('dt:contains("Comments on this address")').next().text()).toMatch(/Some additional information/)
-    expect($('dt:contains("Mobile phone number")').next().text()).toMatch(/1234 4321/)
+    expect($('dt:contains("Mobile")').next().text()).toMatch(/1234 4321/)
 
     expect($('.govuk-fieldset__legend:contains("Is this the correct employer for Jones Mason?")').text()).toBeTruthy()
     expect($('input#isCorrectEmployer').next().text()).toMatch(/Yes/)
@@ -266,24 +267,14 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/employments/:employment
     // Given
     existingJourney.newEmployment = {
       organisationId: 222,
-      employer: {
-        organisationName: 'Some Corp',
-        organisationId: 111,
-        addresses: [
-          {
-            primaryAddress: true,
-            street: 'Some Street',
-            phoneNumbers: [
-              {
-                phoneType: 'BUS',
-                phoneNumber: '1234 1234',
-                extNumber: '222',
-              },
-            ],
-          },
-        ],
-      },
     }
+    organisationsService.getOrganisationSummary.mockResolvedValue({
+      organisationName: 'Some Corp',
+      organisationId: 111,
+      street: 'Some Street',
+      businessPhoneNumber: '1234 1234',
+      businessPhoneNumberExtension: '222',
+    })
 
     // When
     const response = await request(app)
@@ -322,24 +313,14 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/employments/:employment
     ]
     existingJourney.newEmployment = {
       organisationId: 222,
-      employer: {
-        organisationName: 'Some Corp',
-        organisationId: 111,
-        addresses: [
-          {
-            primaryAddress: true,
-            street: 'Some Street',
-            phoneNumbers: [
-              {
-                phoneType: 'BUS',
-                phoneNumber: '1234 1234',
-                extNumber: '222',
-              },
-            ],
-          },
-        ],
-      },
     }
+    organisationsService.getOrganisationSummary.mockResolvedValue({
+      organisationName: 'Some Corp',
+      organisationId: 111,
+      street: 'Some Street',
+      businessPhoneNumber: '1234 1234',
+      businessPhoneNumberExtension: '222',
+    })
 
     // When
     const response = await request(app)

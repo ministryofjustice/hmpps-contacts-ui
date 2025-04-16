@@ -32,11 +32,8 @@ export default class CheckEmployerController implements PageHandler {
     if (!journey.changeOrganisationId) {
       return res.status(404).render('pages/errors/notFound')
     }
-    journey.changeOrganisation = await this.organisationsService.getOrganisation(
-      journey.changeOrganisationId,
-      res.locals.user,
-    )
-    if (!journey.changeOrganisation) {
+    const employer = await this.organisationsService.getOrganisation(journey.changeOrganisationId, res.locals.user)
+    if (!employer) {
       return res.status(404).render('pages/errors/notFound')
     }
 
@@ -45,19 +42,17 @@ export default class CheckEmployerController implements PageHandler {
         backLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/organisation-search/${journeyId}`,
       },
       contactNames: journey.contactNames,
-      organisation: journey.changeOrganisation,
-      organisationTypes: journey.changeOrganisation.organisationTypes
+      organisation: employer,
+      organisationTypes: employer.organisationTypes
         .map(({ organisationTypeDescription }: { organisationTypeDescription: string }) => organisationTypeDescription)
         .sort((a: string, b: string) => a.localeCompare(b))
         .join('\n'),
-      activeAddresses: EmploymentUtils.getActiveAddresses(journey.changeOrganisation),
-      inactiveAddresses: EmploymentUtils.getInactiveAddresses(journey.changeOrganisation),
-      emailAddresses: journey.changeOrganisation.emailAddresses
+      activeAddresses: EmploymentUtils.getActiveAddresses(employer),
+      inactiveAddresses: EmploymentUtils.getInactiveAddresses(employer),
+      emailAddresses: employer.emailAddresses
         .map(({ emailAddress }: { emailAddress: string }) => emailAddress)
         .join('\n'),
-      webAddresses: journey.changeOrganisation.webAddresses
-        .map(({ webAddress }: { webAddress: string }) => webAddress)
-        .join('\n'),
+      webAddresses: employer.webAddresses.map(({ webAddress }: { webAddress: string }) => webAddress).join('\n'),
     })
   }
 
@@ -67,20 +62,24 @@ export default class CheckEmployerController implements PageHandler {
 
     if (req.body.isCorrectEmployer === 'NO') {
       delete journey.changeOrganisationId
-      delete journey.changeOrganisation
       return res.redirect(
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/organisation-search/${journeyId}`,
       )
     }
 
+    const employerSummary = await this.organisationsService.getOrganisationSummary(
+      journey.changeOrganisationId!,
+      res.locals.user,
+    )
+
     if (employmentIdx === 'new') {
       journey.employments.push({
-        employer: EmploymentUtils.summariseOrganisationDetails(journey.changeOrganisation),
+        employer: employerSummary,
         isActive: true,
       })
     } else {
       const idx = Number(employmentIdx) - 1
-      journey.employments[idx]!.employer = EmploymentUtils.summariseOrganisationDetails(journey.changeOrganisation)
+      journey.employments[idx]!.employer = employerSummary
     }
 
     return res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${journeyId}`)

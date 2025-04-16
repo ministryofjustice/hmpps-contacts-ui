@@ -82,6 +82,10 @@ context('Update Prisoner Contact Employments', () => {
       emailAddresses: [],
       organisationTypes: [],
     })
+    cy.task('stubGetOrganisationSummary', {
+      organisationId: 201,
+      organisationName: 'Corp A',
+    })
     cy.task('stubGetOrganisation', {
       organisationId: 202,
       organisationName: 'Corp B',
@@ -91,6 +95,10 @@ context('Update Prisoner Contact Employments', () => {
       webAddresses: [],
       emailAddresses: [],
       organisationTypes: [],
+    })
+    cy.task('stubGetOrganisationSummary', {
+      organisationId: 202,
+      organisationName: 'Corp B',
     })
     cy.task('stubPatchEmployments')
     cy.signIn({

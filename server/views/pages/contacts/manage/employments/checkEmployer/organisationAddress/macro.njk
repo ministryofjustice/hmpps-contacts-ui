@@ -59,7 +59,7 @@
         classes: "govuk-summary-list__row--no-border" if loop.index != params.address.phoneNumbers.length else null,
         key: {
           classes: 'govuk-!-font-weight-regular',
-          text: (phoneNumber.phoneTypeDescription | sentenceCase) + ' phone number'
+          text: phoneNumber.phoneTypeDescription | sentenceCase
         },
         value: {
           text: phoneNumber | formatPhoneNumber or "Not provided"

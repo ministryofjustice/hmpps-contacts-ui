@@ -3,6 +3,7 @@ import TestData from '../../server/routes/testutils/testData'
 import { components } from '../../server/@types/organisationsApi'
 
 type OrganisationDetails = components['schemas']['OrganisationDetails']
+type OrganisationSummary = components['schemas']['OrganisationSummary']
 
 export default {
   stubOrganisationsApiHealth: () =>
@@ -56,6 +57,19 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: organisationDetails,
+      },
+    }),
+
+  stubGetOrganisationSummary: (organisationSummary: OrganisationSummary) =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/organisations-api/organisation/${organisationSummary.organisationId}/summary`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: organisationSummary,
       },
     }),
 }
