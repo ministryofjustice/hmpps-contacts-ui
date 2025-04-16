@@ -38,8 +38,6 @@ export default class ReferenceDataService {
   }
 
   async getReferenceDescriptionForCode(type: ReferenceCodeType, code: string, user: Express.User): Promise<string> {
-    return this.contactsApiClient
-      .getReferenceCodes(type, user)
-      .then(values => values.find(val => val.code === code)?.description ?? '')
+    return this.getReferenceData(type, user).then(values => values.find(val => val.code === code)?.description ?? '')
   }
 }
