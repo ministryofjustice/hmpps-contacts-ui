@@ -1,6 +1,5 @@
 declare namespace journeys {
   import OrganisationSummary = contactsApiClientTypes.OrganisationSummary
-  import OrganisationDetails = organisationsApiClientTypes.OrganisationDetails
 
   export interface AddContactJourney {
     id: string
