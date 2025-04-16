@@ -7,7 +7,6 @@
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "moj/components/filter/macro.njk" import mojFilter %}
-{% from "partials/miniProfile/macro.njk" import miniProfile %}
 {% from "partials/validatedDateInput/macro.njk" import validatedDateInput %}
 {% from "partials/simplePagination/macro.njk" import simplePagination %}
 {% from "../partials/addPagination.njk" import addPagination %}
@@ -17,10 +16,6 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-{% include 'partials/navigation.njk' %}
-{{ miniProfile(prisonerDetails) }}
-{% include 'partials/formErrorSummary.njk' %}
-
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-!-static-margin-bottom-7">

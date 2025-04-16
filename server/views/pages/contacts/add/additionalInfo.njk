@@ -1,16 +1,12 @@
 {% extends "partials/layout.njk" %}
 {% from "govuk/components/task-list/macro.njk" import govukTaskList %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "partials/miniProfile/macro.njk" import miniProfile %}
 
 {% set title = "Enter additional information about " + journey.names | formatNameFirstNameFirst + " (optional)"%}
 {% set pageTitle = "Enter additional information about the contact - Add a contact - DPS" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-  {% include 'partials/navigation.njk' %}
-  {{ miniProfile(prisonerDetails) }}
-  {% include 'partials/formErrorSummary.njk' %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <span class="govuk-caption-l">{{ caption }}</span>

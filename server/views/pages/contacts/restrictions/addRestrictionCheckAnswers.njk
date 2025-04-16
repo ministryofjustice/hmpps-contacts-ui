@@ -1,17 +1,12 @@
 {% extends "../../../partials/layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
-{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
 {% set restrictionClassName = "relationship" if journey.restrictionClass === 'PRISONER_CONTACT' else "global" %}
 {% set title = "Check your answers before saving the new " + restrictionClassName + " restriction" %}
 {% set pageTitle = "Check your answers before saving a new " + restrictionClassName + " restriction - Manage contact restrictions - DPS" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-
-{% include '../../../partials/navigation.njk' %}
-{{ miniProfile(prisonerDetails) }}
-{% include '../../../partials/formErrorSummary.njk' %}
  <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <span class="govuk-caption-l">Manage contact restrictions</span>

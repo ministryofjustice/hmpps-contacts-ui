@@ -14,8 +14,6 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-{% include '../../../partials/navigation.njk' %}
-{{ miniProfile(prisonerDetails) }}
 <span class="govuk-caption-l">{{ caption }}</span>
  <div class="govuk-grid-row">
         {% set prisonerNameForPanel = '<div><strong>Prisoner: </strong><span data-qa="prisoner-name">' + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) + '</span></div>' if showPrisonerNameInSuccessPanel %}

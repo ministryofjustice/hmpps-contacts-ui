@@ -1,6 +1,5 @@
 {% extends "partials/layout.njk" %}
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
-{% from "partials/miniProfile/macro.njk" import miniProfile %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 
 {% if mode === 'NEW' %}
@@ -13,8 +12,6 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-{% include 'partials/navigation.njk' %}
-{{ miniProfile(prisonerDetails) }}
  <div class="govuk-grid-row">
 
         {% set contactRecordLink = "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contactId + "/relationship/" + prisonerContactId %}
