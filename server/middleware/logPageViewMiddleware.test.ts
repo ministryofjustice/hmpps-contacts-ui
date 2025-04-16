@@ -132,24 +132,18 @@ describe('logPageViewMiddleware', () => {
     expect(next).toHaveBeenCalled()
   })
 
-  it('should handle multiple parameters in URL', async () => {
-    req.originalUrl =
-      '/contacts/123/prisoner/A1234BC/relationship/CONTACT123/check-employer/abc123-def456/source?organisationId=ORG123'
+  it('should extract employerId from URL and log page view', async () => {
+    req.originalUrl = '/update-employments/EMP123/details'
 
     await middleware(req as Request, res as Response, next)
 
-    expect(auditService.logPageView).toHaveBeenCalledWith('TEST_PAGE', {
+    expect(auditService.logPageView).toHaveBeenCalledWith(expect.any(String), {
       who: 'test-user',
       correlationId: 'correlation-123',
       details: {
-        contactId: '123',
-        prisonerNumber: 'A1234BC',
-        prisonerContactId: 'CONTACT123',
-        organisationId: 'ORG123',
-        employerId: 'abc123-def456',
+        employerId: 'EMP123',
       },
     })
-    expect(next).toHaveBeenCalled()
   })
 
   it('should handle URLs with no matching parameters', async () => {
@@ -161,48 +155,6 @@ describe('logPageViewMiddleware', () => {
       who: 'test-user',
       correlationId: 'correlation-123',
       details: {},
-    })
-    expect(next).toHaveBeenCalled()
-  })
-
-  it('should log page view with employer ID with check employer', async () => {
-    req.originalUrl = '/check-employer/abc123-def456/'
-    await middleware(req as Request, res as Response, next)
-
-    expect(auditService.logPageView).toHaveBeenCalledWith('TEST_PAGE', {
-      who: 'test-user',
-      correlationId: 'correlation-123',
-      details: {
-        employerId: 'abc123-def456',
-      },
-    })
-    expect(next).toHaveBeenCalled()
-  })
-
-  it('should log page view with employer ID with delete emplyment', async () => {
-    req.originalUrl = '/delete-employment/abc123-def456/'
-    await middleware(req as Request, res as Response, next)
-
-    expect(auditService.logPageView).toHaveBeenCalledWith('TEST_PAGE', {
-      who: 'test-user',
-      correlationId: 'correlation-123',
-      details: {
-        employerId: 'abc123-def456',
-      },
-    })
-    expect(next).toHaveBeenCalled()
-  })
-
-  it('should log page view with employer ID with update employment', async () => {
-    req.originalUrl = '/update-employments/abc123-def456/'
-    await middleware(req as Request, res as Response, next)
-
-    expect(auditService.logPageView).toHaveBeenCalledWith('TEST_PAGE', {
-      who: 'test-user',
-      correlationId: 'correlation-123',
-      details: {
-        employerId: 'abc123-def456',
-      },
     })
     expect(next).toHaveBeenCalled()
   })

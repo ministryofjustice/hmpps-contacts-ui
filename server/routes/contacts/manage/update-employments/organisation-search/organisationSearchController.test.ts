@@ -176,7 +176,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/organisation-search/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/2/update-employments/1/organisation-search/${journeyId}`,
     )
 
     // Then
@@ -184,7 +184,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
       who: 'user1',
       correlationId: expect.any(String),
       details: {
-        contactId: '1',
+        contactId: '2',
         prisonerNumber,
         employerId: '1',
       },
@@ -194,7 +194,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit professional information')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('a:contains("Back to employment information")').attr('href')).toEqual(
-      `/prisoner/A1234BC/contacts/manage/1/update-employments/${journeyId}`,
+      `/prisoner/A1234BC/contacts/manage/2/update-employments/${journeyId}`,
     )
     expect($('input#organisationName').val()).toEqual('test')
     expect($('h1').text()).toEqual('Search for Jones Mason’s employer')
@@ -205,7 +205,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
     const checkEmployerLink = $('a:contains("Check if this is the")')
     expect(checkEmployerLink.text()).toEqual('Check if this is the correct employer (Some Corp)')
     expect(checkEmployerLink.attr('href')).toEqual(
-      `/prisoner/A1234BC/contacts/manage/1/update-employments/1/check-employer/${journeyId}?organisationId=111`,
+      `/prisoner/A1234BC/contacts/manage/2/update-employments/1/check-employer/${journeyId}?organisationId=111`,
     )
     expect($('.moj-pagination__list').text()).toBeTruthy()
   })

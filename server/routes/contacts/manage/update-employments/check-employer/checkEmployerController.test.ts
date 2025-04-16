@@ -86,7 +86,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/chec
       details: {
         contactId: '1',
         prisonerNumber,
-        employerId: journeyId,
+        employerId: 'new',
         organisationId: '222',
       },
     })

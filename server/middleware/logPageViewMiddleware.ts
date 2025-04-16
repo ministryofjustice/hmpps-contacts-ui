@@ -7,7 +7,7 @@ export default function logPageViewMiddleware(auditService: AuditService, pageHa
   const CONTACT_ID_REGEX = /(contacts\/|contacts\/manage\/|contacts\/add\/match\/)([0-9]+)\//
   const PRISON_NUMBER_REGEX = /prisoner\/([0-9A-z]+)\//
   const PRISONER_CONTACT_NUMBER_REGEX = /(?:relationship|prisoner-contact)\/([^/]+)/
-  const EMPLOYER_NUMBER_REGEX = /(?:check-employer|delete-employment|update-employments)\/([a-f0-9-]+)/
+  const EMPLOYER_NUMBER_REGEX = /update-employments\/([^/]+)\/[^/]+/
   const ORGANISATION_ID_REGEX = /organisationId=([^&]+)/
 
   return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {

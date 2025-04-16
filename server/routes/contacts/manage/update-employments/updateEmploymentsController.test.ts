@@ -96,7 +96,6 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
       details: {
         contactId: '1',
         prisonerNumber,
-        employerId: journeyId,
       },
     })
     const $ = cheerio.load(response.text)
