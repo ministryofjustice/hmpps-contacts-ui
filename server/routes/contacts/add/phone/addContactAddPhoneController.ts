@@ -5,7 +5,7 @@ import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import { PhonesSchemaType } from '../../manage/addresses/add-address-phone/AddAddressPhonesSchema'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
+import { PrisonerJourneyParams } from '../../../../@types/journeys'
 
 export default class AddContactAddPhoneController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}

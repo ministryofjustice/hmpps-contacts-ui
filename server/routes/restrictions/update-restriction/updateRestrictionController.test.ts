@@ -5,10 +5,10 @@ import { appWithAllRoutes, flashProvider, user } from '../../testutils/appSetup'
 import { Page } from '../../../services/auditService'
 import { mockedReferenceData } from '../../testutils/stubReferenceData'
 import TestData from '../../testutils/testData'
-import ContactDetails = contactsApiClientTypes.ContactDetails
 import { RestrictionSchemaType } from '../schema/restrictionSchema'
 import { MockedService } from '../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../middleware/setUpSuccessNotificationBanner'
+import { ContactDetails } from '../../../@types/contactsApiClient'
 
 jest.mock('../../../services/auditService')
 jest.mock('../../../services/referenceDataService')

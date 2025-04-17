@@ -3,7 +3,7 @@ import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { nextPageForAddContactJourney } from '../addContactFlowControl'
 import { ContactsService } from '../../../../services'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
+import { PrisonerJourneyParams } from '../../../../@types/journeys'
 
 export default class AddContactModeController implements PageHandler {
   constructor(private readonly contactService: ContactsService) {}

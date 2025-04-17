@@ -7,8 +7,7 @@ import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import { ManageEmergencyContactOrNextOfKinSchemaType } from './manageEmergencyContactOrNextOfKinSchema'
-import ContactDetails = contactsApiClientTypes.ContactDetails
-import PatchRelationshipRequest = contactsApiClientTypes.PatchRelationshipRequest
+import { ContactDetails, PatchRelationshipRequest } from '../../../../../@types/contactsApiClient'
 
 export default class ManageEmergencyContactOrNextOfKinController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}

@@ -1,9 +1,6 @@
-import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
+import { ContactAddressDetails, ContactDetails } from '../@types/contactsApiClient'
 
-export function findMostRelevantAddress(
-  contact: contactsApiClientTypes.ContactDetails,
-  fallbackToExpired: boolean = false,
-) {
+export function findMostRelevantAddress(contact: ContactDetails, fallbackToExpired: boolean = false) {
   const currentAddresses = contact.addresses?.filter((address: ContactAddressDetails) => !address.endDate)
   let mostRelevantAddress: ContactAddressDetails = currentAddresses?.find(
     (address: ContactAddressDetails) => address.primaryAddress,
@@ -24,7 +21,7 @@ export function findMostRelevantAddress(
   return mostRelevantAddress
 }
 
-export function getLabelForAddress(mostRelevantAddress: contactsApiClientTypes.ContactAddressDetails) {
+export function getLabelForAddress(mostRelevantAddress: ContactAddressDetails) {
   let mostRelevantAddressLabel
   if (mostRelevantAddress?.primaryAddress) {
     if (mostRelevantAddress?.mailFlag) {

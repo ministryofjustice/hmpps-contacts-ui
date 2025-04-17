@@ -1,9 +1,9 @@
 import { Request, Response } from 'express'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
 import captionForAddContactJourney from '../addContactsUtils'
+import { PrisonerJourneyParams } from '../../../../@types/journeys'
 
 export default class AddContactAdditionalInfoController implements PageHandler {
   public PAGE_NAME = Page.ENTER_ADDITIONAL_INFORMATION_PAGE

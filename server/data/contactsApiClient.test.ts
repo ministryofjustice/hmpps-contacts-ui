@@ -3,41 +3,38 @@ import config from '../config'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import ContactsApiClient from './contactsApiClient'
 import ReferenceCodeType from '../enumeration/referenceCodeType'
-import { components } from '../@types/contactsApi'
-import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
-import ReferenceCode = contactsApiClientTypes.ReferenceCode
-import PagedModelContactSearchResultItem = contactsApiClientTypes.PagedModelContactSearchResultItem
-import ContactDetails = contactsApiClientTypes.ContactDetails
-import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
-import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
-import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
-import ContactIdentityDetails = contactsApiClientTypes.ContactIdentityDetails
-import UpdateIdentityRequest = contactsApiClientTypes.UpdateIdentityRequest
-import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
-import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
-import CreateContactRestrictionRequest = contactsApiClientTypes.CreateContactRestrictionRequest
-import ContactRestrictionDetails = contactsApiClientTypes.ContactRestrictionDetails
-import CreatePrisonerContactRestrictionRequest = contactsApiClientTypes.CreatePrisonerContactRestrictionRequest
-import PrisonerContactRestrictionDetails = contactsApiClientTypes.PrisonerContactRestrictionDetails
-import UpdateContactRestrictionRequest = contactsApiClientTypes.UpdateContactRestrictionRequest
-import UpdatePrisonerContactRestrictionRequest = contactsApiClientTypes.UpdatePrisonerContactRestrictionRequest
-import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
-import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
-import PatchContactAddressRequest = contactsApiClientTypes.PatchContactAddressRequest
-import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
-import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
-import PagedModelPrisonerContactSummary = contactsApiClientTypes.PagedModelPrisonerContactSummary
 import TestData from '../routes/testutils/testData'
-import PrisonerContactFilter = contactsApiClientTypes.PrisonerContactFilter
-import PrisonerContactPagination = contactsApiClientTypes.PrisonerContactPagination
-
-type PatchContactRequest = components['schemas']['PatchContactRequest']
-type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
-type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
-type ContactEmailDetails = components['schemas']['ContactEmailDetails']
-type AddContactRelationshipRequest = components['schemas']['AddContactRelationshipRequest']
-type CreateContactRequest = components['schemas']['CreateContactRequest']
-type CreateMultipleIdentitiesRequest = components['schemas']['CreateMultipleIdentitiesRequest']
+import {
+  AddContactRelationshipRequest,
+  ContactAddressDetails,
+  ContactAddressPhoneDetails,
+  ContactCreationResult,
+  ContactDetails,
+  ContactEmailDetails,
+  ContactIdentityDetails,
+  ContactPhoneDetails,
+  ContactRestrictionDetails,
+  ContactSearchRequest,
+  CreateContactAddressRequest,
+  CreateContactRequest,
+  CreateContactRestrictionRequest,
+  CreateMultipleEmailsRequest,
+  CreateMultipleIdentitiesRequest,
+  CreatePrisonerContactRestrictionRequest,
+  PagedModelContactSearchResultItem, PagedModelPrisonerContactSummary,
+  PatchContactAddressRequest,
+  PatchContactRequest,
+  PatchContactResponse, PrisonerContactFilter, PrisonerContactPagination,
+  PrisonerContactRelationshipDetails,
+  PrisonerContactRestrictionDetails,
+  ReferenceCode,
+  UpdateContactAddressPhoneRequest,
+  UpdateContactRestrictionRequest,
+  UpdateEmailRequest,
+  UpdateIdentityRequest,
+  UpdatePhoneRequest,
+  UpdatePrisonerContactRestrictionRequest,
+} from '../@types/contactsApiClient'
 
 jest.mock('./tokenStore/inMemoryTokenStore')
 

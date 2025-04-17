@@ -6,11 +6,11 @@ import ReferenceDataService from '../../../../../services/referenceDataService'
 import { PhoneNumberSchemaType } from '../../phone/phoneSchemas'
 import { ContactsService } from '../../../../../services'
 import { Navigation } from '../../../common/navigation'
-import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import Urls from '../../../../urls'
 import { getUpdateAddressDetails } from '../common/utils'
+import { ContactAddressPhoneDetails } from '../../../../../@types/contactsApiClient'
 
 export default class ManageContactEditAddressPhoneController implements PageHandler {
   constructor(

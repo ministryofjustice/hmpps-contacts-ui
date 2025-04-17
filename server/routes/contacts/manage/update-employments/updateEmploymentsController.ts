@@ -1,13 +1,13 @@
 import { Request, Response } from 'express'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { employmentSorter } from '../../../../utils/sorters'
 import { ContactsService } from '../../../../services'
-import PatchEmploymentsRequest = contactsApiClientTypes.PatchEmploymentsRequest
 import { formatNameFirstNameFirst } from '../../../../utils/formatName'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
 import { Navigation } from '../../common/navigation'
+import { PrisonerJourneyParams } from '../../../../@types/journeys'
+import { PatchEmploymentsRequest } from '../../../../@types/contactsApiClient'
 
 export default class UpdateEmploymentsController implements PageHandler {
   constructor(private readonly contactService: ContactsService) {}

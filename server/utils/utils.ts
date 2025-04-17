@@ -1,7 +1,7 @@
 import { differenceInYears, format, isValid, parseISO } from 'date-fns'
-import DateOfBirth = journeys.DateOfBirth
-import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import { components } from '../@types/contactsApi'
+import { ReferenceCode } from '../@types/contactsApiClient'
+import { DateOfBirth } from '../@types/journeys'
 
 type ContactSearchResultItem = components['schemas']['ContactSearchResultItem']
 

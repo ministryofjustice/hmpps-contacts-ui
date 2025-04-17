@@ -7,7 +7,7 @@ import { DateOfDeathSchemaType } from './manageContactDateOfDeathSchema'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../utils/formatName'
 import Urls from '../../../urls'
-import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
+import { PatchContactRequest } from '../../../../@types/contactsApiClient'
 
 export default class ManageContactEnterDateOfDeathController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}

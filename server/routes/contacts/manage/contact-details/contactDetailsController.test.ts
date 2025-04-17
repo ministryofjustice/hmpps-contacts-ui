@@ -6,10 +6,12 @@ import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { components } from '../../../../@types/contactsApi'
-import ContactDetails = contactsApiClientTypes.ContactDetails
-import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
-import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import { mockedReferenceData } from '../../../testutils/stubReferenceData'
+import {
+  ContactAddressDetails,
+  ContactDetails,
+  PrisonerContactRelationshipDetails,
+} from '../../../../@types/contactsApiClient'
 
 type LinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
 

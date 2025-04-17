@@ -5,9 +5,8 @@ import { ContactSearchSchemaType } from './contactSearchSchema'
 import { ContactsService } from '../../../../services'
 import { formatDateForApi } from '../../../../utils/utils'
 import { navigationForAddContactJourney } from '../addContactFlowControl'
-import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
-import PagedModelContactSearchResultItem = contactsApiClientTypes.PagedModelContactSearchResultItem
 import { setPaginationLocals } from '../../../../views/partials/simplePagination/utils'
+import { ContactSearchRequest, PagedModelContactSearchResultItem } from '../../../../@types/contactsApiClient'
 
 export default class ContactSearchController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}

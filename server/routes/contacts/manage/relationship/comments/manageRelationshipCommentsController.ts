@@ -7,8 +7,7 @@ import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import { EnterRelationshipCommentsSchemas } from '../../../add/relationship-comments/enterRelationshipCommentsSchemas'
-import PatchRelationshipRequest = contactsApiClientTypes.PatchRelationshipRequest
-import ContactDetails = contactsApiClientTypes.ContactDetails
+import { ContactDetails, PatchRelationshipRequest } from '../../../../../@types/contactsApiClient'
 
 export default class ManageRelationshipCommentsController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}

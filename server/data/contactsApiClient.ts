@@ -1,46 +1,31 @@
 import config from '../config'
 import RestClient from './restClient'
 import ReferenceCodeType from '../enumeration/referenceCodeType'
-import { components } from '../@types/contactsApi'
-import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
-import ReferenceCode = contactsApiClientTypes.ReferenceCode
-import PagedModelPrisonerContactSummary = contactsApiClientTypes.PagedModelPrisonerContactSummary
-import ContactDetails = contactsApiClientTypes.ContactDetails
-import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
-import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
-import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
-import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
-import UpdateIdentityRequest = contactsApiClientTypes.UpdateIdentityRequest
-import ContactIdentityDetails = contactsApiClientTypes.ContactIdentityDetails
-import PatchRelationshipRequest = contactsApiClientTypes.PatchRelationshipRequest
-import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
-import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
-import CreateContactRestrictionRequest = contactsApiClientTypes.CreateContactRestrictionRequest
-import ContactRestrictionDetails = contactsApiClientTypes.ContactRestrictionDetails
-import CreatePrisonerContactRestrictionRequest = contactsApiClientTypes.CreatePrisonerContactRestrictionRequest
-import PrisonerContactRestrictionDetails = contactsApiClientTypes.PrisonerContactRestrictionDetails
-import UpdatePrisonerContactRestrictionRequest = contactsApiClientTypes.UpdatePrisonerContactRestrictionRequest
-import UpdateContactRestrictionRequest = contactsApiClientTypes.UpdateContactRestrictionRequest
-import PrisonerContactRestrictionsResponse = contactsApiClientTypes.PrisonerContactRestrictionsResponse
-import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
-import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
-import PatchContactAddressRequest = contactsApiClientTypes.PatchContactAddressRequest
-import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
-import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
-import PagedModelContactSearchResultItem = contactsApiClientTypes.PagedModelContactSearchResultItem
-import PrisonerContactFilter = contactsApiClientTypes.PrisonerContactFilter
-import PrisonerContactPagination = contactsApiClientTypes.PrisonerContactPagination
-import PatchEmploymentsRequest = contactsApiClientTypes.PatchEmploymentsRequest
-
-type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
-type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
-type ContactEmailDetails = components['schemas']['ContactEmailDetails']
-type AddContactRelationshipRequest = components['schemas']['AddContactRelationshipRequest']
-type CreateContactRequest = components['schemas']['CreateContactRequest']
-type ContactNameDetails = components['schemas']['ContactNameDetails']
-type CreateMultipleIdentitiesRequest = components['schemas']['CreateMultipleIdentitiesRequest']
-type PagedModelLinkedPrisonerDetails = components['schemas']['PagedModelLinkedPrisonerDetails']
-type CreateMultiplePhoneNumbersRequest = components['schemas']['CreateMultiplePhoneNumbersRequest']
+import {
+  AddContactRelationshipRequest, ContactAddressDetails, ContactAddressPhoneDetails,
+  ContactCreationResult,
+  ContactDetails,
+  ContactEmailDetails,
+  ContactIdentityDetails,
+  ContactNameDetails,
+  ContactPhoneDetails, ContactRestrictionDetails,
+  ContactSearchRequest, CreateContactAddressRequest,
+  CreateContactRequest, CreateContactRestrictionRequest,
+  CreateMultipleEmailsRequest,
+  CreateMultipleIdentitiesRequest,
+  CreateMultiplePhoneNumbersRequest, CreatePrisonerContactRestrictionRequest,
+  PagedModelContactSearchResultItem, PagedModelLinkedPrisonerDetails,
+  PagedModelPrisonerContactSummary, PatchContactAddressRequest,
+  PatchContactRequest,
+  PatchContactResponse, PatchEmploymentsRequest,
+  PatchRelationshipRequest,
+  PrisonerContactFilter,
+  PrisonerContactPagination,
+  PrisonerContactRelationshipDetails, PrisonerContactRestrictionDetails, PrisonerContactRestrictionsResponse,
+  ReferenceCode, UpdateContactAddressPhoneRequest, UpdateContactRestrictionRequest, UpdateEmailRequest,
+  UpdateIdentityRequest,
+  UpdatePhoneRequest, UpdatePrisonerContactRestrictionRequest,
+} from '../@types/contactsApiClient'
 
 export type Pagination = {
   page: number
@@ -200,7 +185,7 @@ export default class ContactsApiClient extends RestClient {
     contactId: number,
     request: CreateMultipleIdentitiesRequest,
     user: Express.User,
-  ): Promise<ContactIdentityDetails> {
+  ): Promise<ContactIdentityDetails[]> {
     return this.post<ContactIdentityDetails[]>(
       {
         path: `/contact/${contactId}/identities`,
@@ -239,7 +224,7 @@ export default class ContactsApiClient extends RestClient {
     request: PatchContactRequest,
     user: Express.User,
   ): Promise<PatchContactResponse> {
-    return this.patch<PatchContactRequest>(
+    return this.patch<PatchContactResponse>(
       {
         path: `/contact/${contactId}`,
         data: request,
@@ -253,7 +238,7 @@ export default class ContactsApiClient extends RestClient {
     request: PatchRelationshipRequest,
     user: Express.User,
   ): Promise<void> {
-    return this.patch<PatchRelationshipRequest>(
+    return this.patch(
       {
         path: `/prisoner-contact/${prisonerContactId}`,
         data: request,
@@ -376,7 +361,7 @@ export default class ContactsApiClient extends RestClient {
     contactId: number,
     request: CreateContactAddressRequest,
     user: Express.User,
-  ): Promise<ContactIdentityDetails> {
+  ): Promise<ContactAddressDetails> {
     return this.post<ContactAddressDetails>(
       {
         path: `/contact/${contactId}/address`,
@@ -391,7 +376,7 @@ export default class ContactsApiClient extends RestClient {
     contactAddressId: number,
     request: PatchContactAddressRequest,
     user: Express.User,
-  ): Promise<ContactIdentityDetails> {
+  ): Promise<ContactAddressDetails> {
     return this.patch<ContactAddressDetails>(
       {
         path: `/contact/${contactId}/address/${contactAddressId}`,

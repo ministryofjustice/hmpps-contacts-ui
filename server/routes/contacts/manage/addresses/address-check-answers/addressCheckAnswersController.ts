@@ -5,11 +5,11 @@ import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import { Navigation } from '../../../common/navigation'
 import { ContactsService } from '../../../../../services'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import Urls from '../../../../urls'
 import { getAddressJourneyAndUrl, getFormattedAddress } from '../common/utils'
+import { PrisonerJourneyParams } from '../../../../../@types/journeys'
 
 export default class AddressCheckAnswersController implements PageHandler {
   constructor(

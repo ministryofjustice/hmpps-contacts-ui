@@ -1,23 +1,23 @@
 import { CurrentIncentive, Prisoner } from '../../data/prisonerOffenderSearchTypes'
-import { components } from '../../@types/contactsApi'
+import {
+  ContactAddressDetails,
+  ContactAddressPhoneDetails,
+  ContactDetails,
+  ContactEmailDetails,
+  ContactIdentityDetails,
+  ContactNameDetails,
+  ContactPhoneDetails,
+  ContactPhoneNumberDetails,
+  ContactRestrictionDetails,
+  ContactSearchResultItem, LinkedPrisonerDetails,
+  PagedModelPrisonerContactSummary,
+  PatchContactResponse,
+  PrisonerContactRelationshipDetails,
+  PrisonerContactRestrictionDetails,
+  PrisonerContactSummary,
+} from '../../@types/contactsApiClient'
+import { OrganisationSummary } from '../../@types/organisationsApiClient'
 
-type ContactSearchResultItem = components['schemas']['ContactSearchResultItem']
-type ContactDetails = components['schemas']['ContactDetails']
-type ContactNameDetails = components['schemas']['ContactNameDetails']
-type ContactAddressDetails = components['schemas']['ContactAddressDetails']
-type ContactPhoneDetails = components['schemas']['ContactPhoneDetails']
-type ContactPhoneNumberDetails = components['schemas']['ContactPhoneDetails']
-type ContactEmailDetails = components['schemas']['ContactEmailDetails']
-type PagedModelPrisonerContactSummary = components['schemas']['PagedModelPrisonerContactSummary']
-type PrisonerContactSummary = components['schemas']['PrisonerContactSummary']
-type ContactIdentityDetails = components['schemas']['ContactIdentityDetails']
-type PatchContactResponse = components['schemas']['PatchContactResponse']
-type PrisonerContactRelationshipDetails = components['schemas']['PrisonerContactRelationshipDetails']
-type ContactRestrictionDetails = components['schemas']['ContactRestrictionDetails']
-type PrisonerContactRestrictionDetails = components['schemas']['PrisonerContactRestrictionDetails']
-type ContactAddressPhoneDetails = components['schemas']['ContactAddressPhoneDetails']
-type LinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
-type OrganisationSummary = components['schemas']['OrganisationSummary']
 export default class TestData {
   static address = ({
     contactAddressId = 1,
@@ -542,4 +542,16 @@ export default class TestData {
       postcode,
       countryDescription,
     }) as OrganisationSummary
+
+  static organisationPropDetailsBoilerplate = () => ({
+    organisationWebAddressId: 0,
+    organisationEmailId: 0,
+    organisationType: '',
+    organisationPhoneId: 0,
+    organisationId: 0,
+    organisationAddressPhoneId: 0,
+    organisationAddressId: 0,
+    createdBy: '',
+    createdTime: '',
+  })
 }

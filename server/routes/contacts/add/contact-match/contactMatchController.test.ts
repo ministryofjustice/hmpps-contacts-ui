@@ -8,10 +8,9 @@ import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { components } from '../../../../@types/contactsApi'
-import AddContactJourney = journeys.AddContactJourney
-import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
-import ContactDetails = contactsApiClientTypes.ContactDetails
 import { mockedReferenceData } from '../../../testutils/stubReferenceData'
+import { AddContactJourney } from '../../../../@types/journeys'
+import { ContactAddressDetails, ContactDetails } from '../../../../@types/contactsApiClient'
 
 type LinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
 

@@ -3,12 +3,12 @@ import { NotFound } from 'http-errors'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { Navigation } from '../../../common/navigation'
-import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 import { CreateContactAddressParam, getAddressFormAndUrl } from '../common/utils'
 import { getFormattedAddress } from '../../../manage/addresses/common/utils'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import logger from '../../../../../../logger'
+import { ContactAddressPhoneDetails } from '../../../../../@types/contactsApiClient'
 
 export default class CreateContactDeleteAddressPhoneController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}

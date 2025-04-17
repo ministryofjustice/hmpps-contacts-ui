@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { Request } from 'express'
 import { format, isValid, parse } from 'date-fns'
 import { createSchema } from '../../../middleware/validationMiddleware'
-import RestrictionClass = journeys.RestrictionClass
+import { RestrictionClass } from '../../../@types/journeys'
 
 const TYPE_REQUIRED_MESSAGE = 'Select the restriction type'
 const START_DATE_REQUIRED_MESSAGE = 'Enter the start date for the restriction'

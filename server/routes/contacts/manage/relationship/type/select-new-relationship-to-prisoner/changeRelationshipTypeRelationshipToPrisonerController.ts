@@ -8,8 +8,8 @@ import { Navigation } from '../../../../common/navigation'
 import { formatNameFirstNameFirst } from '../../../../../../utils/formatName'
 import Urls from '../../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../../middleware/setUpSuccessNotificationBanner'
-import PatchRelationshipRequest = contactsApiClientTypes.PatchRelationshipRequest
 import ReferenceCodeType from '../../../../../../enumeration/referenceCodeType'
+import { PatchRelationshipRequest } from '../../../../../../@types/contactsApiClient'
 
 export default class ChangeRelationshipTypeRelationshipToPrisonerController implements PageHandler {
   constructor(

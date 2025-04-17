@@ -4,13 +4,15 @@ import ContactsApiClient from '../data/contactsApiClient'
 import RestrictionsService from './restrictionsService'
 import { RestrictionSchemaType } from '../routes/restrictions/schema/restrictionSchema'
 import { MockedService } from '../testutils/mockedServices'
-import AddRestrictionJourney = journeys.AddRestrictionJourney
-import ContactRestrictionDetails = contactsApiClientTypes.ContactRestrictionDetails
-import CreateContactRestrictionRequest = contactsApiClientTypes.CreateContactRestrictionRequest
-import PrisonerContactRestrictionDetails = contactsApiClientTypes.PrisonerContactRestrictionDetails
-import CreatePrisonerContactRestrictionRequest = contactsApiClientTypes.CreatePrisonerContactRestrictionRequest
-import UpdateContactRestrictionRequest = contactsApiClientTypes.UpdateContactRestrictionRequest
-import ContactDetails = contactsApiClientTypes.ContactDetails
+import { AddRestrictionJourney } from '../@types/journeys'
+import {
+  ContactDetails,
+  ContactRestrictionDetails,
+  CreateContactRestrictionRequest,
+  CreatePrisonerContactRestrictionRequest,
+  PrisonerContactRestrictionDetails,
+  UpdateContactRestrictionRequest,
+} from '../@types/contactsApiClient'
 
 jest.mock('../data/contactsApiClient')
 jest.mock('../services/auditService')

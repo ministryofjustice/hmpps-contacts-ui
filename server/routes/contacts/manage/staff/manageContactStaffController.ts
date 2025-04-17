@@ -2,13 +2,12 @@ import { Request, Response } from 'express'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { ContactsService } from '../../../../services'
-import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
-import ContactDetails = contactsApiClientTypes.ContactDetails
 import { Navigation } from '../../common/navigation'
 import Urls from '../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../utils/formatName'
 import { ManageContactStaffSchemaType } from './manageContactStaffSchema'
+import { ContactDetails, PatchContactRequest } from '../../../../@types/contactsApiClient'
 
 export default class ManageContactStaffController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}

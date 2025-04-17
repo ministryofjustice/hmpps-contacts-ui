@@ -1,40 +1,31 @@
 import ContactsApiClient, { Pagination } from '../data/contactsApiClient'
-import { components } from '../@types/contactsApi'
-import AddContactJourney = journeys.AddContactJourney
-import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
-import ContactDetails = contactsApiClientTypes.ContactDetails
-import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
-import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
-import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
-import UpdateIdentityRequest = contactsApiClientTypes.UpdateIdentityRequest
-import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
-import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
-import ContactRestrictionDetails = contactsApiClientTypes.ContactRestrictionDetails
-import PrisonerContactRestrictionsResponse = contactsApiClientTypes.PrisonerContactRestrictionsResponse
-import AddressJourney = journeys.AddressJourney
-import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
-import UpdateContactAddressRequest = contactsApiClientTypes.PatchContactAddressRequest
-import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
-import PatchEmploymentsRequest = contactsApiClientTypes.PatchEmploymentsRequest
-import AddressMetadata = journeys.AddressMetadata
-import AddressLines = journeys.AddressLines
-import PagedModelPrisonerContactSummary = contactsApiClientTypes.PagedModelPrisonerContactSummary
-import PagedModelContactSearchResultItem = contactsApiClientTypes.PagedModelContactSearchResultItem
-import PrisonerContactFilter = contactsApiClientTypes.PrisonerContactFilter
-import PrisonerContactPagination = contactsApiClientTypes.PrisonerContactPagination
 import AuditService from './auditService'
 import AuditedService from './auditedService'
-
-type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
-type ContactEmailDetails = components['schemas']['ContactEmailDetails']
-type CreateContactRequest = components['schemas']['CreateContactRequest']
-type AddContactRelationshipRequest = components['schemas']['AddContactRelationshipRequest']
-type ContactNameDetails = components['schemas']['ContactNameDetails']
-type CreateMultipleIdentitiesRequest = components['schemas']['CreateMultipleIdentitiesRequest']
-type IdentityDocument = components['schemas']['IdentityDocument']
-type PagedModelLinkedPrisonerDetails = components['schemas']['PagedModelLinkedPrisonerDetails']
-type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
-type CreateMultiplePhoneNumbersRequest = components['schemas']['CreateMultiplePhoneNumbersRequest']
+import { AddContactJourney, AddressJourney, AddressLines, AddressMetadata } from '../@types/journeys'
+import {
+  AddContactRelationshipRequest,
+  ContactCreationResult,
+  ContactDetails,
+  ContactNameDetails,
+  ContactRestrictionDetails,
+  ContactSearchRequest,
+  CreateContactAddressRequest,
+  CreateContactRequest,
+  CreateMultipleIdentitiesRequest,
+  CreateMultiplePhoneNumbersRequest,
+  IdentityDocument,
+  PagedModelContactSearchResultItem, PagedModelLinkedPrisonerDetails,
+  PagedModelPrisonerContactSummary,
+  PatchContactRequest,
+  PatchContactResponse, PatchEmploymentsRequest, PatchRelationshipRequest,
+  PrisonerContactFilter,
+  PrisonerContactPagination,
+  PrisonerContactRelationshipDetails,
+  PrisonerContactRestrictionsResponse, UpdateContactAddressPhoneRequest,
+  UpdateContactAddressRequest,
+  UpdateIdentityRequest,
+  UpdatePhoneRequest,
+} from '../@types/contactsApiClient'
 
 export default class ContactsService extends AuditedService {
   constructor(
@@ -345,7 +336,7 @@ export default class ContactsService extends AuditedService {
 
   async updateContactRelationshipById(
     prisonerContactId: number,
-    request: contactsApiClientTypes.PatchRelationshipRequest,
+    request: PatchRelationshipRequest,
     user: Express.User,
     correlationId: string,
   ): Promise<void> {

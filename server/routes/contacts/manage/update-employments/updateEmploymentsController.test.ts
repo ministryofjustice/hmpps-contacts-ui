@@ -6,8 +6,8 @@ import { SessionData } from 'express-session'
 import { appWithAllRoutes, flashProvider, user } from '../../../testutils/appSetup'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
-import UpdateEmploymentsJourney = journeys.UpdateEmploymentsJourney
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
+import { UpdateEmploymentsJourney } from '../../../../@types/journeys'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/contactsService')

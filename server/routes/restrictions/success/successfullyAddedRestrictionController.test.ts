@@ -4,8 +4,8 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../testutils/appSetup'
 import { Page } from '../../../services/auditService'
 import TestData from '../../testutils/testData'
-import RestrictionClass = journeys.RestrictionClass
 import { MockedService } from '../../../testutils/mockedServices'
+import { RestrictionClass } from '../../../@types/journeys'
 
 jest.mock('../../../services/auditService')
 jest.mock('../../../services/contactsService')

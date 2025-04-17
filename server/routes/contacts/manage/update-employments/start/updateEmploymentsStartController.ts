@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
 import { ContactsService } from '../../../../../services'
-import UpdateEmploymentsJourney = journeys.UpdateEmploymentsJourney
+import { UpdateEmploymentsJourney } from '../../../../../@types/journeys'
 
 export default class UpdateEmploymentsStartController {
   constructor(private readonly contactsService: ContactsService) {}

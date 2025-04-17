@@ -1,6 +1,6 @@
 import TestData from '../routes/testutils/testData'
-import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import { formatTitleForAddress } from './addressUtils'
+import { ContactAddressDetails } from '../@types/contactsApiClient'
 
 describe('addressUtils', () => {
   describe('formatTitleForAddress', () => {

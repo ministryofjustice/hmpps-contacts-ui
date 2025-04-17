@@ -6,12 +6,11 @@ import { components } from '../../../../../@types/contactsApi'
 import { Navigation } from '../../../common/navigation'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
-import ContactDetails = contactsApiClientTypes.ContactDetails
-import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import { ManageLanguageAndInterpreterSchemaType } from './manageLanguageAndInterpreterSchema'
+import { ContactDetails, ReferenceCode } from '../../../../../@types/contactsApiClient'
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 export default class ManageLanguageAndInterpreterController implements PageHandler {

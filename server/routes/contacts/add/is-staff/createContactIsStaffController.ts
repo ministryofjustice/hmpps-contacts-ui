@@ -2,8 +2,7 @@ import { Request, Response } from 'express'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
-import YesOrNo = journeys.YesOrNo
+import { PrisonerJourneyParams, YesOrNo } from '../../../../@types/journeys'
 
 export default class CreateContactIsStaffController implements PageHandler {
   public PAGE_NAME = Page.ADD_CONTACT_IS_STAFF_PAGE

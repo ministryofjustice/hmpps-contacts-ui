@@ -1,11 +1,10 @@
 import { Request, Response } from 'express'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { Page } from '../../../../../services/auditService'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
-import UpdateEmploymentJourneyParams = journeys.UpdateEmploymentJourneyParams
-import OrganisationSummaryResultItemPage = contactsApiClientTypes.OrganisationSummaryResultItemPage
 import { setPaginationLocals } from '../../../../../views/partials/simplePagination/utils'
 import OrganisationsService from '../../../../../services/organisationsService'
+import { OrganisationSummaryResultItemPage } from '../../../../../@types/organisationsApiClient'
+import { PrisonerJourneyParams, UpdateEmploymentJourneyParams } from '../../../../../@types/journeys'
 
 export default class OrganisationSearchController implements PageHandler {
   constructor(private readonly organisationsService: OrganisationsService) {}

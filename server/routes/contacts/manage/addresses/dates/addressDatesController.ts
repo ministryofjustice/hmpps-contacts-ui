@@ -3,9 +3,9 @@ import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import { Navigation } from '../../../common/navigation'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { getAddressJourneyAndUrl, getFormattedAddress } from '../common/utils'
 import { AddressDatesSchemaType } from './addressDatesSchemas'
+import { PrisonerJourneyParams } from '../../../../../@types/journeys'
 
 export default class AddressDatesController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}

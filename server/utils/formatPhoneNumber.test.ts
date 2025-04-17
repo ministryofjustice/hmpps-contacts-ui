@@ -1,7 +1,6 @@
 import { formatBusinessPhoneNumber, formatPhoneNumber } from './formatPhoneNumber'
 import TestData from '../routes/testutils/testData'
-import OrganisationPhoneDetails = organisationsApiClientTypes.OrganisationPhoneDetails
-import OrganisationAddressPhoneDetails = organisationsApiClientTypes.OrganisationAddressPhoneDetails
+import { OrganisationAddressPhoneDetails, OrganisationPhoneDetails } from '../@types/organisationsApiClient'
 
 describe('format business phone number from OrganisationSummary', () => {
   it('should format phone number and extension for business', () => {

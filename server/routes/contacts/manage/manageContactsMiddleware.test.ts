@@ -4,10 +4,11 @@ import { SessionData } from 'express-session'
 import { ensureInManageContactsJourney, prepareStandaloneManageContactJourney } from './manageContactsMiddleware'
 import { user } from '../../testutils/appSetup'
 import resetAllMocks = jest.resetAllMocks
+import { PrisonerJourneyParams } from '../../../@types/journeys'
 
 describe('manageContactsMiddleware', () => {
   describe('ensureInManageContactsJourney', () => {
-    type Request = ExpressRequest<journeys.PrisonerJourneyParams>
+    type Request = ExpressRequest<PrisonerJourneyParams>
 
     const journeyId = uuidv4()
     let req: Request

@@ -3,33 +3,30 @@ import ContactsApiClient from '../data/contactsApiClient'
 import ContactsService from './contactsService'
 import { PaginationRequest } from '../data/prisonerOffenderSearchTypes'
 import TestData from '../routes/testutils/testData'
-import { components } from '../@types/contactsApi'
 import { MockedService } from '../testutils/mockedServices'
-import AddContactJourney = journeys.AddContactJourney
-import ContactSearchRequest = contactsApiClientTypes.ContactSearchRequest
-import PagedModelContactSearchResultItem = contactsApiClientTypes.PagedModelContactSearchResultItem
-import ContactDetails = contactsApiClientTypes.ContactDetails
-import CreatePhoneRequest = contactsApiClientTypes.CreatePhoneRequest
-import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
-import UpdatePhoneRequest = contactsApiClientTypes.UpdatePhoneRequest
-import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
-import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
-import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
-import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
-import AddressJourney = journeys.AddressJourney
-import CreateContactAddressRequest = contactsApiClientTypes.CreateContactAddressRequest
-import PatchContactAddressRequest = contactsApiClientTypes.PatchContactAddressRequest
-import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
-import UpdateContactAddressPhoneRequest = contactsApiClientTypes.UpdateContactAddressPhoneRequest
-import YesOrNo = journeys.YesOrNo
-import LanguageAndInterpreterRequiredForm = journeys.LanguageAndInterpreterRequiredForm
-import PatchRelationshipRequest = contactsApiClientTypes.PatchRelationshipRequest
-
-type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
-type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
-type ContactEmailDetails = components['schemas']['ContactEmailDetails']
-type AddContactRelationshipRequest = components['schemas']['AddContactRelationshipRequest']
-type CreateContactRequest = components['schemas']['CreateContactRequest']
+import {
+  AddContactRelationshipRequest,
+  ContactAddressDetails,
+  ContactAddressPhoneDetails,
+  ContactCreationResult,
+  ContactDetails,
+  ContactEmailDetails,
+  ContactPhoneDetails,
+  ContactSearchRequest,
+  CreateContactAddressRequest,
+  CreateContactRequest,
+  CreateMultipleEmailsRequest,
+  CreatePhoneRequest,
+  PagedModelContactSearchResultItem,
+  PatchContactAddressRequest,
+  PatchContactRequest,
+  PatchRelationshipRequest,
+  PrisonerContactRelationshipDetails,
+  UpdateContactAddressPhoneRequest,
+  UpdateEmailRequest,
+  UpdatePhoneRequest,
+} from '../@types/contactsApiClient'
+import { AddContactJourney, AddressJourney, LanguageAndInterpreterRequiredForm, YesOrNo } from '../@types/journeys'
 
 jest.mock('../data/contactsApiClient')
 jest.mock('../services/auditService')
@@ -385,12 +382,10 @@ describe('contactsService', () => {
     it('Retrieves search contact details matching the search criteria', async () => {
       // Given
       const contactResults: PagedModelContactSearchResultItem = {
-        totalPages: 1,
-        totalElements: 1,
-        first: true,
-        last: true,
-        size: 20,
-        empty: false,
+        page: {
+          totalPages: 1,
+          totalElements: 1,
+        },
         content: [searchResult],
       }
 
@@ -399,10 +394,10 @@ describe('contactsService', () => {
       const results = await service.searchContact(contactSearchRequest, pagination, user)
 
       // Then
-      expect(results?.content[0].lastName).toEqual(searchResult.lastName)
-      expect(results?.content[0].firstName).toEqual(searchResult.firstName)
-      expect(results.totalPages).toEqual(1)
-      expect(results.totalElements).toEqual(1)
+      expect(results?.content?.[0]?.lastName).toEqual(searchResult.lastName)
+      expect(results?.content?.[0]?.firstName).toEqual(searchResult.firstName)
+      expect(results.page?.totalPages).toEqual(1)
+      expect(results.page?.totalElements).toEqual(1)
     })
 
     it('Propagates errors', async () => {

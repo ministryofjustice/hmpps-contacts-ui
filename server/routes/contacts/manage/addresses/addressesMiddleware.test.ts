@@ -4,8 +4,9 @@ import { SessionData } from 'express-session'
 import { user } from '../../../testutils/appSetup'
 import ensureInAddressJourney from './addressesMiddleware'
 import resetAllMocks = jest.resetAllMocks
+import { PrisonerJourneyParams } from '../../../../@types/journeys'
 
-type Request = ExpressRequest<journeys.PrisonerJourneyParams>
+type Request = ExpressRequest<PrisonerJourneyParams>
 
 describe('ensureInAddressJourney', () => {
   const journeyId = uuidv4()

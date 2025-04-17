@@ -4,7 +4,7 @@ import { PageHandler } from '../../../../../interfaces/pageHandler'
 import Urls from '../../../../urls'
 import { Navigation } from '../../../common/navigation'
 import { getAddressJourneyAndUrl } from '../common/utils'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
+import { PrisonerJourneyParams } from '../../../../../@types/journeys'
 
 export default class CancelAddAddressController implements PageHandler {
   public PAGE_NAME = Page.CANCEL_ADD_ADDRESS_PAGE

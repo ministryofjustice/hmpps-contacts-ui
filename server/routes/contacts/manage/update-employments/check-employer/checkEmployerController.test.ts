@@ -6,7 +6,6 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes } from '../../../../testutils/appSetup'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
-import UpdateEmploymentsJourney = journeys.UpdateEmploymentsJourney
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -135,17 +134,20 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/chec
       deactivatedDate: '2020-12-25',
       caseloadId: 'TEST',
       caseloadPrisonName: 'TEST',
-      programmeNumber: 123,
-      vatNumber: 123456,
+      programmeNumber: '123',
+      vatNumber: '123456',
       comments: 'some words',
       addresses: [
         {
+          ...TestData.organisationPropDetailsBoilerplate(),
           primaryAddress: true,
           mailAddress: true,
           serviceAddress: false,
+          noFixedAddress: false,
           street: 'Some Street',
           phoneNumbers: [
             {
+              ...TestData.organisationPropDetailsBoilerplate(),
               phoneType: 'BUS',
               phoneTypeDescription: 'Mobile',
               phoneNumber: '1234 4321',
@@ -161,15 +163,21 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/chec
       ],
       phoneNumbers: [
         {
+          ...TestData.organisationPropDetailsBoilerplate(),
           phoneType: 'BUS',
           phoneTypeDescription: 'Alt-Business TRA',
           phoneNumber: '1234 1234',
           extNumber: '222',
         },
       ],
-      webAddresses: [{ webAddress: 'a.b.c' }],
-      emailAddresses: [{ emailAddress: 'a@b.c' }],
-      organisationTypes: [{ organisationTypeDescription: 'Org Type' }, { organisationTypeDescription: 'Another Type' }],
+      webAddresses: [{ ...TestData.organisationPropDetailsBoilerplate(), webAddress: 'a.b.c' }],
+      emailAddresses: [{ ...TestData.organisationPropDetailsBoilerplate(), emailAddress: 'a@b.c' }],
+      organisationTypes: [
+        { ...TestData.organisationPropDetailsBoilerplate(), organisationTypeDescription: 'Org Type' },
+        { ...TestData.organisationPropDetailsBoilerplate(), organisationTypeDescription: 'Another Type' },
+      ],
+      createdBy: '',
+      createdTime: '',
     })
 
     // When
@@ -233,6 +241,8 @@ it('should render result with minimal mandatory data', async () => {
     webAddresses: [],
     emailAddresses: [],
     organisationTypes: [],
+    createdBy: '',
+    createdTime: '',
   })
 
   // When
@@ -272,6 +282,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/che
       street: 'Some Street',
       businessPhoneNumber: '1234 1234',
       businessPhoneNumberExtension: '222',
+      organisationActive: true,
     })
 
     // When
@@ -291,6 +302,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/che
       street: 'Some Street',
       businessPhoneNumber: '1234 1234',
       businessPhoneNumberExtension: '222',
+      organisationActive: true,
     })
     expect(journeyData.employments[0]!.isActive).toBeTruthy()
   })
@@ -315,6 +327,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/che
       street: 'Some Street',
       businessPhoneNumber: '1234 1234',
       businessPhoneNumberExtension: '222',
+      organisationActive: true,
     })
 
     // When
@@ -334,6 +347,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/che
       street: 'Some Street',
       businessPhoneNumber: '1234 1234',
       businessPhoneNumberExtension: '222',
+      organisationActive: true,
     })
     expect(journeyData.employments[0]!.isActive).toBeFalsy()
   })

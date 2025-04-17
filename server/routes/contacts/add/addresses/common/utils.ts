@@ -1,8 +1,8 @@
 import { Request } from 'express'
 import { NotFound } from 'http-errors'
-import AddressForm = journeys.AddressForm
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../../services/referenceDataService'
+import { AddressForm } from '../../../../../@types/journeys'
 
 export type CreateContactAddressParam = {
   prisonerNumber: string

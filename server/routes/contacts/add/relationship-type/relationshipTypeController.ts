@@ -1,9 +1,9 @@
 import { Request, Response } from 'express'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { RelationshipTypeSchema } from './relationshipTypeSchema'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
+import { PrisonerJourneyParams } from '../../../../@types/journeys'
 
 export default class RelationshipTypeController implements PageHandler {
   public PAGE_NAME = Page.SELECT_RELATIONSHIP_TYPE

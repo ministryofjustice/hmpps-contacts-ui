@@ -9,8 +9,7 @@ import { Navigation } from '../../../common/navigation'
 import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
-import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
-import ContactDetails = contactsApiClientTypes.ContactDetails
+import { ContactDetails, ContactPhoneDetails } from '../../../../../@types/contactsApiClient'
 
 export default class ManageContactEditPhoneController implements PageHandler {
   constructor(
@@ -27,7 +26,7 @@ export default class ManageContactEditPhoneController implements PageHandler {
     const { user } = res.locals
     const { prisonerNumber, contactId, prisonerContactId, contactPhoneId } = req.params
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
-    const phone: ContactPhoneDetails = contact.phoneNumbers.find(
+    const phone = contact.phoneNumbers.find(
       (aPhone: ContactPhoneDetails) => aPhone.contactPhoneId === parseInt(contactPhoneId, 10),
     )
     if (!phone) {

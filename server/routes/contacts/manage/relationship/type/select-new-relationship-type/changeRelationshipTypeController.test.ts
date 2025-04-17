@@ -7,7 +7,7 @@ import { appWithAllRoutes, user } from '../../../../../testutils/appSetup'
 import { Page } from '../../../../../../services/auditService'
 import TestData from '../../../../../testutils/testData'
 import { MockedService } from '../../../../../../testutils/mockedServices'
-import ChangeRelationshipTypeJourney = journeys.ChangeRelationshipTypeJourney
+import { ChangeRelationshipTypeJourney } from '../../../../../../@types/journeys'
 
 jest.mock('../../../../../../services/auditService')
 jest.mock('../../../../../../services/prisonerSearchService')

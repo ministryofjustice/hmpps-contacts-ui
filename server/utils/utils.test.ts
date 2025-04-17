@@ -12,7 +12,7 @@ import {
   isDateAndInThePast,
   formatDob,
 } from './utils'
-import PagedModelContactSearchResultItem = contactsApiClientTypes.PagedModelContactSearchResultItem
+import { PagedModelContactSearchResultItem } from '../@types/contactsApiClient'
 
 describe('convert to title case', () => {
   it.each([

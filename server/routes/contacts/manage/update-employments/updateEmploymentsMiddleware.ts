@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import logger from '../../../../../logger'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
-import UpdateEmploymentJourneyParams = journeys.UpdateEmploymentJourneyParams
+import { PrisonerJourneyParams, UpdateEmploymentJourneyParams } from '../../../../@types/journeys'
 
 export const ensureInUpdateEmploymentsJourney = async (
   req: Request<PrisonerJourneyParams>,

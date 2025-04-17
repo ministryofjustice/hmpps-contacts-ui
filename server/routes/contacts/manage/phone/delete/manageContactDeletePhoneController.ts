@@ -5,9 +5,8 @@ import { ContactsService } from '../../../../../services'
 import { Navigation } from '../../../common/navigation'
 import Urls from '../../../../urls'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
-import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
-import ContactDetails = contactsApiClientTypes.ContactDetails
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
+import { ContactDetails, ContactPhoneDetails } from '../../../../../@types/contactsApiClient'
 
 export default class ManageContactDeletePhoneController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}

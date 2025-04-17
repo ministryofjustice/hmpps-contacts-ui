@@ -5,7 +5,7 @@ import { navigationForAddContactJourney } from '../addContactFlowControl'
 import { formatNameFirstNameFirst } from '../../../../utils/formatName'
 import captionForAddContactJourney from '../addContactsUtils'
 import Urls from '../../../urls'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
+import { PrisonerJourneyParams } from '../../../../@types/journeys'
 
 export default class CancelAddContactController implements PageHandler {
   public PAGE_NAME = Page.ADD_CONTACT_CANCEL_PAGE

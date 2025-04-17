@@ -1,10 +1,10 @@
 import { Request, Response } from 'express'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { Page } from '../../../../../services/auditService'
-import OrganisationSummaryResultItemPage = contactsApiClientTypes.OrganisationSummaryResultItemPage
 import { setPaginationLocals } from '../../../../../views/partials/simplePagination/utils'
 import OrganisationsService from '../../../../../services/organisationsService'
 import { CreateContactEmploymentParam, getEmploymentAndUrl } from '../common/utils'
+import { OrganisationSummaryResultItemPage } from '../../../../../@types/organisationsApiClient'
 
 export default class CreateContactOrganisationSearchController implements PageHandler {
   constructor(private readonly organisationsService: OrganisationsService) {}

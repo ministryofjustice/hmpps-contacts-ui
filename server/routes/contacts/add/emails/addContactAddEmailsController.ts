@@ -2,8 +2,8 @@ import { Request, Response } from 'express'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { OptionalEmailsSchemaType } from '../../manage/email/emailSchemas'
+import { PrisonerJourneyParams } from '../../../../@types/journeys'
 
 export default class AddContactAddEmailsController implements PageHandler {
   public PAGE_NAME = Page.ADD_CONTACT_ADD_EMAIL_PAGE

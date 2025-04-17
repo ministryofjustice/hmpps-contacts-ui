@@ -4,8 +4,8 @@ import populatePrisonerDetailsIfInCaseload from './populatePrisonerDetailsIfInCa
 import TestData from '../routes/testutils/testData'
 import { user } from '../routes/testutils/appSetup'
 import { PrisonerSearchAddress } from '../data/prisonerOffenderSearchTypes'
-import PrisonerDetails = journeys.PrisonerDetails
 import { MockedService } from '../testutils/mockedServices'
+import { PrisonerDetails } from '../@types/journeys'
 
 jest.mock('../services/prisonerSearchService')
 jest.mock('../services/auditService')

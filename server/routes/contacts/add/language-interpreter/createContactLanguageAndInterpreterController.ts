@@ -4,8 +4,7 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
-import LanguageAndInterpreterRequiredForm = journeys.LanguageAndInterpreterRequiredForm
+import { LanguageAndInterpreterRequiredForm, PrisonerJourneyParams } from '../../../../@types/journeys'
 
 export default class CreateContactLanguageAndInterpreterController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}

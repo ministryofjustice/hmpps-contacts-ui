@@ -8,8 +8,8 @@ import { ContactsService } from '../../../../services'
 import { Navigation } from '../../common/navigation'
 import { formatNameFirstNameFirst } from '../../../../utils/formatName'
 import Urls from '../../../urls'
-import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
+import { PatchContactRequest } from '../../../../@types/contactsApiClient'
 
 export default class ChangeTitleOrMiddleNamesController implements PageHandler {
   constructor(

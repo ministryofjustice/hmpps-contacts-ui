@@ -1,8 +1,8 @@
 import { Request, Response } from 'express'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { Page } from '../../../../../services/auditService'
-import UpdateEmploymentJourneyParams = journeys.UpdateEmploymentJourneyParams
 import { IsActiveEmploymentSchema } from './employmentStatusSchema'
+import { UpdateEmploymentJourneyParams } from '../../../../../@types/journeys'
 
 export default class EmploymentStatusController implements PageHandler {
   public PAGE_NAME = Page.MANAGE_CONTACT_EMPLOYMENT_STATUS_PAGE

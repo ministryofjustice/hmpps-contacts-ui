@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { ContactsService } from '../../../../../../services'
 import { PageHandler } from '../../../../../../interfaces/pageHandler'
 import { Page } from '../../../../../../services/auditService'
-import ChangeRelationshipTypeJourney = journeys.ChangeRelationshipTypeJourney
+import { ChangeRelationshipTypeJourney } from '../../../../../../@types/journeys'
 
 export default class ChangeRelationshipTypeStartController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -29,7 +29,7 @@ export default class ChangeRelationshipTypeStartController implements PageHandle
       contactId: contact.id,
       prisonerContactId: relationship.prisonerContactId,
       names: {
-        title: contact.title,
+        title: contact.titleDescription,
         lastName: contact.lastName,
         firstName: contact.firstName,
         middleNames: contact.middleNames,

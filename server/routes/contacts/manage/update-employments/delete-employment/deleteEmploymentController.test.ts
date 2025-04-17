@@ -6,7 +6,6 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes } from '../../../../testutils/appSetup'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
-import UpdateEmploymentsJourney = journeys.UpdateEmploymentsJourney
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
