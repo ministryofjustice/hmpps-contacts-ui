@@ -119,6 +119,7 @@ export default {
       },
       agent: new AgentConfig(Number(get('CONTACTS_API_TIMEOUT_RESPONSE', 10000))),
       pageSize: 10,
+      referenceDataCacheTTL: Number(get('CONTACTS_API_REFERENCE_DATA_CACHE_TTL', 5 * 60)),
     },
     organisationsApi: {
       url: get('ORGANISATIONS_API_URL', 'http://localhost:8080', requiredInProduction),

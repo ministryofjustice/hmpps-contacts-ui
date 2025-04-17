@@ -31,6 +31,20 @@ describe('referenceDataService', () => {
       expect(apiClient.getReferenceCodes).toHaveBeenCalledWith(ReferenceCodeType.TITLE, user)
     })
 
+    it('should cache reference data', async () => {
+      // Given
+      apiClient.getReferenceCodes.mockResolvedValue(STUBBED_TITLE_OPTIONS)
+
+      // When
+      const firstCall = await service.getReferenceData(ReferenceCodeType.ADDRESS_TYPE, user)
+      const secondCall = await service.getReferenceData(ReferenceCodeType.ADDRESS_TYPE, user)
+
+      // Then
+      expect(firstCall).toStrictEqual(STUBBED_TITLE_OPTIONS)
+      expect(secondCall).toStrictEqual(STUBBED_TITLE_OPTIONS)
+      expect(apiClient.getReferenceCodes).toHaveBeenCalledTimes(1)
+    })
+
     it('should handle a bad request', async () => {
       apiClient.getReferenceCodes.mockRejectedValue(createError.BadRequest())
       await expect(service.getReferenceData(ReferenceCodeType.TITLE, user)).rejects.toBeInstanceOf(BadRequest)
