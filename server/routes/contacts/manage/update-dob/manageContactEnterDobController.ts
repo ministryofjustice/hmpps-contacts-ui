@@ -61,7 +61,7 @@ export default class ManageContactEnterDobController implements PageHandler {
     const { user } = res.locals
     const { day, month, year } = req.body
     const request: PatchContactRequest = {
-      dateOfBirth: new Date(`${year}-${month}-${day}Z`),
+      dateOfBirth: new Date(`${year}-${month}-${day}Z`).toISOString(),
       updatedBy: user.username,
     }
     await this.contactsService.updateContactById(Number(contactId), request, user, req.id)

@@ -8,7 +8,7 @@ import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import { MockedService } from '../../../../../testutils/mockedServices'
-import { ContactDetails } from '../../../../../@types/contactsApiClient'
+import { ContactAddressDetails, ContactDetails } from '../../../../../@types/contactsApiClient'
 import { AddressJourney } from '../../../../../@types/journeys'
 
 jest.mock('../../../../../services/auditService')
@@ -238,7 +238,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/check-answers/:journeyId', () => {
   it('should create address, remove from the session and return to journey return point', async () => {
     // Given
-    contactsService.createContactAddress.mockResolvedValue({})
+    contactsService.createContactAddress.mockResolvedValue({} as ContactAddressDetails)
 
     // When
     await request(app)

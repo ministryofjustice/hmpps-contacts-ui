@@ -24,14 +24,16 @@ export default class AddContactModeController implements PageHandler {
       journey.contactId = Number(journey.contactId)
       const existingContact = await this.contactService.getContact(journey.contactId, user)
       journey.names = {
-        title: existingContact.title,
+        title: existingContact.titleDescription,
         lastName: existingContact.lastName,
         firstName: existingContact.firstName,
         middleNames: existingContact.middleNames,
       }
-      journey.existingContact = {
-        deceasedDate: existingContact.deceasedDate,
+      journey.existingContact = {}
+      if (existingContact.deceasedDate) {
+        journey.existingContact.deceasedDate = existingContact.deceasedDate
       }
+
       if (existingContact.dateOfBirth) {
         const date = new Date(existingContact.dateOfBirth)
         journey.dateOfBirth = {

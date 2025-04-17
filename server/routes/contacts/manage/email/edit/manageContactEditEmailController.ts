@@ -26,9 +26,7 @@ export default class ManageContactEditEmailController implements PageHandler {
     const { prisonerNumber, contactId, prisonerContactId, contactEmailId } = req.params
     const id = Number(contactEmailId)
     const contact: ContactDetails = await this.contactsService.getContact(Number(contactId), user)
-    const email: ContactEmailDetails = contact.emailAddresses.find(
-      (emailAddress: ContactEmailDetails) => emailAddress.contactEmailId === id,
-    )
+    const email = contact.emailAddresses.find((emailAddress: ContactEmailDetails) => emailAddress.contactEmailId === id)
     if (!email) {
       throw new Error(
         `Couldn't find email with id ${contactEmailId} for contact ${contactId}. URL probably entered manually.`,

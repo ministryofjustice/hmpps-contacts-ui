@@ -9,6 +9,7 @@ import { mockedReferenceData } from '../../testutils/stubReferenceData'
 import TestData from '../../testutils/testData'
 import { MockedService } from '../../../testutils/mockedServices'
 import { AddRestrictionJourney, RestrictionClass } from '../../../@types/journeys'
+import { ContactRestrictionDetails } from '../../../@types/contactsApiClient'
 
 jest.mock('../../../services/auditService')
 jest.mock('../../../services/referenceDataService')
@@ -290,7 +291,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
     'should pass to success page and remove from session',
     async restrictionClass => {
       existingJourney.restrictionClass = restrictionClass as RestrictionClass
-      restrictionsService.createRestriction.mockResolvedValue({})
+      restrictionsService.createRestriction.mockResolvedValue({} as ContactRestrictionDetails)
 
       await request(app)
         .post(

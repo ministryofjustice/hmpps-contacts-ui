@@ -8,7 +8,12 @@ import TestData from '../../testutils/testData'
 import { RestrictionSchemaType } from '../schema/restrictionSchema'
 import { MockedService } from '../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../middleware/setUpSuccessNotificationBanner'
-import { ContactDetails } from '../../../@types/contactsApiClient'
+import {
+  ContactDetails,
+  ContactRestrictionDetails,
+  PrisonerContactRestrictionDetails,
+  PrisonerContactRestrictionsResponse,
+} from '../../../@types/contactsApiClient'
 
 jest.mock('../../../services/auditService')
 jest.mock('../../../services/referenceDataService')
@@ -29,7 +34,15 @@ const prisonerContactId = 321
 const restrictionId = 999
 const contact: ContactDetails = {
   id: contactId,
-  title: 'MR',
+  titleCode: 'MR',
+  titleDescription: 'MR',
+  isStaff: false,
+  interpreterRequired: false,
+  addresses: [],
+  phoneNumbers: [],
+  emailAddresses: [],
+  employments: [],
+  identities: [],
   lastName: 'last',
   firstName: 'first',
   middleNames: 'middle',
@@ -89,7 +102,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
           comments: 'some comments',
         }),
       ],
-    })
+    } as unknown as PrisonerContactRestrictionsResponse)
 
     // When
     const response = await request(app).get(
@@ -195,7 +208,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
 describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/update/:restrictionClass/enter-restriction/:restrictionId', () => {
   it('should update restriction and pass to entry point with flash success for PRISONER_CONTACT if there are no validation errors', async () => {
-    restrictionsService.updatePrisonerContactRestriction.mockResolvedValue({})
+    restrictionsService.updatePrisonerContactRestriction.mockResolvedValue({} as PrisonerContactRestrictionDetails)
     contactsService.getContactName.mockResolvedValue(contact)
     const form: RestrictionSchemaType = {
       type: 'BAN',
@@ -225,7 +238,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
   })
 
   it('should update restriction and pass to entry point with flash success for CONTACT_GLOBAL if there are no validation errors', async () => {
-    restrictionsService.updateContactGlobalRestriction.mockResolvedValue({})
+    restrictionsService.updateContactGlobalRestriction.mockResolvedValue({} as ContactRestrictionDetails)
     contactsService.getContactName.mockResolvedValue(contact)
     const form: RestrictionSchemaType = {
       type: 'BAN',

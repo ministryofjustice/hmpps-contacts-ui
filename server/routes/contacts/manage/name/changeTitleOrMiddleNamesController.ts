@@ -69,7 +69,9 @@ export default class ChangeTitleOrMiddleNamesController implements PageHandler {
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const { title, middleNames } = req.body
     const request: PatchContactRequest = {
+      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       titleCode: title || null,
+      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       middleNames: middleNames || null,
       updatedBy: user.username,
     }

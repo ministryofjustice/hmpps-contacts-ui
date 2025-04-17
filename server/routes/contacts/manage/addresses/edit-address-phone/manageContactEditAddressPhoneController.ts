@@ -33,7 +33,7 @@ export default class ManageContactEditAddressPhoneController implements PageHand
     const { user } = res.locals
     const { prisonerNumber, contactId, prisonerContactId, contactAddressId, contactAddressPhoneId } = req.params
     const { address, formattedAddress } = await getUpdateAddressDetails(this.contactsService, req, res)
-    const phone: ContactAddressPhoneDetails = address.phoneNumbers.find(
+    const phone = address.phoneNumbers.find(
       (aPhone: ContactAddressPhoneDetails) => aPhone.contactAddressPhoneId === Number(contactAddressPhoneId),
     )
     if (!phone) {

@@ -22,7 +22,7 @@ export default class ManageContactDeleteEmailController implements PageHandler {
     const contactIdNumber = Number(contactId)
     const contactEmailIdNumber = Number(contactEmailId)
     const contact: ContactDetails = await this.contactsService.getContact(contactIdNumber, user)
-    const email: ContactEmailDetails = contact.emailAddresses.find(
+    const email = contact.emailAddresses.find(
       (aEmail: ContactEmailDetails) => aEmail.contactEmailId === contactEmailIdNumber,
     )
     if (!email) {

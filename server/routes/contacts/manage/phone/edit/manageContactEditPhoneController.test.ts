@@ -7,7 +7,7 @@ import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
-import { ContactDetails } from '../../../../../@types/contactsApiClient'
+import { ContactDetails, ContactPhoneDetails } from '../../../../../@types/contactsApiClient'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/referenceDataService')
@@ -150,7 +150,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/phone/:contactPhoneId/edit', () => {
   it('should edit phone with extension and pass to manage contact details page if there are no validation errors', async () => {
     contactsService.getContactName.mockResolvedValue(contact)
-    contactsService.updateContactPhone.mockResolvedValue(null)
+    contactsService.updateContactPhone.mockResolvedValue({} as ContactPhoneDetails)
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/999/edit`)
       .type('form')
@@ -175,7 +175,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
 
   it('should edit phone without extension and pass to manage contact details page if there are no validation errors', async () => {
     contactsService.getContactName.mockResolvedValue(contact)
-    contactsService.updateContactPhone.mockResolvedValue(null)
+    contactsService.updateContactPhone.mockResolvedValue({} as ContactPhoneDetails)
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/999/edit`)
       .type('form')

@@ -7,7 +7,7 @@ import TestData from '../../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
-import { ContactDetails } from '../../../../../@types/contactsApiClient'
+import { ContactAddressDetails, ContactDetails } from '../../../../../@types/contactsApiClient'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -86,8 +86,8 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/primary-or-postal', () => {
   it('should render change address flags page', async () => {
     // Given
-    contact.addresses[0].primaryAddress = false
-    contact.addresses[0].mailFlag = false
+    contact.addresses[0]!.primaryAddress = false
+    contact.addresses[0]!.mailFlag = false
 
     // When
     const response = await request(app).get(
@@ -140,7 +140,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/primary-or-postal', () => {
   it('should update the address flags and redirect if there are no validation errors', async () => {
     // Given
-    contactsService.updateContactAddress.mockResolvedValue({ contactAddressId })
+    contactsService.updateContactAddress.mockResolvedValue({ contactAddressId } as ContactAddressDetails)
     const isPrimaryOrPostal = 'M'
 
     // When

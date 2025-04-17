@@ -6,6 +6,7 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes } from '../../../../testutils/appSetup'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
+import { UpdateEmploymentsJourney } from '../../../../../@types/journeys'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -315,6 +316,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/che
         employer: {
           organisationName: 'Wrong Corp',
           organisationId: 321,
+          organisationActive: true,
         },
         isActive: false,
       },

@@ -64,7 +64,7 @@ export default class ManageContactEnterDateOfDeathController implements PageHand
     const { user } = res.locals
     const { day, month, year } = req.body
     const request: PatchContactRequest = {
-      deceasedDate: new Date(`${year}-${month}-${day}Z`),
+      deceasedDate: new Date(`${year}-${month}-${day}Z`).toISOString(),
       updatedBy: user.username,
     }
     await this.contactsService

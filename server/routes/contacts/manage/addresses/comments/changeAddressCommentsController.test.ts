@@ -7,7 +7,7 @@ import TestData from '../../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
-import { ContactDetails } from '../../../../../@types/contactsApiClient'
+import { ContactAddressDetails, ContactDetails } from '../../../../../@types/contactsApiClient'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -86,7 +86,7 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/comments', () => {
   it('should render change address comments page', async () => {
     // Given
-    contact.addresses[0].comments = 'text'
+    contact.addresses[0]!.comments = 'text'
 
     // When
     const response = await request(app).get(
@@ -148,7 +148,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/comments', () => {
   it('should update the address comments and redirect if there are no validation errors', async () => {
     // Given
-    contactsService.updateContactAddress.mockResolvedValue({ contactAddressId })
+    contactsService.updateContactAddress.mockResolvedValue({ contactAddressId } as ContactAddressDetails)
     const comments = 'text'
 
     // When
@@ -176,7 +176,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
 
   it('should update the address comments to null if the input is blank', async () => {
     // Given
-    contactsService.updateContactAddress.mockResolvedValue({ contactAddressId })
+    contactsService.updateContactAddress.mockResolvedValue({ contactAddressId } as ContactAddressDetails)
     const comments = ''
 
     // When
@@ -204,7 +204,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
 
   it('should update the address comments and redirect if there are no validation errors', async () => {
     // Given
-    contactsService.updateContactAddress.mockResolvedValue({ contactAddressId })
+    contactsService.updateContactAddress.mockResolvedValue({ contactAddressId } as ContactAddressDetails)
     const comments = 'text'
 
     // When

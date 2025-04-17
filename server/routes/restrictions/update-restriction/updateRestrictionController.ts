@@ -111,7 +111,7 @@ export default class UpdateRestrictionController implements PageHandler {
         .then(contactName =>
           req.flash(
             FLASH_KEY__SUCCESS_BANNER,
-            `You’ve updated the relationship restrictions between contact ${formatNameFirstNameFirst(contactName)} and prisoner ${formatNameFirstNameFirst(prisonerDetails, { excludeMiddleNames: true })}.`,
+            `You’ve updated the relationship restrictions between contact ${formatNameFirstNameFirst(contactName)} and prisoner ${formatNameFirstNameFirst(prisonerDetails!, { excludeMiddleNames: true })}.`,
           ),
         )
     } else {

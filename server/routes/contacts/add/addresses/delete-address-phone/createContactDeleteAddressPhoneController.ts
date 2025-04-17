@@ -8,7 +8,6 @@ import { getFormattedAddress } from '../../../manage/addresses/common/utils'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import logger from '../../../../../../logger'
-import { ContactAddressPhoneDetails } from '../../../../../@types/contactsApiClient'
 
 export default class CreateContactDeleteAddressPhoneController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
@@ -52,7 +51,7 @@ export default class CreateContactDeleteAddressPhoneController implements PageHa
     const { addressIndex, phoneIdx } = req.params
     const { addressForm, bounceBackUrl } = getAddressFormAndUrl(req)
 
-    const phone: ContactAddressPhoneDetails = addressForm.phoneNumbers?.[Number(phoneIdx) - 1]
+    const phone = addressForm.phoneNumbers?.[Number(phoneIdx) - 1]
     if (!phone) {
       logger.error(
         `Couldn't find phone at index ${phoneIdx} for an address ${addressIndex}. URL probably entered manually.`,

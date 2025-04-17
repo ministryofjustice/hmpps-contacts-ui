@@ -147,7 +147,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
 describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/identity/create`, () => {
   it('should create all identity documents and pass to manage contact details page if there are no validation errors and it is a save action', async () => {
-    contactsService.createContactIdentities.mockResolvedValue(null)
+    contactsService.createContactIdentities.mockResolvedValue([])
     contactsService.getContactName.mockResolvedValue(TestData.contactName({ middleNames: 'Middle Names' }))
 
     const form = {

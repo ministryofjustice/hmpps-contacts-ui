@@ -101,7 +101,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(journey.relationshipType).toStrictEqual('S')
     expect(journey.relationshipToPrisoner).toStrictEqual('MOT')
     expect(journey.names).toStrictEqual({
-      title: '',
+      title: undefined,
       lastName: 'last',
       firstName: 'first',
       middleNames: 'middle',

@@ -18,7 +18,7 @@ export default class CancelAddContactController implements PageHandler {
     let title: string
     let showPrisonerAndContact: boolean
     if (journey.mode === 'NEW') {
-      title = `Are you sure you want to cancel adding ${formatNameFirstNameFirst(journey.names)} as a contact?`
+      title = `Are you sure you want to cancel adding ${formatNameFirstNameFirst(journey.names!)} as a contact?`
       showPrisonerAndContact = false
     } else {
       title = 'Are you sure you want to cancel linking the prisoner and the contact?'

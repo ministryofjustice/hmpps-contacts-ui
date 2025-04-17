@@ -323,6 +323,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/employments/:employment
         employer: {
           organisationName: 'Wrong Corp',
           organisationId: 321,
+          organisationActive: true,
         },
         isActive: false,
       },

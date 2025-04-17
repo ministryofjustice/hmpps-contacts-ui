@@ -46,6 +46,7 @@ export default class ManageRelationshipCommentsController implements PageHandler
     const { user, prisonerDetails } = res.locals
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const request: PatchRelationshipRequest = {
+      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       comments: req.body.comments ?? null,
       updatedBy: user.username,
     }
@@ -54,7 +55,7 @@ export default class ManageRelationshipCommentsController implements PageHandler
     await this.contactsService.getContactName(Number(contactId), user).then(response => {
       req.flash(
         FLASH_KEY__SUCCESS_BANNER,
-        `You’ve updated the relationship information for contact ${formatNameFirstNameFirst(response)} and prisoner ${formatNameFirstNameFirst(prisonerDetails, { excludeMiddleNames: true })}.`,
+        `You’ve updated the relationship information for contact ${formatNameFirstNameFirst(response)} and prisoner ${formatNameFirstNameFirst(prisonerDetails!, { excludeMiddleNames: true })}.`,
       )
     })
     res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))

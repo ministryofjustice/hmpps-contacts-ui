@@ -43,13 +43,13 @@ export default class UpdateEmploymentsController implements PageHandler {
     const request: PatchEmploymentsRequest = {
       createEmployments: journey.employments
         .filter(details => !details.employmentId)
-        .map(({ employer, isActive }) => ({ organisationId: employer.organisationId, isActive })),
+        .map(({ employer, isActive }) => ({ organisationId: employer.organisationId, isActive: isActive ?? false })),
       updateEmployments: journey.employments
         .filter(details => details.employmentId)
         .map(({ employmentId, employer, isActive }) => ({
-          employmentId,
+          employmentId: employmentId!,
           organisationId: employer.organisationId,
-          isActive,
+          isActive: isActive ?? false,
         })),
       deleteEmployments: journey.employmentIdsToDelete ?? [],
       requestedBy: res.locals.user.username,

@@ -7,7 +7,7 @@ import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
-import { ContactDetails } from '../../../../../@types/contactsApiClient'
+import { ContactDetails, ContactIdentityDetails } from '../../../../../@types/contactsApiClient'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/referenceDataService')
@@ -152,7 +152,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/identity/:contactIdentityId/edit', () => {
   it('should edit identity number with issuing authority and pass to manage contact details page if there are no validation errors', async () => {
-    contactsService.updateContactIdentity.mockResolvedValue(Promise.resolve())
+    contactsService.updateContactIdentity.mockResolvedValue({} as ContactIdentityDetails)
     contactsService.getContactName.mockResolvedValue(TestData.contactName({ middleNames: 'Middle Names' }))
 
     await request(app)
@@ -180,7 +180,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   })
 
   it('should edit identity number without issuing authority and pass to manage contact details page if there are no validation errors', async () => {
-    contactsService.updateContactIdentity.mockResolvedValue(Promise.resolve())
+    contactsService.updateContactIdentity.mockResolvedValue({} as ContactIdentityDetails)
     contactsService.getContactName.mockResolvedValue(TestData.contactName())
 
     await request(app)

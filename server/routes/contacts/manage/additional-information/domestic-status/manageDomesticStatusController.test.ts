@@ -88,7 +88,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
   it('should render manage domestic status page with no status selected', async () => {
     // Given
-    contactsService.getContact.mockResolvedValue({ ...TestData.contact(), domesticStatusCode: undefined })
+    const contact = TestData.contact()
+    delete contact.domesticStatusCode
+    contactsService.getContact.mockResolvedValue(contact)
 
     // When
     const response = await request(app).get(
