@@ -34,6 +34,7 @@ generic-service:
     APPLICATIONINSIGHTS_CONNECTION_STRING: "InstrumentationKey=$(APPINSIGHTS_INSTRUMENTATIONKEY);IngestionEndpoint=https://northeurope-0.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/"
     AUDIT_SQS_REGION: "eu-west-2"
     AUDIT_SERVICE_NAME: "hmpps-contacts-ui" # Your audit service name
+    CONTACTS_API_REFERENCE_DATA_CACHE_TTL: 300
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:

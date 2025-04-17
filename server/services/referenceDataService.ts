@@ -32,7 +32,7 @@ export default class ReferenceDataService {
     await this.referenceDataCache.setToken(
       `Ref-data:${type}`,
       JSON.stringify(refData),
-      config.apis.contactsApi.cacheTTL,
+      config.apis.contactsApi.referenceDataCacheTTL,
     )
     return refData
   }
