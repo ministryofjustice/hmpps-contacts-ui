@@ -15,7 +15,7 @@
               <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
             </div>
           </div>
-          <p class="govuk-!-margin-bottom-7">
+          <p class="govuk-!-margin-bottom-9">
             <strong>Prisoner:</strong>&nbsp;<span>{{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }} ({{ prisonerDetails.prisonerNumber }})</span>
             <br/>
             <strong>Contact:</strong>&nbsp;<span>{{ journey.names | formatNameFirstNameFirst }} ({{ journey.contactId }})</span>
@@ -23,6 +23,7 @@
 
           {% set baseChangeUrl = "/prisoner/" + journey.prisonerNumber + "/contacts/create" %}
           {{ govukSummaryList({
+              classes: 'govuk-!-margin-bottom-7',
               rows: [
                 {
                   key: {

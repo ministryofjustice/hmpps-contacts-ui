@@ -10,6 +10,7 @@
   {% set enumeratedPhones = opts.enumeratedPhones %}
   {% set editPhoneWithCreateLink = opts.editPhoneWithCreateLink %}
   {% set phoneTypeOrderDictionary = opts.phoneTypeOrderDictionary %}
+  {% set classes = opts.classes %}
 
   {% set isActiveAddress = not address.endDate or not (address.endDate | isDateAndInThePast) %}
 
@@ -171,6 +172,7 @@
   }]) %}
   {{ govukSummaryList({
     card: {
+      classes: (classes + " summary-card-wider-key-column") if classes else "summary-card-wider-key-column",
       title: {
         text: (address | formatTitleForAddress) or "Address"
       },

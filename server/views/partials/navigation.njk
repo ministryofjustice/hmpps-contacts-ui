@@ -36,6 +36,7 @@
 {% endif %}
 {% if navigation.backLink %}
     {{ govukBackLink({
+        classes: "govuk-!-margin-bottom-1",
         text: navigation.backLinkLabel or "Back",
         href: navigation.backLink,
         attributes: {"data-qa": "back-link"}

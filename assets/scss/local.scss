@@ -120,3 +120,13 @@ div.moj-action-bar__filter::after { content: none !important; }
 .remove-width-limit {
   width: unset;
 }
+
+.summary-card-wider-key-column {
+  .govuk-summary-card__content {
+    .govuk-summary-list__row {
+      .govuk-summary-list__key {
+        width: 40%;
+      }
+    }
+  }
+}
