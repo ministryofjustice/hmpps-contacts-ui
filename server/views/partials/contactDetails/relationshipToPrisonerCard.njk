@@ -9,6 +9,7 @@
 
   {{ govukSummaryList({
     card: {
+      classes: 'summary-card-wider-key-column',
       title: {
         text: 'Relationship to prisoner ' + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)
       }

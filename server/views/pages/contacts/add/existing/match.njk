@@ -1,5 +1,4 @@
 {% extends "partials/layout.njk" %}
-{% from "partials/miniProfile/macro.njk" import miniProfile %}
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
@@ -18,9 +17,6 @@
 {% set title = 'Check and confirm if you want to link contact ' + (contact | formatNameFirstNameFirst ) +' to prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) %}
 
 {% block content %}
-  {% include 'partials/formErrorSummary.njk' %}
-  {% include 'partials/navigation.njk' %}
-  {{ miniProfile(prisonerDetails) }}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
       <span class="govuk-caption-l">Link a contact to a prisoner</span>

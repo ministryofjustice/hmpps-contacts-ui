@@ -3,7 +3,6 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "partials/miniProfile/macro.njk" import miniProfile %}
 
 {% block meta %}
   <meta name="autocompleteElements" content="language"/>
@@ -24,10 +23,6 @@
 {% endif %}
 
 {% block content %}
-
-{% include 'partials/navigation.njk' %}
-{{ miniProfile(prisonerDetails) }}
-{% include 'partials/formErrorSummary.njk' %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <span class="govuk-caption-l">{{ caption }}</span>

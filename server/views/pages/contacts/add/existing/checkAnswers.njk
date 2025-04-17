@@ -1,25 +1,17 @@
 {% extends "partials/layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
-{% from "partials/miniProfile/macro.njk" import miniProfile %}
 
 {% set title = "Check your answers before linking the contact to " + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) %}
 {% set pageTitle = "Check your answers before linking the contact to the prisoner - Link a contact to a prisoner - DPS" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-{% include 'partials/navigation.njk' %}
-{{ miniProfile(prisonerDetails) }}
-{% include 'partials/formErrorSummary.njk' %}
  <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-          <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-              <span class="govuk-caption-l">{{ journey | captionForAddContactJourney }}</span>
-              <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
-            </div>
-          </div>
-          <p class="govuk-!-margin-bottom-7">
+        <div class="govuk-grid-column-two-thirds">
+          <span class="govuk-caption-l">{{ journey | captionForAddContactJourney }}</span>
+          <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+          <p class="govuk-!-margin-bottom-9">
             <strong>Prisoner:</strong>&nbsp;<span>{{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }} ({{ prisonerDetails.prisonerNumber }})</span>
             <br/>
             <strong>Contact:</strong>&nbsp;<span>{{ journey.names | formatNameFirstNameFirst }} ({{ journey.contactId }})</span>
@@ -27,6 +19,7 @@
 
           {% set baseChangeUrl = "/prisoner/" + journey.prisonerNumber + "/contacts/create" %}
           {{ govukSummaryList({
+              classes: 'govuk-!-margin-bottom-7 summary-list-wider-key-column',
               rows: [
                 {
                   key: {

@@ -1,4 +1,5 @@
-{% extends "govuk/template.njk" %}
+{% extends "govuk/template.njk" %}`
+{% from "partials/miniProfile/macro.njk" import miniProfile %}
 
 {% block head %}
   <link href="{{ '/assets/css/app.css' | assetMap }}" rel="stylesheet"/>
@@ -18,6 +19,14 @@
 {% block header %}
   {{ feComponents.header | safe }}
   {% block meta %}{% endblock %}
+{% endblock %}
+
+{% block beforeContent %}
+  {% include 'partials/navigation.njk' %}
+  {% include 'partials/formErrorSummary.njk' %}
+  {% if prisonerDetails %}
+    {{ miniProfile(prisonerDetails) }}
+  {% endif %}
 {% endblock %}
 
 {% block bodyStart %}

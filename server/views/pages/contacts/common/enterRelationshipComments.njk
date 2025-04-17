@@ -1,16 +1,12 @@
 {% extends "../../../partials/layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
-{% from "../../../partials/miniProfile/macro.njk" import miniProfile %}
 
 {% set pageTitle = applicationName + " - Select next of kin" %}
 {% set title = "Add additional information about the relationship between the prisoner and " + journey.names | formatNameFirstNameFirst  %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-{% include '../../../partials/navigation.njk' %}
-{{ miniProfile(prisonerDetails) }}
-{% include '../../../partials/formErrorSummary.njk' %}
  <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <span class="govuk-caption-l">{{ caption or 'Contacts' }}</span>

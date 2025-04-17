@@ -4,7 +4,6 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
-{% from "partials/miniProfile/macro.njk" import miniProfile %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "partials/simplePagination/macro.njk" import simplePagination %}
@@ -14,10 +13,6 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-
-  {% include '../../../partials/navigation.njk' %}
-  {{ miniProfile(prisonerDetails) }}
-
   <div class="moj-page-header-actions contact-record-banner-bottom">
     <div class="moj-page-header-actions__title">
       <h1 class="govuk-heading-l">View and manage contacts linked to {{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }}</h1>
@@ -34,7 +29,7 @@
     </div>
   </div>
 
-  <div class="govuk-grid-row prisoner-contact-filter">
+  <div class="govuk-grid-row prisoner-contact-filter govuk-!-margin-left-0 govuk-!-margin-right-0">
     <div class="govuk-grid-column-full">
       <h2 class="govuk-heading-s">Filter by</h2>
     </div>

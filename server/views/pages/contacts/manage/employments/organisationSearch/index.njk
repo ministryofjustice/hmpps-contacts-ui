@@ -2,7 +2,6 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/details/macro.njk" import govukDetails %}
-{% from "partials/miniProfile/macro.njk" import miniProfile %}
 {% from "partials/simplePagination/macro.njk" import simplePagination %}
 
 {% extends "partials/layout.njk" %}§
@@ -16,8 +15,6 @@
 {% endif %}
 
 {% block content %}
-  {% include 'partials/navigation.njk' %}
-  {{ miniProfile(prisonerDetails) }}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <div class="govuk-!-static-margin-bottom-7">

@@ -1,7 +1,6 @@
 {% extends "partials/layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
-{% from "partials/miniProfile/macro.njk" import miniProfile %}
 
 {% if isUpdateJourney %}
   {% set pageTitle = "Change the comments on the relationship between the contact and the prisoner - Edit contact details - DPS" %}
@@ -21,9 +20,6 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-{% include 'partials/navigation.njk' %}
-{{ miniProfile(prisonerDetails) }}
-{% include 'partials/formErrorSummary.njk' %}
  <div class="govuk-grid-row">
    <div class="govuk-grid-column-two-thirds">
      <span class="govuk-caption-l">{{ caption }}</span>

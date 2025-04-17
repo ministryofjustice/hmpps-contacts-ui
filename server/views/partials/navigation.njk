@@ -1,43 +1,42 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 {% if navigation.breadcrumbs %}
-    <div class="govuk-grid-row govuk-!-static-margin-bottom-5" data-qa="breadcrumbs">
-        <div class="govuk-grid-column-full">
-            {% set breadcrumbs = [] %}
+    <div data-qa="breadcrumbs">
+      {% set breadcrumbs = [] %}
 
-            {% for breadcrumb in navigation.breadcrumbs %}
-                {% if breadcrumb === 'DPS_HOME' %}
-                    {% set breadcrumbs = (breadcrumbs.push(
-                        {
-                            text: "Digital Prison Services",
-                            href: DPS_HOME_PAGE_URL
-                        }
-                    ), breadcrumbs) %}
-                {% elseif breadcrumb === 'DPS_PROFILE' %}
-                    {% set breadcrumbs = (breadcrumbs.push(
-                        {
-                            text: prisonerDetails | formatNameFirstNameFirst,
-                            href: digitalPrisonServicesUrl + "/prisoner/" + prisonerDetails.prisonerNumber
-                        }
-                    ), breadcrumbs) %}
-                {% elseif breadcrumb === 'PRISONER_CONTACTS' %}
-                    {% set breadcrumbs = (breadcrumbs.push(
-                        {
-                            text: "Contacts",
-                            href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/list"
-                        }
-                    ), breadcrumbs) %}
-                {% endif %}
-            {% endfor %}
+      {% for breadcrumb in navigation.breadcrumbs %}
+        {% if breadcrumb === 'DPS_HOME' %}
+          {% set breadcrumbs = (breadcrumbs.push(
+            {
+              text: "Digital Prison Services",
+              href: DPS_HOME_PAGE_URL
+            }
+          ), breadcrumbs) %}
+        {% elseif breadcrumb === 'DPS_PROFILE' %}
+          {% set breadcrumbs = (breadcrumbs.push(
+            {
+              text: prisonerDetails | formatNameFirstNameFirst,
+              href: digitalPrisonServicesUrl + "/prisoner/" + prisonerDetails.prisonerNumber
+            }
+          ), breadcrumbs) %}
+        {% elseif breadcrumb === 'PRISONER_CONTACTS' %}
+          {% set breadcrumbs = (breadcrumbs.push(
+            {
+              text: "Contacts",
+              href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/list"
+            }
+          ), breadcrumbs) %}
+        {% endif %}
+      {% endfor %}
 
-            {{ govukBreadcrumbs({
-                items: breadcrumbs
-            }) }}
-        </div>
+      {{ govukBreadcrumbs({
+        items: breadcrumbs
+      }) }}
     </div>
 {% endif %}
 {% if navigation.backLink %}
     {{ govukBackLink({
+        classes: "govuk-!-margin-bottom-1",
         text: navigation.backLinkLabel or "Back",
         href: navigation.backLink,
         attributes: {"data-qa": "back-link"}

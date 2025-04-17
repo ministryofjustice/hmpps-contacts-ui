@@ -1,5 +1,4 @@
 {% extends "partials/layout.njk" %}
-{% from "partials/miniProfile/macro.njk" import miniProfile %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
@@ -31,9 +30,6 @@
   <meta name="autocompleteElements" content="countryCode"/>
 {% endblock %}
 {% block content %}
-  {% include 'partials/navigation.njk' %}
-  {{ miniProfile(prisonerDetails) }}
-  {% include 'partials/formErrorSummary.njk' %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
     <span class="govuk-caption-l">{{ caption }}</span>
