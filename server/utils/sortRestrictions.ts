@@ -1,13 +1,9 @@
 import { isDateAndInThePast } from './utils'
-import {
-  ContactAddressDetails,
-  ContactRestrictionDetails,
-  PrisonerContactRestrictionDetails,
-} from '../@types/contactsApiClient'
+import { ContactRestrictionDetails, PrisonerContactRestrictionDetails } from '../@types/contactsApiClient'
 
 function sortRestrictions(
   restrictions: ContactRestrictionDetails[] | PrisonerContactRestrictionDetails[],
-): ContactAddressDetails[] | PrisonerContactRestrictionDetails[] {
+): ContactRestrictionDetails[] | PrisonerContactRestrictionDetails[] {
   return (
     restrictions?.sort((a, b) => {
       const aExpired = isDateAndInThePast(a.expiryDate)

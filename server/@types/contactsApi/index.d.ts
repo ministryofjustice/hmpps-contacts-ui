@@ -6264,7 +6264,7 @@ export interface components {
        * @description Whether they are the emergency contact for the prisoner
        * @example boolean
        */
-      isEmergencyContact?: string
+      isEmergencyContact?: boolean
       /**
        * @description Whether they are approved to visit the prisoner
        * @example true

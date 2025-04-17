@@ -9,8 +9,10 @@ import {
   ContactRestrictionDetails,
   CreateContactRestrictionRequest,
   CreatePrisonerContactRestrictionRequest,
-  PrisonerContactRestrictionDetails, PrisonerContactRestrictionsResponse,
-  UpdateContactRestrictionRequest, UpdatePrisonerContactRestrictionRequest,
+  PrisonerContactRestrictionDetails,
+  PrisonerContactRestrictionsResponse,
+  UpdateContactRestrictionRequest,
+  UpdatePrisonerContactRestrictionRequest,
 } from '../@types/contactsApiClient'
 
 export default class RestrictionsService extends AuditedService {
@@ -34,8 +36,8 @@ export default class RestrictionsService extends AuditedService {
     const request: CreatePrisonerContactRestrictionRequest & CreateContactRestrictionRequest = {
       restrictionType: type,
       startDate: parsedStartDate,
-      expiryDate: parsedExpiryDate,
-      comments,
+      ...(parsedExpiryDate ? { expiryDate: parsedExpiryDate } : {}),
+      ...(comments ? { comments } : {}),
       createdBy: user.username,
     }
 

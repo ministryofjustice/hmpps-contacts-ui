@@ -48,7 +48,7 @@ afterEach(() => {
 describe('auditPageViewMiddleware', () => {
   it('should only log page view event on successful access', async () => {
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-    contactsService.searchContact.mockResolvedValue(TestData.contact())
+    contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
     contactsService.getContact.mockResolvedValue(TestData.contact())
     contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
 

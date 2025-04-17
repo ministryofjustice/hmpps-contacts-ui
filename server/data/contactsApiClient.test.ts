@@ -6,14 +6,7 @@ import ReferenceCodeType from '../enumeration/referenceCodeType'
 import TestData from '../routes/testutils/testData'
 import {
   AddContactRelationshipRequest,
-  ContactAddressDetails,
-  ContactAddressPhoneDetails,
-  ContactCreationResult,
-  ContactDetails,
   ContactEmailDetails,
-  ContactIdentityDetails,
-  ContactPhoneDetails,
-  ContactRestrictionDetails,
   ContactSearchRequest,
   CreateContactAddressRequest,
   CreateContactRequest,
@@ -21,13 +14,11 @@ import {
   CreateMultipleEmailsRequest,
   CreateMultipleIdentitiesRequest,
   CreatePrisonerContactRestrictionRequest,
-  PagedModelContactSearchResultItem, PagedModelPrisonerContactSummary,
+  PagedModelPrisonerContactSummary,
   PatchContactAddressRequest,
   PatchContactRequest,
-  PatchContactResponse, PrisonerContactFilter, PrisonerContactPagination,
-  PrisonerContactRelationshipDetails,
-  PrisonerContactRestrictionDetails,
-  ReferenceCode,
+  PrisonerContactFilter,
+  PrisonerContactPagination,
   UpdateContactAddressPhoneRequest,
   UpdateContactRestrictionRequest,
   UpdateEmailRequest,
@@ -63,7 +54,7 @@ describe('contactsApiClient', () => {
   describe('createContact', () => {
     it('should create the request and return the response', async () => {
       // Given
-      const expectedContact: ContactCreationResult = {
+      const expectedContact = {
         createdContact: {
           id: 1,
           lastName: 'last',
@@ -133,7 +124,7 @@ describe('contactsApiClient', () => {
   describe('addContactRelationship', () => {
     it('should create the request and return the response', async () => {
       // Given
-      const expected: PrisonerContactRelationshipDetails = {
+      const expected = {
         prisonerContactId: 123456,
       }
       const request: AddContactRelationshipRequest = {
@@ -205,7 +196,7 @@ describe('contactsApiClient', () => {
     describe('createContact', () => {
       it('should create the request and return the response', async () => {
         // Given
-        const expectedCodes: ReferenceCode[] = [
+        const expectedCodes = [
           {
             code: 'MR',
             description: 'Mr',
@@ -266,7 +257,7 @@ describe('contactsApiClient', () => {
         dateOfBirth: '1980-12-10T00:00:00.000Z',
       }
 
-      const results: PagedModelContactSearchResultItem = {
+      const results = {
         totalPage: 1,
         totalElements: 1,
         content: [
@@ -302,7 +293,7 @@ describe('contactsApiClient', () => {
   describe('getContact', () => {
     it('should create the request and return the response', async () => {
       // Given
-      const expectedContact: ContactDetails = {
+      const expectedContact = {
         id: 123456,
         lastName: 'last',
         firstName: 'middle',
@@ -351,7 +342,7 @@ describe('contactsApiClient', () => {
   describe('getPrisonerContactRelationship', () => {
     it('should get the prisoner contact relationship', async () => {
       // Given
-      const expected: PrisonerContactRelationshipDetails = {
+      const expected = {
         relationshipToPrisonerCode: 'FRI',
         relationshipToPrisonerDescription: 'Friend',
         isEmergencyContact: false,
@@ -399,7 +390,7 @@ describe('contactsApiClient', () => {
   describe('updateContactPhone', () => {
     it('should update the contact and return the response', async () => {
       // Given
-      const expectedContactPhoneDetails: ContactPhoneDetails = {
+      const expectedContactPhoneDetails = {
         id: 1,
         phoneType: 'MOB',
         phoneNumber: '0123456789',
@@ -409,7 +400,7 @@ describe('contactsApiClient', () => {
         updatedTime: new Date().toISOString(),
       }
       const request: UpdatePhoneRequest = {
-        type: 'MOB',
+        phoneType: 'MOB',
         phoneNumber: '0123456789',
         updatedBy: 'user1',
       }
@@ -429,7 +420,7 @@ describe('contactsApiClient', () => {
     it.each([400, 401, 403, 500])('should propagate errors updating contact phone', async (errorCode: number) => {
       // Given
       const request: UpdatePhoneRequest = {
-        type: 'MOB',
+        phoneType: 'MOB',
         phoneNumber: '0123456789',
         updatedBy: 'user1',
       }
@@ -499,7 +490,7 @@ describe('contactsApiClient', () => {
         updatedBy: 'user1',
       }
 
-      const expectedContact: PatchContactResponse = {
+      const expectedContact = {
         languageCode: 'ENG',
         updatedBy: 'user1',
       }
@@ -522,7 +513,7 @@ describe('contactsApiClient', () => {
     describe('createContactIdentities', () => {
       it('should create the contact identity and return the response', async () => {
         // Given
-        const expectedContactIdentityDetails: ContactIdentityDetails = {
+        const expectedContactIdentityDetails = {
           id: 1,
           identityType: 'PASS',
           identityNumber: '0123456789',
@@ -591,7 +582,7 @@ describe('contactsApiClient', () => {
     describe('updateContactIdentity', () => {
       it('should update the contact identity and return the response', async () => {
         // Given
-        const expectedContactIdentityDetails: ContactIdentityDetails = {
+        const expectedContactIdentityDetails = {
           id: 1,
           identityType: 'PASS',
           identityNumber: '0123456789',
@@ -602,8 +593,8 @@ describe('contactsApiClient', () => {
           updatedTime: new Date().toISOString(),
         }
         const request: UpdateIdentityRequest = {
-          type: 'PASS',
-          identityNumber: '0123456789',
+          identityType: 'PASS',
+          identityValue: '0123456789',
           updatedBy: 'user1',
         }
 
@@ -622,8 +613,8 @@ describe('contactsApiClient', () => {
       it.each([400, 401, 403, 500])('should propagate errors updating contact identity', async (errorCode: number) => {
         // Given
         const request: UpdateIdentityRequest = {
-          type: 'PASS',
-          identityNumber: '0123456789',
+          identityType: 'PASS',
+          identityValue: '0123456789',
           issuingAuthority: 'UK',
           updatedBy: 'user1',
         }
@@ -847,8 +838,9 @@ describe('contactsApiClient', () => {
       const request: CreateContactRestrictionRequest = {
         restrictionType: 'BAN',
         startDate: '2020-01-01',
+        createdBy: 'user',
       }
-      const expected: ContactRestrictionDetails = {
+      const expected = {
         contactRestrictionId: 123456,
         contactId: 99,
       }
@@ -869,6 +861,7 @@ describe('contactsApiClient', () => {
       const request: CreateContactRestrictionRequest = {
         restrictionType: 'BAN',
         startDate: '2020-01-01',
+        createdBy: 'user',
       }
       const expectedErrorBody = {
         status: errorCode,
@@ -899,8 +892,9 @@ describe('contactsApiClient', () => {
       const request: CreatePrisonerContactRestrictionRequest = {
         restrictionType: 'BAN',
         startDate: '2020-01-01',
+        createdBy: 'user',
       }
-      const expected: PrisonerContactRestrictionDetails = {
+      const expected = {
         prisonerContactRestrictionId: 123456,
         prisonerContactId: 66,
         contactId: 99,
@@ -924,6 +918,7 @@ describe('contactsApiClient', () => {
         const request: CreatePrisonerContactRestrictionRequest = {
           restrictionType: 'BAN',
           startDate: '2020-01-01',
+          createdBy: 'user',
         }
         const expectedErrorBody = {
           status: errorCode,
@@ -955,8 +950,9 @@ describe('contactsApiClient', () => {
       const request: UpdateContactRestrictionRequest = {
         restrictionType: 'BAN',
         startDate: '2020-01-01',
+        updatedBy: 'user',
       }
-      const expected: ContactRestrictionDetails = {
+      const expected = {
         contactRestrictionId: 123456,
         contactId: 99,
       }
@@ -977,6 +973,7 @@ describe('contactsApiClient', () => {
       const request: UpdateContactRestrictionRequest = {
         restrictionType: 'BAN',
         startDate: '2020-01-01',
+        updatedBy: 'user',
       }
       const expectedErrorBody = {
         status: errorCode,
@@ -1007,8 +1004,9 @@ describe('contactsApiClient', () => {
       const request: UpdatePrisonerContactRestrictionRequest = {
         restrictionType: 'BAN',
         startDate: '2020-01-01',
+        updatedBy: 'user',
       }
-      const expected: PrisonerContactRestrictionDetails = {
+      const expected = {
         prisonerContactRestrictionId: 123456,
         prisonerContactId: 66,
         contactId: 99,
@@ -1032,6 +1030,7 @@ describe('contactsApiClient', () => {
         const request: UpdatePrisonerContactRestrictionRequest = {
           restrictionType: 'BAN',
           startDate: '2020-01-01',
+          updatedBy: 'user',
         }
         const expectedErrorBody = {
           status: errorCode,
@@ -1064,8 +1063,11 @@ describe('contactsApiClient', () => {
         addressType: 'HOME',
         countryCode: 'ENG',
         startDate: '2020-01-01',
+        primaryAddress: true,
+        phoneNumbers: [],
+        createdBy: 'user',
       }
-      const expected: ContactAddressDetails = {
+      const expected = {
         contactAddressId: 123456,
       }
       fakeContactsApi
@@ -1086,6 +1088,9 @@ describe('contactsApiClient', () => {
         addressType: 'HOME',
         countryCode: 'ENG',
         startDate: '2020-01-01',
+        primaryAddress: true,
+        phoneNumbers: [],
+        createdBy: 'user',
       }
       const expectedErrorBody = {
         status: errorCode,
@@ -1114,11 +1119,12 @@ describe('contactsApiClient', () => {
     it('should update the contact address', async () => {
       // Given
       const request: PatchContactAddressRequest = {
+        // @ts-expect-error mistyped by openapi script
         addressType: 'HOME',
         countryCode: 'ENG',
         startDate: '2020-01-01',
       }
-      const expected: ContactAddressDetails = {
+      const expected = {
         contactAddressId: 123456,
       }
       fakeContactsApi
@@ -1136,6 +1142,7 @@ describe('contactsApiClient', () => {
     it.each([400, 401, 403])('should propagate errors updating the contact address %s', async (errorCode: number) => {
       // Given
       const request: PatchContactAddressRequest = {
+        // @ts-expect-error mistyped by openapi script
         addressType: 'HOME',
         countryCode: 'ENG',
         startDate: '2020-01-01',
@@ -1166,7 +1173,7 @@ describe('contactsApiClient', () => {
   describe('updateContactAddressPhone', () => {
     it('should update the contact address phone and return the response', async () => {
       // Given
-      const expectedContactAddressPhoneDetails: ContactAddressPhoneDetails = {
+      const expectedContactAddressPhoneDetails = {
         id: 1,
         phoneType: 'MOB',
         phoneNumber: '0123456789',
@@ -1176,7 +1183,7 @@ describe('contactsApiClient', () => {
         updatedTime: new Date().toISOString(),
       }
       const request: UpdateContactAddressPhoneRequest = {
-        type: 'MOB',
+        phoneType: 'MOB',
         phoneNumber: '0123456789',
         updatedBy: 'user1',
       }
@@ -1198,7 +1205,7 @@ describe('contactsApiClient', () => {
       async (errorCode: number) => {
         // Given
         const request: UpdateContactAddressPhoneRequest = {
-          type: 'MOB',
+          phoneType: 'MOB',
           phoneNumber: '0123456789',
           updatedBy: 'user1',
         }

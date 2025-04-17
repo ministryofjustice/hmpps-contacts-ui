@@ -57,7 +57,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
   describe('Contact Details', () => {
     it('should audit contact details page', async () => {
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.searchContact.mockResolvedValue(TestData.contact())
+      contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
       contactsService.getContact.mockResolvedValue(TestData.contact())
       contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
 
@@ -81,7 +81,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
     it('should render contact details page for living contact', async () => {
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.searchContact.mockResolvedValue(TestData.contact())
+      contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
       contactsService.getContact.mockResolvedValue(TestData.contact())
       contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
 
@@ -149,7 +149,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
   describe('Restrictions', () => {
     beforeEach(() => {
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.searchContact.mockResolvedValue(TestData.contact())
+      contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
       contactsService.getContact.mockResolvedValue(TestData.contact())
       contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
     })
@@ -465,17 +465,18 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       it('should render without optional personal details', async () => {
         const contactDetails = {
           ...TestData.contact(),
-          title: undefined,
-          titleDescription: undefined,
           firstName: 'First',
-          middleNames: undefined,
           lastName: 'Last',
-          dateOfBirth: undefined,
-          gender: undefined,
-          genderDescription: undefined,
           isStaff: false,
-          deceasedDate: undefined,
         } as ContactDetails
+        delete contactDetails.titleCode
+        delete contactDetails.titleDescription
+        delete contactDetails.middleNames
+        delete contactDetails.dateOfBirth
+        delete contactDetails.genderCode
+        delete contactDetails.genderDescription
+        delete contactDetails.deceasedDate
+
         contactsService.getContact.mockResolvedValue(contactDetails)
         const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
         const $ = cheerio.load(response.text)
@@ -554,7 +555,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           isNextOfKin: false,
           isRelationshipActive: false,
           isApprovedVisitor: false,
-          comments: undefined,
         } as PrisonerContactRelationshipDetails
         contactsService.getPrisonerContactRelationship.mockResolvedValue(prisonerContactRelationshipDetails)
 
@@ -661,14 +661,14 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       })
 
       it('should render without optional additional information', async () => {
-        const contactDetails = {
+        const contactDetails: ContactDetails = {
           ...TestData.contact(),
-          languageCode: undefined,
-          languageDescription: undefined,
           interpreterRequired: false,
-          domesticStatusCode: undefined,
-          domesticStatusDescription: undefined,
         }
+        delete contactDetails.languageCode
+        delete contactDetails.languageDescription
+        delete contactDetails.domesticStatusCode
+        delete contactDetails.domesticStatusDescription
         contactsService.getContact.mockResolvedValue(contactDetails)
 
         const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
@@ -810,11 +810,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
                   countryCode: 'ENG',
                   countryDescription: 'England',
                   verified: false,
-                  verifiedBy: undefined,
-                  verifiedTime: undefined,
                   mailFlag: mail,
                   startDate: '2021-01-01',
-                  endDate: undefined,
                   noFixedAddress: false,
                   phoneNumbers: [
                     TestData.getAddressPhoneNumberDetails('MOB', 'Mobile phone', '07878 111111', 123, 1, 555, '123'),
@@ -888,8 +885,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
                   countryCode: 'ENG',
                   countryDescription: 'England',
                   verified: false,
-                  verifiedBy: undefined,
-                  verifiedTime: undefined,
                   mailFlag: mail,
                   startDate: '2021-01-01',
                   endDate: '2022-01-01',
@@ -938,29 +933,14 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
               {
                 contactAddressId: 1,
                 contactId: 1,
-                addressType: undefined,
-                addressTypeDescription: undefined,
                 primaryAddress: false,
-                flat: undefined,
-                property: undefined,
-                street: undefined,
-                area: undefined,
-                cityCode: undefined,
-                cityDescription: undefined,
-                countyCode: undefined,
-                countyDescription: undefined,
-                postcode: undefined,
                 countryCode: 'ENG',
                 countryDescription: 'England',
                 verified: false,
-                verifiedBy: undefined,
-                verifiedTime: undefined,
                 mailFlag: false,
-                startDate: undefined,
-                endDate: undefined,
+                startDate: '',
                 noFixedAddress: true,
                 phoneNumbers: [],
-                comments: undefined,
                 createdBy: 'James',
                 createdTime: '2021-01-01',
               } as ContactAddressDetails,

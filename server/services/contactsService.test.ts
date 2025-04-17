@@ -16,7 +16,6 @@ import {
   CreateContactAddressRequest,
   CreateContactRequest,
   CreateMultipleEmailsRequest,
-  CreatePhoneRequest,
   PagedModelContactSearchResultItem,
   PatchContactAddressRequest,
   PatchContactRequest,
@@ -61,7 +60,7 @@ describe('contactsService', () => {
       'should create a contact from the journey dto with all fields',
       async (relationshipType: string, relationshipToPrisoner: string) => {
         // Given
-        const expectedCreated: ContactCreationResult = {
+        const expectedCreated = {
           createdContact: {
             id: 2136718213,
           },
@@ -69,7 +68,7 @@ describe('contactsService', () => {
             prisonerContactId: 987654,
           },
         }
-        apiClient.createContact.mockResolvedValue(expectedCreated)
+        apiClient.createContact.mockResolvedValue(expectedCreated as unknown as ContactCreationResult)
         const journey: AddContactJourney = {
           id: '1',
           lastTouched: new Date().toISOString(),
@@ -105,7 +104,7 @@ describe('contactsService', () => {
           ],
           employments: [
             {
-              employer: { organisationId: 123 },
+              employer: { organisationId: 123, organisationName: '', organisationActive: true },
               isActive: true,
             },
           ],
@@ -170,7 +169,7 @@ describe('contactsService', () => {
       'should create a contact from the journey dto with all staff options',
       async (isStaffJourney: string | undefined, isStaffRequest: boolean) => {
         // Given
-        const expectedCreated: ContactCreationResult = {
+        const expectedCreated = {
           createdContact: {
             id: 2136718213,
           },
@@ -178,7 +177,7 @@ describe('contactsService', () => {
             prisonerContactId: 987654,
           },
         }
-        apiClient.createContact.mockResolvedValue(expectedCreated)
+        apiClient.createContact.mockResolvedValue(expectedCreated as unknown as ContactCreationResult)
         const journey: AddContactJourney = {
           id: '1',
           lastTouched: new Date().toISOString(),
@@ -232,7 +231,7 @@ describe('contactsService', () => {
       'should create a contact from the journey dto with all staff options',
       async (languageAndInterpreterJourney, expectedLanguage, expectedInterpreter) => {
         // Given
-        const expectedCreated: ContactCreationResult = {
+        const expectedCreated = {
           createdContact: {
             id: 2136718213,
           },
@@ -240,7 +239,7 @@ describe('contactsService', () => {
             prisonerContactId: 987654,
           },
         }
-        apiClient.createContact.mockResolvedValue(expectedCreated)
+        apiClient.createContact.mockResolvedValue(expectedCreated as unknown as ContactCreationResult)
         const journey: AddContactJourney = {
           id: '1',
           lastTouched: new Date().toISOString(),
@@ -289,7 +288,7 @@ describe('contactsService', () => {
 
     it('should create a contact from the journey dto with only optional fields', async () => {
       // Given
-      const expectedCreated: ContactCreationResult = {
+      const expectedCreated = {
         createdContact: {
           id: 2136718213,
         },
@@ -297,7 +296,7 @@ describe('contactsService', () => {
           prisonerContactId: 987654,
         },
       }
-      apiClient.createContact.mockResolvedValue(expectedCreated)
+      apiClient.createContact.mockResolvedValue(expectedCreated as unknown as ContactCreationResult)
       const journey: AddContactJourney = {
         id: '1',
         lastTouched: new Date().toISOString(),
@@ -410,7 +409,7 @@ describe('contactsService', () => {
 
   describe('getContact', () => {
     it('Should get the contact', async () => {
-      const expectedContact: ContactDetails = {
+      const expectedContact = {
         id: 123456,
         lastName: 'last',
         firstName: 'middle',
@@ -419,7 +418,7 @@ describe('contactsService', () => {
         createdBy: user.username,
         createdTime: '2024-01-01',
       }
-      apiClient.getContact.mockResolvedValue(expectedContact)
+      apiClient.getContact.mockResolvedValue(expectedContact as ContactDetails)
 
       const contact = await service.getContact(123456, user)
 
@@ -435,7 +434,7 @@ describe('contactsService', () => {
 
   describe('getPrisonerContactRelationship', () => {
     it('should get the prisoner contact relationship', async () => {
-      const expected: PrisonerContactRelationshipDetails = {
+      const expected = {
         relationshipToPrisonerCode: 'FRI',
         relationshipToPrisonerDescription: 'Friend',
         isEmergencyContact: false,
@@ -443,7 +442,7 @@ describe('contactsService', () => {
         isRelationshipActive: true,
         comments: 'Some comments',
       }
-      apiClient.getPrisonerContactRelationship.mockResolvedValue(expected)
+      apiClient.getPrisonerContactRelationship.mockResolvedValue(expected as PrisonerContactRelationshipDetails)
 
       const contact = await service.getPrisonerContactRelationship(123456, user)
 
@@ -465,10 +464,10 @@ describe('contactsService', () => {
       'should add a contact relationship from the journey dto with all fields based on relationship type (%s, %s)',
       async (relationshipType: string, relationshipToPrisoner: string) => {
         // Given
-        const expectedCreated: PrisonerContactRelationshipDetails = {
+        const expectedCreated = {
           prisonerContactId: 987654,
         }
-        apiClient.addContactRelationship.mockResolvedValue(expectedCreated)
+        apiClient.addContactRelationship.mockResolvedValue(expectedCreated as PrisonerContactRelationshipDetails)
         const journey: AddContactJourney = {
           id: '1',
           lastTouched: new Date().toISOString(),
@@ -528,10 +527,10 @@ describe('contactsService', () => {
 
     it('should add a contact relationship from the journey dto with only optional fields', async () => {
       // Given
-      const expectedCreated: PrisonerContactRelationshipDetails = {
+      const expectedCreated = {
         prisonerContactId: 987654,
       }
-      apiClient.addContactRelationship.mockResolvedValue(expectedCreated)
+      apiClient.addContactRelationship.mockResolvedValue(expectedCreated as PrisonerContactRelationshipDetails)
       const journey: AddContactJourney = {
         id: '1',
         lastTouched: new Date().toISOString(),
@@ -612,10 +611,10 @@ describe('contactsService', () => {
   describe('updateContactPhone', () => {
     it('should update a contact phone with all fields', async () => {
       // Given
-      const expected: ContactPhoneDetails = {
+      const expected = {
         contactPhoneId: 999,
       }
-      apiClient.updateContactPhone.mockResolvedValue(expected)
+      apiClient.updateContactPhone.mockResolvedValue(expected as ContactPhoneDetails)
       const expectedRequest: UpdatePhoneRequest = {
         phoneType: 'MOB',
         phoneNumber: '0123456789',
@@ -641,11 +640,11 @@ describe('contactsService', () => {
 
     it('should update a contact phone with only required fields', async () => {
       // Given
-      const expected: ContactPhoneDetails = {
-        id: 999,
+      const expected = {
+        contactPhoneId: 999,
       }
-      apiClient.updateContactPhone.mockResolvedValue(expected)
-      const expectedRequest: CreatePhoneRequest = {
+      apiClient.updateContactPhone.mockResolvedValue(expected as ContactPhoneDetails)
+      const expectedRequest: UpdatePhoneRequest = {
         phoneType: 'MOB',
         phoneNumber: '0123456789',
         updatedBy: 'user1',
@@ -880,10 +879,10 @@ describe('contactsService', () => {
   describe('createContactAddress', () => {
     it('should create a contact address from the journey dto with all fields', async () => {
       // Given
-      const expectedCreated: ContactAddressDetails = {
+      const expectedCreated = {
         contactAddressId: 123456,
       }
-      apiClient.createContactAddress.mockResolvedValue(expectedCreated)
+      apiClient.createContactAddress.mockResolvedValue(expectedCreated as ContactAddressDetails)
       const journey: AddressJourney = {
         id: '1',
         lastTouched: new Date().toISOString(),
@@ -927,8 +926,8 @@ describe('contactsService', () => {
         verified: false,
         primaryAddress: true,
         mailFlag: true,
-        startDate: new Date('2001-02-01Z'),
-        endDate: new Date('2012-12-01Z'),
+        startDate: new Date('2001-02-01Z').toISOString(),
+        endDate: new Date('2012-12-01Z').toISOString(),
         noFixedAddress: true,
         comments: 'My comments will be super useful',
         createdBy: user.username,
@@ -952,10 +951,10 @@ describe('contactsService', () => {
 
     it('should create a contact address from the journey dto with only optional fields', async () => {
       // Given
-      const expectedCreated: ContactAddressDetails = {
+      const expectedCreated = {
         contactAddressId: 123456,
       }
-      apiClient.createContactAddress.mockResolvedValue(expectedCreated)
+      apiClient.createContactAddress.mockResolvedValue(expectedCreated as ContactAddressDetails)
       const journey: AddressJourney = {
         id: '1',
         lastTouched: new Date().toISOString(),
@@ -969,22 +968,12 @@ describe('contactsService', () => {
       }
 
       const expectedRequest: CreateContactAddressRequest = {
-        addressType: undefined,
-        flat: undefined,
-        property: undefined,
-        street: undefined,
-        area: undefined,
-        cityCode: undefined,
-        countyCode: undefined,
-        postcode: undefined,
         countryCode: 'ENG',
         verified: false,
         primaryAddress: false,
         mailFlag: false,
-        startDate: new Date('2000-02-01Z'),
-        endDate: undefined,
+        startDate: new Date('2000-02-01Z').toISOString(),
         noFixedAddress: false,
-        comments: undefined,
         createdBy: user.username,
         phoneNumbers: [],
       }
@@ -1029,10 +1018,10 @@ describe('contactsService', () => {
   describe('updateContactAddress', () => {
     it('should update a contact address from the journey dto with all fields', async () => {
       // Given
-      const expectedUpdated: ContactAddressDetails = {
+      const expectedUpdated = {
         contactAddressId: 123456,
       }
-      apiClient.updateContactAddress.mockResolvedValue(expectedUpdated)
+      apiClient.updateContactAddress.mockResolvedValue(expectedUpdated as ContactAddressDetails)
       const journey = {
         contactId: 999,
         contactAddressId: 123456,
@@ -1054,6 +1043,7 @@ describe('contactsService', () => {
       }
 
       const expectedRequest: PatchContactAddressRequest = {
+        // @ts-expect-error mistyped by openapi script
         addressType: 'WORK',
         flat: '1a',
         property: 'My block',
@@ -1066,8 +1056,8 @@ describe('contactsService', () => {
         verified: false,
         primaryAddress: true,
         mailFlag: true,
-        startDate: new Date('2001-02-01Z'),
-        endDate: new Date('2012-12-01Z'),
+        startDate: new Date('2001-02-01Z').toISOString(),
+        endDate: new Date('2012-12-01Z').toISOString(),
         noFixedAddress: true,
         comments: 'My comments will be super useful',
         updatedBy: user.username,
@@ -1091,10 +1081,10 @@ describe('contactsService', () => {
 
     it('should update a contact address from the journey dto with partial fields', async () => {
       // Given
-      const expectedUpdated: ContactAddressDetails = {
+      const expectedUpdated = {
         contactAddressId: 123456,
       }
-      apiClient.updateContactAddress.mockResolvedValue(expectedUpdated)
+      apiClient.updateContactAddress.mockResolvedValue(expectedUpdated as ContactAddressDetails)
       const journey = {
         contactId: 999,
         contactAddressId: 123456,
@@ -1103,22 +1093,9 @@ describe('contactsService', () => {
       }
 
       const expectedRequest: PatchContactAddressRequest = {
-        addressType: undefined,
-        flat: undefined,
-        property: undefined,
-        street: undefined,
-        area: undefined,
-        cityCode: undefined,
-        countyCode: undefined,
-        postcode: undefined,
         countryCode: 'ENG',
         verified: false,
-        primaryAddress: undefined,
-        mailFlag: undefined,
-        startDate: undefined,
-        endDate: undefined,
         noFixedAddress: false,
-        comments: undefined,
         updatedBy: user.username,
       }
 
@@ -1164,11 +1141,11 @@ describe('contactsService', () => {
   describe('updateContactAddressPhone', () => {
     it('should update a contact address phone with all fields', async () => {
       // Given
-      const expected: ContactAddressPhoneDetails = {
+      const expected = {
         contactAddressPhoneId: 123,
         contactAddressId: 321,
       }
-      apiClient.updateContactAddressPhone.mockResolvedValue(expected)
+      apiClient.updateContactAddressPhone.mockResolvedValue(expected as ContactAddressPhoneDetails)
       const expectedRequest: UpdateContactAddressPhoneRequest = {
         phoneType: 'MOB',
         phoneNumber: '0123456789',
@@ -1203,11 +1180,11 @@ describe('contactsService', () => {
 
     it('should update a contact address phone with only required fields', async () => {
       // Given
-      const expected: ContactAddressPhoneDetails = {
+      const expected = {
         contactAddressPhoneId: 123,
         contactAddressId: 321,
       }
-      apiClient.updateContactAddressPhone.mockResolvedValue(expected)
+      apiClient.updateContactAddressPhone.mockResolvedValue(expected as ContactAddressPhoneDetails)
       const expectedRequest: UpdateContactAddressPhoneRequest = {
         phoneType: 'MOB',
         phoneNumber: '0123456789',

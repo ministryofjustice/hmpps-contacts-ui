@@ -11,6 +11,7 @@ import {
   CreateContactRestrictionRequest,
   CreatePrisonerContactRestrictionRequest,
   PrisonerContactRestrictionDetails,
+  PrisonerContactRestrictionsResponse,
   UpdateContactRestrictionRequest,
 } from '../@types/contactsApiClient'
 
@@ -44,8 +45,8 @@ describe('restrictionsService', () => {
   describe('createRestriction', () => {
     it('should create global restriction with minimal details', async () => {
       // Given
-      const expectedResponse: ContactRestrictionDetails = { contactRestrictionId: 999 }
-      apiClient.createContactGlobalRestriction.mockResolvedValue(expectedResponse)
+      const expectedResponse = { contactRestrictionId: 999 }
+      apiClient.createContactGlobalRestriction.mockResolvedValue(expectedResponse as ContactRestrictionDetails)
       journey.restrictionClass = 'CONTACT_GLOBAL'
       journey.restriction = { type: 'BAN', startDate: '1/2/2009' }
 
@@ -56,8 +57,6 @@ describe('restrictionsService', () => {
       const expectedRequest: CreateContactRestrictionRequest = {
         restrictionType: 'BAN',
         startDate: '2009-02-01',
-        expiryDate: undefined,
-        comments: undefined,
         createdBy: 'user1',
       }
       expect(created).toStrictEqual(expectedResponse)
@@ -73,8 +72,8 @@ describe('restrictionsService', () => {
 
     it('should create global restriction with full details', async () => {
       // Given
-      const expectedResponse: ContactRestrictionDetails = { contactRestrictionId: 999 }
-      apiClient.createContactGlobalRestriction.mockResolvedValue(expectedResponse)
+      const expectedResponse = { contactRestrictionId: 999 }
+      apiClient.createContactGlobalRestriction.mockResolvedValue(expectedResponse as ContactRestrictionDetails)
       journey.restrictionClass = 'CONTACT_GLOBAL'
       journey.restriction = { type: 'BAN', startDate: '1/2/2009', expiryDate: '02/03/2020', comments: 'Some comments' }
 
@@ -116,8 +115,10 @@ describe('restrictionsService', () => {
 
     it('should create prisoner-contact restriction with minimal details', async () => {
       // Given
-      const expectedResponse: PrisonerContactRestrictionDetails = { prisonerContactRestrictionId: 999 }
-      apiClient.createPrisonerContactRestriction.mockResolvedValue(expectedResponse)
+      const expectedResponse = { prisonerContactRestrictionId: 999 }
+      apiClient.createPrisonerContactRestriction.mockResolvedValue(
+        expectedResponse as PrisonerContactRestrictionDetails,
+      )
       journey.restrictionClass = 'PRISONER_CONTACT'
       journey.restriction = { type: 'BAN', startDate: '1/2/2009' }
 
@@ -128,8 +129,6 @@ describe('restrictionsService', () => {
       const expectedRequest: CreatePrisonerContactRestrictionRequest = {
         restrictionType: 'BAN',
         startDate: '2009-02-01',
-        expiryDate: undefined,
-        comments: undefined,
         createdBy: 'user1',
       }
       expect(created).toStrictEqual(expectedResponse)
@@ -152,8 +151,10 @@ describe('restrictionsService', () => {
 
     it('should create global restriction with full details', async () => {
       // Given
-      const expectedResponse: PrisonerContactRestrictionDetails = { prisonerContactRestrictionId: 999 }
-      apiClient.createPrisonerContactRestriction.mockResolvedValue(expectedResponse)
+      const expectedResponse = { prisonerContactRestrictionId: 999 }
+      apiClient.createPrisonerContactRestriction.mockResolvedValue(
+        expectedResponse as PrisonerContactRestrictionDetails,
+      )
       journey.restrictionClass = 'PRISONER_CONTACT'
       journey.restriction = { type: 'BAN', startDate: '1/2/2009', expiryDate: '02/03/2020', comments: 'Some comments' }
 
@@ -214,14 +215,14 @@ describe('restrictionsService', () => {
     const restrictionId = 555
     it('should update global restriction with minimal details', async () => {
       // Given
-      const expectedResponse: ContactRestrictionDetails = { contactRestrictionId: 999 }
+      const expectedResponse = { contactRestrictionId: 999 }
       const form: RestrictionSchemaType = {
         type: 'BAN',
         startDate: '1/2/1999',
         expiryDate: undefined,
         comments: undefined,
       }
-      apiClient.updateContactGlobalRestriction.mockResolvedValue(expectedResponse)
+      apiClient.updateContactGlobalRestriction.mockResolvedValue(expectedResponse as ContactRestrictionDetails)
 
       // When
       const updated = await service.updateContactGlobalRestriction(
@@ -236,8 +237,6 @@ describe('restrictionsService', () => {
       const expectedRequest: UpdateContactRestrictionRequest = {
         restrictionType: 'BAN',
         startDate: '1999-02-01',
-        expiryDate: undefined,
-        comments: undefined,
         updatedBy: 'user1',
       }
       expect(updated).toStrictEqual(expectedResponse)
@@ -264,14 +263,14 @@ describe('restrictionsService', () => {
 
     it('should update global restriction with full details', async () => {
       // Given
-      const expectedResponse: ContactRestrictionDetails = { contactRestrictionId: 999 }
+      const expectedResponse = { contactRestrictionId: 999 }
       const form: RestrictionSchemaType = {
         type: 'BAN',
         startDate: '1/2/1999',
         expiryDate: '2/3/2099',
         comments: 'Comments',
       }
-      apiClient.updateContactGlobalRestriction.mockResolvedValue(expectedResponse)
+      apiClient.updateContactGlobalRestriction.mockResolvedValue(expectedResponse as ContactRestrictionDetails)
 
       // When
       const updated = await service.updateContactGlobalRestriction(
@@ -346,14 +345,16 @@ describe('restrictionsService', () => {
     const restrictionId = 555
     it('should update prisoner restriction with minimal details', async () => {
       // Given
-      const expectedResponse: PrisonerContactRestrictionDetails = { prisonerContactRestrictionId: restrictionId }
+      const expectedResponse = { prisonerContactRestrictionId: restrictionId }
       const form: RestrictionSchemaType = {
         type: 'BAN',
         startDate: '1/2/1999',
         expiryDate: undefined,
         comments: undefined,
       }
-      apiClient.updatePrisonerContactRestriction.mockResolvedValue(expectedResponse)
+      apiClient.updatePrisonerContactRestriction.mockResolvedValue(
+        expectedResponse as PrisonerContactRestrictionDetails,
+      )
 
       // When
       const updated = await service.updatePrisonerContactRestriction(
@@ -368,8 +369,6 @@ describe('restrictionsService', () => {
       const expectedRequest: UpdateContactRestrictionRequest = {
         restrictionType: 'BAN',
         startDate: '1999-02-01',
-        expiryDate: undefined,
-        comments: undefined,
         updatedBy: 'user1',
       }
       expect(updated).toStrictEqual(expectedResponse)
@@ -396,14 +395,16 @@ describe('restrictionsService', () => {
 
     it('should update prisoner-contact restriction with full details', async () => {
       // Given
-      const expectedResponse: PrisonerContactRestrictionDetails = { prisonerContactRestrictionId: restrictionId }
+      const expectedResponse = { prisonerContactRestrictionId: restrictionId }
       const form: RestrictionSchemaType = {
         type: 'BAN',
         startDate: '1/2/1999',
         expiryDate: '2/3/2099',
         comments: 'Comments',
       }
-      apiClient.updatePrisonerContactRestriction.mockResolvedValue(expectedResponse)
+      apiClient.updatePrisonerContactRestriction.mockResolvedValue(
+        expectedResponse as PrisonerContactRestrictionDetails,
+      )
 
       // When
       const updated = await service.updatePrisonerContactRestriction(
@@ -480,6 +481,13 @@ describe('restrictionsService', () => {
 
       const expectedContact: ContactDetails = {
         id: contactId,
+        isStaff: false,
+        interpreterRequired: false,
+        addresses: [],
+        phoneNumbers: [],
+        emailAddresses: [],
+        employments: [],
+        identities: [],
         lastName: 'last',
         firstName: 'middle',
         middleNames: 'first',
@@ -488,7 +496,7 @@ describe('restrictionsService', () => {
         createdTime: '2024-01-01',
       }
 
-      const expectedResponse: ContactRestrictionDetails[] = [
+      const expectedResponse = [
         {
           restrictionTypeDescription: 'No Contact',
           expiryDate: '2053-12-31',
@@ -499,7 +507,7 @@ describe('restrictionsService', () => {
         },
       ]
 
-      apiClient.getGlobalContactRestrictions.mockResolvedValue(expectedResponse)
+      apiClient.getGlobalContactRestrictions.mockResolvedValue(expectedResponse as ContactRestrictionDetails[])
 
       // Act
       const result = await service.getGlobalRestrictions(expectedContact, user)
@@ -544,7 +552,9 @@ describe('restrictionsService', () => {
         ],
       }
 
-      apiClient.getPrisonerContactRestrictions.mockResolvedValue(mockRestrictionsResponse)
+      apiClient.getPrisonerContactRestrictions.mockResolvedValue(
+        mockRestrictionsResponse as PrisonerContactRestrictionsResponse,
+      )
 
       // Act
       const result = await service.getRelationshipAndGlobalRestrictions(prisonerContactId, user)

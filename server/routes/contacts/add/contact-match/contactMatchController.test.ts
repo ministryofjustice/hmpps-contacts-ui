@@ -69,7 +69,7 @@ describe('Contact details', () => {
     it('should render confirmation page', async () => {
       // Given
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.searchContact.mockResolvedValue(TestData.contact())
+      contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
       contactsService.getContact.mockResolvedValue(TestData.contact())
       existingJourney.mode = 'EXISTING'
 
@@ -792,7 +792,7 @@ describe('Contact details', () => {
   describe('Restrictions', () => {
     beforeEach(() => {
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.searchContact.mockResolvedValue(TestData.contact())
+      contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
       contactsService.getContact.mockResolvedValue(TestData.contact())
       existingJourney.mode = 'EXISTING'
     })

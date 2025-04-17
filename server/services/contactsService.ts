@@ -6,26 +6,34 @@ import {
   AddContactRelationshipRequest,
   ContactCreationResult,
   ContactDetails,
+  ContactEmailDetails,
   ContactNameDetails,
   ContactRestrictionDetails,
   ContactSearchRequest,
   CreateContactAddressRequest,
   CreateContactRequest,
+  CreateMultipleEmailsRequest,
   CreateMultipleIdentitiesRequest,
   CreateMultiplePhoneNumbersRequest,
   IdentityDocument,
-  PagedModelContactSearchResultItem, PagedModelLinkedPrisonerDetails,
+  PagedModelContactSearchResultItem,
+  PagedModelLinkedPrisonerDetails,
   PagedModelPrisonerContactSummary,
   PatchContactRequest,
-  PatchContactResponse, PatchEmploymentsRequest, PatchRelationshipRequest,
+  PatchContactResponse,
+  PatchEmploymentsRequest,
+  PatchRelationshipRequest,
   PrisonerContactFilter,
   PrisonerContactPagination,
   PrisonerContactRelationshipDetails,
-  PrisonerContactRestrictionsResponse, UpdateContactAddressPhoneRequest,
-  UpdateContactAddressRequest,
+  UpdateContactAddressPhoneRequest,
+  PrisonerContactRestrictionsResponse,
+  UpdateEmailRequest,
   UpdateIdentityRequest,
   UpdatePhoneRequest,
+  PatchContactAddressRequest,
 } from '../@types/contactsApiClient'
+import { stripNullishAddressLines } from '../routes/contacts/add/addresses/common/utils'
 
 export default class ContactsService extends AuditedService {
   constructor(
@@ -232,12 +240,12 @@ export default class ContactsService extends AuditedService {
     correlationId: string,
     type: string,
     phoneNumber: string,
-    extension?: string,
+    extNumber?: string,
   ) {
     const request: UpdatePhoneRequest = {
       phoneType: type,
       phoneNumber,
-      extNumber: extension,
+      ...(extNumber !== undefined ? { extNumber } : {}),
       updatedBy: user.username,
     }
     return this.handleAuditEvent(this.contactsApiClient.updateContactPhone(contactId, contactPhoneId, request, user), {
@@ -292,7 +300,7 @@ export default class ContactsService extends AuditedService {
     const request: UpdateIdentityRequest = {
       identityType,
       identityValue,
-      issuingAuthority,
+      ...(issuingAuthority !== undefined ? { issuingAuthority } : {}),
       updatedBy: user.username,
     }
     return this.handleAuditEvent(
@@ -410,20 +418,30 @@ export default class ContactsService extends AuditedService {
 
   async createContactAddress(journey: AddressJourney, user: Express.User, correlationId: string) {
     const request: CreateContactAddressRequest = {
-      addressType: journey.addressType === 'DO_NOT_KNOW' ? undefined : journey.addressType,
-      ...journey.addressLines!,
+      ...(journey.addressType === 'DO_NOT_KNOW' || journey.addressType === undefined
+        ? {}
+        : {
+            addressType: journey.addressType,
+          }),
+      ...stripNullishAddressLines(journey.addressLines!),
       verified: false,
-      primaryAddress: journey.addressMetadata!.primaryAddress,
-      mailFlag: journey.addressMetadata!.mailAddress,
-      startDate: new Date(`${journey.addressMetadata!.fromYear}-${journey.addressMetadata!.fromMonth}-01Z`),
-      endDate:
-        journey.addressMetadata!.toMonth && journey.addressMetadata!.toYear
-          ? new Date(`${journey.addressMetadata!.toYear}-${journey.addressMetadata!.toMonth}-01Z`)
-          : undefined,
+      primaryAddress: journey.addressMetadata!.primaryAddress ?? false,
+      mailFlag: journey.addressMetadata!.mailAddress ?? false,
+      startDate: new Date(
+        `${journey.addressMetadata!.fromYear}-${journey.addressMetadata!.fromMonth}-01Z`,
+      ).toISOString(),
+      ...(journey.addressMetadata!.toMonth && journey.addressMetadata!.toYear
+        ? {
+            endDate: new Date(
+              `${journey.addressMetadata!.toYear}-${journey.addressMetadata!.toMonth}-01Z`,
+            ).toISOString(),
+          }
+        : {}),
       noFixedAddress: journey.addressLines!.noFixedAddress,
-      comments: journey.addressMetadata!.comments,
+      ...(journey.addressMetadata!.comments !== null && journey.addressMetadata!.comments !== undefined
+        ? { comments: journey.addressMetadata!.comments }
+        : {}),
       createdBy: user.username,
-
       phoneNumbers:
         journey.phoneNumbers?.map(({ type, phoneNumber, extension }) => ({
           phoneType: type,
@@ -450,22 +468,32 @@ export default class ContactsService extends AuditedService {
     user: Express.User,
     correlationId: string,
   ) {
-    const request: UpdateContactAddressRequest = {
+    const request: PatchContactAddressRequest = {
+      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       addressType: changes.addressType === 'DO_NOT_KNOW' ? null : changes.addressType,
+      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       flat: changes.flat,
+      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       property: changes.property,
+      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       street: changes.street,
+      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       area: changes.area,
+      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       cityCode: changes.cityCode,
+      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       countyCode: changes.countyCode,
+      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       postcode: changes.postcode,
       countryCode: changes.countryCode,
       noFixedAddress: changes.noFixedAddress,
       verified: false,
       primaryAddress: changes.primaryAddress,
       mailFlag: changes.mailAddress,
-      startDate: changes.startDate,
-      endDate: changes.endDate,
+      startDate: changes.startDate && changes.startDate.toISOString(),
+      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
+      endDate: changes.endDate && changes.endDate.toISOString(),
+      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       comments: changes.comments,
       updatedBy: user.username,
     }
@@ -517,12 +545,12 @@ export default class ContactsService extends AuditedService {
     correlationId: string,
     type: string,
     phoneNumber: string,
-    extension?: string,
+    extNumber?: string,
   ) {
     const request: UpdateContactAddressPhoneRequest = {
       phoneType: type,
       phoneNumber,
-      extNumber: extension,
+      ...(extNumber !== undefined ? { extNumber } : {}),
       updatedBy: user.username,
     }
     return this.handleAuditEvent(

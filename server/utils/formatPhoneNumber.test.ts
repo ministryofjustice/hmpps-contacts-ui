@@ -1,6 +1,10 @@
 import { formatBusinessPhoneNumber, formatPhoneNumber } from './formatPhoneNumber'
 import TestData from '../routes/testutils/testData'
-import { OrganisationAddressPhoneDetails, OrganisationPhoneDetails } from '../@types/organisationsApiClient'
+import {
+  OrganisationAddressPhoneDetails,
+  OrganisationPhoneDetails,
+  OrganisationSummary,
+} from '../@types/organisationsApiClient'
 
 describe('format business phone number from OrganisationSummary', () => {
   it('should format phone number and extension for business', () => {
@@ -15,9 +19,8 @@ describe('format business phone number from OrganisationSummary', () => {
   })
 
   it('should handle null extension', () => {
-    const organisation = {
+    const organisation: Partial<OrganisationSummary> = {
       businessPhoneNumber: '1234 5678',
-      businessPhoneNumberExtension: undefined,
     }
 
     const result = formatBusinessPhoneNumber(organisation)
@@ -26,10 +29,7 @@ describe('format business phone number from OrganisationSummary', () => {
   })
 
   it('should return null when there is no phone number', () => {
-    const organisation = {
-      businessPhoneNumber: undefined,
-      businessPhoneNumberExtension: undefined,
-    }
+    const organisation: Partial<OrganisationSummary> = {}
 
     const result = formatBusinessPhoneNumber(organisation)
 

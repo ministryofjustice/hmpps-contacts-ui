@@ -85,7 +85,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-r
   describe('Restrictions', () => {
     beforeEach(() => {
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.searchContact.mockResolvedValue(TestData.contact())
+      contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
       contactsService.getContact.mockResolvedValue(TestData.contact())
       contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
     })
