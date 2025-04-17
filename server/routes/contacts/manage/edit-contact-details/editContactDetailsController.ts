@@ -3,9 +3,8 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
 import { Navigation } from '../../common/navigation'
-import ContactDetails = contactsApiClientTypes.ContactDetails
-import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 import Urls from '../../../urls'
+import { ContactDetails, PrisonerContactRelationshipDetails } from '../../../../@types/contactsApiClient'
 
 export default class EditContactDetailsController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}

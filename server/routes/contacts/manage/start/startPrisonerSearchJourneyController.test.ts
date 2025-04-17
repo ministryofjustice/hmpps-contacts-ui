@@ -4,8 +4,8 @@ import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
-import ManageContactsJourney = journeys.ManageContactsJourney
 import { MockedService } from '../../../../testutils/mockedServices'
+import { ManageContactsJourney } from '../../../../@types/journeys'
 
 jest.mock('../../../../services/auditService')
 

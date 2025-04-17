@@ -9,9 +9,8 @@ import { mockedReferenceData } from '../../../../../testutils/stubReferenceData'
 import TestData from '../../../../../testutils/testData'
 import { MockedService } from '../../../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../../middleware/setUpSuccessNotificationBanner'
-import ContactDetails = contactsApiClientTypes.ContactDetails
-import PatchRelationshipRequest = contactsApiClientTypes.PatchRelationshipRequest
-import ChangeRelationshipTypeJourney = journeys.ChangeRelationshipTypeJourney
+import { ChangeRelationshipTypeJourney } from '../../../../../../@types/journeys'
+import { ContactDetails, PatchRelationshipRequest } from '../../../../../../@types/contactsApiClient'
 
 jest.mock('../../../../../../services/auditService')
 jest.mock('../../../../../../services/referenceDataService')
@@ -32,7 +31,13 @@ const prisonerContactId = 897
 let existingJourney: ChangeRelationshipTypeJourney
 const contact: ContactDetails = {
   id: contactId,
-  title: '',
+  isStaff: false,
+  interpreterRequired: false,
+  addresses: [],
+  phoneNumbers: [],
+  emailAddresses: [],
+  employments: [],
+  identities: [],
   lastName: 'last',
   firstName: 'first',
   middleNames: 'middle',

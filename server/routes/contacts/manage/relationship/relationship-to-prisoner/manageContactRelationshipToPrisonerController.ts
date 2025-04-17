@@ -8,11 +8,13 @@ import { Navigation } from '../../../common/navigation'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
-import ContactDetails = contactsApiClientTypes.ContactDetails
-import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
-import ContactNames = journeys.ContactNames
-import PatchRelationshipRequest = contactsApiClientTypes.PatchRelationshipRequest
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
+import {
+  ContactNameDetails,
+  PatchRelationshipRequest,
+  PrisonerContactRelationshipDetails,
+} from '../../../../../@types/contactsApiClient'
+import { ContactNames } from '../../../../../@types/journeys'
 
 export default class ManageContactRelationshipToPrisonerController implements PageHandler {
   constructor(
@@ -28,7 +30,7 @@ export default class ManageContactRelationshipToPrisonerController implements Pa
   ): Promise<void> => {
     const { user } = res.locals
     const { prisonerNumber, contactId, prisonerContactId } = req.params
-    const contact: ContactDetails = await this.contactsService.getContactName(Number(contactId), user)
+    const contact: ContactNameDetails = await this.contactsService.getContactName(Number(contactId), user)
     const relationship: PrisonerContactRelationshipDetails = await this.contactsService.getPrisonerContactRelationship(
       Number(prisonerContactId),
       user,
@@ -90,7 +92,7 @@ export default class ManageContactRelationshipToPrisonerController implements Pa
       .then(response =>
         req.flash(
           FLASH_KEY__SUCCESS_BANNER,
-          `You’ve updated the relationship information for contact ${formatNameFirstNameFirst(response)} and prisoner ${formatNameFirstNameFirst(prisonerDetails, { excludeMiddleNames: true })}.`,
+          `You’ve updated the relationship information for contact ${formatNameFirstNameFirst(response)} and prisoner ${formatNameFirstNameFirst(prisonerDetails!, { excludeMiddleNames: true })}.`,
         ),
       )
 

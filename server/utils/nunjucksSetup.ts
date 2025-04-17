@@ -28,10 +28,10 @@ import { formatTitleForAddress } from './addressUtils'
 import sortContactAddresses from './sortAddress'
 import { taskStatus } from './taskStatus'
 import captionForAddContactJourney from '../routes/contacts/add/addContactsUtils'
-import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import sortRestrictions from './sortRestrictions'
 import { convertToSortableColumns } from './convertToSortableColumns'
 import { sortPhoneNumbers } from './sortPhoneNumbers'
+import { ContactAddressDetails } from '../@types/contactsApiClient'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')

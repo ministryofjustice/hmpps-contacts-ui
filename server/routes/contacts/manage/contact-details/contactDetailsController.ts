@@ -8,9 +8,8 @@ import { employmentSorter } from '../../../../utils/sorters'
 import { setPaginationLocals } from '../../../../views/partials/simplePagination/utils'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
-import ContactDetails = contactsApiClientTypes.ContactDetails
-import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 import { getReferenceDataOrderDictionary } from '../../../../utils/sortPhoneNumbers'
+import { ContactDetails, PrisonerContactRelationshipDetails } from '../../../../@types/contactsApiClient'
 
 export default class ContactDetailsController implements PageHandler {
   constructor(

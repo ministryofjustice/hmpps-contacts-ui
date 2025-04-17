@@ -1,7 +1,7 @@
 import { Request as ExpressRequest } from 'express'
 import { restrictionSchema } from './restrictionSchema'
 import { deduplicateFieldErrors } from '../../../middleware/validationMiddleware'
-import RestrictionClass = journeys.RestrictionClass
+import { RestrictionClass } from '../../../@types/journeys'
 
 type Request = ExpressRequest<{ restrictionClass: RestrictionClass }>
 

@@ -5,8 +5,8 @@ import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import { Navigation } from '../../../common/navigation'
 import { AddressLinesSchema } from './addressLinesSchemas'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { getAddressJourneyAndUrl } from '../common/utils'
+import { PrisonerJourneyParams } from '../../../../../@types/journeys'
 
 export default class EnterAddressController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}

@@ -1,7 +1,5 @@
-import OrganisationSummary = contactsApiClientTypes.OrganisationSummary
-import { components } from '../@types/contactsApi'
-
-type PrisonerContactSummary = components['schemas']['PrisonerContactSummary']
+import { OrganisationSummary } from '../@types/organisationsApiClient'
+import { PrisonerContactSummary } from '../@types/contactsApiClient'
 
 export const addressToLines = ({
   flat,
@@ -13,7 +11,7 @@ export const addressToLines = ({
   postcode,
   postCode,
   countryDescription,
-}: Partial<OrganisationSummary | PrisonerContactSummary>): string | null => {
+}: Partial<(OrganisationSummary | PrisonerContactSummary) & { postCode?: string }>): string | null => {
   const addressArray = [
     flat,
     property,

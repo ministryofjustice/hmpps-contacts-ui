@@ -1,5 +1,5 @@
-import EmploymentDetails = journeys.EmploymentDetails
-import OrganisationAddressDetails = organisationsApiClientTypes.OrganisationAddressDetails
+import { OrganisationAddressDetails } from '../@types/organisationsApiClient'
+import { EmploymentDetails } from '../@types/journeys'
 
 export const employmentSorter = (a: EmploymentDetails, b: EmploymentDetails) =>
   Number(b.isActive) - Number(a.isActive) ||

@@ -12,7 +12,7 @@ import {
   isDateAndInThePast,
   formatDob,
 } from './utils'
-import PagedModelContactSearchResultItem = contactsApiClientTypes.PagedModelContactSearchResultItem
+import { ContactSearchResultItem } from '../@types/contactsApiClient'
 
 describe('convert to title case', () => {
   it.each([
@@ -223,7 +223,7 @@ describe('formatDob', () => {
       const results = formatDob({
         dateOfBirth: dateOfBirth.toISOString().substring(0, 10),
         deceasedDate: deceased ? '1999-01-01' : undefined,
-      } as PagedModelContactSearchResultItem)
+      } as ContactSearchResultItem)
 
       // Then
       expect(results).toEqual(
@@ -233,12 +233,12 @@ describe('formatDob', () => {
   )
 
   it('should render Date of Birth label correctly with dateOfBirth undefined', () => {
-    expect(formatDob({ dateOfBirth: undefined } as PagedModelContactSearchResultItem)).toEqual(`Not provided`)
+    expect(formatDob({} as ContactSearchResultItem)).toEqual(`Not provided`)
   })
 
   it('should render Date of Birth label correctly with dateOfBirth undefined but with a deceased date', () => {
-    expect(
-      formatDob({ dateOfBirth: undefined, deceasedDate: '2010-01-01' } as PagedModelContactSearchResultItem),
-    ).toEqual(`Not provided<br/><span class="govuk-hint">(Deceased)</span>`)
+    expect(formatDob({ deceasedDate: '2010-01-01' } as ContactSearchResultItem)).toEqual(
+      `Not provided<br/><span class="govuk-hint">(Deceased)</span>`,
+    )
   })
 })

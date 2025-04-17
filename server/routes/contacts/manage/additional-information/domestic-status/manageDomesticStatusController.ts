@@ -5,12 +5,12 @@ import { ContactsService } from '../../../../../services'
 import { components } from '../../../../../@types/contactsApi'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
-import ContactDetails = contactsApiClientTypes.ContactDetails
 import { Navigation } from '../../../common/navigation'
 import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import { ManageDomesticStatusSchemaType } from './manageDomesticStatusSchema'
+import { ContactDetails } from '../../../../../@types/contactsApiClient'
 
 type PatchContactRequest = components['schemas']['PatchContactRequest']
 

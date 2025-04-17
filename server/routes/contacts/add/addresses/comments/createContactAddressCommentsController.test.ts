@@ -7,8 +7,8 @@ import { appWithAllRoutes, flashProvider, user } from '../../../../testutils/app
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
-import AddContactJourney = journeys.AddContactJourney
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
+import { AddContactJourney } from '../../../../../@types/journeys'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')

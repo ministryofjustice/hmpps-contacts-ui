@@ -7,8 +7,7 @@ import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { Page } from '../../../../services/auditService'
-import ContactDetails = contactsApiClientTypes.ContactDetails
-import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
+import { ContactDetails, PrisonerContactRelationshipDetails } from '../../../../@types/contactsApiClient'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -84,13 +83,13 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
     it('should render with all personal details and change links', async () => {
       const contactDetails = {
         ...TestData.contact(),
-        title: 'MR',
+        titleCode: 'MR',
         titleDescription: 'Mr',
         firstName: 'First',
         middleNames: 'Middle Names',
         lastName: 'Last',
         dateOfBirth: '1982-06-15',
-        gender: 'M',
+        genderCode: 'M',
         genderDescription: 'Male',
         isStaff: true,
         deceasedDate: '2000-12-25',
@@ -153,16 +152,18 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
     it('should render without optional personal details', async () => {
       const contactDetails = {
         ...TestData.contact(),
-        title: undefined,
-        titleDescription: undefined,
         firstName: 'First',
-        middleNames: undefined,
         lastName: 'Last',
-        dateOfBirth: undefined,
-        gender: undefined,
-        genderDescription: undefined,
         isStaff: false,
       } as ContactDetails
+
+      delete contactDetails.titleCode
+      delete contactDetails.titleDescription
+      delete contactDetails.middleNames
+      delete contactDetails.dateOfBirth
+      delete contactDetails.genderCode
+      delete contactDetails.genderDescription
+
       contactsService.getContact.mockResolvedValue(contactDetails)
       const response = await request(app).get(
         `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details`,
@@ -298,7 +299,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         isNextOfKin: false,
         isRelationshipActive: false,
         isApprovedVisitor: false,
-        comments: undefined,
       } as PrisonerContactRelationshipDetails
       contactsService.getPrisonerContactRelationship.mockResolvedValue(prisonerContactRelationshipDetails)
 
@@ -505,14 +505,15 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
     })
 
     it('should render without optional additional information and change links', async () => {
-      const contactDetails = {
+      const contactDetails: ContactDetails = {
         ...TestData.contact(),
-        languageCode: undefined,
-        languageDescription: undefined,
         interpreterRequired: false,
-        domesticStatusCode: undefined,
-        domesticStatusDescription: undefined,
       }
+      delete contactDetails.languageCode
+      delete contactDetails.languageDescription
+      delete contactDetails.domesticStatusCode
+      delete contactDetails.domesticStatusDescription
+
       contactsService.getContact.mockResolvedValue(contactDetails)
 
       const response = await request(app).get(

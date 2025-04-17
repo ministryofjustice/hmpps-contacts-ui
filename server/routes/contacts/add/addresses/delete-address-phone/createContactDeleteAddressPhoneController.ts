@@ -3,7 +3,6 @@ import { NotFound } from 'http-errors'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { Navigation } from '../../../common/navigation'
-import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 import { CreateContactAddressParam, getAddressFormAndUrl } from '../common/utils'
 import { getFormattedAddress } from '../../../manage/addresses/common/utils'
 import ReferenceDataService from '../../../../../services/referenceDataService'
@@ -52,7 +51,7 @@ export default class CreateContactDeleteAddressPhoneController implements PageHa
     const { addressIndex, phoneIdx } = req.params
     const { addressForm, bounceBackUrl } = getAddressFormAndUrl(req)
 
-    const phone: ContactAddressPhoneDetails = addressForm.phoneNumbers?.[Number(phoneIdx) - 1]
+    const phone = addressForm.phoneNumbers?.[Number(phoneIdx) - 1]
     if (!phone) {
       logger.error(
         `Couldn't find phone at index ${phoneIdx} for an address ${addressIndex}. URL probably entered manually.`,

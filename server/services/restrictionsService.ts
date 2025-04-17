@@ -1,17 +1,19 @@
 import { formatISO, parse } from 'date-fns'
 import ContactsApiClient from '../data/contactsApiClient'
 import { RestrictionSchemaType } from '../routes/restrictions/schema/restrictionSchema'
-import AddRestrictionJourney = journeys.AddRestrictionJourney
-import PrisonerContactRestrictionDetails = contactsApiClientTypes.PrisonerContactRestrictionDetails
-import CreatePrisonerContactRestrictionRequest = contactsApiClientTypes.CreatePrisonerContactRestrictionRequest
-import CreateContactRestrictionRequest = contactsApiClientTypes.CreateContactRestrictionRequest
-import ContactRestrictionDetails = contactsApiClientTypes.ContactRestrictionDetails
-import UpdateContactRestrictionRequest = contactsApiClientTypes.UpdateContactRestrictionRequest
-import UpdatePrisonerContactRestrictionRequest = contactsApiClientTypes.UpdatePrisonerContactRestrictionRequest
-import ContactDetails = contactsApiClientTypes.ContactDetails
-import PrisonerContactRestrictionsResponse = contactsApiClientTypes.PrisonerContactRestrictionsResponse
 import AuditService from './auditService'
 import AuditedService from './auditedService'
+import { AddRestrictionJourney } from '../@types/journeys'
+import {
+  ContactDetails,
+  ContactRestrictionDetails,
+  CreateContactRestrictionRequest,
+  CreatePrisonerContactRestrictionRequest,
+  PrisonerContactRestrictionDetails,
+  PrisonerContactRestrictionsResponse,
+  UpdateContactRestrictionRequest,
+  UpdatePrisonerContactRestrictionRequest,
+} from '../@types/contactsApiClient'
 
 export default class RestrictionsService extends AuditedService {
   constructor(
@@ -34,8 +36,8 @@ export default class RestrictionsService extends AuditedService {
     const request: CreatePrisonerContactRestrictionRequest & CreateContactRestrictionRequest = {
       restrictionType: type,
       startDate: parsedStartDate,
-      expiryDate: parsedExpiryDate,
-      comments,
+      ...(parsedExpiryDate ? { expiryDate: parsedExpiryDate } : {}),
+      ...(comments ? { comments } : {}),
       createdBy: user.username,
     }
 
@@ -94,8 +96,8 @@ export default class RestrictionsService extends AuditedService {
     const request: UpdateContactRestrictionRequest = {
       restrictionType: type,
       startDate: parsedStartDate,
-      expiryDate: parsedExpiryDate,
-      comments,
+      ...(parsedExpiryDate ? { expiryDate: parsedExpiryDate } : {}),
+      ...(comments ? { comments } : {}),
       updatedBy: user.username,
     }
     return this.handleAuditEvent(
@@ -126,8 +128,8 @@ export default class RestrictionsService extends AuditedService {
     const request: UpdatePrisonerContactRestrictionRequest = {
       restrictionType: type,
       startDate: parsedStartDate,
-      expiryDate: parsedExpiryDate,
-      comments,
+      ...(parsedExpiryDate ? { expiryDate: parsedExpiryDate } : {}),
+      ...(comments ? { comments } : {}),
       updatedBy: user.username,
     }
     return this.handleAuditEvent(

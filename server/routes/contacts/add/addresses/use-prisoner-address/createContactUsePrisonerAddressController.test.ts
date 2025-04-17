@@ -8,8 +8,7 @@ import PrisonerAddressService from '../../../../../services/prisonerAddressServi
 import TestData from '../../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import { MockedService } from '../../../../../testutils/mockedServices'
-import AddContactJourney = journeys.AddContactJourney
-import AddressLines = journeys.AddressLines
+import { AddContactJourney, AddressLines } from '../../../../../@types/journeys'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')

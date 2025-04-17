@@ -7,7 +7,7 @@ import TestData from '../../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
-import ContactDetails = contactsApiClientTypes.ContactDetails
+import { ContactAddressDetails, ContactDetails } from '../../../../../@types/contactsApiClient'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -26,7 +26,12 @@ const prisonerContactId = 456789
 const contactAddressId = 888
 const contact: ContactDetails = {
   id: contactId,
-  title: '',
+  isStaff: false,
+  interpreterRequired: false,
+  phoneNumbers: [],
+  emailAddresses: [],
+  employments: [],
+  identities: [],
   lastName: 'last',
   firstName: 'first',
   middleNames: 'middle',
@@ -155,7 +160,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/enter-address', () => {
   it('should update the address lines and redirect if there are no validation errors', async () => {
     // Given
-    contactsService.updateContactAddress.mockResolvedValue({ contactAddressId })
+    contactsService.updateContactAddress.mockResolvedValue({ contactAddressId } as ContactAddressDetails)
     const noFixedAddress = false
     const flat = 'Flat 1'
     const street = 'Rocky Road'

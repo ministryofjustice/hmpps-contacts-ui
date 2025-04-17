@@ -5,10 +5,10 @@ import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
-import AddContactJourney = journeys.AddContactJourney
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { mockedReferenceData } from '../../../testutils/stubReferenceData'
+import { AddContactJourney } from '../../../../@types/journeys'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')

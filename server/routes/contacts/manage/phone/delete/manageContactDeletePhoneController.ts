@@ -5,9 +5,8 @@ import { ContactsService } from '../../../../../services'
 import { Navigation } from '../../../common/navigation'
 import Urls from '../../../../urls'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
-import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
-import ContactDetails = contactsApiClientTypes.ContactDetails
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
+import { ContactDetails, ContactPhoneDetails } from '../../../../../@types/contactsApiClient'
 
 export default class ManageContactDeletePhoneController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -23,7 +22,7 @@ export default class ManageContactDeletePhoneController implements PageHandler {
     const contactIdNumber = Number(contactId)
     const contactPhoneIdNumber = Number(contactPhoneId)
     const contact: ContactDetails = await this.contactsService.getContact(contactIdNumber, user)
-    const phone: ContactPhoneDetails = contact.phoneNumbers.find(
+    const phone = contact.phoneNumbers.find(
       (aPhone: ContactPhoneDetails) => aPhone.contactPhoneId === contactPhoneIdNumber,
     )
     if (!phone) {

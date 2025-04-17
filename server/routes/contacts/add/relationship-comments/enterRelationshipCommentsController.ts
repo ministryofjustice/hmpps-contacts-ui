@@ -3,7 +3,7 @@ import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { EnterRelationshipCommentsSchemas } from './enterRelationshipCommentsSchemas'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
+import { PrisonerJourneyParams } from '../../../../@types/journeys'
 
 export default class EnterRelationshipCommentsController implements PageHandler {
   public PAGE_NAME = Page.ENTER_RELATIONSHIP_COMMENTS

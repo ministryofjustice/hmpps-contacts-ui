@@ -3,8 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import ContactsService from '../../../../../services/contactsService'
-import ContactNames = journeys.ContactNames
-import AddressJourney = journeys.AddressJourney
+import { AddressJourney, ContactNames } from '../../../../../@types/journeys'
 
 export default class StartAddressJourneyController implements PageHandler {
   constructor(private readonly contactService: ContactsService) {}

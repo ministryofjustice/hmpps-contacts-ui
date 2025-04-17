@@ -7,9 +7,8 @@ import { appWithAllRoutes, flashProvider, user } from '../../testutils/appSetup'
 import { Page } from '../../../services/auditService'
 import { mockedReferenceData } from '../../testutils/stubReferenceData'
 import TestData from '../../testutils/testData'
-import AddRestrictionJourney = journeys.AddRestrictionJourney
-import RestrictionClass = journeys.RestrictionClass
 import { MockedService } from '../../../testutils/mockedServices'
+import { AddRestrictionJourney, RestrictionClass } from '../../../@types/journeys'
 
 jest.mock('../../../services/auditService')
 jest.mock('../../../services/referenceDataService')

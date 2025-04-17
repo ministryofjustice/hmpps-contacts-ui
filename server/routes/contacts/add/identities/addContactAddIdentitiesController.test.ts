@@ -8,7 +8,7 @@ import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { mockedReferenceData } from '../../../testutils/stubReferenceData'
-import AddContactJourney = journeys.AddContactJourney
+import { AddContactJourney } from '../../../../@types/journeys'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')

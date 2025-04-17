@@ -2,12 +2,11 @@ import { Request, Response } from 'express'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { ContactsService } from '../../../../../services'
-import ContactIdentityDetails = contactsApiClientTypes.ContactIdentityDetails
-import ContactDetails = contactsApiClientTypes.ContactDetails
 import { Navigation } from '../../../common/navigation'
 import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
+import { ContactDetails, ContactIdentityDetails } from '../../../../../@types/contactsApiClient'
 
 export default class ManageContactDeleteIdentityController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -23,7 +22,7 @@ export default class ManageContactDeleteIdentityController implements PageHandle
     const contactIdNumber = parseInt(contactId, 10)
     const contactIdentityNumber = parseInt(contactIdentityId, 10)
     const contact: ContactDetails = await this.contactsService.getContact(contactIdNumber, user)
-    const identityDocument: ContactIdentityDetails = contact.identities.find(
+    const identityDocument = contact.identities.find(
       (aIdentityNumber: ContactIdentityDetails) => aIdentityNumber.contactIdentityId === contactIdentityNumber,
     )
     if (!identityDocument) {

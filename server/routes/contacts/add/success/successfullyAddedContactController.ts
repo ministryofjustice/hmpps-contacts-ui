@@ -2,8 +2,8 @@ import { Request, Response } from 'express'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { ContactsService } from '../../../../services'
-import ContactNames = journeys.ContactNames
-import ContactDetails = contactsApiClientTypes.ContactDetails
+import { ContactNameDetails } from '../../../../@types/contactsApiClient'
+import { ContactNames } from '../../../../@types/journeys'
 
 export default class SuccessfullyAddedContactController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -21,7 +21,7 @@ export default class SuccessfullyAddedContactController implements PageHandler {
   ): Promise<void> => {
     const { user } = res.locals
     const { contactId, prisonerContactId, mode } = req.params
-    const contact: ContactDetails = await this.contactsService.getContactName(Number(contactId), user)
+    const contact: ContactNameDetails = await this.contactsService.getContactName(Number(contactId), user)
 
     const names: ContactNames = {
       title: contact.titleDescription,

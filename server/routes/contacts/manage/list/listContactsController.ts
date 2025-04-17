@@ -5,10 +5,12 @@ import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
 import { Navigation } from '../../common/navigation'
 import Urls from '../../../urls'
-import PagedModelPrisonerContactSummary = contactsApiClientTypes.PagedModelPrisonerContactSummary
-import PrisonerContactFilter = contactsApiClientTypes.PrisonerContactFilter
 import { setPaginationLocals } from '../../../../views/partials/simplePagination/utils'
-import PrisonerContactPagination = contactsApiClientTypes.PrisonerContactPagination
+import {
+  PagedModelPrisonerContactSummary,
+  PrisonerContactFilter,
+  PrisonerContactPagination,
+} from '../../../../@types/contactsApiClient'
 
 type RelationshipType = 'S' | 'O'
 type Flag = 'EC' | 'NOK'
@@ -98,7 +100,7 @@ export default class ListContactsController implements PageHandler {
       user,
     )
 
-    let hasAnyContactsAtAll = contactsPage.page?.totalElements > 0
+    let hasAnyContactsAtAll = !!contactsPage.page?.totalElements
     if (contactsPage.page?.totalElements === 0) {
       hasAnyContactsAtAll = await this.contactsService
         .filterPrisonerContacts(prisonerNumber, {}, { page: 0, size: 1 }, user)
@@ -112,7 +114,7 @@ export default class ListContactsController implements PageHandler {
       res,
       this.PAGE_SIZE,
       page,
-      contactsPage.page?.totalElements,
+      contactsPage.page?.totalElements ?? 0,
       contactsPage?.content?.length ?? 0,
       `?${queryParamsWithFilters}&sort=${sort}&page={page}`,
     )

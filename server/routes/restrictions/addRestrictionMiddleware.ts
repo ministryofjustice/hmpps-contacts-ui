@@ -1,7 +1,7 @@
 import { Request } from 'express'
 import logger from '../../../logger'
 import asyncMiddleware from '../../middleware/asyncMiddleware'
-import RestrictionClass = journeys.RestrictionClass
+import { RestrictionClass } from '../../@types/journeys'
 
 const ensureInAddRestrictionJourney = () => {
   return asyncMiddleware(

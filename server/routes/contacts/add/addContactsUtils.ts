@@ -1,4 +1,4 @@
-import AddContactJourney = journeys.AddContactJourney
+import { AddContactJourney } from '../../../@types/journeys'
 
 const captionForAddContactJourney = (journey: AddContactJourney): string => {
   if (journey.mode === 'NEW') {

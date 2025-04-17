@@ -1,9 +1,9 @@
 import { Request, Response } from 'express'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
 import { OptionalDobSchemaType } from './enterDobSchemas'
+import { PrisonerJourneyParams } from '../../../../@types/journeys'
 
 export default class CreateContactEnterDobController implements PageHandler {
   public PAGE_NAME = Page.CREATE_CONTACT_DOB_PAGE

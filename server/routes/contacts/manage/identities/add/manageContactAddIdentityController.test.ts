@@ -8,7 +8,7 @@ import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { components } from '../../../../../@types/contactsApi'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
-import ContactDetails = contactsApiClientTypes.ContactDetails
+import { ContactDetails } from '../../../../../@types/contactsApiClient'
 
 type IdentityDocument = components['schemas']['IdentityDocument']
 jest.mock('../../../../../services/auditService')
@@ -27,10 +27,18 @@ const contactId = 987654
 const prisonerContactId = 456789
 const contact: ContactDetails = {
   id: contactId,
+  isStaff: false,
+  interpreterRequired: false,
+  addresses: [],
+  phoneNumbers: [],
+  emailAddresses: [],
+  employments: [],
+  identities: [],
   lastName: 'last',
   firstName: 'first',
   middleNames: 'middle',
   createdBy: user.username,
+  createdTime: '',
 }
 
 beforeEach(() => {
@@ -139,7 +147,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
 describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/identity/create`, () => {
   it('should create all identity documents and pass to manage contact details page if there are no validation errors and it is a save action', async () => {
-    contactsService.createContactIdentities.mockResolvedValue(null)
+    contactsService.createContactIdentities.mockResolvedValue([])
     contactsService.getContactName.mockResolvedValue(TestData.contactName({ middleNames: 'Middle Names' }))
 
     const form = {

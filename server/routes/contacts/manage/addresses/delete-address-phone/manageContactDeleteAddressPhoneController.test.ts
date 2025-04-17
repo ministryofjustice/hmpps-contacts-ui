@@ -5,8 +5,8 @@ import { appWithAllRoutes, user } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import TestData from '../../../../testutils/testData'
-import ContactDetails = contactsApiClientTypes.ContactDetails
 import { MockedService } from '../../../../../testutils/mockedServices'
+import { ContactDetails } from '../../../../../@types/contactsApiClient'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/referenceDataService')
@@ -25,7 +25,11 @@ const prisonerContactId = 456789
 const contactAddressId = 456654
 const contact: ContactDetails = {
   id: contactId,
-  title: '',
+  isStaff: false,
+  interpreterRequired: false,
+  emailAddresses: [],
+  employments: [],
+  identities: [],
   lastName: 'last',
   firstName: 'first',
   middleNames: 'middle',

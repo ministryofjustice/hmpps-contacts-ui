@@ -3,8 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { nextPageForAddContactJourney } from '../addContactFlowControl'
-import AddContactJourney = journeys.AddContactJourney
-import ReturnPoint = journeys.ReturnPoint
+import { AddContactJourney, ReturnPoint } from '../../../../@types/journeys'
 
 export default class StartAddContactJourneyController implements PageHandler {
   public PAGE_NAME = Page.CREATE_CONTACT_START_PAGE

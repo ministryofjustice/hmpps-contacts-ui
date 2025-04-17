@@ -1,6 +1,6 @@
-import AddContactJourney = journeys.AddContactJourney
 import { Page } from '../../../services/auditService'
 import { BreadcrumbType, Navigation } from '../common/navigation'
+import { AddContactJourney } from '../../../@types/journeys'
 
 type PreModePages = Page.CREATE_CONTACT_START_PAGE | Page.CONTACT_SEARCH_PAGE | Page.CONTACT_MATCH_PAGE
 type CreateContactPages =
@@ -45,7 +45,7 @@ type ExistingContactPages =
   | Page.SUCCESSFULLY_ADDED_CONTACT_PAGE
   | Page.ADD_CONTACT_CANCEL_PAGE
 type AllAddContactPages = PreModePages | CreateContactPages | ExistingContactPages
-type JourneyUrlProvider = (journey: journeys.AddContactJourney) => string | undefined
+type JourneyUrlProvider = (journey: AddContactJourney) => string | undefined
 type Spec = {
   previousUrl: JourneyUrlProvider
   previousUrlLabel?: JourneyUrlProvider
@@ -344,7 +344,7 @@ function backToRelationshipTypeOrCheckAnswers(journey: AddContactJourney) {
     : PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey)
 }
 
-function navigationForAddContactJourney(currentPage: Page, journey: journeys.AddContactJourney): Navigation {
+function navigationForAddContactJourney(currentPage: Page, journey: AddContactJourney): Navigation {
   const spec = findSpec(journey, currentPage)
   if (spec) {
     return {
@@ -366,7 +366,7 @@ function nextPageForAddContactJourney(currentPage: Page, journey: AddContactJour
   throw new Error(`Couldn't determine next page from (${currentPage}) and journey (${JSON.stringify(journey)})`)
 }
 
-function findSpec(journey: journeys.AddContactJourney, currentPage: Page) {
+function findSpec(journey: AddContactJourney, currentPage: Page) {
   let spec: Spec | undefined
   if (!journey.mode) {
     spec = PRE_MODE_SPEC[`${currentPage}` as PreModePages]

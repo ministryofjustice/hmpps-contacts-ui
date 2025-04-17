@@ -9,8 +9,7 @@ import { Navigation } from '../../../common/navigation'
 import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
-import ContactIdentityDetails = contactsApiClientTypes.ContactIdentityDetails
-import ContactDetails = contactsApiClientTypes.ContactDetails
+import { ContactDetails, ContactIdentityDetails } from '../../../../../@types/contactsApiClient'
 
 export default class ManageContactEditIdentityController implements PageHandler {
   constructor(
@@ -27,7 +26,7 @@ export default class ManageContactEditIdentityController implements PageHandler 
     const { user } = res.locals
     const { prisonerNumber, contactId, prisonerContactId, contactIdentityId } = req.params
     const contact: ContactDetails = await this.contactsService.getContact(parseInt(contactId, 10), user)
-    const identity: ContactIdentityDetails = contact.identities.find(
+    const identity = contact.identities.find(
       (aIdentityNumber: ContactIdentityDetails) =>
         aIdentityNumber.contactIdentityId === parseInt(contactIdentityId, 10),
     )

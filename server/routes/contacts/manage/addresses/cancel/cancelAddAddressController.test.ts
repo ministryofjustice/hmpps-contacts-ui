@@ -8,8 +8,8 @@ import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
-import ContactDetails = contactsApiClientTypes.ContactDetails
-import AddressJourney = journeys.AddressJourney
+import { ContactDetails } from '../../../../../@types/contactsApiClient'
+import { AddressJourney } from '../../../../../@types/journeys'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -29,7 +29,13 @@ const contactId = 123456
 const prisonerContactId = 456789
 const contact: ContactDetails = {
   id: contactId,
-  title: '',
+  isStaff: false,
+  interpreterRequired: false,
+  addresses: [],
+  phoneNumbers: [],
+  emailAddresses: [],
+  employments: [],
+  identities: [],
   lastName: 'last',
   firstName: 'first',
   middleNames: 'middle',

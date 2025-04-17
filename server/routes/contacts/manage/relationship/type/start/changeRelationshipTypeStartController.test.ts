@@ -6,9 +6,8 @@ import { appWithAllRoutes, user } from '../../../../../testutils/appSetup'
 import { Page } from '../../../../../../services/auditService'
 import TestData from '../../../../../testutils/testData'
 import { MockedService } from '../../../../../../testutils/mockedServices'
-import ContactDetails = contactsApiClientTypes.ContactDetails
-import ChangeRelationshipTypeJourney = journeys.ChangeRelationshipTypeJourney
-import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
+import { ContactDetails, PrisonerContactRelationshipDetails } from '../../../../../../@types/contactsApiClient'
+import { ChangeRelationshipTypeJourney } from '../../../../../../@types/journeys'
 
 jest.mock('../../../../../../services/auditService')
 jest.mock('../../../../../../services/contactsService')
@@ -26,7 +25,13 @@ const contactId = 123
 const prisonerContactId = 456789
 const contact: ContactDetails = {
   id: contactId,
-  title: '',
+  isStaff: false,
+  interpreterRequired: false,
+  addresses: [],
+  phoneNumbers: [],
+  emailAddresses: [],
+  employments: [],
+  identities: [],
   lastName: 'last',
   firstName: 'first',
   middleNames: 'middle',
@@ -96,7 +101,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(journey.relationshipType).toStrictEqual('S')
     expect(journey.relationshipToPrisoner).toStrictEqual('MOT')
     expect(journey.names).toStrictEqual({
-      title: '',
+      title: undefined,
       lastName: 'last',
       firstName: 'first',
       middleNames: 'middle',

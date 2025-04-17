@@ -3,11 +3,11 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
 import { Navigation } from '../../common/navigation'
-import ContactDetails = contactsApiClientTypes.ContactDetails
 import Urls from '../../../urls'
 import { getReferenceDataOrderDictionary } from '../../../../utils/sortPhoneNumbers'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../services/referenceDataService'
+import { ContactDetails } from '../../../../@types/contactsApiClient'
 
 export default class EditContactMethodsController implements PageHandler {
   constructor(

@@ -4,9 +4,9 @@ import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
-import AddContactJourney = journeys.AddContactJourney
-import ContactDetails = contactsApiClientTypes.ContactDetails
 import { MockedService } from '../../../../testutils/mockedServices'
+import { AddContactJourney } from '../../../../@types/journeys'
+import { ContactDetails } from '../../../../@types/contactsApiClient'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/contactsService')
@@ -84,7 +84,15 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
     // Given
     const contact: ContactDetails = {
       id: 123456,
-      title: 'MR',
+      titleCode: 'MR',
+      titleDescription: 'MR',
+      isStaff: false,
+      interpreterRequired: false,
+      addresses: [],
+      phoneNumbers: [],
+      emailAddresses: [],
+      employments: [],
+      identities: [],
       lastName: 'last',
       firstName: 'middle',
       middleNames: 'first',
@@ -127,11 +135,18 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
     // Given
     const contact: ContactDetails = {
       id: 123456,
-      title: 'MR',
+      titleCode: 'MR',
+      titleDescription: 'MR',
+      isStaff: false,
+      interpreterRequired: false,
+      addresses: [],
+      phoneNumbers: [],
+      emailAddresses: [],
+      employments: [],
+      identities: [],
       lastName: 'last',
       firstName: 'middle',
       middleNames: 'first',
-      dateOfBirth: undefined,
       createdBy: user.username,
       createdTime: '2024-01-01',
     }
@@ -171,11 +186,18 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
     // Given
     const contact: ContactDetails = {
       id: 123456,
-      title: 'MR',
+      titleCode: 'MR',
+      titleDescription: 'MR',
+      isStaff: false,
+      interpreterRequired: false,
+      addresses: [],
+      phoneNumbers: [],
+      emailAddresses: [],
+      employments: [],
+      identities: [],
       lastName: 'last',
       firstName: 'middle',
       middleNames: 'first',
-      dateOfBirth: undefined,
       createdBy: user.username,
       createdTime: '2024-01-01',
     }
@@ -217,7 +239,15 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
     // Given
     const contact: ContactDetails = {
       id: 123456,
-      title: 'MR',
+      titleCode: 'MR',
+      titleDescription: 'MR',
+      isStaff: false,
+      interpreterRequired: false,
+      addresses: [],
+      phoneNumbers: [],
+      emailAddresses: [],
+      employments: [],
+      identities: [],
       lastName: 'last',
       firstName: 'middle',
       middleNames: 'first',

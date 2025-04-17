@@ -1,16 +1,18 @@
 import CaseLoad from '@ministryofjustice/hmpps-connect-dps-components/dist/types/CaseLoad'
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import { fieldErrors } from '../../middleware/validationMiddleware'
+import {
+  AddContactJourney,
+  AddressJourney,
+  AddRestrictionJourney,
+  ChangeRelationshipTypeJourney,
+  ManageContactsJourney,
+  PrisonerDetails,
+  StandaloneManageContactJourney,
+  UpdateEmploymentsJourney,
+} from '../journeys'
 
 export declare module 'express-session' {
-  // Declare that the session will potentially contain these additional fields
-  import AddContactJourney = journeys.AddContactJourney
-  import ManageContactsJourney = journeys.ManageContactsJourney
-  import AddRestrictionJourney = journeys.AddRestrictionJourney
-  import AddressJourney = journeys.AddressJourney
-  import UpdateEmploymentsJourney = journeys.UpdateEmploymentsJourney
-  import ChangeRelationshipTypeJourney = journeys.ChangeRelationshipTypeJourney
-
   interface SessionData {
     returnTo: string
     nowInMinutes: number
@@ -29,9 +31,6 @@ export declare module 'express-session' {
 }
 export declare global {
   namespace Express {
-    import PrisonerDetails = journeys.PrisonerDetails
-    import StandaloneManageContactJourney = journeys.StandaloneManageContactJourney
-
     interface User {
       username: string
       token: string

@@ -4,11 +4,11 @@ import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { EmailSchemaType } from '../emailSchemas'
 import { ContactsService } from '../../../../../services'
 import { components } from '../../../../../@types/contactsApi'
-import ContactDetails = contactsApiClientTypes.ContactDetails
 import { Navigation } from '../../../common/navigation'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import Urls from '../../../../urls'
+import { ContactDetails } from '../../../../../@types/contactsApiClient'
 
 type ContactEmailDetails = components['schemas']['ContactEmailDetails']
 type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
@@ -26,9 +26,7 @@ export default class ManageContactEditEmailController implements PageHandler {
     const { prisonerNumber, contactId, prisonerContactId, contactEmailId } = req.params
     const id = Number(contactEmailId)
     const contact: ContactDetails = await this.contactsService.getContact(Number(contactId), user)
-    const email: ContactEmailDetails = contact.emailAddresses.find(
-      (emailAddress: ContactEmailDetails) => emailAddress.contactEmailId === id,
-    )
+    const email = contact.emailAddresses.find((emailAddress: ContactEmailDetails) => emailAddress.contactEmailId === id)
     if (!email) {
       throw new Error(
         `Couldn't find email with id ${contactEmailId} for contact ${contactId}. URL probably entered manually.`,

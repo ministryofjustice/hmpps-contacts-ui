@@ -2,7 +2,7 @@ import { Request } from 'express'
 import { AuditService, PrisonerSearchService } from '../services'
 import { Prisoner } from '../data/prisonerOffenderSearchTypes'
 import asyncMiddleware from './asyncMiddleware'
-import PrisonerDetails = journeys.PrisonerDetails
+import { PrisonerDetails } from '../@types/journeys'
 
 const populatePrisonerDetailsIfInCaseload = (
   prisonerSearchService: PrisonerSearchService,

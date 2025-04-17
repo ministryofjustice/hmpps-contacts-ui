@@ -3,6 +3,7 @@ import ContactsApiClient from '../data/contactsApiClient'
 import ReferenceDataService from './referenceDataService'
 import { STUBBED_TITLE_OPTIONS } from '../routes/testutils/stubReferenceData'
 import ReferenceCodeType from '../enumeration/referenceCodeType'
+import { ReferenceCode } from '../@types/contactsApiClient'
 
 jest.mock('../data/contactsApiClient')
 
@@ -21,7 +22,7 @@ describe('referenceDataService', () => {
   describe('getReferenceData', () => {
     it('should get reference data by type', async () => {
       // Given
-      apiClient.getReferenceCodes.mockResolvedValue(STUBBED_TITLE_OPTIONS)
+      apiClient.getReferenceCodes.mockResolvedValue(STUBBED_TITLE_OPTIONS as ReferenceCode[])
 
       // When
       const created = await service.getReferenceData(ReferenceCodeType.TITLE, user)
@@ -33,7 +34,7 @@ describe('referenceDataService', () => {
 
     it('should cache reference data', async () => {
       // Given
-      apiClient.getReferenceCodes.mockResolvedValue(STUBBED_TITLE_OPTIONS)
+      apiClient.getReferenceCodes.mockResolvedValue(STUBBED_TITLE_OPTIONS as ReferenceCode[])
 
       // When
       const firstCall = await service.getReferenceData(ReferenceCodeType.ADDRESS_TYPE, user)
@@ -54,7 +55,7 @@ describe('referenceDataService', () => {
   describe('getReferenceDescriptionForCode', () => {
     it('should get reference description for code by type', async () => {
       // Given
-      apiClient.getReferenceCodes.mockResolvedValue(STUBBED_TITLE_OPTIONS)
+      apiClient.getReferenceCodes.mockResolvedValue(STUBBED_TITLE_OPTIONS as ReferenceCode[])
 
       // When
       const created = await service.getReferenceDescriptionForCode(ReferenceCodeType.TITLE, 'MR', user)
@@ -66,7 +67,7 @@ describe('referenceDataService', () => {
 
     it('should get return empty if no matching code', async () => {
       // Given
-      apiClient.getReferenceCodes.mockResolvedValue(STUBBED_TITLE_OPTIONS)
+      apiClient.getReferenceCodes.mockResolvedValue(STUBBED_TITLE_OPTIONS as ReferenceCode[])
 
       // When
       const created = await service.getReferenceDescriptionForCode(ReferenceCodeType.TITLE, 'FOO', user)

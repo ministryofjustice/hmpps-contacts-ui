@@ -212,7 +212,7 @@ describe('listContactsController', () => {
     ])('should render date of birth column correctly', async (contact, expectedDob, expectedHint) => {
       // Given
       contactsService.filterPrisonerContacts.mockResolvedValue({
-        content: [contact],
+        content: [contact as PrisonerContactSummary],
         page: { totalElements: 1, totalPages: 1, size: 10, number: 0 },
       })
 

@@ -6,7 +6,7 @@ import { ContactsService } from '../../../../services'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../utils/formatName'
 import Urls from '../../../urls'
-import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
+import { PatchContactRequest } from '../../../../@types/contactsApiClient'
 
 export default class ManageContactDeleteDateOfDeathController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -41,6 +41,7 @@ export default class ManageContactDeleteDateOfDeathController implements PageHan
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const { user } = res.locals
     const request: PatchContactRequest = {
+      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       deceasedDate: null,
       updatedBy: user.username,
     }

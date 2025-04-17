@@ -4,7 +4,7 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
+import { PrisonerJourneyParams } from '../../../../@types/journeys'
 
 export default class AddContactDomesticStatusController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}

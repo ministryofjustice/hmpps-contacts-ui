@@ -2,12 +2,11 @@ import { Request, Response } from 'express'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { ContactsService } from '../../../../../services'
-import ContactDetails = contactsApiClientTypes.ContactDetails
-import ContactEmailDetails = contactsApiClientTypes.ContactEmailDetails
 import { Navigation } from '../../../common/navigation'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import Urls from '../../../../urls'
+import { ContactDetails, ContactEmailDetails } from '../../../../../@types/contactsApiClient'
 
 export default class ManageContactDeleteEmailController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -23,7 +22,7 @@ export default class ManageContactDeleteEmailController implements PageHandler {
     const contactIdNumber = Number(contactId)
     const contactEmailIdNumber = Number(contactEmailId)
     const contact: ContactDetails = await this.contactsService.getContact(contactIdNumber, user)
-    const email: ContactEmailDetails = contact.emailAddresses.find(
+    const email = contact.emailAddresses.find(
       (aEmail: ContactEmailDetails) => aEmail.contactEmailId === contactEmailIdNumber,
     )
     if (!email) {

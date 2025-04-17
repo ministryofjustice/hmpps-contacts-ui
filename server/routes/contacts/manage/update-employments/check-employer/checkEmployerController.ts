@@ -1,10 +1,10 @@
 import { Request, Response } from 'express'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { Page } from '../../../../../services/auditService'
-import UpdateEmploymentJourneyParams = journeys.UpdateEmploymentJourneyParams
 import OrganisationsService from '../../../../../services/organisationsService'
 import { IsCorrectEmployerSchema } from './checkEmployerSchema'
 import { EmploymentUtils } from '../../../add/employments/common/utils'
+import { UpdateEmploymentJourneyParams } from '../../../../../@types/journeys'
 
 export default class CheckEmployerController implements PageHandler {
   constructor(private readonly organisationsService: OrganisationsService) {}

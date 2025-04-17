@@ -6,11 +6,11 @@ import ReferenceDataService from '../../../../../services/referenceDataService'
 import { PhoneNumberSchemaType } from '../../phone/phoneSchemas'
 import { ContactsService } from '../../../../../services'
 import { Navigation } from '../../../common/navigation'
-import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import Urls from '../../../../urls'
 import { getUpdateAddressDetails } from '../common/utils'
+import { ContactAddressPhoneDetails } from '../../../../../@types/contactsApiClient'
 
 export default class ManageContactEditAddressPhoneController implements PageHandler {
   constructor(
@@ -33,7 +33,7 @@ export default class ManageContactEditAddressPhoneController implements PageHand
     const { user } = res.locals
     const { prisonerNumber, contactId, prisonerContactId, contactAddressId, contactAddressPhoneId } = req.params
     const { address, formattedAddress } = await getUpdateAddressDetails(this.contactsService, req, res)
-    const phone: ContactAddressPhoneDetails = address.phoneNumbers.find(
+    const phone = address.phoneNumbers.find(
       (aPhone: ContactAddressPhoneDetails) => aPhone.contactAddressPhoneId === Number(contactAddressPhoneId),
     )
     if (!phone) {

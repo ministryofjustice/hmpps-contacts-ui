@@ -1,5 +1,5 @@
-import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import { isDateAndInThePast } from './utils'
+import { ContactAddressDetails } from '../@types/contactsApiClient'
 
 const formatTitleForAddress = (address: ContactAddressDetails & { mailAddress?: boolean }): string => {
   let title = address.addressTypeDescription ?? 'Address'

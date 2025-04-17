@@ -6,8 +6,8 @@ import { SessionData } from 'express-session'
 import { appWithAllRoutes, flashProvider, user } from '../../../testutils/appSetup'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
-import UpdateEmploymentsJourney = journeys.UpdateEmploymentsJourney
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
+import { UpdateEmploymentsJourney } from '../../../../@types/journeys'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/contactsService')
@@ -184,12 +184,16 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
           employmentId: 1,
           employer: {
             organisationId: 101,
+            organisationName: '',
+            organisationActive: true,
           },
           isActive: false,
         },
         {
           employer: {
             organisationId: 102,
+            organisationName: '',
+            organisationActive: true,
           },
           isActive: true,
         },
@@ -242,6 +246,8 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
         {
           employer: {
             organisationId: 102,
+            organisationName: '',
+            organisationActive: true,
           },
           isActive: true,
         },
@@ -282,6 +288,8 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
           employmentId: 1,
           employer: {
             organisationId: 101,
+            organisationName: '',
+            organisationActive: true,
           },
           isActive: false,
         },

@@ -5,6 +5,7 @@ import { appWithAllRoutes, user } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
+import { PrisonerContactRelationshipDetails } from '../../../../../@types/contactsApiClient'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -38,7 +39,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
   it('should render manage additional information for a contacts page', async () => {
     // Given
     contactsService.getContact.mockResolvedValue(TestData.contact())
-    contactsService.getPrisonerContactRelationship.mockResolvedValue({ comments: true })
+    contactsService.getPrisonerContactRelationship.mockResolvedValue({
+      comments: 'true',
+    } as PrisonerContactRelationshipDetails)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
 
     // When

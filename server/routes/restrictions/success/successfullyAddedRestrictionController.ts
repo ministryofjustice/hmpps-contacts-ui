@@ -2,9 +2,8 @@ import { Request, Response } from 'express'
 import { Page } from '../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import { ContactsService } from '../../../services'
-import ContactNames = journeys.ContactNames
-import ContactDetails = contactsApiClientTypes.ContactDetails
-import RestrictionClass = journeys.RestrictionClass
+import { ContactNames, RestrictionClass } from '../../../@types/journeys'
+import { ContactNameDetails } from '../../../@types/contactsApiClient'
 
 export default class SuccessfullyAddedRestrictionController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -22,7 +21,7 @@ export default class SuccessfullyAddedRestrictionController implements PageHandl
   ): Promise<void> => {
     const { user } = res.locals
     const { contactId, prisonerContactId, restrictionClass } = req.params
-    const contact: ContactDetails = await this.contactsService.getContactName(Number(contactId), user)
+    const contact: ContactNameDetails = await this.contactsService.getContactName(Number(contactId), user)
 
     const names: ContactNames = {
       title: contact.titleDescription,
