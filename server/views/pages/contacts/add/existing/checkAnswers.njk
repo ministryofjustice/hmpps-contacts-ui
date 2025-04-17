@@ -8,13 +8,9 @@
 
 {% block content %}
  <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-          <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-              <span class="govuk-caption-l">{{ journey | captionForAddContactJourney }}</span>
-              <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
-            </div>
-          </div>
+        <div class="govuk-grid-column-two-thirds">
+          <span class="govuk-caption-l">{{ journey | captionForAddContactJourney }}</span>
+          <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
           <p class="govuk-!-margin-bottom-9">
             <strong>Prisoner:</strong>&nbsp;<span>{{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }} ({{ prisonerDetails.prisonerNumber }})</span>
             <br/>
@@ -23,7 +19,7 @@
 
           {% set baseChangeUrl = "/prisoner/" + journey.prisonerNumber + "/contacts/create" %}
           {{ govukSummaryList({
-              classes: 'govuk-!-margin-bottom-7',
+              classes: 'govuk-!-margin-bottom-7 summary-list-wider-key-column',
               rows: [
                 {
                   key: {

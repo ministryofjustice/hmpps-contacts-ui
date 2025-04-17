@@ -120,10 +120,10 @@
                 ] %}
 
                 <h2 class="govuk-heading-l govuk-!-font-size-24">Personal information</h2>
-                {{ govukSummaryList({ classes: 'govuk-!-margin-bottom-7', rows: contactDetailsRows }) }}
+                {{ govukSummaryList({ classes: 'govuk-!-margin-bottom-7 summary-list-wider-key-column', rows: contactDetailsRows }) }}
                 <h2 class="govuk-heading-l govuk-!-font-size-24">Relationship to prisoner {{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }}</h2>
                 {{ govukSummaryList({
-                    classes: 'govuk-!-margin-bottom-7',
+                    classes: 'govuk-!-margin-bottom-7 summary-list-wider-key-column',
                     rows: [
                         {
                             key: {
@@ -288,7 +288,7 @@
                 ), phoneNumberRows) %}
               {% endfor %}
               {% if phoneNumberRows.length > 0 %}
-              {{ govukSummaryList({ classes: 'govuk-!-margin-bottom-7', rows: phoneNumberRows }) }}
+              {{ govukSummaryList({ classes: 'govuk-!-margin-bottom-7 summary-list-wider-key-column', rows: phoneNumberRows }) }}
               {% else %}
               <p class="govuk-body govuk-!-margin-bottom-7">No phone numbers provided.</p>
               {% endif %}
@@ -336,7 +336,7 @@
                 ), emailAddressesRows) %}
               {% endfor %}
               {% if emailAddressesRows.length > 0 %}
-                {{ govukSummaryList({ classes: 'govuk-!-margin-bottom-7', rows: emailAddressesRows }) }}
+                {{ govukSummaryList({ classes: 'govuk-!-margin-bottom-7 summary-list-wider-key-column', rows: emailAddressesRows }) }}
               {% else %}
                 <p class="govuk-body govuk-!-margin-bottom-7">No email addresses provided.</p>
               {% endif %}
@@ -390,7 +390,7 @@
                   {% for employment in journey.employments %}
                     {{ govukSummaryList({
                       card: {
-                        classes: 'govuk-!-margin-bottom-7' if loop.last,
+                        classes: 'govuk-!-margin-bottom-7 summary-card-wider-key-column' if loop.last else 'summary-card-wider-key-column',
                         title: {
                           text: ("Active employer: " if employment.isActive else "Past employer: ") + employment.employer.organisationName
                         }
@@ -478,13 +478,13 @@
                 ), identityRows) %}
               {% endfor %}
               {% if identityRows.length > 0 %}
-                {{ govukSummaryList({ classes: 'govuk-!-margin-bottom-7', rows: identityRows }) }}
+                {{ govukSummaryList({ classes: 'govuk-!-margin-bottom-7 summary-list-wider-key-column', rows: identityRows }) }}
               {% else %}
                 <p class="govuk-body govuk-!-margin-bottom-7">No identity documents provided.</p>
               {% endif %}
 
               <h2 class="govuk-heading-l govuk-!-font-size-24">Additional information</h2>
-              {{ govukSummaryList({ classes: 'govuk-!-margin-bottom-7', rows: [
+              {{ govukSummaryList({ classes: 'govuk-!-margin-bottom-7 summary-list-wider-key-column', rows: [
                 {
                   key: {
                     text: "Contact’s first language"
