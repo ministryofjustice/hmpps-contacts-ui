@@ -59,7 +59,7 @@
             text: "Caseload"
           },
             value: {
-            text: organisation.caseloadId or 'Not provided'
+            text: organisation.caseloadPrisonName or 'Not provided'
           }
           },
           {
@@ -110,7 +110,7 @@
         {% for phoneNumber in organisation.phoneNumbers %}
           {% set phoneRows = (phoneRows.push({
             key: {
-              text: (phoneNumber.phoneTypeDescription | sentenceCase | escape) + ' phone number'
+              text: phoneNumber.phoneTypeDescription | sentenceCase
             },
             value: {
               text: phoneNumber | formatPhoneNumber or "Not provided"

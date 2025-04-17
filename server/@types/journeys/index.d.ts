@@ -1,6 +1,5 @@
 declare namespace journeys {
   import OrganisationSummary = contactsApiClientTypes.OrganisationSummary
-  import OrganisationDetails = organisationsApiClientTypes.OrganisationDetails
 
   export interface AddContactJourney {
     id: string
@@ -39,7 +38,6 @@ declare namespace journeys {
     pendingEmployments?: EmploymentDetails[] | undefined
     newEmployment?: {
       organisationId?: number
-      employer?: OrganisationDetails
     }
     organisationSearch?: {
       page: number
@@ -104,7 +102,6 @@ declare namespace journeys {
     employmentIdsToDelete?: number[]
     returnPoint: ReturnPoint
     changeOrganisationId?: number
-    changeOrganisation?: OrganisationDetails
     organisationSearch: {
       page: number
       searchTerm?: string

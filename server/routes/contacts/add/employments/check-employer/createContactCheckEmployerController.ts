@@ -28,11 +28,11 @@ export default class CreateContactCheckEmployerController implements PageHandler
     if (!journey.newEmployment?.organisationId) {
       return res.status(404).render('pages/errors/notFound')
     }
-    journey.newEmployment.employer = await this.organisationsService.getOrganisation(
+    const employer = await this.organisationsService.getOrganisation(
       journey.newEmployment.organisationId,
       res.locals.user,
     )
-    if (!journey.newEmployment.employer) {
+    if (!employer) {
       return res.status(404).render('pages/errors/notFound')
     }
 
@@ -43,19 +43,17 @@ export default class CreateContactCheckEmployerController implements PageHandler
       },
       journey,
       contactNames: journey.names,
-      organisation: journey.newEmployment.employer,
-      organisationTypes: journey.newEmployment.employer.organisationTypes
+      organisation: employer,
+      organisationTypes: employer.organisationTypes
         .map(({ organisationTypeDescription }: { organisationTypeDescription: string }) => organisationTypeDescription)
         .sort((a: string, b: string) => a.localeCompare(b))
         .join('\n'),
-      activeAddresses: EmploymentUtils.getActiveAddresses(journey.newEmployment.employer),
-      inactiveAddresses: EmploymentUtils.getInactiveAddresses(journey.newEmployment.employer),
-      emailAddresses: journey.newEmployment.employer.emailAddresses
+      activeAddresses: EmploymentUtils.getActiveAddresses(employer),
+      inactiveAddresses: EmploymentUtils.getInactiveAddresses(employer),
+      emailAddresses: employer.emailAddresses
         .map(({ emailAddress }: { emailAddress: string }) => emailAddress)
         .join('\n'),
-      webAddresses: journey.newEmployment.employer.webAddresses
-        .map(({ webAddress }: { webAddress: string }) => webAddress)
-        .join('\n'),
+      webAddresses: employer.webAddresses.map(({ webAddress }: { webAddress: string }) => webAddress).join('\n'),
     })
   }
 
@@ -67,14 +65,19 @@ export default class CreateContactCheckEmployerController implements PageHandler
       return res.redirect(employmentUrl({ subPath: 'organisation-search' }))
     }
 
+    const employerSummary = await this.organisationsService.getOrganisationSummary(
+      journey.newEmployment!.organisationId!,
+      res.locals.user,
+    )
+
     if (isNew) {
       journey.pendingEmployments ??= []
       journey.pendingEmployments.push({
-        employer: EmploymentUtils.summariseOrganisationDetails(journey.newEmployment!.employer),
+        employer: employerSummary,
         isActive: true,
       })
     } else if (employment) {
-      employment.employer = EmploymentUtils.summariseOrganisationDetails(journey.newEmployment!.employer)
+      employment.employer = employerSummary
     }
 
     return res.redirect(bounceBackUrl)

@@ -4,7 +4,6 @@ import EmploymentDetails = journeys.EmploymentDetails
 import { organisationAddressSorter } from '../../../../../utils/sorters'
 import OrganisationDetails = organisationsApiClientTypes.OrganisationDetails
 import OrganisationAddressDetails = organisationsApiClientTypes.OrganisationAddressDetails
-import OrganisationSummary = contactsApiClientTypes.OrganisationSummary
 
 export type CreateContactEmploymentParam = {
   prisonerNumber: string
@@ -55,54 +54,4 @@ export const EmploymentUtils = {
     organisation.addresses
       .filter(({ endDate }: OrganisationAddressDetails) => endDate && endDate < new Date().toISOString())
       .sort(organisationAddressSorter),
-
-  summariseOrganisationDetails: ({
-    organisationId,
-    organisationName,
-    organisationActive,
-    addresses,
-  }: OrganisationDetails): OrganisationSummary => {
-    const activePrimaryAddress = addresses.find(
-      ({ primaryAddress, endDate }: OrganisationAddressDetails) =>
-        primaryAddress && (!endDate || endDate > new Date().toISOString()),
-    )
-    const phoneNumber = activePrimaryAddress?.phoneNumbers.find(
-      ({ phoneType }: { phoneType: string }) => phoneType === 'BUS',
-    )
-
-    const {
-      flat,
-      property,
-      street,
-      area,
-      cityCode,
-      cityDescription,
-      countyCode,
-      countyDescription,
-      postcode,
-      countryCode,
-      countryDescription,
-    } = activePrimaryAddress || {}
-
-    const { phoneNumber: businessPhoneNumber, extNumber: businessPhoneNumberExtension } = phoneNumber || {}
-
-    return {
-      organisationId,
-      organisationName,
-      organisationActive,
-      flat,
-      property,
-      street,
-      area,
-      cityCode,
-      cityDescription,
-      countyCode,
-      countyDescription,
-      postcode,
-      countryCode,
-      countryDescription,
-      businessPhoneNumber,
-      businessPhoneNumberExtension,
-    }
-  },
 }
