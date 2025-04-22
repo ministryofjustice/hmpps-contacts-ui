@@ -2,8 +2,8 @@ import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import AddIdentityDocumentsPage from '../pages/addIdentityDocumentsPage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
-import { StubIdentityDetails } from '../mockApis/contactsApi'
 import EditContactDetailsPage from '../pages/editContactDetailsPage'
+import { ContactIdentityDetails } from '../../server/@types/contactsApiClient'
 
 context('Create Contact Identity', () => {
   const contactId = 654321
@@ -51,7 +51,7 @@ context('Create Contact Identity', () => {
   })
 
   it('Can create multiple contact identities', () => {
-    const first: StubIdentityDetails = {
+    const first: ContactIdentityDetails = {
       contactIdentityId: 1,
       contactId,
       identityType: 'PASS',
@@ -60,7 +60,7 @@ context('Create Contact Identity', () => {
       createdBy: 'USER1',
       createdTime: new Date().toISOString(),
     }
-    const second: StubIdentityDetails = {
+    const second: ContactIdentityDetails = {
       contactIdentityId: 2,
       contactId,
       identityType: 'DL',

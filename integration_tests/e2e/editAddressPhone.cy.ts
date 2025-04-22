@@ -1,9 +1,9 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
-import { StubAddressPhoneDetails } from '../mockApis/contactsApi'
 import EditAddressPhonePage from '../pages/contact-methods/address/phone/editAddressPhonePage'
 import EditContactMethodsPage from '../pages/editContactMethodsPage'
+import { ContactAddressPhoneDetails } from '../../server/@types/contactsApiClient'
 
 context('Edit Address Phones', () => {
   const contactId = 654321
@@ -73,7 +73,7 @@ context('Edit Address Phones', () => {
   })
 
   it('Can edit a phone for an address with minimal fields', () => {
-    const updated: StubAddressPhoneDetails = {
+    const updated: ContactAddressPhoneDetails = {
       contactPhoneId: 99,
       contactAddressPhoneId: 66,
       contactAddressId,
@@ -118,7 +118,7 @@ context('Edit Address Phones', () => {
   })
 
   it('Can edit a phone for an address with all fields', () => {
-    const updated: StubAddressPhoneDetails = {
+    const updated: ContactAddressPhoneDetails = {
       contactPhoneId: 77,
       contactAddressPhoneId: 66,
       contactAddressId,

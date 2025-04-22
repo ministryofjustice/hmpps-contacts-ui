@@ -7,12 +7,14 @@ import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
-import { components } from '../../../../@types/contactsApi'
 import { mockedReferenceData } from '../../../testutils/stubReferenceData'
 import { AddContactJourney } from '../../../../@types/journeys'
-import { ContactAddressDetails, ContactDetails } from '../../../../@types/contactsApiClient'
-
-type LinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
+import {
+  ContactAddressDetails,
+  ContactDetails,
+  EmploymentDetails,
+  LinkedPrisonerDetails,
+} from '../../../../@types/contactsApiClient'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -902,7 +904,7 @@ describe('Contact details', () => {
 
     it('should render professional information tab with employment record', async () => {
       // Given
-      const employment: components['schemas']['EmploymentDetails'] = {
+      const employment: EmploymentDetails = {
         employmentId: 0,
         contactId: 0,
         employer: {
@@ -934,7 +936,7 @@ describe('Contact details', () => {
 
     it('should render professional information tab with employment record missing optional values', async () => {
       // Given
-      const employment: components['schemas']['EmploymentDetails'] = {
+      const employment: EmploymentDetails = {
         employmentId: 0,
         contactId: 0,
         employer: {

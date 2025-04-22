@@ -7,8 +7,8 @@ import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { MockedService } from '../../../../testutils/mockedServices'
 import TestData from '../../../testutils/testData'
-import { components } from '../../../../@types/contactsApi'
 import { ageInYears } from '../../../../utils/utils'
+import { PrisonerContactSummary } from '../../../../@types/contactsApiClient'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -17,7 +17,6 @@ jest.mock('../../../../services/contactsService')
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const contactsService = MockedService.ContactsService()
-type PrisonerContactSummary = components['schemas']['PrisonerContactSummary']
 
 const prisonerNumber = 'A1234BC'
 const prisoner = TestData.prisoner({ prisonerNumber })

@@ -3,15 +3,17 @@ import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { EmailsSchemaType } from '../emailSchemas'
 import { ContactsService } from '../../../../../services'
-import { components } from '../../../../../@types/contactsApi'
 import { Navigation } from '../../../common/navigation'
 import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
-import { ContactDetails, ContactEmailDetails } from '../../../../../@types/contactsApiClient'
+import {
+  ContactDetails,
+  ContactEmailDetails,
+  CreateMultipleEmailsRequest,
+  EmailAddress,
+} from '../../../../../@types/contactsApiClient'
 
-type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
-type EmailAddress = components['schemas']['EmailAddress']
 export default class ManageContactAddEmailController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
 

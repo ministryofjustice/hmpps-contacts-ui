@@ -6,11 +6,9 @@ import { Page } from '../../../../../services/auditService'
 import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
-import { components } from '../../../../../@types/contactsApi'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
-import { ContactDetails } from '../../../../../@types/contactsApiClient'
+import { ContactDetails, IdentityDocument } from '../../../../../@types/contactsApiClient'
 
-type IdentityDocument = components['schemas']['IdentityDocument']
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/referenceDataService')
 jest.mock('../../../../../services/prisonerSearchService')

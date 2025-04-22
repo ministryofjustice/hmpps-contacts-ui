@@ -4,10 +4,8 @@ import TestData from '../../server/routes/testutils/testData'
 import SearchContactPage from '../pages/searchContactPage'
 import ContactConfirmationPage from '../pages/contactConfirmationPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
-import { components } from '../../server/@types/contactsApi'
 import EnterNamePage from '../pages/enterNamePage'
-
-type LinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
+import { LinkedPrisonerDetails } from '../../server/@types/contactsApiClient'
 
 context('Contact confirmation', () => {
   const { prisonerNumber } = TestData.prisoner()

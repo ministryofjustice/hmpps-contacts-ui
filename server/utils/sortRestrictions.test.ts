@@ -1,8 +1,5 @@
-import { components } from '../@types/contactsApi'
 import sortRestrictions from './sortRestrictions'
-
-type ContactRestrictionDetails = components['schemas']['ContactRestrictionDetails']
-type PrisonerContactRestrictionDetails = components['schemas']['PrisonerContactRestrictionDetails']
+import { ContactRestrictionDetails, PrisonerContactRestrictionDetails } from '../@types/contactsApiClient'
 
 const minimalGlobalRestriction: ContactRestrictionDetails = {
   contactRestrictionId: 1,

@@ -1,9 +1,9 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
-import { StubContactRestrictionDetails } from '../mockApis/contactsApi'
 import EnterRestrictionPage from '../pages/enterRestrictionPage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import EditRestrictionsPage from '../pages/editRestrictionsPage'
+import { ContactRestrictionDetails } from '../../server/@types/contactsApiClient'
 
 context('Update Contact Global Restriction', () => {
   const contactId = 654321
@@ -63,7 +63,7 @@ context('Update Contact Global Restriction', () => {
   })
 
   it('Can update a global restriction for a contact with minimal fields', () => {
-    const updated: Partial<StubContactRestrictionDetails> = {
+    const updated: Partial<ContactRestrictionDetails> = {
       contactRestrictionId: restrictionId,
       contactId,
       createdBy: 'USER1',
@@ -99,7 +99,7 @@ context('Update Contact Global Restriction', () => {
   })
 
   it('Can update a global restriction for a contact with all fields', () => {
-    const updated: Partial<StubContactRestrictionDetails> = {
+    const updated: Partial<ContactRestrictionDetails> = {
       contactRestrictionId: restrictionId,
       contactId,
       createdBy: 'USER1',

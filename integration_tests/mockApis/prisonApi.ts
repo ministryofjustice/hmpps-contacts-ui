@@ -1,8 +1,7 @@
 import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
-import { components } from '../../server/@types/prison-api'
+import { PrisonApiAddress } from '../../server/data/prisonApiTypes'
 
-export type StubPrisonApiAddress = components['schemas']['AddressDto']
 export default {
   stubPrisonApiHealth: () =>
     stubFor({
@@ -16,7 +15,7 @@ export default {
         jsonBody: { status: 'UP' },
       },
     }),
-  stubOffenderAddresses: (args: { prisonerNumber: string; addresses: StubPrisonApiAddress[] }): SuperAgentRequest => {
+  stubOffenderAddresses: (args: { prisonerNumber: string; addresses: PrisonApiAddress[] }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'GET',

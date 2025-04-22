@@ -1,20 +1,20 @@
 import { getReferenceDataOrderDictionary, sortPhoneNumbers } from './sortPhoneNumbers'
-import { components } from '../@types/contactsApi'
+import { ContactPhoneDetails, ReferenceCode } from '../@types/contactsApiClient'
 
 describe('sortPhoneNumbers', () => {
   const homePhone = {
     phoneType: 'HOME',
-  } as components['schemas']['ContactPhoneDetails']
+  } as ContactPhoneDetails
   const altHomePhone = {
     phoneType: 'ALTH',
-  } as components['schemas']['ContactPhoneDetails']
+  } as ContactPhoneDetails
 
   it('should sort phone numbers according to phone type display order', () => {
     const result = sortPhoneNumbers(
       [altHomePhone, homePhone],
       getReferenceDataOrderDictionary([
-        { code: 'HOME', displayOrder: 1 } as components['schemas']['ReferenceCode'],
-        { code: 'ALTH', displayOrder: 2 } as components['schemas']['ReferenceCode'],
+        { code: 'HOME', displayOrder: 1 } as ReferenceCode,
+        { code: 'ALTH', displayOrder: 2 } as ReferenceCode,
       ]),
     )
 

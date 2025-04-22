@@ -1,12 +1,12 @@
 import TestData from '../../server/routes/testutils/testData'
 import Page from '../pages/page'
 import ListContactsPage from '../pages/listContacts'
-import { StubPagedModelPrisonerContactSummary, StubPrisonerContactSummary } from '../mockApis/contactsApi'
+import { PagedModelPrisonerContactSummary, PrisonerContactSummary } from '../../server/@types/contactsApiClient'
 
 context('List contacts ', () => {
   const prisoner = TestData.prisoner({ lastName: 'Prisoner', firstName: 'Test' })
 
-  const minimalContact: StubPrisonerContactSummary = {
+  const minimalContact: PrisonerContactSummary = {
     prisonerContactId: 987654321,
     contactId: 123456789,
     prisonerNumber: prisoner.prisonerNumber,
@@ -40,7 +40,7 @@ context('List contacts ', () => {
   const contactEleven = aContact(11, 'Eleven', 'Contact')
   const contactTwelve = aContact(12, 'Twelve', 'Contact')
 
-  function aContact(id: number, lastName: string, firstName: string): StubPrisonerContactSummary {
+  function aContact(id: number, lastName: string, firstName: string): PrisonerContactSummary {
     return { ...minimalContact, contactId: id, prisonerContactId: id + 100000, lastName, firstName }
   }
 
@@ -52,12 +52,12 @@ context('List contacts ', () => {
   })
 
   it('should maintain filters when paging but applying a sort returns you to page one', () => {
-    const initialPage: StubPagedModelPrisonerContactSummary = {
+    const initialPage: PagedModelPrisonerContactSummary = {
       content: [contactOne, contactTwo, contactThree, contactFour, contactFive],
       page: { totalElements: 5, totalPages: 1, size: 10, number: 0 },
     }
 
-    const pageOne: StubPagedModelPrisonerContactSummary = {
+    const pageOne: PagedModelPrisonerContactSummary = {
       content: [
         contactOne,
         contactTwo,
@@ -73,7 +73,7 @@ context('List contacts ', () => {
       page: { totalElements: 12, totalPages: 2, size: 10, number: 0 },
     }
 
-    const pageTwo: StubPagedModelPrisonerContactSummary = {
+    const pageTwo: PagedModelPrisonerContactSummary = {
       content: [contactEleven, contactTwelve],
       page: { totalElements: 12, totalPages: 2, size: 10, number: 1 },
     }

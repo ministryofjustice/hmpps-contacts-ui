@@ -2,8 +2,8 @@ import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import Page from '../pages/page'
 import EditEmailPage from '../pages/editEmailPage'
-import { UpdateEmailRequest } from '../mockApis/contactsApi'
 import EditContactMethodsPage from '../pages/editContactMethodsPage'
+import { UpdateEmailRequest } from '../../server/@types/contactsApiClient'
 
 context('Edit Email Address', () => {
   const contactId = 22

@@ -16,29 +16,27 @@ import {
   STUBBED_SOCIAL_RELATIONSHIP_OPTIONS,
   STUBBED_TITLE_OPTIONS,
 } from '../../server/routes/testutils/stubReferenceData'
-import { components } from '../../server/@types/contactsApi'
 import TestData from '../../server/routes/testutils/testData'
-
-export type StubContactCreationResult = components['schemas']['ContactCreationResult']
-export type StubPhoneDetails = components['schemas']['ContactPhoneDetails']
-export type StubAddressPhoneDetails = components['schemas']['ContactAddressPhoneDetails']
-export type StubContactRestrictionDetails = components['schemas']['ContactRestrictionDetails']
-export type StubPrisonerContactRestrictionDetails = components['schemas']['PrisonerContactRestrictionDetails']
-export type StubIdentityDetails = components['schemas']['ContactIdentityDetails']
-export type StubContactSearchResultItem = components['schemas']['ContactSearchResultItem']
-export type StubPatchContactResponse = components['schemas']['PatchContactResponse']
-export type StubPrisonerContactRelationshipDetails = components['schemas']['PrisonerContactRelationshipDetails']
-export type StubPrisonerContactRestrictionsResponse = components['schemas']['PrisonerContactRestrictionsResponse']
-export type StubContactEmailDetails = components['schemas']['ContactEmailDetails']
-export type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
-export type ContactRestrictionDetails = components['schemas']['ContactRestrictionDetails']
-export type StubContactAddressDetails = components['schemas']['ContactAddressDetails']
-type StubLinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
-export type StubPagedModelPrisonerContactSummary = components['schemas']['PagedModelPrisonerContactSummary']
-export type StubPrisonerContactSummary = components['schemas']['PrisonerContactSummary']
+import {
+  ContactAddressDetails,
+  ContactAddressPhoneDetails,
+  ContactCreationResult,
+  ContactEmailDetails,
+  ContactIdentityDetails,
+  ContactPhoneDetails,
+  ContactRestrictionDetails,
+  ContactSearchResultItem,
+  LinkedPrisonerDetails,
+  PagedModelPrisonerContactSummary,
+  PatchContactResponse,
+  PrisonerContactRelationshipDetails,
+  PrisonerContactRestrictionDetails,
+  PrisonerContactRestrictionsResponse,
+  UpdateEmailRequest,
+} from '../../server/@types/contactsApiClient'
 
 export default {
-  stubCreateContact: (result: StubContactCreationResult): SuperAgentRequest => {
+  stubCreateContact: (result: ContactCreationResult): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'POST',
@@ -85,7 +83,7 @@ export default {
 
   stubFilteredContactList: (args: {
     prisonerNumber: string
-    page: StubPagedModelPrisonerContactSummary
+    page: PagedModelPrisonerContactSummary
     matchQueryParams: { [key: string]: { equalTo: string } }
   }): SuperAgentRequest => {
     const queryParameters = {
@@ -166,7 +164,7 @@ export default {
 
   stubGetPrisonerContactRestrictions: (params: {
     prisonerContactId: number
-    response: StubPrisonerContactRestrictionsResponse
+    response: PrisonerContactRestrictionsResponse
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -183,7 +181,7 @@ export default {
 
   stubGetPrisonerContactRelationshipById: (params: {
     id: number
-    response: StubPrisonerContactRelationshipDetails
+    response: PrisonerContactRelationshipDetails
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -337,7 +335,7 @@ export default {
       content: [],
     },
   }: {
-    results: { page: { totalPages: number; totalElements: number }; content: StubContactSearchResultItem[] }
+    results: { page: { totalPages: number; totalElements: number }; content: ContactSearchResultItem[] }
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -371,7 +369,7 @@ export default {
     response,
   }: {
     contactId: number
-    response: StubPatchContactResponse
+    response: PatchContactResponse
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -477,7 +475,7 @@ export default {
     created,
   }: {
     contactId: number
-    created: StubIdentityDetails[]
+    created: ContactIdentityDetails[]
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -498,7 +496,7 @@ export default {
   }: {
     contactId: number
     contactIdentityId: number
-    updated: StubIdentityDetails
+    updated: ContactIdentityDetails
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -538,7 +536,7 @@ export default {
   }: {
     contactId: number
     contactPhoneId: number
-    updated: StubPhoneDetails
+    updated: ContactPhoneDetails
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -561,7 +559,7 @@ export default {
     contactId: number
     contactAddressId: number
     contactAddressPhoneId: number
-    updated: StubAddressPhoneDetails
+    updated: ContactAddressPhoneDetails
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -618,7 +616,7 @@ export default {
     created,
   }: {
     contactId: number
-    created: StubContactEmailDetails[]
+    created: ContactEmailDetails[]
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -678,7 +676,7 @@ export default {
     created,
   }: {
     contactId: number
-    created: StubContactRestrictionDetails
+    created: ContactRestrictionDetails
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -699,7 +697,7 @@ export default {
   }: {
     contactId: number
     restrictionId: number
-    updated: StubContactRestrictionDetails
+    updated: ContactRestrictionDetails
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -718,7 +716,7 @@ export default {
     created,
   }: {
     prisonerContactId: number
-    created: StubPrisonerContactRestrictionDetails
+    created: PrisonerContactRestrictionDetails
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -739,7 +737,7 @@ export default {
   }: {
     prisonerContactId: number
     restrictionId: number
-    updated: StubPrisonerContactRestrictionDetails
+    updated: PrisonerContactRestrictionDetails
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -758,7 +756,7 @@ export default {
     created,
   }: {
     contactId: number
-    created: StubContactAddressDetails
+    created: ContactAddressDetails
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -779,7 +777,7 @@ export default {
   }: {
     contactId: number
     contactAddressId: number
-    updated: StubContactAddressDetails
+    updated: ContactAddressDetails
   }): SuperAgentRequest => {
     return stubFor({
       request: {
@@ -796,7 +794,7 @@ export default {
 
   stubGetLinkedPrisoners: (args: {
     contactId: number
-    linkedPrisoners: StubLinkedPrisonerDetails[]
+    linkedPrisoners: LinkedPrisonerDetails[]
     pageNumber?: number
     totalElements?: number
   }): SuperAgentRequest => {

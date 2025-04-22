@@ -5,15 +5,14 @@ import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
-import { components } from '../../../../@types/contactsApi'
 import { mockedReferenceData } from '../../../testutils/stubReferenceData'
 import {
   ContactAddressDetails,
   ContactDetails,
+  EmploymentDetails,
+  LinkedPrisonerDetails,
   PrisonerContactRelationshipDetails,
 } from '../../../../@types/contactsApiClient'
-
-type LinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -357,7 +356,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
     it('should render professional information tab with employment record', async () => {
       // Given
-      const employment: components['schemas']['EmploymentDetails'] = {
+      const employment: EmploymentDetails = {
         employmentId: 0,
         contactId: 0,
         employer: {
@@ -392,7 +391,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
     it('should render professional information tab with employment record missing optional values', async () => {
       // Given
-      const employment: components['schemas']['EmploymentDetails'] = {
+      const employment: EmploymentDetails = {
         employmentId: 0,
         contactId: 0,
         employer: {

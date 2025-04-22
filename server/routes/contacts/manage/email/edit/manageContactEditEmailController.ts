@@ -3,15 +3,11 @@ import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { EmailSchemaType } from '../emailSchemas'
 import { ContactsService } from '../../../../../services'
-import { components } from '../../../../../@types/contactsApi'
 import { Navigation } from '../../../common/navigation'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import Urls from '../../../../urls'
-import { ContactDetails } from '../../../../../@types/contactsApiClient'
-
-type ContactEmailDetails = components['schemas']['ContactEmailDetails']
-type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
+import { ContactDetails, ContactEmailDetails, UpdateEmailRequest } from '../../../../../@types/contactsApiClient'
 
 export default class ManageContactEditEmailController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}

@@ -1,6 +1,6 @@
 import { employmentSorter, organisationAddressSorter } from './sorters'
-import { components } from '../@types/contactsApi'
 import { OrganisationAddressDetails } from '../@types/organisationsApiClient'
+import { EmploymentDetails } from '../@types/contactsApiClient'
 
 describe('employmentSorter', () => {
   const a = {
@@ -8,21 +8,21 @@ describe('employmentSorter', () => {
     employer: {
       organisationName: 'A',
     },
-  } as components['schemas']['EmploymentDetails']
+  } as EmploymentDetails
 
   const b = {
     isActive: false,
     employer: {
       organisationName: 'B',
     },
-  } as components['schemas']['EmploymentDetails']
+  } as EmploymentDetails
 
   const c = {
     isActive: false,
     employer: {
       organisationName: 'C',
     },
-  } as components['schemas']['EmploymentDetails']
+  } as EmploymentDetails
 
   const anotherC = {
     isActive: false,
@@ -30,7 +30,7 @@ describe('employmentSorter', () => {
       organisationName: 'C',
     },
     employmentId: 999,
-  } as components['schemas']['EmploymentDetails']
+  } as EmploymentDetails
 
   it('should sort Active employer to the top', () => {
     const res = [c, a, b].sort(employmentSorter)
