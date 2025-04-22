@@ -1,5 +1,6 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
 
 {% extends "partials/layout.njk" %}§
 
@@ -22,6 +23,15 @@
         <span class="govuk-caption-l">{{ caption }}</span>
         <h1 class="govuk-heading-l">{{ title }}</h1>
       </div>
+
+      {% if hasExistingEmployment %}
+        <p>You can link the contact to employers and change employment status using this service, however the employer organisation records have not yet been moved into DPS.</p>
+        <p>To change details such as the employer name, address or phone number, you’ll need to update the organisation record in NOMIS.</p>
+        {{ govukDetails({
+          summaryText: "How to update an organisation record in NOMIS",
+          html: '<ol class="govuk-list govuk-list--number"><li>Log into NOMIS.</li><li>Search for the organisation using the ‘Maintain external agencies’ page. (You might need to ask your LSA for access.)</li><li>Enter and save your updates. The changes will sync back into DPS automatically.</li></ol>'
+        }) }}
+      {% endif %}
 
       {% if employments.length %}
         {% for employment in employments %}

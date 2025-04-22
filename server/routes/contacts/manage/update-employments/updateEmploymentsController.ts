@@ -33,6 +33,7 @@ export default class UpdateEmploymentsController implements PageHandler {
       contactNames,
       employments,
       navigation,
+      hasExistingEmployment: employments.find(employment => employment.employmentId),
     })
   }
 
