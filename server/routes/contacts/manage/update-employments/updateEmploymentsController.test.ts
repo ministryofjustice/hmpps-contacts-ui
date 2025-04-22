@@ -69,7 +69,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
       ...generateJourneyData(),
       employments: [
         {
-          employmentId: 0,
+          employmentId: 1,
           employer: {
             organisationId: 0,
             organisationName: 'Big Corp',
@@ -122,6 +122,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
       `/prisoner/A1234BC/contacts/manage/1/update-employments/new/organisation-search/${journeyId}`,
     )
     expect($('a:contains("Cancel")').attr('href')).toEqual('/foo/bar')
+    expect($('p:contains("To change details such as the employer name")').text()).toBeTruthy()
   })
 
   it('should handle no employment record', async () => {
@@ -142,6 +143,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
     expect($('a:contains("Add employer")').attr('href')).toEqual(
       `/prisoner/A1234BC/contacts/manage/1/update-employments/new/organisation-search/${journeyId}`,
     )
+    expect($('p:contains("To change details such as the employer name")').text()).toBeFalsy()
   })
 
   it('should handle employment record missing optional values', async () => {
