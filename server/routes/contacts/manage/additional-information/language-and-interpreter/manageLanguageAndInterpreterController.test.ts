@@ -42,7 +42,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
   it('should render manage language and interpretation requirement page', async () => {
     // Given
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-    contactsService.searchContact.mockResolvedValue(TestData.contact())
+    contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
     contactsService.getContact.mockResolvedValue(TestData.contact({ interpreterRequired: true }))
     referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
 

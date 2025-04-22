@@ -6,7 +6,7 @@ import ReferenceDataService from '../../../services/referenceDataService'
 import { Navigation } from '../../contacts/common/navigation'
 import { maxLengthForRestrictionClass, RestrictionSchemaType } from '../schema/restrictionSchema'
 import Urls from '../../urls'
-import RestrictionClass = journeys.RestrictionClass
+import { RestrictionClass } from '../../../@types/journeys'
 
 export default class EnterNewRestrictionController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}

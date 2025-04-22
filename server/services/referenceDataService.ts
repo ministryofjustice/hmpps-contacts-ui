@@ -1,12 +1,12 @@
 import ContactsApiClient from '../data/contactsApiClient'
 import ReferenceCodeType from '../enumeration/referenceCodeType'
-import ReferenceCode = contactsApiClientTypes.ReferenceCode
 import TokenStore from '../data/tokenStore/tokenStore'
 import config from '../config'
 import RedisTokenStore from '../data/tokenStore/redisTokenStore'
 import { createRedisClient } from '../data/redisClient'
 import InMemoryTokenStore from '../data/tokenStore/inMemoryTokenStore'
 import logger from '../../logger'
+import { ReferenceCode } from '../@types/contactsApiClient'
 
 export default class ReferenceDataService {
   private referenceDataCache: TokenStore

@@ -1,13 +1,9 @@
-import { components } from '../@types/contactsApi'
-import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import { isDateAndInThePast } from './utils'
-
-type ContactRestrictionDetails = components['schemas']['ContactRestrictionDetails']
-type PrisonerContactRestrictionDetails = components['schemas']['PrisonerContactRestrictionDetails']
+import { ContactRestrictionDetails, PrisonerContactRestrictionDetails } from '../@types/contactsApiClient'
 
 function sortRestrictions(
   restrictions: ContactRestrictionDetails[] | PrisonerContactRestrictionDetails[],
-): ContactAddressDetails[] | PrisonerContactRestrictionDetails[] {
+): ContactRestrictionDetails[] | PrisonerContactRestrictionDetails[] {
   return (
     restrictions?.sort((a, b) => {
       const aExpired = isDateAndInThePast(a.expiryDate)

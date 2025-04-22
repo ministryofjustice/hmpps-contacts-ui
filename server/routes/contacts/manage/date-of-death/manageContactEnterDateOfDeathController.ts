@@ -7,7 +7,7 @@ import { DateOfDeathSchemaType } from './manageContactDateOfDeathSchema'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../utils/formatName'
 import Urls from '../../../urls'
-import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
+import { PatchContactRequest } from '../../../../@types/contactsApiClient'
 
 export default class ManageContactEnterDateOfDeathController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -64,7 +64,7 @@ export default class ManageContactEnterDateOfDeathController implements PageHand
     const { user } = res.locals
     const { day, month, year } = req.body
     const request: PatchContactRequest = {
-      deceasedDate: new Date(`${year}-${month}-${day}Z`),
+      deceasedDate: new Date(`${year}-${month}-${day}Z`).toISOString(),
       updatedBy: user.username,
     }
     await this.contactsService

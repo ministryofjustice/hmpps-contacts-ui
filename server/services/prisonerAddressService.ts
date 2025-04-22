@@ -1,5 +1,5 @@
 import { PrisonApiClient } from '../data'
-import AddressLines = journeys.AddressLines
+import { AddressLines } from '../@types/journeys'
 
 export default class PrisonerAddressService {
   constructor(private readonly prisonApiClient: PrisonApiClient) {}

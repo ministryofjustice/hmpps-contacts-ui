@@ -1,10 +1,10 @@
 import { Request, Response } from 'express'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
 import captionForAddContactJourney from '../addContactsUtils'
 import { OptionalEmergencyContactOrNextOfKinSchemaType } from '../../manage/relationship/emergency-contact-or-next-of-kin/manageEmergencyContactOrNextOfKinSchema'
+import { PrisonerJourneyParams } from '../../../../@types/journeys'
 
 export default class EmergencyContactOrNextOfKinController implements PageHandler {
   public PAGE_NAME = Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN

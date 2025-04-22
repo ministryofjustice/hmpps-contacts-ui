@@ -1,7 +1,9 @@
 import OrganisationsApiClient from '../data/organisationsApiClient'
-import OrganisationSummaryResultItemPage = contactsApiClientTypes.OrganisationSummaryResultItemPage
-import OrganisationDetails = organisationsApiClientTypes.OrganisationDetails
-import OrganisationSummary = organisationsApiClientTypes.OrganisationSummary
+import {
+  OrganisationDetails,
+  OrganisationSummary,
+  OrganisationSummaryResultItemPage,
+} from '../@types/organisationsApiClient'
 
 export default class OrganisationsService {
   constructor(private readonly organisationsApiClient: OrganisationsApiClient) {}

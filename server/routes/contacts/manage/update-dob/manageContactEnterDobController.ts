@@ -3,11 +3,11 @@ import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Navigation } from '../../common/navigation'
 import { ContactsService } from '../../../../services'
-import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
 import { UpdateDobSchemaType } from './manageContactDobSchema'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../utils/formatName'
 import Urls from '../../../urls'
+import { PatchContactRequest } from '../../../../@types/contactsApiClient'
 
 export default class ManageContactEnterDobController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -61,7 +61,7 @@ export default class ManageContactEnterDobController implements PageHandler {
     const { user } = res.locals
     const { day, month, year } = req.body
     const request: PatchContactRequest = {
-      dateOfBirth: new Date(`${year}-${month}-${day}Z`),
+      dateOfBirth: new Date(`${year}-${month}-${day}Z`).toISOString(),
       updatedBy: user.username,
     }
     await this.contactsService.updateContactById(Number(contactId), request, user, req.id)

@@ -3,9 +3,9 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
 import { Navigation } from '../../common/navigation'
-import ContactDetails = contactsApiClientTypes.ContactDetails
 import Urls from '../../../urls'
 import RestrictionsService from '../../../../services/restrictionsService'
+import { ContactDetails } from '../../../../@types/contactsApiClient'
 
 export default class EditRestrictionsController implements PageHandler {
   constructor(

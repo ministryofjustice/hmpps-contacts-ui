@@ -1,8 +1,8 @@
 import { Request, Response } from 'express'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
+import { PrisonerJourneyParams } from '../../../../@types/journeys'
 
 export default class ApprovedToVisitController implements PageHandler {
   public PAGE_NAME = Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE

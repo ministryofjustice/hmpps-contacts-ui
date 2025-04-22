@@ -7,7 +7,7 @@ import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
-import AddContactJourney = journeys.AddContactJourney
+import { AddContactJourney } from '../../../../@types/journeys'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -119,7 +119,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
 
   it('should render entered for optional info that has been completed', async () => {
     // When
-    existingJourney.employments = [{ employer: {} }]
+    existingJourney.employments = [{ employer: { organisationActive: true, organisationName: '', organisationId: 0 } }]
     existingJourney.addresses = [{ addressType: 'HOME' }]
     existingJourney.relationship!.comments = 'Some comments'
     existingJourney.phoneNumbers = [

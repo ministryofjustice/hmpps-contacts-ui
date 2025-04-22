@@ -7,12 +7,9 @@ import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../testutils/stubReferenceData'
-import AddContactJourney = journeys.AddContactJourney
-import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
-import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 import { MockedService } from '../../../../testutils/mockedServices'
-import YesOrNo = journeys.YesOrNo
-import LanguageAndInterpreterRequiredForm = journeys.LanguageAndInterpreterRequiredForm
+import { AddContactJourney, LanguageAndInterpreterRequiredForm, YesOrNo } from '../../../../@types/journeys'
+import { ContactCreationResult, PrisonerContactRelationshipDetails } from '../../../../@types/contactsApiClient'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/contactsService')
@@ -423,14 +420,14 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
 describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId', () => {
   it('should create the contact and pass to success page', async () => {
     // Given
-    const created: ContactCreationResult = {
+    const created = {
       createdContact: {
         id: 123456,
       },
       createdRelationship: {
         prisonerContactId: 654321,
       },
-    }
+    } as ContactCreationResult
     contactsService.createContact.mockResolvedValue(created)
     journey.mode = 'NEW'
 
@@ -448,9 +445,9 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
 
   it('should add the contact relationship and pass to success page', async () => {
     // Given
-    const created: PrisonerContactRelationshipDetails = {
+    const created = {
       prisonerContactId: 654321,
-    }
+    } as PrisonerContactRelationshipDetails
     contactsService.addContact.mockResolvedValue(created)
     journey.mode = 'EXISTING'
     journey.contactId = 123456

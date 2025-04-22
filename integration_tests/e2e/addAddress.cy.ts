@@ -200,6 +200,8 @@ context('Add Address', () => {
       {
         countryCode: 'ENG',
         verified: false,
+        primaryAddress: false,
+        mailFlag: false,
         startDate: '2009-09-01T00:00:00.000Z',
         noFixedAddress: false,
         createdBy: 'USER1',

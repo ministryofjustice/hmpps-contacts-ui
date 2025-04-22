@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import logger from '../../../../../logger'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
+import { PrisonerJourneyParams } from '../../../../@types/journeys'
 
 const ensureInAddressJourney = async (req: Request<PrisonerJourneyParams>, res: Response, next: NextFunction) => {
   const { journeyId } = req.params

@@ -1,9 +1,8 @@
 import { Request } from 'express'
 import { NotFound } from 'http-errors'
-import EmploymentDetails = journeys.EmploymentDetails
 import { organisationAddressSorter } from '../../../../../utils/sorters'
-import OrganisationDetails = organisationsApiClientTypes.OrganisationDetails
-import OrganisationAddressDetails = organisationsApiClientTypes.OrganisationAddressDetails
+import { OrganisationAddressDetails, OrganisationDetails } from '../../../../../@types/organisationsApiClient'
+import { EmploymentDetails } from '../../../../../@types/journeys'
 
 export type CreateContactEmploymentParam = {
   prisonerNumber: string

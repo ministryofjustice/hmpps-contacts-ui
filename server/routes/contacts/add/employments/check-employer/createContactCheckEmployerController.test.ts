@@ -7,8 +7,8 @@ import { appWithAllRoutes, user } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
-import AddContactJourney = journeys.AddContactJourney
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
+import { AddContactJourney } from '../../../../../@types/journeys'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -136,17 +136,20 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/employments/:employmentI
       deactivatedDate: '2020-12-25',
       caseloadId: 'TEST',
       caseloadPrisonName: 'TEST',
-      programmeNumber: 123,
-      vatNumber: 123456,
+      programmeNumber: '123',
+      vatNumber: '123456',
       comments: 'some words',
       addresses: [
         {
+          ...TestData.organisationPropDetailsBoilerplate(),
+          noFixedAddress: false,
           primaryAddress: true,
           mailAddress: true,
           serviceAddress: false,
           street: 'Some Street',
           phoneNumbers: [
             {
+              ...TestData.organisationPropDetailsBoilerplate(),
               phoneType: 'BUS',
               phoneTypeDescription: 'Mobile',
               phoneNumber: '1234 4321',
@@ -162,15 +165,21 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/employments/:employmentI
       ],
       phoneNumbers: [
         {
+          ...TestData.organisationPropDetailsBoilerplate(),
           phoneType: 'BUS',
           phoneTypeDescription: 'Alt-Business TRA',
           phoneNumber: '1234 1234',
           extNumber: '222',
         },
       ],
-      webAddresses: [{ webAddress: 'a.b.c' }],
-      emailAddresses: [{ emailAddress: 'a@b.c' }],
-      organisationTypes: [{ organisationTypeDescription: 'Org Type' }, { organisationTypeDescription: 'Another Type' }],
+      webAddresses: [{ ...TestData.organisationPropDetailsBoilerplate(), webAddress: 'a.b.c' }],
+      emailAddresses: [{ ...TestData.organisationPropDetailsBoilerplate(), emailAddress: 'a@b.c' }],
+      organisationTypes: [
+        { ...TestData.organisationPropDetailsBoilerplate(), organisationTypeDescription: 'Org Type' },
+        { ...TestData.organisationPropDetailsBoilerplate(), organisationTypeDescription: 'Another Type' },
+      ],
+      createdBy: '',
+      createdTime: '',
     })
 
     // When
@@ -238,6 +247,8 @@ it('should render result with minimal mandatory data', async () => {
     webAddresses: [],
     emailAddresses: [],
     organisationTypes: [],
+    createdBy: '',
+    createdTime: '',
   })
 
   // When
@@ -277,6 +288,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/employments/:employment
       street: 'Some Street',
       businessPhoneNumber: '1234 1234',
       businessPhoneNumberExtension: '222',
+      organisationActive: true,
     })
 
     // When
@@ -299,6 +311,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/employments/:employment
       street: 'Some Street',
       businessPhoneNumber: '1234 1234',
       businessPhoneNumberExtension: '222',
+      organisationActive: true,
     })
     expect(journeyData.pendingEmployments![1]!.isActive).toBeTruthy()
   })
@@ -310,6 +323,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/employments/:employment
         employer: {
           organisationName: 'Wrong Corp',
           organisationId: 321,
+          organisationActive: true,
         },
         isActive: false,
       },
@@ -323,6 +337,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/employments/:employment
       street: 'Some Street',
       businessPhoneNumber: '1234 1234',
       businessPhoneNumberExtension: '222',
+      organisationActive: true,
     })
 
     // When
@@ -345,6 +360,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/employments/:employment
       street: 'Some Street',
       businessPhoneNumber: '1234 1234',
       businessPhoneNumberExtension: '222',
+      organisationActive: true,
     })
     expect(journeyData.pendingEmployments![0]!.isActive).toBeFalsy()
   })

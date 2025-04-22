@@ -1,8 +1,8 @@
 import { Request } from 'express'
 import { NotFound } from 'http-errors'
-import AddressForm = journeys.AddressForm
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../../services/referenceDataService'
+import { AddressForm, AddressLines } from '../../../../../@types/journeys'
 
 export type CreateContactAddressParam = {
   prisonerNumber: string
@@ -99,3 +99,47 @@ export const formatAddresses = async (
     })),
   }))
 }
+
+export const stripUndefinedAddressLines = ({
+  noFixedAddress,
+  flat,
+  property,
+  street,
+  area,
+  cityCode,
+  countyCode,
+  postcode,
+  countryCode,
+}: AddressLines) => ({
+  noFixedAddress,
+  ...(flat !== undefined ? { flat } : {}),
+  ...(property !== undefined ? { property } : {}),
+  ...(street !== undefined ? { street } : {}),
+  ...(area !== undefined ? { area } : {}),
+  ...(cityCode !== undefined ? { cityCode } : {}),
+  ...(countyCode !== undefined ? { countyCode } : {}),
+  ...(postcode !== undefined ? { postcode } : {}),
+  countryCode,
+})
+
+export const stripNullishAddressLines = ({
+  noFixedAddress,
+  flat,
+  property,
+  street,
+  area,
+  cityCode,
+  countyCode,
+  postcode,
+  countryCode,
+}: AddressLines) => ({
+  noFixedAddress,
+  ...(flat !== null && flat !== undefined ? { flat } : {}),
+  ...(property !== null && property !== undefined ? { property } : {}),
+  ...(street !== null && street !== undefined ? { street } : {}),
+  ...(area !== null && area !== undefined ? { area } : {}),
+  ...(cityCode !== null && cityCode !== undefined ? { cityCode } : {}),
+  ...(countyCode !== null && countyCode !== undefined ? { countyCode } : {}),
+  ...(postcode !== null && postcode !== undefined ? { postcode } : {}),
+  countryCode,
+})

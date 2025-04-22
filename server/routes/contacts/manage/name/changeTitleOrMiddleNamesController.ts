@@ -8,8 +8,8 @@ import { ContactsService } from '../../../../services'
 import { Navigation } from '../../common/navigation'
 import { formatNameFirstNameFirst } from '../../../../utils/formatName'
 import Urls from '../../../urls'
-import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
+import { PatchContactRequest } from '../../../../@types/contactsApiClient'
 
 export default class ChangeTitleOrMiddleNamesController implements PageHandler {
   constructor(
@@ -69,7 +69,9 @@ export default class ChangeTitleOrMiddleNamesController implements PageHandler {
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const { title, middleNames } = req.body
     const request: PatchContactRequest = {
+      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       titleCode: title || null,
+      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       middleNames: middleNames || null,
       updatedBy: user.username,
     }

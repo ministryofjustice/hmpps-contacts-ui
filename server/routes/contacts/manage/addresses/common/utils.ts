@@ -2,12 +2,10 @@ import { Request, Response } from 'express'
 import { NotFound } from 'http-errors'
 import { parseISO } from 'date-fns'
 import ContactsService from '../../../../../services/contactsService'
-import AddressLines = journeys.AddressLines
-import AddressMetadata = journeys.AddressMetadata
-import ContactAddressDetails = contactsApiClientTypes.ContactAddressDetails
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../../services/referenceDataService'
-import AddressForm = journeys.AddressForm
+import { AddressForm, AddressLines, AddressMetadata } from '../../../../../@types/journeys'
+import { ContactAddressDetails } from '../../../../../@types/contactsApiClient'
 
 export const getAddressJourneyAndUrl = (
   req: Request<{
@@ -92,7 +90,7 @@ export const getUpdateAddressDetails = async (
     cityCode: existingAddress.cityCode,
     countyCode: existingAddress.countyCode,
     postcode: existingAddress.postcode,
-    countryCode: existingAddress.countryCode,
+    countryCode: existingAddress.countryCode ?? 'ENG',
   }
   const fromDate = existingAddress.startDate ? parseISO(existingAddress.startDate) : undefined
   const toDate = existingAddress.endDate ? parseISO(existingAddress.endDate) : undefined

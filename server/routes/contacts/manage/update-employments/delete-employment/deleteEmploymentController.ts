@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { Page } from '../../../../../services/auditService'
-import UpdateEmploymentJourneyParams = journeys.UpdateEmploymentJourneyParams
+import { UpdateEmploymentJourneyParams } from '../../../../../@types/journeys'
 
 export default class DeleteEmploymentController implements PageHandler {
   public PAGE_NAME = Page.MANAGE_CONTACT_DELETE_EMPLOYMENT_PAGE

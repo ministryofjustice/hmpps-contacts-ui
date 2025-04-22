@@ -4,10 +4,10 @@ import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import { appWithAllRoutes, user } from '../../testutils/appSetup'
 import { Page } from '../../../services/auditService'
-import AddRestrictionJourney = journeys.AddRestrictionJourney
-import ContactDetails = contactsApiClientTypes.ContactDetails
 import { MockedService } from '../../../testutils/mockedServices'
 import TestData from '../../testutils/testData'
+import { AddRestrictionJourney } from '../../../@types/journeys'
+import { ContactDetails } from '../../../@types/contactsApiClient'
 
 jest.mock('../../../services/auditService')
 jest.mock('../../../services/contactsService')
@@ -25,7 +25,13 @@ const contactId = 123
 const prisonerContactId = 321
 const contact: ContactDetails = {
   id: contactId,
-  title: '',
+  isStaff: false,
+  interpreterRequired: false,
+  addresses: [],
+  phoneNumbers: [],
+  emailAddresses: [],
+  employments: [],
+  identities: [],
   lastName: 'last',
   firstName: 'first',
   middleNames: 'middle',

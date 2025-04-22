@@ -5,11 +5,11 @@ import { IsContactMatchedSchema } from './contactMatchSchema'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
 import { ContactsService, RestrictionsService } from '../../../../services'
 import { setPaginationLocals } from '../../../../views/partials/simplePagination/utils'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
-import ContactDetails = contactsApiClientTypes.ContactDetails
 import { getReferenceDataOrderDictionary } from '../../../../utils/sortPhoneNumbers'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../services/referenceDataService'
+import { PrisonerJourneyParams } from '../../../../@types/journeys'
+import { ContactDetails } from '../../../../@types/contactsApiClient'
 
 export default class ContactMatchController implements PageHandler {
   constructor(

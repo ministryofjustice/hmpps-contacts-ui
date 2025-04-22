@@ -7,8 +7,7 @@ import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import { ManageRelationshipStatusSchemaType } from './manageRelationshipStatusSchema'
-import PatchRelationshipRequest = contactsApiClientTypes.PatchRelationshipRequest
-import ContactDetails = contactsApiClientTypes.ContactDetails
+import { ContactDetails, PatchRelationshipRequest } from '../../../../../@types/contactsApiClient'
 
 export default class ManageRelationshipStatusController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -55,7 +54,7 @@ export default class ManageRelationshipStatusController implements PageHandler {
     await this.contactsService.getContactName(Number(contactId), user).then(response => {
       req.flash(
         FLASH_KEY__SUCCESS_BANNER,
-        `You’ve updated the relationship information for contact ${formatNameFirstNameFirst(response)} and prisoner ${formatNameFirstNameFirst(prisonerDetails, { excludeMiddleNames: true })}.`,
+        `You’ve updated the relationship information for contact ${formatNameFirstNameFirst(response)} and prisoner ${formatNameFirstNameFirst(prisonerDetails!, { excludeMiddleNames: true })}.`,
       )
     })
 

@@ -2,9 +2,9 @@ import { Request, Response } from 'express'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import ReferenceDataService from '../../../../services/referenceDataService'
 import { formatAddresses } from './common/utils'
+import { PrisonerJourneyParams } from '../../../../@types/journeys'
 
 export default class AddAddressesController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}

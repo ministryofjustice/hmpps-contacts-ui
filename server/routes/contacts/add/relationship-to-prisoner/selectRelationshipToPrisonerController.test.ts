@@ -6,9 +6,9 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { mockedReferenceData, STUBBED_SOCIAL_RELATIONSHIP_OPTIONS } from '../../../testutils/stubReferenceData'
-import AddContactJourney = journeys.AddContactJourney
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
+import { AddContactJourney } from '../../../../@types/journeys'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/referenceDataService')

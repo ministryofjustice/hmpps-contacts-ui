@@ -1,7 +1,6 @@
 import { capitaliseName } from './utils'
-import PrisonerDetails = journeys.PrisonerDetails
-import ContactNames = journeys.ContactNames
-import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
+import { ContactNames, PrisonerDetails } from '../@types/journeys'
+import { PatchContactResponse } from '../@types/contactsApiClient'
 
 const formatNameLastNameFirst = (
   val: { lastName: string; firstName: string; middleNames?: string } | ContactNames | PrisonerDetails,

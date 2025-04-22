@@ -1,8 +1,9 @@
-import OrganisationSummary = contactsApiClientTypes.OrganisationSummary
-import ContactPhoneDetails = contactsApiClientTypes.ContactPhoneDetails
-import ContactAddressPhoneDetails = contactsApiClientTypes.ContactAddressPhoneDetails
-import OrganisationPhoneDetails = organisationsApiClientTypes.OrganisationPhoneDetails
-import OrganisationAddressPhoneDetails = organisationsApiClientTypes.OrganisationAddressPhoneDetails
+import {
+  OrganisationAddressPhoneDetails,
+  OrganisationPhoneDetails,
+  OrganisationSummary,
+} from '../@types/organisationsApiClient'
+import { ContactAddressPhoneDetails, ContactPhoneDetails } from '../@types/contactsApiClient'
 
 export const formatBusinessPhoneNumber = ({
   businessPhoneNumber,
@@ -17,9 +18,9 @@ export const formatBusinessPhoneNumber = ({
 export const formatPhoneNumber = ({
   phoneNumber,
   extNumber,
-}: Partial<
-  ContactPhoneDetails | ContactAddressPhoneDetails | OrganisationPhoneDetails | OrganisationAddressPhoneDetails
->): string | null => {
+}: ContactPhoneDetails | ContactAddressPhoneDetails | OrganisationPhoneDetails | OrganisationAddressPhoneDetails):
+  | string
+  | null => {
   return phoneToString(phoneNumber, extNumber)
 }
 

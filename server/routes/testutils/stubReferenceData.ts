@@ -1,4 +1,5 @@
 import ReferenceCodeType from '../../enumeration/referenceCodeType'
+import { ReferenceCode } from '../../@types/contactsApiClient'
 
 type StubReferenceData = { code: string; description: string; groupCode: string }
 const STUBBED_TITLE_OPTIONS: StubReferenceData[] = [
@@ -301,48 +302,48 @@ const STUBBED_COUNTRY_OPTIONS: StubReferenceData[] = [
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-const mockedReferenceData = (type: ReferenceCodeType, _: Express.User): Promise<StubReferenceData[]> => {
+const mockedReferenceData = (type: ReferenceCodeType, _: Express.User): Promise<ReferenceCode[]> => {
   if (type === ReferenceCodeType.TITLE) {
-    return Promise.resolve(STUBBED_TITLE_OPTIONS)
+    return Promise.resolve(STUBBED_TITLE_OPTIONS as ReferenceCode[])
   }
   if (type === ReferenceCodeType.SOCIAL_RELATIONSHIP) {
-    return Promise.resolve(STUBBED_SOCIAL_RELATIONSHIP_OPTIONS)
+    return Promise.resolve(STUBBED_SOCIAL_RELATIONSHIP_OPTIONS as ReferenceCode[])
   }
   if (type === ReferenceCodeType.OFFICIAL_RELATIONSHIP) {
-    return Promise.resolve(STUBBED_OFFICIAL_RELATIONSHIP_OPTIONS)
+    return Promise.resolve(STUBBED_OFFICIAL_RELATIONSHIP_OPTIONS as ReferenceCode[])
   }
   if (type === ReferenceCodeType.PHONE_TYPE) {
-    return Promise.resolve(STUBBED_PHONE_TYPE_OPTIONS)
+    return Promise.resolve(STUBBED_PHONE_TYPE_OPTIONS as ReferenceCode[])
   }
   if (type === ReferenceCodeType.DOMESTIC_STS) {
-    return Promise.resolve(STUBBED_DOMESTIC_STATUS_OPTIONS)
+    return Promise.resolve(STUBBED_DOMESTIC_STATUS_OPTIONS as ReferenceCode[])
   }
   if (type === ReferenceCodeType.ID_TYPE) {
-    return Promise.resolve(STUBBED_IDENTITY_OPTIONS)
+    return Promise.resolve(STUBBED_IDENTITY_OPTIONS as ReferenceCode[])
   }
   if (type === ReferenceCodeType.GENDER) {
-    return Promise.resolve(STUBBED_GENDER_OPTIONS)
+    return Promise.resolve(STUBBED_GENDER_OPTIONS as ReferenceCode[])
   }
   if (type === ReferenceCodeType.LANGUAGE) {
-    return Promise.resolve(STUBBED_LANGUAGE_OPTIONS)
+    return Promise.resolve(STUBBED_LANGUAGE_OPTIONS as ReferenceCode[])
   }
   if (type === ReferenceCodeType.RESTRICTION) {
-    return Promise.resolve(STUBBED_RESTRICTION_OPTIONS)
+    return Promise.resolve(STUBBED_RESTRICTION_OPTIONS as ReferenceCode[])
   }
   if (type === ReferenceCodeType.ADDRESS_TYPE) {
-    return Promise.resolve(STUBBED_ADDRESS_TYPE_OPTIONS)
+    return Promise.resolve(STUBBED_ADDRESS_TYPE_OPTIONS as ReferenceCode[])
   }
   if (type === ReferenceCodeType.CITY) {
-    return Promise.resolve(STUBBED_CITY_OPTIONS)
+    return Promise.resolve(STUBBED_CITY_OPTIONS as ReferenceCode[])
   }
   if (type === ReferenceCodeType.COUNTY) {
-    return Promise.resolve(STUBBED_COUNTY_OPTIONS)
+    return Promise.resolve(STUBBED_COUNTY_OPTIONS as ReferenceCode[])
   }
   if (type === ReferenceCodeType.COUNTRY) {
-    return Promise.resolve(STUBBED_COUNTRY_OPTIONS)
+    return Promise.resolve(STUBBED_COUNTRY_OPTIONS as ReferenceCode[])
   }
   if (type === ReferenceCodeType.RELATIONSHIP_TYPE) {
-    return Promise.resolve(STUBBED_RELATIONSHIP_TYPE_OPTIONS)
+    return Promise.resolve(STUBBED_RELATIONSHIP_TYPE_OPTIONS as ReferenceCode[])
   }
 
   return Promise.reject(new Error(`You haven't set up the stubbed reference data for ${type} yet`))

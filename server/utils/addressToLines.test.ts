@@ -1,8 +1,10 @@
 import { addressToLines } from './addressToLines'
+import { OrganisationSummary } from '../@types/organisationsApiClient'
+import { PrisonerContactSummary } from '../@types/contactsApiClient'
 
 describe('Convert address to string', () => {
   it('should convert business address to string with linebreaks', () => {
-    const address = {
+    const address: Partial<PrisonerContactSummary> = {
       flat: 'Flat 24',
       property: 'Some House',
       street: 'Acacia Avenue',
@@ -19,8 +21,7 @@ describe('Convert address to string', () => {
   })
 
   it('should convert business address without flat', () => {
-    const address = {
-      flat: undefined,
+    const address: Partial<OrganisationSummary> = {
       property: 'Some House',
       street: 'Acacia Avenue',
       area: 'Bunting',
@@ -36,9 +37,8 @@ describe('Convert address to string', () => {
   })
 
   it('should convert business address without property', () => {
-    const address = {
+    const address: Partial<OrganisationSummary> = {
       flat: 'Flat 24',
-      property: undefined,
       street: 'Acacia Avenue',
       area: 'Bunting',
       cityDescription: 'SHEF',
@@ -53,9 +53,7 @@ describe('Convert address to string', () => {
   })
 
   it('should convert business address without flat nor property', () => {
-    const address = {
-      flat: undefined,
-      property: undefined,
+    const address: Partial<OrganisationSummary> = {
       street: 'Acacia Avenue',
       area: 'Bunting',
       cityDescription: 'SHEF',

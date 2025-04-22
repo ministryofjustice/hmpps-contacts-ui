@@ -5,10 +5,9 @@ import { ContactsService } from '../../../../services'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
-import ContactCreationResult = contactsApiClientTypes.ContactCreationResult
-import PrisonerContactRelationshipDetails = contactsApiClientTypes.PrisonerContactRelationshipDetails
 import { formatAddresses } from '../addresses/common/utils'
+import { PrisonerJourneyParams } from '../../../../@types/journeys'
+import { ContactCreationResult, PrisonerContactRelationshipDetails } from '../../../../@types/contactsApiClient'
 
 export default class CreateContactCheckAnswersController implements PageHandler {
   constructor(
@@ -125,7 +124,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
         .createContact(journey, user, req.id)
         .then((createdContact: ContactCreationResult) => {
           journey.contactId = createdContact.createdContact.id
-          journey.prisonerContactId = createdContact.createdRelationship.prisonerContactId
+          journey.prisonerContactId = createdContact.createdRelationship!.prisonerContactId
         })
         .then(() => delete req.session.addContactJourneys![journeyId])
     } else if (journey.mode === 'EXISTING') {

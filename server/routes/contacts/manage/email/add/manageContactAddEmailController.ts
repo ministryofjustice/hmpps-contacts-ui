@@ -8,8 +8,7 @@ import { Navigation } from '../../../common/navigation'
 import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
-import ContactDetails = contactsApiClientTypes.ContactDetails
-import ContactEmailDetails = contactsApiClientTypes.ContactEmailDetails
+import { ContactDetails, ContactEmailDetails } from '../../../../../@types/contactsApiClient'
 
 type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
 type EmailAddress = components['schemas']['EmailAddress']

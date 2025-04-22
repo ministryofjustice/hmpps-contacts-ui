@@ -5,10 +5,9 @@ import { appWithAllRoutes, flashProvider, user } from '../../../testutils/appSet
 import { Page } from '../../../../services/auditService'
 import { mockedReferenceData, STUBBED_TITLE_OPTIONS } from '../../../testutils/stubReferenceData'
 import TestData from '../../../testutils/testData'
-import PatchContactRequest = contactsApiClientTypes.PatchContactRequest
 import { MockedService } from '../../../../testutils/mockedServices'
-import PatchContactResponse = contactsApiClientTypes.PatchContactResponse
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
+import { PatchContactRequest, PatchContactResponse } from '../../../../@types/contactsApiClient'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/referenceDataService')
@@ -200,9 +199,9 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       firstName: 'first',
       lastName: 'last',
       middleNames: 'mid',
-      title: 'DR',
+      titleCode: 'DR',
     }
-    contactsService.updateContactById.mockResolvedValue(patchResponse)
+    contactsService.updateContactById.mockResolvedValue(patchResponse as PatchContactResponse)
 
     await request(app)
       .post(

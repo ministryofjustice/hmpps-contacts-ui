@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from './addContactFlowControl'
 import { Page } from '../../../services/auditService'
 import { BreadcrumbType, Navigation } from '../common/navigation'
-import AddContactJourney = journeys.AddContactJourney
+import { AddContactJourney } from '../../../@types/journeys'
 
 describe('addContactFlowControl', () => {
   describe('add new contact', () => {

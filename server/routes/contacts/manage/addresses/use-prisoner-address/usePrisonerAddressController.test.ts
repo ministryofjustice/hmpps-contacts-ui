@@ -7,9 +7,8 @@ import { Page } from '../../../../../services/auditService'
 import PrisonerAddressService from '../../../../../services/prisonerAddressService'
 import TestData from '../../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
-import AddressJourney = journeys.AddressJourney
 import { MockedService } from '../../../../../testutils/mockedServices'
-import AddressLines = journeys.AddressLines
+import { AddressJourney, AddressLines } from '../../../../../@types/journeys'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')

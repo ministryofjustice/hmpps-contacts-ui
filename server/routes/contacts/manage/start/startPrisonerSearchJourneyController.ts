@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
-import ManageContactsJourney = journeys.ManageContactsJourney
+import { ManageContactsJourney } from '../../../../@types/journeys'
 
 export default class StartPrisonerSearchJourneyController implements PageHandler {
   public PAGE_NAME = Page.MANAGE_CONTACTS_START_PAGE

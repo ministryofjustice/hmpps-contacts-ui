@@ -10,8 +10,8 @@ import { formatNameFirstNameFirst } from '../../../utils/formatName'
 import { ContactsService, RestrictionsService } from '../../../services'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../middleware/setUpSuccessNotificationBanner'
 import Urls from '../../urls'
-import RestrictionClass = journeys.RestrictionClass
-import PrisonerContactRestrictionDetails = contactsApiClientTypes.PrisonerContactRestrictionDetails
+import { RestrictionClass } from '../../../@types/journeys'
+import { PrisonerContactRestrictionDetails } from '../../../@types/contactsApiClient'
 
 export default class UpdateRestrictionController implements PageHandler {
   constructor(
@@ -111,7 +111,7 @@ export default class UpdateRestrictionController implements PageHandler {
         .then(contactName =>
           req.flash(
             FLASH_KEY__SUCCESS_BANNER,
-            `You’ve updated the relationship restrictions between contact ${formatNameFirstNameFirst(contactName)} and prisoner ${formatNameFirstNameFirst(prisonerDetails, { excludeMiddleNames: true })}.`,
+            `You’ve updated the relationship restrictions between contact ${formatNameFirstNameFirst(contactName)} and prisoner ${formatNameFirstNameFirst(prisonerDetails!, { excludeMiddleNames: true })}.`,
           ),
         )
     } else {

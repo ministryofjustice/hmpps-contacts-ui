@@ -9,8 +9,8 @@ import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
-import AddContactJourney = journeys.AddContactJourney
 import { mockedReferenceData } from '../../../testutils/stubReferenceData'
+import { AddContactJourney } from '../../../../@types/journeys'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -116,6 +116,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/employments/:journeyId',
           countryDescription: 'England',
           businessPhoneNumber: '01234',
           businessPhoneNumberExtension: '99',
+          organisationActive: true,
         },
         isActive: true,
       },
@@ -169,7 +170,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/employments/:journeyId',
 describe('POST /prisoner/:prisonerNumber/contacts/create/addresses', () => {
   it('should save employments and redirect to task list', async () => {
     existingJourney.pendingEmployments = [
-      { employer: { organisationId: 123, organisationName: 'Org' }, isActive: true },
+      { employer: { organisationId: 123, organisationName: 'Org', organisationActive: true }, isActive: true },
     ]
     delete existingJourney.employments
 
@@ -185,7 +186,9 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/addresses', () => {
 
   it('should delete employments on empty list', async () => {
     existingJourney.pendingEmployments = []
-    existingJourney.employments = [{ employer: { organisationId: 123, organisationName: 'Org' }, isActive: true }]
+    existingJourney.employments = [
+      { employer: { organisationId: 123, organisationName: 'Org', organisationActive: true }, isActive: true },
+    ]
 
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/employments/${journeyId}`)

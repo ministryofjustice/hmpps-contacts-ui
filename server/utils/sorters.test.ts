@@ -1,6 +1,6 @@
 import { employmentSorter, organisationAddressSorter } from './sorters'
 import { components } from '../@types/contactsApi'
-import OrganisationAddressDetails = organisationsApiClientTypes.OrganisationAddressDetails
+import { OrganisationAddressDetails } from '../@types/organisationsApiClient'
 
 describe('employmentSorter', () => {
   const a = {

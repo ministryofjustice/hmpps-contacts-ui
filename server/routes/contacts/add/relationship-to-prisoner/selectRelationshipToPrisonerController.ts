@@ -4,8 +4,8 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import { SelectRelationshipSchema } from '../../common/relationship/selectRelationshipSchemas'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
-import PrisonerJourneyParams = journeys.PrisonerJourneyParams
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
+import { PrisonerJourneyParams } from '../../../../@types/journeys'
 
 export default class SelectRelationshipToPrisonerController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}

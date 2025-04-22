@@ -9,7 +9,7 @@ import { Navigation } from '../../../common/navigation'
 import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
-import ContactDetails = contactsApiClientTypes.ContactDetails
+import { ContactDetails } from '../../../../../@types/contactsApiClient'
 
 export default class ManageContactAddIdentityController implements PageHandler {
   constructor(

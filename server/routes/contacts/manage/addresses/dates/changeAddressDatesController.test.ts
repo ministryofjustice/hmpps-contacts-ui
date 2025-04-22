@@ -7,7 +7,7 @@ import TestData from '../../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
-import ContactDetails = contactsApiClientTypes.ContactDetails
+import { ContactAddressDetails, ContactDetails } from '../../../../../@types/contactsApiClient'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -26,7 +26,12 @@ const prisonerContactId = 456789
 const contactAddressId = 888
 const contact: ContactDetails = {
   id: contactId,
-  title: '',
+  isStaff: false,
+  interpreterRequired: false,
+  phoneNumbers: [],
+  emailAddresses: [],
+  employments: [],
+  identities: [],
   lastName: 'last',
   firstName: 'first',
   middleNames: 'middle',
@@ -81,8 +86,8 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/dates', () => {
   it('should render change address date page', async () => {
     // Given
-    contact.addresses[0].startDate = '1999-01-01T00:00:00'
-    contact.addresses[0].endDate = '2077-12-25T00:00:00'
+    contact.addresses[0]!.startDate = '1999-01-01T00:00:00'
+    contact.addresses[0]!.endDate = '2077-12-25T00:00:00'
 
     // When
     const response = await request(app).get(
@@ -134,8 +139,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
   it('should render previously entered details if validation errors even if values in the session', async () => {
     // Given
-    contact.addresses[0].startDate = '1999-01-01T00:00:00'
-    contact.addresses[0].endDate = '2077-12-25T00:00:00'
+    contact.addresses[0]!.startDate = '1999-01-01T00:00:00'
+    contact.addresses[0]!.endDate = '2077-12-25T00:00:00'
     const form = {
       fromMonth: '',
       toYear: 'a',
@@ -161,7 +166,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/dates', () => {
   it('should update the address date and redirect if there are no validation errors', async () => {
     // Given
-    contactsService.updateContactAddress.mockResolvedValue({ contactAddressId })
+    contactsService.updateContactAddress.mockResolvedValue({ contactAddressId } as ContactAddressDetails)
     const fromMonth = '1'
     const fromYear = '1999'
 

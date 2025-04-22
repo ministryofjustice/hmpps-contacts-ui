@@ -6,9 +6,9 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
-import AddContactJourney = journeys.AddContactJourney
-import ContactSearchResultItemPage = contactsApiClientTypes.PagedModelContactSearchResultItem
 import { MockedService } from '../../../../testutils/mockedServices'
+import { AddContactJourney } from '../../../../@types/journeys'
+import { PagedModelContactSearchResultItem } from '../../../../@types/contactsApiClient'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -56,8 +56,10 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     // Given
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.searchContact.mockResolvedValue({
-      totalPages: 0,
-      totalElements: 0,
+      page: {
+        totalPages: 0,
+        totalElements: 0,
+      },
       content: [TestData.contactSearchResultItem()],
     })
 
@@ -100,8 +102,10 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
 
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.searchContact.mockResolvedValue({
-      totalPages: 0,
-      totalElements: 0,
+      page: {
+        totalPages: 0,
+        totalElements: 0,
+      },
       content: [TestData.contactSearchResultItem()],
     })
 
@@ -230,7 +234,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
 })
 
 describe('Contact seaarch results', () => {
-  const results: ContactSearchResultItemPage = {
+  const results: PagedModelContactSearchResultItem = {
     content: [TestData.contactSearchResultItem()],
     page: {
       number: 0,

@@ -5,6 +5,7 @@ import { appWithAllRoutes, user } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
+import { PrisonerContactRelationshipDetails } from '../../../../../@types/contactsApiClient'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -42,7 +43,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     'should render manage emergency contact or next of kin page when flag is %p',
     async (isEmergencyContactOrNextOfKin, relationship) => {
       const ContactDetails = TestData.contact()
-      contactsService.getPrisonerContactRelationship.mockResolvedValue(relationship)
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(
+        relationship as PrisonerContactRelationshipDetails,
+      )
       const contactId = ContactDetails.id
       // Given
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
