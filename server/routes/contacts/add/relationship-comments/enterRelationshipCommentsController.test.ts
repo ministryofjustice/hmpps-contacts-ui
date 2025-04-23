@@ -245,7 +245,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-relationship-comm
       .type('form')
       .send({ comments: ''.padEnd(241) })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}#`)
   })
 
   it('should return to start if no journey in session', async () => {
