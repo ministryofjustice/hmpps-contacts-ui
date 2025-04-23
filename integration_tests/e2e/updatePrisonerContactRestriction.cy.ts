@@ -1,9 +1,9 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
-import { StubPrisonerContactRestrictionDetails } from '../mockApis/contactsApi'
 import EnterRestrictionPage from '../pages/enterRestrictionPage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import EditRestrictionsPage from '../pages/editRestrictionsPage'
+import { PrisonerContactRestrictionDetails } from '../../server/@types/contactsApiClient'
 
 context('Update Prisoner Contact Restriction', () => {
   const contactId = 654321
@@ -62,7 +62,7 @@ context('Update Prisoner Contact Restriction', () => {
   })
 
   it('Can update a prisoner contact restriction with minimal fields', () => {
-    const updated: Partial<StubPrisonerContactRestrictionDetails> = {
+    const updated: Partial<PrisonerContactRestrictionDetails> = {
       prisonerContactRestrictionId: restrictionId,
       contactId,
       createdBy: 'USER1',
@@ -100,7 +100,7 @@ context('Update Prisoner Contact Restriction', () => {
   })
 
   it('Can update a prisoner contact restriction with all fields', () => {
-    const updated: Partial<StubPrisonerContactRestrictionDetails> = {
+    const updated: Partial<PrisonerContactRestrictionDetails> = {
       prisonerContactRestrictionId: restrictionId,
       contactId,
       createdBy: 'USER1',

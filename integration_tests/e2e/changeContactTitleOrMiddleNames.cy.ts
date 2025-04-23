@@ -1,9 +1,9 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
-import { StubPatchContactResponse } from '../mockApis/contactsApi'
 import ChangeTitleOrMiddleNamesPage from '../pages/changeTitleOrMiddleNamesPage'
 import EditContactDetailsPage from '../pages/editContactDetailsPage'
+import { PatchContactResponse } from '../../server/@types/contactsApiClient'
 
 context('Change Contact Title Or Middle Names', () => {
   const contactId = 654321
@@ -47,7 +47,7 @@ context('Change Contact Title Or Middle Names', () => {
       startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
     })
 
-    const updated: StubPatchContactResponse = {
+    const updated: PatchContactResponse = {
       ...contact,
       titleCode: 'DR',
       middleNames: 'Middle Updated',
@@ -108,7 +108,7 @@ context('Change Contact Title Or Middle Names', () => {
       startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
     })
 
-    const updated: StubPatchContactResponse = {
+    const updated: PatchContactResponse = {
       ...contact,
       titleCode: 'DR',
       middleNames: null,
@@ -169,7 +169,7 @@ context('Change Contact Title Or Middle Names', () => {
       startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
     })
 
-    const updated: StubPatchContactResponse = {
+    const updated: PatchContactResponse = {
       ...contact,
       titleCode: 'DR',
       middleNames: null,

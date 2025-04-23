@@ -1,9 +1,6 @@
 import { differenceInYears, format, isValid, parseISO } from 'date-fns'
-import { components } from '../@types/contactsApi'
-import { ReferenceCode } from '../@types/contactsApiClient'
+import { ContactSearchResultItem, ReferenceCode } from '../@types/contactsApiClient'
 import { DateOfBirth } from '../@types/journeys'
-
-type ContactSearchResultItem = components['schemas']['ContactSearchResultItem']
 
 const isBlank = (str?: string): boolean => !str || /^\s*$/.test(str)
 

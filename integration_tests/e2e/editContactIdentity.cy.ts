@@ -2,8 +2,8 @@ import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ChangeIdentityDocumentPage from '../pages/changeIdentityDocumentPage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
-import { StubIdentityDetails } from '../mockApis/contactsApi'
 import EditContactDetailsPage from '../pages/editContactDetailsPage'
+import { ContactIdentityDetails } from '../../server/@types/contactsApiClient'
 
 context('Edit Contact Identities', () => {
   const contactId = 654321
@@ -52,7 +52,7 @@ context('Edit Contact Identities', () => {
   })
 
   it('Can edit a contact identity with minimal fields', () => {
-    const updated: StubIdentityDetails = {
+    const updated: ContactIdentityDetails = {
       contactIdentityId: 1,
       contactId,
       identityValue: '425362965',
@@ -94,7 +94,7 @@ context('Edit Contact Identities', () => {
   })
 
   it('Can edit a contact identity with all fields', () => {
-    const updated: StubIdentityDetails = {
+    const updated: ContactIdentityDetails = {
       contactIdentityId: 1,
       contactId,
       identityType: 'PASS',

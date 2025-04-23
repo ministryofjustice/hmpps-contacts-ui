@@ -1,10 +1,10 @@
-import { components } from '../@types/contactsApi'
+import { ContactPhoneDetails, ReferenceCode } from '../@types/contactsApiClient'
 
-export const getReferenceDataOrderDictionary = (phoneTypeReferenceData: components['schemas']['ReferenceCode'][]) =>
+export const getReferenceDataOrderDictionary = (phoneTypeReferenceData: ReferenceCode[]) =>
   Object.fromEntries(phoneTypeReferenceData.map(refData => [refData.code, refData.displayOrder]))
 
 export const sortPhoneNumbers = (
-  phoneNumbers: components['schemas']['ContactPhoneDetails'][],
+  phoneNumbers: ContactPhoneDetails[],
   phoneTypeOrderDictionary?: { [key: string]: number },
 ) =>
   phoneTypeOrderDictionary

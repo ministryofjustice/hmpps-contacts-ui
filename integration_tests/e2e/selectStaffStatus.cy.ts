@@ -1,11 +1,9 @@
-import { components } from '../../server/@types/contactsApi'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import Page from '../pages/page'
 import SelectStaffStatusPage from '../pages/contact-details/selectStaffStatus'
 import EditContactDetailsPage from '../pages/editContactDetailsPage'
-
-export type PatchContactRequest = components['schemas']['PatchContactRequest']
+import { PatchContactRequest } from '../../server/@types/contactsApiClient'
 
 context('Select Staff Status', () => {
   const prisoner = TestData.prisoner()

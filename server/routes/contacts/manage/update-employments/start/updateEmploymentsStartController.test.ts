@@ -4,7 +4,7 @@ import { SessionData } from 'express-session'
 import { appWithAllRoutes } from '../../../../testutils/appSetup'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
-import { components } from '../../../../../@types/contactsApi'
+import { EmploymentDetails } from '../../../../../@types/contactsApiClient'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -40,7 +40,7 @@ afterEach(() => {
 describe('GET /contacts/manage/:contactId/update-employments', () => {
   it('should start journey and populate contact data into session, then redirect to entry page', async () => {
     // Given
-    const employment: components['schemas']['EmploymentDetails'] = {
+    const employment: EmploymentDetails = {
       employmentId: 0,
       contactId: 0,
       employer: {

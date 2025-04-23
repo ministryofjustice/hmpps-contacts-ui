@@ -38,11 +38,13 @@ export type CreateMultipleIdentitiesRequest = components['schemas']['CreateMulti
 export type IdentityDocument = components['schemas']['IdentityDocument']
 export type PagedModelLinkedPrisonerDetails = components['schemas']['PagedModelLinkedPrisonerDetails']
 export type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
+export type EmailAddress = components['schemas']['EmailAddress']
 export type CreateMultiplePhoneNumbersRequest = components['schemas']['CreateMultiplePhoneNumbersRequest']
 export type UpdateContactAddressRequest = components['schemas']['UpdateContactAddressRequest']
 export type ContactSearchResultItem = components['schemas']['ContactSearchResultItem']
 export type ContactPhoneNumberDetails = components['schemas']['ContactPhoneDetails']
 export type LinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
+export type EmploymentDetails = components['schemas']['EmploymentDetails']
 
 export type PrisonerContactFilter = {
   active?: boolean

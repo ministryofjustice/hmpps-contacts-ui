@@ -1,9 +1,6 @@
 import { stubFor } from './wiremock'
 import TestData from '../../server/routes/testutils/testData'
-import { components } from '../../server/@types/organisationsApi'
-
-type OrganisationDetails = components['schemas']['OrganisationDetails']
-type OrganisationSummary = components['schemas']['OrganisationSummary']
+import { OrganisationDetails, OrganisationSummary } from '../../server/@types/organisationsApiClient'
 
 export default {
   stubOrganisationsApiHealth: () =>

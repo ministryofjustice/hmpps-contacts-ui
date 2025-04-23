@@ -3,7 +3,7 @@ import ManageContactDetailsPage from '../pages/manageContactDetails'
 import Page from '../pages/page'
 import AddEmailsPage from '../pages/addEmailsPage'
 import EditContactMethodsPage from '../pages/editContactMethodsPage'
-import { StubContactEmailDetails } from '../mockApis/contactsApi'
+import { ContactEmailDetails } from '../../server/@types/contactsApiClient'
 
 context('Create Email Addresses', () => {
   const contactId = 22
@@ -38,7 +38,7 @@ context('Create Email Addresses', () => {
   })
 
   it(`should pass validation and create email addresses`, () => {
-    const created: StubContactEmailDetails[] = [
+    const created: ContactEmailDetails[] = [
       {
         contactId: 1,
         contactEmailId: 1,

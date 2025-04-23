@@ -1,15 +1,12 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { components } from '../../../../../@types/contactsApi'
 import { appWithAllRoutes, flashProvider, user } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
-import { ContactDetails } from '../../../../../@types/contactsApiClient'
-
-type UpdateEmailRequest = components['schemas']['UpdateEmailRequest']
+import { ContactDetails, UpdateEmailRequest } from '../../../../../@types/contactsApiClient'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')

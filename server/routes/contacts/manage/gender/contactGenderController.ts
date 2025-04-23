@@ -2,7 +2,6 @@ import { Request, Response } from 'express'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
-import { components } from '../../../../@types/contactsApi'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import { Navigation } from '../../common/navigation'
@@ -11,9 +10,7 @@ import { formatNameFirstNameFirst } from '../../../../utils/formatName'
 import Urls from '../../../urls'
 import { ContactGenderSchemaType } from './contactGenderSchema'
 import { PrisonerJourneyParams } from '../../../../@types/journeys'
-import { ContactDetails } from '../../../../@types/contactsApiClient'
-
-type PatchContactRequest = components['schemas']['PatchContactRequest']
+import { ContactDetails, PatchContactRequest } from '../../../../@types/contactsApiClient'
 
 export default class ManageGenderController implements PageHandler {
   constructor(

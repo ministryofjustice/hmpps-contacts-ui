@@ -4,7 +4,6 @@ import ManageContactDetailsPage from '../pages/manageContactDetails'
 import SelectAddressTypePage from '../pages/contact-methods/address/selectAddressTypePage'
 import EnterAddressPage from '../pages/contact-methods/address/enterAddressPage'
 import AddressCheckYourAnswersPage from '../pages/contact-methods/address/addressCheckYourAnswersPage'
-import { StubPrisonApiAddress } from '../mockApis/prisonApi'
 import EditContactMethodsPage from '../pages/editContactMethodsPage'
 import EnterAddressDatesPage from '../pages/contact-methods/address/enterAddressDatesPage'
 import SelectAddressFlagsPage from '../pages/contact-methods/address/selectAddressFlagsPage'
@@ -12,6 +11,7 @@ import EnterAddressCommentsPage from '../pages/contact-methods/address/enterAddr
 import CancelAddAddressPage from '../pages/contact-methods/address/cancelAddAddressPage'
 import AddAddressPhonesPage from '../pages/contact-methods/address/phone/addAddressPhonesPage'
 import ConfirmDeleteAddressPhonePage from '../pages/contact-methods/address/phone/confirmDeleteAddressPhonePage'
+import { PrisonApiAddress } from '../../server/data/prisonApiTypes'
 
 context('Add Address', () => {
   const contactId = 654321
@@ -228,7 +228,7 @@ context('Add Address', () => {
         ],
       }),
     )
-    const prisonerAddress: StubPrisonApiAddress = {
+    const prisonerAddress: PrisonApiAddress = {
       addressId: 1,
       addressType: 'foo',
       primary: true,

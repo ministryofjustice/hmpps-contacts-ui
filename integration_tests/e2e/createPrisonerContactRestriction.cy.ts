@@ -1,12 +1,12 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
-import { StubPrisonerContactRestrictionDetails } from '../mockApis/contactsApi'
 import EnterRestrictionPage from '../pages/enterRestrictionPage'
 import CreateRestrictionCheckYourAnswersPage from '../pages/createRestrictionCheckYourAnswersPage'
 import CreateRestrictionSuccessPage from '../pages/createRestrictionSuccessPage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import CancelAddRestrictionPage from '../pages/cancelAddRestrictionPage'
 import EditRestrictionsPage from '../pages/editRestrictionsPage'
+import { PrisonerContactRestrictionDetails } from '../../server/@types/contactsApiClient'
 
 context('Create Prisoner Contact Restriction', () => {
   const contactId = 654321
@@ -55,7 +55,7 @@ context('Create Prisoner Contact Restriction', () => {
   })
 
   it('Can create a new prisoner contact restriction for a contact with minimal fields', () => {
-    const created: Partial<StubPrisonerContactRestrictionDetails> = {
+    const created: Partial<PrisonerContactRestrictionDetails> = {
       prisonerContactRestrictionId: 99,
       contactId,
       createdBy: 'USER1',
@@ -89,7 +89,7 @@ context('Create Prisoner Contact Restriction', () => {
   })
 
   it('Can create a new prisoner contact for a contact with all fields', () => {
-    const created: Partial<StubPrisonerContactRestrictionDetails> = {
+    const created: Partial<PrisonerContactRestrictionDetails> = {
       prisonerContactRestrictionId: 99,
       contactId,
       createdBy: 'USER1',
@@ -125,7 +125,7 @@ context('Create Prisoner Contact Restriction', () => {
   })
 
   it('Can change answers', () => {
-    const created: Partial<StubPrisonerContactRestrictionDetails> = {
+    const created: Partial<PrisonerContactRestrictionDetails> = {
       prisonerContactRestrictionId: 99,
       contactId,
       createdBy: 'USER1',
