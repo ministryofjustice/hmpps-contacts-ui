@@ -197,7 +197,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .type('form')
       .send({ day: '01', month: '', year: '' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
 
     expect(session.addContactJourneys![journeyId]!.searchContact!.dateOfBirth).toBeUndefined()
   })
@@ -210,7 +210,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .type('form')
       .send({ day: '01', month: '12', year: '' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
 
     expect(session.addContactJourneys![journeyId]!.searchContact!.dateOfBirth).toBeUndefined()
   })
@@ -227,7 +227,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
         year: date.setDate(date.getDate() + 1),
       })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
 
     expect(session.addContactJourneys![journeyId]!.searchContact!.dateOfBirth).toBeUndefined()
   })

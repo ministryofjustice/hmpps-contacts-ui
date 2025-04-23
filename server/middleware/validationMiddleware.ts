@@ -45,7 +45,8 @@ export const validate = <P extends { [key: string]: string }>(schema: z.ZodTypeA
     const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
 
     req.flash('validationErrors', JSON.stringify(deduplicatedFieldErrors))
-    return res.redirect(req.originalUrl)
+    const urlWithDefaultFragmentSoAnyFieldFocusIsRemoved = `${req.originalUrl}#`
+    return res.redirect(urlWithDefaultFragmentSoAnyFieldFocusIsRemoved)
   }
 }
 

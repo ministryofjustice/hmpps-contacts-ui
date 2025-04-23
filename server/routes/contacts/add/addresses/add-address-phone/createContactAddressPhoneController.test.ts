@@ -335,7 +335,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex
       .type('form')
       .send({})
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/addresses/new/phone/create/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/addresses/new/phone/create/${journeyId}#`)
     expect(session.addContactJourneys![journeyId]!.newAddress!.phoneNumbers).toBeUndefined()
   })
 

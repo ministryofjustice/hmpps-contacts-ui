@@ -279,7 +279,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
         .expect(302)
         .expect(
           'Location',
-          `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/${restrictionClass}/enter-restriction/${restrictionId}`,
+          `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/${restrictionClass}/enter-restriction/${restrictionId}#`,
         )
     },
   )

@@ -196,7 +196,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .expect(302)
       .expect(
         'Location',
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/create`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/create#`,
       )
     expect(contactsService.createContactIdentities).not.toHaveBeenCalled()
     expect(flashProvider).toHaveBeenCalledWith('validationErrors', expect.anything())

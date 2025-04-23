@@ -246,7 +246,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship-typ
       .type('form')
       .send({})
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}#`)
   })
 
   it('should return to start if no journey in session', async () => {

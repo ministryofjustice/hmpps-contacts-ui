@@ -249,7 +249,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex
       .type('form')
       .send({ comments: 'a'.repeat(300) })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/addresses/new/comments/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/addresses/new/comments/${journeyId}#`)
   })
 
   it('should return not found page if index is out of range', async () => {

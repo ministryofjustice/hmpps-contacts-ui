@@ -287,7 +287,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex
       .type('form')
       .send({})
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/addresses/new/enter-address/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/addresses/new/enter-address/${journeyId}#`)
   })
 
   it('should return not found page if index is out of range', async () => {

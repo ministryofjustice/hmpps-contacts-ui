@@ -81,7 +81,7 @@ describe('POST /contacts/manage/prisoner-search/:journeyId', () => {
       .type('form')
       .send({ search: 'A' })
       .expect(302)
-      .expect('Location', `/contacts/manage/prisoner-search/${journeyId}`)
+      .expect('Location', `/contacts/manage/prisoner-search/${journeyId}#`)
 
     expect(flashProvider).toHaveBeenCalledWith('validationErrors', `{"search":["${ENTER_TWO_CHARS_MIN}"]}`)
   })

@@ -213,7 +213,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
       .type('form')
       .send({ day: ' ' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}#`)
   })
 
   it('should return to start if no journey in session', async () => {

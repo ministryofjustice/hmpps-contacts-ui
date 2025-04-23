@@ -259,7 +259,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/identities/:journeyId',
       .type('form')
       .send({ save: '', identities: [{ identityType: '', identityValue: '0123' }] })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/identities/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/identities/${journeyId}#`)
   })
 
   it('should return to start if no journey in session', async () => {

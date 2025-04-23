@@ -64,14 +64,13 @@ describe('validationMiddleware', () => {
 
       await validate(schema)(req, res, next)
 
-      expect(res.redirect).toHaveBeenCalledWith('/url-being-validated')
       expect(req.flash).toHaveBeenCalledWith(
         'validationErrors',
         JSON.stringify({ information: [DESCRIPTION_OF_INFORMATION] }),
       )
       expect(req.flash).toHaveBeenCalledWith('formResponses', JSON.stringify(req.body))
     })
-    it('should redirect to original url', async () => {
+    it('should redirect to original url with a default fragment to ensure correct focus', async () => {
       const next = jest.fn()
       req = {
         params: {},
@@ -86,12 +85,7 @@ describe('validationMiddleware', () => {
 
       await validate(schema)(req, res, next)
 
-      expect(res.redirect).toHaveBeenCalledWith('/url-being-validated')
-      expect(req.flash).toHaveBeenCalledWith(
-        'validationErrors',
-        JSON.stringify({ information: [DESCRIPTION_OF_INFORMATION] }),
-      )
-      expect(req.flash).toHaveBeenCalledWith('formResponses', JSON.stringify(req.body))
+      expect(res.redirect).toHaveBeenCalledWith('/url-being-validated#')
     })
 
     it('should return flash responses for other info', async () => {
@@ -109,7 +103,6 @@ describe('validationMiddleware', () => {
 
       await validate(schema)(req, res, next)
 
-      expect(res.redirect).toHaveBeenCalledWith('/url-being-validated')
       expect(req.flash).toHaveBeenCalledWith(
         'validationErrors',
         JSON.stringify({ otherInformation: [DESCRIPTION_OF_OTHER_INFORMATION] }),
@@ -132,7 +125,6 @@ describe('validationMiddleware', () => {
 
       await validate(schema)(req, res, next)
 
-      expect(res.redirect).toHaveBeenCalledWith('/url-being-validated')
       expect(req.flash).toHaveBeenCalledWith(
         'validationErrors',
         JSON.stringify({

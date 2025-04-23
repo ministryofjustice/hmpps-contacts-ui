@@ -1025,7 +1025,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/add/match/22/:journeyId?contac
       .type('form')
       .send({ isContactMatched: '' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/add/match/22/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/add/match/22/${journeyId}#`)
 
     // Then
     expect(session.addContactJourneys![journeyId]!.isContactMatched).toStrictEqual(undefined)
