@@ -21,7 +21,7 @@
                   label: {
                     text: "Document type"
                   },
-                  classes: 'govuk-!-width-one-quarter',
+                  classes: 'govuk-!-width-one-half',
                   items: typeOptions | referenceCodesToSelect(undefined, true) | setSelected(identityType),
                   errorMessage: validationErrors | findError('identityType')
                 }) }}

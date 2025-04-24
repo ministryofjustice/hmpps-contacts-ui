@@ -33,7 +33,7 @@
                     label: {
                       text: "Document type"
                     },
-                    classes: 'govuk-!-width-one-quarter',
+                    classes: 'govuk-!-width-one-half',
                     items: typeOptions | referenceCodesToSelect('Select document type') | setSelected(identity.identityType),
                     errorMessage: validationErrors | findError('identities[' + loop.index0 + '].identityType'),
                     attributes: {
