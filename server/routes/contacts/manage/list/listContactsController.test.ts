@@ -380,7 +380,7 @@ describe('listContactsController', () => {
           totalExpired: 5,
           active: [{ restrictionType: 'BAN', restrictionTypeDescription: 'Banned' }],
         },
-        ['Banned', '(Contact has 5 expired restrictions)'],
+        ['Banned', '(Contact also has 5 expired restrictions)'],
       ],
     ])('should render restrictions column correctly', async (restrictionSummary, expectedRows) => {
       // Given

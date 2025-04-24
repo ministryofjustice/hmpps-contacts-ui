@@ -138,3 +138,13 @@ div.moj-action-bar__filter::after { content: none !important; }
     }
   }
 }
+
+// make the name and person id as small as possible and ensure DOB doesn't wrap but let everything else fit to content.
+#prisoner-contact-list tr{
+  th:first-child {
+    width: 5%;
+  }
+  th:nth-child(2) {
+    min-width: 130px;
+  }
+}
