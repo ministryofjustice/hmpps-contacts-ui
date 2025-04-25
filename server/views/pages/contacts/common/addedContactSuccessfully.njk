@@ -15,6 +15,7 @@
  <div class="govuk-grid-row">
 
         {% set contactRecordLink = "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contactId + "/relationship/" + prisonerContactId %}
+        {% set contactListLink = "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/list" %}
         <div class="govuk-grid-column-two-thirds">
             {{ govukPanel({
                 titleText: successMessage,
@@ -26,6 +27,11 @@
             }) }}
 
               <div>
+                {% if mode === 'NEW' %}
+                  <p class="govuk-body"><a href="{{ contactRecordLink }}" class="govuk-body govuk-link--no-visited-state" data-qa="go-to-contact-info-link">View {{ names | formatNameFirstNameFirst(possessiveSuffix = true) }} contact information</a></p>
+                  <p class="govuk-body"><a href="{{ contactListLink }}" class="govuk-body govuk-link--no-visited-state" data-qa="go-to-contact-list-link">Go to {{ prisonerDetails | formatNameFirstNameFirst(possessiveSuffix = true, excludeMiddleNames = true) }} contact list</a></p>
+                {% endif %}
+
                 <h2 class="govuk-heading-l govuk-!-font-size-24 govuk-!-margin-bottom-3">Add restrictions</h2>
                 {{ govukWarningText({
                   html: 'If any restrictions apply to the relationship between the prisoner and the contact or to the contact individually, <a href="' + contactRecordLink + '" class="govuk-body govuk-link--no-visited-state govuk-!-font-weight-bold" data-qa="go-to-restrictions-link">add the restrictions now</a>.',
@@ -48,7 +54,7 @@
                 <h2 class="govuk-heading-l govuk-!-font-size-24 govuk-!-margin-bottom-3">Check the contact information is up to date</h2>
                 <p class="govuk-body">It’s also important to make sure the information in the contact record is accurate and up to date.</p>
                 <a href="{{ contactRecordLink }}" class="govuk-body govuk-link--no-visited-state" data-qa="go-to-contact-info-link">
-                    View {{ names | formatNameFirstNameFirst }}’s contact information
+                    View {{ names | formatNameFirstNameFirst(possessiveSuffix = true) }} contact information
                 </a>
                 {% endif %}
               </div>
