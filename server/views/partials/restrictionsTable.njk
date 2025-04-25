@@ -36,12 +36,12 @@
 
   {% if restrictionClass === 'PRISONER_CONTACT' %}
     {% set title = 'Relationship restrictions' %}
-    {% set caption = 'These restrictions apply to the relationship between prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' and contact ' + (contact | formatNameFirstNameFirst(excludeMiddleNames = true)) + '.' %}
-    {% set emptyCaption = 'No restrictions apply to the relationship between prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' and contact ' + (contact | formatNameFirstNameFirst(excludeMiddleNames = true)) + '.' %}
+    {% set caption = 'These restrictions apply to the relationship between prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' and contact ' + (contact | formatNameFirstNameFirst) + '.' %}
+    {% set emptyCaption = 'No restrictions apply to the relationship between prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' and contact ' + (contact | formatNameFirstNameFirst) + '.' %}
   {% else %}
     {% set title = 'Global restrictions' %}
-    {% set caption = 'These restrictions apply to contact ' + (contact | formatNameFirstNameFirst(excludeMiddleNames = true)) + ' across the whole prison estate.' %}
-    {% set emptyCaption = 'No restrictions apply to contact ' + (contact | formatNameFirstNameFirst(excludeMiddleNames = true)) + ' across the whole prison estate.' %}
+    {% set caption = 'These restrictions apply to contact ' + (contact | formatNameFirstNameFirst) + ' across the whole prison estate.' %}
+    {% set emptyCaption = 'No restrictions apply to contact ' + (contact | formatNameFirstNameFirst) + ' across the whole prison estate.' %}
   {% endif %}
 
   {% if not hideTableTitle %}
