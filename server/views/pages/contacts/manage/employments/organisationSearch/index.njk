@@ -87,17 +87,21 @@
             head: [
               {
                 text: 'Organisation name and corporate ID',
-                key: 'organisationName'
+                key: 'organisationName',
+                classes: "govuk-!-width-one-quarter"
               },
               {
-                text: "Primary address"
+                text: "Primary address",
+                classes: "govuk-!-width-one-quarter"
               },
               {
-                text: "Business phone number"
+                text: "Business phone number",
+                classes: "govuk-!-width-one-quarter"
               },
               {
                 text: "Action",
-                format: "numeric"
+                format: "numeric",
+                classes: "govuk-!-width-one-quarter"
               }
             ] | convertToSortableColumns(sort or 'organisationName,asc'),
             rows: organisationRows
