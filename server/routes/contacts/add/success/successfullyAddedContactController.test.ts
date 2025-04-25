@@ -33,12 +33,19 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId', () => {
-  it.each([
-    ['NEW', 'New contact added and linked to prisoner', 'New contact added and linked to a prisoner - DPS'],
-    ['EXISTING', 'Contact linked to prisoner', 'Contact linked to prisoner - DPS'],
-  ])('should render check answers page with dob for mode %s', async (mode, message: string, title) => {
+  it('should render check answers page with dob for mode NEW', async () => {
     // Given
-    contactsService.getContactName.mockResolvedValue(TestData.contact())
+    const mode = 'NEW'
+    const message = 'New contact added and linked to prisoner'
+    const title = 'New contact added and linked to a prisoner - DPS'
+
+    contactsService.getContactName.mockResolvedValue(
+      TestData.contact({
+        lastName: 'Last',
+        middleNames: 'Middle Names',
+        firstName: 'First',
+      }),
+    )
 
     // When
     const response = await request(app).get(`/prisoner/A1234BC/contact/${mode}/123456/654321/success`)
@@ -49,12 +56,56 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     expect($('a:contains("Back")').text()).toBeFalsy()
     expect($('.govuk-panel__title').text().trim()).toStrictEqual(message)
     expect($('[data-qa=prisoner-name]').text().trim()).toContain('John Smith')
-    expect($('[data-qa=contact-name]').text().trim()).toContain('Jones Mason')
+    expect($('[data-qa=contact-name]').text().trim()).toContain('First Middle Names Last')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(1)
-    expect($('[data-qa=breadcrumbs] a').eq(0).attr('href')).toStrictEqual('http://localhost:3001')
-    expect($('[data-qa=breadcrumbs] a').eq(1).attr('href')).toStrictEqual('http://localhost:3001/prisoner/A1234BC')
-    expect($('[data-qa=breadcrumbs] a').eq(2).attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/list')
+    const breadcrumbs = $('[data-qa=breadcrumbs] a')
+    expect(breadcrumbs.eq(0).attr('href')).toStrictEqual('http://localhost:3001')
+    expect(breadcrumbs.eq(1).attr('href')).toStrictEqual('http://localhost:3001/prisoner/A1234BC')
+    expect(breadcrumbs.eq(2).attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/list')
     expect($('.govuk-caption-l')).toHaveLength(0)
+
+    const contactLink = $('[data-qa=go-to-contact-info-link]').first()
+    expect(contactLink.text().trim()).toStrictEqual('View First Middle Names Last’s contact information')
+    expect(contactLink.attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/manage/123456/relationship/654321')
+
+    const prisonerLink = $('[data-qa=go-to-contact-list-link]').first()
+    expect(prisonerLink.text().trim()).toStrictEqual('Go to John Smith’s contact list')
+    expect(prisonerLink.attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/list')
+  })
+
+  it('should render check answers page with dob for mode EXISTING', async () => {
+    // Given
+    const mode = 'EXISTING'
+    const message = 'Contact linked to prisoner'
+    const title = 'Contact linked to prisoner - DPS'
+    contactsService.getContactName.mockResolvedValue(
+      TestData.contact({
+        lastName: 'Last',
+        middleNames: 'Middle Names',
+        firstName: 'First',
+      }),
+    )
+
+    // When
+    const response = await request(app).get(`/prisoner/A1234BC/contact/${mode}/123456/654321/success`)
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(title)
+    expect($('a:contains("Back")').text()).toBeFalsy()
+    expect($('.govuk-panel__title').text().trim()).toStrictEqual(message)
+    expect($('[data-qa=prisoner-name]').text().trim()).toContain('John Smith')
+    expect($('[data-qa=contact-name]').text().trim()).toContain('First Middle Names Last')
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(1)
+    const breadcrumbs = $('[data-qa=breadcrumbs] a')
+    expect(breadcrumbs.eq(0).attr('href')).toStrictEqual('http://localhost:3001')
+    expect(breadcrumbs.eq(1).attr('href')).toStrictEqual('http://localhost:3001/prisoner/A1234BC')
+    expect(breadcrumbs.eq(2).attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/list')
+    expect($('.govuk-caption-l')).toHaveLength(0)
+
+    const contactLink = $('[data-qa=go-to-contact-info-link]').first()
+    expect(contactLink.text().trim()).toStrictEqual('View First Middle Names Last’s contact information')
+    expect(contactLink.attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/manage/123456/relationship/654321')
   })
 
   it('should call the audit service for the page view', async () => {
