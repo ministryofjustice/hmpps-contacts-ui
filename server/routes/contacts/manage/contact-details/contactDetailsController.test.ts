@@ -149,7 +149,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
     beforeEach(() => {
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
-      contactsService.getContact.mockResolvedValue(TestData.contact())
+      contactsService.getContact.mockResolvedValue(
+        TestData.contact({ firstName: 'First', middleNames: 'Middle Names', lastName: 'Last' }),
+      )
       contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
     })
     it('should render restrictions tab with global and prisoner-contact restrictions', async () => {
@@ -186,10 +188,10 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions (2)')
 
       expect($('.restrictions-caption-PRISONER_CONTACT').text()).toStrictEqual(
-        'These restrictions apply to the relationship between prisoner John Smith and contact Jones Mason.',
+        'These restrictions apply to the relationship between prisoner John Smith and contact First Middle Names Last.',
       )
       expect($('.restrictions-caption-CONTACT_GLOBAL').text()).toStrictEqual(
-        'These restrictions apply to contact Jones Mason across the whole prison estate.',
+        'These restrictions apply to contact First Middle Names Last across the whole prison estate.',
       )
 
       const relationshipRestrictionTitleText = $('[data-qa="PRISONER_CONTACT-1-type-value"]').text().trim()
@@ -275,10 +277,10 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
       expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions (0)')
       expect($('.restrictions-caption-PRISONER_CONTACT').text()).toStrictEqual(
-        'No restrictions apply to the relationship between prisoner John Smith and contact Jones Mason.',
+        'No restrictions apply to the relationship between prisoner John Smith and contact First Middle Names Last.',
       )
       expect($('.restrictions-caption-CONTACT_GLOBAL').text()).toStrictEqual(
-        'No restrictions apply to contact Jones Mason across the whole prison estate.',
+        'No restrictions apply to contact First Middle Names Last across the whole prison estate.',
       )
 
       expect($('[data-qa=edit-restrictions-link]').text().trim()).toStrictEqual('Add restrictions')
