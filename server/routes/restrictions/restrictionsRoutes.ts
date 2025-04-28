@@ -1,21 +1,22 @@
-import { Router } from 'express'
+import { RequestHandler, Router } from 'express'
+import { z } from 'zod'
 import AuditService from '../../services/auditService'
-import logPageViewMiddleware from '../../middleware/logPageViewMiddleware'
 import ContactsService from '../../services/contactsService'
 import PrisonerSearchService from '../../services/prisonerSearchService'
 import ReferenceDataService from '../../services/referenceDataService'
 import StartAddRestrictionJourneyController from './start-add/startAddRestrictionJourneyController'
-import asyncMiddleware from '../../middleware/asyncMiddleware'
 import populatePrisonerDetailsIfInCaseload from '../../middleware/populatePrisonerDetailsIfInCaseload'
-import { validate } from '../../middleware/validationMiddleware'
+import { SchemaFactory, validate } from '../../middleware/validationMiddleware'
 import EnterNewRestrictionController from './enter-restriction/enterNewRestrictionController'
-import ensureInAddRestrictionJourney from './addRestrictionMiddleware'
 import { restrictionSchema } from './schema/restrictionSchema'
 import AddRestrictionCheckAnswersController from './check-answers/addRestrictionCheckAnswersController'
 import RestrictionsService from '../../services/restrictionsService'
 import SuccessfullyAddedRestrictionController from './success/successfullyAddedRestrictionController'
 import UpdateRestrictionController from './update-restriction/updateRestrictionController'
 import CancelAddRestrictionController from './cancel/cancelAddRestrictionController'
+import { PageHandler } from '../../interfaces/pageHandler'
+import { routerMethods } from '../../utils/routerMethods'
+import ensureInAddRestrictionJourney from './addRestrictionMiddleware'
 
 const RestrictionsRoutes = (
   auditService: AuditService,
@@ -25,82 +26,81 @@ const RestrictionsRoutes = (
   restrictionsService: RestrictionsService,
 ) => {
   const router = Router({ mergeParams: true })
+  const { get, post } = routerMethods(router, auditService)
+  const journeyRoute = <P extends { [key: string]: string }>({
+    path,
+    controller,
+    schema,
+    noValidation,
+  }: {
+    path: string
+    controller: PageHandler
+    schema?: z.ZodTypeAny | SchemaFactory<P>
+    noValidation?: boolean
+  }) => {
+    if (!schema && !noValidation) {
+      throw Error('Missing validation schema for POST route')
+    }
+    const getMiddleware = [
+      ensureInAddRestrictionJourney,
+      populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    ]
+    get(path, controller, ...getMiddleware)
+    if (schema && !noValidation) {
+      post(path, controller, ensureInAddRestrictionJourney, validate(schema))
+    } else {
+      post(path, controller, ensureInAddRestrictionJourney)
+    }
+  }
 
-  const startController = new StartAddRestrictionJourneyController(contactsService)
-  router.get(
+  get(
     '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/start',
-    logPageViewMiddleware(auditService, startController),
-    asyncMiddleware(startController.GET),
+    new StartAddRestrictionJourneyController(contactsService),
   )
 
-  const enterRestrictionController = new EnterNewRestrictionController(referenceDataService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/enter-restriction/:journeyId',
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    ensureInAddRestrictionJourney(),
-    logPageViewMiddleware(auditService, enterRestrictionController),
-    asyncMiddleware(enterRestrictionController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/enter-restriction/:journeyId',
-    ensureInAddRestrictionJourney(),
-    validate(restrictionSchema()),
-    asyncMiddleware(enterRestrictionController.POST),
-  )
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/enter-restriction/:journeyId',
+    controller: new EnterNewRestrictionController(referenceDataService),
+    schema: restrictionSchema(),
+  })
 
-  const checkAnswersController = new AddRestrictionCheckAnswersController(referenceDataService, restrictionsService)
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/check-answers/:journeyId',
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    ensureInAddRestrictionJourney(),
-    logPageViewMiddleware(auditService, checkAnswersController),
-    asyncMiddleware(checkAnswersController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/check-answers/:journeyId',
-    ensureInAddRestrictionJourney(),
-    asyncMiddleware(checkAnswersController.POST),
-  )
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/check-answers/:journeyId',
+    controller: new AddRestrictionCheckAnswersController(referenceDataService, restrictionsService),
+    noValidation: true,
+  })
 
-  const successController = new SuccessfullyAddedRestrictionController(contactsService)
-  router.get(
+  get(
     '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/success',
+    new SuccessfullyAddedRestrictionController(contactsService),
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, successController),
-    asyncMiddleware(successController.GET),
   )
 
-  const cancelAddingRestrictionController = new CancelAddRestrictionController()
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/cancel/:journeyId',
-    ensureInAddRestrictionJourney(),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, cancelAddingRestrictionController),
-    asyncMiddleware(cancelAddingRestrictionController.GET),
-  )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/cancel/:journeyId',
-    ensureInAddRestrictionJourney(),
-    asyncMiddleware(cancelAddingRestrictionController.POST),
-  )
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/cancel/:journeyId',
+    controller: new CancelAddRestrictionController(),
+    noValidation: true,
+  })
 
-  const updateRestrictionController = new UpdateRestrictionController(
+  const updateRestrictionsPath =
+    '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/update/:restrictionClass/enter-restriction/:restrictionId'
+  const updateRestrictionsController = new UpdateRestrictionController(
     contactsService,
     restrictionsService,
     referenceDataService,
   )
-  router.get(
-    '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/update/:restrictionClass/enter-restriction/:restrictionId',
+  get(
+    updateRestrictionsPath,
+    updateRestrictionsController,
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    logPageViewMiddleware(auditService, updateRestrictionController),
-    asyncMiddleware(updateRestrictionController.GET),
   )
-  router.post(
-    '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/update/:restrictionClass/enter-restriction/:restrictionId',
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+  post(
+    updateRestrictionsPath,
+    updateRestrictionsController,
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService) as RequestHandler,
     validate(restrictionSchema()),
-    asyncMiddleware(updateRestrictionController.POST),
   )
+
   return router
 }
 
