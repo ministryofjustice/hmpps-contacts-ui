@@ -72,7 +72,7 @@ context('Change date of death', () => {
         method: 'PATCH',
         urlPath: `/contact/${contactId}`,
       },
-      { deceasedDate: '2000-02-01T00:00:00.000Z', updatedBy: 'USER1' },
+      { deceasedDate: '2000-02-01T00:00:00.000Z' },
     )
   })
 

@@ -37,7 +37,6 @@ context('Select Staff Status', () => {
   it(`should render manage contact details staff status`, () => {
     const request: PatchContactRequest = {
       isStaff: true,
-      updatedBy: 'USER1',
     }
     cy.task('stubPatchContactById', { contactId, request })
 
@@ -65,7 +64,6 @@ context('Select Staff Status', () => {
       },
       {
         isStaff: true,
-        updatedBy: 'USER1',
       },
     )
   })

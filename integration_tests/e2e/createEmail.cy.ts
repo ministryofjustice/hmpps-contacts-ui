@@ -81,7 +81,6 @@ context('Create Email Addresses', () => {
       },
       {
         emailAddresses: [{ emailAddress: 'test@example.com' }, { emailAddress: 'test3@example.com' }],
-        createdBy: 'john smith',
       },
     )
   })

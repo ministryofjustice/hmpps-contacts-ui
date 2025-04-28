@@ -81,7 +81,6 @@ context('Create Contact Global Restriction', () => {
       {
         restrictionType: 'CCTV',
         startDate: '1982-06-15',
-        createdBy: 'USER1',
       },
     )
   })
@@ -117,7 +116,6 @@ context('Create Contact Global Restriction', () => {
         startDate: '1982-06-15',
         expiryDate: '2025-12-25',
         comments: 'Some comments',
-        createdBy: 'USER1',
       },
     )
   })
@@ -184,7 +182,6 @@ context('Create Contact Global Restriction', () => {
         startDate: '2024-02-28',
         expiryDate: '2025-06-15',
         comments: 'Different comments',
-        createdBy: 'USER1',
       },
     )
   })

@@ -35,6 +35,7 @@ const minimalContact: PrisonerContactSummary = {
   isEmergencyContact: false,
   isRelationshipActive: false,
   currentTerm: true,
+  isStaff: false,
   restrictionSummary: {
     active: [],
     totalActive: 0,
@@ -231,8 +232,8 @@ describe('listContactsController', () => {
       [
         {
           ...minimalContact,
-          relationshipType: 'S',
-          relationshipTypeCode: 'Social',
+          relationshipTypeCode: 'S',
+          relationshipTypeDescription: 'Social',
           relationshipToPrisonerCode: 'FRI',
           relationshipToPrisonerDescription: 'Friend',
           isRelationshipActive: true,
@@ -242,8 +243,8 @@ describe('listContactsController', () => {
       [
         {
           ...minimalContact,
-          relationshipType: 'O',
-          relationshipTypeCode: 'Official',
+          relationshipTypeCode: 'O',
+          relationshipTypeDescription: 'Official',
           relationshipToPrisonerCode: 'DR',
           relationshipToPrisonerDescription: 'Doctor',
           isRelationshipActive: true,
@@ -253,8 +254,8 @@ describe('listContactsController', () => {
       [
         {
           ...minimalContact,
-          relationshipType: 'S',
-          relationshipTypeCode: 'Social',
+          relationshipTypeCode: 'S',
+          relationshipTypeDescription: 'Social',
           relationshipToPrisonerCode: 'FRI',
           relationshipToPrisonerDescription: 'Friend',
           isRelationshipActive: false,
@@ -264,8 +265,8 @@ describe('listContactsController', () => {
       [
         {
           ...minimalContact,
-          relationshipType: 'O',
-          relationshipTypeCode: 'Official',
+          relationshipTypeCode: 'O',
+          relationshipTypeDescription: 'Official',
           relationshipToPrisonerCode: 'DR',
           relationshipToPrisonerDescription: 'Doctor',
           isRelationshipActive: false,
@@ -287,6 +288,35 @@ describe('listContactsController', () => {
       const rows = $('#prisoner-contact-list tbody tr')
       const firstRowColumns = rows.eq(0).find('td')
       expect(firstRowColumns.eq(2).text().trim()).toStrictEqual(expectedRelationshipToPrisoner)
+    })
+
+    it('should render staff hint', async () => {
+      // Given
+      const contact = {
+        ...minimalContact,
+        relationshipTypeCode: 'S',
+        relationshipTypeDescription: 'Social',
+        relationshipToPrisonerCode: 'FRI',
+        relationshipToPrisonerDescription: 'Friend',
+        isRelationshipActive: true,
+        isStaff: true,
+      }
+      contactsService.filterPrisonerContacts.mockResolvedValue({
+        content: [contact],
+        page: { totalElements: 1, totalPages: 1, size: 10, number: 0 },
+      })
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/list`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      const rows = $('#prisoner-contact-list tbody tr')
+      const firstRowColumns = rows.eq(0).find('td')
+      const lines = firstRowColumns.eq(2).text().trim().split(/\r?\n/)
+      expect(lines).toHaveLength(2)
+      expect(lines[0]!.trim()).toStrictEqual('Friend')
+      expect(lines[1]!.trim()).toStrictEqual('(Staff)')
     })
 
     it.each([

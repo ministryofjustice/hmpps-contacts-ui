@@ -67,7 +67,7 @@ context('Delete date of death', () => {
         method: 'PATCH',
         urlPath: `/contact/${contactId}`,
       },
-      { deceasedDate: null, updatedBy: 'USER1' },
+      { deceasedDate: null },
     )
   })
 

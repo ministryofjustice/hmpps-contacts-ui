@@ -210,7 +210,6 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     const expected: PatchRelationshipRequest = {
       relationshipTypeCode: 'O',
       relationshipToPrisonerCode: 'DR',
-      updatedBy: 'user1',
     }
     expect(contactsService.updateContactRelationshipById).toHaveBeenCalledWith(
       prisonerContactId,

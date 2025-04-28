@@ -84,7 +84,6 @@ export default class ManageContactRelationshipToPrisonerController implements Pa
     const { relationship } = req.body
     const request: PatchRelationshipRequest = {
       relationshipToPrisonerCode: relationship,
-      updatedBy: user.username,
     }
     await this.contactsService
       .updateContactRelationshipById(Number(prisonerContactId), request, user, req.id)

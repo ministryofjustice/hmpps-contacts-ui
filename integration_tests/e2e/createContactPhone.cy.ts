@@ -85,7 +85,6 @@ context('Create Contact Phones', () => {
             phoneNumber: '01234 777776',
           },
         ],
-        createdBy: 'USER1',
       },
     )
   })

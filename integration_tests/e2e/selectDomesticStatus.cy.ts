@@ -46,7 +46,6 @@ context('Select Domestic Status', () => {
 
     const request: PatchContactRequest = {
       domesticStatusCode: 'S',
-      updatedBy: 'USER1',
     }
     cy.task('stubTitlesReferenceData')
     cy.task('stubGetDomesticStatuses')
@@ -72,7 +71,6 @@ context('Select Domestic Status', () => {
       },
       {
         domesticStatusCode: 'S',
-        updatedBy: 'USER1',
       },
     )
   })

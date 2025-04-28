@@ -83,7 +83,6 @@ context('Change Contact Title Or Middle Names', () => {
       {
         titleCode: 'DR',
         middleNames: 'Middle Updated',
-        updatedBy: 'USER1',
       },
     )
   })
@@ -144,7 +143,6 @@ context('Change Contact Title Or Middle Names', () => {
       {
         titleCode: null,
         middleNames: null,
-        updatedBy: 'USER1',
       },
     )
   })
@@ -205,7 +203,6 @@ context('Change Contact Title Or Middle Names', () => {
       {
         titleCode: 'DR',
         middleNames: null,
-        updatedBy: 'USER1',
       },
     )
   })

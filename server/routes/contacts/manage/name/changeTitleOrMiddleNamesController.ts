@@ -73,7 +73,6 @@ export default class ChangeTitleOrMiddleNamesController implements PageHandler {
       titleCode: title || null,
       // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       middleNames: middleNames || null,
-      updatedBy: user.username,
     }
     await this.contactService
       .updateContactById(Number(contactId), request, user, req.id)

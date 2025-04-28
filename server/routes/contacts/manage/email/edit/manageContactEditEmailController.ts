@@ -58,7 +58,6 @@ export default class ManageContactEditEmailController implements PageHandler {
     const { emailAddress } = req.body
     const request: UpdateEmailRequest = {
       emailAddress,
-      updatedBy: user.name,
     }
     await this.contactsService
       .updateContactEmail(Number(contactId), Number(contactEmailId), request, user, req.id)

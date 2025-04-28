@@ -52,7 +52,6 @@ export default class ManageContactAddEmailController implements PageHandler {
     if (typeof save !== 'undefined' && emails) {
       const request: CreateMultipleEmailsRequest = {
         emailAddresses: emails.map(email => ({ emailAddress: email.emailAddress }) as EmailAddress),
-        createdBy: user.name,
       }
       await this.contactsService
         .createContactEmails(parseInt(contactId, 10), request, user, req.id)

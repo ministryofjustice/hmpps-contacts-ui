@@ -80,7 +80,6 @@ context('Create Address Phones', () => {
         urlPath: `/contact/${contactId}/address/${contactAddressId}/phones`,
       },
       {
-        createdBy: 'USER1',
         phoneNumbers: [
           {
             phoneType: 'HOME',

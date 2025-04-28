@@ -81,7 +81,6 @@ context('Change Relationship To Prisoner', () => {
       },
       {
         relationshipToPrisonerCode: 'MOT',
-        updatedBy: 'USER1',
       },
     )
   })
@@ -129,7 +128,6 @@ context('Change Relationship To Prisoner', () => {
       },
       {
         relationshipToPrisonerCode: 'OFS',
-        updatedBy: 'USER1',
       },
     )
   })

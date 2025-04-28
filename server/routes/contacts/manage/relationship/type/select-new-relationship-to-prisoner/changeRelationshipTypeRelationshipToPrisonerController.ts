@@ -69,7 +69,6 @@ export default class ChangeRelationshipTypeRelationshipToPrisonerController impl
     const request: PatchRelationshipRequest = {
       relationshipTypeCode: journey.relationshipType,
       relationshipToPrisonerCode: relationship,
-      updatedBy: user.username,
     }
     await this.contactsService
       .updateContactRelationshipById(Number(prisonerContactId), request, user, req.id)

@@ -117,7 +117,6 @@ context('Create Contact and Enter Domestic Status', () => {
         isStaff: false,
         interpreterRequired: false,
         domesticStatusCode: 'S',
-        createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipTypeCode: 'S',

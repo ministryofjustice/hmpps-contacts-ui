@@ -47,7 +47,6 @@ context('Edit Email Address', () => {
   it('Can edit a contact email', () => {
     const updated: UpdateEmailRequest = {
       emailAddress: 'mr.last@example.com',
-      updatedBy: 'john smith',
     }
     cy.task('stubUpdateContactEmail', { contactId, contactEmailId: 777, updated })
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
@@ -74,7 +73,6 @@ context('Edit Email Address', () => {
       },
       {
         emailAddress: 'mr.last@example.com',
-        updatedBy: 'john smith',
       },
     )
   })
@@ -82,7 +80,6 @@ context('Edit Email Address', () => {
   it('Should not prevent setting to the same email address being edited', () => {
     const updated: UpdateEmailRequest = {
       emailAddress: 'mr.last@example.com',
-      updatedBy: 'john smith',
     }
     cy.task('stubUpdateContactEmail', { contactId, contactEmailId: 777, updated })
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
@@ -105,7 +102,6 @@ context('Edit Email Address', () => {
       },
       {
         emailAddress: 'last@example.com',
-        updatedBy: 'john smith',
       },
     )
   })

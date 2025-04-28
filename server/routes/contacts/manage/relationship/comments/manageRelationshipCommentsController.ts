@@ -48,7 +48,6 @@ export default class ManageRelationshipCommentsController implements PageHandler
     const request: PatchRelationshipRequest = {
       // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       comments: req.body.comments ?? null,
-      updatedBy: user.username,
     }
 
     await this.contactsService.updateContactRelationshipById(Number(prisonerContactId), request, user, req.id)

@@ -142,7 +142,6 @@ context('Add Address', () => {
         endDate: '2010-10-01T00:00:00.000Z',
         noFixedAddress: true,
         comments: 'Something about the address',
-        createdBy: 'USER1',
         phoneNumbers: [
           { phoneType: 'HOME', phoneNumber: '01234 777777', extNumber: '000' },
           { phoneType: 'MOB', phoneNumber: '01234 777776' },
@@ -204,7 +203,6 @@ context('Add Address', () => {
         mailFlag: false,
         startDate: '2009-09-01T00:00:00.000Z',
         noFixedAddress: false,
-        createdBy: 'USER1',
         phoneNumbers: [],
       },
     )
@@ -420,7 +418,6 @@ context('Add Address', () => {
         endDate: '2011-11-01T00:00:00.000Z',
         noFixedAddress: false,
         comments: 'Updated comments',
-        createdBy: 'USER1',
         phoneNumbers: [{ phoneType: 'HOME', phoneNumber: '01234 777777', extNumber: '000' }],
       },
     )

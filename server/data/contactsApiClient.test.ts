@@ -71,7 +71,6 @@ describe('contactsApiClient', () => {
         identities: [],
         addresses: [],
         phoneNumbers: [],
-        createdBy: 'user1',
       }
 
       fakeContactsApi
@@ -96,7 +95,6 @@ describe('contactsApiClient', () => {
         identities: [],
         addresses: [],
         phoneNumbers: [],
-        createdBy: 'user1',
       }
       const expectedErrorBody = {
         status: errorCode,
@@ -138,7 +136,6 @@ describe('contactsApiClient', () => {
           isApprovedVisitor: false,
           comments: 'Some comments about this relationship',
         },
-        createdBy: 'user1',
       }
 
       fakeContactsApi
@@ -167,7 +164,6 @@ describe('contactsApiClient', () => {
           isApprovedVisitor: false,
           comments: 'Some comments about this relationship',
         },
-        createdBy: 'user1',
       }
       const expectedErrorBody = {
         status: errorCode,
@@ -402,7 +398,6 @@ describe('contactsApiClient', () => {
       const request: UpdatePhoneRequest = {
         phoneType: 'MOB',
         phoneNumber: '0123456789',
-        updatedBy: 'user1',
       }
 
       fakeContactsApi
@@ -422,7 +417,6 @@ describe('contactsApiClient', () => {
       const request: UpdatePhoneRequest = {
         phoneType: 'MOB',
         phoneNumber: '0123456789',
-        updatedBy: 'user1',
       }
       const expectedErrorBody = {
         status: errorCode,
@@ -487,7 +481,6 @@ describe('contactsApiClient', () => {
       // Given
       const request: PatchContactRequest = {
         languageCode: 'ENG',
-        updatedBy: 'user1',
       }
 
       const expectedContact = {
@@ -529,7 +522,6 @@ describe('contactsApiClient', () => {
               issuingAuthority: 'UK',
             },
           ],
-          createdBy: 'user1',
         }
 
         fakeContactsApi
@@ -554,7 +546,6 @@ describe('contactsApiClient', () => {
               issuingAuthority: 'UK',
             },
           ],
-          createdBy: 'user1',
         }
         const expectedErrorBody = {
           status: errorCode,
@@ -595,7 +586,6 @@ describe('contactsApiClient', () => {
         const request: UpdateIdentityRequest = {
           identityType: 'PASS',
           identityValue: '0123456789',
-          updatedBy: 'user1',
         }
 
         fakeContactsApi
@@ -616,7 +606,6 @@ describe('contactsApiClient', () => {
           identityType: 'PASS',
           identityValue: '0123456789',
           issuingAuthority: 'UK',
-          updatedBy: 'user1',
         }
         const expectedErrorBody = {
           status: errorCode,
@@ -687,13 +676,12 @@ describe('contactsApiClient', () => {
           emailAddress: 'test@example.com',
           createdBy: 'user1',
           createdTime: new Date().toISOString(),
-          updatedBy: new Date().toISOString(),
+          updatedBy: 'user2',
           updatedTime: new Date().toISOString(),
         }
 
         const request: CreateMultipleEmailsRequest = {
           emailAddresses: [{ emailAddress: 'test@example.com' }],
-          createdBy: 'user1',
         }
 
         fakeContactsApi
@@ -712,7 +700,6 @@ describe('contactsApiClient', () => {
         // Given
         const request: CreateMultipleEmailsRequest = {
           emailAddresses: [{ emailAddress: 'test@example.com' }],
-          createdBy: 'user1',
         }
         const expectedErrorBody = {
           status: errorCode,
@@ -746,13 +733,12 @@ describe('contactsApiClient', () => {
           emailAddress: 'test@example.com',
           createdBy: 'user1',
           createdTime: new Date().toISOString(),
-          updatedBy: new Date().toISOString(),
+          updatedBy: 'user2',
           updatedTime: new Date().toISOString(),
         }
 
         const request: UpdateEmailRequest = {
           emailAddress: 'test@example.com',
-          updatedBy: 'user1',
         }
 
         fakeContactsApi
@@ -771,7 +757,6 @@ describe('contactsApiClient', () => {
         // Given
         const request: UpdateEmailRequest = {
           emailAddress: 'test@example.com',
-          updatedBy: 'user1',
         }
         const expectedErrorBody = {
           status: errorCode,
@@ -838,7 +823,6 @@ describe('contactsApiClient', () => {
       const request: CreateContactRestrictionRequest = {
         restrictionType: 'BAN',
         startDate: '2020-01-01',
-        createdBy: 'user',
       }
       const expected = {
         contactRestrictionId: 123456,
@@ -861,7 +845,6 @@ describe('contactsApiClient', () => {
       const request: CreateContactRestrictionRequest = {
         restrictionType: 'BAN',
         startDate: '2020-01-01',
-        createdBy: 'user',
       }
       const expectedErrorBody = {
         status: errorCode,
@@ -892,7 +875,6 @@ describe('contactsApiClient', () => {
       const request: CreatePrisonerContactRestrictionRequest = {
         restrictionType: 'BAN',
         startDate: '2020-01-01',
-        createdBy: 'user',
       }
       const expected = {
         prisonerContactRestrictionId: 123456,
@@ -918,7 +900,6 @@ describe('contactsApiClient', () => {
         const request: CreatePrisonerContactRestrictionRequest = {
           restrictionType: 'BAN',
           startDate: '2020-01-01',
-          createdBy: 'user',
         }
         const expectedErrorBody = {
           status: errorCode,
@@ -950,7 +931,6 @@ describe('contactsApiClient', () => {
       const request: UpdateContactRestrictionRequest = {
         restrictionType: 'BAN',
         startDate: '2020-01-01',
-        updatedBy: 'user',
       }
       const expected = {
         contactRestrictionId: 123456,
@@ -973,7 +953,6 @@ describe('contactsApiClient', () => {
       const request: UpdateContactRestrictionRequest = {
         restrictionType: 'BAN',
         startDate: '2020-01-01',
-        updatedBy: 'user',
       }
       const expectedErrorBody = {
         status: errorCode,
@@ -1004,7 +983,6 @@ describe('contactsApiClient', () => {
       const request: UpdatePrisonerContactRestrictionRequest = {
         restrictionType: 'BAN',
         startDate: '2020-01-01',
-        updatedBy: 'user',
       }
       const expected = {
         prisonerContactRestrictionId: 123456,
@@ -1030,7 +1008,6 @@ describe('contactsApiClient', () => {
         const request: UpdatePrisonerContactRestrictionRequest = {
           restrictionType: 'BAN',
           startDate: '2020-01-01',
-          updatedBy: 'user',
         }
         const expectedErrorBody = {
           status: errorCode,
@@ -1065,7 +1042,6 @@ describe('contactsApiClient', () => {
         startDate: '2020-01-01',
         primaryAddress: true,
         phoneNumbers: [],
-        createdBy: 'user',
       }
       const expected = {
         contactAddressId: 123456,
@@ -1090,7 +1066,6 @@ describe('contactsApiClient', () => {
         startDate: '2020-01-01',
         primaryAddress: true,
         phoneNumbers: [],
-        createdBy: 'user',
       }
       const expectedErrorBody = {
         status: errorCode,
@@ -1185,7 +1160,6 @@ describe('contactsApiClient', () => {
       const request: UpdateContactAddressPhoneRequest = {
         phoneType: 'MOB',
         phoneNumber: '0123456789',
-        updatedBy: 'user1',
       }
 
       fakeContactsApi
@@ -1207,7 +1181,6 @@ describe('contactsApiClient', () => {
         const request: UpdateContactAddressPhoneRequest = {
           phoneType: 'MOB',
           phoneNumber: '0123456789',
-          updatedBy: 'user1',
         }
         const expectedErrorBody = {
           status: errorCode,

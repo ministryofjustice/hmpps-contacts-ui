@@ -137,7 +137,6 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
 
     const requestBody: CreateMultipleEmailsRequest = {
       emailAddresses: [{ emailAddress: 'test@example.com' }],
-      createdBy: user.name,
     }
 
     expect(contactsService.createContactEmails).toHaveBeenCalledWith(contactId, requestBody, user, expect.any(String))

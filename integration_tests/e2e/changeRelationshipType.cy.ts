@@ -89,7 +89,6 @@ context('Change Relationship Type', () => {
       {
         relationshipTypeCode: 'O',
         relationshipToPrisonerCode: 'DR',
-        updatedBy: 'USER1',
       },
     )
   })
@@ -143,7 +142,6 @@ context('Change Relationship Type', () => {
       {
         relationshipTypeCode: 'S',
         relationshipToPrisonerCode: 'MOT',
-        updatedBy: 'USER1',
       },
     )
   })
@@ -197,7 +195,6 @@ context('Change Relationship Type', () => {
       {
         relationshipTypeCode: 'O',
         relationshipToPrisonerCode: 'OFS',
-        updatedBy: 'USER1',
       },
     )
   })

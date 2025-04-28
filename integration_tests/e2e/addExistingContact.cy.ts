@@ -147,7 +147,6 @@ context('Add Existing Contact', () => {
           isApprovedVisitor: true,
           comments: 'Some comments about the relationship',
         },
-        createdBy: 'USER1',
       },
     )
   })
@@ -211,7 +210,6 @@ context('Add Existing Contact', () => {
           isEmergencyContact: false,
           isApprovedVisitor: false,
         },
-        createdBy: 'USER1',
       },
     )
   })
@@ -273,7 +271,6 @@ context('Add Existing Contact', () => {
           isEmergencyContact: true,
           isApprovedVisitor: true,
         },
-        createdBy: 'USER1',
       },
     )
   })
@@ -391,7 +388,6 @@ context('Add Existing Contact', () => {
           isEmergencyContact: false,
           isApprovedVisitor: true,
         },
-        createdBy: 'USER1',
       },
     )
   })

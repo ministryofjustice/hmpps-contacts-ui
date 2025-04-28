@@ -60,7 +60,6 @@ export default class ManageLanguageAndInterpreterController implements PageHandl
     const request: PatchContactRequest = {
       languageCode: req.body.language,
       interpreterRequired: req.body.interpreterRequired === 'YES',
-      updatedBy: user.username,
     }
     await this.contactsService.updateContactById(Number(contactId), request, user, req.id)
     await this.contactsService.getContactName(Number(contactId), user).then(response => {
