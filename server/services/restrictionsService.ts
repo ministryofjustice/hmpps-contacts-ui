@@ -38,7 +38,6 @@ export default class RestrictionsService extends AuditedService {
       startDate: parsedStartDate,
       ...(parsedExpiryDate ? { expiryDate: parsedExpiryDate } : {}),
       ...(comments ? { comments } : {}),
-      createdBy: user.username,
     }
 
     switch (journey.restrictionClass) {
@@ -98,7 +97,6 @@ export default class RestrictionsService extends AuditedService {
       startDate: parsedStartDate,
       ...(parsedExpiryDate ? { expiryDate: parsedExpiryDate } : {}),
       ...(comments ? { comments } : {}),
-      updatedBy: user.username,
     }
     return this.handleAuditEvent(
       this.contactsApiClient.updateContactGlobalRestriction(contactId, contactRestrictionId, request, user),
@@ -130,7 +128,6 @@ export default class RestrictionsService extends AuditedService {
       startDate: parsedStartDate,
       ...(parsedExpiryDate ? { expiryDate: parsedExpiryDate } : {}),
       ...(comments ? { comments } : {}),
-      updatedBy: user.username,
     }
     return this.handleAuditEvent(
       this.contactsApiClient.updatePrisonerContactRestriction(

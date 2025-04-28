@@ -120,7 +120,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
 
     expect(contactsService.updateContactById).toHaveBeenCalledWith(
       10,
-      { domesticStatusCode: 'S', updatedBy: 'user1' },
+      { domesticStatusCode: 'S' },
       user,
       expect.any(String),
     )

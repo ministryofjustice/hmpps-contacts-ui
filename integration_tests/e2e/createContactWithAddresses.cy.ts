@@ -189,7 +189,6 @@ context('Create Contact With Addresses', () => {
             comments: 'test comments',
           },
         ],
-        createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipTypeCode: 'S',

@@ -95,12 +95,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .expect(302)
       .expect('Location', '/prisoner/A1234BC/contacts/manage/10/relationship/987654')
 
-    expect(contactsService.updateContactById).toHaveBeenCalledWith(
-      10,
-      { genderCode: 'M', updatedBy: 'user1' },
-      user,
-      expect.any(String),
-    )
+    expect(contactsService.updateContactById).toHaveBeenCalledWith(10, { genderCode: 'M' }, user, expect.any(String))
   })
 
   it('should return to enter page if there are validation errors', async () => {

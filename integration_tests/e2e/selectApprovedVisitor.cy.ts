@@ -70,7 +70,7 @@ context('Manage contact update approved visitor contact', () => {
         method: 'PATCH',
         urlPath: `/prisoner-contact/${prisonerContactId}`,
       },
-      { isApprovedVisitor: false, updatedBy: 'USER1' },
+      { isApprovedVisitor: false },
     )
   })
 

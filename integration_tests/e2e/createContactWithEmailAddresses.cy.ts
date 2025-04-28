@@ -137,7 +137,6 @@ context('Create Contact With Email addresses', () => {
         isStaff: false,
         interpreterRequired: false,
         emailAddresses: [{ emailAddress: 'a2@mail.com' }, { emailAddress: 'c2@mail.com' }],
-        createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipTypeCode: 'S',

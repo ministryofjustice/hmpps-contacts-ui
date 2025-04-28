@@ -136,7 +136,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     // Then
     expect(contactsService.updateContactById).toHaveBeenCalledWith(
       contactId,
-      { deceasedDate: null, updatedBy: 'user1' },
+      { deceasedDate: null },
       user,
       expect.any(String),
     )

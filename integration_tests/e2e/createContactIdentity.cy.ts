@@ -111,7 +111,6 @@ context('Create Contact Identity', () => {
             issuingAuthority: 'DVLA',
           },
         ],
-        createdBy: 'USER1',
       },
     )
   })

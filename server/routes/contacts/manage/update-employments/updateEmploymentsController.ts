@@ -53,7 +53,6 @@ export default class UpdateEmploymentsController implements PageHandler {
           isActive: isActive ?? false,
         })),
       deleteEmployments: journey.employmentIdsToDelete ?? [],
-      requestedBy: res.locals.user.username,
     }
 
     await this.contactService.patchEmployments(Number(contactId), request, res.locals.user, req.id)

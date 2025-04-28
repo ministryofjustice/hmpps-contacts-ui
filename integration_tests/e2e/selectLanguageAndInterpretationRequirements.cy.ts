@@ -34,7 +34,6 @@ context('Select Language and interpretation requirements', () => {
     const request: PatchContactRequest = {
       languageCode: 'ARA',
       interpreterRequired: true,
-      updatedBy: 'USER1',
     }
     cy.task('stubPatchContactById', { contactId, request })
 
@@ -69,7 +68,6 @@ context('Select Language and interpretation requirements', () => {
       {
         languageCode: 'ARA',
         interpreterRequired: true,
-        updatedBy: 'USER1',
       },
     )
   })

@@ -83,8 +83,8 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   const contactId = '10'
   describe('update contact with staff status', () => {
     test.each([
-      ['YES', { isStaff: true, updatedBy: 'user1' }],
-      ['NO', { isStaff: false, updatedBy: 'user1' }],
+      ['YES', { isStaff: true }],
+      ['NO', { isStaff: false }],
     ])('should update contact when isStaff is %p', async (isStaff, expectedPayload) => {
       contactsService.getContactName.mockResolvedValue(TestData.contact())
       await request(app)

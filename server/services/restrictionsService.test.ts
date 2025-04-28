@@ -57,7 +57,6 @@ describe('restrictionsService', () => {
       const expectedRequest: CreateContactRestrictionRequest = {
         restrictionType: 'BAN',
         startDate: '2009-02-01',
-        createdBy: 'user1',
       }
       expect(created).toStrictEqual(expectedResponse)
       expect(apiClient.createContactGlobalRestriction).toHaveBeenCalledWith(99, expectedRequest, user)
@@ -86,7 +85,6 @@ describe('restrictionsService', () => {
         startDate: '2009-02-01',
         expiryDate: '2020-03-02',
         comments: 'Some comments',
-        createdBy: 'user1',
       }
       expect(created).toStrictEqual(expectedResponse)
       expect(apiClient.createContactGlobalRestriction).toHaveBeenCalledWith(99, expectedRequest, user)
@@ -129,7 +127,6 @@ describe('restrictionsService', () => {
       const expectedRequest: CreatePrisonerContactRestrictionRequest = {
         restrictionType: 'BAN',
         startDate: '2009-02-01',
-        createdBy: 'user1',
       }
       expect(created).toStrictEqual(expectedResponse)
       expect(apiClient.createPrisonerContactRestriction).toHaveBeenCalledWith(66, expectedRequest, user)
@@ -167,7 +164,6 @@ describe('restrictionsService', () => {
         startDate: '2009-02-01',
         expiryDate: '2020-03-02',
         comments: 'Some comments',
-        createdBy: 'user1',
       }
       expect(created).toStrictEqual(expectedResponse)
       expect(apiClient.createPrisonerContactRestriction).toHaveBeenCalledWith(66, expectedRequest, user)
@@ -237,7 +233,6 @@ describe('restrictionsService', () => {
       const expectedRequest: UpdateContactRestrictionRequest = {
         restrictionType: 'BAN',
         startDate: '1999-02-01',
-        updatedBy: 'user1',
       }
       expect(updated).toStrictEqual(expectedResponse)
       expect(apiClient.updateContactGlobalRestriction).toHaveBeenCalledWith(
@@ -287,7 +282,6 @@ describe('restrictionsService', () => {
         startDate: '1999-02-01',
         expiryDate: '2099-03-02',
         comments: 'Comments',
-        updatedBy: 'user1',
       }
       expect(updated).toStrictEqual(expectedResponse)
       expect(apiClient.updateContactGlobalRestriction).toHaveBeenCalledWith(
@@ -369,7 +363,6 @@ describe('restrictionsService', () => {
       const expectedRequest: UpdateContactRestrictionRequest = {
         restrictionType: 'BAN',
         startDate: '1999-02-01',
-        updatedBy: 'user1',
       }
       expect(updated).toStrictEqual(expectedResponse)
       expect(apiClient.updatePrisonerContactRestriction).toHaveBeenCalledWith(
@@ -421,7 +414,6 @@ describe('restrictionsService', () => {
         startDate: '1999-02-01',
         expiryDate: '2099-03-02',
         comments: 'Comments',
-        updatedBy: 'user1',
       }
       expect(updated).toStrictEqual(expectedResponse)
       expect(apiClient.updatePrisonerContactRestriction).toHaveBeenCalledWith(

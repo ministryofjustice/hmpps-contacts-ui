@@ -124,7 +124,6 @@ context('Create Contact and Select Staff Status', () => {
         isStaff: false,
         interpreterRequired: true,
         languageCode: 'ENG',
-        createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipTypeCode: 'S',

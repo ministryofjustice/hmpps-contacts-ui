@@ -71,7 +71,6 @@ export default class ContactsService extends AuditedService {
         isApprovedVisitor: journey.relationship?.isApprovedVisitor ?? false,
         ...(journey?.relationship?.comments === undefined ? {} : { comments: journey.relationship.comments }),
       },
-      createdBy: user.username,
     }
     if (journey.dateOfBirth?.isKnown === 'YES') {
       request.dateOfBirth = new Date(
@@ -160,7 +159,6 @@ export default class ContactsService extends AuditedService {
         isEmergencyContact: journey.relationship!.isEmergencyContact ?? false,
         isApprovedVisitor: journey.relationship?.isApprovedVisitor ?? false,
       },
-      createdBy: user.username,
     }
     if (journey.relationship!.comments) {
       request.relationship!.comments = journey.relationship!.comments
@@ -222,7 +220,6 @@ export default class ContactsService extends AuditedService {
         phoneNumber,
         ...(extension === undefined ? {} : { extNumber: extension }),
       })),
-      createdBy: user.username,
     }
     return this.handleAuditEvent(this.contactsApiClient.createContactPhones(contactId, request, user), {
       what: 'API_POST_CONTACT_PHONES',
@@ -246,7 +243,6 @@ export default class ContactsService extends AuditedService {
       phoneType: type,
       phoneNumber,
       ...(extNumber !== undefined ? { extNumber } : {}),
-      updatedBy: user.username,
     }
     return this.handleAuditEvent(this.contactsApiClient.updateContactPhone(contactId, contactPhoneId, request, user), {
       what: 'API_PUT_CONTACT_PHONE',
@@ -277,7 +273,6 @@ export default class ContactsService extends AuditedService {
   ) {
     const request: CreateMultipleIdentitiesRequest = {
       identities,
-      createdBy: user.username,
     }
     return this.handleAuditEvent(this.contactsApiClient.createContactIdentities(contactId, request, user), {
       what: 'API_POST_CONTACT_IDENTITIES',
@@ -301,7 +296,6 @@ export default class ContactsService extends AuditedService {
       identityType,
       identityValue,
       ...(issuingAuthority !== undefined ? { issuingAuthority } : {}),
-      updatedBy: user.username,
     }
     return this.handleAuditEvent(
       this.contactsApiClient.updateContactIdentity(contactId, contactIdentityId, request, user),
@@ -348,7 +342,7 @@ export default class ContactsService extends AuditedService {
     user: Express.User,
     correlationId: string,
   ): Promise<void> {
-    const { comments, updatedBy, ...detailsToAudit } = request
+    const { comments, ...detailsToAudit } = request
     return this.handleAuditEvent(
       this.contactsApiClient.updateContactRelationshipById(prisonerContactId, request, user),
       {
@@ -441,7 +435,6 @@ export default class ContactsService extends AuditedService {
       ...(journey.addressMetadata!.comments !== null && journey.addressMetadata!.comments !== undefined
         ? { comments: journey.addressMetadata!.comments }
         : {}),
-      createdBy: user.username,
       phoneNumbers:
         journey.phoneNumbers?.map(({ type, phoneNumber, extension }) => ({
           phoneType: type,
@@ -495,7 +488,6 @@ export default class ContactsService extends AuditedService {
       endDate: changes.endDate && changes.endDate.toISOString(),
       // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       comments: changes.comments,
-      updatedBy: user.username,
     }
     return this.handleAuditEvent(
       this.contactsApiClient.updateContactAddress(changes.contactId, changes.contactAddressId!, request, user),
@@ -523,7 +515,6 @@ export default class ContactsService extends AuditedService {
         phoneNumber,
         ...(extension === undefined ? {} : { extNumber: extension }),
       })),
-      createdBy: user.username,
     }
     return this.handleAuditEvent(
       this.contactsApiClient.createContactAddressPhones(contactId, contactAddressId, request, user),
@@ -551,7 +542,6 @@ export default class ContactsService extends AuditedService {
       phoneType: type,
       phoneNumber,
       ...(extNumber !== undefined ? { extNumber } : {}),
-      updatedBy: user.username,
     }
     return this.handleAuditEvent(
       this.contactsApiClient.updateContactAddressPhone(

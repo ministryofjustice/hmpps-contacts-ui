@@ -94,7 +94,6 @@ context('Update Prisoner Contact Restriction', () => {
       {
         restrictionType: 'CCTV',
         startDate: '1982-06-15',
-        updatedBy: 'USER1',
       },
     )
   })
@@ -134,7 +133,6 @@ context('Update Prisoner Contact Restriction', () => {
         startDate: '1982-06-15',
         expiryDate: '2000-12-25',
         comments: 'Updated comments',
-        updatedBy: 'USER1',
       },
     )
   })

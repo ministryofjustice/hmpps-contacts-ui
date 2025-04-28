@@ -199,7 +199,6 @@ context('Update Prisoner Contact Employments', () => {
         createEmployments: [{ organisationId: 202, isActive: true }],
         updateEmployments: [{ employmentId: 102, organisationId: 201, isActive: true }],
         deleteEmployments: [101],
-        requestedBy: 'USER1',
       },
     )
 

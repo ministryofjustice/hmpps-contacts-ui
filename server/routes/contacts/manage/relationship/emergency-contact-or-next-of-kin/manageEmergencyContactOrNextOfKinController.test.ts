@@ -98,10 +98,10 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   const contactId = '10'
   describe('update contact with emergency contact and next of kin status', () => {
     test.each([
-      ['EC', { isEmergencyContact: true, isNextOfKin: false, updatedBy: 'user1' }],
-      ['NOK', { isEmergencyContact: false, isNextOfKin: true, updatedBy: 'user1' }],
-      ['ECNOK', { isEmergencyContact: true, isNextOfKin: true, updatedBy: 'user1' }],
-      ['NONE', { isEmergencyContact: false, isNextOfKin: false, updatedBy: 'user1' }],
+      ['EC', { isEmergencyContact: true, isNextOfKin: false }],
+      ['NOK', { isEmergencyContact: false, isNextOfKin: true }],
+      ['ECNOK', { isEmergencyContact: true, isNextOfKin: true }],
+      ['NONE', { isEmergencyContact: false, isNextOfKin: false }],
     ])('should update contact when isApprovedToVisit is %p', async (isEmergencyContactOrNextOfKin, expectedPayload) => {
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContactName.mockResolvedValue(TestData.contact())

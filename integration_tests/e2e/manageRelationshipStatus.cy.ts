@@ -68,7 +68,7 @@ context('Manage contact update relationship status active', () => {
         method: 'PATCH',
         urlPath: `/prisoner-contact/${prisonerContactId}`,
       },
-      { isRelationshipActive: false, updatedBy: 'USER1' },
+      { isRelationshipActive: false },
     )
   })
 

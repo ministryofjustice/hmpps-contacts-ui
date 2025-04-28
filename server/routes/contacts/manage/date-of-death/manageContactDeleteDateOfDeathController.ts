@@ -43,7 +43,6 @@ export default class ManageContactDeleteDateOfDeathController implements PageHan
     const request: PatchContactRequest = {
       // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       deceasedDate: null,
-      updatedBy: user.username,
     }
     await this.contactsService
       .updateContactById(Number(contactId), request, user, req.id)

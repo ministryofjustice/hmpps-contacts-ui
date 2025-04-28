@@ -47,7 +47,6 @@ export default class ManageRelationshipStatusController implements PageHandler {
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const request: PatchRelationshipRequest = {
       isRelationshipActive: req.body.relationshipStatus === 'YES',
-      updatedBy: user.username,
     }
 
     await this.contactsService.updateContactRelationshipById(Number(prisonerContactId), request, user, req.id)

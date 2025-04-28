@@ -117,7 +117,6 @@ context('Create Contact and Enter Gender', () => {
         isStaff: false,
         interpreterRequired: false,
         genderCode: 'M',
-        createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipTypeCode: 'S',

@@ -119,7 +119,6 @@ context('Create Contact and Select Staff Status', () => {
         firstName: 'First',
         isStaff: true,
         interpreterRequired: false,
-        createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipTypeCode: 'S',
@@ -152,7 +151,6 @@ context('Create Contact and Select Staff Status', () => {
         firstName: 'First',
         isStaff: false,
         interpreterRequired: false,
-        createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipTypeCode: 'S',

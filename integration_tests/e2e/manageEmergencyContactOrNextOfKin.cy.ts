@@ -71,7 +71,7 @@ context('Manage contact update emergency contact', () => {
         method: 'PATCH',
         urlPath: `/prisoner-contact/${prisonerContactId}`,
       },
-      { isEmergencyContact: false, isNextOfKin: false, updatedBy: 'USER1' },
+      { isEmergencyContact: false, isNextOfKin: false },
     )
   })
 

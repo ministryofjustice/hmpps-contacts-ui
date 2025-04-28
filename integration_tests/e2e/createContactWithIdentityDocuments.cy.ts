@@ -153,7 +153,6 @@ context('Create Contact With Identity documents', () => {
             issuingAuthority: 'Authority',
           },
         ],
-        createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipTypeCode: 'S',

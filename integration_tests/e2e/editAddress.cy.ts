@@ -109,7 +109,6 @@ context('Edit Address', () => {
       {
         addressType: 'WORK',
         verified: false,
-        updatedBy: 'USER1',
       },
     )
   })
@@ -155,7 +154,6 @@ context('Edit Address', () => {
         postcode: 'P1',
         countryCode: 'SCOT',
         verified: false,
-        updatedBy: 'USER1',
       },
     )
   })
@@ -201,7 +199,6 @@ context('Edit Address', () => {
         postcode: null,
         countryCode: 'SCOT',
         verified: false,
-        updatedBy: 'USER1',
       },
     )
   })
@@ -231,7 +228,6 @@ context('Edit Address', () => {
         startDate: '2009-09-01T00:00:00.000Z',
         endDate: '2077-12-01T00:00:00.000Z',
         verified: false,
-        updatedBy: 'USER1',
       },
     )
   })
@@ -259,7 +255,6 @@ context('Edit Address', () => {
         startDate: '2020-01-01T00:00:00.000Z',
         endDate: null,
         verified: false,
-        updatedBy: 'USER1',
       },
     )
   })
@@ -283,7 +278,6 @@ context('Edit Address', () => {
         primaryAddress: true,
         mailFlag: true,
         verified: false,
-        updatedBy: 'USER1',
       },
     )
   })
@@ -306,7 +300,6 @@ context('Edit Address', () => {
       {
         comments: 'new text',
         verified: false,
-        updatedBy: 'USER1',
       },
     )
   })
@@ -329,7 +322,6 @@ context('Edit Address', () => {
       {
         comments: null,
         verified: false,
-        updatedBy: 'USER1',
       },
     )
   })

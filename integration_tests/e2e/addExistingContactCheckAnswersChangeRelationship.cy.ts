@@ -126,7 +126,6 @@ context('Add Existing Contact Check Answers', () => {
           isApprovedVisitor: false,
           comments: 'Some comments about the relationship',
         },
-        createdBy: 'USER1',
       },
     )
   })
@@ -165,7 +164,6 @@ context('Add Existing Contact Check Answers', () => {
           isApprovedVisitor: false,
           comments: 'Some comments about the relationship',
         },
-        createdBy: 'USER1',
       },
     )
   })
@@ -200,7 +198,6 @@ context('Add Existing Contact Check Answers', () => {
           isApprovedVisitor: false,
           comments: 'Some comments about the relationship',
         },
-        createdBy: 'USER1',
       },
     )
   })
@@ -237,7 +234,6 @@ context('Add Existing Contact Check Answers', () => {
           isApprovedVisitor: false,
           comments: 'Some comments about the relationship',
         },
-        createdBy: 'USER1',
       },
     )
   })

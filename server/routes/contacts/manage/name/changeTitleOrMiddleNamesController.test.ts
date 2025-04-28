@@ -215,7 +215,6 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     const expectedRequest: PatchContactRequest = {
       titleCode: 'DR',
       middleNames: 'mid',
-      updatedBy: user.username,
     }
 
     expect(contactsService.updateContactById).toHaveBeenCalledWith(contactId, expectedRequest, user, expect.any(String))

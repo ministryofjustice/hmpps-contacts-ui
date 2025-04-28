@@ -149,7 +149,6 @@ context('Create Contact With Phone Numbers', () => {
           { phoneType: 'MOB', phoneNumber: '0123456789' },
           { phoneType: 'HOME', phoneNumber: '987654321', extNumber: '#123' },
         ],
-        createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipTypeCode: 'S',

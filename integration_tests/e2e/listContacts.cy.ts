@@ -21,6 +21,7 @@ context('List contacts ', () => {
     isEmergencyContact: false,
     isRelationshipActive: true,
     currentTerm: true,
+    isStaff: true,
     restrictionSummary: {
       active: [],
       totalActive: 0,

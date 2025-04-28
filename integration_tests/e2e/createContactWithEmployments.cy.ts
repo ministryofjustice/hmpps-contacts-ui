@@ -210,7 +210,6 @@ context('Create Contact With Addresses', () => {
             isActive: false,
           },
         ],
-        createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipTypeCode: 'O',

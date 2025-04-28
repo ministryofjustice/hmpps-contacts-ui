@@ -89,7 +89,7 @@ context('Edit Contact Identities', () => {
         method: 'PUT',
         urlPath: `/contact/${contactId}/identity/1`,
       },
-      { identityType: 'NINO', identityValue: '123434', updatedBy: 'USER1' },
+      { identityType: 'NINO', identityValue: '123434' },
     )
   })
 
@@ -131,7 +131,7 @@ context('Edit Contact Identities', () => {
         method: 'PUT',
         urlPath: `/contact/${contactId}/identity/1`,
       },
-      { identityType: 'NINO', identityValue: '987654321', issuingAuthority: 'USA', updatedBy: 'USER1' },
+      { identityType: 'NINO', identityValue: '987654321', issuingAuthority: 'USA' },
     )
   })
 

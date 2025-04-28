@@ -93,7 +93,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .expect('Location', '/prisoner/A1234BC/contacts/manage/10/relationship/1')
     expect(contactsService.updateContactRelationshipById).toHaveBeenCalledWith(
       1,
-      { comments: 'comment added', updatedBy: 'user1' },
+      { comments: 'comment added' },
       user,
       expect.any(String),
     )

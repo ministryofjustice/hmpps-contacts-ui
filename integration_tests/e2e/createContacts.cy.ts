@@ -119,7 +119,6 @@ context('Create Contacts', () => {
         firstName: 'First',
         isStaff: false,
         interpreterRequired: false,
-        createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipTypeCode: 'S',
@@ -194,7 +193,6 @@ context('Create Contacts', () => {
         lastName: 'Last',
         firstName: 'First',
         middleNames: 'Middle',
-        createdBy: 'USER1',
         dateOfBirth: '1982-06-15',
         isStaff: false,
         interpreterRequired: false,
@@ -263,7 +261,6 @@ context('Create Contacts', () => {
         firstName: 'First',
         isStaff: false,
         interpreterRequired: false,
-        createdBy: 'USER1',
         relationship: {
           prisonerNumber: 'A1234BC',
           relationshipTypeCode: 'O',

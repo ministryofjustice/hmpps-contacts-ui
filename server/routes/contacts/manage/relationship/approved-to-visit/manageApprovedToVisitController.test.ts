@@ -88,8 +88,8 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   const contactId = '10'
   describe('update contact with approved to visit status', () => {
     test.each([
-      ['YES', { isApprovedVisitor: true, updatedBy: 'user1' }],
-      ['NO', { isApprovedVisitor: false, updatedBy: 'user1' }],
+      ['YES', { isApprovedVisitor: true }],
+      ['NO', { isApprovedVisitor: false }],
     ])('should update contact when isApprovedToVisit is %p', async (isApprovedToVisit, expectedPayload) => {
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContactName.mockResolvedValue(TestData.contact())

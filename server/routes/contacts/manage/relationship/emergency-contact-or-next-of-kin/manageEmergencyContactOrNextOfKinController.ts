@@ -52,7 +52,6 @@ export default class ManageEmergencyContactOrNextOfKinController implements Page
     const request: PatchRelationshipRequest = {
       isEmergencyContact: req.body.emergencyContact,
       isNextOfKin: req.body.nextOfKin,
-      updatedBy: user.username,
     }
     await this.contactsService.updateContactRelationshipById(parseInt(prisonerContactId, 10), request, user, req.id)
     await this.contactsService.getContactName(Number(contactId), user).then(response => {

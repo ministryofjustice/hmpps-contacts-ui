@@ -102,7 +102,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
 
     expect(contactsService.updateContactById).toHaveBeenCalledWith(
       10,
-      { languageCode: 'ENG', interpreterRequired: false, updatedBy: 'user1' },
+      { languageCode: 'ENG', interpreterRequired: false },
       user,
       expect.any(String),
     )

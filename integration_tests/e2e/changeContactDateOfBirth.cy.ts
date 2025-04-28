@@ -80,7 +80,6 @@ context('Change Contact Date Of Birth', () => {
       },
       {
         dateOfBirth: '2000-12-25T00:00:00.000Z',
-        updatedBy: 'USER1',
       },
     )
   })
@@ -135,7 +134,6 @@ context('Change Contact Date Of Birth', () => {
       },
       {
         dateOfBirth: '2000-12-25T00:00:00.000Z',
-        updatedBy: 'USER1',
       },
     )
   })

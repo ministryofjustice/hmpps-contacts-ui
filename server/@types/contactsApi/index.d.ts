@@ -1370,6 +1370,26 @@ export interface paths {
     patch: operations['patchContact']
     trace?: never
   }
+  '/sync/contact/{contactId}/reconcile': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Reconciliation endpoint for a single contact by ID
+     * @description Get a minimal version of a contact and its main sub-entities to reconcile against
+     */
+    get: operations['reconcileSingleContact']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/sync/contact/reconcile': {
     parameters: {
       query?: never
@@ -1414,8 +1434,25 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    /** Endpoint to fetch all contacts for a specific prisoner by prisoner number and active status */
+    /** Fetch contact relationships by prisoner number with the requested filtering applied with pagination */
     get: operations['getAllContacts']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/prisoner/{prisonNumber}/contact/count': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Count of a prisoner's active contact relationships for their current term by relationship type */
+    get: operations['getContactRelationshipCount']
     put?: never
     post?: never
     delete?: never
@@ -1842,14 +1879,6 @@ export interface components {
        */
       createdTime: string
     }
-    ErrorResponse: {
-      /** Format: int32 */
-      status: number
-      errorCode?: string
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
-    }
     SyncPrisonerNumberOfChildrenResponse: {
       /**
        * Format: int64
@@ -1868,6 +1897,14 @@ export interface components {
       createdTime?: string
       /** @description Username of the creator */
       createdBy?: string
+    }
+    ErrorResponse: {
+      /** Format: int32 */
+      status: number
+      errorCode?: string
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
     }
     /** @description Request to update a prisoner's domestic status */
     SyncUpdatePrisonerDomesticStatusRequest: {
@@ -3152,11 +3189,6 @@ export interface components {
        * @example 1
        */
       numberOfChildren?: number
-      /**
-       * @description User who requesting to create or update
-       * @example admin
-       */
-      requestedBy: string
     }
     /** @description Response object containing prisoner number of children information */
     PrisonerNumberOfChildrenResponse: {
@@ -3185,11 +3217,6 @@ export interface components {
        * @example M
        */
       domesticStatusCode?: string
-      /**
-       * @description User who requesting to create or update
-       * @example admin
-       */
-      requestedBy: string
     }
     /** @description Response object containing prisoner domestic status information */
     PrisonerDomesticStatusResponse: {
@@ -3241,11 +3268,6 @@ export interface components {
        * @example N/A
        */
       comments?: string
-      /**
-       * @description User who updated the entry
-       * @example admin
-       */
-      updatedBy: string
     }
     /** @description Restriction related to a prisoner and contacts relationship */
     PrisonerContactRestrictionDetails: {
@@ -3364,11 +3386,6 @@ export interface components {
        * @example N/A
        */
       comments?: string
-      /**
-       * @description User who updated the entry
-       * @example admin
-       */
-      updatedBy: string
     }
     /** @description Global restriction related to a contact, a.k.a estate-wide restrictions */
     ContactRestrictionDetails: {
@@ -3465,11 +3482,6 @@ export interface components {
        * @example 123
        */
       extNumber?: string
-      /**
-       * @description User who updated the entry
-       * @example admin
-       */
-      updatedBy: string
     }
     /** @description A phone number related to a contact with descriptions of all reference data */
     ContactPhoneDetails: {
@@ -3545,11 +3557,6 @@ export interface components {
        * @example DVLA
        */
       issuingAuthority?: string
-      /**
-       * @description User who updated the entry
-       * @example admin
-       */
-      updatedBy: string
     }
     /** @description Identity related to a contact */
     ContactIdentityDetails: {
@@ -3623,11 +3630,6 @@ export interface components {
       organisationId: number
       /** @description Whether this is a current employment or not */
       isActive: boolean
-      /**
-       * @description The id of the user who updated the entry
-       * @example JD000001
-       */
-      updatedBy: string
     }
     /** @description The details of an employment for a contact including a summary of the employing organisation. */
     EmploymentDetails: {
@@ -3696,11 +3698,6 @@ export interface components {
        * @example test@example.com
        */
       emailAddress: string
-      /**
-       * @description User who updated the entry
-       * @example admin
-       */
-      updatedBy: string
     }
     /** @description Email related to a contact */
     ContactEmailDetails: {
@@ -3799,7 +3796,7 @@ export interface components {
        * @description Country code - from NOMIS reference data
        * @example UK
        */
-      countryCode?: string
+      countryCode: string
       /**
        * @description Whether the address has been verified by postcode lookup
        * @example false
@@ -3832,11 +3829,6 @@ export interface components {
        * @example Some additional information
        */
       comments?: string
-      /**
-       * @description The id of the user who updated the address
-       * @example JD000001
-       */
-      updatedBy: string
     }
     /** @description A contact address response */
     ContactAddressResponse: {
@@ -3991,11 +3983,6 @@ export interface components {
        * @example 123
        */
       extNumber?: string
-      /**
-       * @description The username of the person who made the update
-       * @example JD000001
-       */
-      updatedBy: string
     }
     /** @description An address-specific phone number */
     ContactAddressPhoneDetails: {
@@ -4859,11 +4846,6 @@ export interface components {
       contactId: number
       /** @description A description of the contacts relationship to a prisoner */
       relationship: components['schemas']['ContactRelationship']
-      /**
-       * @description The id of the user creating the contact
-       * @example JD000001
-       */
-      createdBy: string
     }
     /** @description Describes the prisoner contact relationship */
     PrisonerContactRelationshipDetails: {
@@ -4962,11 +4944,6 @@ export interface components {
        * @example N/A
        */
       comments?: string
-      /**
-       * @description User who created the entry
-       * @example admin
-       */
-      createdBy: string
     }
     /** @description Request to migrate a prisoner's number of children */
     MigratePrisonerNumberOfChildrenRequest: {
@@ -5546,7 +5523,7 @@ export interface components {
        * @description Country code - from NOMIS
        * @example UK
        */
-      countryCode?: string
+      countryCode: string
       /**
        * @description Whether the address has been verified by postcode lookup
        * @example false
@@ -5657,11 +5634,6 @@ export interface components {
       emailAddresses?: components['schemas']['EmailAddress'][]
       /** @description Employments */
       employments?: components['schemas']['Employment'][]
-      /**
-       * @description The id of the user creating the contact
-       * @example JD000001
-       */
-      createdBy: string
       staff?: boolean
     }
     /** @description A single email address */
@@ -6012,21 +5984,11 @@ export interface components {
        * @example N/A
        */
       comments?: string
-      /**
-       * @description User who created the entry
-       * @example admin
-       */
-      createdBy: string
     }
     /** @description Request to create multiple phone numbers for a contact or an address */
     CreateMultiplePhoneNumbersRequest: {
       /** @description Phone numbers */
       phoneNumbers: components['schemas']['PhoneNumber'][]
-      /**
-       * @description User who created the entry
-       * @example admin
-       */
-      createdBy: string
     }
     /** @description Request to create a new phone number */
     CreatePhoneRequest: {
@@ -6045,11 +6007,6 @@ export interface components {
        * @example 123
        */
       extNumber?: string
-      /**
-       * @description User who created the entry
-       * @example admin
-       */
-      createdBy: string
     }
     /** @description Request to create a new contact identity */
     CreateIdentityRequest: {
@@ -6068,21 +6025,11 @@ export interface components {
        * @example DVLA
        */
       issuingAuthority?: string
-      /**
-       * @description User who created the entry
-       * @example admin
-       */
-      createdBy: string
     }
     /** @description Request to create multiple contact identity documents */
     CreateMultipleIdentitiesRequest: {
       /** @description Identity documents */
       identities: components['schemas']['IdentityDocument'][]
-      /**
-       * @description User who created the entry
-       * @example admin
-       */
-      createdBy: string
     }
     /** @description Request to create a new employment with an employer and whether it is active or inactive */
     CreateEmploymentRequest: {
@@ -6094,21 +6041,11 @@ export interface components {
       organisationId: number
       /** @description Whether this is a current employment or not */
       isActive: boolean
-      /**
-       * @description The id of the user who created the entry
-       * @example JD000001
-       */
-      createdBy: string
     }
     /** @description Request to create a new email address */
     CreateMultipleEmailsRequest: {
       /** @description Email addresses */
       emailAddresses: components['schemas']['EmailAddress'][]
-      /**
-       * @description User who created the entry
-       * @example admin
-       */
-      createdBy: string
     }
     /** @description Request to create a new email address */
     CreateEmailRequest: {
@@ -6117,11 +6054,6 @@ export interface components {
        * @example test@example.com
        */
       emailAddress: string
-      /**
-       * @description User who created the entry
-       * @example admin
-       */
-      createdBy: string
     }
     /** @description Request to create a new contact address */
     CreateContactAddressRequest: {
@@ -6178,7 +6110,7 @@ export interface components {
        * @description Country code - from NOMIS
        * @example UK
        */
-      countryCode?: string
+      countryCode: string
       /**
        * @description Whether the address has been verified by postcode lookup
        * @example false
@@ -6213,11 +6145,6 @@ export interface components {
        * @example Some additional information
        */
       comments?: string
-      /**
-       * @description The id of the user who created the contact
-       * @example JD000001
-       */
-      createdBy: string
     }
     /** @description Request to create a new address-linked phone number */
     CreateContactAddressPhoneRequest: {
@@ -6242,11 +6169,6 @@ export interface components {
        * @example 123
        */
       extNumber?: string
-      /**
-       * @description User who created the entry
-       * @example admin
-       */
-      createdBy: string
     }
     /** @description Request to update an existing relationship details */
     PatchRelationshipRequest: {
@@ -6262,7 +6184,7 @@ export interface components {
       relationshipToPrisonerCode?: string
       /**
        * @description Whether they are the emergency contact for the prisoner
-       * @example boolean
+       * @example true
        */
       isEmergencyContact?: boolean
       /**
@@ -6285,11 +6207,6 @@ export interface components {
        * @example Some additional information
        */
       comments?: string
-      /**
-       * @description The id of the user who updated the contact
-       * @example JD000001
-       */
-      updatedBy: string
     }
     /** @description Request to patch a new contact. firstName and lastName are not updatable so are intentionally missing from this request. */
     PatchContactRequest: {
@@ -6342,11 +6259,6 @@ export interface components {
        * @example 1980-01-01
        */
       deceasedDate?: string
-      /**
-       * @description The id of the user who updated the contact
-       * @example JD000001
-       */
-      updatedBy: string
     }
     /** @description The details of a updated contact as an individual */
     PatchContactResponse: {
@@ -6453,8 +6365,6 @@ export interface components {
       updateEmployments: components['schemas']['PatchEmploymentsUpdateEmployment'][]
       /** @description List of ids for employments to delete */
       deleteEmployments: number[]
-      /** @description The id of the user requesting the changes. Will become created by for new employments and updated by for updated employments */
-      requestedBy: string
     }
     /** @description Request to update an existing employment's employer or active flag. */
     PatchEmploymentsUpdateEmployment: {
@@ -6562,11 +6472,6 @@ export interface components {
        * @example Some additional information
        */
       comments?: string
-      /**
-       * @description The id of the user who updated the address
-       * @example JD000001
-       */
-      updatedBy: string
     }
     EmploymentEntity: {
       /** Format: int64 */
@@ -6582,6 +6487,263 @@ export interface components {
       updatedBy?: string
       /** Format: date-time */
       updatedTime?: string
+    }
+    /** @description Contact address reconciliation */
+    ReconcileAddress: {
+      /**
+       * Format: int64
+       * @description The id of the contact address
+       * @example 123456
+       */
+      contactAddressId: number
+      /**
+       * @description The coded value for type of address
+       * @example HOME
+       */
+      addressType?: string
+      /**
+       * @description True if this is the primary address otherwise false
+       * @example true
+       */
+      primaryAddress: boolean
+      /**
+       * @description Building or house number or name
+       * @example Mansion House
+       */
+      property?: string
+      /**
+       * @description Street or road name
+       * @example Acacia Avenue
+       */
+      street?: string
+      /**
+       * @description Area
+       * @example Morton Heights
+       */
+      area?: string
+      /** @description Address-specific phone numbers */
+      addressPhones: components['schemas']['ReconcileAddressPhone'][]
+    }
+    /** @description Contact address phone reconciliation */
+    ReconcileAddressPhone: {
+      /**
+       * Format: int64
+       * @description Unique identifier for the contact address phone
+       * @example 1
+       */
+      contactAddressPhoneId: number
+      /**
+       * @description Type of phone
+       * @example MOB
+       */
+      phoneType: string
+      /**
+       * @description Phone number
+       * @example +1234567890
+       */
+      phoneNumber: string
+      /**
+       * @description Extension number
+       * @example 123
+       */
+      extNumber?: string
+    }
+    /** @description Contact email reconciliation */
+    ReconcileEmail: {
+      /**
+       * Format: int64
+       * @description Unique identifier for the contact email
+       * @example 1
+       */
+      contactEmailId: number
+      /**
+       * @description Email address
+       * @example test@example.com
+       */
+      emailAddress: string
+    }
+    /** @description Contact employment reconciliation */
+    ReconcileEmployment: {
+      /**
+       * Format: int64
+       * @description The ID of the employment
+       * @example 12345
+       */
+      employmentId: number
+      /**
+       * Format: int64
+       * @description The ID of the organization associated with the employment
+       * @example 12345
+       */
+      organisationId: number
+      /**
+       * @description If the employment is active
+       * @example true
+       */
+      active: boolean
+    }
+    /** @description Contact identity reconciliation */
+    ReconcileIdentity: {
+      /**
+       * Format: int64
+       * @description Unique identifier for the contact identity
+       * @example 1
+       */
+      contactIdentityId: number
+      /**
+       * @description Type of identity
+       * @example DL
+       */
+      identityType: string
+      /**
+       * @description Identity
+       * @example DL090 0909 909
+       */
+      identityValue: string
+      /**
+       * @description Issuing authority
+       * @example DVLA
+       */
+      issuingAuthority?: string
+    }
+    /** @description Contact phone reconciliation */
+    ReconcilePhone: {
+      /**
+       * Format: int64
+       * @description Unique identifier for the contact phone
+       * @example 1
+       */
+      contactPhoneId: number
+      /**
+       * @description Type of phone
+       * @example MOB
+       */
+      phoneType: string
+      /**
+       * @description Phone number
+       * @example +1234567890
+       */
+      phoneNumber: string
+      /**
+       * @description Extension number
+       * @example 123
+       */
+      extNumber?: string
+    }
+    /** @description Prisoner contact relationship reconciliation */
+    ReconcileRelationship: {
+      /**
+       * Format: int64
+       * @description The ID of the prisoner contact
+       * @example 12345
+       */
+      prisonerContactId: number
+      /**
+       * @description The prisoner number
+       * @example A1234BC
+       */
+      prisonerNumber: string
+      /**
+       * @description Social or official contact
+       * @example S
+       */
+      contactType: string
+      /**
+       * @description The relationship code from reference data
+       * @example Friend
+       */
+      relationshipType: string
+      /**
+       * @description Indicates if the prisoner contact is next of kin
+       * @example true
+       */
+      nextOfKin: boolean
+      /**
+       * @description Indicates if the prisoner contact is an emergency contact
+       * @example true
+       */
+      emergencyContact: boolean
+      /**
+       * @description Indicates if the prisoner contact is active
+       * @example true
+       */
+      active: boolean
+      /**
+       * @description Indicates if the prisoner contact is an approved visitor
+       * @example true
+       */
+      approvedVisitor: boolean
+      /** @description The list of restrictions on this relationship */
+      relationshipRestrictions: components['schemas']['ReconcileRelationshipRestriction'][]
+    }
+    /** @description Contact relationship restriction reconciliation */
+    ReconcileRelationshipRestriction: {
+      /**
+       * Format: int64
+       * @description The ID of the prisoner contact restriction
+       * @example 12345
+       */
+      prisonerContactRestrictionId: number
+      /**
+       * @description Type of restriction
+       * @example MOBILE
+       */
+      restrictionType: string
+      /**
+       * Format: date
+       * @description Restriction created date
+       * @example 2024-01-01
+       */
+      startDate?: string
+      /**
+       * Format: date
+       * @description Restriction end date
+       * @example 2024-01-01
+       */
+      expiryDate?: string
+    }
+    /** @description Contact restriction reconciliation */
+    ReconcileRestriction: {
+      /**
+       * Format: int64
+       * @description The ID of the contact restriction
+       * @example 12345
+       */
+      contactRestrictionId: number
+      /**
+       * @description Type of restriction
+       * @example MOBILE
+       */
+      restrictionType: string
+      /**
+       * Format: date
+       * @description Restriction created date
+       * @example 2024-01-01
+       */
+      startDate?: string
+      /**
+       * Format: date
+       * @description Restriction end date
+       * @example 2024-01-01
+       */
+      expiryDate?: string
+    }
+    SyncContactReconcile: {
+      /** Format: int64 */
+      contactId: number
+      firstName: string
+      lastName: string
+      middleNames?: string
+      /** Format: date */
+      dateOfBirth?: string
+      staffFlag: boolean
+      phones: components['schemas']['ReconcilePhone'][]
+      addresses: components['schemas']['ReconcileAddress'][]
+      emails: components['schemas']['ReconcileEmail'][]
+      identities: components['schemas']['ReconcileIdentity'][]
+      restrictions: components['schemas']['ReconcileRestriction'][]
+      relationships: components['schemas']['ReconcileRelationship'][]
+      employments: components['schemas']['ReconcileEmployment'][]
     }
     PageMetadata: {
       /** Format: int64 */
@@ -6684,6 +6846,19 @@ export interface components {
        * @example A1234BC
        */
       prisonerNumber: string
+      /**
+       * @description
+       *           The title code for the contact.
+       *           This is a coded value (from the group code TITLE in reference data).
+       *
+       * @example MR
+       */
+      titleCode?: string
+      /**
+       * @description The description of the title code, if present
+       * @example Mr
+       */
+      titleDescription?: string
       /**
        * @description The last name of the contact
        * @example Doe
@@ -6791,6 +6966,11 @@ export interface components {
        */
       countryDescription?: string
       /**
+       * @description Flag to indicate whether this address indicates no fixed address
+       * @example false
+       */
+      noFixedAddress?: boolean
+      /**
        * @description If true this address should be considered as the primary residential address
        * @example true
        */
@@ -6850,6 +7030,11 @@ export interface components {
        * @example Close family friend
        */
       comments?: string
+      /**
+       * @description Whether the contact is a staff member
+       * @example false
+       */
+      isStaff: boolean
       restrictionSummary: components['schemas']['RestrictionsSummary']
     }
     RestrictionTypeDetails: {
@@ -6862,6 +7047,19 @@ export interface components {
       totalActive: number
       /** Format: int32 */
       totalExpired: number
+    }
+    /** @description A count of a prisoners contact relationships */
+    PrisonerContactRelationshipCount: {
+      /**
+       * Format: int64
+       * @description The number of active social relationships
+       */
+      social: number
+      /**
+       * Format: int64
+       * @description The number of active official relationships
+       */
+      official: number
     }
     /** @description Restriction related to a specific relationship between a prisoner and contact */
     PrisonerContactRestrictionsResponse: {
@@ -12364,6 +12562,47 @@ export interface operations {
       }
     }
   }
+  reconcileSingleContact: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the contact. */
+        contactId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Reconciliation object for one contact */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncContactReconcile']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   reconcileContacts: {
     parameters: {
       query?: {
@@ -12490,7 +12729,7 @@ export interface operations {
     }
     requestBody?: never
     responses: {
-      /** @description List of all contacts for the prisoner */
+      /** @description A page of matching contact relationships for the prisoner */
       200: {
         headers: {
           [name: string]: unknown
@@ -12519,6 +12758,50 @@ export interface operations {
       }
       /** @description The Prisoner was not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getContactRelationshipCount: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The prison number of the prisoner who's contacts will be returned
+         * @example A1234BC
+         */
+        prisonNumber: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Count of active prisoner contact relationships */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerContactRelationshipCount']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
         headers: {
           [name: string]: unknown
         }

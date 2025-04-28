@@ -123,7 +123,6 @@ describe('contactsService', () => {
             { phoneType: 'MOB', phoneNumber: '0123456789' },
             { phoneType: 'HOME', phoneNumber: '987654321', extNumber: '#123' },
           ],
-          createdBy: 'user1',
           relationship: {
             prisonerNumber,
             relationshipTypeCode: relationshipType,
@@ -209,7 +208,6 @@ describe('contactsService', () => {
             isEmergencyContact: false,
             isApprovedVisitor: false,
           },
-          createdBy: 'user1',
         }
 
         // When
@@ -271,7 +269,6 @@ describe('contactsService', () => {
             isEmergencyContact: false,
             isApprovedVisitor: false,
           },
-          createdBy: 'user1',
         }
         if (expectedLanguage) {
           expectedRequest.languageCode = expectedLanguage
@@ -330,7 +327,6 @@ describe('contactsService', () => {
           isEmergencyContact: true,
           isApprovedVisitor: false,
         },
-        createdBy: 'user1',
       }
 
       // When
@@ -506,7 +502,6 @@ describe('contactsService', () => {
             isApprovedVisitor: false,
             comments: 'Some comments about this relationship',
           },
-          createdBy: 'user1',
         }
 
         // When
@@ -562,7 +557,6 @@ describe('contactsService', () => {
           isEmergencyContact: true,
           isApprovedVisitor: false,
         },
-        createdBy: 'user1',
       }
 
       // When
@@ -619,7 +613,6 @@ describe('contactsService', () => {
         phoneType: 'MOB',
         phoneNumber: '0123456789',
         extNumber: '000',
-        updatedBy: 'user1',
       }
 
       // When
@@ -647,7 +640,6 @@ describe('contactsService', () => {
       const expectedRequest: UpdatePhoneRequest = {
         phoneType: 'MOB',
         phoneNumber: '0123456789',
-        updatedBy: 'user1',
       }
 
       // When
@@ -678,7 +670,6 @@ describe('contactsService', () => {
     // Given
     const request: PatchContactRequest = {
       languageCode: 'ENG',
-      updatedBy: 'user1',
     }
     it('Should update the language reference', async () => {
       // When
@@ -747,7 +738,6 @@ describe('contactsService', () => {
   describe('createContactEmail', () => {
     const expectedRequest: CreateMultipleEmailsRequest = {
       emailAddresses: [{ emailAddress: 'test@example.com' }],
-      createdBy: 'user1',
     }
 
     it('should create contact emails with all fields', async () => {
@@ -758,7 +748,7 @@ describe('contactsService', () => {
         emailAddress: 'test@example.com',
         createdBy: 'user1',
         createdTime: new Date().toISOString(),
-        updatedBy: new Date().toISOString(),
+        updatedBy: 'user2',
         updatedTime: new Date().toISOString(),
       }
       apiClient.createContactEmails.mockResolvedValue([expectedCreated])
@@ -800,13 +790,12 @@ describe('contactsService', () => {
       emailAddress: 'test@example.com',
       createdBy: 'user1',
       createdTime: new Date().toISOString(),
-      updatedBy: new Date().toISOString(),
+      updatedBy: 'user2',
       updatedTime: new Date().toISOString(),
     }
 
     const request: UpdateEmailRequest = {
       emailAddress: 'test@example.com',
-      updatedBy: 'user1',
     }
 
     it('should update a contact email', async () => {
@@ -930,7 +919,6 @@ describe('contactsService', () => {
         endDate: new Date('2012-12-01Z').toISOString(),
         noFixedAddress: true,
         comments: 'My comments will be super useful',
-        createdBy: user.username,
         phoneNumbers: [],
       }
 
@@ -974,7 +962,6 @@ describe('contactsService', () => {
         mailFlag: false,
         startDate: new Date('2000-02-01Z').toISOString(),
         noFixedAddress: false,
-        createdBy: user.username,
         phoneNumbers: [],
       }
 
@@ -1060,7 +1047,6 @@ describe('contactsService', () => {
         endDate: new Date('2012-12-01Z').toISOString(),
         noFixedAddress: true,
         comments: 'My comments will be super useful',
-        updatedBy: user.username,
       }
 
       // When
@@ -1096,7 +1082,6 @@ describe('contactsService', () => {
         countryCode: 'ENG',
         verified: false,
         noFixedAddress: false,
-        updatedBy: user.username,
       }
 
       // When
@@ -1150,7 +1135,6 @@ describe('contactsService', () => {
         phoneType: 'MOB',
         phoneNumber: '0123456789',
         extNumber: '000',
-        updatedBy: 'user1',
       }
 
       // When
@@ -1188,7 +1172,6 @@ describe('contactsService', () => {
       const expectedRequest: UpdateContactAddressPhoneRequest = {
         phoneType: 'MOB',
         phoneNumber: '0123456789',
-        updatedBy: 'user1',
       }
 
       // When
@@ -1234,7 +1217,6 @@ describe('contactsService', () => {
         isNextOfKin: true,
         isRelationshipActive: true,
         comments: 'SOME COMMENTS',
-        updatedBy: 'USER1',
       }
       await expect(service.updateContactRelationshipById(99, request, user, 'correlationId')).resolves.toStrictEqual(
         undefined,
@@ -1260,9 +1242,7 @@ describe('contactsService', () => {
 
     it('should audit only provided details when doing an update', async () => {
       apiClient.updateContactRelationshipById.mockResolvedValue(undefined)
-      const request: PatchRelationshipRequest = {
-        updatedBy: 'USER1',
-      }
+      const request: PatchRelationshipRequest = {}
       await expect(service.updateContactRelationshipById(99, request, user, 'correlationId')).resolves.toStrictEqual(
         undefined,
       )

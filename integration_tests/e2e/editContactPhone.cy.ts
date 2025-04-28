@@ -91,7 +91,6 @@ context('Edit Contact Phones', () => {
       {
         phoneType: 'HOME',
         phoneNumber: '999 888',
-        updatedBy: 'USER1',
       },
     )
   })
@@ -140,7 +139,6 @@ context('Edit Contact Phones', () => {
         phoneType: 'MOB',
         phoneNumber: '987654321',
         extNumber: '000',
-        updatedBy: 'USER1',
       },
     )
   })
