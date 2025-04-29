@@ -22,7 +22,8 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "inlineSources": true,
-    "exactOptionalPropertyTypes": true
+    "exactOptionalPropertyTypes": true,
+    "isolatedModules": true
   },
   "exclude": [
     "node_modules",
