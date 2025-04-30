@@ -3,11 +3,12 @@ import request from 'supertest'
 import { v4 as uuidv4 } from 'uuid'
 import { SessionData } from 'express-session'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, user } from '../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../testutils/appSetup'
 import { Page } from '../../../services/auditService'
 import TestData from '../../testutils/testData'
 import { MockedService } from '../../../testutils/mockedServices'
 import { AddRestrictionJourney } from '../../../@types/journeys'
+import { HmppsUser } from '../../../interfaces/hmppsUser'
 
 jest.mock('../../../services/auditService')
 jest.mock('../../../services/contactsService')
@@ -26,6 +27,7 @@ const contactId = 123456
 const prisonerContactId = 987564
 const prisonerNumber = 'A1234BC'
 let journey: AddRestrictionJourney
+let currentUser = authorisingUser
 beforeEach(() => {
   journey = {
     id: journeyId,
@@ -51,7 +53,7 @@ beforeEach(() => {
       referenceDataService,
       prisonerSearchService,
     },
-    userSupplier: () => user,
+    userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.addRestrictionJourneys = {}
@@ -100,7 +102,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CANCEL_RESTRICTION_PAGE, {
-      who: user.username,
+      who: authorisingUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '123456',
@@ -120,6 +122,19 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
       .expect(res => {
         expect(res.text).toContain('Page not found')
       })
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 403],
+    [authorisingUser, 200],
+  ])('GET should block access without required roles (%s, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    await request(app)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/PRISONER_CONTACT/cancel/${journeyId}`,
+      )
+      .expect(expectedStatus)
   })
 })
 
@@ -166,5 +181,20 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
       .expect(res => {
         expect(res.text).toContain('Page not found')
       })
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 403],
+    [authorisingUser, 302],
+  ])('POST should block access without required roles (%s, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    await request(app)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/PRISONER_CONTACT/cancel/${journeyId}`,
+      )
+      .type('form')
+      .send({ action: 'YES' })
+      .expect(expectedStatus)
   })
 })

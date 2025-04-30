@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, user } from '../../../../testutils/appSetup'
+import { appWithAllRoutes, basicPrisonUser } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
@@ -27,7 +27,7 @@ beforeEach(() => {
       prisonerSearchService,
       contactsService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
   })
 })
 
@@ -69,7 +69,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_EDIT_RELATIONSHIP_STATUS_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '10',
@@ -100,7 +100,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       expect(contactsService.updateContactRelationshipById).toHaveBeenCalledWith(
         1,
         { isRelationshipActive: expected },
-        user,
+        basicPrisonUser,
         expect.any(String),
       )
     },

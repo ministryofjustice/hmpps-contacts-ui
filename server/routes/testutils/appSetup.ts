@@ -18,15 +18,37 @@ import { auditPageViewMiddleware } from '../../middleware/auditPageViewMiddlewar
 
 jest.mock('../../services/auditService')
 
-export const user: HmppsUser = {
-  name: 'FIRST LAST',
-  userId: 'id',
+export const basicPrisonUser: HmppsUser = {
+  name: 'ALL PRISON STAFF',
+  userId: 'all_prison_staff_id',
   token: 'token',
-  username: 'user1',
-  displayName: 'First Last',
+  username: 'all_prison_staff',
+  displayName: 'All Prison Staff',
   authSource: 'nomis',
   staffId: 1234,
   userRoles: [],
+}
+
+export const adminUser: HmppsUser = {
+  name: 'CONTACTS ADMIN',
+  userId: 'contacts_admin_id',
+  token: 'token',
+  username: 'contacts_admin',
+  displayName: 'Contacts Admin',
+  authSource: 'nomis',
+  staffId: 4567,
+  userRoles: ['CONTACTS_ADMINISTRATOR'],
+}
+
+export const authorisingUser: HmppsUser = {
+  name: 'CONTACTS AUTHORISER',
+  userId: 'contacts_authoriser_id',
+  token: 'token',
+  username: 'contacts_authoriser',
+  displayName: 'Contacts Authoriser',
+  authSource: 'nomis',
+  staffId: 5678,
+  userRoles: ['CONTACTS_AUTHORISER'],
 }
 
 export const flashProvider = jest.fn()
@@ -102,7 +124,7 @@ export function appWithAllRoutes({
   services = {
     auditService: MockedService.AuditService(),
   },
-  userSupplier = () => user,
+  userSupplier = () => basicPrisonUser,
   validationErrors,
   sessionReceiver = undefined,
 }: {

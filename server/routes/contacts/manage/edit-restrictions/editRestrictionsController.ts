@@ -6,6 +6,7 @@ import { Navigation } from '../../common/navigation'
 import Urls from '../../../urls'
 import RestrictionsService from '../../../../services/restrictionsService'
 import { ContactDetails } from '../../../../@types/contactsApiClient'
+import Permission from '../../../../enumeration/permission'
 
 export default class EditRestrictionsController implements PageHandler {
   constructor(
@@ -14,6 +15,8 @@ export default class EditRestrictionsController implements PageHandler {
   ) {}
 
   public PAGE_NAME = Page.EDIT_RESTRICTIONS_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_RESTRICTIONS
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }, unknown, unknown>,

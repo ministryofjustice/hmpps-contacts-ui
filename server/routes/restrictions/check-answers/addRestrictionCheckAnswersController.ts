@@ -7,6 +7,7 @@ import ReferenceDataService from '../../../services/referenceDataService'
 import { Navigation } from '../../contacts/common/navigation'
 import { RestrictionSchemaType } from '../schema/restrictionSchema'
 import RestrictionsService from '../../../services/restrictionsService'
+import Permission from '../../../enumeration/permission'
 
 export default class AddRestrictionCheckAnswersController implements PageHandler {
   constructor(
@@ -15,6 +16,8 @@ export default class AddRestrictionCheckAnswersController implements PageHandler
   ) {}
 
   public PAGE_NAME = Page.ADD_RESTRICTION_CHECK_ANSWERS_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_RESTRICTIONS
 
   GET = async (
     req: Request<{

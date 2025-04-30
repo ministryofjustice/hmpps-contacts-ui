@@ -3,7 +3,7 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { v4 as uuidv4 } from 'uuid'
 import { SessionData } from 'express-session'
-import { appWithAllRoutes, flashProvider, user } from '../../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../testutils/appSetup'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
@@ -91,7 +91,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
 
     // Then
     expect(auditService.logPageView).toHaveBeenCalledWith('MANAGE_CONTACT_UPDATE_EMPLOYMENTS_PAGE', {
-      who: 'user1',
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '1',
@@ -226,7 +226,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
         ],
         deleteEmployments: [201],
       },
-      user,
+      basicPrisonUser,
       expect.any(String),
     )
 
@@ -273,7 +273,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
         updateEmployments: [],
         deleteEmployments: [],
       },
-      user,
+      basicPrisonUser,
       expect.any(String),
     )
     expect(response.status).toEqual(302)
@@ -315,7 +315,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
         ],
         deleteEmployments: [],
       },
-      user,
+      basicPrisonUser,
       expect.any(String),
     )
     expect(response.status).toEqual(302)
@@ -342,7 +342,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
         updateEmployments: [],
         deleteEmployments: [201],
       },
-      user,
+      basicPrisonUser,
       expect.any(String),
     )
     expect(response.status).toEqual(302)

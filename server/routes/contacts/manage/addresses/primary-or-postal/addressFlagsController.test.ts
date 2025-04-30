@@ -3,7 +3,7 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, user } from '../../../../testutils/appSetup'
+import { appWithAllRoutes, basicPrisonUser } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
@@ -50,7 +50,7 @@ beforeEach(() => {
       prisonerSearchService,
       referenceDataService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.addressJourneys = {}
@@ -99,7 +99,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     ).toBeTruthy()
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.SELECT_ADDRESS_FLAGS_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '123456',

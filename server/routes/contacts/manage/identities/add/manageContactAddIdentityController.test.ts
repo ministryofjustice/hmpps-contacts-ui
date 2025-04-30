@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, flashProvider, user } from '../../../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import TestData from '../../../../testutils/testData'
@@ -35,7 +35,7 @@ const contact: ContactDetails = {
   lastName: 'last',
   firstName: 'first',
   middleNames: 'middle',
-  createdBy: user.username,
+  createdBy: basicPrisonUser.username,
   createdTime: '',
 }
 
@@ -47,7 +47,7 @@ beforeEach(() => {
       prisonerSearchService,
       contactsService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
   })
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
@@ -97,7 +97,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_ADD_IDENTITY_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '987654',
@@ -171,7 +171,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
 
     expect(contactsService.createContactIdentities).toHaveBeenCalledWith(
       contactId,
-      user,
+      basicPrisonUser,
       expectedIdentities,
       expect.any(String),
     )

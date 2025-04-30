@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import { Request as ExpressRequest, Response } from 'express'
 import { SessionData } from 'express-session'
-import { user } from '../../../testutils/appSetup'
+import { basicPrisonUser } from '../../../testutils/appSetup'
 import ensureInAddressJourney from './addressesMiddleware'
 import resetAllMocks = jest.resetAllMocks
 import { PrisonerJourneyParams } from '../../../../@types/journeys'
@@ -23,7 +23,12 @@ describe('ensureInAddressJourney', () => {
       params: { journeyId },
       session: {} as Partial<SessionData>,
     } as unknown as Request
-    res = { redirect: jest.fn(), render: jest.fn(), status: resStatus, locals: { user } } as unknown as Response
+    res = {
+      redirect: jest.fn(),
+      render: jest.fn(),
+      status: resStatus,
+      locals: { user: basicPrisonUser },
+    } as unknown as Response
     next = jest.fn()
   })
   it('should proceed if the journey is in the session and update the last touched date', () => {

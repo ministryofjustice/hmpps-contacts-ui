@@ -3,7 +3,7 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, user } from '../../../../testutils/appSetup'
+import { appWithAllRoutes, basicPrisonUser } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
@@ -40,7 +40,7 @@ const contact: ContactDetails = {
   firstName: 'first',
   middleNames: 'middle',
   dateOfBirth: '1980-12-10T00:00:00.000Z',
-  createdBy: user.username,
+  createdBy: basicPrisonUser.username,
   createdTime: '2024-01-01',
 }
 
@@ -75,7 +75,7 @@ beforeEach(() => {
       referenceDataService,
       contactsService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.addressJourneys = {}
@@ -213,7 +213,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADDRESS_CHECK_ANSWERS_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '123456',
@@ -252,7 +252,11 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
 
     // Then
     expect(session.addressJourneys![journeyId]).toBeUndefined()
-    expect(contactsService.createContactAddress).toHaveBeenCalledWith(existingJourney, user, expect.any(String))
+    expect(contactsService.createContactAddress).toHaveBeenCalledWith(
+      existingJourney,
+      basicPrisonUser,
+      expect.any(String),
+    )
   })
 
   it('should return not found page if no journey in session', async () => {

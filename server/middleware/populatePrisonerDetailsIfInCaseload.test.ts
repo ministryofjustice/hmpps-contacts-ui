@@ -2,7 +2,7 @@ import 'reflect-metadata'
 import { Request as ExpressRequest, Response } from 'express'
 import populatePrisonerDetailsIfInCaseload from './populatePrisonerDetailsIfInCaseload'
 import TestData from '../routes/testutils/testData'
-import { user } from '../routes/testutils/appSetup'
+import { basicPrisonUser } from '../routes/testutils/appSetup'
 import { PrisonerSearchAddress } from '../data/prisonerOffenderSearchTypes'
 import { MockedService } from '../testutils/mockedServices'
 import { PrisonerDetails } from '../@types/journeys'
@@ -18,7 +18,7 @@ type Request = ExpressRequest<{ prisonerNumber: string }>
 describe('prisonerDetailsMiddleware', () => {
   const prisoner = TestData.prisoner()
   const resStatus = jest.fn()
-  const res = { locals: { user }, render: jest.fn(), status: resStatus } as unknown as Response
+  const res = { locals: { user: basicPrisonUser }, render: jest.fn(), status: resStatus } as unknown as Response
 
   let req = {} as Request
 
@@ -44,7 +44,7 @@ describe('prisonerDetailsMiddleware', () => {
     await populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService)(req, res, next)
 
     expect(next).toHaveBeenCalledTimes(1)
-    expect(prisonerSearchService.getByPrisonerNumber).toHaveBeenCalledWith('A1234BC', user)
+    expect(prisonerSearchService.getByPrisonerNumber).toHaveBeenCalledWith('A1234BC', basicPrisonUser)
     const expectedPrisonerDetails: PrisonerDetails = {
       prisonerNumber: 'A1234BC',
       lastName: 'SMITH',
@@ -166,7 +166,7 @@ describe('prisonerDetailsMiddleware', () => {
     expect(res.locals.prisonerDetails).toBeUndefined()
     expect(auditService.logAuditEvent).toHaveBeenCalledWith({
       what: 'NOT_IN_CASELOAD',
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: '123456',
       subjectType: 'PRISONER_NUMBER',
       subjectId: 'A1234BC',
@@ -200,7 +200,7 @@ describe('prisonerDetailsMiddleware', () => {
     expect(res.locals.prisonerDetails).toBeUndefined()
     expect(auditService.logAuditEvent).toHaveBeenCalledWith({
       what: 'NOT_IN_CASELOAD',
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: '123456',
       subjectType: 'PRISONER_NUMBER',
       subjectId: 'A1234BC',
@@ -225,6 +225,6 @@ describe('prisonerDetailsMiddleware', () => {
 
     await populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService)(req, res, next)
 
-    expect(prisonerSearchService.getByPrisonerNumber).toHaveBeenCalledWith('A1234BC', user)
+    expect(prisonerSearchService.getByPrisonerNumber).toHaveBeenCalledWith('A1234BC', basicPrisonUser)
   })
 })

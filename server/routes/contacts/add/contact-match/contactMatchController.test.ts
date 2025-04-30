@@ -3,7 +3,7 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, user } from '../../../testutils/appSetup'
+import { appWithAllRoutes, basicPrisonUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
@@ -50,7 +50,7 @@ beforeEach(() => {
       referenceDataService,
       restrictionsService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.addContactJourneys = {}
@@ -81,7 +81,7 @@ describe('Contact details', () => {
       // Then
       expect(response.status).toEqual(200)
       expect(auditService.logPageView).toHaveBeenCalledWith(Page.CONTACT_MATCH_PAGE, {
-        who: user.username,
+        who: basicPrisonUser.username,
         correlationId: expect.any(String),
         details: {
           contactId: '22',
@@ -721,7 +721,7 @@ describe('Contact details', () => {
         expect(rowColumns.eq(0).text()).toContain(linkedPrisoner.prisonerNumber)
       })
       expect($('.moj-pagination__list')).toHaveLength(2)
-      expect(contactsService.getLinkedPrisoners).toHaveBeenCalledWith(1, 0, 10, user)
+      expect(contactsService.getLinkedPrisoners).toHaveBeenCalledWith(1, 0, 10, basicPrisonUser)
     })
 
     it('should load the relevant page if not default', async () => {
@@ -768,7 +768,7 @@ describe('Contact details', () => {
         1,
         1 /* page number is 0 indexed so page 2 = page 1 API */,
         10,
-        user,
+        basicPrisonUser,
       )
     })
   })

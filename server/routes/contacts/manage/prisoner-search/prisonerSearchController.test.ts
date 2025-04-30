@@ -2,7 +2,7 @@ import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
-import { appWithAllRoutes, flashProvider, user } from '../../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { ENTER_TWO_CHARS_MIN } from './prisonerSearchSchema'
 import { MockedService } from '../../../../testutils/mockedServices'
@@ -20,7 +20,7 @@ beforeEach(() => {
     services: {
       auditService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.manageContactsJourneys = {}
@@ -44,7 +44,7 @@ describe('GET /contacts/manage/prisoner-search', () => {
     expect(response.text).toContain('Contacts')
     expect(response.text).toContain('Hmpps Contacts Ui')
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.PRISONER_SEARCH_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {},
     })

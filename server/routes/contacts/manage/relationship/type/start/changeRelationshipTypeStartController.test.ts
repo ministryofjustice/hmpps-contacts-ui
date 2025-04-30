@@ -2,7 +2,7 @@ import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
-import { appWithAllRoutes, user } from '../../../../../testutils/appSetup'
+import { appWithAllRoutes, basicPrisonUser } from '../../../../../testutils/appSetup'
 import { Page } from '../../../../../../services/auditService'
 import TestData from '../../../../../testutils/testData'
 import { MockedService } from '../../../../../../testutils/mockedServices'
@@ -36,7 +36,7 @@ const contact: ContactDetails = {
   firstName: 'first',
   middleNames: 'middle',
   dateOfBirth: '1980-12-10T00:00:00.000Z',
-  createdBy: user.username,
+  createdBy: basicPrisonUser.username,
   createdTime: '2024-01-01',
 }
 const prisonerContact: PrisonerContactRelationshipDetails = TestData.prisonerContactRelationship({
@@ -53,7 +53,7 @@ beforeEach(() => {
       contactsService,
       prisonerSearchService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       if (preExistingJourneysToAddToSession) {
@@ -84,7 +84,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     // Then
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CHANGE_RELATIONSHIP_TYPE_START_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '123',

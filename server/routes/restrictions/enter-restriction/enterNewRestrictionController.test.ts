@@ -3,12 +3,13 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, flashProvider, user } from '../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser, flashProvider } from '../../testutils/appSetup'
 import { Page } from '../../../services/auditService'
 import { mockedReferenceData } from '../../testutils/stubReferenceData'
 import TestData from '../../testutils/testData'
 import { MockedService } from '../../../testutils/mockedServices'
 import { AddRestrictionJourney, RestrictionClass } from '../../../@types/journeys'
+import { HmppsUser } from '../../../interfaces/hmppsUser'
 
 jest.mock('../../../services/auditService')
 jest.mock('../../../services/referenceDataService')
@@ -25,6 +26,7 @@ const prisonerNumber = 'A1234BC'
 const contactId = 123
 const prisonerContactId = 321
 let existingJourney: AddRestrictionJourney
+let currentUser = authorisingUser
 
 beforeEach(() => {
   existingJourney = {
@@ -45,7 +47,7 @@ beforeEach(() => {
       referenceDataService,
       prisonerSearchService,
     },
-    userSupplier: () => user,
+    userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.addRestrictionJourneys = {}
@@ -127,7 +129,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ENTER_RESTRICTION_PAGE, {
-      who: user.username,
+      who: authorisingUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '123',
@@ -218,6 +220,21 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
         expect(res.text).toContain('Page not found')
       })
   })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 403],
+    [authorisingUser, 200],
+  ])('GET should block access without required roles (%s, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    existingJourney.restrictionClass = 'PRISONER_CONTACT'
+
+    await request(app)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/PRISONER_CONTACT/enter-restriction/${journeyId}`,
+      )
+      .expect(expectedStatus)
+  })
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/enter-restriction/:journeyId', () => {
@@ -281,4 +298,20 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
         })
     },
   )
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 403],
+    [authorisingUser, 302],
+  ])('POST should block access without required roles (%s, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    existingJourney.restrictionClass = 'CONTACT_GLOBAL'
+    await request(app)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/CONTACT_GLOBAL/enter-restriction/${journeyId}`,
+      )
+      .type('form')
+      .send({ type: 'BAN', startDate: '1/2/2024', expiryDate: '2/3/2025', comments: 'some comments' })
+      .expect(expectedStatus)
+  })
 })

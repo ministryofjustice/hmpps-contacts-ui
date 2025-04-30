@@ -3,7 +3,7 @@ import request from 'supertest'
 import { v4 as uuidv4 } from 'uuid'
 import { SessionData } from 'express-session'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, user } from '../../../testutils/appSetup'
+import { appWithAllRoutes, basicPrisonUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../testutils/stubReferenceData'
@@ -59,7 +59,7 @@ beforeEach(() => {
       referenceDataService,
       prisonerSearchService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.addContactJourneys = {}
@@ -401,7 +401,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         prisonerNumber: 'A1234BC',
@@ -439,7 +439,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
       .expect('Location', '/prisoner/A1234BC/contact/NEW/123456/654321/success')
 
     // Then
-    expect(contactsService.createContact).toHaveBeenCalledWith(journey, user, expect.any(String))
+    expect(contactsService.createContact).toHaveBeenCalledWith(journey, basicPrisonUser, expect.any(String))
     expect(session.addContactJourneys![journeyId]).toBeUndefined()
   })
 
@@ -460,7 +460,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
       .expect('Location', '/prisoner/A1234BC/contact/EXISTING/123456/654321/success')
 
     // Then
-    expect(contactsService.addContact).toHaveBeenCalledWith(journey, user, expect.any(String))
+    expect(contactsService.addContact).toHaveBeenCalledWith(journey, basicPrisonUser, expect.any(String))
     expect(session.addContactJourneys![journeyId]).toBeUndefined()
   })
 

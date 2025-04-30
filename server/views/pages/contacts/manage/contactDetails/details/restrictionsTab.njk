@@ -7,12 +7,14 @@
   </div>
   <div class="moj-page-header-actions__actions">
     <div class="moj-button-group moj-button-group--inline">
-       {% if prisonerContactRestrictions.length or contactGlobalRestrictions.length %}
-          {% set editLinkText = 'Add or update restrictions' %}
-        {% else %}
-          {% set editLinkText = 'Add restrictions' %}
-        {% endif %}
-       <a class="govuk-link govuk-link--no-visited-state" data-qa="edit-restrictions-link" href="{{ "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contactId + "/relationship/" + prisonerContactId + "/edit-restrictions" }}">{{ editLinkText }}</a>
+       {% if user | hasPermission('MANAGE_RESTRICTIONS') %}
+         {% if prisonerContactRestrictions.length or contactGlobalRestrictions.length %}
+            {% set editLinkText = 'Add or update restrictions' %}
+          {% else %}
+            {% set editLinkText = 'Add restrictions' %}
+          {% endif %}
+         <a class="govuk-link govuk-link--no-visited-state" data-qa="edit-restrictions-link" href="{{ "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contactId + "/relationship/" + prisonerContactId + "/edit-restrictions" }}">{{ editLinkText }}</a>
+       {% endif %}
     </div>
   </div>
 </div>

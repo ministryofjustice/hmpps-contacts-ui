@@ -3,7 +3,7 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, user } from '../../../../../testutils/appSetup'
+import { appWithAllRoutes, basicPrisonUser } from '../../../../../testutils/appSetup'
 import { Page } from '../../../../../../services/auditService'
 import TestData from '../../../../../testutils/testData'
 import { MockedService } from '../../../../../../testutils/mockedServices'
@@ -43,7 +43,7 @@ beforeEach(() => {
       auditService,
       prisonerSearchService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.changeRelationshipTypeJourneys = {}
@@ -95,7 +95,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CHANGE_RELATIONSHIP_SELECT_NEW_TYPE_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '123',
