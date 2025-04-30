@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, flashProvider, user } from '../../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
@@ -27,7 +27,7 @@ beforeEach(() => {
       prisonerSearchService,
       contactsService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
   })
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
@@ -110,7 +110,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.UPDATE_CONTACT_CONFIRM_DELETE_DATE_OF_DEATH_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '99',
@@ -137,7 +137,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     expect(contactsService.updateContactById).toHaveBeenCalledWith(
       contactId,
       { deceasedDate: null },
-      user,
+      basicPrisonUser,
       expect.any(String),
     )
     expect(flashProvider).toHaveBeenCalledWith(

@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, user } from '../../../../testutils/appSetup'
+import { appWithAllRoutes, basicPrisonUser } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import TestData from '../../../../testutils/testData'
@@ -39,7 +39,7 @@ const contact: ContactDetails = {
     TestData.getContactIdentityDetails('PASS', 'Passport number', '425362965', 'UK passport office', 2, true),
     TestData.getContactIdentityDetails('NINO', 'National insurance number', '06/614465M', 'UK', 3, true),
   ],
-  createdBy: user.username,
+  createdBy: basicPrisonUser.username,
   createdTime: '2024-01-01',
 }
 
@@ -51,7 +51,7 @@ beforeEach(() => {
       prisonerSearchService,
       contactsService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
   })
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
@@ -75,7 +75,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     // Then
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_DELETE_IDENTITY_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '987654',
@@ -145,6 +145,11 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
 
     // Then
-    expect(contactsService.deleteContactIdentity).toHaveBeenCalledWith(contactId, 1, user, expect.any(String))
+    expect(contactsService.deleteContactIdentity).toHaveBeenCalledWith(
+      contactId,
+      1,
+      basicPrisonUser,
+      expect.any(String),
+    )
   })
 })

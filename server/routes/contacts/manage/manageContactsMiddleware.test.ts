@@ -2,7 +2,7 @@ import { Request as ExpressRequest, Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
 import { SessionData } from 'express-session'
 import { ensureInManageContactsJourney, prepareStandaloneManageContactJourney } from './manageContactsMiddleware'
-import { user } from '../../testutils/appSetup'
+import { basicPrisonUser } from '../../testutils/appSetup'
 import resetAllMocks = jest.resetAllMocks
 import { PrisonerJourneyParams } from '../../../@types/journeys'
 
@@ -21,7 +21,7 @@ describe('manageContactsMiddleware', () => {
         params: { journeyId },
         session: {} as Partial<SessionData>,
       } as unknown as Request
-      res = { redirect: jest.fn(), locals: { user } } as unknown as Response
+      res = { redirect: jest.fn(), locals: { user: basicPrisonUser } } as unknown as Response
       next = jest.fn()
     })
 
@@ -97,7 +97,7 @@ describe('manageContactsMiddleware', () => {
       } as unknown as Request
       status = jest.fn()
       render = jest.fn()
-      res = { status, render, locals: { user } } as unknown as Response
+      res = { status, render, locals: { user: basicPrisonUser } } as unknown as Response
       next = jest.fn()
     })
 

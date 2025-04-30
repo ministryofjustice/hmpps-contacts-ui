@@ -3,7 +3,7 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, flashProvider, user } from '../../../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
@@ -84,7 +84,7 @@ beforeEach(() => {
       prisonerSearchService,
       referenceDataService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.addContactJourneys = {}
@@ -122,7 +122,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/new/comments/:
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
     expect($('[data-qa=address-reference]').first().html()!.trim()).toMatch(/<strong>Address:<\/strong><br>\s+?England/)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_ENTER_ADDRESS_COMMENTS_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         prisonerNumber: 'A1234BC',
@@ -192,7 +192,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/
       /<strong>Address:<\/strong><br>\n\s+?1a<br>\s+?My block<br>\s+?A street<br>\s+?Downtown<br>\s+?Exeter<br>\s+?Devon<br>\s+?PC1 D3<br>\s+?England/,
     )
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_ENTER_ADDRESS_COMMENTS_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         prisonerNumber: 'A1234BC',

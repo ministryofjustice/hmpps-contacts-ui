@@ -2,12 +2,13 @@ import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
-import { appWithAllRoutes, user } from '../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../testutils/appSetup'
 import { Page } from '../../../services/auditService'
 import { MockedService } from '../../../testutils/mockedServices'
 import TestData from '../../testutils/testData'
 import { AddRestrictionJourney } from '../../../@types/journeys'
 import { ContactDetails } from '../../../@types/contactsApiClient'
+import { HmppsUser } from '../../../interfaces/hmppsUser'
 
 jest.mock('../../../services/auditService')
 jest.mock('../../../services/contactsService')
@@ -36,9 +37,10 @@ const contact: ContactDetails = {
   firstName: 'first',
   middleNames: 'middle',
   dateOfBirth: '1980-12-10T00:00:00.000Z',
-  createdBy: user.username,
+  createdBy: basicPrisonUser.username,
   createdTime: '2024-01-01',
 }
+let currentUser = authorisingUser
 
 beforeEach(() => {
   app = appWithAllRoutes({
@@ -47,7 +49,7 @@ beforeEach(() => {
       contactsService,
       prisonerSearchService,
     },
-    userSupplier: () => user,
+    userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       if (preExistingJourneysToAddToSession) {
@@ -79,7 +81,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
       // Then
       expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADD_RESTRICTION_START_PAGE, {
-        who: user.username,
+        who: authorisingUser.username,
         correlationId: expect.any(String),
         details: {
           contactId: '123',
@@ -205,5 +207,19 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     expect(Object.keys(session.addRestrictionJourneys!).sort()).toStrictEqual(
       [newId, 'old', 'middle-aged', 'young', 'youngest'].sort(),
     )
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 403],
+    [authorisingUser, 302],
+  ])('GET should block access without required roles (%s, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    contactsService.getContactName.mockResolvedValue(contact)
+    currentUser = user
+    await request(app)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/PRISONER_CONTACT/start?returnUrl=/foo`,
+      )
+      .expect(expectedStatus)
   })
 })

@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import * as cheerio from 'cheerio'
 import request from 'supertest'
-import { appWithAllRoutes, user } from '../../../testutils/appSetup'
+import { appWithAllRoutes, basicPrisonUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { mockedReferenceData } from '../../../testutils/stubReferenceData'
@@ -30,7 +30,7 @@ beforeEach(() => {
       contactsService,
       referenceDataService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
   })
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
 })
@@ -63,7 +63,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
     expect($(`.govuk-radios__input[value='${gender}']`).attr('checked', 'checked').val()).toStrictEqual(gender)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_GENDER_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '10',
@@ -95,7 +95,12 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .expect(302)
       .expect('Location', '/prisoner/A1234BC/contacts/manage/10/relationship/987654')
 
-    expect(contactsService.updateContactById).toHaveBeenCalledWith(10, { genderCode: 'M' }, user, expect.any(String))
+    expect(contactsService.updateContactById).toHaveBeenCalledWith(
+      10,
+      { genderCode: 'M' },
+      basicPrisonUser,
+      expect.any(String),
+    )
   })
 
   it('should return to enter page if there are validation errors', async () => {

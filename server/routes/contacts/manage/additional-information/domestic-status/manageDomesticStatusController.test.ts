@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import * as cheerio from 'cheerio'
 import request from 'supertest'
-import { appWithAllRoutes, user } from '../../../../testutils/appSetup'
+import { appWithAllRoutes, basicPrisonUser } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { mockedReferenceData, STUBBED_DOMESTIC_STATUS_OPTIONS } from '../../../../testutils/stubReferenceData'
@@ -30,7 +30,7 @@ beforeEach(() => {
       contactsService,
       referenceDataService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
   })
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
 })
@@ -75,7 +75,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')
 
       expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_DOMESTIC_STATUS_PAGE, {
-        who: user.username,
+        who: basicPrisonUser.username,
         correlationId: expect.any(String),
         details: {
           contactId: '10',
@@ -121,7 +121,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     expect(contactsService.updateContactById).toHaveBeenCalledWith(
       10,
       { domesticStatusCode: 'S' },
-      user,
+      basicPrisonUser,
       expect.any(String),
     )
   })

@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, user } from '../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
@@ -13,6 +13,7 @@ import {
   LinkedPrisonerDetails,
   PrisonerContactRelationshipDetails,
 } from '../../../../@types/contactsApiClient'
+import { HmppsUser } from '../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -28,8 +29,10 @@ const restrictionsService = MockedService.RestrictionsService()
 
 let app: Express
 const prisonerNumber = 'A1234BC'
+let currentUser: HmppsUser
 
 beforeEach(() => {
+  currentUser = basicPrisonUser
   app = appWithAllRoutes({
     services: {
       auditService,
@@ -38,6 +41,7 @@ beforeEach(() => {
       referenceDataService,
       restrictionsService,
     },
+    userSupplier: () => currentUser,
   })
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mr')
@@ -66,7 +70,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       // Then
       expect(response.status).toEqual(200)
       expect(auditService.logPageView).toHaveBeenCalledWith(Page.CONTACT_DETAILS_PAGE, {
-        who: user.username,
+        who: basicPrisonUser.username,
         correlationId: expect.any(String),
         details: {
           contactId: '1',
@@ -74,8 +78,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           prisonerNumber: 'A1234BC',
         },
       })
-      expect(contactsService.getContact).toHaveBeenCalledWith(1, user)
-      expect(contactsService.getPrisonerContactRelationship).toHaveBeenCalledWith(99, user)
+      expect(contactsService.getContact).toHaveBeenCalledWith(1, basicPrisonUser)
+      expect(contactsService.getPrisonerContactRelationship).toHaveBeenCalledWith(99, basicPrisonUser)
     })
 
     it('should render contact details page for living contact', async () => {
@@ -155,6 +159,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
     })
     it('should render restrictions tab with global and prisoner-contact restrictions', async () => {
+      currentUser = authorisingUser
       restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({
         prisonerContactRestrictions: [TestData.getPrisonerContactRestrictionDetails()],
         contactGlobalRestrictions: [
@@ -173,7 +178,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       // Then
       expect(response.status).toEqual(200)
       expect(auditService.logPageView).toHaveBeenCalledWith(Page.CONTACT_DETAILS_PAGE, {
-        who: user.username,
+        who: authorisingUser.username,
         correlationId: expect.any(String),
         details: {
           contactId: '1',
@@ -213,6 +218,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
     it('should render global restrictions tab with expired restrictions', async () => {
       // Given
+      currentUser = authorisingUser
       restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({
         prisonerContactRestrictions: [],
         contactGlobalRestrictions: [
@@ -264,6 +270,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
     it('should render restrictions tab with no restrictions message', async () => {
       // Given
+      currentUser = authorisingUser
       restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({
         contactGlobalRestrictions: [],
         prisonerContactRestrictions: [],
@@ -313,6 +320,26 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect($('[data-qa="CONTACT_GLOBAL-1-expiry-date-value"]').text().trim()).toStrictEqual('Not provided')
       expect($('[data-qa="CONTACT_GLOBAL-1-comments-value"]').text().trim()).toStrictEqual('Not provided')
     })
+
+    it.each([basicPrisonUser, adminUser])(
+      'should hide link to edit restrictions if not an authorised user (%s)',
+      async user => {
+        // Given
+        currentUser = user
+        restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({
+          contactGlobalRestrictions: [],
+          prisonerContactRestrictions: [],
+        })
+
+        // When
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+        // Then
+        const $ = cheerio.load(response.text)
+
+        expect($('[data-qa=edit-restrictions-link]')).toHaveLength(0)
+      },
+    )
 
     it('should show not show manage restriction link', async () => {
       // Given
@@ -1124,7 +1151,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         expect(rowColumns.eq(0).text()).toContain(linkedPrisoner.prisonerNumber)
       })
       expect($('.moj-pagination__list')).toHaveLength(2)
-      expect(contactsService.getLinkedPrisoners).toHaveBeenCalledWith(1, 0, 50, user)
+      expect(contactsService.getLinkedPrisoners).toHaveBeenCalledWith(1, 0, 50, basicPrisonUser)
     })
 
     it('should load the relevant page if not default', async () => {
@@ -1171,7 +1198,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         1,
         1 /* page number is 0 indexed so page 2 = page 1 API */,
         50,
-        user,
+        basicPrisonUser,
       )
     })
   })

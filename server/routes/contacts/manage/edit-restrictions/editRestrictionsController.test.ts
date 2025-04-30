@@ -1,10 +1,11 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, user } from '../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../testutils/appSetup'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { Page } from '../../../../services/auditService'
+import { HmppsUser } from '../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -18,6 +19,7 @@ const restrictionsService = MockedService.RestrictionsService()
 
 let app: Express
 const prisonerNumber = 'A1234BC'
+let currentUser = authorisingUser
 
 beforeEach(() => {
   app = appWithAllRoutes({
@@ -27,6 +29,7 @@ beforeEach(() => {
       contactsService,
       restrictionsService,
     },
+    userSupplier: () => currentUser,
   })
 })
 
@@ -53,7 +56,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-r
     )
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.EDIT_RESTRICTIONS_PAGE, {
-      who: user.username,
+      who: authorisingUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '1',
@@ -61,7 +64,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-r
         prisonerNumber: 'A1234BC',
       },
     })
-    expect(contactsService.getContact).toHaveBeenCalledWith(1, user)
+    expect(contactsService.getContact).toHaveBeenCalledWith(1, authorisingUser)
   })
 
   it('should have correct navigation', async () => {
@@ -298,6 +301,22 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-r
       expect($('[data-qa=manage-PRISONER_CONTACT-restriction-link-2]').first().attr('href')).toStrictEqual(
         '/prisoner/A1234BC/contacts/22/relationship/99/restriction/update/PRISONER_CONTACT/enter-restriction/2',
       )
+    })
+
+    it.each([
+      [basicPrisonUser, 403],
+      [adminUser, 403],
+      [authorisingUser, 200],
+    ])('GET should block access without required roles (%s, %s)', async (user: HmppsUser, expectedStatus: number) => {
+      currentUser = user
+      restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({
+        contactGlobalRestrictions: [],
+        prisonerContactRestrictions: [],
+      })
+
+      await request(app)
+        .get(`/prisoner/${prisonerNumber}/contacts/manage/22/relationship/99/edit-restrictions`)
+        .expect(expectedStatus)
     })
   })
 })

@@ -16,7 +16,7 @@ export const routerMethods = (router: Router, auditService: AuditService) => {
     router.get(
       path,
       ...handlers,
-      checkPermissionsMiddleware(Permission.VIEW_CONTACT_LIST),
+      checkPermissionsMiddleware(controller.REQUIRED_PERMISSION ?? Permission.VIEW_CONTACT_LIST),
       logPageViewMiddleware(auditService, controller),
       asyncMiddleware(controller.GET),
     )
@@ -28,7 +28,7 @@ export const routerMethods = (router: Router, auditService: AuditService) => {
     router.post(
       path,
       ...(handlers as RequestHandler[]),
-      checkPermissionsMiddleware(Permission.VIEW_CONTACT_LIST),
+      checkPermissionsMiddleware(controller.REQUIRED_PERMISSION ?? Permission.VIEW_CONTACT_LIST),
       asyncMiddleware(controller.POST!),
     )
   return { get, post }

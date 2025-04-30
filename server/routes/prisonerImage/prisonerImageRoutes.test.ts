@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { Readable } from 'stream'
-import { appWithAllRoutes, user } from '../testutils/appSetup'
+import { appWithAllRoutes, basicPrisonUser } from '../testutils/appSetup'
 import PrisonerImageService from '../../services/prisonerImageService'
 
 jest.mock('../../services/prisonerImageService')
@@ -14,7 +14,7 @@ let app: Express
 beforeEach(() => {
   app = appWithAllRoutes({
     services: { prisonerImageService },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
   })
 })
 
@@ -28,7 +28,7 @@ describe('GET /prisoner-image/:prisonerNumber', () => {
     const response = await request(app).get(`/prisoner-image/A1111AA`)
     expect(response.status).toEqual(200)
     expect(response.body).toEqual(Buffer.from('image'))
-    expect(prisonerImageService.getImage).toHaveBeenCalledWith('A1111AA', user)
+    expect(prisonerImageService.getImage).toHaveBeenCalledWith('A1111AA', basicPrisonUser)
   })
 
   it('should return a placeholder image when the service fails', async () => {
@@ -36,6 +36,6 @@ describe('GET /prisoner-image/:prisonerNumber', () => {
     const response = await request(app).get(`/prisoner-image/A1111AA`)
     expect(response.status).toEqual(200)
     expect(response.body).not.toEqual(Buffer.from('rejected'))
-    expect(prisonerImageService.getImage).toHaveBeenCalledWith('A1111AA', user)
+    expect(prisonerImageService.getImage).toHaveBeenCalledWith('A1111AA', basicPrisonUser)
   })
 })

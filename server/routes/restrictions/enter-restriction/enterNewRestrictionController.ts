@@ -7,11 +7,14 @@ import { Navigation } from '../../contacts/common/navigation'
 import { maxLengthForRestrictionClass, RestrictionSchemaType } from '../schema/restrictionSchema'
 import Urls from '../../urls'
 import { RestrictionClass } from '../../../@types/journeys'
+import Permission from '../../../enumeration/permission'
 
 export default class EnterNewRestrictionController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
   public PAGE_NAME = Page.ENTER_RESTRICTION_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_RESTRICTIONS
 
   GET = async (
     req: Request<{

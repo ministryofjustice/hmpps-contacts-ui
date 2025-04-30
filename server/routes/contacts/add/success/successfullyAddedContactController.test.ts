@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, user } from '../../../testutils/appSetup'
+import { appWithAllRoutes, basicPrisonUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
@@ -23,7 +23,7 @@ beforeEach(() => {
       contactsService,
       prisonerSearchService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
   })
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
@@ -118,7 +118,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.SUCCESSFULLY_ADDED_CONTACT_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         prisonerNumber: 'A1234BC',

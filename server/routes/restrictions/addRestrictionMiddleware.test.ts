@@ -2,7 +2,7 @@ import { Request as ExpressRequest, Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
 import { SessionData } from 'express-session'
 import ensureInAddRestrictionJourney from './addRestrictionMiddleware'
-import { user } from '../testutils/appSetup'
+import { basicPrisonUser } from '../testutils/appSetup'
 import { RestrictionClass } from '../../@types/journeys'
 
 type Request = ExpressRequest<{
@@ -33,7 +33,7 @@ describe('addRestrictionMiddleware', () => {
         params: { journeyId, prisonerNumber, contactId, prisonerContactId, restrictionClass },
         session: {} as Partial<SessionData>,
       } as unknown as Request
-      res = { status, render, locals: { user } } as unknown as Response
+      res = { status, render, locals: { user: basicPrisonUser } } as unknown as Response
     })
 
     it('should proceed if the journey is in the session and update the last touched date', () => {

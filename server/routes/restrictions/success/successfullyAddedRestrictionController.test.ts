@@ -1,11 +1,12 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, user } from '../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../testutils/appSetup'
 import { Page } from '../../../services/auditService'
 import TestData from '../../testutils/testData'
 import { MockedService } from '../../../testutils/mockedServices'
 import { RestrictionClass } from '../../../@types/journeys'
+import { HmppsUser } from '../../../interfaces/hmppsUser'
 
 jest.mock('../../../services/auditService')
 jest.mock('../../../services/contactsService')
@@ -17,6 +18,7 @@ const prisonerSearchService = MockedService.PrisonerSearchService()
 
 let app: Express
 const prisonerNumber = 'A1234BC'
+let currentUser = authorisingUser
 beforeEach(() => {
   app = appWithAllRoutes({
     services: {
@@ -24,7 +26,7 @@ beforeEach(() => {
       contactsService,
       prisonerSearchService,
     },
-    userSupplier: () => user,
+    userSupplier: () => currentUser,
   })
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
@@ -111,7 +113,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.SUCCESSFULLY_ADDED_RESTRICTION_PAGE, {
-      who: user.username,
+      who: authorisingUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '22',
@@ -119,5 +121,20 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
         prisonerNumber: 'A1234BC',
       },
     })
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 403],
+    [authorisingUser, 200],
+  ])('GET should block access without required roles (%s, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    const contactDetails = TestData.contact()
+    contactsService.getContactName.mockResolvedValue(contactDetails)
+    currentUser = user
+    await request(app)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/${contactDetails.id}/relationship/123456/restriction/add/CONTACT_GLOBAL/success`,
+      )
+      .expect(expectedStatus)
   })
 })

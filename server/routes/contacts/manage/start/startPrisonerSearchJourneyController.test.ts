@@ -2,7 +2,7 @@ import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
-import { appWithAllRoutes, user } from '../../../testutils/appSetup'
+import { appWithAllRoutes, basicPrisonUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { ManageContactsJourney } from '../../../../@types/journeys'
@@ -18,7 +18,7 @@ let preExistingJourneysToAddToSession: Array<ManageContactsJourney>
 beforeEach(() => {
   app = appWithAllRoutes({
     services: { auditService },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       if (preExistingJourneysToAddToSession) {
@@ -41,7 +41,7 @@ describe('GET /prisoner-search', () => {
     const response = await request(app).get('/prisoner-search')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACTS_START_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {},
     })
@@ -67,7 +67,7 @@ describe('GET /prisoner-search', () => {
     const { location } = response.headers
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACTS_START_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {},
     })
@@ -95,7 +95,7 @@ describe('GET /prisoner-search', () => {
     const response = await request(app).get('/prisoner-search')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACTS_START_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {},
     })
@@ -117,7 +117,7 @@ describe('GET /prisoner-search', () => {
     const { location } = response.headers
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACTS_START_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {},
     })

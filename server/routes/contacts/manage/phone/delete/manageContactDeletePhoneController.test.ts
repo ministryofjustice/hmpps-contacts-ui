@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, flashProvider, user } from '../../../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import TestData from '../../../../testutils/testData'
@@ -39,7 +39,7 @@ const contact: ContactDetails = {
     TestData.getContactPhoneNumberDetails('HOME', 'Home', '01111 777777', 999),
     TestData.getContactPhoneNumberDetails('MOB', 'Mobile', '07878 111111', 123, '123'),
   ],
-  createdBy: user.username,
+  createdBy: basicPrisonUser.username,
   createdTime: '2024-01-01',
 }
 
@@ -51,7 +51,7 @@ beforeEach(() => {
       prisonerSearchService,
       contactsService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
   })
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
@@ -74,7 +74,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     // Then
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_DELETE_PHONE_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '987654',
@@ -174,7 +174,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
 
     // Then
-    expect(contactsService.deleteContactPhone).toHaveBeenCalledWith(contactId, 123, user, expect.any(String))
+    expect(contactsService.deleteContactPhone).toHaveBeenCalledWith(contactId, 123, basicPrisonUser, expect.any(String))
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
       'You’ve updated the contact methods for First Middle Last.',

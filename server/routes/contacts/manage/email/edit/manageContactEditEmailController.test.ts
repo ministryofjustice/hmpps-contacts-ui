@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, flashProvider, user } from '../../../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
@@ -37,13 +37,13 @@ const contact: ContactDetails = {
       contactEmailId: 6,
       contactId: 20000000,
       emailAddress: 'mr.first@example.com',
-      createdBy: user.username,
+      createdBy: basicPrisonUser.username,
       createdTime: '2024-11-15T20:00:34.498693',
-      updatedBy: user.username,
+      updatedBy: basicPrisonUser.username,
       updatedTime: '2024-11-18T11:17:15.722593',
     },
   ],
-  createdBy: user.username,
+  createdBy: basicPrisonUser.username,
   createdTime: '2024-01-01',
 }
 
@@ -54,7 +54,7 @@ beforeEach(() => {
       prisonerSearchService,
       contactsService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
   })
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
@@ -123,7 +123,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_EDIT_EMAIL_ADDRESSES_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '987654',
@@ -161,7 +161,13 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     const requestBody: UpdateEmailRequest = {
       emailAddress: 'test@example.com',
     }
-    expect(contactsService.updateContactEmail).toHaveBeenCalledWith(contactId, 6, requestBody, user, expect.any(String))
+    expect(contactsService.updateContactEmail).toHaveBeenCalledWith(
+      contactId,
+      6,
+      requestBody,
+      basicPrisonUser,
+      expect.any(String),
+    )
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
       'You’ve updated the contact methods for First Middle Last.',

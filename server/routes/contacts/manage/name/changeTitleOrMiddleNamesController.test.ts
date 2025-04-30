@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, flashProvider, user } from '../../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { mockedReferenceData, STUBBED_TITLE_OPTIONS } from '../../../testutils/stubReferenceData'
 import TestData from '../../../testutils/testData'
@@ -38,7 +38,7 @@ beforeEach(() => {
       prisonerSearchService,
       contactsService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
   })
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
@@ -109,7 +109,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.UPDATE_NAME_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '99',
@@ -217,7 +217,12 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       middleNames: 'mid',
     }
 
-    expect(contactsService.updateContactById).toHaveBeenCalledWith(contactId, expectedRequest, user, expect.any(String))
+    expect(contactsService.updateContactById).toHaveBeenCalledWith(
+      contactId,
+      expectedRequest,
+      basicPrisonUser,
+      expect.any(String),
+    )
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
       'You’ve updated the personal information for First Mid Last.',

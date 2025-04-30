@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import createError from 'http-errors'
-import { appWithAllRoutes, user } from '../routes/testutils/appSetup'
+import { appWithAllRoutes, basicPrisonUser } from '../routes/testutils/appSetup'
 import { Page } from '../services/auditService'
 import TestData from '../routes/testutils/testData'
 import { MockedService } from '../testutils/mockedServices'
@@ -58,7 +58,7 @@ describe('auditPageViewMiddleware', () => {
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CONTACT_DETAILS_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '1',
@@ -79,7 +79,7 @@ describe('auditPageViewMiddleware', () => {
     expect(response.status).toEqual(404)
     expect(auditService.logPageView).not.toHaveBeenCalled()
     expect(auditService.logAuditEvent).toHaveBeenCalledWith({
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         prisonNumber: 'A1234BC',
@@ -102,7 +102,7 @@ describe('auditPageViewMiddleware', () => {
     expect(response.status).toEqual(500)
     expect(auditService.logPageView).not.toHaveBeenCalled()
     expect(auditService.logAuditEvent).toHaveBeenCalledWith({
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         prisonNumber: 'A1234BC',

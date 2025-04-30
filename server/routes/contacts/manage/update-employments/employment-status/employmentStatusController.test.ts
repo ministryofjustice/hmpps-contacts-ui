@@ -3,7 +3,7 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes } from '../../../../testutils/appSetup'
+import { appWithAllRoutes, basicPrisonUser } from '../../../../testutils/appSetup'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { UpdateEmploymentsJourney } from '../../../../../@types/journeys'
@@ -118,7 +118,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/empl
 
     // Then
     expect(auditService.logPageView).toHaveBeenCalledWith('MANAGE_CONTACT_EMPLOYMENT_STATUS_PAGE', {
-      who: 'user1',
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '1',

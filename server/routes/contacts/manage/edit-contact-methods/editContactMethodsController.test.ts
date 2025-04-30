@@ -3,7 +3,7 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { Cheerio, CheerioAPI } from 'cheerio'
 import { Element } from 'domhandler'
-import { appWithAllRoutes, user } from '../../../testutils/appSetup'
+import { appWithAllRoutes, basicPrisonUser } from '../../../testutils/appSetup'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { Page } from '../../../../services/auditService'
@@ -54,7 +54,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
     )
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.EDIT_CONTACT_METHODS_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '1',
@@ -62,7 +62,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         prisonerNumber: 'A1234BC',
       },
     })
-    expect(contactsService.getContact).toHaveBeenCalledWith(1, user)
+    expect(contactsService.getContact).toHaveBeenCalledWith(1, basicPrisonUser)
   })
 
   it('should have correct navigation', async () => {

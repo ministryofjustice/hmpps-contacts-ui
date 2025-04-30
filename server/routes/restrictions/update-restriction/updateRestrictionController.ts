@@ -12,6 +12,7 @@ import { FLASH_KEY__SUCCESS_BANNER } from '../../../middleware/setUpSuccessNotif
 import Urls from '../../urls'
 import { RestrictionClass } from '../../../@types/journeys'
 import { PrisonerContactRestrictionDetails } from '../../../@types/contactsApiClient'
+import Permission from '../../../enumeration/permission'
 
 export default class UpdateRestrictionController implements PageHandler {
   constructor(
@@ -21,6 +22,8 @@ export default class UpdateRestrictionController implements PageHandler {
   ) {}
 
   public PAGE_NAME = Page.UPDATE_RESTRICTION_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_RESTRICTIONS
 
   GET = async (
     req: Request<{

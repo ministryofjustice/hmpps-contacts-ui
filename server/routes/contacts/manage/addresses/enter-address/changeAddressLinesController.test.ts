@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, flashProvider, user } from '../../../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
@@ -36,7 +36,7 @@ const contact: ContactDetails = {
   firstName: 'first',
   middleNames: 'middle',
   dateOfBirth: '1980-12-10T00:00:00.000Z',
-  createdBy: user.username,
+  createdBy: basicPrisonUser.username,
   createdTime: '2024-01-01',
   addresses: [
     TestData.address({
@@ -70,7 +70,7 @@ beforeEach(() => {
       referenceDataService,
       contactsService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
   })
   contactsService.getContact.mockResolvedValue(contact)
   contactsService.getContactName.mockResolvedValue(contact)
@@ -118,7 +118,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('#countryCode').val()).toStrictEqual('ENG')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ENTER_ADDRESS_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '123456',
@@ -190,7 +190,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       property: null,
       cityCode: null,
     }
-    expect(contactsService.updateContactAddress).toHaveBeenCalledWith(expected, user, expect.any(String))
+    expect(contactsService.updateContactAddress).toHaveBeenCalledWith(expected, basicPrisonUser, expect.any(String))
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
       'You’ve updated the contact methods for First Middle Last.',

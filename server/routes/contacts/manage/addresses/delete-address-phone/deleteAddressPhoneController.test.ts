@@ -3,7 +3,7 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
-import { appWithAllRoutes, user } from '../../../../testutils/appSetup'
+import { appWithAllRoutes, basicPrisonUser } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import TestData from '../../../../testutils/testData'
@@ -51,7 +51,7 @@ beforeEach(() => {
       prisonerSearchService,
       referenceDataService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.addressJourneys = {}
@@ -96,7 +96,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('[data-qa=address-reference]').first().html()!.trim()).toMatch(/<strong>Address:<\/strong><br>\s+?England/)
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Yes, delete phone number')
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.DELETE_ADDRESS_PHONE_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '123456',

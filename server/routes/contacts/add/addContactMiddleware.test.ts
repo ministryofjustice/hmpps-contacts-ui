@@ -2,7 +2,7 @@ import { Request as ExpressRequest, Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
 import { SessionData } from 'express-session'
 import { ensureInAddContactJourney } from './addContactMiddleware'
-import { user } from '../../testutils/appSetup'
+import { basicPrisonUser } from '../../testutils/appSetup'
 
 type Request = ExpressRequest<{ journeyId: string; prisonerNumber: string }>
 
@@ -17,7 +17,7 @@ describe('createContactMiddleware', () => {
         params: { journeyId, prisonerNumber },
         session: {} as Partial<SessionData>,
       } as unknown as Request
-      res = { redirect: jest.fn(), locals: { user } } as unknown as Response
+      res = { redirect: jest.fn(), locals: { user: basicPrisonUser } } as unknown as Response
     })
 
     it('should proceed if the journey is in the session and update the last touched date', () => {

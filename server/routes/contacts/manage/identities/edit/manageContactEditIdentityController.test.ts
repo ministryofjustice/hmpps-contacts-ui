@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, flashProvider, user } from '../../../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import TestData from '../../../../testutils/testData'
@@ -39,7 +39,7 @@ const contact: ContactDetails = {
     TestData.getContactIdentityDetails('PASS', 'Passport number', '425362965', 'UK passport office', 2, true),
     TestData.getContactIdentityDetails('NINO', 'National insurance number', '06/614465M', 'UK', 3, true),
   ],
-  createdBy: user.username,
+  createdBy: basicPrisonUser.username,
   createdTime: '2024-01-01',
 }
 
@@ -51,7 +51,7 @@ beforeEach(() => {
       prisonerSearchService,
       contactsService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
   })
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
@@ -126,7 +126,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_EDIT_IDENTITY_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '987654',
@@ -167,7 +167,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     expect(contactsService.updateContactIdentity).toHaveBeenCalledWith(
       contactId,
       999,
-      user,
+      basicPrisonUser,
       expect.any(String),
       'MOB',
       '123456789',
@@ -195,7 +195,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     expect(contactsService.updateContactIdentity).toHaveBeenCalledWith(
       contactId,
       999,
-      user,
+      basicPrisonUser,
       expect.any(String),
       'MOB',
       '123456789',

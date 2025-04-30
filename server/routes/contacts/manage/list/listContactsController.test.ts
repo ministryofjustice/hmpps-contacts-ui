@@ -3,7 +3,7 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { Cheerio, CheerioAPI } from 'cheerio'
 import { Element } from 'domhandler'
-import { appWithAllRoutes, user } from '../../../testutils/appSetup'
+import { appWithAllRoutes, basicPrisonUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { MockedService } from '../../../../testutils/mockedServices'
 import TestData from '../../../testutils/testData'
@@ -52,7 +52,7 @@ beforeEach(() => {
       prisonerSearchService,
       contactsService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
   })
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
 })
@@ -114,7 +114,7 @@ describe('listContactsController', () => {
       // Then
       expect(response.status).toEqual(200)
       expect(auditService.logPageView).toHaveBeenCalledWith(Page.LIST_CONTACTS_PAGE, {
-        who: user.username,
+        who: basicPrisonUser.username,
         correlationId: expect.any(String),
         details: {
           prisonerNumber: 'A1234BC',
@@ -575,7 +575,7 @@ describe('listContactsController', () => {
         prisonerNumber,
         expectedFilter,
         expectedPagination,
-        user,
+        basicPrisonUser,
       )
     })
 
@@ -644,14 +644,14 @@ describe('listContactsController', () => {
         prisonerNumber,
         { active: true },
         { page: 0, size: 10, sort: expectDefaultSort },
-        user,
+        basicPrisonUser,
       )
       expect(contactsService.filterPrisonerContacts).toHaveBeenNthCalledWith(
         2,
         prisonerNumber,
         {},
         { page: 0, size: 1 },
-        user,
+        basicPrisonUser,
       )
     })
 
@@ -687,14 +687,14 @@ describe('listContactsController', () => {
         prisonerNumber,
         { active: true, relationshipType: 'S' },
         { page: 0, size: 10, sort: expectDefaultSort },
-        user,
+        basicPrisonUser,
       )
       expect(contactsService.filterPrisonerContacts).toHaveBeenNthCalledWith(
         2,
         prisonerNumber,
         {},
         { page: 0, size: 1 },
-        user,
+        basicPrisonUser,
       )
     })
 
@@ -733,14 +733,14 @@ describe('listContactsController', () => {
         prisonerNumber,
         { active: true },
         { page: 0, size: 10, sort: expectDefaultSort },
-        user,
+        basicPrisonUser,
       )
       expect(contactsService.filterPrisonerContacts).toHaveBeenNthCalledWith(
         2,
         prisonerNumber,
         {},
         { page: 0, size: 1 },
-        user,
+        basicPrisonUser,
       )
     })
 
@@ -786,14 +786,14 @@ describe('listContactsController', () => {
         prisonerNumber,
         { active: true, emergencyContact: true },
         { page: 0, size: 10, sort: expectDefaultSort },
-        user,
+        basicPrisonUser,
       )
       expect(contactsService.filterPrisonerContacts).toHaveBeenNthCalledWith(
         2,
         prisonerNumber,
         {},
         { page: 0, size: 1 },
-        user,
+        basicPrisonUser,
       )
     })
   })

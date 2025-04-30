@@ -3,7 +3,7 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
-import { appWithAllRoutes, flashProvider, user } from '../../../../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../../../testutils/appSetup'
 import { Page } from '../../../../../../services/auditService'
 import { mockedReferenceData } from '../../../../../testutils/stubReferenceData'
 import TestData from '../../../../../testutils/testData'
@@ -42,7 +42,7 @@ const contact: ContactDetails = {
   firstName: 'first',
   middleNames: 'middle',
   dateOfBirth: '1980-12-10T00:00:00.000Z',
-  createdBy: user.username,
+  createdBy: basicPrisonUser.username,
   createdTime: '2024-01-01',
 }
 
@@ -72,7 +72,7 @@ beforeEach(() => {
       prisonerSearchService,
       contactsService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.changeRelationshipTypeJourneys = {}
@@ -166,7 +166,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(auditService.logPageView).toHaveBeenCalledWith(
       Page.CHANGE_RELATIONSHIP_SELECT_NEW_RELATIONSHIP_TO_PRISONER_PAGE,
       {
-        who: user.username,
+        who: basicPrisonUser.username,
         correlationId: expect.any(String),
         details: {
           contactId: '123',
@@ -214,7 +214,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     expect(contactsService.updateContactRelationshipById).toHaveBeenCalledWith(
       prisonerContactId,
       expected,
-      user,
+      basicPrisonUser,
       expect.any(String),
     )
     expect(flashProvider).toHaveBeenCalledWith(

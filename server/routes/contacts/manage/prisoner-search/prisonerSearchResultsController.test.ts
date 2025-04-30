@@ -3,7 +3,7 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, flashProvider, user } from '../../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { PaginationRequest, Prisoner } from '../../../../data/prisonerOffenderSearchTypes'
 import logger from '../../../../../logger'
@@ -26,7 +26,7 @@ beforeEach(() => {
       auditService,
       prisonerSearchService,
     },
-    userSupplier: () => user,
+    userSupplier: () => basicPrisonUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.activeCaseLoadId = 'HEI'
@@ -162,7 +162,7 @@ describe('GET /contacts/manage/prisoner-search-results', () => {
     expect($('[data-qa=prisoner-A1234BC-name]').text().trim()).toStrictEqual('Last, First')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.PRISONER_SEARCH_RESULTS_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {},
     })
@@ -170,7 +170,7 @@ describe('GET /contacts/manage/prisoner-search-results', () => {
       'test',
       'HEI',
       { page: 0, size: 20 } as PaginationRequest,
-      user,
+      basicPrisonUser,
     )
   })
 
@@ -188,7 +188,7 @@ describe('GET /contacts/manage/prisoner-search-results', () => {
     expect(response.text).toContain('There are no results for this name or number at Hewell')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.PRISONER_SEARCH_RESULTS_PAGE, {
-      who: user.username,
+      who: basicPrisonUser.username,
       correlationId: expect.any(String),
       details: {},
     })
@@ -197,7 +197,7 @@ describe('GET /contacts/manage/prisoner-search-results', () => {
       'test',
       'HEI',
       { page: 0, size: 20 } as PaginationRequest,
-      user,
+      basicPrisonUser,
     )
   })
 

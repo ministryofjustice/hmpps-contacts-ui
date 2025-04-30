@@ -4,11 +4,14 @@ import { PageHandler } from '../../../interfaces/pageHandler'
 import { ContactsService } from '../../../services'
 import { ContactNames, RestrictionClass } from '../../../@types/journeys'
 import { ContactNameDetails } from '../../../@types/contactsApiClient'
+import Permission from '../../../enumeration/permission'
 
 export default class SuccessfullyAddedRestrictionController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
 
   public PAGE_NAME = Page.SUCCESSFULLY_ADDED_RESTRICTION_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_RESTRICTIONS
 
   GET = async (
     req: Request<{

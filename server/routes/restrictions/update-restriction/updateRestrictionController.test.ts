@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, flashProvider, user } from '../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser, flashProvider } from '../../testutils/appSetup'
 import { Page } from '../../../services/auditService'
 import { mockedReferenceData } from '../../testutils/stubReferenceData'
 import TestData from '../../testutils/testData'
@@ -14,6 +14,7 @@ import {
   PrisonerContactRestrictionDetails,
   PrisonerContactRestrictionsResponse,
 } from '../../../@types/contactsApiClient'
+import { HmppsUser } from '../../../interfaces/hmppsUser'
 
 jest.mock('../../../services/auditService')
 jest.mock('../../../services/referenceDataService')
@@ -47,9 +48,11 @@ const contact: ContactDetails = {
   firstName: 'first',
   middleNames: 'middle',
   dateOfBirth: '1980-12-10T00:00:00.000Z',
-  createdBy: user.username,
+  createdBy: basicPrisonUser.username,
   createdTime: '2024-01-01',
 }
+
+let currentUser = authorisingUser
 
 beforeEach(() => {
   app = appWithAllRoutes({
@@ -60,7 +63,7 @@ beforeEach(() => {
       restrictionsService,
       contactsService,
     },
-    userSupplier: () => user,
+    userSupplier: () => currentUser,
   })
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
@@ -176,7 +179,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.UPDATE_RESTRICTION_PAGE, {
-      who: user.username,
+      who: authorisingUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '123',
@@ -204,6 +207,19 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     expect($('#expiryDate').val()).toStrictEqual('never')
     expect($('#comments').val()).toStrictEqual('changed comments')
   })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 403],
+    [authorisingUser, 200],
+  ])('GET should block access without required roles (%s, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    await request(app)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/CONTACT_GLOBAL/enter-restriction/${restrictionId}`,
+      )
+      .expect(expectedStatus)
+  })
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/update/:restrictionClass/enter-restriction/:restrictionId', () => {
@@ -228,7 +244,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
       prisonerContactId,
       restrictionId,
       form,
-      user,
+      authorisingUser,
       expect.any(String),
     )
     expect(flashProvider).toHaveBeenCalledWith(
@@ -258,7 +274,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
       contactId,
       restrictionId,
       form,
-      user,
+      authorisingUser,
       expect.any(String),
     )
     expect(flashProvider).toHaveBeenCalledWith(
@@ -283,4 +299,27 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
         )
     },
   )
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 403],
+    [authorisingUser, 302],
+  ])('POST should block access without required roles (%s, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    restrictionsService.updateContactGlobalRestriction.mockResolvedValue({} as ContactRestrictionDetails)
+    contactsService.getContactName.mockResolvedValue(contact)
+    const form: RestrictionSchemaType = {
+      type: 'BAN',
+      startDate: '1/2/2024',
+      expiryDate: '2/3/2025',
+      comments: 'some comments',
+    }
+    await request(app)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/update/CONTACT_GLOBAL/enter-restriction/${restrictionId}`,
+      )
+      .type('form')
+      .send(form)
+      .expect(expectedStatus)
+  })
 })
