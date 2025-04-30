@@ -48,7 +48,13 @@ export default function createApp(services: Services): express.Application {
   nunjucksSetup(app)
   app.get('*any', auditPageViewMiddleware(services.auditService))
   app.use(setUpAuthentication())
-  app.use(authorisationMiddleware([AuthorisedRoles.ROLE_PRISON]))
+  app.use(
+    authorisationMiddleware([
+      AuthorisedRoles.ROLE_PRISON,
+      AuthorisedRoles.ROLE_CONTACTS_ADMINISTRATOR,
+      AuthorisedRoles.ROLE_CONTACTS_AUTHORISER,
+    ]),
+  )
   app.use(setUpCsrf())
   app.get(
     '*any',

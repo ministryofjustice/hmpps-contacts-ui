@@ -7,4 +7,4 @@ interface Navigation {
 
 type BreadcrumbType = 'DPS_HOME' | 'DPS_PROFILE' | 'PRISONER_CONTACTS'
 
-export { Navigation, BreadcrumbType }
+export type { Navigation, BreadcrumbType }

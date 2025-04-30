@@ -48,7 +48,7 @@ describe('addRestrictionMiddleware', () => {
         restrictionClass,
         contactNames: { lastName: 'Last', firstName: 'First' },
       }
-      ensureInAddRestrictionJourney()(req, res, next)
+      ensureInAddRestrictionJourney(req, res, next)
       expect(next).toHaveBeenCalledTimes(1)
       expect(new Date(req.session.addRestrictionJourneys[journeyId].lastTouched).getTime()).toBeGreaterThan(
         lastTouchedBeforeCall.getTime(),
@@ -57,14 +57,14 @@ describe('addRestrictionMiddleware', () => {
     it('should return not found if the journey is not in the session', () => {
       status.mockReturnValue(res)
       req.session.addRestrictionJourneys = {}
-      ensureInAddRestrictionJourney()(req, res, next)
+      ensureInAddRestrictionJourney(req, res, next)
       expect(next).toHaveBeenCalledTimes(0)
       expect(status).toHaveBeenCalledWith(404)
       expect(render).toHaveBeenCalledWith('pages/errors/notFound')
     })
     it('should return not found if no journeys created at all', () => {
       status.mockReturnValue(res)
-      ensureInAddRestrictionJourney()(req, res, next)
+      ensureInAddRestrictionJourney(req, res, next)
       expect(next).toHaveBeenCalledTimes(0)
       expect(status).toHaveBeenCalledWith(404)
       expect(render).toHaveBeenCalledWith('pages/errors/notFound')
