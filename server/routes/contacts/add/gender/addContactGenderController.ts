@@ -21,7 +21,7 @@ export default class AddContactGenderController implements PageHandler {
       genderOptions,
       isNewContact: true,
       gender: res.locals?.formResponses?.['gender'] ?? journey?.gender,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
     }
     res.render('pages/contacts/manage/contactDetails/manageGender', view)
   }
@@ -38,8 +38,9 @@ export default class AddContactGenderController implements PageHandler {
   ): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
     const { body } = req
     journey.gender = body.gender
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
   }
 }

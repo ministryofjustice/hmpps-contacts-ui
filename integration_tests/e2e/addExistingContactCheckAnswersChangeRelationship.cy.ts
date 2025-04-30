@@ -8,7 +8,6 @@ import ContactConfirmationPage from '../pages/contactConfirmationPage'
 import AddContactSuccessPage from '../pages/addContactSuccessPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import RelationshipCommentsPage from '../pages/contact-details/relationship/relationshipCommentsPage'
-import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
 import SelectEmergencyContactOrNextOfKinPage from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
 
 context('Add Existing Contact Check Answers', () => {
@@ -30,7 +29,7 @@ context('Add Existing Contact Check Answers', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
-    cy.task('stubSignIn', { roles: ['PRISON'] })
+    cy.task('stubSignIn', { roles: ['PRISON', 'CONTACTS_ADMIN'] })
     cy.task('stubTitlesReferenceData')
     cy.task('stubRelationshipReferenceData')
     cy.task('stubOfficialRelationshipReferenceData')
@@ -85,8 +84,6 @@ context('Add Existing Contact Check Answers', () => {
       .selectRelationship('MOT')
       .continueTo(SelectEmergencyContactOrNextOfKinPage, 'Existing Contact', 'John Smith', true) //
       .selectIsEmergencyContactOrNextOfKin('NOK')
-      .continueTo(SelectApprovedVisitorPage, 'Existing Contact', 'John Smith', true) //
-      .selectIsApprovedVisitor('NO')
       .continueTo(RelationshipCommentsPage, 'Existing Contact', 'John Smith', true) //
       .enterComments('Some comments about the relationship')
       .continueTo(LinkExistingContactCYAPage) //

@@ -11,6 +11,7 @@ export default class CreateContactEnterDobController implements PageHandler {
   GET = async (req: Request<{ journeyId: string }>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
     const view = {
       isNewContact: true,
       contact: journey.names,
@@ -18,7 +19,7 @@ export default class CreateContactEnterDobController implements PageHandler {
       day: res.locals?.formResponses?.['day'] ?? journey?.dateOfBirth?.day,
       month: res.locals?.formResponses?.['month'] ?? journey?.dateOfBirth?.month,
       year: res.locals?.formResponses?.['year'] ?? journey?.dateOfBirth?.year,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
     }
     res.render('pages/contacts/manage/contactDetails/manageDob', view)
   }
@@ -26,6 +27,7 @@ export default class CreateContactEnterDobController implements PageHandler {
   POST = async (req: Request<PrisonerJourneyParams, unknown, OptionalDobSchemaType>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
     const { day, month, year } = req.body
     if (day && month && year) {
       journey.dateOfBirth = {
@@ -39,6 +41,6 @@ export default class CreateContactEnterDobController implements PageHandler {
         isKnown: 'NO',
       }
     }
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
   }
 }

@@ -9,7 +9,6 @@ import CreateContactSuccessPage from '../pages/createContactSuccessPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
 import SelectDomesticStatusPage from '../pages/contact-details/additional-information/selectDomesticStatusPage'
-import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
 import SelectEmergencyContactOrNextOfKinPage from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
 import ManageDobPage from '../pages/contact-details/dobPage'
 
@@ -20,7 +19,7 @@ context('Create Contact and Enter Domestic Status', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
-    cy.task('stubSignIn', { roles: ['PRISON'] })
+    cy.task('stubSignIn', { roles: ['PRISON', 'CONTACTS_ADMIN'] })
     cy.task('stubTitlesReferenceData')
     cy.task('stubPhoneTypeReferenceData')
     cy.task('stubRelationshipReferenceData')
@@ -81,10 +80,6 @@ context('Create Contact and Enter Domestic Status', () => {
 
     Page.verifyOnPage(SelectEmergencyContactOrNextOfKinPage, 'First Last', 'John Smith', true) //
       .selectIsEmergencyContactOrNextOfKin('NOK')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectApprovedVisitorPage, 'First Last', 'John Smith', true) //
-      .selectIsApprovedVisitor('NO')
       .clickContinue()
   })
 

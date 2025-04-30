@@ -10,6 +10,7 @@ export default class AddEmploymentsController implements PageHandler {
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { journeyId, prisonerNumber } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
 
     journey.pendingEmployments ??= journey.employments
     // clear search term whenever user comes back to this page
@@ -22,7 +23,7 @@ export default class AddEmploymentsController implements PageHandler {
       journeyId,
       contactNames: journey.names,
       employments: journey.pendingEmployments,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
     }
     res.render('pages/contacts/manage/employments/index', view)
   }
@@ -30,12 +31,13 @@ export default class AddEmploymentsController implements PageHandler {
   POST = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
 
     if (journey.pendingEmployments?.length) {
       journey.employments = journey.pendingEmployments
     } else {
       delete journey.employments
     }
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
   }
 }

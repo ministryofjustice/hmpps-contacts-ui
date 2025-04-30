@@ -32,7 +32,7 @@
 
       {% set identityNumbers = identityNumbers.concat([{
         key: {
-          html: item.identityTypeDescription | escape + ('<p class="unsupported-identity-hint">Cannot be changed as the document type is no longer supported in DPS and NOMIS.</p>' if showActions and item.identityTypeIsActive === false else '')
+          html: item.identityTypeDescription | escape + ('<p class="summary-card-key-hint">Cannot be changed as the document type is no longer supported in DPS and NOMIS.</p>' if showActions and item.identityTypeIsActive === false else '')
         },
         value: {
           html: item.identityValue | escape + ('<p>Issued by ' + item.issuingAuthority | escape + '</p>' if item.issuingAuthority else '')

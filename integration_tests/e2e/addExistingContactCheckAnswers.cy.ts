@@ -11,7 +11,7 @@ import RelationshipCommentsPage from '../pages/contact-details/relationship/rela
 import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
 import SelectEmergencyContactOrNextOfKinPage from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
 
-context('Add Existing Contact Check Answers', () => {
+context('Add existing contact check answers including authoriser fields', () => {
   const { prisonerNumber } = TestData.prisoner()
   const contactId = 654321
   const contact = TestData.contact({
@@ -30,7 +30,7 @@ context('Add Existing Contact Check Answers', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
-    cy.task('stubSignIn', { roles: ['PRISON'] })
+    cy.task('stubSignIn', { roles: ['PRISON', 'CONTACTS_AUTHORISER'] })
     cy.task('stubTitlesReferenceData')
     cy.task('stubRelationshipReferenceData')
     cy.task('stubOfficialRelationshipReferenceData')
@@ -125,6 +125,39 @@ context('Add Existing Contact Check Answers', () => {
           isNextOfKin: false,
           isEmergencyContact: true,
           isApprovedVisitor: false,
+          comments: 'Some comments about the relationship',
+        },
+      },
+    )
+  })
+
+  it('Can change approved to visit from check answers', () => {
+    Page.verifyOnPage(LinkExistingContactCYAPage, 'Existing Contact') //
+      .verifyShowApprovedVisitorAs('No')
+      .clickLink('Change if the contact is approved to visit the prisoner')
+
+    Page.verifyOnPage(SelectApprovedVisitorPage, 'Existing Contact', 'John Smith', true) //
+      .selectIsApprovedVisitor('YES')
+      .clickContinue()
+
+    Page.verifyOnPage(LinkExistingContactCYAPage) //
+      .verifyShowApprovedVisitorAs('Yes')
+      .continueTo(AddContactSuccessPage)
+
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: '/prisoner-contact',
+      },
+      {
+        contactId,
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipTypeCode: 'S',
+          relationshipToPrisonerCode: 'MOT',
+          isNextOfKin: true,
+          isEmergencyContact: false,
+          isApprovedVisitor: true,
           comments: 'Some comments about the relationship',
         },
       },

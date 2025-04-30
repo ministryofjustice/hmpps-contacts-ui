@@ -11,6 +11,7 @@ export default class RelationshipTypeController implements PageHandler {
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
     const view = {
       isNewContact: true,
       journey,
@@ -18,7 +19,7 @@ export default class RelationshipTypeController implements PageHandler {
         res.locals?.formResponses?.['relationshipType'] ??
         journey?.relationship?.pendingNewRelationshipType ??
         journey?.relationship?.relationshipType,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
     }
     res.render('pages/contacts/add/relationshipType', view)
   }
@@ -26,11 +27,12 @@ export default class RelationshipTypeController implements PageHandler {
   POST = async (req: Request<PrisonerJourneyParams, unknown, RelationshipTypeSchema>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
     const { body } = req
     if (!journey.relationship) {
       journey.relationship = {}
     }
     journey.relationship.pendingNewRelationshipType = body.relationshipType
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
   }
 }

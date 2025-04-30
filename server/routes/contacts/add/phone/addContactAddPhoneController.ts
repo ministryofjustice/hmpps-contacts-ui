@@ -24,7 +24,7 @@ export default class AddContactAddPhoneController implements PageHandler {
       journey,
       typeOptions: await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user),
       phones: res.locals?.formResponses?.['phones'] ?? existingPhoneNumbers,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
       isNewContact: true,
     }
     res.render('pages/contacts/manage/contactMethods/addPhone', viewModel)
@@ -33,11 +33,12 @@ export default class AddContactAddPhoneController implements PageHandler {
   POST = async (req: Request<PrisonerJourneyParams, unknown, PhonesSchemaType>, res: Response): Promise<void> => {
     const { prisonerNumber, journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
 
     const { phones, save, add, remove } = req.body
     if (save !== undefined) {
       journey.phoneNumbers = phones
-      return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
+      return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
     }
     if (add !== undefined) {
       phones.push({ type: '', phoneNumber: '', extension: '' })

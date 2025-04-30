@@ -3,11 +3,12 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, basicPrisonUser } from '../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { AddContactJourney } from '../../../../@types/journeys'
+import { HmppsUser } from '../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -20,8 +21,10 @@ let session: Partial<SessionData>
 const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 let existingJourney: AddContactJourney
+let currentUser: HmppsUser
 
 beforeEach(() => {
+  currentUser = adminUser
   existingJourney = {
     id: journeyId,
     lastTouched: new Date().toISOString(),
@@ -43,7 +46,7 @@ beforeEach(() => {
       auditService,
       prisonerSearchService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.addContactJourneys = {}
@@ -106,7 +109,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/emergency-contact-or-nex
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN, {
-      who: basicPrisonUser.username,
+      who: adminUser.username,
       correlationId: expect.any(String),
       details: {
         prisonerNumber: 'A1234BC',
@@ -138,8 +141,28 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/emergency-contact-or-nex
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/create/emergency-contact-or-next-of-kin', () => {
-  it('should pass to next page if there are no validation errors and we are not checking answers', async () => {
+  it('should pass to next page if there are no validation errors and we are not checking answers as admin user', async () => {
     // Given
+    currentUser = adminUser
+    existingJourney.relationship = { relationshipToPrisoner: 'MOT' }
+    existingJourney.isCheckingAnswers = false
+
+    // When
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`)
+      .type('form')
+      .send({ isEmergencyContactOrNextOfKin: 'NOK' })
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`)
+
+    // Then
+    const expectedRelationship = { relationshipToPrisoner: 'MOT', isEmergencyContact: false, isNextOfKin: true }
+    expect(session.addContactJourneys![journeyId]!.relationship).toStrictEqual(expectedRelationship)
+  })
+
+  it('should pass to next page if there are no validation errors and we are not checking answers as authorising user', async () => {
+    // Given
+    currentUser = authorisingUser
     existingJourney.relationship = { relationshipToPrisoner: 'MOT' }
     existingJourney.isCheckingAnswers = false
 
@@ -184,7 +207,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/emergency-contact-or-ne
       .type('form')
       .send({})
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/approved-to-visit/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`)
 
     // Then
     const expectedRelationship = {

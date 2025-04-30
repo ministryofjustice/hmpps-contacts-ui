@@ -10,9 +10,10 @@ export default class CreateContactIsStaffController implements PageHandler {
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
     const view = {
       journey,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
       isNewContact: true,
       isStaff: res.locals?.formResponses?.['isStaff'] ?? journey?.isStaff,
     }
@@ -31,8 +32,9 @@ export default class CreateContactIsStaffController implements PageHandler {
   ): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
     const { body } = req
     journey.isStaff = body.isStaff
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
   }
 }

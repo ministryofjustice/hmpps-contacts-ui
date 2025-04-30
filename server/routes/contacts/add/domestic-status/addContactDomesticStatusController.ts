@@ -21,7 +21,7 @@ export default class AddContactDomesticStatusController implements PageHandler {
       domesticStatusOptions,
       isNewContact: true,
       domesticStatusCode: res.locals?.formResponses?.['domesticStatusCode'] ?? journey?.domesticStatusCode,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
     }
     res.render('pages/contacts/manage/contactDetails/domesticStatus', view)
   }
@@ -38,8 +38,9 @@ export default class AddContactDomesticStatusController implements PageHandler {
   ): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
     const { body } = req
     journey.domesticStatusCode = body.domesticStatusCode
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
   }
 }

@@ -11,6 +11,7 @@ export default class AddContactAddEmailsController implements PageHandler {
   GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
     const existingEmails = journey.emailAddresses ?? []
     if (existingEmails.length === 0) {
       existingEmails.push({ emailAddress: '' })
@@ -19,7 +20,7 @@ export default class AddContactAddEmailsController implements PageHandler {
       isNewContact: true,
       names: journey.names,
       emails: res.locals?.formResponses?.['emails'] ?? existingEmails,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
     }
     res.render('pages/contacts/manage/contactMethods/addEmails', viewModel)
   }
@@ -30,11 +31,12 @@ export default class AddContactAddEmailsController implements PageHandler {
   ): Promise<void> => {
     const { prisonerNumber, journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
 
     const { emails, save, add, remove } = req.body
     if (save !== undefined) {
       journey.emailAddresses = emails
-      return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
+      return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
     }
 
     req.body.emails ??= [{ emailAddress: '' }]

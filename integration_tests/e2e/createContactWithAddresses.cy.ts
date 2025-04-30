@@ -17,7 +17,6 @@ import SelectAddressFlagsPage from '../pages/contact-methods/address/selectAddre
 import EnterAddressCommentsPage from '../pages/contact-methods/address/enterAddressCommentsPage'
 import ConfirmDeleteAddressPhonePage from '../pages/contact-methods/address/phone/confirmDeleteAddressPhonePage'
 import ConfirmDeleteContactAddressPage from '../pages/confirmDeleteContactAddressPage'
-import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
 import SelectEmergencyContactOrNextOfKinPage from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
 import ManageDobPage from '../pages/contact-details/dobPage'
 
@@ -28,7 +27,7 @@ context('Create Contact With Addresses', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
-    cy.task('stubSignIn', { roles: ['PRISON'] })
+    cy.task('stubSignIn', { roles: ['PRISON', 'CONTACTS_ADMIN'] })
     cy.task('stubTitlesReferenceData')
     cy.task('stubRelationshipReferenceData')
     cy.task('stubOfficialRelationshipReferenceData')
@@ -94,10 +93,6 @@ context('Create Contact With Addresses', () => {
 
     Page.verifyOnPage(SelectEmergencyContactOrNextOfKinPage, 'First Last', 'John Smith', true) //
       .selectIsEmergencyContactOrNextOfKin('NOK')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectApprovedVisitorPage, 'First Last', 'John Smith', true) //
-      .selectIsApprovedVisitor('NO')
       .clickContinue()
 
     // Can submit without entering a phone number and also go back to additional info

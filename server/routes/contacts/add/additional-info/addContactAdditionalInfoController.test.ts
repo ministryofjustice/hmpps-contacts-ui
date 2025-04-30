@@ -3,11 +3,12 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, basicPrisonUser } from '../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { AddContactJourney } from '../../../../@types/journeys'
+import { HmppsUser } from '../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -20,8 +21,10 @@ let session: Partial<SessionData>
 const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 let existingJourney: AddContactJourney
+let currentUser: HmppsUser
 
 beforeEach(() => {
+  currentUser = adminUser
   existingJourney = {
     id: journeyId,
     lastTouched: new Date().toISOString(),
@@ -49,7 +52,7 @@ beforeEach(() => {
       auditService,
       prisonerSearchService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.addContactJourneys = {}
@@ -66,7 +69,36 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:journeyId', () => {
-  it('should render enter additional info page', async () => {
+  it('should render enter additional info page for admin user', async () => {
+    // Given
+    currentUser = adminUser
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`,
+    )
+
+    // Then
+    expect(response.status).toEqual(200)
+
+    const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual('Enter additional information about the contact - Add a contact - DPS')
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
+      'Enter additional information about First Middle Last (optional)',
+    )
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back to emergency contact and next of kin')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
+    )
+    expect($('[data-qa=cancel-button]')).toHaveLength(0)
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+  })
+
+  it('should render enter additional info page for authorising user', async () => {
+    // Given
+    currentUser = authorisingUser
+
     // When
     const response = await request(app).get(
       `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`,
@@ -177,7 +209,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
 
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ENTER_ADDITIONAL_INFORMATION_PAGE, {
-      who: basicPrisonUser.username,
+      who: adminUser.username,
       correlationId: expect.any(String),
       details: {
         prisonerNumber: 'A1234BC',

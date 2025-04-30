@@ -28,7 +28,7 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
       relationshipType,
       relationshipOptions,
       journey,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
       continueButtonLabel: 'Continue',
     }
     res.render('pages/contacts/manage/contactDetails/relationship/selectRelationship', viewModel)
@@ -41,6 +41,7 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
     const { journeyId } = req.params
     const { relationship } = req.body
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
     if (!journey.relationship) {
       journey.relationship = {}
     }
@@ -48,6 +49,6 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
     journey.relationship.relationshipType = (journey.relationship.pendingNewRelationshipType ??
       journey.relationship.relationshipType)!
     delete journey.relationship.pendingNewRelationshipType
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
   }
 }

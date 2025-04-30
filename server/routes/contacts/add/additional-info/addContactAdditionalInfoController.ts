@@ -11,12 +11,14 @@ export default class AddContactAdditionalInfoController implements PageHandler {
   GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
+
     delete journey.pendingEmployments
     delete journey.pendingAddresses
     const view = {
       journey,
       caption: captionForAddContactJourney(journey),
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
     }
     res.render('pages/contacts/add/additionalInfo', view)
   }
@@ -24,6 +26,8 @@ export default class AddContactAdditionalInfoController implements PageHandler {
   POST = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
+    const { user } = res.locals
+
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
   }
 }

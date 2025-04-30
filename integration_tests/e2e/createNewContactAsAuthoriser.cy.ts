@@ -15,14 +15,14 @@ import SelectApprovedVisitorPage from '../pages/contact-details/relationship/sel
 import SelectEmergencyContactOrNextOfKinPage from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
 import ManageDobPage from '../pages/contact-details/dobPage'
 
-context('Create Contacts', () => {
+context('Create new contact as authoriser who can set visit approval', () => {
   const contactId = 654321
   const prisonerContactId = 987654
 
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
-    cy.task('stubSignIn', { roles: ['PRISON'] })
+    cy.task('stubSignIn', { roles: ['PRISON', 'CONTACTS_AUTHORISER'] })
     cy.task('stubTitlesReferenceData')
     cy.task('stubPhoneTypeReferenceData')
     cy.task('stubRelationshipReferenceData')
@@ -87,7 +87,7 @@ context('Create Contacts', () => {
       .clickContinue()
 
     Page.verifyOnPage(SelectApprovedVisitorPage, 'First Last', 'John Smith', true) //
-      .selectIsApprovedVisitor('NO')
+      .selectIsApprovedVisitor('YES')
       .clickContinue()
 
     Page.verifyOnPage(AddContactAdditionalInfoPage, 'First Last') //
@@ -125,7 +125,7 @@ context('Create Contacts', () => {
           relationshipToPrisonerCode: 'MOT',
           isNextOfKin: true,
           isEmergencyContact: false,
-          isApprovedVisitor: false,
+          isApprovedVisitor: true,
         },
       },
     )

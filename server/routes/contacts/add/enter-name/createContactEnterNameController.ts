@@ -25,7 +25,7 @@ export default class EnterNameController implements PageHandler {
       lastName: res.locals?.formResponses?.['lastName'] ?? journey?.names?.lastName,
       firstName: res.locals?.formResponses?.['firstName'] ?? journey?.names?.firstName,
       middleNames: res.locals?.formResponses?.['middleNames'] ?? journey?.names?.middleNames,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
     }
     res.render('pages/contacts/add/new/enterName', viewModel)
   }
@@ -44,7 +44,8 @@ export default class EnterNameController implements PageHandler {
     const { journeyId } = req.params
     const { title, lastName, firstName, middleNames } = req.body
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
     journey.names = { title, lastName, firstName, middleNames }
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
   }
 }

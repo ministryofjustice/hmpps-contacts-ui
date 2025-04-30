@@ -68,7 +68,7 @@ export default class ContactMatchController implements PageHandler {
       linkedPrisoners: linkedPrisoners.content,
       linkedPrisonersCount,
       isContactConfirmed: res.locals?.formResponses?.['isContactMatched'] ?? journey?.isContactMatched,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
       phoneTypeOrderDictionary: getReferenceDataOrderDictionary(
         await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user),
       ),
@@ -79,15 +79,16 @@ export default class ContactMatchController implements PageHandler {
     const { isContactMatched } = req.body
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
     journey.isContactMatched = isContactMatched
     if (journey.isContactMatched === 'YES') {
       journey.mode = 'EXISTING'
       journey.contactId = journey.matchingContactId!
-      return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
+      return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
     }
     if (journey.isContactMatched === 'NO_CREATE_NEW') {
       journey.mode = 'NEW'
-      return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
+      return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
     }
     // return to search by default which will reset the mode
     return res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/search/${journey.id}`)

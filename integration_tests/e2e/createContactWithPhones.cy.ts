@@ -10,7 +10,6 @@ import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import AddContactAdditionalInfoPage from '../pages/addContactAdditionalInfoPage'
 import AddPhonesPage from '../pages/contact-methods/addPhonesPage'
 import ConfirmDeletePhonePage from '../pages/confirmDeletePhonePage'
-import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
 import SelectEmergencyContactOrNextOfKinPage from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
 import ManageDobPage from '../pages/contact-details/dobPage'
 
@@ -21,7 +20,7 @@ context('Create Contact With Phone Numbers', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
-    cy.task('stubSignIn', { roles: ['PRISON'] })
+    cy.task('stubSignIn', { roles: ['PRISON', 'CONTACTS_ADMIN'] })
     cy.task('stubTitlesReferenceData')
     cy.task('stubRelationshipReferenceData')
     cy.task('stubOfficialRelationshipReferenceData')
@@ -83,10 +82,6 @@ context('Create Contact With Phone Numbers', () => {
 
     Page.verifyOnPage(SelectEmergencyContactOrNextOfKinPage, 'First Last', 'John Smith', true) //
       .selectIsEmergencyContactOrNextOfKin('NOK')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectApprovedVisitorPage, 'First Last', 'John Smith', true) //
-      .selectIsApprovedVisitor('NO')
       .clickContinue()
 
     // Can submit without entering a phone number and also go back to additional info

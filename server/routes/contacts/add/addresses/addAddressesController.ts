@@ -23,7 +23,7 @@ export default class AddAddressesController implements PageHandler {
       ...req.params,
       contact: journey.names,
       addresses: await formatAddresses(journey.pendingAddresses, this.referenceDataService, user),
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
     }
     res.render('pages/contacts/add/addresses/index', view)
   }
@@ -31,12 +31,13 @@ export default class AddAddressesController implements PageHandler {
   POST = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
 
     if (journey.pendingAddresses?.length) {
       journey.addresses = journey.pendingAddresses
     } else {
       delete journey.addresses
     }
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
   }
 }

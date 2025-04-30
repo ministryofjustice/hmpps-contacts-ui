@@ -11,9 +11,8 @@ import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import RelationshipCommentsPage from '../pages/contact-details/relationship/relationshipCommentsPage'
 import SelectApprovedVisitorPage from '../pages/contact-details/relationship/selectApprovedVisitorPage'
 import SelectEmergencyContactOrNextOfKinPage from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
-import CancelAddContactPage from '../pages/cancelAddContactPage'
 
-context('Add Existing Contact', () => {
+context('Add existing contact as authorising user so can set visit approval', () => {
   const { prisonerNumber } = TestData.prisoner()
   const contactId = 654321
   const prisonerContactId = 987654
@@ -34,7 +33,7 @@ context('Add Existing Contact', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
-    cy.task('stubSignIn', { roles: ['PRISON'] })
+    cy.task('stubSignIn', { roles: ['PRISON', 'CONTACTS_AUTHORISER'] })
     cy.task('stubTitlesReferenceData')
     cy.task('stubRelationshipReferenceData')
     cy.task('stubOfficialRelationshipReferenceData')
@@ -214,92 +213,7 @@ context('Add Existing Contact', () => {
     )
   })
 
-  it('Can add an official contact', () => {
-    cy.task('stubGetContactById', {
-      id: contactId,
-      firstName: 'Existing',
-      lastName: 'Contact',
-    })
-
-    Page.verifyOnPage(SearchContactPage) //
-      .clickTheContactLink(contactId)
-
-    Page.verifyOnPage(ContactConfirmationPage, 'Existing Contact', 'John Smith') //
-      .selectIsTheRightPersonYesRadio()
-      .clickContinue()
-
-    Page.verifyOnPage(SelectRelationshipTypePage, 'Existing Contact', 'John Smith') //
-      .selectRelationshipType('O')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact', 'John Smith') //
-      .selectRelationship('DR')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectEmergencyContactOrNextOfKinPage, 'Existing Contact', 'John Smith', true) //
-      .selectIsEmergencyContactOrNextOfKin('EC')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectApprovedVisitorPage, 'Existing Contact', 'John Smith', true) //
-      .selectIsApprovedVisitor('YES')
-      .clickContinue()
-
-    Page.verifyOnPage(RelationshipCommentsPage, 'Existing Contact', 'John Smith', true) //
-      .clickContinue()
-
-    Page.verifyOnPage(LinkExistingContactCYAPage) //
-      .verifyShowsNameAs('Existing Contact (654321)')
-      .verifyShowRelationshipAs('Doctor')
-      .verifyShowIsEmergencyContactAs('Yes')
-      .verifyShowIsNextOfKinAs('No')
-      .clickContinue()
-
-    Page.verifyOnPage(AddContactSuccessPage)
-
-    cy.verifyLastAPICall(
-      {
-        method: 'POST',
-        urlPath: `/prisoner-contact`,
-      },
-      {
-        contactId,
-        relationship: {
-          prisonerNumber: 'A1234BC',
-          relationshipTypeCode: 'O',
-          relationshipToPrisonerCode: 'DR',
-          isNextOfKin: false,
-          isEmergencyContact: true,
-          isApprovedVisitor: true,
-        },
-      },
-    )
-  })
-
-  it('Should require selection of contact relationship', () => {
-    cy.task('stubGetContactById', {
-      id: contactId,
-      firstName: 'Existing',
-      lastName: 'Contact',
-    })
-
-    Page.verifyOnPage(SearchContactPage) //
-      .clickTheContactLink(contactId)
-
-    Page.verifyOnPage(ContactConfirmationPage, 'Existing Contact', 'John Smith') //
-      .selectIsTheRightPersonYesRadio()
-      .clickContinue()
-
-    Page.verifyOnPage(SelectRelationshipTypePage, 'Existing Contact', 'John Smith') //
-      .selectRelationshipType('S')
-      .clickContinue()
-
-    const selectRelationshipPage = Page.verifyOnPage(SelectRelationshipPage, 'Existing Contact', 'John Smith')
-    selectRelationshipPage.clickContinue()
-
-    selectRelationshipPage.hasFieldInError('relationship', 'Select the contact’s relationship to the prisoner')
-  })
-
-  it('Can navigate all the way back to search from relationship comments', () => {
+  it('Can navigate all the way back to search from CYA', () => {
     cy.task('stubGetContactById', {
       id: contactId,
       firstName: 'Existing',
@@ -332,98 +246,5 @@ context('Add Existing Contact', () => {
       .backTo(ContactConfirmationPage, 'Existing Contact', 'John Smith')
       .backTo(SearchContactPage)
       .verifyShowsNameAs('Contact, Existing')
-  })
-
-  it('Can add a deceased contact and show the deceased date on check answers page', () => {
-    cy.task('stubGetContactById', {
-      id: contactId,
-      firstName: 'Deceased',
-      lastName: 'Contact',
-      dateOfBirth: '1990-01-14',
-      deceasedDate: '2020-12-25',
-    })
-
-    Page.verifyOnPage(SearchContactPage) //
-      .clickTheContactLink(contactId)
-
-    Page.verifyOnPage(ContactConfirmationPage, 'Deceased Contact', 'John Smith') //
-      .selectIsTheRightPersonYesRadio()
-      .clickContinue()
-
-    Page.verifyOnPage(SelectRelationshipTypePage, 'Deceased Contact', 'John Smith') //
-      .selectRelationshipType('S')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectRelationshipPage, 'Deceased Contact', 'John Smith') //
-      .selectRelationship('MOT')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectEmergencyContactOrNextOfKinPage, 'Deceased Contact', 'John Smith', true) //
-      .selectIsEmergencyContactOrNextOfKin('NOK')
-      .clickContinue()
-
-    Page.verifyOnPage(SelectApprovedVisitorPage, 'Deceased Contact', 'John Smith', true) //
-      .selectIsApprovedVisitor('YES')
-      .clickContinue()
-
-    Page.verifyOnPage(RelationshipCommentsPage, 'Deceased Contact', 'John Smith', true) //
-      .clickContinue()
-
-    Page.verifyOnPage(LinkExistingContactCYAPage) //
-      .verifyShowsNameAs('Deceased Contact (654321)')
-      .continueTo(AddContactSuccessPage)
-
-    cy.verifyLastAPICall(
-      {
-        method: 'POST',
-        urlPath: `/prisoner-contact`,
-      },
-      {
-        contactId,
-        relationship: {
-          prisonerNumber: 'A1234BC',
-          relationshipTypeCode: 'S',
-          relationshipToPrisonerCode: 'MOT',
-          isNextOfKin: true,
-          isEmergencyContact: false,
-          isApprovedVisitor: true,
-        },
-      },
-    )
-  })
-
-  it('Cancelling from check answers prompts for confirmation', () => {
-    cy.task('stubGetContactById', {
-      id: contactId,
-      firstName: 'Existing',
-      lastName: 'Contact',
-      dateOfBirth: '1990-01-14',
-      employments: [],
-    })
-
-    Page.verifyOnPage(SearchContactPage) //
-      .clickTheContactLink(contactId)
-
-    Page.verifyOnPage(ContactConfirmationPage, 'Existing Contact', 'John Smith') //
-      .selectIsTheRightPersonYesRadio()
-      .continueTo(SelectRelationshipTypePage, 'Existing Contact', 'John Smith') //
-      .selectRelationshipType('S')
-      .continueTo(SelectRelationshipPage, 'Existing Contact', 'John Smith') //
-      .selectRelationship('MOT')
-      .continueTo(SelectEmergencyContactOrNextOfKinPage, 'Existing Contact', 'John Smith', true) //
-      .selectIsEmergencyContactOrNextOfKin('NONE')
-      .continueTo(SelectApprovedVisitorPage, 'Existing Contact', 'John Smith', true) //
-      .selectIsApprovedVisitor('YES')
-      .continueTo(RelationshipCommentsPage, 'Existing Contact', 'John Smith', true) //
-      .enterComments('Some comments about the relationship')
-      .continueTo(LinkExistingContactCYAPage) //
-      .clickLink('Cancel')
-
-    Page.verifyOnPage(CancelAddContactPage, 'Existing Contact') //
-      .clickButtonTo('No, return to check answers', LinkExistingContactCYAPage)
-      .clickLinkTo('Cancel', CancelAddContactPage, 'Existing Contact')
-      .clickButton('Yes, cancel')
-
-    Page.verifyOnPage(ListContactsPage, 'John Smith')
   })
 })
