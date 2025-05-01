@@ -6,11 +6,14 @@ import ReferenceDataService from '../../../../services/referenceDataService'
 import { PhonesSchemaType } from '../../manage/addresses/add-address-phone/AddAddressPhonesSchema'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
 import { PrisonerJourneyParams } from '../../../../@types/journeys'
+import Permission from '../../../../enumeration/permission'
 
 export default class AddContactAddPhoneController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
   public PAGE_NAME = Page.ADD_CONTACT_ADD_PHONE_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params

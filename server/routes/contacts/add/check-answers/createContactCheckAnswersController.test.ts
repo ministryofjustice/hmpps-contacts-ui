@@ -3,7 +3,7 @@ import request from 'supertest'
 import { v4 as uuidv4 } from 'uuid'
 import { SessionData } from 'express-session'
 import * as cheerio from 'cheerio'
-import { adminUser, appWithAllRoutes, authorisingUser } from '../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../testutils/stubReferenceData'
@@ -451,6 +451,17 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 200],
+    [authorisingUser, 200],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    await request(app)
+      .get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+      .expect(expectedStatus)
+  })
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId', () => {
@@ -506,5 +517,26 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
       .type('form')
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    const created = {
+      createdContact: {
+        id: 123456,
+      },
+      createdRelationship: {
+        prisonerContactId: 654321,
+      },
+    } as ContactCreationResult
+    contactsService.createContact.mockResolvedValue(created)
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+      .type('form')
+      .expect(expectedStatus)
   })
 })

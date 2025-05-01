@@ -3,12 +3,19 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../../testutils/appSetup'
+import {
+  adminUser,
+  appWithAllRoutes,
+  authorisingUser,
+  basicPrisonUser,
+  flashProvider,
+} from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import { AddContactJourney } from '../../../../../@types/journeys'
+import { HmppsUser } from '../../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -22,8 +29,10 @@ let session: Partial<SessionData>
 const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 let existingJourney: AddContactJourney
+let currentUser: HmppsUser
 
 beforeEach(() => {
+  currentUser = adminUser
   existingJourney = {
     id: journeyId,
     lastTouched: new Date().toISOString(),
@@ -84,7 +93,7 @@ beforeEach(() => {
       prisonerSearchService,
       referenceDataService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.addContactJourneys = {}
@@ -124,7 +133,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/new/phone/crea
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
     expect($('[data-qa=address-reference]').first().html()!.trim()).toMatch(/<strong>Address:<\/strong><br>\s+?England/)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_ADD_ADDRESS_PHONE_PAGE, {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         prisonerNumber: 'A1234BC',
@@ -191,6 +200,17 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/new/phone/crea
     expect($('[data-qa=phones-0-phoneNumber]').val()).toStrictEqual('abc')
     expect($('[data-qa=phones-0-extension]').val()).toStrictEqual('')
   })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 200],
+    [authorisingUser, 200],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    await request(app)
+      .get(`/prisoner/${prisonerNumber}/contacts/create/addresses/new/phone/create/${journeyId}`)
+      .expect(expectedStatus)
+  })
 })
 
 describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/phone/create/:journeyId`, () => {
@@ -217,7 +237,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/
       /<strong>Address:<\/strong><br>\n\s+?1a<br>\s+?My block<br>\s+?A street<br>\s+?Downtown<br>\s+?Exeter<br>\s+?Devon<br>\s+?PC1 D3<br>\s+?England/,
     )
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_ADD_ADDRESS_PHONE_PAGE, {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         prisonerNumber: 'A1234BC',
@@ -409,5 +429,25 @@ describe(`POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex
       )
       expect(flashProvider).not.toHaveBeenCalledWith('validationErrors', expect.anything())
     })
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    const form = {
+      save: '',
+      phones: [
+        { type: '', phoneNumber: '', extension: '' },
+        { type: '', phoneNumber: '', extension: '' },
+      ],
+    }
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/addresses/new/phone/create/${journeyId}`)
+      .type('form')
+      .send(form)
+      .expect(expectedStatus)
   })
 })

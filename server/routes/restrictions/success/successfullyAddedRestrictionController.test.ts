@@ -127,7 +127,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     [basicPrisonUser, 403],
     [adminUser, 403],
     [authorisingUser, 200],
-  ])('GET should block access without required roles (%s, %s)', async (user: HmppsUser, expectedStatus: number) => {
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
     const contactDetails = TestData.contact()
     contactsService.getContactName.mockResolvedValue(contactDetails)
     currentUser = user

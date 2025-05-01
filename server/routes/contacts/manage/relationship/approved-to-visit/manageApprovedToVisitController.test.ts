@@ -90,7 +90,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     [basicPrisonUser, 403],
     [adminUser, 403],
     [authorisingUser, 200],
-  ])('GET should block access without required roles (%s, %s)', async (user: HmppsUser, expectedStatus: number) => {
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
     currentUser = user
     const contactDetails = TestData.contact()
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
@@ -151,7 +151,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     [basicPrisonUser, 403],
     [adminUser, 403],
     [authorisingUser, 302],
-  ])('POST should block access without required roles (%s, %s)', async (user: HmppsUser, expectedStatus: number) => {
+  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
     currentUser = user
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.getContactName.mockResolvedValue(TestData.contact())

@@ -3,12 +3,13 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, basicPrisonUser } from '../../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import { AddContactJourney } from '../../../../../@types/journeys'
+import { HmppsUser } from '../../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -24,8 +25,10 @@ let session: Partial<SessionData>
 const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 let existingJourney: AddContactJourney
+let currentUser: HmppsUser
 
 beforeEach(() => {
+  currentUser = adminUser
   existingJourney = {
     id: journeyId,
     lastTouched: new Date().toISOString(),
@@ -68,7 +71,7 @@ beforeEach(() => {
       referenceDataService,
       organisationsService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.addContactJourneys = {}
@@ -225,55 +228,81 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/employments/:employmentI
     expect($('button:contains("Continue")').text()).toBeTruthy()
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_CHECK_EMPLOYER_PAGE, {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         prisonerNumber: 'A1234BC',
       },
     })
   })
-})
 
-it('should render result with minimal mandatory data', async () => {
-  // Given
-  existingJourney.newEmployment = { organisationId: 222 }
+  it('should render result with minimal mandatory data', async () => {
+    // Given
+    existingJourney.newEmployment = { organisationId: 222 }
 
-  organisationsService.getOrganisation.mockResolvedValue({
-    organisationName: 'Some Corp',
-    organisationId: 222,
-    active: true,
-    addresses: [],
-    phoneNumbers: [],
-    webAddresses: [],
-    emailAddresses: [],
-    organisationTypes: [],
-    createdBy: '',
-    createdTime: '',
+    organisationsService.getOrganisation.mockResolvedValue({
+      organisationName: 'Some Corp',
+      organisationId: 222,
+      active: true,
+      addresses: [],
+      phoneNumbers: [],
+      webAddresses: [],
+      emailAddresses: [],
+      organisationTypes: [],
+      createdBy: '',
+      createdTime: '',
+    })
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/create/employments/new/check-employer/${journeyId}`,
+    )
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect($('h1:contains("Check and confirm if this is the correct employer for Jones Mason")').text()).toBeTruthy()
+    expect($('dt:contains("Organisation name")').next().text()).toMatch(/Some Corp/)
+    expect($('dt:contains("Organisation type")').next().text()).toMatch(/Not provided/)
+    expect($('dt:contains("Caseload")').next().text()).toMatch(/Not provided/)
+    expect($('dt:contains("Programme number")').next().text()).toMatch(/Not provided/)
+    expect($('dt:contains("VAT number")').next().text()).toMatch(/Not provided/)
+    expect($('dt:contains("Comments on this organisation")').next().text()).toMatch(/Not provided/)
+    expect($('dt:contains("Organisation status")').next().text()).toMatch(/Active/)
+    expect($('dt:contains("Expiry date")').text()).toBeFalsy()
+    expect($('h2:contains("Phone numbers")').parent().next().find('.govuk-summary-list__key').text()).toMatch(
+      /No phone numbers provided./,
+    )
+    expect($('h2:contains("Email and web addresses")').parent().next().find('.govuk-summary-list__key').text()).toMatch(
+      /No email or web addresses provided./,
+    )
+    expect($('p:contains("No addresses provided.")').text()).toBeTruthy()
   })
 
-  // When
-  const response = await request(app).get(
-    `/prisoner/${prisonerNumber}/contacts/create/employments/new/check-employer/${journeyId}`,
-  )
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 200],
+    [authorisingUser, 200],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    existingJourney.newEmployment = { organisationId: 222 }
 
-  // Then
-  const $ = cheerio.load(response.text)
-  expect($('h1:contains("Check and confirm if this is the correct employer for Jones Mason")').text()).toBeTruthy()
-  expect($('dt:contains("Organisation name")').next().text()).toMatch(/Some Corp/)
-  expect($('dt:contains("Organisation type")').next().text()).toMatch(/Not provided/)
-  expect($('dt:contains("Caseload")').next().text()).toMatch(/Not provided/)
-  expect($('dt:contains("Programme number")').next().text()).toMatch(/Not provided/)
-  expect($('dt:contains("VAT number")').next().text()).toMatch(/Not provided/)
-  expect($('dt:contains("Comments on this organisation")').next().text()).toMatch(/Not provided/)
-  expect($('dt:contains("Organisation status")').next().text()).toMatch(/Active/)
-  expect($('dt:contains("Expiry date")').text()).toBeFalsy()
-  expect($('h2:contains("Phone numbers")').parent().next().find('.govuk-summary-list__key').text()).toMatch(
-    /No phone numbers provided./,
-  )
-  expect($('h2:contains("Email and web addresses")').parent().next().find('.govuk-summary-list__key').text()).toMatch(
-    /No email or web addresses provided./,
-  )
-  expect($('p:contains("No addresses provided.")').text()).toBeTruthy()
+    organisationsService.getOrganisation.mockResolvedValue({
+      organisationName: 'Some Corp',
+      organisationId: 222,
+      active: true,
+      addresses: [],
+      phoneNumbers: [],
+      webAddresses: [],
+      emailAddresses: [],
+      organisationTypes: [],
+      createdBy: '',
+      createdTime: '',
+    })
+
+    await request(app)
+      .get(`/prisoner/${prisonerNumber}/contacts/create/employments/new/check-employer/${journeyId}`)
+      .expect(expectedStatus)
+  })
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/create/employments/:employmentIdx/check-employer', () => {
@@ -382,5 +411,18 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/employments/:employment
     expect(response.headers['location']).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/create/employments/new/organisation-search/${journeyId}`,
     )
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/employments/new/check-employer/${journeyId}`)
+      .type('form')
+      .send({ isCorrectEmployer: 'NO' })
+      .expect(expectedStatus)
   })
 })

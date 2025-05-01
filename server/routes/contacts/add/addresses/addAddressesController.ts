@@ -5,11 +5,14 @@ import { navigationForAddContactJourney, nextPageForAddContactJourney } from '..
 import ReferenceDataService from '../../../../services/referenceDataService'
 import { formatAddresses } from './common/utils'
 import { PrisonerJourneyParams } from '../../../../@types/journeys'
+import Permission from '../../../../enumeration/permission'
 
 export default class AddAddressesController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
   public PAGE_NAME = Page.ADD_ADDRESSES
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { user } = res.locals

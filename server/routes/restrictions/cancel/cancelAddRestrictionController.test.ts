@@ -128,7 +128,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     [basicPrisonUser, 403],
     [adminUser, 403],
     [authorisingUser, 200],
-  ])('GET should block access without required roles (%s, %s)', async (user: HmppsUser, expectedStatus: number) => {
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
     currentUser = user
     await request(app)
       .get(
@@ -187,7 +187,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
     [basicPrisonUser, 403],
     [adminUser, 403],
     [authorisingUser, 302],
-  ])('POST should block access without required roles (%s, %s)', async (user: HmppsUser, expectedStatus: number) => {
+  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
     currentUser = user
     await request(app)
       .post(

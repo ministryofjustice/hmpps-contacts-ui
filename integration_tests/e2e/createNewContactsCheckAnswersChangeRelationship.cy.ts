@@ -15,7 +15,7 @@ import ManageDobPage from '../pages/contact-details/dobPage'
 context('Create contact and update the relationship from check answers', () => {
   beforeEach(() => {
     cy.task('reset')
-    cy.task('stubSignIn', { roles: ['PRISON', 'CONTACTS_ADMIN'] })
+    cy.task('stubSignIn', { roles: ['PRISON', 'CONTACTS_ADMINISTRATOR'] })
     cy.task('stubComponentsMeta')
     cy.task('stubTitlesReferenceData')
     cy.task('stubPhoneTypeReferenceData')

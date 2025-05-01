@@ -4,11 +4,14 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { ContactsService } from '../../../../services'
 import { ContactNameDetails } from '../../../../@types/contactsApiClient'
 import { ContactNames } from '../../../../@types/journeys'
+import Permission from '../../../../enumeration/permission'
 
 export default class SuccessfullyAddedContactController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
 
   public PAGE_NAME = Page.SUCCESSFULLY_ADDED_CONTACT_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<{

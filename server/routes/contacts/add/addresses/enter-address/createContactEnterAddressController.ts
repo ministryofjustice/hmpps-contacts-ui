@@ -6,11 +6,14 @@ import ReferenceDataService from '../../../../../services/referenceDataService'
 import { Navigation } from '../../../common/navigation'
 import { CreateContactAddressParam, getAddressFormAndUrl } from '../common/utils'
 import { AddressLinesSchema } from '../../../manage/addresses/enter-address/addressLinesSchemas'
+import Permission from '../../../../../enumeration/permission'
 
 export default class CreateContactEnterAddressController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
   public PAGE_NAME = Page.CREATE_CONTACT_ENTER_ADDRESS_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   private DEFAULT_COUNTRY = 'ENG'
 

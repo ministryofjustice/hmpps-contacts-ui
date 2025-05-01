@@ -4,11 +4,14 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { nextPageForAddContactJourney } from '../addContactFlowControl'
 import { ContactsService } from '../../../../services'
 import { PrisonerJourneyParams } from '../../../../@types/journeys'
+import Permission from '../../../../enumeration/permission'
 
 export default class AddContactModeController implements PageHandler {
   constructor(private readonly contactService: ContactsService) {}
 
   public PAGE_NAME = Page.ADD_CONTACT_MODE_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<PrisonerJourneyParams & { mode?: 'EXISTING' | 'NEW' }, unknown, unknown, { contactId?: string }>,

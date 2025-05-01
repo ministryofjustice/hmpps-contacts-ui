@@ -6,11 +6,14 @@ import { SelectRelationshipSchema } from '../../common/relationship/selectRelati
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import { PrisonerJourneyParams } from '../../../../@types/journeys'
+import Permission from '../../../../enumeration/permission'
 
 export default class SelectRelationshipToPrisonerController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
   public PAGE_NAME = Page.SELECT_CONTACT_RELATIONSHIP
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params
