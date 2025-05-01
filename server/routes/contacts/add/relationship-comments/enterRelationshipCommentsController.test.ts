@@ -3,11 +3,12 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, flashProvider } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { AddContactJourney } from '../../../../@types/journeys'
+import { HmppsUser } from '../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -20,8 +21,10 @@ let session: Partial<SessionData>
 const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 let existingJourney: AddContactJourney
+let currentUser: HmppsUser
 
 beforeEach(() => {
+  currentUser = adminUser
   existingJourney = {
     id: journeyId,
     lastTouched: new Date().toISOString(),
@@ -48,7 +51,7 @@ beforeEach(() => {
       auditService,
       prisonerSearchService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.addContactJourneys = {}
@@ -95,24 +98,34 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-relationship-comme
   )
 
   it.each([
-    ['NEW', `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`],
-    ['EXISTING', `/prisoner/${prisonerNumber}/contacts/create/approved-to-visit/${journeyId}`],
-  ])('should go back to corresponding previous page for each mode %s', async (mode, previousUrl: string) => {
-    // Given
-    existingJourney.mode = mode as 'NEW' | 'EXISTING'
+    ['NEW', adminUser, `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`],
+    ['NEW', authorisingUser, `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`],
+    [
+      'EXISTING',
+      adminUser,
+      `/prisoner/${prisonerNumber}/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
+    ],
+    ['EXISTING', authorisingUser, `/prisoner/${prisonerNumber}/contacts/create/approved-to-visit/${journeyId}`],
+  ])(
+    'should go back to corresponding previous page for each mode %s and user',
+    async (mode, user: HmppsUser, previousUrl: string) => {
+      // Given
+      currentUser = user
+      existingJourney.mode = mode as 'NEW' | 'EXISTING'
 
-    // When
-    const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`,
-    )
+      // When
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`,
+      )
 
-    // Then
-    expect(response.status).toEqual(200)
+      // Then
+      expect(response.status).toEqual(200)
 
-    const $ = cheerio.load(response.text)
-    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(previousUrl)
-  })
+      const $ = cheerio.load(response.text)
+      expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
+      expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(previousUrl)
+    },
+  )
 
   it('should call the audit service for the page view', async () => {
     // Given
@@ -125,7 +138,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-relationship-comme
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ENTER_RELATIONSHIP_COMMENTS, {
-      who: basicPrisonUser.username,
+      who: adminUser.username,
       correlationId: expect.any(String),
       details: {
         prisonerNumber: 'A1234BC',

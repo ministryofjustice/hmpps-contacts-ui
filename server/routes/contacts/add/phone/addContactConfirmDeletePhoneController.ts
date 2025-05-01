@@ -34,7 +34,7 @@ export default class AddContactConfirmDeletePhoneController implements PageHandl
           user,
         ),
       },
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
     }
     res.render('pages/contacts/manage/contactMethods/confirmDeletePhone', view)
   }
@@ -42,10 +42,11 @@ export default class AddContactConfirmDeletePhoneController implements PageHandl
   POST = async (req: Request<PrisonerJourneyParams & { index: string }>, res: Response): Promise<void> => {
     const { journeyId, index } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
     const indexNumber = Number(index)
     if (journey.phoneNumbers && indexNumber <= journey.phoneNumbers.length - 1) {
       journey.phoneNumbers.splice(indexNumber, 1)
     }
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
   }
 }

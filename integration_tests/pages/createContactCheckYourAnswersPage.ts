@@ -100,6 +100,11 @@ export default class CreateContactCheckYourAnswersPage extends Page {
     return this
   }
 
+  verifyShowApprovedVisitorAs(expected: string): CreateContactCheckYourAnswersPage {
+    this.checkAnswersApprovedVisitorValue().should('contain.text', expected)
+    return this
+  }
+
   private checkAnswersTitleValue = (): PageElement => cy.get('.check-answers-title-value')
 
   private checkAnswersNameValue = (): PageElement => cy.get('.check-answers-name-value')
@@ -115,6 +120,8 @@ export default class CreateContactCheckYourAnswersPage extends Page {
   private checkAnswersNextOfKinValue = (): PageElement => cy.get('.check-answers-next-of-kin-value')
 
   private checkAnswersCommentsValue = (): PageElement => cy.get('.check-answers-comments-value')
+
+  private checkAnswersApprovedVisitorValue = (): PageElement => cy.get('.check-answers-approved-visitor-value')
 
   private checkAnswersGenderValue = (): PageElement => cy.get('.check-answers-gender-value')
 

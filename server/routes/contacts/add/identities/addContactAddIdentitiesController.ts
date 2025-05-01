@@ -27,7 +27,7 @@ export default class AddContactAddIdentitiesController implements PageHandler {
       contact: journey.names,
       typeOptions: await this.referenceDataService.getReferenceData(ReferenceCodeType.ID_TYPE, user),
       identities: res.locals?.formResponses?.['identities'] ?? existingIdentities,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
     }
     res.render('pages/contacts/manage/addIdentities', viewModel)
   }
@@ -38,11 +38,12 @@ export default class AddContactAddIdentitiesController implements PageHandler {
   ): Promise<void> => {
     const { prisonerNumber, journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
 
     const { identities, save, add, remove } = req.body
     if (save !== undefined) {
       journey.identities = identities
-      return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
+      return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
     }
 
     req.body.identities ??= [{ identityType: '', identityValue: '', issuingAuthority: '' }]

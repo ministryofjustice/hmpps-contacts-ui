@@ -3,13 +3,14 @@ import request from 'supertest'
 import { v4 as uuidv4 } from 'uuid'
 import { SessionData } from 'express-session'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, basicPrisonUser } from '../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../testutils/stubReferenceData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { AddContactJourney, LanguageAndInterpreterRequiredForm, YesOrNo } from '../../../../@types/journeys'
 import { ContactCreationResult, PrisonerContactRelationshipDetails } from '../../../../@types/contactsApiClient'
+import { HmppsUser } from '../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/contactsService')
@@ -26,7 +27,9 @@ let session: Partial<SessionData>
 const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 let journey: AddContactJourney
+let currentUser: HmppsUser
 beforeEach(() => {
+  currentUser = adminUser
   journey = {
     id: journeyId,
     lastTouched: new Date().toISOString(),
@@ -59,7 +62,7 @@ beforeEach(() => {
       referenceDataService,
       prisonerSearchService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.addContactJourneys = {}
@@ -136,6 +139,39 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     expect(backLink.attr('href')).toStrictEqual('?back=true')
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and link contact')
   })
+
+  it.each(['NEW', 'EXISTING'])('should show approved visitor value and link if authorising user', async mode => {
+    // Given
+    currentUser = authorisingUser
+    journey.mode = mode as 'NEW' | 'EXISTING'
+    journey.relationship!.isApprovedVisitor = true
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+    // Then
+    const $ = cheerio.load(response.text)
+    const heading = $('dt:contains("Approved for visits")')
+    expect(heading.next().text().trim()).toStrictEqual('Yes')
+    expect(heading.next().next().text().trim()).toStrictEqual('Change if the contact is approved to visit the prisoner')
+  })
+
+  it.each(['NEW', 'EXISTING'])(
+    'should not show approved visitor value and link if not authorising user',
+    async mode => {
+      // Given
+      currentUser = adminUser
+      journey.mode = mode as 'NEW' | 'EXISTING'
+      journey.relationship!.isApprovedVisitor = true
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect($('dt:contains("Approved for visits")')).toHaveLength(0)
+    },
+  )
 
   it('should render check answers page without dob', async () => {
     // Given
@@ -401,7 +437,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, {
-      who: basicPrisonUser.username,
+      who: adminUser.username,
       correlationId: expect.any(String),
       details: {
         prisonerNumber: 'A1234BC',
@@ -439,7 +475,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
       .expect('Location', '/prisoner/A1234BC/contact/NEW/123456/654321/success')
 
     // Then
-    expect(contactsService.createContact).toHaveBeenCalledWith(journey, basicPrisonUser, expect.any(String))
+    expect(contactsService.createContact).toHaveBeenCalledWith(journey, adminUser, expect.any(String))
     expect(session.addContactJourneys![journeyId]).toBeUndefined()
   })
 
@@ -460,7 +496,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
       .expect('Location', '/prisoner/A1234BC/contact/EXISTING/123456/654321/success')
 
     // Then
-    expect(contactsService.addContact).toHaveBeenCalledWith(journey, basicPrisonUser, expect.any(String))
+    expect(contactsService.addContact).toHaveBeenCalledWith(journey, adminUser, expect.any(String))
     expect(session.addContactJourneys![journeyId]).toBeUndefined()
   })
 

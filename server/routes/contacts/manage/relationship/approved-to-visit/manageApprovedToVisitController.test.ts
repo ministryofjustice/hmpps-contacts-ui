@@ -1,11 +1,12 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, basicPrisonUser } from '../../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { PrisonerContactRelationshipDetails } from '../../../../../@types/contactsApiClient'
+import { HmppsUser } from '../../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -18,15 +19,17 @@ const contactsService = MockedService.ContactsService()
 let app: Express
 const prisonerNumber = 'A1234BC'
 const prisonerContactId = 12232
+let currentUser: HmppsUser
 
 beforeEach(() => {
+  currentUser = authorisingUser
   app = appWithAllRoutes({
     services: {
       auditService,
       prisonerSearchService,
       contactsService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
   })
 })
 
@@ -38,14 +41,14 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     ['YES', { isApprovedVisitor: true }],
     ['NO', { isApprovedVisitor: false }],
   ])('should render manage approved to visit page when flag is %p', async (isApprovedToVisit, expectedResponse) => {
-    const ContactDetails = TestData.contact()
+    const contactDetails = TestData.contact()
     contactsService.getPrisonerContactRelationship.mockResolvedValue(
       expectedResponse as PrisonerContactRelationshipDetails,
     )
-    const contactId = ContactDetails.id
+    const contactId = contactDetails.id
     // Given
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-    contactsService.getContact.mockResolvedValue(ContactDetails)
+    contactsService.getContact.mockResolvedValue(contactDetails)
 
     // When
 
@@ -73,7 +76,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_UPDATE_APPROVED_TO_VISIT_PAGE, {
-      who: basicPrisonUser.username,
+      who: authorisingUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '22',
@@ -81,6 +84,24 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
         prisonerNumber: 'A1234BC',
       },
     })
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 403],
+    [authorisingUser, 200],
+  ])('GET should block access without required roles (%s, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    const contactDetails = TestData.contact()
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.getContact.mockResolvedValue(contactDetails)
+    contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
+
+    await request(app)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactDetails.id}/relationship/${prisonerContactId}/approved-to-visit`,
+      )
+      .expect(expectedStatus)
   })
 })
 
@@ -105,7 +126,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       expect(contactsService.updateContactRelationshipById).toHaveBeenCalledWith(
         prisonerContactId,
         expectedPayload,
-        basicPrisonUser,
+        authorisingUser,
         expect.any(String),
       )
     })
@@ -124,5 +145,22 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         'Location',
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/approved-to-visit#`,
       )
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 403],
+    [authorisingUser, 302],
+  ])('POST should block access without required roles (%s, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.getContactName.mockResolvedValue(TestData.contact())
+    await request(app)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/approved-to-visit`,
+      )
+      .type('form')
+      .send({ isApprovedToVisit: 'YES' })
+      .expect(expectedStatus)
   })
 })

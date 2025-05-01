@@ -1,6 +1,9 @@
 import { Page } from '../../../services/auditService'
 import { BreadcrumbType, Navigation } from '../common/navigation'
 import { AddContactJourney } from '../../../@types/journeys'
+import { HmppsUser } from '../../../interfaces/hmppsUser'
+import { hasPermission } from '../../../utils/permissionsUtils'
+import Permission from '../../../enumeration/permission'
 
 type PreModePages = Page.CREATE_CONTACT_START_PAGE | Page.CONTACT_SEARCH_PAGE | Page.CONTACT_MATCH_PAGE
 type CreateContactPages =
@@ -45,7 +48,7 @@ type ExistingContactPages =
   | Page.SUCCESSFULLY_ADDED_CONTACT_PAGE
   | Page.ADD_CONTACT_CANCEL_PAGE
 type AllAddContactPages = PreModePages | CreateContactPages | ExistingContactPages
-type JourneyUrlProvider = (journey: AddContactJourney) => string | undefined
+type JourneyUrlProvider = (journey: AddContactJourney, user: HmppsUser) => string | undefined
 type Spec = {
   previousUrl: JourneyUrlProvider
   previousUrlLabel?: JourneyUrlProvider
@@ -154,7 +157,7 @@ const PRE_MODE_SPEC: Record<PreModePages, Spec> = {
   [Page.CONTACT_MATCH_PAGE]: {
     previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
     previousUrlLabel: _ => 'Back to contact search',
-    nextUrl: journey => PAGES.ADD_CONTACT_MODE_PAGE.url(journey),
+    nextUrl: (journey, user) => PAGES.ADD_CONTACT_MODE_PAGE.url(journey, user),
   },
 }
 
@@ -164,7 +167,7 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   [Page.CONTACT_MATCH_PAGE]: {
     previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
     previousUrlLabel: _ => 'Back to contact search',
-    nextUrl: journey => PAGES.ADD_CONTACT_MODE_PAGE.url(journey),
+    nextUrl: (journey, user) => PAGES.ADD_CONTACT_MODE_PAGE.url(journey, user),
   },
   [Page.ADD_CONTACT_MODE_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CREATE_CONTACT_NAME_PAGE.url },
   [Page.CREATE_CONTACT_NAME_PAGE]: {
@@ -181,20 +184,33 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
     nextUrl: forwardToRelationshipToPrisonerOrCheckAnswers(),
   },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
-    previousUrl: journey => backToRelationshipTypeOrCheckAnswers(journey),
+    previousUrl: (journey, user) => backToRelationshipTypeOrCheckAnswers(journey, user),
     nextUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN.url),
   },
   [Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN]: {
     previousUrl: checkAnswersOr(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
-    nextUrl: checkAnswersOr(PAGES.ADD_CONTACT_APPROVED_TO_VISIT_PAGE.url),
+    nextUrl: checkAnswersOr(
+      ifCanApproveForVisitsOr(
+        PAGES.ADD_CONTACT_APPROVED_TO_VISIT_PAGE.url,
+        PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url,
+      ),
+    ),
   },
   [Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE]: {
     previousUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN.url),
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.ENTER_ADDITIONAL_INFORMATION_PAGE]: {
-    previousUrl: checkAnswersOr(PAGES.ADD_CONTACT_APPROVED_TO_VISIT_PAGE.url),
-    previousUrlLabel: _ => 'Back to visits approval',
+    previousUrl: checkAnswersOr(
+      ifCanApproveForVisitsOr(
+        PAGES.ADD_CONTACT_APPROVED_TO_VISIT_PAGE.url,
+        PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN.url,
+      ),
+    ),
+    previousUrlLabel: (_, user) =>
+      hasPermission(user, Permission.APPROVE_TO_VISIT)
+        ? 'Back to visits approval'
+        : 'Back to emergency contact and next of kin',
     nextUrl: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url,
   },
   [Page.ENTER_RELATIONSHIP_COMMENTS]: {
@@ -287,19 +303,26 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
     nextUrl: forwardToRelationshipToPrisonerOrCheckAnswers(),
   },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
-    previousUrl: journey => backToRelationshipTypeOrCheckAnswers(journey),
+    previousUrl: (journey, user) => backToRelationshipTypeOrCheckAnswers(journey, user),
     nextUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN.url),
   },
   [Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN]: {
     previousUrl: checkAnswersOr(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
-    nextUrl: checkAnswersOr(PAGES.ADD_CONTACT_APPROVED_TO_VISIT_PAGE.url),
+    nextUrl: checkAnswersOr(
+      ifCanApproveForVisitsOr(PAGES.ADD_CONTACT_APPROVED_TO_VISIT_PAGE.url, PAGES.ENTER_RELATIONSHIP_COMMENTS.url),
+    ),
   },
   [Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE]: {
     previousUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN.url),
     nextUrl: checkAnswersOr(PAGES.ENTER_RELATIONSHIP_COMMENTS.url),
   },
   [Page.ENTER_RELATIONSHIP_COMMENTS]: {
-    previousUrl: checkAnswersOr(PAGES.ADD_CONTACT_APPROVED_TO_VISIT_PAGE.url),
+    previousUrl: checkAnswersOr(
+      ifCanApproveForVisitsOr(
+        PAGES.ADD_CONTACT_APPROVED_TO_VISIT_PAGE.url,
+        PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN.url,
+      ),
+    ),
     nextUrl: checkAnswersOr(PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url),
   },
   [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE]: {
@@ -319,47 +342,52 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
 }
 
 function checkAnswersOr(other: JourneyUrlProvider): JourneyUrlProvider {
-  return journey => (journey.isCheckingAnswers ? PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey) : other(journey))
+  return (journey, user) =>
+    journey.isCheckingAnswers ? PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey, user) : other(journey, user)
+}
+
+function ifCanApproveForVisitsOr(yes: JourneyUrlProvider, no: JourneyUrlProvider): JourneyUrlProvider {
+  return (journey, user) => (hasPermission(user, Permission.APPROVE_TO_VISIT) ? yes(journey, user) : no(journey, user))
 }
 
 function backIfCheckAnswersOr(other: JourneyUrlProvider): JourneyUrlProvider {
-  return journey => (journey.isCheckingAnswers ? `Back` : other(journey))
+  return (journey, user) => (journey.isCheckingAnswers ? `Back` : other(journey, user))
 }
 
 function forwardToRelationshipToPrisonerOrCheckAnswers(): JourneyUrlProvider {
-  return journey => {
+  return (journey, user) => {
     const relationshipTypeIsTheSame =
       journey.relationship?.pendingNewRelationshipType === journey.previousAnswers?.relationship?.relationshipType
     return journey.isCheckingAnswers && relationshipTypeIsTheSame
-      ? PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey)
-      : PAGES.SELECT_CONTACT_RELATIONSHIP.url(journey)
+      ? PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey, user)
+      : PAGES.SELECT_CONTACT_RELATIONSHIP.url(journey, user)
   }
 }
 
-function backToRelationshipTypeOrCheckAnswers(journey: AddContactJourney) {
+function backToRelationshipTypeOrCheckAnswers(journey: AddContactJourney, user: HmppsUser) {
   const relationshipType = journey.relationship?.pendingNewRelationshipType ?? journey.relationship?.relationshipType
   const relationshipTypeIsTheSame = relationshipType === journey.previousAnswers?.relationship?.relationshipType
   return (journey.isCheckingAnswers && !relationshipTypeIsTheSame) || !journey.isCheckingAnswers
-    ? PAGES.SELECT_RELATIONSHIP_TYPE.url(journey)
-    : PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey)
+    ? PAGES.SELECT_RELATIONSHIP_TYPE.url(journey, user)
+    : PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey, user)
 }
 
-function navigationForAddContactJourney(currentPage: Page, journey: AddContactJourney): Navigation {
+function navigationForAddContactJourney(currentPage: Page, journey: AddContactJourney, user: HmppsUser): Navigation {
   const spec = findSpec(journey, currentPage)
   if (spec) {
     return {
-      backLinkLabel: spec.previousUrlLabel ? spec.previousUrlLabel(journey) : undefined,
-      backLink: spec.previousUrl(journey),
+      backLinkLabel: spec.previousUrlLabel ? spec.previousUrlLabel(journey, user) : undefined,
+      backLink: spec.previousUrl(journey, user),
       breadcrumbs: PAGES[currentPage as AllAddContactPages].breadcrumbs,
-      cancelButton: spec.cancelUrl?.(journey),
+      cancelButton: spec.cancelUrl?.(journey, user),
     }
   }
   throw new Error(`Couldn't determine navigation for page (${currentPage}) and journey (${JSON.stringify(journey)})`)
 }
 
-function nextPageForAddContactJourney(currentPage: Page, journey: AddContactJourney): string {
+function nextPageForAddContactJourney(currentPage: Page, journey: AddContactJourney, user: HmppsUser): string {
   const spec = findSpec(journey, currentPage)
-  const nextPage = spec?.nextUrl(journey)
+  const nextPage = spec?.nextUrl(journey, user)
   if (nextPage) {
     return nextPage
   }

@@ -23,7 +23,7 @@ export default class CreateContactLanguageAndInterpreterController implements Pa
       language: res.locals?.formResponses?.['language'] ?? journey?.languageAndInterpreter?.language,
       interpreterRequired:
         res.locals?.formResponses?.['interpreterRequired'] ?? journey?.languageAndInterpreter?.interpreterRequired,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
     }
     res.render('pages/contacts/manage/contactDetails/languageAndInterpreter', view)
   }
@@ -34,6 +34,7 @@ export default class CreateContactLanguageAndInterpreterController implements Pa
   ): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
     const { body } = req
     delete journey.languageAndInterpreter
     if (body.language || body.interpreterRequired) {
@@ -42,6 +43,6 @@ export default class CreateContactLanguageAndInterpreterController implements Pa
         interpreterRequired: body.interpreterRequired ? body.interpreterRequired : undefined,
       }
     }
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
   }
 }

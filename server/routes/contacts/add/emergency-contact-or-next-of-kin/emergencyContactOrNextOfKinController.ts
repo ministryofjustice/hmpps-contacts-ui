@@ -12,6 +12,7 @@ export default class EmergencyContactOrNextOfKinController implements PageHandle
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
     const view = {
       isOptional: true,
       journey,
@@ -20,7 +21,7 @@ export default class EmergencyContactOrNextOfKinController implements PageHandle
       continueButtonLabel: 'Continue',
       emergencyContact: journey.relationship?.isEmergencyContact,
       nextOfKin: journey.relationship?.isNextOfKin,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
     }
     res.render('pages/contacts/manage/contactDetails/relationship/manageNextOfKinAndEmergencyContact', view)
   }
@@ -31,9 +32,10 @@ export default class EmergencyContactOrNextOfKinController implements PageHandle
   ): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
     const { emergencyContact, nextOfKin } = req.body
     journey.relationship!.isEmergencyContact = emergencyContact
     journey.relationship!.isNextOfKin = nextOfKin
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
   }
 }

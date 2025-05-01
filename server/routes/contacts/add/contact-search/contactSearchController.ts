@@ -87,7 +87,7 @@ export default class ContactSearchController implements PageHandler {
       month: res.locals?.formResponses?.['month'] ?? month,
       year: res.locals?.formResponses?.['year'] ?? year,
       filter: dobError ? 'Filter cannot be applied' : hasDob && `${day}/${month}/${year}`,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
       sort: journey.searchContact?.sort,
       journey,
       results,

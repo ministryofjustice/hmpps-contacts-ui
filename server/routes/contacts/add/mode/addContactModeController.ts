@@ -48,6 +48,6 @@ export default class AddContactModeController implements PageHandler {
         }
       }
     }
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
   }
 }

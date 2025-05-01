@@ -3,11 +3,12 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { Cheerio } from 'cheerio'
 import { Element } from 'domhandler'
-import { appWithAllRoutes, basicPrisonUser } from '../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser } from '../../../testutils/appSetup'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { Page } from '../../../../services/auditService'
 import { ContactDetails, PrisonerContactRelationshipDetails } from '../../../../@types/contactsApiClient'
+import { HmppsUser } from '../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -19,14 +20,17 @@ const contactsService = MockedService.ContactsService()
 
 let app: Express
 const prisonerNumber = 'A1234BC'
+let currentUser: HmppsUser
 
 beforeEach(() => {
+  currentUser = adminUser
   app = appWithAllRoutes({
     services: {
       auditService,
       prisonerSearchService,
       contactsService,
     },
+    userSupplier: () => currentUser,
   })
 })
 
@@ -49,7 +53,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
     )
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.EDIT_CONTACT_DETAILS_PAGE, {
-      who: basicPrisonUser.username,
+      who: adminUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '1',
@@ -57,8 +61,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         prisonerNumber: 'A1234BC',
       },
     })
-    expect(contactsService.getContact).toHaveBeenCalledWith(1, basicPrisonUser)
-    expect(contactsService.getPrisonerContactRelationship).toHaveBeenCalledWith(99, basicPrisonUser)
+    expect(contactsService.getContact).toHaveBeenCalledWith(1, adminUser)
+    expect(contactsService.getPrisonerContactRelationship).toHaveBeenCalledWith(99, adminUser)
   })
 
   it('should have correct navigation', async () => {
@@ -213,7 +217,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
   })
 
   describe('Relationship details card', () => {
-    it('should render with all relationship details and change links', async () => {
+    it('should render with all relationship details and change links as authorising user', async () => {
+      currentUser = authorisingUser
       const prisonerContactRelationshipDetails = {
         prisonerContactId: 99,
         relationshipTypeCode: 'S',
@@ -288,7 +293,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
       )
     })
 
-    it('should render without optional relationship details', async () => {
+    it('should render without optional relationship details as authorising user', async () => {
+      currentUser = authorisingUser
       const prisonerContactRelationshipDetails = {
         prisonerContactId: 99,
         relationshipTypeCode: 'O',
@@ -359,6 +365,37 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         'Not provided',
         '/prisoner/A1234BC/contacts/manage/22/relationship/99/relationship-comments',
         'Change the comments on the relationship (Relationship to prisoner Incarcerated Individual)',
+      )
+    })
+
+    it('should hide change link for visits approval if the user does not have permission', async () => {
+      currentUser = adminUser
+      const prisonerContactRelationshipDetails = {
+        prisonerContactId: 99,
+        relationshipTypeCode: 'O',
+        relationshipTypeDescription: 'Official',
+        relationshipToPrisonerCode: 'DR',
+        relationshipToPrisonerDescription: 'Doctor',
+        isEmergencyContact: false,
+        isNextOfKin: false,
+        isRelationshipActive: false,
+        isApprovedVisitor: true,
+      } as PrisonerContactRelationshipDetails
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(prisonerContactRelationshipDetails)
+
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details`,
+      )
+
+      const $ = cheerio.load(response.text)
+      const relationshipInformationCard = $('h2:contains("Relationship to prisoner Incarcerated Individual")')
+        .parent()
+        .parent()
+      expect(relationshipInformationCard).toHaveLength(1)
+      expect(relationshipInformationCard.find(`dt:contains("Approved for visits")`).first()).toHaveLength(1)
+      expect($('[data-qa=change-approved-visitor-link]')).toHaveLength(0)
+      expect($('[data-qa=cant-approve-visit-hint]').first().text().trim()).toStrictEqual(
+        'Cannot be changed as you do not have permission to authorise visits on DPS.',
       )
     })
   })

@@ -13,7 +13,8 @@ export default class CancelAddContactController implements PageHandler {
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const navigation = navigationForAddContactJourney(this.PAGE_NAME, journey)
+    const { user } = res.locals
+    const navigation = navigationForAddContactJourney(this.PAGE_NAME, journey, user)
     const caption = captionForAddContactJourney(journey)
     let title: string
     let showPrisonerAndContact: boolean
@@ -39,12 +40,13 @@ export default class CancelAddContactController implements PageHandler {
   ): Promise<void> => {
     const { journeyId, prisonerNumber } = req.params
     const { action } = req.body
+    const { user } = res.locals
     if (action === 'YES') {
       delete req.session.addContactJourneys![journeyId]
       res.redirect(Urls.contactList(prisonerNumber))
     } else {
       const journey = req.session.addContactJourneys![journeyId]!
-      const navigation = navigationForAddContactJourney(this.PAGE_NAME, journey)
+      const navigation = navigationForAddContactJourney(this.PAGE_NAME, journey, user)
       res.redirect(navigation.backLink!)
     }
   }

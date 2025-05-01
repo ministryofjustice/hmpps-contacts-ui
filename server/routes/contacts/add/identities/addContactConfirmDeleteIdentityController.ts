@@ -34,7 +34,7 @@ export default class AddContactConfirmDeleteIdentityController implements PageHa
           user,
         ),
       },
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
     }
     res.render('pages/contacts/manage/contactDetails/confirmDeleteIdentity', view)
   }
@@ -42,11 +42,12 @@ export default class AddContactConfirmDeleteIdentityController implements PageHa
   POST = async (req: Request<PrisonerJourneyParams & { index: string }>, res: Response): Promise<void> => {
     const { journeyId, index } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    const { user } = res.locals
     const indexNumber = Number(index) - 1
     if (journey.identities && indexNumber <= journey.identities.length - 1) {
       journey.identities.splice(indexNumber, 1)
     }
     if (!journey.identities?.length) delete journey.identities
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
   }
 }

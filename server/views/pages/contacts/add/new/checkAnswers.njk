@@ -207,22 +207,24 @@
                         },
                         {
                           key: {
-                          text: "Approved for visits"
-                        },
+                            text: "Approved for visits"
+                          },
                           value: {
-                          html: "Not provided" if journey.relationship.isApprovedVisitor == undefined else (journey.relationship.isApprovedVisitor | formatYesNo)
-                        },
+                            html: "Not provided" if journey.relationship.isApprovedVisitor == undefined else (journey.relationship.isApprovedVisitor | formatYesNo),
+                            classes: 'check-answers-approved-visitor-value'
+                          },
                           actions: {
-                          items: [
-                            {
-                              href: baseChangeUrl + "/approved-to-visit/"  + journey.id,
-                              text: "Change",
-                              visuallyHiddenText: "if the contact is approved to visit the prisoner",
-                              classes: "govuk-link--no-visited-state"
-                            }
-                          ]
-                        }
-                        },
+                            items: [
+                              {
+                                href: baseChangeUrl + "/approved-to-visit/"  + journey.id,
+                                text: "Change",
+                                visuallyHiddenText: "if the contact is approved to visit the prisoner",
+                                attributes: {"data-qa": "change-next-of-kin-link"},
+                                classes: "govuk-link--no-visited-state"
+                              }
+                            ]
+                          }
+                        } if ( user | hasPermission('APPROVE_TO_VISIT') ),
                         {
                             key: {
                                 text: "Comments on this relationship"

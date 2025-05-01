@@ -25,7 +25,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
     const { journeyId } = req.params
     const { back } = req.query
     const journey = req.session.addContactJourneys![journeyId]!
-    const navigation = navigationForAddContactJourney(this.PAGE_NAME, journey)
+    const navigation = navigationForAddContactJourney(this.PAGE_NAME, journey, user)
     if (back && navigation.backLink) {
       journey.isCheckingAnswers = false
       delete journey.previousAnswers
@@ -135,7 +135,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
         })
         .then(() => delete req.session.addContactJourneys![journeyId])
     }
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
   }
 
   private async getDescriptionIfSet(

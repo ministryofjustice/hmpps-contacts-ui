@@ -55,6 +55,11 @@ export default class LinkExistingContactCYAPage extends Page {
     return this
   }
 
+  verifyShowApprovedVisitorAs(expected: string): LinkExistingContactCYAPage {
+    this.checkAnswersApprovedVisitorValue().should('contain.text', expected)
+    return this
+  }
+
   private checkAnswersNameValue = (): PageElement => cy.findByText('Contact:').next()
 
   private checkAnswersRelationshipValue = (): PageElement => cy.get('.check-answers-relationship-to-prisoner-value')
@@ -62,6 +67,8 @@ export default class LinkExistingContactCYAPage extends Page {
   private checkAnswersRelationshipTypeValue = (): PageElement => cy.get('.check-answers-relationship-type-value')
 
   private checkAnswersEmergencyContactValue = (): PageElement => cy.get('.check-answers-emergency-contact-value')
+
+  private checkAnswersApprovedVisitorValue = (): PageElement => cy.get('.check-answers-approved-visitor-value')
 
   private checkAnswersNextOfKinValue = (): PageElement => cy.get('.check-answers-next-of-kin-value')
 

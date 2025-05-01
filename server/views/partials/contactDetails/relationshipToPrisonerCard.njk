@@ -6,6 +6,13 @@
   {% set relationship = opts.relationship %}
   {% set showActions = opts.showActions %}
   {% set prisonerDetails = opts.prisonerDetails %}
+  {% set user = opts.user %}
+
+  {% set canApproveToVisit = (user | hasPermission('APPROVE_TO_VISIT')) %}
+  {% set approvedForVisitsKey = 'Approved for visits' %}
+  {% if showActions and not canApproveToVisit %}
+  {% set approvedForVisitsKey = approvedForVisitsKey + '<br><p data-qa="cant-approve-visit-hint" class="summary-card-key-hint">Cannot be changed as you do not have permission to authorise visits on DPS.</p>'%}
+  {% endif %}
 
   {{ govukSummaryList({
     card: {
@@ -112,7 +119,7 @@
       },
       {
         key: {
-          text: 'Approved for visits'
+          html: approvedForVisitsKey
         },
         value: {
           text: relationship.isApprovedVisitor | formatYesNo
@@ -126,7 +133,7 @@
               attributes: {"data-qa": "change-approved-visitor-link"},
               classes: "govuk-link--no-visited-state"
             }
-          ] if showActions else []
+          ] if showActions and canApproveToVisit else []
         }
       },
       {

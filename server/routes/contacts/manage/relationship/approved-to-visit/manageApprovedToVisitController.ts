@@ -8,11 +8,14 @@ import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSucces
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import { ManageApprovedToVisitSchemaType } from './manageApprovedToVisitSchema'
 import { ContactDetails, PatchRelationshipRequest } from '../../../../../@types/contactsApiClient'
+import Permission from '../../../../../enumeration/permission'
 
 export default class ManageApprovedToVisitController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
 
   public PAGE_NAME = Page.MANAGE_CONTACT_UPDATE_APPROVED_TO_VISIT_PAGE
+
+  public REQUIRED_PERMISSION = Permission.APPROVE_TO_VISIT
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }>,
