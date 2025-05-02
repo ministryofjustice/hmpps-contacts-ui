@@ -5,7 +5,6 @@ import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import SearchContactPage from '../pages/searchContactPage'
-import ManageContactDetailsPage from '../pages/manageContactDetails'
 import CreateContactSuccessPage from '../pages/createContactSuccessPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import CancelAddContactPage from '../pages/cancelAddContactPage'
@@ -99,10 +98,7 @@ context('Create new contact as admin who cannot set visit approval', () => {
       .verifyShowCommentsAs('Not provided')
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactSuccessPage) //
-      .clickLink('add the restrictions now')
-
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Last')
+    Page.verifyOnPage(CreateContactSuccessPage)
 
     cy.verifyLastAPICall(
       {
@@ -233,10 +229,7 @@ context('Create new contact as admin who cannot set visit approval', () => {
       .verifyShowIsNextOfKinAs('Yes')
       .clickContinue()
 
-    Page.verifyOnPage(CreateContactSuccessPage) //
-      .clickLink('add the restrictions now')
-
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Last')
+    Page.verifyOnPage(CreateContactSuccessPage)
 
     cy.verifyLastAPICall(
       {

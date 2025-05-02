@@ -121,10 +121,7 @@ context('Add existing contact as admin user so cannot set visit approval', () =>
       .verifyShowCommentsAs('Some comments about the relationship')
       .clickContinue()
 
-    Page.verifyOnPage(AddContactSuccessPage) //
-      .clickLink('add the restrictions now')
-
-    Page.verifyOnPage(ManageContactDetailsPage, 'Existing Contact')
+    Page.verifyOnPage(AddContactSuccessPage)
 
     cy.verifyLastAPICall(
       {
