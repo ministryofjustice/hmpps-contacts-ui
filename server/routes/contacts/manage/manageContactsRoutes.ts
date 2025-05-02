@@ -184,6 +184,21 @@ const ManageContactsRoutes = (
     new ContactDetailsController(contactsService, restrictionsService, referenceDataService),
   )
 
+  get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-contact-details',
+    new EditContactDetailsController(contactsService),
+  )
+
+  get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-contact-methods',
+    new EditContactMethodsController(contactsService, referenceDataService),
+  )
+
+  get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-restrictions',
+    new EditRestrictionsController(contactsService, restrictionsService),
+  )
+
   // Manage the attribute of one contact (phones, addresses, IDs, emails, restrictions)
   standAloneRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/language-and-interpreter',
@@ -487,21 +502,6 @@ const ManageContactsRoutes = (
     journeyEnsurer: [ensureInUpdateEmploymentsJourney, ensureValidEmploymentIdx(false)],
     noValidation: true,
   })
-
-  get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-contact-details',
-    new EditContactDetailsController(contactsService),
-  )
-
-  get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-contact-methods',
-    new EditContactMethodsController(contactsService, referenceDataService),
-  )
-
-  get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-restrictions',
-    new EditRestrictionsController(contactsService, restrictionsService),
-  )
 
   // Relationship type mini journey
   get(
