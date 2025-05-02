@@ -10,6 +10,7 @@ import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import { PrisonerJourneyParams } from '../../../../@types/journeys'
 import { ContactDetails } from '../../../../@types/contactsApiClient'
+import Permission from '../../../../enumeration/permission'
 
 export default class ContactMatchController implements PageHandler {
   constructor(
@@ -19,6 +20,8 @@ export default class ContactMatchController implements PageHandler {
   ) {}
 
   public PAGE_NAME = Page.CONTACT_MATCH_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   private LINKED_PRISONER_ITEMS_PER_PAGE = 10
 

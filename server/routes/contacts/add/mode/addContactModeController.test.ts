@@ -2,11 +2,12 @@ import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
-import { appWithAllRoutes, basicPrisonUser } from '../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { AddContactJourney } from '../../../../@types/journeys'
 import { ContactDetails } from '../../../../@types/contactsApiClient'
+import { HmppsUser } from '../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/contactsService')
@@ -19,8 +20,10 @@ let session: Partial<SessionData>
 const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 let existingJourney: AddContactJourney
+let currentUser: HmppsUser
 
 beforeEach(() => {
+  currentUser = adminUser
   existingJourney = {
     id: journeyId,
     lastTouched: new Date().toISOString(),
@@ -34,7 +37,7 @@ beforeEach(() => {
       auditService,
       contactsService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.addContactJourneys = {}
@@ -56,7 +59,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
 
     // Then
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADD_CONTACT_MODE_PAGE, {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         prisonerNumber: 'A1234BC',
@@ -97,7 +100,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       firstName: 'middle',
       middleNames: 'first',
       dateOfBirth: '1980-12-10T00:00:00.000Z',
-      createdBy: basicPrisonUser.username,
+      createdBy: currentUser.username,
       createdTime: '2024-01-01',
     }
     existingJourney.contactId = 123456
@@ -116,7 +119,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`,
     )
     expect(existingJourney.mode).toStrictEqual('EXISTING')
-    expect(contactsService.getContact).toHaveBeenCalledWith(123456, basicPrisonUser)
+    expect(contactsService.getContact).toHaveBeenCalledWith(123456, currentUser)
     expect(existingJourney.names).toStrictEqual({
       title: 'MR',
       lastName: 'last',
@@ -147,7 +150,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       lastName: 'last',
       firstName: 'middle',
       middleNames: 'first',
-      createdBy: basicPrisonUser.username,
+      createdBy: currentUser.username,
       createdTime: '2024-01-01',
     }
     existingJourney.contactId = 123456
@@ -162,7 +165,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
 
     // Then
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADD_CONTACT_MODE_PAGE, {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         prisonerNumber: 'A1234BC',
@@ -173,7 +176,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`,
     )
     expect(existingJourney.mode).toStrictEqual('EXISTING')
-    expect(contactsService.getContact).toHaveBeenCalledWith(123456, basicPrisonUser)
+    expect(contactsService.getContact).toHaveBeenCalledWith(123456, currentUser)
     expect(existingJourney.names).toStrictEqual({
       title: 'MR',
       lastName: 'last',
@@ -198,7 +201,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       lastName: 'last',
       firstName: 'middle',
       middleNames: 'first',
-      createdBy: basicPrisonUser.username,
+      createdBy: currentUser.username,
       createdTime: '2024-01-01',
     }
     existingJourney.contactId = 123456
@@ -212,7 +215,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
     // Then
     expect(response.status).toEqual(302)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADD_CONTACT_MODE_PAGE, {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         prisonerNumber: 'A1234BC',
@@ -223,7 +226,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`,
     )
     expect(existingJourney.mode).toStrictEqual('EXISTING')
-    expect(contactsService.getContact).toHaveBeenCalledWith(123456, basicPrisonUser)
+    expect(contactsService.getContact).toHaveBeenCalledWith(123456, currentUser)
     expect(existingJourney.names).toStrictEqual({
       title: 'MR',
       lastName: 'last',
@@ -253,7 +256,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       middleNames: 'first',
       dateOfBirth: '1982-01-01',
       deceasedDate: '2020-12-25',
-      createdBy: basicPrisonUser.username,
+      createdBy: currentUser.username,
       createdTime: '2024-01-01',
     }
     existingJourney.contactId = 123456
@@ -272,9 +275,20 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId', () 
       `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`,
     )
     expect(existingJourney.mode).toStrictEqual('EXISTING')
-    expect(contactsService.getContact).toHaveBeenCalledWith(123456, basicPrisonUser)
+    expect(contactsService.getContact).toHaveBeenCalledWith(123456, currentUser)
     expect(existingJourney.existingContact).toStrictEqual({
       deceasedDate: '2020-12-25',
     })
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    await request(app)
+      .get(`/prisoner/${prisonerNumber}/contacts/add/mode/EXISTING/${journeyId}?contactId=123456`)
+      .expect(expectedStatus)
   })
 })

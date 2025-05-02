@@ -2,13 +2,14 @@ import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
-import { appWithAllRoutes, basicPrisonUser } from '../../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import PrisonerAddressService from '../../../../../services/prisonerAddressService'
 import TestData from '../../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { AddContactJourney, AddressLines } from '../../../../../@types/journeys'
+import { HmppsUser } from '../../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -27,8 +28,10 @@ const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 
 let existingJourney: AddContactJourney
+let currentUser: HmppsUser
 
 beforeEach(() => {
+  currentUser = adminUser
   existingJourney = {
     id: journeyId,
     lastTouched: new Date().toISOString(),
@@ -58,7 +61,7 @@ beforeEach(() => {
       referenceDataService,
       prisonerAddressService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.addContactJourneys = {}
@@ -162,11 +165,35 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/
 
     // Then
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_USE_PRISONER_ADDRESS_PAGE, {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         prisonerNumber: 'A1234BC',
       },
     })
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    const prisonerAddress: AddressLines = {
+      noFixedAddress: true,
+      flat: 'Prisoner Flat',
+      property: 'Prisoner Premises',
+      street: 'Prisoner Street',
+      area: 'Prisoner Locality',
+      cityCode: '9999',
+      countyCode: 'CORNWALL',
+      postcode: 'Prisoner Postcode',
+      countryCode: 'WALES',
+    }
+    prisonerAddressService.getPrimaryAddress.mockResolvedValue(prisonerAddress)
+
+    await request(app)
+      .get(`/prisoner/${prisonerNumber}/contacts/create/addresses/new/use-prisoner-address/${journeyId}?returnUrl=/foo`)
+      .expect(expectedStatus)
   })
 })

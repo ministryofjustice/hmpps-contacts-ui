@@ -4,11 +4,14 @@ import { Page } from '../../../../../services/auditService'
 import OrganisationsService from '../../../../../services/organisationsService'
 import { CreateContactEmploymentParam, EmploymentUtils, getEmploymentAndUrl } from '../common/utils'
 import { IsCorrectEmployerSchema } from '../../../manage/update-employments/check-employer/checkEmployerSchema'
+import Permission from '../../../../../enumeration/permission'
 
 export default class CreateContactCheckEmployerController implements PageHandler {
   constructor(private readonly organisationsService: OrganisationsService) {}
 
   public PAGE_NAME = Page.CREATE_CONTACT_CHECK_EMPLOYER_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<CreateContactEmploymentParam, unknown, unknown, { organisationId: string }>,

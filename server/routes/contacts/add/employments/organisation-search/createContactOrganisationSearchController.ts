@@ -5,11 +5,14 @@ import { setPaginationLocals } from '../../../../../views/partials/simplePaginat
 import OrganisationsService from '../../../../../services/organisationsService'
 import { CreateContactEmploymentParam, getEmploymentAndUrl } from '../common/utils'
 import { OrganisationSummaryResultItemPage } from '../../../../../@types/organisationsApiClient'
+import Permission from '../../../../../enumeration/permission'
 
 export default class CreateContactOrganisationSearchController implements PageHandler {
   constructor(private readonly organisationsService: OrganisationsService) {}
 
   public PAGE_NAME = Page.CREATE_CONTACT_SEARCH_ORGANISATION_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   private TABLE_ROW_COUNT = 10
 

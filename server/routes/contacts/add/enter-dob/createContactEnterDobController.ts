@@ -4,9 +4,12 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
 import { OptionalDobSchemaType } from './enterDobSchemas'
 import { PrisonerJourneyParams } from '../../../../@types/journeys'
+import Permission from '../../../../enumeration/permission'
 
 export default class CreateContactEnterDobController implements PageHandler {
   public PAGE_NAME = Page.CREATE_CONTACT_DOB_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (req: Request<{ journeyId: string }>, res: Response): Promise<void> => {
     const { journeyId } = req.params

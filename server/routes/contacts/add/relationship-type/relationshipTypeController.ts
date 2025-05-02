@@ -4,9 +4,12 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { RelationshipTypeSchema } from './relationshipTypeSchema'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
 import { PrisonerJourneyParams } from '../../../../@types/journeys'
+import Permission from '../../../../enumeration/permission'
 
 export default class RelationshipTypeController implements PageHandler {
   public PAGE_NAME = Page.SELECT_RELATIONSHIP_TYPE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { journeyId } = req.params

@@ -4,9 +4,12 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
 import { OptionalEmailsSchemaType } from '../../manage/email/emailSchemas'
 import { PrisonerJourneyParams } from '../../../../@types/journeys'
+import Permission from '../../../../enumeration/permission'
 
 export default class AddContactAddEmailsController implements PageHandler {
   public PAGE_NAME = Page.ADD_CONTACT_ADD_EMAIL_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params

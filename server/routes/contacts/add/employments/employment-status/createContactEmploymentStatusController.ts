@@ -4,9 +4,12 @@ import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { Page } from '../../../../../services/auditService'
 import { IsActiveEmploymentSchema } from '../../../manage/update-employments/employment-status/employmentStatusSchema'
 import { CreateContactEmploymentParam, getEmploymentAndUrl } from '../common/utils'
+import Permission from '../../../../../enumeration/permission'
 
 export default class CreateContactEmploymentStatusController implements PageHandler {
   public PAGE_NAME = Page.CREATE_CONTACT_EMPLOYMENT_STATUS_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (req: Request<CreateContactEmploymentParam>, res: Response) => {
     const { journey, employment, bounceBackUrl } = getEmploymentAndUrl(req)

@@ -5,11 +5,14 @@ import { navigationForAddContactJourney, nextPageForAddContactJourney } from '..
 import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import { LanguageAndInterpreterRequiredForm, PrisonerJourneyParams } from '../../../../@types/journeys'
+import Permission from '../../../../enumeration/permission'
 
 export default class CreateContactLanguageAndInterpreterController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
   public PAGE_NAME = Page.ADD_CONTACT_LANGUAGE_INTERPRETER_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { journeyId } = req.params

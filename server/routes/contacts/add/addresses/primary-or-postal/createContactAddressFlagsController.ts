@@ -6,11 +6,14 @@ import { Navigation } from '../../../common/navigation'
 import { CreateContactAddressParam, getAddressFormAndUrl } from '../common/utils'
 import { getFormattedAddress } from '../../../manage/addresses/common/utils'
 import { AddressFlagsSchemaType } from '../../../manage/addresses/primary-or-postal/addressFlagsSchemas'
+import Permission from '../../../../../enumeration/permission'
 
 export default class CreateContactAddressFlagsController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
   public PAGE_NAME = Page.CREATE_CONTACT_SELECT_ADDRESS_FLAGS_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (req: Request<CreateContactAddressParam>, res: Response): Promise<void> => {
     const { journey, addressForm, bounceBackOrAddressUrl } = getAddressFormAndUrl(req)

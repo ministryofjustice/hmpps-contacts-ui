@@ -3,12 +3,13 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, basicPrisonUser } from '../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { mockedReferenceData } from '../../../testutils/stubReferenceData'
 import { AddContactJourney } from '../../../../@types/journeys'
+import { HmppsUser } from '../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -23,8 +24,10 @@ let session: Partial<SessionData>
 const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 let existingJourney: AddContactJourney
+let currentUser: HmppsUser
 
 beforeEach(() => {
+  currentUser = adminUser
   existingJourney = {
     id: journeyId,
     lastTouched: new Date().toISOString(),
@@ -49,7 +52,7 @@ beforeEach(() => {
       prisonerSearchService,
       referenceDataService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.addContactJourneys = {}
@@ -118,7 +121,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-gender/:journeyId'
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADD_CONTACT_ENTER_GENDER_PAGE, {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         prisonerNumber: 'A1234BC',
@@ -144,6 +147,17 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-gender/:journeyId'
       .get(`/prisoner/${prisonerNumber}/contacts/create/enter-gender/${uuidv4()}`)
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 200],
+    [authorisingUser, 200],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    await request(app)
+      .get(`/prisoner/${prisonerNumber}/contacts/create/enter-gender/${journeyId}`)
+      .expect(expectedStatus)
   })
 })
 
@@ -206,5 +220,18 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-gender/:journeyId
       .send({})
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/enter-gender/${journeyId}`)
+      .type('form')
+      .send({ gender: 'F' })
+      .expect(expectedStatus)
   })
 })

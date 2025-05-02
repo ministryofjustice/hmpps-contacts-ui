@@ -4,9 +4,12 @@ import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { nextPageForAddContactJourney } from '../addContactFlowControl'
 import { AddContactJourney, ReturnPoint } from '../../../../@types/journeys'
+import Permission from '../../../../enumeration/permission'
 
 export default class StartAddContactJourneyController implements PageHandler {
   public PAGE_NAME = Page.CREATE_CONTACT_START_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   private MAX_JOURNEYS = 5
 

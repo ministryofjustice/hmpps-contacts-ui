@@ -7,11 +7,14 @@ import { Navigation } from '../../../common/navigation'
 import { CreateContactAddressParam, getAddressFormAndUrl } from '../common/utils'
 import { getFormattedAddress } from '../../../manage/addresses/common/utils'
 import { OptionalPhonesSchemaType } from '../../../manage/addresses/add-address-phone/AddAddressPhonesSchema'
+import Permission from '../../../../../enumeration/permission'
 
 export default class CreateContactAddressPhoneController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
   public PAGE_NAME = Page.CREATE_CONTACT_ADD_ADDRESS_PHONE_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (req: Request<CreateContactAddressParam>, res: Response): Promise<void> => {
     const { user } = res.locals
