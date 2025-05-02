@@ -10,6 +10,7 @@ import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSucces
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import { ManageDomesticStatusSchemaType } from './manageDomesticStatusSchema'
 import { ContactDetails, PatchContactRequest } from '../../../../../@types/contactsApiClient'
+import Permission from '../../../../../enumeration/permission'
 
 export default class ManageDomesticStatusController implements PageHandler {
   constructor(
@@ -18,6 +19,8 @@ export default class ManageDomesticStatusController implements PageHandler {
   ) {}
 
   public PAGE_NAME = Page.MANAGE_DOMESTIC_STATUS_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }>,

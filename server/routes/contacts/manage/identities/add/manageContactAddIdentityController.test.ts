@@ -1,13 +1,20 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../../testutils/appSetup'
+import {
+  appWithAllRoutes,
+  flashProvider,
+  basicPrisonUser,
+  adminUser,
+  authorisingUser,
+} from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { ContactDetails, IdentityDocument } from '../../../../../@types/contactsApiClient'
+import { HmppsUser } from '../../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/referenceDataService')
@@ -38,8 +45,10 @@ const contact: ContactDetails = {
   createdBy: basicPrisonUser.username,
   createdTime: '',
 }
+let currentUser: HmppsUser
 
 beforeEach(() => {
+  currentUser = adminUser
   app = appWithAllRoutes({
     services: {
       auditService,
@@ -47,7 +56,7 @@ beforeEach(() => {
       prisonerSearchService,
       contactsService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
   })
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
@@ -97,7 +106,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_ADD_IDENTITY_PAGE, {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '987654',
@@ -105,6 +114,19 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
         prisonerNumber: 'A1234BC',
       },
     })
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 200],
+    [authorisingUser, 200],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    contactsService.getContact.mockResolvedValue(contact)
+
+    await request(app)
+      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/create`)
+      .expect(expectedStatus)
   })
 
   it('should render previously entered details if validation errors or adding or removing without javascript', async () => {
@@ -171,7 +193,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
 
     expect(contactsService.createContactIdentities).toHaveBeenCalledWith(
       contactId,
-      basicPrisonUser,
+      currentUser,
       expectedIdentities,
       expect.any(String),
     )
@@ -179,6 +201,31 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       FLASH_KEY__SUCCESS_BANNER,
       'You’ve updated the identity documentation for Jones Middle Names Mason.',
     )
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    contactsService.createContactIdentities.mockResolvedValue([])
+    contactsService.getContactName.mockResolvedValue(TestData.contactName({ middleNames: 'Middle Names' }))
+
+    const form = {
+      save: '',
+      identities: [
+        { identityType: 'DL', identityValue: '123456789', issuingAuthority: '000' },
+        { identityType: 'PASS', identityValue: '987564321', issuingAuthority: '' },
+      ],
+    }
+    await request(app)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/create`,
+      )
+      .type('form')
+      .send(form)
+      .expect(expectedStatus)
   })
 
   it('should return to input page with details kept if there are validation errors', async () => {

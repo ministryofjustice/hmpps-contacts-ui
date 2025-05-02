@@ -4,9 +4,12 @@ import { PageHandler } from '../../../../../../interfaces/pageHandler'
 import { RelationshipTypeSchema } from '../../../../add/relationship-type/relationshipTypeSchema'
 import Urls from '../../../../../urls'
 import { Navigation } from '../../../../common/navigation'
+import Permission from '../../../../../../enumeration/permission'
 
 export default class ChangeRelationshipTypeController implements PageHandler {
   public PAGE_NAME = Page.CHANGE_RELATIONSHIP_SELECT_NEW_TYPE_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<

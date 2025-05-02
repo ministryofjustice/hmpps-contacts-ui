@@ -21,7 +21,7 @@ context('Change Relationship Type', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
-    cy.task('stubSignIn', { roles: ['PRISON'] })
+    cy.task('stubSignIn', { roles: ['PRISON', 'CONTACTS_ADMINISTRATOR'] })
     cy.task('stubRelationshipReferenceData')
     cy.task('stubOfficialRelationshipReferenceData')
     cy.task('stubTitlesReferenceData')

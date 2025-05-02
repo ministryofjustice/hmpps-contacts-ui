@@ -3,7 +3,13 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
-import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../../../testutils/appSetup'
+import {
+  appWithAllRoutes,
+  flashProvider,
+  basicPrisonUser,
+  adminUser,
+  authorisingUser,
+} from '../../../../../testutils/appSetup'
 import { Page } from '../../../../../../services/auditService'
 import { mockedReferenceData } from '../../../../../testutils/stubReferenceData'
 import TestData from '../../../../../testutils/testData'
@@ -11,6 +17,7 @@ import { MockedService } from '../../../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../../middleware/setUpSuccessNotificationBanner'
 import { ChangeRelationshipTypeJourney } from '../../../../../../@types/journeys'
 import { ContactDetails, PatchRelationshipRequest } from '../../../../../../@types/contactsApiClient'
+import { HmppsUser } from '../../../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../../../services/auditService')
 jest.mock('../../../../../../services/referenceDataService')
@@ -29,6 +36,7 @@ const prisonerNumber = 'A1234BC'
 const contactId = 123
 const prisonerContactId = 897
 let existingJourney: ChangeRelationshipTypeJourney
+let currentUser: HmppsUser
 const contact: ContactDetails = {
   id: contactId,
   isStaff: false,
@@ -50,6 +58,7 @@ const relationship = TestData.prisonerContactRelationship({
   relationshipToPrisonerCode: 'OTHER',
 })
 beforeEach(() => {
+  currentUser = adminUser
   existingJourney = {
     id: journeyId,
     lastTouched: new Date().toISOString(),
@@ -72,7 +81,7 @@ beforeEach(() => {
       prisonerSearchService,
       contactsService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.changeRelationshipTypeJourneys = {}
@@ -166,7 +175,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(auditService.logPageView).toHaveBeenCalledWith(
       Page.CHANGE_RELATIONSHIP_SELECT_NEW_RELATIONSHIP_TO_PRISONER_PAGE,
       {
-        who: basicPrisonUser.username,
+        who: currentUser.username,
         correlationId: expect.any(String),
         details: {
           contactId: '123',
@@ -186,6 +195,20 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       .expect(res => {
         expect(res.text).toContain('Page not found')
       })
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 200],
+    [authorisingUser, 200],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+
+    await request(app)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-to-prisoner/${journeyId}`,
+      )
+      .expect(expectedStatus)
   })
 })
 
@@ -214,7 +237,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     expect(contactsService.updateContactRelationshipById).toHaveBeenCalledWith(
       prisonerContactId,
       expected,
-      basicPrisonUser,
+      currentUser,
       expect.any(String),
     )
     expect(flashProvider).toHaveBeenCalledWith(
@@ -249,5 +272,24 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .expect(res => {
         expect(res.text).toContain('Page not found')
       })
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    existingJourney.relationshipType = 'O'
+    contactsService.getContactName.mockResolvedValue(contact)
+    contactsService.updateContactRelationshipById.mockResolvedValue(undefined)
+
+    await request(app)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-to-prisoner/${journeyId}`,
+      )
+      .type('form')
+      .send({ relationship: 'DR' })
+      .expect(expectedStatus)
   })
 })

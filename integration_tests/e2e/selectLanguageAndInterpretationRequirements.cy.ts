@@ -12,7 +12,7 @@ context('Select Language and interpretation requirements', () => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
     cy.task('stubPhoneTypeReferenceData')
-    cy.task('stubSignIn', { roles: ['PRISON'] })
+    cy.task('stubSignIn', { roles: ['PRISON', 'CONTACTS_ADMINISTRATOR'] })
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,

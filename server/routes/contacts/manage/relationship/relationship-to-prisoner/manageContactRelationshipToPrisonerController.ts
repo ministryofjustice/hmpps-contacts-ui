@@ -15,6 +15,7 @@ import {
   PrisonerContactRelationshipDetails,
 } from '../../../../../@types/contactsApiClient'
 import { ContactNames } from '../../../../../@types/journeys'
+import Permission from '../../../../../enumeration/permission'
 
 export default class ManageContactRelationshipToPrisonerController implements PageHandler {
   constructor(
@@ -23,6 +24,8 @@ export default class ManageContactRelationshipToPrisonerController implements Pa
   ) {}
 
   public PAGE_NAME = Page.MANAGE_CONTACT_UPDATE_RELATIONSHIP_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }>,

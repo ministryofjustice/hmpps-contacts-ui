@@ -10,6 +10,7 @@ import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSucces
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import { ManageLanguageAndInterpreterSchemaType } from './manageLanguageAndInterpreterSchema'
 import { ContactDetails, PatchContactRequest, ReferenceCode } from '../../../../../@types/contactsApiClient'
+import Permission from '../../../../../enumeration/permission'
 
 export default class ManageLanguageAndInterpreterController implements PageHandler {
   constructor(
@@ -18,6 +19,8 @@ export default class ManageLanguageAndInterpreterController implements PageHandl
   ) {}
 
   public PAGE_NAME = Page.MANAGE_LANGUAGE_AND_INTERPRETER_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }>,

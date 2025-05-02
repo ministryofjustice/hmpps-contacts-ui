@@ -1,13 +1,20 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../testutils/appSetup'
+import {
+  appWithAllRoutes,
+  flashProvider,
+  basicPrisonUser,
+  adminUser,
+  authorisingUser,
+} from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { mockedReferenceData, STUBBED_TITLE_OPTIONS } from '../../../testutils/stubReferenceData'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
 import { PatchContactRequest, PatchContactResponse } from '../../../../@types/contactsApiClient'
+import { HmppsUser } from '../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/referenceDataService')
@@ -29,8 +36,10 @@ const contact = TestData.contact({
   middleNames: 'middle names',
   lastName: 'last',
 })
+let currentUser: HmppsUser
 
 beforeEach(() => {
+  currentUser = adminUser
   app = appWithAllRoutes({
     services: {
       auditService,
@@ -38,7 +47,7 @@ beforeEach(() => {
       prisonerSearchService,
       contactsService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
   })
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
@@ -109,7 +118,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.UPDATE_NAME_PAGE, {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '99',
@@ -191,6 +200,25 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('#lastName').text()).toStrictEqual('Last')
     expect($('#title').val()).toStrictEqual('')
   })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 200],
+    [authorisingUser, 200],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    contactsService.getContactName.mockResolvedValue({
+      firstName: 'first',
+      lastName: 'last',
+    })
+
+    // When
+    await request(app)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-title-or-middle-names`,
+      )
+      .expect(expectedStatus)
+  })
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/change-contact-title-or-middle-names', () => {
@@ -220,7 +248,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     expect(contactsService.updateContactById).toHaveBeenCalledWith(
       contactId,
       expectedRequest,
-      basicPrisonUser,
+      currentUser,
       expect.any(String),
     )
     expect(flashProvider).toHaveBeenCalledWith(
@@ -241,5 +269,28 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         'Location',
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-title-or-middle-names#`,
       )
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    const patchResponse: Partial<PatchContactResponse> = {
+      firstName: 'first',
+      lastName: 'last',
+      middleNames: 'mid',
+      titleCode: 'DR',
+    }
+    contactsService.updateContactById.mockResolvedValue(patchResponse as PatchContactResponse)
+
+    await request(app)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-title-or-middle-names`,
+      )
+      .type('form')
+      .send({ middleNames: 'mid', title: 'DR' })
+      .expect(expectedStatus)
   })
 })

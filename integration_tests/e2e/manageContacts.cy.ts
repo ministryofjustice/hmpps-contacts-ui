@@ -7,7 +7,7 @@ context('Manage contacts ', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
-    cy.task('stubSignIn', { roles: ['PRISON'] })
+    cy.task('stubSignIn', { roles: ['PRISON', 'CONTACTS_ADMINISTRATOR'] })
     cy.signIn({ startUrl: '/prisoner-search' })
   })
 

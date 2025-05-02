@@ -10,6 +10,7 @@ import Urls from '../../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../../middleware/setUpSuccessNotificationBanner'
 import ReferenceCodeType from '../../../../../../enumeration/referenceCodeType'
 import { PatchRelationshipRequest } from '../../../../../../@types/contactsApiClient'
+import Permission from '../../../../../../enumeration/permission'
 
 export default class ChangeRelationshipTypeRelationshipToPrisonerController implements PageHandler {
   constructor(
@@ -18,6 +19,8 @@ export default class ChangeRelationshipTypeRelationshipToPrisonerController impl
   ) {}
 
   public PAGE_NAME = Page.CHANGE_RELATIONSHIP_SELECT_NEW_RELATIONSHIP_TO_PRISONER_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string; journeyId: string }>,

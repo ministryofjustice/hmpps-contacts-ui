@@ -1,10 +1,11 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, basicPrisonUser } from '../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
+import { HmppsUser } from '../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -17,15 +18,17 @@ const contactsService = MockedService.ContactsService()
 let app: Express
 const prisonerNumber = 'A1234BC'
 const prisonerContactId = 987654
+let currentUser: HmppsUser
 
 beforeEach(() => {
+  currentUser = adminUser
   app = appWithAllRoutes({
     services: {
       auditService,
       prisonerSearchService,
       contactsService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
   })
 })
 
@@ -68,7 +71,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     )
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_UPDATE_STAFF_PAGE, {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '22',
@@ -76,6 +79,22 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
         prisonerNumber: 'A1234BC',
       },
     })
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 200],
+    [authorisingUser, 200],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    const ContactDetails = TestData.contact()
+    const contactId = ContactDetails.id
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.getContact.mockResolvedValue(ContactDetails)
+
+    await request(app)
+      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/staff`)
+      .expect(expectedStatus)
   })
 })
 
@@ -97,7 +116,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       expect(contactsService.updateContactById).toHaveBeenCalledWith(
         10,
         expectedPayload,
-        basicPrisonUser,
+        currentUser,
         expect.any(String),
       )
     })
@@ -113,5 +132,19 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         'Location',
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/staff#`,
       )
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    contactsService.getContactName.mockResolvedValue(TestData.contact())
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/staff`)
+      .type('form')
+      .send({ isStaff: 'YES' })
+      .expect(expectedStatus)
   })
 })

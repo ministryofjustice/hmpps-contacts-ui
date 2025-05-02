@@ -10,6 +10,7 @@ import ReferenceDataService from '../../../../services/referenceDataService'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import { getReferenceDataOrderDictionary } from '../../../../utils/sortPhoneNumbers'
 import { ContactDetails, PrisonerContactRelationshipDetails } from '../../../../@types/contactsApiClient'
+import Permission from '../../../../enumeration/permission'
 
 export default class ContactDetailsController implements PageHandler {
   constructor(
@@ -19,6 +20,8 @@ export default class ContactDetailsController implements PageHandler {
   ) {}
 
   public PAGE_NAME = Page.CONTACT_DETAILS_PAGE
+
+  public REQUIRED_PERMISSION = Permission.VIEW_CONTACT_LIST
 
   private LINKED_PRISONER_ITEMS_PER_PAGE = 50
 

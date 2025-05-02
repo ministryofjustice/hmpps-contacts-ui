@@ -1,13 +1,20 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../../testutils/appSetup'
+import {
+  appWithAllRoutes,
+  flashProvider,
+  basicPrisonUser,
+  adminUser,
+  authorisingUser,
+} from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { ContactDetails, ContactIdentityDetails } from '../../../../../@types/contactsApiClient'
+import { HmppsUser } from '../../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/referenceDataService')
@@ -42,8 +49,10 @@ const contact: ContactDetails = {
   createdBy: basicPrisonUser.username,
   createdTime: '2024-01-01',
 }
+let currentUser: HmppsUser
 
 beforeEach(() => {
+  currentUser = adminUser
   app = appWithAllRoutes({
     services: {
       auditService,
@@ -51,7 +60,7 @@ beforeEach(() => {
       prisonerSearchService,
       contactsService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
   })
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
@@ -94,6 +103,19 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('#issuingAuthority').val()).toStrictEqual('UK')
   })
 
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 200],
+    [authorisingUser, 200],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    contactsService.getContact.mockResolvedValue(contact)
+
+    await request(app)
+      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/1/edit`)
+      .expect(expectedStatus)
+  })
+
   it('should render edited answers instead of original if there is a validation error', async () => {
     // Given
     contactsService.getContact.mockResolvedValue(contact)
@@ -126,7 +148,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_EDIT_IDENTITY_PAGE, {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '987654',
@@ -167,7 +189,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     expect(contactsService.updateContactIdentity).toHaveBeenCalledWith(
       contactId,
       999,
-      basicPrisonUser,
+      currentUser,
       expect.any(String),
       'MOB',
       '123456789',
@@ -195,7 +217,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     expect(contactsService.updateContactIdentity).toHaveBeenCalledWith(
       contactId,
       999,
-      basicPrisonUser,
+      currentUser,
       expect.any(String),
       'MOB',
       '123456789',
@@ -220,5 +242,23 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/999/edit#`,
       )
     expect(contactsService.updateContactIdentity).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    contactsService.updateContactIdentity.mockResolvedValue({} as ContactIdentityDetails)
+    contactsService.getContactName.mockResolvedValue(TestData.contactName({ middleNames: 'Middle Names' }))
+
+    await request(app)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/999/edit`,
+      )
+      .type('form')
+      .send({ identityType: 'MOB', identityValue: '123456789', issuingAuthority: '000' })
+      .expect(expectedStatus)
   })
 })

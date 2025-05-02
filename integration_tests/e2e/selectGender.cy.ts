@@ -11,7 +11,7 @@ context('Select Gender', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
-    cy.task('stubSignIn', { roles: ['PRISON'] })
+    cy.task('stubSignIn', { roles: ['PRISON', 'CONTACTS_ADMINISTRATOR'] })
     cy.task('stubPhoneTypeReferenceData')
     cy.task('stubTitlesReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
