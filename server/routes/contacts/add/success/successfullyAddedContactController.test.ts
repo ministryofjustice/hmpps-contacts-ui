@@ -138,4 +138,48 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     contactsService.getContactName.mockResolvedValue(TestData.contact())
     await request(app).get(`/prisoner/A1234BC/contact/NEW/123456/654321/success`).expect(expectedStatus)
   })
+
+  it.each(['EXISTING', 'NEW'])(
+    'Should show restrictions advisory text if user can manage restrictions for mode %s',
+    async mode => {
+      currentUser = authorisingUser
+
+      contactsService.getContactName.mockResolvedValue(
+        TestData.contact({
+          lastName: 'Last',
+          middleNames: 'Middle Names',
+          firstName: 'First',
+        }),
+      )
+
+      // When
+      const response = await request(app).get(`/prisoner/A1234BC/contact/${mode}/123456/654321/success`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect($('h2:contains("Add restrictions")')).toHaveLength(1)
+    },
+  )
+
+  it.each(['EXISTING', 'NEW'])(
+    'Should not show restrictions advisory text if user cannot manage restrictions for mode %s',
+    async mode => {
+      currentUser = adminUser
+
+      contactsService.getContactName.mockResolvedValue(
+        TestData.contact({
+          lastName: 'Last',
+          middleNames: 'Middle Names',
+          firstName: 'First',
+        }),
+      )
+
+      // When
+      const response = await request(app).get(`/prisoner/A1234BC/contact/${mode}/123456/654321/success`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect($('h2:contains("Add restrictions")')).toHaveLength(0)
+    },
+  )
 })
