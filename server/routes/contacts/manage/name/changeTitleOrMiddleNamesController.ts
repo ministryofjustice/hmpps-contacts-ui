@@ -10,6 +10,7 @@ import { formatNameFirstNameFirst } from '../../../../utils/formatName'
 import Urls from '../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
 import { PatchContactRequest } from '../../../../@types/contactsApiClient'
+import Permission from '../../../../enumeration/permission'
 
 export default class ChangeTitleOrMiddleNamesController implements PageHandler {
   constructor(
@@ -18,6 +19,8 @@ export default class ChangeTitleOrMiddleNamesController implements PageHandler {
   ) {}
 
   public PAGE_NAME = Page.UPDATE_NAME_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<{

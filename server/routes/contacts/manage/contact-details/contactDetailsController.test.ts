@@ -147,6 +147,19 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect(response.status).toEqual(200)
       expect($('.confirm-comments-value').text().trim()).toStrictEqual('')
     })
+
+    it.each([
+      [basicPrisonUser, 200],
+      [adminUser, 200],
+      [authorisingUser, 200],
+    ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+      currentUser = user
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      const contact = TestData.contact()
+      contactsService.getContact.mockResolvedValue(contact)
+
+      await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`).expect(expectedStatus)
+    })
   })
 
   describe('Restrictions', () => {

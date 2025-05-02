@@ -11,6 +11,7 @@ import Urls from '../../../urls'
 import { ContactGenderSchemaType } from './contactGenderSchema'
 import { PrisonerJourneyParams } from '../../../../@types/journeys'
 import { ContactDetails, PatchContactRequest } from '../../../../@types/contactsApiClient'
+import Permission from '../../../../enumeration/permission'
 
 export default class ManageGenderController implements PageHandler {
   constructor(
@@ -19,6 +20,8 @@ export default class ManageGenderController implements PageHandler {
   ) {}
 
   public PAGE_NAME = Page.MANAGE_GENDER_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<PrisonerJourneyParams & { contactId: string; prisonerContactId: string }>,

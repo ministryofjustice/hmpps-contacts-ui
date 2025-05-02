@@ -5,11 +5,14 @@ import { ContactsService } from '../../../../services'
 import { Navigation } from '../../common/navigation'
 import Urls from '../../../urls'
 import { ContactDetails, PrisonerContactRelationshipDetails } from '../../../../@types/contactsApiClient'
+import Permission from '../../../../enumeration/permission'
 
 export default class EditContactDetailsController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
 
   public PAGE_NAME = Page.EDIT_CONTACT_DETAILS_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }, unknown, unknown>,

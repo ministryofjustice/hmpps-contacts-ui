@@ -8,11 +8,14 @@ import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNo
 import { formatNameFirstNameFirst } from '../../../../utils/formatName'
 import { ManageContactStaffSchemaType } from './manageContactStaffSchema'
 import { ContactDetails, PatchContactRequest } from '../../../../@types/contactsApiClient'
+import Permission from '../../../../enumeration/permission'
 
 export default class ManageContactStaffController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
 
   public PAGE_NAME = Page.MANAGE_CONTACT_UPDATE_STAFF_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }>,

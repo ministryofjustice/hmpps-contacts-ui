@@ -10,6 +10,7 @@ import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import { ContactDetails } from '../../../../../@types/contactsApiClient'
+import Permission from '../../../../../enumeration/permission'
 
 export default class ManageContactAddIdentityController implements PageHandler {
   constructor(
@@ -18,6 +19,8 @@ export default class ManageContactAddIdentityController implements PageHandler {
   ) {}
 
   public PAGE_NAME = Page.MANAGE_CONTACT_ADD_IDENTITY_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<{

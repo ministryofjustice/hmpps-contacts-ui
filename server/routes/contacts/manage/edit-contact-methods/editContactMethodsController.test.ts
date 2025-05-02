@@ -3,12 +3,13 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { Cheerio, CheerioAPI } from 'cheerio'
 import { Element } from 'domhandler'
-import { appWithAllRoutes, basicPrisonUser } from '../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../testutils/appSetup'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { Page } from '../../../../services/auditService'
 import { mockedReferenceData } from '../../../testutils/stubReferenceData'
 import { ContactAddressDetails } from '../../../../@types/contactsApiClient'
+import { HmppsUser } from '../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -22,8 +23,10 @@ const referenceDataService = MockedService.ReferenceDataService()
 
 let app: Express
 const prisonerNumber = 'A1234BC'
+let currentUser: HmppsUser
 
 beforeEach(() => {
+  currentUser = adminUser
   app = appWithAllRoutes({
     services: {
       auditService,
@@ -31,6 +34,7 @@ beforeEach(() => {
       contactsService,
       referenceDataService,
     },
+    userSupplier: () => currentUser,
   })
 })
 
@@ -54,7 +58,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
     )
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.EDIT_CONTACT_METHODS_PAGE, {
-      who: basicPrisonUser.username,
+      who: adminUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '1',
@@ -62,7 +66,18 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         prisonerNumber: 'A1234BC',
       },
     })
-    expect(contactsService.getContact).toHaveBeenCalledWith(1, basicPrisonUser)
+    expect(contactsService.getContact).toHaveBeenCalledWith(1, adminUser)
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 200],
+    [authorisingUser, 200],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    await request(app)
+      .get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details`)
+      .expect(expectedStatus)
   })
 
   it('should have correct navigation', async () => {

@@ -52,7 +52,7 @@ context('Update Prisoner Contact Employments', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
-    cy.task('stubSignIn', { roles: ['PRISON'] })
+    cy.task('stubSignIn', { roles: ['PRISON', 'CONTACTS_ADMINISTRATOR'] })
     cy.task('stubRestrictionTypeReferenceData')
     cy.task('stubTitlesReferenceData')
     cy.task('stubPhoneTypeReferenceData')

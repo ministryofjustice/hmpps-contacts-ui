@@ -28,7 +28,7 @@ context('Add Address', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
-    cy.task('stubSignIn', { roles: ['PRISON'] })
+    cy.task('stubSignIn', { roles: ['PRISON', 'CONTACTS_ADMINISTRATOR'] })
     cy.task('stubTitlesReferenceData')
     cy.task('stubAddressTypeReferenceData')
     cy.task('stubCityReferenceData')

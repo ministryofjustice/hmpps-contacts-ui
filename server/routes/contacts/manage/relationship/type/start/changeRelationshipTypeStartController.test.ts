@@ -2,12 +2,13 @@ import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
-import { appWithAllRoutes, basicPrisonUser } from '../../../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../../../testutils/appSetup'
 import { Page } from '../../../../../../services/auditService'
 import TestData from '../../../../../testutils/testData'
 import { MockedService } from '../../../../../../testutils/mockedServices'
 import { ContactDetails, PrisonerContactRelationshipDetails } from '../../../../../../@types/contactsApiClient'
 import { ChangeRelationshipTypeJourney } from '../../../../../../@types/journeys'
+import { HmppsUser } from '../../../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../../../services/auditService')
 jest.mock('../../../../../../services/contactsService')
@@ -44,8 +45,10 @@ const prisonerContact: PrisonerContactRelationshipDetails = TestData.prisonerCon
   relationshipTypeCode: 'S',
   relationshipToPrisonerCode: 'MOT',
 })
+let currentUser: HmppsUser
 
 beforeEach(() => {
+  currentUser = adminUser
   preExistingJourneysToAddToSession = []
   app = appWithAllRoutes({
     services: {
@@ -53,7 +56,7 @@ beforeEach(() => {
       contactsService,
       prisonerSearchService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       if (preExistingJourneysToAddToSession) {
@@ -84,7 +87,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     // Then
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CHANGE_RELATIONSHIP_TYPE_START_PAGE, {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '123',
@@ -106,6 +109,20 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       firstName: 'first',
       middleNames: 'middle',
     })
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    contactsService.getContact.mockResolvedValue(contact)
+    contactsService.getPrisonerContactRelationship.mockResolvedValue(prisonerContact)
+
+    await request(app)
+      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/start`)
+      .expect(expectedStatus)
   })
 
   it('should not remove any existing address journeys in the session', async () => {

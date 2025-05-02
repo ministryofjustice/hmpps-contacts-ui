@@ -8,6 +8,7 @@ import { getReferenceDataOrderDictionary } from '../../../../utils/sortPhoneNumb
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import { ContactDetails } from '../../../../@types/contactsApiClient'
+import Permission from '../../../../enumeration/permission'
 
 export default class EditContactMethodsController implements PageHandler {
   constructor(
@@ -16,6 +17,8 @@ export default class EditContactMethodsController implements PageHandler {
   ) {}
 
   public PAGE_NAME = Page.EDIT_CONTACT_METHODS_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }, unknown, unknown>,

@@ -199,7 +199,7 @@ const ManageContactsRoutes = (
     new EditRestrictionsController(contactsService, restrictionsService),
   )
 
-  // Manage the attribute of one contact (phones, addresses, IDs, emails, restrictions)
+  // Contact details (relationship, name, dob, identity docs, etc.)
   standAloneRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/language-and-interpreter',
     controller: new ManageLanguageAndInterpreterController(contactsService, referenceDataService),
@@ -218,24 +218,6 @@ const ManageContactsRoutes = (
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/staff',
     controller: new ManageContactStaffController(contactsService),
     schema: manageContactStaffSchema,
-  })
-
-  standAloneRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/phone/create',
-    controller: new ManageContactAddPhoneController(contactsService, referenceDataService),
-    schema: phonesSchema,
-  })
-
-  standAloneRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/phone/:contactPhoneId/edit',
-    controller: new ManageContactEditPhoneController(contactsService, referenceDataService),
-    schema: phoneNumberSchema,
-  })
-
-  standAloneRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/phone/:contactPhoneId/delete',
-    controller: new ManageContactDeletePhoneController(contactsService),
-    noValidation: true,
   })
 
   standAloneRoute({
@@ -293,13 +275,6 @@ const ManageContactsRoutes = (
   })
 
   standAloneRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-relationship-to-prisoner',
-    controller: new ManageContactRelationshipToPrisonerController(contactsService, referenceDataService),
-    schema: selectRelationshipSchemaFactory(),
-    prisonerDetailsRequiredOnPost: true,
-  })
-
-  standAloneRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/emergency-contact-or-next-of-kin',
     controller: new ManageEmergencyContactOrNextOfKinController(contactsService),
     schema: manageEmergencyContactOrNextOfKinSchema,
@@ -313,6 +288,42 @@ const ManageContactsRoutes = (
     prisonerDetailsRequiredOnPost: true,
   })
 
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/relationship-comments',
+    controller: new ManageRelationshipCommentsController(contactsService),
+    schema: enterRelationshipCommentsSchema,
+    prisonerDetailsRequiredOnPost: true,
+  })
+
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-relationship-to-prisoner',
+    controller: new ManageContactRelationshipToPrisonerController(contactsService, referenceDataService),
+    schema: selectRelationshipSchemaFactory(),
+    prisonerDetailsRequiredOnPost: true,
+  })
+
+  // Relationship type mini journey
+  get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/type/start',
+    new ChangeRelationshipTypeStartController(contactsService),
+  )
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/type/select-new-relationship-type/:journeyId',
+    controller: new ChangeRelationshipTypeController(),
+    schema: selectRelationshipTypeSchema(),
+    journeyEnsurer: [ensureInChangeRelationshipTypeJourney],
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/type/select-new-relationship-to-prisoner/:journeyId',
+    controller: new ChangeRelationshipTypeRelationshipToPrisonerController(contactsService, referenceDataService),
+    schema: selectRelationshipSchemaFactory(),
+    journeyEnsurer: [ensureInChangeRelationshipTypeJourney],
+    prisonerDetailsRequiredOnPost: true,
+  })
+
+  // Contact methods (email, phone address)
   standAloneRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/email/create',
     controller: new ManageContactAddEmailController(contactsService),
@@ -332,10 +343,21 @@ const ManageContactsRoutes = (
   })
 
   standAloneRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/relationship-comments',
-    controller: new ManageRelationshipCommentsController(contactsService),
-    schema: enterRelationshipCommentsSchema,
-    prisonerDetailsRequiredOnPost: true,
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/phone/create',
+    controller: new ManageContactAddPhoneController(contactsService, referenceDataService),
+    schema: phonesSchema,
+  })
+
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/phone/:contactPhoneId/edit',
+    controller: new ManageContactEditPhoneController(contactsService, referenceDataService),
+    schema: phoneNumberSchema,
+  })
+
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/phone/:contactPhoneId/delete',
+    controller: new ManageContactDeletePhoneController(contactsService),
+    noValidation: true,
   })
 
   // Addresses
@@ -501,27 +523,6 @@ const ManageContactsRoutes = (
     controller: new DeleteEmploymentController(),
     journeyEnsurer: [ensureInUpdateEmploymentsJourney, ensureValidEmploymentIdx(false)],
     noValidation: true,
-  })
-
-  // Relationship type mini journey
-  get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/type/start',
-    new ChangeRelationshipTypeStartController(contactsService),
-  )
-
-  journeyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/type/select-new-relationship-type/:journeyId',
-    controller: new ChangeRelationshipTypeController(),
-    schema: selectRelationshipTypeSchema(),
-    journeyEnsurer: [ensureInChangeRelationshipTypeJourney],
-  })
-
-  journeyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/type/select-new-relationship-to-prisoner/:journeyId',
-    controller: new ChangeRelationshipTypeRelationshipToPrisonerController(contactsService, referenceDataService),
-    schema: selectRelationshipSchemaFactory(),
-    journeyEnsurer: [ensureInChangeRelationshipTypeJourney],
-    prisonerDetailsRequiredOnPost: true,
   })
 
   return router
