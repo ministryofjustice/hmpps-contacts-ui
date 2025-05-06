@@ -5,11 +5,14 @@ import OrganisationsService from '../../../../../services/organisationsService'
 import { IsCorrectEmployerSchema } from './checkEmployerSchema'
 import { EmploymentUtils } from '../../../add/employments/common/utils'
 import { UpdateEmploymentJourneyParams } from '../../../../../@types/journeys'
+import Permission from '../../../../../enumeration/permission'
 
 export default class CheckEmployerController implements PageHandler {
   constructor(private readonly organisationsService: OrganisationsService) {}
 
   public PAGE_NAME = Page.MANAGE_CONTACT_CHECK_EMPLOYER_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<UpdateEmploymentJourneyParams, unknown, unknown, { organisationId: string }>,

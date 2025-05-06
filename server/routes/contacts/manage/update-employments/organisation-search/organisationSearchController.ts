@@ -5,11 +5,14 @@ import { setPaginationLocals } from '../../../../../views/partials/simplePaginat
 import OrganisationsService from '../../../../../services/organisationsService'
 import { OrganisationSummaryResultItemPage } from '../../../../../@types/organisationsApiClient'
 import { PrisonerJourneyParams, UpdateEmploymentJourneyParams } from '../../../../../@types/journeys'
+import Permission from '../../../../../enumeration/permission'
 
 export default class OrganisationSearchController implements PageHandler {
   constructor(private readonly organisationsService: OrganisationsService) {}
 
   public PAGE_NAME = Page.MANAGE_CONTACT_SEARCH_ORGANISATION_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   private TABLE_ROW_COUNT = 10
 

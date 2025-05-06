@@ -3,11 +3,18 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { v4 as uuidv4 } from 'uuid'
 import { SessionData } from 'express-session'
-import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../testutils/appSetup'
+import {
+  appWithAllRoutes,
+  flashProvider,
+  basicPrisonUser,
+  adminUser,
+  authorisingUser,
+} from '../../../testutils/appSetup'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
 import { UpdateEmploymentsJourney } from '../../../../@types/journeys'
+import { HmppsUser } from '../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/contactsService')
@@ -18,6 +25,7 @@ const contactsService = MockedService.ContactsService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 
 let app: Express
+let currentUser: HmppsUser
 const prisonerNumber = 'A1234BC'
 const journeyId = uuidv4()
 const prisoner = TestData.prisoner()
@@ -44,6 +52,7 @@ const setJourneyData = (data: UpdateEmploymentsJourney) => {
 }
 
 beforeEach(() => {
+  currentUser = adminUser
   app = appWithAllRoutes({
     services: {
       auditService,
@@ -54,6 +63,7 @@ beforeEach(() => {
       session = receivedSession
       sessionInjection.setSession(session)
     },
+    userSupplier: () => currentUser,
   })
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
 })
@@ -91,7 +101,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
 
     // Then
     expect(auditService.logPageView).toHaveBeenCalledWith('MANAGE_CONTACT_UPDATE_EMPLOYMENTS_PAGE', {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '1',
@@ -173,6 +183,22 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
     expect($('dt:contains("Employer’s primary address")').next().text()).toMatch(/Not provided/)
     expect($('dt:contains("Business phone number at primary address")').next().text()).toMatch(/Not provided/)
   })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 200],
+    [authorisingUser, 200],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    setJourneyData({
+      ...generateJourneyData(),
+      employments: [],
+    })
+
+    await request(app)
+      .get(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/${journeyId}`)
+      .expect(expectedStatus)
+  })
 })
 
 describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () => {
@@ -226,7 +252,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
         ],
         deleteEmployments: [201],
       },
-      basicPrisonUser,
+      currentUser,
       expect.any(String),
     )
 
@@ -273,7 +299,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
         updateEmployments: [],
         deleteEmployments: [],
       },
-      basicPrisonUser,
+      currentUser,
       expect.any(String),
     )
     expect(response.status).toEqual(302)
@@ -315,7 +341,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
         ],
         deleteEmployments: [],
       },
-      basicPrisonUser,
+      currentUser,
       expect.any(String),
     )
     expect(response.status).toEqual(302)
@@ -342,9 +368,44 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
         updateEmployments: [],
         deleteEmployments: [201],
       },
-      basicPrisonUser,
+      currentUser,
       expect.any(String),
     )
     expect(response.status).toEqual(302)
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    setJourneyData({
+      ...generateJourneyData(),
+      employmentIdsToDelete: [201],
+      employments: [
+        {
+          employmentId: 1,
+          employer: {
+            organisationId: 101,
+            organisationName: '',
+            organisationActive: true,
+          },
+          isActive: false,
+        },
+        {
+          employer: {
+            organisationId: 102,
+            organisationName: '',
+            organisationActive: true,
+          },
+          isActive: true,
+        },
+      ],
+    })
+
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/${journeyId}`)
+      .expect(expectedStatus)
   })
 })

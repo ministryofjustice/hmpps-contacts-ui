@@ -4,7 +4,6 @@ import { SchemaFactory, validate } from '../../../middleware/validationMiddlewar
 import AuditService from '../../../services/auditService'
 import ListContactsController from './list/listContactsController'
 import { ContactsService, PrisonerSearchService } from '../../../services'
-import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import populatePrisonerDetailsIfInCaseload from '../../../middleware/populatePrisonerDetailsIfInCaseload'
 import ContactDetailsController from './contact-details/contactDetailsController'
 import ReferenceDataService from '../../../services/referenceDataService'
@@ -485,9 +484,9 @@ const ManageContactsRoutes = (
   })
 
   // Edit employments
-  router.get(
+  get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments',
-    asyncMiddleware(new UpdateEmploymentsStartController(contactsService).GET),
+    new UpdateEmploymentsStartController(contactsService),
   )
 
   journeyRoute({

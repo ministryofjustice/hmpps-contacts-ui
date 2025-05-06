@@ -3,10 +3,11 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, basicPrisonUser } from '../../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../../testutils/appSetup'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { UpdateEmploymentsJourney } from '../../../../../@types/journeys'
+import { HmppsUser } from '../../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -17,6 +18,7 @@ const prisonerSearchService = MockedService.PrisonerSearchService()
 const organisationsService = MockedService.OrganisationsService()
 
 let app: Express
+let currentUser: HmppsUser
 const journeyId = uuidv4()
 const prisonerNumber = 'A1234BC'
 const prisoner = TestData.prisoner()
@@ -57,6 +59,7 @@ const setJourneyData = (data: UpdateEmploymentsJourney) => {
 }
 
 beforeEach(() => {
+  currentUser = adminUser
   app = appWithAllRoutes({
     services: {
       auditService,
@@ -67,6 +70,7 @@ beforeEach(() => {
       session = receivedSession
       sessionInjection.setSession(session)
     },
+    userSupplier: () => currentUser,
   })
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
 })
@@ -181,7 +185,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
 
     // Then
     expect(auditService.logPageView).toHaveBeenCalledWith('MANAGE_CONTACT_SEARCH_ORGANISATION_PAGE', {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '2',
@@ -288,6 +292,27 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
     expect($('input#organisationName').val()).toEqual('')
     expect($('p:contains("No organisation records match your search.")').text()).toBeFalsy()
   })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 200],
+    [authorisingUser, 200],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    setJourneyData({
+      ...generateJourneyData(),
+      organisationSearch: { page: 1 },
+    })
+
+    organisationsService.searchOrganisations.mockResolvedValue({
+      content: [],
+      totalElements: 0,
+    })
+
+    await request(app)
+      .get(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/organisation-search/${journeyId}`)
+      .expect(expectedStatus)
+  })
 })
 
 describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/organisation-search', () => {
@@ -311,5 +336,20 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/org
 
     const journeyData = session.updateEmploymentsJourneys![journeyId]!
     expect(journeyData.organisationSearch.searchTerm).toEqual('te %st')
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    setJourneyData(generateJourneyData())
+
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/organisation-search/${journeyId}`)
+      .type('form')
+      .send({ organisationName: 'te %st' })
+      .expect(expectedStatus)
   })
 })

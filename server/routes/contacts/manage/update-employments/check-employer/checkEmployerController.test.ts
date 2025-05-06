@@ -3,10 +3,11 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, basicPrisonUser } from '../../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../../testutils/appSetup'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { UpdateEmploymentsJourney } from '../../../../../@types/journeys'
+import { HmppsUser } from '../../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -17,6 +18,7 @@ const prisonerSearchService = MockedService.PrisonerSearchService()
 const organisationsService = MockedService.OrganisationsService()
 
 let app: Express
+let currentUser: HmppsUser
 const journeyId = uuidv4()
 const prisonerNumber = 'A1234BC'
 const prisoner = TestData.prisoner()
@@ -43,6 +45,7 @@ const setJourneyData = (data: UpdateEmploymentsJourney) => {
 }
 
 beforeEach(() => {
+  currentUser = adminUser
   app = appWithAllRoutes({
     services: {
       auditService,
@@ -53,6 +56,7 @@ beforeEach(() => {
       session = receivedSession
       sessionInjection.setSession(session)
     },
+    userSupplier: () => currentUser,
   })
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
 })
@@ -81,7 +85,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/chec
 
     expect(journeyData.changeOrganisationId).toEqual(222)
     expect(auditService.logPageView).toHaveBeenCalledWith('MANAGE_CONTACT_CHECK_EMPLOYER_PAGE', {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '1',
@@ -271,6 +275,35 @@ it('should render result with minimal mandatory data', async () => {
   expect($('p:contains("No addresses provided.")').text()).toBeTruthy()
 })
 
+it.each([
+  [basicPrisonUser, 403],
+  [adminUser, 200],
+  [authorisingUser, 200],
+])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+  currentUser = user
+  setJourneyData({
+    ...generateJourneyData(),
+    changeOrganisationId: 222,
+  })
+
+  organisationsService.getOrganisation.mockResolvedValue({
+    organisationName: 'Some Corp',
+    organisationId: 222,
+    active: true,
+    addresses: [],
+    phoneNumbers: [],
+    webAddresses: [],
+    emailAddresses: [],
+    organisationTypes: [],
+    createdBy: '',
+    createdTime: '',
+  })
+
+  await request(app)
+    .get(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/new/check-employer/${journeyId}`)
+    .expect(expectedStatus)
+})
+
 describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/check-employer', () => {
   it('should redirect to update-employment and add new employment record on answer YES', async () => {
     // Given
@@ -373,5 +406,31 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/che
     expect(response.headers['location']).toMatch(
       /contacts\/manage\/1\/update-employments\/new\/organisation-search\/[a-f0-9-]{36}/,
     )
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+
+    const journeyData = generateJourneyData()
+    journeyData.changeOrganisationId = 222
+    setJourneyData(journeyData)
+    organisationsService.getOrganisationSummary.mockResolvedValue({
+      organisationName: 'Some Corp',
+      organisationId: 111,
+      street: 'Some Street',
+      businessPhoneNumber: '1234 1234',
+      businessPhoneNumberExtension: '222',
+      organisationActive: true,
+    })
+
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/new/check-employer/${journeyId}`)
+      .type('form')
+      .send({ isCorrectEmployer: 'YES' })
+      .expect(expectedStatus)
   })
 })

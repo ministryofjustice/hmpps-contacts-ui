@@ -8,11 +8,14 @@ import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNo
 import { Navigation } from '../../common/navigation'
 import { PrisonerJourneyParams } from '../../../../@types/journeys'
 import { PatchEmploymentsRequest } from '../../../../@types/contactsApiClient'
+import Permission from '../../../../enumeration/permission'
 
 export default class UpdateEmploymentsController implements PageHandler {
   constructor(private readonly contactService: ContactsService) {}
 
   public PAGE_NAME = Page.MANAGE_CONTACT_UPDATE_EMPLOYMENTS_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (req: Request<PrisonerJourneyParams & { contactId: string }>, res: Response) => {
     const { prisonerNumber, contactId, journeyId } = req.params
