@@ -1,12 +1,19 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../../testutils/appSetup'
+import {
+  appWithAllRoutes,
+  flashProvider,
+  basicPrisonUser,
+  adminUser,
+  authorisingUser,
+} from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { ContactDetails, UpdateEmailRequest } from '../../../../../@types/contactsApiClient'
+import { HmppsUser } from '../../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -17,6 +24,7 @@ const prisonerSearchService = MockedService.PrisonerSearchService()
 const contactsService = MockedService.ContactsService()
 
 let app: Express
+let currentUser: HmppsUser
 const prisonerNumber = 'A1234BC'
 const contactId = 987654
 const prisonerContactId = 456789
@@ -48,13 +56,14 @@ const contact: ContactDetails = {
 }
 
 beforeEach(() => {
+  currentUser = adminUser
   app = appWithAllRoutes({
     services: {
       auditService,
       prisonerSearchService,
       contactsService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
   })
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
@@ -93,6 +102,19 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('#emailAddress').val()).toStrictEqual('mr.first@example.com')
   })
 
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 200],
+    [authorisingUser, 200],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    contactsService.getContact.mockResolvedValue(contact)
+
+    await request(app)
+      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/6/edit`)
+      .expect(expectedStatus)
+  })
+
   it('should render edited answer instead of original if there is a validation error', async () => {
     // Given
     contactsService.getContact.mockResolvedValue(contact)
@@ -123,7 +145,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_EDIT_EMAIL_ADDRESSES_PAGE, {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '987654',
@@ -165,7 +187,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       contactId,
       6,
       requestBody,
-      basicPrisonUser,
+      currentUser,
       expect.any(String),
     )
     expect(flashProvider).toHaveBeenCalledWith(
@@ -186,5 +208,20 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       )
     expect(contactsService.updateContactEmail).not.toHaveBeenCalled()
     expect(flashProvider).not.toHaveBeenCalledWith(FLASH_KEY__SUCCESS_BANNER, expect.anything)
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    contactsService.getContactName.mockResolvedValue(contact)
+    contactsService.updateContactEmail.mockResolvedValue(TestData.getContactEmailDetails('mr.last@example.com', 1))
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/6/edit`)
+      .type('form')
+      .send({ emailAddress: 'test@example.com' })
+      .expect(expectedStatus)
   })
 })
