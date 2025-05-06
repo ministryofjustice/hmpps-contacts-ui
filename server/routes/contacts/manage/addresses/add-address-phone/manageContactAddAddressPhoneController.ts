@@ -10,6 +10,7 @@ import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import Urls from '../../../../urls'
 import { getUpdateAddressDetails } from '../common/utils'
 import { PhonesSchemaType } from './AddAddressPhonesSchema'
+import Permission from '../../../../../enumeration/permission'
 
 export default class ManageContactAddAddressPhoneController implements PageHandler {
   constructor(
@@ -18,6 +19,8 @@ export default class ManageContactAddAddressPhoneController implements PageHandl
   ) {}
 
   public PAGE_NAME = Page.ADD_ADDRESS_PHONE_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string; contactAddressId: string }>,

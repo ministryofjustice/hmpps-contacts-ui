@@ -8,11 +8,14 @@ import ContactsService from '../../../../../services/contactsService'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import { AddressFlagsSchemaType } from './addressFlagsSchemas'
+import Permission from '../../../../../enumeration/permission'
 
 export default class ChangeAddressFlagsController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
 
   public PAGE_NAME = Page.SELECT_ADDRESS_FLAGS_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string; contactAddressId: string }>,

@@ -7,11 +7,14 @@ import { Navigation } from '../../../common/navigation'
 import Urls from '../../../../urls'
 import { getAddressJourneyAndUrl } from '../common/utils'
 import { PrisonerJourneyParams } from '../../../../../@types/journeys'
+import Permission from '../../../../../enumeration/permission'
 
 export default class AddressTypeController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
   public PAGE_NAME = Page.SELECT_ADDRESS_TYPE_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<PrisonerJourneyParams & { contactId: string; prisonerContactId: string }>,

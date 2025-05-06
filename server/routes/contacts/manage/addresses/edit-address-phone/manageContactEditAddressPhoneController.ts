@@ -11,6 +11,7 @@ import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import Urls from '../../../../urls'
 import { getUpdateAddressDetails } from '../common/utils'
 import { ContactAddressPhoneDetails } from '../../../../../@types/contactsApiClient'
+import Permission from '../../../../../enumeration/permission'
 
 export default class ManageContactEditAddressPhoneController implements PageHandler {
   constructor(
@@ -19,6 +20,8 @@ export default class ManageContactEditAddressPhoneController implements PageHand
   ) {}
 
   public PAGE_NAME = Page.EDIT_ADDRESS_PHONE_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<{

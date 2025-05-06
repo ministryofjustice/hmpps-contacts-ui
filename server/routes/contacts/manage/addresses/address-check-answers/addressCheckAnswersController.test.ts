@@ -3,13 +3,14 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, basicPrisonUser } from '../../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { ContactAddressDetails, ContactDetails } from '../../../../../@types/contactsApiClient'
 import { AddressJourney } from '../../../../../@types/journeys'
+import { HmppsUser } from '../../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -23,6 +24,7 @@ const contactsService = MockedService.ContactsService()
 
 let app: Express
 let session: Partial<SessionData>
+let currentUser: HmppsUser
 const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 const contactId = 123456
@@ -47,6 +49,7 @@ const contact: ContactDetails = {
 let existingJourney: AddressJourney
 
 beforeEach(() => {
+  currentUser = adminUser
   existingJourney = {
     id: journeyId,
     lastTouched: new Date().toISOString(),
@@ -75,7 +78,7 @@ beforeEach(() => {
       referenceDataService,
       contactsService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.addressJourneys = {}
@@ -213,7 +216,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     expect(response.status).toEqual(200)
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADDRESS_CHECK_ANSWERS_PAGE, {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '123456',
@@ -232,6 +235,20 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       .expect(res => {
         expect(res.text).toContain('Page not found')
       })
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 200],
+    [authorisingUser, 200],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+
+    await request(app)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/check-answers/${journeyId}`,
+      )
+      .expect(expectedStatus)
   })
 })
 
@@ -252,11 +269,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
 
     // Then
     expect(session.addressJourneys![journeyId]).toBeUndefined()
-    expect(contactsService.createContactAddress).toHaveBeenCalledWith(
-      existingJourney,
-      basicPrisonUser,
-      expect.any(String),
-    )
+    expect(contactsService.createContactAddress).toHaveBeenCalledWith(existingJourney, currentUser, expect.any(String))
   })
 
   it('should return not found page if no journey in session', async () => {
@@ -270,5 +283,21 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .expect(res => {
         expect(res.text).toContain('Page not found')
       })
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    contactsService.createContactAddress.mockResolvedValue({} as ContactAddressDetails)
+    await request(app)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/check-answers/${journeyId}`,
+      )
+      .type('form')
+      .send({})
+      .expect(expectedStatus)
   })
 })

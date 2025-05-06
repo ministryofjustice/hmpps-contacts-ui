@@ -4,11 +4,14 @@ import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import ContactsService from '../../../../../services/contactsService'
 import { AddressJourney, ContactNames } from '../../../../../@types/journeys'
+import Permission from '../../../../../enumeration/permission'
 
 export default class StartAddressJourneyController implements PageHandler {
   constructor(private readonly contactService: ContactsService) {}
 
   public PAGE_NAME = Page.ADDRESS_START_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   private MAX_JOURNEYS = 5
 

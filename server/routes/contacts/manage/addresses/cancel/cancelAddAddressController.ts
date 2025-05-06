@@ -5,9 +5,12 @@ import Urls from '../../../../urls'
 import { Navigation } from '../../../common/navigation'
 import { getAddressJourneyAndUrl } from '../common/utils'
 import { PrisonerJourneyParams } from '../../../../../@types/journeys'
+import Permission from '../../../../../enumeration/permission'
 
 export default class CancelAddAddressController implements PageHandler {
   public PAGE_NAME = Page.CANCEL_ADD_ADDRESS_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<PrisonerJourneyParams & { contactId: string; prisonerContactId: string }, unknown, unknown>,

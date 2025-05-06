@@ -1,13 +1,20 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../../testutils/appSetup'
+import {
+  appWithAllRoutes,
+  flashProvider,
+  basicPrisonUser,
+  adminUser,
+  authorisingUser,
+} from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { ContactAddressDetails, ContactDetails } from '../../../../../@types/contactsApiClient'
+import { HmppsUser } from '../../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -20,6 +27,7 @@ const referenceDataService = MockedService.ReferenceDataService()
 const contactsService = MockedService.ContactsService()
 
 let app: Express
+let currentUser: HmppsUser
 const prisonerNumber = 'A1234BC'
 const contactId = 123456
 const prisonerContactId = 456789
@@ -63,6 +71,7 @@ const contact: ContactDetails = {
 }
 
 beforeEach(() => {
+  currentUser = adminUser
   app = appWithAllRoutes({
     services: {
       auditService,
@@ -70,7 +79,7 @@ beforeEach(() => {
       referenceDataService,
       contactsService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
   })
   contactsService.getContact.mockResolvedValue(contact)
   contactsService.getContactName.mockResolvedValue(contact)
@@ -118,7 +127,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('#countryCode').val()).toStrictEqual('ENG')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ENTER_ADDRESS_PAGE, {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '123456',
@@ -155,6 +164,21 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('#postcode').val()).toStrictEqual('PC1 D3')
     expect($('#countryCode').val()).toStrictEqual('ENG')
   })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 200],
+    [authorisingUser, 200],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    contactsService.getContact.mockResolvedValue(contact)
+
+    await request(app)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/enter-address`,
+      )
+      .expect(expectedStatus)
+  })
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/:contactAddressId/enter-address', () => {
@@ -190,7 +214,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       property: null,
       cityCode: null,
     }
-    expect(contactsService.updateContactAddress).toHaveBeenCalledWith(expected, basicPrisonUser, expect.any(String))
+    expect(contactsService.updateContactAddress).toHaveBeenCalledWith(expected, currentUser, expect.any(String))
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
       'You’ve updated the contact methods for First Middle Last.',
@@ -209,5 +233,27 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         'Location',
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/enter-address#`,
       )
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    contactsService.updateContactAddress.mockResolvedValue({ contactAddressId } as ContactAddressDetails)
+    const noFixedAddress = false
+    const flat = 'Flat 1'
+    const street = 'Rocky Road'
+    const countryCode = 'ENG'
+
+    // When
+    await request(app)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/enter-address`,
+      )
+      .type('form')
+      .send({ noFixedAddress, flat, street, countryCode })
+      .expect(expectedStatus)
   })
 })

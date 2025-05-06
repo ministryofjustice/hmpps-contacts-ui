@@ -7,11 +7,14 @@ import { Navigation } from '../../../common/navigation'
 import { AddressLinesSchema } from './addressLinesSchemas'
 import { getAddressJourneyAndUrl } from '../common/utils'
 import { PrisonerJourneyParams } from '../../../../../@types/journeys'
+import Permission from '../../../../../enumeration/permission'
 
 export default class EnterAddressController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
   public PAGE_NAME = Page.ENTER_ADDRESS_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   private DEFAULT_COUNTRY = 'ENG'
 

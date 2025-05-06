@@ -2,11 +2,14 @@ import { Request, Response } from 'express'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import PrisonerAddressService from '../../../../../services/prisonerAddressService'
+import Permission from '../../../../../enumeration/permission'
 
 export default class UsePrisonerAddressController implements PageHandler {
   constructor(private readonly prisonerAddressService: PrisonerAddressService) {}
 
   public PAGE_NAME = Page.USE_PRISONER_ADDRESS_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<{ journeyId: string; prisonerNumber: string }, unknown, unknown, { returnUrl: string }>,

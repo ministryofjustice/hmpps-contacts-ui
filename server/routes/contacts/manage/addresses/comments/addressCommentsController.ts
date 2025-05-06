@@ -6,11 +6,14 @@ import { Navigation } from '../../../common/navigation'
 import { getAddressJourneyAndUrl, getFormattedAddress } from '../common/utils'
 import { AddressCommentsSchemaType } from './addressCommentsSchema'
 import { PrisonerJourneyParams } from '../../../../../@types/journeys'
+import Permission from '../../../../../enumeration/permission'
 
 export default class AddressCommentsController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
   public PAGE_NAME = Page.ENTER_ADDRESS_COMMENTS_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<PrisonerJourneyParams & { contactId: string; prisonerContactId: string }>,
