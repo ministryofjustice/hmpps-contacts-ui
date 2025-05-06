@@ -3,10 +3,11 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, basicPrisonUser } from '../../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../../testutils/appSetup'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { UpdateEmploymentsJourney } from '../../../../../@types/journeys'
+import { HmppsUser } from '../../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -15,6 +16,7 @@ const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 
 let app: Express
+let currentUser: HmppsUser
 const journeyId = uuidv4()
 const prisonerNumber = 'A1234BC'
 const prisoner = TestData.prisoner()
@@ -55,6 +57,7 @@ const setJourneyData = (data: UpdateEmploymentsJourney) => {
 }
 
 beforeEach(() => {
+  currentUser = adminUser
   app = appWithAllRoutes({
     services: {
       auditService,
@@ -64,6 +67,7 @@ beforeEach(() => {
       session = receivedSession
       sessionInjection.setSession(session)
     },
+    userSupplier: () => currentUser,
   })
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
 })
@@ -118,7 +122,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/empl
 
     // Then
     expect(auditService.logPageView).toHaveBeenCalledWith('MANAGE_CONTACT_EMPLOYMENT_STATUS_PAGE', {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '1',
@@ -157,6 +161,21 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/empl
     expect($('label:contains("Active")').prev('input').attr('checked')).toBeTruthy()
     expect($('label:contains("Inactive")').prev('input').attr('checked')).toBeFalsy()
   })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 200],
+    [authorisingUser, 200],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    const journeyData = generateJourneyData()
+    setJourneyData(journeyData)
+
+    // When
+    await request(app)
+      .get(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/employment-status/${journeyId}`)
+      .expect(expectedStatus)
+  })
 })
 
 describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/employment-status', () => {
@@ -178,5 +197,24 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/emp
     expect(response.status).toEqual(302)
     expect(response.headers['location']).toMatch(/contacts\/manage\/1\/update-employments\/[a-f0-9-]{36}/)
     expect(journeyData.employments[0]!.isActive).toBeTruthy()
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    const journeyData = generateJourneyData()
+    journeyData.employments[0]!.isActive = false
+    setJourneyData(journeyData)
+
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/employment-status/${journeyId}`)
+      .type('form')
+      .send({
+        isActive: 'true',
+      })
+      .expect(expectedStatus)
   })
 })

@@ -2,9 +2,16 @@ import { NextFunction, Request, Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
 import { ContactsService } from '../../../../../services'
 import { UpdateEmploymentsJourney } from '../../../../../@types/journeys'
+import { PageHandler } from '../../../../../interfaces/pageHandler'
+import { Page } from '../../../../../services/auditService'
+import Permission from '../../../../../enumeration/permission'
 
-export default class UpdateEmploymentsStartController {
+export default class UpdateEmploymentsStartController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
+
+  public PAGE_NAME = Page.MANAGE_CONTACT_START_MANAGE_EMPLOYMENT_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   private MAX_JOURNEYS = 5
 

@@ -1,10 +1,11 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
-import { appWithAllRoutes } from '../../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../../testutils/appSetup'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { EmploymentDetails } from '../../../../../@types/contactsApiClient'
+import { HmppsUser } from '../../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -15,11 +16,13 @@ const prisonerSearchService = MockedService.PrisonerSearchService()
 const contactsService = MockedService.ContactsService()
 
 let app: Express
+let currentUser: HmppsUser
 const prisonerNumber = 'A1234BC'
 const prisoner = TestData.prisoner()
 let session: Partial<SessionData>
 
 beforeEach(() => {
+  currentUser = adminUser
   app = appWithAllRoutes({
     services: {
       auditService,
@@ -29,6 +32,7 @@ beforeEach(() => {
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
     },
+    userSupplier: () => currentUser,
   })
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
 })
@@ -67,7 +71,6 @@ describe('GET /contacts/manage/:contactId/update-employments', () => {
 
     // Then
     expect(response.status).toEqual(302)
-    expect(auditService.logPageView).not.toHaveBeenCalled()
     expect(response.headers['location']).toMatch(/contacts\/manage\/1\/update-employments\/[a-f0-9-]{36}/)
     const responseJourneyId = response.headers['location']!.split('/').slice(-1)[0]
     const journeyData = session.updateEmploymentsJourneys![responseJourneyId!]!
@@ -79,5 +82,18 @@ describe('GET /contacts/manage/:contactId/update-employments', () => {
     expect(journeyData.contactNames!.title).toEqual(contact.titleCode)
     expect(journeyData.employments[0]).toEqual(employment)
     expect(journeyData.returnPoint!.url).toEqual('/foo/bar')
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    contactsService.getContact.mockResolvedValue(TestData.contact())
+
+    await request(app)
+      .get(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments?returnUrl=/foo/bar`)
+      .expect(expectedStatus)
   })
 })

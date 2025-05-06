@@ -3,9 +3,12 @@ import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { Page } from '../../../../../services/auditService'
 import { IsActiveEmploymentSchema } from './employmentStatusSchema'
 import { UpdateEmploymentJourneyParams } from '../../../../../@types/journeys'
+import Permission from '../../../../../enumeration/permission'
 
 export default class EmploymentStatusController implements PageHandler {
   public PAGE_NAME = Page.MANAGE_CONTACT_EMPLOYMENT_STATUS_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (req: Request<UpdateEmploymentJourneyParams>, res: Response) => {
     const { prisonerNumber, contactId, employmentIdx, journeyId } = req.params
