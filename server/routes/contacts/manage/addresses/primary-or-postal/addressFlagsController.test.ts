@@ -3,12 +3,13 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, basicPrisonUser } from '../../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { AddressJourney } from '../../../../../@types/journeys'
+import { HmppsUser } from '../../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -20,6 +21,7 @@ const referenceDataService = MockedService.ReferenceDataService()
 
 let app: Express
 let session: Partial<SessionData>
+let currentUser: HmppsUser
 const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 const contactId = 123456
@@ -27,6 +29,7 @@ const prisonerContactId = 456789
 let existingJourney: AddressJourney
 
 beforeEach(() => {
+  currentUser = adminUser
   existingJourney = {
     id: journeyId,
     lastTouched: new Date().toISOString(),
@@ -50,7 +53,7 @@ beforeEach(() => {
       prisonerSearchService,
       referenceDataService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.addressJourneys = {}
@@ -99,7 +102,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     ).toBeTruthy()
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.SELECT_ADDRESS_FLAGS_PAGE, {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '123456',
@@ -153,6 +156,20 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       .expect(res => {
         expect(res.text).toContain('Page not found')
       })
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 200],
+    [authorisingUser, 200],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+
+    await request(app)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/primary-or-postal/${journeyId}`,
+      )
+      .expect(expectedStatus)
   })
 })
 
@@ -221,5 +238,20 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .expect(res => {
         expect(res.text).toContain('Page not found')
       })
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    await request(app)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/primary-or-postal/${journeyId}`,
+      )
+      .type('form')
+      .send({ isPrimaryOrPostal: 'P' })
+      .expect(expectedStatus)
   })
 })

@@ -7,11 +7,14 @@ import ReferenceDataService from '../../../../../services/referenceDataService'
 import { Navigation } from '../../../common/navigation'
 import { getAddressJourneyAndUrl, getFormattedAddress } from '../common/utils'
 import logger from '../../../../../../logger'
+import Permission from '../../../../../enumeration/permission'
 
 export default class DeleteAddressPhoneController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
   public PAGE_NAME = Page.DELETE_ADDRESS_PHONE_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<{

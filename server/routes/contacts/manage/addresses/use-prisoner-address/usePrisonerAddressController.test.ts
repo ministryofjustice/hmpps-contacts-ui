@@ -2,13 +2,14 @@ import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
-import { appWithAllRoutes, basicPrisonUser } from '../../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import PrisonerAddressService from '../../../../../services/prisonerAddressService'
 import TestData from '../../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { AddressJourney, AddressLines } from '../../../../../@types/journeys'
+import { HmppsUser } from '../../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -23,6 +24,7 @@ const prisonerAddressService = new PrisonerAddressService(null) as jest.Mocked<P
 
 let app: Express
 let session: Partial<SessionData>
+let currentUser: HmppsUser
 const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 const contactId = 123456
@@ -31,6 +33,7 @@ const prisonerContactId = 456789
 let existingJourney: AddressJourney
 
 beforeEach(() => {
+  currentUser = adminUser
   existingJourney = {
     id: journeyId,
     lastTouched: new Date().toISOString(),
@@ -51,7 +54,7 @@ beforeEach(() => {
       referenceDataService,
       prisonerAddressService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.addressJourneys = {}
@@ -161,7 +164,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     // Then
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.USE_PRISONER_ADDRESS_PAGE, {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         contactId: '123456',
@@ -180,5 +183,19 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       .expect(res => {
         expect(res.text).toContain('Page not found')
       })
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+
+    await request(app)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/use-prisoner-address/${journeyId}?returnUrl=/foo`,
+      )
+      .expect(expectedStatus)
   })
 })

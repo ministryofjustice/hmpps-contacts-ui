@@ -8,11 +8,14 @@ import ContactsService from '../../../../../services/contactsService'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import { AddressDatesSchemaType } from './addressDatesSchemas'
+import Permission from '../../../../../enumeration/permission'
 
 export default class ChangeAddressDatesController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
 
   public PAGE_NAME = Page.ENTER_ADDRESS_DATES_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string; contactAddressId: string }>,

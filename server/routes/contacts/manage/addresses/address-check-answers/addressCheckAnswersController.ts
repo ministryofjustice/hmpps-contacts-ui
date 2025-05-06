@@ -10,6 +10,7 @@ import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import Urls from '../../../../urls'
 import { getAddressJourneyAndUrl, getFormattedAddress } from '../common/utils'
 import { PrisonerJourneyParams } from '../../../../../@types/journeys'
+import Permission from '../../../../../enumeration/permission'
 
 export default class AddressCheckAnswersController implements PageHandler {
   constructor(
@@ -18,6 +19,8 @@ export default class AddressCheckAnswersController implements PageHandler {
   ) {}
 
   public PAGE_NAME = Page.ADDRESS_CHECK_ANSWERS_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<PrisonerJourneyParams & { contactId: string; prisonerContactId: string }>,

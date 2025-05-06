@@ -2,12 +2,13 @@ import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
-import { appWithAllRoutes, basicPrisonUser } from '../../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { AddressJourney } from '../../../../../@types/journeys'
 import { ContactDetails } from '../../../../../@types/contactsApiClient'
+import { HmppsUser } from '../../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/contactsService')
@@ -20,6 +21,7 @@ const prisonerSearchService = MockedService.PrisonerSearchService()
 let app: Express
 let session: Partial<SessionData>
 let preExistingJourneysToAddToSession: Array<AddressJourney>
+let currentUser: HmppsUser
 const prisonerNumber = 'A1234BC'
 const contactId = 123
 const prisonerContactId = 456789
@@ -41,6 +43,7 @@ const contact: ContactDetails = {
 }
 
 beforeEach(() => {
+  currentUser = adminUser
   preExistingJourneysToAddToSession = []
   app = appWithAllRoutes({
     services: {
@@ -48,7 +51,7 @@ beforeEach(() => {
       contactsService,
       prisonerSearchService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       if (preExistingJourneysToAddToSession) {
@@ -78,7 +81,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     // Then
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADDRESS_START_PAGE, {
-      who: basicPrisonUser.username,
+      who: currentUser.username,
       correlationId: expect.any(String),
       details: {
         prisonerNumber: 'A1234BC',
@@ -210,5 +213,18 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(Object.keys(session.addressJourneys!).sort()).toStrictEqual(
       [newId, 'old', 'middle-aged', 'young', 'youngest'].sort(),
     )
+  })
+
+  it.each([
+    [basicPrisonUser, 403],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    contactsService.getContactName.mockResolvedValue(contact)
+
+    await request(app)
+      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/start`)
+      .expect(expectedStatus)
   })
 })

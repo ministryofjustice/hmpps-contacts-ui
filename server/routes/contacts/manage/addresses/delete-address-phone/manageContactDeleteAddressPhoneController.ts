@@ -8,11 +8,14 @@ import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSucces
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import { getUpdateAddressDetails } from '../common/utils'
 import { ContactAddressPhoneDetails } from '../../../../../@types/contactsApiClient'
+import Permission from '../../../../../enumeration/permission'
 
 export default class ManageContactDeleteAddressPhoneController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
 
   public PAGE_NAME = Page.DELETE_ADDRESS_PHONE_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<{
