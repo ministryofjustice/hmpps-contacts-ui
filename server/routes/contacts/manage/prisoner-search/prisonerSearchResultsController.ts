@@ -5,11 +5,14 @@ import config from '../../../../config'
 import { PrisonerSearchService } from '../../../../services'
 import { PagePrisoner, PaginationRequest } from '../../../../data/prisonerOffenderSearchTypes'
 import { PrisonerSearchSchemaType } from './prisonerSearchSchema'
+import Permission from '../../../../enumeration/permission'
 
 export default class PrisonerSearchController implements PageHandler {
   constructor(private readonly prisonerSearchService: PrisonerSearchService) {}
 
   public PAGE_NAME = Page.PRISONER_SEARCH_RESULTS_PAGE
+
+  public REQUIRED_PERMISSION = Permission.VIEW_CONTACT_LIST
 
   GET = async (req: Request<{ journeyId: string }>, res: Response): Promise<void> => {
     const { user } = res.locals

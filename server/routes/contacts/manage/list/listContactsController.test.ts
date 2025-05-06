@@ -3,12 +3,13 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { Cheerio, CheerioAPI } from 'cheerio'
 import { Element } from 'domhandler'
-import { appWithAllRoutes, basicPrisonUser } from '../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { MockedService } from '../../../../testutils/mockedServices'
 import TestData from '../../../testutils/testData'
 import { ageInYears } from '../../../../utils/utils'
 import { PrisonerContactSummary } from '../../../../@types/contactsApiClient'
+import { HmppsUser } from '../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -44,15 +45,17 @@ const minimalContact: PrisonerContactSummary = {
 }
 const expectDefaultSort = ['lastName,asc', 'firstName,asc', 'middleNames,asc', 'middleNames,asc', 'contactId,asc']
 let app: Express
+let currentUser: HmppsUser
 
 beforeEach(() => {
+  currentUser = basicPrisonUser
   app = appWithAllRoutes({
     services: {
       auditService,
       prisonerSearchService,
       contactsService,
     },
-    userSupplier: () => basicPrisonUser,
+    userSupplier: () => currentUser,
   })
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
 })
@@ -120,6 +123,21 @@ describe('listContactsController', () => {
           prisonerNumber: 'A1234BC',
         },
       })
+    })
+
+    it.each([
+      [basicPrisonUser, 200],
+      [adminUser, 200],
+      [authorisingUser, 200],
+    ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+      currentUser = user
+
+      contactsService.filterPrisonerContacts.mockResolvedValue({
+        content: [minimalContact],
+        page: { totalElements: 1, totalPages: 1, size: 10, number: 0 },
+      })
+
+      await request(app).get(`/prisoner/${prisonerNumber}/contacts/list`).expect(expectedStatus)
     })
 
     it.each([
@@ -831,5 +849,18 @@ describe('listContactsController', () => {
           `/prisoner/${prisonerNumber}/contacts/list?relationshipStatus=ACTIVE_ONLY&relationshipType=S&relationshipType=O&flag=EC&flag=NOK`,
         )
     })
+  })
+
+  it.each([
+    [basicPrisonUser, 302],
+    [adminUser, 302],
+    [authorisingUser, 302],
+  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+    currentUser = user
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/list`)
+      .type('form')
+      .send({ relationshipStatus: 'ACTIVE_ONLY' })
+      .expect(expectedStatus)
   })
 })
