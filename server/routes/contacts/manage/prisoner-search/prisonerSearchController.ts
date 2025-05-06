@@ -2,9 +2,12 @@ import { Request, Response } from 'express'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import { PrisonerSearchSchemaType } from './prisonerSearchSchema'
+import Permission from '../../../../enumeration/permission'
 
 export default class PrisonerSearchController implements PageHandler {
   public PAGE_NAME = Page.PRISONER_SEARCH_PAGE
+
+  public REQUIRED_PERMISSION = Permission.VIEW_CONTACT_LIST
 
   GET = async (req: Request<{ journeyId: string }>, res: Response): Promise<void> => {
     const { journeyId } = req.params

@@ -11,6 +11,7 @@ import {
   PrisonerContactFilter,
   PrisonerContactPagination,
 } from '../../../../@types/contactsApiClient'
+import Permission from '../../../../enumeration/permission'
 
 type RelationshipType = 'S' | 'O'
 type Flag = 'EC' | 'NOK'
@@ -30,6 +31,8 @@ export default class ListContactsController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
 
   public PAGE_NAME = Page.LIST_CONTACTS_PAGE
+
+  public REQUIRED_PERMISSION = Permission.VIEW_CONTACT_LIST
 
   private PAGE_SIZE = config.apis.contactsApi.pageSize || 10
 
