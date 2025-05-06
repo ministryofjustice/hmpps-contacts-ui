@@ -7,11 +7,14 @@ import Urls from '../../../../urls'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { ContactDetails, ContactPhoneDetails } from '../../../../../@types/contactsApiClient'
+import Permission from '../../../../../enumeration/permission'
 
 export default class ManageContactDeletePhoneController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
 
   public PAGE_NAME = Page.MANAGE_CONTACT_DELETE_PHONE_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string; contactPhoneId: string }>,

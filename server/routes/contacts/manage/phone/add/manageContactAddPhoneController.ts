@@ -9,6 +9,7 @@ import Urls from '../../../../urls'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import { PhonesSchemaType } from '../../addresses/add-address-phone/AddAddressPhonesSchema'
+import Permission from '../../../../../enumeration/permission'
 
 export default class ManageContactAddPhoneController implements PageHandler {
   constructor(
@@ -17,6 +18,8 @@ export default class ManageContactAddPhoneController implements PageHandler {
   ) {}
 
   public PAGE_NAME = Page.MANAGE_CONTACT_ADD_PHONE_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }>,

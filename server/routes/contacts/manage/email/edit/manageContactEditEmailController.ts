@@ -8,11 +8,14 @@ import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSucces
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import Urls from '../../../../urls'
 import { ContactDetails, ContactEmailDetails, UpdateEmailRequest } from '../../../../../@types/contactsApiClient'
+import Permission from '../../../../../enumeration/permission'
 
 export default class ManageContactEditEmailController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
 
   public PAGE_NAME = Page.MANAGE_CONTACT_EDIT_EMAIL_ADDRESSES_PAGE
+
+  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string; contactEmailId: string }>,
