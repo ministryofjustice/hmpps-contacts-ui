@@ -182,4 +182,29 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
       expect($('h2:contains("Add restrictions")')).toHaveLength(0)
     },
   )
+
+  it.each([
+    [adminUser, 'It’s important to make sure the information in the contact record is accurate and up to date.'],
+    [
+      authorisingUser,
+      'It’s also important to make sure the information in the contact record is accurate and up to date.',
+    ],
+  ])('Should show next step hint when existing and as user %j', async (user, expected) => {
+    currentUser = user
+
+    contactsService.getContactName.mockResolvedValue(
+      TestData.contact({
+        lastName: 'Last',
+        middleNames: 'Middle Names',
+        firstName: 'First',
+      }),
+    )
+
+    // When
+    const response = await request(app).get(`/prisoner/A1234BC/contact/EXISTING/123456/654321/success`)
+
+    // Then
+    const $ = cheerio.load(response.text)
+    expect($('[data-qa=next-step-hint]').first().text()).toStrictEqual(expected)
+  })
 })
