@@ -2,8 +2,9 @@ import TestData from '../../server/routes/testutils/testData'
 import Page from '../pages/page'
 import ListContactsPage from '../pages/listContacts'
 import { PagedModelPrisonerContactSummary, PrisonerContactSummary } from '../../server/@types/contactsApiClient'
+import SearchContactPage from '../pages/searchContactPage'
 
-context('List contacts ', () => {
+context('List contacts with Contacts Administrator or Authoriser roles', () => {
   const prisoner = TestData.prisoner({ lastName: 'Prisoner', firstName: 'Test' })
 
   const minimalContact: PrisonerContactSummary = {
@@ -48,7 +49,7 @@ context('List contacts ', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
-    cy.task('stubSignIn', { roles: ['PRISON'] })
+    cy.task('stubSignIn', { roles: ['PRISON', 'CONTACTS_ADMINISTRATOR'] })
     cy.task('stubPrisonerById', prisoner)
   })
 
@@ -146,5 +147,24 @@ context('List contacts ', () => {
         'Nine, Contact',
         'Ten, Contact',
       ])
+  })
+
+  it('should be able to link to create a new contact when there are no contacts at all', () => {
+    const initialPage: PagedModelPrisonerContactSummary = {
+      content: [],
+      page: { totalElements: 0, totalPages: 1, size: 10, number: 0 },
+    }
+
+    cy.task('stubFilteredContactList', {
+      prisonerNumber: prisoner.prisonerNumber,
+      page: initialPage,
+    })
+
+    cy.signIn({ startUrl: `/prisoner/${prisoner.prisonerNumber}/contacts/list` })
+
+    Page.verifyOnPage(ListContactsPage, 'Test Prisoner')
+      .clickButtonTo('Link contact', SearchContactPage)
+      .clickLinkTo('Back to prisoner’s contact list', ListContactsPage, 'Test Prisoner')
+      .clickLinkTo('Link a contact to this prisoner', SearchContactPage)
   })
 })

@@ -79,8 +79,46 @@ function elementToTextLines(element: Cheerio<Element>, $: CheerioAPI) {
 
 describe('listContactsController', () => {
   describe('GET /prisoner/:prisonerNumber/contacts/list', () => {
-    it('should render with correct navigation', async () => {
+    it.each([adminUser, authorisingUser])(
+      'should render with correct navigation for admin or authoriser (%j)',
+      async user => {
+        // Given
+        currentUser = user
+        contactsService.filterPrisonerContacts.mockResolvedValue({
+          content: [minimalContact],
+          page: { totalElements: 1, totalPages: 1, size: 10, number: 0 },
+        })
+
+        // When
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/list`)
+
+        // Then
+        const $ = cheerio.load(response.text)
+        expect($('title').text()).toStrictEqual('View and manage contacts linked to a prisoner - DPS')
+        expect($('.govuk-heading-l').first().text().trim()).toStrictEqual(
+          'View and manage contacts linked to John Smith',
+        )
+
+        const breadcrumbLinks = $('[data-qa=breadcrumbs] a')
+        expect(breadcrumbLinks).toHaveLength(2)
+        expect(breadcrumbLinks.eq(0).attr('href')).toStrictEqual('http://localhost:3001')
+        expect(breadcrumbLinks.eq(1).attr('href')).toStrictEqual('http://localhost:3001/prisoner/A1234BC')
+
+        const linkContactButton = $('[data-qa=add-contact-button]').first()
+        expect(linkContactButton.text().trim()).toStrictEqual('Link another contact')
+        expect(linkContactButton.attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/create/start')
+
+        const contactRecordLink = $(`[data-qa=contact-123456789-link]`).first()
+        expect(contactRecordLink.text().trim()).toStrictEqual('Last, First')
+        expect(contactRecordLink.attr('href')).toStrictEqual(
+          '/prisoner/A1234BC/contacts/manage/123456789/relationship/987654321',
+        )
+      },
+    )
+
+    it('should render with correct navigation for general user', async () => {
       // Given
+      currentUser = basicPrisonUser
       contactsService.filterPrisonerContacts.mockResolvedValue({
         content: [minimalContact],
         page: { totalElements: 1, totalPages: 1, size: 10, number: 0 },
@@ -92,16 +130,15 @@ describe('listContactsController', () => {
       // Then
       const $ = cheerio.load(response.text)
       expect($('title').text()).toStrictEqual('View and manage contacts linked to a prisoner - DPS')
-      expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('View and manage contacts linked to John Smith')
+      expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('View contacts linked to John Smith')
 
       const breadcrumbLinks = $('[data-qa=breadcrumbs] a')
       expect(breadcrumbLinks).toHaveLength(2)
       expect(breadcrumbLinks.eq(0).attr('href')).toStrictEqual('http://localhost:3001')
       expect(breadcrumbLinks.eq(1).attr('href')).toStrictEqual('http://localhost:3001/prisoner/A1234BC')
 
-      const linkContactButton = $('[data-qa=add-contact-button]').first()
-      expect(linkContactButton.text().trim()).toStrictEqual('Link another contact')
-      expect(linkContactButton.attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/create/start')
+      expect($('[data-qa=add-contact-button]')).toHaveLength(0)
+      expect($(`[data-qa=contact-123456789-link]`)).toHaveLength(0)
     })
 
     it('should audit page view', async () => {
@@ -195,6 +232,7 @@ describe('listContactsController', () => {
       'should render contact name and prisoner number column correctly',
       async (contact, expectedName, expectedFirstTag, expectedSecondTag, expectedTagCount) => {
         // Given
+        currentUser = adminUser
         contactsService.filterPrisonerContacts.mockResolvedValue({
           content: [contact],
           page: { totalElements: 1, totalPages: 1, size: 10, number: 0 },
@@ -207,7 +245,12 @@ describe('listContactsController', () => {
         const $ = cheerio.load(response.text)
         const rows = $('#prisoner-contact-list tbody tr')
         const firstRowColumns = rows.eq(0).find('td')
-        const nameAndPrisonerNumber = firstRowColumns.eq(0).text().trim().split(/\r?\n/)
+        const nameAndPrisonerNumber = firstRowColumns
+          .eq(0)
+          .text()
+          .trim()
+          .split(/\r?\n/)
+          .filter(it => it.trim().length > 0)
         expect(nameAndPrisonerNumber[0]!.trim()).toStrictEqual(expectedName)
         expect(nameAndPrisonerNumber[1]!.trim()).toStrictEqual('123456789')
         expect(firstRowColumns.eq(0).find('a').attr('href')).toStrictEqual(
@@ -637,96 +680,53 @@ describe('listContactsController', () => {
       expect($('#flagsNextOfKin').attr('checked')).toStrictEqual('checked')
     })
 
-    it('should show no contacts at all with link to add a contact if no active results and no unfiltered contacts', async () => {
-      // Given
-      contactsService.filterPrisonerContacts.mockResolvedValue({
-        content: [],
-        page: { totalElements: 0, totalPages: 1, size: 10, number: 0 },
-      })
-
-      // When
-      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/list`)
-
-      // Then
-      const $ = cheerio.load(response.text)
-      const noResultsContent = elementToTextLines($('[data-qa=no-results-content]').first(), $)
-      expect(noResultsContent).toStrictEqual([
-        'John Smith does not have any linked contacts.',
-        'Link a contact to this prisoner',
-      ])
-      expect($('[data-qa=no-results-link-a-contact]').attr('href')).toStrictEqual(
-        `/prisoner/${prisonerNumber}/contacts/create/start`,
-      )
-      expect(contactsService.filterPrisonerContacts).toHaveBeenNthCalledWith(
-        1,
-        prisonerNumber,
-        { active: true },
-        { page: 0, size: 10, sort: expectDefaultSort },
-        basicPrisonUser,
-      )
-      expect(contactsService.filterPrisonerContacts).toHaveBeenNthCalledWith(
-        2,
-        prisonerNumber,
-        {},
-        { page: 0, size: 1 },
-        basicPrisonUser,
-      )
-    })
-
-    it('should show no contacts at all with link to add a contact if no active results and no unfiltered contacts even if filters applied', async () => {
-      // Given
-      contactsService.filterPrisonerContacts.mockResolvedValue({
-        content: [],
-        page: { totalElements: 0, totalPages: 1, size: 10, number: 0 },
-      })
-
-      // When
-      const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/list?relationshipStatus=ACTIVE_ONLY&relationshipType=S`,
-      )
-
-      // Then
-      const $ = cheerio.load(response.text)
-      const noResultsContent = elementToTextLines($('[data-qa=no-results-content]').first(), $)
-      expect(noResultsContent).toStrictEqual([
-        'John Smith does not have any linked contacts.',
-        'Link a contact to this prisoner',
-      ])
-      expect($('[data-qa=no-results-link-a-contact]').attr('href')).toStrictEqual(
-        `/prisoner/${prisonerNumber}/contacts/create/start`,
-      )
-
-      const linkContactButton = $('[data-qa=add-contact-button]').first()
-      expect(linkContactButton.text().trim()).toStrictEqual('Link contact')
-      expect(linkContactButton.attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/create/start')
-
-      expect(contactsService.filterPrisonerContacts).toHaveBeenNthCalledWith(
-        1,
-        prisonerNumber,
-        { active: true, relationshipType: 'S' },
-        { page: 0, size: 10, sort: expectDefaultSort },
-        basicPrisonUser,
-      )
-      expect(contactsService.filterPrisonerContacts).toHaveBeenNthCalledWith(
-        2,
-        prisonerNumber,
-        {},
-        { page: 0, size: 1 },
-        basicPrisonUser,
-      )
-    })
-
-    it('should show no active contacts link to change to include inactive if not filters applied and no contacts', async () => {
-      // Given
-      contactsService.filterPrisonerContacts
-        .mockResolvedValueOnce({
+    it.each([adminUser, authorisingUser])(
+      'should show no contacts at all with link to add a contact if no active results and no unfiltered contacts if admin or authoriser (%j)',
+      async user => {
+        // Given
+        currentUser = user
+        contactsService.filterPrisonerContacts.mockResolvedValue({
           content: [],
           page: { totalElements: 0, totalPages: 1, size: 10, number: 0 },
         })
-        .mockResolvedValueOnce({
-          content: [{ ...minimalContact, isRelationshipActive: false }],
-          page: { totalElements: 1, totalPages: 1, size: 10, number: 0 },
-        })
+
+        // When
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/list`)
+
+        // Then
+        const $ = cheerio.load(response.text)
+        const noResultsContent = elementToTextLines($('[data-qa=no-results-content]').first(), $)
+        expect(noResultsContent).toStrictEqual([
+          'John Smith does not have any linked contacts.',
+          'Link a contact to this prisoner',
+        ])
+        expect($('[data-qa=no-results-link-a-contact]').attr('href')).toStrictEqual(
+          `/prisoner/${prisonerNumber}/contacts/create/start`,
+        )
+        expect(contactsService.filterPrisonerContacts).toHaveBeenNthCalledWith(
+          1,
+          prisonerNumber,
+          { active: true },
+          { page: 0, size: 10, sort: expectDefaultSort },
+          currentUser,
+        )
+        expect(contactsService.filterPrisonerContacts).toHaveBeenNthCalledWith(
+          2,
+          prisonerNumber,
+          {},
+          { page: 0, size: 1 },
+          currentUser,
+        )
+      },
+    )
+
+    it('should show no contacts at all with no link to add a contact if no active results and no unfiltered contacts and a basic user', async () => {
+      // Given
+      currentUser = basicPrisonUser
+      contactsService.filterPrisonerContacts.mockResolvedValue({
+        content: [],
+        page: { totalElements: 0, totalPages: 1, size: 10, number: 0 },
+      })
 
       // When
       const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/list`)
@@ -734,36 +734,167 @@ describe('listContactsController', () => {
       // Then
       const $ = cheerio.load(response.text)
       const noResultsContent = elementToTextLines($('[data-qa=no-results-content]').first(), $)
-      expect(noResultsContent).toStrictEqual([
-        'John Smith does not have any contacts with active relationship status.',
-        'View contacts with inactive relationship status',
-      ])
-      expect($('[data-qa=no-results-include-inactive]').attr('href')).toStrictEqual(
-        `/prisoner/${prisonerNumber}/contacts/list?relationshipStatus=ACTIVE_AND_INACTIVE`,
-      )
-
-      const linkContactButton = $('[data-qa=add-contact-button]').first()
-      expect(linkContactButton.text().trim()).toStrictEqual('Link another contact')
-      expect(linkContactButton.attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/create/start')
-
-      expect(contactsService.filterPrisonerContacts).toHaveBeenNthCalledWith(
-        1,
-        prisonerNumber,
-        { active: true },
-        { page: 0, size: 10, sort: expectDefaultSort },
-        basicPrisonUser,
-      )
-      expect(contactsService.filterPrisonerContacts).toHaveBeenNthCalledWith(
-        2,
-        prisonerNumber,
-        {},
-        { page: 0, size: 1 },
-        basicPrisonUser,
-      )
+      expect(noResultsContent).toStrictEqual(['John Smith does not have any linked contacts.'])
+      expect($('[data-qa=no-results-link-a-contact]')).toHaveLength(0)
     })
 
-    it('should show no contacts match filter when there are filters and prisoner has any contacts', async () => {
+    it.each([adminUser, authorisingUser])(
+      'should show no contacts at all with link to add a contact if no active results and no unfiltered contacts even if filters applied if admin or authoriser (%j)',
+      async user => {
+        // Given
+        currentUser = user
+        contactsService.filterPrisonerContacts.mockResolvedValue({
+          content: [],
+          page: { totalElements: 0, totalPages: 1, size: 10, number: 0 },
+        })
+
+        // When
+        const response = await request(app).get(
+          `/prisoner/${prisonerNumber}/contacts/list?relationshipStatus=ACTIVE_ONLY&relationshipType=S`,
+        )
+
+        // Then
+        const $ = cheerio.load(response.text)
+        const noResultsContent = elementToTextLines($('[data-qa=no-results-content]').first(), $)
+        expect(noResultsContent).toStrictEqual([
+          'John Smith does not have any linked contacts.',
+          'Link a contact to this prisoner',
+        ])
+        expect($('[data-qa=no-results-link-a-contact]').attr('href')).toStrictEqual(
+          `/prisoner/${prisonerNumber}/contacts/create/start`,
+        )
+
+        const linkContactButton = $('[data-qa=add-contact-button]').first()
+        expect(linkContactButton.text().trim()).toStrictEqual('Link contact')
+        expect(linkContactButton.attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/create/start')
+
+        expect(contactsService.filterPrisonerContacts).toHaveBeenNthCalledWith(
+          1,
+          prisonerNumber,
+          { active: true, relationshipType: 'S' },
+          { page: 0, size: 10, sort: expectDefaultSort },
+          currentUser,
+        )
+        expect(contactsService.filterPrisonerContacts).toHaveBeenNthCalledWith(
+          2,
+          prisonerNumber,
+          {},
+          { page: 0, size: 1 },
+          currentUser,
+        )
+      },
+    )
+
+    it.each([adminUser, authorisingUser])(
+      'should show no active contacts link to change to include inactive if not filters applied and no contacts for admin and authoriser roles (%j)',
+      async user => {
+        // Given
+        currentUser = user
+        contactsService.filterPrisonerContacts
+          .mockResolvedValueOnce({
+            content: [],
+            page: { totalElements: 0, totalPages: 1, size: 10, number: 0 },
+          })
+          .mockResolvedValueOnce({
+            content: [{ ...minimalContact, isRelationshipActive: false }],
+            page: { totalElements: 1, totalPages: 1, size: 10, number: 0 },
+          })
+
+        // When
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/list`)
+
+        // Then
+        const $ = cheerio.load(response.text)
+        const noResultsContent = elementToTextLines($('[data-qa=no-results-content]').first(), $)
+        expect(noResultsContent).toStrictEqual([
+          'John Smith does not have any contacts with active relationship status.',
+          'View contacts with inactive relationship status',
+        ])
+        expect($('[data-qa=no-results-include-inactive]').attr('href')).toStrictEqual(
+          `/prisoner/${prisonerNumber}/contacts/list?relationshipStatus=ACTIVE_AND_INACTIVE`,
+        )
+
+        const linkContactButton = $('[data-qa=add-contact-button]').first()
+        expect(linkContactButton.text().trim()).toStrictEqual('Link another contact')
+        expect(linkContactButton.attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/create/start')
+
+        expect(contactsService.filterPrisonerContacts).toHaveBeenNthCalledWith(
+          1,
+          prisonerNumber,
+          { active: true },
+          { page: 0, size: 10, sort: expectDefaultSort },
+          currentUser,
+        )
+        expect(contactsService.filterPrisonerContacts).toHaveBeenNthCalledWith(
+          2,
+          prisonerNumber,
+          {},
+          { page: 0, size: 1 },
+          currentUser,
+        )
+      },
+    )
+
+    it.each([adminUser, authorisingUser])(
+      'should show no contacts match filter when there are filters and prisoner has any contacts if admin or authoriser (%j)',
+      async user => {
+        // Given
+        currentUser = user
+        contactsService.filterPrisonerContacts
+          .mockResolvedValueOnce({
+            content: [],
+            page: { totalElements: 0, totalPages: 1, size: 10, number: 0 },
+          })
+          .mockResolvedValueOnce({
+            content: [{ ...minimalContact, isRelationshipActive: false }],
+            page: { totalElements: 1, totalPages: 1, size: 10, number: 0 },
+          })
+
+        // When
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/list?flag=EC`)
+
+        // Then
+        const $ = cheerio.load(response.text)
+        const noResultsContent = $('[data-qa=no-results-content]').text()
+        expect(noResultsContent).toContain('No contact records match your filter')
+        expect(noResultsContent).toContain('You can:')
+        expect(noResultsContent).toContain('change the filters and apply them again')
+        expect(noResultsContent).toContain('clear the filters to view contacts with active relationship status')
+        expect(noResultsContent).toContain(
+          'link another contact if you cannot find the correct person in the prisoner’s contact list',
+        )
+
+        expect($('[data-qa=no-results-clear-filters]').attr('href')).toStrictEqual(
+          `/prisoner/${prisonerNumber}/contacts/list`,
+        )
+        expect($('[data-qa=no-results-link-a-contact]').attr('href')).toStrictEqual(
+          `/prisoner/${prisonerNumber}/contacts/create/start`,
+        )
+
+        const linkContactButton = $('[data-qa=add-contact-button]').first()
+        expect(linkContactButton.text().trim()).toStrictEqual('Link another contact')
+        expect(linkContactButton.attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/create/start')
+
+        expect(contactsService.filterPrisonerContacts).toHaveBeenNthCalledWith(
+          1,
+          prisonerNumber,
+          { active: true, emergencyContact: true },
+          { page: 0, size: 10, sort: expectDefaultSort },
+          currentUser,
+        )
+        expect(contactsService.filterPrisonerContacts).toHaveBeenNthCalledWith(
+          2,
+          prisonerNumber,
+          {},
+          { page: 0, size: 1 },
+          currentUser,
+        )
+      },
+    )
+
+    it('When no match and there are filters hide the link new contact link for basic users', async () => {
       // Given
+      currentUser = basicPrisonUser
       contactsService.filterPrisonerContacts
         .mockResolvedValueOnce({
           content: [],
@@ -784,35 +915,12 @@ describe('listContactsController', () => {
       expect(noResultsContent).toContain('You can:')
       expect(noResultsContent).toContain('change the filters and apply them again')
       expect(noResultsContent).toContain('clear the filters to view contacts with active relationship status')
-      expect(noResultsContent).toContain(
-        'link another contact if you cannot find the correct person in the prisoner’s contact list',
-      )
 
       expect($('[data-qa=no-results-clear-filters]').attr('href')).toStrictEqual(
         `/prisoner/${prisonerNumber}/contacts/list`,
       )
-      expect($('[data-qa=no-results-link-a-contact]').attr('href')).toStrictEqual(
-        `/prisoner/${prisonerNumber}/contacts/create/start`,
-      )
-
-      const linkContactButton = $('[data-qa=add-contact-button]').first()
-      expect(linkContactButton.text().trim()).toStrictEqual('Link another contact')
-      expect(linkContactButton.attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/create/start')
-
-      expect(contactsService.filterPrisonerContacts).toHaveBeenNthCalledWith(
-        1,
-        prisonerNumber,
-        { active: true, emergencyContact: true },
-        { page: 0, size: 10, sort: expectDefaultSort },
-        basicPrisonUser,
-      )
-      expect(contactsService.filterPrisonerContacts).toHaveBeenNthCalledWith(
-        2,
-        prisonerNumber,
-        {},
-        { page: 0, size: 1 },
-        basicPrisonUser,
-      )
+      expect($('[data-qa=no-results-link-a-contact]')).toHaveLength(0)
+      expect($('[data-qa=add-contact-button]')).toHaveLength(0)
     })
   })
 

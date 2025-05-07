@@ -8,7 +8,7 @@ context('Sign In', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
-    cy.task('stubSignIn', { roles: ['PRISON'] })
+    cy.task('stubSignIn', { roles: ['PRISON', 'CONTACTS_ADMINISTRATOR'] })
     cy.task(
       'stubPrisonerById',
       TestData.prisoner({ prisonerNumber: 'A1234BC', lastName: 'Last', firstName: 'Prisoner' }),
