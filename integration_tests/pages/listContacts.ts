@@ -1,8 +1,8 @@
 import Page, { PageElement } from './page'
 
 export default class ListContactsPage extends Page {
-  constructor(prisonerName: string) {
-    super(`View and manage contacts linked to ${prisonerName}`)
+  constructor(prisonerName: string, isReadOnly: boolean) {
+    super(isReadOnly ? `View contacts linked to ${prisonerName}` : `View and manage contacts linked to ${prisonerName}`)
   }
 
   clickAddNewContactButton() {
@@ -17,6 +17,13 @@ export default class ListContactsPage extends Page {
   expectNames(expectedNames: string[]): ListContactsPage {
     const items = []
     cy.get('.pcl-contact-name-link').each($li => items.push($li.text()))
+    cy.wrap(items).should('deep.equal', expectedNames)
+    return this
+  }
+
+  expectReadOnlyNames(expectedNames: string[]): ListContactsPage {
+    const items = []
+    cy.get('.read-only-contact-name').each($li => items.push($li.text()))
     cy.wrap(items).should('deep.equal', expectedNames)
     return this
   }

@@ -15,16 +15,22 @@
 {% block content %}
   <div class="moj-page-header-actions contact-record-banner-bottom">
     <div class="moj-page-header-actions__title">
-      <h1 class="govuk-heading-l">View and manage contacts linked to {{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }}</h1>
+      {% if user | hasPermission('MANAGE_CONTACTS') %}
+        <h1 class="govuk-heading-l">View and manage contacts linked to {{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }}</h1>
+      {% else %}
+        <h1 class="govuk-heading-l">View contacts linked to {{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }}</h1>
+      {% endif %}
     </div>
     <div class="moj-page-header-actions__actions">
       <div class="moj-button-group moj-button-group--inline">
+        {% if user | hasPermission('MANAGE_CONTACTS') %}
         {{ govukButton({
           text: "Link another contact" if hasAnyContactsAtAll else "Link contact",
           href: "/prisoner/" + prisonerNumber + "/contacts/create/start",
           attributes: {"data-qa": "add-contact-button"},
           preventDoubleClick: true
         }) }}
+        {% endif %}
       </div>
     </div>
   </div>
@@ -125,9 +131,14 @@
         {% set rows = [] %}
         {% for contact in contacts %}
           {% set contactNameAndNumber %}
-            <a href="/prisoner/{{ prisonerNumber }}/contacts/manage/{{ contact.contactId }}/relationship/{{ contact.prisonerContactId }}"
-              data-qa="contact-{{ contact.contactId }}-link"
-              class="govuk-link--no-visited-state pcl-contact-name-link">{{ contact | formatNameLastNameFirst }}</a><br />
+            {% if user | hasPermission('MANAGE_CONTACTS') %}
+              <a href="/prisoner/{{ prisonerNumber }}/contacts/manage/{{ contact.contactId }}/relationship/{{ contact.prisonerContactId }}"
+                data-qa="contact-{{ contact.contactId }}-link"
+                class="govuk-link--no-visited-state pcl-contact-name-link">{{ contact | formatNameLastNameFirst }}</a>
+            {% else %}
+              <span class="read-only-contact-name">{{ contact | formatNameLastNameFirst }}</span>
+            {% endif %}
+            <br />
             <span class="govuk-hint">{{ contact.contactId }}</span>
             {% if contact.isEmergencyContact %}<p class="emergency-contact-tag govuk-!-margin-top-1">Emergency contact</p>{% endif %}
             {% if contact.isNextOfKin %}<p class="next-of-kin-tag {{ 'govuk-!-margin-top-1' if not contact.isEmergencyContact }}">Next of kin</p>{% endif %}
@@ -200,7 +211,9 @@
         <div data-qa="no-results-content">
         {% if not hasAnyContactsAtAll %}
           <p class="govuk-body">{{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }} does not have any linked contacts.</p>
-          <a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/create/start" class="govuk-body govuk-link--no-visited-state" data-qa="no-results-link-a-contact">Link a contact to this prisoner</a>
+          {% if user | hasPermission('MANAGE_CONTACTS') %}
+            <a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/create/start" class="govuk-body govuk-link--no-visited-state" data-qa="no-results-link-a-contact">Link a contact to this prisoner</a>
+          {% endif %}
         {% elseif not hasAnyFiltersApplied %}
           <p class="govuk-body">{{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }} does not have any contacts with active relationship status.</p>
           <a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/list?relationshipStatus=ACTIVE_AND_INACTIVE" class="govuk-body govuk-link--no-visited-state" data-qa="no-results-include-inactive">View contacts with inactive relationship status</a>
@@ -210,7 +223,9 @@
           <ul class="govuk-list govuk-list--bullet">
             <li>change the filters and apply them again</li>
             <li><a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/list" class="govuk-body govuk-link--no-visited-state" data-qa="no-results-clear-filters">clear the filters</a> to view contacts with active relationship status</li>
-            <li><a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/create/start" class="govuk-body govuk-link--no-visited-state" data-qa="no-results-link-a-contact">link another contact</a> if you cannot find the correct person in the prisoner’s contact list</li>
+            {% if user | hasPermission('MANAGE_CONTACTS') %}
+              <li><a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/create/start" class="govuk-body govuk-link--no-visited-state" data-qa="no-results-link-a-contact">link another contact</a> if you cannot find the correct person in the prisoner’s contact list</li>
+            {% endif %}
           </ul>
         {% endif %}
         </div>
