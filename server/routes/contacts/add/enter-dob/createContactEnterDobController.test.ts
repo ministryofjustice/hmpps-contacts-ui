@@ -36,7 +36,6 @@ beforeEach(() => {
     lastTouched: new Date().toISOString(),
     prisonerNumber,
     isCheckingAnswers: false,
-    returnPoint: { url: '/foo-bar' },
     names: {
       lastName: 'last',
       middleNames: 'middle',

@@ -45,7 +45,6 @@ const generateJourneyData = (): UpdateEmploymentsJourney => ({
       isActive: false,
     },
   ],
-  returnPoint: { url: '/foo/bar' },
   organisationSearch: { page: 1 },
 })
 const setJourneyData = (data: UpdateEmploymentsJourney) => {
@@ -76,14 +75,14 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/delete-employment', () => {
+describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/update-employments/:employmentIdx/delete-employment', () => {
   it('should show error on "new" employment index', async () => {
     // Given
     setJourneyData(generateJourneyData())
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/new/delete-employment/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/new/delete-employment/${journeyId}`,
     )
 
     // Then
@@ -100,7 +99,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/dele
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/9999/delete-employment/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/9999/delete-employment/${journeyId}`,
     )
 
     // Then
@@ -117,7 +116,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/dele
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/delete-employment/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/1/delete-employment/${journeyId}`,
     )
 
     expect(auditService.logPageView).toHaveBeenCalledWith('MANAGE_CONTACT_DELETE_EMPLOYMENT_PAGE', {
@@ -125,6 +124,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/dele
       correlationId: expect.any(String),
       details: {
         contactId: '1',
+        prisonerContactId: '2',
         prisonerNumber,
         employerId: '1',
       },
@@ -138,10 +138,10 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/dele
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit professional information')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('a:contains("Back")').attr('href')).toEqual(
-      `/prisoner/A1234BC/contacts/manage/1/update-employments/${journeyId}`,
+      `/prisoner/A1234BC/contacts/manage/1/relationship/2/update-employments/${journeyId}`,
     )
     expect($('a:contains("No, do not delete")').attr('href')).toEqual(
-      `/prisoner/A1234BC/contacts/manage/1/update-employments/${journeyId}`,
+      `/prisoner/A1234BC/contacts/manage/1/relationship/2/update-employments/${journeyId}`,
     )
     expect($('h1:contains("Are you sure you want to delete this employer")').text()).toBeTruthy()
     expect($('dt:contains("Employer name")').next().text()).toMatch(/Big Corp/)
@@ -161,12 +161,14 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/dele
 
     // When
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/delete-employment/${journeyId}`)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/1/delete-employment/${journeyId}`,
+      )
       .expect(expectedStatus)
   })
 })
 
-describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/delete-employment', () => {
+describe('POST /contacts/manage/:contactId/relationship/:prisonerContactId/update-employments/:employmentIdx/delete-employment', () => {
   it('should mark employment for deletion and redirect', async () => {
     // Given
     const journeyData = generateJourneyData()
@@ -174,13 +176,17 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/del
 
     // When
     const response = await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/delete-employment/${journeyId}`)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/1/delete-employment/${journeyId}`,
+      )
       .type('form')
       .send({})
 
     // Then
     expect(response.status).toEqual(302)
-    expect(response.headers['location']).toMatch(/contacts\/manage\/1\/update-employments\/[a-f0-9-]{36}/)
+    expect(response.headers['location']).toMatch(
+      /contacts\/manage\/1\/relationship\/2\/update-employments\/[a-f0-9-]{36}/,
+    )
     expect(journeyData.employments.length).toEqual(0)
     expect(journeyData.employmentIdsToDelete?.length).toEqual(1)
     expect(journeyData.employmentIdsToDelete).toContain(1234)
@@ -194,7 +200,9 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/del
 
     // When
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/delete-employment/${journeyId}`)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/1/delete-employment/${journeyId}`,
+      )
       .type('form')
       .send({})
 
@@ -213,7 +221,9 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/del
     setJourneyData(journeyData)
 
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/delete-employment/${journeyId}`)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/1/delete-employment/${journeyId}`,
+      )
       .type('form')
       .send({})
       .expect(expectedStatus)

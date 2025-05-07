@@ -40,7 +40,6 @@ const generateJourneyData = (): UpdateEmploymentsJourney => ({
   contactId: contact.id,
   contactNames: { ...contact },
   employments: [],
-  returnPoint: { url: '/foo/bar' },
   organisationSearch: { page: 1 },
 })
 const setJourneyData = (data: UpdateEmploymentsJourney) => {
@@ -72,7 +71,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => {
+describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/update-employments/:journeyId', () => {
   it('should render employment records with change links', async () => {
     // Given
     setJourneyData({
@@ -96,7 +95,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/${journeyId}`,
     )
 
     // Then
@@ -105,6 +104,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
       correlationId: expect.any(String),
       details: {
         contactId: '1',
+        prisonerContactId: '2',
         prisonerNumber,
       },
     })
@@ -113,25 +113,27 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit professional information')
     expect($('h1').text()).toStrictEqual('Edit employment information for Jones Mason')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-    expect($('a:contains("Back to contact record")').attr('href')).toEqual('/foo/bar')
+    expect($('a:contains("Back to contact record")').attr('href')).toEqual(
+      '/prisoner/A1234BC/contacts/manage/1/relationship/2',
+    )
     expect($('dt:contains("Employer name")').next().text()).toMatch(/Big Corp/)
     expect($('dt:contains("Employer’s primary address")').next().text()).toMatch(/Some House(\s+)England/)
     expect($('dt:contains("Business phone number at primary address")').next().text()).toMatch(/60511, ext\. 123/)
     expect($('dt:contains("Employment status")').next().text()).toMatch(/Inactive/)
 
     expect($('a:contains("Delete employer (Past employer: Big Corp)")').attr('href')).toEqual(
-      `/prisoner/A1234BC/contacts/manage/1/update-employments/1/delete-employment/${journeyId}`,
+      `/prisoner/A1234BC/contacts/manage/1/relationship/2/update-employments/1/delete-employment/${journeyId}`,
     )
     expect($('a:contains("Change organisation (Past employer: Big Corp)")').attr('href')).toEqual(
-      `/prisoner/A1234BC/contacts/manage/1/update-employments/1/organisation-search/${journeyId}`,
+      `/prisoner/A1234BC/contacts/manage/1/relationship/2/update-employments/1/organisation-search/${journeyId}`,
     )
     expect($('a:contains("Change status of the employment with (Past employer: Big Corp)")').attr('href')).toEqual(
-      `/prisoner/A1234BC/contacts/manage/1/update-employments/1/employment-status/${journeyId}`,
+      `/prisoner/A1234BC/contacts/manage/1/relationship/2/update-employments/1/employment-status/${journeyId}`,
     )
     expect($('a:contains("Add another employer")').attr('href')).toEqual(
-      `/prisoner/A1234BC/contacts/manage/1/update-employments/new/organisation-search/${journeyId}`,
+      `/prisoner/A1234BC/contacts/manage/1/relationship/2/update-employments/new/organisation-search/${journeyId}`,
     )
-    expect($('a:contains("Cancel")').attr('href')).toEqual('/foo/bar')
+    expect($('a:contains("Cancel")').attr('href')).toEqual('/prisoner/A1234BC/contacts/manage/1/relationship/2')
     expect($('p:contains("To change details such as the employer name")').text()).toBeTruthy()
   })
 
@@ -144,14 +146,14 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/${journeyId}`,
     )
 
     // Then
     const $ = cheerio.load(response.text)
     expect($('h1:contains("Edit employment information")').parent().next().text()).toContain('No employers recorded.')
     expect($('a:contains("Add employer")').attr('href')).toEqual(
-      `/prisoner/A1234BC/contacts/manage/1/update-employments/new/organisation-search/${journeyId}`,
+      `/prisoner/A1234BC/contacts/manage/1/relationship/2/update-employments/new/organisation-search/${journeyId}`,
     )
     expect($('p:contains("To change details such as the employer name")').text()).toBeFalsy()
   })
@@ -175,7 +177,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/${journeyId}`,
     )
 
     // Then
@@ -196,12 +198,12 @@ describe('GET /contacts/manage/:contactId/update-employments/:journeyId', () => 
     })
 
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/${journeyId}`)
+      .get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/${journeyId}`)
       .expect(expectedStatus)
   })
 })
 
-describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () => {
+describe('POST /contacts/manage/:contactId/relationship/:prisonerContactId/update-employments/:journeyId', () => {
   it('should send PATCH employments API call, then redirect with success message', async () => {
     // Given
     setJourneyData({
@@ -230,7 +232,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
 
     // When
     const response = await request(app).post(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/${journeyId}`,
     )
 
     // Then
@@ -262,7 +264,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
     )
 
     expect(response.status).toEqual(302)
-    expect(response.headers['location']).toMatch(/\/foo\/bar/)
+    expect(response.headers['location']).toStrictEqual('/prisoner/A1234BC/contacts/manage/1/relationship/2')
   })
 
   it('should handle request with only CREATE', async () => {
@@ -283,7 +285,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
 
     // When
     const response = await request(app).post(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/${journeyId}`,
     )
 
     // Then
@@ -324,7 +326,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
 
     // When
     const response = await request(app).post(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/${journeyId}`,
     )
 
     // Then
@@ -357,7 +359,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
 
     // When
     const response = await request(app).post(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/${journeyId}`,
     )
 
     // Then
@@ -405,7 +407,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:journeyId', () =>
     })
 
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/${journeyId}`)
       .expect(expectedStatus)
   })
 })

@@ -45,7 +45,6 @@ const generateJourneyData = (): UpdateEmploymentsJourney => ({
       isActive: false,
     },
   ],
-  returnPoint: { url: '/foo/bar' },
   organisationSearch: { page: 1 },
 })
 const setJourneyData = (data: UpdateEmploymentsJourney) => {
@@ -76,14 +75,14 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/employment-status', () => {
+describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/update-employments/:employmentIdx/employment-status', () => {
   it('should show error on "new" employment index', async () => {
     // Given
     setJourneyData(generateJourneyData())
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/new/employment-status/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/new/employment-status/${journeyId}`,
     )
 
     // Then
@@ -100,7 +99,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/empl
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/9999/organisation-search/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/9999/organisation-search/${journeyId}`,
     )
 
     // Then
@@ -117,7 +116,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/empl
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/employment-status/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/1/employment-status/${journeyId}`,
     )
 
     // Then
@@ -126,6 +125,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/empl
       correlationId: expect.any(String),
       details: {
         contactId: '1',
+        prisonerContactId: '2',
         prisonerNumber,
         employerId: '1',
       },
@@ -137,7 +137,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/empl
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit professional information')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('a:contains("Back")').attr('href')).toEqual(
-      `/prisoner/A1234BC/contacts/manage/1/update-employments/${journeyId}`,
+      `/prisoner/A1234BC/contacts/manage/1/relationship/2/update-employments/${journeyId}`,
     )
     expect($('h1:contains("What is the current employment status")').text()).toBeTruthy()
     expect($('label:contains("Active")').prev('input').attr('checked')).toBeFalsy()
@@ -153,7 +153,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/empl
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/employment-status/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/1/employment-status/${journeyId}`,
     )
 
     // Then
@@ -173,12 +173,14 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/empl
 
     // When
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/employment-status/${journeyId}`)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/1/employment-status/${journeyId}`,
+      )
       .expect(expectedStatus)
   })
 })
 
-describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/employment-status', () => {
+describe('POST /contacts/manage/:contactId/relationship/:prisonerContactId/update-employments/:employmentIdx/employment-status', () => {
   it('should update employment status in session and redirect', async () => {
     // Given
     const journeyData = generateJourneyData()
@@ -187,7 +189,9 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/emp
 
     // When
     const response = await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/employment-status/${journeyId}`)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/1/employment-status/${journeyId}`,
+      )
       .type('form')
       .send({
         isActive: 'true',
@@ -195,7 +199,9 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/emp
 
     // Then
     expect(response.status).toEqual(302)
-    expect(response.headers['location']).toMatch(/contacts\/manage\/1\/update-employments\/[a-f0-9-]{36}/)
+    expect(response.headers['location']).toMatch(
+      /contacts\/manage\/1\/relationship\/2\/update-employments\/[a-f0-9-]{36}/,
+    )
     expect(journeyData.employments[0]!.isActive).toBeTruthy()
   })
 
@@ -210,7 +216,9 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/emp
     setJourneyData(journeyData)
 
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/employment-status/${journeyId}`)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/1/employment-status/${journeyId}`,
+      )
       .type('form')
       .send({
         isActive: 'true',

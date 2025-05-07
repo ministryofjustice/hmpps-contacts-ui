@@ -20,7 +20,7 @@ export default class OrganisationSearchController implements PageHandler {
     req: Request<UpdateEmploymentJourneyParams, unknown, unknown, { page?: string; sort?: string }>,
     res: Response,
   ) => {
-    const { prisonerNumber, contactId, employmentIdx, journeyId } = req.params
+    const { prisonerNumber, contactId, employmentIdx, journeyId, prisonerContactId } = req.params
     const journey = req.session.updateEmploymentsJourneys![journeyId]!
     const { page, sort } = req.query
 
@@ -28,14 +28,14 @@ export default class OrganisationSearchController implements PageHandler {
       journey.organisationSearch.sort = sort
       journey.organisationSearch.page = 1
       return res.redirect(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/organisation-search/${journeyId}#pagination`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/update-employments/${employmentIdx}/organisation-search/${journeyId}#pagination`,
       )
     }
     if (page) {
       const pageNumber = Number(page)
       journey.organisationSearch.page = Number.isNaN(pageNumber) ? 1 : pageNumber
       return res.redirect(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/organisation-search/${journeyId}#pagination`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/update-employments/${employmentIdx}/organisation-search/${journeyId}#pagination`,
       )
     }
 
@@ -63,9 +63,9 @@ export default class OrganisationSearchController implements PageHandler {
     return res.render('pages/contacts/manage/employments/organisationSearch/index', {
       navigation: {
         backLinkLabel: 'Back to employment information',
-        backLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${journeyId}`,
+        backLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/update-employments/${journeyId}`,
       },
-      baseEmploymentLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/`,
+      baseEmploymentLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/update-employments/${employmentIdx}/`,
       ...req.params,
       contact: journey.contactNames,
       organisationName: journey.organisationSearch.searchTerm,

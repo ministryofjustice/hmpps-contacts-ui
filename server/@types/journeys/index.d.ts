@@ -5,7 +5,6 @@ export interface AddContactJourney {
   lastTouched: string
   prisonerNumber: string
   isCheckingAnswers: boolean
-  returnPoint: ReturnPoint
   mode?: 'EXISTING' | 'NEW' | undefined
   searchContact?:
     | {
@@ -99,7 +98,6 @@ export interface UpdateEmploymentsJourney {
   contactNames: ContactNames
   employments: EmploymentDetails[]
   employmentIdsToDelete?: number[]
-  returnPoint: ReturnPoint
   changeOrganisationId?: number
   organisationSearch: {
     page: number
@@ -117,11 +115,6 @@ export interface ChangeRelationshipTypeJourney {
   names: ContactNames
   relationshipType: string
   relationshipToPrisoner: string
-}
-
-export interface ReturnPoint {
-  url: string
-  anchor?: string
 }
 
 export interface PrisonerDetails {
@@ -196,14 +189,6 @@ export interface AddressMetadata {
   comments?: string | null | undefined
 }
 
-export interface StandaloneManageContactJourney {
-  returnPoint: ReturnPoint
-  names?: ContactNames
-  contactNames?: ContactNames
-  restrictionClass?: RestrictionClass
-  contactId?: string
-}
-
 export interface PhoneNumberForm {
   type: string
   phoneNumber: string
@@ -231,5 +216,6 @@ export type RestrictionClass = 'CONTACT_GLOBAL' | 'PRISONER_CONTACT'
 
 export type UpdateEmploymentJourneyParams = PrisonerJourneyParams & {
   contactId: string
+  prisonerContactId: string
   employmentIdx: string
 }

@@ -485,40 +485,40 @@ const ManageContactsRoutes = (
 
   // Edit employments
   get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments',
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-employments',
     new UpdateEmploymentsStartController(contactsService),
   )
 
   journeyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments/:journeyId',
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-employments/:journeyId',
     controller: new UpdateEmploymentsController(contactsService),
     journeyEnsurer: ensureInUpdateEmploymentsJourney,
     noValidation: true,
   })
 
   journeyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments/:employmentIdx/organisation-search/:journeyId',
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-employments/:employmentIdx/organisation-search/:journeyId',
     controller: new OrganisationSearchController(organisationsService),
     journeyEnsurer: [ensureInUpdateEmploymentsJourney, ensureValidEmploymentIdx()],
     noValidation: true,
   })
 
   journeyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments/:employmentIdx/check-employer/:journeyId',
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-employments/:employmentIdx/check-employer/:journeyId',
     controller: new CheckEmployerController(organisationsService),
     journeyEnsurer: [ensureInUpdateEmploymentsJourney, ensureValidEmploymentIdx()],
     schema: checkEmployerSchema,
   })
 
   journeyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments/:employmentIdx/employment-status/:journeyId',
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-employments/:employmentIdx/employment-status/:journeyId',
     controller: new EmploymentStatusController(),
     journeyEnsurer: [ensureInUpdateEmploymentsJourney, ensureValidEmploymentIdx(false)],
     schema: employmentStatusSchema,
   })
 
   journeyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/update-employments/:employmentIdx/delete-employment/:journeyId',
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-employments/:employmentIdx/delete-employment/:journeyId',
     controller: new DeleteEmploymentController(),
     journeyEnsurer: [ensureInUpdateEmploymentsJourney, ensureValidEmploymentIdx(false)],
     noValidation: true,

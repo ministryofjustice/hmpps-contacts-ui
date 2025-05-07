@@ -42,7 +42,6 @@ beforeEach(() => {
     lastTouched: new Date().toISOString(),
     prisonerNumber,
     isCheckingAnswers: false,
-    returnPoint: { url: '/foo-bar' },
     mode: 'EXISTING',
   }
   app = appWithAllRoutes({

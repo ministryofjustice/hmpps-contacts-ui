@@ -18,7 +18,7 @@ export default class CheckEmployerController implements PageHandler {
     req: Request<UpdateEmploymentJourneyParams, unknown, unknown, { organisationId: string }>,
     res: Response,
   ) => {
-    const { prisonerNumber, contactId, employmentIdx, journeyId } = req.params
+    const { prisonerNumber, contactId, employmentIdx, journeyId, prisonerContactId } = req.params
     const journey = req.session.updateEmploymentsJourneys![journeyId]!
     const { organisationId } = req.query
 
@@ -28,7 +28,7 @@ export default class CheckEmployerController implements PageHandler {
         journey.changeOrganisationId = orgIdNumber
       }
       return res.redirect(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/check-employer/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/update-employments/${employmentIdx}/check-employer/${journeyId}`,
       )
     }
 
@@ -42,7 +42,7 @@ export default class CheckEmployerController implements PageHandler {
 
     return res.render('pages/contacts/manage/employments/checkEmployer/index', {
       navigation: {
-        backLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/organisation-search/${journeyId}`,
+        backLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/update-employments/${employmentIdx}/organisation-search/${journeyId}`,
       },
       contactNames: journey.contactNames,
       organisation: employer,
@@ -60,13 +60,13 @@ export default class CheckEmployerController implements PageHandler {
   }
 
   POST = async (req: Request<UpdateEmploymentJourneyParams, unknown, IsCorrectEmployerSchema>, res: Response) => {
-    const { prisonerNumber, contactId, employmentIdx, journeyId } = req.params
+    const { prisonerNumber, contactId, employmentIdx, journeyId, prisonerContactId } = req.params
     const journey = req.session.updateEmploymentsJourneys![journeyId]!
 
     if (req.body.isCorrectEmployer === 'NO') {
       delete journey.changeOrganisationId
       return res.redirect(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${employmentIdx}/organisation-search/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/update-employments/${employmentIdx}/organisation-search/${journeyId}`,
       )
     }
 
@@ -85,6 +85,8 @@ export default class CheckEmployerController implements PageHandler {
       journey.employments[idx]!.employer = employerSummary
     }
 
-    return res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${journeyId}`)
+    return res.redirect(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/update-employments/${journeyId}`,
+    )
   }
 }

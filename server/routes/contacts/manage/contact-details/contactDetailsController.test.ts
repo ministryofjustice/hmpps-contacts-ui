@@ -392,7 +392,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         'No employers recorded.',
       )
       expect($('a:contains("Edit employers")').attr('href')).toEqual(
-        '/prisoner/A1234BC/contacts/manage/22/update-employments?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99',
+        '/prisoner/A1234BC/contacts/manage/1/relationship/99/update-employments',
       )
     })
 
@@ -427,7 +427,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect($('dt:contains("Business phone number at primary address")').next().text()).toMatch(/60511, ext\. 123/)
       expect($('dt:contains("Employment status")').next().text()).toMatch(/Inactive/)
       expect($('a:contains("Edit employers")').attr('href')).toEqual(
-        '/prisoner/A1234BC/contacts/manage/22/update-employments?returnUrl=/prisoner/A1234BC/contacts/manage/1/relationship/99',
+        '/prisoner/A1234BC/contacts/manage/1/relationship/99/update-employments',
       )
     })
 

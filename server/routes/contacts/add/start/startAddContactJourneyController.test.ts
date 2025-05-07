@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { MockedService } from '../../../../testutils/mockedServices'
-import { AddContactJourney, ReturnPoint } from '../../../../@types/journeys'
+import { AddContactJourney } from '../../../../@types/journeys'
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
 
 jest.mock('../../../../services/auditService')
@@ -61,29 +61,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
     expect(Object.entries(session.addContactJourneys!)).toHaveLength(1)
   })
 
-  it('should set the return point to prisoner contact if no return parameters are specified', async () => {
-    // Given
-    const expectedReturnPoint: ReturnPoint = {
-      url: `/prisoner/${prisonerNumber}/contacts/list`,
-    }
-
-    // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/start`)
-
-    // Then
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.CREATE_CONTACT_START_PAGE, {
-      who: currentUser.username,
-      correlationId: expect.any(String),
-      details: {
-        prisonerNumber: 'A1234BC',
-      },
-    })
-    expect(response.status).toEqual(302)
-    expect(response.headers['location']).toContain('/contacts/search/')
-    const journey = Object.values(session.addContactJourneys!)[0]!
-    expect(journey.returnPoint).toStrictEqual(expectedReturnPoint)
-  })
-
   it('should not remove any existing add journeys in the session', async () => {
     // Given
     preExistingJourneysToAddToSession = [
@@ -91,7 +68,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
         id: uuidv4(),
         lastTouched: new Date().toISOString(),
         isCheckingAnswers: false,
-        returnPoint: { url: '/foo-bar' },
         prisonerNumber,
         names: {
           lastName: 'foo',
@@ -121,35 +97,30 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
         lastTouched: new Date(2024, 1, 1, 11, 30).toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { url: '/foo-bar' },
       },
       {
         id: 'middle-aged',
         lastTouched: new Date(2024, 1, 1, 12, 30).toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { url: '/foo-bar' },
       },
       {
         id: 'youngest',
         lastTouched: new Date(2024, 1, 1, 14, 30).toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { url: '/foo-bar' },
       },
       {
         id: 'oldest',
         lastTouched: new Date(2024, 1, 1, 10, 30).toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { url: '/foo-bar' },
       },
       {
         id: 'young',
         lastTouched: new Date(2024, 1, 1, 13, 30).toISOString(),
         prisonerNumber,
         isCheckingAnswers: false,
-        returnPoint: { url: '/foo-bar' },
       },
     ]
 

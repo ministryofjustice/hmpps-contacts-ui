@@ -158,9 +158,6 @@ describe('addContactFlowControl', () => {
             id: journeyId,
             lastTouched: new Date().toISOString(),
             prisonerNumber: 'A1234BC',
-            returnPoint: {
-              url: '/foo',
-            },
             mode: 'NEW',
             isCheckingAnswers: false,
             dateOfBirth: {
@@ -204,9 +201,6 @@ describe('addContactFlowControl', () => {
             id: journeyId,
             lastTouched: new Date().toISOString(),
             prisonerNumber: 'A1234BC',
-            returnPoint: {
-              url: '/foo',
-            },
             mode: 'NEW',
             isCheckingAnswers: true,
             dateOfBirth: {
@@ -303,9 +297,6 @@ describe('addContactFlowControl', () => {
             id: journeyId,
             lastTouched: new Date().toISOString(),
             prisonerNumber: 'A1234BC',
-            returnPoint: {
-              url: '/foo',
-            },
             isCheckingAnswers: false,
             dateOfBirth: {
               isKnown: 'NO',
@@ -333,9 +324,6 @@ describe('addContactFlowControl', () => {
             id: journeyId,
             lastTouched: new Date().toISOString(),
             prisonerNumber: 'A1234BC',
-            returnPoint: {
-              url: '/foo',
-            },
             mode: 'NEW',
             relationship: {
               relationshipType: before,
@@ -439,9 +427,6 @@ describe('addContactFlowControl', () => {
             id: journeyId,
             lastTouched: new Date().toISOString(),
             prisonerNumber: 'A1234BC',
-            returnPoint: {
-              url: '/foo',
-            },
             mode: 'EXISTING',
             matchingContactId: 12346789,
             isCheckingAnswers: false,
@@ -470,9 +455,6 @@ describe('addContactFlowControl', () => {
           id: journeyId,
           lastTouched: new Date().toISOString(),
           prisonerNumber: 'A1234BC',
-          returnPoint: {
-            url: '/foo',
-          },
           mode: 'EXISTING',
           isCheckingAnswers: true,
         }
@@ -533,9 +515,6 @@ describe('addContactFlowControl', () => {
             id: journeyId,
             lastTouched: new Date().toISOString(),
             prisonerNumber: 'A1234BC',
-            returnPoint: {
-              url: '/foo',
-            },
             mode: 'EXISTING',
             isCheckingAnswers: false,
             contactId: 123456,
@@ -560,9 +539,6 @@ describe('addContactFlowControl', () => {
             id: journeyId,
             lastTouched: new Date().toISOString(),
             prisonerNumber: 'A1234BC',
-            returnPoint: {
-              url: '/foo',
-            },
             mode: 'EXISTING',
             relationship: {
               relationshipType: before,
@@ -597,9 +573,6 @@ describe('addContactFlowControl', () => {
         id: journeyId,
         lastTouched: new Date().toISOString(),
         prisonerNumber: 'A1234BC',
-        returnPoint: {
-          url: '/foo',
-        },
         isCheckingAnswers: false,
       }
       const expected: Navigation = {
@@ -624,9 +597,6 @@ describe('addContactFlowControl', () => {
         id: journeyId,
         lastTouched: new Date().toISOString(),
         prisonerNumber: 'A1234BC',
-        returnPoint: {
-          url: '/foo',
-        },
         isCheckingAnswers: false,
       }
       if (mode) journey.mode = mode as 'NEW' | 'EXISTING'

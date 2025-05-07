@@ -76,7 +76,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
       // When
       const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/start?returnUrl=/foo`,
+        `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/start`,
       )
 
       // Then
@@ -117,7 +117,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/PRISONER_CONTACT/start?returnUrl=/foo`,
+      `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/PRISONER_CONTACT/start`,
     )
     const { location } = response.headers
 
@@ -197,7 +197,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/PRISONER_CONTACT/start?returnUrl=/foo`,
+      `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/PRISONER_CONTACT/start`,
     )
     const { location } = response.headers
 
@@ -218,7 +218,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     currentUser = user
     await request(app)
       .get(
-        `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/PRISONER_CONTACT/start?returnUrl=/foo`,
+        `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/PRISONER_CONTACT/start`,
       )
       .expect(expectedStatus)
   })
