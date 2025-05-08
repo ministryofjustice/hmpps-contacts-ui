@@ -174,7 +174,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/update
           businessPhoneNumberExtension: '222',
         }),
       ],
-      totalElements: 11,
+      page: { totalElements: 11 },
     })
 
     // When
@@ -231,7 +231,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/update
           businessPhoneNumberExtension: '222',
         }),
       ],
-      totalElements: 1,
+      page: { totalElements: 1 },
     })
 
     // When
@@ -256,7 +256,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/update
 
     organisationsService.searchOrganisations.mockResolvedValue({
       content: [],
-      totalElements: 0,
+      page: { totalElements: 0 },
     })
 
     // When
@@ -279,7 +279,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/update
 
     organisationsService.searchOrganisations.mockResolvedValue({
       content: [],
-      totalElements: 0,
+      page: { totalElements: 0 },
     })
 
     // When
@@ -306,7 +306,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/update
 
     organisationsService.searchOrganisations.mockResolvedValue({
       content: [],
-      totalElements: 0,
+      page: { totalElements: 0 },
     })
 
     await request(app)

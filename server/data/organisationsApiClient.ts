@@ -3,7 +3,7 @@ import RestClient from './restClient'
 import {
   OrganisationDetails,
   OrganisationSummary,
-  OrganisationSummaryResultItemPage,
+  PagedModelOrganisationSummary,
 } from '../@types/organisationsApiClient'
 
 export default class OrganisationsApiClient extends RestClient {
@@ -24,9 +24,9 @@ export default class OrganisationsApiClient extends RestClient {
       sort: string[]
     },
     user: Express.User,
-  ): Promise<OrganisationSummaryResultItemPage> {
+  ): Promise<PagedModelOrganisationSummary> {
     const name = encodeURIComponent(searchTerm)
-    return this.get<OrganisationSummaryResultItemPage>(
+    return this.get<PagedModelOrganisationSummary>(
       {
         path: `/organisation/search?name=${name}&page=${page}&size=${size}${sort.map(itm => `&sort=${encodeURIComponent(itm)}`).join('')}`,
       },

@@ -594,14 +594,6 @@ export interface components {
        */
       updatedTime: string
     }
-    ErrorResponse: {
-      /** Format: int32 */
-      status: number
-      errorCode?: string
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
-    }
     SyncOrganisationResponse: {
       /**
        * Format: int64
@@ -667,6 +659,14 @@ export interface components {
        * @example 2023-09-24T12:00:00
        */
       updatedTime?: string
+    }
+    ErrorResponse: {
+      /** Format: int32 */
+      status: number
+      errorCode?: string
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
     }
     /** @description Request to update a web address for an organisation */
     SyncUpdateWebRequest: {
@@ -2418,39 +2418,19 @@ export interface components {
       /** @description List of Nomis and DPS IDs for email addresses */
       phoneNumbers: components['schemas']['IdPair'][]
     }
-    PageSyncOrganisationId: {
+    PageMetadata: {
+      /** Format: int64 */
+      size?: number
+      /** Format: int64 */
+      number?: number
       /** Format: int64 */
       totalElements?: number
-      /** Format: int32 */
-      totalPages?: number
-      first?: boolean
-      last?: boolean
-      /** Format: int32 */
-      size?: number
-      content?: components['schemas']['SyncOrganisationId'][]
-      /** Format: int32 */
-      number?: number
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      numberOfElements?: number
-      pageable?: components['schemas']['PageableObject']
-      empty?: boolean
-    }
-    PageableObject: {
       /** Format: int64 */
-      offset?: number
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      pageSize?: number
-      paged?: boolean
-      /** Format: int32 */
-      pageNumber?: number
-      unpaged?: boolean
+      totalPages?: number
     }
-    SortObject: {
-      empty?: boolean
-      sorted?: boolean
-      unsorted?: boolean
+    PagedModelSyncOrganisationId: {
+      content?: components['schemas']['SyncOrganisationId'][]
+      page?: components['schemas']['PageMetadata']
     }
     /** @description Response object for sync reconciliation */
     SyncOrganisationId: {
@@ -2609,25 +2589,9 @@ export interface components {
       size?: number
       sort?: string[]
     }
-    OrganisationSummaryResultItemPage: {
+    PagedModelOrganisationSummary: {
       content?: components['schemas']['OrganisationSummary'][]
-      pageable?: components['schemas']['PageableObject']
-      /** Format: int64 */
-      total?: number
-      last?: boolean
-      /** Format: int64 */
-      totalElements?: number
-      /** Format: int32 */
-      totalPages?: number
-      first?: boolean
-      /** Format: int32 */
-      size?: number
-      /** Format: int32 */
-      number?: number
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      numberOfElements?: number
-      empty?: boolean
+      page?: components['schemas']['PageMetadata']
     }
   }
   responses: never
@@ -4195,7 +4159,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PageSyncOrganisationId']
+          'application/json': components['schemas']['PagedModelSyncOrganisationId']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -4385,7 +4349,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['OrganisationSummaryResultItemPage']
+          'application/json': components['schemas']['PagedModelOrganisationSummary']
         }
       }
       /** @description Invalid request */

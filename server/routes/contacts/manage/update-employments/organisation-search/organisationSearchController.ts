@@ -3,7 +3,7 @@ import { PageHandler } from '../../../../../interfaces/pageHandler'
 import { Page } from '../../../../../services/auditService'
 import { setPaginationLocals } from '../../../../../views/partials/simplePagination/utils'
 import OrganisationsService from '../../../../../services/organisationsService'
-import { OrganisationSummaryResultItemPage } from '../../../../../@types/organisationsApiClient'
+import { PagedModelOrganisationSummary } from '../../../../../@types/organisationsApiClient'
 import { PrisonerJourneyParams, UpdateEmploymentJourneyParams } from '../../../../../@types/journeys'
 import Permission from '../../../../../enumeration/permission'
 
@@ -39,7 +39,7 @@ export default class OrganisationSearchController implements PageHandler {
       )
     }
 
-    let searchResult: OrganisationSummaryResultItemPage | undefined
+    let searchResult: PagedModelOrganisationSummary | undefined
 
     if (journey.organisationSearch.searchTerm) {
       searchResult = await this.organisationsService.searchOrganisations(
@@ -55,7 +55,7 @@ export default class OrganisationSearchController implements PageHandler {
         res,
         this.TABLE_ROW_COUNT,
         journey.organisationSearch.page,
-        searchResult?.totalElements ?? 0,
+        searchResult?.page?.totalElements ?? 0,
         searchResult?.content?.length ?? 0,
       )
     }

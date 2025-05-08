@@ -169,7 +169,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/employments/:employmentI
           businessPhoneNumberExtension: '222',
         }),
       ],
-      totalElements: 11,
+      page: { totalElements: 11 },
     })
 
     // When
@@ -220,7 +220,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/employments/:employmentI
           businessPhoneNumberExtension: '222',
         }),
       ],
-      totalElements: 1,
+      page: { totalElements: 1 },
     })
 
     // When
@@ -242,7 +242,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/employments/:employmentI
 
     organisationsService.searchOrganisations.mockResolvedValue({
       content: [],
-      totalElements: 0,
+      page: { totalElements: 0 },
     })
 
     // When
@@ -262,7 +262,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/employments/:employmentI
 
     organisationsService.searchOrganisations.mockResolvedValue({
       content: [],
-      totalElements: 0,
+      page: { totalElements: 0 },
     })
 
     // When
