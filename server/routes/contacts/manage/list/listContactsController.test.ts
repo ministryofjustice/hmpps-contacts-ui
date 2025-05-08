@@ -493,6 +493,36 @@ describe('listContactsController', () => {
     })
 
     it.each([
+      [
+        `/prisoner/${prisonerNumber}/contacts/list?relationshipStatus=dk9m4%22%3e%3cscript%3ealert(1)%3c%2fscript%3ew194n`,
+      ],
+      [`/prisoner/${prisonerNumber}/contacts/list?flag=dk9m4%22%3e%3cscript%3ealert(1)%3c%2fscript%3ew194n`],
+      [
+        `/prisoner/${prisonerNumber}/contacts/list?relationshipType=dk9m4%22%3e%3cscript%3ealert(1)%3c%2fscript%3ew194n`,
+      ],
+      [`/prisoner/${prisonerNumber}/contacts/list?sort=dk9m4%22%3e%3cscript%3ealert(1)%3c%2fscript%3ew194n`],
+      [`/prisoner/${prisonerNumber}/contacts/list?page=dk9m4%22%3e%3cscript%3ealert(1)%3c%2fscript%3ew194n`],
+    ])('should not accept query params outside of the allowed list of values to prevent XSS (%s)', async url => {
+      // Given
+      contactsService.filterPrisonerContacts.mockResolvedValue({
+        content: [minimalContact],
+        page: { totalElements: 1, totalPages: 1, size: 10, number: 0 },
+      })
+
+      // When
+      const response = await request(app).get(url)
+
+      // Then
+      expect(response.status).toEqual(200)
+      expect(contactsService.filterPrisonerContacts).toHaveBeenCalledWith(
+        prisonerNumber,
+        { active: true },
+        { page: 0, size: 10, sort: expectDefaultSort },
+        basicPrisonUser,
+      )
+    })
+
+    it.each([
       [`/prisoner/${prisonerNumber}/contacts/list`, { active: true }, { page: 0, size: 10, sort: expectDefaultSort }],
       [
         `/prisoner/${prisonerNumber}/contacts/list?relationshipStatus=ACTIVE_ONLY&sort=name,asc&page=2`,
@@ -620,25 +650,28 @@ describe('listContactsController', () => {
           sort: expectDefaultSort,
         },
       ],
-    ])('should search using correct query parameters and defaults', async (url, expectedFilter, expectedPagination) => {
-      // Given
-      contactsService.filterPrisonerContacts.mockResolvedValue({
-        content: [minimalContact],
-        page: { totalElements: 1, totalPages: 1, size: 10, number: expectedPagination.page },
-      })
+    ])(
+      'should search using correct query parameters and defaults %s',
+      async (url, expectedFilter, expectedPagination) => {
+        // Given
+        contactsService.filterPrisonerContacts.mockResolvedValue({
+          content: [minimalContact],
+          page: { totalElements: 1, totalPages: 1, size: 10, number: expectedPagination.page },
+        })
 
-      // When
-      const response = await request(app).get(url)
+        // When
+        const response = await request(app).get(url)
 
-      // Then
-      expect(response.status).toEqual(200)
-      expect(contactsService.filterPrisonerContacts).toHaveBeenCalledWith(
-        prisonerNumber,
-        expectedFilter,
-        expectedPagination,
-        basicPrisonUser,
-      )
-    })
+        // Then
+        expect(response.status).toEqual(200)
+        expect(contactsService.filterPrisonerContacts).toHaveBeenCalledWith(
+          prisonerNumber,
+          expectedFilter,
+          expectedPagination,
+          basicPrisonUser,
+        )
+      },
+    )
 
     it('should tick correct options based on default URL params', async () => {
       // Given

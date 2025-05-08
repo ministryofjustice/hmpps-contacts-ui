@@ -13,16 +13,25 @@ import {
 } from '../../../../@types/contactsApiClient'
 import Permission from '../../../../enumeration/permission'
 
-type RelationshipType = 'S' | 'O'
-type Flag = 'EC' | 'NOK'
+const allowedRelationshipTypes = ['S', 'O']
+type RelationshipType = (typeof allowedRelationshipTypes)[number]
+
+const allowedFlags = ['EC', 'NOK']
+type Flag = (typeof allowedFlags)[number]
+
+const allowedRelationshipStatus = ['ACTIVE_ONLY', 'ACTIVE_AND_INACTIVE']
+type RelationshipStatus = (typeof allowedRelationshipStatus)[number]
+
+const allowedSort = ['name,desc', 'name,asc', 'dob,desc', 'dob,asc']
+
 type Filter = {
-  relationshipStatus?: 'ACTIVE_ONLY' | 'ACTIVE_AND_INACTIVE'
+  relationshipStatus?: RelationshipStatus
   relationshipType?: RelationshipType[]
   flag?: Flag[]
 }
 
 type SafeFilter = {
-  relationshipStatus: 'ACTIVE_ONLY' | 'ACTIVE_AND_INACTIVE'
+  relationshipStatus: RelationshipStatus
   relationshipType: RelationshipType[]
   flag: Flag[]
 }
@@ -45,8 +54,8 @@ export default class ListContactsController implements PageHandler {
     const { user } = res.locals
     const { prisonerNumber } = req.params
     const { query } = req
-    const page = query.page ? Number(query.page) : 1
-    const sort = query.sort ?? this.DEFAULT_SORT
+    const page = query.page && !Number.isNaN(Number(query.page)) ? Number(query.page) : 1
+    const sort = query.sort && allowedSort.includes(query.sort) ? query.sort : this.DEFAULT_SORT
     const safeFilter = this.toSafeFilter(query)
     const { relationshipStatus, relationshipType, flag } = safeFilter
 
@@ -143,10 +152,14 @@ export default class ListContactsController implements PageHandler {
     res.redirect(`${Urls.contactList(prisonerNumber)}?${this.filterToQueryParams(filter)}`)
   }
 
+  // sanitise the inputs to ensure they are not null and do not contain any values other than the allowed values to prevent XSS
   private toSafeFilter(filter: Filter): SafeFilter {
-    const relationshipStatus = filter.relationshipStatus ?? 'ACTIVE_ONLY'
-    const relationshipType = this.toSafeArray(filter.relationshipType) as RelationshipType[]
-    const flag = this.toSafeArray(filter.flag) as Flag[]
+    const relationshipStatus =
+      filter.relationshipStatus && allowedRelationshipStatus.includes(filter.relationshipStatus)
+        ? filter.relationshipStatus
+        : 'ACTIVE_ONLY'
+    const relationshipType = this.toSafeArray(filter.relationshipType, allowedRelationshipTypes) as RelationshipType[]
+    const flag = this.toSafeArray(filter.flag, allowedFlags) as Flag[]
     return { relationshipStatus, relationshipType, flag }
   }
 
@@ -154,13 +167,16 @@ export default class ListContactsController implements PageHandler {
     return `relationshipStatus=${filter.relationshipStatus}${filter.relationshipType.map(it => `&relationshipType=${it}`).join('')}${filter.flag.map(it => `&flag=${it}`).join('')}`
   }
 
-  private toSafeArray(value: string[] | string | undefined): string[] {
+  private toSafeArray(value: string[] | string | undefined, allowedTypes: string[]): string[] {
     if (!value) {
       return []
     }
+    let array: string[]
     if (!Array.isArray(value)) {
-      return [value]
+      array = [value]
+    } else {
+      array = value
     }
-    return value
+    return array.filter(it => allowedTypes.includes(it))
   }
 }
