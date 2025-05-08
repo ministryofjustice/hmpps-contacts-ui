@@ -33,7 +33,6 @@ beforeEach(() => {
     lastTouched: new Date().toISOString(),
     prisonerNumber,
     isCheckingAnswers: false,
-    returnPoint: { url: '/foo-bar' },
   }
   app = appWithAllRoutes({
     services: {

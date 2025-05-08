@@ -34,7 +34,6 @@ export const resetAddContactJourney = async (
     lastTouched: existingJourney.lastTouched,
     isCheckingAnswers: false,
     prisonerNumber: existingJourney.prisonerNumber,
-    returnPoint: existingJourney.returnPoint,
     searchContact: existingJourney.searchContact,
   }
   return next()

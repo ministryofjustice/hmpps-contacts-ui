@@ -1,10 +1,10 @@
 import { Request as ExpressRequest, Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
 import { SessionData } from 'express-session'
-import { ensureInManageContactsJourney, prepareStandaloneManageContactJourney } from './manageContactsMiddleware'
+import { ensureInManageContactsJourney } from './manageContactsMiddleware'
 import { basicPrisonUser } from '../../testutils/appSetup'
-import resetAllMocks = jest.resetAllMocks
 import { PrisonerJourneyParams } from '../../../@types/journeys'
+import resetAllMocks = jest.resetAllMocks
 
 describe('manageContactsMiddleware', () => {
   describe('ensureInManageContactsJourney', () => {
@@ -77,63 +77,6 @@ describe('manageContactsMiddleware', () => {
         expect(next).toHaveBeenCalledTimes(0)
         expect(res.redirect).toHaveBeenCalledWith('/prisoner/A1234BC/contacts/list')
       })
-    })
-  })
-  describe('prepareStandaloneManageContactJourney', () => {
-    type Request = ExpressRequest
-
-    const journeyId = uuidv4()
-    let req: Request
-    let res: Response
-    let next: jest.Mock
-    let status: jest.Mock
-    let render: jest.Mock
-
-    beforeEach(() => {
-      resetAllMocks()
-      req = {
-        params: { journeyId },
-        session: {} as Partial<SessionData>,
-      } as unknown as Request
-      status = jest.fn()
-      render = jest.fn()
-      res = { status, render, locals: { user: basicPrisonUser } } as unknown as Response
-      next = jest.fn()
-    })
-
-    it('should set return url and anchor into the journey', () => {
-      req.query = { returnUrl: '/foo', returnAnchor: 'bar' }
-      prepareStandaloneManageContactJourney(req, res, next)
-
-      expect(next).toHaveBeenCalledTimes(1)
-      expect(res.locals.journey).toStrictEqual({
-        returnPoint: {
-          url: '/foo',
-          anchor: 'bar',
-        },
-      })
-    })
-
-    it('should set return url only if no anchor', () => {
-      req.query = { returnUrl: '/foo' }
-      prepareStandaloneManageContactJourney(req, res, next)
-
-      expect(next).toHaveBeenCalledTimes(1)
-      expect(res.locals.journey).toStrictEqual({
-        returnPoint: {
-          url: '/foo',
-        },
-      })
-    })
-
-    it('should return to not found page if return url is missing', () => {
-      req.query = {}
-      status.mockReturnValue(res)
-      prepareStandaloneManageContactJourney(req, res, next)
-
-      expect(next).toHaveBeenCalledTimes(0)
-      expect(res.status).toHaveBeenCalledWith(404)
-      expect(res.render).toHaveBeenCalledWith('pages/errors/notFound')
     })
   })
 })

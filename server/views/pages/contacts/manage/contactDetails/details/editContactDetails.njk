@@ -16,7 +16,6 @@
         <span class="govuk-caption-l">Manage contacts</span>
         <h1 class="govuk-heading-l">Edit contact details for {{ contact | formatNameFirstNameFirst }}</h1>
       </div>
-      {% set returnUrl = '/prisoner/' + prisonerNumber + '/contacts/manage/' + contactId + '/relationship/' + prisonerContactId + '/edit-contact-details' %}
 
       {{ personalInformationCard({
           contact: contact,
@@ -40,7 +39,6 @@
           contact: contact,
           prisonerNumber: prisonerNumber,
           prisonerContactId: prisonerContactId,
-          returnUrl: returnUrl,
           showActions: true
         })
       }}
@@ -49,7 +47,6 @@
           contact: contact,
           prisonerNumber: prisonerNumber,
           prisonerContactId: prisonerContactRelationship.prisonerContactId,
-          returnUrl: returnUrl,
           showActions: true
         })
       }}

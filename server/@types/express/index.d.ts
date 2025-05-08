@@ -8,7 +8,6 @@ import {
   ChangeRelationshipTypeJourney,
   ManageContactsJourney,
   PrisonerDetails,
-  StandaloneManageContactJourney,
   UpdateEmploymentsJourney,
 } from '../journeys'
 
@@ -71,7 +70,6 @@ export declare global {
       message?: string
       status?: number
       stack?: string | null | undefined
-      journey: StandaloneManageContactJourney
     }
   }
 }

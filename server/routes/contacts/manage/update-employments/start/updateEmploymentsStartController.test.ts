@@ -66,12 +66,14 @@ describe('GET /contacts/manage/:contactId/update-employments', () => {
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments?returnUrl=/foo/bar`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments`,
     )
 
     // Then
     expect(response.status).toEqual(302)
-    expect(response.headers['location']).toMatch(/contacts\/manage\/1\/update-employments\/[a-f0-9-]{36}/)
+    expect(response.headers['location']).toMatch(
+      /contacts\/manage\/1\/relationship\/2\/update-employments\/[a-f0-9-]{36}/,
+    )
     const responseJourneyId = response.headers['location']!.split('/').slice(-1)[0]
     const journeyData = session.updateEmploymentsJourneys![responseJourneyId!]!
 
@@ -81,7 +83,6 @@ describe('GET /contacts/manage/:contactId/update-employments', () => {
     expect(journeyData.contactNames!.lastName).toEqual(contact.lastName)
     expect(journeyData.contactNames!.title).toEqual(contact.titleCode)
     expect(journeyData.employments[0]).toEqual(employment)
-    expect(journeyData.returnPoint!.url).toEqual('/foo/bar')
   })
 
   it.each([
@@ -93,7 +94,7 @@ describe('GET /contacts/manage/:contactId/update-employments', () => {
     contactsService.getContact.mockResolvedValue(TestData.contact())
 
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments?returnUrl=/foo/bar`)
+      .get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments`)
       .expect(expectedStatus)
   })
 })

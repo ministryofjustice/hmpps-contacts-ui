@@ -32,7 +32,6 @@ beforeEach(() => {
     prisonerNumber,
     isCheckingAnswers: false,
     matchingContactId,
-    returnPoint: { url: '/foo-bar' },
     names: {
       lastName: 'last',
       middleNames: 'middle',

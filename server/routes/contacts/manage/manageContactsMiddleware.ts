@@ -27,21 +27,4 @@ const ensureInManageContactsJourney = async (
   return next()
 }
 
-const prepareStandaloneManageContactJourney = async (req: Request, res: Response, next: NextFunction) => {
-  const { returnUrl, returnAnchor } = req.query
-  if (!returnUrl) {
-    logger.warn(`No return url specified for standalone manage contacts journey. ${req.url}`)
-    return res.status(404).render('pages/errors/notFound')
-  }
-  res.locals.journey = {
-    returnPoint: {
-      url: returnUrl as string,
-    },
-  }
-  if (returnAnchor) {
-    res.locals.journey.returnPoint.anchor = returnAnchor as string
-  }
-  return next()
-}
-
-export { ensureInManageContactsJourney, prepareStandaloneManageContactJourney }
+export { ensureInManageContactsJourney }

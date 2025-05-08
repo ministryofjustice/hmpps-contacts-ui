@@ -33,7 +33,6 @@ const generateJourneyData = (): UpdateEmploymentsJourney => ({
   contactId: contact.id,
   contactNames: { ...contact },
   employments: [],
-  returnPoint: { url: '/foo/bar' },
   organisationSearch: { page: 1 },
 })
 const setJourneyData = (data: UpdateEmploymentsJourney) => {
@@ -65,20 +64,20 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/check-employer', () => {
+describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/update-employments/:employmentIdx/check-employer', () => {
   it('should set organisationId query into session and redirect', async () => {
     // Given
     setJourneyData(generateJourneyData())
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/new/check-employer/${journeyId}?organisationId=222`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/new/check-employer/${journeyId}?organisationId=222`,
     )
 
     // Then
     expect(response.status).toEqual(302)
     expect(response.headers['location']).toMatch(
-      /contacts\/manage\/1\/update-employments\/new\/check-employer\/[a-f0-9-]{36}/,
+      /contacts\/manage\/1\/relationship\/2\/update-employments\/new\/check-employer\/[a-f0-9-]{36}/,
     )
 
     const journeyData = session.updateEmploymentsJourneys![journeyId]!
@@ -89,6 +88,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/chec
       correlationId: expect.any(String),
       details: {
         contactId: '1',
+        prisonerContactId: '2',
         prisonerNumber,
         employerId: 'new',
         organisationId: '222',
@@ -102,7 +102,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/chec
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/new/check-employer/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/new/check-employer/${journeyId}`,
     )
 
     // Then
@@ -118,7 +118,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/chec
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/new/check-employer/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/new/check-employer/${journeyId}`,
     )
 
     // Then
@@ -187,7 +187,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/chec
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/new/check-employer/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/new/check-employer/${journeyId}`,
     )
 
     // Then
@@ -198,7 +198,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/chec
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit professional information')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('a:contains("Back")').attr('href')).toEqual(
-      `/prisoner/A1234BC/contacts/manage/1/update-employments/new/organisation-search/${journeyId}`,
+      `/prisoner/A1234BC/contacts/manage/1/relationship/2/update-employments/new/organisation-search/${journeyId}`,
     )
     expect($('h1:contains("Check and confirm if this is the correct employer for Jones Mason")').text()).toBeTruthy()
     expect($('dt:contains("Organisation name")').next().text()).toMatch(/Some Corp/)
@@ -252,7 +252,7 @@ it('should render result with minimal mandatory data', async () => {
 
   // When
   const response = await request(app).get(
-    `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/new/check-employer/${journeyId}`,
+    `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/new/check-employer/${journeyId}`,
   )
 
   // Then
@@ -300,11 +300,13 @@ it.each([
   })
 
   await request(app)
-    .get(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/new/check-employer/${journeyId}`)
+    .get(
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/new/check-employer/${journeyId}`,
+    )
     .expect(expectedStatus)
 })
 
-describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/check-employer', () => {
+describe('POST /contacts/manage/:contactId/relationship/:prisonerContactId/update-employments/:employmentIdx/check-employer', () => {
   it('should redirect to update-employment and add new employment record on answer YES', async () => {
     // Given
     const journeyData = generateJourneyData()
@@ -321,7 +323,9 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/che
 
     // When
     const response = await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/new/check-employer/${journeyId}`)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/new/check-employer/${journeyId}`,
+      )
       .type('form')
       .send({
         isCorrectEmployer: 'YES',
@@ -329,7 +333,9 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/che
 
     // Then
     expect(response.status).toEqual(302)
-    expect(response.headers['location']).toMatch(/contacts\/manage\/1\/update-employments\/[a-f0-9-]{36}/)
+    expect(response.headers['location']).toMatch(
+      /contacts\/manage\/1\/relationship\/2\/update-employments\/[a-f0-9-]{36}/,
+    )
     expect(journeyData.employments[0]!.employer).toEqual({
       organisationName: 'Some Corp',
       organisationId: 111,
@@ -367,7 +373,9 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/che
 
     // When
     const response = await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/check-employer/${journeyId}`)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/1/check-employer/${journeyId}`,
+      )
       .type('form')
       .send({
         isCorrectEmployer: 'YES',
@@ -375,7 +383,9 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/che
 
     // Then
     expect(response.status).toEqual(302)
-    expect(response.headers['location']).toMatch(/contacts\/manage\/1\/update-employments\/[a-f0-9-]{36}/)
+    expect(response.headers['location']).toMatch(
+      /contacts\/manage\/1\/relationship\/2\/update-employments\/[a-f0-9-]{36}/,
+    )
     expect(journeyData.employments[0]!.employer).toEqual({
       organisationName: 'Some Corp',
       organisationId: 111,
@@ -395,7 +405,9 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/che
 
     // When
     const response = await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/new/check-employer/${journeyId}`)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/new/check-employer/${journeyId}`,
+      )
       .type('form')
       .send({
         isCorrectEmployer: 'NO',
@@ -404,7 +416,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/che
     // Then
     expect(response.status).toEqual(302)
     expect(response.headers['location']).toMatch(
-      /contacts\/manage\/1\/update-employments\/new\/organisation-search\/[a-f0-9-]{36}/,
+      /contacts\/manage\/1\/relationship\/2\/update-employments\/new\/organisation-search\/[a-f0-9-]{36}/,
     )
   })
 
@@ -428,7 +440,9 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/che
     })
 
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/new/check-employer/${journeyId}`)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/new/check-employer/${journeyId}`,
+      )
       .type('form')
       .send({ isCorrectEmployer: 'YES' })
       .expect(expectedStatus)

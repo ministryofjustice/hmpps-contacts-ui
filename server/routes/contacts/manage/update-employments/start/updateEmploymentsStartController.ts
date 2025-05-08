@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express'
+import { Request, Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
 import { ContactsService } from '../../../../../services'
 import { UpdateEmploymentsJourney } from '../../../../../@types/journeys'
@@ -16,11 +16,10 @@ export default class UpdateEmploymentsStartController implements PageHandler {
   private MAX_JOURNEYS = 5
 
   GET = async (
-    req: Request<{ contactId: string; prisonerNumber: string }, unknown, unknown, { returnUrl: string }>,
+    req: Request<{ contactId: string; prisonerNumber: string; prisonerContactId: string }, unknown, unknown>,
     res: Response,
-    next: NextFunction,
   ) => {
-    const { prisonerNumber, contactId } = req.params
+    const { prisonerNumber, contactId, prisonerContactId } = req.params
     const contact = await this.contactsService.getContact(Number(req.params.contactId), res.locals.user)
     const journey: UpdateEmploymentsJourney = {
       id: uuidv4(),
@@ -33,7 +32,6 @@ export default class UpdateEmploymentsStartController implements PageHandler {
         middleNames: contact.middleNames,
       },
       employments: contact.employments,
-      returnPoint: { url: req.query.returnUrl },
       organisationSearch: { page: 1 },
     }
 
@@ -52,6 +50,8 @@ export default class UpdateEmploymentsStartController implements PageHandler {
         .forEach(journeyToRemove => delete req.session.updateEmploymentsJourneys![journeyToRemove.id])
     }
 
-    res.redirect(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/${journey.id}`)
+    res.redirect(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/update-employments/${journey.id}`,
+    )
   }
 }

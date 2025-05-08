@@ -47,7 +47,6 @@ const generateJourneyData = (): UpdateEmploymentsJourney => ({
       isActive: false,
     },
   ],
-  returnPoint: { url: '/foo/bar' },
   organisationSearch: { page: 1 },
 })
 const setJourneyData = (data: UpdateEmploymentsJourney) => {
@@ -79,14 +78,14 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/organisation-search', () => {
+describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/update-employments/:employmentIdx/organisation-search', () => {
   it('should show error on invalid employment index', async () => {
     // Given
     setJourneyData(generateJourneyData())
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/invalid-employment-index/organisation-search/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/invalid-employment-index/organisation-search/${journeyId}`,
     )
 
     // Then
@@ -103,7 +102,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/9999/organisation-search/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/9999/organisation-search/${journeyId}`,
     )
 
     // Then
@@ -120,13 +119,13 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/organisation-search/${journeyId}?page=2`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/1/organisation-search/${journeyId}?page=2`,
     )
 
     // Then
     expect(response.status).toEqual(302)
     expect(response.headers['location']).toMatch(
-      /contacts\/manage\/1\/update-employments\/1\/organisation-search\/[a-f0-9-]{36}/,
+      /contacts\/manage\/1\/relationship\/2\/update-employments\/1\/organisation-search\/[a-f0-9-]{36}/,
     )
 
     const journeyData = session.updateEmploymentsJourneys![journeyId]!
@@ -145,13 +144,13 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/organisation-search/${journeyId}?sort=organisationName,desc`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/1/organisation-search/${journeyId}?sort=organisationName,desc`,
     )
 
     // Then
     expect(response.status).toEqual(302)
     expect(response.headers['location']).toMatch(
-      /contacts\/manage\/1\/update-employments\/1\/organisation-search\/[a-f0-9-]{36}/,
+      /contacts\/manage\/1\/relationship\/2\/update-employments\/1\/organisation-search\/[a-f0-9-]{36}/,
     )
 
     expect(journeyData.organisationSearch.sort).toEqual('organisationName,desc')
@@ -180,7 +179,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/2/update-employments/1/organisation-search/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/2/relationship/3/update-employments/1/organisation-search/${journeyId}`,
     )
 
     // Then
@@ -189,6 +188,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
       correlationId: expect.any(String),
       details: {
         contactId: '2',
+        prisonerContactId: '3',
         prisonerNumber,
         employerId: '1',
       },
@@ -198,7 +198,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit professional information')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('a:contains("Back to employment information")').attr('href')).toEqual(
-      `/prisoner/A1234BC/contacts/manage/2/update-employments/${journeyId}`,
+      `/prisoner/A1234BC/contacts/manage/2/relationship/3/update-employments/${journeyId}`,
     )
     expect($('input#organisationName').val()).toEqual('test')
     expect($('h1').text()).toEqual('Search for Jones Mason’s employer')
@@ -209,7 +209,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
     const checkEmployerLink = $('a:contains("Check if this is the")')
     expect(checkEmployerLink.text()).toEqual('Check if this is the correct employer (Some Corp)')
     expect(checkEmployerLink.attr('href')).toEqual(
-      `/prisoner/A1234BC/contacts/manage/2/update-employments/1/check-employer/${journeyId}?organisationId=111`,
+      `/prisoner/A1234BC/contacts/manage/2/relationship/3/update-employments/1/check-employer/${journeyId}?organisationId=111`,
     )
     expect($('.moj-pagination__list').text()).toBeTruthy()
   })
@@ -236,7 +236,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/organisation-search/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/1/organisation-search/${journeyId}`,
     )
 
     // Then
@@ -261,7 +261,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/organisation-search/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/1/organisation-search/${journeyId}`,
     )
 
     // Then
@@ -284,7 +284,7 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/organisation-search/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/1/organisation-search/${journeyId}`,
     )
 
     // Then
@@ -310,19 +310,23 @@ describe('GET /contacts/manage/:contactId/update-employments/:employmentIdx/orga
     })
 
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/organisation-search/${journeyId}`)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/1/organisation-search/${journeyId}`,
+      )
       .expect(expectedStatus)
   })
 })
 
-describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/organisation-search', () => {
+describe('POST /contacts/manage/:contactId/relationship/:prisonerContactId/update-employments/:employmentIdx/organisation-search', () => {
   it('should set searchTerm into session and redirect', async () => {
     // Given
     setJourneyData(generateJourneyData())
 
     // When
     const response = await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/organisation-search/${journeyId}`)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/1/organisation-search/${journeyId}`,
+      )
       .type('form')
       .send({
         organisationName: 'te %st',
@@ -331,7 +335,7 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/org
     // Then
     expect(response.status).toEqual(302)
     expect(response.headers['location']).toMatch(
-      /contacts\/manage\/1\/update-employments\/1\/organisation-search\/[a-f0-9-]{36}/,
+      /contacts\/manage\/1\/relationship\/2\/update-employments\/1\/organisation-search\/[a-f0-9-]{36}/,
     )
 
     const journeyData = session.updateEmploymentsJourneys![journeyId]!
@@ -347,7 +351,9 @@ describe('POST /contacts/manage/:contactId/update-employments/:employmentIdx/org
     setJourneyData(generateJourneyData())
 
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/manage/1/update-employments/1/organisation-search/${journeyId}`)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/1/organisation-search/${journeyId}`,
+      )
       .type('form')
       .send({ organisationName: 'te %st' })
       .expect(expectedStatus)

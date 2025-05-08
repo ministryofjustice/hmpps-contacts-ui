@@ -9,6 +9,7 @@ import { Navigation } from '../../common/navigation'
 import { PrisonerJourneyParams } from '../../../../@types/journeys'
 import { PatchEmploymentsRequest } from '../../../../@types/contactsApiClient'
 import Permission from '../../../../enumeration/permission'
+import Urls from '../../../urls'
 
 export default class UpdateEmploymentsController implements PageHandler {
   constructor(private readonly contactService: ContactsService) {}
@@ -17,21 +18,24 @@ export default class UpdateEmploymentsController implements PageHandler {
 
   public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 
-  GET = async (req: Request<PrisonerJourneyParams & { contactId: string }>, res: Response) => {
-    const { prisonerNumber, contactId, journeyId } = req.params
-    const { contactNames, employments, returnPoint } = req.session.updateEmploymentsJourneys![journeyId]!
+  GET = async (
+    req: Request<{ prisonerNumber: string; journeyId: string; contactId: string; prisonerContactId: string }>,
+    res: Response,
+  ) => {
+    const { prisonerNumber, contactId, prisonerContactId, journeyId } = req.params
+    const { contactNames, employments } = req.session.updateEmploymentsJourneys![journeyId]!
     employments.sort(employmentSorter)
 
     // clear search term whenever user comes back to this page
     req.session.updateEmploymentsJourneys![journeyId]!.organisationSearch = { page: 1 }
-
+    const contactDetailsUrl = Urls.contactDetails(prisonerNumber, contactId, prisonerContactId)
     const navigation: Navigation = {
       backLinkLabel: 'Back to contact record',
-      backLink: returnPoint.url,
-      cancelButton: returnPoint.url,
+      backLink: contactDetailsUrl,
+      cancelButton: contactDetailsUrl,
     }
     res.render('pages/contacts/manage/employments/index', {
-      updateEmploymentBaseLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/update-employments/`,
+      updateEmploymentBaseLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/update-employments/`,
       journeyId,
       contactNames,
       employments,
@@ -40,8 +44,11 @@ export default class UpdateEmploymentsController implements PageHandler {
     })
   }
 
-  POST = async (req: Request<PrisonerJourneyParams & { contactId: string }>, res: Response) => {
-    const { journeyId, contactId } = req.params
+  POST = async (
+    req: Request<PrisonerJourneyParams & { contactId: string; prisonerContactId: string }>,
+    res: Response,
+  ) => {
+    const { journeyId, contactId, prisonerNumber, prisonerContactId } = req.params
     const journey = req.session.updateEmploymentsJourneys![journeyId]!
 
     const request: PatchEmploymentsRequest = {
@@ -65,6 +72,6 @@ export default class UpdateEmploymentsController implements PageHandler {
     )
     delete req.session.updateEmploymentsJourneys![journeyId]
 
-    res.redirect(journey.returnPoint.url)
+    res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
   }
 }

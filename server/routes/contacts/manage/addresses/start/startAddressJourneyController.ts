@@ -23,8 +23,7 @@ export default class StartAddressJourneyController implements PageHandler {
         prisonerContactId: string
       },
       unknown,
-      unknown,
-      { returnUrl: string }
+      unknown
     >,
     res: Response,
   ): Promise<void> => {

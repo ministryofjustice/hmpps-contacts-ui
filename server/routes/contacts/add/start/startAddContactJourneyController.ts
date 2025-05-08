@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { nextPageForAddContactJourney } from '../addContactFlowControl'
-import { AddContactJourney, ReturnPoint } from '../../../../@types/journeys'
+import { AddContactJourney } from '../../../../@types/journeys'
 import Permission from '../../../../enumeration/permission'
 
 export default class StartAddContactJourneyController implements PageHandler {
@@ -16,12 +16,10 @@ export default class StartAddContactJourneyController implements PageHandler {
   GET = async (req: Request<{ prisonerNumber: string }>, res: Response): Promise<void> => {
     const { prisonerNumber } = req.params
     const { user } = res.locals
-    const returnPoint: ReturnPoint = { url: `/prisoner/${prisonerNumber}/contacts/list` }
     const journey: AddContactJourney = {
       id: uuidv4(),
       lastTouched: new Date().toISOString(),
       isCheckingAnswers: false,
-      returnPoint,
       prisonerNumber,
     }
     if (!req.session.addContactJourneys) {
