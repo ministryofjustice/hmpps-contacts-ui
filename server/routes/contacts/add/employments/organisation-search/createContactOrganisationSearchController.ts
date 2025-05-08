@@ -4,7 +4,7 @@ import { Page } from '../../../../../services/auditService'
 import { setPaginationLocals } from '../../../../../views/partials/simplePagination/utils'
 import OrganisationsService from '../../../../../services/organisationsService'
 import { CreateContactEmploymentParam, getEmploymentAndUrl } from '../common/utils'
-import { OrganisationSummaryResultItemPage } from '../../../../../@types/organisationsApiClient'
+import { PagedModelOrganisationSummary } from '../../../../../@types/organisationsApiClient'
 import Permission from '../../../../../enumeration/permission'
 
 export default class CreateContactOrganisationSearchController implements PageHandler {
@@ -37,7 +37,7 @@ export default class CreateContactOrganisationSearchController implements PageHa
       return res.redirect(`${employmentUrl({ subPath: 'organisation-search' })}#pagination`)
     }
 
-    let searchResult: OrganisationSummaryResultItemPage | undefined
+    let searchResult: PagedModelOrganisationSummary | undefined
 
     if (journey.organisationSearch.searchTerm) {
       searchResult = await this.organisationsService.searchOrganisations(
@@ -53,7 +53,7 @@ export default class CreateContactOrganisationSearchController implements PageHa
         res,
         this.TABLE_ROW_COUNT,
         journey.organisationSearch.page,
-        searchResult?.totalElements ?? 0,
+        searchResult?.page?.totalElements ?? 0,
         searchResult?.content?.length ?? 0,
       )
     }

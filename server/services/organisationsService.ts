@@ -2,7 +2,7 @@ import OrganisationsApiClient from '../data/organisationsApiClient'
 import {
   OrganisationDetails,
   OrganisationSummary,
-  OrganisationSummaryResultItemPage,
+  PagedModelOrganisationSummary,
 } from '../@types/organisationsApiClient'
 
 export default class OrganisationsService {
@@ -16,7 +16,7 @@ export default class OrganisationsService {
       sort: string[]
     },
     user: Express.User,
-  ): Promise<OrganisationSummaryResultItemPage> {
+  ): Promise<PagedModelOrganisationSummary> {
     return this.organisationsApiClient.searchOrganisations(searchParams, user)
   }
 

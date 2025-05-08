@@ -39,7 +39,7 @@ export default {
               organisationId: 202,
             }),
           ],
-          totalElements: 11,
+          page: { totalElements: 11 },
         },
       },
     }),
