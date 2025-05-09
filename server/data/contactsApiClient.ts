@@ -33,6 +33,7 @@ import {
   PrisonerContactRelationshipDetails,
   PrisonerContactRestrictionDetails,
   PrisonerContactRestrictionsResponse,
+  PrisonerContactSummary,
   ReferenceCode,
   UpdateContactAddressPhoneRequest,
   UpdateContactRestrictionRequest,
@@ -87,6 +88,19 @@ export default class ContactsApiClient extends RestClient {
       {
         path: `/prisoner/${prisonerNumber}/contact`,
         query: { ...paginationParameters, ...filter },
+      },
+      user,
+    )
+  }
+
+  async getAllSummariesForPrisonerAndContact(
+    prisonerNumber: string,
+    contactId: number,
+    user: Express.User,
+  ): Promise<PrisonerContactSummary[]> {
+    return this.get<PrisonerContactSummary[]>(
+      {
+        path: `/prisoner/${prisonerNumber}/contact/${contactId}`,
       },
       user,
     )

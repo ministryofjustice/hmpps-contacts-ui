@@ -32,6 +32,7 @@ import {
   UpdateIdentityRequest,
   UpdatePhoneRequest,
   PatchContactAddressRequest,
+  PrisonerContactSummary,
 } from '../@types/contactsApiClient'
 import { stripNullishAddressLines } from '../routes/contacts/add/addresses/common/utils'
 
@@ -183,6 +184,14 @@ export default class ContactsService extends AuditedService {
     user: Express.User,
   ): Promise<PagedModelPrisonerContactSummary> {
     return this.contactsApiClient.filterPrisonerContacts(prisonerNumber, filter, pagination, user)
+  }
+
+  async getAllSummariesForPrisonerAndContact(
+    prisonerNumber: string,
+    contactId: number,
+    user: Express.User,
+  ): Promise<PrisonerContactSummary[]> {
+    return this.contactsApiClient.getAllSummariesForPrisonerAndContact(prisonerNumber, contactId, user)
   }
 
   async searchContact(

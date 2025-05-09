@@ -6824,7 +6824,7 @@ export interface components {
       isActive: boolean
     }
     PagedModelPrisonerContactSummary: {
-      content?: components['schemas']['PrisonerContactSummary'][]
+      content?: components['schemas']['c'][]
       page?: components['schemas']['PageMetadata']
     }
     /** @description Describes the details of a prisoner's contact */

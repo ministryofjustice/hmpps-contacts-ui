@@ -38,7 +38,7 @@ describe('ensureInChangeRelationshipTypeJourney', () => {
   it('should show error when there is no journey data', async () => {
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-type/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-type/${journeyId}`,
     )
 
     // Then

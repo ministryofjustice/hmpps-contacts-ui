@@ -26,7 +26,6 @@ import { restrictedEditingNameSchema } from '../common/name/nameSchemas'
 import ManageContactAddEmailController from './email/add/manageContactAddEmailController'
 import ManageContactEditEmailController from './email/edit/manageContactEditEmailController'
 import { emailSchema, emailsSchema } from './email/emailSchemas'
-import ManageContactRelationshipToPrisonerController from './relationship/relationship-to-prisoner/manageContactRelationshipToPrisonerController'
 import { selectRelationshipSchemaFactory } from '../common/relationship/selectRelationshipSchemas'
 import ManageContactDeleteEmailController from './email/delete/manageContactDeleteEmailController'
 import { enterRelationshipCommentsSchema } from '../add/relationship-comments/enterRelationshipCommentsSchemas'
@@ -95,6 +94,8 @@ import AddressPhoneController from './addresses/add-address-phone/addressPhoneCo
 import { routerMethods } from '../../../utils/routerMethods'
 import DeleteAddressPhoneController from './addresses/delete-address-phone/deleteAddressPhoneController'
 import EditRestrictionsController from './edit-restrictions/editRestrictionsController'
+import ChangeRelationshipTypeHandleDuplicateController from './relationship/type/handle-duplicate/changeRelationshipTypeHandleDuplicateController'
+import { handleDuplicateRelationshipSchemaFactory } from '../common/relationship/handleDuplicateRelationshipSchemas'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -294,32 +295,32 @@ const ManageContactsRoutes = (
     prisonerDetailsRequiredOnPost: true,
   })
 
-  standAloneRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-relationship-to-prisoner',
-    controller: new ManageContactRelationshipToPrisonerController(contactsService, referenceDataService),
-    schema: selectRelationshipSchemaFactory(),
-    prisonerDetailsRequiredOnPost: true,
-  })
-
-  // Relationship type mini journey
+  // Relationship type and relationship to prisoner mini journeys
   get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/type/start',
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-relationship-type/:mode/start',
     new ChangeRelationshipTypeStartController(contactsService),
   )
 
   journeyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/type/select-new-relationship-type/:journeyId',
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-relationship-type/select-new-relationship-type/:journeyId',
     controller: new ChangeRelationshipTypeController(),
     schema: selectRelationshipTypeSchema(),
     journeyEnsurer: [ensureInChangeRelationshipTypeJourney],
   })
 
   journeyRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/type/select-new-relationship-to-prisoner/:journeyId',
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-relationship-type/select-new-relationship-to-prisoner/:journeyId',
     controller: new ChangeRelationshipTypeRelationshipToPrisonerController(contactsService, referenceDataService),
     schema: selectRelationshipSchemaFactory(),
     journeyEnsurer: [ensureInChangeRelationshipTypeJourney],
     prisonerDetailsRequiredOnPost: true,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-relationship-type/handle-duplicate/:journeyId',
+    controller: new ChangeRelationshipTypeHandleDuplicateController(contactsService, referenceDataService),
+    schema: handleDuplicateRelationshipSchemaFactory(),
+    journeyEnsurer: [ensureInChangeRelationshipTypeJourney],
   })
 
   // Contact methods (email, phone address)
