@@ -45,7 +45,7 @@ export default class ChangeRelationshipTypeController implements PageHandler {
     const { body } = req
     journey.relationshipType = body.relationshipType
     res.redirect(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-to-prisoner/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-to-prisoner/${journeyId}`,
     )
   }
 }

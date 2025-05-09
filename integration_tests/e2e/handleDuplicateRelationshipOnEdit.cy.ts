@@ -11,7 +11,8 @@ import { PrisonerContactSummary } from '../../server/@types/contactsApiClient'
 context('Handle duplicate relationship when editing relationships', () => {
   const contactId = 654321
   const prisonerContactId = 987654
-  const duplicatePrisonerContactId = 1565478941
+  const duplicateDoctorPrisonerContactId = 1565478941
+  const duplicateFriendPrisonerContactId = 3214567891
   const { prisonerNumber } = TestData.prisoner()
   const contact = TestData.contact({
     id: contactId,
@@ -64,7 +65,14 @@ context('Handle duplicate relationship when editing relationships', () => {
       },
     })
     cy.task('stubGetPrisonerContactRestrictions', {
-      prisonerContactId: duplicatePrisonerContactId,
+      prisonerContactId: duplicateDoctorPrisonerContactId,
+      response: {
+        prisonerContactRestrictions: [],
+        contactGlobalRestrictions: [],
+      },
+    })
+    cy.task('stubGetPrisonerContactRestrictions', {
+      prisonerContactId: duplicateFriendPrisonerContactId,
       response: {
         prisonerContactRestrictions: [],
         contactGlobalRestrictions: [],
@@ -86,8 +94,8 @@ context('Handle duplicate relationship when editing relationships', () => {
       response: theRelationshipBeingEdited,
     })
 
-    const theExistingDuplicateRelationship = TestData.prisonerContactRelationship({
-      prisonerContactId: duplicatePrisonerContactId,
+    const theExistingDoctorRelationship = TestData.prisonerContactRelationship({
+      prisonerContactId: duplicateDoctorPrisonerContactId,
       relationshipTypeCode: 'O',
       relationshipTypeDescription: 'Official',
       relationshipToPrisonerCode: 'DR',
@@ -95,8 +103,21 @@ context('Handle duplicate relationship when editing relationships', () => {
       comments: 'the duplicate',
     })
     cy.task('stubGetPrisonerContactRelationshipById', {
-      id: duplicatePrisonerContactId,
-      response: theExistingDuplicateRelationship,
+      id: duplicateDoctorPrisonerContactId,
+      response: theExistingDoctorRelationship,
+    })
+
+    const theExistingFriendRelationship = TestData.prisonerContactRelationship({
+      prisonerContactId: duplicateFriendPrisonerContactId,
+      relationshipTypeCode: 'S',
+      relationshipTypeDescription: 'Social',
+      relationshipToPrisonerCode: 'FRI',
+      relationshipToPrisonerDescription: 'Friend',
+      comments: 'the duplicate',
+    })
+    cy.task('stubGetPrisonerContactRelationshipById', {
+      id: duplicateFriendPrisonerContactId,
+      response: theExistingFriendRelationship,
     })
     cy.signIn({
       startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
@@ -121,11 +142,19 @@ context('Handle duplicate relationship when editing relationships', () => {
         },
         {
           ...minimalContact,
-          prisonerContactId: duplicatePrisonerContactId,
+          prisonerContactId: duplicateDoctorPrisonerContactId,
           relationshipTypeCode: 'O',
           relationshipTypeDescription: 'Official',
           relationshipToPrisonerCode: 'DR',
           relationshipToPrisonerDescription: 'Doctor',
+        },
+        {
+          ...minimalContact,
+          prisonerContactId: duplicateFriendPrisonerContactId,
+          relationshipTypeCode: 'S',
+          relationshipTypeDescription: 'Social',
+          relationshipToPrisonerCode: 'FRI',
+          relationshipToPrisonerDescription: 'Friend',
         },
       ],
     })
@@ -146,7 +175,7 @@ context('Handle duplicate relationship when editing relationships', () => {
 
     Page.verifyOnPage(HandleDuplicateRelationshipPage)
       .selectAction('GO_TO_CONTACT_LIST')
-      .continueTo(ListContactsPage, 'John Smith')
+      .continueTo(ListContactsPage, 'John Smith', false)
   })
 
   it('When changing type and relationship to prisoner can go to prisoner contact', () => {
@@ -160,6 +189,34 @@ context('Handle duplicate relationship when editing relationships', () => {
 
     Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last', 'John Smith') //
       .selectRelationship('DR')
+      .clickContinue()
+
+    Page.verifyOnPage(HandleDuplicateRelationshipPage)
+      .selectAction('GO_TO_DUPE')
+      .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
+  })
+
+  it('When changing just relationship to prisoner can go to contact list', () => {
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickLinkTo('Edit contact details', EditContactDetailsPage, 'First Middle Names Last')
+      .clickChangeRelationshipToPrisonerLink()
+
+    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last', 'John Smith') //
+      .selectRelationship('FRI')
+      .clickContinue()
+
+    Page.verifyOnPage(HandleDuplicateRelationshipPage)
+      .selectAction('GO_TO_CONTACT_LIST')
+      .continueTo(ListContactsPage, 'John Smith', false)
+  })
+
+  it('When changing type and relationship to prisoner can go to prisoner contact', () => {
+    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
+      .clickLinkTo('Edit contact details', EditContactDetailsPage, 'First Middle Names Last')
+      .clickChangeRelationshipToPrisonerLink()
+
+    Page.verifyOnPage(SelectRelationshipPage, 'First Middle Names Last', 'John Smith') //
+      .selectRelationship('FRI')
       .clickContinue()
 
     Page.verifyOnPage(HandleDuplicateRelationshipPage)

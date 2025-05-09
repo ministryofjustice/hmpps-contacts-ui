@@ -257,14 +257,14 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         relationshipInformationCard,
         'Relationship type',
         'Social',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/type/start',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/edit-relationship-type/all/start',
         'Change relationship type (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(
         relationshipInformationCard,
         'Relationship to prisoner',
         'Friend',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/update-relationship-to-prisoner',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/edit-relationship-type/relationship-to-prisoner/start',
         'Change the relationship to the prisoner (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(
@@ -332,14 +332,14 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         relationshipInformationCard,
         'Relationship type',
         'Official',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/type/start',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/edit-relationship-type/all/start',
         'Change relationship type (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(
         relationshipInformationCard,
         'Relationship to prisoner',
         'Doctor',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/update-relationship-to-prisoner',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/edit-relationship-type/relationship-to-prisoner/start',
         'Change the relationship to the prisoner (Relationship to prisoner Incarcerated Individual)',
       )
       expectSummaryListItem(

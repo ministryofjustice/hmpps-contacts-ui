@@ -41,7 +41,7 @@ export default class ChangeRelationshipTypeHandleDuplicateController implements 
     )
 
     const navigation: Navigation = {
-      backLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-to-prisoner/${journey.id}`,
+      backLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-to-prisoner/${journey.id}`,
     }
     const viewModel = {
       isNewContact: false,

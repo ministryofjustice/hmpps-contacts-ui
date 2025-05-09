@@ -63,6 +63,7 @@ beforeEach(() => {
   existingJourney = {
     id: journeyId,
     lastTouched: new Date().toISOString(),
+    mode: 'all',
     prisonerNumber,
     contactId,
     prisonerContactId,
@@ -97,15 +98,25 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/type/select-new-relationship-to-prisoner/${journeyId}/:journeyId`, () => {
-  it('should have correct navigation', async () => {
+describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-relationship-type/select-new-relationship-to-prisoner/${journeyId}/:journeyId`, () => {
+  it.each([
+    [
+      'all',
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-type/${journeyId}`,
+    ],
+    [
+      'relationship-to-prisoner',
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-contact-details`,
+    ],
+  ])('should have correct navigation for mode (%s)', async (mode, expectedBackLink) => {
     // Given
     contactsService.getContact.mockResolvedValue(contact)
     contactsService.getPrisonerContactRelationship.mockResolvedValue(relationship)
+    existingJourney.mode = mode as 'all' | 'relationship-to-prisoner'
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-to-prisoner/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-to-prisoner/${journeyId}`,
     )
 
     // Then
@@ -123,9 +134,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
     )
     expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
-    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-type/${journeyId}`,
-    )
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(expectedBackLink)
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')
   })
@@ -151,7 +160,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
       // When
       const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-to-prisoner/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-to-prisoner/${journeyId}`,
       )
 
       // Then
@@ -169,7 +178,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
   it('should call the audit service for the page view', async () => {
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-to-prisoner/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-to-prisoner/${journeyId}`,
     )
 
     expect(response.status).toEqual(200)
@@ -190,7 +199,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
   it('should return not found in no journey in session', async () => {
     await request(app)
       .get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-to-prisoner/${uuidv4()}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-to-prisoner/${uuidv4()}`,
       )
       .expect(404)
       .expect(res => {
@@ -207,13 +216,13 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     await request(app)
       .get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-to-prisoner/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-to-prisoner/${journeyId}`,
       )
       .expect(expectedStatus)
   })
 })
 
-describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/type/select-new-relationship-to-prisoner/${journeyId}`, () => {
+describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-relationship-type/select-new-relationship-to-prisoner/${journeyId}`, () => {
   it('should update relationship type and relationship to prisoner and pass back to contact details page with success banner', async () => {
     // Given
     existingJourney.relationshipType = 'O'
@@ -223,7 +232,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     // When
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-to-prisoner/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-to-prisoner/${journeyId}`,
       )
       .type('form')
       .send({ relationship: 'DR' })
@@ -257,14 +266,14 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     // When
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-to-prisoner/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-to-prisoner/${journeyId}`,
       )
       .type('form')
       .send({ relationship: 'DR' })
       .expect(302)
       .expect(
         'Location',
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/handle-duplicate/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/handle-duplicate/${journeyId}`,
       )
 
     // Then
@@ -290,7 +299,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     // When
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-to-prisoner/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-to-prisoner/${journeyId}`,
       )
       .type('form')
       .send({ relationship: 'DR' })
@@ -303,14 +312,14 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   it('should return to input page with details kept if there are validation errors', async () => {
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-to-prisoner/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-to-prisoner/${journeyId}`,
       )
       .type('form')
       .send({})
       .expect(302)
       .expect(
         'Location',
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-to-prisoner/${journeyId}#`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-to-prisoner/${journeyId}#`,
       )
     expect(contactsService.updateContactRelationshipById).not.toHaveBeenCalled()
   })
@@ -318,7 +327,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   it('should return not found in no journey in session', async () => {
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-to-prisoner/${uuidv4()}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-to-prisoner/${uuidv4()}`,
       )
       .type('form')
       .expect(404)
@@ -339,7 +348,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
 
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-to-prisoner/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-to-prisoner/${journeyId}`,
       )
       .type('form')
       .send({ relationship: 'DR' })

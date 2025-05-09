@@ -109,6 +109,7 @@ export interface UpdateEmploymentsJourney {
 export interface ChangeRelationshipTypeJourney {
   id: string
   lastTouched: string
+  mode: 'all' | 'relationship-to-prisoner'
   prisonerNumber: string
   contactId: number
   prisonerContactId: number

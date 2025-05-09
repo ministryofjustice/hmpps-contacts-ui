@@ -59,6 +59,7 @@ beforeEach(() => {
   existingJourney = {
     id: journeyId,
     lastTouched: new Date().toISOString(),
+    mode: 'all',
     prisonerNumber,
     contactId,
     prisonerContactId,
@@ -93,14 +94,14 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/type/handle-duplicate/${journeyId}/:journeyId`, () => {
+describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-relationship-type/handle-duplicate/${journeyId}/:journeyId`, () => {
   it('should have correct navigation', async () => {
     // Given
     contactsService.getAllSummariesForPrisonerAndContact.mockResolvedValue([])
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/handle-duplicate/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/handle-duplicate/${journeyId}`,
     )
 
     // Then
@@ -117,7 +118,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('[data-qa=cancel-button]')).toHaveLength(0)
     expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-to-prisoner/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-to-prisoner/${journeyId}`,
     )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
@@ -145,7 +146,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/handle-duplicate/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/handle-duplicate/${journeyId}`,
     )
 
     // Then
@@ -187,7 +188,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
       // When
       const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/handle-duplicate/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/handle-duplicate/${journeyId}`,
       )
 
       // Then
@@ -209,7 +210,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
   it('should call the audit service for the page view', async () => {
     contactsService.getAllSummariesForPrisonerAndContact.mockResolvedValue([])
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/handle-duplicate/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/handle-duplicate/${journeyId}`,
     )
 
     expect(response.status).toEqual(200)
@@ -228,7 +229,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     contactsService.getAllSummariesForPrisonerAndContact.mockResolvedValue([])
     await request(app)
       .get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/handle-duplicate/${uuidv4()}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/handle-duplicate/${uuidv4()}`,
       )
       .expect(404)
       .expect(res => {
@@ -245,13 +246,13 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     contactsService.getAllSummariesForPrisonerAndContact.mockResolvedValue([])
     await request(app)
       .get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/handle-duplicate/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/handle-duplicate/${journeyId}`,
       )
       .expect(expectedStatus)
   })
 })
 
-describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/type/handle-duplicate/${journeyId}`, () => {
+describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-relationship-type/handle-duplicate/${journeyId}`, () => {
   it('should go to the contact list if that is selected', async () => {
     // Given
     existingJourney.relationshipType = 'O'
@@ -259,7 +260,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     // When
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/handle-duplicate/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/handle-duplicate/${journeyId}`,
       )
       .type('form')
       .send({ duplicateAction: 'GO_TO_CONTACT_LIST' })
@@ -293,7 +294,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     // When
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/handle-duplicate/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/handle-duplicate/${journeyId}`,
       )
       .type('form')
       .send({ duplicateAction: 'GO_TO_DUPE' })
@@ -309,21 +310,21 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   it('should return to input page with details kept if there are validation errors', async () => {
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/handle-duplicate/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/handle-duplicate/${journeyId}`,
       )
       .type('form')
       .send({})
       .expect(302)
       .expect(
         'Location',
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/handle-duplicate/${journeyId}#`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/handle-duplicate/${journeyId}#`,
       )
   })
 
   it('should return not found in no journey in session', async () => {
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/handle-duplicate/${uuidv4()}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/handle-duplicate/${uuidv4()}`,
       )
       .type('form')
       .expect(404)
@@ -343,7 +344,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
 
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/handle-duplicate/${journeyId}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/handle-duplicate/${journeyId}`,
       )
       .type('form')
       .send({ duplicateAction: 'GO_TO_CONTACT_LIST' })
