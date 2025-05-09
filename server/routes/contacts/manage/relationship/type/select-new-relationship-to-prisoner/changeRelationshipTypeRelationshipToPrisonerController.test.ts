@@ -3,6 +3,7 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
+import createError from 'http-errors'
 import {
   appWithAllRoutes,
   flashProvider,
@@ -245,6 +246,58 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       'You’ve updated the relationship information for contact First Middle Last and prisoner John Smith.',
     )
     expect(session.changeRelationshipTypeJourneys![journeyId]).toBeUndefined()
+  })
+
+  it('should pass to the handle duplicate page if we get a conflict response from the API', async () => {
+    // Given
+    existingJourney.relationshipType = 'O'
+    contactsService.getContactName.mockResolvedValue(contact)
+    contactsService.updateContactRelationshipById.mockRejectedValue(createError.Conflict())
+
+    // When
+    await request(app)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-to-prisoner/${journeyId}`,
+      )
+      .type('form')
+      .send({ relationship: 'DR' })
+      .expect(302)
+      .expect(
+        'Location',
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/handle-duplicate/${journeyId}`,
+      )
+
+    // Then
+    const expected: PatchRelationshipRequest = {
+      relationshipTypeCode: 'O',
+      relationshipToPrisonerCode: 'DR',
+    }
+    expect(contactsService.updateContactRelationshipById).toHaveBeenCalledWith(
+      prisonerContactId,
+      expected,
+      currentUser,
+      expect.any(String),
+    )
+    expect(session.changeRelationshipTypeJourneys![journeyId]).not.toBeNull()
+  })
+
+  it('should re-raise errors if they are not conflicts', async () => {
+    // Given
+    existingJourney.relationshipType = 'O'
+    contactsService.getContactName.mockResolvedValue(contact)
+    contactsService.updateContactRelationshipById.mockRejectedValue(createError.InternalServerError())
+
+    // When
+    await request(app)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-to-prisoner/${journeyId}`,
+      )
+      .type('form')
+      .send({ relationship: 'DR' })
+      .expect(500)
+
+    expect(contactsService.updateContactRelationshipById).toHaveBeenCalled()
+    expect(session.changeRelationshipTypeJourneys![journeyId]).not.toBeNull()
   })
 
   it('should return to input page with details kept if there are validation errors', async () => {

@@ -95,6 +95,8 @@ import AddressPhoneController from './addresses/add-address-phone/addressPhoneCo
 import { routerMethods } from '../../../utils/routerMethods'
 import DeleteAddressPhoneController from './addresses/delete-address-phone/deleteAddressPhoneController'
 import EditRestrictionsController from './edit-restrictions/editRestrictionsController'
+import ChangeRelationshipTypeHandleDuplicateController from './relationship/type/handle-duplicate/changeRelationshipTypeHandleDuplicateController'
+import { handleDuplicateRelationshipSchemaFactory } from '../common/relationship/handleDuplicateRelationshipSchemas'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -320,6 +322,13 @@ const ManageContactsRoutes = (
     schema: selectRelationshipSchemaFactory(),
     journeyEnsurer: [ensureInChangeRelationshipTypeJourney],
     prisonerDetailsRequiredOnPost: true,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/type/handle-duplicate/:journeyId',
+    controller: new ChangeRelationshipTypeHandleDuplicateController(contactsService, referenceDataService),
+    schema: handleDuplicateRelationshipSchemaFactory(),
+    journeyEnsurer: [ensureInChangeRelationshipTypeJourney],
   })
 
   // Contact methods (email, phone address)

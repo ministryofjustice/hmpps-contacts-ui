@@ -32,6 +32,7 @@ import {
   PrisonerContactRelationshipDetails,
   PrisonerContactRestrictionDetails,
   PrisonerContactRestrictionsResponse,
+  PrisonerContactSummary,
   UpdateEmailRequest,
 } from '../../server/@types/contactsApiClient'
 
@@ -103,6 +104,24 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: args.page,
+      },
+    })
+  },
+
+  stubAllSummariesForAPrisonerAndContact: (args: {
+    prisonerNumber: string
+    contactId: number
+    items: PrisonerContactSummary
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/prisoner/${args.prisonerNumber}/contact/${args.contactId}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: args.items,
       },
     })
   },
@@ -392,6 +411,24 @@ export default {
       },
       response: {
         status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {},
+      },
+    })
+  },
+
+  stubUpdateContactRelationshipByIdHasConflict: ({
+    prisonerContactId,
+  }: {
+    prisonerContactId: number
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'PATCH',
+        urlPath: `/prisoner-contact/${prisonerContactId}`,
+      },
+      response: {
+        status: 409,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {},
       },
