@@ -137,9 +137,9 @@
     "passport-oauth2": "^1.8.0",
     "redis": "^4.7.0",
     "reflect-metadata": "^0.2.2",
-    "superagent": "^10.2.0",
+    "superagent": "^10.2.1",
     "uuid": "^11.1.0",
-    "zod": "^3.24.3"
+    "zod": "^3.24.4"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
@@ -187,7 +187,7 @@
     "nock": "^14.0.4",
     "nodemon": "^3.1.10",
     "nyc": "^17.1.0",
-    "openapi-typescript": "^7.6.1",
+    "openapi-typescript": "^7.7.1",
     "prettier": "^3.5.3",
     "prettier-plugin-jinja-template": "^2.1.0",
     "supertest": "^7.1.0",
