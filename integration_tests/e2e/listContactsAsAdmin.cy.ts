@@ -41,6 +41,7 @@ context('List contacts with Contacts Administrator or Authoriser roles', () => {
   const contactTen = aContact(10, 'Ten', 'Contact')
   const contactEleven = aContact(11, 'Eleven', 'Contact')
   const contactTwelve = aContact(12, 'Twelve', 'Contact')
+  const contactInactive = aContact(13, 'Inactive', 'Contact')
 
   function aContact(id: number, lastName: string, firstName: string): PrisonerContactSummary {
     return { ...minimalContact, contactId: id, prisonerContactId: id + 100000, lastName, firstName }
@@ -55,8 +56,19 @@ context('List contacts with Contacts Administrator or Authoriser roles', () => {
 
   it('should maintain filters when paging but applying a sort returns you to page one', () => {
     const initialPage: PagedModelPrisonerContactSummary = {
-      content: [contactOne, contactTwo, contactThree, contactFour, contactFive],
-      page: { totalElements: 5, totalPages: 1, size: 10, number: 0 },
+      content: [
+        contactInactive,
+        contactOne,
+        contactTwo,
+        contactThree,
+        contactFour,
+        contactFive,
+        contactSix,
+        contactSeven,
+        contactEight,
+        contactNine,
+      ],
+      page: { totalElements: 13, totalPages: 2, size: 10, number: 0 },
     }
 
     const pageOne: PagedModelPrisonerContactSummary = {
@@ -83,12 +95,13 @@ context('List contacts with Contacts Administrator or Authoriser roles', () => {
     const filtered = {
       relationshipType: { equalTo: 'S' },
       emergencyContactOrNextOfKin: { equalTo: 'true' },
+      active: { equalTo: 'true' },
     }
 
     cy.task('stubFilteredContactList', {
       prisonerNumber: prisoner.prisonerNumber,
       page: initialPage,
-      matchQueryParams: { active: { equalTo: 'true' } },
+      matchQueryParams: { active: { absent: true } },
     })
 
     cy.task('stubFilteredContactList', {
@@ -106,11 +119,22 @@ context('List contacts with Contacts Administrator or Authoriser roles', () => {
     cy.signIn({ startUrl: `/prisoner/${prisoner.prisonerNumber}/contacts/list` })
 
     Page.verifyOnPage(ListContactsPage, 'Test Prisoner')
-      .expectNames(['One, Contact', 'Two, Contact', 'Three, Contact', 'Four, Contact', 'Five, Contact'])
+      .expectNames([
+        'Inactive, Contact',
+        'One, Contact',
+        'Two, Contact',
+        'Three, Contact',
+        'Four, Contact',
+        'Five, Contact',
+        'Six, Contact',
+        'Seven, Contact',
+        'Eight, Contact',
+        'Nine, Contact',
+      ])
       .clickSocialContacts()
       .clickNextOfKin()
       .clickEmergencyContact()
-      .clickIncludeInactive()
+      .clickActiveOnly()
       .clickButtonTo('Apply filters', ListContactsPage, 'Test Prisoner')
       .expectNames([
         'One, Contact',
@@ -127,14 +151,14 @@ context('List contacts with Contacts Administrator or Authoriser roles', () => {
       .hasSocialContacts()
       .hasNextOfKin()
       .hasEmergencyContact()
-      .hasIncludeInactive()
+      .hasActiveOnly()
       .clickIndexedLinkTo(0, 'Page 2 of 2', ListContactsPage, 'Test Prisoner')
       .expectNames(['Eleven, Contact', 'Twelve, Contact'])
       .clickLinkTo('Contact name and person ID', ListContactsPage, 'Test Prisoner')
       .hasSocialContacts()
       .hasNextOfKin()
       .hasEmergencyContact()
-      .hasIncludeInactive()
+      .hasActiveOnly()
       .expectNames([
         'One, Contact',
         'Two, Contact',

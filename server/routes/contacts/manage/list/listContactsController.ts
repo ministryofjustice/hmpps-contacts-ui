@@ -157,7 +157,7 @@ export default class ListContactsController implements PageHandler {
     const relationshipStatus =
       filter.relationshipStatus && allowedRelationshipStatus.includes(filter.relationshipStatus)
         ? filter.relationshipStatus
-        : 'ACTIVE_ONLY'
+        : 'ACTIVE_AND_INACTIVE'
     const relationshipType = this.toSafeArray(filter.relationshipType, allowedRelationshipTypes) as RelationshipType[]
     const flag = this.toSafeArray(filter.flag, allowedFlags) as Flag[]
     return { relationshipStatus, relationshipType, flag }
