@@ -85,7 +85,7 @@ export default {
   stubFilteredContactList: (args: {
     prisonerNumber: string
     page: PagedModelPrisonerContactSummary
-    matchQueryParams: { [key: string]: { equalTo: string } }
+    matchQueryParams: { [key: string]: { equalTo?: string; absent?: boolean } }
   }): SuperAgentRequest => {
     const queryParameters = {
       ...args.matchQueryParams,

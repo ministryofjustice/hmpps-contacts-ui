@@ -45,7 +45,7 @@ context('List contacts with a read only set of roles', () => {
     cy.task('stubFilteredContactList', {
       prisonerNumber: prisoner.prisonerNumber,
       page: initialPage,
-      matchQueryParams: { active: { equalTo: 'true' } },
+      matchQueryParams: { active: { absent: true } },
     })
 
     cy.signIn({ startUrl: `/prisoner/${prisoner.prisonerNumber}/contacts/list` })

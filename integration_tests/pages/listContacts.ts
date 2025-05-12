@@ -68,6 +68,11 @@ export default class ListContactsPage extends Page {
     return this
   }
 
+  clickActiveOnly(): ListContactsPage {
+    this.activeOnly().check()
+    return this
+  }
+
   clickIncludeInactive(): ListContactsPage {
     this.includeInactive().check()
     return this
@@ -75,6 +80,11 @@ export default class ListContactsPage extends Page {
 
   hasIncludeInactive(): ListContactsPage {
     this.includeInactive().should('be.checked')
+    return this
+  }
+
+  hasActiveOnly(): ListContactsPage {
+    this.activeOnly().should('be.checked')
     return this
   }
 
@@ -87,4 +97,6 @@ export default class ListContactsPage extends Page {
   private nextOfKin = (): PageElement => cy.get('#flagsNextOfKin')
 
   private includeInactive = (): PageElement => cy.get(`.govuk-radios__input[value='ACTIVE_AND_INACTIVE']`)
+
+  private activeOnly = (): PageElement => cy.get(`.govuk-radios__input[value='ACTIVE_ONLY']`)
 }

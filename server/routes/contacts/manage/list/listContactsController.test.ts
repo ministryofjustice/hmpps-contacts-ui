@@ -516,14 +516,14 @@ describe('listContactsController', () => {
       expect(response.status).toEqual(200)
       expect(contactsService.filterPrisonerContacts).toHaveBeenCalledWith(
         prisonerNumber,
-        { active: true },
+        {},
         { page: 0, size: 10, sort: expectDefaultSort },
         basicPrisonUser,
       )
     })
 
     it.each([
-      [`/prisoner/${prisonerNumber}/contacts/list`, { active: true }, { page: 0, size: 10, sort: expectDefaultSort }],
+      [`/prisoner/${prisonerNumber}/contacts/list`, {}, { page: 0, size: 10, sort: expectDefaultSort }],
       [
         `/prisoner/${prisonerNumber}/contacts/list?relationshipStatus=ACTIVE_ONLY&sort=name,asc&page=2`,
         { active: true },
@@ -651,7 +651,7 @@ describe('listContactsController', () => {
         },
       ],
     ])(
-      'should search using correct query parameters and defaults %s',
+      'should search using correct query parameters and defaults (%s)',
       async (url, expectedFilter, expectedPagination) => {
         // Given
         contactsService.filterPrisonerContacts.mockResolvedValue({
@@ -685,7 +685,7 @@ describe('listContactsController', () => {
 
       // Then
       const $ = cheerio.load(response.text)
-      expect($('input[type=radio]:checked').val()).toStrictEqual('ACTIVE_ONLY')
+      expect($('input[type=radio]:checked').val()).toStrictEqual('ACTIVE_AND_INACTIVE')
       expect($('#relationshipTypeSocial').attr('checked')).toBeUndefined()
       expect($('#relationshipTypeOfficial').attr('checked')).toBeUndefined()
       expect($('#flagsEmergencyContact').attr('checked')).toBeUndefined()
@@ -724,7 +724,9 @@ describe('listContactsController', () => {
         })
 
         // When
-        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/list`)
+        const response = await request(app).get(
+          `/prisoner/${prisonerNumber}/contacts/list?relationshipStatus=ACTIVE_ONLY`,
+        )
 
         // Then
         const $ = cheerio.load(response.text)
@@ -762,7 +764,9 @@ describe('listContactsController', () => {
       })
 
       // When
-      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/list`)
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/list?relationshipStatus=ACTIVE_ONLY`,
+      )
 
       // Then
       const $ = cheerio.load(response.text)
@@ -834,7 +838,9 @@ describe('listContactsController', () => {
           })
 
         // When
-        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/list`)
+        const response = await request(app).get(
+          `/prisoner/${prisonerNumber}/contacts/list?relationshipStatus=ACTIVE_ONLY`,
+        )
 
         // Then
         const $ = cheerio.load(response.text)
@@ -911,7 +917,7 @@ describe('listContactsController', () => {
         expect(contactsService.filterPrisonerContacts).toHaveBeenNthCalledWith(
           1,
           prisonerNumber,
-          { active: true, emergencyContact: true },
+          { emergencyContact: true },
           { page: 0, size: 10, sort: expectDefaultSort },
           currentUser,
         )
