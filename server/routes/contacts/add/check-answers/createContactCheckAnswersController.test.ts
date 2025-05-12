@@ -3,6 +3,7 @@ import request from 'supertest'
 import { v4 as uuidv4 } from 'uuid'
 import { SessionData } from 'express-session'
 import * as cheerio from 'cheerio'
+import createError from 'http-errors'
 import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
@@ -508,6 +509,41 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
     // Then
     expect(contactsService.addContact).toHaveBeenCalledWith(journey, adminUser, expect.any(String))
     expect(session.addContactJourneys![journeyId]).toBeUndefined()
+  })
+
+  it('should redirect to handle-duplicate if we fail with 409', async () => {
+    // Given
+    contactsService.addContact.mockRejectedValue(createError.Conflict())
+    journey.mode = 'EXISTING'
+    journey.contactId = 123456
+
+    // When
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+      .type('form')
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/add/handle-duplicate/${journeyId}`)
+
+    // Then
+    expect(contactsService.addContact).toHaveBeenCalledWith(journey, adminUser, expect.any(String))
+    expect(session.addContactJourneys![journeyId]).toBeTruthy()
+  })
+
+  it('should pass on other errors that are not 409', async () => {
+    // Given
+    contactsService.addContact.mockRejectedValue(createError.InternalServerError())
+    journey.mode = 'EXISTING'
+    journey.contactId = 123456
+
+    // When
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+      .type('form')
+      .expect(500)
+
+    // Then
+    expect(contactsService.addContact).toHaveBeenCalledWith(journey, adminUser, expect.any(String))
+    expect(session.addContactJourneys![journeyId]).toBeTruthy()
   })
 
   it('should return to start if no journey in session', async () => {

@@ -47,6 +47,7 @@ type ExistingContactPages =
   | Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE
   | Page.SUCCESSFULLY_ADDED_CONTACT_PAGE
   | Page.ADD_CONTACT_CANCEL_PAGE
+  | Page.ADD_CONTACT_HANDLE_DUPLICATE_PAGE
 type AllAddContactPages = PreModePages | CreateContactPages | ExistingContactPages
 type JourneyUrlProvider = (journey: AddContactJourney, user: HmppsUser) => string | undefined
 type Spec = {
@@ -144,6 +145,9 @@ const PAGES: Record<AllAddContactPages, PageConfig> = {
   },
   [Page.ADD_CONTACT_DOMESTIC_STATUS_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/domestic-status/${journey.id}`,
+  },
+  [Page.ADD_CONTACT_HANDLE_DUPLICATE_PAGE]: {
+    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/add/handle-duplicate/${journey.id}`,
   },
 }
 
@@ -336,6 +340,10 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
     nextUrl: _ => undefined,
   },
   [Page.ADD_CONTACT_CANCEL_PAGE]: {
+    previousUrl: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url,
+    nextUrl: _ => undefined,
+  },
+  [Page.ADD_CONTACT_HANDLE_DUPLICATE_PAGE]: {
     previousUrl: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url,
     nextUrl: _ => undefined,
   },

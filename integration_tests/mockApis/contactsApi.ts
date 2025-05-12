@@ -68,6 +68,19 @@ export default {
     })
   },
 
+  stubAddContactRelationshipHasConflict: (): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'POST',
+        urlPath: `/prisoner-contact`,
+      },
+      response: {
+        status: 409,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      },
+    })
+  },
+
   stubContactList: (prisonerNumber: string): SuperAgentRequest => {
     return stubFor({
       request: {

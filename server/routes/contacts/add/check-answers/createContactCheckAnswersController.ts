@@ -122,23 +122,37 @@ export default class CreateContactCheckAnswersController implements PageHandler 
     const { user } = res.locals
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
+    let result: { success: boolean; error?: { status: number } }
     if (journey.mode === 'NEW') {
-      await this.contactService
+      result = await this.contactService
         .createContact(journey, user, req.id)
         .then((createdContact: ContactCreationResult) => {
           journey.contactId = createdContact.createdContact.id
           journey.prisonerContactId = createdContact.createdRelationship!.prisonerContactId
+          return { success: true }
         })
-        .then(() => delete req.session.addContactJourneys![journeyId])
     } else if (journey.mode === 'EXISTING') {
-      await this.contactService
-        .addContact(journey, user, req.id)
-        .then((createdContact: PrisonerContactRelationshipDetails) => {
+      result = await this.contactService.addContact(journey, user, req.id).then(
+        (createdContact: PrisonerContactRelationshipDetails) => {
           journey.prisonerContactId = createdContact.prisonerContactId
-        })
-        .then(() => delete req.session.addContactJourneys![journeyId])
+          return { success: true }
+        },
+        error => {
+          return { success: false, error }
+        },
+      )
+    } else {
+      throw new Error(`Unknown journey mode ${journey.mode}`)
     }
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+    const { success, error } = result
+    if (success) {
+      delete req.session.addContactJourneys![journeyId]
+      res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+    } else if (error?.status === 409) {
+      res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/add/handle-duplicate/${journey.id}`)
+    } else {
+      throw error
+    }
   }
 
   private async getDescriptionIfSet(

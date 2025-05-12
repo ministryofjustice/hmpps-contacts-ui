@@ -66,6 +66,8 @@ import CreateContactEmploymentStatusController from './employments/employment-st
 import { employmentStatusSchema } from '../manage/update-employments/employment-status/employmentStatusSchema'
 import CreateContactDeleteEmploymentController from './employments/delete-employment/createContactDeleteEmploymentController'
 import { ensureInAddContactJourney, resetAddContactJourney } from './addContactMiddleware'
+import { handleDuplicateRelationshipSchemaFactory } from '../common/relationship/handleDuplicateRelationshipSchemas'
+import AddContactHandleDuplicateController from './handle-duplicate/addContactHandleDuplicateController'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -172,6 +174,12 @@ const AddContactRoutes = (
     path: '/prisoner/:prisonerNumber/contacts/create/enter-relationship-comments/:journeyId',
     controller: new EnterRelationshipCommentsController(),
     schema: enterRelationshipCommentsSchema,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/add/handle-duplicate/:journeyId',
+    controller: new AddContactHandleDuplicateController(contactsService, referenceDataService),
+    schema: handleDuplicateRelationshipSchemaFactory(),
   })
 
   journeyRoute({
