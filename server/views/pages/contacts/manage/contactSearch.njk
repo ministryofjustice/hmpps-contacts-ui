@@ -66,10 +66,23 @@
               preventDoubleClick: true
             }) }}
           </form>
+          {% set advancedSearchInstructions %}
+            <div class="govuk-!-width-three-quarters">
+              <p class="govuk-body">This service currently allows search by name or partial name, with filtering by exact date of birth. </p>
+              <p class="govuk-body">You still need to use NOMIS for advanced search and filters such as:</p>
+              <ul class="govuk-list govuk-list--bullet">
+                <li>‘sounds like’ name search</li>
+                <li>identity document search</li>
+                <li>person ID search (the unique number given to each contact record)</li>
+                <li>filter by gender</li>
+                <li>filter by year of birth and a range of years either side of that date</li>
+              </ul>
+            </div>
+          {% endset %}
           {{ govukDetails({
             classes: "govuk-!-margin-top-6 govuk-!-margin-bottom-0",
             summaryText: "How to use advanced search and filters",
-            text: "[Placeholder content - needs to tell user about how to access these features on NOMIS]"
+            html: advancedSearchInstructions
           }) }}
         </div>
       </div>
