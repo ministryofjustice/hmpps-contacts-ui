@@ -22,12 +22,6 @@ generic-service:
     SENTRY_ENVIRONMENT: DEV
     AUDIT_ENABLED: 'true'
 
-  allowlist:
-    krupal-app-sec: 80.195.27.199/32
-    groups:
-      - internal
-      - prisons
-
 generic-prometheus-alerts:
   alertSeverity: hmpps-contacts-ui-dev
   businessHoursOnly: true
