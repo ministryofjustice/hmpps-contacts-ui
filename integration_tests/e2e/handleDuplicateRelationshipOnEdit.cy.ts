@@ -173,7 +173,7 @@ context('Handle duplicate relationship when editing relationships', () => {
       .selectRelationship('DR')
       .clickContinue()
 
-    Page.verifyOnPage(HandleDuplicateRelationshipPage)
+    Page.verifyOnPage(HandleDuplicateRelationshipPage, false)
       .selectAction('GO_TO_CONTACT_LIST')
       .continueTo(ListContactsPage, 'John Smith', false)
   })
@@ -191,7 +191,7 @@ context('Handle duplicate relationship when editing relationships', () => {
       .selectRelationship('DR')
       .clickContinue()
 
-    Page.verifyOnPage(HandleDuplicateRelationshipPage)
+    Page.verifyOnPage(HandleDuplicateRelationshipPage, false)
       .selectAction('GO_TO_DUPE')
       .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
@@ -205,7 +205,7 @@ context('Handle duplicate relationship when editing relationships', () => {
       .selectRelationship('FRI')
       .clickContinue()
 
-    Page.verifyOnPage(HandleDuplicateRelationshipPage)
+    Page.verifyOnPage(HandleDuplicateRelationshipPage, false)
       .selectAction('GO_TO_CONTACT_LIST')
       .continueTo(ListContactsPage, 'John Smith', false)
   })
@@ -219,7 +219,7 @@ context('Handle duplicate relationship when editing relationships', () => {
       .selectRelationship('FRI')
       .clickContinue()
 
-    Page.verifyOnPage(HandleDuplicateRelationshipPage)
+    Page.verifyOnPage(HandleDuplicateRelationshipPage, false)
       .selectAction('GO_TO_DUPE')
       .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
   })

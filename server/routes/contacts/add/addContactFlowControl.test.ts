@@ -414,6 +414,13 @@ describe('addContactFlowControl', () => {
           undefined,
           adminUser,
         ],
+        [
+          Page.ADD_CONTACT_HANDLE_DUPLICATE_PAGE,
+          `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
+          undefined,
+          undefined,
+          adminUser,
+        ],
       ])(
         'Should go back to previous page: from %s to %s',
         (
@@ -450,6 +457,7 @@ describe('addContactFlowControl', () => {
         [Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE],
         [Page.ENTER_RELATIONSHIP_COMMENTS],
         [Page.ADD_CONTACT_CANCEL_PAGE],
+        [Page.ADD_CONTACT_HANDLE_DUPLICATE_PAGE],
       ])('Should go back to check answers when checking answers from page %s', (page: Page) => {
         const journey: AddContactJourney = {
           id: journeyId,

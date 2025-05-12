@@ -21,10 +21,13 @@
     <div class="govuk-grid-column-two-thirds">
       <span class="govuk-caption-l">{{ caption }}</span>
       <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+      {% if existingRelationships.length and existingRelationships.length > 1 %}
       {{ govukWarningText({
         html: 'The relationship ‘' + relationshipTypeDescription + '’ has already been recorded as one of multiple relationships between the contact and the prisoner.',
-        iconFallbackText: "Warning"
+        iconFallbackText: "Warning",
+        attributes: {"data-qa": "multiple-relationships-warning"}
       }) }}
+      {% endif %}
     </div>
   </div>
   <div class="govuk-grid-row">
