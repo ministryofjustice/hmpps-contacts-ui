@@ -16,10 +16,10 @@ export default class ChangeRelationshipTypeStartController implements PageHandle
   private MAX_JOURNEYS = 5
 
   GET = async (
-    req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }>,
+    req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string; mode: string }>,
     res: Response,
   ) => {
-    const { prisonerNumber, contactId, prisonerContactId } = req.params
+    const { prisonerNumber, contactId, prisonerContactId, mode } = req.params
     const contact = await this.contactsService.getContact(Number(contactId), res.locals.user)
     const relationship = await this.contactsService.getPrisonerContactRelationship(
       Number(prisonerContactId),
@@ -28,6 +28,7 @@ export default class ChangeRelationshipTypeStartController implements PageHandle
     const journey: ChangeRelationshipTypeJourney = {
       id: uuidv4(),
       lastTouched: new Date().toISOString(),
+      mode: mode as 'all' | 'relationship-to-prisoner',
       prisonerNumber,
       contactId: contact.id,
       prisonerContactId: relationship.prisonerContactId,
@@ -56,8 +57,16 @@ export default class ChangeRelationshipTypeStartController implements PageHandle
         .forEach(journeyToRemove => delete req.session.changeRelationshipTypeJourneys![journeyToRemove.id])
     }
 
-    res.redirect(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-type/${journey.id}`,
-    )
+    if (mode === 'relationship-to-prisoner') {
+      res.redirect(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-to-prisoner/${journey.id}`,
+      )
+    } else if (mode === 'all') {
+      res.redirect(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-type/${journey.id}`,
+      )
+    } else {
+      throw Error(`Unknown edit relationship mode ${mode}`)
+    }
   }
 }

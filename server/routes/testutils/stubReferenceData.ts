@@ -27,6 +27,7 @@ const STUBBED_SOCIAL_RELATIONSHIP_OPTIONS: StubReferenceData[] = [
   { code: 'SON', description: 'Son', groupCode: 'SOCIAL_RELATIONSHIP' },
   { code: 'WIFE', description: 'Wife', groupCode: 'SOCIAL_RELATIONSHIP' },
   { code: 'HUS', description: 'Husband', groupCode: 'SOCIAL_RELATIONSHIP' },
+  { code: 'FRI', description: 'Friend', groupCode: 'SOCIAL_RELATIONSHIP' },
   { code: 'OTHER', description: 'Other - Social', groupCode: 'SOCIAL_RELATIONSHIP' },
   { code: 'NONE', description: 'None', groupCode: 'SOCIAL_RELATIONSHIP' },
   { code: 'ILP', description: 'In Loco Parentes', groupCode: 'SOCIAL_RELATIONSHIP' },

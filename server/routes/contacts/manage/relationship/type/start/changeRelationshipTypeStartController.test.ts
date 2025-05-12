@@ -74,42 +74,52 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/type/start', () => {
-  it('should create the journey and redirect to select type page with details populated in session', async () => {
-    // Given
-    contactsService.getContact.mockResolvedValue(contact)
-    contactsService.getPrisonerContactRelationship.mockResolvedValue(prisonerContact)
+describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-relationship-type/:mode/start', () => {
+  it.each([
+    [
+      'all',
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-type`,
+    ],
+    [
+      'relationship-to-prisoner',
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-to-prisoner`,
+    ],
+  ])(
+    'should create the journey and redirect to correct page with details populated in session for mode (%s)',
+    async (mode, expectedUrl) => {
+      // Given
+      contactsService.getContact.mockResolvedValue(contact)
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(prisonerContact)
 
-    // When
-    const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/start`,
-    )
+      // When
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/${mode}/start`,
+      )
 
-    // Then
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.CHANGE_RELATIONSHIP_TYPE_START_PAGE, {
-      who: currentUser.username,
-      correlationId: expect.any(String),
-      details: {
-        contactId: '123',
-        prisonerContactId: '456789',
-        prisonerNumber: 'A1234BC',
-      },
-    })
-    expect(response.status).toEqual(302)
-    expect(response.headers['location']).toContain(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-type`,
-    )
-    expect(Object.entries(session.changeRelationshipTypeJourneys!)).toHaveLength(1)
-    const journey = Object.values(session.changeRelationshipTypeJourneys!)[0]!
-    expect(journey.relationshipType).toStrictEqual('S')
-    expect(journey.relationshipToPrisoner).toStrictEqual('MOT')
-    expect(journey.names).toStrictEqual({
-      title: undefined,
-      lastName: 'last',
-      firstName: 'first',
-      middleNames: 'middle',
-    })
-  })
+      // Then
+      expect(auditService.logPageView).toHaveBeenCalledWith(Page.CHANGE_RELATIONSHIP_TYPE_START_PAGE, {
+        who: currentUser.username,
+        correlationId: expect.any(String),
+        details: {
+          contactId: '123',
+          prisonerContactId: '456789',
+          prisonerNumber: 'A1234BC',
+        },
+      })
+      expect(response.status).toEqual(302)
+      expect(response.headers['location']).toContain(expectedUrl)
+      expect(Object.entries(session.changeRelationshipTypeJourneys!)).toHaveLength(1)
+      const journey = Object.values(session.changeRelationshipTypeJourneys!)[0]!
+      expect(journey.relationshipType).toStrictEqual('S')
+      expect(journey.relationshipToPrisoner).toStrictEqual('MOT')
+      expect(journey.names).toStrictEqual({
+        title: undefined,
+        lastName: 'last',
+        firstName: 'first',
+        middleNames: 'middle',
+      })
+    },
+  )
 
   it.each([
     [basicPrisonUser, 403],
@@ -121,7 +131,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     contactsService.getPrisonerContactRelationship.mockResolvedValue(prisonerContact)
 
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/start`)
+      .get(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/all/start`,
+      )
       .expect(expectedStatus)
   })
 
@@ -134,6 +146,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       {
         id: uuidv4(),
         lastTouched: new Date().toISOString(),
+        mode: 'all',
         prisonerNumber,
         contactId,
         prisonerContactId,
@@ -148,7 +161,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/start`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/all/start`,
     )
     const { location } = response.headers
 
@@ -169,6 +182,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       {
         id: 'old',
         lastTouched: new Date(2024, 1, 1, 11, 30).toISOString(),
+        mode: 'all',
         prisonerNumber,
         contactId,
         prisonerContactId,
@@ -182,6 +196,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       {
         id: 'middle-aged',
         lastTouched: new Date(2024, 1, 1, 12, 30).toISOString(),
+        mode: 'relationship-to-prisoner',
         prisonerNumber,
         contactId,
         prisonerContactId,
@@ -195,6 +210,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       {
         id: 'youngest',
         lastTouched: new Date(2024, 1, 1, 14, 30).toISOString(),
+        mode: 'all',
         prisonerNumber,
         contactId,
         prisonerContactId,
@@ -208,6 +224,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       {
         id: 'oldest',
         lastTouched: new Date(2024, 1, 1, 10, 30).toISOString(),
+        mode: 'all',
         prisonerNumber,
         contactId,
         prisonerContactId,
@@ -221,6 +238,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       {
         id: 'young',
         lastTouched: new Date(2024, 1, 1, 13, 30).toISOString(),
+        mode: 'all',
         prisonerNumber,
         contactId,
         prisonerContactId,
@@ -235,7 +253,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/start`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/all/start`,
     )
     const { location } = response.headers
 

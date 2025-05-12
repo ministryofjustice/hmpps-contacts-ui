@@ -36,8 +36,14 @@ export default class ChangeRelationshipTypeRelationshipToPrisonerController impl
       journey.relationshipType === 'S' ? ReferenceCodeType.SOCIAL_RELATIONSHIP : ReferenceCodeType.OFFICIAL_RELATIONSHIP
     const relationshipOptions = await this.referenceDataService.getReferenceData(groupCodeForRelationshipType, user)
 
+    let backLink = ''
+    if (journey.mode === 'all') {
+      backLink = `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-type/${journey.id}`
+    } else if (journey.mode === 'relationship-to-prisoner') {
+      backLink = Urls.editContactDetails(prisonerNumber, contactId, prisonerContactId)
+    }
     const navigation: Navigation = {
-      backLink: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/type/select-new-relationship-type/${journey.id}`,
+      backLink,
       cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
     }
     const viewModel = {
@@ -68,22 +74,44 @@ export default class ChangeRelationshipTypeRelationshipToPrisonerController impl
     const { user, prisonerDetails } = res.locals
     const { prisonerNumber, contactId, prisonerContactId, journeyId } = req.params
     const { relationship } = req.body
+
+    // Set on session in case it's a duplicate and we need to use the value on the handle duplicate page
     const journey = req.session.changeRelationshipTypeJourneys![journeyId]!
+    journey.relationshipToPrisoner = relationship
+
     const request: PatchRelationshipRequest = {
-      relationshipTypeCode: journey.relationshipType,
-      relationshipToPrisonerCode: relationship,
+      relationshipToPrisonerCode: journey.relationshipToPrisoner,
     }
-    await this.contactsService
+    if (journey.mode === 'all') {
+      request.relationshipTypeCode = journey.relationshipType
+    }
+
+    const { success, error } = await this.contactsService
       .updateContactRelationshipById(Number(prisonerContactId), request, user, req.id)
-      .then(_ => this.contactsService.getContactName(Number(contactId), user))
-      .then(response => {
+      .then(
+        _ => {
+          return { success: true, error: null }
+        },
+        reason => {
+          return { success: false, error: reason }
+        },
+      )
+
+    if (success) {
+      await this.contactsService.getContactName(Number(contactId), user).then(response => {
         delete req.session.changeRelationshipTypeJourneys![journeyId]
         return req.flash(
           FLASH_KEY__SUCCESS_BANNER,
           `You’ve updated the relationship information for contact ${formatNameFirstNameFirst(response)} and prisoner ${formatNameFirstNameFirst(prisonerDetails!, { excludeMiddleNames: true })}.`,
         )
       })
-
-    res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
+      res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
+    } else if (error.status === 409) {
+      res.redirect(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/handle-duplicate/${journey.id}`,
+      )
+    } else {
+      throw error
+    }
   }
 }

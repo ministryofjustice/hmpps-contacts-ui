@@ -1,0 +1,82 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "partials/contactDetails/prisonerContactSummaryTable.njk" import prisonerContactSummaryTable %}
+
+{% set mainClasses = "app-container govuk-body" %}
+
+{% if isNewContact %}
+  {% set pageTitle = "This relationship has already been recorded - Link a contact to a prisoner - DPS" %}
+  {% set title = "This relationship has already been recorded" %}
+  {% set caption = journey | captionForAddContactJourney %}
+{% else %}
+  {% set pageTitle = "You cannot make this change as the relationship has already been recorded - Edit contact details - DPS" %}
+  {% set title = "You cannot make this change as the relationship has already been recorded" %}
+  {% set caption = "Edit contact relationship information" %}
+{% endif %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-l">{{ caption }}</span>
+      <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+      {{ govukWarningText({
+        html: 'The relationship ‘' + relationshipTypeDescription + '’ has already been recorded as one of multiple relationships between the contact and the prisoner.',
+        iconFallbackText: "Warning"
+      }) }}
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {{ prisonerContactSummaryTable({
+        contacts: existingRelationships,
+        prisonerNumber: prisonerDetails.prisonerNumber,
+        user: user
+      }) }}
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form method='POST'>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        {{ govukRadios({
+          name: "duplicateAction",
+          errorMessage: validationErrors | findError('duplicateAction'),
+          fieldset: {
+            legend: {
+              text: 'How do you want to continue?',
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            },
+            attributes: {"data-qa": "confim-title-value-bottom"}
+          },
+          items: [
+            {
+              value: 'GO_TO_DUPE',
+              text: 'Go to the existing record of the ‘' + relationshipTypeDescription + '’ relationship',
+              id: 'duplicateActionGoToDupe'
+            },
+            {
+              value: 'GO_TO_CONTACT_LIST',
+              text: 'Go to the prisoner’s contact list',
+              id: 'duplicateActionGoToContactList'
+            }
+          ]
+        }) }}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: 'Continue',
+            type: "submit",
+            classes: 'govuk-!-margin-top-6',
+            attributes: {"data-qa": "continue-button"},
+            preventDoubleClick: true
+          }) }}
+          {% if navigation.cancelButton %}
+            <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}
