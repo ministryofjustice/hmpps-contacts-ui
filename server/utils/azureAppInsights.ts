@@ -4,8 +4,10 @@ import {
   getCorrelationContext,
   setup,
   TelemetryClient,
+  Contracts,
 } from 'applicationinsights'
-import { RequestHandler } from 'express'
+import { Request, RequestHandler } from 'express'
+import { EnvelopeTelemetry } from 'applicationinsights/out/Declarations/Contracts'
 import type { ApplicationInfo } from '../applicationInfo'
 
 export function initialiseAppInsights(): void {
@@ -24,7 +26,7 @@ export function buildAppInsightsClient(
   if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
     defaultClient.context.tags['ai.cloud.role'] = overrideName || applicationName
     defaultClient.context.tags['ai.application.ver'] = buildNumber
-
+    defaultClient.addTelemetryProcessor(addUserDataToRequests)
     defaultClient.addTelemetryProcessor(({ tags, data }, contextObjects) => {
       const operationNameOverride =
         contextObjects?.['correlationContext']?.customProperties?.getProperty('operationName')
@@ -52,4 +54,24 @@ export function appInsightsMiddleware(): RequestHandler {
     })
     next()
   }
+}
+
+function addUserDataToRequests(envelope: EnvelopeTelemetry, contextObjects: Record<string, unknown> | undefined) {
+  const isRequest = envelope.data.baseType === Contracts.TelemetryTypeString['Request']
+  if (isRequest) {
+    const { username, activeCaseLoad } =
+      (contextObjects?.['http.ServerRequest'] as Request | undefined)?.res?.locals?.user || {}
+    if (username) {
+      const properties = envelope.data.baseData?.['properties']
+      // eslint-disable-next-line no-param-reassign
+      envelope.data.baseData ??= {}
+      // eslint-disable-next-line no-param-reassign
+      envelope.data.baseData['properties'] = {
+        username,
+        activeCaseLoadId: activeCaseLoad?.caseLoadId,
+        ...properties,
+      }
+    }
+  }
+  return true
 }
