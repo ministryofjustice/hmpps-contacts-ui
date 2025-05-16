@@ -8,6 +8,8 @@ import { navigationForAddContactJourney } from '../addContactFlowControl'
 import { setPaginationLocals } from '../../../../views/partials/simplePagination/utils'
 import { ContactSearchRequest, PagedModelContactSearchResultItem } from '../../../../@types/contactsApiClient'
 import Permission from '../../../../enumeration/permission'
+import { ContactNames } from '../../../../@types/journeys'
+import { NAME_REGEX } from '../../common/name/nameSchemas'
 
 export default class ContactSearchController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -56,7 +58,7 @@ export default class ContactSearchController implements PageHandler {
 
     let results: PagedModelContactSearchResultItem | undefined
 
-    if (journey.searchContact?.contact?.lastName && !dobError) {
+    if (journey.searchContact?.contact && this.namesAreValid(journey.searchContact?.contact) && !dobError) {
       const contactSearchRequest: ContactSearchRequest = {
         lastName: journey.searchContact.contact.lastName,
         firstName: journey.searchContact.contact.firstName,
@@ -121,5 +123,23 @@ export default class ContactSearchController implements PageHandler {
       delete journey.searchContact.sort
     }
     res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/search/${journeyId}`)
+  }
+
+  private namesAreValid(contact: Partial<ContactNames>): boolean {
+    // last name is required
+    if (!contact.lastName || !this.isValidName(contact.lastName)) {
+      return false
+    }
+    if (contact.middleNames?.length && !this.isValidName(contact.middleNames)) {
+      return false
+    }
+    if (contact.firstName?.length && !this.isValidName(contact.firstName)) {
+      return false
+    }
+    return true
+  }
+
+  private isValidName(name: string): boolean {
+    return NAME_REGEX.test(name)
   }
 }

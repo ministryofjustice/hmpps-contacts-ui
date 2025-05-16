@@ -13,7 +13,7 @@ const MIDDLE_NAME_TOO_LONG_ERROR_MSG = 'Contact’s middle names must be 35 char
 const MIDDLE_NAME_INVALID_PREFIX = 'Contact’s middle names must not contain '
 
 // Keep these in sync as VALID_CHAR_REGEX is used to extract the non-matching chars for the error
-const NAME_REGEX = /^[a-zA-Z\s,.'-]*$/
+export const NAME_REGEX = /^[a-zA-Z\s,.'-]*$/
 const VALID_CHAR_REGEX = /[a-zA-Z\s,.'-]/g
 
 const lf = new Intl.ListFormat('en')
