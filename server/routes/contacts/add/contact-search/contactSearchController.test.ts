@@ -178,6 +178,38 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     })
   })
 
+  it.each([
+    [
+      { lastName: '', middleNames: 'middle', firstName: 'first' },
+      { firstName: 'first', middleNames: 'middle', lastName: undefined },
+    ],
+    [
+      { lastName: '#123', middleNames: 'middle', firstName: '' },
+      { firstName: undefined, middleNames: 'middle', lastName: '#123' },
+    ],
+    [
+      { lastName: 'last', middleNames: '%foo', firstName: '' },
+      { firstName: undefined, middleNames: '%foo', lastName: 'last' },
+    ],
+    [
+      { lastName: 'last', middleNames: 'middle', firstName: '&thisIsIt;' },
+      { firstName: '&thisIsIt;', middleNames: 'middle', lastName: 'last' },
+    ],
+  ])('should pass to result page when names are not valid', async (form, expectedContact) => {
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      .type('form')
+      .send(form)
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+
+    expect(session.addContactJourneys![journeyId]!.searchContact).toStrictEqual({
+      contact: expectedContact,
+      page: 1,
+    })
+    expect(contactsService.searchContact).not.toHaveBeenCalled()
+  })
+
   it('should save DoB to session when search names are in session', async () => {
     existingJourney.searchContact = { contact: { lastName: 'last' } }
 
