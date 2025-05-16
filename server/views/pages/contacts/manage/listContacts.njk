@@ -119,7 +119,7 @@
           attributes: {"data-qa": "apply-filter-button"},
           preventDoubleClick: true
         }) }}
-        <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/list?relationshipStatus=ACTIVE_ONLY" data-qa="clear-button">Clear filters</a>
+        <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/list" data-qa="clear-button">Clear filters</a>
       </div>
     </form>
   </div>
@@ -152,7 +152,7 @@
           <p class="govuk-body">You can:</p>
           <ul class="govuk-list govuk-list--bullet">
             <li>change the filters and apply them again</li>
-            <li><a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/list" class="govuk-body govuk-link--no-visited-state" data-qa="no-results-clear-filters">clear the filters</a> to view contacts with active relationship status</li>
+            <li><a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/list" class="govuk-body govuk-link--no-visited-state" data-qa="no-results-clear-filters">clear the filters</a> to view all the prisoner’s contacts</li>
             {% if user | hasPermission('MANAGE_CONTACTS') %}
               <li><a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/create/start" class="govuk-body govuk-link--no-visited-state" data-qa="no-results-link-a-contact">link another contact</a> if you cannot find the correct person in the prisoner’s contact list</li>
             {% endif %}

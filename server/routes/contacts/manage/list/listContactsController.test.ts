@@ -898,7 +898,7 @@ describe('listContactsController', () => {
         expect(noResultsContent).toContain('No contact records match your filter')
         expect(noResultsContent).toContain('You can:')
         expect(noResultsContent).toContain('change the filters and apply them again')
-        expect(noResultsContent).toContain('clear the filters to view contacts with active relationship status')
+        expect(noResultsContent).toContain('clear the filters to view all the prisoner’s contacts')
         expect(noResultsContent).toContain(
           'link another contact if you cannot find the correct person in the prisoner’s contact list',
         )
@@ -953,7 +953,7 @@ describe('listContactsController', () => {
       expect(noResultsContent).toContain('No contact records match your filter')
       expect(noResultsContent).toContain('You can:')
       expect(noResultsContent).toContain('change the filters and apply them again')
-      expect(noResultsContent).toContain('clear the filters to view contacts with active relationship status')
+      expect(noResultsContent).toContain('clear the filters to view all the prisoner’s contacts')
 
       expect($('[data-qa=no-results-clear-filters]').attr('href')).toStrictEqual(
         `/prisoner/${prisonerNumber}/contacts/list`,
