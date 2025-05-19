@@ -34,7 +34,7 @@ describe('addressLinesSchemas', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        flat: ['Flat must be 30 characters or less'],
+        flat: ['Flat or building unit must be 30 characters or less'],
       })
     })
 
@@ -46,7 +46,7 @@ describe('addressLinesSchemas', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        property: ['Premises must be 50 characters or less'],
+        property: ['Building name must be 50 characters or less'],
       })
     })
 
@@ -58,7 +58,7 @@ describe('addressLinesSchemas', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        street: ['Street must be 160 characters or less'],
+        street: ['Street number and name must be 160 characters or less'],
       })
     })
 
@@ -70,7 +70,7 @@ describe('addressLinesSchemas', () => {
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        area: ['Locality must be 70 characters or less'],
+        area: ['District or locality must be 70 characters or less'],
       })
     })
 
