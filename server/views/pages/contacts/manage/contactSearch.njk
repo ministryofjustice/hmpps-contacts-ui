@@ -87,7 +87,7 @@
         </div>
       </div>
 
-      <div class="moj-filter-layout">
+      <div class="moj-filter-layout contact-search-filter">
         {% if lastName %}
           <form class="moj-filter-layout__filter" method='POST'>
             <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
@@ -95,13 +95,16 @@
               heading: {
                 text: "Filter"
               },
+              submit:{
+                text: "Apply filter"
+              },
               selectedFilters: {
                 heading: {
-                  text: "Selected filters"
+                  text: "Selected filter"
                 },
                 clearLink: {
                   href: "?clear=filter",
-                  text: "Clear filters"
+                  text: "Clear filter"
                 },
                 categories: [
                   {
@@ -138,15 +141,14 @@
           {% endif %}
 
           {% if results.content.length %}
-            {{ simplePagination(paginationParams)  }}
+            <div id="pagination" class="contact-search-pagination">{{ simplePagination(paginationParams)  }}</div>
           {% endif %}
-
           {% if results.content.length %}
             {% set contactRows = [] %}
             {% for contact in results.content %}
               {% set contactRows = (contactRows.push([
                 {
-                  html: ((contact.lastName + ", " + contact.firstName) | capitaliseName) + '<br/><span class="govuk-hint">' + contact.id + '</span>'
+                  html: (contact | formatNameLastNameFirst) + '<br/><span class="govuk-hint">' + contact.id + '</span>'
                 },
                 {
                   html: contact | formatDob
@@ -186,7 +188,7 @@
           {% else %}
             {% if dobError %}
               <div class="govuk-body govuk-!-margin-bottom-6">
-                <p><strong>There is a problem with the date of birth filter</strong></p>
+                <p><strong>There is a problem with the date of birth filter.</strong></p>
                 <p>You can either:</p>
                 <ul class="govuk-list govuk-list--bullet">
                   <li>correct the problem and apply the filter again</li>
@@ -198,7 +200,7 @@
             {% else %}
               <div class="govuk-body govuk-!-margin-bottom-6">
                 <p><strong>No contact records match your search.</strong></p>
-                <p>You may:</p>
+                <p>You can:</p>
                 <ul class="govuk-list govuk-list--bullet">
                   <li>try searching again</li>
                   <li><a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/add/mode/NEW/{{ journey.id }}" class="govuk-body govuk-link govuk-link--no-visited-state">add a new contact</a> if you cannot find the person on the system</li>
@@ -209,7 +211,7 @@
           {% endif %}
 
           {% if results.content.length %}
-            {{ simplePagination(paginationParams)  }}
+            <div class="contact-search-pagination">{{ simplePagination(paginationParams) }}</div>
           {% endif %}
         </div>
     </div>

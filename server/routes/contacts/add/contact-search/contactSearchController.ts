@@ -34,17 +34,17 @@ export default class ContactSearchController implements PageHandler {
 
       if (clear === 'filter') {
         delete journey.searchContact.dateOfBirth
-        return res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/search/${journeyId}`)
+        return res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/search/${journeyId}#`)
       }
       if (sort) {
         journey.searchContact.sort = sort
         journey.searchContact.page = 1
-        return res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/search/${journeyId}`)
+        return res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/search/${journeyId}#pagination`)
       }
       if (page) {
         const pageNumber = Number(page)
         journey.searchContact.page = Number.isNaN(pageNumber) ? 1 : pageNumber
-        return res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/search/${journeyId}`)
+        return res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/search/${journeyId}#pagination`)
       }
     }
 
@@ -122,7 +122,7 @@ export default class ContactSearchController implements PageHandler {
       journey.searchContact.page = 1
       delete journey.searchContact.sort
     }
-    res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/search/${journeyId}`)
+    res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/search/${journeyId}#`)
   }
 
   private namesAreValid(contact: Partial<ContactNames>): boolean {

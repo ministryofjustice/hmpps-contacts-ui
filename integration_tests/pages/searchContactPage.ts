@@ -40,7 +40,7 @@ export default class SearchContactPage extends Page {
   }
 
   clickFilterButton() {
-    cy.findByRole('button', { name: 'Apply filters' }).click()
+    cy.findByRole('button', { name: 'Apply filter' }).click()
   }
 
   verifyShowsNameAs(expected: string): SearchContactPage {
