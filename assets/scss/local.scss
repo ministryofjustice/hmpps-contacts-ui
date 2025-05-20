@@ -152,3 +152,18 @@ div.moj-action-bar__filter::after { content: none !important; }
 .delete-employer-no-wrap {
   min-width: 160px
 }
+
+.contact-search-filter {
+  .moj-filter__tag {
+    padding-left: 10px;
+  }
+
+  .moj-filter__tag::after {
+    margin-left: 15px;
+  }
+}
+
+// prevent overflow of mojFilter from hiding the pagination
+.contact-search-pagination {
+  margin-left: 4px;
+}

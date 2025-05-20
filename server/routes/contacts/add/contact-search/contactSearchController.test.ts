@@ -148,7 +148,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .type('form')
       .send({ lastName: 'last', middleNames: '', firstName: '' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
 
     expect(session.addContactJourneys![journeyId]!.searchContact).toStrictEqual({
       contact: {
@@ -166,7 +166,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .type('form')
       .send({ lastName: '', middleNames: 'middle', firstName: 'first' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
 
     expect(session.addContactJourneys![journeyId]!.searchContact).toStrictEqual({
       contact: {
@@ -201,7 +201,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .type('form')
       .send(form)
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
 
     expect(session.addContactJourneys![journeyId]!.searchContact).toStrictEqual({
       contact: expectedContact,
@@ -218,7 +218,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .type('form')
       .send({ day: '01', month: '12', year: '1999' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
 
     expect(session.addContactJourneys![journeyId]!.searchContact!.dateOfBirth).toStrictEqual({
       day: 1,
@@ -235,7 +235,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .type('form')
       .send({ day: '01', month: '12', year: '1999' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
 
     expect(session.addContactJourneys![journeyId]!.searchContact!.dateOfBirth).toBeUndefined()
   })
