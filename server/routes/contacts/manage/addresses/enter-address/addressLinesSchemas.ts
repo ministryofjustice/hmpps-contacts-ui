@@ -2,10 +2,10 @@ import { z } from 'zod'
 import { createSchema } from '../../../../../middleware/validationMiddleware'
 
 const COUNTRY_REQUIRED_MESSAGE = 'Select a country'
-const FLAT_TOO_LONG_ERROR_MSG = 'Flat must be 30 characters or less'
-const PREMISES_TOO_LONG_ERROR_MSG = 'Premises must be 50 characters or less'
-const STREET_TOO_LONG_ERROR_MSG = 'Street must be 160 characters or less'
-const LOCALITY_TOO_LONG_ERROR_MSG = 'Locality must be 70 characters or less'
+const FLAT_TOO_LONG_ERROR_MSG = 'Flat or building unit must be 30 characters or less'
+const PREMISES_TOO_LONG_ERROR_MSG = 'Building name must be 50 characters or less'
+const STREET_TOO_LONG_ERROR_MSG = 'Street number and name must be 160 characters or less'
+const LOCALITY_TOO_LONG_ERROR_MSG = 'District or locality must be 70 characters or less'
 const POSTCODE_TOO_LONG_ERROR_MSG = 'Postcode must be 12 characters or less'
 
 export const addressLinesSchema = createSchema({
