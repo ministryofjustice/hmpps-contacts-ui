@@ -41,7 +41,6 @@ export default class SuccessfullyAddedRestrictionController implements PageHandl
       navigation: {
         breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'],
       },
-      caption: 'Manage contact restrictions',
     }
     res.render('pages/contacts/restrictions/success', view)
   }

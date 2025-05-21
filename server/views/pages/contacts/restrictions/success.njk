@@ -14,7 +14,6 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-<span class="govuk-caption-l">{{ caption }}</span>
  <div class="govuk-grid-row">
         {% set prisonerNameForPanel = '<div><strong>Prisoner: </strong><span data-qa="prisoner-name">' + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) + '</span></div>' if showPrisonerNameInSuccessPanel %}
         <div class="govuk-grid-column-two-thirds">
@@ -23,12 +22,12 @@
                 attributes: {"data-qa": "success-message"},
                 html: (
                      prisonerNameForPanel +
-                    '<div><strong>Contact: </strong><span data-qa="contact-name">' + journey.names | formatNameFirstNameFirst(excludeMiddleNames = true) + '</span></div>'
+                    '<div><strong>Contact: </strong><span data-qa="contact-name">' + journey.names | formatNameFirstNameFirst + '</span></div>'
                 )
             }) }}
             <div>
                 <a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/manage/{{ contactId }}/relationship/{{ prisonerContactId }}" class="govuk-body govuk-link--no-visited-state" data-qa="go-to-contact-info-link">
-                    View {{ journey.names | formatNameFirstNameFirst(excludeMiddleNames = true) }}’s contact information
+                    View {{ journey.names | formatNameFirstNameFirst }}’s contact information
                 </a>
             </div>
             <div class="govuk-!-margin-top-4">

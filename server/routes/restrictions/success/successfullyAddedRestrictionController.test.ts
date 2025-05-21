@@ -64,7 +64,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     expect($('[data-qa=go-to-contacts-list-link]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/list',
     )
-    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Manage contact restrictions')
+    expect($('.govuk-caption-l')).toHaveLength(0)
     expect($('a:contains("Back")').text()).toBeFalsy()
   })
 
@@ -72,7 +72,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     // Given
     const restrictionClass: RestrictionClass = 'CONTACT_GLOBAL'
     const message: string = 'New global restriction recorded'
-    const contactDetails = TestData.contact()
+    const contactDetails = TestData.contact({firstName: 'First', middleNames: 'Middle Names', lastName: 'Last'})
     contactsService.getContactName.mockResolvedValue(contactDetails)
 
     // When
@@ -85,7 +85,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     expect($('title').text()).toStrictEqual('New global restriction recorded - Manage contact restrictions - DPS')
     expect($('.govuk-panel__title').text().trim()).toStrictEqual(message)
     expect($('[data-qa=prisoner-name]')).toHaveLength(0)
-    expect($('[data-qa=contact-name]').text().trim()).toContain('Jones Mason')
+    expect($('[data-qa=contact-name]').text().trim()).toContain('First Middle Names Last')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(1)
     expect($('[data-qa=breadcrumbs] a').eq(0).attr('href')).toStrictEqual('http://localhost:3001')
     expect($('[data-qa=breadcrumbs] a').eq(1).attr('href')).toStrictEqual('http://localhost:3001/prisoner/A1234BC')
@@ -96,7 +96,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     expect($('[data-qa=go-to-contacts-list-link]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/list',
     )
-    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Manage contact restrictions')
+    expect($('.govuk-caption-l')).toHaveLength(0)
     expect($('a:contains("Back")').text()).toBeFalsy()
   })
 
