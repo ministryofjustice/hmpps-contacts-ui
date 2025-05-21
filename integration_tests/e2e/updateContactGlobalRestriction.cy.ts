@@ -58,7 +58,7 @@ context('Update Contact Global Restriction', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickRestrictionsTab('1')
       .verifyOnRestrictionsTab()
-      .clickLinkTo('Add or update restrictions', EditRestrictionsPage, 'First Middle Names Last')
+      .clickLinkTo('Add or update restrictions', EditRestrictionsPage, 'First Middle Names Last', true)
       .clickLink('Change this Banned global restriction')
   })
 
@@ -166,7 +166,7 @@ context('Update Contact Global Restriction', () => {
 
   it('Back link goes to manage contact', () => {
     Page.verifyOnPage(EnterRestrictionPage, enterPageTitle) //
-      .backTo(EditRestrictionsPage, 'First Middle Names Last')
+      .backTo(EditRestrictionsPage, 'First Middle Names Last', true)
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 

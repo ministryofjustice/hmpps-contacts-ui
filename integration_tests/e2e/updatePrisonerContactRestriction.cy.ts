@@ -57,7 +57,7 @@ context('Update Prisoner Contact Restriction', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickRestrictionsTab('1')
       .verifyOnRestrictionsTab()
-      .clickLinkTo('Add or update restrictions', EditRestrictionsPage, 'First Middle Names Last')
+      .clickLinkTo('Add or update restrictions', EditRestrictionsPage, 'First Middle Names Last', true)
       .clickLink('Change this Banned relationship restriction')
   })
 
@@ -170,7 +170,7 @@ context('Update Prisoner Contact Restriction', () => {
 
   it('Back link goes to manage contact', () => {
     Page.verifyOnPage(EnterRestrictionPage, enterPageTitle) //
-      .backTo(EditRestrictionsPage, 'First Middle Names Last')
+      .backTo(EditRestrictionsPage, 'First Middle Names Last', true)
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 

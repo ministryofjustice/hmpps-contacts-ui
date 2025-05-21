@@ -68,7 +68,7 @@ context('Manage contacts restrictions', () => {
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Daniel M. Davis') //
       .clickRestrictionsTab('2')
-      .clickLinkTo('Add or update restrictions', EditRestrictionsPage, 'Daniel M. Davis')
+      .clickLinkTo('Add or update restrictions', EditRestrictionsPage, 'Daniel M. Davis', true)
       .clickButton('Add another relationship restriction')
 
     Page.verifyOnPage(EnterRestrictionPage, 'Add a new relationship restriction')
@@ -90,7 +90,7 @@ context('Manage contacts restrictions', () => {
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Daniel M. Davis') //
       .clickRestrictionsTab('2')
-      .clickLinkTo('Add or update restrictions', EditRestrictionsPage, 'Daniel M. Davis')
+      .clickLinkTo('Add or update restrictions', EditRestrictionsPage, 'Daniel M. Davis', true)
       .clickButton('Add another global restriction')
 
     Page.verifyOnPage(EnterRestrictionPage, 'Add a new global restriction for Daniel M. Davis')

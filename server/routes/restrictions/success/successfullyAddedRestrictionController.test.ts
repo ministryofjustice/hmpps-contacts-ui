@@ -72,7 +72,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     // Given
     const restrictionClass: RestrictionClass = 'CONTACT_GLOBAL'
     const message: string = 'New global restriction recorded'
-    const contactDetails = TestData.contact({firstName: 'First', middleNames: 'Middle Names', lastName: 'Last'})
+    const contactDetails = TestData.contact({ firstName: 'First', middleNames: 'Middle Names', lastName: 'Last' })
     contactsService.getContactName.mockResolvedValue(contactDetails)
 
     // When

@@ -42,7 +42,13 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-r
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(
       TestData.prisoner({ firstName: 'Incarcerated', lastName: 'Individual' }),
     )
-    contactsService.getContact.mockResolvedValue(TestData.contact())
+    contactsService.getContact.mockResolvedValue(
+      TestData.contact({
+        firstName: 'First',
+        lastName: 'Last',
+        middleNames: 'Middle Names',
+      }),
+    )
     contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
     restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({
       prisonerContactRestrictions: [],
@@ -67,13 +73,28 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-r
     expect(contactsService.getContact).toHaveBeenCalledWith(1, authorisingUser)
   })
 
-  it('should have correct navigation', async () => {
+  it.each([
+    [
+      'Add restrictions for First Middle Names Last',
+      { prisonerContactRestrictions: [], contactGlobalRestrictions: [] },
+    ],
+    [
+      'Add or update restrictions for First Middle Names Last',
+      { prisonerContactRestrictions: [TestData.getPrisonerContactRestrictionDetails()], contactGlobalRestrictions: [] },
+    ],
+    [
+      'Add or update restrictions for First Middle Names Last',
+      { prisonerContactRestrictions: [], contactGlobalRestrictions: [TestData.getContactRestrictionDetails()] },
+    ],
+  ])('should have correct navigation (%s, %j)', async (expectedTitle, restrictions) => {
+    restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue(restrictions)
+
     const response = await request(app).get(
       `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-restrictions`,
     )
     const $ = cheerio.load(response.text)
     expect($('title').text()).toStrictEqual('Add or update restrictions for a contact linked to a prisoner - DPS')
-    expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('Add or update restrictions for Jones Mason')
+    expect($('.govuk-heading-l').first().text().trim()).toStrictEqual(expectedTitle)
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Manage contacts')
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
