@@ -48,7 +48,7 @@ context('Create Contact Global Restriction', () => {
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .clickRestrictionsTab('0')
       .verifyOnRestrictionsTab()
-      .clickLinkTo('Add restrictions', EditRestrictionsPage, 'First Middle Names Last')
+      .clickLinkTo('Add restrictions', EditRestrictionsPage, 'First Middle Names Last', false)
       .clickButton('Add global restriction')
   })
 
@@ -242,7 +242,7 @@ context('Create Contact Global Restriction', () => {
       .enterStartDate('28/02/2024')
       .clickButtonTo('Continue', CreateRestrictionCheckYourAnswersPage, 'CONTACT_GLOBAL')
       .clickLinkTo('Back', EnterRestrictionPage, enterPageTitle)
-      .clickLinkTo('Back', EditRestrictionsPage, 'First Middle Names Last')
+      .clickLinkTo('Back', EditRestrictionsPage, 'First Middle Names Last', false)
       .clickLinkTo('Back to contact record', ManageContactDetailsPage, 'First Middle Names Last')
   })
 

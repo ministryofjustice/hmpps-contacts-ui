@@ -1,7 +1,7 @@
 import Page from './page'
 
 export default class EditRestrictionsPage extends Page {
-  constructor(name: string) {
-    super(`Add or update restrictions for ${name}`)
+  constructor(name: string, hasAnyRestrictions: boolean) {
+    super(hasAnyRestrictions ? `Add or update restrictions for ${name}` : `Add restrictions for ${name}`)
   }
 }
