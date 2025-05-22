@@ -98,8 +98,11 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect($('[data-qa=breadcrumbs]')).toHaveLength(1)
       const breadcrumbLinks = $('[data-qa=breadcrumbs] a')
       expect(breadcrumbLinks.eq(0).attr('href')).toStrictEqual('http://localhost:3001')
+      expect(breadcrumbLinks.eq(0).text().trim()).toStrictEqual('Digital Prison Services')
       expect(breadcrumbLinks.eq(1).attr('href')).toStrictEqual('http://localhost:3001/prisoner/A1234BC')
+      expect(breadcrumbLinks.eq(1).text().trim()).toStrictEqual('Smith, John')
       expect(breadcrumbLinks.eq(2).attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/list')
+      expect(breadcrumbLinks.eq(2).text().trim()).toStrictEqual('Contacts')
 
       expect($('[data-qa=cancel-button]')).toHaveLength(0)
       expect($('[data-qa=back-link]')).toHaveLength(0)

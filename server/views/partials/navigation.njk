@@ -15,7 +15,7 @@
         {% elseif breadcrumb === 'DPS_PROFILE' %}
           {% set breadcrumbs = (breadcrumbs.push(
             {
-              text: prisonerDetails | formatNameFirstNameFirst,
+              text: prisonerDetails | formatNameLastNameFirst(excludeMiddleNames = true),
               href: digitalPrisonServicesUrl + "/prisoner/" + prisonerDetails.prisonerNumber
             }
           ), breadcrumbs) %}
