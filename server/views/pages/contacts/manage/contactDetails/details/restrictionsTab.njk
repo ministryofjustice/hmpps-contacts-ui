@@ -18,19 +18,22 @@
     </div>
   </div>
 </div>
+<div class="govuk-!-padding-bottom-6">
+  {{ restrictionsTable( {
+    restrictionClass: 'PRISONER_CONTACT',
+    restrictions: prisonerContactRestrictions,
+    contact: contact,
+    prisonerDetails: prisonerDetails,
+    showActions: false
+  } ) }}
+</div>
 
-{{ restrictionsTable( {
-  restrictionClass: 'PRISONER_CONTACT',
-  restrictions: prisonerContactRestrictions,
-  contact: contact,
-  prisonerDetails: prisonerDetails,
-  showActions: false
-} ) }}
-
-{{ restrictionsTable( {
-  restrictionClass: 'CONTACT_GLOBAL',
-  restrictions: contactGlobalRestrictions,
-  contact: contact,
-  prisonerDetails: prisonerDetails,
-  showActions: false
-} ) }}
+<div>
+  {{ restrictionsTable( {
+    restrictionClass: 'CONTACT_GLOBAL',
+    restrictions: contactGlobalRestrictions,
+    contact: contact,
+    prisonerDetails: prisonerDetails,
+    showActions: false
+  } ) }}
+</div>
