@@ -286,18 +286,16 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/
 
 describe(`POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/phone/create/:journeyId`, () => {
   it('should update journey data and pass to next page', async () => {
-    const form = {
-      save: '',
-      phones: [
-        { type: 'MOB', phoneNumber: '123456789', extension: '000' },
-        { type: 'HOME', phoneNumber: '987654321', extension: undefined },
-      ],
-    }
-
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/addresses/new/phone/create/${journeyId}`)
       .type('form')
-      .send(form)
+      .send('save=')
+      .send('phones[0][type]=MOB')
+      .send('phones[0][phoneNumber]=123456789')
+      .send('phones[0][extension]=000')
+      .send('phones[1][type]=HOME')
+      .send('phones[1][phoneNumber]=987654321')
+      .send('phones[1][extension]=')
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/addresses/new/comments/${journeyId}`)
 
@@ -308,18 +306,16 @@ describe(`POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex
   })
 
   it('should update journey data and bounce back', async () => {
-    const form = {
-      save: '',
-      phones: [
-        { type: 'MOB', phoneNumber: '123456789', extension: '000' },
-        { type: 'HOME', phoneNumber: '987654321', extension: undefined },
-      ],
-    }
-
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/addresses/1/phone/create/${journeyId}`)
       .type('form')
-      .send(form)
+      .send('save=')
+      .send('phones[0][type]=MOB')
+      .send('phones[0][phoneNumber]=123456789')
+      .send('phones[0][extension]=000')
+      .send('phones[1][type]=HOME')
+      .send('phones[1][phoneNumber]=987654321')
+      .send('phones[1][extension]=')
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/addresses/${journeyId}`)
 
@@ -330,18 +326,16 @@ describe(`POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex
   })
 
   it('should pass to next page with all blank inputs', async () => {
-    const form = {
-      save: '',
-      phones: [
-        { type: '', phoneNumber: '', extension: '' },
-        { type: '', phoneNumber: '', extension: '' },
-      ],
-    }
-
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/addresses/new/phone/create/${journeyId}`)
       .type('form')
-      .send(form)
+      .send('save=')
+      .send('phones[0][type]=')
+      .send('phones[0][phoneNumber]=')
+      .send('phones[0][extension]=')
+      .send('phones[1][type]=')
+      .send('phones[1][phoneNumber]=')
+      .send('phones[1][extension]=')
       .expect(302)
 
     expect(session.addContactJourneys![journeyId]!.newAddress!.phoneNumbers).toBeUndefined()
@@ -360,15 +354,13 @@ describe(`POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex
 
   describe('should work without javascript enabled', () => {
     it('should return to input page without validating if we are adding a phone number', async () => {
-      const form = {
-        add: '',
-        phones: [{ type: 'MOB', phoneNumber: 'a123456789', extension: '000' }],
-      }
-
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/create/addresses/new/phone/create/${journeyId}`)
         .type('form')
-        .send(form)
+        .send('add=')
+        .send('phones[0][type]=MOB')
+        .send('phones[0][phoneNumber]=a123456789')
+        .send('phones[0][extension]=000')
         .expect(302)
         .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/addresses/new/phone/create/${journeyId}`)
       expect(flashProvider).toHaveBeenCalledWith(
@@ -385,18 +377,16 @@ describe(`POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex
     })
 
     it('should return to input page without validating if we are removing a phone number', async () => {
-      const form = {
-        remove: '1',
-        phones: [
-          { type: 'MOB', phoneNumber: 'a123456789', extension: '000' },
-          { type: 'HOME', phoneNumber: 'b987654321', extension: 'b'.repeat(100) },
-        ],
-      }
-
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/create/addresses/new/phone/create/${journeyId}`)
         .type('form')
-        .send(form)
+        .send('remove=1')
+        .send('phones[0][type]=MOB')
+        .send('phones[0][phoneNumber]=a123456789')
+        .send('phones[0][extension]=000')
+        .send('phones[1][type]=HOME')
+        .send('phones[1][phoneNumber]=b987654321')
+        .send(`phones[1][extension]=${'b'.repeat(100)}`)
         .expect(302)
         .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/addresses/new/phone/create/${journeyId}`)
       expect(flashProvider).toHaveBeenCalledWith(
@@ -410,14 +400,12 @@ describe(`POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex
     })
 
     it('should return to input page without validating even if action is not save, add or remove', async () => {
-      const form = {
-        phones: [{ type: 'MOB', phoneNumber: 'a123456789', extension: '000' }],
-      }
-
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/create/addresses/new/phone/create/${journeyId}`)
         .type('form')
-        .send(form)
+        .send('phones[0][type]=MOB')
+        .send('phones[0][phoneNumber]=a123456789')
+        .send('phones[0][extension]=000')
         .expect(302)
         .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/addresses/new/phone/create/${journeyId}`)
       expect(flashProvider).toHaveBeenCalledWith(
@@ -436,17 +424,16 @@ describe(`POST /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex
     [authorisingUser, 302],
   ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
     currentUser = user
-    const form = {
-      save: '',
-      phones: [
-        { type: '', phoneNumber: '', extension: '' },
-        { type: '', phoneNumber: '', extension: '' },
-      ],
-    }
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/addresses/new/phone/create/${journeyId}`)
       .type('form')
-      .send(form)
+      .send('save=')
+      .send('phones[0][type]=')
+      .send('phones[0][phoneNumber]=')
+      .send('phones[0][extension]=')
+      .send('phones[1][type]=')
+      .send('phones[1][phoneNumber]=')
+      .send('phones[1][extension]=')
       .expect(expectedStatus)
   })
 })

@@ -222,13 +222,13 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/add-phone-numbers/:jour
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/add-phone-numbers/${journeyId}`)
       .type('form')
-      .send({
-        save: '',
-        phones: [
-          { type: 'MOB', phoneNumber: '999' },
-          { type: 'HOME', phoneNumber: '015234879', extension: '000' },
-        ],
-      })
+      .send('save=')
+      .send('phones[0][type]=MOB')
+      .send('phones[0][phoneNumber]=999')
+      .send('phones[0][extension]=')
+      .send('phones[1][type]=HOME')
+      .send('phones[1][phoneNumber]=015234879')
+      .send('phones[1][extension]=000')
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`)
 
@@ -249,13 +249,13 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/add-phone-numbers/:jour
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/add-phone-numbers/${journeyId}`)
       .type('form')
-      .send({
-        save: '',
-        phones: [
-          { type: '', phoneNumber: '', extension: '' },
-          { type: '', phoneNumber: '', extension: '' },
-        ],
-      })
+      .send('save=')
+      .send('phones[0][type]=')
+      .send('phones[0][phoneNumber]=')
+      .send('phones[0][extension]=')
+      .send('phones[1][type]=')
+      .send('phones[1][phoneNumber]=')
+      .send('phones[1][extension]=')
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`)
 
@@ -271,13 +271,13 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/add-phone-numbers/:jour
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/add-phone-numbers/${journeyId}`)
       .type('form')
-      .send({
-        save: '',
-        phones: [
-          { type: 'MOB', phoneNumber: '999' },
-          { type: 'HOME', phoneNumber: '015234879', extension: '000' },
-        ],
-      })
+      .send('save=')
+      .send('phones[0][type]=MOB')
+      .send('phones[0][phoneNumber]=999')
+      .send('phones[0][extension]=')
+      .send('phones[1][type]=HOME')
+      .send('phones[1][phoneNumber]=015234879')
+      .send('phones[1][extension]=000')
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
 
@@ -293,7 +293,10 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/add-phone-numbers/:jour
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/add-phone-numbers/${journeyId}`)
       .type('form')
-      .send({ save: '', phones: [{ type: '', phoneNumber: '0123', extension: '' }] })
+      .send('save=')
+      .send('phones[0][type]=')
+      .send('phones[0][phoneNumber]=999')
+      .send('phones[0][extension]=')
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/add-phone-numbers/${journeyId}#`)
   })
@@ -316,27 +319,25 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/add-phone-numbers/:jour
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/add-phone-numbers/${journeyId}`)
       .type('form')
-      .send({
-        save: '',
-        phones: [
-          { type: 'MOB', phoneNumber: '999' },
-          { type: 'HOME', phoneNumber: '015234879', extension: '000' },
-        ],
-      })
+      .send('save=')
+      .send('phones[0][type]=MOB')
+      .send('phones[0][phoneNumber]=999')
+      .send('phones[0][extension]=')
+      .send('phones[1][type]=HOME')
+      .send('phones[1][phoneNumber]=015234879')
+      .send('phones[1][extension]=000')
       .expect(expectedStatus)
   })
 
   describe('should work without javascript enabled', () => {
     it('should return to input page without validating if we are adding a phone number', async () => {
-      const form = {
-        add: '',
-        phones: [{ type: 'MOB', phoneNumber: 'a123456789', extension: '000' }],
-      }
-
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/create/add-phone-numbers/${journeyId}`)
         .type('form')
-        .send(form)
+        .send('add=')
+        .send('phones[0][type]=MOB')
+        .send('phones[0][phoneNumber]=a123456789')
+        .send('phones[0][extension]=000')
         .expect(302)
         .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/add-phone-numbers/${journeyId}`)
 
@@ -355,18 +356,16 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/add-phone-numbers/:jour
     })
 
     it('should return to input page without validating if we are removing a phone number', async () => {
-      const form = {
-        remove: '1',
-        phones: [
-          { type: 'MOB', phoneNumber: 'a123456789', extension: '000' },
-          { type: 'HOME', phoneNumber: 'b987654321', extension: 'b'.repeat(100) },
-        ],
-      }
-
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/create/add-phone-numbers/${journeyId}`)
         .type('form')
-        .send(form)
+        .send('remove=1')
+        .send('phones[0][type]=MOB')
+        .send('phones[0][phoneNumber]=a123456789')
+        .send('phones[0][extension]=000')
+        .send('phones[1][type]=HOME')
+        .send('phones[1][phoneNumber]=b987654321')
+        .send(`phones[1][extension]=${'b'.repeat(100)}`)
         .expect(302)
         .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/add-phone-numbers/${journeyId}`)
 
@@ -382,14 +381,12 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/add-phone-numbers/:jour
     })
 
     it('should return to input page without validating even if action is not save, add or remove', async () => {
-      const form = {
-        phones: [{ type: 'MOB', phoneNumber: 'a123456789', extension: '000' }],
-      }
-
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/create/add-phone-numbers/${journeyId}`)
         .type('form')
-        .send(form)
+        .send('phones[0][type]=MOB')
+        .send('phones[0][phoneNumber]=a123456789')
+        .send('phones[0][extension]=000')
         .expect(302)
         .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/add-phone-numbers/${journeyId}`)
 
