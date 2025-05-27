@@ -37,7 +37,7 @@
         No restrictions
       {% elseif restrictionSummary.totalActive > 0 %}
         {% for restriction in restrictionSummary.active | sort(attribute = 'restrictionTypeDescription') %}
-          {{ govukTag({ text: restriction.restrictionTypeDescription, classes: 'govuk-!-margin-1 ' + restriction.restrictionType | restrictionTagColour }) }}
+          {{ govukTag({ text: restriction.restrictionTypeDescription, classes: 'govuk-!-margin-top-1 govuk-!-margin-bottom-1 ' + restriction.restrictionType | restrictionTagColour }) }}
           {% if not loop.last %}<br/>{% endif %}
         {% endfor %}
       {% else %}

@@ -139,13 +139,27 @@ div.moj-action-bar__filter::after { content: none !important; }
   }
 }
 
-// make the name and person id as small as possible and ensure DOB doesn't wrap but let everything else fit to content.
-#prisoner-contact-list tr{
-  th:first-child {
-    width: 5%;
-  }
-  th:nth-child(2) {
-    min-width: 130px;
+#prisoner-contact-list {
+  tr {
+    // make the name and person id as small as possible
+    th:first-child {
+      width: 5%;
+    }
+
+    // and ensure DOB doesn't wrap
+    th:nth-child(2) {
+      min-width: 130px;
+    }
+
+    // and make the restrictions column no wider than non-contact visit tag
+    th:nth-child(4) {
+      max-width: 215px;
+    }
+
+    // and make the restrictions column no wider than non-contact visit tag
+    th:nth-child(6) {
+      max-width: 185px;
+    }
   }
 }
 
