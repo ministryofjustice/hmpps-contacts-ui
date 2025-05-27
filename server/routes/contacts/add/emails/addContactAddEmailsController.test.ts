@@ -179,10 +179,9 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/emails/:journeyId', () 
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/emails/${journeyId}`)
       .type('form')
-      .send({
-        save: '',
-        emails: [{ emailAddress: 'a@b.cd' }, { emailAddress: 'z@y.xx' }],
-      })
+      .send('save=')
+      .send('emails[0][emailAddress]=a@b.cd')
+      .send('emails[1][emailAddress]=z@y.xx')
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`)
 
@@ -202,10 +201,9 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/emails/:journeyId', () 
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/emails/${journeyId}`)
       .type('form')
-      .send({
-        save: '',
-        emails: [{ emailAddress: '' }, { emailAddress: '' }],
-      })
+      .send('save=')
+      .send('emails[0][emailAddress]=')
+      .send('emails[1][emailAddress]=')
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`)
 
@@ -221,10 +219,8 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/emails/:journeyId', () 
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/emails/${journeyId}`)
       .type('form')
-      .send({
-        save: '',
-        emails: [{ emailAddress: 'a@b.cd' }],
-      })
+      .send('save=')
+      .send('emails[0][emailAddress]=a@b.cd')
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
 
@@ -236,7 +232,9 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/emails/:journeyId', () 
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/emails/${journeyId}`)
       .type('form')
-      .send({ save: '', emails: [{ emailAddress: '' }, { emailAddress: '123' }] })
+      .send('save=')
+      .send('emails[0][emailAddress]=test@example.com')
+      .send('emails[1][emailAddress]=123')
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/emails/${journeyId}#`)
   })
@@ -259,24 +257,18 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/emails/:journeyId', () 
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/emails/${journeyId}`)
       .type('form')
-      .send({
-        save: '',
-        emails: [{ emailAddress: 'a@b.cd' }],
-      })
+      .send('save=')
+      .send('emails[0][emailAddress]=test@example.com')
       .expect(expectedStatus)
   })
 
   describe('should work without javascript enabled', () => {
     it('should return to input page without validating if we are adding an email address', async () => {
-      const form = {
-        add: '',
-        emails: [{ emailAddress: 'a@b.cd' }],
-      }
-
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/create/emails/${journeyId}`)
         .type('form')
-        .send(form)
+        .send('add=')
+        .send('emails[0][emailAddress]=a@b.cd')
         .expect(302)
         .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/emails/${journeyId}`)
 
@@ -292,15 +284,12 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/emails/:journeyId', () 
     })
 
     it('should return to input page without validating if we are removing an email address', async () => {
-      const form = {
-        remove: '1',
-        emails: [{ emailAddress: 'a@b.cd' }, { emailAddress: 'z@y.xx' }],
-      }
-
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/create/emails/${journeyId}`)
         .type('form')
-        .send(form)
+        .send('remove=1')
+        .send('emails[0][emailAddress]=a@b.cd')
+        .send('emails[1][emailAddress]=z@y.xx')
         .expect(302)
         .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/emails/${journeyId}`)
 
@@ -316,14 +305,10 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/emails/:journeyId', () 
     })
 
     it('should return to input page without validating even if action is not save, add or remove', async () => {
-      const form = {
-        emails: [{ emailAddress: '123' }],
-      }
-
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/create/emails/${journeyId}`)
         .type('form')
-        .send(form)
+        .send('emails[0][emailAddress]=123')
         .expect(302)
         .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/emails/${journeyId}`)
 

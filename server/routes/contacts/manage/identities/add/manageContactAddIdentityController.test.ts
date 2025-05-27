@@ -169,20 +169,18 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   it('should create all identity documents and pass to manage contact details page if there are no validation errors and it is a save action', async () => {
     contactsService.createContactIdentities.mockResolvedValue([])
     contactsService.getContactName.mockResolvedValue(TestData.contactName({ middleNames: 'Middle Names' }))
-
-    const form = {
-      save: '',
-      identities: [
-        { identityType: 'DL', identityValue: '123456789', issuingAuthority: '000' },
-        { identityType: 'PASS', identityValue: '987564321', issuingAuthority: '' },
-      ],
-    }
     await request(app)
       .post(
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/create`,
       )
       .type('form')
-      .send(form)
+      .send('save=')
+      .send('identities[0][identityType]=DL')
+      .send('identities[0][identityValue]=123456789')
+      .send('identities[0][issuingAuthority]=000')
+      .send('identities[1][identityType]=PASS')
+      .send('identities[1][identityValue]=987564321')
+      .send('identities[1][issuingAuthority]=')
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
@@ -212,19 +210,18 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     contactsService.createContactIdentities.mockResolvedValue([])
     contactsService.getContactName.mockResolvedValue(TestData.contactName({ middleNames: 'Middle Names' }))
 
-    const form = {
-      save: '',
-      identities: [
-        { identityType: 'DL', identityValue: '123456789', issuingAuthority: '000' },
-        { identityType: 'PASS', identityValue: '987564321', issuingAuthority: '' },
-      ],
-    }
     await request(app)
       .post(
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/create`,
       )
       .type('form')
-      .send(form)
+      .send('save=')
+      .send('identities[0][identityType]=DL')
+      .send('identities[0][identityValue]=123456789')
+      .send('identities[0][issuingAuthority]=000')
+      .send('identities[1][identityType]=PASS')
+      .send('identities[1][identityValue]=987564321')
+      .send('identities[1][issuingAuthority]=')
       .expect(expectedStatus)
   })
 
@@ -251,24 +248,17 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
 
   describe('should work without javascript enabled', () => {
     it('should return to input page without validating if we are adding an identity', async () => {
-      const form = {
-        add: '',
-        identities: [
-          {
-            identityType: 'DL',
-            identityValue: 'VALUE',
-            issuingAuthority:
-              'A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR!',
-          },
-        ],
-      }
-
       await request(app)
         .post(
           `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/create`,
         )
         .type('form')
-        .send(form)
+        .send('add=')
+        .send('identities[0][identityType]=DL')
+        .send('identities[0][identityValue]=VALUE')
+        .send(
+          'identities[0][issuingAuthority]=A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR!',
+        )
         .expect(302)
         .expect(
           'Location',
@@ -294,29 +284,20 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     })
 
     it('should return to input page without validating if we are removing an identity', async () => {
-      const form = {
-        remove: '1',
-        identities: [
-          {
-            identityType: 'DL',
-            identityValue: 'VALUE',
-            issuingAuthority:
-              'A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR!',
-          },
-          {
-            identityType: 'DL',
-            identityValue: 'TO BE REMOVED',
-            issuingAuthority: '',
-          },
-        ],
-      }
-
       await request(app)
         .post(
           `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/create`,
         )
         .type('form')
-        .send(form)
+        .send('remove=1')
+        .send('identities[0][identityType]=DL')
+        .send('identities[0][identityValue]=VALUE')
+        .send(
+          'identities[0][issuingAuthority]=A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR!',
+        )
+        .send('identities[1][identityType]=DL')
+        .send('identities[1][identityValue]=TO BE REMOVED')
+        .send('identities[1][issuingAuthority]=')
         .expect(302)
         .expect(
           'Location',
@@ -341,23 +322,16 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     })
 
     it('should return to input page without validating even if action is not save, add or remove', async () => {
-      const form = {
-        identities: [
-          {
-            identityType: 'DL',
-            identityValue: 'VALUE',
-            issuingAuthority:
-              'A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR!',
-          },
-        ],
-      }
-
       await request(app)
         .post(
           `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/create`,
         )
         .type('form')
-        .send(form)
+        .send('identities[0][identityType]=DL')
+        .send('identities[0][identityValue]=VALUE')
+        .send(
+          'identities[0][issuingAuthority]=A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR!',
+        )
         .expect(302)
         .expect(
           'Location',

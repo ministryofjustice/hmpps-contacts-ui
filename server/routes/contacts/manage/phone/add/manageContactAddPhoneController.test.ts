@@ -2,11 +2,11 @@ import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import {
-  appWithAllRoutes,
-  flashProvider,
-  basicPrisonUser,
   adminUser,
+  appWithAllRoutes,
   authorisingUser,
+  basicPrisonUser,
+  flashProvider,
 } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
@@ -148,18 +148,15 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   it('should create phones and pass to return point if there are no validation errors', async () => {
     contactsService.getContactName.mockResolvedValue(contact)
 
-    const form = {
-      save: '',
-      phones: [
-        { type: 'MOB', phoneNumber: '123456789', extension: '000' },
-        { type: 'HOME', phoneNumber: '987654321', extension: undefined },
-      ],
-    }
-
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/create`)
       .type('form')
-      .send(form)
+      .send('save=')
+      .send('phones[0][type]=MOB')
+      .send('phones[0][phoneNumber]=123456789')
+      .send('phones[0][extension]=000')
+      .send('phones[1][type]=HOME')
+      .send('phones[1][phoneNumber]=987654321')
       .expect(302)
       .expect('Location', '/prisoner/A1234BC/contacts/manage/987654/relationship/456789')
 
@@ -195,29 +192,25 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     currentUser = user
     contactsService.getContactName.mockResolvedValue(contact)
 
-    const form = {
-      save: '',
-      phones: [{ type: 'MOB', phoneNumber: '123456789', extension: '000' }],
-    }
-
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/create`)
       .type('form')
-      .send(form)
+      .send('save=')
+      .send('phones[0][type]=MOB')
+      .send('phones[0][phoneNumber]=123456789')
+      .send('phones[0][extension]=000')
       .expect(expectedStatus)
   })
 
   describe('should work without javascript enabled', () => {
     it('should return to input page without validating if we are adding a phone number', async () => {
-      const form = {
-        add: '',
-        phones: [{ type: 'MOB', phoneNumber: 'a123456789', extension: '000' }],
-      }
-
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/create`)
         .type('form')
-        .send(form)
+        .send('add=')
+        .send('phones[0][type]=MOB')
+        .send('phones[0][phoneNumber]=a123456789')
+        .send('phones[0][extension]=000')
         .expect(302)
         .expect(
           'Location',
@@ -239,18 +232,15 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     })
 
     it('should return to input page without validating if we are removing a phone number', async () => {
-      const form = {
-        remove: '1',
-        phones: [
-          { type: 'MOB', phoneNumber: 'a123456789', extension: '000' },
-          { type: 'HOME', phoneNumber: 'b987654321', extension: 'b'.repeat(100) },
-        ],
-      }
-
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/create`)
         .type('form')
-        .send(form)
+        .send('remove=1')
+        .send('phones[0][type]=MOB')
+        .send('phones[0][phoneNumber]=a123456789')
+        .send('phones[0][extension]=000')
+        .send('phones[1][type]=HOME')
+        .send('phones[1][phoneNumber]=b987654321')
         .expect(302)
         .expect(
           'Location',
@@ -269,14 +259,12 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     })
 
     it('should return to input page without validating even if action is not save, add or remove', async () => {
-      const form = {
-        phones: [{ type: 'MOB', phoneNumber: 'a123456789', extension: '000' }],
-      }
-
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/phone/create`)
         .type('form')
-        .send(form)
+        .send('phones[0][type]=MOB')
+        .send('phones[0][phoneNumber]=a123456789')
+        .send('phones[0][extension]=000')
         .expect(302)
         .expect(
           'Location',

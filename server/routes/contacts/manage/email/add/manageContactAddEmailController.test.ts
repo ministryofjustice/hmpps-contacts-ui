@@ -154,7 +154,8 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`)
       .type('form')
-      .send({ save: '', emails: [{ emailAddress: 'test@example.com' }] })
+      .send('save=')
+      .send('emails[0][emailAddress]=test@example.com')
       .expect(302)
       .expect('Location', `/prisoner/A1234BC/contacts/manage/987654/relationship/456789`)
 
@@ -178,26 +179,23 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`)
       .type('form')
-      .send({ emails: [{ emailAddress: '' }] })
+      .send('save=')
+      .send('emails[0][emailAddress]=')
       .expect(302)
       .expect(
         'Location',
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create#`,
       )
     expect(contactsService.createContactEmails).not.toHaveBeenCalled()
   })
 
   describe('should work without javascript enabled', () => {
     it('should return to input page without validating if we are adding an email', async () => {
-      const form = {
-        add: '',
-        emails: [{ emailAddress: 'invalidemail' }],
-      }
-
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`)
         .type('form')
-        .send(form)
+        .send('add=')
+        .send('emails[0][emailAddress]=invalidemail')
         .expect(302)
         .expect(
           'Location',
@@ -215,15 +213,12 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     })
 
     it('should return to input page without validating if we are removing an email', async () => {
-      const form = {
-        remove: '1',
-        emails: [{ emailAddress: 'invalidemail' }, { emailAddress: 'removeme@example.com' }],
-      }
-
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`)
         .type('form')
-        .send(form)
+        .send('remove=1')
+        .send('emails[0][emailAddress]=invalidemail')
+        .send('emails[1][emailAddress]=removeme@example.com')
         .expect(302)
         .expect(
           'Location',
@@ -241,14 +236,10 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     })
 
     it('should return to input page without validating even if action is not save, add or remove', async () => {
-      const form = {
-        emails: [{ emailAddress: 'invalidemail' }],
-      }
-
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`)
         .type('form')
-        .send(form)
+        .send('emails[0][emailAddress]=invalidemail')
         .expect(302)
         .expect(
           'Location',
@@ -276,7 +267,8 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`)
       .type('form')
-      .send({ save: '', emails: [{ emailAddress: 'test@example.com' }] })
+      .send('save=')
+      .send('emails[0][emailAddress]=test@example.com')
       .expect(expectedStatus)
   })
 })

@@ -201,17 +201,12 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/identities/:journeyId',
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/identities/${journeyId}`)
       .type('form')
-      .send({
-        save: '',
-        identities: [
-          { identityType: 'DL', identityValue: '0123456789' },
-          {
-            identityType: 'PASS',
-            identityValue: '987654321',
-            issuingAuthority: 'Authority',
-          },
-        ],
-      })
+      .send('save=')
+      .send('identities[0][identityType]=DL')
+      .send('identities[0][identityValue]=0123456789')
+      .send('identities[1][identityType]=PASS')
+      .send('identities[1][identityValue]=987654321')
+      .send('identities[1][issuingAuthority]=Authority')
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`)
 
@@ -235,13 +230,13 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/identities/:journeyId',
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/identities/${journeyId}`)
       .type('form')
-      .send({
-        save: '',
-        identities: [
-          { identityType: '', identityValue: '', issuingAuthority: '' },
-          { identityType: '', identityValue: '', issuingAuthority: '' },
-        ],
-      })
+      .send('save=')
+      .send('identities[0][identityType]=')
+      .send('identities[0][identityValue]=')
+      .send('identities[0][issuingAuthority]=')
+      .send('identities[1][identityType]=')
+      .send('identities[1][identityValue]=')
+      .send('identities[1][issuingAuthority]=')
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`)
 
@@ -257,10 +252,10 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/identities/:journeyId',
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/identities/${journeyId}`)
       .type('form')
-      .send({
-        save: '',
-        identities: [{ identityType: 'DL', identityValue: '0123456789' }],
-      })
+      .send('save=')
+      .send('identities[0][identityType]=DL')
+      .send('identities[0][identityValue]=0123456789')
+      .send('identities[0][issuingAuthority]=')
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
 
@@ -274,7 +269,9 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/identities/:journeyId',
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/identities/${journeyId}`)
       .type('form')
-      .send({ save: '', identities: [{ identityType: '', identityValue: '0123' }] })
+      .send('save=')
+      .send('identities[0][identityType]=')
+      .send('identities[0][identityValue]=0123456789')
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/identities/${journeyId}#`)
   })
@@ -289,16 +286,14 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/identities/:journeyId',
   })
 
   describe('should work without javascript enabled', () => {
-    it('should return to input page without validating if we are adding a phone number', async () => {
-      const form = {
-        add: '',
-        identities: [{ identityType: 'MOB', identityValue: 'a123456789', issuingAuthority: '000' }],
-      }
-
+    it('should return to input page without validating if we are adding an identity doc', async () => {
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/create/identities/${journeyId}`)
         .type('form')
-        .send(form)
+        .send('add=')
+        .send('identities[0][identityType]=DL')
+        .send('identities[0][identityValue]=')
+        .send('identities[0][issuingAuthority]=')
         .expect(302)
         .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/identities/${journeyId}`)
 
@@ -307,7 +302,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/identities/:journeyId',
         'formResponses',
         JSON.stringify({
           identities: [
-            { identityType: 'MOB', identityValue: 'a123456789', issuingAuthority: '000' },
+            { identityType: 'DL', identityValue: '', issuingAuthority: '' },
             { identityType: '', identityValue: '', issuingAuthority: '' },
           ],
           add: '',
@@ -316,19 +311,17 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/identities/:journeyId',
       expect(flashProvider).not.toHaveBeenCalledWith('validationErrors', expect.anything())
     })
 
-    it('should return to input page without validating if we are removing a phone number', async () => {
-      const form = {
-        remove: '1',
-        identities: [
-          { identityType: 'MOB', identityValue: 'a123456789', issuingAuthority: '000' },
-          { identityType: 'HOME', identityValue: 'b987654321', issuingAuthority: 'b'.repeat(100) },
-        ],
-      }
-
+    it('should return to input page without validating if we are removing an identity document', async () => {
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/create/identities/${journeyId}`)
         .type('form')
-        .send(form)
+        .send('remove=1')
+        .send('identities[0][identityType]=DL')
+        .send('identities[0][identityValue]=')
+        .send('identities[0][issuingAuthority]=000')
+        .send('identities[1][identityType]=')
+        .send('identities[1][identityValue]=b987654321')
+        .send('identities[1][issuingAuthority]=')
         .expect(302)
         .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/identities/${journeyId}`)
 
@@ -336,7 +329,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/identities/:journeyId',
       expect(flashProvider).toHaveBeenCalledWith(
         'formResponses',
         JSON.stringify({
-          identities: [{ identityType: 'MOB', identityValue: 'a123456789', issuingAuthority: '000' }],
+          identities: [{ identityType: 'DL', identityValue: '', issuingAuthority: '000' }],
           remove: '1',
         }),
       )
@@ -344,14 +337,12 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/identities/:journeyId',
     })
 
     it('should return to input page without validating even if action is not save, add or remove', async () => {
-      const form = {
-        identities: [{ identityType: 'MOB', identityValue: 'a123456789', issuingAuthority: '000' }],
-      }
-
       await request(app)
         .post(`/prisoner/${prisonerNumber}/contacts/create/identities/${journeyId}`)
         .type('form')
-        .send(form)
+        .send('identities[0][identityType]=DL')
+        .send('identities[0][identityValue]=')
+        .send('identities[0][issuingAuthority]=000')
         .expect(302)
         .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/identities/${journeyId}`)
 
@@ -359,7 +350,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/identities/:journeyId',
       expect(flashProvider).toHaveBeenCalledWith(
         'formResponses',
         JSON.stringify({
-          identities: [{ identityType: 'MOB', identityValue: 'a123456789', issuingAuthority: '000' }],
+          identities: [{ identityType: 'DL', identityValue: '', issuingAuthority: '000' }],
         }),
       )
       expect(flashProvider).not.toHaveBeenCalledWith('validationErrors', expect.anything())
@@ -375,10 +366,9 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/identities/:journeyId',
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/identities/${journeyId}`)
       .type('form')
-      .send({
-        save: '',
-        identities: [{ identityType: 'DL', identityValue: '0123456789' }],
-      })
+      .send('save=')
+      .send('identities[0][identityType]=DL')
+      .send('identities[0][identityValue]=0123456789')
       .expect(expectedStatus)
   })
 })

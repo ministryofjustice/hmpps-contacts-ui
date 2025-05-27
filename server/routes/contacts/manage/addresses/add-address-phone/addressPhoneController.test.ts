@@ -4,11 +4,11 @@ import * as cheerio from 'cheerio'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import {
-  appWithAllRoutes,
-  flashProvider,
-  basicPrisonUser,
   adminUser,
+  appWithAllRoutes,
   authorisingUser,
+  basicPrisonUser,
+  flashProvider,
 } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../../testutils/stubReferenceData'
@@ -213,20 +213,18 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
 describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/phone/:journeyId`, () => {
   it('should update journey data and pass to next page', async () => {
-    const form = {
-      save: '',
-      phones: [
-        { type: 'MOB', phoneNumber: '123456789', extension: '000' },
-        { type: 'HOME', phoneNumber: '987654321', extension: undefined },
-      ],
-    }
-
     await request(app)
       .post(
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/phone/${journeyId}`,
       )
       .type('form')
-      .send(form)
+      .send('save=')
+      .send('phones[0][type]=MOB')
+      .send('phones[0][phoneNumber]=123456789')
+      .send('phones[0][extension]=000')
+      .send('phones[1][type]=HOME')
+      .send('phones[1][phoneNumber]=987654321')
+      .send('phones[1][extension]=')
       .expect(302)
 
     expect(session.addressJourneys![journeyId]!.phoneNumbers).toStrictEqual([
@@ -236,20 +234,18 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   })
 
   it('should pass to next page with all blank inputs', async () => {
-    const form = {
-      save: '',
-      phones: [
-        { type: '', phoneNumber: '', extension: '' },
-        { type: '', phoneNumber: '', extension: '' },
-      ],
-    }
-
     await request(app)
       .post(
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/phone/${journeyId}`,
       )
       .type('form')
-      .send(form)
+      .send('save=')
+      .send('phones[0][type]=')
+      .send('phones[0][phoneNumber]=')
+      .send('phones[0][extension]=')
+      .send('phones[1][type]=')
+      .send('phones[1][phoneNumber]=')
+      .send('phones[1][extension]=')
       .expect(302)
 
     expect(session.addressJourneys![journeyId]!.phoneNumbers).toBeUndefined()
@@ -274,7 +270,10 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
           `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/phone/${journeyId}`,
         )
         .type('form')
-        .send({ save: '', phones: [{ type: '', phoneNumber: '', extension: '' }] })
+        .send('save=')
+        .send('phones[0][type]=')
+        .send('phones[0][phoneNumber]=')
+        .send('phones[0][extension]=')
         .expect(302)
         .expect('Location', expectedRedirect)
     },
@@ -302,36 +301,32 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     [authorisingUser, 302],
   ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
     currentUser = user
-    const form = {
-      save: '',
-      phones: [
-        { type: 'MOB', phoneNumber: '123456789', extension: '000' },
-        { type: 'HOME', phoneNumber: '987654321', extension: undefined },
-      ],
-    }
-
     await request(app)
       .post(
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/phone/${journeyId}`,
       )
       .type('form')
-      .send(form)
+      .send('save=')
+      .send('phones[0][type]=MOB')
+      .send('phones[0][phoneNumber]=123456789')
+      .send('phones[0][extension]=000')
+      .send('phones[1][type]=HOME')
+      .send('phones[1][phoneNumber]=987654321')
+      .send('phones[1][extension]=')
       .expect(expectedStatus)
   })
 
   describe('should work without javascript enabled', () => {
     it('should return to input page without validating if we are adding a phone number', async () => {
-      const form = {
-        add: '',
-        phones: [{ type: 'MOB', phoneNumber: 'a123456789', extension: '000' }],
-      }
-
       await request(app)
         .post(
           `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/phone/${journeyId}`,
         )
         .type('form')
-        .send(form)
+        .send('add=')
+        .send('phones[0][type]=MOB')
+        .send('phones[0][phoneNumber]=a123456789')
+        .send('phones[0][extension]=000')
         .expect(302)
         .expect(
           'Location',
@@ -351,20 +346,18 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     })
 
     it('should return to input page without validating if we are removing a phone number', async () => {
-      const form = {
-        remove: '1',
-        phones: [
-          { type: 'MOB', phoneNumber: 'a123456789', extension: '000' },
-          { type: 'HOME', phoneNumber: 'b987654321', extension: 'b'.repeat(100) },
-        ],
-      }
-
       await request(app)
         .post(
           `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/phone/${journeyId}`,
         )
         .type('form')
-        .send(form)
+        .send('remove=1')
+        .send('phones[0][type]=MOB')
+        .send('phones[0][phoneNumber]=a123456789')
+        .send('phones[0][extension]=000')
+        .send('phones[1][type]=HOME')
+        .send('phones[1][phoneNumber]=b987654321')
+        .send(`phones[1][extension]=${'b'.repeat(100)}`)
         .expect(302)
         .expect(
           'Location',
@@ -381,16 +374,14 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     })
 
     it('should return to input page without validating even if action is not save, add or remove', async () => {
-      const form = {
-        phones: [{ type: 'MOB', phoneNumber: 'a123456789', extension: '000' }],
-      }
-
       await request(app)
         .post(
           `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/phone/${journeyId}`,
         )
         .type('form')
-        .send(form)
+        .send('phones[0][type]=MOB')
+        .send('phones[0][phoneNumber]=a123456789')
+        .send('phones[0][extension]=000')
         .expect(302)
         .expect(
           'Location',
