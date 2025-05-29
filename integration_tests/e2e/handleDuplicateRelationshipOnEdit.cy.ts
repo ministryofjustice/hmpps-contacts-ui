@@ -175,7 +175,7 @@ context('Handle duplicate relationship when editing relationships', () => {
 
     Page.verifyOnPage(HandleDuplicateRelationshipPage, false)
       .selectAction('GO_TO_CONTACT_LIST')
-      .continueTo(ListContactsPage, 'John Smith', false)
+      .continueTo(ListContactsPage, 'John Smith')
   })
 
   it('When changing type and relationship to prisoner can go to prisoner contact', () => {
@@ -207,7 +207,7 @@ context('Handle duplicate relationship when editing relationships', () => {
 
     Page.verifyOnPage(HandleDuplicateRelationshipPage, false)
       .selectAction('GO_TO_CONTACT_LIST')
-      .continueTo(ListContactsPage, 'John Smith', false)
+      .continueTo(ListContactsPage, 'John Smith')
   })
 
   it('When changing type and relationship to prisoner can go to prisoner contact', () => {

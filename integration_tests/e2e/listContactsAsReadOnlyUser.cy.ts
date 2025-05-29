@@ -50,7 +50,7 @@ context('List contacts with a read only set of roles', () => {
 
     cy.signIn({ startUrl: `/prisoner/${prisoner.prisonerNumber}/contacts/list` })
 
-    Page.verifyOnPage(ListContactsPage, 'Test Prisoner', true) //
+    Page.verifyOnPage(ListContactsPage, 'Test Prisoner') //
       .expectReadOnlyNames(['Last, First'])
   })
 })

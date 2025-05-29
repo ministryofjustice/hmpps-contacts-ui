@@ -9,17 +9,13 @@
 {% from "partials/contactDetails/prisonerContactSummaryTable.njk" import prisonerContactSummaryTable %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 
-{% set pageTitle = "View and manage contacts linked to a prisoner - DPS" %}
+{% set pageTitle = "Contacts linked to a prisoner - DPS" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
   <div class="moj-page-header-actions contact-record-banner-bottom">
     <div class="moj-page-header-actions__title govuk-!-width-two-thirds">
-      {% if user | hasPermission('MANAGE_CONTACTS') %}
-        <h1 class="govuk-heading-l">View and manage contacts linked to {{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }}</h1>
-      {% else %}
-        <h1 class="govuk-heading-l">View contacts linked to {{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }}</h1>
-      {% endif %}
+        <h1 class="govuk-heading-l">Contacts linked to {{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }}</h1>
     </div>
     <div class="moj-page-header-actions__actions">
       <div class="moj-button-group moj-button-group--inline">
