@@ -155,7 +155,7 @@ context('Add existing contact should handle duplicate error from server', () => 
   it('Can add an existing contact with only optional fields', () => {
     Page.verifyOnPage(HandleDuplicateRelationshipPage, true)
       .selectAction('GO_TO_CONTACT_LIST')
-      .continueTo(ListContactsPage, 'John Smith', false)
+      .continueTo(ListContactsPage, 'John Smith')
   })
 
   it('Can add an existing contact with only optional fields', () => {

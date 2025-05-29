@@ -94,10 +94,8 @@ describe('listContactsController', () => {
 
         // Then
         const $ = cheerio.load(response.text)
-        expect($('title').text()).toStrictEqual('View and manage contacts linked to a prisoner - DPS')
-        expect($('.govuk-heading-l').first().text().trim()).toStrictEqual(
-          'View and manage contacts linked to John Smith',
-        )
+        expect($('title').text()).toStrictEqual('Contacts linked to a prisoner - DPS')
+        expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('Contacts linked to John Smith')
 
         const breadcrumbLinks = $('[data-qa=breadcrumbs] a')
         expect(breadcrumbLinks).toHaveLength(2)
@@ -129,8 +127,8 @@ describe('listContactsController', () => {
 
       // Then
       const $ = cheerio.load(response.text)
-      expect($('title').text()).toStrictEqual('View and manage contacts linked to a prisoner - DPS')
-      expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('View contacts linked to John Smith')
+      expect($('title').text()).toStrictEqual('Contacts linked to a prisoner - DPS')
+      expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('Contacts linked to John Smith')
 
       const breadcrumbLinks = $('[data-qa=breadcrumbs] a')
       expect(breadcrumbLinks).toHaveLength(2)

@@ -1,8 +1,8 @@
 import Page, { PageElement } from './page'
 
 export default class ListContactsPage extends Page {
-  constructor(prisonerName: string, isReadOnly: boolean) {
-    super(isReadOnly ? `View contacts linked to ${prisonerName}` : `View and manage contacts linked to ${prisonerName}`)
+  constructor(prisonerName: string) {
+    super(`Contacts linked to ${prisonerName}`)
   }
 
   clickAddNewContactButton() {
