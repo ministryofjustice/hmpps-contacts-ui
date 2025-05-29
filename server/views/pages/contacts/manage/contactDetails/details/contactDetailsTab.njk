@@ -4,6 +4,7 @@
 {% from "partials/contactDetails/relationshipToPrisonerCard.njk" import relationshipToPrisonerCard %}
 {% from "partials/contactDetails/identityDocumentationCard.njk" import identityDocumentationCard %}
 {% from "partials/contactDetails/additionalInformationCard.njk" import additionalInformationCard %}
+{% from "moj/components/alert/macro.njk" import mojAlert %}
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
@@ -21,6 +22,15 @@
 </div>
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+
+      {{ mojAlert({
+        variant: "warning",
+        title: "Contact images are not yet available in DPS",
+        showTitleAsHeading: true,
+        dismissible: false,
+        html: 'You still need to use NOMIS to view and manage contact images.',
+        attributes: { "data-qa": "image-warning" }
+      }) }}
 
       {{  personalInformationCard({
         prisonerNumber: prisonerNumber,

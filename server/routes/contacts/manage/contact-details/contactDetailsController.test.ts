@@ -108,7 +108,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect($('[data-qa=back-link]')).toHaveLength(0)
     })
 
-    it('should render contact details page for living contact', async () => {
+    it('should render contact details page for deceased contact', async () => {
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue({
         ...TestData.contact(),
@@ -133,6 +133,22 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
       expect($('[data-qa=cancel-button]')).toHaveLength(0)
       expect($('[data-qa=back-link]')).toHaveLength(0)
+    })
+
+    it('should show a warning about contact images', async () => {
+      // Given
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.getContact.mockResolvedValue(TestData.contact())
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      const warningText = $('[data-qa=image-warning]').text().trim()
+      expect(response.status).toEqual(200)
+      expect(warningText).toMatch(/Contact images are not yet available in DPS/)
+      expect(warningText).toMatch(/You still need to use NOMIS to view and manage contact images./)
     })
 
     it('should not show comments when theres no comments', async () => {
