@@ -881,4 +881,16 @@ export default {
         jsonBody: {},
       },
     }),
+  stubDeleteContactRelationship: ({ prisonerContactId }: { prisonerContactId: number }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'DELETE',
+        urlPath: `/prisoner-contact/${prisonerContactId}`,
+      },
+      response: {
+        status: 204,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      },
+    })
+  },
 }

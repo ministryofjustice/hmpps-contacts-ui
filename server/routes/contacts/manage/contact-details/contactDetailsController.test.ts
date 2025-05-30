@@ -563,6 +563,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
     describe('Relationship to prisoner card', () => {
       it('should render with all relationship details', async () => {
         const prisonerContactRelationshipDetails = {
+          prisonerContactId: 99,
           relationshipTypeCode: 'S',
           relationshipTypeDescription: 'Social',
           relationshipToPrisonerCode: 'FRI',
@@ -603,6 +604,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         ).toStrictEqual('Some comments')
         expect($('.next-of-kin-tag')).toHaveLength(1)
         expect($('.emergency-contact-tag')).toHaveLength(1)
+        expect($('a:contains("Delete relationship")').attr('href')).toStrictEqual(
+          `/prisoner/${prisonerNumber}/contacts/manage/22/relationship/99/delete?backTo=contact-details`,
+        )
       })
 
       it('should render without optional relationship details', async () => {

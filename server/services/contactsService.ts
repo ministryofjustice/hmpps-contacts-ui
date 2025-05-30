@@ -614,4 +614,21 @@ export default class ContactsService extends AuditedService {
       correlationId,
     })
   }
+
+  async deleteContactRelationship(
+    prisonerNumber: string,
+    contactId: number,
+    prisonerContactId: number,
+    user: Express.User,
+    correlationId: string,
+  ) {
+    return this.handleAuditEvent(this.contactsApiClient.deleteContactRelationship(prisonerContactId, user), {
+      what: 'API_DELETE_CONTACT_RELATIONSHIP',
+      who: user.username,
+      subjectType: 'CONTACT_RELATIONSHIP',
+      subjectId: String(prisonerContactId),
+      details: { prisonerNumber, contactId, prisonerContactId },
+      correlationId,
+    })
+  }
 }

@@ -1251,4 +1251,39 @@ describe('contactsService', () => {
       })
     })
   })
+
+  describe('deleteContactRelationship', () => {
+    // Given
+    it('should delete the contact phone', async () => {
+      // When
+      apiClient.deleteContactRelationship.mockResolvedValue()
+      await service.deleteContactRelationship('A1234BC', 23, 77, user, 'correlationId')
+
+      // Then
+      expect(apiClient.deleteContactRelationship).toHaveBeenCalledWith(77, user)
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'API_DELETE_CONTACT_RELATIONSHIP',
+        who: 'user1',
+        subjectType: 'CONTACT_RELATIONSHIP',
+        subjectId: '77',
+        correlationId: 'correlationId',
+        details: { prisonerNumber: 'A1234BC', contactId: 23, prisonerContactId: 77 },
+      })
+    })
+
+    it('Propagates errors', async () => {
+      apiClient.deleteContactRelationship.mockRejectedValue(new Error('some error'))
+      await expect(service.deleteContactRelationship('A1234BC', 23, 77, user, 'correlationId')).rejects.toEqual(
+        new Error('some error'),
+      )
+      expect(auditService.logAuditEvent).toHaveBeenCalledWith({
+        what: 'FAILURE_API_DELETE_CONTACT_RELATIONSHIP',
+        who: 'user1',
+        subjectType: 'CONTACT_RELATIONSHIP',
+        subjectId: '77',
+        correlationId: 'correlationId',
+        details: { prisonerNumber: 'A1234BC', contactId: 23, prisonerContactId: 77, statusCode: undefined },
+      })
+    })
+  })
 })

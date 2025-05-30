@@ -96,6 +96,8 @@ import DeleteAddressPhoneController from './addresses/delete-address-phone/delet
 import EditRestrictionsController from './edit-restrictions/editRestrictionsController'
 import ChangeRelationshipTypeHandleDuplicateController from './relationship/type/handle-duplicate/changeRelationshipTypeHandleDuplicateController'
 import { handleDuplicateRelationshipSchemaFactory } from '../common/relationship/handleDuplicateRelationshipSchemas'
+import DeleteRelationshipController from './relationship/delete-relationship/deleteRelationshipController'
+import { deleteRelationshipSchema } from './relationship/delete-relationship/deleteRelationshipActionSchema'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -292,6 +294,13 @@ const ManageContactsRoutes = (
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/relationship-comments',
     controller: new ManageRelationshipCommentsController(contactsService),
     schema: enterRelationshipCommentsSchema,
+    prisonerDetailsRequiredOnPost: true,
+  })
+
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/delete',
+    controller: new DeleteRelationshipController(contactsService),
+    schema: deleteRelationshipSchema,
     prisonerDetailsRequiredOnPost: true,
   })
 
