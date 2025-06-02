@@ -483,4 +483,13 @@ export default class ContactsApiClient extends RestClient {
       user,
     )
   }
+
+  async deleteContactRelationship(prisonerContactId: number, user: Express.User): Promise<void> {
+    return this.delete(
+      {
+        path: `/prisoner-contact/${prisonerContactId}`,
+      },
+      user,
+    )
+  }
 }

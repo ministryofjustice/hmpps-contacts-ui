@@ -13,6 +13,7 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
+  {% include 'partials/successNotificationBanner.njk' %}
   <div class="moj-page-header-actions contact-record-banner-bottom">
     <div class="moj-page-header-actions__title govuk-!-width-two-thirds">
         <h1 class="govuk-heading-l">Contacts linked to {{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }}</h1>
