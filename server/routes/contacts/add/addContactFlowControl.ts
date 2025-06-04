@@ -34,6 +34,7 @@ type CreateContactPages =
   | Page.ADD_CONTACT_DOMESTIC_STATUS_PAGE
   | Page.ADD_CONTACT_ADD_EMAIL_PAGE
   | Page.ADD_CONTACT_DELETE_EMAIL_PAGE
+  | Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE
 type ExistingContactPages =
   | Page.CREATE_CONTACT_START_PAGE
   | Page.CONTACT_SEARCH_PAGE
@@ -149,6 +150,9 @@ const PAGES: Record<AllAddContactPages, PageConfig> = {
   [Page.ADD_CONTACT_HANDLE_DUPLICATE_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/add/handle-duplicate/${journey.id}`,
   },
+  [Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE]: {
+    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/possible-existing-records/${journey.id}`,
+  },
 }
 
 const PRE_MODE_SPEC: Record<PreModePages, Spec> = {
@@ -181,10 +185,14 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   },
   [Page.CREATE_CONTACT_DOB_PAGE]: {
     previousUrl: checkAnswersOr(PAGES.CREATE_CONTACT_NAME_PAGE.url),
+    nextUrl: checkAnswersOr(PAGES.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE.url),
+  },
+  [Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE]: {
+    previousUrl: checkAnswersOr(PAGES.CREATE_CONTACT_DOB_PAGE.url),
     nextUrl: checkAnswersOr(PAGES.SELECT_RELATIONSHIP_TYPE.url),
   },
   [Page.SELECT_RELATIONSHIP_TYPE]: {
-    previousUrl: checkAnswersOr(PAGES.CREATE_CONTACT_DOB_PAGE.url),
+    previousUrl: backToPossibleExistingRecordsOrDobOrCheckAnswers(),
     nextUrl: forwardToRelationshipToPrisonerOrCheckAnswers(),
   },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
@@ -378,6 +386,17 @@ function backToRelationshipTypeOrCheckAnswers(journey: AddContactJourney, user: 
   return (journey.isCheckingAnswers && !relationshipTypeIsTheSame) || !journey.isCheckingAnswers
     ? PAGES.SELECT_RELATIONSHIP_TYPE.url(journey, user)
     : PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey, user)
+}
+
+function backToPossibleExistingRecordsOrDobOrCheckAnswers(): JourneyUrlProvider {
+  return (journey, user) => {
+    if (journey.isCheckingAnswers) {
+      return PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey, user)
+    }
+    return journey.possibleExistingRecords && journey.possibleExistingRecords.length > 0
+      ? PAGES.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE.url(journey, user)
+      : PAGES.CREATE_CONTACT_DOB_PAGE.url(journey, user)
+  }
 }
 
 function navigationForAddContactJourney(currentPage: Page, journey: AddContactJourney, user: HmppsUser): Navigation {

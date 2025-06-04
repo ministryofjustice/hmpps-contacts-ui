@@ -49,6 +49,9 @@ export default class EnterNameController implements PageHandler {
     const journey = req.session.addContactJourneys![journeyId]!
     const { user } = res.locals
     journey.names = { title, lastName, firstName, middleNames }
+
+    // Remove possible existing records on name change to re-trigger search for existing records
+    delete journey.possibleExistingRecords
     res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
   }
 }

@@ -24,6 +24,15 @@ context('Create contact and update the relationship from check answers', () => {
     cy.task('stubRelationshipTypeReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', TestData.prisoner().prisonerNumber)
+    cy.task('stubContactSearch', {
+      results: {
+        page: {
+          totalPages: 0,
+          totalElements: 0,
+        },
+        content: [],
+      },
+    })
     cy.task('stubCreateContact', {
       createdContact: { id: 123456 },
       createdRelationship: { prisonerContactId: 654321 },

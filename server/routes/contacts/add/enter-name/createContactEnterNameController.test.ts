@@ -190,6 +190,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
 
 describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId', () => {
   it('should pass to next page if there are no validation errors', async () => {
+    existingJourney.possibleExistingRecords = [TestData.contactSearchResultItem()]
+
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${journeyId}`)
       .type('form')
@@ -203,6 +205,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId',
       middleNames: 'middle',
       title: 'Mr',
     })
+    expect(existingJourney.possibleExistingRecords).toBeUndefined()
   })
 
   it('should pass to check answers page if there are no validation errors and journey is in check state', async () => {
@@ -214,6 +217,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId',
       title: 'MR',
     }
     existingJourney.isCheckingAnswers = true
+    existingJourney.possibleExistingRecords = [TestData.contactSearchResultItem()]
 
     // When
     await request(app)
@@ -230,15 +234,21 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId',
       middleNames: 'middle updated',
       title: 'DR',
     })
+    expect(existingJourney.possibleExistingRecords).toBeUndefined()
   })
 
   it('should return to enter page with details kept if there are validation errors', async () => {
+    const possibleExistingRecords = [TestData.contactSearchResultItem()]
+    existingJourney.possibleExistingRecords = possibleExistingRecords
+
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${journeyId}`)
       .type('form')
       .send({ firstName: 'first' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-name/${journeyId}#`)
+
+    expect(existingJourney.possibleExistingRecords).toStrictEqual(possibleExistingRecords)
   })
 
   it('should return to start if no journey in session', async () => {

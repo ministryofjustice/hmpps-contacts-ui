@@ -68,6 +68,7 @@ import CreateContactDeleteEmploymentController from './employments/delete-employ
 import { ensureInAddContactJourney, resetAddContactJourney } from './addContactMiddleware'
 import { handleDuplicateRelationshipSchemaFactory } from '../common/relationship/handleDuplicateRelationshipSchemas'
 import AddContactHandleDuplicateController from './handle-duplicate/addContactHandleDuplicateController'
+import PossibleExistingRecordsController from './possible-existing-records/possibleExistingRecordsController'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -168,6 +169,12 @@ const AddContactRoutes = (
     path: '/prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId',
     controller: new CreateContactEnterDobController(),
     schema: optionalDobSchema,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/possible-existing-records/:journeyId',
+    controller: new PossibleExistingRecordsController(contactsService),
+    noValidation: true,
   })
 
   journeyRoute({
