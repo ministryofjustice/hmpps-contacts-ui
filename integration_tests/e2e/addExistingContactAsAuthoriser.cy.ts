@@ -4,7 +4,7 @@ import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import SearchContactPage from '../pages/searchContactPage'
-import ContactConfirmationPage from '../pages/contactConfirmationPage'
+import ContactMatchPage from '../pages/contactMatchPage'
 import AddContactSuccessPage from '../pages/addContactSuccessPage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
@@ -93,7 +93,7 @@ context('Add existing contact as authorising user so can set visit approval', ()
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Existing Contact', 'John Smith') //
+    Page.verifyOnPage(ContactMatchPage, 'Existing Contact', 'John Smith') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
@@ -161,7 +161,7 @@ context('Add existing contact as authorising user so can set visit approval', ()
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Existing Contact', 'John Smith') //
+    Page.verifyOnPage(ContactMatchPage, 'Existing Contact', 'John Smith') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
@@ -224,7 +224,7 @@ context('Add existing contact as authorising user so can set visit approval', ()
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Existing Contact', 'John Smith') //
+    Page.verifyOnPage(ContactMatchPage, 'Existing Contact', 'John Smith') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
@@ -243,7 +243,7 @@ context('Add existing contact as authorising user so can set visit approval', ()
       .backTo(SelectEmergencyContactOrNextOfKinPage, 'Existing Contact', 'John Smith', true)
       .backTo(SelectRelationshipPage, 'Existing Contact', 'John Smith')
       .backTo(SelectRelationshipTypePage, 'Existing Contact', 'John Smith')
-      .backTo(ContactConfirmationPage, 'Existing Contact', 'John Smith')
+      .backTo(ContactMatchPage, 'Existing Contact', 'John Smith')
       .backTo(SearchContactPage)
       .verifyShowsNameAs('Contact, Existing')
   })
