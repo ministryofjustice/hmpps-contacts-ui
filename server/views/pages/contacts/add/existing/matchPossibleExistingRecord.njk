@@ -21,33 +21,33 @@
       <form method='POST'>
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
         {{ govukRadios({
-          name: "isContactMatched",
+          name: "isPossibleExistingRecordMatched",
           fieldset: {
             legend: {
               text: 'Is this the correct contact to link to ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) + '?',
               isPageHeading: false,
               classes: "govuk-fieldset__legend--m"
             },
-            attributes: {"data-qa": "confim-title-value-bottom"}
+            attributes: {"data-qa": "confim-existing-record-bottom"}
           },
           items: [
             {
               value: "YES",
               text: "Yes",
-              checked: journey.isContactMatched === 'YES'
+              checked: journey.isPossibleExistingRecordMatched === 'YES'
             },
             {
-              value: "NO_SEARCH_AGAIN",
-              text: "No, take me back to contact search to try again",
-              checked: journey.isContactMatched === 'NO_SEARCH_AGAIN'
-            },
+              value: "NO_GO_BACK_TO_POSSIBLE_EXISTING_RECORDS",
+              text: "No, take me back to the other possible existing records",
+              checked: journey.isPossibleExistingRecordMatched === 'NO_GO_BACK_TO_POSSIBLE_EXISTING_RECORDS'
+            } if multipleMatches,
             {
-              value: "NO_CREATE_NEW",
-              text: "No, I need to add a new contact onto the system",
-              checked: journey.isContactMatched === 'NO_CREATE_NEW'
+              value: "NO_CONTINUE_ADDING_CONTACT",
+              text: "No, I need to continue adding a new contact onto the system",
+              checked: journey.isPossibleExistingRecordMatched === 'NO_CONTINUE_ADDING_CONTACT'
             }
           ],
-          errorMessage: validationErrors | findError('isContactMatched')
+          errorMessage: validationErrors | findError('isPossibleExistingRecordMatched')
         }) }}
 
         <div class="govuk-button-group">

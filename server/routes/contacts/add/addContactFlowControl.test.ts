@@ -384,6 +384,45 @@ describe('addContactFlowControl', () => {
           expect(nav.backLink).toStrictEqual(expected)
         },
       )
+
+      it.each([
+        ['YES', `/prisoner/A1234BC/contacts/add/mode/EXISTING/${journeyId}`, 'EXISTING'],
+        [
+          'NO_GO_BACK_TO_POSSIBLE_EXISTING_RECORDS',
+          `/prisoner/A1234BC/contacts/create/possible-existing-records/${journeyId}`,
+          'NEW',
+        ],
+        [
+          'NO_CONTINUE_ADDING_CONTACT',
+          `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`,
+          'NEW',
+        ],
+      ])(
+        'should redirect correctly based on option (%s) and toggle mode if necessary',
+        (option: string, expectedUrl: string, expectedMode: string) => {
+          const journey: AddContactJourney = {
+            id: journeyId,
+            lastTouched: new Date().toISOString(),
+            prisonerNumber: 'A1234BC',
+            mode: 'NEW',
+            isCheckingAnswers: false,
+            possibleExistingRecords: [],
+            isPossibleExistingRecordMatched: option as
+              | 'YES'
+              | 'NO_GO_BACK_TO_POSSIBLE_EXISTING_RECORDS'
+              | 'NO_CONTINUE_ADDING_CONTACT',
+          }
+
+          const page = nextPageForAddContactJourney(
+            Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORD_MATCH_PAGE,
+            journey,
+            adminUser,
+          )
+
+          expect(page).toStrictEqual(expectedUrl)
+          expect(journey.mode).toStrictEqual(expectedMode)
+        },
+      )
     })
   })
 

@@ -69,6 +69,8 @@ import { ensureInAddContactJourney, resetAddContactJourney } from './addContactM
 import { handleDuplicateRelationshipSchemaFactory } from '../common/relationship/handleDuplicateRelationshipSchemas'
 import AddContactHandleDuplicateController from './handle-duplicate/addContactHandleDuplicateController'
 import PossibleExistingRecordsController from './possible-existing-records/possibleExistingRecordsController'
+import PossibleExistingRecordMatchController from './possible-existing-record-match/possibleExistingRecordMatchController'
+import { possibleExistingRecordMatchSchema } from './possible-existing-record-match/possibleExistingRecordMatchSchema'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -175,6 +177,12 @@ const AddContactRoutes = (
     path: '/prisoner/:prisonerNumber/contacts/create/possible-existing-records/:journeyId',
     controller: new PossibleExistingRecordsController(contactsService),
     noValidation: true,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/possible-existing-record-match/:matchingContactId/:journeyId',
+    controller: new PossibleExistingRecordMatchController(contactsService, restrictionsService, referenceDataService),
+    schema: possibleExistingRecordMatchSchema,
   })
 
   journeyRoute({

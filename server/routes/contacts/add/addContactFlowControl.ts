@@ -35,6 +35,7 @@ type CreateContactPages =
   | Page.ADD_CONTACT_ADD_EMAIL_PAGE
   | Page.ADD_CONTACT_DELETE_EMAIL_PAGE
   | Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE
+  | Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORD_MATCH_PAGE
 type ExistingContactPages =
   | Page.CREATE_CONTACT_START_PAGE
   | Page.CONTACT_SEARCH_PAGE
@@ -153,6 +154,10 @@ const PAGES: Record<AllAddContactPages, PageConfig> = {
   [Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/possible-existing-records/${journey.id}`,
   },
+  [Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORD_MATCH_PAGE]: {
+    url: journey =>
+      `/prisoner/${journey.prisonerNumber}/contacts/create/possible-existing-record-match/${journey.matchingContactId}/${journey.id}`,
+  },
 }
 
 const PRE_MODE_SPEC: Record<PreModePages, Spec> = {
@@ -190,6 +195,11 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   [Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE]: {
     previousUrl: checkAnswersOr(PAGES.CREATE_CONTACT_DOB_PAGE.url),
     nextUrl: checkAnswersOr(PAGES.SELECT_RELATIONSHIP_TYPE.url),
+  },
+  [Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORD_MATCH_PAGE]: {
+    previousUrl: PAGES.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE.url,
+    previousUrlLabel: _ => 'Back to possible existing records',
+    nextUrl: nextPageForPossibleExistingRecordMatch(),
   },
   [Page.SELECT_RELATIONSHIP_TYPE]: {
     previousUrl: backToPossibleExistingRecordsOrDobOrCheckAnswers(),
@@ -377,6 +387,25 @@ function forwardToRelationshipToPrisonerOrCheckAnswers(): JourneyUrlProvider {
     return journey.isCheckingAnswers && relationshipTypeIsTheSame
       ? PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey, user)
       : PAGES.SELECT_CONTACT_RELATIONSHIP.url(journey, user)
+  }
+}
+
+function nextPageForPossibleExistingRecordMatch(): JourneyUrlProvider {
+  return (journey, user) => {
+    if (journey.isPossibleExistingRecordMatched === 'YES') {
+      // abandon current journey and switch mode as if we came from contact search originally. Switched here to ensure
+      // navigation is loaded from correct spec.
+      /* eslint-disable no-param-reassign */
+      journey.mode = 'EXISTING'
+      return PAGES.ADD_CONTACT_MODE_PAGE.url(journey, user)
+    }
+    if (journey.isPossibleExistingRecordMatched === 'NO_GO_BACK_TO_POSSIBLE_EXISTING_RECORDS') {
+      return PAGES.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE.url(journey, user)
+    }
+    if (journey.isPossibleExistingRecordMatched === 'NO_CONTINUE_ADDING_CONTACT') {
+      return PAGES.SELECT_RELATIONSHIP_TYPE.url(journey, user)
+    }
+    throw Error(`Unknown value for possible existing record matched: ${journey.isPossibleExistingRecordMatched}`)
   }
 }
 

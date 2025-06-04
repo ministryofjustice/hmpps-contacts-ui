@@ -107,6 +107,14 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/possible-existing-record
     expect(matchCounts).toHaveLength(2)
     expect(matchCounts.first().text().trim()).toStrictEqual('Showing 1 to 2 of 2 results')
     expect(contactsService.searchContact).toHaveBeenCalled()
+
+    expect($('[data-qa=add-contact-123456-link]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/create/possible-existing-record-match/123456/${journeyId}`,
+    )
+
+    expect($('[data-qa=add-contact-654321-link]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/create/possible-existing-record-match/654321/${journeyId}`,
+    )
   })
 
   it('should render possible existing records if there was a dob and only one match', async () => {
