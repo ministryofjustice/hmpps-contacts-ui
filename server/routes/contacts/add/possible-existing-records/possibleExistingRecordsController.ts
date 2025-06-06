@@ -7,9 +7,13 @@ import Permission from '../../../../enumeration/permission'
 import { ContactsService } from '../../../../services'
 import { ContactSearchRequest, ContactSearchResultItem } from '../../../../@types/contactsApiClient'
 import { formatDateForApi } from '../../../../utils/utils'
+import TelemetryService from '../../../../services/telemetryService'
 
 export default class PossibleExistingRecordsController implements PageHandler {
-  constructor(private readonly contactsService: ContactsService) {}
+  constructor(
+    private readonly contactsService: ContactsService,
+    private readonly telemetryService: TelemetryService,
+  ) {}
 
   public PAGE_NAME = Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE
 
@@ -18,7 +22,7 @@ export default class PossibleExistingRecordsController implements PageHandler {
   private TABLE_ROW_COUNT = 100
 
   GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
-    const { journeyId } = req.params
+    const { journeyId, prisonerNumber } = req.params
     const { user } = res.locals
     const journey = req.session.addContactJourneys![journeyId]!
     const nextUrl = nextPageForAddContactJourney(this.PAGE_NAME, journey, user)
@@ -41,6 +45,13 @@ export default class PossibleExistingRecordsController implements PageHandler {
         user,
       )
       matches = result.content as ContactSearchResultItem[]
+      if (matches.length > 0) {
+        this.telemetryService.trackEvent('POSSIBLE_EXISTING_RECORDS_FOUND', user, {
+          journeyId,
+          numberOfMatches: matches.length,
+          prisonerNumber,
+        })
+      }
     }
     journey.possibleExistingRecords = matches
 

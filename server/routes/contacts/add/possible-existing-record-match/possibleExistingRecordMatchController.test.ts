@@ -22,12 +22,14 @@ jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
 jest.mock('../../../../services/referenceDataService')
 jest.mock('../../../../services/restrictionsService')
+jest.mock('../../../../services/telemetryService')
 
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const contactsService = MockedService.ContactsService()
 const referenceDataService = MockedService.ReferenceDataService()
 const restrictionsService = MockedService.RestrictionsService()
+const telemetryService = MockedService.TelemetryService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -51,6 +53,7 @@ beforeEach(() => {
       contactsService,
       referenceDataService,
       restrictionsService,
+      telemetryService,
     },
     userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -113,6 +116,12 @@ describe('Contact details', () => {
       expect(options.eq(2).next().text().trim()).toStrictEqual(
         'No, I need to continue adding a new contact onto the system',
       )
+
+      expect(telemetryService.trackEvent).toHaveBeenCalledWith('POSSIBLE_EXISTING_RECORD_REVIEWED', adminUser, {
+        journeyId,
+        matchingContactId: 22,
+        prisonerNumber,
+      })
     })
 
     it('should render possible existing record page when there was only one match', async () => {
@@ -1114,6 +1123,12 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/possible-existing-recor
     expect(existingJourney.isPossibleExistingRecordMatched).toStrictEqual('YES')
     expect(existingJourney.mode).toStrictEqual('EXISTING')
     expect(existingJourney.contactId).toStrictEqual(22)
+    expect(telemetryService.trackEvent).toHaveBeenCalledWith('POSSIBLE_EXISTING_RECORD_ACTION', adminUser, {
+      journeyId,
+      matchingContactId: existingJourney.matchingContactId,
+      prisonerNumber,
+      action: 'YES',
+    })
   })
 
   it('should pass validation when "No, take me back to the other possible existing records" is selected and return to records', async () => {

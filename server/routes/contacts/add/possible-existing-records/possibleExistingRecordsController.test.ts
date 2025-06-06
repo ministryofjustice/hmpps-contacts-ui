@@ -15,11 +15,13 @@ jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/referenceDataService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
+jest.mock('../../../../services/telemetryService')
 
 const auditService = MockedService.AuditService()
 const referenceDataService = MockedService.ReferenceDataService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const contactsService = MockedService.ContactsService()
+const telemetryService = MockedService.TelemetryService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -44,6 +46,7 @@ beforeEach(() => {
       referenceDataService,
       prisonerSearchService,
       contactsService,
+      telemetryService,
     },
     userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -115,6 +118,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/possible-existing-record
     expect($('[data-qa=add-contact-654321-link]').first().attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/create/possible-existing-record-match/654321/${journeyId}`,
     )
+    expect(telemetryService.trackEvent).toHaveBeenCalledWith('POSSIBLE_EXISTING_RECORDS_FOUND', adminUser, {
+      journeyId,
+      numberOfMatches: 2,
+      prisonerNumber,
+    })
   })
 
   it('should render possible existing records if there was a dob and only one match', async () => {
@@ -184,6 +192,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/possible-existing-record
     expect(matchCounts.first().text().trim()).toStrictEqual('Showing 1 to 2 of 2 results')
 
     expect(contactsService.searchContact).not.toHaveBeenCalled()
+    expect(telemetryService.trackEvent).not.toHaveBeenCalled()
   })
 
   it('should not search again if the possible matches exist already even if they are empty', async () => {

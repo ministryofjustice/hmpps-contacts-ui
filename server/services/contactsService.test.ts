@@ -26,9 +26,11 @@ import {
   UpdatePhoneRequest,
 } from '../@types/contactsApiClient'
 import { AddContactJourney, AddressJourney, LanguageAndInterpreterRequiredForm, YesOrNo } from '../@types/journeys'
+import { HmppsUser } from '../interfaces/hmppsUser'
 
 jest.mock('../data/contactsApiClient')
 jest.mock('../services/auditService')
+jest.mock('../services/telemetryService')
 const searchResult = TestData.contactSearchResultItem()
 const contactSearchRequest: ContactSearchRequest = {
   lastName: 'last',
@@ -38,15 +40,16 @@ const contactSearchRequest: ContactSearchRequest = {
 }
 
 const auditService = MockedService.AuditService()
+const telemetryService = MockedService.TelemetryService()
 
 describe('contactsService', () => {
-  const user = { token: 'userToken', username: 'user1' } as Express.User
+  const user = { token: 'userToken', username: 'user1' } as HmppsUser
   const prisonerNumber = 'A1234BC'
   let apiClient: jest.Mocked<ContactsApiClient>
   let service: ContactsService
   beforeEach(() => {
     apiClient = new ContactsApiClient() as jest.Mocked<ContactsApiClient>
-    service = new ContactsService(apiClient, auditService)
+    service = new ContactsService(apiClient, auditService, telemetryService)
   })
 
   afterEach(() => {
@@ -107,6 +110,7 @@ describe('contactsService', () => {
               isActive: true,
             },
           ],
+          possibleExistingRecords: [TestData.contactSearchResultItem()],
         }
         const expectedRequest: CreateContactRequest = {
           titleCode: 'Mr',
@@ -155,6 +159,11 @@ describe('contactsService', () => {
           subjectType: 'CONTACT',
           correlationId: 'correlationId',
           details: { prisonNumber: 'A1234BC', isApprovedVisitor: true },
+        })
+        expect(telemetryService.trackEvent).toHaveBeenCalledWith('CONTACT_CREATED', user, {
+          journeyId: journey.id,
+          prisonerNumber: journey.prisonerNumber,
+          numberOfPossibleExistingRecords: 1,
         })
       },
     )
@@ -484,6 +493,7 @@ describe('contactsService', () => {
             comments: 'Some comments about this relationship',
           },
           contactId: 123456,
+          possibleExistingRecords: [TestData.contactSearchResultItem(), TestData.contactSearchResultItem()],
         }
         const expectedRequest: AddContactRelationshipRequest = {
           contactId: 123456,
@@ -510,6 +520,12 @@ describe('contactsService', () => {
           subjectType: 'CONTACT_RELATIONSHIP',
           correlationId: 'correlationId',
           details: { prisonNumber: 'A1234BC', contactId: 123456, isApprovedVisitor: false },
+        })
+        expect(telemetryService.trackEvent).toHaveBeenCalledWith('CONTACT_LINKED', user, {
+          journeyId: journey.id,
+          prisonerNumber: journey.prisonerNumber,
+          contactId: 123456,
+          numberOfPossibleExistingRecords: 2,
         })
       },
     )

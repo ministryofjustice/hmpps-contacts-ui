@@ -8,7 +8,7 @@ import applicationInfoSupplier from '../applicationInfo'
 
 const applicationInfo = applicationInfoSupplier()
 initialiseAppInsights()
-buildAppInsightsClient(applicationInfo)
+const applicationInsightsClient = buildAppInsightsClient(applicationInfo)
 
 import config from '../config'
 import HmppsAuditClient from './hmppsAuditClient'
@@ -24,6 +24,7 @@ export const dataAccess = () => ({
   contactsApiClient: new ContactsApiClient(),
   prisonApiClient: new PrisonApiClient(),
   organisationsApiClient: new OrganisationsApiClient(),
+  applicationInsightsClient,
 })
 
 export { HmppsAuditClient, PrisonerSearchApiClient, ContactsApiClient, PrisonApiClient, OrganisationsApiClient }
