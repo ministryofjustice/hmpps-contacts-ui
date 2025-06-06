@@ -160,7 +160,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/add/handle-duplicate/:journeyId
     expect($('[data-qa=multiple-relationships-warning]')).toHaveLength(1)
   })
 
-  it('hide multi relationship warning if there is only one existing relationship', async () => {
+  it('hide multi relationship warning if there is only one existing relationship and show different go to dupe label', async () => {
     // Given
     existingJourney.relationship!.relationshipToPrisoner = 'BRO'
     contactsService.getAllSummariesForPrisonerAndContact.mockResolvedValue([
@@ -181,6 +181,9 @@ describe(`GET /prisoner/:prisonerNumber/contacts/add/handle-duplicate/:journeyId
 
     const $ = cheerio.load(response.text)
     expect($('[data-qa=multiple-relationships-warning]')).toHaveLength(0)
+    expect($('#duplicateActionGoToDupe').next().text().trim()).toStrictEqual(
+      `Go to the existing record of the relationship`,
+    )
   })
 
   it.each([

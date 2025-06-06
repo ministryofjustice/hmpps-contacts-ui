@@ -207,6 +207,38 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     },
   )
 
+  it('should render single relationships with a different go to duple label and without the warning', async () => {
+    // Given
+    existingJourney.relationshipToPrisoner = 'BRO'
+    contactsService.getAllSummariesForPrisonerAndContact.mockResolvedValue([
+      {
+        ...minimalContact,
+        prisonerContactId: 15896471,
+        relationshipToPrisonerCode: 'BRO',
+        relationshipToPrisonerDescription: 'Brother',
+        isRelationshipActive: false,
+      },
+    ])
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/handle-duplicate/${journeyId}`,
+    )
+
+    // Then
+    expect(response.status).toEqual(200)
+
+    const $ = cheerio.load(response.text)
+    const rows = $('#prisoner-contact-list tbody tr')
+    const firstRowColumns = rows.eq(0).find('td')
+    expect(firstRowColumns.eq(2).text().trim()).toStrictEqual('Inactive relationship: Brother')
+    expect($('#duplicateActionGoToDupe').next().text().trim()).toStrictEqual(
+      `Go to the existing record of the relationship`,
+    )
+    expect($('#duplicateActionGoToContactList').next().text().trim()).toStrictEqual('Go to the prisoner’s contact list')
+    expect($('.govuk-warning-text__text')).toHaveLength(0)
+  })
+
   it('should call the audit service for the page view', async () => {
     contactsService.getAllSummariesForPrisonerAndContact.mockResolvedValue([])
     const response = await request(app).get(

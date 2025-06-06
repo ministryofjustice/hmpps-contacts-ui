@@ -43,6 +43,11 @@
     <div class="govuk-grid-column-two-thirds">
       <form method='POST'>
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        {% if existingRelationships.length and existingRelationships.length > 1 %}
+          {% set goToDupeLabel = 'Go to the existing record of the ‘' + relationshipTypeDescription + '’ relationship' %}
+        {% else %}
+          {% set goToDupeLabel = 'Go to the existing record of the relationship' %}
+        {% endif %}
         {{ govukRadios({
           name: "duplicateAction",
           errorMessage: validationErrors | findError('duplicateAction'),
@@ -57,7 +62,7 @@
           items: [
             {
               value: 'GO_TO_DUPE',
-              text: 'Go to the existing record of the ‘' + relationshipTypeDescription + '’ relationship',
+              text: goToDupeLabel,
               id: 'duplicateActionGoToDupe'
             },
             {

@@ -141,22 +141,17 @@ div.moj-action-bar__filter::after { content: none !important; }
 
 #prisoner-contact-list {
   tr {
-    // make the name and person id as small as possible
-    th:first-child {
-      width: 5%;
-    }
-
-    // and ensure DOB doesn't wrap
+    // ensure DOB doesn't wrap
     th:nth-child(2) {
       min-width: 130px;
     }
 
-    // and make the restrictions column no wider than non-contact visit tag
-    th:nth-child(4) {
-      max-width: 215px;
+    // allow breaking of words in long address lines
+    td:nth-child(4) {
+      word-break: break-word;
     }
 
-    // and make the restrictions column no wider than non-contact visit tag
+    // make the restrictions column no wider than non-contact visit tag
     th:nth-child(6) {
       max-width: 185px;
     }
