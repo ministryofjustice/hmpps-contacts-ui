@@ -1,0 +1,176 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "partials/restrictionsTable.njk" import restrictionsTable %}
+{% from "partials/linkedPrisonersTable.njk" import linkedPrisonersTable %}
+{% from "partials/contactDetails/personalInformationCard.njk" import personalInformationCard %}
+{% from "partials/contactDetails/identityDocumentationCard.njk" import identityDocumentationCard %}
+{% from "partials/contactDetails/additionalInformationCard.njk" import additionalInformationCard %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "partials/contactMethods/phoneNumbersCard.njk" import phoneNumbersCard %}
+{% from "partials/contactMethods/emailAddressesCard.njk" import emailAddressesCard %}
+{% from "partials/contactMethods/contactAddressCard.njk" import contactAddressCard %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro matchContactContent(opts) %}
+
+  {% set title = opts.title %}
+  {% set contact = opts.contact %}
+  {% set prisonerDetails = opts.prisonerDetails %}
+  {% set globalRestrictions = opts.globalRestrictions %}
+  {% set linkedPrisoners = opts.linkedPrisoners %}
+  {% set linkedPrisonersCount = opts.linkedPrisonersCount %}
+  {% set phoneTypeOrderDictionary = opts.phoneTypeOrderDictionar %}
+  {% set paginationParams = opts.paginationParams %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+      <span class="govuk-caption-l">Link a contact to a prisoner</span>
+      <h1 class="govuk-heading-l" data-qa="confim-title-value-top">{{ title }}</h1>
+      <p class="govuk-body">If this is the correct contact record but their information needs to be updated, you can make updates after you link the record to the prisoner. </p>
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <div class="govuk-tabs" data-module="govuk-tabs">
+        <ul class="govuk-tabs__list">
+          <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+            <a class="govuk-tabs__tab" href="#contact-details">
+              Contact details
+            </a>
+          </li>
+          <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab" href="#contact-methods">
+              Contact methods
+            </a>
+          </li>
+          <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab" href="#professional-information">
+              Professional information
+            </a>
+          </li>
+          <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab restrictions-tab-title" href="#restrictions">
+              Restrictions ({{ globalRestrictions.length }})
+            </a>
+          </li>
+          <li class="govuk-tabs__list-item">
+            <a class="govuk-tabs__tab linked-prisoners-tab-title" href="#linked-prisoners">
+              Linked prisoners ({{ linkedPrisonersCount }})
+            </a>
+          </li>
+        </ul>
+        <div class="govuk-tabs__panel govuk-!-static-padding-top-7 " id="contact-details">
+          <div class="govuk-!-width-two-thirds">
+            <h1 class="govuk-heading-l">Contact details</h1>
+            {{  personalInformationCard({ contact: contact, showActions: false }) }}
+
+            {{  identityDocumentationCard({ contact: contact, showActions: false }) }}
+
+            {{  additionalInformationCard({ contact: contact, showActions: false }) }}
+          </div>
+        </div>
+        <div class="govuk-tabs__panel govuk-!-static-padding-top-7" id="contact-methods">
+          <div class="govuk-!-width-two-thirds">
+            <h1 class="govuk-heading-l">Contact methods</h1>
+            {{  phoneNumbersCard({ contact: contact, showActions: false, phoneTypeOrderDictionary: phoneTypeOrderDictionary }) }}
+
+            {{  emailAddressesCard({ contact: contact, showActions: false }) }}
+
+            <h2 class="govuk-heading-l govuk-!-font-size-24">Addresses</h2>
+            {% if contact.addresses and contact.addresses.length > 0 %}
+              {% set hasInactive = false %}
+              {% set inactiveHtml = '' %}
+              {% for item in contact.addresses | sortContactAddresses %}
+                {% set summaryCard = contactAddressCard({ address: item, showActions: false, phoneTypeOrderDictionary: phoneTypeOrderDictionary }) %}
+                {% if (item.endDate | isDateAndInThePast) %}
+                  {% set inactiveHtml = inactiveHtml + summaryCard %}
+                  {% set hasInactive = true %}
+                {% else %}
+                  {{ summaryCard }}
+                {% endif %}
+              {% endfor %}
+              {% if hasInactive %}
+                {{ govukDetails({
+                  summaryText: "View previous addresses",
+                  html: inactiveHtml
+                }) }}
+              {% endif %}
+            {% else %}
+              <p>No addresses provided.</p>
+            {% endif %}
+          </div>
+        </div>
+        <div class="govuk-tabs__panel govuk-!-static-padding-top-7" id="professional-information">
+          <div class="govuk-!-width-two-thirds">
+            <h1 class="govuk-heading-l">Professional information</h1>
+            {% if contact.employments.length %}
+              {% for employment in contact.employments %}
+                {{ govukSummaryList({
+                  card: {
+                    title: {
+                      text: ("Active employer: " if employment.isActive else "Past employer: ") + employment.employer.organisationName
+                    }
+                  },
+                  rows: [
+                    {
+                      key: {
+                      text: "Employer name"
+                    },
+                      value: {
+                      text: employment.employer.organisationName
+                    }
+                    },
+                    {
+                      key: {
+                      text: "Employer’s primary address"
+                    },
+                      value: {
+                      html: (employment.employer | addressToLines or 'Not provided') | escape | nl2br
+                    }
+                    },
+                    {
+                      key: {
+                      text: "Business phone number at primary address"
+                    },
+                      value: {
+                      text: employment.employer | formatBusinessPhoneNumber or "Not provided"
+                    }
+                    },
+                    {
+                      key: {
+                      text: "Employment status"
+                    },
+                      value: {
+                      text: "Active" if employment.isActive else "Inactive"
+                    }
+                    }
+                  ]
+                }) }}
+              {% endfor %}
+            {% else %}
+              <p class="govuk-body">No employers recorded.</p>
+            {% endif %}
+          </div>
+        </div>
+        <div class="govuk-tabs__panel govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" data-qa="restrictions-result-message" id="restrictions">
+          <h1 class="govuk-heading-l">Restrictions</h1>
+          {{ restrictionsTable( {
+            restrictions: globalRestrictions,
+            contact: contact,
+            prisonerDetails: prisonerDetails,
+            restrictionClass: 'CONTACT_GLOBAL',
+            showActions: false,
+            hideTableTitle: true
+          } ) }}
+        </div>
+        <div class="govuk-tabs__panel govuk-!-static-padding-top-7 govuk-tabs__panel--hidden" id="linked-prisoners">
+          {% if linkedPrisoners.length > 0 %}
+            <h1 class="govuk-heading-l" data-qa="confirm-global-restriction-title">Prisoners linked to contact {{ contact | formatNameFirstNameFirst }}</h1>
+            {{ linkedPrisonersTable({ linkedPrisoners: linkedPrisoners, paginationParams: paginationParams }) }}
+          {% else %}
+            <p data-qa="no-linked-prisoners-message">No linked prisoners recorded.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endmacro %}

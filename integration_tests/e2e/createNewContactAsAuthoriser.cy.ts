@@ -30,6 +30,15 @@ context('Create new contact as authoriser who can set visit approval', () => {
     cy.task('stubRelationshipTypeReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', TestData.prisoner().prisonerNumber)
+    cy.task('stubContactSearch', {
+      results: {
+        page: {
+          totalPages: 0,
+          totalElements: 0,
+        },
+        content: [],
+      },
+    })
     cy.task('stubCreateContact', {
       createdContact: { id: contactId },
       createdRelationship: { prisonerContactId },

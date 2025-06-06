@@ -52,7 +52,7 @@ beforeEach(() => {
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
       session = receivedSession
       session.addContactJourneys = {}
-      session.addContactJourneys[journeyId] = { ...existingJourney }
+      session.addContactJourneys[journeyId] = existingJourney
     },
   })
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
@@ -170,28 +170,33 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId', (
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
-  it('should pass to next page if there are no validation errors', async () => {
+  it('should pass to next page if there are no validation errors with no dob', async () => {
+    existingJourney.possibleExistingRecords = [TestData.contactSearchResultItem()]
+
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
       .type('form')
       .send({ day: '', month: '', year: '' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/possible-existing-records/${journeyId}`)
 
     const expectedDob = { isKnown: 'NO' }
-    expect(session.addContactJourneys![journeyId]!.dateOfBirth).toStrictEqual(expectedDob)
+    expect(existingJourney.dateOfBirth).toStrictEqual(expectedDob)
+    expect(existingJourney.possibleExistingRecords).toBeUndefined()
   })
 
   it.each([
     ['01', '06', '1982'],
     ['1', '6', '1982'],
   ])('should pass to next page if there are no validation errors with the date parsable', async (day, month, year) => {
+    existingJourney.possibleExistingRecords = [TestData.contactSearchResultItem()]
+
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
       .type('form')
       .send({ day, month, year })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/possible-existing-records/${journeyId}`)
 
     // Then
     const expectedDob = {
@@ -200,12 +205,14 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
       month: 6,
       year: 1982,
     }
-    expect(session.addContactJourneys![journeyId]!.dateOfBirth).toStrictEqual(expectedDob)
+    expect(existingJourney.dateOfBirth).toStrictEqual(expectedDob)
+    expect(existingJourney.possibleExistingRecords).toBeUndefined()
   })
 
   it('should pass to check answers page if a valid DOB is entered and we are checking answers', async () => {
     existingJourney.isCheckingAnswers = true
     existingJourney.dateOfBirth = { isKnown: 'YES', day: 25, month: 12, year: 1990 }
+    existingJourney.possibleExistingRecords = [TestData.contactSearchResultItem()]
 
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
@@ -221,16 +228,22 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
       month: 6,
       year: 1982,
     }
-    expect(session.addContactJourneys![journeyId]!.dateOfBirth).toStrictEqual(expectedDob)
+    expect(existingJourney.dateOfBirth).toStrictEqual(expectedDob)
+    expect(existingJourney.possibleExistingRecords).toBeUndefined()
   })
 
   it('should return to enter page if there are validation errors', async () => {
+    const possibleExistingRecords = [TestData.contactSearchResultItem()]
+    existingJourney.possibleExistingRecords = possibleExistingRecords
+
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
       .type('form')
       .send({ day: ' ' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}#`)
+
+    expect(existingJourney.possibleExistingRecords).toStrictEqual(possibleExistingRecords)
   })
 
   it('should return to start if no journey in session', async () => {

@@ -44,6 +44,8 @@ export default class CreateContactEnterDobController implements PageHandler {
         isKnown: 'NO',
       }
     }
+    // Remove possible existing records on DOB change to re-trigger search for existing records
+    delete journey.possibleExistingRecords
     res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
   }
 }

@@ -4,7 +4,7 @@ import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import SearchContactPage from '../pages/searchContactPage'
-import ContactConfirmationPage from '../pages/contactConfirmationPage'
+import ContactMatchPage from '../pages/contactMatchPage'
 import AddContactSuccessPage from '../pages/addContactSuccessPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import RelationshipCommentsPage from '../pages/contact-details/relationship/relationshipCommentsPage'
@@ -74,7 +74,7 @@ context('Add Existing Contact Check Answers', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Existing Contact', 'John Smith') //
+    Page.verifyOnPage(ContactMatchPage, 'Existing Contact', 'John Smith') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 

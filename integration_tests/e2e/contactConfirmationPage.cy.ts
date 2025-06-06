@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid'
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import SearchContactPage from '../pages/searchContactPage'
-import ContactConfirmationPage from '../pages/contactConfirmationPage'
+import ContactMatchPage from '../pages/contactMatchPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import EnterNamePage from '../pages/enterNamePage'
 import { LinkedPrisonerDetails } from '../../server/@types/contactsApiClient'
@@ -71,7 +71,7 @@ context('Contact confirmation', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Existing Contact', 'John Smith') //
+    Page.verifyOnPage(ContactMatchPage, 'Existing Contact', 'John Smith') //
       .hasLinkedPrisonersCount(0)
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
@@ -88,7 +88,7 @@ context('Contact confirmation', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Existing Contact', 'John Smith') //
+    Page.verifyOnPage(ContactMatchPage, 'Existing Contact', 'John Smith') //
       .clickRestrictionsTab()
       .checkRestrictionsDetails()
       .selectIsTheRightPersonYesRadio()
@@ -125,7 +125,7 @@ context('Contact confirmation', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Existing Contact', 'John Smith') //
+    Page.verifyOnPage(ContactMatchPage, 'Existing Contact', 'John Smith') //
       .hasLinkedPrisonersCount(2)
   })
 
@@ -190,7 +190,7 @@ context('Contact confirmation', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Existing Contact', 'John Smith') //
+    Page.verifyOnPage(ContactMatchPage, 'Existing Contact', 'John Smith') //
       .hasLinkedPrisonersCount(35)
       .clickLinkedPrisonerTab()
       .hasLinkedPrisonerRow(0, 'A0BC')
@@ -209,7 +209,7 @@ context('Contact confirmation', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    const contactConfirmationPage = Page.verifyOnPage(ContactConfirmationPage, 'Existing Contact', 'John Smith')
+    const contactConfirmationPage = Page.verifyOnPage(ContactMatchPage, 'Existing Contact', 'John Smith')
     contactConfirmationPage.clickContinue()
 
     const expectedMessage = 'Select if this is the correct contact or not'
@@ -234,7 +234,7 @@ context('Contact confirmation', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Existing Contact', 'John Smith')
+    Page.verifyOnPage(ContactMatchPage, 'Existing Contact', 'John Smith')
       .verifyShowsTabTitleAs('Contact details', 0)
       .verifyShowsTabTitleAs('Contact methods', 1)
       .verifyShowsTabTitleAs('Professional information', 2)
@@ -248,7 +248,7 @@ context('Contact confirmation', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Existing Contact', 'John Smith')
+    Page.verifyOnPage(ContactMatchPage, 'Existing Contact', 'John Smith')
       .selectIsTheRightPersonNoSearchAgainRadio()
       .clickContinue()
 
@@ -261,7 +261,7 @@ context('Contact confirmation', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Existing Contact', 'John Smith')
+    Page.verifyOnPage(ContactMatchPage, 'Existing Contact', 'John Smith')
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 
@@ -274,7 +274,7 @@ context('Contact confirmation', () => {
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Existing Contact', 'John Smith')
+    Page.verifyOnPage(ContactMatchPage, 'Existing Contact', 'John Smith')
       .selectIsTheRightPersonNoCreateNewRadio()
       .clickContinue()
 

@@ -4,7 +4,7 @@ import TestData from '../../server/routes/testutils/testData'
 import ListContactsPage from '../pages/listContacts'
 import SelectRelationshipPage from '../pages/selectRelationshipPage'
 import SearchContactPage from '../pages/searchContactPage'
-import ContactConfirmationPage from '../pages/contactConfirmationPage'
+import ContactMatchPage from '../pages/contactMatchPage'
 import SelectRelationshipTypePage from '../pages/selectRelationshipTypePage'
 import RelationshipCommentsPage from '../pages/contact-details/relationship/relationshipCommentsPage'
 import SelectEmergencyContactOrNextOfKinPage from '../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
@@ -128,7 +128,7 @@ context('Add existing contact should handle duplicate error from server', () => 
     Page.verifyOnPage(SearchContactPage) //
       .clickTheContactLink(contactId)
 
-    Page.verifyOnPage(ContactConfirmationPage, 'Existing Contact', 'John Smith') //
+    Page.verifyOnPage(ContactMatchPage, 'Existing Contact', 'John Smith') //
       .selectIsTheRightPersonYesRadio()
       .clickContinue()
 

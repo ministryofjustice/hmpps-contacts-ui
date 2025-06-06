@@ -1,4 +1,5 @@
 import { OrganisationSummary } from '../organisationsApiClient'
+import { ContactSearchResultItem } from '../contactsApiClient'
 
 export interface AddContactJourney {
   id: string
@@ -15,6 +16,7 @@ export interface AddContactJourney {
       }
     | undefined
   isContactMatched?: 'YES' | 'NO_SEARCH_AGAIN' | 'NO_CREATE_NEW'
+  isPossibleExistingRecordMatched?: 'YES' | 'NO_GO_BACK_TO_POSSIBLE_EXISTING_RECORDS' | 'NO_CONTINUE_ADDING_CONTACT'
   names?: ContactNames
   dateOfBirth?: DateOfBirth
   gender?: string | undefined
@@ -45,6 +47,7 @@ export interface AddContactJourney {
   phoneNumbers?: PhoneNumberForm[] | undefined
   identities?: IdentityForm[] | undefined
   emailAddresses?: EmailAddressForm[] | undefined
+  possibleExistingRecords?: ContactSearchResultItem[] | undefined
 }
 
 export interface ContactNames {

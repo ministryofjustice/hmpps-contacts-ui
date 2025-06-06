@@ -5,6 +5,8 @@ import { BreadcrumbType, Navigation } from '../common/navigation'
 import { AddContactJourney } from '../../../@types/journeys'
 import { adminUser, authorisingUser } from '../../testutils/appSetup'
 import { HmppsUser } from '../../../interfaces/hmppsUser'
+import { ContactSearchResultItem } from '../../../@types/contactsApiClient'
+import TestData from '../../testutils/testData'
 
 describe('addContactFlowControl', () => {
   describe('add new contact', () => {
@@ -230,6 +232,11 @@ describe('addContactFlowControl', () => {
         [Page.CREATE_CONTACT_NAME_PAGE, `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`, adminUser],
         [
           Page.CREATE_CONTACT_DOB_PAGE,
+          `/prisoner/A1234BC/contacts/create/possible-existing-records/${journeyId}`,
+          adminUser,
+        ],
+        [
+          Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE,
           `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`,
           adminUser,
         ],
@@ -342,6 +349,78 @@ describe('addContactFlowControl', () => {
           const nav = nextPageForAddContactJourney(Page.SELECT_RELATIONSHIP_TYPE, journey, adminUser)
 
           expect(nav).toStrictEqual(expected)
+        },
+      )
+
+      it.each([
+        [undefined, false, `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`],
+        [[], false, `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`],
+        [
+          [TestData.contactSearchResultItem()],
+          false,
+          `/prisoner/A1234BC/contacts/create/possible-existing-records/${journeyId}`,
+        ],
+        [undefined, true, `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`],
+        [[], true, `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`],
+        [[TestData.contactSearchResultItem()], true, `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`],
+      ])(
+        'should go back to possible existing records or dob depending on if there were matches or even a search done but CYA always returns to CYA',
+        (
+          possibleExistingRecords: undefined | ContactSearchResultItem[],
+          isCheckingAnswers: boolean,
+          expected: string,
+        ) => {
+          const journey: AddContactJourney = {
+            id: journeyId,
+            lastTouched: new Date().toISOString(),
+            prisonerNumber: 'A1234BC',
+            mode: 'NEW',
+            isCheckingAnswers,
+            possibleExistingRecords,
+          }
+
+          const nav = navigationForAddContactJourney(Page.SELECT_RELATIONSHIP_TYPE, journey, adminUser)
+
+          expect(nav.backLink).toStrictEqual(expected)
+        },
+      )
+
+      it.each([
+        ['YES', `/prisoner/A1234BC/contacts/add/mode/EXISTING/${journeyId}`, 'EXISTING'],
+        [
+          'NO_GO_BACK_TO_POSSIBLE_EXISTING_RECORDS',
+          `/prisoner/A1234BC/contacts/create/possible-existing-records/${journeyId}`,
+          'NEW',
+        ],
+        [
+          'NO_CONTINUE_ADDING_CONTACT',
+          `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`,
+          'NEW',
+        ],
+      ])(
+        'should redirect correctly based on option (%s) and toggle mode if necessary',
+        (option: string, expectedUrl: string, expectedMode: string) => {
+          const journey: AddContactJourney = {
+            id: journeyId,
+            lastTouched: new Date().toISOString(),
+            prisonerNumber: 'A1234BC',
+            mode: 'NEW',
+            isCheckingAnswers: false,
+            possibleExistingRecords: [],
+            isPossibleExistingRecordMatched: option as
+              | 'YES'
+              | 'NO_GO_BACK_TO_POSSIBLE_EXISTING_RECORDS'
+              | 'NO_CONTINUE_ADDING_CONTACT',
+          }
+
+          const page = nextPageForAddContactJourney(
+            Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORD_MATCH_PAGE,
+            journey,
+            adminUser,
+          )
+
+          expect(page).toStrictEqual(expectedUrl)
+          expect(journey.mode).toStrictEqual(expectedMode)
         },
       )
     })
