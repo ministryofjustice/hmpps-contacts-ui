@@ -71,6 +71,7 @@ import AddContactHandleDuplicateController from './handle-duplicate/addContactHa
 import PossibleExistingRecordsController from './possible-existing-records/possibleExistingRecordsController'
 import PossibleExistingRecordMatchController from './possible-existing-record-match/possibleExistingRecordMatchController'
 import { possibleExistingRecordMatchSchema } from './possible-existing-record-match/possibleExistingRecordMatchSchema'
+import TelemetryService from '../../../services/telemetryService'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -80,6 +81,7 @@ const AddContactRoutes = (
   restrictionsService: RestrictionsService,
   prisonerAddressService: PrisonerAddressService,
   organisationsService: OrganisationsService,
+  telemetryService: TelemetryService,
 ) => {
   const router = Router({ mergeParams: true })
   const { get, post } = routerMethods(router, auditService)
@@ -175,13 +177,18 @@ const AddContactRoutes = (
 
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/create/possible-existing-records/:journeyId',
-    controller: new PossibleExistingRecordsController(contactsService),
+    controller: new PossibleExistingRecordsController(contactsService, telemetryService),
     noValidation: true,
   })
 
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/create/possible-existing-record-match/:matchingContactId/:journeyId',
-    controller: new PossibleExistingRecordMatchController(contactsService, restrictionsService, referenceDataService),
+    controller: new PossibleExistingRecordMatchController(
+      contactsService,
+      restrictionsService,
+      referenceDataService,
+      telemetryService,
+    ),
     schema: possibleExistingRecordMatchSchema,
   })
 

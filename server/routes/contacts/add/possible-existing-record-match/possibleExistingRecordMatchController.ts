@@ -11,12 +11,14 @@ import { PrisonerJourneyParams } from '../../../../@types/journeys'
 import { ContactDetails } from '../../../../@types/contactsApiClient'
 import Permission from '../../../../enumeration/permission'
 import { PossibleExistingRecordMatchSchema } from './possibleExistingRecordMatchSchema'
+import TelemetryService from '../../../../services/telemetryService'
 
 export default class PossibleExistingRecordMatchController implements PageHandler {
   constructor(
     private readonly contactsService: ContactsService,
     private readonly restrictionsService: RestrictionsService,
     private readonly referenceDataService: ReferenceDataService,
+    private readonly telemetryService: TelemetryService,
   ) {}
 
   public PAGE_NAME = Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORD_MATCH_PAGE
@@ -36,7 +38,7 @@ export default class PossibleExistingRecordMatchController implements PageHandle
     >,
     res: Response,
   ): Promise<void> => {
-    const { journeyId, matchingContactId } = req.params
+    const { journeyId, matchingContactId, prisonerNumber } = req.params
     const { user } = res.locals
     const journey = req.session.addContactJourneys![journeyId]!
     journey.matchingContactId = Number(matchingContactId)
@@ -65,6 +67,12 @@ export default class PossibleExistingRecordMatchController implements PageHandle
       '?linkedPrisonerPage={page}#linked-prisoners',
     )
 
+    this.telemetryService.trackEvent('POSSIBLE_EXISTING_RECORD_REVIEWED', user, {
+      journeyId,
+      matchingContactId: Number(matchingContactId),
+      prisonerNumber,
+    })
+
     return res.render('pages/contacts/add/existing/matchPossibleExistingRecord', {
       contact,
       globalRestrictions,
@@ -81,17 +89,23 @@ export default class PossibleExistingRecordMatchController implements PageHandle
   }
 
   POST = async (
-    req: Request<{ journeyId: string }, PossibleExistingRecordMatchSchema>,
+    req: Request<{ journeyId: string; prisonerNumber: string }, PossibleExistingRecordMatchSchema>,
     res: Response,
   ): Promise<void> => {
     const { isPossibleExistingRecordMatched } = req.body
-    const { journeyId } = req.params
+    const { journeyId, prisonerNumber } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
     const { user } = res.locals
     journey.isPossibleExistingRecordMatched = isPossibleExistingRecordMatched
     if (isPossibleExistingRecordMatched === 'YES') {
       journey.contactId = journey.matchingContactId!
     }
+    this.telemetryService.trackEvent('POSSIBLE_EXISTING_RECORD_ACTION', user, {
+      journeyId,
+      matchingContactId: journey.matchingContactId,
+      prisonerNumber,
+      action: isPossibleExistingRecordMatched,
+    })
     return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
   }
 }

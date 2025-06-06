@@ -35,18 +35,21 @@ import {
   PrisonerContactSummary,
 } from '../@types/contactsApiClient'
 import { stripNullishAddressLines } from '../routes/contacts/add/addresses/common/utils'
+import TelemetryService from './telemetryService'
+import { HmppsUser } from '../interfaces/hmppsUser'
 
 export default class ContactsService extends AuditedService {
   constructor(
     private readonly contactsApiClient: ContactsApiClient,
     override readonly auditService: AuditService,
+    private readonly telemetryService: TelemetryService,
   ) {
     super(auditService)
   }
 
   async createContact(
     journey: AddContactJourney,
-    user: Express.User,
+    user: HmppsUser,
     correlationId: string,
   ): Promise<ContactCreationResult> {
     const request: CreateContactRequest = {
@@ -142,12 +145,19 @@ export default class ContactsService extends AuditedService {
         isApprovedVisitor: request.relationship?.isApprovedVisitor ?? false,
       },
       correlationId,
+    }).then(result => {
+      this.telemetryService.trackEvent('CONTACT_CREATED', user, {
+        journeyId: journey.id,
+        prisonerNumber: journey.prisonerNumber,
+        numberOfPossibleExistingRecords: journey.possibleExistingRecords?.length ?? 0,
+      })
+      return result
     })
   }
 
   async addContact(
     journey: AddContactJourney,
-    user: Express.User,
+    user: HmppsUser,
     correlationId: string,
   ): Promise<PrisonerContactRelationshipDetails> {
     const request: AddContactRelationshipRequest = {
@@ -174,6 +184,14 @@ export default class ContactsService extends AuditedService {
         isApprovedVisitor: request.relationship.isApprovedVisitor,
       },
       correlationId,
+    }).then(result => {
+      this.telemetryService.trackEvent('CONTACT_LINKED', user, {
+        journeyId: journey.id,
+        prisonerNumber: journey.prisonerNumber,
+        contactId: journey.contactId,
+        numberOfPossibleExistingRecords: journey.possibleExistingRecords?.length ?? 0,
+      })
+      return result
     })
   }
 

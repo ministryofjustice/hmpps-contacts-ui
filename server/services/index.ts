@@ -7,6 +7,7 @@ import ReferenceDataService from './referenceDataService'
 import RestrictionsService from './restrictionsService'
 import PrisonerAddressService from './prisonerAddressService'
 import OrganisationsService from './organisationsService'
+import TelemetryService from './telemetryService'
 
 export const services = () => {
   const {
@@ -16,11 +17,13 @@ export const services = () => {
     contactsApiClient,
     prisonApiClient,
     organisationsApiClient,
+    applicationInsightsClient,
   } = dataAccess()
 
   const auditService = new AuditService(hmppsAuditClient)
+  const telemetryService = new TelemetryService(applicationInsightsClient)
   const prisonerSearchService = new PrisonerSearchService(prisonerSearchApiClient)
-  const contactsService = new ContactsService(contactsApiClient, auditService)
+  const contactsService = new ContactsService(contactsApiClient, auditService, telemetryService)
   const prisonerImageService = new PrisonerImageService(prisonApiClient)
   const referenceDataService = new ReferenceDataService(contactsApiClient)
   const restrictionsService = new RestrictionsService(contactsApiClient, auditService)
@@ -37,6 +40,7 @@ export const services = () => {
     restrictionsService,
     prisonerAddressService,
     organisationsService,
+    telemetryService,
   }
 }
 
