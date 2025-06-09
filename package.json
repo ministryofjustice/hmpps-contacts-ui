@@ -103,12 +103,12 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.821.0",
+    "@aws-sdk/client-sqs": "^3.823.0",
     "@cypress/code-coverage": "^3.14.4",
     "@ministryofjustice/frontend": "^5.1.3",
     "@ministryofjustice/hmpps-connect-dps-components": "^2.1.0",
     "@ministryofjustice/hmpps-monitoring": "^0.0.1-beta.2",
-    "@sentry/node": "^9.24.0",
+    "@sentry/node": "^9.25.1",
     "@types/cypress__code-coverage": "^3.10.2",
     "accessible-autocomplete": "^3.0.1",
     "agentkeepalive": "^4.6.0",
@@ -139,7 +139,7 @@
     "reflect-metadata": "^0.2.2",
     "superagent": "^10.2.1",
     "uuid": "^11.1.0",
-    "zod": "^3.25.42"
+    "zod": "^3.25.50"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
@@ -167,7 +167,7 @@
     "cheerio": "^1.0.0",
     "chokidar": "^3.6.0",
     "concurrently": "^9.1.2",
-    "cypress": "^14.4.0",
+    "cypress": "^14.4.1",
     "cypress-circleci-reporter": "^0.3.0",
     "cypress-multi-reporters": "^2.0.5",
     "dotenv": "^16.5.0",
