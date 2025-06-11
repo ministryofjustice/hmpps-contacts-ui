@@ -5,7 +5,11 @@ import { HmppsUser } from '../../../interfaces/hmppsUser'
 import { hasPermission } from '../../../utils/permissionsUtils'
 import Permission from '../../../enumeration/permission'
 
-type PreModePages = Page.CREATE_CONTACT_START_PAGE | Page.CONTACT_SEARCH_PAGE | Page.CONTACT_MATCH_PAGE
+type PreModePages =
+  | Page.CREATE_CONTACT_START_PAGE
+  | Page.CONTACT_SEARCH_PAGE
+  | Page.CONTACT_MATCH_PAGE
+  | Page.ADD_CONTACT_REVIEW_EXISTING_RELATIONSHIPS_PAGE
 type CreateContactPages =
   | Page.CREATE_CONTACT_START_PAGE
   | Page.CONTACT_SEARCH_PAGE
@@ -36,6 +40,7 @@ type CreateContactPages =
   | Page.ADD_CONTACT_DELETE_EMAIL_PAGE
   | Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE
   | Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORD_MATCH_PAGE
+  | Page.ADD_CONTACT_REVIEW_EXISTING_RELATIONSHIPS_PAGE
 type ExistingContactPages =
   | Page.CREATE_CONTACT_START_PAGE
   | Page.CONTACT_SEARCH_PAGE
@@ -50,6 +55,7 @@ type ExistingContactPages =
   | Page.SUCCESSFULLY_ADDED_CONTACT_PAGE
   | Page.ADD_CONTACT_CANCEL_PAGE
   | Page.ADD_CONTACT_HANDLE_DUPLICATE_PAGE
+  | Page.ADD_CONTACT_REVIEW_EXISTING_RELATIONSHIPS_PAGE
 type AllAddContactPages = PreModePages | CreateContactPages | ExistingContactPages
 type JourneyUrlProvider = (journey: AddContactJourney, user: HmppsUser) => string | undefined
 type Spec = {
@@ -158,6 +164,10 @@ const PAGES: Record<AllAddContactPages, PageConfig> = {
     url: journey =>
       `/prisoner/${journey.prisonerNumber}/contacts/create/possible-existing-record-match/${journey.matchingContactId}/${journey.id}`,
   },
+  [Page.ADD_CONTACT_REVIEW_EXISTING_RELATIONSHIPS_PAGE]: {
+    // this page is only accessible directly from search results with an id
+    url: _ => `#`,
+  },
 }
 
 const PRE_MODE_SPEC: Record<PreModePages, Spec> = {
@@ -171,6 +181,11 @@ const PRE_MODE_SPEC: Record<PreModePages, Spec> = {
     previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
     previousUrlLabel: _ => 'Back to contact search',
     nextUrl: (journey, user) => PAGES.ADD_CONTACT_MODE_PAGE.url(journey, user),
+  },
+  [Page.ADD_CONTACT_REVIEW_EXISTING_RELATIONSHIPS_PAGE]: {
+    previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
+    previousUrlLabel: _ => 'Back to contact search',
+    nextUrl: _ => undefined,
   },
 }
 
@@ -306,6 +321,11 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
     previousUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
+  [Page.ADD_CONTACT_REVIEW_EXISTING_RELATIONSHIPS_PAGE]: {
+    previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
+    previousUrlLabel: _ => 'Back to contact search',
+    nextUrl: _ => undefined,
+  },
 }
 
 const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
@@ -363,6 +383,11 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
   },
   [Page.ADD_CONTACT_HANDLE_DUPLICATE_PAGE]: {
     previousUrl: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url,
+    nextUrl: _ => undefined,
+  },
+  [Page.ADD_CONTACT_REVIEW_EXISTING_RELATIONSHIPS_PAGE]: {
+    previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
+    previousUrlLabel: _ => 'Back to contact search',
     nextUrl: _ => undefined,
   },
 }

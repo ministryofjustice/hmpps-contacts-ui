@@ -72,6 +72,7 @@ import PossibleExistingRecordsController from './possible-existing-records/possi
 import PossibleExistingRecordMatchController from './possible-existing-record-match/possibleExistingRecordMatchController'
 import { possibleExistingRecordMatchSchema } from './possible-existing-record-match/possibleExistingRecordMatchSchema'
 import TelemetryService from '../../../services/telemetryService'
+import ReviewExistingRelationshipsController from './review-existing-relationships/reviewExistingRelationshipsController'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -178,6 +179,12 @@ const AddContactRoutes = (
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/create/possible-existing-records/:journeyId',
     controller: new PossibleExistingRecordsController(contactsService, telemetryService),
+    noValidation: true,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/review-existing-relationships/:matchingContactId/:journeyId',
+    controller: new ReviewExistingRelationshipsController(contactsService, telemetryService),
     noValidation: true,
   })
 

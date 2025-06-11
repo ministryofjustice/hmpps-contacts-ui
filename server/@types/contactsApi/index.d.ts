@@ -1336,7 +1336,11 @@ export interface paths {
     get: operations['getPrisonerContactById']
     put?: never
     post?: never
-    delete?: never
+    /**
+     * Delete prisoner contact relationship
+     * @description Delete the relationship between the contact and a prisoner. Only allowed if there are no relationship restrictions.
+     */
+    delete: operations['deleteContactRelationship']
     options?: never
     head?: never
     /**
@@ -1368,6 +1372,26 @@ export interface paths {
      * @description Update a contact
      */
     patch: operations['patchContact']
+    trace?: never
+  }
+  '/sync/prisoner/{prisonerNumber}/reconcile': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Reconciliation endpoint for a single prisoner by prisoner number
+     * @description Get all the relationships, active and inactive, and their restrictions for one prisoner
+     */
+    get: operations['reconcileSinglePrisoner']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
     trace?: never
   }
   '/sync/contact/{contactId}/reconcile': {
@@ -1436,6 +1460,28 @@ export interface paths {
     }
     /** Fetch contact relationships by prisoner number with the requested filtering applied with pagination */
     get: operations['getAllContacts']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/prisoner/{prisonNumber}/contact/{contactId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get all relationships between a specific prisoner and contact
+     * @description Prisoners can have multiple relationships defined with a single contact which is a security risk and highly discouraged.
+     *           |This API should be used to help dissuade users from creating multiple relationships between a single prisoner and contact wherever possible.
+     *
+     */
+    get: operations['getAllSummariesForPrisonerAndContact']
     put?: never
     post?: never
     delete?: never
@@ -6473,6 +6519,98 @@ export interface components {
        */
       comments?: string
     }
+    /** @description Prisoner single relationship reconciliation */
+    ReconcilePrisonerRelationship: {
+      /**
+       * Format: int64
+       * @description The ID of the contact
+       * @example 12345
+       */
+      contactId: number
+      /**
+       * Format: int64
+       * @description The ID of the prisoner contact
+       * @example 12345
+       */
+      prisonerContactId: number
+      /**
+       * @description Contact first name
+       * @example Bob
+       */
+      firstName?: string
+      /**
+       * @description Contact last name
+       * @example Smith
+       */
+      lastName?: string
+      /**
+       * @description The prisoner number
+       * @example A1234BC
+       */
+      prisonerNumber: string
+      /**
+       * @description Social or official contact
+       * @example S
+       */
+      relationshipTypeCode: string
+      /**
+       * @description The relationship code from reference data
+       * @example FRIEND
+       */
+      relationshipToPrisoner: string
+      /**
+       * @description Indicates if the prisoner contact is next of kin
+       * @example true
+       */
+      nextOfKin: boolean
+      /**
+       * @description Indicates if the prisoner contact is an emergency contact
+       * @example true
+       */
+      emergencyContact: boolean
+      /**
+       * @description Indicates if the prisoner contact is active
+       * @example true
+       */
+      active: boolean
+      /**
+       * @description Indicates if the prisoner contact is an approved visitor
+       * @example true
+       */
+      approvedVisitor: boolean
+      /** @description The list of restrictions on this relationship */
+      restrictions: components['schemas']['ReconcileRelationshipRestriction'][]
+    }
+    /** @description Contact relationship restriction reconciliation */
+    ReconcileRelationshipRestriction: {
+      /**
+       * Format: int64
+       * @description The ID of the prisoner contact restriction
+       * @example 12345
+       */
+      prisonerContactRestrictionId: number
+      /**
+       * @description Type of restriction
+       * @example MOBILE
+       */
+      restrictionType: string
+      /**
+       * Format: date
+       * @description Restriction created date
+       * @example 2024-01-01
+       */
+      startDate?: string
+      /**
+       * Format: date
+       * @description Restriction end date
+       * @example 2024-01-01
+       */
+      expiryDate?: string
+    }
+    /** @description Prisoner relationship reconciliation */
+    SyncPrisonerReconcile: {
+      relationships: components['schemas']['ReconcilePrisonerRelationship'][]
+    }
     EmploymentEntity: {
       /** Format: int64 */
       employmentId: number
@@ -6676,32 +6814,6 @@ export interface components {
       /** @description The list of restrictions on this relationship */
       relationshipRestrictions: components['schemas']['ReconcileRelationshipRestriction'][]
     }
-    /** @description Contact relationship restriction reconciliation */
-    ReconcileRelationshipRestriction: {
-      /**
-       * Format: int64
-       * @description The ID of the prisoner contact restriction
-       * @example 12345
-       */
-      prisonerContactRestrictionId: number
-      /**
-       * @description Type of restriction
-       * @example MOBILE
-       */
-      restrictionType: string
-      /**
-       * Format: date
-       * @description Restriction created date
-       * @example 2024-01-01
-       */
-      startDate?: string
-      /**
-       * Format: date
-       * @description Restriction end date
-       * @example 2024-01-01
-       */
-      expiryDate?: string
-    }
     /** @description Contact restriction reconciliation */
     ReconcileRestriction: {
       /**
@@ -6728,14 +6840,39 @@ export interface components {
        */
       expiryDate?: string
     }
+    /** @description Reconciliation data for one contact */
     SyncContactReconcile: {
-      /** Format: int64 */
+      /**
+       * Format: int64
+       * @description Unique identifier for a contact
+       * @example 1111
+       */
       contactId: number
+      /**
+       * @description Contact first name
+       * @example Bob
+       */
       firstName: string
+      /**
+       * @description Contact last name
+       * @example Smith
+       */
       lastName: string
+      /**
+       * @description Contact middle names
+       * @example David
+       */
       middleNames?: string
-      /** Format: date */
+      /**
+       * Format: date
+       * @description Contact data of birth
+       * @example 2001-02-01
+       */
       dateOfBirth?: string
+      /**
+       * @description Staff indicator
+       * @example false
+       */
       staffFlag: boolean
       phones: components['schemas']['ReconcilePhone'][]
       addresses: components['schemas']['ReconcileAddress'][]
@@ -7410,6 +7547,45 @@ export interface components {
        * @example Some additional information
        */
       comments?: string
+      /** @description A list of existing relationships to a prisoner if a check against the prisoner number was requested. Empty if there are no existing relationships or null if it was not requested. */
+      existingRelationships?: components['schemas']['ExistingRelationshipToPrisoner'][]
+    }
+    ExistingRelationshipToPrisoner: {
+      /**
+       * Format: int64
+       * @description The unique identifier for the prisoner contact
+       * @example 123456
+       */
+      prisonerContactId: number
+      /**
+       * @description
+       *           Coded value indicating either a social or official contact (mandatory).
+       *           This is a coded value from the group code CONTACT_TYPE in reference data.
+       *           Known values are (S) Social or (O) official.
+       *
+       * @example S
+       */
+      relationshipTypeCode: string
+      /**
+       * @description The description of the contact relationship type. Description from reference data Official or Social
+       * @example Official
+       */
+      relationshipTypeDescription: string
+      /**
+       * @description The relationship to the prisoner. A code from SOCIAL_RELATIONSHIP or OFFICIAL_RELATIONSHIP reference data groups depending on the relationship type.
+       * @example FRI
+       */
+      relationshipToPrisonerCode: string
+      /**
+       * @description The description of the relationship
+       * @example Friend
+       */
+      relationshipToPrisonerDescription?: string
+      /**
+       * @description Is this prisoner's contact relationship active?
+       * @example true
+       */
+      isRelationshipActive: boolean
     }
     PagedModelContactSearchResultItem: {
       content?: components['schemas']['ContactSearchResultItem'][]
@@ -10581,6 +10757,15 @@ export interface operations {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
+      /** @description The requested combination of prisoner, contact and relationship to prisoner already exists. */
+      409: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
     }
   }
   syncCreatePrisonerContactRestriction: {
@@ -11105,6 +11290,15 @@ export interface operations {
       }
       /** @description Could not find the prisoner or contact that this relationship relates to */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The requested combination of prisoner, contact and relationship to prisoner already exists. */
+      409: {
         headers: {
           [name: string]: unknown
         }
@@ -12368,6 +12562,66 @@ export interface operations {
       }
     }
   }
+  deleteContactRelationship: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the prisoner contact
+         * @example 123456
+         */
+        prisonerContactId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Deleted the relationship successfully */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find the prisoner contact that this relationship relates to */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The relationship has attached entities such as restrictions and cannot be deleted. */
+      409: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   patchContactRelationship: {
     parameters: {
       query?: never
@@ -12434,6 +12688,15 @@ export interface operations {
       }
       /** @description Could not find the prisoner contact that this relationship relates to */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The requested combination of prisoner, contact and relationship to prisoner already exists. */
+      409: {
         headers: {
           [name: string]: unknown
         }
@@ -12553,6 +12816,47 @@ export interface operations {
       }
       /** @description No contact with that id could be found */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  reconcileSinglePrisoner: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the contact. */
+        prisonerNumber: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Reconciliation object for one contact */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncPrisonerReconcile']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
         headers: {
           [name: string]: unknown
         }
@@ -12736,6 +13040,64 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['PagedModelPrisonerContactSummary']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The Prisoner was not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getAllSummariesForPrisonerAndContact: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The prison number of the prisoner who's contacts will be returned
+         * @example A1234BC
+         */
+        prisonNumber: string
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description A page of matching contact relationships for the prisoner */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerContactSummary'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -13529,10 +13891,31 @@ export interface operations {
   searchContacts: {
     parameters: {
       query: {
+        /**
+         * @description Last name of the contact
+         * @example Jones
+         */
         lastName: string
+        /**
+         * @description First name of the contact
+         * @example Elton
+         */
         firstName?: string
+        /**
+         * @description Middle names of the contact
+         * @example Simon
+         */
         middleNames?: string
+        /**
+         * @description Date of Birth of the contact in ISO format
+         * @example 30/12/2010
+         */
         dateOfBirth?: string
+        /**
+         * @description If a prisoner number is specified, check all matching contacts for any existing relationships to the prisoner. All matching contacts are returned regardless of whether they have an existing relationship to the prisoner or not.
+         * @example A1234BC
+         */
+        includeAnyExistingRelationshipsToPrisoner?: string
         /** @description Zero-based page index (0..N) */
         page?: number
         /** @description The size of the page to be returned */
