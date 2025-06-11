@@ -108,7 +108,7 @@
     "@ministryofjustice/frontend": "^5.1.3",
     "@ministryofjustice/hmpps-connect-dps-components": "^2.1.0",
     "@ministryofjustice/hmpps-monitoring": "^0.0.1-beta.2",
-    "@sentry/node": "^9.25.1",
+    "@sentry/node": "^9.26.0",
     "@types/cypress__code-coverage": "^3.10.2",
     "accessible-autocomplete": "^3.0.1",
     "agentkeepalive": "^4.6.0",
@@ -139,7 +139,7 @@
     "reflect-metadata": "^0.2.2",
     "superagent": "^10.2.1",
     "uuid": "^11.1.0",
-    "zod": "^3.25.50"
+    "zod": "^3.25.51"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
