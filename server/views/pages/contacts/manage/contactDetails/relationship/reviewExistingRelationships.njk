@@ -1,0 +1,39 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "partials/contactDetails/prisonerContactSummaryTable.njk" import prisonerContactSummaryTable %}
+
+{% set mainClasses = "app-container govuk-body" %}
+
+{% set pageTitle = "The contact is already linked to the prisoner - Manage contacts - DPS" %}
+{% set title = "The contact is already linked to the prisoner " %}
+{% set caption = journey | captionForAddContactJourney %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-l">{{ caption }}</span>
+      <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {{ prisonerContactSummaryTable({
+        contacts: existingRelationships,
+        prisonerNumber: prisonerDetails.prisonerNumber,
+        user: user
+      }) }}
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <p class="govuk-body">You can:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li data-qa="view-existing-hint">{% if existingRelationships.length > 1 %}view and update these existing records{% else %}view and update this existing record{% endif %}</li>
+        <li><a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/add/match/{{ matchingContactId }}/{{ journey.id }}" class="govuk-link govuk-link--no-visited-state" data-qa="add-another-relationship-link">link this contact to the prisoner again</a> - for example, to record when a contact has both social and official relationships to a prisoner</li>
+        <li><a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/list" class="govuk-link govuk-link--no-visited-state" data-qa="return-to-contact-list-link">go back to the prisoner’s contact list</a> without making any changes</li>
+      </ul>
+    </div>
+  </div>
+{% endblock %}

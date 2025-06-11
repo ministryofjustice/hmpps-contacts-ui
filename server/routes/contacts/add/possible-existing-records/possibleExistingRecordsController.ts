@@ -31,8 +31,8 @@ export default class PossibleExistingRecordsController implements PageHandler {
       matches = journey.possibleExistingRecords
     } else if (journey.dateOfBirth?.isKnown === 'YES') {
       const contactSearchRequest: ContactSearchRequest = {
-        lastName: journey.names?.lastName,
-        firstName: journey.names?.firstName,
+        lastName: journey.names!.lastName,
+        firstName: journey.names!.firstName,
         dateOfBirth: formatDateForApi(journey.dateOfBirth),
       }
       const result = await this.contactsService.searchContact(

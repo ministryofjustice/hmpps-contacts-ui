@@ -6,7 +6,6 @@ export type PrisonerContactRelationshipDetails = components['schemas']['Prisoner
 export type ContactAddressDetails = components['schemas']['ContactAddressDetails']
 export type PagedModelPrisonerContactSummary = components['schemas']['PagedModelPrisonerContactSummary']
 export type ReferenceCode = components['schemas']['ReferenceCode']
-export type ContactSearchRequest = components['schemas']['ContactSearchRequest']
 export type PagedModelContactSearchResultItem = components['schemas']['PagedModelContactSearchResultItem']
 export type CreatePhoneRequest = components['schemas']['CreatePhoneRequest']
 export type UpdatePhoneRequest = components['schemas']['UpdatePhoneRequest']
@@ -58,4 +57,12 @@ export type PrisonerContactPagination = {
   page: number
   size: number
   sort?: string[]
+}
+
+export type ContactSearchRequest = {
+  lastName: string
+  firstName?: string | undefined
+  middleNames?: string | undefined
+  dateOfBirth?: string | null
+  includeAnyExistingRelationshipsToPrisoner?: string | undefined
 }

@@ -147,6 +147,13 @@ describe('addContactFlowControl', () => {
           'Back to additional information options',
           adminUser,
         ],
+        [
+          Page.ADD_CONTACT_REVIEW_EXISTING_RELATIONSHIPS_PAGE,
+          `/prisoner/A1234BC/contacts/search/${journeyId}`,
+          undefined,
+          'Back to contact search',
+          adminUser,
+        ],
       ])(
         'Should go back to previous page: from %s to %s',
         (
@@ -500,6 +507,13 @@ describe('addContactFlowControl', () => {
           undefined,
           adminUser,
         ],
+        [
+          Page.ADD_CONTACT_REVIEW_EXISTING_RELATIONSHIPS_PAGE,
+          `/prisoner/A1234BC/contacts/search/${journeyId}`,
+          undefined,
+          'Back to contact search',
+          adminUser,
+        ],
       ])(
         'Should go back to previous page: from %s to %s',
         (
@@ -655,6 +669,12 @@ describe('addContactFlowControl', () => {
       [Page.CREATE_CONTACT_START_PAGE, undefined, undefined, undefined],
       [Page.CONTACT_SEARCH_PAGE, undefined, '/prisoner/A1234BC/contacts/list', 'Back to prisoner’s contact list'],
       [Page.CONTACT_MATCH_PAGE, undefined, `/prisoner/A1234BC/contacts/search/${journeyId}`, 'Back to contact search'],
+      [
+        Page.ADD_CONTACT_REVIEW_EXISTING_RELATIONSHIPS_PAGE,
+        undefined,
+        `/prisoner/A1234BC/contacts/search/${journeyId}`,
+        'Back to contact search',
+      ],
     ])('Should have no back for initial pages', (page: Page, breadcrumbs, backLink, backLinkLabel) => {
       const journey: AddContactJourney = {
         id: journeyId,

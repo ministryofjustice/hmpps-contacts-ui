@@ -60,10 +60,11 @@ export default class ContactSearchController implements PageHandler {
 
     if (journey.searchContact?.contact && this.namesAreValid(journey.searchContact?.contact) && !dobError) {
       const contactSearchRequest: ContactSearchRequest = {
-        lastName: journey.searchContact.contact.lastName,
+        lastName: journey.searchContact.contact.lastName!,
         firstName: journey.searchContact.contact.firstName,
         middleNames: journey.searchContact.contact.middleNames,
         dateOfBirth: formatDateForApi(journey.searchContact.dateOfBirth),
+        includeAnyExistingRelationshipsToPrisoner: journey.prisonerNumber,
       }
 
       results = await this.contactsService.searchContact(

@@ -258,6 +258,7 @@ export default class TestData {
     countryDescription = 'England',
     createdBy = 'User13',
     createdTime = '2024-09-11T11:08:26.191824',
+    existingRelationships = [],
   }: Partial<ContactSearchResultItem> = {}): ContactSearchResultItem =>
     ({
       id,
@@ -278,6 +279,7 @@ export default class TestData {
       countryDescription,
       createdBy,
       createdTime,
+      existingRelationships,
     }) as ContactSearchResultItem
 
   static contact = ({
