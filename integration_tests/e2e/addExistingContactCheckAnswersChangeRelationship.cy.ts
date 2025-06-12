@@ -62,6 +62,12 @@ context('Add Existing Contact Check Answers', () => {
       dateOfBirth: '1990-01-14',
     })
 
+    cy.task('stubAllSummariesForAPrisonerAndContact', {
+      prisonerNumber,
+      contactId,
+      items: [],
+    })
+
     cy.signIn({ startUrl: `/prisoner/${prisonerNumber}/contacts/list` })
 
     Page.verifyOnPage(ListContactsPage, 'John Smith') //

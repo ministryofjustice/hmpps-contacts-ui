@@ -170,6 +170,45 @@ context('Add existing contact when search reveals some existing relationships', 
     )
   })
 
+  it('Can review the existing contact records from the match screen and continue to add a contact', () => {
+    Page.verifyOnPage(SearchContactPage) //
+      .enterLastName('Contact')
+      .clickSearchButton()
+
+    Page.verifyOnPage(SearchContactPage) //
+      .clickLinkTo('Check if this is the correct contact', ContactMatchPage, 'Existing Contact', 'John Smith')
+      .clickLinkTo('View existing record', ReviewExistingRelationshipsPage)
+      .clickLinkTo('Back to contact search', SearchContactPage)
+      .clickLinkTo('Check if this is the correct contact', ContactMatchPage, 'Existing Contact', 'John Smith')
+      .selectIsTheRightPersonYesRadio()
+      .continueTo(SelectRelationshipTypePage, 'Existing Contact', 'John Smith')
+      .selectRelationshipType('S')
+      .continueTo(SelectRelationshipPage, 'Existing Contact', 'John Smith')
+      .selectRelationship('MOT')
+      .continueTo(SelectEmergencyContactOrNextOfKinPage, 'Existing Contact', 'John Smith', true, 'John Smith', true) //
+      .continueTo(RelationshipCommentsPage, 'Existing Contact', 'John Smith', true) //
+      .continueTo(LinkExistingContactCYAPage)
+      .continueTo(AddContactSuccessPage)
+
+    cy.verifyLastAPICall(
+      {
+        method: 'POST',
+        urlPath: `/prisoner-contact`,
+      },
+      {
+        contactId,
+        relationship: {
+          prisonerNumber: 'A1234BC',
+          relationshipTypeCode: 'S',
+          relationshipToPrisonerCode: 'MOT',
+          isNextOfKin: false,
+          isEmergencyContact: false,
+          isApprovedVisitor: false,
+        },
+      },
+    )
+  })
+
   it('Should be able to go back to the contact list', () => {
     Page.verifyOnPage(SearchContactPage) //
       .enterLastName('Contact')
@@ -188,5 +227,16 @@ context('Add existing contact when search reveals some existing relationships', 
     Page.verifyOnPage(SearchContactPage) //
       .clickLinkTo('View existing record', ReviewExistingRelationshipsPage)
       .clickLinkTo('Contact, Existing', ManageContactDetailsPage, 'Existing Contact')
+  })
+
+  it('Can review the existing contact records from the match screen and then continue back to the contact list', () => {
+    Page.verifyOnPage(SearchContactPage) //
+      .enterLastName('Contact')
+      .clickSearchButton()
+
+    Page.verifyOnPage(SearchContactPage) //
+      .clickLinkTo('Check if this is the correct contact', ContactMatchPage, 'Existing Contact', 'John Smith')
+      .selectIsTheRightPersonNoGoToContactList()
+      .continueTo(ListContactsPage, 'John Smith')
   })
 })

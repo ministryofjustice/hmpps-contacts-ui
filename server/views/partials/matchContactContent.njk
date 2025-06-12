@@ -12,7 +12,6 @@
 
 {% macro matchContactContent(opts) %}
 
-  {% set title = opts.title %}
   {% set contact = opts.contact %}
   {% set prisonerDetails = opts.prisonerDetails %}
   {% set globalRestrictions = opts.globalRestrictions %}
@@ -21,13 +20,6 @@
   {% set phoneTypeOrderDictionary = opts.phoneTypeOrderDictionar %}
   {% set paginationParams = opts.paginationParams %}
 
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
-      <span class="govuk-caption-l">Link a contact to a prisoner</span>
-      <h1 class="govuk-heading-l" data-qa="confim-title-value-top">{{ title }}</h1>
-      <p class="govuk-body">If this is the correct contact record but their information needs to be updated, you can make updates after you link the record to the prisoner. </p>
-    </div>
-  </div>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <div class="govuk-tabs" data-module="govuk-tabs">

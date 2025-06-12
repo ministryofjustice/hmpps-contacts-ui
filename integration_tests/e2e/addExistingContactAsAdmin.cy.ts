@@ -70,6 +70,11 @@ context('Add existing contact as admin user so cannot set visit approval', () =>
       middleNames: '',
       dateOfBirth: '',
     })
+    cy.task('stubAllSummariesForAPrisonerAndContact', {
+      prisonerNumber,
+      contactId,
+      items: [],
+    })
 
     cy.signIn({ startUrl: `/prisoner/${prisonerNumber}/contacts/list` })
 

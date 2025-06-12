@@ -15,7 +15,7 @@ export interface AddContactJourney {
         sort?: string
       }
     | undefined
-  isContactMatched?: 'YES' | 'NO_SEARCH_AGAIN' | 'NO_CREATE_NEW'
+  isContactMatched?: 'YES' | 'NO_SEARCH_AGAIN' | 'NO_CREATE_NEW' | 'NO_GO_BACK_TO_CONTACT_LIST'
   isPossibleExistingRecordMatched?: 'YES' | 'NO_GO_BACK_TO_POSSIBLE_EXISTING_RECORDS' | 'NO_CONTINUE_ADDING_CONTACT'
   names?: ContactNames
   dateOfBirth?: DateOfBirth
