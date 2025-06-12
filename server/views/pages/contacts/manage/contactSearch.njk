@@ -168,14 +168,13 @@
                 }
               ]), contactRows) %}
               {% if hasExistingRelationships %}
-                {% set title = (contact | formatNameFirstNameFirst) + ' (' + contact.id + ') is already linked to prisoner' %}
                 {% set reviewUrl = '/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/create/review-existing-relationships/' + contact.id + '/' + journey.id %}
                 {% set alertHtml %}
                   {{ mojAlert({
                     variant: "information",
-                    title: title,
+                    title: (contact | formatNameFirstNameFirst) + ' (' + contact.id + ') is already linked to the prisoner',
                     dismissible: false,
-                    html: title + ' ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) + '. <br/><a href="' + reviewUrl + '" class="govuk-link">View existing record' +  ('s' if contact.existingRelationships.length > 1) + '</a>',
+                    html: (contact | formatNameFirstNameFirst) + ' (' + contact.id + ') is already linked to prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) + '. <br/><a href="' + reviewUrl + '" class="govuk-link">View existing record' +  ('s' if contact.existingRelationships.length > 1) + '</a>',
                     classes: 'govuk-!-margin-bottom-0'
                   }) }}
                 {% endset %}

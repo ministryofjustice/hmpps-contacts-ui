@@ -11,6 +11,7 @@ import ReferenceDataService from '../../../../services/referenceDataService'
 import { PrisonerJourneyParams } from '../../../../@types/journeys'
 import { ContactDetails } from '../../../../@types/contactsApiClient'
 import Permission from '../../../../enumeration/permission'
+import Urls from '../../../urls'
 
 export default class ContactMatchController implements PageHandler {
   constructor(
@@ -43,6 +44,11 @@ export default class ContactMatchController implements PageHandler {
 
     const contact: ContactDetails = await this.contactsService.getContact(journey.matchingContactId, user)
     const globalRestrictions = await this.restrictionsService.getGlobalRestrictions(contact, user)
+    const existingRelationshipSummaries = await this.contactsService.getAllSummariesForPrisonerAndContact(
+      journey.prisonerNumber,
+      journey.matchingContactId,
+      user,
+    )
 
     const { linkedPrisonerPage } = req.query
 
@@ -70,11 +76,13 @@ export default class ContactMatchController implements PageHandler {
       globalRestrictions,
       linkedPrisoners: linkedPrisoners.content,
       linkedPrisonersCount,
+      journey,
       isContactConfirmed: res.locals?.formResponses?.['isContactMatched'] ?? journey?.isContactMatched,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
       phoneTypeOrderDictionary: getReferenceDataOrderDictionary(
         await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user),
       ),
+      existingRelationshipSummaries,
     })
   }
 
@@ -92,6 +100,9 @@ export default class ContactMatchController implements PageHandler {
     if (journey.isContactMatched === 'NO_CREATE_NEW') {
       journey.mode = 'NEW'
       return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+    }
+    if (journey.isContactMatched === 'NO_GO_BACK_TO_CONTACT_LIST') {
+      return res.redirect(Urls.contactList(journey.prisonerNumber))
     }
     // return to search by default which will reset the mode
     return res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/search/${journey.id}`)

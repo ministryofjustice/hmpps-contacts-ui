@@ -28,6 +28,12 @@ export default class ContactMatchPage extends Page {
     return this
   }
 
+  selectIsTheRightPersonNoGoToContactList(): ContactMatchPage {
+    // this replaces the no create new button when there are existing matches
+    this.checkRadio(2).check()
+    return this
+  }
+
   clickRestrictionsTab() {
     this.getRestrictionsTab().should('contain.text', 'Restrictions (1)').click()
     return this

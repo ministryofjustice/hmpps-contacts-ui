@@ -52,6 +52,11 @@ context('Contact confirmation', () => {
       middleNames: '',
       dateOfBirth: '',
     })
+    cy.task('stubAllSummariesForAPrisonerAndContact', {
+      prisonerNumber,
+      contactId,
+      items: [],
+    })
 
     cy.signIn({ startUrl: `/prisoner/${prisonerNumber}/contacts/search/${journeyId}` })
 

@@ -14,6 +14,7 @@ import {
   ContactDetails,
   EmploymentDetails,
   LinkedPrisonerDetails,
+  PrisonerContactSummary,
 } from '../../../../@types/contactsApiClient'
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
 
@@ -35,6 +36,30 @@ const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 let existingJourney: AddContactJourney
 let currentUser: HmppsUser
+
+const minimalContact: PrisonerContactSummary = {
+  prisonerContactId: 987654321,
+  contactId: 123456789,
+  prisonerNumber,
+  lastName: 'Last',
+  firstName: 'First',
+  relationshipTypeCode: 'S',
+  relationshipTypeDescription: 'Social',
+  relationshipToPrisonerCode: 'FR',
+  relationshipToPrisonerDescription: 'Father',
+  isApprovedVisitor: false,
+  isNextOfKin: false,
+  isEmergencyContact: false,
+  isRelationshipActive: false,
+  currentTerm: true,
+  isStaff: false,
+  restrictionSummary: {
+    active: [],
+    totalActive: 0,
+    totalExpired: 0,
+  },
+}
+
 beforeEach(() => {
   currentUser = adminUser
   existingJourney = {
@@ -70,11 +95,13 @@ afterEach(() => {
 })
 describe('Contact details', () => {
   describe('GET /prisoner/:prisonerNumber/contacts/EXISTING/match/:journeyId?contactId=', () => {
-    it('should render confirmation page', async () => {
+    it('should render confirmation page when there is no existing records', async () => {
       // Given
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
       contactsService.getContact.mockResolvedValue(TestData.contact())
+      contactsService.getAllSummariesForPrisonerAndContact.mockResolvedValue([])
+
       existingJourney.mode = 'EXISTING'
 
       // When
@@ -105,6 +132,124 @@ describe('Contact details', () => {
       )
       expect($('[data-qa=confim-title-value-bottom]').text().trim()).toContain(
         'Is this the correct contact to link to John Smith?',
+      )
+      expect($('#contactMatchActionYes').next().text().trim()).toStrictEqual('Yes')
+      expect($('#contactMatchActionNoSearchAgain').next().text().trim()).toStrictEqual(
+        'No, take me back to contact search to try again',
+      )
+      expect($('#contactMatchActionNoCreateNew').next().text().trim()).toStrictEqual(
+        'No, I need to add a new contact onto the system',
+      )
+      expect($('#contactMatchActionNoGoToContactList')).toHaveLength(0)
+    })
+
+    it('should show existing record warning for a single existing record', async () => {
+      // Given
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
+      contactsService.getContact.mockResolvedValue(TestData.contact())
+      contactsService.getAllSummariesForPrisonerAndContact.mockResolvedValue([
+        {
+          ...minimalContact,
+          prisonerContactId: 15896471,
+          relationshipToPrisonerCode: 'BRO',
+          relationshipToPrisonerDescription: 'Brother',
+          isRelationshipActive: false,
+        },
+      ])
+      existingJourney.mode = 'EXISTING'
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/match/22/${journeyId}`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+
+      expect($('title').text()).toStrictEqual(
+        'Check and confirm if you want to link a contact to a prisoner - Manage contacts - DPS',
+      )
+      expect($('.govuk-caption-l').text()).toStrictEqual('Link a contact to a prisoner')
+      expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+      expect($('a:contains("Back to contact search")').attr('href')).toEqual(
+        `/prisoner/A1234BC/contacts/search/${journeyId}`,
+      )
+      expect($('[data-qa=confim-title-value-top]').text().trim()).toStrictEqual(
+        'Check and confirm if you want to link contact Jones Mason to prisoner John Smith',
+      )
+      expect($('[data-qa=confim-title-value-bottom]').text().trim()).toContain(
+        'Do you want to create another relationship link between this contact and John Smith?',
+      )
+      expect($('#contactMatchActionYes').next().text().trim()).toStrictEqual('Yes')
+      expect($('#contactMatchActionNoSearchAgain').next().text().trim()).toStrictEqual(
+        'No, take me back to contact search to try again',
+      )
+      expect($('#contactMatchActionNoCreateNew')).toHaveLength(0)
+      expect($('#contactMatchActionNoGoToContactList').next().text().trim()).toStrictEqual(
+        'No, take me back to the prisoner’s contact list without making any changes',
+      )
+
+      const existingRecordLink = $('[data-qa=view-existing-record-link]')
+      expect(existingRecordLink.text().trim()).toContain('View existing record')
+      expect(existingRecordLink.attr('href')).toContain(
+        `/prisoner/A1234BC/contacts/create/review-existing-relationships/22/${journeyId}`,
+      )
+    })
+
+    it('should show existing record warning for a multiple existing records', async () => {
+      // Given
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
+      contactsService.getContact.mockResolvedValue(TestData.contact())
+      contactsService.getAllSummariesForPrisonerAndContact.mockResolvedValue([
+        {
+          ...minimalContact,
+          prisonerContactId: 15896471,
+          relationshipToPrisonerCode: 'BRO',
+          relationshipToPrisonerDescription: 'Brother',
+          isRelationshipActive: false,
+        },
+        {
+          ...minimalContact,
+          prisonerContactId: 4567897132,
+          relationshipToPrisonerCode: 'FRI',
+          relationshipToPrisonerDescription: 'Friend',
+          isRelationshipActive: false,
+        },
+      ])
+      existingJourney.mode = 'EXISTING'
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/match/22/${journeyId}`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+
+      expect($('title').text()).toStrictEqual(
+        'Check and confirm if you want to link a contact to a prisoner - Manage contacts - DPS',
+      )
+      expect($('.govuk-caption-l').text()).toStrictEqual('Link a contact to a prisoner')
+      expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+      expect($('a:contains("Back to contact search")').attr('href')).toEqual(
+        `/prisoner/A1234BC/contacts/search/${journeyId}`,
+      )
+      expect($('[data-qa=confim-title-value-top]').text().trim()).toStrictEqual(
+        'Check and confirm if you want to link contact Jones Mason to prisoner John Smith',
+      )
+      expect($('[data-qa=confim-title-value-bottom]').text().trim()).toContain(
+        'Do you want to create another relationship link between this contact and John Smith?',
+      )
+      expect($('#contactMatchActionYes').next().text().trim()).toStrictEqual('Yes')
+      expect($('#contactMatchActionNoSearchAgain').next().text().trim()).toStrictEqual(
+        'No, take me back to contact search to try again',
+      )
+      expect($('#contactMatchActionNoCreateNew')).toHaveLength(0)
+      expect($('#contactMatchActionNoGoToContactList').next().text().trim()).toStrictEqual(
+        'No, take me back to the prisoner’s contact list without making any changes',
+      )
+      const existingRecordLink = $('[data-qa=view-existing-record-link]')
+      expect(existingRecordLink.text().trim()).toContain('View existing records')
+      expect(existingRecordLink.attr('href')).toContain(
+        `/prisoner/A1234BC/contacts/create/review-existing-relationships/22/${journeyId}`,
       )
     })
 
@@ -1031,6 +1176,22 @@ describe('POST /prisoner/:prisonerNumber/contacts/add/match/22/:journeyId?contac
     expect(existingJourney.isContactMatched).toStrictEqual('NO_CREATE_NEW')
     expect(existingJourney.mode).toStrictEqual('NEW')
     expect(existingJourney.contactId).toBeUndefined()
+  })
+
+  it('should pass validation when "No, take me back to the prisoner’s contact list without making any changes" is selected and redirect to contact list', async () => {
+    // Given
+    existingJourney.matchingContactId = 22
+
+    // When
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/add/match/22/${journeyId}`)
+      .type('form')
+      .send({ isContactMatched: 'NO_GO_BACK_TO_CONTACT_LIST' })
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/list`)
+
+    // Then
+    expect(existingJourney.isContactMatched).toStrictEqual('NO_GO_BACK_TO_CONTACT_LIST')
   })
 
   it('should not pass validation when no option is selected', async () => {

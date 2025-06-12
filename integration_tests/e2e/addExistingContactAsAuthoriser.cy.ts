@@ -71,6 +71,12 @@ context('Add existing contact as authorising user so can set visit approval', ()
       dateOfBirth: '',
     })
 
+    cy.task('stubAllSummariesForAPrisonerAndContact', {
+      prisonerNumber,
+      contactId,
+      items: [],
+    })
+
     cy.signIn({ startUrl: `/prisoner/${prisonerNumber}/contacts/list` })
 
     Page.verifyOnPage(ListContactsPage, 'John Smith') //
