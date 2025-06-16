@@ -10,6 +10,7 @@ import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { AddContactJourney } from '../../../../@types/journeys'
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
+import { PrisonerContactSummary } from '../../../../@types/contactsApiClient'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/referenceDataService')
@@ -91,7 +92,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/possible-existing-record
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('Possible existing records have been found')
     expect($('[data-qa=cancel-button]')).toHaveLength(0)
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back to add a contact')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`,
     )
@@ -149,7 +150,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/possible-existing-record
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual('A possible existing record has been found')
     expect($('[data-qa=cancel-button]')).toHaveLength(0)
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back to add a contact')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`,
     )
@@ -166,6 +167,66 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/possible-existing-record
 
     expect($('[data-qa=match-count]')).toHaveLength(0)
     expect(contactsService.searchContact).toHaveBeenCalled()
+  })
+
+  it('should render alert if possible existing record is already linked to the prisoner', async () => {
+    existingJourney.dateOfBirth = {
+      isKnown: 'YES',
+      day: 15,
+      month: 6,
+      year: 1982,
+    }
+    const possibleExistingRelationship: PrisonerContactSummary = {
+      prisonerContactId: 987654321,
+      contactId: 22,
+      prisonerNumber,
+      lastName: 'Last',
+      firstName: 'First',
+      relationshipTypeCode: 'S',
+      relationshipTypeDescription: 'Social',
+      relationshipToPrisonerCode: 'FR',
+      relationshipToPrisonerDescription: 'Father',
+      isApprovedVisitor: false,
+      isNextOfKin: false,
+      isEmergencyContact: false,
+      isRelationshipActive: false,
+      currentTerm: true,
+      isStaff: false,
+      restrictionSummary: {
+        active: [],
+        totalActive: 0,
+        totalExpired: 0,
+      },
+    }
+
+    const possibleRecords = [
+      TestData.contactSearchResultItem({ id: 123456, firstName: 'First', middleNames: 'One', lastName: 'Last' }),
+      TestData.contactSearchResultItem({
+        id: 654321,
+        firstName: 'First',
+        middleNames: '',
+        lastName: 'Last',
+        existingRelationships: [possibleExistingRelationship],
+      }),
+    ]
+    contactsService.searchContact.mockResolvedValue({
+      content: possibleRecords,
+      page: { totalPages: 1, totalElements: 1, number: 0, size: 100 },
+    })
+
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/create/possible-existing-records/${journeyId}`,
+    )
+
+    expect(response.status).toEqual(200)
+
+    const $ = cheerio.load(response.text)
+
+    const existingRecordLink = $('[data-qa=possible-existing-relationship-link-654321]').first()
+    expect(existingRecordLink.text().trim()).toContain('View existing record')
+    expect(existingRecordLink.attr('href')).toContain(
+      `/prisoner/A1234BC/contacts/create/review-possible-duplicate-existing-relationships/654321/${journeyId}`,
+    )
   })
 
   it('should not search again if the possible matches exist already (they are reset by dob and name controllers)', async () => {

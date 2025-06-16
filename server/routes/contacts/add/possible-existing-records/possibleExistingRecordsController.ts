@@ -34,6 +34,7 @@ export default class PossibleExistingRecordsController implements PageHandler {
         lastName: journey.names!.lastName,
         firstName: journey.names!.firstName,
         dateOfBirth: formatDateForApi(journey.dateOfBirth),
+        includeAnyExistingRelationshipsToPrisoner: prisonerNumber,
       }
       const result = await this.contactsService.searchContact(
         contactSearchRequest,

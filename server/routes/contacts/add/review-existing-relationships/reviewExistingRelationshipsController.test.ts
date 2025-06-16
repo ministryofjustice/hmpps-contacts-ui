@@ -245,3 +245,130 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/review-existing-relation
       .expect(expectedStatus)
   })
 })
+
+describe('GET /prisoner/:prisonerNumber/contacts/create/review-possible-duplicate-existing-relationships/:matchingContactId/:journeyId', () => {
+  it('should render existing relationships and navigation when there is more than one', async () => {
+    existingJourney.mode = 'NEW'
+    contactsService.getAllSummariesForPrisonerAndContact.mockResolvedValue([
+      {
+        ...minimalContact,
+        prisonerContactId: 15896471,
+        relationshipToPrisonerCode: 'BRO',
+        relationshipToPrisonerDescription: 'Brother',
+        isRelationshipActive: false,
+      },
+      {
+        ...minimalContact,
+        prisonerContactId: 568598312,
+        relationshipToPrisonerCode: 'FRI',
+        relationshipToPrisonerDescription: 'Friend',
+        isRelationshipActive: true,
+      },
+    ])
+
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/create/review-possible-duplicate-existing-relationships/456789/${journeyId}`,
+    )
+
+    expect(response.status).toEqual(200)
+
+    const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(`The contact is already linked to the prisoner - Manage contacts - DPS`)
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
+      'The contact is already linked to the prisoner',
+    )
+    expect($('[data-qa=cancel-button]')).toHaveLength(0)
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back to possible existing records')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/create/possible-existing-records/${journeyId}`,
+    )
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Link a contact to a prisoner')
+    expect($('[data-qa=continue-button]')).toHaveLength(0)
+
+    expect($('[data-qa=view-existing-hint]').first().text().trim()).toStrictEqual(
+      'view and update these existing records',
+    )
+
+    const addAnotherLink = $('[data-qa=add-another-relationship-link]').first()
+    expect(addAnotherLink.attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/add/match/456789/${journeyId}`,
+    )
+    expect(addAnotherLink.parent().text().trim()).toStrictEqual(
+      'link this contact to the prisoner again - for example, to record when a contact has both social and official relationships to a prisoner',
+    )
+
+    const contactListLink = $('[data-qa=return-to-contact-list-link]').first()
+    expect(contactListLink.attr('href')).toStrictEqual(`/prisoner/${prisonerNumber}/contacts/list`)
+    expect(contactListLink.parent().text().trim()).toStrictEqual(
+      'go back to the prisoner’s contact list without making any changes',
+    )
+
+    expect(telemetryService.trackEvent).toHaveBeenCalledWith('REVIEWING_EXISTING_RELATIONSHIPS', adminUser, {
+      journeyId,
+      numberOfExistingRelationships: 2,
+      prisonerNumber,
+      matchingContactId: '456789',
+    })
+    expect(contactsService.getAllSummariesForPrisonerAndContact).toHaveBeenCalledWith(prisonerNumber, 456789, adminUser)
+  })
+
+  it('should render existing relationships and navigation if there was only one', async () => {
+    existingJourney.mode = 'NEW'
+    contactsService.getAllSummariesForPrisonerAndContact.mockResolvedValue([
+      {
+        ...minimalContact,
+        prisonerContactId: 15896471,
+        relationshipToPrisonerCode: 'BRO',
+        relationshipToPrisonerDescription: 'Brother',
+        isRelationshipActive: false,
+      },
+    ])
+
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/create/review-possible-duplicate-existing-relationships/456789/${journeyId}`,
+    )
+
+    expect(response.status).toEqual(200)
+
+    const $ = cheerio.load(response.text)
+    expect($('title').text()).toStrictEqual(`The contact is already linked to the prisoner - Manage contacts - DPS`)
+    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
+      'The contact is already linked to the prisoner',
+    )
+    expect($('[data-qa=cancel-button]')).toHaveLength(0)
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back to possible existing records')
+    expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/create/possible-existing-records/${journeyId}`,
+    )
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Link a contact to a prisoner')
+    expect($('[data-qa=continue-button]')).toHaveLength(0)
+
+    expect($('[data-qa=view-existing-hint]').first().text().trim()).toStrictEqual(
+      'view and update this existing record',
+    )
+
+    const addAnotherLink = $('[data-qa=add-another-relationship-link]').first()
+    expect(addAnotherLink.attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/add/match/456789/${journeyId}`,
+    )
+    expect(addAnotherLink.parent().text().trim()).toStrictEqual(
+      'link this contact to the prisoner again - for example, to record when a contact has both social and official relationships to a prisoner',
+    )
+
+    const contactListLink = $('[data-qa=return-to-contact-list-link]').first()
+    expect(contactListLink.attr('href')).toStrictEqual(`/prisoner/${prisonerNumber}/contacts/list`)
+    expect(contactListLink.parent().text().trim()).toStrictEqual(
+      'go back to the prisoner’s contact list without making any changes',
+    )
+
+    expect(telemetryService.trackEvent).toHaveBeenCalledWith('REVIEWING_EXISTING_RELATIONSHIPS', adminUser, {
+      journeyId,
+      numberOfExistingRelationships: 1,
+      prisonerNumber,
+      matchingContactId: '456789',
+    })
+    expect(contactsService.getAllSummariesForPrisonerAndContact).toHaveBeenCalledWith(prisonerNumber, 456789, adminUser)
+  })
+})

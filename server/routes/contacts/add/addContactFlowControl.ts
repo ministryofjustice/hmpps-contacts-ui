@@ -41,6 +41,7 @@ type CreateContactPages =
   | Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE
   | Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORD_MATCH_PAGE
   | Page.ADD_CONTACT_REVIEW_EXISTING_RELATIONSHIPS_PAGE
+  | Page.ADD_CONTACT_POSSIBLE_DUPLICATE_EXISTING_RELATIONSHIPS_PAGE
 type ExistingContactPages =
   | Page.CREATE_CONTACT_START_PAGE
   | Page.CONTACT_SEARCH_PAGE
@@ -165,7 +166,11 @@ const PAGES: Record<AllAddContactPages, PageConfig> = {
       `/prisoner/${journey.prisonerNumber}/contacts/create/possible-existing-record-match/${journey.matchingContactId}/${journey.id}`,
   },
   [Page.ADD_CONTACT_REVIEW_EXISTING_RELATIONSHIPS_PAGE]: {
-    // this page is only accessible directly from search results with an id
+    // this page is only accessible directly from search results with a contact id
+    url: _ => `#`,
+  },
+  [Page.ADD_CONTACT_POSSIBLE_DUPLICATE_EXISTING_RELATIONSHIPS_PAGE]: {
+    // this page is only accessible directly from possible existing records results with a contact id
     url: _ => `#`,
   },
 }
@@ -209,12 +214,18 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   },
   [Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE]: {
     previousUrl: checkAnswersOr(PAGES.CREATE_CONTACT_DOB_PAGE.url),
+    previousUrlLabel: _ => 'Back to add a contact',
     nextUrl: checkAnswersOr(PAGES.SELECT_RELATIONSHIP_TYPE.url),
   },
   [Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORD_MATCH_PAGE]: {
     previousUrl: PAGES.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE.url,
     previousUrlLabel: _ => 'Back to possible existing records',
     nextUrl: nextPageForPossibleExistingRecordMatch(),
+  },
+  [Page.ADD_CONTACT_POSSIBLE_DUPLICATE_EXISTING_RELATIONSHIPS_PAGE]: {
+    previousUrl: PAGES.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE.url,
+    previousUrlLabel: _ => 'Back to possible existing records',
+    nextUrl: _ => undefined,
   },
   [Page.SELECT_RELATIONSHIP_TYPE]: {
     previousUrl: backToPossibleExistingRecordsOrDobOrCheckAnswers(),

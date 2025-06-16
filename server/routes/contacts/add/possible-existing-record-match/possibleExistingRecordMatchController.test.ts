@@ -14,6 +14,7 @@ import {
   ContactDetails,
   EmploymentDetails,
   LinkedPrisonerDetails,
+  PrisonerContactSummary,
 } from '../../../../@types/contactsApiClient'
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
 
@@ -66,6 +67,7 @@ beforeEach(() => {
   referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mr')
   restrictionsService.getGlobalRestrictions.mockResolvedValue([])
   contactsService.getLinkedPrisoners.mockResolvedValue({ content: [], page: { totalElements: 0 } })
+  contactsService.getAllSummariesForPrisonerAndContact.mockResolvedValue([])
 })
 
 afterEach(() => {
@@ -120,6 +122,7 @@ describe('Contact details', () => {
       expect(telemetryService.trackEvent).toHaveBeenCalledWith('POSSIBLE_EXISTING_RECORD_REVIEWED', adminUser, {
         journeyId,
         matchingContactId: 22,
+        existingRelationshipsCount: 0,
         prisonerNumber,
       })
     })
@@ -160,6 +163,61 @@ describe('Contact details', () => {
       expect(options.eq(1).next().text().trim()).toStrictEqual(
         'No, I need to continue adding a new contact onto the system',
       )
+    })
+
+    it('should show alert for existing relationships with the match', async () => {
+      // Given
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
+      contactsService.getContact.mockResolvedValue(TestData.contact())
+      existingJourney.mode = 'NEW'
+      existingJourney.possibleExistingRecords = [
+        TestData.contactSearchResultItem({ id: 22 }),
+        TestData.contactSearchResultItem({ id: 8888 }),
+      ]
+      const existingContactSummary: PrisonerContactSummary = {
+        prisonerContactId: 987654321,
+        contactId: 22,
+        prisonerNumber,
+        lastName: 'Last',
+        firstName: 'First',
+        relationshipTypeCode: 'S',
+        relationshipTypeDescription: 'Social',
+        relationshipToPrisonerCode: 'FR',
+        relationshipToPrisonerDescription: 'Father',
+        isApprovedVisitor: false,
+        isNextOfKin: false,
+        isEmergencyContact: false,
+        isRelationshipActive: false,
+        currentTerm: true,
+        isStaff: false,
+        restrictionSummary: {
+          active: [],
+          totalActive: 0,
+          totalExpired: 0,
+        },
+      }
+      contactsService.getAllSummariesForPrisonerAndContact.mockResolvedValue([existingContactSummary])
+
+      // When
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/create/possible-existing-record-match/22/${journeyId}`,
+      )
+
+      // Then
+      const $ = cheerio.load(response.text)
+
+      const existingRecordLink = $('[data-qa=view-existing-record-link]')
+      expect(existingRecordLink.text().trim()).toContain('View existing record')
+      expect(existingRecordLink.attr('href')).toContain(
+        `/prisoner/A1234BC/contacts/create/review-possible-duplicate-existing-relationships/22/${journeyId}`,
+      )
+      expect(telemetryService.trackEvent).toHaveBeenCalledWith('POSSIBLE_EXISTING_RECORD_REVIEWED', adminUser, {
+        journeyId,
+        matchingContactId: 22,
+        existingRelationshipsCount: 1,
+        prisonerNumber,
+      })
     })
 
     it('should audit matching possible existing record page', async () => {
