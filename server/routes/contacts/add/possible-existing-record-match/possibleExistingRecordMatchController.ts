@@ -45,6 +45,11 @@ export default class PossibleExistingRecordMatchController implements PageHandle
 
     const contact: ContactDetails = await this.contactsService.getContact(journey.matchingContactId, user)
     const globalRestrictions = await this.restrictionsService.getGlobalRestrictions(contact, user)
+    const existingRelationshipSummaries = await this.contactsService.getAllSummariesForPrisonerAndContact(
+      journey.prisonerNumber,
+      journey.matchingContactId,
+      user,
+    )
 
     const { linkedPrisonerPage } = req.query
 
@@ -70,6 +75,7 @@ export default class PossibleExistingRecordMatchController implements PageHandle
     this.telemetryService.trackEvent('POSSIBLE_EXISTING_RECORD_REVIEWED', user, {
       journeyId,
       matchingContactId: Number(matchingContactId),
+      existingRelationshipsCount: existingRelationshipSummaries.length,
       prisonerNumber,
     })
 
@@ -85,6 +91,8 @@ export default class PossibleExistingRecordMatchController implements PageHandle
       phoneTypeOrderDictionary: getReferenceDataOrderDictionary(
         await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user),
       ),
+      existingRelationshipSummaries,
+      journey,
     })
   }
 

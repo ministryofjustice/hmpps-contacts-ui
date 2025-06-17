@@ -11,9 +11,8 @@ export default class ReviewExistingRelationshipsController implements PageHandle
   constructor(
     private readonly contactsService: ContactsService,
     private readonly telemetryService: TelemetryService,
+    public PAGE_NAME: Page,
   ) {}
-
-  public PAGE_NAME = Page.ADD_CONTACT_REVIEW_EXISTING_RELATIONSHIPS_PAGE
 
   public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
 

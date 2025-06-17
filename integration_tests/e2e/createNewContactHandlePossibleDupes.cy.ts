@@ -15,10 +15,13 @@ import PossibleExistingRecordMatchPage from '../pages/possibleExistingRecordMatc
 import RelationshipCommentsPage from '../pages/contact-details/relationship/relationshipCommentsPage'
 import LinkExistingContactCYAPage from '../pages/linkExistingContactCYAPage'
 import AddContactSuccessPage from '../pages/addContactSuccessPage'
+import { PrisonerContactSummary } from '../../server/@types/contactsApiClient'
+import ReviewExistingRelationshipsPage from '../pages/ReviewExistingRelationshipsPage'
 
 context('Create a new contact and handle possible duplicates', () => {
   const contactId = 654321
   const prisonerContactId = 987654
+  const { prisonerNumber } = TestData.prisoner()
 
   beforeEach(() => {
     cy.task('reset')
@@ -30,7 +33,7 @@ context('Create a new contact and handle possible duplicates', () => {
     cy.task('stubOfficialRelationshipReferenceData')
     cy.task('stubRelationshipTypeReferenceData')
     cy.task('stubPrisonerById', TestData.prisoner())
-    cy.task('stubContactList', TestData.prisoner().prisonerNumber)
+    cy.task('stubContactList', prisonerNumber)
     cy.task(
       'stubGetContactById',
       TestData.contact({
@@ -52,7 +55,6 @@ context('Create a new contact and handle possible duplicates', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
-    const { prisonerNumber } = TestData.prisoner()
     cy.signIn({ startUrl: `/prisoner/${prisonerNumber}/contacts/list` })
 
     Page.verifyOnPage(ListContactsPage, 'John Smith') //
@@ -77,6 +79,11 @@ context('Create a new contact and handle possible duplicates', () => {
     cy.task('stubGetContactNameById', existingContact)
     cy.task('stubGetLinkedPrisoners', { contactId: existingContact.id, linkedPrisoners: [] })
     cy.task('stubGetGlobalRestrictions', [TestData.getContactRestrictionDetails({ contactId: existingContact.id })])
+    cy.task('stubAllSummariesForAPrisonerAndContact', {
+      prisonerNumber,
+      contactId: existingContact.id,
+      items: [],
+    })
     cy.task('stubContactSearch', {
       results: {
         page: {
@@ -179,6 +186,11 @@ context('Create a new contact and handle possible duplicates', () => {
     cy.task('stubGetContactNameById', existingContact)
     cy.task('stubGetLinkedPrisoners', { contactId: existingContact.id, linkedPrisoners: [] })
     cy.task('stubGetGlobalRestrictions', [TestData.getContactRestrictionDetails({ contactId: existingContact.id })])
+    cy.task('stubAllSummariesForAPrisonerAndContact', {
+      prisonerNumber,
+      contactId: existingContact.id,
+      items: [],
+    })
     cy.task('stubContactSearch', {
       results: {
         page: {
@@ -245,5 +257,92 @@ context('Create a new contact and handle possible duplicates', () => {
         },
       },
     )
+  })
+
+  it('Can review existing relationship for possible existing contact', () => {
+    const existingContact = TestData.contact({
+      id: 555666777,
+      firstName: 'First',
+      middleNames: 'Possible Record',
+      lastName: 'Last',
+    })
+    const existingRelationship: PrisonerContactSummary = {
+      prisonerContactId: 987654321,
+      contactId: existingContact.id,
+      prisonerNumber,
+      firstName: 'First',
+      middleNames: 'Possible Record',
+      lastName: 'Last',
+      relationshipTypeCode: 'S',
+      relationshipTypeDescription: 'Social',
+      relationshipToPrisonerCode: 'FR',
+      relationshipToPrisonerDescription: 'Father',
+      isApprovedVisitor: false,
+      isNextOfKin: false,
+      isEmergencyContact: false,
+      isRelationshipActive: false,
+      currentTerm: true,
+      isStaff: false,
+      restrictionSummary: {
+        active: [],
+        totalActive: 0,
+        totalExpired: 0,
+      },
+    }
+
+    cy.task('stubAddContactRelationship', {
+      contactId: existingContact.id,
+      createdPrisonerContactId: prisonerContactId,
+    })
+    cy.task('stubGetContactById', existingContact)
+    cy.task('stubGetContactNameById', existingContact)
+    cy.task('stubGetLinkedPrisoners', { contactId: existingContact.id, linkedPrisoners: [] })
+    cy.task('stubGetGlobalRestrictions', [TestData.getContactRestrictionDetails({ contactId: existingContact.id })])
+    cy.task('stubAllSummariesForAPrisonerAndContact', {
+      prisonerNumber,
+      contactId: existingContact.id,
+      items: [existingRelationship],
+    })
+    cy.task('stubContactSearch', {
+      results: {
+        page: {
+          totalPages: 1,
+          totalElements: 1,
+        },
+        content: [
+          TestData.contactSearchResultItem({
+            id: existingContact.id,
+            firstName: 'First',
+            middleNames: 'Possible Record',
+            lastName: 'Last',
+            existingRelationships: [existingRelationship],
+          }),
+        ],
+      },
+    })
+
+    Page.verifyOnPage(EnterNamePage) //
+      .enterLastName('Last')
+      .enterFirstName('First')
+      .clickContinue()
+
+    Page.verifyOnPage(ManageDobPage, 'First Last', true) //
+      .enterDay('15')
+      .enterMonth('6')
+      .enterYear('1982')
+      .clickContinue()
+
+    Page.verifyOnPage(PossibleExistingRecordsPage, false)
+      .clickLinkTo('View existing record', ReviewExistingRelationshipsPage)
+      .clickLinkTo('Back to possible existing records', PossibleExistingRecordsPage, false)
+      .clickIndexedLinkTo(
+        0,
+        'Check if this is the correct contact',
+        PossibleExistingRecordMatchPage,
+        'First Possible Record Last',
+        'John Smith',
+      )
+      .clickLinkTo('View existing record', ReviewExistingRelationshipsPage)
+      .clickLinkTo('Back to possible existing records', PossibleExistingRecordsPage, false)
   })
 })

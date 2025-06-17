@@ -2,6 +2,7 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "partials/matchContactContent.njk" import matchContactContent %}
+{% from "moj/components/alert/macro.njk" import mojAlert %}
 {% set pageTitle = "Check and confirm if you want to link a contact to a prisoner - Manage contacts - DPS" %}
 {% set title = 'Check and confirm if you want to link contact ' + (contact | formatNameFirstNameFirst ) +' to prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) %}
 
@@ -10,6 +11,15 @@
     <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
       <span class="govuk-caption-l">Link a contact to a prisoner</span>
       <h1 class="govuk-heading-l" data-qa="confim-title-value-top">{{ title }}</h1>
+      {% if existingRelationshipSummaries and existingRelationshipSummaries.length > 0 %}
+        {% set reviewUrl = '/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/create/review-possible-duplicate-existing-relationships/' + contact.id + '/' + journey.id %}
+        {{ mojAlert({
+          variant: "information",
+          title: (contact | formatNameFirstNameFirst) + ' (' + contact.id + ') is already linked to the prisoner',
+          dismissible: false,
+          html: (contact | formatNameFirstNameFirst) + ' (' + contact.id + ') is already linked to prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) + '. <br/><a href="' + reviewUrl + '" class="govuk-link" data-qa="view-existing-record-link">View existing record' +  ('s' if existingRelationshipSummaries.length > 1) + '</a>'
+        }) }}
+      {% endif %}
       <p class="govuk-body">If this is the correct contact record but their information needs to be updated, you can make updates after you link the record to the prisoner. </p>
     </div>
   </div>

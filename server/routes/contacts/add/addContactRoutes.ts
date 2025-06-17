@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { z } from 'zod'
-import AuditService from '../../../services/auditService'
+import AuditService, { Page } from '../../../services/auditService'
 import EnterNameController from './enter-name/createContactEnterNameController'
 import { SchemaFactory, validate } from '../../../middleware/validationMiddleware'
 import { fullNameSchema } from '../common/name/nameSchemas'
@@ -182,9 +182,25 @@ const AddContactRoutes = (
     noValidation: true,
   })
 
+  // during search
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/create/review-existing-relationships/:matchingContactId/:journeyId',
-    controller: new ReviewExistingRelationshipsController(contactsService, telemetryService),
+    controller: new ReviewExistingRelationshipsController(
+      contactsService,
+      telemetryService,
+      Page.ADD_CONTACT_REVIEW_EXISTING_RELATIONSHIPS_PAGE,
+    ),
+    noValidation: true,
+  })
+
+  // when adding a new contact but a duplicate is detected
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/create/review-possible-duplicate-existing-relationships/:matchingContactId/:journeyId',
+    controller: new ReviewExistingRelationshipsController(
+      contactsService,
+      telemetryService,
+      Page.ADD_CONTACT_POSSIBLE_DUPLICATE_EXISTING_RELATIONSHIPS_PAGE,
+    ),
     noValidation: true,
   })
 
