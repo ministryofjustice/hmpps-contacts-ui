@@ -103,12 +103,12 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.826.0",
+    "@aws-sdk/client-sqs": "^3.828.0",
     "@cypress/code-coverage": "^3.14.4",
     "@ministryofjustice/frontend": "^5.1.3",
     "@ministryofjustice/hmpps-connect-dps-components": "^2.1.0",
     "@ministryofjustice/hmpps-monitoring": "^0.0.1-beta.2",
-    "@sentry/node": "^9.28.0",
+    "@sentry/node": "^9.28.1",
     "@types/cypress__code-coverage": "^3.10.2",
     "accessible-autocomplete": "^3.0.1",
     "agentkeepalive": "^4.6.0",
@@ -139,7 +139,7 @@
     "reflect-metadata": "^0.2.2",
     "superagent": "^10.2.1",
     "uuid": "^11.1.0",
-    "zod": "^3.25.61"
+    "zod": "^3.25.63"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
@@ -191,7 +191,7 @@
     "prettier": "^3.5.3",
     "prettier-plugin-jinja-template": "^2.1.0",
     "supertest": "^7.1.1",
-    "ts-jest": "^29.3.4",
+    "ts-jest": "^29.4.0",
     "typescript": "^5.8.3",
     "wait-on": "^8.0.3"
   },
