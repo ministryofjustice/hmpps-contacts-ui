@@ -3,6 +3,7 @@ import { NotFound } from 'http-errors'
 import { v4 as uuidv4 } from 'uuid'
 import dpsComponents from '@ministryofjustice/hmpps-connect-dps-components'
 import { SessionData } from 'express-session'
+import CaseLoad from '@ministryofjustice/hmpps-connect-dps-components/dist/types/CaseLoad'
 import config from '../../config'
 import routes from '../index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
@@ -18,6 +19,13 @@ import { auditPageViewMiddleware } from '../../middleware/auditPageViewMiddlewar
 
 jest.mock('../../services/auditService')
 
+export const hewelCaseLoad: CaseLoad = {
+  caseLoadId: 'HEI',
+  currentlyActive: true,
+  description: 'HMP Hewell',
+  type: 'INST',
+  caseloadFunction: 'GENERAL',
+}
 export const basicPrisonUser: HmppsUser = {
   name: 'ALL PRISON STAFF',
   userId: 'all_prison_staff_id',
@@ -27,6 +35,9 @@ export const basicPrisonUser: HmppsUser = {
   authSource: 'nomis',
   staffId: 1234,
   userRoles: [],
+  activeCaseLoad: hewelCaseLoad,
+  caseLoads: [hewelCaseLoad],
+  activeCaseLoadId: hewelCaseLoad.caseLoadId,
 }
 
 export const adminUser: HmppsUser = {
@@ -38,6 +49,9 @@ export const adminUser: HmppsUser = {
   authSource: 'nomis',
   staffId: 4567,
   userRoles: ['CONTACTS_ADMINISTRATOR'],
+  activeCaseLoad: hewelCaseLoad,
+  caseLoads: [hewelCaseLoad],
+  activeCaseLoadId: hewelCaseLoad.caseLoadId,
 }
 
 export const authorisingUser: HmppsUser = {
@@ -49,6 +63,9 @@ export const authorisingUser: HmppsUser = {
   authSource: 'nomis',
   staffId: 5678,
   userRoles: ['CONTACTS_AUTHORISER'],
+  activeCaseLoad: hewelCaseLoad,
+  caseLoads: [hewelCaseLoad],
+  activeCaseLoadId: hewelCaseLoad.caseLoadId,
 }
 
 export const flashProvider = jest.fn()

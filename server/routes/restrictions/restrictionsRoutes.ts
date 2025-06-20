@@ -1,11 +1,10 @@
-import { RequestHandler, Router } from 'express'
+import { Router } from 'express'
 import { z } from 'zod'
 import AuditService from '../../services/auditService'
 import ContactsService from '../../services/contactsService'
 import PrisonerSearchService from '../../services/prisonerSearchService'
 import ReferenceDataService from '../../services/referenceDataService'
 import StartAddRestrictionJourneyController from './start-add/startAddRestrictionJourneyController'
-import populatePrisonerDetailsIfInCaseload from '../../middleware/populatePrisonerDetailsIfInCaseload'
 import { SchemaFactory, validate } from '../../middleware/validationMiddleware'
 import EnterNewRestrictionController from './enter-restriction/enterNewRestrictionController'
 import { restrictionSchema } from './schema/restrictionSchema'
@@ -26,7 +25,7 @@ const RestrictionsRoutes = (
   restrictionsService: RestrictionsService,
 ) => {
   const router = Router({ mergeParams: true })
-  const { get, post } = routerMethods(router, auditService)
+  const { get, post } = routerMethods(router, auditService, prisonerSearchService)
   const journeyRoute = <P extends { [key: string]: string }>({
     path,
     controller,
@@ -41,10 +40,7 @@ const RestrictionsRoutes = (
     if (!schema && !noValidation) {
       throw Error('Missing validation schema for POST route')
     }
-    const getMiddleware = [
-      ensureInAddRestrictionJourney,
-      populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    ]
+    const getMiddleware = [ensureInAddRestrictionJourney]
     get(path, controller, ...getMiddleware)
     if (schema && !noValidation) {
       post(path, controller, ensureInAddRestrictionJourney, validate(schema))
@@ -73,7 +69,6 @@ const RestrictionsRoutes = (
   get(
     '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/success',
     new SuccessfullyAddedRestrictionController(contactsService),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
   )
 
   journeyRoute({
@@ -89,17 +84,8 @@ const RestrictionsRoutes = (
     restrictionsService,
     referenceDataService,
   )
-  get(
-    updateRestrictionsPath,
-    updateRestrictionsController,
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-  )
-  post(
-    updateRestrictionsPath,
-    updateRestrictionsController,
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService) as RequestHandler,
-    validate(restrictionSchema()),
-  )
+  get(updateRestrictionsPath, updateRestrictionsController)
+  post(updateRestrictionsPath, updateRestrictionsController, validate(restrictionSchema()))
 
   return router
 }

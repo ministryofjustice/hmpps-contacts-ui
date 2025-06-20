@@ -12,7 +12,7 @@ export default class PrisonerSearchController implements PageHandler {
 
   public PAGE_NAME = Page.PRISONER_SEARCH_RESULTS_PAGE
 
-  public REQUIRED_PERMISSION = Permission.VIEW_CONTACT_LIST
+  public REQUIRED_PERMISSION = Permission.PRISONER_SEARCH
 
   GET = async (req: Request<{ journeyId: string }>, res: Response): Promise<void> => {
     const { user } = res.locals

@@ -7,10 +7,13 @@ import { Page } from '../../../../services/auditService'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { AddContactJourney } from '../../../../@types/journeys'
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
+import TestData from '../../../testutils/testData'
 
 jest.mock('../../../../services/auditService')
+jest.mock('../../../../services/prisonerSearchService')
 
 const auditService = MockedService.AuditService()
+const prisonerSearchService = MockedService.PrisonerSearchService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -23,6 +26,7 @@ beforeEach(() => {
   app = appWithAllRoutes({
     services: {
       auditService,
+      prisonerSearchService,
     },
     userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -35,6 +39,7 @@ beforeEach(() => {
       }
     },
   })
+  prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
 })
 
 afterEach(() => {

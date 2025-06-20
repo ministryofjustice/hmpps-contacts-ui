@@ -8,7 +8,7 @@
   {% set prisonerDetails = opts.prisonerDetails %}
   {% set user = opts.user %}
 
-  {% set canApproveToVisit = (user | hasPermission('APPROVE_TO_VISIT')) %}
+  {% set canApproveToVisit = (user | hasPermission('APPROVE_TO_VISIT', prisonerDetails)) %}
   {% set approvedForVisitsKey = 'Approved for visits' %}
   {% if showActions and not canApproveToVisit %}
   {% set approvedForVisitsKey = approvedForVisitsKey + '<br><p data-qa="cant-approve-visit-hint" class="summary-card-key-hint">Cannot be changed as you do not have permission to authorise visits on DPS.</p>'%}

@@ -30,6 +30,7 @@ beforeEach(() => {
     },
     userSupplier: () => currentUser,
   })
+  prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
 })
 
 afterEach(() => {
@@ -44,7 +45,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     const ContactDetails = TestData.contact(expectedResponse)
     const contactId = ContactDetails.id
     // Given
-    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.getContact.mockResolvedValue(ContactDetails)
 
     // When
@@ -89,7 +89,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     currentUser = user
     const ContactDetails = TestData.contact()
     const contactId = ContactDetails.id
-    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.getContact.mockResolvedValue(ContactDetails)
 
     await request(app)

@@ -47,6 +47,7 @@ beforeEach(() => {
       session.addContactJourneys[journeyId] = existingJourney
     },
   })
+  prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
 })
 
 afterEach(() => {
@@ -56,7 +57,6 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
   it('should render contact page without filter when there is no search', async () => {
     // Given
-    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.searchContact.mockResolvedValue({
       page: {
         totalPages: 0,
@@ -102,7 +102,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       contact: { lastName: 'name' },
     }
 
-    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.searchContact.mockResolvedValue({
       page: {
         totalPages: 0,
@@ -129,7 +128,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     [authorisingUser, 200],
   ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
     currentUser = user
-    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.searchContact.mockResolvedValue({
       page: {
         totalPages: 0,
@@ -316,7 +314,6 @@ describe('Contact seaarch results', () => {
         dateOfBirth: {},
       },
     }
-    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.searchContact.mockResolvedValue(results)
 
     // When
@@ -351,7 +348,6 @@ describe('Contact seaarch results', () => {
         dateOfBirth: {},
       },
     }
-    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.searchContact.mockResolvedValue({
       content: [],
       page: {

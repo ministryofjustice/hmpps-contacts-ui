@@ -18,6 +18,7 @@ import {
   PrisonerContactSummary,
 } from '../../@types/contactsApiClient'
 import { OrganisationSummary } from '../../@types/organisationsApiClient'
+import { PrisonerDetails } from '../../@types/journeys'
 
 export default class TestData {
   static address = ({
@@ -238,6 +239,25 @@ export default class TestData {
       locationDescription,
       addresses,
     }) as Prisoner
+
+  static prisonerDetails = ({
+    prisonerNumber = 'A1234BC',
+    firstName = 'JOHN',
+    lastName = 'SMITH',
+    dateOfBirth = '1975-04-02',
+    prisonId = 'HEI',
+    prisonName = 'HMP Hewell',
+    cellLocation = '1-1-C-028',
+  }: Partial<PrisonerDetails> = {}): PrisonerDetails =>
+    ({
+      prisonerNumber,
+      firstName,
+      lastName,
+      dateOfBirth,
+      prisonId,
+      prisonName,
+      cellLocation,
+    }) as PrisonerDetails
 
   static contactSearchResultItem = ({
     id = 13,

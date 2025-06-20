@@ -5,14 +5,15 @@ import { HmppsUser } from '../interfaces/hmppsUser'
 describe('permissionUtils', () => {
   describe('permissionsFromRoles', () => {
     it.each([
-      [['PRISON'], [Permission.VIEW_CONTACT_LIST]],
+      [['PRISON'], [Permission.PRISONER_SEARCH, Permission.VIEW_CONTACT_LIST]],
       [
         ['PRISON', 'CONTACTS_ADMINISTRATOR'],
-        [Permission.VIEW_CONTACT_LIST, Permission.MANAGE_CONTACTS],
+        [Permission.PRISONER_SEARCH, Permission.VIEW_CONTACT_LIST, Permission.MANAGE_CONTACTS],
       ],
       [
         ['PRISON', 'CONTACTS_AUTHORISER'],
         [
+          Permission.PRISONER_SEARCH,
           Permission.VIEW_CONTACT_LIST,
           Permission.MANAGE_CONTACTS,
           Permission.MANAGE_RESTRICTIONS,
@@ -22,6 +23,7 @@ describe('permissionUtils', () => {
       [
         ['PRISON', 'CONTACTS_ADMINISTRATOR', 'CONTACTS_AUTHORISER'],
         [
+          Permission.PRISONER_SEARCH,
           Permission.VIEW_CONTACT_LIST,
           Permission.MANAGE_CONTACTS,
           Permission.MANAGE_RESTRICTIONS,
@@ -29,13 +31,128 @@ describe('permissionUtils', () => {
         ],
       ],
     ])('should return correct permissions for roles', (userRoles: string[], expectedPermissions: Permission[]) => {
-      expect(permissionsFromRoles(userRoles)).toStrictEqual(expectedPermissions)
+      const user = {
+        username: 'foo',
+        userRoles,
+        caseLoads: [
+          {
+            caseLoadId: 'BXI',
+          },
+        ],
+        activeCaseLoad: {
+          caseLoadId: 'BXI',
+        },
+        activeCaseLoadId: 'BXI',
+      } as unknown as HmppsUser
+      const prisonerDetails = {
+        prisonerNumber: 'A1234BC',
+        lastName: 'First',
+        firstName: 'Last',
+        dateOfBirth: '2010-06-21',
+        prisonName: 'Brixton',
+        prisonId: 'BXI',
+        cellLocation: 'C1',
+        hasPrimaryAddress: false,
+      }
+      expect(permissionsFromRoles(user, prisonerDetails)).toStrictEqual(expectedPermissions)
+    })
+
+    it('should allow view contact list but not edit if the user has global search even if not in the users caseload', () => {
+      const user = {
+        username: 'foo',
+        userRoles: ['PRISON', 'GLOBAL_SEARCH', 'CONTACTS_ADMINISTRATOR', 'CONTACTS_AUTHORISER'],
+        caseLoads: [
+          {
+            caseLoadId: 'BXI',
+          },
+        ],
+        activeCaseLoad: {
+          caseLoadId: 'BXI',
+        },
+        activeCaseLoadId: 'BXI',
+      } as unknown as HmppsUser
+      const prisonerDetails = {
+        prisonerNumber: 'A1234BC',
+        lastName: 'First',
+        firstName: 'Last',
+        dateOfBirth: '2010-06-21',
+        prisonName: 'Brixton',
+        prisonId: 'OTHER',
+        cellLocation: 'C1',
+        hasPrimaryAddress: false,
+      }
+      expect(permissionsFromRoles(user, prisonerDetails)).toStrictEqual([
+        Permission.PRISONER_SEARCH,
+        Permission.VIEW_CONTACT_LIST,
+      ])
+    })
+
+    it('should allow view contact list but not edit if the user has the prison in a non-active caseload', () => {
+      const user = {
+        username: 'foo',
+        userRoles: ['PRISON', 'CONTACTS_ADMINISTRATOR', 'CONTACTS_AUTHORISER'],
+        caseLoads: [
+          {
+            caseLoadId: 'BXI',
+          },
+          {
+            caseLoadId: 'OTHER',
+          },
+        ],
+        activeCaseLoad: {
+          caseLoadId: 'BXI',
+        },
+        activeCaseLoadId: 'BXI',
+      } as unknown as HmppsUser
+      const prisonerDetails = {
+        prisonerNumber: 'A1234BC',
+        lastName: 'First',
+        firstName: 'Last',
+        dateOfBirth: '2010-06-21',
+        prisonName: 'Brixton',
+        prisonId: 'OTHER',
+        cellLocation: 'C1',
+        hasPrimaryAddress: false,
+      }
+      expect(permissionsFromRoles(user, prisonerDetails)).toStrictEqual([
+        Permission.PRISONER_SEARCH,
+        Permission.VIEW_CONTACT_LIST,
+      ])
+    })
+
+    it('should not allow access if not in other caseloads and without global search even with admin roles', () => {
+      const user = {
+        username: 'foo',
+        userRoles: [['PRISON', 'CONTACTS_ADMINISTRATOR', 'CONTACTS_AUTHORISER']],
+        caseLoads: [
+          {
+            caseLoadId: 'BXI',
+          },
+        ],
+        activeCaseLoad: {
+          caseLoadId: 'BXI',
+        },
+        activeCaseLoadId: 'BXI',
+      } as unknown as HmppsUser
+      const prisonerDetails = {
+        prisonerNumber: 'A1234BC',
+        lastName: 'First',
+        firstName: 'Last',
+        dateOfBirth: '2010-06-21',
+        prisonName: 'Brixton',
+        prisonId: 'OTHER',
+        cellLocation: 'C1',
+        hasPrimaryAddress: false,
+      }
+      expect(permissionsFromRoles(user, prisonerDetails)).toStrictEqual([Permission.PRISONER_SEARCH])
+      // TODO expect audit service to have been called
     })
   })
 
   describe('hasPermission', () => {
     it.each([
       // general user
+      [['PRISON'], Permission.PRISONER_SEARCH, true],
       [['PRISON'], Permission.VIEW_CONTACT_LIST, true],
       [['PRISON'], Permission.MANAGE_CONTACTS, false],
       [['PRISON'], Permission.MANAGE_RESTRICTIONS, false],
@@ -55,8 +172,27 @@ describe('permissionUtils', () => {
         const user = {
           username: 'foo',
           userRoles,
+          caseLoads: [
+            {
+              caseLoadId: 'BXI',
+            },
+          ],
+          activeCaseLoad: {
+            caseLoadId: 'BXI',
+          },
+          activeCaseLoadId: 'BXI',
         } as unknown as HmppsUser
-        expect(hasPermission(user, permission)).toStrictEqual(expected)
+        const prisonerDetails = {
+          prisonerNumber: 'A1234BC',
+          lastName: 'First',
+          firstName: 'Last',
+          dateOfBirth: '2010-06-21',
+          prisonName: 'Brixton',
+          prisonId: 'BXI',
+          cellLocation: 'C1',
+          hasPrimaryAddress: false,
+        }
+        expect(hasPermission(user, permission, prisonerDetails)).toStrictEqual(expected)
       },
     )
   })

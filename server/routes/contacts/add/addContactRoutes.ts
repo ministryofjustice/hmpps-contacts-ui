@@ -11,7 +11,6 @@ import CreateContactCheckAnswersController from './check-answers/createContactCh
 import ReferenceDataService from '../../../services/referenceDataService'
 import SelectRelationshipToPrisonerController from './relationship-to-prisoner/selectRelationshipToPrisonerController'
 import { selectRelationshipSchemaFactory } from '../common/relationship/selectRelationshipSchemas'
-import populatePrisonerDetailsIfInCaseload from '../../../middleware/populatePrisonerDetailsIfInCaseload'
 import EnterRelationshipCommentsController from './relationship-comments/enterRelationshipCommentsController'
 import { enterRelationshipCommentsSchema } from './relationship-comments/enterRelationshipCommentsSchemas'
 import ContactSearchController from './contact-search/contactSearchController'
@@ -85,7 +84,7 @@ const AddContactRoutes = (
   telemetryService: TelemetryService,
 ) => {
   const router = Router({ mergeParams: true })
-  const { get, post } = routerMethods(router, auditService)
+  const { get, post } = routerMethods(router, auditService, prisonerSearchService)
 
   const journeyRoute = <P extends { [key: string]: string }>({
     path,
@@ -103,10 +102,7 @@ const AddContactRoutes = (
     if (!schema && !noValidation) {
       throw Error('Missing validation schema for POST route')
     }
-    const getMiddleware = [
-      ensureInAddContactJourney,
-      populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    ]
+    const getMiddleware = [ensureInAddContactJourney]
     if (resetJourney) {
       getMiddleware.push(resetAddContactJourney)
     }
@@ -236,7 +232,6 @@ const AddContactRoutes = (
   get(
     '/prisoner/:prisonerNumber/contact/:mode/:contactId/:prisonerContactId/success',
     new SuccessfullyAddedContactController(contactsService),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
   )
 
   journeyRoute({

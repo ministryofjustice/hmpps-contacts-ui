@@ -44,6 +44,7 @@ beforeEach(() => {
       isEmergencyContact: true,
       isNextOfKin: true,
     },
+    prisonerDetails: TestData.prisonerDetails({ prisonerNumber }),
     mode: 'NEW',
   }
   app = appWithAllRoutes({
