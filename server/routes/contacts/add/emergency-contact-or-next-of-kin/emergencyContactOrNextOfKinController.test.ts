@@ -38,6 +38,7 @@ beforeEach(() => {
     relationship: {
       relationshipToPrisoner: 'MOT',
     },
+    prisonerDetails: TestData.prisonerDetails({ prisonerNumber }),
     mode: 'NEW',
   }
   app = appWithAllRoutes({
