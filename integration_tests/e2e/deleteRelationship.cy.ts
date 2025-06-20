@@ -82,7 +82,7 @@ context('Delete Relationship', () => {
     })
   })
 
-  xit('Can delete if the relationship has no restrictions', () => {
+  it('Can delete if the relationship has no restrictions', () => {
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId,
       response: {
@@ -115,7 +115,7 @@ context('Delete Relationship', () => {
     )
   })
 
-  xit('Cannot delete the relationship if it has relationship restrictions, return to contact list', () => {
+  it('Cannot delete the relationship if it has relationship restrictions, return to contact list', () => {
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId,
       response: {
@@ -148,7 +148,7 @@ context('Delete Relationship', () => {
     )
   })
 
-  xit('Cannot delete the relationship if it has relationship restrictions, return to contact record', () => {
+  it('Cannot delete the relationship if it has relationship restrictions, return to contact record', () => {
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId,
       response: {
@@ -181,7 +181,7 @@ context('Delete Relationship', () => {
     )
   })
 
-  xit('Back link goes back to which ever page you came from', () => {
+  it('Back link goes back to which ever page you came from', () => {
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId,
       response: {
@@ -213,7 +213,7 @@ context('Delete Relationship', () => {
       .backTo(EditContactDetailsPage, 'First Middle Names Last')
   })
 
-  xit('Cancel goes back to manage contact', () => {
+  it('Cancel goes back to manage contact', () => {
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId,
       response: {
