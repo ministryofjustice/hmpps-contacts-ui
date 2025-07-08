@@ -17,7 +17,7 @@ generic-service:
     ORGANISATIONS_API_URL: 'https://organisations-api.hmpps.service.justice.gov.uk'
     COMMON_COMPONENTS_ENABLED: true
     SENTRY_ENVIRONMENT: PRODUCTION
-    ENVIRONMENT_NAME: PRODUCTION
+    FEATURE_ENABLED_PRISONS: 'KMI,GNI,SPI,LGI,DWI,HOI,WWI'
     AUDIT_ENABLED: 'false'
 
 generic-prometheus-alerts:

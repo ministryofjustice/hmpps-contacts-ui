@@ -728,7 +728,7 @@ describe('listContactsController', () => {
         },
         userSupplier: () => basicPrisonUser,
       })
-
+      process.env['FEATURE_ENABLED_PRISONS'] = 'KMI,GNI,SPI,LGI,DWI,HOI,WWI'
       // When
       const response = await request(appWithCustomSession).get(`/prisoner/${prisonerNumber}/contacts/list`)
 
@@ -778,7 +778,7 @@ describe('listContactsController', () => {
           }
         },
       })
-
+      process.env['FEATURE_ENABLED_PRISONS'] = 'KMI,GNI,SPI,LGI,DWI,HOI,WWI'
       // When
       const response = await request(appWithCustomSession).get(`/prisoner/${prisonerNumber}/contacts/list`)
 
