@@ -3,6 +3,7 @@ import config from '../../../../config'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import { ContactsService } from '../../../../services'
+import { getAnnouncement } from '../../../../utils/announcement'
 import { Navigation } from '../../common/navigation'
 import Urls from '../../../urls'
 import { setPaginationLocals } from '../../../../views/partials/simplePagination/utils'
@@ -52,6 +53,7 @@ export default class ListContactsController implements PageHandler {
     res: Response,
   ): Promise<void> => {
     const { user } = res.locals
+    const activeCaseLoadId = req.session.activeCaseLoadId!
     const { prisonerNumber } = req.params
     const { query } = req
     const page = query.page && !Number.isNaN(Number(query.page)) ? Number(query.page) : 1
@@ -132,8 +134,11 @@ export default class ListContactsController implements PageHandler {
     )
 
     const navigation: Navigation = { breadcrumbs: ['DPS_HOME', 'DPS_PROFILE'] }
+
+    const announcement = getAnnouncement(activeCaseLoadId)
     res.render('pages/contacts/manage/listContacts', {
       relationshipStatus,
+      announcement,
       relationshipType,
       flag,
       sort,
