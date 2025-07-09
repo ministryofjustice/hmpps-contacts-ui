@@ -3,6 +3,7 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { Cheerio, CheerioAPI } from 'cheerio'
 import { Element } from 'domhandler'
+import { SessionData } from 'express-session'
 import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { MockedService } from '../../../../testutils/mockedServices'
@@ -46,6 +47,7 @@ const minimalContact: PrisonerContactSummary = {
 const expectDefaultSort = ['lastName,asc', 'firstName,asc', 'middleNames,asc', 'middleNames,asc', 'contactId,asc']
 let app: Express
 let currentUser: HmppsUser
+let session: Partial<SessionData>
 
 beforeEach(() => {
   currentUser = basicPrisonUser
@@ -709,6 +711,81 @@ describe('listContactsController', () => {
       expect($('#relationshipTypeOfficial').attr('checked')).toStrictEqual('checked')
       expect($('#flagsEmergencyContact').attr('checked')).toStrictEqual('checked')
       expect($('#flagsNextOfKin').attr('checked')).toStrictEqual('checked')
+    })
+
+    it('should render the announcement banner when prison is not feature enabled', async () => {
+      // Given
+      contactsService.filterPrisonerContacts.mockResolvedValue({
+        content: [minimalContact],
+        page: { totalElements: 1, totalPages: 1, size: 10, number: 0 },
+      })
+      // Simulate a non-feature-enabled prison
+      const appWithCustomSession = appWithAllRoutes({
+        services: {
+          auditService,
+          prisonerSearchService,
+          contactsService,
+        },
+        userSupplier: () => basicPrisonUser,
+      })
+      process.env['FEATURE_ENABLED_PRISONS'] = 'KMI,GNI,SPI,LGI,DWI,HOI,WWI'
+      // When
+      const response = await request(appWithCustomSession).get(`/prisoner/${prisonerNumber}/contacts/list`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      const banner = $('.moj-alert__heading')
+      expect(banner.length).toBe(1)
+      expect(banner.text()).toContain('You have limited access to the new Contacts service on DPS')
+      const bannerLink = $('.govuk-notification-banner__link')
+      expect(bannerLink.html()).toContain('managingcontacts@justice.gov.uk')
+    })
+
+    it('should not render the announcement banner when prison is feature enabled', async () => {
+      // Given
+      const featureEnabledPrisonId = 'WWI' // This is in the featureEnabledPrisons set
+
+      // Mock the prisoner search service to return a prisoner with a feature-enabled prison ID
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValueOnce({
+        ...prisoner,
+        prisonId: featureEnabledPrisonId,
+      })
+
+      contactsService.filterPrisonerContacts.mockResolvedValue({
+        content: [minimalContact],
+        page: { totalElements: 1, totalPages: 1, size: 10, number: 0 },
+      })
+
+      const appWithCustomSession = appWithAllRoutes({
+        services: {
+          auditService,
+          prisonerSearchService,
+          contactsService,
+        },
+        userSupplier: () => ({
+          ...basicPrisonUser,
+          activeCaseLoadId: featureEnabledPrisonId,
+        }),
+        sessionReceiver: (receivedSession: Partial<SessionData>) => {
+          session = receivedSession
+          session.activeCaseLoadId = featureEnabledPrisonId
+          session.activeCaseLoad = {
+            caseLoadId: featureEnabledPrisonId,
+            caseloadFunction: '',
+            currentlyActive: true,
+            description: 'Hewell',
+            type: '',
+          }
+        },
+      })
+      process.env['FEATURE_ENABLED_PRISONS'] = 'KMI,GNI,SPI,LGI,DWI,HOI,WWI'
+      // When
+      const response = await request(appWithCustomSession).get(`/prisoner/${prisonerNumber}/contacts/list`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      const banner = $('.moj-alert__heading')
+      expect(banner.length).toBe(0) // Expect no banner to be rendered
     })
 
     it.each([adminUser, authorisingUser])(

@@ -146,6 +146,7 @@ export default {
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
+  featureEnabledPrisons: get('FEATURE_ENABLED_PRISONS', ''),
   sentry: {
     dsn: process.env['SENTRY_DSN'],
     loaderScriptId: process.env['SENTRY_LOADER_SCRIPT_ID'],
