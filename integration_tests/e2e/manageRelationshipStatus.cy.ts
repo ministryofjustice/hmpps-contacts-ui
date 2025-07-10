@@ -109,7 +109,7 @@ context('Manage contact update relationship status active', () => {
 
     Page.verifyOnPage(SelectRelationshipStatusPage, 'First Middle Names Last', 'John Smith') //
       .verifyHintText(
-        'Setting the relationship status to inactive will not remove First Middle Names Last from the prisoner’s approved visitors list in the visits booking service. If you no longer want this contact to be listed in the visits booking service, a DPS user with Contacts Authoriser access will need to remove visits approval.',
+        'Setting the relationship status to inactive will not remove First Middle Names Last from the prisoner’s approved visitors list in the visits booking service.If you no longer want this contact to be listed in the visits booking service, a DPS user with Contacts Authoriser access will need to remove visits approval.',
       )
   })
 })

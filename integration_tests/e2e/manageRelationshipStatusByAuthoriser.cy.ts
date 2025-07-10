@@ -67,7 +67,7 @@ context('Manage contact update relationship status active with Authoriser role',
 
     Page.verifyOnPage(SelectRelationshipStatusPage, 'First Middle Names Last', 'John Smith') //
       .verifyHintText(
-        'Setting the relationship status to inactive will not remove First Middle Names Last from John Smith’s approved visitors list in the visits booking service. If this contact should not be on the prisoner’s approved visitor list, you’ll need to remove visits approval.',
+        'Setting the relationship status to inactive will not remove First Middle Names Last from John Smith’s approved visitors list in the visits booking service.If this contact should not be on the prisoner’s approved visitor list, you’ll need to remove visits approval.',
       )
   })
 })

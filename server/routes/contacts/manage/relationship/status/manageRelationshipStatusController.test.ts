@@ -46,9 +46,9 @@ afterEach(() => {
 
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/relationship-status', () => {
   const INACTIVE_RELATIONSHIP_HINT_AUTHORISER =
-    'Setting the relationship status to inactive will not remove Jones Mason from John Smith’s approved visitors list in the visits booking service. If this contact should not be on the prisoner’s approved visitor list, you’ll need to remove visits approval.'
+    'Setting the relationship status to inactive will not remove Jones Mason from John Smith’s approved visitors list in the visits booking service.If this contact should not be on the prisoner’s approved visitor list, you’ll need to remove visits approval.'
   const INACTIVE_RELATIONSHIP_HINT_ADMINISTRATOR =
-    'Setting the relationship status to inactive will not remove Jones Mason from the prisoner’s approved visitors list in the visits booking service. If you no longer want this contact to be listed in the visits booking service, a DPS user with Contacts Authoriser access will need to remove visits approval.'
+    'Setting the relationship status to inactive will not remove Jones Mason from the prisoner’s approved visitors list in the visits booking service.If you no longer want this contact to be listed in the visits booking service, a DPS user with Contacts Authoriser access will need to remove visits approval.'
 
   const tests = [
     {

@@ -18,9 +18,9 @@
             {% set showRelationshipStatusHint = isApprovedVisitor and isRelationshipActive %}
             {% if showRelationshipStatusHint %}
               {% if user | hasRole('CONTACTS_AUTHORISER') %}
-                {% set relationshipStatusHint = "Setting the relationship status to inactive will not remove " + (contact | formatNameFirstNameFirst) + " from " + (prisonerDetails | formatNameFirstNameFirst(possessiveSuffix = true, excludeMiddleNames = true)) + " approved visitors list in the visits booking service. If this contact should not be on the prisoner’s approved visitor list, you’ll need to remove visits approval." %}
+                {% set relationshipStatusHint = "Setting the relationship status to inactive will not remove " + (contact | formatNameFirstNameFirst) + " from " + (prisonerDetails | formatNameFirstNameFirst(possessiveSuffix = true, excludeMiddleNames = true)) + " approved visitors list in the visits booking service.<br><br>If this contact should not be on the prisoner’s approved visitor list, you’ll need to remove visits approval." %}
               {% elif user | hasRole('CONTACTS_ADMINISTRATOR') %}
-                {% set relationshipStatusHint = "Setting the relationship status to inactive will not remove " + (contact | formatNameFirstNameFirst) + " from the prisoner’s approved visitors list in the visits booking service. If you no longer want this contact to be listed in the visits booking service, a DPS user with Contacts Authoriser access will need to remove visits approval." %}
+                {% set relationshipStatusHint = "Setting the relationship status to inactive will not remove " + (contact | formatNameFirstNameFirst) + " from the prisoner’s approved visitors list in the visits booking service.<br><br>If you no longer want this contact to be listed in the visits booking service, a DPS user with Contacts Authoriser access will need to remove visits approval." %}
               {% endif %}
             {% endif %}
 
@@ -33,7 +33,7 @@
                 }
               },
               hint: {
-                text: relationshipStatusHint
+                text: relationshipStatusHint | safe
               } if showRelationshipStatusHint else undefined,
               errorMessage: validationErrors | findError('relationshipStatus'),
               name: "relationshipStatus",
