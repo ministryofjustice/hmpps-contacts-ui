@@ -26,4 +26,9 @@ function hasPermission(user: HmppsUser, permission: Permission): boolean {
   return permissionsFromRoles(user.userRoles).includes(permission)
 }
 
-export { permissionsFromRoles, hasPermission }
+function hasRole(user: HmppsUser, role: string): boolean {
+  if (!user) return false
+  return user.userRoles.includes(role)
+}
+
+export { permissionsFromRoles, hasPermission, hasRole }

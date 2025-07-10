@@ -10,5 +10,12 @@ export default class SelectRelationshipStatusPage extends Page {
     return this
   }
 
+  verifyHintText(expected: string): SelectRelationshipStatusPage {
+    this.getRelationshipHintText().should('contain.text', expected)
+    return this
+  }
+
+  private getRelationshipHintText = (): PageElement => cy.get('#relationshipStatus-hint')
+
   private radio = (value: 'YES' | 'NO'): PageElement => cy.get(`.govuk-radios__input[value='${value}']`)
 }

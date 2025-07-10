@@ -32,7 +32,7 @@ import sortRestrictions from './sortRestrictions'
 import { convertToSortableColumns } from './convertToSortableColumns'
 import { sortPhoneNumbers } from './sortPhoneNumbers'
 import { ContactAddressDetails } from '../@types/contactsApiClient'
-import { hasPermission } from './permissionsUtils'
+import { hasPermission, hasRole } from './permissionsUtils'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -151,4 +151,5 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('sortRestrictions', sortRestrictions)
   njkEnv.addFilter('sortPhoneNumbers', sortPhoneNumbers)
   njkEnv.addFilter('hasPermission', hasPermission)
+  njkEnv.addFilter('hasRole', hasRole)
 }
