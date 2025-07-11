@@ -61,6 +61,7 @@ context('Change Contact Date Of Birth', () => {
       .clickChangeDateOfBirthLink()
 
     Page.verifyOnPage(ManageDobPage, 'First Middle Names Last') //
+      .hasHintText('The contact’s date of birth is required for visits to the prisoner. For example, 27 3 1980.')
       .hasDay('15')
       .hasMonth('6')
       .hasYear('1982')
