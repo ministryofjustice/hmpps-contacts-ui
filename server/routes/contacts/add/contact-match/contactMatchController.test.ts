@@ -88,6 +88,7 @@ beforeEach(() => {
   referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mr')
   restrictionsService.getGlobalRestrictions.mockResolvedValue([])
   contactsService.getLinkedPrisoners.mockResolvedValue({ content: [], page: { totalElements: 0 } })
+  prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
 })
 
 afterEach(() => {
@@ -97,7 +98,7 @@ describe('Contact details', () => {
   describe('GET /prisoner/:prisonerNumber/contacts/EXISTING/match/:journeyId?contactId=', () => {
     it('should render confirmation page when there is no existing records', async () => {
       // Given
-      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+
       contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
       contactsService.getContact.mockResolvedValue(TestData.contact())
       contactsService.getAllSummariesForPrisonerAndContact.mockResolvedValue([])
@@ -197,7 +198,6 @@ describe('Contact details', () => {
 
     it('should show existing record warning for a multiple existing records', async () => {
       // Given
-      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
       contactsService.getContact.mockResolvedValue(TestData.contact())
       contactsService.getAllSummariesForPrisonerAndContact.mockResolvedValue([
@@ -259,7 +259,6 @@ describe('Contact details', () => {
       [authorisingUser, 200],
     ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
       currentUser = user
-      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
       contactsService.getContact.mockResolvedValue(TestData.contact())
       existingJourney.mode = 'EXISTING'
@@ -270,7 +269,6 @@ describe('Contact details', () => {
 
   describe('Contact details tab', () => {
     beforeEach(() => {
-      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(TestData.contact())
       contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
     })
@@ -450,7 +448,6 @@ describe('Contact details', () => {
 
   describe('Contact methods tab', () => {
     beforeEach(() => {
-      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(TestData.contact())
       contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
     })
@@ -799,7 +796,6 @@ describe('Contact details', () => {
         },
       ]
       contactsService.getLinkedPrisoners.mockResolvedValue({ content: linkedPrisoners, page: { totalElements: 4 } })
-      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(TestData.contact())
       contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
 
@@ -865,7 +861,6 @@ describe('Contact details', () => {
         )
 
       contactsService.getLinkedPrisoners.mockResolvedValue({ content: linkedPrisoners, page: { totalElements: 240 } })
-      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(TestData.contact({ id: 1 }))
       contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
 
@@ -906,7 +901,6 @@ describe('Contact details', () => {
         )
 
       contactsService.getLinkedPrisoners.mockResolvedValue({ content: linkedPrisoners, page: { totalElements: 240 } })
-      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(TestData.contact({ id: 1 }))
       contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
 
@@ -936,7 +930,6 @@ describe('Contact details', () => {
 
   describe('Restrictions', () => {
     beforeEach(() => {
-      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
       contactsService.getContact.mockResolvedValue(TestData.contact())
       existingJourney.mode = 'EXISTING'
@@ -1048,7 +1041,6 @@ describe('Contact details', () => {
 
   describe('employments', () => {
     beforeEach(() => {
-      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       existingJourney.mode = 'EXISTING'
     })
     it('should render professional information tab with no employment record', async () => {
