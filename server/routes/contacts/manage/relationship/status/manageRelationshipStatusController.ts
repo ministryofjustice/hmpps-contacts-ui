@@ -34,6 +34,7 @@ export default class ManageRelationshipStatusController implements PageHandler {
       contact,
       prisonerContactId,
       isRelationshipActive: relationship.isRelationshipActive,
+      isApprovedVisitor: relationship.isApprovedVisitor,
       navigation,
     })
   }

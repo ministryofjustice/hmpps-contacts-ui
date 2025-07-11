@@ -51,6 +51,17 @@ export const authorisingUser: HmppsUser = {
   userRoles: ['CONTACTS_AUTHORISER'],
 }
 
+export const userWithMultipleRoles: HmppsUser = {
+  name: 'CONTACTS MULTIPLE ROLES',
+  userId: 'contacts_multi_role_user_id',
+  token: 'token',
+  username: 'contacts_multi_role_user',
+  displayName: 'Contacts Multiple Roles',
+  authSource: 'nomis',
+  staffId: 6789,
+  userRoles: ['CONTACTS_AUTHORISER', 'CONTACTS_ADMINISTRATOR', 'ROLE_PRISON'],
+}
+
 export const flashProvider = jest.fn()
 
 function appSetup(

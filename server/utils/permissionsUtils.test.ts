@@ -1,5 +1,5 @@
 import Permission from '../enumeration/permission'
-import { hasPermission, permissionsFromRoles } from './permissionsUtils'
+import { hasPermission, permissionsFromRoles, hasRole } from './permissionsUtils'
 import { HmppsUser } from '../interfaces/hmppsUser'
 
 describe('permissionUtils', () => {
@@ -59,5 +59,21 @@ describe('permissionUtils', () => {
         expect(hasPermission(user, permission)).toStrictEqual(expected)
       },
     )
+  })
+
+  describe('hasRole', () => {
+    it.each([
+      [['ROLE_PRISON'], 'ROLE_PRISON', true],
+      [['ROLE_PRISON'], 'ROLE_CONTACTS_ADMINISTRATOR', false],
+      [['ROLE_PRISON', 'ROLE_CONTACTS_ADMINISTRATOR'], 'ROLE_CONTACTS_ADMINISTRATOR', true],
+      [['ROLE_PRISON', 'ROLE_CONTACTS_ADMINISTRATOR'], 'ROLE_CONTACTS_AUTHORISER', false],
+      [['ROLE_PRISON', 'ROLE_CONTACTS_ADMINISTRATOR', 'ROLE_CONTACTS_AUTHORISER'], 'ROLE_CONTACTS_AUTHORISER', true],
+    ])('should return correct role for roles (%s, %s)', (userRoles: string[], role: string, expected: boolean) => {
+      const user = {
+        username: 'foo',
+        userRoles,
+      } as unknown as HmppsUser
+      expect(hasRole(user, role)).toStrictEqual(expected)
+    })
   })
 })

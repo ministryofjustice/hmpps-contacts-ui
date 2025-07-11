@@ -1,7 +1,13 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../../testutils/appSetup'
+import {
+  adminUser,
+  appWithAllRoutes,
+  authorisingUser,
+  basicPrisonUser,
+  userWithMultipleRoles,
+} from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
@@ -39,6 +45,91 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/relationship-status', () => {
+  const INACTIVE_RELATIONSHIP_HINT_AUTHORISER =
+    'Setting the relationship status to inactive will not remove Jones Mason from John Smith’s approved visitors list in the visits booking service.If this contact should not be on the prisoner’s approved visitor list, you’ll need to remove visits approval.'
+  const INACTIVE_RELATIONSHIP_HINT_ADMINISTRATOR =
+    'Setting the relationship status to inactive will not remove Jones Mason from the prisoner’s approved visitors list in the visits booking service.If you no longer want this contact to be listed in the visits booking service, a DPS user with Contacts Authoriser access will need to remove visits approval.'
+
+  const tests = [
+    {
+      user: adminUser,
+      expectedHint: INACTIVE_RELATIONSHIP_HINT_ADMINISTRATOR,
+    },
+    {
+      user: authorisingUser,
+      expectedHint: INACTIVE_RELATIONSHIP_HINT_AUTHORISER,
+    },
+    {
+      user: userWithMultipleRoles,
+      expectedHint: INACTIVE_RELATIONSHIP_HINT_AUTHORISER,
+    },
+  ]
+
+  tests.forEach(({ user, expectedHint }) => {
+    it(`should render manage relationship status page with correct hint text for user with roles ${user.userRoles}`, async () => {
+      // Given
+      currentUser = user
+      contactsService.getContact.mockResolvedValue(TestData.contact())
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.getPrisonerContactRelationship.mockResolvedValue({
+        isRelationshipActive: true,
+        isApprovedVisitor: true,
+      } as PrisonerContactRelationshipDetails)
+
+      // When
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/relationship-status`,
+      )
+
+      // Then
+      expect(response.status).toEqual(200)
+      const $ = cheerio.load(response.text)
+      expect($('.govuk-hint').text().trim()).toContain(expectedHint)
+    })
+  })
+
+  it('should render manage relationship status page with no hint text when relationship is not active', async () => {
+    // Given
+    currentUser = adminUser
+    contactsService.getContact.mockResolvedValue(TestData.contact())
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.getPrisonerContactRelationship.mockResolvedValue({
+      isRelationshipActive: false,
+      isApprovedVisitor: true,
+    } as PrisonerContactRelationshipDetails)
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/relationship-status`,
+    )
+
+    // Then
+    expect(response.status).toEqual(200)
+    const $ = cheerio.load(response.text)
+    expect($('.govuk-hint').length).toEqual(0)
+  })
+
+  it('should render manage relationship status page with no hint text when contact is not approved visitor', async () => {
+    // Given
+    currentUser = adminUser
+    contactsService.getContact.mockResolvedValue(TestData.contact())
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.getPrisonerContactRelationship.mockResolvedValue({
+      isRelationshipActive: true,
+      isApprovedVisitor: false,
+    } as PrisonerContactRelationshipDetails)
+
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/relationship-status`,
+    )
+
+    // Then
+    expect(response.status).toEqual(200)
+    const $ = cheerio.load(response.text)
+    expect($('.govuk-hint').length).toEqual(0)
+  })
+
   it('should render manage relationship status active status page', async () => {
     // Given
     contactsService.getContact.mockResolvedValue(TestData.contact())
