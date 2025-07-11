@@ -87,6 +87,15 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId', (
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
   })
 
+  it('should render the info text for date of birth as required for visits', async () => {
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
+    expect(response.status).toEqual(200)
+    const $ = cheerio.load(response.text)
+    expect($('.govuk-hint').parent().text()).toContain(
+      'The contact’s date of birth is required for visits to the prisoner. For example, 27 3 1980.',
+    )
+  })
+
   it('should call the audit service for the page view', async () => {
     // Given
 

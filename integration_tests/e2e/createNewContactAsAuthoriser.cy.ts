@@ -149,6 +149,7 @@ context('Create new contact as authoriser who can set visit approval', () => {
       .clickContinue()
 
     Page.verifyOnPage(ManageDobPage, 'First Middle Last', true) //
+      .hasHintText('The contact’s date of birth is required for visits to the prisoner. For example, 27 3 1980.')
       .enterDay('15')
       .enterMonth('06')
       .enterYear('1982')

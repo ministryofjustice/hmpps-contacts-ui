@@ -81,6 +81,26 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('#year').val()).toStrictEqual('2010')
   })
 
+  it('should render the info text for date of birth as required for visits', async () => {
+    contactsService.getContact.mockResolvedValue(
+      TestData.contact({
+        firstName: 'First',
+        middleNames: 'Middle',
+        lastName: 'Last',
+        dateOfBirth: '2010-12-15',
+      }),
+    )
+
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/update-dob`,
+    )
+    expect(response.status).toEqual(200)
+    const $ = cheerio.load(response.text)
+    expect($('.govuk-hint').parent().text()).toContain(
+      'The contact’s date of birth is required for visits to the prisoner. For example, 27 3 1980.',
+    )
+  })
+
   it('should call the audit service for the page view', async () => {
     // Given
     contactsService.getContact.mockResolvedValue(TestData.contact({}))
