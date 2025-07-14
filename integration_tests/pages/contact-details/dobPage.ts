@@ -15,6 +15,11 @@ export default class ManageDobPage extends Page {
     return this
   }
 
+  hasHintText(expected: string) {
+    this.getHintText().should('contain.text', expected)
+    return this
+  }
+
   hasDay(day: string) {
     this.dayTextBox().should('have.value', day)
     return this
@@ -47,4 +52,6 @@ export default class ManageDobPage extends Page {
   private monthTextBox = (): PageElement => cy.get('#month')
 
   private yearTextBox = (): PageElement => cy.get('#year')
+
+  private getHintText = (): PageElement => cy.get('#dob-hint')
 }

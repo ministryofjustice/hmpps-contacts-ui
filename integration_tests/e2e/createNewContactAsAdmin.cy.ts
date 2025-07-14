@@ -80,6 +80,7 @@ context('Create new contact as admin who cannot set visit approval', () => {
       .clickContinue()
 
     Page.verifyOnPage(ManageDobPage, 'First Last', true) //
+      .hasHintText('The contact’s date of birth is required for visits to the prisoner. For example, 27 3 1980.')
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipTypePage, 'First Last', 'John Smith') //
