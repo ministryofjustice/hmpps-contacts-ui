@@ -74,6 +74,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')
+    // Assert hint text and details are NOT present
+    expect($('.govuk-hint').length).toBe(0)
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_UPDATE_APPROVED_TO_VISIT_PAGE, {
       who: authorisingUser.username,
