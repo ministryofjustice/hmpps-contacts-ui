@@ -15,12 +15,13 @@ export default class StartAddContactJourneyController implements PageHandler {
 
   GET = async (req: Request<{ prisonerNumber: string }>, res: Response): Promise<void> => {
     const { prisonerNumber } = req.params
-    const { user } = res.locals
+    const { user, prisonerDetails } = res.locals
     const journey: AddContactJourney = {
       id: uuidv4(),
       lastTouched: new Date().toISOString(),
       isCheckingAnswers: false,
       prisonerNumber,
+      prisonerDetails: prisonerDetails!,
     }
     if (!req.session.addContactJourneys) {
       req.session.addContactJourneys = {}
