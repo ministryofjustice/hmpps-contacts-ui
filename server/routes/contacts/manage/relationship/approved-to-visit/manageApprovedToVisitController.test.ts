@@ -75,6 +75,22 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')
 
+    // Assert hint text and details are present
+    const hintHtml = $('.govuk-hint').html()
+    expect(hintHtml).not.toContain('Skip this question if:')
+    expect(hintHtml).not.toContain('the contact has not yet been checked and approved for visits to this prisoner')
+    expect(hintHtml).not.toContain(
+      'for any other reason, you’re not sure whether the contact is approved to visit the prisoner or not',
+    )
+    // Check details summary
+    expect(hintHtml).toContain('Procedures for approving visitors')
+    expect(hintHtml).toContain('Check your local procedures when approving visitors for prisoners.')
+    expect(hintHtml).toContain('person posing a risk to children (PPRC)')
+    expect(hintHtml).toContain('harassment offence (including stalking)')
+    expect(hintHtml).toContain('public protection contact restrictions')
+    expect(hintHtml).toContain('domestic abuse perpetrator')
+    expect(hintHtml).toContain('Sex Offences Act 2003')
+
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_CONTACT_UPDATE_APPROVED_TO_VISIT_PAGE, {
       who: authorisingUser.username,
       correlationId: expect.any(String),

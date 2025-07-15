@@ -24,13 +24,25 @@
 
 {% block content %}
   {% set hintHtmlForOptional %}
-    <div class="govuk-body">
-      <p>Skip this question if:</p>
-      <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
-        <li>the contact has not yet been checked and approved for visits to this prisoner</li>
-        <li>for any other reason, you’re not sure whether the contact is approved to visit the prisoner or not</li>
-      </ul>
-    </div>
+    {% if isOptional %}
+      <div class="govuk-body">
+        <p>Skip this question if:</p>
+        <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+          <li>the contact has not yet been checked and approved for visits to this prisoner</li>
+          <li>for any other reason, you’re not sure whether the contact is approved to visit the prisoner or not</li>
+        </ul>
+      </div>
+    {% endif %}
+    <details class="govuk-details">
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+          Procedures for approving visitors
+        </span>
+      </summary>
+      <div class="govuk-details__text">
+        <div class="govuk-body"><p>Check your local procedures when approving visitors for prisoners.</p><p>You must also check prisoner alerts and contact the OMU before approving a visitor if the prisoner has been:</p><ul class="govuk-list govuk-list--bullet"><li>identified as a person posing a risk to children (PPRC) or a potential PPRC</li><li>convicted or remanded for a harassment offence (including stalking)</li><li>subject to public protection contact restrictions, including victim contact restrictions, court order restriction, victim or witness contact restriction (remand cases) or no-contact requests</li><li>identified as a domestic abuse perpetrator</li><li>cautioned, convicted, or otherwise dealt with in respect of a sexual offence listed in Schedule 3 of the Sex Offences Act 2003</li></ul></div>
+      </div>
+    </details>
   {% endset -%}
 
   <div class="govuk-grid-row">
@@ -48,7 +60,7 @@
           },
           hint: {
             html: hintHtmlForOptional
-          } if isOptional else undefined,
+          },
           name: "isApprovedToVisit",
           errorMessage: validationErrors | findError('isApprovedToVisit'),
           items: [
