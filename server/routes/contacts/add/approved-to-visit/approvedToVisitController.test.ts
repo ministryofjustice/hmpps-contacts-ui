@@ -90,6 +90,22 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/approved-to-visit/:journ
       )
       expect($('[data-qa=cancel-button]')).toHaveLength(0)
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+
+      // Assert hint text and details are present
+      const hintHtml = $('.govuk-hint').html()
+      expect(hintHtml).toContain('Skip this question if:')
+      expect(hintHtml).toContain('the contact has not yet been checked and approved for visits to this prisoner')
+      expect(hintHtml).toContain(
+        'for any other reason, you’re not sure whether the contact is approved to visit the prisoner or not',
+      )
+      // Check details summary
+      expect(hintHtml).toContain('Procedures for approving visitors')
+      expect(hintHtml).toContain('Check your local procedures when approving visitors for prisoners.')
+      expect(hintHtml).toContain('person posing a risk to children (PPRC)')
+      expect(hintHtml).toContain('harassment offence (including stalking)')
+      expect(hintHtml).toContain('public protection contact restrictions')
+      expect(hintHtml).toContain('domestic abuse perpetrator')
+      expect(hintHtml).toContain('Sex Offences Act 2003')
     },
   )
 
