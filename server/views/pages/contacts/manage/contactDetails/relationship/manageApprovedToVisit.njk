@@ -24,13 +24,15 @@
 
 {% block content %}
   {% set hintHtmlForOptional %}
-    <div class="govuk-body">
-      <p>Skip this question if:</p>
-      <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
-        <li>the contact has not yet been checked and approved for visits to this prisoner</li>
-        <li>for any other reason, you’re not sure whether the contact is approved to visit the prisoner or not</li>
-      </ul>
-    </div>
+    {% if isOptional %}
+      <div class="govuk-body">
+        <p>Skip this question if:</p>
+        <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+          <li>the contact has not yet been checked and approved for visits to this prisoner</li>
+          <li>for any other reason, you’re not sure whether the contact is approved to visit the prisoner or not</li>
+        </ul>
+      </div>
+    {% endif %}
     <details class="govuk-details">
       <summary class="govuk-details__summary">
         <span class="govuk-details__summary-text">
@@ -58,7 +60,7 @@
           },
           hint: {
             html: hintHtmlForOptional
-          } if isOptional else undefined,
+          },
           name: "isApprovedToVisit",
           errorMessage: validationErrors | findError('isApprovedToVisit'),
           items: [
