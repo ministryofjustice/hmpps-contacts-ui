@@ -111,7 +111,7 @@
     "@types/cypress__code-coverage": "^3.10.2",
     "accessible-autocomplete": "^3.0.1",
     "agentkeepalive": "^4.6.0",
-    "applicationinsights": "^2.9.6",
+    "applicationinsights": "^2.9.7",
     "axe-core": "^4.10.3",
     "body-parser": "^2.2.0",
     "bunyan": "^1.8.15",
