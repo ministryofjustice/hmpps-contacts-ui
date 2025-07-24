@@ -23,7 +23,7 @@ type Flag = (typeof allowedFlags)[number]
 const allowedRelationshipStatus = ['ACTIVE_ONLY', 'ACTIVE_AND_INACTIVE']
 type RelationshipStatus = (typeof allowedRelationshipStatus)[number]
 
-const allowedSort = ['name,desc', 'name,asc', 'dob,desc', 'dob,asc']
+const allowedSort = ['name,desc', 'name,asc', 'age,desc', 'age,asc']
 
 type Filter = {
   relationshipStatus?: RelationshipStatus
@@ -99,9 +99,10 @@ export default class ListContactsController implements PageHandler {
       `middleNames,${sortDirection}`,
       `contactId,${sortDirection}`,
     ]
-    if (sortKey === 'dob') {
+    if (sortKey === 'age') {
       // we want reverse order for dates
       prisonerContactPagination.sort = [
+        `deceasedDate,${sortDirection === 'asc' ? 'desc' : 'asc'}`,
         `dateOfBirth,${sortDirection === 'asc' ? 'desc' : 'asc'}`,
         ...prisonerContactPagination.sort,
       ]

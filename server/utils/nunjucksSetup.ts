@@ -14,6 +14,7 @@ import {
   referenceCodesToSelect,
   referenceCodesToRadiosOrCheckboxes,
   formatDob,
+  formatAge,
 } from './utils'
 import config from '../config'
 import logger from '../../logger'
@@ -98,6 +99,7 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('formatBusinessPhoneNumber', formatBusinessPhoneNumber)
   njkEnv.addFilter('formatPhoneNumber', formatPhoneNumber)
   njkEnv.addFilter('formatDob', formatDob)
+  njkEnv.addFilter('formatAge', formatAge)
   njkEnv.addFilter('sentenceCase', sentenceCase)
   njkEnv.addFilter('isDateAndInThePast', isDateAndInThePast)
   njkEnv.addFilter('referenceCodesToSelect', referenceCodesToSelect)
