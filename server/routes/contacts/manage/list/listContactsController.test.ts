@@ -8,7 +8,6 @@ import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '.
 import { Page } from '../../../../services/auditService'
 import { MockedService } from '../../../../testutils/mockedServices'
 import TestData from '../../../testutils/testData'
-import { ageInYears } from '../../../../utils/utils'
 import { PrisonerContactSummary } from '../../../../@types/contactsApiClient'
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
 
@@ -265,12 +264,12 @@ describe('listContactsController', () => {
     )
 
     it.each([
-      [{ ...minimalContact, dateOfBirth: undefined }, 'Not provided', undefined],
-      [{ ...minimalContact, dateOfBirth: '1982-06-01' }, '1/6/1982', `(${ageInYears('1982-06-01')} old)`],
-      [{ ...minimalContact, dateOfBirth: '1999-11-29' }, '29/11/1999', `(${ageInYears('1999-11-29')} old)`],
-      [{ ...minimalContact, dateOfBirth: '1982-01-01', deceasedDate: '2025-01-01' }, '1/1/1982', '(Deceased)'],
-      [{ ...minimalContact, dateOfBirth: undefined, deceasedDate: '2025-01-01' }, 'Not provided', '(Deceased)'],
-    ])('should render date of birth column correctly', async (contact, expectedDob, expectedHint) => {
+      [{ ...minimalContact, dateOfBirth: undefined }, 'Not provided'],
+      [{ ...minimalContact, dateOfBirth: '1982-06-01' }, '18 or over'],
+      [{ ...minimalContact, dateOfBirth: new Date().toISOString().substring(0, 10) }, 'Under 18'],
+      [{ ...minimalContact, dateOfBirth: '1982-01-01', deceasedDate: '2025-01-01' }, 'Deceased'],
+      [{ ...minimalContact, dateOfBirth: undefined, deceasedDate: '2025-01-01' }, 'Deceased'],
+    ])('should render date of birth column correctly', async (contact, expectedDob) => {
       // Given
       contactsService.filterPrisonerContacts.mockResolvedValue({
         content: [contact as PrisonerContactSummary],
@@ -284,9 +283,7 @@ describe('listContactsController', () => {
       const $ = cheerio.load(response.text)
       const rows = $('#prisoner-contact-list tbody tr')
       const firstRowColumns = rows.eq(0).find('td')
-      const dobAndRelatedHints = firstRowColumns.eq(1).html()!.split('<br>')
-      expect(dobAndRelatedHints[0]!.trim()).toStrictEqual(expectedDob)
-      if (expectedHint) expect(dobAndRelatedHints[1]).toContain(expectedHint)
+      expect(firstRowColumns.eq(1).text().trim()).toStrictEqual(expectedDob)
     })
 
     it.each([
@@ -543,7 +540,7 @@ describe('listContactsController', () => {
         },
       ],
       [
-        `/prisoner/${prisonerNumber}/contacts/list?relationshipStatus=ACTIVE_ONLY&sort=dob,asc&page=1`,
+        `/prisoner/${prisonerNumber}/contacts/list?relationshipStatus=ACTIVE_ONLY&sort=age,asc&page=1`,
         { active: true },
         {
           page: 0,
@@ -559,7 +556,7 @@ describe('listContactsController', () => {
         },
       ],
       [
-        `/prisoner/${prisonerNumber}/contacts/list?relationshipStatus=ACTIVE_ONLY&sort=dob,desc&page=1`,
+        `/prisoner/${prisonerNumber}/contacts/list?relationshipStatus=ACTIVE_ONLY&sort=age,desc&page=1`,
         { active: true },
         {
           page: 0,

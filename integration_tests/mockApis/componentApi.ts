@@ -21,6 +21,7 @@ const componentsNoServices: HeaderFooterSharedData = {
       caseloadFunction: 'GENERAL',
     },
   ],
+  allocationJobResponsibilities: [],
   services: [],
 }
 

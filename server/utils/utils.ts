@@ -149,3 +149,20 @@ export const formatDob = (contact: ContactSearchResultItem) => {
   }
   return `${dateOfBirth}${hint ? `<br/><span class="govuk-hint">${hint}</span>` : ''}`
 }
+
+export const formatAge = (contact: ContactSearchResultItem) => {
+  if (contact.deceasedDate) {
+    return 'Deceased'
+  }
+  if (contact.dateOfBirth) {
+    const richDate = parseISO(contact.dateOfBirth)
+    if (isValid(richDate)) {
+      const age = differenceInYears(new Date(), richDate)
+      if (age >= 18) {
+        return '18 or over'
+      }
+      return 'Under 18'
+    }
+  }
+  return 'Not provided'
+}
