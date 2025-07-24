@@ -546,6 +546,7 @@ describe('listContactsController', () => {
           page: 0,
           size: 10,
           sort: [
+            'deceasedDate,desc',
             'dateOfBirth,desc',
             'lastName,asc',
             'firstName,asc',
@@ -562,6 +563,7 @@ describe('listContactsController', () => {
           page: 0,
           size: 10,
           sort: [
+            'deceasedDate,asc',
             'dateOfBirth,asc',
             'lastName,desc',
             'firstName,desc',

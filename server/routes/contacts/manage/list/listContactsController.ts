@@ -102,6 +102,7 @@ export default class ListContactsController implements PageHandler {
     if (sortKey === 'age') {
       // we want reverse order for dates
       prisonerContactPagination.sort = [
+        `deceasedDate,${sortDirection === 'asc' ? 'desc' : 'asc'}`,
         `dateOfBirth,${sortDirection === 'asc' ? 'desc' : 'asc'}`,
         ...prisonerContactPagination.sort,
       ]
