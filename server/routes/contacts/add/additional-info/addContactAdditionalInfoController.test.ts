@@ -92,6 +92,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
     )
     expect($('[data-qa=cancel-button]')).toHaveLength(0)
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('strong:contains("Only record data when it is necessary to do so.")').text()).toBeTruthy()
   })
 
   it('should render enter additional info page for authorising user', async () => {

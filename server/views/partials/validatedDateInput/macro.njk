@@ -2,6 +2,7 @@
 
 {% macro validatedDateInput(opts) %}
   {% set id = opts.id %}
+  {% set name = opts.name %}
   {% set title = opts.title %}
   {% set hintText = opts.hintText %}
 
@@ -21,6 +22,7 @@
 
   {{ govukDateInput({
     id: id,
+    name: name or id,
     fieldset: {
       legend: {
         text: title.text,
