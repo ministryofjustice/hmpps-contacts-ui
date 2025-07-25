@@ -1,6 +1,7 @@
 {% extends "partials/layout.njk" %}
 {% from "govuk/components/task-list/macro.njk" import govukTaskList %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 
 {% set title = "Enter additional information about " + journey.names | formatNameFirstNameFirst + " (optional)"%}
 {% set pageTitle = "Enter additional information about the contact - Add a contact - DPS" %}
@@ -11,9 +12,14 @@
     <div class="govuk-grid-column-two-thirds">
       <span class="govuk-caption-l">{{ caption }}</span>
       <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+
+      {{ govukWarningText({
+        text: "Only record data when it is necessary to do so.",
+        iconFallbackText: "Warning"
+      }) }}
+
       <form method='POST'>
         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-
         <h2>Contact methods</h2>
         {{ govukTaskList({
           idPrefix: "contact-methods",

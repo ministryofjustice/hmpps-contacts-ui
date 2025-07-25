@@ -1,6 +1,7 @@
 {% extends "partials/layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "partials/validatedDateInput/macro.njk" import validatedDateInput %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 
 {% if isNewContact %}
   {% set pageTitle = "What is the contact’s date of birth? - Add a contact - DPS" %}
@@ -18,15 +19,20 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <span class="govuk-caption-l">{{ caption }}</span>
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-6 main-heading"><label for="dob">{{ title }}</label></h1>
+
+        {% if isNewContact %}
+          {{ govukWarningText({
+            text: "Date of birth is needed for visits to the prisoner. Only add date of birth if it is necessary.",
+            iconFallbackText: "Warning"
+          }) }}
+        {% endif %}
+
         <form method='POST'>
           <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
           {{ validatedDateInput({
             id: "dob",
-            title: {
-              text: title,
-              isPageHeading: true,
-              classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6 main-heading"
-            },
+            name: "dob",
             hintText: "The contact’s date of birth is required for visits to the prisoner. </br></br>For example, 27 3 1980." | safe,
             validationErrors: validationErrors,
             day: day,

@@ -85,6 +85,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-dob/:journeyId', (
     )
     expect($('[data-qa=cancel-button]')).toHaveLength(0)
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect(
+      $(
+        'strong:contains("Date of birth is needed for visits to the prisoner. Only add date of birth if it is necessary.")',
+      ).text(),
+    ).toBeTruthy()
   })
 
   it('should render the info text for date of birth as required for visits', async () => {

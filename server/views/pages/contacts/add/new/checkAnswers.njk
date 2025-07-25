@@ -2,6 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "partials/contactMethods/contactAddressCard.njk" import contactAddressCard %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 
 {% set pageTitle = "Check your answers before linking the contact to the prisoner - Add a contact - DPS" %}
 {% set title = "Check your answers before linking the contact to " + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) %}
@@ -12,6 +13,12 @@
         <div class="govuk-grid-column-two-thirds">
             <span class="govuk-caption-l">{{ journey | captionForAddContactJourney }}</span>
             <h1 class="govuk-heading-l govuk-!-margin-bottom-9" data-qa="main-heading">{{ title }}</h1>
+
+            {{ govukWarningText({
+              text: "Only record data when it is necessary to do so.",
+              iconFallbackText: "Warning"
+            }) }}
+
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
                 {% set baseChangeUrl = "/prisoner/" + journey.prisonerNumber + "/contacts/create" %}
