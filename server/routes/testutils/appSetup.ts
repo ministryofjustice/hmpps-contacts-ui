@@ -26,6 +26,14 @@ export const hewelCaseLoad: CaseLoad = {
   type: 'INST',
   caseloadFunction: 'GENERAL',
 }
+
+export const altcourseCaseLoad: CaseLoad = {
+  caseLoadId: 'ACI',
+  currentlyActive: false,
+  description: 'Altcourse (HMP)',
+  type: 'INST',
+  caseloadFunction: 'PRISON',
+}
 export const basicPrisonUser: HmppsUser = {
   name: 'ALL PRISON STAFF',
   userId: 'all_prison_staff_id',
@@ -77,6 +85,23 @@ export const userWithMultipleRoles: HmppsUser = {
   authSource: 'nomis',
   staffId: 6789,
   userRoles: ['CONTACTS_AUTHORISER', 'CONTACTS_ADMINISTRATOR', 'ROLE_PRISON'],
+  activeCaseLoad: hewelCaseLoad,
+  caseLoads: [hewelCaseLoad],
+  activeCaseLoadId: hewelCaseLoad.caseLoadId,
+}
+
+export const userWithMultipleRolesAndCaseLoads: HmppsUser = {
+  name: 'CONTACTS MULTIPLE ROLES',
+  userId: 'contacts_multi_role_user_id',
+  token: 'token',
+  username: 'contacts_multi_role_user',
+  displayName: 'Contacts Multiple Roles',
+  authSource: 'nomis',
+  staffId: 6789,
+  userRoles: ['CONTACTS_AUTHORISER', 'CONTACTS_ADMINISTRATOR', 'ROLE_PRISON'],
+  activeCaseLoad: hewelCaseLoad,
+  caseLoads: [hewelCaseLoad, altcourseCaseLoad],
+  activeCaseLoadId: hewelCaseLoad.caseLoadId,
 }
 
 export const flashProvider = jest.fn()
