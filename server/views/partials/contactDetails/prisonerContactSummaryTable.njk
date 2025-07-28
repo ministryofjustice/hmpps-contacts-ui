@@ -8,12 +8,13 @@
   {% set prisonerNumber = opts.prisonerNumber %}
   {% set sort = opts.sort %}
   {% set sortQueryParams = opts.sortQueryParams %}
+  {% set prisonerDetails = opts.prisonerDetails %}
 
 
   {% set rows = [] %}
   {% for contact in contacts %}
     {% set contactNameAndNumber %}
-      {% if user | hasPermission('MANAGE_CONTACTS') %}
+      {% if user | hasPermission('MANAGE_CONTACTS', prisonerDetails) %}
         <a href="/prisoner/{{ prisonerNumber }}/contacts/manage/{{ contact.contactId }}/relationship/{{ contact.prisonerContactId }}"
            data-qa="contact-{{ contact.contactId }}-link"
            class="govuk-link--no-visited-state pcl-contact-name-link">{{ contact | formatNameLastNameFirst }}</a>

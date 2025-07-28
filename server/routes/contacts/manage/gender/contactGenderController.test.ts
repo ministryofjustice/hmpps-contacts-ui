@@ -36,6 +36,7 @@ beforeEach(() => {
     userSupplier: () => currentUser,
   })
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
+  prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
 })
 
 afterEach(() => {
@@ -43,10 +44,6 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/gender', () => {
-  beforeEach(() => {
-    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-  })
-
   it.each([
     ['M', 'Male'],
     ['F', 'Female'],
