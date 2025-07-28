@@ -107,6 +107,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     expect(backLink.text().trim()).toStrictEqual('Back to additional information options')
     expect(backLink.attr('href')).toStrictEqual('?back=true')
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and link contact')
+    expect($('strong:contains("Only record data when it is necessary to do so.")').text()).toBeTruthy()
   })
 
   it('should render alternative check answers page for mode EXISTING', async () => {
@@ -138,6 +139,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     expect(backLink.text().trim()).toStrictEqual('Back to relationship comments')
     expect(backLink.attr('href')).toStrictEqual('?back=true')
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and link contact')
+    expect($('strong:contains("Only record data when it is necessary to do so.")').text()).toBeTruthy()
   })
 
   it.each(['NEW', 'EXISTING'])('should show approved visitor value and link if authorising user', async mode => {
