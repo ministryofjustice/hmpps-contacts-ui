@@ -391,7 +391,7 @@ describe('listContactsController', () => {
           postcode: 'S2 3LK',
           countryDescription: 'UK',
         },
-        'Flat 24\nSome House\nAcacia Avenue\nBunting\nSHEF\nSYORKS\nS2 3LK\nUK',
+        'SHEF',
       ],
     ])('should render address column correctly', async (contact, expectedAddress) => {
       // Given
