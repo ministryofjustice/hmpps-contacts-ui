@@ -1,6 +1,7 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 
 {% extends "partials/layout.njk" %}§
 
@@ -23,6 +24,13 @@
         <span class="govuk-caption-l">{{ caption }}</span>
         <h1 class="govuk-heading-l">{{ title }}</h1>
       </div>
+
+      {% if not isNewContact %}
+        {{ govukWarningText({
+          text: "Only record data when it is necessary to do so.",
+          iconFallbackText: "Warning"
+        }) }}
+      {% endif %}
 
       {% if hasExistingEmployment %}
         <p>You can link the contact to employers and change employment status using this service, however the employer organisation records have not yet been moved into DPS.</p>

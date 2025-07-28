@@ -96,6 +96,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/1/relationship/99',
     )
+    expect($('strong:contains("Only record data when it is necessary to do so.")').text()).toBeTruthy()
   })
 
   describe('Phone numbers summary card', () => {
