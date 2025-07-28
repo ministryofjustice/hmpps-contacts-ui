@@ -51,7 +51,7 @@
     {% set classes = 'light-grey govuk-!-padding-top-3 govuk-!-padding-bottom-3' if not contact.isRelationshipActive else 'govuk-!-padding-top-3 govuk-!-padding-bottom-3' %}
     {% set rows = (rows.push([
       { html: contactNameAndNumber, classes: classes + ' govuk-!-padding-left-1'},
-      { html: contact | formatDob, classes: classes },
+      { text: contact | formatAge, classes: classes },
       { html: relationshipHtml, classes: classes },
       { html: (contact | addressToLines or 'Not provided') | escape | nl2br, classes: classes },
       { text: 'Approved' if contact.isApprovedVisitor else 'Not approved or has not been checked', classes: classes },
@@ -65,8 +65,8 @@
       key: 'name'
     },
     {
-      text: "Date of birth",
-      key: 'dob'
+      text: "Age",
+      key: 'age'
     },
     {
       text: "Relationship to prisoner"
