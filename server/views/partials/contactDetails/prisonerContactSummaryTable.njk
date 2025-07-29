@@ -48,7 +48,7 @@
       {% endif %}
     {% endset %}
 
-    {% set classes = 'light-grey govuk-!-padding-top-3 govuk-!-padding-bottom-3' if not contact.isRelationshipActive else 'govuk-!-padding-top-3 govuk-!-padding-bottom-3' %}
+    {% set classes = 'light-grey govuk-!-padding-top-3 govuk-!-padding-bottom-3 max-200-width' if not contact.isRelationshipActive else 'govuk-!-padding-top-3 govuk-!-padding-bottom-3 max-200-width' %}
     {% set rows = (rows.push([
       { html: contactNameAndNumber, classes: classes + ' govuk-!-padding-left-1'},
       { text: contact | formatAge, classes: classes },
