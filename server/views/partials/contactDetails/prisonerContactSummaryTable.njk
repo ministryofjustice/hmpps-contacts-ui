@@ -53,7 +53,7 @@
       { html: contactNameAndNumber, classes: classes + ' govuk-!-padding-left-1'},
       { text: contact | formatAge, classes: classes },
       { html: relationshipHtml, classes: classes },
-      { text: contact.cityDescription or 'Not provided', classes: classes },
+      { html: (contact | coarseAddressToLines or 'Not provided') | escape | nl2br, classes: classes },
       { text: 'Approved' if contact.isApprovedVisitor else 'Not approved or has not been checked', classes: classes },
       { html: restrictionsHtml, classes: classes + ' govuk-!-padding-right-1' }
     ]), rows) %}

@@ -19,7 +19,7 @@ import {
 import config from '../config'
 import logger from '../../logger'
 import { buildErrorSummaryList, customErrorOrderBuilder, findError } from '../middleware/validationMiddleware'
-import { addressToLines } from './addressToLines'
+import { addressToLines, coarseAddressToLines } from './addressToLines'
 import formatYesNo from './formatYesNo'
 import { formatNameLastNameFirst, formatNameFirstNameFirst } from './formatName'
 import restrictionTagColour from './restrictionTagColour'
@@ -85,6 +85,7 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addGlobal('DPS_HOME_PAGE_URL', config.serviceUrls.digitalPrison)
   njkEnv.addFilter('pluralise', (word, count, plural = `${word}s`) => (count === 1 ? word : plural))
   njkEnv.addFilter('addressToLines', addressToLines)
+  njkEnv.addFilter('coarseAddressToLines', coarseAddressToLines)
   njkEnv.addFilter('formatTitleForAddress', formatTitleForAddress)
   njkEnv.addFilter('sortContactAddresses', sortContactAddresses)
   njkEnv.addFilter('ageInYears', ageInYears)
