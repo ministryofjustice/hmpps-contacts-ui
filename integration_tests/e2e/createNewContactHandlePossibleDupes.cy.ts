@@ -110,16 +110,18 @@ context('Create a new contact and handle possible duplicates', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
-      .clickContinue()
-
-    Page.verifyOnPage(ManageDobPage, 'First Last', true) //
+      .continueTo(SelectRelationshipTypePage, 'First Last', 'John Smith') //
+      .selectRelationshipType('S')
+      .continueTo(SelectRelationshipPage, 'First Last', 'John Smith') //
+      .selectRelationship('MOT')
+      .continueTo(ManageDobPage, 'First Last', true) //
       .enterDay('15')
       .enterMonth('6')
       .enterYear('1982')
       .clickContinue()
 
     Page.verifyOnPage(PossibleExistingRecordsPage, true)
-      .clickLinkTo('Continue adding a new contact', SelectRelationshipTypePage, 'First Last', 'John Smith')
+      .clickLinkTo('Continue adding a new contact', SelectEmergencyContactOrNextOfKinPage, 'First Last', 'John Smith')
       .backTo(PossibleExistingRecordsPage, true)
       .clickIndexedLinkTo(
         0,
@@ -138,10 +140,6 @@ context('Create a new contact and handle possible duplicates', () => {
         'John Smith',
       )
       .selectRadio('NO_CONTINUE_ADDING_CONTACT')
-      .continueTo(SelectRelationshipTypePage, 'First Last', 'John Smith') //
-      .selectRelationshipType('S')
-      .continueTo(SelectRelationshipPage, 'First Last', 'John Smith') //
-      .selectRelationship('MOT')
       .continueTo(SelectEmergencyContactOrNextOfKinPage, 'First Last', 'John Smith', true) //
       .selectIsEmergencyContactOrNextOfKin('NOK')
       .continueTo(AddContactAdditionalInfoPage, 'First Last') //
@@ -211,9 +209,11 @@ context('Create a new contact and handle possible duplicates', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
-      .clickContinue()
-
-    Page.verifyOnPage(ManageDobPage, 'First Last', true) //
+      .continueTo(SelectRelationshipTypePage, 'First Last', 'John Smith') //
+      .selectRelationshipType('S')
+      .continueTo(SelectRelationshipPage, 'First Last', 'John Smith') //
+      .selectRelationship('MOT')
+      .continueTo(ManageDobPage, 'First Last', true) //
       .enterDay('15')
       .enterMonth('6')
       .enterYear('1982')
@@ -324,9 +324,11 @@ context('Create a new contact and handle possible duplicates', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
-      .clickContinue()
-
-    Page.verifyOnPage(ManageDobPage, 'First Last', true) //
+      .continueTo(SelectRelationshipTypePage, 'First Last', 'John Smith') //
+      .selectRelationshipType('S')
+      .continueTo(SelectRelationshipPage, 'First Last', 'John Smith') //
+      .selectRelationship('MOT')
+      .continueTo(ManageDobPage, 'First Last', true) //
       .enterDay('15')
       .enterMonth('6')
       .enterYear('1982')

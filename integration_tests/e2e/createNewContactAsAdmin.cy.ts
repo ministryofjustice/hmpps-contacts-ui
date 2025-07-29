@@ -79,16 +79,16 @@ context('Create new contact as admin who cannot set visit approval', () => {
       .enterFirstName('First')
       .clickContinue()
 
-    Page.verifyOnPage(ManageDobPage, 'First Last', true) //
-      .hasHintText('The contact’s date of birth is required for visits to the prisoner. For example, 27 3 1980.')
-      .clickContinue()
-
     Page.verifyOnPage(SelectRelationshipTypePage, 'First Last', 'John Smith') //
       .selectRelationshipType('S')
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'First Last', 'John Smith') //
       .selectRelationship('MOT')
+      .clickContinue()
+
+    Page.verifyOnPage(ManageDobPage, 'First Last', true) //
+      .hasHintText('The contact’s date of birth is required for visits to the prisoner. For example, 27 3 1980.')
       .clickContinue()
 
     Page.verifyOnPage(SelectEmergencyContactOrNextOfKinPage, 'First Last', 'John Smith', true) //
@@ -141,18 +141,18 @@ context('Create new contact as admin who cannot set visit approval', () => {
       .enterMiddleNames('Middle')
       .clickContinue()
 
-    Page.verifyOnPage(ManageDobPage, 'First Middle Last', true) //
-      .enterDay('15')
-      .enterMonth('06')
-      .enterYear('1982')
-      .clickContinue()
-
     Page.verifyOnPage(SelectRelationshipTypePage, 'First Middle Last', 'John Smith') //
       .selectRelationshipType('S')
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'First Middle Last', 'John Smith') //
       .selectRelationship('MOT')
+      .clickContinue()
+
+    Page.verifyOnPage(ManageDobPage, 'First Middle Last', true) //
+      .enterDay('15')
+      .enterMonth('06')
+      .enterYear('1982')
       .clickContinue()
 
     Page.verifyOnPage(SelectEmergencyContactOrNextOfKinPage, 'First Middle Last', 'John Smith', true) //
@@ -213,15 +213,15 @@ context('Create new contact as admin who cannot set visit approval', () => {
       .enterFirstName('First')
       .clickContinue()
 
-    Page.verifyOnPage(ManageDobPage, 'First Last', true) //
-      .clickContinue()
-
     Page.verifyOnPage(SelectRelationshipTypePage, 'First Last', 'John Smith') //
       .selectRelationshipType('O')
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'First Last', 'John Smith') //
       .selectRelationship('DR')
+      .clickContinue()
+
+    Page.verifyOnPage(ManageDobPage, 'First Last', true) //
       .clickContinue()
 
     Page.verifyOnPage(SelectEmergencyContactOrNextOfKinPage, 'First Last', 'John Smith', true) //
@@ -305,7 +305,6 @@ context('Create new contact as admin who cannot set visit approval', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
-      .continueTo(ManageDobPage, 'First Last', true)
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipTypePage, 'First Last', 'John Smith') //
@@ -324,6 +323,14 @@ context('Create new contact as admin who cannot set visit approval', () => {
       .enterFirstName('First')
       .clickContinue()
 
+    Page.verifyOnPage(SelectRelationshipTypePage, 'First Last', 'John Smith') //
+      .selectRelationshipType('S')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectRelationshipPage, 'First Last', 'John Smith') //
+      .selectRelationship('MOT')
+      .clickContinue()
+
     const enterDobPage = Page.verifyOnPage(ManageDobPage, 'First Last', true)
     enterDobPage.enterYear(' ').clickContinue()
     enterDobPage.hasFieldInError('dob', 'Date of birth must include a day and a month')
@@ -340,6 +347,14 @@ context('Create new contact as admin who cannot set visit approval', () => {
       .enterFirstName('First')
       .clickContinue()
 
+    Page.verifyOnPage(SelectRelationshipTypePage, 'First Last', 'John Smith') //
+      .selectRelationshipType('S')
+      .clickContinue()
+
+    Page.verifyOnPage(SelectRelationshipPage, 'First Last', 'John Smith') //
+      .selectRelationship('MOT')
+      .clickContinue()
+
     const enterDobPage = Page.verifyOnPage(ManageDobPage, 'First Last', true)
     enterDobPage.enterDay('aa').enterMonth('bb').enterYear('cccc').clickContinue()
 
@@ -354,11 +369,11 @@ context('Create new contact as admin who cannot set visit approval', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
-      .continueTo(ManageDobPage, 'First Last', true) //
       .continueTo(SelectRelationshipTypePage, 'First Last', 'John Smith')
       .selectRelationshipType('S')
       .continueTo(SelectRelationshipPage, 'First Last', 'John Smith') //
       .selectRelationship('MOT')
+      .continueTo(ManageDobPage, 'First Last', true) //
       .continueTo(SelectEmergencyContactOrNextOfKinPage, 'First Last', 'John Smith', true) //
       .selectIsEmergencyContactOrNextOfKin('NOK')
       .continueTo(AddContactAdditionalInfoPage, 'First Last')
@@ -375,11 +390,11 @@ context('Create new contact as admin who cannot set visit approval', () => {
     const relationshipCommentsPage = Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
-      .continueTo(ManageDobPage, 'First Last', true)
       .continueTo(SelectRelationshipTypePage, 'First Last', 'John Smith')
       .selectRelationshipType('S')
       .continueTo(SelectRelationshipPage, 'First Last', 'John Smith')
       .selectRelationship('MOT')
+      .continueTo(ManageDobPage, 'First Last', true)
       .continueTo(SelectEmergencyContactOrNextOfKinPage, 'First Last', 'John Smith', true) //
       .selectIsEmergencyContactOrNextOfKin('NOK')
       .continueTo(AddContactAdditionalInfoPage, 'First Last')
@@ -396,9 +411,9 @@ context('Create new contact as admin who cannot set visit approval', () => {
     relationshipCommentsPage //
       .backTo(AddContactAdditionalInfoPage, 'First Last')
       .backTo(SelectEmergencyContactOrNextOfKinPage, 'First Last', 'John Smith', true)
+      .backTo(ManageDobPage, 'First Last', true)
       .backTo(SelectRelationshipPage, 'First Last', 'John Smith')
       .backTo(SelectRelationshipTypePage, 'First Last', 'John Smith')
-      .backTo(ManageDobPage, 'First Last', true)
       .backTo(EnterNamePage)
   })
 
@@ -406,11 +421,11 @@ context('Create new contact as admin who cannot set visit approval', () => {
     Page.verifyOnPage(EnterNamePage) //
       .enterLastName('Last')
       .enterFirstName('First')
-      .continueTo(ManageDobPage, 'First Last', true) //
       .continueTo(SelectRelationshipTypePage, 'First Last', 'John Smith') //
       .selectRelationshipType('S')
       .continueTo(SelectRelationshipPage, 'First Last', 'John Smith') //
       .selectRelationship('MOT')
+      .continueTo(ManageDobPage, 'First Last', true) //
       .continueTo(SelectEmergencyContactOrNextOfKinPage, 'First Last', 'John Smith', true) //
       .selectIsEmergencyContactOrNextOfKin('NOK')
       .continueTo(AddContactAdditionalInfoPage, 'First Last')

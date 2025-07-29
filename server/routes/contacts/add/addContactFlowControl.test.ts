@@ -23,14 +23,14 @@ describe('addContactFlowControl', () => {
         ],
         [
           Page.CREATE_CONTACT_DOB_PAGE,
-          `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`,
+          `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`,
           undefined,
           undefined,
           adminUser,
         ],
         [
           Page.SELECT_RELATIONSHIP_TYPE,
-          `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`,
+          `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`,
           undefined,
           undefined,
           adminUser,
@@ -44,7 +44,7 @@ describe('addContactFlowControl', () => {
         ],
         [
           Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN,
-          `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`,
+          `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`,
           undefined,
           undefined,
           adminUser,
@@ -236,7 +236,11 @@ describe('addContactFlowControl', () => {
       it.each([
         [Page.CREATE_CONTACT_START_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`, adminUser],
         [Page.ADD_CONTACT_MODE_PAGE, `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`, adminUser],
-        [Page.CREATE_CONTACT_NAME_PAGE, `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`, adminUser],
+        [
+          Page.CREATE_CONTACT_NAME_PAGE,
+          `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`,
+          adminUser,
+        ],
         [
           Page.CREATE_CONTACT_DOB_PAGE,
           `/prisoner/A1234BC/contacts/create/possible-existing-records/${journeyId}`,
@@ -244,7 +248,7 @@ describe('addContactFlowControl', () => {
         ],
         [
           Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE,
-          `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`,
+          `/prisoner/A1234BC/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
           adminUser,
         ],
         [
@@ -252,11 +256,7 @@ describe('addContactFlowControl', () => {
           `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`,
           adminUser,
         ],
-        [
-          Page.SELECT_CONTACT_RELATIONSHIP,
-          `/prisoner/A1234BC/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
-          adminUser,
-        ],
+        [Page.SELECT_CONTACT_RELATIONSHIP, `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`, adminUser],
         [
           Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
@@ -386,7 +386,43 @@ describe('addContactFlowControl', () => {
             possibleExistingRecords,
           }
 
-          const nav = navigationForAddContactJourney(Page.SELECT_RELATIONSHIP_TYPE, journey, adminUser)
+          const nav = navigationForAddContactJourney(Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN, journey, adminUser)
+
+          expect(nav.backLink).toStrictEqual(expected)
+        },
+      )
+
+      it.each([
+        [undefined, false, `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`],
+        [[], false, `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`],
+        [
+          [TestData.contactSearchResultItem()],
+          false,
+          `/prisoner/A1234BC/contacts/create/possible-existing-records/${journeyId}`,
+        ],
+        [undefined, true, `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`],
+        [[], true, `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`],
+        [[TestData.contactSearchResultItem()], true, `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`],
+      ])(
+        'should go back to possible existing records or select relationship depending on if there were matches or even a search done but CYA always returns to CYA',
+        (
+          possibleExistingRecords: undefined | ContactSearchResultItem[],
+          isCheckingAnswers: boolean,
+          expected: string,
+        ) => {
+          const journey: AddContactJourney = {
+            id: journeyId,
+            lastTouched: new Date().toISOString(),
+            prisonerNumber: 'A1234BC',
+            mode: 'NEW',
+            isCheckingAnswers,
+            possibleExistingRecords,
+            relationship: {
+              relationshipToPrisoner: 'CA',
+            },
+          }
+
+          const nav = navigationForAddContactJourney(Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN, journey, adminUser)
 
           expect(nav.backLink).toStrictEqual(expected)
         },
@@ -401,7 +437,7 @@ describe('addContactFlowControl', () => {
         ],
         [
           'NO_CONTINUE_ADDING_CONTACT',
-          `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`,
+          `/prisoner/A1234BC/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
           'NEW',
         ],
       ])(

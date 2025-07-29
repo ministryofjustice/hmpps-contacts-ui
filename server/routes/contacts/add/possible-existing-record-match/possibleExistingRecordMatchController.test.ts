@@ -1219,7 +1219,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/possible-existing-recor
       .type('form')
       .send({ isPossibleExistingRecordMatched: 'NO_CONTINUE_ADDING_CONTACT' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`)
 
     // Then
     expect(existingJourney.isPossibleExistingRecordMatched).toStrictEqual('NO_CONTINUE_ADDING_CONTACT')

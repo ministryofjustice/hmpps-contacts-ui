@@ -197,7 +197,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId',
       .type('form')
       .send({ firstName: 'first', lastName: 'last', middleNames: 'middle', title: 'Mr' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/enter-dob/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`)
 
     expect(session.addContactJourneys![journeyId]!.names).toStrictEqual({
       lastName: 'last',

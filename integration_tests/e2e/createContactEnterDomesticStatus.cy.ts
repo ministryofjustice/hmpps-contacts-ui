@@ -67,15 +67,15 @@ context('Create Contact and Enter Domestic Status', () => {
       .enterFirstName('First')
       .clickContinue()
 
-    Page.verifyOnPage(ManageDobPage, 'First Last', true) //
-      .clickContinue()
-
     Page.verifyOnPage(SelectRelationshipTypePage, 'First Last', 'John Smith') //
       .selectRelationshipType('S')
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'First Last', 'John Smith') //
       .selectRelationship('MOT')
+      .clickContinue()
+
+    Page.verifyOnPage(ManageDobPage, 'First Last', true) //
       .clickContinue()
 
     Page.verifyOnPage(SelectEmergencyContactOrNextOfKinPage, 'First Last', 'John Smith', true) //

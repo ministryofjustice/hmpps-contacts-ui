@@ -4,6 +4,7 @@ import { AddContactJourney } from '../../../@types/journeys'
 import { HmppsUser } from '../../../interfaces/hmppsUser'
 import { hasPermission } from '../../../utils/permissionsUtils'
 import Permission from '../../../enumeration/permission'
+import { isInternalContact } from '../../../utils/utils'
 
 type PreModePages =
   | Page.CREATE_CONTACT_START_PAGE
@@ -206,16 +207,24 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   [Page.CREATE_CONTACT_NAME_PAGE]: {
     previousUrl: checkAnswersOr(PAGES.CONTACT_SEARCH_PAGE.url),
     previousUrlLabel: _ => 'Back to contact search',
-    nextUrl: checkAnswersOr(PAGES.CREATE_CONTACT_DOB_PAGE.url),
+    nextUrl: checkAnswersOr(PAGES.SELECT_RELATIONSHIP_TYPE.url),
+  },
+  [Page.SELECT_RELATIONSHIP_TYPE]: {
+    previousUrl: checkAnswersOr(PAGES.CREATE_CONTACT_NAME_PAGE.url),
+    nextUrl: forwardToRelationshipToPrisonerOrCheckAnswers(),
+  },
+  [Page.SELECT_CONTACT_RELATIONSHIP]: {
+    previousUrl: (journey, user) => backToRelationshipTypeOrCheckAnswers(journey, user),
+    nextUrl: forwardToDobOrPossibleExistingRecordOrCheckAnswers(),
   },
   [Page.CREATE_CONTACT_DOB_PAGE]: {
-    previousUrl: checkAnswersOr(PAGES.CREATE_CONTACT_NAME_PAGE.url),
+    previousUrl: checkAnswersOr(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
     nextUrl: checkAnswersOr(PAGES.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE.url),
   },
   [Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE]: {
     previousUrl: checkAnswersOr(PAGES.CREATE_CONTACT_DOB_PAGE.url),
     previousUrlLabel: _ => 'Back to add a contact',
-    nextUrl: checkAnswersOr(PAGES.SELECT_RELATIONSHIP_TYPE.url),
+    nextUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN.url),
   },
   [Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORD_MATCH_PAGE]: {
     previousUrl: PAGES.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE.url,
@@ -227,16 +236,8 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
     previousUrlLabel: _ => 'Back to possible existing records',
     nextUrl: _ => undefined,
   },
-  [Page.SELECT_RELATIONSHIP_TYPE]: {
-    previousUrl: backToPossibleExistingRecordsOrDobOrCheckAnswers(),
-    nextUrl: forwardToRelationshipToPrisonerOrCheckAnswers(),
-  },
-  [Page.SELECT_CONTACT_RELATIONSHIP]: {
-    previousUrl: (journey, user) => backToRelationshipTypeOrCheckAnswers(journey, user),
-    nextUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN.url),
-  },
   [Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN]: {
-    previousUrl: checkAnswersOr(PAGES.SELECT_CONTACT_RELATIONSHIP.url),
+    previousUrl: backToPossibleExistingRecordsOrDobOrCheckAnswers(),
     nextUrl: checkAnswersOr(
       ifCanApproveForVisitsOr(
         PAGES.ADD_CONTACT_APPROVED_TO_VISIT_PAGE.url,
@@ -426,6 +427,15 @@ function forwardToRelationshipToPrisonerOrCheckAnswers(): JourneyUrlProvider {
   }
 }
 
+function forwardToDobOrPossibleExistingRecordOrCheckAnswers(): JourneyUrlProvider {
+  return (journey, user) => {
+    if (journey.isCheckingAnswers) return PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey, user)
+    if (journey.relationship?.relationshipToPrisoner && isInternalContact(journey.relationship.relationshipToPrisoner))
+      return PAGES.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE.url(journey, user)
+    return PAGES.CREATE_CONTACT_DOB_PAGE.url(journey, user)
+  }
+}
+
 function nextPageForPossibleExistingRecordMatch(): JourneyUrlProvider {
   return (journey, user) => {
     if (journey.isPossibleExistingRecordMatched === 'YES') {
@@ -439,7 +449,7 @@ function nextPageForPossibleExistingRecordMatch(): JourneyUrlProvider {
       return PAGES.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE.url(journey, user)
     }
     if (journey.isPossibleExistingRecordMatched === 'NO_CONTINUE_ADDING_CONTACT') {
-      return PAGES.SELECT_RELATIONSHIP_TYPE.url(journey, user)
+      return PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN.url(journey, user)
     }
     throw Error(`Unknown value for possible existing record matched: ${journey.isPossibleExistingRecordMatched}`)
   }
@@ -458,9 +468,13 @@ function backToPossibleExistingRecordsOrDobOrCheckAnswers(): JourneyUrlProvider 
     if (journey.isCheckingAnswers) {
       return PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey, user)
     }
-    return journey.possibleExistingRecords && journey.possibleExistingRecords.length > 0
-      ? PAGES.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE.url(journey, user)
-      : PAGES.CREATE_CONTACT_DOB_PAGE.url(journey, user)
+    if (journey.possibleExistingRecords && journey.possibleExistingRecords.length > 0)
+      return PAGES.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE.url(journey, user)
+
+    if (journey.relationship?.relationshipToPrisoner && isInternalContact(journey.relationship.relationshipToPrisoner))
+      return PAGES.SELECT_CONTACT_RELATIONSHIP.url(journey, user)
+
+    return PAGES.CREATE_CONTACT_DOB_PAGE.url(journey, user)
   }
 }
 
