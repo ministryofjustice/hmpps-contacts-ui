@@ -1,0 +1,49 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% set pageTitle = "Are you sure you want to delete the date of birth for the contact? - Edit date of birth for a contact - DPS" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-l">Edit date of birth for a contact</span>
+      <h1 class="govuk-heading-l" data-qa="main-heading">Are you sure you want to delete the date of birth for {{ contact | formatNameFirstNameFirst }}?</h1>
+
+      <form method='POST'>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        {{ govukSummaryList({
+          rows: [
+            {
+              key: {
+              text: "Date of birth"
+            },
+              value: {
+              html: contact.dateOfBirth | formatDate,
+              classes: 'date-of-birth-value'
+            }
+            }
+          ]
+        }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Yes, delete",
+            type: "submit",
+            classes: 'govuk-!-margin-top-6 govuk-button--warning',
+            attributes: {"data-qa": "continue-button"},
+            preventDoubleClick: true
+          }) }}
+          {{ govukButton({
+            text: "No, do not delete",
+            type: "button",
+            classes: 'govuk-!-margin-top-6 govuk-button--secondary',
+            attributes: {"data-qa": "cancel-button"},
+            href: navigation.cancelButton,
+            preventDoubleClick: true
+          }) }}
+        </div>
+      </form>
+     </div>
+</div>
+{% endblock %}

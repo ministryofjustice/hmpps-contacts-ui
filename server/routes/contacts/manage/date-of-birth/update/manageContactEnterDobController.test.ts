@@ -7,15 +7,15 @@ import {
   basicPrisonUser,
   adminUser,
   authorisingUser,
-} from '../../../testutils/appSetup'
-import { Page } from '../../../../services/auditService'
-import TestData from '../../../testutils/testData'
-import { MockedService } from '../../../../testutils/mockedServices'
-import { HmppsUser } from '../../../../interfaces/hmppsUser'
+} from '../../../../testutils/appSetup'
+import { Page } from '../../../../../services/auditService'
+import TestData from '../../../../testutils/testData'
+import { MockedService } from '../../../../../testutils/mockedServices'
+import { HmppsUser } from '../../../../../interfaces/hmppsUser'
 
-jest.mock('../../../../services/auditService')
-jest.mock('../../../../services/prisonerSearchService')
-jest.mock('../../../../services/contactsService')
+jest.mock('../../../../../services/auditService')
+jest.mock('../../../../../services/prisonerSearchService')
+jest.mock('../../../../../services/contactsService')
 
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()

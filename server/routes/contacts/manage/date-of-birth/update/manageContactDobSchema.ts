@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { createDateInputSchema, DateInputSchemaRule } from '../../../../utils/validation/dateSchema'
+import { createDateInputSchema, DateInputSchemaRule } from '../../../../../utils/validation/dateSchema'
 
 export const updateDobSchema = createDateInputSchema({
   inputId: 'dob',
