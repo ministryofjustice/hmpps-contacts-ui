@@ -101,7 +101,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/possible-existing-record
 
     const continueLink = $('[data-qa=continue-adding-new-link]').first()
     expect(continueLink.attr('href')).toStrictEqual(
-      `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
     )
     expect(continueLink.parent().text().trim()).toStrictEqual(
       'Continue adding a new contact if none of these are the correct contact.',
@@ -159,7 +159,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/possible-existing-record
 
     const continueLink = $('[data-qa=continue-adding-new-link]').first()
     expect(continueLink.attr('href')).toStrictEqual(
-      `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`,
+      `/prisoner/${prisonerNumber}/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
     )
     expect(continueLink.parent().text().trim()).toStrictEqual(
       'Continue adding a new contact if this is not the correct contact.',
@@ -268,7 +268,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/possible-existing-record
     await request(app)
       .get(`/prisoner/${prisonerNumber}/contacts/create/possible-existing-records/${journeyId}`)
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`)
 
     expect(contactsService.searchContact).not.toHaveBeenCalled()
   })
@@ -288,7 +288,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/possible-existing-record
     await request(app)
       .get(`/prisoner/${prisonerNumber}/contacts/create/possible-existing-records/${journeyId}`)
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`)
 
     expect(contactsService.searchContact).toHaveBeenCalled()
   })
@@ -301,7 +301,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/possible-existing-record
     await request(app)
       .get(`/prisoner/${prisonerNumber}/contacts/create/possible-existing-records/${journeyId}`)
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`)
 
     expect(contactsService.searchContact).not.toHaveBeenCalled()
   })

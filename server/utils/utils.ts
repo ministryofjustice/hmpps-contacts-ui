@@ -166,3 +166,7 @@ export const formatAge = (contact: ContactSearchResultItem) => {
   }
   return 'Not provided'
 }
+
+const INTERNAL_OFFICIAL_ROLES = new Set(['RO', 'CUSPO', 'CUSPO2', 'COM', 'PROB', 'POM', 'PPA', 'OFS', 'CA'])
+
+export const isInternalContact = (relationshipCode: string) => INTERNAL_OFFICIAL_ROLES.has(relationshipCode)

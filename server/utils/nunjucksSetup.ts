@@ -15,6 +15,7 @@ import {
   referenceCodesToRadiosOrCheckboxes,
   formatDob,
   formatAge,
+  isInternalContact,
 } from './utils'
 import config from '../config'
 import logger from '../../logger'
@@ -154,4 +155,5 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('sortPhoneNumbers', sortPhoneNumbers)
   njkEnv.addFilter('hasPermission', hasPermission)
   njkEnv.addFilter('hasRole', hasRole)
+  njkEnv.addFilter('isInternalContact', isInternalContact)
 }

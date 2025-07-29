@@ -62,7 +62,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-type
   it.each([
     [
       'NEW',
-      `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`,
+      `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`,
       'Add a contact and link to a prisoner',
       'Add a contact - DPS',
     ],
