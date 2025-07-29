@@ -226,6 +226,62 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         '/prisoner/A1234BC/contacts/manage/22/relationship/99/enter-date-of-death?backTo=edit-contact-details',
       )
     })
+
+    it('should show delete dob link for internal contact', async () => {
+      contactsService.getPrisonerContactRelationship.mockResolvedValue({
+        ...TestData.prisonerContactRelationship(),
+        relationshipTypeCode: 'O',
+        relationshipTypeDescription: 'Official',
+        relationshipToPrisonerCode: 'CA',
+        relationshipToPrisonerDescription: 'Case Administrator',
+      })
+
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details`,
+      )
+      const $ = cheerio.load(response.text)
+      const personalInformationCard = $('h2:contains("Personal information")').parent().parent()
+      expectSummaryListItem(
+        personalInformationCard,
+        'Date of birth',
+        '14 January 1990',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/delete-dob',
+        'Delete the contact’s date of birth (Personal information)',
+      )
+      expect($('a:contains("Change the contact’s date of birth (Personal information)")').text()).toBeFalsy()
+    })
+
+    it('should not show any dob link for internal contact without dob', async () => {
+      const contactDetails = {
+        ...TestData.contact(),
+        firstName: 'First',
+        lastName: 'Last',
+        isStaff: false,
+      } as ContactDetails
+
+      delete contactDetails.titleCode
+      delete contactDetails.titleDescription
+      delete contactDetails.middleNames
+      delete contactDetails.dateOfBirth
+      delete contactDetails.genderCode
+      delete contactDetails.genderDescription
+
+      contactsService.getContact.mockResolvedValue(contactDetails)
+      contactsService.getPrisonerContactRelationship.mockResolvedValue({
+        ...TestData.prisonerContactRelationship(),
+        relationshipTypeCode: 'O',
+        relationshipTypeDescription: 'Official',
+        relationshipToPrisonerCode: 'CA',
+        relationshipToPrisonerDescription: 'Case Administrator',
+      })
+
+      const response = await request(app).get(
+        `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details`,
+      )
+      const $ = cheerio.load(response.text)
+      expect($('a:contains("Delete the contact’s date of birth (Personal information)")').text()).toBeFalsy()
+      expect($('a:contains("Change the contact’s date of birth (Personal information)")').text()).toBeFalsy()
+    })
   })
 
   describe('Relationship details card', () => {
