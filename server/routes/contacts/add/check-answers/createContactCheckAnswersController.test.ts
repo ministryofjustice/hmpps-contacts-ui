@@ -110,6 +110,20 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     expect($('strong:contains("Only record data when it is necessary to do so.")').text()).toBeTruthy()
   })
 
+  it('should render check answers page without dob for mode NEW if relationship is for internal contact', async () => {
+    // Given
+    journey.mode = 'NEW'
+    journey.relationship!.relationshipToPrisoner = 'CA'
+
+    // When
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+    // Then
+    expect(response.status).toEqual(200)
+    const $ = cheerio.load(response.text)
+    expect($('.check-answers-dob-value').first().text()).toBeFalsy()
+  })
+
   it('should render alternative check answers page for mode EXISTING', async () => {
     // Given
     journey.mode = 'EXISTING'
