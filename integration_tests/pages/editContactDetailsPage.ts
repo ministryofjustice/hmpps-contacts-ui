@@ -164,6 +164,10 @@ export default class EditContactDetailsPage extends Page {
     this.deleteDateOfDeathLink().click()
   }
 
+  clickDeleteDobLink() {
+    cy.findByRole('link', { name: 'Delete the contact’s date of birth (Personal information)' }).click()
+  }
+
   private titleHeading = (): PageElement => cy.findByText('Title')
 
   private titleValue = (): PageElement => this.titleHeading().next()

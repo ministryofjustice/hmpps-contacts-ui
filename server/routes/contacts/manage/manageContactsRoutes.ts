@@ -18,7 +18,7 @@ import { identitiesSchema, identitySchema } from './identities/IdentitySchemas'
 import ManageContactAddIdentityController from './identities/add/manageContactAddIdentityController'
 import ManageContactEditIdentityController from './identities/edit/manageContactEditIdentityController'
 import ManageContactDeleteIdentityController from './identities/delete/manageContactDeleteIdentityController'
-import ManageContactEnterDobController from './update-dob/manageContactEnterDobController'
+import ManageContactEnterDobController from './date-of-birth/update/manageContactEnterDobController'
 import ManageGenderController from './gender/contactGenderController'
 import ChangeTitleOrMiddleNamesController from './name/changeTitleOrMiddleNamesController'
 import ManageRelationshipCommentsController from './relationship/comments/manageRelationshipCommentsController'
@@ -60,7 +60,7 @@ import { checkEmployerSchema } from './update-employments/check-employer/checkEm
 import { employmentStatusSchema } from './update-employments/employment-status/employmentStatusSchema'
 import EmploymentStatusController from './update-employments/employment-status/employmentStatusController'
 import DeleteEmploymentController from './update-employments/delete-employment/deleteEmploymentController'
-import { updateDobSchema } from './update-dob/manageContactDobSchema'
+import { updateDobSchema } from './date-of-birth/update/manageContactDobSchema'
 import { contactGenderSchema } from './gender/contactGenderSchema'
 import { manageContactStaffSchema } from './staff/manageContactStaffSchema'
 import ChangeRelationshipTypeStartController from './relationship/type/start/changeRelationshipTypeStartController'
@@ -98,6 +98,7 @@ import ChangeRelationshipTypeHandleDuplicateController from './relationship/type
 import { handleDuplicateRelationshipSchemaFactory } from '../common/relationship/handleDuplicateRelationshipSchemas'
 import DeleteRelationshipController from './relationship/delete-relationship/deleteRelationshipController'
 import { deleteRelationshipSchema } from './relationship/delete-relationship/deleteRelationshipActionSchema'
+import ManageContactDeleteDobController from './date-of-birth/delete/manageContactDeleteDobController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -250,6 +251,12 @@ const ManageContactsRoutes = (
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/update-dob',
     controller: new ManageContactEnterDobController(contactsService),
     schema: updateDobSchema,
+  })
+
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/delete-dob',
+    controller: new ManageContactDeleteDobController(contactsService),
+    noValidation: true,
   })
 
   standAloneRoute({

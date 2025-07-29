@@ -228,13 +228,14 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
     })
 
     it('should show delete dob link for internal contact', async () => {
-      contactsService.getPrisonerContactRelationship.mockResolvedValue({
-        ...TestData.prisonerContactRelationship(),
-        relationshipTypeCode: 'O',
-        relationshipTypeDescription: 'Official',
-        relationshipToPrisonerCode: 'CA',
-        relationshipToPrisonerDescription: 'Case Administrator',
-      })
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(
+        TestData.prisonerContactRelationship({
+          relationshipTypeCode: 'O',
+          relationshipTypeDescription: 'Official',
+          relationshipToPrisonerCode: 'CA',
+          relationshipToPrisonerDescription: 'Case Administrator',
+        }),
+      )
 
       const response = await request(app).get(
         `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details`,
@@ -267,13 +268,14 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
       delete contactDetails.genderDescription
 
       contactsService.getContact.mockResolvedValue(contactDetails)
-      contactsService.getPrisonerContactRelationship.mockResolvedValue({
-        ...TestData.prisonerContactRelationship(),
-        relationshipTypeCode: 'O',
-        relationshipTypeDescription: 'Official',
-        relationshipToPrisonerCode: 'CA',
-        relationshipToPrisonerDescription: 'Case Administrator',
-      })
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(
+        TestData.prisonerContactRelationship({
+          relationshipTypeCode: 'O',
+          relationshipTypeDescription: 'Official',
+          relationshipToPrisonerCode: 'CA',
+          relationshipToPrisonerDescription: 'Case Administrator',
+        }),
+      )
 
       const response = await request(app).get(
         `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details`,
