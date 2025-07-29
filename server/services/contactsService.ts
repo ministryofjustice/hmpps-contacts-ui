@@ -37,6 +37,7 @@ import {
 import { stripNullishAddressLines } from '../routes/contacts/add/addresses/common/utils'
 import TelemetryService from './telemetryService'
 import { HmppsUser } from '../interfaces/hmppsUser'
+import { isInternalContact } from '../utils/utils'
 
 export default class ContactsService extends AuditedService {
   constructor(
@@ -76,7 +77,7 @@ export default class ContactsService extends AuditedService {
         ...(journey?.relationship?.comments === undefined ? {} : { comments: journey.relationship.comments }),
       },
     }
-    if (journey.dateOfBirth?.isKnown === 'YES') {
+    if (journey.dateOfBirth?.isKnown === 'YES' && !isInternalContact(journey.relationship!.relationshipToPrisoner!)) {
       request.dateOfBirth = new Date(
         `${journey.dateOfBirth.year}-${journey.dateOfBirth.month}-${journey.dateOfBirth.day}Z`,
       )

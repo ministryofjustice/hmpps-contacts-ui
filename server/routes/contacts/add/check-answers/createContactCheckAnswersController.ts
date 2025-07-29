@@ -46,7 +46,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
     delete journey.pendingEmployments
     delete journey.pendingAddresses
     let dateOfBirth
-    if (journey.dateOfBirth!.isKnown === 'YES') {
+    if (journey.dateOfBirth?.isKnown === 'YES') {
       dateOfBirth = new Date(`${journey.dateOfBirth!.year}-${journey.dateOfBirth!.month}-${journey.dateOfBirth!.day}Z`)
     }
     const relationshipTypeDescription = await this.referenceDataService.getReferenceDescriptionForCode(
