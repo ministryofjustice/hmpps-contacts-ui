@@ -101,15 +101,15 @@ context('Create Contact With Addresses', () => {
       .enterFirstName('First')
       .clickContinue()
 
-    Page.verifyOnPage(ManageDobPage, 'First Last', true) //
-      .clickContinue()
-
     Page.verifyOnPage(SelectRelationshipTypePage, 'First Last', 'John Smith') //
       .selectRelationshipType('O')
       .clickContinue()
 
     Page.verifyOnPage(SelectRelationshipPage, 'First Last', 'John Smith') //
       .selectRelationship('DR')
+      .clickContinue()
+
+    Page.verifyOnPage(ManageDobPage, 'First Last', true) //
       .clickContinue()
 
     Page.verifyOnPage(SelectEmergencyContactOrNextOfKinPage, 'First Last', 'John Smith', true) //
