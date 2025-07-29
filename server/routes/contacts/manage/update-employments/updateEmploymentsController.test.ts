@@ -135,6 +135,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/update
     )
     expect($('a:contains("Cancel")').attr('href')).toEqual('/prisoner/A1234BC/contacts/manage/1/relationship/2')
     expect($('p:contains("To change details such as the employer name")').text()).toBeTruthy()
+
+    expect($('strong:contains("Only record data when it is necessary to do so.")').text()).toBeTruthy()
   })
 
   it('should handle no employment record', async () => {
@@ -151,7 +153,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/update
 
     // Then
     const $ = cheerio.load(response.text)
-    expect($('h1:contains("Edit employment information")').parent().next().text()).toContain('No employers recorded.')
+    expect($('h1:contains("Edit employment information")').parent().next().next().text()).toContain(
+      'No employers recorded.',
+    )
     expect($('a:contains("Add employer")').attr('href')).toEqual(
       `/prisoner/A1234BC/contacts/manage/1/relationship/2/update-employments/new/organisation-search/${journeyId}`,
     )

@@ -4,6 +4,7 @@
 {% from "partials/contactMethods/phoneNumbersCard.njk" import phoneNumbersCard %}
 {% from "partials/contactMethods/emailAddressesCard.njk" import emailAddressesCard %}
 {% from "partials/contactMethods/contactAddressCard.njk" import contactAddressCard %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 
 {% extends "partials/layout.njk" %}§
 
@@ -16,6 +17,11 @@
         <span class="govuk-caption-l">Manage contacts</span>
         <h1 class="govuk-heading-l">Edit contact methods for {{ contact | formatNameFirstNameFirst }}</h1>
       </div>
+
+      {{ govukWarningText({
+        text: "Only record data when it is necessary to do so.",
+        iconFallbackText: "Warning"
+      }) }}
 
       {{ phoneNumbersCard({
           contact: contact,
