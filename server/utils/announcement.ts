@@ -18,7 +18,7 @@ const LIMITED_ACCESS_ANNOUNCEMENT: Announcement = {
 All establishments will have full access to the new prisoner Contacts service from October. To request early access, ask your Head of Operations or another appropriate staff member to email
 <a class="govuk-notification-banner__link" href="mailto:managingcontacts@justice.gov.uk">managingcontacts@justice.gov.uk</a>.
 
-<div class="govuk-notification-banner__content">
+<div class="govuk-notification-banner__content govuk-!-padding-left-0">
   <details class="govuk-details">
     <summary class="govuk-details__summary">
       <span class="govuk-details__summary-text">Where is this data from?</span>
