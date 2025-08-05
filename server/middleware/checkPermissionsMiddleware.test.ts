@@ -1,6 +1,8 @@
 import { Request, Response } from 'express'
 import checkPermissionsMiddleware from './checkPermissionsMiddleware'
 import Permission from '../enumeration/permission'
+import TestData from '../routes/testutils/testData'
+import { basicPrisonUser } from '../routes/testutils/appSetup'
 
 describe('checkPermissionsMiddleware', () => {
   let req: Partial<Request>
@@ -16,9 +18,8 @@ describe('checkPermissionsMiddleware', () => {
     req = {}
     res = {
       locals: {
-        user: {
-          username: 'test-user',
-        },
+        user: { ...basicPrisonUser, userRoles: [] },
+        prisonerDetails: TestData.prisonerDetails(),
       },
       render,
       status,
@@ -74,6 +75,7 @@ describe('checkPermissionsMiddleware', () => {
   ])(
     'should render not found page with a 403 response so that the unauthorised access is logged',
     async (userRoles: string[], requiredPermission: Permission) => {
+      res.locals!.user!.userRoles = userRoles
       const middleware = checkPermissionsMiddleware(requiredPermission)
       await middleware(req as Request, res as Response, next)
       expect(next).not.toHaveBeenCalled()
