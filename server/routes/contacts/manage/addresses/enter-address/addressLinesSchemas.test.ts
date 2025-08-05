@@ -40,13 +40,13 @@ describe('addressLinesSchemas', () => {
 
     it('property max length', async () => {
       // When
-      const result = await doValidate({ countryCode: 'ENG', property: ''.padEnd(51, 'X') })
+      const result = await doValidate({ countryCode: 'ENG', property: ''.padEnd(131, 'X') })
 
       // Then
       expect(result.success).toStrictEqual(false)
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
-        property: ['Building name must be 50 characters or less'],
+        property: ['Building name must be 130 characters or less'],
       })
     })
 
@@ -91,7 +91,7 @@ describe('addressLinesSchemas', () => {
       const result = await doValidate({
         countryCode: 'ENG',
         flat: ''.padEnd(30, 'X'),
-        property: ''.padEnd(50, 'X'),
+        property: ''.padEnd(130, 'X'),
         street: ''.padEnd(160, 'X'),
         area: ''.padEnd(70, 'X'),
         postcode: ''.padEnd(12, 'X'),
