@@ -138,6 +138,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         '15 June 1982',
         '/prisoner/A1234BC/contacts/manage/22/relationship/99/update-dob',
         'Change the contact’s date of birth (Personal information)',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/delete-dob',
+        'Delete the contact’s date of birth (Personal information)',
       )
       expectSummaryListItem(
         personalInformationCard,
@@ -225,9 +227,10 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
       expect($('[data-qa=record-date-of-death-link]').attr('href')).toStrictEqual(
         '/prisoner/A1234BC/contacts/manage/22/relationship/99/enter-date-of-death?backTo=edit-contact-details',
       )
+      expect($('a:contains("Delete the contact’s date of birth (Personal information)")').text()).toBeFalsy()
     })
 
-    it('should show delete dob link for internal contact', async () => {
+    it('should not show dob for internal contact', async () => {
       contactsService.getPrisonerContactRelationship.mockResolvedValue(
         TestData.prisonerContactRelationship({
           relationshipTypeCode: 'O',
@@ -242,14 +245,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
       )
       const $ = cheerio.load(response.text)
       const personalInformationCard = $('h2:contains("Personal information")').parent().parent()
-      expectSummaryListItem(
-        personalInformationCard,
-        'Date of birth',
-        '14 January 1990',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/delete-dob',
-        'Delete the contact’s date of birth (Personal information)',
-      )
+      expect(personalInformationCard.find(`dt:contains("Date of birth")`).text()).toBeFalsy()
       expect($('a:contains("Change the contact’s date of birth (Personal information)")').text()).toBeFalsy()
+      expect($('a:contains("Delete the contact’s date of birth (Personal information)")').text()).toBeFalsy()
     })
 
     it('should not show any dob link for internal contact without dob', async () => {

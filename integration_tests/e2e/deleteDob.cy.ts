@@ -26,11 +26,7 @@ context('Delete date of death', () => {
     cy.task('stubGetContactNameById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', {
       id: prisonerContactId,
-      response: TestData.prisonerContactRelationship({
-        relationshipToPrisonerCode: 'CA',
-        prisonerContactId,
-        isEmergencyContact: true,
-      }),
+      response: TestData.prisonerContactRelationship(),
     })
     cy.task('stubPatchContactById', { contactId, response: contact })
     cy.task('stubGetPrisonerContactRestrictions', {

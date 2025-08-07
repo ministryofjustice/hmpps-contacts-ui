@@ -522,6 +522,27 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         expect($('[data-qa=record-date-of-death-link]')).toHaveLength(0)
       })
 
+      it('should hide dob of personal details for internal contact', async () => {
+        const contactDetails = {
+          ...TestData.contact(),
+          dateOfBirth: '1982-06-15',
+        } as ContactDetails
+        contactsService.getContact.mockResolvedValue(contactDetails)
+        contactsService.getPrisonerContactRelationship.mockResolvedValue(
+          TestData.prisonerContactRelationship({
+            relationshipTypeCode: 'O',
+            relationshipTypeDescription: 'Official',
+            relationshipToPrisonerCode: 'CA',
+            relationshipToPrisonerDescription: 'Case Administrator',
+          }),
+        )
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+        const $ = cheerio.load(response.text)
+
+        const personalInformationCard = $('h2:contains("Personal information")').parent().parent()
+        expect(personalInformationCard.find(`dt:contains("Date of birth")`).text()).toBeFalsy()
+      })
+
       it('should render without optional personal details', async () => {
         const contactDetails = {
           ...TestData.contact(),
