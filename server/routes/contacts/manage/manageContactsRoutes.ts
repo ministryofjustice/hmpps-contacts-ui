@@ -4,7 +4,6 @@ import { SchemaFactory, validate } from '../../../middleware/validationMiddlewar
 import AuditService from '../../../services/auditService'
 import ListContactsController from './list/listContactsController'
 import { ContactsService, PrisonerSearchService } from '../../../services'
-import populatePrisonerDetailsIfInCaseload from '../../../middleware/populatePrisonerDetailsIfInCaseload'
 import ContactDetailsController from './contact-details/contactDetailsController'
 import ReferenceDataService from '../../../services/referenceDataService'
 import ManageLanguageAndInterpreterController from './additional-information/language-and-interpreter/manageLanguageAndInterpreterController'
@@ -110,20 +109,18 @@ const ManageContactsRoutes = (
   organisationsService: OrganisationsService,
 ) => {
   const router = Router({ mergeParams: true })
-  const { get, post } = routerMethods(router, auditService)
+  const { get, post } = routerMethods(router, auditService, prisonerSearchService)
 
   const standAloneRoute = <P extends { [key: string]: string }>({
     path,
     controller,
     schema,
     noValidation,
-    prisonerDetailsRequiredOnPost,
   }: {
     path: string
     controller: PageHandler
     schema?: z.ZodTypeAny | SchemaFactory<P>
     noValidation?: boolean
-    prisonerDetailsRequiredOnPost?: boolean
   }) => {
     if (!schema && !noValidation) {
       throw Error('Missing validation schema for POST route')
@@ -134,9 +131,6 @@ const ManageContactsRoutes = (
     if (schema) {
       postMiddleware.push(validate(schema))
     }
-    if (prisonerDetailsRequiredOnPost) {
-      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService) as RequestHandler)
-    }
     post(path, controller, ...postMiddleware)
   }
 
@@ -146,14 +140,12 @@ const ManageContactsRoutes = (
     journeyEnsurer,
     schema,
     noValidation,
-    prisonerDetailsRequiredOnPost,
   }: {
     path: string
     controller: PageHandler
     journeyEnsurer: RequestHandler<P> | (RequestHandler<P> | RequestHandler)[]
     schema?: z.ZodTypeAny | SchemaFactory<P>
     noValidation?: boolean
-    prisonerDetailsRequiredOnPost?: boolean
   }) => {
     if (!schema && !noValidation) {
       throw Error('Missing validation schema for POST route')
@@ -166,13 +158,8 @@ const ManageContactsRoutes = (
     if (schema) {
       postMiddleware.push(validate(schema))
     }
-    if (prisonerDetailsRequiredOnPost) {
-      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService) as RequestHandler)
-    }
     post(path, controller, ...postMiddleware)
   }
-
-  router.get('/prisoner/:prisonerNumber/*any', populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService))
 
   // List contacts for a prisoner
   standAloneRoute({
@@ -207,14 +194,12 @@ const ManageContactsRoutes = (
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/language-and-interpreter',
     controller: new ManageLanguageAndInterpreterController(contactsService, referenceDataService),
     schema: manageLanguageAndInterpreterSchema,
-    prisonerDetailsRequiredOnPost: true,
   })
 
   standAloneRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/approved-to-visit',
     controller: new ManageApprovedToVisitController(contactsService),
     schema: manageApprovedToVisitSchema,
-    prisonerDetailsRequiredOnPost: true,
   })
 
   standAloneRoute({
@@ -287,28 +272,24 @@ const ManageContactsRoutes = (
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/emergency-contact-or-next-of-kin',
     controller: new ManageEmergencyContactOrNextOfKinController(contactsService),
     schema: manageEmergencyContactOrNextOfKinSchema,
-    prisonerDetailsRequiredOnPost: true,
   })
 
   standAloneRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/relationship-status',
     controller: new ManageRelationshipStatusController(contactsService),
     schema: manageRelationshipStatusSchema,
-    prisonerDetailsRequiredOnPost: true,
   })
 
   standAloneRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/relationship-comments',
     controller: new ManageRelationshipCommentsController(contactsService),
     schema: enterRelationshipCommentsSchema,
-    prisonerDetailsRequiredOnPost: true,
   })
 
   standAloneRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/delete',
     controller: new DeleteRelationshipController(contactsService),
     schema: deleteRelationshipSchema,
-    prisonerDetailsRequiredOnPost: true,
   })
 
   // Relationship type and relationship to prisoner mini journeys
@@ -329,7 +310,6 @@ const ManageContactsRoutes = (
     controller: new ChangeRelationshipTypeRelationshipToPrisonerController(contactsService, referenceDataService),
     schema: selectRelationshipSchemaFactory(),
     journeyEnsurer: [ensureInChangeRelationshipTypeJourney],
-    prisonerDetailsRequiredOnPost: true,
   })
 
   journeyRoute({

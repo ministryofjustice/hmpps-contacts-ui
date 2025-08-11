@@ -172,6 +172,7 @@ describe('addContactFlowControl', () => {
             dateOfBirth: {
               isKnown: 'NO',
             },
+            prisonerDetails: TestData.prisonerDetails(),
           }
           const expected: Navigation = {
             backLink: expectedBackUrl,
@@ -318,6 +319,7 @@ describe('addContactFlowControl', () => {
             mode: 'NEW',
             contactId: 123456,
             prisonerContactId: 654321,
+            prisonerDetails: TestData.prisonerDetails(),
           }
 
           const nav = nextPageForAddContactJourney(page, journey, user)
@@ -566,6 +568,7 @@ describe('addContactFlowControl', () => {
             mode: 'EXISTING',
             matchingContactId: 12346789,
             isCheckingAnswers: false,
+            prisonerDetails: TestData.prisonerDetails(),
           }
           const expected: Navigation = {
             backLink: expectedBackUrl,
@@ -656,6 +659,7 @@ describe('addContactFlowControl', () => {
             isCheckingAnswers: false,
             contactId: 123456,
             prisonerContactId: 654321,
+            prisonerDetails: TestData.prisonerDetails(),
           }
 
           const nav = nextPageForAddContactJourney(page, journey, user)

@@ -48,6 +48,8 @@ export interface AddContactJourney {
   identities?: IdentityForm[] | undefined
   emailAddresses?: EmailAddressForm[] | undefined
   possibleExistingRecords?: ContactSearchResultItem[] | undefined
+  // TODO make not null but broke 68 tests and didn't have time to fix
+  prisonerDetails?: PrisonerDetails | undefined
 }
 
 export interface ContactNames {
@@ -127,6 +129,7 @@ export interface PrisonerDetails {
   firstName: string
   dateOfBirth: string
   prisonName?: string | undefined
+  prisonId?: string | undefined
   cellLocation?: string | undefined
   hasPrimaryAddress: boolean
 }
