@@ -28,29 +28,29 @@ describe('checkPermissionsMiddleware', () => {
 
   it.each([
     // everyone can access
-    [['PRISON'], Permission.VIEW_CONTACT_LIST],
-    [['CONTACTS_ADMINISTRATOR'], Permission.VIEW_CONTACT_LIST],
-    [['CONTACTS_AUTHORISER'], Permission.VIEW_CONTACT_LIST],
-    [['PRISON', 'CONTACTS_ADMINISTRATOR'], Permission.VIEW_CONTACT_LIST],
-    [['PRISON', 'CONTACTS_AUTHORISER'], Permission.VIEW_CONTACT_LIST],
-    [['CONTACTS_ADMINISTRATOR', 'CONTACTS_AUTHORISER'], Permission.VIEW_CONTACT_LIST],
-    [['PRISON', 'CONTACTS_ADMINISTRATOR', 'CONTACTS_AUTHORISER'], Permission.VIEW_CONTACT_LIST],
+    [['PRISON'], Permission.read_contacts],
+    [['CONTACTS_ADMINISTRATOR'], Permission.read_contacts],
+    [['CONTACTS_AUTHORISER'], Permission.read_contacts],
+    [['PRISON', 'CONTACTS_ADMINISTRATOR'], Permission.read_contacts],
+    [['PRISON', 'CONTACTS_AUTHORISER'], Permission.read_contacts],
+    [['CONTACTS_ADMINISTRATOR', 'CONTACTS_AUTHORISER'], Permission.read_contacts],
+    [['PRISON', 'CONTACTS_ADMINISTRATOR', 'CONTACTS_AUTHORISER'], Permission.read_contacts],
     // only admin or authoriser
-    [['CONTACTS_ADMINISTRATOR'], Permission.MANAGE_CONTACTS],
-    [['CONTACTS_AUTHORISER'], Permission.MANAGE_CONTACTS],
-    [['PRISON', 'CONTACTS_ADMINISTRATOR'], Permission.MANAGE_CONTACTS],
-    [['PRISON', 'CONTACTS_AUTHORISER'], Permission.MANAGE_CONTACTS],
-    [['CONTACTS_ADMINISTRATOR', 'CONTACTS_AUTHORISER'], Permission.MANAGE_CONTACTS],
-    [['PRISON', 'CONTACTS_ADMINISTRATOR', 'CONTACTS_AUTHORISER'], Permission.MANAGE_CONTACTS],
+    [['CONTACTS_ADMINISTRATOR'], Permission.edit_contacts],
+    [['CONTACTS_AUTHORISER'], Permission.edit_contacts],
+    [['PRISON', 'CONTACTS_ADMINISTRATOR'], Permission.edit_contacts],
+    [['PRISON', 'CONTACTS_AUTHORISER'], Permission.edit_contacts],
+    [['CONTACTS_ADMINISTRATOR', 'CONTACTS_AUTHORISER'], Permission.edit_contacts],
+    [['PRISON', 'CONTACTS_ADMINISTRATOR', 'CONTACTS_AUTHORISER'], Permission.edit_contacts],
     // only authoriser
-    [['CONTACTS_AUTHORISER'], Permission.MANAGE_RESTRICTIONS],
-    [['PRISON', 'CONTACTS_AUTHORISER'], Permission.MANAGE_RESTRICTIONS],
-    [['CONTACTS_ADMINISTRATOR', 'CONTACTS_AUTHORISER'], Permission.MANAGE_RESTRICTIONS],
-    [['PRISON', 'CONTACTS_ADMINISTRATOR', 'CONTACTS_AUTHORISER'], Permission.MANAGE_RESTRICTIONS],
-    [['CONTACTS_AUTHORISER'], Permission.APPROVE_TO_VISIT],
-    [['PRISON', 'CONTACTS_AUTHORISER'], Permission.APPROVE_TO_VISIT],
-    [['CONTACTS_ADMINISTRATOR', 'CONTACTS_AUTHORISER'], Permission.APPROVE_TO_VISIT],
-    [['PRISON', 'CONTACTS_ADMINISTRATOR', 'CONTACTS_AUTHORISER'], Permission.APPROVE_TO_VISIT],
+    [['CONTACTS_AUTHORISER'], Permission.edit_contact_restrictions],
+    [['PRISON', 'CONTACTS_AUTHORISER'], Permission.edit_contact_restrictions],
+    [['CONTACTS_ADMINISTRATOR', 'CONTACTS_AUTHORISER'], Permission.edit_contact_restrictions],
+    [['PRISON', 'CONTACTS_ADMINISTRATOR', 'CONTACTS_AUTHORISER'], Permission.edit_contact_restrictions],
+    [['CONTACTS_AUTHORISER'], Permission.edit_contact_visit_approval],
+    [['PRISON', 'CONTACTS_AUTHORISER'], Permission.edit_contact_visit_approval],
+    [['CONTACTS_ADMINISTRATOR', 'CONTACTS_AUTHORISER'], Permission.edit_contact_visit_approval],
+    [['PRISON', 'CONTACTS_ADMINISTRATOR', 'CONTACTS_AUTHORISER'], Permission.edit_contact_visit_approval],
   ])(
     'should call next() if the user has required permission (%s, %s)',
     async (userRoles: string[], requiredPermission: Permission) => {
@@ -64,13 +64,13 @@ describe('checkPermissionsMiddleware', () => {
   )
 
   it.each([
-    [['PRISON'], Permission.MANAGE_CONTACTS],
-    [['PRISON'], Permission.MANAGE_RESTRICTIONS],
-    [['PRISON', 'CONTACTS_ADMINISTRATOR'], Permission.MANAGE_RESTRICTIONS],
-    [['CONTACTS_ADMINISTRATOR'], Permission.MANAGE_RESTRICTIONS],
-    [['PRISON'], Permission.APPROVE_TO_VISIT],
-    [['PRISON', 'CONTACTS_ADMINISTRATOR'], Permission.APPROVE_TO_VISIT],
-    [['CONTACTS_ADMINISTRATOR'], Permission.APPROVE_TO_VISIT],
+    [['PRISON'], Permission.edit_contacts],
+    [['PRISON'], Permission.edit_contact_restrictions],
+    [['PRISON', 'CONTACTS_ADMINISTRATOR'], Permission.edit_contact_restrictions],
+    [['CONTACTS_ADMINISTRATOR'], Permission.edit_contact_restrictions],
+    [['PRISON'], Permission.edit_contact_visit_approval],
+    [['PRISON', 'CONTACTS_ADMINISTRATOR'], Permission.edit_contact_visit_approval],
+    [['CONTACTS_ADMINISTRATOR'], Permission.edit_contact_visit_approval],
   ])(
     'should render not found page with a 403 response so that the unauthorised access is logged',
     async (userRoles: string[], requiredPermission: Permission) => {

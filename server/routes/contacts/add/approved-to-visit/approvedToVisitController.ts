@@ -8,7 +8,7 @@ import Permission from '../../../../enumeration/permission'
 export default class ApprovedToVisitController implements PageHandler {
   public PAGE_NAME = Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE
 
-  public REQUIRED_PERMISSION = Permission.APPROVE_TO_VISIT
+  public REQUIRED_PERMISSION = Permission.edit_contact_visit_approval
 
   GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params

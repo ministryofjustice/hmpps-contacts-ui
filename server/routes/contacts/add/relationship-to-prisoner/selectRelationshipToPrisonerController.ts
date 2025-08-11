@@ -13,7 +13,7 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
 
   public PAGE_NAME = Page.SELECT_CONTACT_RELATIONSHIP
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params

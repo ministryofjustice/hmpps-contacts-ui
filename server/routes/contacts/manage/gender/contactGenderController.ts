@@ -21,7 +21,7 @@ export default class ManageGenderController implements PageHandler {
 
   public PAGE_NAME = Page.MANAGE_GENDER_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (
     req: Request<PrisonerJourneyParams & { contactId: string; prisonerContactId: string }>,

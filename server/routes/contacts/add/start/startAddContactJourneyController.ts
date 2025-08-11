@@ -9,7 +9,7 @@ import Permission from '../../../../enumeration/permission'
 export default class StartAddContactJourneyController implements PageHandler {
   public PAGE_NAME = Page.CREATE_CONTACT_START_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   private MAX_JOURNEYS = 5
 

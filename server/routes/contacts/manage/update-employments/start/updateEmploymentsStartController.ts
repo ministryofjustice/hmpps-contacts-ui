@@ -11,7 +11,7 @@ export default class UpdateEmploymentsStartController implements PageHandler {
 
   public PAGE_NAME = Page.MANAGE_CONTACT_START_MANAGE_EMPLOYMENT_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   private MAX_JOURNEYS = 5
 

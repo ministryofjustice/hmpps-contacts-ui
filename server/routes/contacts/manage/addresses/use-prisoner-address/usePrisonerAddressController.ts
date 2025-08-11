@@ -9,7 +9,7 @@ export default class UsePrisonerAddressController implements PageHandler {
 
   public PAGE_NAME = Page.USE_PRISONER_ADDRESS_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (
     req: Request<{ journeyId: string; prisonerNumber: string }, unknown, unknown, { returnUrl: string }>,

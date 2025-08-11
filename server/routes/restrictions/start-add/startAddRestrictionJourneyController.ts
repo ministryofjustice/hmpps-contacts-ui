@@ -11,7 +11,7 @@ export default class StartAddRestrictionJourneyController implements PageHandler
 
   public PAGE_NAME = Page.ADD_RESTRICTION_START_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_RESTRICTIONS
+  public REQUIRED_PERMISSION = Permission.edit_contact_restrictions
 
   private MAX_JOURNEYS = 5
 

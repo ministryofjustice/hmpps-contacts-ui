@@ -16,7 +16,7 @@ export default class ContactSearchController implements PageHandler {
 
   public PAGE_NAME = Page.CONTACT_SEARCH_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   private TABLE_ROW_COUNT = 10
 

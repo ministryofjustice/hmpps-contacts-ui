@@ -5,6 +5,7 @@ import asyncMiddleware from '../middleware/asyncMiddleware'
 import { AuditService } from '../services'
 import { PrisonerJourneyParams } from '../@types/journeys'
 import checkPermissionsMiddleware from '../middleware/checkPermissionsMiddleware'
+import setUpPrisonerPermissions from '../middleware/setUpPrisonerPermissions'
 
 export const routerMethods = (router: Router, auditService: AuditService) => {
   const get = <P extends { [key: string]: string }>(
@@ -16,6 +17,7 @@ export const routerMethods = (router: Router, auditService: AuditService) => {
       path,
       ...handlers,
       checkPermissionsMiddleware(controller.REQUIRED_PERMISSION),
+      setUpPrisonerPermissions(),
       logPageViewMiddleware(auditService, controller),
       asyncMiddleware(controller.GET),
     )
@@ -28,6 +30,7 @@ export const routerMethods = (router: Router, auditService: AuditService) => {
       path,
       ...(handlers as RequestHandler[]),
       checkPermissionsMiddleware(controller.REQUIRED_PERMISSION),
+      setUpPrisonerPermissions(),
       asyncMiddleware(controller.POST!),
     )
   return { get, post }

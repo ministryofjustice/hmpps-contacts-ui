@@ -15,7 +15,7 @@ export default class ChangeAddressDatesController implements PageHandler {
 
   public PAGE_NAME = Page.ENTER_ADDRESS_DATES_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string; contactAddressId: string }>,

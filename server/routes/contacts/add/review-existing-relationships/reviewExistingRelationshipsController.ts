@@ -14,7 +14,7 @@ export default class ReviewExistingRelationshipsController implements PageHandle
     public PAGE_NAME: Page,
   ) {}
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<PrisonerJourneyParams & { matchingContactId: string }>, res: Response): Promise<void> => {
     const { journeyId, prisonerNumber, matchingContactId } = req.params

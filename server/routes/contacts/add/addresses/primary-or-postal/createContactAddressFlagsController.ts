@@ -13,7 +13,7 @@ export default class CreateContactAddressFlagsController implements PageHandler 
 
   public PAGE_NAME = Page.CREATE_CONTACT_SELECT_ADDRESS_FLAGS_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<CreateContactAddressParam>, res: Response): Promise<void> => {
     const { journey, addressForm, bounceBackOrAddressUrl } = getAddressFormAndUrl(req)

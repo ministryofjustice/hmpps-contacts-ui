@@ -10,7 +10,7 @@ import Permission from '../../../../../enumeration/permission'
 export default class CancelAddAddressController implements PageHandler {
   public PAGE_NAME = Page.CANCEL_ADD_ADDRESS_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (
     req: Request<PrisonerJourneyParams & { contactId: string; prisonerContactId: string }, unknown, unknown>,

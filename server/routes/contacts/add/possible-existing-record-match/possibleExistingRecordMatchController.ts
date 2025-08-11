@@ -23,7 +23,7 @@ export default class PossibleExistingRecordMatchController implements PageHandle
 
   public PAGE_NAME = Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORD_MATCH_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   private LINKED_PRISONER_ITEMS_PER_PAGE = 10
 

@@ -12,7 +12,7 @@ export default class AddContactGenderController implements PageHandler {
 
   public PAGE_NAME = Page.ADD_CONTACT_ENTER_GENDER_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { journeyId } = req.params

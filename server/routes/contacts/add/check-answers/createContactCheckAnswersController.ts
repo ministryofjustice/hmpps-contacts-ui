@@ -18,7 +18,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
 
   public PAGE_NAME = Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (
     req: Request<PrisonerJourneyParams, unknown, unknown, { back?: string }>,

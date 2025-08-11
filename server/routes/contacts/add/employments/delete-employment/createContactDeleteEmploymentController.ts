@@ -8,7 +8,7 @@ import Permission from '../../../../../enumeration/permission'
 export default class CreateContactDeleteEmploymentController implements PageHandler {
   public PAGE_NAME = Page.CREATE_CONTACT_DELETE_EMPLOYMENT_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<CreateContactEmploymentParam>, res: Response) => {
     const { journey, employment, bounceBackUrl } = getEmploymentAndUrl(req)

@@ -12,7 +12,7 @@ export default class AddContactConfirmDeleteIdentityController implements PageHa
 
   public PAGE_NAME = Page.ADD_CONTACT_DELETE_IDENTITY_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (
     req: Request<PrisonerJourneyParams & { index: string }, unknown, unknown>,

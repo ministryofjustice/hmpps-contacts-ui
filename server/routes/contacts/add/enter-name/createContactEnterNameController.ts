@@ -13,7 +13,7 @@ export default class EnterNameController implements PageHandler {
 
   public PAGE_NAME = Page.CREATE_CONTACT_NAME_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<{ journeyId: string }>, res: Response): Promise<void> => {
     const { journeyId } = req.params
