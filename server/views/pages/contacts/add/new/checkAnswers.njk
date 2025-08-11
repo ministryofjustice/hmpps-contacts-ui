@@ -231,7 +231,7 @@
                               }
                             ]
                           }
-                        } if ( user | hasPermission('APPROVE_TO_VISIT') ),
+                        } if ( user | isGranted(PersonalRelationshipsPermission.edit_contact_visit_approval, prisonerPermissions) ),
                         {
                             key: {
                                 text: "Comments on this relationship"

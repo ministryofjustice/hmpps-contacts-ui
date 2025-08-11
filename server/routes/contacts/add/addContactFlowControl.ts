@@ -257,7 +257,7 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
       ),
     ),
     previousUrlLabel: (_, user) =>
-      hasPermission(user, Permission.APPROVE_TO_VISIT)
+      hasPermission(user, Permission.edit_contact_visit_approval)
         ? 'Back to visits approval'
         : 'Back to emergency contact and next of kin',
     nextUrl: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url,
@@ -410,7 +410,7 @@ function checkAnswersOr(other: JourneyUrlProvider): JourneyUrlProvider {
 }
 
 function ifCanApproveForVisitsOr(yes: JourneyUrlProvider, no: JourneyUrlProvider): JourneyUrlProvider {
-  return (journey, user) => (hasPermission(user, Permission.APPROVE_TO_VISIT) ? yes(journey, user) : no(journey, user))
+  return (journey, user) => (hasPermission(user, Permission.edit_contact_visit_approval) ? yes(journey, user) : no(journey, user))
 }
 
 function backIfCheckAnswersOr(other: JourneyUrlProvider): JourneyUrlProvider {

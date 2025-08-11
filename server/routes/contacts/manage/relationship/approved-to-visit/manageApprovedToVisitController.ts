@@ -15,7 +15,7 @@ export default class ManageApprovedToVisitController implements PageHandler {
 
   public PAGE_NAME = Page.MANAGE_CONTACT_UPDATE_APPROVED_TO_VISIT_PAGE
 
-  public REQUIRED_PERMISSION = Permission.APPROVE_TO_VISIT
+  public REQUIRED_PERMISSION = Permission.edit_contact_visit_approval
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }>,

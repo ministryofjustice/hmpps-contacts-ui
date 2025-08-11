@@ -15,7 +15,7 @@ export default class ManageEmergencyContactOrNextOfKinController implements Page
 
   public PAGE_NAME = Page.MANAGE_CONTACT_UPDATE_EMERGENCY_CONTACT_OR_NEXT_OF_KIN_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }>,

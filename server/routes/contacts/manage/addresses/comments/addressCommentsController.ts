@@ -13,7 +13,7 @@ export default class AddressCommentsController implements PageHandler {
 
   public PAGE_NAME = Page.ENTER_ADDRESS_COMMENTS_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (
     req: Request<PrisonerJourneyParams & { contactId: string; prisonerContactId: string }>,

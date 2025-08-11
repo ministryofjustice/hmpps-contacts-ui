@@ -14,7 +14,7 @@ export default class ManageContactDeleteDateOfDeathController implements PageHan
 
   public PAGE_NAME = Page.UPDATE_CONTACT_CONFIRM_DELETE_DATE_OF_DEATH_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }>,

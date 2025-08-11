@@ -13,7 +13,7 @@ export default class AddressFlagsController implements PageHandler {
 
   public PAGE_NAME = Page.SELECT_ADDRESS_FLAGS_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (
     req: Request<PrisonerJourneyParams & { contactId: string; prisonerContactId: string }>,

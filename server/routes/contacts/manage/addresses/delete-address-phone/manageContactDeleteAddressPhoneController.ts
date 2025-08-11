@@ -15,7 +15,7 @@ export default class ManageContactDeleteAddressPhoneController implements PageHa
 
   public PAGE_NAME = Page.DELETE_ADDRESS_PHONE_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (
     req: Request<{

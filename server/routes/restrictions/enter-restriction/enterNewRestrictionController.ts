@@ -14,7 +14,7 @@ export default class EnterNewRestrictionController implements PageHandler {
 
   public PAGE_NAME = Page.ENTER_RESTRICTION_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_RESTRICTIONS
+  public REQUIRED_PERMISSION = Permission.edit_contact_restrictions
 
   GET = async (
     req: Request<{

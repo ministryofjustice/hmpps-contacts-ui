@@ -8,7 +8,7 @@ import Permission from '../../../../enumeration/permission'
 export default class StartPrisonerSearchJourneyController implements PageHandler {
   public PAGE_NAME = Page.MANAGE_CONTACTS_START_PAGE
 
-  public REQUIRED_PERMISSION = Permission.VIEW_CONTACT_LIST
+  public REQUIRED_PERMISSION = Permission.read_contacts
 
   private MAX_JOURNEYS = 5
 

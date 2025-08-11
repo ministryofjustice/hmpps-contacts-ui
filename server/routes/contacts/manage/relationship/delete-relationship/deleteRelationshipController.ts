@@ -14,7 +14,7 @@ export default class DeleteRelationshipController implements PageHandler {
 
   public PAGE_NAME = Page.MANAGE_CONTACT_DELETE_RELATIONSHIP
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }>,

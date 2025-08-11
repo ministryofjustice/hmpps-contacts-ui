@@ -9,7 +9,7 @@ import Permission from '../../../../../enumeration/permission'
 export default class CreateContactEmploymentStatusController implements PageHandler {
   public PAGE_NAME = Page.CREATE_CONTACT_EMPLOYMENT_STATUS_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<CreateContactEmploymentParam>, res: Response) => {
     const { journey, employment, bounceBackUrl } = getEmploymentAndUrl(req)

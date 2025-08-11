@@ -21,7 +21,7 @@ export default class ContactDetailsController implements PageHandler {
 
   public PAGE_NAME = Page.CONTACT_DETAILS_PAGE
 
-  public REQUIRED_PERMISSION = Permission.VIEW_CONTACT_LIST
+  public REQUIRED_PERMISSION = Permission.read_contacts
 
   private LINKED_PRISONER_ITEMS_PER_PAGE = 50
 

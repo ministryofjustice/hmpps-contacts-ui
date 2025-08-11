@@ -11,7 +11,7 @@ export default class SuccessfullyAddedRestrictionController implements PageHandl
 
   public PAGE_NAME = Page.SUCCESSFULLY_ADDED_RESTRICTION_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_RESTRICTIONS
+  public REQUIRED_PERMISSION = Permission.edit_contact_restrictions
 
   GET = async (
     req: Request<{

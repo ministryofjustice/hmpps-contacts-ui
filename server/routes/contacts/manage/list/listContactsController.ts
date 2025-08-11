@@ -42,7 +42,7 @@ export default class ListContactsController implements PageHandler {
 
   public PAGE_NAME = Page.LIST_CONTACTS_PAGE
 
-  public REQUIRED_PERMISSION = Permission.VIEW_CONTACT_LIST
+  public REQUIRED_PERMISSION = Permission.read_contacts
 
   private PAGE_SIZE = config.apis.contactsApi.pageSize || 10
 

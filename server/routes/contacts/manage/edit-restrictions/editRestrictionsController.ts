@@ -16,7 +16,7 @@ export default class EditRestrictionsController implements PageHandler {
 
   public PAGE_NAME = Page.EDIT_RESTRICTIONS_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_RESTRICTIONS
+  public REQUIRED_PERMISSION = Permission.edit_contact_restrictions
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }, unknown, unknown>,

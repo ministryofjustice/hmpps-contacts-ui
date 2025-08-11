@@ -17,7 +17,7 @@ export default class PossibleExistingRecordsController implements PageHandler {
 
   public PAGE_NAME = Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   private TABLE_ROW_COUNT = 100
 

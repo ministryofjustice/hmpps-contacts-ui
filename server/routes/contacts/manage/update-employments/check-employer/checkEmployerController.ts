@@ -12,7 +12,7 @@ export default class CheckEmployerController implements PageHandler {
 
   public PAGE_NAME = Page.MANAGE_CONTACT_CHECK_EMPLOYER_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (
     req: Request<UpdateEmploymentJourneyParams, unknown, unknown, { organisationId: string }>,
