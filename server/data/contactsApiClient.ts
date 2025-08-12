@@ -35,6 +35,7 @@ import {
   PrisonerContactRestrictionsResponse,
   PrisonerContactSummary,
   ReferenceCode,
+  RelationshipDeletePlan,
   UpdateContactAddressPhoneRequest,
   UpdateContactRestrictionRequest,
   UpdateEmailRequest,
@@ -489,6 +490,15 @@ export default class ContactsApiClient extends RestClient {
     return this.delete(
       {
         path: `/prisoner-contact/${prisonerContactId}`,
+      },
+      user,
+    )
+  }
+
+  async planDeleteContactRelationship(prisonerContactId: number, user: Express.User): Promise<RelationshipDeletePlan> {
+    return this.get<RelationshipDeletePlan>(
+      {
+        path: `/prisoner-contact/${prisonerContactId}/plan-delete`,
       },
       user,
     )

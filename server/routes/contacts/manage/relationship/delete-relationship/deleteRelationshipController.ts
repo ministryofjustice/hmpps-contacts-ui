@@ -24,17 +24,14 @@ export default class DeleteRelationshipController implements PageHandler {
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const { backTo } = req.query
     const contact = await this.contactsService.getContactName(Number(contactId), user)
-    const restrictions = await this.contactsService.getPrisonerContactRestrictions(Number(prisonerContactId), user)
     const summary = await this.contactsService
       .getAllSummariesForPrisonerAndContact(prisonerNumber, Number(contactId), user)
       .then(summaries => summaries.find(it => it.prisonerContactId === Number(prisonerContactId)))
     if (!summary) {
       throw Error(`Failed to find prisoner contact summary by id: ${prisonerContactId}`)
     }
-    let mode = 'BLOCKED'
-    if (restrictions.prisonerContactRestrictions && restrictions.prisonerContactRestrictions.length === 0) {
-      mode = 'ALLOWED'
-    }
+    const plan = await this.contactsService.planDeleteContactRelationship(Number(prisonerContactId), user)
+
     const navigation: Navigation = {
       backLink:
         backTo && backTo === 'contact-details'
@@ -44,7 +41,8 @@ export default class DeleteRelationshipController implements PageHandler {
     }
     const viewModel = {
       contact,
-      mode,
+      mode: plan.hasRestrictions ? 'BLOCKED' : 'ALLOWED',
+      willAlsoDeleteContactDob: plan.willAlsoDeleteContactDob,
       summary,
       navigation,
     }

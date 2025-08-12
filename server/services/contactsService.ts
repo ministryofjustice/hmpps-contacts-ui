@@ -650,4 +650,8 @@ export default class ContactsService extends AuditedService {
       correlationId,
     })
   }
+
+  async planDeleteContactRelationship(prisonerContactId: number, user: Express.User) {
+    return this.contactsApiClient.planDeleteContactRelationship(prisonerContactId, user)
+  }
 }
