@@ -4,6 +4,23 @@
  */
 
 export interface paths {
+  '/utility/remove-internal-official-dob': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Endpoint to remove the date of birth from contacts in solely internal official relationships */
+    put: operations['removeDateOfBirth']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/sync/{prisonerNumber}/number-of-children': {
     parameters: {
       query?: never
@@ -59,6 +76,43 @@ export interface paths {
     put: operations['syncUpdateDomesticStatus']
     post?: never
     delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/sync/prisoner-restriction/{prisonerRestrictionId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns the data for a prisoner restriction by id
+     * @description
+     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     *           Used to get the details for one prisoner restriction.
+     *
+     */
+    get: operations['syncGetPrisonerRestrictionById']
+    /**
+     * Updates an existing prisoner restriction by internal ID
+     * @description
+     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     *           Used to update a prisoner restriction.
+     *
+     */
+    put: operations['syncUpdatePrisonerRestriction']
+    post?: never
+    /**
+     * Deletes one prisoner restriction by internal ID
+     * @description
+     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     *           Used to delete a prisoner restriction.
+     *
+     */
+    delete: operations['syncDeletePrisonerRestrictionById']
     options?: never
     head?: never
     patch?: never
@@ -696,6 +750,29 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/sync/prisoner-restriction': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Creates a new prisoner restriction
+     * @description
+     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     *           Used to create a prisoner restriction.
+     *
+     */
+    post: operations['syncCreatePrisonerRestriction']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/sync/prisoner-contact': {
     parameters: {
       query?: never
@@ -963,6 +1040,54 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/prisoner-restrictions/reset': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Reset a prisoner's restrictions to match what exists in NOMIS
+     * @description
+     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     *           Used to reset a prisoner's restrictions to match what exists in NOMIS.
+     *           This is used for scenarios like booking moves, new bookings, and reinstated bookings.
+     *
+     */
+    post: operations['resetPrisonerRestrictions']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/prisoner-restrictions/merge': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Merge prisoner restrictions from one prisoner to another, deleting all from the removed prisoner and resetting the list for the retained prisoner.
+     * @description
+     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.\n' +
+     *           'Used to merge a prisoner's restrictions records with another prisoner's restrictions.\n' +
+     *           'Deletes all restrictions from the removed prisoner and resets the retained prisoner's restrictions to those in the request.'
+     *
+     */
+    post: operations['mergePrisonerRestrictions']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/prisoner-contact': {
     parameters: {
       query?: never
@@ -1007,6 +1132,46 @@ export interface paths {
      * @description Creates a new prisoner contact restriction for the specified prisoner contact relationship
      */
     post: operations['createPrisonerContactRestriction']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/migrate/prisoner-restrictions': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Migrate restrictions for prisoner
+     * @description Migrate a prisoner's restrictions from NOMIS.
+     */
+    post: operations['migratePrisonerRestrictions']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/migrate/prisoner-restriction/{prisonerNumber}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Migrate restriction for prisoner
+     * @description Migrate a prisoner's restriction from NOMIS.
+     */
+    post: operations['migratePrisonerRestriction']
     delete?: never
     options?: never
     head?: never
@@ -1507,7 +1672,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/language-reference': {
+  '/prisoner-restrictions/{prisonerNumber}': {
     parameters: {
       query?: never
       header?: never
@@ -1515,11 +1680,10 @@ export interface paths {
       cookie?: never
     }
     /**
-     * Get language reference
-     * @deprecated
-     * @description Gets all language references
+     * Get all restrictions for a prisoner
+     * @description Returns all restrictions for a prisoner, optionally filtering by current term only, with paging.
      */
-    get: operations['getAllLanguages']
+    get: operations['getPrisonerRestrictions']
     put?: never
     post?: never
     delete?: never
@@ -1528,7 +1692,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/language-reference/{id}': {
+  '/prisoner-restrictions/reconcile': {
     parameters: {
       query?: never
       header?: never
@@ -1536,11 +1700,10 @@ export interface paths {
       cookie?: never
     }
     /**
-     * Get language reference
-     * @deprecated
-     * @description Gets a language reference by their id
+     * Reconciliation endpoint for all prisoner restrictions (paged restriction IDs only)
+     * @description Get a paged list of all prisoner restriction IDs for reconciliation purposes
      */
-    get: operations['getLanguageById']
+    get: operations['reconcileAllPrisonerRestrictionIds']
     put?: never
     post?: never
     delete?: never
@@ -1549,7 +1712,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/language-reference/nomis-code/{code}': {
+  '/prisoner-contact/{prisonerContactId}/plan-delete': {
     parameters: {
       query?: never
       header?: never
@@ -1557,221 +1720,10 @@ export interface paths {
       cookie?: never
     }
     /**
-     * Get language reference
-     * @deprecated
-     * @description Gets a language reference by their nomis code
+     * Plan to delete prisoner contact relationship
+     * @description Plan to delete the relationship between the contact and a prisoner. Returns side effects of the deletion.
      */
-    get: operations['getLanguageByNomisCode']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/language-reference/iso-alpha3/{code}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get language reference
-     * @deprecated
-     * @description Gets a language reference by their by ISO Alpha 3 code
-     */
-    get: operations['getLanguageByIsoAlpha3']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/language-reference/iso-alpha2/{code}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get language reference
-     * @deprecated
-     * @description Gets a language reference by their ISO Alpha 2 code
-     */
-    get: operations['getLanguageByIsoAlpha2']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/county-reference': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get county reference
-     * @deprecated
-     * @description Gets all county references
-     */
-    get: operations['getAllCounties']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/county-reference/{id}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get county reference
-     * @deprecated
-     * @description Gets a county reference by their id
-     */
-    get: operations['getCountyById']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/county-reference/nomis-code/{code}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get county reference
-     * @deprecated
-     * @description Gets a county reference by their nomis code
-     */
-    get: operations['getCountyByNomisCode']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/country-reference': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get country reference
-     * @deprecated
-     * @description Gets all country references
-     */
-    get: operations['getAllCountries']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/country-reference/{id}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get country reference
-     * @deprecated
-     * @description Gets a country reference by their id
-     */
-    get: operations['getCountryById']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/country-reference/nomis-code/{code}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get country reference
-     * @deprecated
-     * @description Gets a country reference by their nomis code
-     */
-    get: operations['getCountryByNomisCode']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/country-reference/iso-alpha3/{code}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get country reference
-     * @deprecated
-     * @description Gets a country reference by their by ISO Alpha 3 code
-     */
-    get: operations['getCountryByIsoAlpha3']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/country-reference/iso-alpha2/{code}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get country reference
-     * @deprecated
-     * @description Gets a country reference by their ISO Alpha 2 code
-     */
-    get: operations['getCountryByIsoAlpha2']
+    get: operations['planDeleteContactRelationship']
     put?: never
     post?: never
     delete?: never
@@ -1840,73 +1792,13 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/city-reference': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get city reference
-     * @deprecated
-     * @description Gets all city references
-     */
-    get: operations['getAllCities']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/city-reference/{id}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get city reference
-     * @deprecated
-     * @description Gets a city reference by their id
-     */
-    get: operations['getCityById']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/city-reference/nomis-code/{code}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get city reference
-     * @deprecated
-     * @description Gets a city reference by their nomis code
-     */
-    get: operations['getCityByNomisCode']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
 }
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
+    UpdateInternalOfficialDobResponse: {
+      contactsUpdated: number[]
+    }
     /** @description Request to update a prisoner's number of children */
     SyncUpdatePrisonerNumberOfChildrenRequest: {
       /**
@@ -1988,6 +1880,122 @@ export interface components {
       createdTime?: string
       /** @description Username of the creator */
       createdBy?: string
+    }
+    /** @description Request to update a prisoner restriction */
+    SyncUpdatePrisonerRestrictionRequest: {
+      /**
+       * @description The prisoner number
+       * @example A1234BC
+       */
+      prisonerNumber: string
+      /**
+       * @description The restriction type
+       * @example NO_VISIT
+       */
+      restrictionType: string
+      /**
+       * Format: date
+       * @description Effective date of the restriction
+       * @example 2024-06-11
+       */
+      effectiveDate: string
+      /**
+       * Format: date
+       * @description Expiry date of the restriction
+       * @example 2024-12-31
+       */
+      expiryDate?: string
+      /**
+       * @description True if this restriction applies to the latest or current term in prison, false if a previous term
+       * @example true
+       */
+      currentTerm?: boolean
+      /**
+       * @description Comment text
+       * @example No visits allowed
+       */
+      commentText?: string
+      /**
+       * @description Authorised staff user name
+       * @example JSMITH
+       */
+      authorisedUsername: string
+      /**
+       * @description Username of the person who last updated the record
+       * @example JDOE_ADM
+       */
+      updatedBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the record was last updated
+       */
+      updatedTime?: string
+    }
+    /** @description Prisoner restriction sync response */
+    SyncPrisonerRestriction: {
+      /**
+       * Format: int64
+       * @description The internal ID for the prisoner restriction
+       * @example 12345
+       */
+      prisonerRestrictionId: number
+      /**
+       * @description The prisoner number
+       * @example A1234BC
+       */
+      prisonerNumber: string
+      /**
+       * @description The restriction type
+       * @example NO_VISIT
+       */
+      restrictionType: string
+      /**
+       * Format: date
+       * @description Effective date of the restriction
+       * @example 2024-06-11
+       */
+      effectiveDate: string
+      /**
+       * Format: date
+       * @description Expiry date of the restriction
+       * @example 2024-12-31
+       */
+      expiryDate?: string
+      /**
+       * @description Comment text
+       * @example No visits allowed
+       */
+      commentText?: string
+      /**
+       * @description Authorised staff user name
+       * @example JSMITH
+       */
+      authorisedUsername: string
+      /**
+       * @description True if this restriction applies to the latest or current term in prison, false if a previous term
+       * @example true
+       */
+      currentTerm: boolean
+      /**
+       * @description Username of the person who created the record
+       * @example JSMITH_ADM
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the record was created
+       */
+      createdTime: string
+      /**
+       * @description Username of the person who last updated the record
+       * @example JDOE_ADM
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the record was last updated
+       */
+      updatedTime?: string
     }
     /** @description Request object to update prisoner contact details */
     SyncUpdatePrisonerContactRequest: {
@@ -4099,6 +4107,56 @@ export interface components {
        */
       updatedTime?: string
     }
+    /** @description Request to create a prisoner restriction */
+    SyncCreatePrisonerRestrictionRequest: {
+      /**
+       * @description The prisoner number
+       * @example A1234BC
+       */
+      prisonerNumber: string
+      /**
+       * @description The restriction type
+       * @example NO_VISIT
+       */
+      restrictionType: string
+      /**
+       * Format: date
+       * @description Effective date of the restriction
+       * @example 2024-06-11
+       */
+      effectiveDate: string
+      /**
+       * Format: date
+       * @description Expiry date of the restriction
+       * @example 2024-12-31
+       */
+      expiryDate?: string
+      /**
+       * @description True if this restriction applies to the latest or current term in prison, false if a previous term
+       * @example true
+       */
+      currentTerm: boolean
+      /**
+       * @description Comment text
+       * @example No visits allowed
+       */
+      commentText?: string
+      /**
+       * @description Authorised staff user name
+       * @example JSMITH
+       */
+      authorisedUsername: string
+      /**
+       * @description Username of the person who created the record
+       * @example JSMITH_ADM
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the record was created
+       */
+      createdTime: string
+    }
     /** @description Request object to create a prisoner contact details */
     SyncCreatePrisonerContactRequest: {
       /**
@@ -4751,11 +4809,27 @@ export interface components {
       prisonerNumber: string
       /** @description The restrictions for this prisoner contact relationship */
       restrictions: components['schemas']['SyncRelationshipRestriction'][]
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description The data and time the record was created
+       * @example 2022-10-01T16:45:45
+       */
       createDateTime?: string
+      /**
+       * @description The username who created the row
+       * @example X999X
+       */
       createUsername?: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description The date and time the record was last amended
+       * @example 2022-10-01T16:45:45
+       */
       modifyDateTime?: string
+      /**
+       * @description The username who last modified the row
+       * @example X999X
+       */
       modifyUsername?: string
     }
     SyncRelationshipRestriction: {
@@ -4784,11 +4858,27 @@ export interface components {
        * @example 2024-03-01
        */
       expiryDate?: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description The data and time the record was created
+       * @example 2022-10-01T16:45:45
+       */
       createDateTime?: string
+      /**
+       * @description The username who created the row
+       * @example X999X
+       */
       createUsername?: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description The date and time the record was last amended
+       * @example 2022-10-01T16:45:45
+       */
       modifyDateTime?: string
+      /**
+       * @description The username who last modified the row
+       * @example X999X
+       */
       modifyUsername?: string
     }
     IdPair: {
@@ -4882,6 +4972,110 @@ export interface components {
     MergePrisonerContactResponse: {
       relationshipsCreated: components['schemas']['PrisonerContactAndRestrictionIds'][]
       relationshipsRemoved: components['schemas']['PrisonerRelationshipIds'][]
+    }
+    /** @description Details of a prisoner restriction record */
+    PrisonerRestrictionDetailsRequest: {
+      /**
+       * @description The restriction type
+       * @example NO_VISIT
+       */
+      restrictionType: string
+      /**
+       * Format: date
+       * @description Effective date of the restriction
+       * @example 2024-06-11
+       */
+      effectiveDate: string
+      /**
+       * Format: date
+       * @description Expiry date of the restriction
+       * @example 2024-12-31
+       */
+      expiryDate?: string
+      /**
+       * @description Comment text
+       * @example No visits allowed
+       */
+      commentText?: string
+      /**
+       * @description Authorised staff user name
+       * @example JSMITH
+       */
+      authorisedUsername: string
+      /**
+       * @description True if this restriction applies to the latest or current term in prison, false if a previous term
+       * @example true
+       */
+      currentTerm: boolean
+      /**
+       * @description Username of the person who created the record
+       * @example JSMITH_ADM
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the record was created
+       */
+      createdTime: string
+      /**
+       * @description Username of the person who last updated the record
+       * @example JDOE_ADM
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the record was last updated
+       */
+      updatedTime?: string
+    }
+    /** @description The request to remove all restrictions for a prisoner and add new ones */
+    ResetPrisonerRestrictionsRequest: {
+      /**
+       * @description The prisoner number to reset restrictions for
+       * @example A1234BC
+       */
+      prisonerNumber: string
+      /** @description Restriction records to be added */
+      restrictions: components['schemas']['PrisonerRestrictionDetailsRequest'][]
+    }
+    /** @description Response class for changed restrictions operations. */
+    ChangedRestrictionsResponse: {
+      /**
+       * @description Indicates if any restrictions have changed
+       * @example true
+       */
+      hasChanged: boolean
+      /**
+       * @description List of IDs for created restrictions
+       * @example [
+       *       101,
+       *       102
+       *     ]
+       */
+      createdRestrictions: number[]
+      /**
+       * @description List of IDs for deleted restrictions
+       * @example [
+       *       201,
+       *       202
+       *     ]
+       */
+      deletedRestrictions: number[]
+    }
+    /** @description The request to merge restrictions from one prisoner to another, resetting the retained prisoner's restrictions to those in the request and deleting all from the removed prisoner. */
+    MergePrisonerRestrictionsRequest: {
+      /**
+       * @description The prisoner number to retain restrictions for
+       * @example A1234BC
+       */
+      keepingPrisonerNumber: string
+      /**
+       * @description The prisoner number to remove restrictions from
+       * @example A1234BD
+       */
+      removingPrisonerNumber: string
+      /** @description Restriction records to be set for the retained prisoner */
+      restrictions: components['schemas']['PrisonerRestrictionDetailsRequest'][]
     }
     AddContactRelationshipRequest: {
       /**
@@ -4990,6 +5184,94 @@ export interface components {
        * @example N/A
        */
       comments?: string
+    }
+    /** @description Request to migrate a prisoner's restrictions */
+    MigratePrisonerRestrictionsRequest: {
+      /**
+       * @description The prisoner number
+       * @example A1234BC
+       */
+      prisonerNumber: string
+      /** @description Restriction records */
+      restrictions: components['schemas']['PrisonerRestrictionDetailsRequest'][]
+    }
+    /** @description Response after migrating prisoner restrictions */
+    PrisonerRestrictionsMigrationResponse: {
+      /**
+       * @description The prisoner number
+       * @example A1234BC
+       */
+      prisonerNumber: string
+      /** @description IDs of the migrated restriction records */
+      prisonerRestrictionsIds: number[]
+    }
+    /** @description Request to migrate a prisoner's restriction */
+    MigratePrisonerRestrictionRequest: {
+      /**
+       * @description The restriction type
+       * @example NO_VISIT
+       */
+      restrictionType: string
+      /**
+       * Format: date
+       * @description Effective date of the restriction
+       * @example 2024-06-11
+       */
+      effectiveDate: string
+      /**
+       * Format: date
+       * @description Expiry date of the restriction
+       * @example 2024-12-31
+       */
+      expiryDate?: string
+      /**
+       * @description Comment text
+       * @example No visits allowed
+       */
+      commentText?: string
+      /**
+       * @description Authorised staff user name
+       * @example JSMITH
+       */
+      authorisedUsername: string
+      /**
+       * @description True if this restriction applies to the latest or current term in prison, false if a previous term
+       * @example true
+       */
+      currentTerm: boolean
+      /**
+       * @description Username of the person who created the record
+       * @example JSMITH_ADM
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the record was created
+       */
+      createdTime: string
+      /**
+       * @description Username of the person who last updated the record
+       * @example JDOE_ADM
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the record was last updated
+       */
+      updatedTime?: string
+    }
+    /** @description Response after migrating prisoner restriction */
+    PrisonerRestrictionMigrationResponse: {
+      /**
+       * @description The prisoner number
+       * @example A1234BC
+       */
+      prisonerNumber: string
+      /**
+       * Format: int64
+       * @description ID of the migrated restriction record
+       */
+      prisonerRestrictionId: number
     }
     /** @description Request to migrate a prisoner's number of children */
     MigratePrisonerNumberOfChildrenRequest: {
@@ -5168,11 +5450,27 @@ export interface components {
       endDate?: string
       /** @description A list of phone numbers which are linked to this address */
       phoneNumbers: components['schemas']['MigratePhoneNumber'][]
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description The data and time the record was created
+       * @example 2022-10-01T16:45:45
+       */
       createDateTime?: string
+      /**
+       * @description The username who created the row
+       * @example X999X
+       */
       createUsername?: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description The date and time the record was last amended
+       * @example 2022-10-01T16:45:45
+       */
       modifyDateTime?: string
+      /**
+       * @description The username who last modified the row
+       * @example X999X
+       */
       modifyUsername?: string
     }
     /** @description Request to migrate a contact and all of its sub-elements from NOMIS into this service */
@@ -5237,11 +5535,27 @@ export interface components {
       contacts: components['schemas']['MigrateRelationship'][]
       /** @description The restrictions which apply to this person only */
       restrictions: components['schemas']['MigrateRestriction'][]
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description The data and time the record was created
+       * @example 2022-10-01T16:45:45
+       */
       createDateTime?: string
+      /**
+       * @description The username who created the row
+       * @example X999X
+       */
       createUsername?: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description The date and time the record was last amended
+       * @example 2022-10-01T16:45:45
+       */
       modifyDateTime?: string
+      /**
+       * @description The username who last modified the row
+       * @example X999X
+       */
       modifyUsername?: string
     }
     MigrateEmailAddress: {
@@ -5256,11 +5570,27 @@ export interface components {
        * @example test@example.com
        */
       email: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description The data and time the record was created
+       * @example 2022-10-01T16:45:45
+       */
       createDateTime?: string
+      /**
+       * @description The username who created the row
+       * @example X999X
+       */
       createUsername?: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description The date and time the record was last amended
+       * @example 2022-10-01T16:45:45
+       */
       modifyDateTime?: string
+      /**
+       * @description The username who last modified the row
+       * @example X999X
+       */
       modifyUsername?: string
     }
     MigrateEmployment: {
@@ -5277,11 +5607,27 @@ export interface components {
        * @example true
        */
       active: boolean
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description The data and time the record was created
+       * @example 2022-10-01T16:45:45
+       */
       createDateTime?: string
+      /**
+       * @description The username who created the row
+       * @example X999X
+       */
       createUsername?: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description The date and time the record was last amended
+       * @example 2022-10-01T16:45:45
+       */
       modifyDateTime?: string
+      /**
+       * @description The username who last modified the row
+       * @example X999X
+       */
       modifyUsername?: string
     }
     MigrateIdentifier: {
@@ -5303,11 +5649,27 @@ export interface components {
        * @example DVLA
        */
       issuedAuthority?: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description The data and time the record was created
+       * @example 2022-10-01T16:45:45
+       */
       createDateTime?: string
+      /**
+       * @description The username who created the row
+       * @example X999X
+       */
       createUsername?: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description The date and time the record was last amended
+       * @example 2022-10-01T16:45:45
+       */
       modifyDateTime?: string
+      /**
+       * @description The username who last modified the row
+       * @example X999X
+       */
       modifyUsername?: string
     }
     MigratePhoneNumber: {
@@ -5329,11 +5691,27 @@ export interface components {
       extension?: string
       /** @description Type of phone number (from reference data) */
       type: components['schemas']['CodedValue']
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description The data and time the record was created
+       * @example 2022-10-01T16:45:45
+       */
       createDateTime?: string
+      /**
+       * @description The username who created the row
+       * @example X999X
+       */
       createUsername?: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description The date and time the record was last amended
+       * @example 2022-10-01T16:45:45
+       */
       modifyDateTime?: string
+      /**
+       * @description The username who last modified the row
+       * @example X999X
+       */
       modifyUsername?: string
     }
     MigratePrisonerContactRestriction: {
@@ -5362,11 +5740,27 @@ export interface components {
        * @example 2024-03-01
        */
       expiryDate?: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description The data and time the record was created
+       * @example 2022-10-01T16:45:45
+       */
       createDateTime?: string
+      /**
+       * @description The username who created the row
+       * @example X999X
+       */
       createUsername?: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description The date and time the record was last amended
+       * @example 2022-10-01T16:45:45
+       */
       modifyDateTime?: string
+      /**
+       * @description The username who last modified the row
+       * @example X999X
+       */
       modifyUsername?: string
     }
     MigrateRelationship: {
@@ -5430,11 +5824,27 @@ export interface components {
       prisonerNumber: string
       /** @description The restrictions for this prisoner contact relationship */
       restrictions: components['schemas']['MigratePrisonerContactRestriction'][]
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description The data and time the record was created
+       * @example 2022-10-01T16:45:45
+       */
       createDateTime?: string
+      /**
+       * @description The username who created the row
+       * @example X999X
+       */
       createUsername?: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description The date and time the record was last amended
+       * @example 2022-10-01T16:45:45
+       */
       modifyDateTime?: string
+      /**
+       * @description The username who last modified the row
+       * @example X999X
+       */
       modifyUsername?: string
     }
     MigrateRestriction: {
@@ -5463,11 +5873,27 @@ export interface components {
        * @example 2024-03-01
        */
       expiryDate?: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description The data and time the record was created
+       * @example 2022-10-01T16:45:45
+       */
       createDateTime?: string
+      /**
+       * @description The username who created the row
+       * @example X999X
+       */
       createUsername?: string
-      /** Format: date-time */
+      /**
+       * Format: date-time
+       * @description The date and time the record was last amended
+       * @example 2022-10-01T16:45:45
+       */
       modifyDateTime?: string
+      /**
+       * @description The username who last modified the row
+       * @example X999X
+       */
       modifyUsername?: string
     }
     AddressAndPhones: {
@@ -6922,9 +7348,6 @@ export interface components {
       | 'RESTRICTION'
       | 'TITLE'
       | 'TEST_TYPE'
-    Sort: {
-      sort?: string[]
-    }
     /** @description Describes the details of a reference code */
     ReferenceCode: {
       /**
@@ -7198,6 +7621,92 @@ export interface components {
        */
       official: number
     }
+    PagedModelPrisonerRestrictionDetails: {
+      content?: components['schemas']['PrisonerRestrictionDetails'][]
+      page?: components['schemas']['PageMetadata']
+    }
+    /** @description Prisoner restriction details response */
+    PrisonerRestrictionDetails: {
+      /**
+       * Format: int64
+       * @description The internal ID for the prisoner restriction
+       * @example 12345
+       */
+      prisonerRestrictionId: number
+      /**
+       * @description The prisoner number
+       * @example A1234BC
+       */
+      prisonerNumber: string
+      /**
+       * @description The restriction type
+       * @example NO_VISIT
+       */
+      restrictionType: string
+      /**
+       * Format: date
+       * @description Effective date of the restriction
+       * @example 2024-06-11
+       */
+      effectiveDate: string
+      /**
+       * Format: date
+       * @description Expiry date of the restriction
+       * @example 2024-12-31
+       */
+      expiryDate?: string
+      /**
+       * @description Comment text
+       * @example No visits allowed
+       */
+      commentText?: string
+      /**
+       * @description Authorised staff user name
+       * @example JSMITH
+       */
+      authorisedUsername: string
+      /**
+       * @description True if this restriction applies to the latest or current term in prison, false if a previous term
+       * @example true
+       */
+      currentTerm: boolean
+      /**
+       * @description Username of the person who created the record
+       * @example JSMITH_ADM
+       */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the record was created
+       */
+      createdTime: string
+      /**
+       * @description Username of the person who last updated the record
+       * @example JDOE_ADM
+       */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Timestamp when the record was last updated
+       */
+      updatedTime?: string
+    }
+    Pageable: {
+      /** Format: int32 */
+      page?: number
+      /** Format: int32 */
+      size?: number
+      sort?: string[]
+    }
+    /** @description Response object for prisoner restriction reconciliation */
+    PrisonerRestrictionId: {
+      /**
+       * Format: int64
+       * @description The ID for prisoner restriction
+       * @example 111111
+       */
+      prisonerRestrictionId: number
+    }
     /** @description Restriction related to a specific relationship between a prisoner and contact */
     PrisonerContactRestrictionsResponse: {
       /** @description Relationship specific restrictions */
@@ -7205,116 +7714,9 @@ export interface components {
       /** @description Global (estate-wide) restrictions for the contact */
       contactGlobalRestrictions: components['schemas']['ContactRestrictionDetails'][]
     }
-    /** @description Language reference entity */
-    Language: {
-      /**
-       * Format: int64
-       * @description Unique identifier of the language
-       * @example 1
-       */
-      languageId: number
-      /**
-       * @description Nomis code of the language
-       * @example GBR
-       */
-      nomisCode: string
-      /**
-       * @description Nomis description of the language
-       * @example United Kingdom
-       */
-      nomisDescription: string
-      /**
-       * @description ISO Alpha-2 code of the language
-       * @example GB
-       */
-      isoAlpha2: string
-      /**
-       * @description ISO Alpha-3 code of the language
-       * @example GBR
-       */
-      isoAlpha3: string
-      /**
-       * @description ISO language description
-       * @example United Kingdom of Great Britain and Northern Ireland
-       */
-      isoLanguageDesc: string
-      /**
-       * Format: int32
-       * @description Display sequence for the language
-       * @example 1
-       */
-      displaySequence: number
-    }
-    /** @description County reference entity */
-    County: {
-      /**
-       * Format: int64
-       * @description Unique identifier of the county
-       * @example 1
-       */
-      countyId: number
-      /**
-       * @description Nomis code of the county
-       * @example GBR
-       */
-      nomisCode: string
-      /**
-       * @description Nomis description of the county
-       * @example United Kingdom
-       */
-      nomisDescription: string
-      /**
-       * Format: int32
-       * @description Display sequence for the county
-       * @example 1
-       */
-      displaySequence: number
-    }
-    /** @description Country reference entity */
-    Country: {
-      /**
-       * Format: int64
-       * @description Unique identifier of the country
-       * @example 1
-       */
-      countryId: number
-      /**
-       * @description Nomis code of the country
-       * @example GBR
-       */
-      nomisCode: string
-      /**
-       * @description Nomis description of the country
-       * @example United Kingdom
-       */
-      nomisDescription: string
-      /**
-       * Format: int32
-       * @description ISO numeric code of the country
-       * @example 826
-       */
-      isoNumeric: number
-      /**
-       * @description ISO Alpha-2 code of the country
-       * @example GB
-       */
-      isoAlpha2: string
-      /**
-       * @description ISO Alpha-3 code of the country
-       * @example GBR
-       */
-      isoAlpha3: string
-      /**
-       * @description ISO country description
-       * @example United Kingdom of Great Britain and Northern Ireland
-       */
-      isoCountryDesc: string
-      /**
-       * Format: int32
-       * @description Display sequence for the country
-       * @example 1
-       */
-      displaySequence: number
+    RelationshipDeletePlan: {
+      willAlsoDeleteContactDob: boolean
+      hasRestrictions: boolean
     }
     ContactNameDetails: {
       /**
@@ -7591,31 +7993,6 @@ export interface components {
       content?: components['schemas']['ContactSearchResultItem'][]
       page?: components['schemas']['PageMetadata']
     }
-    /** @description City reference entity */
-    City: {
-      /**
-       * Format: int64
-       * @description Unique identifier of the city
-       * @example 1
-       */
-      cityId: number
-      /**
-       * @description Nomis code of the city
-       * @example GBR
-       */
-      nomisCode: string
-      /**
-       * @description Nomis description of the city
-       * @example United Kingdom
-       */
-      nomisDescription: string
-      /**
-       * Format: int32
-       * @description Display sequence for the city
-       * @example 1
-       */
-      displaySequence: number
-    }
   }
   responses: never
   parameters: never
@@ -7625,6 +8002,26 @@ export interface components {
 }
 export type $defs = Record<string, never>
 export interface operations {
+  removeDateOfBirth: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['UpdateInternalOfficialDobResponse']
+        }
+      }
+    }
+  }
   syncGetNumberOfChildrenByPrisonerNumber: {
     parameters: {
       query?: never
@@ -7799,6 +8196,165 @@ export interface operations {
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
+      }
+    }
+  }
+  syncGetPrisonerRestrictionById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for a prisoner restriction. */
+        prisonerRestrictionId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the prisoner restriction */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncPrisonerRestriction']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No prisoner restriction reference with that id could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  syncUpdatePrisonerRestriction: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the prisoner restriction. */
+        prisonerRestrictionId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SyncUpdatePrisonerRestrictionRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully updated prisoner restriction */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncPrisonerRestriction']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No prisoner restriction reference with that id could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncPrisonerRestriction']
+        }
+      }
+    }
+  }
+  syncDeletePrisonerRestrictionById: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the prisoner restriction. */
+        prisonerRestrictionId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successfully deleted prisoner restriction */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No prisoner restriction reference with that id could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
@@ -10708,6 +11264,57 @@ export interface operations {
       }
     }
   }
+  syncCreatePrisonerRestriction: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SyncCreatePrisonerRestrictionRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully created prisoner restriction */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SyncPrisonerRestriction']
+        }
+      }
+      /** @description The request has invalid or missing fields */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   syncCreatePrisonerContact: {
     parameters: {
       query?: never
@@ -11239,6 +11846,108 @@ export interface operations {
       }
     }
   }
+  resetPrisonerRestrictions: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ResetPrisonerRestrictionsRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully reset Prisoner's restrictions records */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ChangedRestrictionsResponse']
+        }
+      }
+      /** @description The request failed validation with invalid or missing data supplied */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  mergePrisonerRestrictions: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MergePrisonerRestrictionsRequest']
+      }
+    }
+    responses: {
+      /** @description Successfully merged Prisoner's restrictions records */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ChangedRestrictionsResponse']
+        }
+      }
+      /** @description The request failed validation with invalid or missing data supplied */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   addContactRelationship: {
     parameters: {
       query?: never
@@ -11417,6 +12126,129 @@ export interface operations {
         }
       }
       /** @description Could not find the the prisoner contact relationship this prisoner contact restriction is for */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  migratePrisonerRestrictions: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MigratePrisonerRestrictionsRequest']
+      }
+    }
+    responses: {
+      /** @description The restrictions were migrated successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerRestrictionsMigrationResponse']
+        }
+      }
+      /** @description The request failed validation with invalid or missing data supplied */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find reference data for the supplied restriction type */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  migratePrisonerRestriction: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The internal ID for the prisoner in NOMIS. */
+        prisonerNumber: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MigratePrisonerRestrictionRequest']
+      }
+    }
+    responses: {
+      /** @description The restriction was migrated successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerRestrictionMigrationResponse']
+        }
+      }
+      /** @description The request failed validation with invalid or missing data supplied */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Could not find reference data for the supplied restriction type */
       404: {
         headers: {
           [name: string]: unknown
@@ -12954,9 +13786,12 @@ export interface operations {
   }
   getReferenceDataByGroup: {
     parameters: {
-      query: {
-        /** @description Sort configuration - default displayOrder, description */
-        sort: components['schemas']['Sort']
+      query?: {
+        /**
+         * @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.
+         * @example displayOrder,asc
+         */
+        sort?: string[]
         /** @description Whether to only return active codes or not, defaults to true */
         activeOnly?: boolean
       }
@@ -13173,22 +14008,91 @@ export interface operations {
       }
     }
   }
-  getAllLanguages: {
+  getPrisonerRestrictions: {
     parameters: {
-      query?: never
+      query?: {
+        /**
+         * @description filter results by current terms
+         * @example true
+         */
+        currentTermOnly?: boolean
+        /** @description Zero-based page index (0..N) */
+        page?: number
+        /** @description The size of the page to be returned */
+        size?: number
+        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+        sort?: string[]
+      }
+      header?: never
+      path: {
+        prisonerNumber: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found restrictions */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PagedModelPrisonerRestrictionDetails']
+        }
+      }
+      /** @description Invalid request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  reconcileAllPrisonerRestrictionIds: {
+    parameters: {
+      query: {
+        pageable: components['schemas']['Pageable']
+        /** @description Zero-based page index (0..N) */
+        page?: number
+        /** @description The size of the page to be returned */
+        size?: number
+        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+        sort?: string[]
+      }
       header?: never
       path?: never
       cookie?: never
     }
     requestBody?: never
     responses: {
-      /** @description Found the language reference */
+      /** @description Page of restriction IDs */
       200: {
         headers: {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Language']
+          'application/json': components['schemas']['PrisonerRestrictionId']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -13211,24 +14115,28 @@ export interface operations {
       }
     }
   }
-  getLanguageById: {
+  planDeleteContactRelationship: {
     parameters: {
       query?: never
       header?: never
       path: {
-        id: number
+        /**
+         * @description The id of the prisoner contact
+         * @example 123456
+         */
+        prisonerContactId: number
       }
       cookie?: never
     }
     requestBody?: never
     responses: {
-      /** @description Found the language reference */
+      /** @description Planned the deletion of the prisoner contact relationship */
       200: {
         headers: {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Language']
+          'application/json': components['schemas']['RelationshipDeletePlan']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -13249,530 +14157,13 @@ export interface operations {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
-      /** @description No language reference with that id could be found */
+      /** @description Could not find the prisoner contact that this relationship relates to */
       404: {
         headers: {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Language']
-        }
-      }
-    }
-  }
-  getLanguageByNomisCode: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        code: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Found the language reference */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['Language']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
           'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description No language reference with that nomis code could be found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['Language']
-        }
-      }
-    }
-  }
-  getLanguageByIsoAlpha3: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        code: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Found the language reference */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['Language']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description No language reference with that ISO Alpha 3 code could be found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['Language']
-        }
-      }
-    }
-  }
-  getLanguageByIsoAlpha2: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        code: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Found the language reference */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['Language']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description No language reference with that ISO Alpha 2 code could be found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['Language']
-        }
-      }
-    }
-  }
-  getAllCounties: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Found the county reference */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['County']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  getCountyById: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        id: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Found the county reference */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['County']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description No county reference with that id could be found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['County']
-        }
-      }
-    }
-  }
-  getCountyByNomisCode: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        code: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Found the county reference */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['County']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description No county reference with that nomis code could be found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['County']
-        }
-      }
-    }
-  }
-  getAllCountries: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Found the country reference */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['Country']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  getCountryById: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        id: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Found the country reference */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['Country']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description No country reference with that id could be found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['Country']
-        }
-      }
-    }
-  }
-  getCountryByNomisCode: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        code: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Found the country reference */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['Country']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description No country reference with that nomis code could be found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['Country']
-        }
-      }
-    }
-  }
-  getCountryByIsoAlpha3: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        code: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Found the country reference */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['Country']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description No country reference with that ISO Alpha 3 code could be found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['Country']
-        }
-      }
-    }
-  }
-  getCountryByIsoAlpha2: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        code: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Found the country reference */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['Country']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description No country reference with that ISO Alpha 2 code could be found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['Country']
         }
       }
     }
@@ -13963,142 +14354,6 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  getAllCities: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Found the city reference */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['City']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  getCityById: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        id: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Found the city reference */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['City']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description No city reference with that id could be found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['City']
-        }
-      }
-    }
-  }
-  getCityByNomisCode: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        code: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Found the city reference */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['City']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description No city reference with that nomis code could be found */
-      404: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['City']
         }
       }
     }

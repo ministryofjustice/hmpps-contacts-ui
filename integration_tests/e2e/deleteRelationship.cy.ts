@@ -90,6 +90,13 @@ context('Delete Relationship', () => {
         contactGlobalRestrictions: [TestData.getContactRestrictionDetails()],
       },
     })
+    cy.task('stubPlanDeleteContactRelationship', {
+      prisonerContactId,
+      response: {
+        willAlsoDeleteContactDob: false,
+        hasRestrictions: false,
+      },
+    })
     cy.task('stubDeleteContactRelationship', { prisonerContactId })
     cy.signIn({
       startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
@@ -121,6 +128,13 @@ context('Delete Relationship', () => {
       response: {
         prisonerContactRestrictions: [TestData.getPrisonerContactRestrictionDetails()],
         contactGlobalRestrictions: [],
+      },
+    })
+    cy.task('stubPlanDeleteContactRelationship', {
+      prisonerContactId,
+      response: {
+        willAlsoDeleteContactDob: false,
+        hasRestrictions: true,
       },
     })
 
@@ -156,6 +170,13 @@ context('Delete Relationship', () => {
         contactGlobalRestrictions: [],
       },
     })
+    cy.task('stubPlanDeleteContactRelationship', {
+      prisonerContactId,
+      response: {
+        willAlsoDeleteContactDob: false,
+        hasRestrictions: true,
+      },
+    })
 
     cy.signIn({
       startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
@@ -189,6 +210,14 @@ context('Delete Relationship', () => {
         contactGlobalRestrictions: [],
       },
     })
+    cy.task('stubPlanDeleteContactRelationship', {
+      prisonerContactId,
+      response: {
+        willAlsoDeleteContactDob: false,
+        hasRestrictions: false,
+      },
+    })
+
     cy.signIn({
       startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
     })
@@ -219,6 +248,13 @@ context('Delete Relationship', () => {
       response: {
         prisonerContactRestrictions: [],
         contactGlobalRestrictions: [],
+      },
+    })
+    cy.task('stubPlanDeleteContactRelationship', {
+      prisonerContactId,
+      response: {
+        willAlsoDeleteContactDob: false,
+        hasRestrictions: false,
       },
     })
 

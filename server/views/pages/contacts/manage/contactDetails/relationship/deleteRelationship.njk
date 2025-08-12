@@ -21,11 +21,19 @@
       <span class="govuk-caption-l">{{ caption }}</span>
       <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
       {% if mode == 'ALLOWED' %}
-        {{ govukWarningText({
-          html: 'The contact record for ' + (contact | formatNameFirstNameFirst) + ' will stay on the system, but this relationship will be deleted from ' + ( prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) ) + '’s contact list.',
-          iconFallbackText: "Warning",
-          attributes: {"data-qa": "relationship-delete-warning"}
-        }) }}
+        {% if willAlsoDeleteContactDob %}
+          {{ govukWarningText({
+            html: 'The contact record for ' + (contact | formatNameFirstNameFirst) + ' will stay on the system, but this relationship will be deleted from ' + ( prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) ) + '’s contact list.<br/><br/>' + ( contact | formatNameFirstNameFirst(possessiveSuffix = true) ) + ' date of birth will also be deleted.',
+            iconFallbackText: "Warning",
+            attributes: {"data-qa": "relationship-delete-warning"}
+          }) }}
+        {% else %}
+          {{ govukWarningText({
+            html: 'The contact record for ' + (contact | formatNameFirstNameFirst) + ' will stay on the system, but this relationship will be deleted from ' + ( prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) ) + '’s contact list.',
+            iconFallbackText: "Warning",
+            attributes: {"data-qa": "relationship-delete-warning"}
+          }) }}
+        {% endif %}
       {% endif %}
     </div>
   </div>
