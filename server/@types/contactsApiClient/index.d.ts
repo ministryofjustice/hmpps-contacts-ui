@@ -44,6 +44,7 @@ export type ContactSearchResultItem = components['schemas']['ContactSearchResult
 export type ContactPhoneNumberDetails = components['schemas']['ContactPhoneDetails']
 export type LinkedPrisonerDetails = components['schemas']['LinkedPrisonerDetails']
 export type EmploymentDetails = components['schemas']['EmploymentDetails']
+export type RelationshipDeletePlan = components['schemas']['RelationshipDeletePlan']
 
 export type PrisonerContactFilter = {
   active?: boolean
