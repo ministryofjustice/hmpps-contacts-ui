@@ -105,9 +105,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     'should render delete page when there are some relationship restrictions with correct back link for %s',
     async (backTo, expectedBackLink) => {
       // Given
-      contactsService.getPrisonerContactRestrictions.mockResolvedValue({
-        prisonerContactRestrictions: [],
-        contactGlobalRestrictions: [TestData.getContactRestrictionDetails()],
+      contactsService.planDeleteContactRelationship.mockResolvedValue({
+        willAlsoDeleteContactDob: false,
+        hasRestrictions: false,
       })
 
       // When
@@ -154,9 +154,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     'should render delete page when there are no relationship restrictions with correct back link for %s',
     async (backTo, expectedBackLink) => {
       // Given
-      contactsService.getPrisonerContactRestrictions.mockResolvedValue({
-        prisonerContactRestrictions: [TestData.getPrisonerContactRestrictionDetails()],
-        contactGlobalRestrictions: [TestData.getContactRestrictionDetails()],
+      contactsService.planDeleteContactRelationship.mockResolvedValue({
+        willAlsoDeleteContactDob: false,
+        hasRestrictions: true,
       })
 
       // When
@@ -185,9 +185,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
   it('should audit the page view', async () => {
     // Given
-    contactsService.getPrisonerContactRestrictions.mockResolvedValue({
-      prisonerContactRestrictions: [],
-      contactGlobalRestrictions: [TestData.getContactRestrictionDetails()],
+    contactsService.planDeleteContactRelationship.mockResolvedValue({
+      willAlsoDeleteContactDob: false,
+      hasRestrictions: false,
     })
 
     // When
@@ -210,9 +210,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
   it('GET should block access without edit contacts permission', async () => {
     mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
 
-    contactsService.getPrisonerContactRestrictions.mockResolvedValue({
-      prisonerContactRestrictions: [],
-      contactGlobalRestrictions: [],
+    contactsService.planDeleteContactRelationship.mockResolvedValue({
+      willAlsoDeleteContactDob: false,
+      hasRestrictions: false,
     })
 
     await request(app)

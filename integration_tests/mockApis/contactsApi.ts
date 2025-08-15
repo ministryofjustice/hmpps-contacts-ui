@@ -33,6 +33,7 @@ import {
   PrisonerContactRestrictionDetails,
   PrisonerContactRestrictionsResponse,
   PrisonerContactSummary,
+  RelationshipDeletePlan,
   UpdateEmailRequest,
 } from '../../server/@types/contactsApiClient'
 
@@ -890,6 +891,22 @@ export default {
       response: {
         status: 204,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      },
+    })
+  },
+  stubPlanDeleteContactRelationship: (params: {
+    prisonerContactId: number
+    response: RelationshipDeletePlan
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/prisoner-contact/${params.prisonerContactId}/plan-delete`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: params.response,
       },
     })
   },
