@@ -4,6 +4,7 @@ import { Readable } from 'stream'
 import { appWithAllRoutes, basicPrisonUser } from '../testutils/appSetup'
 import PrisonerImageService from '../../services/prisonerImageService'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../services/prisonerImageService')
 
 // @ts-expect-error pass null param into mocked service
@@ -16,6 +17,8 @@ beforeEach(() => {
     services: { prisonerImageService },
     userSupplier: () => basicPrisonUser,
   })
+
+  // mockPermissions(app, { [Permission.read_contacts]: true })
 })
 
 afterEach(() => {

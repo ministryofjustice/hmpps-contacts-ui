@@ -3,20 +3,17 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import {
-  appWithAllRoutes,
-  flashProvider,
-  basicPrisonUser,
-  adminUser,
-  authorisingUser,
-} from '../../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, adminUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { mockedReferenceData } from '../../../testutils/stubReferenceData'
 import { AddContactJourney } from '../../../../@types/journeys'
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
+import mockPermissions from '../../../testutils/mockPermissions'
+import Permission from '../../../../enumeration/permission'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/referenceDataService')
@@ -65,6 +62,9 @@ beforeEach(() => {
       session.addContactJourneys[journeyId] = { ...existingJourney }
     },
   })
+
+  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
 })
@@ -201,15 +201,10 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/add-phone-numbers/:journ
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 200],
-    [authorisingUser, 200],
-  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
-    await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/create/add-phone-numbers/${journeyId}`)
-      .expect(expectedStatus)
+  it('GET should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
+    await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/add-phone-numbers/${journeyId}`).expect(403)
   })
 })
 
@@ -310,12 +305,9 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/add-phone-numbers/:jour
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 302],
-    [authorisingUser, 302],
-  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
+  it('POST should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/add-phone-numbers/${journeyId}`)
       .type('form')
@@ -326,7 +318,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/add-phone-numbers/:jour
       .send('phones[1][type]=HOME')
       .send('phones[1][phoneNumber]=015234879')
       .send('phones[1][extension]=000')
-      .expect(expectedStatus)
+      .expect(403)
   })
 
   describe('should work without javascript enabled', () => {

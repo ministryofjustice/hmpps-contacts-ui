@@ -1,13 +1,15 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../testutils/appSetup'
+import { appWithAllRoutes, authorisingUser } from '../../testutils/appSetup'
 import { Page } from '../../../services/auditService'
 import TestData from '../../testutils/testData'
 import { MockedService } from '../../../testutils/mockedServices'
 import { RestrictionClass } from '../../../@types/journeys'
-import { HmppsUser } from '../../../interfaces/hmppsUser'
+import mockPermissions from '../../testutils/mockPermissions'
+import Permission from '../../../enumeration/permission'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../services/auditService')
 jest.mock('../../../services/contactsService')
 jest.mock('../../../services/prisonerSearchService')
@@ -18,7 +20,7 @@ const prisonerSearchService = MockedService.PrisonerSearchService()
 
 let app: Express
 const prisonerNumber = 'A1234BC'
-let currentUser = authorisingUser
+const currentUser = authorisingUser
 beforeEach(() => {
   app = appWithAllRoutes({
     services: {
@@ -28,6 +30,9 @@ beforeEach(() => {
     },
     userSupplier: () => currentUser,
   })
+
+  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contact_restrictions]: true })
+
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
 
@@ -123,18 +128,16 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     })
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 403],
-    [authorisingUser, 200],
-  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
+  it('GET should block access without edit contact restrictions permission', async () => {
     const contactDetails = TestData.contact()
     contactsService.getContactName.mockResolvedValue(contactDetails)
-    currentUser = user
+
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contact_restrictions]: false })
+
     await request(app)
       .get(
         `/prisoner/${prisonerNumber}/contacts/${contactDetails.id}/relationship/123456/restriction/add/CONTACT_GLOBAL/success`,
       )
-      .expect(expectedStatus)
+      .expect(403)
   })
 })

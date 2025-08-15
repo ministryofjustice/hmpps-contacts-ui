@@ -14,7 +14,10 @@ import {
   PrisonerContactRelationshipDetails,
 } from '../../../../@types/contactsApiClient'
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
+import mockPermissions from '../../../testutils/mockPermissions'
+import Permission from '../../../../enumeration/permission'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
@@ -43,6 +46,9 @@ beforeEach(() => {
     },
     userSupplier: () => currentUser,
   })
+
+  mockPermissions(app, { [Permission.read_contacts]: true })
+
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mr')
   restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({
@@ -167,17 +173,14 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect($('.confirm-comments-value').text().trim()).toStrictEqual('')
     })
 
-    it.each([
-      [basicPrisonUser, 200],
-      [adminUser, 200],
-      [authorisingUser, 200],
-    ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-      currentUser = user
+    it('GET should block access without read contacts permission', async () => {
+      mockPermissions(app, { [Permission.read_contacts]: false })
+
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       const contact = TestData.contact()
       contactsService.getContact.mockResolvedValue(contact)
 
-      await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`).expect(expectedStatus)
+      await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`).expect(403)
     })
   })
 
@@ -190,8 +193,12 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       )
       contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
     })
+
     it('should render restrictions tab with global and prisoner-contact restrictions', async () => {
       currentUser = authorisingUser
+
+      mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contact_restrictions]: true })
+
       restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({
         prisonerContactRestrictions: [TestData.getPrisonerContactRestrictionDetails()],
         contactGlobalRestrictions: [
@@ -251,6 +258,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
     it('should render global restrictions tab with expired restrictions', async () => {
       // Given
       currentUser = authorisingUser
+      mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contact_restrictions]: true })
+
       restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({
         prisonerContactRestrictions: [],
         contactGlobalRestrictions: [
@@ -303,6 +312,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
     it('should render restrictions tab with no restrictions message', async () => {
       // Given
       currentUser = authorisingUser
+      mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contact_restrictions]: true })
+
       restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({
         contactGlobalRestrictions: [],
         prisonerContactRestrictions: [],

@@ -3,12 +3,15 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes } from '../../../../testutils/appSetup'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { UpdateEmploymentsJourney } from '../../../../../@types/journeys'
 import { HmppsUser } from '../../../../../interfaces/hmppsUser'
+import mockPermissions from '../../../../testutils/mockPermissions'
+import Permission from '../../../../../enumeration/permission'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
 
@@ -68,6 +71,9 @@ beforeEach(() => {
     },
     userSupplier: () => currentUser,
   })
+
+  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
 })
 
@@ -151,12 +157,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/update
     expect($('button:contains("Yes, delete")').text()).toBeTruthy()
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 200],
-    [authorisingUser, 200],
-  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
+  it('GET should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
     setJourneyData(generateJourneyData())
 
     // When
@@ -164,7 +167,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/update
       .get(
         `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/1/delete-employment/${journeyId}`,
       )
-      .expect(expectedStatus)
+      .expect(403)
   })
 })
 
@@ -211,12 +214,9 @@ describe('POST /contacts/manage/:contactId/relationship/:prisonerContactId/updat
     expect(journeyData.employmentIdsToDelete).toBeFalsy()
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 302],
-    [authorisingUser, 302],
-  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
+  it('POST should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
     const journeyData = generateJourneyData()
     setJourneyData(journeyData)
 
@@ -226,6 +226,6 @@ describe('POST /contacts/manage/:contactId/relationship/:prisonerContactId/updat
       )
       .type('form')
       .send({})
-      .expect(expectedStatus)
+      .expect(403)
   })
 })

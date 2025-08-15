@@ -410,7 +410,8 @@ function checkAnswersOr(other: JourneyUrlProvider): JourneyUrlProvider {
 }
 
 function ifCanApproveForVisitsOr(yes: JourneyUrlProvider, no: JourneyUrlProvider): JourneyUrlProvider {
-  return (journey, user) => (hasPermission(user, Permission.edit_contact_visit_approval) ? yes(journey, user) : no(journey, user))
+  return (journey, user) =>
+    hasPermission(user, Permission.edit_contact_visit_approval) ? yes(journey, user) : no(journey, user)
 }
 
 function backIfCheckAnswersOr(other: JourneyUrlProvider): JourneyUrlProvider {

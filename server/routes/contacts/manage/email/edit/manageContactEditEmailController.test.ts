@@ -1,20 +1,17 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import {
-  appWithAllRoutes,
-  flashProvider,
-  basicPrisonUser,
-  adminUser,
-  authorisingUser,
-} from '../../../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, basicPrisonUser, adminUser } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
 import { ContactDetails, UpdateEmailRequest } from '../../../../../@types/contactsApiClient'
 import { HmppsUser } from '../../../../../interfaces/hmppsUser'
+import mockPermissions from '../../../../testutils/mockPermissions'
+import Permission from '../../../../../enumeration/permission'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
 jest.mock('../../../../../services/contactsService')
@@ -65,6 +62,9 @@ beforeEach(() => {
     },
     userSupplier: () => currentUser,
   })
+
+  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
 
@@ -102,17 +102,14 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('#emailAddress').val()).toStrictEqual('mr.first@example.com')
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 200],
-    [authorisingUser, 200],
-  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
+  it('GET should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
     contactsService.getContact.mockResolvedValue(contact)
 
     await request(app)
       .get(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/6/edit`)
-      .expect(expectedStatus)
+      .expect(403)
   })
 
   it('should render edited answer instead of original if there is a validation error', async () => {
@@ -210,18 +207,15 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     expect(flashProvider).not.toHaveBeenCalledWith(FLASH_KEY__SUCCESS_BANNER, expect.anything)
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 302],
-    [authorisingUser, 302],
-  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
+  it('POST should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
     contactsService.getContactName.mockResolvedValue(contact)
     contactsService.updateContactEmail.mockResolvedValue(TestData.getContactEmailDetails('mr.last@example.com', 1))
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/6/edit`)
       .type('form')
       .send({ emailAddress: 'test@example.com' })
-      .expect(expectedStatus)
+      .expect(403)
   })
 })

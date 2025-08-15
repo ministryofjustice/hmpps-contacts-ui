@@ -3,15 +3,17 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../testutils/appSetup'
+import { appWithAllRoutes, authorisingUser } from '../../testutils/appSetup'
 import { Page } from '../../../services/auditService'
 import { mockedReferenceData } from '../../testutils/stubReferenceData'
 import TestData from '../../testutils/testData'
 import { MockedService } from '../../../testutils/mockedServices'
 import { AddRestrictionJourney, RestrictionClass } from '../../../@types/journeys'
 import { ContactRestrictionDetails } from '../../../@types/contactsApiClient'
-import { HmppsUser } from '../../../interfaces/hmppsUser'
+import mockPermissions from '../../testutils/mockPermissions'
+import Permission from '../../../enumeration/permission'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../services/auditService')
 jest.mock('../../../services/referenceDataService')
 jest.mock('../../../services/prisonerSearchService')
@@ -29,7 +31,7 @@ const prisonerNumber = 'A1234BC'
 const contactId = 123
 const prisonerContactId = 321
 let existingJourney: AddRestrictionJourney
-let currentUser = authorisingUser
+const currentUser = authorisingUser
 
 beforeEach(() => {
   existingJourney = {
@@ -62,6 +64,9 @@ beforeEach(() => {
       session.addRestrictionJourneys[journeyId] = existingJourney
     },
   })
+
+  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contact_restrictions]: true })
+
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
@@ -287,12 +292,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
       })
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 403],
-    [authorisingUser, 200],
-  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
+  it('GET should block access without edit_contact_restrictions permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contact_restrictions]: false })
+
     referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Banned')
     existingJourney.restrictionClass = 'CONTACT_GLOBAL'
     existingJourney.restriction = {
@@ -306,7 +308,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
       .get(
         `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/CONTACT_GLOBAL/check-answers/${journeyId}`,
       )
-      .expect(expectedStatus)
+      .expect(403)
   })
 })
 
@@ -356,12 +358,9 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
     },
   )
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 403],
-    [authorisingUser, 302],
-  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
+  it('POST should block access without edit_contact_restrictions permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contact_restrictions]: false })
+
     restrictionsService.createRestriction.mockResolvedValue({} as ContactRestrictionDetails)
 
     await request(app)
@@ -370,6 +369,6 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
       )
       .type('form')
       .send({ type: 'BAN', startDate: '1/2/2024', expiryDate: '2/3/2025', comments: 'some comments' })
-      .expect(expectedStatus)
+      .expect(403)
   })
 })
