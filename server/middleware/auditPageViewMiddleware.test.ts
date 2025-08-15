@@ -6,7 +6,10 @@ import { Page } from '../services/auditService'
 import TestData from '../routes/testutils/testData'
 import { MockedService } from '../testutils/mockedServices'
 import { mockedReferenceData } from '../routes/testutils/stubReferenceData'
+import mockPermissions from '../routes/testutils/mockPermissions'
+import Permission from '../enumeration/permission'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../services/auditService')
 jest.mock('../services/prisonerSearchService')
 jest.mock('../services/contactsService')
@@ -32,6 +35,9 @@ beforeEach(() => {
       restrictionsService,
     },
   })
+
+  mockPermissions(app, { [Permission.read_contacts]: true })
+
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mr')
   restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({

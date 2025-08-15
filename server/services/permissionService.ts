@@ -7,15 +7,11 @@ import config from '../config'
 // Get data access objects
 const { contactsApiClient, applicationInsightsClient } = dataAccess()
 
-const createOptions: any = {
+const prisonPermissionsService = PrisonPermissionsService.create({
   prisonerSearchConfig: config.apis.prisonerSearchApi,
   authenticationClient: new AuthenticationClient(config.apis.hmppsAuth, logger, contactsApiClient.tokenStore),
   logger,
-}
-if (applicationInsightsClient) {
-  createOptions.telemetryClient = applicationInsightsClient
-}
-
-const prisonPermissionsService = PrisonPermissionsService.create(createOptions)
+  ...(applicationInsightsClient && { telemetryClient: applicationInsightsClient }),
+})
 
 export default prisonPermissionsService

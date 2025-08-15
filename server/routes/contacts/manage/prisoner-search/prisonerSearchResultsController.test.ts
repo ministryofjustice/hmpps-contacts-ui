@@ -9,7 +9,10 @@ import { PaginationRequest, Prisoner } from '../../../../data/prisonerOffenderSe
 import logger from '../../../../../logger'
 import { ENTER_TWO_CHARS_MIN } from './prisonerSearchSchema'
 import { MockedService } from '../../../../testutils/mockedServices'
+import mockPermissions from '../../../testutils/mockPermissions'
+import Permission from '../../../../enumeration/permission'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 
@@ -47,6 +50,8 @@ beforeEach(() => {
       }
     },
   })
+
+  mockPermissions(app, { [Permission.read_contacts]: true })
 })
 
 afterEach(() => {

@@ -3,6 +3,7 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
+import { setupNunjucksPermissions } from '@ministryofjustice/hmpps-prison-permissions-lib'
 import {
   initialiseName,
   formatDate,
@@ -35,7 +36,6 @@ import { convertToSortableColumns } from './convertToSortableColumns'
 import { sortPhoneNumbers } from './sortPhoneNumbers'
 import { ContactAddressDetails } from '../@types/contactsApiClient'
 import { hasPermission, hasRole } from './permissionsUtils'
-import { setupNunjucksPermissions } from '@ministryofjustice/hmpps-prison-permissions-lib'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -96,7 +96,7 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('formatNameLastNameFirst', formatNameLastNameFirst)
   njkEnv.addFilter('formatNameFirstNameFirst', formatNameFirstNameFirst)
   njkEnv.addFilter('restrictionTagColour', restrictionTagColour)
-  njkEnv.addFilter('nl2br', (val?: string) => (val ? String(val).replace(/\n/g, '<br/>') : ''))
+  // njkEnv.addFilter('nl2br', (val?: string) => (val ? String(val).replace(/\n/g, '<br/>') : ''))
   njkEnv.addFilter('capitalizeFirstLetter', capitalizeFirstLetter)
   njkEnv.addFilter('convertToSortableColumns', convertToSortableColumns)
   njkEnv.addFilter('formatDateRange', formatDateRange)
@@ -159,6 +159,7 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('hasPermission', hasPermission)
   njkEnv.addFilter('hasRole', hasRole)
   njkEnv.addFilter('isInternalContact', isInternalContact)
+
   // Add prisoner permissions helpers and enums for use in templates (isGranted, PersonalRelationshipsPermission, etc.)
   setupNunjucksPermissions(njkEnv)
 }

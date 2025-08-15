@@ -2,11 +2,14 @@ import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
-import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../testutils/appSetup'
+import { appWithAllRoutes, basicPrisonUser, flashProvider } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { ENTER_TWO_CHARS_MIN } from './prisonerSearchSchema'
 import { MockedService } from '../../../../testutils/mockedServices'
+import Permission from '../../../../enumeration/permission'
+import mockPermissions from '../../../testutils/mockPermissions'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 
 const auditService = MockedService.AuditService()
@@ -30,6 +33,8 @@ beforeEach(() => {
       }
     },
   })
+
+  mockPermissions(app, { [Permission.read_contacts]: true })
 })
 
 afterEach(() => {
@@ -42,7 +47,7 @@ describe('GET /contacts/manage/prisoner-search', () => {
 
     expect(response.status).toEqual(200)
     expect(response.text).toContain('Contacts')
-    expect(response.text).toContain('Hmpps Contacts Ui')
+    expect(response.text).toContain('Contacts linked to a prisoner - DPS')
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.PRISONER_SEARCH_PAGE, {
       who: basicPrisonUser.username,
       correlationId: expect.any(String),

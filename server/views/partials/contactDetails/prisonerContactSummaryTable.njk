@@ -13,7 +13,7 @@
   {% set rows = [] %}
   {% for contact in contacts %}
     {% set contactNameAndNumber %}
-      {% if user | isGranted(PersonalRelationshipsPermission.edit_contacts, prisonerPermissions) %}
+      {% if isGranted(PersonalRelationshipsPermission.edit_contacts, prisonerPermissions) %}
         <a href="/prisoner/{{ prisonerNumber }}/contacts/manage/{{ contact.contactId }}/relationship/{{ contact.prisonerContactId }}"
            data-qa="contact-{{ contact.contactId }}-link"
            class="govuk-link--no-visited-state pcl-contact-name-link">{{ contact | formatNameLastNameFirst }}</a>
