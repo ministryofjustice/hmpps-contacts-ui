@@ -1,12 +1,14 @@
 import type { RequestHandler, NextFunction } from 'express'
-import { prisonerPermissionsGuard } from '@ministryofjustice/hmpps-prison-permissions-lib'
+import { PermissionsService, prisonerPermissionsGuard } from '@ministryofjustice/hmpps-prison-permissions-lib'
 import asyncMiddleware from './asyncMiddleware'
-import prisonPermissionsService from '../services/permissionService'
 import Permission from '../enumeration/permission'
 
-export default function checkPermissionsMiddleware(requiredPermission: Permission): RequestHandler {
+export default function checkPermissionsMiddleware(
+  permissionsService: PermissionsService,
+  requiredPermission: Permission,
+): RequestHandler {
   return asyncMiddleware(async (req, res, next) => {
-    const guard = prisonerPermissionsGuard(prisonPermissionsService, {
+    const guard = prisonerPermissionsGuard(permissionsService, {
       requestDependentOn: [requiredPermission],
     })
     const handleNext: NextFunction = err => {
