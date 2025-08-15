@@ -6,7 +6,10 @@ import { appWithAllRoutes, basicPrisonUser } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { ManageContactsJourney } from '../../../../@types/journeys'
+import mockPermissions from '../../../testutils/mockPermissions'
+import Permission from '../../../../enumeration/permission'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 
 const auditService = MockedService.AuditService()
@@ -29,6 +32,8 @@ beforeEach(() => {
       }
     },
   })
+
+  mockPermissions(app, { [Permission.read_contacts]: true })
 })
 
 afterEach(() => {

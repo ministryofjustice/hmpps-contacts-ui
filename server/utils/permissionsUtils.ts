@@ -11,19 +11,20 @@ function stripRole(role: string): string {
 }
 
 function permissionsFromRoles(userRoles: string[]): Permission[] {
-  const permissions: Permission[] = [Permission.VIEW_CONTACT_LIST]
+  const permissions: Permission[] = [Permission.read_contacts]
   if (userRoles.includes(ADMIN_USER_ROLE) || userRoles.includes(AUTHORISER_USER_ROLE)) {
-    permissions.push(Permission.MANAGE_CONTACTS)
+    permissions.push(Permission.edit_contacts)
   }
   if (userRoles.includes(AUTHORISER_USER_ROLE)) {
-    permissions.push(Permission.MANAGE_RESTRICTIONS, Permission.APPROVE_TO_VISIT)
+    permissions.push(Permission.edit_contact_restrictions, Permission.edit_contact_visit_approval)
   }
   return permissions
 }
 
 function hasPermission(user: HmppsUser, permission: Permission): boolean {
   if (!user) return false
-  return permissionsFromRoles(user.userRoles).includes(permission)
+  const roles: string[] = Array.isArray(user.userRoles) ? user.userRoles : []
+  return permissionsFromRoles(roles).includes(permission)
 }
 
 function hasRole(user: HmppsUser, role: string): boolean {

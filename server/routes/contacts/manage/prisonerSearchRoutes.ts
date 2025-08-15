@@ -1,5 +1,6 @@
 import { RequestHandler, Router } from 'express'
 import { z } from 'zod'
+import { PermissionsService } from '@ministryofjustice/hmpps-prison-permissions-lib'
 import { SchemaFactory, validate } from '../../../middleware/validationMiddleware'
 import AuditService from '../../../services/auditService'
 import { ensureInManageContactsJourney } from './manageContactsMiddleware'
@@ -12,9 +13,13 @@ import { routerMethods } from '../../../utils/routerMethods'
 import PrisonerSearchResultsController from './prisoner-search/prisonerSearchResultsController'
 
 // these routes are only being maintained until a proper entry point from the DPS profile is created
-const PrisonerSearchRoutes = (auditService: AuditService, prisonerSearchService: PrisonerSearchService) => {
+const PrisonerSearchRoutes = (
+  auditService: AuditService,
+  prisonerSearchService: PrisonerSearchService,
+  permissionsService: PermissionsService,
+) => {
   const router = Router({ mergeParams: true })
-  const { get, post } = routerMethods(router, auditService)
+  const { get, post } = routerMethods(router, permissionsService, auditService)
 
   const journeyRoute = <P extends { [key: string]: string }>({
     path,

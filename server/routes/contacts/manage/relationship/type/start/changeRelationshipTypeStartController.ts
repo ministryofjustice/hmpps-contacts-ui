@@ -11,7 +11,7 @@ export default class ChangeRelationshipTypeStartController implements PageHandle
 
   public PAGE_NAME = Page.CHANGE_RELATIONSHIP_TYPE_START_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   private MAX_JOURNEYS = 5
 

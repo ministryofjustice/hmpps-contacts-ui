@@ -22,7 +22,7 @@ export default class ContactMatchController implements PageHandler {
 
   public PAGE_NAME = Page.CONTACT_MATCH_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   private LINKED_PRISONER_ITEMS_PER_PAGE = 10
 

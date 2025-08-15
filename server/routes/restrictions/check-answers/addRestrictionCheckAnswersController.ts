@@ -17,7 +17,7 @@ export default class AddRestrictionCheckAnswersController implements PageHandler
 
   public PAGE_NAME = Page.ADD_RESTRICTION_CHECK_ANSWERS_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_RESTRICTIONS
+  public REQUIRED_PERMISSION = Permission.edit_contact_restrictions
 
   GET = async (
     req: Request<{

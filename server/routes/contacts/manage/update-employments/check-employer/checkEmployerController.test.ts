@@ -3,12 +3,15 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes } from '../../../../testutils/appSetup'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { UpdateEmploymentsJourney } from '../../../../../@types/journeys'
 import { HmppsUser } from '../../../../../interfaces/hmppsUser'
+import mockPermissions from '../../../../testutils/mockPermissions'
+import Permission from '../../../../../enumeration/permission'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
 jest.mock('../../../../../services/organisationsService')
@@ -57,6 +60,13 @@ beforeEach(() => {
     },
     userSupplier: () => currentUser,
   })
+
+  mockPermissions(app, {
+    [Permission.read_contacts]: true,
+    [Permission.edit_contacts]: true,
+    [Permission.edit_contact_restrictions]: true,
+  })
+
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
 })
 
@@ -275,12 +285,9 @@ it('should render result with minimal mandatory data', async () => {
   expect($('p:contains("No addresses provided.")').text()).toBeTruthy()
 })
 
-it.each([
-  [basicPrisonUser, 403],
-  [adminUser, 200],
-  [authorisingUser, 200],
-])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-  currentUser = user
+it('GET should block access without edit contacts permission', async () => {
+  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
   setJourneyData({
     ...generateJourneyData(),
     changeOrganisationId: 222,
@@ -303,7 +310,7 @@ it.each([
     .get(
       `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/new/check-employer/${journeyId}`,
     )
-    .expect(expectedStatus)
+    .expect(403)
 })
 
 describe('POST /contacts/manage/:contactId/relationship/:prisonerContactId/update-employments/:employmentIdx/check-employer', () => {
@@ -420,12 +427,8 @@ describe('POST /contacts/manage/:contactId/relationship/:prisonerContactId/updat
     )
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 302],
-    [authorisingUser, 302],
-  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
+  it('POST should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
 
     const journeyData = generateJourneyData()
     journeyData.changeOrganisationId = 222
@@ -445,6 +448,6 @@ describe('POST /contacts/manage/:contactId/relationship/:prisonerContactId/updat
       )
       .type('form')
       .send({ isCorrectEmployer: 'YES' })
-      .expect(expectedStatus)
+      .expect(403)
   })
 })

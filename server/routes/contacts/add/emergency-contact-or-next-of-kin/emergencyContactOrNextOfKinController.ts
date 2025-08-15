@@ -10,7 +10,7 @@ import Permission from '../../../../enumeration/permission'
 export default class EmergencyContactOrNextOfKinController implements PageHandler {
   public PAGE_NAME = Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { journeyId } = req.params

@@ -20,7 +20,7 @@ export default class ChangeRelationshipTypeRelationshipToPrisonerController impl
 
   public PAGE_NAME = Page.CHANGE_RELATIONSHIP_SELECT_NEW_RELATIONSHIP_TO_PRISONER_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string; journeyId: string }>,

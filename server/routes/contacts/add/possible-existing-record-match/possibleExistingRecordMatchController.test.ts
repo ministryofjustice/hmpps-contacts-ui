@@ -3,7 +3,7 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../testutils/appSetup'
+import { adminUser, appWithAllRoutes } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
@@ -17,7 +17,10 @@ import {
   PrisonerContactSummary,
 } from '../../../../@types/contactsApiClient'
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
+import mockPermissions from '../../../testutils/mockPermissions'
+import Permission from '../../../../enumeration/permission'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
@@ -38,6 +41,7 @@ const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 let existingJourney: AddContactJourney
 let currentUser: HmppsUser
+
 beforeEach(() => {
   currentUser = adminUser
   existingJourney = {
@@ -63,6 +67,9 @@ beforeEach(() => {
       session.addContactJourneys[journeyId] = existingJourney
     },
   })
+
+  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mr')
   restrictionsService.getGlobalRestrictions.mockResolvedValue([])
@@ -244,12 +251,9 @@ describe('Contact details', () => {
       })
     })
 
-    it.each([
-      [basicPrisonUser, 403],
-      [adminUser, 200],
-      [authorisingUser, 200],
-    ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-      currentUser = user
+    it('GET should block access without edit contact permission', async () => {
+      mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
       contactsService.getContact.mockResolvedValue(TestData.contact())
@@ -257,7 +261,7 @@ describe('Contact details', () => {
 
       await request(app)
         .get(`/prisoner/${prisonerNumber}/contacts/create/possible-existing-record-match/22/${journeyId}`)
-        .expect(expectedStatus)
+        .expect(403)
     })
   })
 
@@ -1241,16 +1245,13 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/possible-existing-recor
     expect(session.addContactJourneys![journeyId]!.isPossibleExistingRecordMatched).toStrictEqual(undefined)
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 302],
-    [authorisingUser, 302],
-  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
+  it('POST should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/possible-existing-record-match/22/${journeyId}`)
       .type('form')
       .send({ isPossibleExistingRecordMatched: 'NO_GO_BACK_TO_POSSIBLE_EXISTING_RECORDS' })
-      .expect(expectedStatus)
+      .expect(403)
   })
 })

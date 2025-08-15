@@ -1,20 +1,17 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import {
-  appWithAllRoutes,
-  flashProvider,
-  basicPrisonUser,
-  adminUser,
-  authorisingUser,
-} from '../../../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, basicPrisonUser, adminUser } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { ContactDetails } from '../../../../../@types/contactsApiClient'
 import { HmppsUser } from '../../../../../interfaces/hmppsUser'
+import mockPermissions from '../../../../testutils/mockPermissions'
+import Permission from '../../../../../enumeration/permission'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/referenceDataService')
 jest.mock('../../../../../services/prisonerSearchService')
@@ -63,6 +60,7 @@ beforeEach(() => {
     },
     userSupplier: () => currentUser,
   })
+  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
@@ -143,19 +141,16 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect($('[data-qa=phones-0-extension]').val()).toStrictEqual('000')
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 200],
-    [authorisingUser, 200],
-  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
+  it('GET should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
     contactsService.getContact.mockResolvedValue(contact)
 
     await request(app)
       .get(
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/${contactAddressId}/phone/create`,
       )
-      .expect(expectedStatus)
+      .expect(403)
   })
 })
 
@@ -204,12 +199,9 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     expect(contactsService.createContactAddressPhones).not.toHaveBeenCalled()
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 302],
-    [authorisingUser, 302],
-  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
+  it('POST should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
     contactsService.getContactName.mockResolvedValue(contact)
 
     await request(app)
@@ -223,7 +215,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .send('phones[0][extension]=000')
       .send('phones[1][type]=HOME')
       .send('phones[1][phoneNumber]=987654321')
-      .expect(expectedStatus)
+      .expect(403)
   })
 
   describe('should work without javascript enabled', () => {

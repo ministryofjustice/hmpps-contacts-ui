@@ -1,5 +1,6 @@
 import { RequestHandler, Router } from 'express'
 import { z } from 'zod'
+import { PermissionsService } from '@ministryofjustice/hmpps-prison-permissions-lib'
 import AuditService from '../../services/auditService'
 import ContactsService from '../../services/contactsService'
 import PrisonerSearchService from '../../services/prisonerSearchService'
@@ -24,9 +25,10 @@ const RestrictionsRoutes = (
   referenceDataService: ReferenceDataService,
   prisonerSearchService: PrisonerSearchService,
   restrictionsService: RestrictionsService,
+  permissionsService: PermissionsService,
 ) => {
   const router = Router({ mergeParams: true })
-  const { get, post } = routerMethods(router, auditService)
+  const { get, post } = routerMethods(router, permissionsService, auditService)
   const journeyRoute = <P extends { [key: string]: string }>({
     path,
     controller,

@@ -15,7 +15,7 @@ export default class ChangeAddressFlagsController implements PageHandler {
 
   public PAGE_NAME = Page.SELECT_ADDRESS_FLAGS_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string; contactAddressId: string }>,

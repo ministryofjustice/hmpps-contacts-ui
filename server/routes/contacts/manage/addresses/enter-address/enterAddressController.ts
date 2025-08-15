@@ -14,7 +14,7 @@ export default class EnterAddressController implements PageHandler {
 
   public PAGE_NAME = Page.ENTER_ADDRESS_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   private DEFAULT_COUNTRY = 'ENG'
 
