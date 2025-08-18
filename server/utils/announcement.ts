@@ -14,8 +14,8 @@ const getEnabledPrisons = () => {
 
 const LIMITED_ACCESS_ANNOUNCEMENT: Announcement = {
   title: 'You have limited access to the new Contacts service on DPS',
-  html: `Your ability to manage prisoner contacts on DPS is currently limited.</br>
-All establishments will have full access to the new prisoner Contacts service from October. To request early access, ask your Head of Operations or another appropriate staff member to email
+  html: `While the new Contacts service is being piloted, your establishment has read-only access.</br>
+To request full access for your establishment, ask your Head of Operations or another appropriate staff member to email
 <a class="govuk-notification-banner__link" href="mailto:managingcontacts@justice.gov.uk">managingcontacts@justice.gov.uk</a>.
 
 <div class="govuk-notification-banner__content govuk-!-padding-left-0">
