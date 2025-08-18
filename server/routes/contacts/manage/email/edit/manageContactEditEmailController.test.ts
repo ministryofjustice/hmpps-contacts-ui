@@ -1,7 +1,13 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, flashProvider, basicPrisonUser, adminUser } from '../../../../testutils/appSetup'
+import {
+  appWithAllRoutes,
+  flashProvider,
+  basicPrisonUser,
+  adminUser,
+  adminUserPermissions,
+} from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
@@ -63,7 +69,7 @@ beforeEach(() => {
     userSupplier: () => currentUser,
   })
 
-  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+  mockPermissions(app, adminUserPermissions)
 
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })

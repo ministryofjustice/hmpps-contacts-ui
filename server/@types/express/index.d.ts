@@ -44,6 +44,7 @@ export declare global {
 
     interface Locals {
       user: HmppsUser
+      prisonerPermissions?: PrisonerPermissions
       validationErrors?: fieldErrors
       digitalPrisonServicesUrl: string
       feComponents?: {

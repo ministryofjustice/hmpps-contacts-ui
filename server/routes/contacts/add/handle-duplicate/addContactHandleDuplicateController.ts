@@ -20,7 +20,7 @@ export default class AddContactHandleDuplicateController implements PageHandler 
   public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<{ prisonerNumber: string; journeyId: string }>, res: Response): Promise<void> => {
-    const { user } = res.locals
+    const { user, prisonerPermissions } = res.locals
     const { prisonerNumber, journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
 
@@ -41,7 +41,7 @@ export default class AddContactHandleDuplicateController implements PageHandler 
 
     const viewModel = {
       isNewContact: true,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
       relationshipTypeDescription,
       journey,
       existingRelationships: existingRelationships.sort((a, b) => {

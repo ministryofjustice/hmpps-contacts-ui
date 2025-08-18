@@ -3,7 +3,13 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { adminUser, appWithAllRoutes, authorisingUser } from '../../../testutils/appSetup'
+import {
+  adminUserPermissions,
+  adminUser,
+  appWithAllRoutes,
+  authorisingUser,
+  authorisingUserPermissions,
+} from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
@@ -62,7 +68,7 @@ beforeEach(() => {
     },
   })
 
-  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+  mockPermissions(app, adminUserPermissions)
 
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(
     TestData.prisoner({ prisonerNumber, firstName: 'Prisoner', lastName: 'Name', middleNames: 'Not Shown' }),
@@ -104,6 +110,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
   it('should render enter additional info page for authorising user', async () => {
     // Given
     currentUser = authorisingUser
+    mockPermissions(app, authorisingUserPermissions)
 
     // When
     const response = await request(app).get(

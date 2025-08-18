@@ -1,13 +1,12 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import createError from 'http-errors'
-import { appWithAllRoutes, basicPrisonUser } from '../routes/testutils/appSetup'
+import { appWithAllRoutes, basicPrisonUser, readOnlyPermissions } from '../routes/testutils/appSetup'
 import { Page } from '../services/auditService'
 import TestData from '../routes/testutils/testData'
 import { MockedService } from '../testutils/mockedServices'
 import { mockedReferenceData } from '../routes/testutils/stubReferenceData'
 import mockPermissions from '../routes/testutils/mockPermissions'
-import Permission from '../enumeration/permission'
 
 jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../services/auditService')
@@ -36,7 +35,7 @@ beforeEach(() => {
     },
   })
 
-  mockPermissions(app, { [Permission.read_contacts]: true })
+  mockPermissions(app, readOnlyPermissions)
 
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mr')

@@ -3,7 +3,7 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, authorisingUser } from '../../../testutils/appSetup'
+import { appWithAllRoutes, authorisingUser, authorisingUserPermissions } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
@@ -56,7 +56,7 @@ beforeEach(() => {
     },
   })
 
-  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contact_visit_approval]: true })
+  mockPermissions(app, authorisingUserPermissions)
 
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })

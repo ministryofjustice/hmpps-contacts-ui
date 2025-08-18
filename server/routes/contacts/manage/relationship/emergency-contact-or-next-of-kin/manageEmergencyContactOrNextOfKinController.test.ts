@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { adminUser, appWithAllRoutes } from '../../../../testutils/appSetup'
+import { adminUserPermissions, adminUser, appWithAllRoutes } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
@@ -35,7 +35,7 @@ beforeEach(() => {
     userSupplier: () => currentUser,
   })
 
-  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+  mockPermissions(app, adminUserPermissions)
 })
 
 afterEach(() => {

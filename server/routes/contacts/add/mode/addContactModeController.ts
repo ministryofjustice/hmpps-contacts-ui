@@ -18,7 +18,7 @@ export default class AddContactModeController implements PageHandler {
     res: Response,
   ): Promise<void> => {
     const { journeyId, mode } = req.params
-    const { user } = res.locals
+    const { user, prisonerPermissions } = res.locals
 
     const journey = req.session.addContactJourneys![journeyId]!
     journey.mode = mode
@@ -51,6 +51,6 @@ export default class AddContactModeController implements PageHandler {
         }
       }
     }
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
   }
 }

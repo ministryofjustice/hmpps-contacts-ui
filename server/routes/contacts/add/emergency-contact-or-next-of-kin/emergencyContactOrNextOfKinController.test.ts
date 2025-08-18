@@ -3,7 +3,13 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { adminUser, appWithAllRoutes, authorisingUser } from '../../../testutils/appSetup'
+import {
+  adminUserPermissions,
+  adminUser,
+  appWithAllRoutes,
+  authorisingUser,
+  authorisingUserPermissions,
+} from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
@@ -56,7 +62,7 @@ beforeEach(() => {
     },
   })
 
-  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+  mockPermissions(app, adminUserPermissions)
 
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
@@ -159,9 +165,15 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/emergency-contact-or-nex
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/create/emergency-contact-or-next-of-kin', () => {
-  it('should pass to next page if there are no validation errors and we are not checking answers as admin user', async () => {
+  it('should pass to next page if there are no validation errors and we are not checking answers without edit contact visit approval permission', async () => {
     // Given
     currentUser = adminUser
+    mockPermissions(app, {
+      [Permission.read_contacts]: true,
+      [Permission.edit_contacts]: true,
+      [Permission.edit_contact_visit_approval]: false,
+    })
+
     existingJourney.relationship = { relationshipToPrisoner: 'MOT' }
     existingJourney.isCheckingAnswers = false
 
@@ -178,9 +190,11 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/emergency-contact-or-ne
     expect(session.addContactJourneys![journeyId]!.relationship).toStrictEqual(expectedRelationship)
   })
 
-  it('should pass to next page if there are no validation errors and we are not checking answers as authorising user', async () => {
+  it('should pass to next page if there are no validation errors and we are not checking answers with edit contact visit approval permission', async () => {
     // Given
     currentUser = authorisingUser
+    mockPermissions(app, authorisingUserPermissions)
+
     existingJourney.relationship = { relationshipToPrisoner: 'MOT' }
     existingJourney.isCheckingAnswers = false
 

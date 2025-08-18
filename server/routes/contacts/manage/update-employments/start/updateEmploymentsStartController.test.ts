@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
-import { adminUser, appWithAllRoutes } from '../../../../testutils/appSetup'
+import { adminUserPermissions, adminUser, appWithAllRoutes } from '../../../../testutils/appSetup'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { EmploymentDetails } from '../../../../../@types/contactsApiClient'
@@ -38,7 +38,7 @@ beforeEach(() => {
     userSupplier: () => currentUser,
   })
 
-  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+  mockPermissions(app, adminUserPermissions)
 
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
 })

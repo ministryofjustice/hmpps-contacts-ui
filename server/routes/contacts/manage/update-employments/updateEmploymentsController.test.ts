@@ -3,7 +3,7 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { v4 as uuidv4 } from 'uuid'
 import { SessionData } from 'express-session'
-import { appWithAllRoutes, flashProvider, adminUser } from '../../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, adminUser, adminUserPermissions } from '../../../testutils/appSetup'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNotificationBanner'
@@ -61,7 +61,9 @@ beforeEach(() => {
     },
     userSupplier: () => currentUser,
   })
-  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+
+  mockPermissions(app, adminUserPermissions)
+
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
 })
 

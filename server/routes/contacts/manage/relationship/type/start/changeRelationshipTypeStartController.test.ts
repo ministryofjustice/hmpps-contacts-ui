@@ -2,7 +2,7 @@ import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
-import { adminUser, appWithAllRoutes, basicPrisonUser } from '../../../../../testutils/appSetup'
+import { adminUserPermissions, adminUser, appWithAllRoutes, basicPrisonUser } from '../../../../../testutils/appSetup'
 import { Page } from '../../../../../../services/auditService'
 import TestData from '../../../../../testutils/testData'
 import { MockedService } from '../../../../../../testutils/mockedServices'
@@ -71,7 +71,7 @@ beforeEach(() => {
     },
   })
 
-  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+  mockPermissions(app, adminUserPermissions)
 
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })

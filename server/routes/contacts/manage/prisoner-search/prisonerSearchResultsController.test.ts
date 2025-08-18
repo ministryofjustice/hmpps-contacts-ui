@@ -3,14 +3,13 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, flashProvider, basicPrisonUser } from '../../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, basicPrisonUser, readOnlyPermissions } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { PaginationRequest, Prisoner } from '../../../../data/prisonerOffenderSearchTypes'
 import logger from '../../../../../logger'
 import { ENTER_TWO_CHARS_MIN } from './prisonerSearchSchema'
 import { MockedService } from '../../../../testutils/mockedServices'
 import mockPermissions from '../../../testutils/mockPermissions'
-import Permission from '../../../../enumeration/permission'
 
 jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
@@ -51,7 +50,7 @@ beforeEach(() => {
     },
   })
 
-  mockPermissions(app, { [Permission.read_contacts]: true })
+  mockPermissions(app, readOnlyPermissions)
 })
 
 afterEach(() => {

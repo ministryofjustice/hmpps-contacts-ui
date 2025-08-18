@@ -3,7 +3,7 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { Cheerio, CheerioAPI } from 'cheerio'
 import { Element } from 'domhandler'
-import { adminUser, appWithAllRoutes } from '../../../testutils/appSetup'
+import { adminUserPermissions, adminUser, appWithAllRoutes } from '../../../testutils/appSetup'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { Page } from '../../../../services/auditService'
@@ -39,7 +39,7 @@ beforeEach(() => {
     },
     userSupplier: () => currentUser,
   })
-  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+  mockPermissions(app, adminUserPermissions)
 })
 
 afterEach(() => {

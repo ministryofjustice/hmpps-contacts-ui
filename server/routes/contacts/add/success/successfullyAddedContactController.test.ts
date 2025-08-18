@@ -1,7 +1,13 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { adminUser, appWithAllRoutes, authorisingUser } from '../../../testutils/appSetup'
+import {
+  adminUserPermissions,
+  adminUser,
+  appWithAllRoutes,
+  authorisingUser,
+  authorisingUserPermissions,
+} from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
@@ -32,7 +38,7 @@ beforeEach(() => {
     userSupplier: () => currentUser,
   })
 
-  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+  mockPermissions(app, adminUserPermissions)
 
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
@@ -145,12 +151,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
   it.each(['EXISTING', 'NEW'])(
     'Should show restrictions advisory text if user can manage restrictions for mode %s',
     async mode => {
-      mockPermissions(app, {
-        [Permission.read_contacts]: true,
-        [Permission.edit_contacts]: true,
-        [Permission.edit_contact_restrictions]: true,
-      })
       currentUser = authorisingUser
+      mockPermissions(app, authorisingUserPermissions)
 
       contactsService.getContactName.mockResolvedValue(
         TestData.contact({

@@ -4,14 +4,20 @@ import * as cheerio from 'cheerio'
 import { Cheerio, CheerioAPI } from 'cheerio'
 import { Element } from 'domhandler'
 import { SessionData } from 'express-session'
-import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../testutils/appSetup'
+import {
+  adminUserPermissions,
+  adminUser,
+  appWithAllRoutes,
+  authorisingUser,
+  basicPrisonUser,
+  readOnlyPermissions,
+} from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { MockedService } from '../../../../testutils/mockedServices'
 import TestData from '../../../testutils/testData'
 import { PrisonerContactSummary } from '../../../../@types/contactsApiClient'
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
 import mockPermissions from '../../../testutils/mockPermissions'
-import Permission from '../../../../enumeration/permission'
 
 jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
@@ -61,7 +67,7 @@ beforeEach(() => {
     },
     userSupplier: () => currentUser,
   })
-  mockPermissions(app, { [Permission.read_contacts]: true })
+  mockPermissions(app, readOnlyPermissions)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
 })
 
@@ -86,7 +92,8 @@ describe('listContactsController', () => {
   describe('GET /prisoner/:prisonerNumber/contacts/list', () => {
     it('should render with correct navigation for users that can edit contacts', async () => {
       // Given
-      mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+      mockPermissions(app, adminUserPermissions)
+
       contactsService.filterPrisonerContacts.mockResolvedValue({
         content: [minimalContact],
         page: { totalElements: 1, totalPages: 1, size: 10, number: 0 },
@@ -118,7 +125,7 @@ describe('listContactsController', () => {
 
     it('should render with correct navigation for users with only read contacts permission', async () => {
       // Given
-      mockPermissions(app, { [Permission.read_contacts]: true })
+      mockPermissions(app, readOnlyPermissions)
       currentUser = basicPrisonUser
       contactsService.filterPrisonerContacts.mockResolvedValue({
         content: [minimalContact],
@@ -233,7 +240,8 @@ describe('listContactsController', () => {
       'should render contact name and prisoner number column correctly',
       async (contact, expectedName, expectedFirstTag, expectedSecondTag, expectedTagCount) => {
         // Given
-        mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+        mockPermissions(app, adminUserPermissions)
+
         contactsService.filterPrisonerContacts.mockResolvedValue({
           content: [contact],
           page: { totalElements: 1, totalPages: 1, size: 10, number: 0 },
@@ -791,7 +799,8 @@ describe('listContactsController', () => {
 
     it('should show no contacts at all with link to add a contact if no active results and no unfiltered contacts for users that can edit contacts', async () => {
       // Given
-      mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+      mockPermissions(app, adminUserPermissions)
+
       contactsService.filterPrisonerContacts.mockResolvedValue({
         content: [],
         page: { totalElements: 0, totalPages: 1, size: 10, number: 0 },
@@ -850,7 +859,8 @@ describe('listContactsController', () => {
 
     it('should show no contacts at all with link to add a contact if no active results and no unfiltered contacts even if filters applied for users that can edit contacts', async () => {
       // Given
-      mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+      mockPermissions(app, adminUserPermissions)
+
       contactsService.filterPrisonerContacts.mockResolvedValue({
         content: [],
         page: { totalElements: 0, totalPages: 1, size: 10, number: 0 },
@@ -894,7 +904,8 @@ describe('listContactsController', () => {
 
     it('should show no active contacts link to change to include inactive if not filters applied and no contacts for users that can edit contacts', async () => {
       // Given
-      mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+      mockPermissions(app, adminUserPermissions)
+
       contactsService.filterPrisonerContacts
         .mockResolvedValueOnce({
           content: [],
@@ -943,7 +954,8 @@ describe('listContactsController', () => {
 
     it('should show no contacts match filter when there are filters and prisoner has any contacts for users that can edit contacts', async () => {
       // Given
-      mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+      mockPermissions(app, adminUserPermissions)
+
       contactsService.filterPrisonerContacts
         .mockResolvedValueOnce({
           content: [],

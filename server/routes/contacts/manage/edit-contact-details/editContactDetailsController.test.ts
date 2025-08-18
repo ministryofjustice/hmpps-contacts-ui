@@ -3,7 +3,13 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { Cheerio } from 'cheerio'
 import { Element } from 'domhandler'
-import { adminUser, appWithAllRoutes, authorisingUser } from '../../../testutils/appSetup'
+import {
+  adminUserPermissions,
+  adminUser,
+  appWithAllRoutes,
+  authorisingUser,
+  authorisingUserPermissions,
+} from '../../../testutils/appSetup'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { Page } from '../../../../services/auditService'
@@ -36,7 +42,7 @@ beforeEach(() => {
     userSupplier: () => currentUser,
   })
 
-  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+  mockPermissions(app, adminUserPermissions)
 })
 
 afterEach(() => {
@@ -289,12 +295,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
   describe('Relationship details card', () => {
     it('should render with all relationship details and change links as authorising user', async () => {
       currentUser = authorisingUser
-      mockPermissions(app, {
-        [Permission.read_contacts]: true,
-        [Permission.edit_contacts]: true,
-        [Permission.edit_contact_visit_approval]: true,
-        [Permission.edit_contact_restrictions]: true,
-      })
+      mockPermissions(app, authorisingUserPermissions)
 
       const prisonerContactRelationshipDetails = {
         prisonerContactId: 99,
@@ -375,12 +376,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
 
     it('should render without optional relationship details as authorising user', async () => {
       currentUser = authorisingUser
-
-      mockPermissions(app, {
-        [Permission.read_contacts]: true,
-        [Permission.edit_contacts]: true,
-        [Permission.edit_contact_visit_approval]: true,
-      })
+      mockPermissions(app, authorisingUserPermissions)
 
       const prisonerContactRelationshipDetails = {
         prisonerContactId: 99,

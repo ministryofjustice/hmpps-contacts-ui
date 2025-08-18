@@ -3,7 +3,7 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { adminUser, appWithAllRoutes } from '../../../testutils/appSetup'
+import { adminUserPermissions, adminUser, appWithAllRoutes } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { mockedReferenceData } from '../../../testutils/stubReferenceData'
 import TestData from '../../../testutils/testData'
@@ -59,7 +59,9 @@ beforeEach(() => {
       session.addContactJourneys[journeyId] = existingJourney
     },
   })
-  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+
+  mockPermissions(app, adminUserPermissions)
+
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })

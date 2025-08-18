@@ -18,7 +18,7 @@ export default class AddContactAddPhoneController implements PageHandler {
   GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { user, prisonerPermissions } = res.locals
     const existingPhoneNumbers = journey.phoneNumbers ?? []
     if (existingPhoneNumbers.length === 0) {
       existingPhoneNumbers.push({ type: '', phoneNumber: '', extension: '' })
@@ -27,7 +27,7 @@ export default class AddContactAddPhoneController implements PageHandler {
       journey,
       typeOptions: await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user),
       phones: res.locals?.formResponses?.['phones'] ?? existingPhoneNumbers,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
       isNewContact: true,
     }
     res.render('pages/contacts/manage/contactMethods/addPhone', viewModel)
@@ -36,12 +36,12 @@ export default class AddContactAddPhoneController implements PageHandler {
   POST = async (req: Request<PrisonerJourneyParams, unknown, PhonesSchemaType>, res: Response): Promise<void> => {
     const { prisonerNumber, journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { prisonerPermissions } = res.locals
 
     const { phones, save, add, remove } = req.body
     if (save !== undefined) {
       journey.phoneNumbers = phones
-      return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+      return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
     }
     if (add !== undefined) {
       phones.push({ type: '', phoneNumber: '', extension: '' })

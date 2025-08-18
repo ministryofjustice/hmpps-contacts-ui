@@ -38,7 +38,7 @@ export default class ContactMatchController implements PageHandler {
     res: Response,
   ): Promise<void> => {
     const { journeyId, matchingContactId } = req.params
-    const { user } = res.locals
+    const { user, prisonerPermissions } = res.locals
     const journey = req.session.addContactJourneys![journeyId]!
     journey.matchingContactId = Number(matchingContactId)
 
@@ -78,7 +78,7 @@ export default class ContactMatchController implements PageHandler {
       linkedPrisonersCount,
       journey,
       isContactConfirmed: res.locals?.formResponses?.['isContactMatched'] ?? journey?.isContactMatched,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
       phoneTypeOrderDictionary: getReferenceDataOrderDictionary(
         await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user),
       ),
@@ -90,16 +90,16 @@ export default class ContactMatchController implements PageHandler {
     const { isContactMatched } = req.body
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { prisonerPermissions } = res.locals
     journey.isContactMatched = isContactMatched
     if (journey.isContactMatched === 'YES') {
       journey.mode = 'EXISTING'
       journey.contactId = journey.matchingContactId!
-      return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+      return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
     }
     if (journey.isContactMatched === 'NO_CREATE_NEW') {
       journey.mode = 'NEW'
-      return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+      return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
     }
     if (journey.isContactMatched === 'NO_GO_BACK_TO_CONTACT_LIST') {
       return res.redirect(Urls.contactList(journey.prisonerNumber))

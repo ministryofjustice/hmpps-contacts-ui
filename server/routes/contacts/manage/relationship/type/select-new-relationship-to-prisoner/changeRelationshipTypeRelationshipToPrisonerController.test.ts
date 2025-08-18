@@ -4,7 +4,13 @@ import * as cheerio from 'cheerio'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import createError from 'http-errors'
-import { appWithAllRoutes, flashProvider, basicPrisonUser, adminUser } from '../../../../../testutils/appSetup'
+import {
+  appWithAllRoutes,
+  flashProvider,
+  basicPrisonUser,
+  adminUser,
+  adminUserPermissions,
+} from '../../../../../testutils/appSetup'
 import { Page } from '../../../../../../services/auditService'
 import { mockedReferenceData } from '../../../../../testutils/stubReferenceData'
 import TestData from '../../../../../testutils/testData'
@@ -88,7 +94,7 @@ beforeEach(() => {
     },
   })
 
-  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+  mockPermissions(app, adminUserPermissions)
 
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))

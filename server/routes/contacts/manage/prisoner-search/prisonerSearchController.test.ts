@@ -2,11 +2,10 @@ import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
-import { appWithAllRoutes, basicPrisonUser, flashProvider } from '../../../testutils/appSetup'
+import { appWithAllRoutes, basicPrisonUser, flashProvider, readOnlyPermissions } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { ENTER_TWO_CHARS_MIN } from './prisonerSearchSchema'
 import { MockedService } from '../../../../testutils/mockedServices'
-import Permission from '../../../../enumeration/permission'
 import mockPermissions from '../../../testutils/mockPermissions'
 
 jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
@@ -34,7 +33,7 @@ beforeEach(() => {
     },
   })
 
-  mockPermissions(app, { [Permission.read_contacts]: true })
+  mockPermissions(app, readOnlyPermissions)
 })
 
 afterEach(() => {

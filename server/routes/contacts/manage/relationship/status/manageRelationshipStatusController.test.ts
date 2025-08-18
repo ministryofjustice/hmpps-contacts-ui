@@ -1,7 +1,12 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { adminUser, appWithAllRoutes, authorisingUser, userWithMultipleRoles } from '../../../../testutils/appSetup'
+import {
+  adminUserPermissions,
+  adminUser,
+  appWithAllRoutes,
+  authorisingUserPermissions,
+} from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
@@ -36,7 +41,7 @@ beforeEach(() => {
     userSupplier: () => currentUser,
   })
 
-  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+  mockPermissions(app, adminUserPermissions)
 })
 
 afterEach(() => {
@@ -51,23 +56,24 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
   const tests = [
     {
-      user: adminUser,
+      permissions: adminUserPermissions,
       expectedHint: INACTIVE_RELATIONSHIP_HINT_ADMINISTRATOR,
     },
     {
-      user: authorisingUser,
+      permissions: authorisingUserPermissions,
       expectedHint: INACTIVE_RELATIONSHIP_HINT_AUTHORISER,
     },
     {
-      user: userWithMultipleRoles,
+      permissions: { ...adminUserPermissions, ...authorisingUserPermissions },
       expectedHint: INACTIVE_RELATIONSHIP_HINT_AUTHORISER,
     },
   ]
 
-  tests.forEach(({ user, expectedHint }) => {
-    it(`should render manage relationship status page with correct hint text for user with roles ${user.userRoles}`, async () => {
+  tests.forEach(({ permissions, expectedHint }) => {
+    it(`should render manage relationship status page with correct hint text for user with edit contact visit approval permission: ${permissions[Permission.edit_contact_visit_approval]}`, async () => {
       // Given
-      currentUser = user
+      mockPermissions(app, permissions)
+
       contactsService.getContact.mockResolvedValue(TestData.contact())
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getPrisonerContactRelationship.mockResolvedValue({

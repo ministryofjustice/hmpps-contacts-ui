@@ -4,7 +4,13 @@ import { v4 as uuidv4 } from 'uuid'
 import { SessionData } from 'express-session'
 import * as cheerio from 'cheerio'
 import createError from 'http-errors'
-import { adminUser, appWithAllRoutes, authorisingUser } from '../../../testutils/appSetup'
+import {
+  adminUserPermissions,
+  adminUser,
+  appWithAllRoutes,
+  authorisingUser,
+  authorisingUserPermissions,
+} from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../testutils/stubReferenceData'
@@ -73,7 +79,7 @@ beforeEach(() => {
     },
   })
 
-  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true })
+  mockPermissions(app, adminUserPermissions)
 
   referenceDataService.getReferenceDescriptionForCode.mockImplementation(mockedGetReferenceDescriptionForCode)
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
@@ -167,11 +173,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     async mode => {
       // Given
       currentUser = authorisingUser
-      mockPermissions(app, {
-        [Permission.read_contacts]: true,
-        [Permission.edit_contacts]: true,
-        [Permission.edit_contact_visit_approval]: true,
-      })
+      mockPermissions(app, authorisingUserPermissions)
 
       journey.mode = mode as 'NEW' | 'EXISTING'
       journey.relationship!.isApprovedVisitor = true

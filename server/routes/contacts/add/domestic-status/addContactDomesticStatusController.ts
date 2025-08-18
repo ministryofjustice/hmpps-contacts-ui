@@ -16,7 +16,7 @@ export default class AddContactDomesticStatusController implements PageHandler {
 
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { journeyId } = req.params
-    const { user } = res.locals
+    const { user, prisonerPermissions } = res.locals
     const journey = req.session.addContactJourneys![journeyId]!
     const domesticStatusOptions = await this.referenceDataService.getReferenceData(ReferenceCodeType.DOMESTIC_STS, user)
     const view = {
@@ -24,7 +24,7 @@ export default class AddContactDomesticStatusController implements PageHandler {
       domesticStatusOptions,
       isNewContact: true,
       domesticStatusCode: res.locals?.formResponses?.['domesticStatusCode'] ?? journey?.domesticStatusCode,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
     }
     res.render('pages/contacts/manage/contactDetails/domesticStatus', view)
   }
@@ -41,9 +41,9 @@ export default class AddContactDomesticStatusController implements PageHandler {
   ): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { prisonerPermissions } = res.locals
     const { body } = req
     journey.domesticStatusCode = body.domesticStatusCode
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
   }
 }
