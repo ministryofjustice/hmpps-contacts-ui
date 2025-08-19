@@ -36,6 +36,7 @@ beforeEach(() => {
     userSupplier: () => currentUser,
   })
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
+  prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
 })
 
 afterEach(() => {
@@ -43,10 +44,6 @@ afterEach(() => {
 })
 
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/domestic-status', () => {
-  beforeEach(() => {
-    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-  })
-
   it.each(STUBBED_DOMESTIC_STATUS_OPTIONS.map(itm => [itm.code, itm.description]))(
     'should render manage domestic status page with status selected',
     async (code: string, description: string) => {

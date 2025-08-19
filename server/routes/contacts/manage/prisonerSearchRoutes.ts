@@ -14,7 +14,7 @@ import PrisonerSearchResultsController from './prisoner-search/prisonerSearchRes
 // these routes are only being maintained until a proper entry point from the DPS profile is created
 const PrisonerSearchRoutes = (auditService: AuditService, prisonerSearchService: PrisonerSearchService) => {
   const router = Router({ mergeParams: true })
-  const { get, post } = routerMethods(router, auditService)
+  const { get, post } = routerMethods(router, auditService, prisonerSearchService)
 
   const journeyRoute = <P extends { [key: string]: string }>({
     path,
