@@ -64,35 +64,4 @@ describe('Prisoner search service', () => {
       expect(result.inOutStatus).toEqual('TRN')
     })
   })
-
-  describe('getPrisoners', () => {
-    const pagination = { page: 0, size: 20 } as PaginationRequest
-
-    it('Retrieves prisoner details matching the search criteria', async () => {
-      const prisoners = {
-        totalPages: 1,
-        totalElements: 1,
-        first: true,
-        last: true,
-        size: 20,
-        empty: false,
-        content: [prisoner],
-      } as PagePrisoner
-
-      await prisonerSearchApiClient.searchInCaseload.mockResolvedValue(prisoners)
-
-      const results = await prisonerSearchService.searchInCaseload(search, prisonId, pagination, user)
-
-      expect(results.content![0]!.prisonerNumber).toEqual(prisoner.prisonerNumber)
-      expect(results.totalPages).toEqual(1)
-      expect(results.totalElements).toEqual(1)
-    })
-
-    it('Propagates errors', async () => {
-      prisonerSearchApiClient.searchInCaseload.mockRejectedValue(new Error('some error'))
-      await expect(prisonerSearchService.searchInCaseload(search, prisonId, pagination, user)).rejects.toEqual(
-        new Error('some error'),
-      )
-    })
-  })
 })

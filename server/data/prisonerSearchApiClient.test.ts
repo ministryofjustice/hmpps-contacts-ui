@@ -30,37 +30,6 @@ describe('Prisoner search', () => {
     nock.cleanAll()
   })
 
-  describe('searchInCaseload', () => {
-    it('should return expected data', async () => {
-      const results = {
-        totalPage: 1,
-        totalElements: 1,
-        content: [
-          {
-            lastName: 'test',
-            firstName: 'test',
-            prisonerNumber: 'test',
-            dateOfBirth: '2000-01-01',
-          },
-        ],
-      }
-
-      fakePrisonerSearchApi
-        .get('/prison/HEI/prisoners')
-        .query({
-          term: 'test',
-          page: 0,
-          size: 20,
-        })
-        .matchHeader('authorization', `Bearer systemToken`)
-        .reply(200, results)
-
-      const output = await prisonerSearchApiClient.searchInCaseload('test', prisonId, user, { page: 0, size: 20 })
-
-      expect(output).toEqual(results)
-    })
-  })
-
   describe('getByPrisonerNumber', () => {
     it('should return a single prisoner by prisoner number', async () => {
       const prisoner = TestData.prisoner()
