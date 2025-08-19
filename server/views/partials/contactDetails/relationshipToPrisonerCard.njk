@@ -6,6 +6,7 @@
   {% set relationship = opts.relationship %}
   {% set showActions = opts.showActions %}
   {% set prisonerDetails = opts.prisonerDetails %}
+  {% set prisonerPermissions = opts.prisonerPermissions %}
   {% set user = opts.user %}
 
   {% set canApproveToVisit = isGranted(PersonalRelationshipsPermission.edit_contact_visit_approval, prisonerPermissions) %}
