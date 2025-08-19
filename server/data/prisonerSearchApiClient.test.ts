@@ -12,7 +12,6 @@ const user = { token: 'userToken', username: 'user1' } as Express.User
 describe('Prisoner search', () => {
   let fakePrisonerSearchApi: nock.Scope
   let prisonerSearchApiClient: PrisonerSearchApiClient
-  const prisonId = 'HEI'
 
   beforeEach(() => {
     fakePrisonerSearchApi = nock(config.apis.prisonerSearchApi.url)

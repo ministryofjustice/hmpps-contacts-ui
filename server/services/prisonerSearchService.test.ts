@@ -2,7 +2,6 @@ import { BadRequest, NotFound } from 'http-errors'
 import PrisonerSearchService from './prisonerSearchService'
 import TestData from '../routes/testutils/testData'
 import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
-import { PagePrisoner, PaginationRequest } from '../data/prisonerOffenderSearchTypes'
 
 jest.mock('../data/prisonerSearchApiClient')
 
@@ -13,7 +12,6 @@ describe('Prisoner search service', () => {
   let prisonerSearchService: PrisonerSearchService
 
   const prisonId = 'HEI'
-  const search = 'some search'
   const prisoner = TestData.prisoner()
 
   beforeEach(() => {

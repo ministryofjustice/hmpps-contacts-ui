@@ -1,4 +1,4 @@
-import { Prisoner, PagePrisoner, PaginationRequest } from '../data/prisonerOffenderSearchTypes'
+import { Prisoner } from '../data/prisonerOffenderSearchTypes'
 import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
 
 export default class PrisonerSearchService {
