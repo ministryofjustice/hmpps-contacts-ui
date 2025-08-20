@@ -94,6 +94,34 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 describe('Contact details', () => {
+  beforeEach(() => {
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+    contactsService.getContact.mockResolvedValue(TestData.contact())
+    contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
+  })
+  describe('Common header area', () => {
+    it('should render common header area when prisoner restrictions are present ', async () => {
+      // Given
+      restrictionsService.getGlobalRestrictions.mockResolvedValue([TestData.getContactRestrictionDetails()])
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/match/22/${journeyId}`)
+
+      // Then
+      expect(response.status).toEqual(200)
+      const $ = cheerio.load(response.text)
+
+      expect($('.govuk-caption-l').text()).toStrictEqual('Link a contact to a prisoner')
+      expect($('[data-qa=confim-title-value-top]').text().trim()).toStrictEqual(
+        'Check and confirm if you want to link contact Jones Mason to prisoner John Smith',
+      )
+      expect($('.moj-badge').text().trim()).toStrictEqual('Active restrictions in place')
+      expect($('p.govuk-body.govuk-\\!-margin-top-3').text().trim()).toStrictEqual(
+        'If this is the correct contact record but their information needs to be updated, you can make updates after you link the record to the prisoner.',
+      )
+    })
+  })
+
   describe('GET /prisoner/:prisonerNumber/contacts/EXISTING/match/:journeyId?contactId=', () => {
     it('should render confirmation page when there is no existing records', async () => {
       // Given
@@ -122,13 +150,9 @@ describe('Contact details', () => {
       expect($('title').text()).toStrictEqual(
         'Check and confirm if you want to link a contact to a prisoner - Manage contacts - DPS',
       )
-      expect($('.govuk-caption-l').text()).toStrictEqual('Link a contact to a prisoner')
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
       expect($('a:contains("Back to contact search")').attr('href')).toEqual(
         `/prisoner/A1234BC/contacts/search/${journeyId}`,
-      )
-      expect($('[data-qa=confim-title-value-top]').text().trim()).toStrictEqual(
-        'Check and confirm if you want to link contact Jones Mason to prisoner John Smith',
       )
       expect($('[data-qa=confim-title-value-bottom]').text().trim()).toContain(
         'Is this the correct contact to link to John Smith?',
@@ -168,13 +192,9 @@ describe('Contact details', () => {
       expect($('title').text()).toStrictEqual(
         'Check and confirm if you want to link a contact to a prisoner - Manage contacts - DPS',
       )
-      expect($('.govuk-caption-l').text()).toStrictEqual('Link a contact to a prisoner')
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
       expect($('a:contains("Back to contact search")').attr('href')).toEqual(
         `/prisoner/A1234BC/contacts/search/${journeyId}`,
-      )
-      expect($('[data-qa=confim-title-value-top]').text().trim()).toStrictEqual(
-        'Check and confirm if you want to link contact Jones Mason to prisoner John Smith',
       )
       expect($('[data-qa=confim-title-value-bottom]').text().trim()).toContain(
         'Do you want to create another relationship link between this contact and John Smith?',
@@ -227,13 +247,9 @@ describe('Contact details', () => {
       expect($('title').text()).toStrictEqual(
         'Check and confirm if you want to link a contact to a prisoner - Manage contacts - DPS',
       )
-      expect($('.govuk-caption-l').text()).toStrictEqual('Link a contact to a prisoner')
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
       expect($('a:contains("Back to contact search")').attr('href')).toEqual(
         `/prisoner/A1234BC/contacts/search/${journeyId}`,
-      )
-      expect($('[data-qa=confim-title-value-top]').text().trim()).toStrictEqual(
-        'Check and confirm if you want to link contact Jones Mason to prisoner John Smith',
       )
       expect($('[data-qa=confim-title-value-bottom]').text().trim()).toContain(
         'Do you want to create another relationship link between this contact and John Smith?',
@@ -269,12 +285,6 @@ describe('Contact details', () => {
   })
 
   describe('Contact details tab', () => {
-    beforeEach(() => {
-      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.getContact.mockResolvedValue(TestData.contact())
-      contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
-    })
-
     describe('Personal details card', () => {
       it('should render with all personal details', async () => {
         const contactDetails = {

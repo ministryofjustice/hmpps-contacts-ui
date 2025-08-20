@@ -1,4 +1,5 @@
 {% extends "partials/layout.njk" %}
+{% from "moj/components/badge/macro.njk" import mojBadge %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "partials/matchContactContent.njk" import matchContactContent %}
@@ -21,7 +22,13 @@
           html: (contact | formatNameFirstNameFirst) + ' (' + contact.id + ') is already linked to prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) + '. <br/><a href="' + reviewUrl + '" class="govuk-link" data-qa="view-existing-record-link">View existing record' +  ('s' if existingRelationshipSummaries.length > 1) + '</a>'
         }) }}
       {% endif %}
-      <p class="govuk-body">If this is the correct contact record but their information needs to be updated, you can make updates after you link the record to the prisoner. </p>
+      {% if globalRestrictions.length > 0 %}
+        {{ mojBadge({
+          text: "Active restrictions in place",
+          classes: "moj-badge--red"
+        }) }}
+      {% endif %}
+      <p class="govuk-body govuk-!-margin-top-3">If this is the correct contact record but their information needs to be updated, you can make updates after you link the record to the prisoner. </p>
     </div>
   </div>
   {{ matchContactContent({
