@@ -259,6 +259,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect($('[data-qa="CONTACT_GLOBAL-2-comments-value"]').text().trim()).toStrictEqual('Keep an eye')
 
       expect($('[data-qa=edit-restrictions-link]').text().trim()).toStrictEqual('Add or update restrictions')
+      const warningText = $('[data-qa=restrictions-warning]').text().trim()
+      expect(warningText).toMatch(/Prisoner restrictions are not yet available in DPS/)
+      expect(warningText).toMatch(/You still need to use NOMIS to view and manage prisoner restrictions./)
     })
 
     it('should render global restrictions tab with expired restrictions', async () => {
