@@ -9,13 +9,13 @@ import Permission from '../../../../enumeration/permission'
 export default class StartAddContactJourneyController implements PageHandler {
   public PAGE_NAME = Page.CREATE_CONTACT_START_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   private MAX_JOURNEYS = 5
 
   GET = async (req: Request<{ prisonerNumber: string }>, res: Response): Promise<void> => {
     const { prisonerNumber } = req.params
-    const { user } = res.locals
+    const { prisonerPermissions } = res.locals
     const journey: AddContactJourney = {
       id: uuidv4(),
       lastTouched: new Date().toISOString(),
@@ -35,6 +35,6 @@ export default class StartAddContactJourneyController implements PageHandler {
         .slice(this.MAX_JOURNEYS)
         .forEach(journeyToRemove => delete req.session.addContactJourneys![journeyToRemove.id])
     }
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
   }
 }

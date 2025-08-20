@@ -3,6 +3,7 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
+import { setupNunjucksPermissions } from '@ministryofjustice/hmpps-prison-permissions-lib'
 import {
   initialiseName,
   formatDate,
@@ -34,13 +35,12 @@ import sortRestrictions from './sortRestrictions'
 import { convertToSortableColumns } from './convertToSortableColumns'
 import { sortPhoneNumbers } from './sortPhoneNumbers'
 import { ContactAddressDetails } from '../@types/contactsApiClient'
-import { hasPermission, hasRole } from './permissionsUtils'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
 
   app.locals.asset_path = '/assets/'
-  app.locals.applicationName = 'Hmpps Contacts Ui'
+  app.locals.applicationName = 'Contacts linked to a prisoner - DPS'
   app.locals.environmentName = config.environmentName
   app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
   let assetManifest: Record<string, string> = {}
@@ -95,6 +95,7 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('formatNameLastNameFirst', formatNameLastNameFirst)
   njkEnv.addFilter('formatNameFirstNameFirst', formatNameFirstNameFirst)
   njkEnv.addFilter('restrictionTagColour', restrictionTagColour)
+  // njkEnv.addFilter('nl2br', (val?: string) => (val ? String(val).replace(/\n/g, '<br/>') : ''))
   njkEnv.addFilter('capitalizeFirstLetter', capitalizeFirstLetter)
   njkEnv.addFilter('convertToSortableColumns', convertToSortableColumns)
   njkEnv.addFilter('formatDateRange', formatDateRange)
@@ -154,7 +155,8 @@ export default function nunjucksSetup(app: express.Express): void {
   )
   njkEnv.addFilter('sortRestrictions', sortRestrictions)
   njkEnv.addFilter('sortPhoneNumbers', sortPhoneNumbers)
-  njkEnv.addFilter('hasPermission', hasPermission)
-  njkEnv.addFilter('hasRole', hasRole)
   njkEnv.addFilter('isInternalContact', isInternalContact)
+
+  // Add prisoner permissions helpers and enums for use in templates (isGranted, PersonalRelationshipsPermission, etc.)
+  setupNunjucksPermissions(njkEnv)
 }

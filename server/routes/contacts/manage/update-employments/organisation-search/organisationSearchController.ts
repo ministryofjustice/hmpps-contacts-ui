@@ -12,7 +12,7 @@ export default class OrganisationSearchController implements PageHandler {
 
   public PAGE_NAME = Page.MANAGE_CONTACT_SEARCH_ORGANISATION_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   private TABLE_ROW_COUNT = 10
 

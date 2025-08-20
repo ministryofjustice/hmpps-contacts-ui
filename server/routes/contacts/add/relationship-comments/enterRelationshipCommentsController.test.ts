@@ -3,19 +3,17 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import {
-  adminUser,
-  appWithAllRoutes,
-  authorisingUser,
-  basicPrisonUser,
-  flashProvider,
-} from '../../../testutils/appSetup'
+import { PrisonerPermission } from '@ministryofjustice/hmpps-prison-permissions-lib'
+import { adminUserPermissions, adminUser, appWithAllRoutes, flashProvider } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { AddContactJourney } from '../../../../@types/journeys'
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
+import mockPermissions from '../../../testutils/mockPermissions'
+import Permission from '../../../../enumeration/permission'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 
@@ -63,6 +61,9 @@ beforeEach(() => {
       session.addContactJourneys[journeyId] = { ...existingJourney }
     },
   })
+
+  mockPermissions(app, adminUserPermissions)
+
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
 
@@ -103,19 +104,31 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-relationship-comme
   )
 
   it.each([
-    ['NEW', adminUser, `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`],
-    ['NEW', authorisingUser, `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`],
+    [
+      'NEW',
+      { [Permission.edit_contact_visit_approval]: false },
+      `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`,
+    ],
+    [
+      'NEW',
+      { [Permission.edit_contact_visit_approval]: true },
+      `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`,
+    ],
     [
       'EXISTING',
-      adminUser,
+      { [Permission.edit_contact_visit_approval]: false },
       `/prisoner/${prisonerNumber}/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
     ],
-    ['EXISTING', authorisingUser, `/prisoner/${prisonerNumber}/contacts/create/approved-to-visit/${journeyId}`],
+    [
+      'EXISTING',
+      { [Permission.edit_contact_visit_approval]: true },
+      `/prisoner/${prisonerNumber}/contacts/create/approved-to-visit/${journeyId}`,
+    ],
   ])(
-    'should go back to corresponding previous page for each mode %s and user',
-    async (mode, user: HmppsUser, previousUrl: string) => {
+    'should go back to corresponding previous page for each mode %s and edit contact visit approval permission',
+    async (mode, permission: Partial<Record<PrisonerPermission, boolean>>, previousUrl: string) => {
       // Given
-      currentUser = user
+      mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: true, ...permission })
       existingJourney.mode = mode as 'NEW' | 'EXISTING'
 
       // When
@@ -225,15 +238,12 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-relationship-comme
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 200],
-    [authorisingUser, 200],
-  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
+  it('GET should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
     await request(app)
       .get(`/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`)
-      .expect(expectedStatus)
+      .expect(403)
   })
 })
 
@@ -286,16 +296,13 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-relationship-comm
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 302],
-    [authorisingUser, 302],
-  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
+  it('POST should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${journeyId}`)
       .type('form')
       .send({ comments: 'Foo' })
-      .expect(expectedStatus)
+      .expect(403)
   })
 })

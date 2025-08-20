@@ -1,12 +1,14 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../testutils/appSetup'
+import { appWithAllRoutes, authorisingUser } from '../../../testutils/appSetup'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { Page } from '../../../../services/auditService'
-import { HmppsUser } from '../../../../interfaces/hmppsUser'
+import mockPermissions from '../../../testutils/mockPermissions'
+import Permission from '../../../../enumeration/permission'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
@@ -19,7 +21,7 @@ const restrictionsService = MockedService.RestrictionsService()
 
 let app: Express
 const prisonerNumber = 'A1234BC'
-let currentUser = authorisingUser
+const currentUser = authorisingUser
 
 beforeEach(() => {
   app = appWithAllRoutes({
@@ -31,6 +33,7 @@ beforeEach(() => {
     },
     userSupplier: () => currentUser,
   })
+  mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contact_restrictions]: true })
 })
 
 afterEach(() => {
@@ -324,12 +327,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-r
       )
     })
 
-    it.each([
-      [basicPrisonUser, 403],
-      [adminUser, 403],
-      [authorisingUser, 200],
-    ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-      currentUser = user
+    it('GET should block access without edit contact restrictions permission', async () => {
+      mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contact_restrictions]: false })
+
       restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({
         contactGlobalRestrictions: [],
         prisonerContactRestrictions: [],
@@ -337,7 +337,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-r
 
       await request(app)
         .get(`/prisoner/${prisonerNumber}/contacts/manage/22/relationship/99/edit-restrictions`)
-        .expect(expectedStatus)
+        .expect(403)
     })
   })
 })

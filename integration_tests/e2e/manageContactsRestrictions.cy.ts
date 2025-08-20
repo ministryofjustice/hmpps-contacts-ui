@@ -15,7 +15,6 @@ context('Manage contacts restrictions', () => {
     cy.task('stubGetGenders')
     cy.task('stubTitlesReferenceData')
     cy.task('stubPhoneTypeReferenceData')
-    cy.task('stubComponentsMeta')
     cy.task('stubPrisoners', {
       results: {
         totalPages: 1,

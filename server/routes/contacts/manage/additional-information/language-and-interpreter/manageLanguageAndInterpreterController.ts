@@ -20,7 +20,7 @@ export default class ManageLanguageAndInterpreterController implements PageHandl
 
   public PAGE_NAME = Page.MANAGE_LANGUAGE_AND_INTERPRETER_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }>,

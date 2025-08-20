@@ -1,12 +1,17 @@
 import { v4 as uuidv4 } from 'uuid'
+import { isGranted, PrisonerPermission, PrisonerPermissions } from '@ministryofjustice/hmpps-prison-permissions-lib'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from './addContactFlowControl'
 import { Page } from '../../../services/auditService'
 import { BreadcrumbType, Navigation } from '../common/navigation'
 import { AddContactJourney } from '../../../@types/journeys'
-import { adminUser, authorisingUser } from '../../testutils/appSetup'
-import { HmppsUser } from '../../../interfaces/hmppsUser'
+import { adminUserPermissions, authorisingUserPermissions } from '../../testutils/appSetup'
 import { ContactSearchResultItem } from '../../../@types/contactsApiClient'
 import TestData from '../../testutils/testData'
+
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
+
+const prisonerPermissions = {} as PrisonerPermissions
+const isGrantedMock = isGranted as jest.MockedFunction<typeof isGranted>
 
 describe('addContactFlowControl', () => {
   describe('add new contact', () => {
@@ -19,140 +24,140 @@ describe('addContactFlowControl', () => {
           `/prisoner/A1234BC/contacts/search/${journeyId}`,
           undefined,
           'Back to contact search',
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.CREATE_CONTACT_DOB_PAGE,
           `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`,
           undefined,
           undefined,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.SELECT_RELATIONSHIP_TYPE,
           `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`,
           undefined,
           undefined,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.SELECT_CONTACT_RELATIONSHIP,
           `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`,
           undefined,
           undefined,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN,
           `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`,
           undefined,
           undefined,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE,
           `/prisoner/A1234BC/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
           undefined,
           undefined,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ENTER_ADDITIONAL_INFORMATION_PAGE,
           `/prisoner/A1234BC/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
           undefined,
           `Back to emergency contact and next of kin`,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ENTER_ADDITIONAL_INFORMATION_PAGE,
           `/prisoner/A1234BC/contacts/create/approved-to-visit/${journeyId}`,
           undefined,
           `Back to visits approval`,
-          authorisingUser,
+          authorisingUserPermissions,
         ],
         [
           Page.ENTER_RELATIONSHIP_COMMENTS,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
           undefined,
           undefined,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
           `/prisoner/A1234BC/contacts/add/cancel/${journeyId}`,
           'Back to additional information options',
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ADD_CONTACT_CANCEL_PAGE,
           `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
           undefined,
           undefined,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ADD_CONTACT_ADD_PHONE_PAGE,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
           undefined,
           undefined,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ADD_CONTACT_DELETE_PHONE_PAGE,
           `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
           `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
           undefined,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ADD_CONTACT_ENTER_GENDER_PAGE,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
           undefined,
           undefined,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ADD_CONTACT_IS_STAFF_PAGE,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
           undefined,
           undefined,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ADD_CONTACT_LANGUAGE_INTERPRETER_PAGE,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
           undefined,
           undefined,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ADD_CONTACT_DOMESTIC_STATUS_PAGE,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
           undefined,
           undefined,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ADD_EMPLOYMENTS,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
           undefined,
           'Back to additional information options',
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ADD_ADDRESSES,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
           undefined,
           'Back to additional information options',
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ADD_CONTACT_REVIEW_EXISTING_RELATIONSHIPS_PAGE,
           `/prisoner/A1234BC/contacts/search/${journeyId}`,
           undefined,
           'Back to contact search',
-          adminUser,
+          adminUserPermissions,
         ],
       ])(
         'Should go back to previous page: from %s to %s',
@@ -161,7 +166,7 @@ describe('addContactFlowControl', () => {
           expectedBackUrl: string | undefined,
           expectedCancelButton: string | undefined,
           expectedBackLabel: string | undefined,
-          user: HmppsUser,
+          permissions: Partial<Record<PrisonerPermission, boolean>>,
         ) => {
           const journey: AddContactJourney = {
             id: journeyId,
@@ -180,7 +185,9 @@ describe('addContactFlowControl', () => {
             cancelButton: expectedCancelButton,
           }
 
-          const nav = navigationForAddContactJourney(page, journey, user)
+          isGrantedMock.mockImplementation((perm, _perms) => permissions[perm] || false)
+
+          const nav = navigationForAddContactJourney(page, journey, prisonerPermissions)
 
           expect(nav).toStrictEqual(expected)
         },
@@ -223,7 +230,7 @@ describe('addContactFlowControl', () => {
             cancelButton,
           }
 
-          const nav = navigationForAddContactJourney(page, journey, adminUser)
+          const nav = navigationForAddContactJourney(page, journey, prisonerPermissions)
 
           expect(nav).toStrictEqual(expected)
         },
@@ -234,79 +241,91 @@ describe('addContactFlowControl', () => {
       const journeyId = uuidv4()
 
       it.each([
-        [Page.CREATE_CONTACT_START_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`, adminUser],
-        [Page.ADD_CONTACT_MODE_PAGE, `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`, adminUser],
+        [Page.CREATE_CONTACT_START_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`, adminUserPermissions],
+        [Page.ADD_CONTACT_MODE_PAGE, `/prisoner/A1234BC/contacts/create/enter-name/${journeyId}`, adminUserPermissions],
         [
           Page.CREATE_CONTACT_NAME_PAGE,
           `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.CREATE_CONTACT_DOB_PAGE,
           `/prisoner/A1234BC/contacts/create/possible-existing-records/${journeyId}`,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE,
           `/prisoner/A1234BC/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.SELECT_RELATIONSHIP_TYPE,
           `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`,
-          adminUser,
+          adminUserPermissions,
         ],
-        [Page.SELECT_CONTACT_RELATIONSHIP, `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`, adminUser],
+        [
+          Page.SELECT_CONTACT_RELATIONSHIP,
+          `/prisoner/A1234BC/contacts/create/enter-dob/${journeyId}`,
+          adminUserPermissions,
+        ],
         [
           Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN,
           `/prisoner/A1234BC/contacts/create/approved-to-visit/${journeyId}`,
-          authorisingUser,
+          authorisingUserPermissions,
         ],
         [
           Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ENTER_RELATIONSHIP_COMMENTS,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
-          adminUser,
+          adminUserPermissions,
         ],
-        [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, `/prisoner/A1234BC/contact/NEW/123456/654321/success`, adminUser],
+        [
+          Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE,
+          `/prisoner/A1234BC/contact/NEW/123456/654321/success`,
+          adminUserPermissions,
+        ],
         [
           Page.ADD_CONTACT_ADD_PHONE_PAGE,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
-          adminUser,
+          adminUserPermissions,
         ],
-        [Page.ADD_CONTACT_DELETE_PHONE_PAGE, `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`, adminUser],
+        [
+          Page.ADD_CONTACT_DELETE_PHONE_PAGE,
+          `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
+          adminUserPermissions,
+        ],
         [
           Page.ADD_CONTACT_ENTER_GENDER_PAGE,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ADD_CONTACT_IS_STAFF_PAGE,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ADD_CONTACT_LANGUAGE_INTERPRETER_PAGE,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ADD_CONTACT_DOMESTIC_STATUS_PAGE,
           `/prisoner/A1234BC/contacts/add/enter-additional-info/${journeyId}`,
-          adminUser,
+          adminUserPermissions,
         ],
       ])(
         'Should go to next page if not checking answers: from %s to %s',
-        (page: Page, expectedNextUrl: string | undefined, user: HmppsUser) => {
+        (page: Page, expectedNextUrl: string | undefined, permissions: Record<PrisonerPermission, boolean>) => {
           const journey: AddContactJourney = {
             id: journeyId,
             lastTouched: new Date().toISOString(),
@@ -320,7 +339,9 @@ describe('addContactFlowControl', () => {
             prisonerContactId: 654321,
           }
 
-          const nav = nextPageForAddContactJourney(page, journey, user)
+          isGrantedMock.mockImplementation((perm, _perms) => permissions[perm] || false)
+
+          const nav = nextPageForAddContactJourney(page, journey, prisonerPermissions)
 
           expect(nav).toStrictEqual(expectedNextUrl)
         },
@@ -353,7 +374,7 @@ describe('addContactFlowControl', () => {
             },
           }
 
-          const nav = nextPageForAddContactJourney(Page.SELECT_RELATIONSHIP_TYPE, journey, adminUser)
+          const nav = nextPageForAddContactJourney(Page.SELECT_RELATIONSHIP_TYPE, journey, prisonerPermissions)
 
           expect(nav).toStrictEqual(expected)
         },
@@ -386,7 +407,11 @@ describe('addContactFlowControl', () => {
             possibleExistingRecords,
           }
 
-          const nav = navigationForAddContactJourney(Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN, journey, adminUser)
+          const nav = navigationForAddContactJourney(
+            Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN,
+            journey,
+            prisonerPermissions,
+          )
 
           expect(nav.backLink).toStrictEqual(expected)
         },
@@ -422,7 +447,11 @@ describe('addContactFlowControl', () => {
             },
           }
 
-          const nav = navigationForAddContactJourney(Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN, journey, adminUser)
+          const nav = navigationForAddContactJourney(
+            Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN,
+            journey,
+            prisonerPermissions,
+          )
 
           expect(nav.backLink).toStrictEqual(expected)
         },
@@ -459,7 +488,7 @@ describe('addContactFlowControl', () => {
           const page = nextPageForAddContactJourney(
             Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORD_MATCH_PAGE,
             journey,
-            adminUser,
+            prisonerPermissions,
           )
 
           expect(page).toStrictEqual(expectedUrl)
@@ -478,77 +507,77 @@ describe('addContactFlowControl', () => {
           `/prisoner/A1234BC/contacts/search/${journeyId}`,
           undefined,
           'Back to contact search',
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.SELECT_RELATIONSHIP_TYPE,
           `/prisoner/A1234BC/contacts/add/match/12346789/${journeyId}`,
           undefined,
           undefined,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.SELECT_CONTACT_RELATIONSHIP,
           `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`,
           undefined,
           undefined,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN,
           `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`,
           undefined,
           undefined,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE,
           `/prisoner/A1234BC/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
           undefined,
           undefined,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ENTER_RELATIONSHIP_COMMENTS,
           `/prisoner/A1234BC/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
           undefined,
           undefined,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ENTER_RELATIONSHIP_COMMENTS,
           `/prisoner/A1234BC/contacts/create/approved-to-visit/${journeyId}`,
           undefined,
           undefined,
-          authorisingUser,
+          authorisingUserPermissions,
         ],
         [
           Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE,
           `/prisoner/A1234BC/contacts/create/enter-relationship-comments/${journeyId}`,
           `/prisoner/A1234BC/contacts/add/cancel/${journeyId}`,
           'Back to relationship comments',
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ADD_CONTACT_CANCEL_PAGE,
           `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
           undefined,
           undefined,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ADD_CONTACT_HANDLE_DUPLICATE_PAGE,
           `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
           undefined,
           undefined,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ADD_CONTACT_REVIEW_EXISTING_RELATIONSHIPS_PAGE,
           `/prisoner/A1234BC/contacts/search/${journeyId}`,
           undefined,
           'Back to contact search',
-          adminUser,
+          adminUserPermissions,
         ],
       ])(
         'Should go back to previous page: from %s to %s',
@@ -557,7 +586,7 @@ describe('addContactFlowControl', () => {
           expectedBackUrl: string | undefined,
           expectedCancelButton: string | undefined,
           expectedBackLinkLabel: string | undefined,
-          user: HmppsUser,
+          permissions: Record<PrisonerPermission, boolean>,
         ) => {
           const journey: AddContactJourney = {
             id: journeyId,
@@ -574,7 +603,9 @@ describe('addContactFlowControl', () => {
             cancelButton: expectedCancelButton,
           }
 
-          const nav = navigationForAddContactJourney(page, journey, user)
+          isGrantedMock.mockImplementation((perm, _perms) => permissions[perm] || false)
+
+          const nav = navigationForAddContactJourney(page, journey, prisonerPermissions)
 
           expect(nav).toStrictEqual(expected)
         },
@@ -602,7 +633,7 @@ describe('addContactFlowControl', () => {
           cancelButton: undefined,
         }
 
-        const nav = navigationForAddContactJourney(page, journey, adminUser)
+        const nav = navigationForAddContactJourney(page, journey, prisonerPermissions)
 
         expect(nav).toStrictEqual(expected)
       })
@@ -611,43 +642,51 @@ describe('addContactFlowControl', () => {
     describe('getNextPageForAddContactJourney', () => {
       const journeyId = uuidv4()
       it.each([
-        [Page.CREATE_CONTACT_START_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`, adminUser],
-        [Page.CONTACT_MATCH_PAGE, `/prisoner/A1234BC/contacts/add/mode/EXISTING/${journeyId}`, adminUser],
+        [Page.CREATE_CONTACT_START_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`, adminUserPermissions],
+        [Page.CONTACT_MATCH_PAGE, `/prisoner/A1234BC/contacts/add/mode/EXISTING/${journeyId}`, adminUserPermissions],
         [
           Page.ADD_CONTACT_MODE_PAGE,
           `/prisoner/A1234BC/contacts/create/select-relationship-type/${journeyId}`,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.SELECT_RELATIONSHIP_TYPE,
           `/prisoner/A1234BC/contacts/create/select-relationship-to-prisoner/${journeyId}`,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.SELECT_CONTACT_RELATIONSHIP,
           `/prisoner/A1234BC/contacts/create/emergency-contact-or-next-of-kin/${journeyId}`,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN,
           `/prisoner/A1234BC/contacts/create/approved-to-visit/${journeyId}`,
-          authorisingUser,
+          authorisingUserPermissions,
         ],
         [
           Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN,
           `/prisoner/A1234BC/contacts/create/enter-relationship-comments/${journeyId}`,
-          adminUser,
+          adminUserPermissions,
         ],
         [
           Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE,
           `/prisoner/A1234BC/contacts/create/enter-relationship-comments/${journeyId}`,
-          adminUser,
+          adminUserPermissions,
         ],
-        [Page.ENTER_RELATIONSHIP_COMMENTS, `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`, adminUser],
-        [Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE, `/prisoner/A1234BC/contact/EXISTING/123456/654321/success`, adminUser],
+        [
+          Page.ENTER_RELATIONSHIP_COMMENTS,
+          `/prisoner/A1234BC/contacts/create/check-answers/${journeyId}`,
+          adminUserPermissions,
+        ],
+        [
+          Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE,
+          `/prisoner/A1234BC/contact/EXISTING/123456/654321/success`,
+          adminUserPermissions,
+        ],
       ])(
         'Should go to next page if not checking answers: from %s to %s',
-        (page: Page, expectedNextUrl: string, user: HmppsUser) => {
+        (page: Page, expectedNextUrl: string, permissions: Record<PrisonerPermission, boolean>) => {
           const journey: AddContactJourney = {
             id: journeyId,
             lastTouched: new Date().toISOString(),
@@ -657,8 +696,9 @@ describe('addContactFlowControl', () => {
             contactId: 123456,
             prisonerContactId: 654321,
           }
+          isGrantedMock.mockImplementation((perm, _perms) => permissions[perm] || false)
 
-          const nav = nextPageForAddContactJourney(page, journey, user)
+          const nav = nextPageForAddContactJourney(page, journey, prisonerPermissions)
 
           expect(nav).toStrictEqual(expectedNextUrl)
         },
@@ -691,7 +731,7 @@ describe('addContactFlowControl', () => {
             },
           }
 
-          const nav = nextPageForAddContactJourney(Page.SELECT_RELATIONSHIP_TYPE, journey, adminUser)
+          const nav = nextPageForAddContactJourney(Page.SELECT_RELATIONSHIP_TYPE, journey, prisonerPermissions)
 
           expect(nav).toStrictEqual(expected)
         },
@@ -725,7 +765,7 @@ describe('addContactFlowControl', () => {
         cancelButton: undefined,
       }
 
-      const nav = navigationForAddContactJourney(page, journey, adminUser)
+      const nav = navigationForAddContactJourney(page, journey, prisonerPermissions)
 
       expect(nav).toStrictEqual(expected)
     })
@@ -744,7 +784,7 @@ describe('addContactFlowControl', () => {
       }
       if (mode) journey.mode = mode as 'NEW' | 'EXISTING'
 
-      const nav = nextPageForAddContactJourney(page, journey, adminUser)
+      const nav = nextPageForAddContactJourney(page, journey, prisonerPermissions)
 
       expect(nav).toStrictEqual(expectedNextUrl)
     })

@@ -2,12 +2,15 @@ import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
-import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../testutils/appSetup'
+import { adminUserPermissions, adminUser, appWithAllRoutes } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { AddContactJourney } from '../../../../@types/journeys'
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
+import mockPermissions from '../../../testutils/mockPermissions'
+import Permission from '../../../../enumeration/permission'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 
 const auditService = MockedService.AuditService()
@@ -35,6 +38,8 @@ beforeEach(() => {
       }
     },
   })
+
+  mockPermissions(app, adminUserPermissions)
 })
 
 afterEach(() => {
@@ -137,12 +142,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
     )
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 302],
-    [authorisingUser, 302],
-  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
-    await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/start`).expect(expectedStatus)
+  it('GET should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
+    await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/start`).expect(403)
   })
 })

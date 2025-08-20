@@ -1,12 +1,14 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import createError from 'http-errors'
-import { appWithAllRoutes, basicPrisonUser } from '../routes/testutils/appSetup'
+import { appWithAllRoutes, basicPrisonUser, readOnlyPermissions } from '../routes/testutils/appSetup'
 import { Page } from '../services/auditService'
 import TestData from '../routes/testutils/testData'
 import { MockedService } from '../testutils/mockedServices'
 import { mockedReferenceData } from '../routes/testutils/stubReferenceData'
+import mockPermissions from '../routes/testutils/mockPermissions'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../services/auditService')
 jest.mock('../services/prisonerSearchService')
 jest.mock('../services/contactsService')
@@ -32,6 +34,9 @@ beforeEach(() => {
       restrictionsService,
     },
   })
+
+  mockPermissions(app, readOnlyPermissions)
+
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   referenceDataService.getReferenceDescriptionForCode.mockResolvedValue('Mr')
   restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({

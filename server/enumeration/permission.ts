@@ -1,8 +1,4 @@
-enum Permission {
-  VIEW_CONTACT_LIST = 'VIEW_CONTACT_LIST',
-  MANAGE_CONTACTS = 'MANAGE_CONTACTS',
-  APPROVE_TO_VISIT = 'APPROVE_TO_VISIT',
-  MANAGE_RESTRICTIONS = 'MANAGE_RESTRICTIONS',
-}
+import { PersonalRelationshipsPermission } from '@ministryofjustice/hmpps-prison-permissions-lib'
 
-export default Permission
+export { PersonalRelationshipsPermission }
+export default PersonalRelationshipsPermission

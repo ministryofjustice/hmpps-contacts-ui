@@ -9,12 +9,12 @@ import Permission from '../../../../enumeration/permission'
 export default class CreateContactEnterDobController implements PageHandler {
   public PAGE_NAME = Page.CREATE_CONTACT_DOB_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<{ journeyId: string }>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { prisonerPermissions } = res.locals
     const view = {
       isNewContact: true,
       contact: journey.names,
@@ -22,7 +22,7 @@ export default class CreateContactEnterDobController implements PageHandler {
       day: res.locals?.formResponses?.['day'] ?? journey?.dateOfBirth?.day,
       month: res.locals?.formResponses?.['month'] ?? journey?.dateOfBirth?.month,
       year: res.locals?.formResponses?.['year'] ?? journey?.dateOfBirth?.year,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
     }
     res.render('pages/contacts/manage/contactDetails/manageDob', view)
   }
@@ -30,7 +30,7 @@ export default class CreateContactEnterDobController implements PageHandler {
   POST = async (req: Request<PrisonerJourneyParams, unknown, OptionalDobSchemaType>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { prisonerPermissions } = res.locals
     const { day, month, year } = req.body
     if (day && month && year) {
       journey.dateOfBirth = {
@@ -46,6 +46,6 @@ export default class CreateContactEnterDobController implements PageHandler {
     }
     // Remove possible existing records on DOB change to re-trigger search for existing records
     delete journey.possibleExistingRecords
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
   }
 }

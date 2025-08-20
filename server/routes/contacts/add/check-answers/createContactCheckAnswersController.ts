@@ -18,17 +18,17 @@ export default class CreateContactCheckAnswersController implements PageHandler 
 
   public PAGE_NAME = Page.CREATE_CONTACT_CHECK_ANSWERS_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (
     req: Request<PrisonerJourneyParams, unknown, unknown, { back?: string }>,
     res: Response,
   ): Promise<void> => {
-    const { user } = res.locals
+    const { user, prisonerPermissions } = res.locals
     const { journeyId } = req.params
     const { back } = req.query
     const journey = req.session.addContactJourneys![journeyId]!
-    const navigation = navigationForAddContactJourney(this.PAGE_NAME, journey, user)
+    const navigation = navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions)
     if (back && navigation.backLink) {
       journey.isCheckingAnswers = false
       delete journey.previousAnswers
@@ -119,7 +119,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
   }
 
   POST = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
-    const { user } = res.locals
+    const { user, prisonerPermissions } = res.locals
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
     let result: { success: boolean; error?: { status: number } }
@@ -147,7 +147,7 @@ export default class CreateContactCheckAnswersController implements PageHandler 
     const { success, error } = result
     if (success) {
       delete req.session.addContactJourneys![journeyId]
-      res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+      res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
     } else if (error?.status === 409) {
       res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/add/handle-duplicate/${journey.id}`)
     } else {

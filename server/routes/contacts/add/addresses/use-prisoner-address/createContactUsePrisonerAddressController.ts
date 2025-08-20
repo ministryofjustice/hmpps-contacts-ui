@@ -10,7 +10,7 @@ export default class CreateContactUsePrisonerAddressController implements PageHa
 
   public PAGE_NAME = Page.CREATE_CONTACT_USE_PRISONER_ADDRESS_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (
     req: Request<CreateContactAddressParam, unknown, unknown, { returnUrl: string }>,

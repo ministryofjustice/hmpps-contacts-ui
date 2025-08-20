@@ -6,9 +6,10 @@
   {% set relationship = opts.relationship %}
   {% set showActions = opts.showActions %}
   {% set prisonerDetails = opts.prisonerDetails %}
+  {% set prisonerPermissions = opts.prisonerPermissions %}
   {% set user = opts.user %}
 
-  {% set canApproveToVisit = (user | hasPermission('APPROVE_TO_VISIT')) %}
+  {% set canApproveToVisit = isGranted(PersonalRelationshipsPermission.edit_contact_visit_approval, prisonerPermissions) %}
   {% set approvedForVisitsKey = 'Approved for visits' %}
   {% if showActions and not canApproveToVisit %}
   {% set approvedForVisitsKey = approvedForVisitsKey + '<br><p data-qa="cant-approve-visit-hint" class="summary-card-key-hint">Cannot be changed as you do not have permission to authorise visits on DPS.</p>'%}

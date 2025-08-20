@@ -5,7 +5,6 @@ import asyncMiddleware from '../middleware/asyncMiddleware'
 import AddContactRoutes from './contacts/add/addContactRoutes'
 import ManageContactsRoutes from './contacts/manage/manageContactsRoutes'
 import RestrictionsRoutes from './restrictions/restrictionsRoutes'
-import PrisonerSearchRoutes from './contacts/manage/prisonerSearchRoutes'
 
 export default function routes({
   auditService,
@@ -17,6 +16,7 @@ export default function routes({
   prisonerAddressService,
   organisationsService,
   telemetryService,
+  permissionsService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
 
@@ -31,6 +31,7 @@ export default function routes({
       prisonerAddressService,
       organisationsService,
       telemetryService,
+      permissionsService,
     ),
   )
   router.use(
@@ -43,14 +44,20 @@ export default function routes({
       restrictionsService,
       prisonerAddressService,
       organisationsService,
+      permissionsService,
     ),
   )
   router.use(
     '/',
-    RestrictionsRoutes(auditService, contactsService, referenceDataService, prisonerSearchService, restrictionsService),
+    RestrictionsRoutes(
+      auditService,
+      contactsService,
+      referenceDataService,
+      prisonerSearchService,
+      restrictionsService,
+      permissionsService,
+    ),
   )
-
-  router.use('/', PrisonerSearchRoutes(auditService, prisonerSearchService))
 
   // Special route - which gives the mini-profile nunjucks macro access to prisoner images
   router.get('/prisoner-image/:prisonerNumber', asyncMiddleware(new PrisonerImageRoutes(prisonerImageService).GET))

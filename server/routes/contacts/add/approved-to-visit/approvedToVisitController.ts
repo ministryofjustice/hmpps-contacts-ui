@@ -8,18 +8,18 @@ import Permission from '../../../../enumeration/permission'
 export default class ApprovedToVisitController implements PageHandler {
   public PAGE_NAME = Page.ADD_CONTACT_APPROVED_TO_VISIT_PAGE
 
-  public REQUIRED_PERMISSION = Permission.APPROVE_TO_VISIT
+  public REQUIRED_PERMISSION = Permission.edit_contact_visit_approval
 
   GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { prisonerPermissions } = res.locals
     const viewModel = {
       isNewContact: true,
       journey,
       contact: journey.names,
       isApprovedVisitor: journey.relationship?.isApprovedVisitor,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
     }
     res.render('pages/contacts/manage/contactDetails/relationship/manageApprovedToVisit', viewModel)
   }
@@ -30,7 +30,7 @@ export default class ApprovedToVisitController implements PageHandler {
   ): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { prisonerPermissions } = res.locals
     const { isApprovedToVisit } = req.body
     journey.relationship ??= {}
     if (isApprovedToVisit) {
@@ -38,6 +38,6 @@ export default class ApprovedToVisitController implements PageHandler {
     } else {
       delete journey.relationship.isApprovedVisitor
     }
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
   }
 }

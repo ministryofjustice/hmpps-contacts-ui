@@ -12,10 +12,10 @@ export default class AddAddressesController implements PageHandler {
 
   public PAGE_NAME = Page.ADD_ADDRESSES
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
-    const { user } = res.locals
+    const { user, prisonerPermissions } = res.locals
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
 
@@ -26,7 +26,7 @@ export default class AddAddressesController implements PageHandler {
       ...req.params,
       contact: journey.names,
       addresses: await formatAddresses(journey.pendingAddresses, this.referenceDataService, user),
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
     }
     res.render('pages/contacts/add/addresses/index', view)
   }
@@ -34,13 +34,13 @@ export default class AddAddressesController implements PageHandler {
   POST = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { prisonerPermissions } = res.locals
 
     if (journey.pendingAddresses?.length) {
       journey.addresses = journey.pendingAddresses
     } else {
       delete journey.addresses
     }
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
   }
 }

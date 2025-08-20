@@ -1,8 +1,7 @@
+import { isGranted, PrisonerPermissions } from '@ministryofjustice/hmpps-prison-permissions-lib'
 import { Page } from '../../../services/auditService'
 import { BreadcrumbType, Navigation } from '../common/navigation'
 import { AddContactJourney } from '../../../@types/journeys'
-import { HmppsUser } from '../../../interfaces/hmppsUser'
-import { hasPermission } from '../../../utils/permissionsUtils'
 import Permission from '../../../enumeration/permission'
 import { isInternalContact } from '../../../utils/utils'
 
@@ -59,7 +58,7 @@ type ExistingContactPages =
   | Page.ADD_CONTACT_HANDLE_DUPLICATE_PAGE
   | Page.ADD_CONTACT_REVIEW_EXISTING_RELATIONSHIPS_PAGE
 type AllAddContactPages = PreModePages | CreateContactPages | ExistingContactPages
-type JourneyUrlProvider = (journey: AddContactJourney, user: HmppsUser) => string | undefined
+type JourneyUrlProvider = (journey: AddContactJourney, permissions: PrisonerPermissions) => string | undefined
 type Spec = {
   previousUrl: JourneyUrlProvider
   previousUrlLabel?: JourneyUrlProvider
@@ -186,7 +185,7 @@ const PRE_MODE_SPEC: Record<PreModePages, Spec> = {
   [Page.CONTACT_MATCH_PAGE]: {
     previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
     previousUrlLabel: _ => 'Back to contact search',
-    nextUrl: (journey, user) => PAGES.ADD_CONTACT_MODE_PAGE.url(journey, user),
+    nextUrl: (journey, permissions) => PAGES.ADD_CONTACT_MODE_PAGE.url(journey, permissions),
   },
   [Page.ADD_CONTACT_REVIEW_EXISTING_RELATIONSHIPS_PAGE]: {
     previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
@@ -201,7 +200,7 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   [Page.CONTACT_MATCH_PAGE]: {
     previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
     previousUrlLabel: _ => 'Back to contact search',
-    nextUrl: (journey, user) => PAGES.ADD_CONTACT_MODE_PAGE.url(journey, user),
+    nextUrl: (journey, permissions) => PAGES.ADD_CONTACT_MODE_PAGE.url(journey, permissions),
   },
   [Page.ADD_CONTACT_MODE_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CREATE_CONTACT_NAME_PAGE.url },
   [Page.CREATE_CONTACT_NAME_PAGE]: {
@@ -214,7 +213,7 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
     nextUrl: forwardToRelationshipToPrisonerOrCheckAnswers(),
   },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
-    previousUrl: (journey, user) => backToRelationshipTypeOrCheckAnswers(journey, user),
+    previousUrl: (journey, permissions) => backToRelationshipTypeOrCheckAnswers(journey, permissions),
     nextUrl: forwardToDobOrPossibleExistingRecordOrCheckAnswers(),
   },
   [Page.CREATE_CONTACT_DOB_PAGE]: {
@@ -256,8 +255,8 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
         PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN.url,
       ),
     ),
-    previousUrlLabel: (_, user) =>
-      hasPermission(user, Permission.APPROVE_TO_VISIT)
+    previousUrlLabel: (_, permissions) =>
+      isGranted(Permission.edit_contact_visit_approval, permissions)
         ? 'Back to visits approval'
         : 'Back to emergency contact and next of kin',
     nextUrl: PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url,
@@ -357,7 +356,7 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
     nextUrl: forwardToRelationshipToPrisonerOrCheckAnswers(),
   },
   [Page.SELECT_CONTACT_RELATIONSHIP]: {
-    previousUrl: (journey, user) => backToRelationshipTypeOrCheckAnswers(journey, user),
+    previousUrl: (journey, permissions) => backToRelationshipTypeOrCheckAnswers(journey, permissions),
     nextUrl: checkAnswersOr(PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN.url),
   },
   [Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN]: {
@@ -405,95 +404,108 @@ const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
 }
 
 function checkAnswersOr(other: JourneyUrlProvider): JourneyUrlProvider {
-  return (journey, user) =>
-    journey.isCheckingAnswers ? PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey, user) : other(journey, user)
+  return (journey, permissions) =>
+    journey.isCheckingAnswers
+      ? PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey, permissions)
+      : other(journey, permissions)
 }
 
 function ifCanApproveForVisitsOr(yes: JourneyUrlProvider, no: JourneyUrlProvider): JourneyUrlProvider {
-  return (journey, user) => (hasPermission(user, Permission.APPROVE_TO_VISIT) ? yes(journey, user) : no(journey, user))
+  return (journey, permissions) =>
+    isGranted(Permission.edit_contact_visit_approval, permissions)
+      ? yes(journey, permissions)
+      : no(journey, permissions)
 }
 
 function backIfCheckAnswersOr(other: JourneyUrlProvider): JourneyUrlProvider {
-  return (journey, user) => (journey.isCheckingAnswers ? `Back` : other(journey, user))
+  return (journey, permissions) => (journey.isCheckingAnswers ? `Back` : other(journey, permissions))
 }
 
 function forwardToRelationshipToPrisonerOrCheckAnswers(): JourneyUrlProvider {
-  return (journey, user) => {
+  return (journey, permissions) => {
     const relationshipTypeIsTheSame =
       journey.relationship?.pendingNewRelationshipType === journey.previousAnswers?.relationship?.relationshipType
     return journey.isCheckingAnswers && relationshipTypeIsTheSame
-      ? PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey, user)
-      : PAGES.SELECT_CONTACT_RELATIONSHIP.url(journey, user)
+      ? PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey, permissions)
+      : PAGES.SELECT_CONTACT_RELATIONSHIP.url(journey, permissions)
   }
 }
 
 function forwardToDobOrPossibleExistingRecordOrCheckAnswers(): JourneyUrlProvider {
-  return (journey, user) => {
-    if (journey.isCheckingAnswers) return PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey, user)
+  return (journey, permissions) => {
+    if (journey.isCheckingAnswers) return PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey, permissions)
     if (journey.relationship?.relationshipToPrisoner && isInternalContact(journey.relationship.relationshipToPrisoner))
-      return PAGES.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE.url(journey, user)
-    return PAGES.CREATE_CONTACT_DOB_PAGE.url(journey, user)
+      return PAGES.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE.url(journey, permissions)
+    return PAGES.CREATE_CONTACT_DOB_PAGE.url(journey, permissions)
   }
 }
 
 function nextPageForPossibleExistingRecordMatch(): JourneyUrlProvider {
-  return (journey, user) => {
+  return (journey, permissions) => {
     if (journey.isPossibleExistingRecordMatched === 'YES') {
       // abandon current journey and switch mode as if we came from contact search originally. Switched here to ensure
       // navigation is loaded from correct spec.
       /* eslint-disable no-param-reassign */
       journey.mode = 'EXISTING'
-      return PAGES.ADD_CONTACT_MODE_PAGE.url(journey, user)
+      return PAGES.ADD_CONTACT_MODE_PAGE.url(journey, permissions)
     }
     if (journey.isPossibleExistingRecordMatched === 'NO_GO_BACK_TO_POSSIBLE_EXISTING_RECORDS') {
-      return PAGES.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE.url(journey, user)
+      return PAGES.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE.url(journey, permissions)
     }
     if (journey.isPossibleExistingRecordMatched === 'NO_CONTINUE_ADDING_CONTACT') {
-      return PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN.url(journey, user)
+      return PAGES.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN.url(journey, permissions)
     }
     throw Error(`Unknown value for possible existing record matched: ${journey.isPossibleExistingRecordMatched}`)
   }
 }
 
-function backToRelationshipTypeOrCheckAnswers(journey: AddContactJourney, user: HmppsUser) {
+function backToRelationshipTypeOrCheckAnswers(journey: AddContactJourney, permissions: PrisonerPermissions) {
   const relationshipType = journey.relationship?.pendingNewRelationshipType ?? journey.relationship?.relationshipType
   const relationshipTypeIsTheSame = relationshipType === journey.previousAnswers?.relationship?.relationshipType
   return (journey.isCheckingAnswers && !relationshipTypeIsTheSame) || !journey.isCheckingAnswers
-    ? PAGES.SELECT_RELATIONSHIP_TYPE.url(journey, user)
-    : PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey, user)
+    ? PAGES.SELECT_RELATIONSHIP_TYPE.url(journey, permissions)
+    : PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey, permissions)
 }
 
 function backToPossibleExistingRecordsOrDobOrCheckAnswers(): JourneyUrlProvider {
-  return (journey, user) => {
+  return (journey, permissions) => {
     if (journey.isCheckingAnswers) {
-      return PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey, user)
+      return PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url(journey, permissions)
     }
     if (journey.possibleExistingRecords && journey.possibleExistingRecords.length > 0)
-      return PAGES.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE.url(journey, user)
+      return PAGES.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE.url(journey, permissions)
 
     if (journey.relationship?.relationshipToPrisoner && isInternalContact(journey.relationship.relationshipToPrisoner))
-      return PAGES.SELECT_CONTACT_RELATIONSHIP.url(journey, user)
+      return PAGES.SELECT_CONTACT_RELATIONSHIP.url(journey, permissions)
 
-    return PAGES.CREATE_CONTACT_DOB_PAGE.url(journey, user)
+    return PAGES.CREATE_CONTACT_DOB_PAGE.url(journey, permissions)
   }
 }
 
-function navigationForAddContactJourney(currentPage: Page, journey: AddContactJourney, user: HmppsUser): Navigation {
+function navigationForAddContactJourney(
+  currentPage: Page,
+  journey: AddContactJourney,
+  permissions: PrisonerPermissions,
+): Navigation {
   const spec = findSpec(journey, currentPage)
   if (spec) {
     return {
-      backLinkLabel: spec.previousUrlLabel ? spec.previousUrlLabel(journey, user) : undefined,
-      backLink: spec.previousUrl(journey, user),
+      backLinkLabel: spec.previousUrlLabel ? spec.previousUrlLabel(journey, permissions) : undefined,
+      backLink: spec.previousUrl(journey, permissions),
       breadcrumbs: PAGES[currentPage as AllAddContactPages].breadcrumbs,
-      cancelButton: spec.cancelUrl?.(journey, user),
+      cancelButton: spec.cancelUrl?.(journey, permissions),
     }
   }
   throw new Error(`Couldn't determine navigation for page (${currentPage}) and journey (${JSON.stringify(journey)})`)
 }
 
-function nextPageForAddContactJourney(currentPage: Page, journey: AddContactJourney, user: HmppsUser): string {
+function nextPageForAddContactJourney(
+  currentPage: Page,
+  journey: AddContactJourney,
+  permissions: PrisonerPermissions,
+): string {
   const spec = findSpec(journey, currentPage)
-  const nextPage = spec?.nextUrl(journey, user)
+  const nextPage = spec?.nextUrl(journey, permissions)
   if (nextPage) {
     return nextPage
   }

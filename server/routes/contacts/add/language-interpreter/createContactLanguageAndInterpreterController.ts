@@ -12,11 +12,11 @@ export default class CreateContactLanguageAndInterpreterController implements Pa
 
   public PAGE_NAME = Page.ADD_CONTACT_LANGUAGE_INTERPRETER_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { journeyId } = req.params
-    const { user } = res.locals
+    const { user, prisonerPermissions } = res.locals
     const journey = req.session.addContactJourneys![journeyId]!
     const spokenLanguages = await this.referenceDataService.getReferenceData(ReferenceCodeType.LANGUAGE, user)
     const view = {
@@ -26,7 +26,7 @@ export default class CreateContactLanguageAndInterpreterController implements Pa
       language: res.locals?.formResponses?.['language'] ?? journey?.languageAndInterpreter?.language,
       interpreterRequired:
         res.locals?.formResponses?.['interpreterRequired'] ?? journey?.languageAndInterpreter?.interpreterRequired,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
     }
     res.render('pages/contacts/manage/contactDetails/languageAndInterpreter', view)
   }
@@ -37,7 +37,7 @@ export default class CreateContactLanguageAndInterpreterController implements Pa
   ): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { prisonerPermissions } = res.locals
     const { body } = req
     delete journey.languageAndInterpreter
     if (body.language || body.interpreterRequired) {
@@ -46,6 +46,6 @@ export default class CreateContactLanguageAndInterpreterController implements Pa
         interpreterRequired: body.interpreterRequired ? body.interpreterRequired : undefined,
       }
     }
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
   }
 }

@@ -3,6 +3,7 @@ import { NotFound } from 'http-errors'
 import { v4 as uuidv4 } from 'uuid'
 import dpsComponents from '@ministryofjustice/hmpps-connect-dps-components'
 import { SessionData } from 'express-session'
+import { PrisonerPermission } from '@ministryofjustice/hmpps-prison-permissions-lib'
 import config from '../../config'
 import routes from '../index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
@@ -15,6 +16,7 @@ import populateValidationErrors from '../../middleware/populateValidationErrors'
 import setUpAuth from '../../middleware/setUpAuthentication'
 import { MockedService } from '../../testutils/mockedServices'
 import { auditPageViewMiddleware } from '../../middleware/auditPageViewMiddleware'
+import Permission from '../../enumeration/permission'
 
 jest.mock('../../services/auditService')
 
@@ -29,6 +31,11 @@ export const basicPrisonUser: HmppsUser = {
   userRoles: [],
 }
 
+export const readOnlyPermissions: Record<PrisonerPermission, boolean> = { [Permission.read_contacts]: true } as Record<
+  PrisonerPermission,
+  boolean
+>
+
 export const adminUser: HmppsUser = {
   name: 'CONTACTS ADMIN',
   userId: 'contacts_admin_id',
@@ -40,6 +47,11 @@ export const adminUser: HmppsUser = {
   userRoles: ['CONTACTS_ADMINISTRATOR'],
 }
 
+export const adminUserPermissions: Record<PrisonerPermission, boolean> = {
+  [Permission.read_contacts]: true,
+  [Permission.edit_contacts]: true,
+} as Record<PrisonerPermission, boolean>
+
 export const authorisingUser: HmppsUser = {
   name: 'CONTACTS AUTHORISER',
   userId: 'contacts_authoriser_id',
@@ -50,6 +62,13 @@ export const authorisingUser: HmppsUser = {
   staffId: 5678,
   userRoles: ['CONTACTS_AUTHORISER'],
 }
+
+export const authorisingUserPermissions: Record<PrisonerPermission, boolean> = {
+  [Permission.read_contacts]: true,
+  [Permission.edit_contacts]: true,
+  [Permission.edit_contact_visit_approval]: true,
+  [Permission.edit_contact_restrictions]: true,
+} as Record<PrisonerPermission, boolean>
 
 export const userWithMultipleRoles: HmppsUser = {
   name: 'CONTACTS MULTIPLE ROLES',

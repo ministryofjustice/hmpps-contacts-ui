@@ -2,7 +2,6 @@ import { BadRequest, NotFound } from 'http-errors'
 import PrisonerSearchService from './prisonerSearchService'
 import TestData from '../routes/testutils/testData'
 import PrisonerSearchApiClient from '../data/prisonerSearchApiClient'
-import { PagePrisoner, PaginationRequest } from '../data/prisonerOffenderSearchTypes'
 
 jest.mock('../data/prisonerSearchApiClient')
 
@@ -13,7 +12,6 @@ describe('Prisoner search service', () => {
   let prisonerSearchService: PrisonerSearchService
 
   const prisonId = 'HEI'
-  const search = 'some search'
   const prisoner = TestData.prisoner()
 
   beforeEach(() => {
@@ -62,37 +60,6 @@ describe('Prisoner search service', () => {
       prisonerSearchApiClient.getByPrisonerNumber.mockResolvedValue({ ...prisoner, inOutStatus: 'TRN' })
       const result = await prisonerSearchService.getByPrisonerNumber(prisoner.prisonerNumber, user)
       expect(result.inOutStatus).toEqual('TRN')
-    })
-  })
-
-  describe('getPrisoners', () => {
-    const pagination = { page: 0, size: 20 } as PaginationRequest
-
-    it('Retrieves prisoner details matching the search criteria', async () => {
-      const prisoners = {
-        totalPages: 1,
-        totalElements: 1,
-        first: true,
-        last: true,
-        size: 20,
-        empty: false,
-        content: [prisoner],
-      } as PagePrisoner
-
-      await prisonerSearchApiClient.searchInCaseload.mockResolvedValue(prisoners)
-
-      const results = await prisonerSearchService.searchInCaseload(search, prisonId, pagination, user)
-
-      expect(results.content![0]!.prisonerNumber).toEqual(prisoner.prisonerNumber)
-      expect(results.totalPages).toEqual(1)
-      expect(results.totalElements).toEqual(1)
-    })
-
-    it('Propagates errors', async () => {
-      prisonerSearchApiClient.searchInCaseload.mockRejectedValue(new Error('some error'))
-      await expect(prisonerSearchService.searchInCaseload(search, prisonId, pagination, user)).rejects.toEqual(
-        new Error('some error'),
-      )
     })
   })
 })

@@ -13,11 +13,11 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
 
   public PAGE_NAME = Page.SELECT_CONTACT_RELATIONSHIP
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params
-    const { user } = res.locals
+    const { user, prisonerPermissions } = res.locals
     const journey = req.session.addContactJourneys![journeyId]!
     const relationshipType = journey.relationship!.pendingNewRelationshipType ?? journey.relationship!.relationshipType
     const groupCodeForRelationshipType =
@@ -31,7 +31,7 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
       relationshipType,
       relationshipOptions,
       journey,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
       continueButtonLabel: 'Continue',
     }
     res.render('pages/contacts/manage/contactDetails/relationship/selectRelationship', viewModel)
@@ -44,7 +44,7 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
     const { journeyId } = req.params
     const { relationship } = req.body
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { prisonerPermissions } = res.locals
     if (!journey.relationship) {
       journey.relationship = {}
     }
@@ -52,6 +52,6 @@ export default class SelectRelationshipToPrisonerController implements PageHandl
     journey.relationship.relationshipType = (journey.relationship.pendingNewRelationshipType ??
       journey.relationship.relationshipType)!
     delete journey.relationship.pendingNewRelationshipType
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
   }
 }

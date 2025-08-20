@@ -3,7 +3,7 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../testutils/appSetup'
+import { adminUserPermissions, adminUser, appWithAllRoutes } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { mockedReferenceData } from '../../../testutils/stubReferenceData'
 import TestData from '../../../testutils/testData'
@@ -11,7 +11,10 @@ import { MockedService } from '../../../../testutils/mockedServices'
 import { AddContactJourney } from '../../../../@types/journeys'
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
 import { PrisonerContactSummary } from '../../../../@types/contactsApiClient'
+import mockPermissions from '../../../testutils/mockPermissions'
+import Permission from '../../../../enumeration/permission'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/referenceDataService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -56,6 +59,9 @@ beforeEach(() => {
       session.addContactJourneys[journeyId] = existingJourney
     },
   })
+
+  mockPermissions(app, adminUserPermissions)
+
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
@@ -339,14 +345,11 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/possible-existing-record
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 302],
-    [authorisingUser, 302],
-  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
+  it('GET should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
     await request(app)
       .get(`/prisoner/${prisonerNumber}/contacts/create/possible-existing-records/${journeyId}`)
-      .expect(expectedStatus)
+      .expect(403)
   })
 })

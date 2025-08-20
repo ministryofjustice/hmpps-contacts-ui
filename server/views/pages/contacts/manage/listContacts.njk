@@ -32,7 +32,7 @@
     </div>
     <div class="moj-page-header-actions__actions">
       <div class="moj-button-group moj-button-group--inline">
-        {% if user | hasPermission('MANAGE_CONTACTS') %}
+        {% if isGranted(PersonalRelationshipsPermission.edit_contacts, prisonerPermissions) %}
         {{ govukButton({
           text: "Link another contact" if hasAnyContactsAtAll else "Link contact",
           href: "/prisoner/" + prisonerNumber + "/contacts/create/start",
@@ -140,6 +140,7 @@
         {{ prisonerContactSummaryTable({
           contacts: contacts,
           prisonerNumber: prisonerNumber,
+          prisonerPermissions: prisonerPermissions,
           sort: sort,
           sortQueryParams: queryParamsWithFilters,
           user: user
@@ -150,7 +151,7 @@
         <div data-qa="no-results-content">
         {% if not hasAnyContactsAtAll %}
           <p class="govuk-body">{{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }} does not have any linked contacts.</p>
-          {% if user | hasPermission('MANAGE_CONTACTS') %}
+          {% if isGranted(PersonalRelationshipsPermission.edit_contacts, prisonerPermissions) %}
             <a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/create/start" class="govuk-body govuk-link--no-visited-state" data-qa="no-results-link-a-contact">Link a contact to this prisoner</a>
           {% endif %}
         {% elseif not hasAnyFiltersApplied %}
@@ -162,7 +163,7 @@
           <ul class="govuk-list govuk-list--bullet">
             <li>change the filters and apply them again</li>
             <li><a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/list" class="govuk-body govuk-link--no-visited-state" data-qa="no-results-clear-filters">clear the filters</a> to view all the prisoner’s contacts</li>
-            {% if user | hasPermission('MANAGE_CONTACTS') %}
+            {% if isGranted(PersonalRelationshipsPermission.edit_contacts, prisonerPermissions) %}
               <li><a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/create/start" class="govuk-body govuk-link--no-visited-state" data-qa="no-results-link-a-contact">link another contact</a> if you cannot find the correct person in the prisoner’s contact list</li>
             {% endif %}
           </ul>

@@ -17,15 +17,15 @@ export default class PossibleExistingRecordsController implements PageHandler {
 
   public PAGE_NAME = Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORDS_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   private TABLE_ROW_COUNT = 100
 
   GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId, prisonerNumber } = req.params
-    const { user } = res.locals
+    const { user, prisonerPermissions } = res.locals
     const journey = req.session.addContactJourneys![journeyId]!
-    const nextUrl = nextPageForAddContactJourney(this.PAGE_NAME, journey, user)
+    const nextUrl = nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions)
     let matches: ContactSearchResultItem[] = []
     if (journey.possibleExistingRecords) {
       matches = journey.possibleExistingRecords
@@ -59,7 +59,7 @@ export default class PossibleExistingRecordsController implements PageHandler {
     if (matches.length > 0) {
       const viewModel = {
         journey,
-        navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
+        navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
         nextUrl,
         matches,
       }

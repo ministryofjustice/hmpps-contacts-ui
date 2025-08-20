@@ -16,7 +16,7 @@ export default class UpdateEmploymentsController implements PageHandler {
 
   public PAGE_NAME = Page.MANAGE_CONTACT_UPDATE_EMPLOYMENTS_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (
     req: Request<{ prisonerNumber: string; journeyId: string; contactId: string; prisonerContactId: string }>,

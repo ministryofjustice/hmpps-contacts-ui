@@ -13,7 +13,7 @@ export default class CreateContactAddressCommentsController implements PageHandl
 
   public PAGE_NAME = Page.CREATE_CONTACT_ENTER_ADDRESS_COMMENTS_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<CreateContactAddressParam>, res: Response): Promise<void> => {
     const { journey, addressForm, bounceBackOrAddressUrl } = getAddressFormAndUrl(req)

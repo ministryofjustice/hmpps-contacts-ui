@@ -23,7 +23,7 @@ export default class PossibleExistingRecordMatchController implements PageHandle
 
   public PAGE_NAME = Page.ADD_CONTACT_POSSIBLE_EXISTING_RECORD_MATCH_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   private LINKED_PRISONER_ITEMS_PER_PAGE = 10
 
@@ -39,7 +39,7 @@ export default class PossibleExistingRecordMatchController implements PageHandle
     res: Response,
   ): Promise<void> => {
     const { journeyId, matchingContactId, prisonerNumber } = req.params
-    const { user } = res.locals
+    const { user, prisonerPermissions } = res.locals
     const journey = req.session.addContactJourneys![journeyId]!
     journey.matchingContactId = Number(matchingContactId)
 
@@ -87,7 +87,7 @@ export default class PossibleExistingRecordMatchController implements PageHandle
       linkedPrisonersCount,
       isPossibleExistingRecordMatched:
         res.locals?.formResponses?.['isPossibleExistingRecordMatched'] ?? journey?.isPossibleExistingRecordMatched,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
       phoneTypeOrderDictionary: getReferenceDataOrderDictionary(
         await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user),
       ),
@@ -103,7 +103,7 @@ export default class PossibleExistingRecordMatchController implements PageHandle
     const { isPossibleExistingRecordMatched } = req.body
     const { journeyId, prisonerNumber } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { user, prisonerPermissions } = res.locals
     journey.isPossibleExistingRecordMatched = isPossibleExistingRecordMatched
     if (isPossibleExistingRecordMatched === 'YES') {
       journey.contactId = journey.matchingContactId!
@@ -114,6 +114,6 @@ export default class PossibleExistingRecordMatchController implements PageHandle
       prisonerNumber,
       action: isPossibleExistingRecordMatched,
     })
-    return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+    return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
   }
 }

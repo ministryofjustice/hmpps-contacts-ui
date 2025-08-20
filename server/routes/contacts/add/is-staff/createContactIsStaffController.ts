@@ -8,15 +8,15 @@ import Permission from '../../../../enumeration/permission'
 export default class CreateContactIsStaffController implements PageHandler {
   public PAGE_NAME = Page.ADD_CONTACT_IS_STAFF_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { prisonerPermissions } = res.locals
     const view = {
       journey,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
       isNewContact: true,
       isStaff: res.locals?.formResponses?.['isStaff'] ?? journey?.isStaff,
     }
@@ -35,9 +35,9 @@ export default class CreateContactIsStaffController implements PageHandler {
   ): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { prisonerPermissions } = res.locals
     const { body } = req
     journey.isStaff = body.isStaff
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
   }
 }

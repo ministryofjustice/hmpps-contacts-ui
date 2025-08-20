@@ -14,11 +14,11 @@ export default class ReviewExistingRelationshipsController implements PageHandle
     public PAGE_NAME: Page,
   ) {}
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<PrisonerJourneyParams & { matchingContactId: string }>, res: Response): Promise<void> => {
     const { journeyId, prisonerNumber, matchingContactId } = req.params
-    const { user } = res.locals
+    const { user, prisonerPermissions } = res.locals
     const journey = req.session.addContactJourneys![journeyId]!
     const existingRelationships = await this.contactsService.getAllSummariesForPrisonerAndContact(
       prisonerNumber,
@@ -27,7 +27,7 @@ export default class ReviewExistingRelationshipsController implements PageHandle
     )
     const viewModel = {
       journey,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
       existingRelationships,
       matchingContactId,
     }

@@ -13,7 +13,7 @@ export default class CreateContactEnterAddressController implements PageHandler 
 
   public PAGE_NAME = Page.CREATE_CONTACT_ENTER_ADDRESS_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   private DEFAULT_COUNTRY = 'ENG'
 

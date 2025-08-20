@@ -11,14 +11,14 @@ export default class AddContactModeController implements PageHandler {
 
   public PAGE_NAME = Page.ADD_CONTACT_MODE_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (
     req: Request<PrisonerJourneyParams & { mode?: 'EXISTING' | 'NEW' }, unknown, unknown, { contactId?: string }>,
     res: Response,
   ): Promise<void> => {
     const { journeyId, mode } = req.params
-    const { user } = res.locals
+    const { user, prisonerPermissions } = res.locals
 
     const journey = req.session.addContactJourneys![journeyId]!
     journey.mode = mode
@@ -51,6 +51,6 @@ export default class AddContactModeController implements PageHandler {
         }
       }
     }
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
   }
 }

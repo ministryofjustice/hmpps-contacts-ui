@@ -1,13 +1,16 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../../testutils/appSetup'
+import { adminUserPermissions, adminUser, appWithAllRoutes } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { PrisonerContactRelationshipDetails } from '../../../../../@types/contactsApiClient'
 import { HmppsUser } from '../../../../../interfaces/hmppsUser'
+import mockPermissions from '../../../../testutils/mockPermissions'
+import Permission from '../../../../../enumeration/permission'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
 jest.mock('../../../../../services/contactsService')
@@ -32,6 +35,7 @@ beforeEach(() => {
     },
     userSupplier: () => currentUser,
   })
+  mockPermissions(app, adminUserPermissions)
 })
 
 afterEach(() => {
@@ -81,12 +85,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     })
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 200],
-    [authorisingUser, 200],
-  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
+  it('GET should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
     contactsService.getContact.mockResolvedValue(TestData.contact())
     contactsService.getPrisonerContactRelationship.mockResolvedValue({
       comments: 'true',
@@ -97,7 +98,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       .get(
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/relationship-comments`,
       )
-      .expect(expectedStatus)
+      .expect(403)
   })
 })
 
@@ -136,12 +137,9 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       )
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 302],
-    [authorisingUser, 302],
-  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
+  it('POST should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
     contactsService.getContactName.mockResolvedValue(TestData.contact())
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     await request(app)
@@ -150,6 +148,6 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       )
       .type('form')
       .send({ comments: 'comment added' })
-      .expect(expectedStatus)
+      .expect(403)
   })
 })

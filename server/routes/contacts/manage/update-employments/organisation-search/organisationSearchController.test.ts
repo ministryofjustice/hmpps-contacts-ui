@@ -3,12 +3,15 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../../testutils/appSetup'
+import { adminUserPermissions, adminUser, appWithAllRoutes } from '../../../../testutils/appSetup'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { UpdateEmploymentsJourney } from '../../../../../@types/journeys'
 import { HmppsUser } from '../../../../../interfaces/hmppsUser'
+import mockPermissions from '../../../../testutils/mockPermissions'
+import Permission from '../../../../../enumeration/permission'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
 jest.mock('../../../../../services/organisationsService')
@@ -71,6 +74,9 @@ beforeEach(() => {
     },
     userSupplier: () => currentUser,
   })
+
+  mockPermissions(app, adminUserPermissions)
+
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
 })
 
@@ -293,12 +299,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/update
     expect($('p:contains("No organisation records match your search.")').text()).toBeFalsy()
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 200],
-    [authorisingUser, 200],
-  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
+  it('GET should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
     setJourneyData({
       ...generateJourneyData(),
       organisationSearch: { page: 1 },
@@ -313,7 +316,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/update
       .get(
         `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/2/update-employments/1/organisation-search/${journeyId}`,
       )
-      .expect(expectedStatus)
+      .expect(403)
   })
 })
 
@@ -342,12 +345,9 @@ describe('POST /contacts/manage/:contactId/relationship/:prisonerContactId/updat
     expect(journeyData.organisationSearch.searchTerm).toEqual('te %st')
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 302],
-    [authorisingUser, 302],
-  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
+  it('POST should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
     setJourneyData(generateJourneyData())
 
     await request(app)
@@ -356,6 +356,6 @@ describe('POST /contacts/manage/:contactId/relationship/:prisonerContactId/updat
       )
       .type('form')
       .send({ organisationName: 'te %st' })
-      .expect(expectedStatus)
+      .expect(403)
   })
 })

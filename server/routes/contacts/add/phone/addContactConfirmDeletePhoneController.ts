@@ -12,14 +12,14 @@ export default class AddContactConfirmDeletePhoneController implements PageHandl
 
   public PAGE_NAME = Page.ADD_CONTACT_DELETE_PHONE_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (
     req: Request<PrisonerJourneyParams & { index: string }, unknown, unknown>,
     res: Response,
   ): Promise<void> => {
     const { journeyId, index } = req.params
-    const { user } = res.locals
+    const { user, prisonerPermissions } = res.locals
     const journey = req.session.addContactJourneys![journeyId]!
     const phoneToRemove = journey.phoneNumbers?.[Number(index)]
     if (!phoneToRemove) {
@@ -37,7 +37,7 @@ export default class AddContactConfirmDeletePhoneController implements PageHandl
           user,
         ),
       },
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
     }
     res.render('pages/contacts/manage/contactMethods/confirmDeletePhone', view)
   }
@@ -45,11 +45,11 @@ export default class AddContactConfirmDeletePhoneController implements PageHandl
   POST = async (req: Request<PrisonerJourneyParams & { index: string }>, res: Response): Promise<void> => {
     const { journeyId, index } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { prisonerPermissions } = res.locals
     const indexNumber = Number(index)
     if (journey.phoneNumbers && indexNumber <= journey.phoneNumbers.length - 1) {
       journey.phoneNumbers.splice(indexNumber, 1)
     }
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
   }
 }

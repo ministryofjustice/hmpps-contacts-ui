@@ -13,7 +13,7 @@ export default class CreateContactAddressTypeController implements PageHandler {
 
   public PAGE_NAME = Page.CREATE_CONTACT_SELECT_ADDRESS_TYPE_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<CreateContactAddressParam>, res: Response): Promise<void> => {
     const { user } = res.locals

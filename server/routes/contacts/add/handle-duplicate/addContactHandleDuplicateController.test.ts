@@ -3,7 +3,7 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
-import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../testutils/appSetup'
+import { adminUserPermissions, adminUser, appWithAllRoutes } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { mockedGetReferenceDescriptionForCode } from '../../../testutils/stubReferenceData'
 import TestData from '../../../testutils/testData'
@@ -11,7 +11,10 @@ import { MockedService } from '../../../../testutils/mockedServices'
 import { AddContactJourney } from '../../../../@types/journeys'
 import { PrisonerContactSummary } from '../../../../@types/contactsApiClient'
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
+import mockPermissions from '../../../testutils/mockPermissions'
+import Permission from '../../../../enumeration/permission'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/referenceDataService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -88,6 +91,9 @@ beforeEach(() => {
       session.addContactJourneys[journeyId] = { ...existingJourney }
     },
   })
+
+  mockPermissions(app, adminUserPermissions)
+
   referenceDataService.getReferenceDescriptionForCode.mockImplementation(mockedGetReferenceDescriptionForCode)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
 })
@@ -253,16 +259,11 @@ describe(`GET /prisoner/:prisonerNumber/contacts/add/handle-duplicate/:journeyId
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 200],
-    [authorisingUser, 200],
-  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
+  it('GET should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
     contactsService.getAllSummariesForPrisonerAndContact.mockResolvedValue([])
-    await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/add/handle-duplicate/${journeyId}`)
-      .expect(expectedStatus)
+    await request(app).get(`/prisoner/${prisonerNumber}/contacts/add/handle-duplicate/${journeyId}`).expect(403)
   })
 })
 
@@ -336,12 +337,9 @@ describe(`POST /prisoner/:prisonerNumber/contacts/add/handle-duplicate/:journeyI
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 302],
-    [authorisingUser, 302],
-  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
+  it('POST should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
     existingJourney.relationship!.relationshipType = 'O'
     contactsService.updateContactRelationshipById.mockResolvedValue(undefined)
 
@@ -349,6 +347,6 @@ describe(`POST /prisoner/:prisonerNumber/contacts/add/handle-duplicate/:journeyI
       .post(`/prisoner/${prisonerNumber}/contacts/add/handle-duplicate/${journeyId}`)
       .type('form')
       .send({ duplicateAction: 'GO_TO_CONTACT_LIST' })
-      .expect(expectedStatus)
+      .expect(403)
   })
 })

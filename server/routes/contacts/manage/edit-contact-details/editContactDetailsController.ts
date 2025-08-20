@@ -12,7 +12,7 @@ export default class EditContactDetailsController implements PageHandler {
 
   public PAGE_NAME = Page.EDIT_CONTACT_DETAILS_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (
     req: Request<{ prisonerNumber: string; contactId: string; prisonerContactId: string }, unknown, unknown>,

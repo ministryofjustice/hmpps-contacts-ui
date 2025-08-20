@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { z } from 'zod'
+import { PermissionsService } from '@ministryofjustice/hmpps-prison-permissions-lib'
 import AuditService, { Page } from '../../../services/auditService'
 import EnterNameController from './enter-name/createContactEnterNameController'
 import { SchemaFactory, validate } from '../../../middleware/validationMiddleware'
@@ -83,9 +84,10 @@ const AddContactRoutes = (
   prisonerAddressService: PrisonerAddressService,
   organisationsService: OrganisationsService,
   telemetryService: TelemetryService,
+  permissionsService: PermissionsService,
 ) => {
   const router = Router({ mergeParams: true })
-  const { get, post } = routerMethods(router, auditService)
+  const { get, post } = routerMethods(router, permissionsService, auditService)
 
   const journeyRoute = <P extends { [key: string]: string }>({
     path,

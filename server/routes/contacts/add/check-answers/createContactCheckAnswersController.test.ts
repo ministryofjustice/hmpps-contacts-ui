@@ -4,7 +4,13 @@ import { v4 as uuidv4 } from 'uuid'
 import { SessionData } from 'express-session'
 import * as cheerio from 'cheerio'
 import createError from 'http-errors'
-import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../testutils/appSetup'
+import {
+  adminUserPermissions,
+  adminUser,
+  appWithAllRoutes,
+  authorisingUser,
+  authorisingUserPermissions,
+} from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { mockedGetReferenceDescriptionForCode, mockedReferenceData } from '../../../testutils/stubReferenceData'
@@ -12,7 +18,10 @@ import { MockedService } from '../../../../testutils/mockedServices'
 import { AddContactJourney, LanguageAndInterpreterRequiredForm, YesOrNo } from '../../../../@types/journeys'
 import { ContactCreationResult, PrisonerContactRelationshipDetails } from '../../../../@types/contactsApiClient'
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
+import mockPermissions from '../../../testutils/mockPermissions'
+import Permission from '../../../../enumeration/permission'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/contactsService')
 jest.mock('../../../../services/referenceDataService')
@@ -69,6 +78,9 @@ beforeEach(() => {
       session.addContactJourneys[journeyId] = journey
     },
   })
+
+  mockPermissions(app, adminUserPermissions)
+
   referenceDataService.getReferenceDescriptionForCode.mockImplementation(mockedGetReferenceDescriptionForCode)
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
@@ -156,21 +168,28 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     expect($('strong:contains("Only record data when it is necessary to do so.")').text()).toBeTruthy()
   })
 
-  it.each(['NEW', 'EXISTING'])('should show approved visitor value and link if authorising user', async mode => {
-    // Given
-    currentUser = authorisingUser
-    journey.mode = mode as 'NEW' | 'EXISTING'
-    journey.relationship!.isApprovedVisitor = true
+  it.each(['NEW', 'EXISTING'])(
+    'should show approved visitor value and link if edit contact visit approval permission is granted',
+    async mode => {
+      // Given
+      currentUser = authorisingUser
+      mockPermissions(app, authorisingUserPermissions)
 
-    // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+      journey.mode = mode as 'NEW' | 'EXISTING'
+      journey.relationship!.isApprovedVisitor = true
 
-    // Then
-    const $ = cheerio.load(response.text)
-    const heading = $('dt:contains("Approved for visits")')
-    expect(heading.next().text().trim()).toStrictEqual('Yes')
-    expect(heading.next().next().text().trim()).toStrictEqual('Change if the contact is approved to visit the prisoner')
-  })
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      const heading = $('dt:contains("Approved for visits")')
+      expect(heading.next().text().trim()).toStrictEqual('Yes')
+      expect(heading.next().next().text().trim()).toStrictEqual(
+        'Change if the contact is approved to visit the prisoner',
+      )
+    },
+  )
 
   it.each(['NEW', 'EXISTING'])(
     'should not show approved visitor value and link if not authorising user',
@@ -468,15 +487,10 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 200],
-    [authorisingUser, 200],
-  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
-    await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
-      .expect(expectedStatus)
+  it('GET should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
+    await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`).expect(403)
   })
 })
 
@@ -570,12 +584,9 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 302],
-    [authorisingUser, 302],
-  ])('POST should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
+  it('POST should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
     const created = {
       createdContact: {
         id: 123456,
@@ -588,6 +599,6 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyI
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`)
       .type('form')
-      .expect(expectedStatus)
+      .expect(403)
   })
 })

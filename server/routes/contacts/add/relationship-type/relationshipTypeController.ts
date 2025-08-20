@@ -9,12 +9,12 @@ import Permission from '../../../../enumeration/permission'
 export default class RelationshipTypeController implements PageHandler {
   public PAGE_NAME = Page.SELECT_RELATIONSHIP_TYPE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { prisonerPermissions } = res.locals
     const view = {
       isNewContact: true,
       journey,
@@ -22,7 +22,7 @@ export default class RelationshipTypeController implements PageHandler {
         res.locals?.formResponses?.['relationshipType'] ??
         journey?.relationship?.pendingNewRelationshipType ??
         journey?.relationship?.relationshipType,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
     }
     res.render('pages/contacts/add/relationshipType', view)
   }
@@ -30,12 +30,12 @@ export default class RelationshipTypeController implements PageHandler {
   POST = async (req: Request<PrisonerJourneyParams, unknown, RelationshipTypeSchema>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { prisonerPermissions } = res.locals
     const { body } = req
     if (!journey.relationship) {
       journey.relationship = {}
     }
     journey.relationship.pendingNewRelationshipType = body.relationshipType
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
   }
 }

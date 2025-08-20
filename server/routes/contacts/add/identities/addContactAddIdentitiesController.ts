@@ -13,12 +13,12 @@ export default class AddContactAddIdentitiesController implements PageHandler {
 
   public PAGE_NAME = Page.ADD_CONTACT_ADD_IDENTITY_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { user, prisonerPermissions } = res.locals
     const existingIdentities = journey.identities ?? []
     if (existingIdentities.length === 0) {
       existingIdentities.push({ identityType: '', identityValue: '', issuingAuthority: '' })
@@ -30,7 +30,7 @@ export default class AddContactAddIdentitiesController implements PageHandler {
       contact: journey.names,
       typeOptions: await this.referenceDataService.getReferenceData(ReferenceCodeType.ID_TYPE, user),
       identities: res.locals?.formResponses?.['identities'] ?? existingIdentities,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
     }
     res.render('pages/contacts/manage/addIdentities', viewModel)
   }
@@ -41,12 +41,12 @@ export default class AddContactAddIdentitiesController implements PageHandler {
   ): Promise<void> => {
     const { prisonerNumber, journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { prisonerPermissions } = res.locals
 
     const { identities, save, add, remove } = req.body
     if (save !== undefined) {
       journey.identities = identities
-      return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+      return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
     }
 
     req.body.identities ??= [{ identityType: '', identityValue: '', issuingAuthority: '' }]

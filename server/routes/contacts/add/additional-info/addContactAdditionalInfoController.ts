@@ -9,19 +9,19 @@ import Permission from '../../../../enumeration/permission'
 export default class AddContactAdditionalInfoController implements PageHandler {
   public PAGE_NAME = Page.ENTER_ADDITIONAL_INFORMATION_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { prisonerPermissions } = res.locals
 
     delete journey.pendingEmployments
     delete journey.pendingAddresses
     const view = {
       journey,
       caption: captionForAddContactJourney(journey),
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
     }
     res.render('pages/contacts/add/additionalInfo', view)
   }
@@ -29,8 +29,8 @@ export default class AddContactAdditionalInfoController implements PageHandler {
   POST = async (req: Request<PrisonerJourneyParams>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { prisonerPermissions } = res.locals
 
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
   }
 }

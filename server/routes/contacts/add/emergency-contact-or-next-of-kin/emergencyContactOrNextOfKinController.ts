@@ -10,12 +10,12 @@ import Permission from '../../../../enumeration/permission'
 export default class EmergencyContactOrNextOfKinController implements PageHandler {
   public PAGE_NAME = Page.SELECT_EMERGENCY_CONTACT_OR_NEXT_OF_KIN
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<PrisonerJourneyParams, unknown, unknown>, res: Response): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { prisonerPermissions } = res.locals
     const view = {
       isOptional: true,
       journey,
@@ -24,7 +24,7 @@ export default class EmergencyContactOrNextOfKinController implements PageHandle
       continueButtonLabel: 'Continue',
       emergencyContact: journey.relationship?.isEmergencyContact,
       nextOfKin: journey.relationship?.isNextOfKin,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
     }
     res.render('pages/contacts/manage/contactDetails/relationship/manageNextOfKinAndEmergencyContact', view)
   }
@@ -35,10 +35,10 @@ export default class EmergencyContactOrNextOfKinController implements PageHandle
   ): Promise<void> => {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
-    const { user } = res.locals
+    const { prisonerPermissions } = res.locals
     const { emergencyContact, nextOfKin } = req.body
     journey.relationship!.isEmergencyContact = emergencyContact
     journey.relationship!.isNextOfKin = nextOfKin
-    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, user))
+    res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
   }
 }

@@ -3,14 +3,17 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { Cheerio, CheerioAPI } from 'cheerio'
 import { Element } from 'domhandler'
-import { adminUser, appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../../testutils/appSetup'
+import { adminUserPermissions, adminUser, appWithAllRoutes } from '../../../testutils/appSetup'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { Page } from '../../../../services/auditService'
 import { mockedReferenceData } from '../../../testutils/stubReferenceData'
 import { ContactAddressDetails } from '../../../../@types/contactsApiClient'
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
+import mockPermissions from '../../../testutils/mockPermissions'
+import Permission from '../../../../enumeration/permission'
 
+jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
@@ -36,6 +39,7 @@ beforeEach(() => {
     },
     userSupplier: () => currentUser,
   })
+  mockPermissions(app, adminUserPermissions)
 })
 
 afterEach(() => {
@@ -69,15 +73,12 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
     expect(contactsService.getContact).toHaveBeenCalledWith(1, adminUser)
   })
 
-  it.each([
-    [basicPrisonUser, 403],
-    [adminUser, 200],
-    [authorisingUser, 200],
-  ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-    currentUser = user
+  it('GET should block access without edit contacts permission', async () => {
+    mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
+
     await request(app)
       .get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details`)
-      .expect(expectedStatus)
+      .expect(403)
   })
 
   it('should have correct navigation', async () => {

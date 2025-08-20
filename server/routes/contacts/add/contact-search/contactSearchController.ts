@@ -16,7 +16,7 @@ export default class ContactSearchController implements PageHandler {
 
   public PAGE_NAME = Page.CONTACT_SEARCH_PAGE
 
-  public REQUIRED_PERMISSION = Permission.MANAGE_CONTACTS
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   private TABLE_ROW_COUNT = 10
 
@@ -25,7 +25,7 @@ export default class ContactSearchController implements PageHandler {
     res: Response,
   ): Promise<void> => {
     const { journeyId } = req.params
-    const { user } = res.locals
+    const { user, prisonerPermissions } = res.locals
     const journey = req.session.addContactJourneys![journeyId]!
 
     delete journey.isContactMatched
@@ -93,7 +93,7 @@ export default class ContactSearchController implements PageHandler {
       month: res.locals?.formResponses?.['month'] ?? month,
       year: res.locals?.formResponses?.['year'] ?? year,
       filter: dobError ? 'Filter cannot be applied' : hasDob && `${day}/${month}/${year}`,
-      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, user),
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
       sort: journey.searchContact?.sort,
       journey,
       results,
