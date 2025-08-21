@@ -43,10 +43,7 @@ const RestrictionsRoutes = (
     if (!schema && !noValidation) {
       throw Error('Missing validation schema for POST route')
     }
-    const getMiddleware = [
-      ensureInAddRestrictionJourney,
-      populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-    ]
+    const getMiddleware = [ensureInAddRestrictionJourney, populatePrisonerDetailsIfInCaseload(prisonerSearchService)]
     get(path, controller, ...getMiddleware)
     if (schema && !noValidation) {
       post(path, controller, ensureInAddRestrictionJourney, validate(schema))
@@ -75,7 +72,7 @@ const RestrictionsRoutes = (
   get(
     '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/success',
     new SuccessfullyAddedRestrictionController(contactsService),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService),
   )
 
   journeyRoute({
@@ -91,15 +88,11 @@ const RestrictionsRoutes = (
     restrictionsService,
     referenceDataService,
   )
-  get(
-    updateRestrictionsPath,
-    updateRestrictionsController,
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService),
-  )
+  get(updateRestrictionsPath, updateRestrictionsController, populatePrisonerDetailsIfInCaseload(prisonerSearchService))
   post(
     updateRestrictionsPath,
     updateRestrictionsController,
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService) as RequestHandler,
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService) as RequestHandler,
     validate(restrictionSchema()),
   )
 

@@ -137,7 +137,7 @@ const ManageContactsRoutes = (
       postMiddleware.push(validate(schema))
     }
     if (prisonerDetailsRequiredOnPost) {
-      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService) as RequestHandler)
+      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService) as RequestHandler)
     }
     post(path, controller, ...postMiddleware)
   }
@@ -169,12 +169,12 @@ const ManageContactsRoutes = (
       postMiddleware.push(validate(schema))
     }
     if (prisonerDetailsRequiredOnPost) {
-      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService) as RequestHandler)
+      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService) as RequestHandler)
     }
     post(path, controller, ...postMiddleware)
   }
 
-  router.get('/prisoner/:prisonerNumber/*any', populatePrisonerDetailsIfInCaseload(prisonerSearchService, auditService))
+  router.get('/prisoner/:prisonerNumber/*any', populatePrisonerDetailsIfInCaseload(prisonerSearchService))
 
   // List contacts for a prisoner
   standAloneRoute({
