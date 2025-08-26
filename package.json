@@ -102,8 +102,8 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.864.0",
-    "@cypress/code-coverage": "^3.14.5",
+    "@aws-sdk/client-sqs": "^3.872.0",
+    "@cypress/code-coverage": "^3.14.6",
     "@ministryofjustice/frontend": "^5.1.5",
     "@ministryofjustice/hmpps-auth-clients": "^0.0.1",
     "@ministryofjustice/hmpps-connect-dps-components": "^2.2.0",
@@ -128,7 +128,7 @@
     "domhandler": "^5.0.3",
     "express": "^5.1.0",
     "express-session": "^1.18.2",
-    "govuk-frontend": "^5.11.1",
+    "govuk-frontend": "^5.11.2",
     "helmet": "^8.1.0",
     "http-errors": "^2.0.0",
     "jwt-decode": "^4.0.0",
@@ -136,7 +136,7 @@
     "nunjucks": "^3.2.4",
     "passport": "^0.7.0",
     "passport-oauth2": "^1.8.0",
-    "redis": "^5.8.1",
+    "redis": "^5.8.2",
     "reflect-metadata": "^0.2.2",
     "superagent": "^10.2.3",
     "uuid": "^11.1.0",
