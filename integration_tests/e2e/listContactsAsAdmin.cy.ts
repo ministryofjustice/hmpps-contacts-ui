@@ -5,7 +5,7 @@ import { PagedModelPrisonerContactSummary, PrisonerContactSummary } from '../../
 import SearchContactPage from '../pages/searchContactPage'
 
 context('List contacts with Contacts Administrator or Authoriser roles', () => {
-  const prisoner = TestData.prisoner({ lastName: 'Prisoner', firstName: 'Test' })
+  const prisoner = TestData.prisoner({ lastName: 'Prisoner', firstName: 'Test', prisonId: 'KMI' })
 
   const minimalContact: PrisonerContactSummary = {
     prisonerContactId: 987654321,
@@ -190,5 +190,38 @@ context('List contacts with Contacts Administrator or Authoriser roles', () => {
       .clickButtonTo('Link contact', SearchContactPage)
       .clickLinkTo('Back to prisoner’s contact list', ListContactsPage, 'Test Prisoner')
       .clickLinkTo('Link a contact to this prisoner', SearchContactPage)
+  })
+
+  it("should allow to see prisoner contacts list if the prisoner is in the user's inactive caseload", () => {
+    const prisonerInInactiveCaseLoad = TestData.prisoner({
+      lastName: 'Prisoner',
+      firstName: 'Inactive Caseload',
+      prisonId: 'KMI',
+    })
+    const initialPage: PagedModelPrisonerContactSummary = {
+      content: [
+        contactInactive,
+        contactOne,
+        contactTwo,
+        contactThree,
+        contactFour,
+        contactFive,
+        contactSix,
+        contactSeven,
+        contactEight,
+        contactNine,
+      ],
+      page: { totalElements: 13, totalPages: 2, size: 10, number: 0 },
+    }
+
+    cy.task('stubPrisonerById', prisonerInInactiveCaseLoad)
+    cy.task('stubFilteredContactList', {
+      prisonerNumber: prisonerInInactiveCaseLoad.prisonerNumber,
+      page: initialPage,
+    })
+
+    cy.signIn({ startUrl: `/prisoner/${prisonerInInactiveCaseLoad.prisonerNumber}/contacts/list` })
+
+    Page.verifyOnPage(ListContactsPage, 'Inactive Caseload Prisoner')
   })
 })

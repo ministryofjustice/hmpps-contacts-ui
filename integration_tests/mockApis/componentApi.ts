@@ -20,6 +20,13 @@ const componentsNoServices: HeaderFooterSharedData = {
       type: 'INST',
       caseloadFunction: 'GENERAL',
     },
+    {
+      caseLoadId: 'KMI',
+      currentlyActive: false,
+      description: 'HMP Hewell',
+      type: 'INST',
+      caseloadFunction: 'GENERAL',
+    },
   ],
   allocationJobResponsibilities: [],
   services: [],
