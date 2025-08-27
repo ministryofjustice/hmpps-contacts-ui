@@ -5,7 +5,7 @@ import { PagedModelPrisonerContactSummary, PrisonerContactSummary } from '../../
 import SearchContactPage from '../pages/searchContactPage'
 
 context('List contacts with Contacts Administrator or Authoriser roles', () => {
-  const prisoner = TestData.prisoner({ lastName: 'Prisoner', firstName: 'Test', prisonId: 'KMI' })
+  const prisoner = TestData.prisoner({ lastName: 'Prisoner', firstName: 'Test' })
 
   const minimalContact: PrisonerContactSummary = {
     prisonerContactId: 987654321,
