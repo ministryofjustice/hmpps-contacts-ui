@@ -29,6 +29,7 @@ export const basicPrisonUser: HmppsUser = {
   authSource: 'nomis',
   staffId: 1234,
   userRoles: [],
+  activeCaseLoadId: 'HEI',
 }
 
 export const readOnlyPermissions: Record<PrisonerPermission, boolean> = { [Permission.read_contacts]: true } as Record<

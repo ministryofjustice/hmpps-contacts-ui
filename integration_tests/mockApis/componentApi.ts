@@ -23,7 +23,7 @@ const componentsNoServices: HeaderFooterSharedData = {
     {
       caseLoadId: 'KMI',
       currentlyActive: false,
-      description: 'HMP Hewell',
+      description: 'Kirkham (HMP)',
       type: 'INST',
       caseloadFunction: 'GENERAL',
     },
