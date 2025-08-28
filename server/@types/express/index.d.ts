@@ -1,6 +1,7 @@
 import CaseLoad from '@ministryofjustice/hmpps-connect-dps-components/dist/types/CaseLoad'
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import { fieldErrors } from '../../middleware/validationMiddleware'
+import { Prisoner } from '../../data/prisonerOffenderSearchTypes'
 import {
   AddContactJourney,
   AddressJourney,
@@ -40,6 +41,9 @@ export declare global {
       verified?: boolean
       id: string
       logout(done: (err: unknown) => void): void
+      middleware?: {
+        prisonerData?: Prisoner
+      }
     }
 
     interface Locals {

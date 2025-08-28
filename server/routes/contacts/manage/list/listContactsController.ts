@@ -53,7 +53,7 @@ export default class ListContactsController implements PageHandler {
     res: Response,
   ): Promise<void> => {
     const { user } = res.locals
-    const prisonerPrisonId = user.activeCaseLoadId
+    const prisonerPrisonId = req.middleware?.prisonerData?.prisonId
     const { prisonerNumber } = req.params
     const { query } = req
     const page = query.page && !Number.isNaN(Number(query.page)) ? Number(query.page) : 1
