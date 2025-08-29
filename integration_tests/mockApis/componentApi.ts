@@ -20,6 +20,13 @@ const componentsNoServices: HeaderFooterSharedData = {
       type: 'INST',
       caseloadFunction: 'GENERAL',
     },
+    {
+      caseLoadId: 'KMI',
+      currentlyActive: false,
+      description: 'Kirkham (HMP)',
+      type: 'INST',
+      caseloadFunction: 'GENERAL',
+    },
   ],
   allocationJobResponsibilities: [],
   services: [],

@@ -1,32 +1,14 @@
 import { Request } from 'express'
-import { AuditService, PrisonerSearchService } from '../services'
+import { PrisonerSearchService } from '../services'
 import { Prisoner } from '../data/prisonerOffenderSearchTypes'
 import asyncMiddleware from './asyncMiddleware'
 import { PrisonerDetails } from '../@types/journeys'
 
-const populatePrisonerDetailsIfInCaseload = (
-  prisonerSearchService: PrisonerSearchService,
-  auditService: AuditService,
-) => {
+const populatePrisonerDetailsIfInCaseload = (prisonerSearchService: PrisonerSearchService) => {
   return asyncMiddleware(async (req: Request<{ prisonerNumber: string }>, res, next) => {
     const { prisonerNumber } = req.params
     const { user } = res.locals
     return prisonerSearchService.getByPrisonerNumber(prisonerNumber, user).then((prisoner: Prisoner) => {
-      if (!req.session.activeCaseLoadId || req.session.activeCaseLoadId !== prisoner.prisonId) {
-        auditService.logAuditEvent({
-          what: 'NOT_IN_CASELOAD',
-          who: user.username,
-          correlationId: req.id,
-          subjectType: 'PRISONER_NUMBER',
-          subjectId: prisonerNumber,
-          details: {
-            userCurrentPrison: req.session.activeCaseLoadId,
-            prisonerCurrentPrison: prisoner.prisonId,
-          },
-        })
-        return res.status(404).render('pages/errors/notFound')
-      }
-
       res.locals.prisonerDetails = toPrisonerDetails(prisoner)
       return next()
     })

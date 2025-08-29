@@ -17,6 +17,7 @@ import setUpAuth from '../../middleware/setUpAuthentication'
 import { MockedService } from '../../testutils/mockedServices'
 import { auditPageViewMiddleware } from '../../middleware/auditPageViewMiddleware'
 import Permission from '../../enumeration/permission'
+import { prisonerMock } from './PrisonerMocks'
 
 jest.mock('../../services/auditService')
 
@@ -108,6 +109,7 @@ function appSetup(
       ...res.locals,
       user: { ...req.user } as HmppsUser,
     }
+    req.middleware = { prisonerData: prisonerMock }
     req.session.activeCaseLoadId = 'HEI'
     req.session.activeCaseLoad = {
       caseLoadId: 'HEI',
