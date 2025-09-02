@@ -372,7 +372,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
       const deleteRelationshipText = $('[data-qa="delete-relationship-link"]').text().trim()
       expect(deleteRelationshipText).toContain('Delete this relationship')
       expect($('[data-qa="delete-relationship-link"]').attr('href')).toStrictEqual(
-        `/prisoner/${prisonerNumber}/contacts/manage/22/relationship/99/delete?backTo=edit-contact-details`,
+        `/prisoner/${prisonerNumber}/contacts/manage/22/relationship/99/delete`,
       )
     })
 

@@ -112,7 +112,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
       // When
       const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/delete?backTo=${backTo}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/delete`,
       )
       const $ = cheerio.load(response.text)
 
@@ -130,7 +130,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
         ' Warning Only delete a relationship if it never existed. If a relationship did exist but is no longer active, mark it as inactive. The contact record for First Middle Names Last will stay on the system, but this relationship will be deleted from Person Prison’s contact list. ',
       )
       expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
-      expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(expectedBackLink)
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
       expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Yes, delete')
       const cancelButton = $('[data-qa=cancel-button]').first()
@@ -165,7 +164,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
       // When
       const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/delete?backTo=${backTo}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/delete`,
       )
       const $ = cheerio.load(response.text)
 
@@ -179,7 +178,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
         'You cannot delete the record of this relationship as it includes information about relationship restrictions',
       )
       expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
-      expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(expectedBackLink)
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
       expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
       expect($('[data-qa=cancel-button]')).toHaveLength(0)
