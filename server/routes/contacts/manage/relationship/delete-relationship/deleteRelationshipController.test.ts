@@ -125,6 +125,10 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       expect($('[data-qa=main-heading]').first().text().trim()).toBe(
         'Are you sure you want to delete this relationship between First Middle Names Last and the prisoner Person Prison?',
       )
+      const text = $('[data-qa=relationship-delete-warning] .govuk-warning-text__text').text().replace(/\s+/g, ' ')
+      expect(text).toContain(
+        ' Warning Only delete a relationship if it never existed. If a relationship did exist but is no longer active, mark it as inactive. The contact record for First Middle Names Last will stay on the system, but this relationship will be deleted from Person Prison’s contact list. ',
+      )
       expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
       expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(expectedBackLink)
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)

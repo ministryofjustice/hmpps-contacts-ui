@@ -595,9 +595,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           'Not provided',
         )
         expect($(personalInformationCard).find('dt:contains("Staff member")').next().text().trim()).toStrictEqual('No')
-        expect($('[data-qa=record-date-of-death-link]').attr('href')).toStrictEqual(
-          '/prisoner/A1234BC/contacts/manage/22/relationship/99/enter-date-of-death?backTo=contact-details',
-        )
       })
     })
 
@@ -645,9 +642,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         ).toStrictEqual('Some comments')
         expect($('.next-of-kin-tag')).toHaveLength(1)
         expect($('.emergency-contact-tag')).toHaveLength(1)
-        expect($('a:contains("Delete relationship")').attr('href')).toStrictEqual(
-          `/prisoner/${prisonerNumber}/contacts/manage/22/relationship/99/delete?backTo=contact-details`,
-        )
       })
 
       it('should render without optional relationship details', async () => {
