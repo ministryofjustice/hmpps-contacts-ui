@@ -168,6 +168,11 @@ export default class EditContactDetailsPage extends Page {
     cy.findByRole('link', { name: 'Delete the contact’s date of birth (Personal information)' }).click()
   }
 
+  clickDeleteRelationshipLink() {
+    this.deleteRelationshipLink().click()
+    return this
+  }
+
   private titleHeading = (): PageElement => cy.findByText('Title')
 
   private titleValue = (): PageElement => this.titleHeading().next()
@@ -276,4 +281,6 @@ export default class EditContactDetailsPage extends Page {
 
   private deleteDateOfDeathLink = (): PageElement =>
     cy.findByRole('link', { name: 'Delete the contact’s date of death (Personal information)' })
+
+  private deleteRelationshipLink = (): PageElement => cy.get('[data-qa="delete-relationship-link"]')
 }
