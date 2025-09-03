@@ -95,95 +95,83 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/delete', () => {
-  const backLinkCases = [
-    ['contact-details', '/prisoner/A1234BC/contacts/manage/5454312/relationship/12232'],
-    ['edit-contact-details', '/prisoner/A1234BC/contacts/manage/5454312/relationship/12232/edit-contact-details'],
-    ['gibberish', '/prisoner/A1234BC/contacts/manage/5454312/relationship/12232/edit-contact-details'],
-  ]
+  it('should render delete page when there are some relationship restrictions with correct back link for %s', async () => {
+    // Given
+    contactsService.planDeleteContactRelationship.mockResolvedValue({
+      willAlsoDeleteContactDob: false,
+      hasRestrictions: false,
+    })
 
-  it.each(backLinkCases)(
-    'should render delete page when there are some relationship restrictions with correct back link for %s',
-    async (backTo, expectedBackLink) => {
-      // Given
-      contactsService.planDeleteContactRelationship.mockResolvedValue({
-        willAlsoDeleteContactDob: false,
-        hasRestrictions: false,
-      })
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/delete`,
+    )
+    const $ = cheerio.load(response.text)
 
-      // When
-      const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/delete`,
-      )
-      const $ = cheerio.load(response.text)
+    // Then
+    expect(response.status).toEqual(200)
+    expect($('title').text()).toStrictEqual(
+      'Are you sure you want to delete a relationship? - Edit contact details - DPS',
+    )
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Manage contacts')
+    expect($('[data-qa=main-heading]').first().text().trim()).toBe(
+      'Are you sure you want to delete this relationship between First Middle Names Last and the prisoner Person Prison?',
+    )
+    const text = $('[data-qa=relationship-delete-warning] .govuk-warning-text__text').text().replace(/\s+/g, ' ')
+    expect(text).toContain(
+      ' Warning Only delete a relationship if it never existed. If a relationship did exist but is no longer active, mark it as inactive. The contact record for First Middle Names Last will stay on the system, but this relationship will be deleted from Person Prison’s contact list. ',
+    )
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Yes, delete')
+    const cancelButton = $('[data-qa=cancel-button]').first()
+    expect(cancelButton.attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/manage/5454312/relationship/12232')
+    expect(cancelButton.text().trim()).toStrictEqual('No, do not delete')
 
-      // Then
-      expect(response.status).toEqual(200)
-      expect($('title').text()).toStrictEqual(
-        'Are you sure you want to delete a relationship? - Edit contact details - DPS',
-      )
-      expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Manage contacts')
-      expect($('[data-qa=main-heading]').first().text().trim()).toBe(
-        'Are you sure you want to delete this relationship between First Middle Names Last and the prisoner Person Prison?',
-      )
-      const text = $('[data-qa=relationship-delete-warning] .govuk-warning-text__text').text().replace(/\s+/g, ' ')
-      expect(text).toContain(
-        ' Warning Only delete a relationship if it never existed. If a relationship did exist but is no longer active, mark it as inactive. The contact record for First Middle Names Last will stay on the system, but this relationship will be deleted from Person Prison’s contact list. ',
-      )
-      expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
-      expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-      expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Yes, delete')
-      const cancelButton = $('[data-qa=cancel-button]').first()
-      expect(cancelButton.attr('href')).toStrictEqual('/prisoner/A1234BC/contacts/manage/5454312/relationship/12232')
-      expect(cancelButton.text().trim()).toStrictEqual('No, do not delete')
+    expect($('[data-qa=relationship-delete-warning]')).toHaveLength(1)
 
-      expect($('[data-qa=relationship-delete-warning]')).toHaveLength(1)
+    // check it chose the correct relationship from all summaries
+    const rows = $('#prisoner-contact-list tbody tr')
+    const firstRowColumns = rows.eq(0).find('td')
+    const lines = firstRowColumns.eq(2).text().trim().split(/\r?\n/)
+    expect(lines).toHaveLength(1)
+    expect(lines[0]!.trim()).toStrictEqual('Friend')
 
-      // check it chose the correct relationship from all summaries
-      const rows = $('#prisoner-contact-list tbody tr')
-      const firstRowColumns = rows.eq(0).find('td')
-      const lines = firstRowColumns.eq(2).text().trim().split(/\r?\n/)
-      expect(lines).toHaveLength(1)
-      expect(lines[0]!.trim()).toStrictEqual('Friend')
+    const contactLinks = $('[data-qa=contact-5454312-link]')
+    expect(contactLinks).toHaveLength(1)
+    expect(contactLinks.first().attr('href')).toStrictEqual(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
+    )
+  })
 
-      const contactLinks = $('[data-qa=contact-5454312-link]')
-      expect(contactLinks).toHaveLength(1)
-      expect(contactLinks.first().attr('href')).toStrictEqual(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
-      )
-    },
-  )
+  it('should render delete page when there are no relationship restrictions with correct back link for %s', async () => {
+    // Given
+    contactsService.planDeleteContactRelationship.mockResolvedValue({
+      willAlsoDeleteContactDob: false,
+      hasRestrictions: true,
+    })
 
-  it.each(backLinkCases)(
-    'should render delete page when there are no relationship restrictions with correct back link for %s',
-    async (backTo, expectedBackLink) => {
-      // Given
-      contactsService.planDeleteContactRelationship.mockResolvedValue({
-        willAlsoDeleteContactDob: false,
-        hasRestrictions: true,
-      })
+    // When
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/delete`,
+    )
+    const $ = cheerio.load(response.text)
 
-      // When
-      const response = await request(app).get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/delete`,
-      )
-      const $ = cheerio.load(response.text)
-
-      // Then
-      expect(response.status).toEqual(200)
-      expect($('title').text()).toStrictEqual(
-        'You cannot delete the record of the relationship as it includes information about relationship restrictions - Edit contact details - DPS',
-      )
-      expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Manage contacts')
-      expect($('[data-qa=main-heading]').first().text().trim()).toBe(
-        'You cannot delete the record of this relationship as it includes information about relationship restrictions',
-      )
-      expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
-      expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-      expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
-      expect($('[data-qa=cancel-button]')).toHaveLength(0)
-      expect($('[data-qa=relationship-delete-warning]')).toHaveLength(0)
-    },
-  )
+    // Then
+    expect(response.status).toEqual(200)
+    expect($('title').text()).toStrictEqual(
+      'You cannot delete the record of the relationship as it includes information about relationship restrictions - Edit contact details - DPS',
+    )
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Manage contacts')
+    expect($('[data-qa=main-heading]').first().text().trim()).toBe(
+      'You cannot delete the record of this relationship as it includes information about relationship restrictions',
+    )
+    expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
+    expect($('[data-qa=cancel-button]')).toHaveLength(0)
+    expect($('[data-qa=relationship-delete-warning]')).toHaveLength(0)
+  })
 
   it('should audit the page view', async () => {
     // Given
