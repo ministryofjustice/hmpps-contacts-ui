@@ -22,7 +22,6 @@ export default class DeleteRelationshipController implements PageHandler {
   ): Promise<void> => {
     const { user } = res.locals
     const { prisonerNumber, contactId, prisonerContactId } = req.params
-    const { backTo } = req.query
     const contact = await this.contactsService.getContactName(Number(contactId), user)
     const summary = await this.contactsService
       .getAllSummariesForPrisonerAndContact(prisonerNumber, Number(contactId), user)
@@ -33,10 +32,7 @@ export default class DeleteRelationshipController implements PageHandler {
     const plan = await this.contactsService.planDeleteContactRelationship(Number(prisonerContactId), user)
 
     const navigation: Navigation = {
-      backLink:
-        backTo && backTo === 'contact-details'
-          ? Urls.contactDetails(prisonerNumber, contactId, prisonerContactId)
-          : Urls.editContactDetails(prisonerNumber, contactId, prisonerContactId),
+      backLink: Urls.editContactDetails(prisonerNumber, contactId, prisonerContactId),
       cancelButton: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
     }
     const viewModel = {

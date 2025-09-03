@@ -369,8 +369,10 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         '/prisoner/A1234BC/contacts/manage/22/relationship/99/relationship-comments',
         'Change the comments on the relationship (Relationship to prisoner Incarcerated Individual)',
       )
-      expect($('a:contains("Delete relationship")').attr('href')).toStrictEqual(
-        `/prisoner/${prisonerNumber}/contacts/manage/22/relationship/99/delete?backTo=edit-contact-details`,
+      const deleteRelationshipText = $('[data-qa="delete-relationship-link"]').text().trim()
+      expect(deleteRelationshipText).toContain('Delete this relationship')
+      expect($('[data-qa="delete-relationship-link"]').attr('href')).toStrictEqual(
+        `/prisoner/${prisonerNumber}/contacts/manage/22/relationship/99/delete`,
       )
     })
 

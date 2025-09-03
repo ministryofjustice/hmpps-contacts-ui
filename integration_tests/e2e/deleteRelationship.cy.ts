@@ -103,13 +103,12 @@ context('Delete Relationship', () => {
     })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickLinkTo(
-        'Delete relationship (Relationship to prisoner John Smith)',
-        DeleteRelationshipPage,
-        true,
-        'John Smith',
-        'First Middle Names Last',
-      )
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickDeleteRelationshipLink()
+
+    Page.verifyOnPage(DeleteRelationshipPage, true, 'John Smith', 'First Middle Names Last') //
       .clickButtonTo('Yes, delete', ListContactsPage, 'John Smith')
       .hasSuccessBanner('You’ve deleted a relationship from John Smith’s contact list.')
 
@@ -143,13 +142,12 @@ context('Delete Relationship', () => {
     })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickLinkTo(
-        'Delete relationship (Relationship to prisoner John Smith)',
-        DeleteRelationshipPage,
-        false,
-        'John Smith',
-        'First Middle Names Last',
-      )
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickDeleteRelationshipLink()
+
+    Page.verifyOnPage(DeleteRelationshipPage, false, 'John Smith', 'First Middle Names Last') //
       .selectBlockedAction('GO_TO_CONTACT_LIST')
       .clickButtonTo('Continue', ListContactsPage, 'John Smith')
 
@@ -183,13 +181,12 @@ context('Delete Relationship', () => {
     })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickLinkTo(
-        'Delete relationship (Relationship to prisoner John Smith)',
-        DeleteRelationshipPage,
-        false,
-        'John Smith',
-        'First Middle Names Last',
-      )
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickDeleteRelationshipLink()
+
+    Page.verifyOnPage(DeleteRelationshipPage, false, 'John Smith', 'First Middle Names Last') //
       .selectBlockedAction('GO_TO_CONTACT_RECORD')
       .clickButtonTo('Continue', ManageContactDetailsPage, 'First Middle Names Last')
 
@@ -223,26 +220,18 @@ context('Delete Relationship', () => {
     })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickLinkTo(
-        'Delete relationship (Relationship to prisoner John Smith)',
-        DeleteRelationshipPage,
-        true,
-        'John Smith',
-        'First Middle Names Last',
-      )
-      .backTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .clickLinkTo('Edit contact details', EditContactDetailsPage, 'First Middle Names Last')
-      .clickLinkTo(
-        'Delete relationship (Relationship to prisoner John Smith)',
-        DeleteRelationshipPage,
-        true,
-        'John Smith',
-        'First Middle Names Last',
-      )
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickDeleteRelationshipLink()
+
+    Page.verifyOnPage(DeleteRelationshipPage, true, 'John Smith', 'First Middle Names Last') //
+      .backTo(EditContactDetailsPage, 'First Middle Names Last')
+      .clickDeleteRelationshipLink()
       .backTo(EditContactDetailsPage, 'First Middle Names Last')
   })
 
-  it('Cancel goes back to manage contact', () => {
+  it('Cancel goes back to edit contact', () => {
     cy.task('stubGetPrisonerContactRestrictions', {
       prisonerContactId,
       response: {
@@ -263,13 +252,12 @@ context('Delete Relationship', () => {
     })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickLinkTo(
-        'Delete relationship (Relationship to prisoner John Smith)',
-        DeleteRelationshipPage,
-        true,
-        'John Smith',
-        'First Middle Names Last',
-      )
+      .clickEditContactDetailsLink()
+
+    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
+      .clickDeleteRelationshipLink()
+
+    Page.verifyOnPage(DeleteRelationshipPage, true, 'John Smith', 'First Middle Names Last') //
       .clickButtonTo('No, do not delete', ManageContactDetailsPage, 'First Middle Names Last')
   })
 })

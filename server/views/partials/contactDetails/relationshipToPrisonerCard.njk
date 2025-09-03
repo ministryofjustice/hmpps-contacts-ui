@@ -20,16 +20,6 @@
       classes: 'summary-card-wider-key-column',
       title: {
         text: 'Relationship to prisoner ' + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)
-      },
-      actions: {
-        items: [
-          {
-            href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/"  + relationship.prisonerContactId + "/delete?backTo=" + ('edit-contact-details' if showActions else 'contact-details'),
-            text: "Delete relationship",
-            attributes: {"data-qa": "delete-relationship-link"},
-            classes: "govuk-link--no-visited-state"
-          }
-        ]
       }
     },
     rows: [
@@ -165,7 +155,12 @@
             }
           ] if showActions else []
         }
-      }
+      },
+      {
+        key: {
+          html: '<a data-qa="delete-relationship-link" class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-regular" href="/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/manage/' + contact.id + '/relationship/' + relationship.prisonerContactId + '/delete">Delete this relationship</a>'
+        }
+      } if showActions
     ]
   }) }}
 

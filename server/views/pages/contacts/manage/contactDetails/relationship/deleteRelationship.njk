@@ -29,7 +29,7 @@
           }) }}
         {% else %}
           {{ govukWarningText({
-            html: 'The contact record for ' + (contact | formatNameFirstNameFirst) + ' will stay on the system, but this relationship will be deleted from ' + ( prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) ) + '’s contact list.',
+            html: 'Only delete a relationship if it never existed. If a relationship did exist but is no longer active, mark it as inactive. <br/><br/>The contact record for ' + (contact | formatNameFirstNameFirst) + ' will stay on the system, but this relationship will be deleted from ' + ( prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) ) + '’s contact list.',
             iconFallbackText: "Warning",
             attributes: {"data-qa": "relationship-delete-warning"}
           }) }}
