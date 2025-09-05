@@ -21,7 +21,7 @@ generic-service:
     ENVIRONMENT_NAME: PRE-PRODUCTION
     SENTRY_ENVIRONMENT: PRE-PRODUCTION
     AUDIT_ENABLED: 'false'
-    FEATURE_ENABLED_PRISONS: 'KMI,GNI,SPI,LGI,DWI,HOI,WWI,LEI'
+    FEATURE_ENABLED_PRISONS: 'KMI,GNI,SPI,LGI,DWI,HOI,WWI,LEI,LWI,BWI'
 
 generic-prometheus-alerts:
   alertSeverity: hmpps-contacts-ui-non-prod
