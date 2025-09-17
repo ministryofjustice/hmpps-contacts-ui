@@ -5,7 +5,7 @@
 
 {% set mainClasses = "app-container govuk-body" %}
 
-{% set pageTitle = "Review prisoner and contact restrictions - Manage contacts - DPS" %}
+{% set pageTitle = "Review prisoner restrictions and alerts - Manage contacts - DPS" %}
 {% block content %}
 
   <div class="govuk-grid-row">
@@ -14,7 +14,7 @@
         <h1 class="govuk-heading-l" data-qa="prisoner-restrictions-heading">{{ prisonerDetails | formatNameFirstNameFirst(possessiveSuffix = true, excludeMiddleNames = true) }} prisoner restrictions</h1>
       <div class="summary-card-wider-key-column">
         {{ restrictionsReviewTable({
-        restrictionClass: 'CONTACT_GLOBAL',
+        restrictionClass: 'prisoner-restrictions',
         restrictions: prisonerRestrictions,
         prisonerDetails: prisonerDetails
         }) }}
@@ -29,7 +29,7 @@
         <h1 class="govuk-heading-l" data-qa="prisoner-alerts-heading">{{ prisonerDetails  | formatNameFirstNameFirst(possessiveSuffix = true, excludeMiddleNames = true) }} prisoner alerts</h1>
       <div class="summary-card-wider-key-column">
         {{ restrictionsReviewTable({
-        restrictionClass: 'PRISONER_CONTACT',
+        restrictionClass: 'prisoner-alerts',
         restrictions: prisonerAlerts,
         prisonerDetails: prisonerDetails,
         hideTableTitle: true,
