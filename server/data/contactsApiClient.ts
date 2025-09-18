@@ -153,6 +153,7 @@ export default class ContactsApiClient extends RestClient {
           middleNames: contactSearchRequest.middleNames,
           dateOfBirth: contactSearchRequest.dateOfBirth,
           includeAnyExistingRelationshipsToPrisoner: contactSearchRequest.includeAnyExistingRelationshipsToPrisoner,
+          soundsLike: contactSearchRequest.soundsLike,
           ...paginationParameters,
         },
       },
