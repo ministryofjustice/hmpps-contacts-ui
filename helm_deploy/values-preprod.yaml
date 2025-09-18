@@ -17,6 +17,7 @@ generic-service:
     PRISON_API_URL: 'https://prison-api-preprod.prison.service.justice.gov.uk'
     CONTACTS_API_URL: 'https://personal-relationships-api-preprod.hmpps.service.justice.gov.uk'
     ORGANISATIONS_API_URL: 'https://organisations-api-preprod.hmpps.service.justice.gov.uk'
+    ALERTS_API_URL: 'https://alerts-api-preprod.hmpps.service.justice.gov.uk'
     COMMON_COMPONENTS_ENABLED: true
     ENVIRONMENT_NAME: PRE-PRODUCTION
     SENTRY_ENVIRONMENT: PRE-PRODUCTION

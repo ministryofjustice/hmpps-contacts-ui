@@ -1,0 +1,45 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "partials/restrictionsReviewTable.njk" import restrictionsReviewTable %}
+
+{% set mainClasses = "app-container govuk-body" %}
+
+{% set pageTitle = "Review prisoner restrictions and alerts - Manage contacts - DPS" %}
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-summary-card">
+    <div class="govuk-!-margin-left-6 govuk-!-margin-top-6">
+        <h1 class="govuk-heading-l" data-qa="prisoner-restrictions-heading">{{ prisonerDetails | formatNameFirstNameFirst(possessiveSuffix = true, excludeMiddleNames = true) }} prisoner restrictions</h1>
+      <div class="summary-card-wider-key-column">
+        {{ restrictionsReviewTable({
+        restrictionClass: 'prisoner-restrictions',
+        restrictions: prisonerRestrictions,
+        prisonerDetails: prisonerDetails
+        }) }}
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-summary-card">
+    <div class="govuk-!-margin-left-6 govuk-!-margin-top-6">
+        <h1 class="govuk-heading-l" data-qa="prisoner-alerts-heading">{{ prisonerDetails  | formatNameFirstNameFirst(possessiveSuffix = true, excludeMiddleNames = true) }} prisoner alerts</h1>
+      <div class="summary-card-wider-key-column">
+        {{ restrictionsReviewTable({
+        restrictionClass: 'prisoner-alerts',
+        restrictions: prisonerAlerts,
+        prisonerDetails: prisonerDetails,
+        hideTableTitle: true,
+        itemType: 'alerts'
+        }) }}
+      </div>
+    </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+
