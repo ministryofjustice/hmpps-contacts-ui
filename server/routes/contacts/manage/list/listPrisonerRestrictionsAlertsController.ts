@@ -5,7 +5,6 @@ import Permission from '../../../../enumeration/permission'
 import ContactsService from '../../../../services/contactsService'
 import AlertsService from '../../../../services/alertsService'
 import { PageAlert } from '../../../../data/alertsApiTypes'
-import { Navigation } from '../../common/navigation'
 
 export default class ListPrisonerRestrictionsAlertsController implements PageHandler {
   constructor(
@@ -31,14 +30,13 @@ export default class ListPrisonerRestrictionsAlertsController implements PageHan
     const prisonerAlertsContent: PageAlert = await this.alertsService.getAlerts(prisonerNumber, user)
     const prisonerRestrictions = prisonerRestrictionsContent.content
     const prisonerAlerts = prisonerAlertsContent.content
-    const navigation: Navigation = { breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'] }
+
     const viewModel = {
       caption: 'Link a contact to a prisoner',
       title: 'Review prisoner and contact restrictions',
       prisonerDetails,
       prisonerRestrictions,
       prisonerAlerts,
-      navigation,
     }
 
     res.render('pages/contacts/restrictions/reviewRestrictions', viewModel)
