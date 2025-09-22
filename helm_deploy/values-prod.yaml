@@ -18,7 +18,7 @@ generic-service:
     ALERTS_API_URL: 'https://alerts-api.hmpps.service.justice.gov.uk'
     COMMON_COMPONENTS_ENABLED: true
     SENTRY_ENVIRONMENT: PRODUCTION
-    FEATURE_ENABLED_PRISONS: 'KMI,GNI,SPI,LGI,DWI,HOI,WWI,LEI,LWI,BWI,BLI,SLI'
+    FEATURE_ENABLED_PRISONS: 'KMI,GNI,SPI,LGI,DWI,HOI,WWI,LEI,LWI,BWI,BLI,SLI,IWI'
     AUDIT_ENABLED: 'false'
 
 generic-prometheus-alerts:
