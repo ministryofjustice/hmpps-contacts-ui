@@ -264,6 +264,71 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect(warningText).toMatch(/You still need to use NOMIS to view and manage prisoner restrictions./)
     })
 
+    it('should render restrictions tab with global and prisoner-contact restrictions with no restrictions admin role', async () => {
+      currentUser = authorisingUser
+
+      mockPermissions(app, { [Permission.read_contacts]: true })
+
+      restrictionsService.getRelationshipAndGlobalRestrictions.mockResolvedValue({
+        prisonerContactRestrictions: [TestData.getPrisonerContactRestrictionDetails()],
+        contactGlobalRestrictions: [
+          TestData.getContactRestrictionDetails({
+            contactRestrictionId: 2,
+            startDate: '2024-01-02',
+            createdTime: '2024-08-01T09:00:00.000000',
+            restrictionType: 'CCTV',
+            restrictionTypeDescription: 'Keep under CCTV supervision',
+          }),
+        ],
+      })
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+      // Then
+      expect(response.status).toEqual(200)
+      expect(auditService.logPageView).toHaveBeenCalledWith(Page.CONTACT_DETAILS_PAGE, {
+        who: authorisingUser.username,
+        correlationId: expect.any(String),
+        details: {
+          contactId: '1',
+          prisonerContactId: '99',
+          prisonerNumber: 'A1234BC',
+        },
+      })
+
+      const $ = cheerio.load(response.text)
+      expect(response.status).toEqual(200)
+
+      expect($('.restrictions-tab-title').text().trim()).toStrictEqual('Restrictions (2)')
+      expect($('[data-qa=no-manage-permission-role-hint]').text().trim()).toStrictEqual(
+        'You need the Contacts Authoriser role to manage restrictions in DPS.',
+      )
+      expect($('.restrictions-caption-PRISONER_CONTACT').text()).toStrictEqual(
+        'These restrictions apply to the relationship between prisoner John Smith and contact First Middle Names Last.',
+      )
+      expect($('.restrictions-caption-CONTACT_GLOBAL').text()).toStrictEqual(
+        'These restrictions apply to contact First Middle Names Last across the whole prison estate.',
+      )
+
+      const relationshipRestrictionTitleText = $('[data-qa="PRISONER_CONTACT-1-type-value"]').text().trim()
+      expect(relationshipRestrictionTitleText).toContain('Child Visitors to be Vetted')
+      expect($('[data-qa="PRISONER_CONTACT-1-start-date-value"]').text().trim()).toStrictEqual('1/1/2024')
+      expect($('[data-qa="PRISONER_CONTACT-1-expiry-date-value"]').text().trim()).toStrictEqual('1/8/2050')
+      expect($('[data-qa="PRISONER_CONTACT-1-entered-by-value"]').text().trim()).toStrictEqual('User One')
+      expect($('[data-qa="PRISONER_CONTACT-1-comments-value"]').text().trim()).toStrictEqual('Keep an eye')
+
+      const globalRestrictionTitleText = $('[data-qa="CONTACT_GLOBAL-2-type-value"]').text().trim()
+      expect(globalRestrictionTitleText).toContain('Keep under CCTV supervision')
+      expect($('[data-qa="CONTACT_GLOBAL-2-start-date-value"]').text().trim()).toStrictEqual('2/1/2024')
+      expect($('[data-qa="CONTACT_GLOBAL-2-expiry-date-value"]').text().trim()).toStrictEqual('1/8/2050')
+      expect($('[data-qa="CONTACT_GLOBAL-2-entered-by-value"]').text().trim()).toStrictEqual('User One')
+      expect($('[data-qa="CONTACT_GLOBAL-2-comments-value"]').text().trim()).toStrictEqual('Keep an eye')
+
+      const warningText = $('[data-qa=restrictions-warning]').text().trim()
+      expect(warningText).toMatch(/Prisoner restrictions are not yet available in DPS/)
+      expect(warningText).toMatch(/You still need to use NOMIS to view and manage prisoner restrictions./)
+    })
+
     it('should render global restrictions tab with expired restrictions', async () => {
       // Given
       currentUser = authorisingUser
