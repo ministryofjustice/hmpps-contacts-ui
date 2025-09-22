@@ -9,7 +9,6 @@ export interface AddContactJourney {
   mode?: 'EXISTING' | 'NEW' | undefined
   searchContact?:
     | {
-        soundsLike?: boolean | undefined
         contact?: Partial<ContactNames>
         dateOfBirth?: Partial<DateOfBirth>
         page?: number
@@ -89,7 +88,6 @@ export interface ManageContactsJourney {
   searchContact?: {
     contact?: Partial<ContactNames>
     dateOfBirth?: Partial<DateOfBirth>
-    soundsLike?: boolean
   }
   contactId?: number
   activateListPage?: number

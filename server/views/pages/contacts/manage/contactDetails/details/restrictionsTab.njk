@@ -9,14 +9,12 @@
   <div class="moj-page-header-actions__actions">
     <div class="moj-button-group moj-button-group--inline">
        {% if isGranted(PersonalRelationshipsPermission.edit_contact_restrictions, prisonerPermissions) %}
-          {% if prisonerContactRestrictions.length or contactGlobalRestrictions.length %}
+         {% if prisonerContactRestrictions.length or contactGlobalRestrictions.length %}
             {% set editLinkText = 'Add or update restrictions' %}
           {% else %}
             {% set editLinkText = 'Add restrictions' %}
           {% endif %}
          <a class="govuk-link govuk-link--no-visited-state" data-qa="edit-restrictions-link" href="{{ "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/manage/" + contactId + "/relationship/" + prisonerContactId + "/edit-restrictions" }}">{{ editLinkText }}</a>
-       {% else %}
-          <p data-qa="no-manage-permission-role-hint" class="manage-restriction-card-key-hint">You need the Contacts Authoriser role to manage restrictions in DPS.</p>
        {% endif %}
     </div>
   </div>

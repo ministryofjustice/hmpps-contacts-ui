@@ -86,7 +86,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     expect($('.govuk-form-group .govuk-label').eq(1).text()).toContain('Middle names')
     expect($('.govuk-form-group .govuk-label').eq(2).text()).toContain('Last name')
     expect($('.govuk-fieldset__legend:contains("Date of birth")').text()).toBeFalsy()
-    expect($('label[for="soundsLike"]').text().trim()).toBe('Sounds like search')
     expect($('[data-qa=search-button]').text()).toContain('Search')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(`/prisoner/${prisonerNumber}/contacts/list`)
     expect($('[data-qa=back-link]').first().text()).toStrictEqual('Back to prisoner’s contact list')
@@ -159,26 +158,6 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
         lastName: 'last',
       },
       page: 1,
-      soundsLike: false,
-    })
-  })
-
-  it('should pass the sounds like when it is enabled', async () => {
-    await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
-      .type('form')
-      .send({ lastName: 'last', middleNames: '', firstName: '', soundsLike: 'true' })
-      .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
-
-    expect(session.addContactJourneys![journeyId]!.searchContact).toStrictEqual({
-      contact: {
-        firstName: undefined,
-        middleNames: undefined,
-        lastName: 'last',
-      },
-      page: 1,
-      soundsLike: true,
     })
   })
 
@@ -197,7 +176,6 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
         lastName: undefined,
       },
       page: 1,
-      soundsLike: false,
     })
   })
 
@@ -229,7 +207,6 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     expect(session.addContactJourneys![journeyId]!.searchContact).toStrictEqual({
       contact: expectedContact,
       page: 1,
-      soundsLike: false,
     })
     expect(contactsService.searchContact).not.toHaveBeenCalled()
   })
