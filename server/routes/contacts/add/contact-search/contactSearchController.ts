@@ -65,7 +65,6 @@ export default class ContactSearchController implements PageHandler {
         middleNames: journey.searchContact.contact.middleNames,
         dateOfBirth: formatDateForApi(journey.searchContact.dateOfBirth),
         includeAnyExistingRelationshipsToPrisoner: journey.prisonerNumber,
-        soundsLike: journey.searchContact.soundsLike,
       }
 
       results = await this.contactsService.searchContact(
@@ -104,7 +103,7 @@ export default class ContactSearchController implements PageHandler {
   }
 
   POST = async (req: Request<{ journeyId: string }, ContactSearchSchemaType>, res: Response): Promise<void> => {
-    const { lastName, firstName, middleNames, day, month, year, soundsLike } = req.body
+    const { lastName, firstName, middleNames, day, month, year } = req.body
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
 
@@ -115,11 +114,10 @@ export default class ContactSearchController implements PageHandler {
           middleNames: middleNames || undefined,
           firstName: firstName || undefined,
         },
-        soundsLike: Boolean(soundsLike),
         page: 1,
       }
     } else if (lastName === '' && firstName === '' && middleNames === '') {
-      journey.searchContact = { page: 1, soundsLike: Boolean(soundsLike) }
+      journey.searchContact = { page: 1 }
     } else if (day && month && year && journey.searchContact?.contact?.lastName) {
       journey.searchContact.dateOfBirth = { day, month, year }
       journey.searchContact.page = 1

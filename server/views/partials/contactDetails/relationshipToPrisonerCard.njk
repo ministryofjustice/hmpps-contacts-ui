@@ -12,7 +12,7 @@
   {% set canApproveToVisit = isGranted(PersonalRelationshipsPermission.edit_contact_visit_approval, prisonerPermissions) %}
   {% set approvedForVisitsKey = 'Approved for visits' %}
   {% if showActions and not canApproveToVisit %}
-  {% set approvedForVisitsKey = approvedForVisitsKey + '<br><p data-qa="cant-approve-visit-hint" class="summary-card-key-hint">You need the Contacts Authoriser role to manage visit approvals in DPS.</p>'%}
+  {% set approvedForVisitsKey = approvedForVisitsKey + '<br><p data-qa="cant-approve-visit-hint" class="summary-card-key-hint">Cannot be changed as you do not have permission to authorise visits on DPS.</p>'%}
   {% endif %}
 
   {{ govukSummaryList({
