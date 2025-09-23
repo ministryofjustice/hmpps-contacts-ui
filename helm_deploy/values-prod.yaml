@@ -15,6 +15,7 @@ generic-service:
     PRISON_API_URL: 'https://prison-api.prison.service.justice.gov.uk'
     CONTACTS_API_URL: 'https://personal-relationships-api.hmpps.service.justice.gov.uk'
     ORGANISATIONS_API_URL: 'https://organisations-api.hmpps.service.justice.gov.uk'
+    ALERTS_API_URL: 'https://alerts-api.hmpps.service.justice.gov.uk'
     COMMON_COMPONENTS_ENABLED: true
     SENTRY_ENVIRONMENT: PRODUCTION
     FEATURE_ENABLED_PRISONS: 'KMI,GNI,SPI,LGI,DWI,HOI,WWI,LEI,LWI,BWI,BLI,SLI,IWI'

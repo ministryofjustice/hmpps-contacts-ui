@@ -480,7 +480,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
       expect(relationshipInformationCard.find(`dt:contains("Approved for visits")`).first()).toHaveLength(1)
       expect($('[data-qa=change-approved-visitor-link]')).toHaveLength(0)
       expect($('[data-qa=cant-approve-visit-hint]').first().text().trim()).toStrictEqual(
-        'Cannot be changed as you do not have permission to authorise visits on DPS.',
+        'You need the Contacts Authoriser role to manage visit approvals in DPS.',
       )
     })
   })

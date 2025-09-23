@@ -2,6 +2,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
@@ -59,32 +60,40 @@
               label: { text: "Last name" },
               value: lastName
             }) }}
+        </div>
+          <div class="govuk-!-width-three-quarters">
+              {% set advancedSearchInstructions %}
+                <div class="govuk-!-width-three-quarters govuk-!-margin-top-4">
+                  {{ govukCheckboxes({
+                    idPrefix: "soundsLike",
+                    name: "soundsLike",
+                    classes: "govuk-!-margin-bottom-4",
+                    items: [
+                      {
+                        value: "true",
+                        text: "Sounds like search"
+                      }
+                    ]
+                  }) }}
+                </div>
+              {% endset %}
 
-            {{ govukButton({
-              classes: "moj-search__button",
-              text: "Search",
-              attributes: {"data-qa": "search-button"},
-              preventDoubleClick: true
-            }) }}
-          </form>
-          {% set advancedSearchInstructions %}
-            <div class="govuk-!-width-three-quarters">
-              <p class="govuk-body">This service currently allows search by name or partial name, with filtering by exact date of birth. </p>
-              <p class="govuk-body">You still need to use NOMIS for advanced search and filters such as:</p>
-              <ul class="govuk-list govuk-list--bullet">
-                <li>‘sounds like’ name search</li>
-                <li>identity document search</li>
-                <li>person ID search (the unique number given to each contact record)</li>
-                <li>filter by gender</li>
-                <li>filter by year of birth and a range of years either side of that date</li>
-              </ul>
+              {{ govukDetails({
+                classes: "govuk-!-margin-top-6 govuk-!-margin-bottom-0",
+                summaryText: "Show advanced filters",
+                html: advancedSearchInstructions
+              }) }}
+
+            <div class="govuk-details govuk-!-margin-top-6 govuk-!-margin-bottom-0">
+              {{ govukButton({
+                classes: "moj-search__button",
+                text: "Search",
+                attributes: {"data-qa": "search-button"},
+                preventDoubleClick: true
+              }) }}
             </div>
-          {% endset %}
-          {{ govukDetails({
-            classes: "govuk-!-margin-top-6 govuk-!-margin-bottom-0",
-            summaryText: "How to use advanced search and filters",
-            html: advancedSearchInstructions
-          }) }}
+          </form>
+
         </div>
       </div>
 

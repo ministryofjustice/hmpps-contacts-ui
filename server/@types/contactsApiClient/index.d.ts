@@ -36,6 +36,7 @@ export type ContactNameDetails = components['schemas']['ContactNameDetails']
 export type CreateMultipleIdentitiesRequest = components['schemas']['CreateMultipleIdentitiesRequest']
 export type IdentityDocument = components['schemas']['IdentityDocument']
 export type PagedModelLinkedPrisonerDetails = components['schemas']['PagedModelLinkedPrisonerDetails']
+export type PagedModelPrisonerRestrictionDetails = components['schemas']['PagedModelPrisonerRestrictionDetails']
 export type CreateMultipleEmailsRequest = components['schemas']['CreateMultipleEmailsRequest']
 export type EmailAddress = components['schemas']['EmailAddress']
 export type CreateMultiplePhoneNumbersRequest = components['schemas']['CreateMultiplePhoneNumbersRequest']
@@ -66,4 +67,5 @@ export type ContactSearchRequest = {
   middleNames?: string | undefined
   dateOfBirth?: string | null
   includeAnyExistingRelationshipsToPrisoner?: string | undefined
+  soundsLike?: boolean | undefined
 }
