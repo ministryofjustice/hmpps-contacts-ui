@@ -31,8 +31,8 @@ To request full access for your establishment, ask your Head of Operations or an
 }
 
 const NEW_ACCESS_ANNOUNCEMENT: Announcement = {
-  title: 'Your prison has the new Contacts service in DPS',
-  html: `You can access guidance and demo videos on our <a class="govuk-notification-banner__link" href="https://justiceuk.sharepoint.com/:u:/r/sites/prisons-digital/SitePages/Managing%20Prisoner%20Contacts.aspx?csf=1&web=1&e=47P78C">Sharepoint site</a>.</br> If you think you need a different role, email <a class="govuk-notification-banner__link" href="mailto:managingcontacts@justice.gov.uk">managingcontacts@justice.gov.uk</a> to request access.`,
+  title: 'Your prison is piloting the new Contacts service in DPS',
+  html: `Use this service to manage contacts instead of NOMIS.</br> Guidance, support, and demo videos are available on the <a class="govuk-notification-banner__link" href="https://justiceuk.sharepoint.com/:u:/r/sites/prisons-digital/SitePages/Managing%20Prisoner%20Contacts.aspx?csf=1&web=1&e=47P78C" target="_blank" rel="noopener noreferrer">Sharepoint site</a>.</br> Please help us improve the service by sending your feedback to <a class="govuk-notification-banner__link" href="mailto:managingcontacts@justice.gov.uk">managingcontacts@justice.gov.uk</a>.`,
 }
 
 export function getAnnouncement(prison: string): Announcement | undefined {

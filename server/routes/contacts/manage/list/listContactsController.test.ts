@@ -794,7 +794,7 @@ describe('listContactsController', () => {
       // Then
       const $ = cheerio.load(response.text)
       const banner = $('.moj-alert__heading')
-      expect(banner.text()).toContain('Your prison has the new Contacts service in DPS')
+      expect(banner.text()).toContain('Your prison is piloting the new Contacts service in DPS')
       const bannerLink = $('.govuk-notification-banner__link')
       expect(bannerLink.html()).toContain('Sharepoint site')
     })

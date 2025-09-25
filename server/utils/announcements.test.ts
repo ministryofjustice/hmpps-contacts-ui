@@ -17,7 +17,7 @@ To request full access for your establishment, ask your Head of Operations or an
   </details>
 </div>`
 
-  const ROLLOUT_INFO_TEXT = `You can access guidance and demo videos on our <a class="govuk-notification-banner__link" href="https://justiceuk.sharepoint.com/:u:/r/sites/prisons-digital/SitePages/Managing%20Prisoner%20Contacts.aspx?csf=1&web=1&e=47P78C">Sharepoint site</a>.</br> If you think you need a different role, email <a class="govuk-notification-banner__link" href="mailto:managingcontacts@justice.gov.uk">managingcontacts@justice.gov.uk</a> to request access.`
+  const ROLLOUT_INFO_TEXT = `Use this service to manage contacts instead of NOMIS.</br> Guidance, support, and demo videos are available on the <a class="govuk-notification-banner__link" href="https://justiceuk.sharepoint.com/:u:/r/sites/prisons-digital/SitePages/Managing%20Prisoner%20Contacts.aspx?csf=1&web=1&e=47P78C" target="_blank" rel="noopener noreferrer">Sharepoint site</a>.</br> Please help us improve the service by sending your feedback to <a class="govuk-notification-banner__link" href="mailto:managingcontacts@justice.gov.uk">managingcontacts@justice.gov.uk</a>.`
 
   beforeEach(() => {
     jest.resetModules() // This clears the cache
@@ -34,7 +34,7 @@ To request full access for your establishment, ask your Head of Operations or an
       process.env['FEATURE_ENABLED_PRISONS'] = 'KMI,GNI,SPI,LGI,DWI,HOI,WWI'
 
       const expectedAnnouncement = {
-        title: 'Your prison has the new Contacts service in DPS',
+        title: 'Your prison is piloting the new Contacts service in DPS',
         html: expect.stringContaining(ROLLOUT_INFO_TEXT),
       }
 
@@ -85,7 +85,7 @@ To request full access for your establishment, ask your Head of Operations or an
 
       // Act & Assert
       const expectedAnnouncement = {
-        title: 'Your prison has the new Contacts service in DPS',
+        title: 'Your prison is piloting the new Contacts service in DPS',
         html: expect.stringContaining(ROLLOUT_INFO_TEXT),
       }
 
