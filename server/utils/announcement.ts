@@ -30,6 +30,11 @@ To request full access for your establishment, ask your Head of Operations or an
 </div>`,
 }
 
+const NEW_ACCESS_ANNOUNCEMENT: Announcement = {
+  title: 'Your prison has the new Contacts service in DPS',
+  html: `You can access guidance and demo videos on our <a class="govuk-notification-banner__link" href="https://justiceuk.sharepoint.com/:u:/r/sites/prisons-digital/SitePages/Managing%20Prisoner%20Contacts.aspx?csf=1&web=1&e=47P78C">Sharepoint site</a>.</br> If you think you need a different role, email <a class="govuk-notification-banner__link" href="mailto:managingcontacts@justice.gov.uk">managingcontacts@justice.gov.uk</a> to request access.`,
+}
+
 export function getAnnouncement(prison: string): Announcement | undefined {
-  return getEnabledPrisons().has(prison) ? undefined : LIMITED_ACCESS_ANNOUNCEMENT
+  return getEnabledPrisons().has(prison) ? NEW_ACCESS_ANNOUNCEMENT : LIMITED_ACCESS_ANNOUNCEMENT
 }

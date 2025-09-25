@@ -17,6 +17,8 @@ To request full access for your establishment, ask your Head of Operations or an
   </details>
 </div>`
 
+  const ROLLOUT_INFO_TEXT = `You can access guidance and demo videos on our <a class="govuk-notification-banner__link" href="https://justiceuk.sharepoint.com/:u:/r/sites/prisons-digital/SitePages/Managing%20Prisoner%20Contacts.aspx?csf=1&web=1&e=47P78C">Sharepoint site</a>.</br> If you think you need a different role, email <a class="govuk-notification-banner__link" href="mailto:managingcontacts@justice.gov.uk">managingcontacts@justice.gov.uk</a> to request access.`
+
   beforeEach(() => {
     jest.resetModules() // This clears the cache
     process.env = { ...OLD_ENV } // Make a copy
@@ -31,14 +33,13 @@ To request full access for your establishment, ask your Head of Operations or an
       // Arrange
       process.env['FEATURE_ENABLED_PRISONS'] = 'KMI,GNI,SPI,LGI,DWI,HOI,WWI'
 
+      const expectedAnnouncement = {
+        title: 'Your prison has the new Contacts service in DPS',
+        html: expect.stringContaining(ROLLOUT_INFO_TEXT),
+      }
+
       // Act & Assert
-      expect(getAnnouncement('KMI')).toBeUndefined()
-      expect(getAnnouncement('GNI')).toBeUndefined()
-      expect(getAnnouncement('SPI')).toBeUndefined()
-      expect(getAnnouncement('LGI')).toBeUndefined()
-      expect(getAnnouncement('DWI')).toBeUndefined()
-      expect(getAnnouncement('HOI')).toBeUndefined()
-      expect(getAnnouncement('WWI')).toBeUndefined()
+      expect(getAnnouncement('KMI')).toMatchObject(expectedAnnouncement)
     })
 
     it('should return announcement for prisons not in FEATURE_ENABLED_PRISONS', () => {
@@ -83,9 +84,13 @@ To request full access for your establishment, ask your Head of Operations or an
       process.env['FEATURE_ENABLED_PRISONS'] = '  KMI , GNI ,  SPI  '
 
       // Act & Assert
-      expect(getAnnouncement('KMI')).toBeUndefined()
-      expect(getAnnouncement('GNI')).toBeUndefined()
-      expect(getAnnouncement('SPI')).toBeUndefined()
+      const expectedAnnouncement = {
+        title: 'Your prison has the new Contacts service in DPS',
+        html: expect.stringContaining(ROLLOUT_INFO_TEXT),
+      }
+
+      // Act & Assert
+      expect(getAnnouncement('KMI')).toMatchObject(expectedAnnouncement)
       expect(getAnnouncement('MDI')).toMatchObject({
         title: 'You have limited access to the new Contacts service on DPS',
         html: expect.stringContaining(INFO_TEXT),
