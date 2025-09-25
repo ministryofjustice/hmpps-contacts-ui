@@ -30,6 +30,11 @@ To request full access for your establishment, ask your Head of Operations or an
 </div>`,
 }
 
+const NEW_ACCESS_ANNOUNCEMENT: Announcement = {
+  title: 'Your prison is piloting the new Contacts service in DPS',
+  html: `Use this service to manage contacts instead of NOMIS.</br> Guidance, support, and demo videos are available on the <a class="govuk-notification-banner__link" href="https://justiceuk.sharepoint.com/:u:/r/sites/prisons-digital/SitePages/Managing%20Prisoner%20Contacts.aspx?csf=1&web=1&e=47P78C" target="_blank" rel="noopener noreferrer">Sharepoint site</a>.</br> Please help us improve the service by sending your feedback to <a class="govuk-notification-banner__link" href="mailto:managingcontacts@justice.gov.uk">managingcontacts@justice.gov.uk</a>.`,
+}
+
 export function getAnnouncement(prison: string): Announcement | undefined {
-  return getEnabledPrisons().has(prison) ? undefined : LIMITED_ACCESS_ANNOUNCEMENT
+  return getEnabledPrisons().has(prison) ? NEW_ACCESS_ANNOUNCEMENT : LIMITED_ACCESS_ANNOUNCEMENT
 }
