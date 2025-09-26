@@ -23,6 +23,7 @@ import {
   PagedModelContactSearchResultItem,
   PagedModelLinkedPrisonerDetails,
   PagedModelPrisonerContactSummary,
+  PagedModelPrisonerRestrictionDetails,
   PatchContactAddressRequest,
   PatchContactRequest,
   PatchContactResponse,
@@ -472,6 +473,21 @@ export default class ContactsApiClient extends RestClient {
     return this.get<PagedModelLinkedPrisonerDetails>(
       {
         path: `/contact/${contactId}/linked-prisoners?page=${page}&size=${size}`,
+      },
+      user,
+    )
+  }
+
+  async getPrisonerRestrictions(
+    prisonerNumber: string,
+    page: number,
+    size: number,
+    user: Express.User,
+    currentTerm: boolean,
+  ): Promise<PagedModelPrisonerRestrictionDetails> {
+    return this.get<PagedModelPrisonerRestrictionDetails>(
+      {
+        path: `/prisoner-restrictions/${prisonerNumber}?page=${page}&size=${size}&currentTerm=${currentTerm}`,
       },
       user,
     )
