@@ -15,7 +15,7 @@ export default class ListPrisonerRestrictionsAlertsController implements PageHan
 
   public PAGE_NAME = Page.VIEW_RESTRICTION_PAGE
 
-  public REQUIRED_PERMISSION = Permission.read_contacts
+  public REQUIRED_PERMISSION = Permission.edit_contacts
 
   GET = async (req: Request<{ prisonerNumber: string }>, res: Response): Promise<void> => {
     const { prisonerNumber } = req.params
@@ -31,7 +31,7 @@ export default class ListPrisonerRestrictionsAlertsController implements PageHan
     const prisonerAlertsContent: PageAlert = await this.alertsService.getAlerts(prisonerNumber, user)
     const prisonerRestrictions = prisonerRestrictionsContent.content
     const prisonerAlerts = prisonerAlertsContent.content
-    const navigation: Navigation = { breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'] }
+    const navigation: Navigation = { breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_ALERTS_RESTRICTIONS'] }
     const viewModel = {
       caption: 'Link a contact to a prisoner',
       title: 'Review prisoner and contact restrictions',

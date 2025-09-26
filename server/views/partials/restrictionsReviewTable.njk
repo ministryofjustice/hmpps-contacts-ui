@@ -18,7 +18,7 @@
     {% set expiryDate = restriction.expiryDate or restriction.activeTo %}
     {% set enteredByDisplayName = restriction.authorisedByDisplayName or restriction.lastModifiedByDisplayName %}
     {% set retrictionTypeHtml %}
-      {{ govukTag({ text: restrictionTypeDescription, classes: 'wide-tag ' + (restriction.restrictionType or (restriction.alertCode and restriction.alertCode.code)) | restrictionTagColour }) }}{{ ' (expired)' if (expiryDate | isDateAndInThePast) }}
+      {{ govukTag({ text: restrictionTypeDescription, classes: 'wide-tag ' + (restriction.restrictionType or (restriction.alertCode and restriction.alertCode.code)) | restrictionTagColour }) }}{{ ' (expired)' if (expiryDate | isDateAndInThePast) }}{{ ' (Previous booking)' if not restriction.currentTerm and not restriction.alertUuid }}
     {% endset %}
     {% set rows = (rows.push([
       { html: retrictionTypeHtml, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-type-value"} },

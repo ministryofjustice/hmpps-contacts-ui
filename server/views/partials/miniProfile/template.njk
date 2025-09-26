@@ -28,12 +28,14 @@
                     <span class="govuk-heading-s govuk-!-margin-bottom-0 govuk-!-padding-0">Cell number</span>
                     <span class="govuk-body" data-qa="mini-profile-cell-location">{{ prisonerDetails.cellLocation }}</span>
                 </li>
-                <li>
-                    <span class="govuk-heading-s govuk-!-margin-bottom-0 govuk-!-padding-0">Alerts and restrictions</span>
-                    <p class="govuk-heading-s govuk-!-margin-bottom-1">
-                        <a id="prisoner-alerts-restrictions-link" class="govuk-link--no-visited-state" href="/prisoner/{{ prisonerDetails.prisonerNumber }}/alerts-restrictions" data-qa="contact-{{ prisonerDetails.prisonerNumber }}-alerts-restrictions">View all</a>
-                    </p>
-                </li>
+                {% if isGranted(PersonalRelationshipsPermission.edit_contacts, prisonerPermissions) %}
+                  <li>
+                      <span class="govuk-heading-s govuk-!-margin-bottom-0 govuk-!-padding-0">Alerts and restrictions</span>
+                      <p class="govuk-heading-s govuk-!-margin-bottom-1">
+                          <a id="prisoner-alerts-restrictions-link" class="govuk-link--no-visited-state" href="/prisoner/{{ prisonerDetails.prisonerNumber }}/alerts-restrictions" data-qa="contact-{{ prisonerDetails.prisonerNumber }}-alerts-restrictions">View all</a>
+                      </p>
+                  </li>
+                {% endif %}
             </ul>
         </div>
     </div>
