@@ -6,7 +6,7 @@ import pagedPrisonerAlertsData from '../../server/testutils/testPrisonerAlertsDa
 import pagedPrisonerRestrictionDetails from '../../server/testutils/testPrisonerRestrictionsData'
 import ViewAllRestrictionsAndAlertsPage from '../pages/viewAllRestrictionsAndAlertsPage'
 
-context('List prisoner restrictions and alerts with a read only set of roles', () => {
+context('List prisoner restrictions and alerts with a contact admin or higher roles', () => {
   const prisoner = TestData.prisoner({ prisonerNumber: 'A1234BC', lastName: 'Prisoner', firstName: 'Test' })
   const prisonerRestrictions = pagedPrisonerRestrictionDetails({
     content: [{ ...pagedPrisonerRestrictionDetails().content[0], prisonerNumber: 'A1234BC' }],
@@ -41,7 +41,7 @@ context('List prisoner restrictions and alerts with a read only set of roles', (
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubComponentsMeta')
-    cy.task('stubSignIn', { roles: ['PRISON'] })
+    cy.task('stubSignIn', { roles: ['PRISON', 'CONTACTS_ADMINISTRATOR'] })
     cy.task('stubPrisonerById', prisoner)
     cy.task('stubPrisonerRestrictionsById', prisonerRestrictions)
     cy.task('stubPrisonerAlertsById', prisonerAlerts)
@@ -62,7 +62,7 @@ context('List prisoner restrictions and alerts with a read only set of roles', (
     cy.signIn({ startUrl: `/prisoner/${prisoner.prisonerNumber}/contacts/list` })
 
     Page.verifyOnPage(ListContactsPage, 'Test Prisoner') //
-      .expectReadOnlyNames(['Last, First'])
+      .expectNames(['Last, First'])
       .clickViewAllRestrictions()
 
     Page.verifyOnPage(ViewAllRestrictionsAndAlertsPage, 'Test Prisoner', 'Test Prisoner')
