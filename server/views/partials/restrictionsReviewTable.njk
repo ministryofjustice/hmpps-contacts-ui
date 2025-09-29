@@ -33,7 +33,14 @@
   {% set caption = 'These ' + (itemType or 'restrictions') + ' apply to prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' across the whole prison estate.' %}
   {% set emptyCaption = 'No ' + (itemType or 'restrictions') + ' apply to prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' across the whole prison estate.' %}
   {% if not hideTableTitle %}
-  <h2 class="govuk-heading-m govuk-!-margin-bottom-6" data-qa="{{ restrictionClass }}-title">{{ title }}</h2>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-half">
+      <h2 class="govuk-heading-m govuk-!-margin-bottom-6" data-qa="{{ restrictionClass }}-title">{{ title }}</h2>
+    </div>
+    <div class="govuk-!-text-align-right govuk-!-padding-right-5">
+      <p>To add or update prisoner restrictions, go to NOMIS</p>
+    </div>
+  </div>
   {% endif %}
   {% if restrictions.length %}
   {{ govukTable({
