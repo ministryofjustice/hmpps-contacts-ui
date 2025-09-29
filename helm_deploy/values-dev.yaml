@@ -18,6 +18,7 @@ generic-service:
     CONTACTS_API_URL: 'https://personal-relationships-api-dev.hmpps.service.justice.gov.uk'
     ORGANISATIONS_API_URL: 'https://organisations-api-dev.hmpps.service.justice.gov.uk'
     ALERTS_API_URL: 'https://alerts-api-dev.hmpps.service.justice.gov.uk'
+    PRISONER_PROFILE_PAGE_URL: 'https://prisoner-dev.digital.prison.service.justice.gov.uk'
     COMMON_COMPONENTS_ENABLED: true
     ENVIRONMENT_NAME: DEV
     SENTRY_ENVIRONMENT: DEV

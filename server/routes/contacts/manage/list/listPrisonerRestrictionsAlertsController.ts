@@ -19,8 +19,7 @@ export default class ListPrisonerRestrictionsAlertsController implements PageHan
 
   GET = async (req: Request<{ prisonerNumber: string }>, res: Response): Promise<void> => {
     const { prisonerNumber } = req.params
-    const { user } = res.locals
-    const { prisonerDetails } = res.locals
+    const { prisonerDetails, user, prisonerProfileUrl } = res.locals
     const prisonerRestrictionsContent = await this.contactsService.getPrisonerRestrictions(
       prisonerNumber,
       0,
@@ -39,6 +38,7 @@ export default class ListPrisonerRestrictionsAlertsController implements PageHan
       prisonerRestrictions,
       prisonerAlerts,
       navigation,
+      prisonerProfileUrl,
     }
 
     res.render('pages/contacts/restrictions/reviewRestrictions', viewModel)
