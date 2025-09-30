@@ -91,7 +91,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
     )
     const warningText = $('[data-qa=authoriser-permission-warning]').text().trim()
     expect(warningText).toContain(
-      "As a Contacts Administrator, you cannot approve this contact's visit to John Smith. If you need to do this, ask for the Contacts Authoriser",
+      'As a Contacts Administrator, you cannot approve this contact’s visit to John Smith. If you need to do this, ask for the Contacts Authoriser',
     )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')

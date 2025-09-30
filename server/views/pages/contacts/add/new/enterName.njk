@@ -14,8 +14,7 @@
             <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
             {% if not isGranted(PersonalRelationshipsPermission.edit_contact_restrictions, prisonerPermissions) %}
              {{ govukWarningText({
-                html: "As a Contacts Administrator, you cannot approve this contact's visit to " + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) + ". If you need to do this, ask for the Contacts Authoriser role.",
-                iconFallbackText: "Warning",
+                html: "As a Contacts Administrator, you cannot approve this contact’s visit to " + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) + ". If you need to do this, ask for the Contacts Authoriser role.",                iconFallbackText: "Warning",
                 attributes: {"data-qa": "authoriser-permission-warning"}
               }) }}
             {% endif %}
