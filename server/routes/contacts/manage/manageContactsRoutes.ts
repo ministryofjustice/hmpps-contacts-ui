@@ -6,6 +6,7 @@ import AuditService from '../../../services/auditService'
 import ListContactsController from './list/listContactsController'
 import { ContactsService, PrisonerSearchService } from '../../../services'
 import populatePrisonerDetailsIfInCaseload from '../../../middleware/populatePrisonerDetailsIfInCaseload'
+import AlertsService from '../../../services/alertsService'
 import ContactDetailsController from './contact-details/contactDetailsController'
 import ReferenceDataService from '../../../services/referenceDataService'
 import ManageLanguageAndInterpreterController from './additional-information/language-and-interpreter/manageLanguageAndInterpreterController'
@@ -100,11 +101,13 @@ import { handleDuplicateRelationshipSchemaFactory } from '../common/relationship
 import DeleteRelationshipController from './relationship/delete-relationship/deleteRelationshipController'
 import { deleteRelationshipSchema } from './relationship/delete-relationship/deleteRelationshipActionSchema'
 import ManageContactDeleteDobController from './date-of-birth/delete/manageContactDeleteDobController'
+import ListPrisonerRestrictionsAlertsController from './list/listPrisonerRestrictionsAlertsController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
   prisonerSearchService: PrisonerSearchService,
   contactsService: ContactsService,
+  alertsService: AlertsService,
   referenceDataService: ReferenceDataService,
   restrictionsService: RestrictionsService,
   prisonerAddressService: PrisonerAddressService,
@@ -182,6 +185,13 @@ const ManageContactsRoutes = (
     controller: new ListContactsController(contactsService),
     noValidation: true,
   })
+
+  // View one contact
+  get(
+    '/prisoner/:prisonerNumber/alerts-restrictions',
+    new ListPrisonerRestrictionsAlertsController(contactsService, alertsService),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService),
+  )
 
   // View one contact
   get(
