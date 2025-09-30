@@ -2,8 +2,7 @@ import { getAnnouncement } from './announcement'
 
 describe('announcement', () => {
   const OLD_ENV = process.env
-  const INFO_TEXT = `While the new Contacts service is being piloted, your establishment has read-only access.</br>
-To request full access for your establishment, ask your Head of Operations or another appropriate staff member to email
+  const INFO_TEXT = `Your prison currently has read-only access and will receive full access on Tuesday 21 October. Prepare by reading our <a class="govuk-notification-sharepoint__link" href="https://justiceuk.sharepoint.com/:u:/r/sites/prisons-digital/SitePages/Managing%20Prisoner%20Contacts.aspx?csf=1&web=1&e=47P78C" target="_blank" rel="noopener noreferrer">Sharepoint site</a>.<br/>If you have any questions, please contact
 <a class="govuk-notification-banner__link" href="mailto:managingcontacts@justice.gov.uk">managingcontacts@justice.gov.uk</a>.
 
 <div class="govuk-notification-banner__content govuk-!-padding-left-0">
