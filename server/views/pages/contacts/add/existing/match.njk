@@ -4,6 +4,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "partials/matchContactContent.njk" import matchContactContent %}
 {% from "moj/components/alert/macro.njk" import mojAlert %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 {% set pageTitle = "Check and confirm if you want to link a contact to a prisoner - Manage contacts - DPS" %}
 {% set title = 'Check and confirm if you want to link contact ' + (contact | formatNameFirstNameFirst ) +' to prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) %}
 
@@ -29,6 +30,14 @@
         }) }}
       {% endif %}
       <p class="govuk-body govuk-!-margin-top-3">If this is the correct contact record but their information needs to be updated, you can make updates after you link the record to the prisoner. </p>
+
+      {% if not isGranted(PersonalRelationshipsPermission.edit_contact_restrictions, prisonerPermissions) %}
+       {{ govukWarningText({
+          html: 'As a Contacts Administrator, you cannot approve ' + (contact | formatNameFirstNameFirst) + ' to visit ' + ( prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) ) + ' . If you need to do this, ask for the Contacts Authoriser role.',
+          iconFallbackText: "Warning",
+          attributes: {"data-qa": "authoriser-permission-warning"}
+        }) }}
+      {% endif %}
     </div>
   </div>
   {{ matchContactContent({

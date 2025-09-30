@@ -2,6 +2,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 {% set pageTitle = "What’s the name of the contact you want to link to the prisoner? - Add a contact - DPS" %}
 {% set title = "What’s the name of the contact you want to link to " + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) + "?" %}
 {% set mainClasses = "app-container govuk-body" %}
@@ -11,6 +12,12 @@
         <div class="govuk-grid-column-two-thirds">
             <span class="govuk-caption-l">{{ caption }}</span>
             <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+            {% if not isGranted(PersonalRelationshipsPermission.edit_contact_restrictions, prisonerPermissions) %}
+             {{ govukWarningText({
+                html: "As a Contacts Administrator, you cannot approve this contact’s visit to " + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) + ". If you need to do this, ask for the Contacts Authoriser role.",                iconFallbackText: "Warning",
+                attributes: {"data-qa": "authoriser-permission-warning"}
+              }) }}
+            {% endif %}
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
