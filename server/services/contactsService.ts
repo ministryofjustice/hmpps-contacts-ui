@@ -33,7 +33,6 @@ import {
   UpdatePhoneRequest,
   PatchContactAddressRequest,
   PrisonerContactSummary,
-  PagedModelPrisonerRestrictionDetails,
 } from '../@types/contactsApiClient'
 import { stripNullishAddressLines } from '../routes/contacts/add/addresses/common/utils'
 import TelemetryService from './telemetryService'
@@ -437,16 +436,6 @@ export default class ContactsService extends AuditedService {
     user: Express.User,
   ): Promise<PrisonerContactRestrictionsResponse> {
     return this.contactsApiClient.getPrisonerContactRestrictions(prisonerContactId, user)
-  }
-
-  async getPrisonerRestrictions(
-    prisonerNumber: string,
-    page: number,
-    size: number,
-    user: Express.User,
-    currentTerm: boolean,
-  ): Promise<PagedModelPrisonerRestrictionDetails> {
-    return this.contactsApiClient.getPrisonerRestrictions(prisonerNumber, page, size, user, currentTerm)
   }
 
   async createContactAddress(journey: AddressJourney, user: Express.User, correlationId: string) {

@@ -16,14 +16,12 @@ import PrisonerSearchApiClient from './prisonerSearchApiClient'
 import ContactsApiClient from './contactsApiClient'
 import PrisonApiClient from './prisonApiClient'
 import OrganisationsApiClient from './organisationsApiClient'
-import AlertsApiClient from './alertsApiClient'
 
 export const dataAccess = () => ({
   applicationInfo,
   hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
   prisonerSearchApiClient: new PrisonerSearchApiClient(),
   contactsApiClient: new ContactsApiClient(),
-  alertsApiClient: new AlertsApiClient(),
   prisonApiClient: new PrisonApiClient(),
   organisationsApiClient: new OrganisationsApiClient(),
   applicationInsightsClient,

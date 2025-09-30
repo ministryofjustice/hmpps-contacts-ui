@@ -5,6 +5,6 @@ interface Navigation {
   cancelButton?: string | undefined
 }
 
-type BreadcrumbType = 'DPS_HOME' | 'DPS_PROFILE' | 'PRISONER_CONTACTS' | 'PRISONER_ALERTS_RESTRICTIONS'
+type BreadcrumbType = 'DPS_HOME' | 'DPS_PROFILE' | 'PRISONER_CONTACTS'
 
 export type { Navigation, BreadcrumbType }

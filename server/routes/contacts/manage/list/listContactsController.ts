@@ -52,7 +52,7 @@ export default class ListContactsController implements PageHandler {
     req: Request<{ prisonerNumber: string }, unknown, unknown, { page: string; sort: string } & Filter>,
     res: Response,
   ): Promise<void> => {
-    const { user, prisonerPermissions } = res.locals
+    const { user } = res.locals
     const prisonerPrisonId = req.middleware?.prisonerData?.prisonId
     const { prisonerNumber } = req.params
     const { query } = req
@@ -149,7 +149,6 @@ export default class ListContactsController implements PageHandler {
       navigation,
       hasAnyContactsAtAll,
       hasAnyFiltersApplied,
-      prisonerPermissions,
     })
   }
 
