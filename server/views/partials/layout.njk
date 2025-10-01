@@ -33,7 +33,7 @@
   {% include 'partials/navigation.njk' %}
   {% include 'partials/formErrorSummary.njk' %}
   {% if prisonerDetails %}
-    {{ miniProfile(prisonerDetails) }}
+    {{ miniProfile(prisonerDetails, prisonerPermissions) }}
   {% endif %}
 {% endblock %}
 

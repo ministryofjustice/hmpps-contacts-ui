@@ -1720,10 +1720,10 @@ export interface paths {
       cookie?: never
     }
     /**
-     * Plan to delete prisoner contact relationship
-     * @description Plan to delete the relationship between the contact and a prisoner. Returns side effects of the deletion.
+     * Assess if a prisoner contact relationship can be deleted
+     * @description Assess if a prisoner contact relationship can be deleted, considering any attached restrictions or if deletion will also remove the contact's date of birth.
      */
-    get: operations['planDeleteContactRelationship']
+    get: operations['assessIfRelationshipCanBeDeleted']
     put?: never
     post?: never
     delete?: never
@@ -6089,10 +6089,14 @@ export interface components {
        * @example S
        */
       domesticStatusCode?: string
-      /** @description
+      /**
+       * @description
        *           The domestic status of the contact.
        *           This is a coded value (from the group code GENDER in reference data).
-       *            */
+       *
+       * @example M
+       * @example F
+       */
       genderCode?: string
       /** @description A description of the relationship if the contact should be linked to a prisoner */
       relationship?: components['schemas']['ContactRelationship']
@@ -6411,9 +6415,17 @@ export interface components {
        * @example Single
        */
       domesticStatusDescription?: string
-      /** @description The NOMIS code for the contacts gender. See reference data with group code 'GENDER' */
+      /**
+       * @description The NOMIS code for the contacts gender. See reference data with group code 'GENDER'
+       * @example M
+       * @example F
+       */
       genderCode?: string
-      /** @description The description of gender code. See reference data with group code 'GENDER' */
+      /**
+       * @description The description of gender code. See reference data with group code 'GENDER'
+       * @example Male
+       * @example Female
+       */
       genderDescription?: string
       /**
        * @description The id of the user who created the contact
@@ -7639,10 +7651,19 @@ export interface components {
        */
       prisonerNumber: string
       /**
-       * @description The restriction type
-       * @example NO_VISIT
+       * @description
+       *         The coded type of restriction that applies to this contact.
+       *         This is a coded value from the group RESTRICTION in reference codes.
+       *         Example values include ACC, BAN, CHILD, CLOSED, RESTRICTED, DIHCON, NONCON.
+       *
+       * @example BAN
        */
       restrictionType: string
+      /**
+       * @description The description of restrictionType
+       * @example Banned
+       */
+      restrictionTypeDescription: string
       /**
        * Format: date
        * @description Effective date of the restriction
@@ -7665,6 +7686,11 @@ export interface components {
        * @example JSMITH
        */
       authorisedUsername: string
+      /**
+       * @description The display name of either the person who authorised the restriction.
+       * @example John Smith
+       */
+      authorisedByDisplayName: string
       /**
        * @description True if this restriction applies to the latest or current term in prison, false if a previous term
        * @example true
@@ -7714,8 +7740,11 @@ export interface components {
       /** @description Global (estate-wide) restrictions for the contact */
       contactGlobalRestrictions: components['schemas']['ContactRestrictionDetails'][]
     }
+    /** @description Assess if a prisoner contact relationship can be deleted, has restrictions or can DOB be deleted */
     RelationshipDeletePlan: {
+      /** @description Indicates if deleting the relationship will also delete the contact's date of birth */
       willAlsoDeleteContactDob: boolean
+      /** @description Indicates if the relationship has restrictions */
       hasRestrictions: boolean
     }
     ContactNameDetails: {
@@ -13700,7 +13729,13 @@ export interface operations {
   }
   reconcileSingleContact: {
     parameters: {
-      query?: never
+      query?: {
+        /**
+         * @description filter results by current terms
+         * @example true
+         */
+        currentTermOnly?: boolean
+      }
       header?: never
       path: {
         /** @description The internal ID for the contact. */
@@ -14016,6 +14051,11 @@ export interface operations {
          * @example true
          */
         currentTermOnly?: boolean
+        /**
+         * @description return paged results (default true) if false returns all records
+         * @example true
+         */
+        paged?: boolean
         /** @description Zero-based page index (0..N) */
         page?: number
         /** @description The size of the page to be returned */
@@ -14115,7 +14155,7 @@ export interface operations {
       }
     }
   }
-  planDeleteContactRelationship: {
+  assessIfRelationshipCanBeDeleted: {
     parameters: {
       query?: never
       header?: never
@@ -14130,7 +14170,7 @@ export interface operations {
     }
     requestBody?: never
     responses: {
-      /** @description Planned the deletion of the prisoner contact relationship */
+      /** @description Assess if a prisoner contact relationship can be deleted */
       200: {
         headers: {
           [name: string]: unknown
