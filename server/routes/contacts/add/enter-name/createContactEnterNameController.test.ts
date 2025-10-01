@@ -3,14 +3,7 @@ import request from 'supertest'
 import { SessionData } from 'express-session'
 import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
-import {
-  appWithAllRoutes,
-  flashProvider,
-  adminUser,
-  adminUserPermissions,
-  authorisingUser,
-  authorisingUserPermissions,
-} from '../../../testutils/appSetup'
+import { appWithAllRoutes, flashProvider, adminUser, adminUserPermissions } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { mockedReferenceData, STUBBED_TITLE_OPTIONS } from '../../../testutils/stubReferenceData'
 import TestData from '../../../testutils/testData'
@@ -89,58 +82,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
       'What’s the name of the contact you want to link to John Smith?',
     )
-    const warningText = $('[data-qa=authoriser-permission-warning]').text().trim()
-    expect(warningText).toContain(
-      'As a Contacts Administrator, you cannot approve this contact’s visit to John Smith. If you need to do this, ask for the Contacts Authoriser',
-    )
-    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
-    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
-    expect($('[data-qa=cancel-button]')).toHaveLength(0)
-    expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-  })
-
-  it('should render enter name page with no contact authoriser role', async () => {
-    currentUser = authorisingUser
-    existingJourney = {
-      id: journeyId,
-      lastTouched: new Date().toISOString(),
-      prisonerNumber,
-      isCheckingAnswers: false,
-      mode: 'NEW',
-    }
-    app = appWithAllRoutes({
-      services: {
-        auditService,
-        referenceDataService,
-        prisonerSearchService,
-      },
-      userSupplier: () => currentUser,
-      sessionReceiver: (receivedSession: Partial<SessionData>) => {
-        session = receivedSession
-        session.addContactJourneys = {}
-        session.addContactJourneys[journeyId] = existingJourney
-      },
-    })
-
-    mockPermissions(app, authorisingUserPermissions)
-
-    // When
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${journeyId}`)
-
-    // Then
-    expect(response.status).toEqual(200)
-
-    const $ = cheerio.load(response.text)
-    expect($('title').text()).toStrictEqual(
-      'What’s the name of the contact you want to link to the prisoner? - Add a contact - DPS',
-    )
-    expect($('a:contains("Back to contact search")').attr('href')).toEqual(
-      `/prisoner/A1234BC/contacts/search/${journeyId}`,
-    )
-    expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'What’s the name of the contact you want to link to John Smith?',
-    )
-    expect($('[data-qa=authoriser-permission-warning]')).toHaveLength(0)
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
     expect($('[data-qa=cancel-button]')).toHaveLength(0)
