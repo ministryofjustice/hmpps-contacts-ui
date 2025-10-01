@@ -796,7 +796,7 @@ describe('listContactsController', () => {
       const banner = $('.moj-alert__heading')
       expect(banner.text()).toContain('Your prison is piloting the new Contacts service in DPS')
       const bannerLink = $('.govuk-notification-banner__link')
-      expect(bannerLink.html()).toContain('Sharepoint site')
+      expect(bannerLink.html()).toContain('SharePoint site')
     })
 
     it('should show no contacts at all with link to add a contact if no active results and no unfiltered contacts for users that can edit contacts', async () => {
