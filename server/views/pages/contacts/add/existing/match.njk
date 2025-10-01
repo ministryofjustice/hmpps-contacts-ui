@@ -33,7 +33,7 @@
 
       {% if not isGranted(PersonalRelationshipsPermission.edit_contact_restrictions, prisonerPermissions) %}
        {{ govukWarningText({
-          html: 'As a Contacts Administrator, you cannot approve ' + (contact | formatNameFirstNameFirst) + ' to visit ' + ( prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) ) + ' . If you need to do this, ask for the Contacts Authoriser role.',
+          html: 'As a Contacts Administrator, you cannot approve ' + (contact | formatNameFirstNameFirst) + ' to visit ' + ( prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) ) + '. If you need to do this, ask for the Contacts Authoriser role.',
           iconFallbackText: "Warning",
           attributes: {"data-qa": "authoriser-permission-warning"}
         }) }}
