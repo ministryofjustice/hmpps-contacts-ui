@@ -18,6 +18,7 @@ import CancelAddRestrictionController from './cancel/cancelAddRestrictionControl
 import { PageHandler } from '../../interfaces/pageHandler'
 import { routerMethods } from '../../utils/routerMethods'
 import ensureInAddRestrictionJourney from './addRestrictionMiddleware'
+import AlertsService from '../../services/alertsService'
 
 const RestrictionsRoutes = (
   auditService: AuditService,
@@ -26,6 +27,7 @@ const RestrictionsRoutes = (
   prisonerSearchService: PrisonerSearchService,
   restrictionsService: RestrictionsService,
   permissionsService: PermissionsService,
+  alertsService: AlertsService,
 ) => {
   const router = Router({ mergeParams: true })
   const { get, post } = routerMethods(router, permissionsService, auditService)
@@ -45,7 +47,7 @@ const RestrictionsRoutes = (
     }
     const getMiddleware = [
       ensureInAddRestrictionJourney,
-      populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService),
+      populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService),
     ]
     get(path, controller, ...getMiddleware)
     if (schema && !noValidation) {
@@ -75,7 +77,7 @@ const RestrictionsRoutes = (
   get(
     '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/success',
     new SuccessfullyAddedRestrictionController(contactsService),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService),
   )
 
   journeyRoute({
@@ -94,12 +96,12 @@ const RestrictionsRoutes = (
   get(
     updateRestrictionsPath,
     updateRestrictionsController,
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService),
   )
   post(
     updateRestrictionsPath,
     updateRestrictionsController,
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService),
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     validate(restrictionSchema()),

@@ -142,7 +142,7 @@ const ManageContactsRoutes = (
     if (prisonerDetailsRequiredOnPost) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService))
+      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService))
     }
     post(path, controller, ...postMiddleware)
   }
@@ -176,14 +176,14 @@ const ManageContactsRoutes = (
     if (prisonerDetailsRequiredOnPost) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService))
+      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService))
     }
     post(path, controller, ...postMiddleware)
   }
 
   router.get(
     '/prisoner/:prisonerNumber/*any',
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService),
   )
 
   // List contacts for a prisoner
@@ -197,7 +197,7 @@ const ManageContactsRoutes = (
   get(
     '/prisoner/:prisonerNumber/alerts-restrictions',
     new ListPrisonerRestrictionsAlertsController(contactsService, alertsService),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService),
   )
 
   // View one contact

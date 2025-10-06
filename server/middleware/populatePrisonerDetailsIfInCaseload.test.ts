@@ -7,12 +7,15 @@ import { basicPrisonUser } from '../routes/testutils/appSetup'
 import { PrisonerSearchAddress } from '../data/prisonerOffenderSearchTypes'
 import { MockedService } from '../testutils/mockedServices'
 import { PrisonerDetails } from '../@types/journeys'
+import AlertsService from '../services/alertsService'
 
 jest.mock('../services/prisonerSearchService')
 jest.mock('../services/contactsService')
+jest.mock('../services/alertsService')
 
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const contactsService = MockedService.ContactsService()
+const alertsService = MockedService.AlertsService()
 
 type Request = ExpressRequest<{ prisonerNumber: string }>
 
@@ -43,7 +46,7 @@ describe('prisonerDetailsMiddleware', () => {
       },
     } as Request
 
-    await populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService)(req, res, next)
+    await populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService)(req, res, next)
 
     expect(next).toHaveBeenCalledTimes(1)
     expect(prisonerSearchService.getByPrisonerNumber).toHaveBeenCalledWith('A1234BC', basicPrisonUser)
@@ -72,7 +75,7 @@ describe('prisonerDetailsMiddleware', () => {
       },
     } as Request
 
-    await populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService)(req, res, next)
+    await populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService)(req, res, next)
 
     const expectedPrisonerDetails: PrisonerDetails = {
       prisonerNumber: 'A1234BC',
@@ -103,7 +106,7 @@ describe('prisonerDetailsMiddleware', () => {
       },
     } as Request
 
-    await populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService)(req, res, next)
+    await populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService)(req, res, next)
 
     const expectedPrisonerDetails: PrisonerDetails = {
       prisonerNumber: 'A1234BC',
@@ -134,7 +137,7 @@ describe('prisonerDetailsMiddleware', () => {
       },
     } as Request
 
-    await populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService)(req, res, next)
+    await populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService)(req, res, next)
 
     const expectedPrisonerDetails: PrisonerDetails = {
       prisonerNumber: 'A1234BC',
@@ -161,7 +164,7 @@ describe('prisonerDetailsMiddleware', () => {
       },
     } as Request
 
-    await populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService)(req, res, next)
+    await populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService)(req, res, next)
 
     expect(prisonerSearchService.getByPrisonerNumber).toHaveBeenCalledWith('A1234BC', basicPrisonUser)
   })
