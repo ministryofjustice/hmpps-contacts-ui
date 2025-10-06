@@ -33,6 +33,7 @@ export default function routes({
       organisationsService,
       telemetryService,
       permissionsService,
+      alertsService,
     ),
   )
   router.use(
@@ -58,6 +59,7 @@ export default function routes({
       prisonerSearchService,
       restrictionsService,
       permissionsService,
+      alertsService,
     ),
   )
 

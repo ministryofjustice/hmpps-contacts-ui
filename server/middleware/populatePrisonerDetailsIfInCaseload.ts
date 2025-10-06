@@ -39,10 +39,7 @@ const populatePrisonerDetailsIfInCaseload = (
           alertsCount = prisonerAlertsContent?.content?.length ?? 0
         } catch (err) {
           // do nothing if restrictions fetch fails - we can still show prisoner details
-          logger.error(
-            err,
-            `Failed to populate alerts and restrictions for prisoner: ${req.params.prisonerNumber}`,
-          )
+          logger.error(err, `Failed to populate alerts and restrictions for prisoner: ${req.params.prisonerNumber}`)
         }
 
         res.locals.prisonerDetails = toPrisonerDetails(prisoner, restrictionsCount, alertsCount)
