@@ -37,6 +37,7 @@ const populatePrisonerDetailsIfInCaseload = (
       }
     } catch (err) {
       // swallow prisoner lookup errors and continue (don't set prisonerDetails)
+      next(err)
     } finally {
       // ensure next is always called
       next()
