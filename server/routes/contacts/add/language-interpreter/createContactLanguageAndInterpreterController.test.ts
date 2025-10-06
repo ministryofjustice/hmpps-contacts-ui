@@ -12,7 +12,7 @@ import { AddContactJourney, LanguageAndInterpreterRequiredForm } from '../../../
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
 import mockPermissions from '../../../testutils/mockPermissions'
 import Permission from '../../../../enumeration/permission'
-import stubRestrictionsData from '../../../testutils/stubRestrictionsData'
+import RestrictionsTestData from '../../../testutils/stubRestrictionsData'
 
 jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
@@ -69,7 +69,7 @@ beforeEach(() => {
 
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
-  contactsService.getPrisonerRestrictions.mockResolvedValue(stubRestrictionsData)
+  contactsService.getPrisonerRestrictions.mockResolvedValue(RestrictionsTestData.stubRestrictionsData())
 })
 
 afterEach(() => {
