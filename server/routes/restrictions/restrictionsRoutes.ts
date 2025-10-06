@@ -1,4 +1,4 @@
-import { RequestHandler, Router } from 'express'
+import { Router } from 'express'
 import { z } from 'zod'
 import { PermissionsService } from '@ministryofjustice/hmpps-prison-permissions-lib'
 import AuditService from '../../services/auditService'
@@ -43,7 +43,10 @@ const RestrictionsRoutes = (
     if (!schema && !noValidation) {
       throw Error('Missing validation schema for POST route')
     }
-    const getMiddleware = [ensureInAddRestrictionJourney, populatePrisonerDetailsIfInCaseload(prisonerSearchService)]
+    const getMiddleware = [
+      ensureInAddRestrictionJourney,
+      populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService),
+    ]
     get(path, controller, ...getMiddleware)
     if (schema && !noValidation) {
       post(path, controller, ensureInAddRestrictionJourney, validate(schema))
@@ -72,7 +75,7 @@ const RestrictionsRoutes = (
   get(
     '/prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/success',
     new SuccessfullyAddedRestrictionController(contactsService),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService),
   )
 
   journeyRoute({
@@ -88,11 +91,15 @@ const RestrictionsRoutes = (
     restrictionsService,
     referenceDataService,
   )
-  get(updateRestrictionsPath, updateRestrictionsController, populatePrisonerDetailsIfInCaseload(prisonerSearchService))
+  get(
+    updateRestrictionsPath,
+    updateRestrictionsController,
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService),
+  )
   post(
     updateRestrictionsPath,
     updateRestrictionsController,
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService) as RequestHandler,
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService),
     validate(restrictionSchema()),
   )
 

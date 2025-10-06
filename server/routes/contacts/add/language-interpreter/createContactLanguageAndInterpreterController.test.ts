@@ -12,15 +12,18 @@ import { AddContactJourney, LanguageAndInterpreterRequiredForm } from '../../../
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
 import mockPermissions from '../../../testutils/mockPermissions'
 import Permission from '../../../../enumeration/permission'
+import stubRestrictionsData from '../../../testutils/stubRestrictionsData'
 
 jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/referenceDataService')
+jest.mock('../../../../services/contactsService')
 
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const referenceDataService = MockedService.ReferenceDataService()
+const contactsService = MockedService.ContactsService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -66,6 +69,7 @@ beforeEach(() => {
 
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner({ prisonerNumber }))
   referenceDataService.getReferenceData.mockImplementation(mockedReferenceData)
+  contactsService.getPrisonerRestrictions.mockResolvedValue(stubRestrictionsData)
 })
 
 afterEach(() => {

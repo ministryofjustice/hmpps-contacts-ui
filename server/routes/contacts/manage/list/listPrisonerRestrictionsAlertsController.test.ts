@@ -63,8 +63,7 @@ describe('listPrisonerRestrictionsAlertsController', () => {
       // Then
       const $ = cheerio.load(response.text)
       expect($('title').text()).toContain('Review prisoner restrictions and alerts')
-      expect($('[data-qa="prisoner-restrictions-title"]').text()).toContain('Global restrictions')
-      expect($('[data-qa="prisoner-alerts-heading"]').text()).toContain('John Smith’s prisoner alerts')
+      expect($('[data-qa="prisoner-alerts-heading"]').text()).toContain('John Smith’s alerts')
       expect(contactsService.getPrisonerRestrictions).toHaveBeenCalledWith(
         prisonerNumber,
         0,

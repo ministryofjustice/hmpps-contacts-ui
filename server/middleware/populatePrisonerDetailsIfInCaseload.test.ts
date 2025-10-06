@@ -2,14 +2,17 @@ import 'reflect-metadata'
 import { Request as ExpressRequest, Response } from 'express'
 import populatePrisonerDetailsIfInCaseload from './populatePrisonerDetailsIfInCaseload'
 import TestData from '../routes/testutils/testData'
+import RestrictionsTestData from '../routes/testutils/stubRestrictionsData'
 import { basicPrisonUser } from '../routes/testutils/appSetup'
 import { PrisonerSearchAddress } from '../data/prisonerOffenderSearchTypes'
 import { MockedService } from '../testutils/mockedServices'
 import { PrisonerDetails } from '../@types/journeys'
 
 jest.mock('../services/prisonerSearchService')
+jest.mock('../services/contactsService')
 
 const prisonerSearchService = MockedService.PrisonerSearchService()
+const contactsService = MockedService.ContactsService()
 
 type Request = ExpressRequest<{ prisonerNumber: string }>
 
@@ -21,6 +24,8 @@ describe('prisonerDetailsMiddleware', () => {
 
   beforeEach(() => {
     delete res.locals.prisonerDetails
+    // provide a sensible default so middleware won't throw when awaiting restrictions
+    contactsService.getPrisonerRestrictions.mockResolvedValue(RestrictionsTestData.stubRestrictionsData())
   })
 
   afterEach(() => {
@@ -30,6 +35,7 @@ describe('prisonerDetailsMiddleware', () => {
   it('should add prisoner details and call next', async () => {
     const next = jest.fn()
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
+    contactsService.getPrisonerRestrictions.mockResolvedValue(RestrictionsTestData.stubRestrictionsData())
 
     req = {
       params: {
@@ -37,7 +43,7 @@ describe('prisonerDetailsMiddleware', () => {
       },
     } as Request
 
-    await populatePrisonerDetailsIfInCaseload(prisonerSearchService)(req, res, next)
+    await populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService)(req, res, next)
 
     expect(next).toHaveBeenCalledTimes(1)
     expect(prisonerSearchService.getByPrisonerNumber).toHaveBeenCalledWith('A1234BC', basicPrisonUser)
@@ -49,6 +55,8 @@ describe('prisonerDetailsMiddleware', () => {
       prisonName: 'HMP Hewell',
       cellLocation: '1-1-C-028',
       hasPrimaryAddress: false,
+      alertsCount: 0,
+      restrictionsCount: 1,
     }
     expect(res.locals.prisonerDetails).toStrictEqual(expectedPrisonerDetails)
   })
@@ -64,7 +72,7 @@ describe('prisonerDetailsMiddleware', () => {
       },
     } as Request
 
-    await populatePrisonerDetailsIfInCaseload(prisonerSearchService)(req, res, next)
+    await populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService)(req, res, next)
 
     const expectedPrisonerDetails: PrisonerDetails = {
       prisonerNumber: 'A1234BC',
@@ -74,6 +82,8 @@ describe('prisonerDetailsMiddleware', () => {
       prisonName: 'HMP Hewell',
       cellLocation: '1-1-C-028',
       hasPrimaryAddress: false,
+      alertsCount: 0,
+      restrictionsCount: 1,
     }
     expect(res.locals.prisonerDetails).toStrictEqual(expectedPrisonerDetails)
   })
@@ -93,7 +103,7 @@ describe('prisonerDetailsMiddleware', () => {
       },
     } as Request
 
-    await populatePrisonerDetailsIfInCaseload(prisonerSearchService)(req, res, next)
+    await populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService)(req, res, next)
 
     const expectedPrisonerDetails: PrisonerDetails = {
       prisonerNumber: 'A1234BC',
@@ -103,6 +113,8 @@ describe('prisonerDetailsMiddleware', () => {
       prisonName: 'HMP Hewell',
       cellLocation: '1-1-C-028',
       hasPrimaryAddress: false,
+      alertsCount: 0,
+      restrictionsCount: 1,
     }
     expect(res.locals.prisonerDetails).toStrictEqual(expectedPrisonerDetails)
   })
@@ -122,7 +134,7 @@ describe('prisonerDetailsMiddleware', () => {
       },
     } as Request
 
-    await populatePrisonerDetailsIfInCaseload(prisonerSearchService)(req, res, next)
+    await populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService)(req, res, next)
 
     const expectedPrisonerDetails: PrisonerDetails = {
       prisonerNumber: 'A1234BC',
@@ -132,6 +144,8 @@ describe('prisonerDetailsMiddleware', () => {
       prisonName: 'HMP Hewell',
       cellLocation: '1-1-C-028',
       hasPrimaryAddress: true,
+      alertsCount: 0,
+      restrictionsCount: 1,
     }
     expect(res.locals.prisonerDetails).toStrictEqual(expectedPrisonerDetails)
   })
@@ -147,7 +161,7 @@ describe('prisonerDetailsMiddleware', () => {
       },
     } as Request
 
-    await populatePrisonerDetailsIfInCaseload(prisonerSearchService)(req, res, next)
+    await populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService)(req, res, next)
 
     expect(prisonerSearchService.getByPrisonerNumber).toHaveBeenCalledWith('A1234BC', basicPrisonUser)
   })

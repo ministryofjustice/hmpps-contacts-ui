@@ -105,7 +105,10 @@ const AddContactRoutes = (
     if (!schema && !noValidation) {
       throw Error('Missing validation schema for POST route')
     }
-    const getMiddleware = [ensureInAddContactJourney, populatePrisonerDetailsIfInCaseload(prisonerSearchService)]
+    const getMiddleware = [
+      ensureInAddContactJourney,
+      populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService),
+    ]
     if (resetJourney) {
       getMiddleware.push(resetAddContactJourney)
     }
@@ -235,7 +238,7 @@ const AddContactRoutes = (
   get(
     '/prisoner/:prisonerNumber/contact/:mode/:contactId/:prisonerContactId/success',
     new SuccessfullyAddedContactController(contactsService),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService),
   )
 
   journeyRoute({

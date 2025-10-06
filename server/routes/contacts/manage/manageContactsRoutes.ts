@@ -140,7 +140,7 @@ const ManageContactsRoutes = (
       postMiddleware.push(validate(schema))
     }
     if (prisonerDetailsRequiredOnPost) {
-      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService) as RequestHandler)
+      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService))
     }
     post(path, controller, ...postMiddleware)
   }
@@ -172,12 +172,15 @@ const ManageContactsRoutes = (
       postMiddleware.push(validate(schema))
     }
     if (prisonerDetailsRequiredOnPost) {
-      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService) as RequestHandler)
+      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService) as RequestHandler)
     }
     post(path, controller, ...postMiddleware)
   }
 
-  router.get('/prisoner/:prisonerNumber/*any', populatePrisonerDetailsIfInCaseload(prisonerSearchService))
+  router.get(
+    '/prisoner/:prisonerNumber/*any',
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService),
+  )
 
   // List contacts for a prisoner
   standAloneRoute({
@@ -190,7 +193,7 @@ const ManageContactsRoutes = (
   get(
     '/prisoner/:prisonerNumber/alerts-restrictions',
     new ListPrisonerRestrictionsAlertsController(contactsService, alertsService),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService),
   )
 
   // View one contact
