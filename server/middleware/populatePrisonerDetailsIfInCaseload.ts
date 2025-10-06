@@ -3,6 +3,7 @@ import { PrisonerSearchService, ContactsService } from '../services'
 import { Prisoner } from '../data/prisonerOffenderSearchTypes'
 import { PrisonerDetails } from '../@types/journeys'
 import { PagedModelPrisonerRestrictionDetails } from '../@types/contactsApiClient'
+import logger from '../../logger'
 
 const populatePrisonerDetailsIfInCaseload = (
   prisonerSearchService: PrisonerSearchService,
@@ -30,16 +31,19 @@ const populatePrisonerDetailsIfInCaseload = (
           )
           restrictionsCount = restrictions?.content?.length ?? 0
         } catch (err) {
-          // swallow restriction service errors and continue (count stays 0)
+          // do nothing if restrictions fetch fails - we can still show prisoner details
+          logger.error(
+            err,
+            `Failed to populate prisoner details for prisoner restrictions for prisoner: ${req.params.prisonerNumber}`,
+          )
         }
 
         res.locals.prisonerDetails = toPrisonerDetails(prisoner, restrictionsCount)
       }
     } catch (err) {
-      // swallow prisoner lookup errors and continue (don't set prisonerDetails)
+      logger.error(err, `Failed to populate prisoner details for prisoner: ${req.params.prisonerNumber}`)
       next(err)
     } finally {
-      // ensure next is always called
       next()
     }
   }
