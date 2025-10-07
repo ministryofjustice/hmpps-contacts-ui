@@ -33,7 +33,6 @@ beforeEach(() => {
       auditService,
       prisonerSearchService,
       contactsService,
-      contactsService,
       alertsService,
     },
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
