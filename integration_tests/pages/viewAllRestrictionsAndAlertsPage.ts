@@ -11,7 +11,7 @@ export default class ViewAllRestrictionsAndAlertsPage extends Page {
   }
 
   checkPrisonerAlertsCardTitle() {
-    this.getPrisonerAlertsCardTitle().should('contain.text', `prisoner alerts`)
+    this.getPrisonerAlertsCardTitle().should('contain.text', `Prisoner’s alerts`)
     return this
   }
 

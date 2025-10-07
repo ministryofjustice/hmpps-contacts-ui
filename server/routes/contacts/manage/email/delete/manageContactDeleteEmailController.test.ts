@@ -16,7 +16,9 @@ jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/referenceDataService')
 jest.mock('../../../../../services/prisonerSearchService')
 jest.mock('../../../../../services/contactsService')
+jest.mock('../../../../../services/alertsService')
 
+const alertsService = MockedService.AlertsService()
 const auditService = MockedService.AuditService()
 const referenceDataService = MockedService.ReferenceDataService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
@@ -55,6 +57,7 @@ beforeEach(() => {
       referenceDataService,
       prisonerSearchService,
       contactsService,
+      alertsService,
     },
     userSupplier: () => currentUser,
   })
@@ -71,6 +74,16 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/email/:contactEmailId/delete', () => {
   it('should call the audit service for the page view', async () => {
     // Given
+    app = appWithAllRoutes({
+      services: {
+        auditService,
+        referenceDataService,
+        prisonerSearchService,
+        contactsService,
+        alertsService,
+      },
+      userSupplier: () => currentUser,
+    })
     contactsService.getContact.mockResolvedValue(contact)
 
     // When

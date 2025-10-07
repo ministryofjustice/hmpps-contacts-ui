@@ -16,7 +16,9 @@ jest.mock('../../../services/auditService')
 jest.mock('../../../services/contactsService')
 jest.mock('../../../services/referenceDataService')
 jest.mock('../../../services/prisonerSearchService')
+jest.mock('../../../services/alertsService')
 
+const alertsService = MockedService.AlertsService()
 const auditService = MockedService.AuditService()
 const contactsService = MockedService.ContactsService()
 const referenceDataService = MockedService.ReferenceDataService()
@@ -54,6 +56,7 @@ beforeEach(() => {
       contactsService,
       referenceDataService,
       prisonerSearchService,
+      alertsService,
     },
     userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -74,6 +77,21 @@ afterEach(() => {
 
 describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prisonerContactId/restriction/add/:restrictionClass/cancel/:journeyId', () => {
   it('should render cancel page', async () => {
+    app = appWithAllRoutes({
+      services: {
+        auditService,
+        contactsService,
+        referenceDataService,
+        prisonerSearchService,
+        alertsService,
+      },
+      userSupplier: () => currentUser,
+      sessionReceiver: (receivedSession: Partial<SessionData>) => {
+        session = receivedSession
+        session.addRestrictionJourneys = {}
+        session.addRestrictionJourneys[journeyId] = journey
+      },
+    })
     const response = await request(app).get(
       `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/PRISONER_CONTACT/cancel/${journeyId}`,
     )

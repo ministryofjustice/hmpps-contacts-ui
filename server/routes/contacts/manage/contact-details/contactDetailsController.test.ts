@@ -22,6 +22,8 @@ import {
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
 import mockPermissions from '../../../testutils/mockPermissions'
 import Permission from '../../../../enumeration/permission'
+import RestrictionsTestData from '../../../testutils/stubRestrictionsData'
+import AlertTestData from '../../../testutils/stubAlertsData'
 
 jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
@@ -29,12 +31,14 @@ jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
 jest.mock('../../../../services/referenceDataService')
 jest.mock('../../../../services/restrictionsService')
+jest.mock('../../../../services/alertsService')
 
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const contactsService = MockedService.ContactsService()
 const referenceDataService = MockedService.ReferenceDataService()
 const restrictionsService = MockedService.RestrictionsService()
+const alertsService = MockedService.AlertsService()
 
 let app: Express
 const prisonerNumber = 'A1234BC'
@@ -49,6 +53,7 @@ beforeEach(() => {
       contactsService,
       referenceDataService,
       restrictionsService,
+      alertsService,
     },
     userSupplier: () => currentUser,
   })
@@ -62,6 +67,8 @@ beforeEach(() => {
     contactGlobalRestrictions: [],
   })
   contactsService.getLinkedPrisoners.mockResolvedValue({ content: [], page: { totalElements: 0 } })
+  contactsService.getPrisonerRestrictions.mockResolvedValue(RestrictionsTestData.stubRestrictionsData())
+  alertsService.getAlerts.mockResolvedValue(AlertTestData.stubAlertData())
 })
 
 afterEach(() => {
@@ -75,6 +82,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
       contactsService.getContact.mockResolvedValue(TestData.contact())
       contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
+      contactsService.getPrisonerRestrictions.mockResolvedValue(RestrictionsTestData.stubRestrictionsData())
 
       // When
       const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
@@ -1028,6 +1036,18 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       ])(
         'should render an expired address with all details and the correct title (primary %s, mail %s, expired %s, type %s, expected title %s)',
         async (primary, mail, type, expectedTitle, expectedType, expectedPrimaryOrPostal) => {
+          app = appWithAllRoutes({
+            services: {
+              auditService,
+              prisonerSearchService,
+              contactsService,
+              referenceDataService,
+              restrictionsService,
+              alertsService,
+            },
+            userSupplier: () => currentUser,
+          })
+
           contactsService.getContact.mockResolvedValue(
             TestData.contact({
               addresses: [

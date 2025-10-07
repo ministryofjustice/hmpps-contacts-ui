@@ -19,7 +19,9 @@ jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/referenceDataService')
 jest.mock('../../../../services/contactsService')
+jest.mock('../../../../services/alertsService')
 
+const alertsService = MockedService.AlertsService()
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const referenceDataService = MockedService.ReferenceDataService()
@@ -56,6 +58,8 @@ beforeEach(() => {
       auditService,
       prisonerSearchService,
       referenceDataService,
+      contactsService,
+      alertsService,
     },
     userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -79,6 +83,21 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/create/language-and-interpreter/:journeyId', () => {
   it('should render page with correct navigation before CYA', async () => {
     // Given
+    app = appWithAllRoutes({
+      services: {
+        auditService,
+        prisonerSearchService,
+        referenceDataService,
+        contactsService,
+        alertsService,
+      },
+      userSupplier: () => currentUser,
+      sessionReceiver: (receivedSession: Partial<SessionData>) => {
+        session = receivedSession
+        session.addContactJourneys = {}
+        session.addContactJourneys[journeyId] = { ...existingJourney }
+      },
+    })
     existingJourney.isCheckingAnswers = false
 
     // When
@@ -158,6 +177,21 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/language-and-interpreter
     'should render previously entered details if there are session values %s, %s, %s',
     async (existing, expectedLang, expectedInterpreter) => {
       // Given
+      app = appWithAllRoutes({
+        services: {
+          auditService,
+          prisonerSearchService,
+          referenceDataService,
+          contactsService,
+          alertsService,
+        },
+        userSupplier: () => currentUser,
+        sessionReceiver: (receivedSession: Partial<SessionData>) => {
+          session = receivedSession
+          session.addContactJourneys = {}
+          session.addContactJourneys[journeyId] = { ...existingJourney }
+        },
+      })
       existingJourney.languageAndInterpreter = existing as LanguageAndInterpreterRequiredForm
 
       // When
