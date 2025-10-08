@@ -69,7 +69,8 @@ describe('listPrisonerRestrictionsAlertsController', () => {
         0,
         10,
         expect.anything(),
-        true,
+        false,
+        false,
       )
       expect(alertsService.getAlerts).toHaveBeenCalledWith(prisonerNumber, expect.anything())
     })

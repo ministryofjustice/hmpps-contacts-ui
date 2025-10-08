@@ -31,7 +31,8 @@ const populatePrisonerDetailsIfInCaseload = (
             0,
             10,
             user,
-            true,
+            false,
+            false,
           )
           restrictionsCount = restrictions?.content?.length ?? 0
 

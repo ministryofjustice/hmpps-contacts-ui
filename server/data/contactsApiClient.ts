@@ -484,10 +484,11 @@ export default class ContactsApiClient extends RestClient {
     size: number,
     user: Express.User,
     currentTerm: boolean,
+    paged: boolean,
   ): Promise<PagedModelPrisonerRestrictionDetails> {
     return this.get<PagedModelPrisonerRestrictionDetails>(
       {
-        path: `/prisoner-restrictions/${prisonerNumber}?page=${page}&size=${size}&currentTerm=${currentTerm}`,
+        path: `/prisoner-restrictions/${prisonerNumber}?page=${page}&size=${size}&currentTerm=${currentTerm}&paged=${paged}`,
       },
       user,
     )

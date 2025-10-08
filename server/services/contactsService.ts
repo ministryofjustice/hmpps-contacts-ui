@@ -445,8 +445,9 @@ export default class ContactsService extends AuditedService {
     size: number,
     user: Express.User,
     currentTerm: boolean,
+    paged: boolean,
   ): Promise<PagedModelPrisonerRestrictionDetails> {
-    return this.contactsApiClient.getPrisonerRestrictions(prisonerNumber, page, size, user, currentTerm)
+    return this.contactsApiClient.getPrisonerRestrictions(prisonerNumber, page, size, user, currentTerm, paged)
   }
 
   async createContactAddress(journey: AddressJourney, user: Express.User, correlationId: string) {

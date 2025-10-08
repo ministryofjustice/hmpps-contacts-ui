@@ -25,7 +25,8 @@ export default class ListPrisonerRestrictionsAlertsController implements PageHan
       0,
       10,
       user,
-      true,
+      false,
+      false,
     )
     const prisonerAlertsContent: PageAlert = await this.alertsService.getAlerts(prisonerNumber, user)
     const prisonerRestrictions = prisonerRestrictionsContent.content
