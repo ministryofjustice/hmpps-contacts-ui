@@ -31,10 +31,7 @@ describe('Alerts api client tests', () => {
   it('Get alerts for a prisoner', async () => {
     const alert = TestAlertsData.getAlert()
 
-    fakeAlertsApi
-      .get('/prisoners/A1234BC/alerts?isActive=true')
-      .matchHeader('authorization', `Bearer systemToken`)
-      .reply(200, alert)
+    fakeAlertsApi.get('/prisoners/A1234BC/alerts').matchHeader('authorization', `Bearer systemToken`).reply(200, alert)
     const result = await alertsApiClient.getAllAlerts('A1234BC', user)
 
     expect(result).toEqual(alert)

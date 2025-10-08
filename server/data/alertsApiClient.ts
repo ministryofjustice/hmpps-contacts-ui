@@ -8,6 +8,6 @@ export default class AlertsApiClient extends RestClient {
   }
 
   async getAllAlerts(prisonerNumber: string, user: Express.User): Promise<PageAlert> {
-    return this.get({ path: `/prisoners/${prisonerNumber}/alerts?isActive=true` }, user)
+    return this.get({ path: `/prisoners/${prisonerNumber}/alerts` }, user)
   }
 }

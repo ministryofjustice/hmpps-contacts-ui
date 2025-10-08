@@ -13,7 +13,7 @@ jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
 jest.mock('../../../../../services/contactsService')
-jest.mock('../../../../../services/AlertsService')
+jest.mock('../../../../../services/alertsService')
 
 const alertsService = MockedService.AlertsService()
 const auditService = MockedService.AuditService()
