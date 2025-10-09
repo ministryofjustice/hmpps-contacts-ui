@@ -17,7 +17,9 @@ jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/referenceDataService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
+jest.mock('../../../../services/alertsService')
 
+const alertsService = MockedService.AlertsService()
 const auditService = MockedService.AuditService()
 const referenceDataService = MockedService.ReferenceDataService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
@@ -43,6 +45,7 @@ beforeEach(() => {
       referenceDataService,
       prisonerSearchService,
       contactsService,
+      alertsService,
     },
     userSupplier: () => currentUser,
   })

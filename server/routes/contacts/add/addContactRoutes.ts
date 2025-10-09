@@ -74,6 +74,7 @@ import PossibleExistingRecordMatchController from './possible-existing-record-ma
 import { possibleExistingRecordMatchSchema } from './possible-existing-record-match/possibleExistingRecordMatchSchema'
 import TelemetryService from '../../../services/telemetryService'
 import ReviewExistingRelationshipsController from './review-existing-relationships/reviewExistingRelationshipsController'
+import AlertsService from '../../../services/alertsService'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -85,6 +86,7 @@ const AddContactRoutes = (
   organisationsService: OrganisationsService,
   telemetryService: TelemetryService,
   permissionsService: PermissionsService,
+  alertsService: AlertsService,
 ) => {
   const router = Router({ mergeParams: true })
   const { get, post } = routerMethods(router, permissionsService, auditService)
@@ -105,7 +107,10 @@ const AddContactRoutes = (
     if (!schema && !noValidation) {
       throw Error('Missing validation schema for POST route')
     }
-    const getMiddleware = [ensureInAddContactJourney, populatePrisonerDetailsIfInCaseload(prisonerSearchService)]
+    const getMiddleware = [
+      ensureInAddContactJourney,
+      populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService),
+    ]
     if (resetJourney) {
       getMiddleware.push(resetAddContactJourney)
     }
@@ -235,7 +240,7 @@ const AddContactRoutes = (
   get(
     '/prisoner/:prisonerNumber/contact/:mode/:contactId/:prisonerContactId/success',
     new SuccessfullyAddedContactController(contactsService),
-    populatePrisonerDetailsIfInCaseload(prisonerSearchService),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService),
   )
 
   journeyRoute({

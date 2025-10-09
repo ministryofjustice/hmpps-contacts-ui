@@ -27,6 +27,7 @@ jest.mock('../../../../services/contactsService')
 jest.mock('../../../../services/referenceDataService')
 jest.mock('../../../../services/restrictionsService')
 jest.mock('../../../../services/telemetryService')
+jest.mock('../../../../services/alertsService')
 
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
@@ -34,6 +35,7 @@ const contactsService = MockedService.ContactsService()
 const referenceDataService = MockedService.ReferenceDataService()
 const restrictionsService = MockedService.RestrictionsService()
 const telemetryService = MockedService.TelemetryService()
+const alertsService = MockedService.AlertsService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -59,6 +61,7 @@ beforeEach(() => {
       referenceDataService,
       restrictionsService,
       telemetryService,
+      alertsService,
     },
     userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -872,6 +875,23 @@ describe('Contact details', () => {
     })
 
     it('should show pagination if more than 10', async () => {
+      app = appWithAllRoutes({
+        services: {
+          auditService,
+          prisonerSearchService,
+          contactsService,
+          referenceDataService,
+          restrictionsService,
+          telemetryService,
+          alertsService,
+        },
+        userSupplier: () => currentUser,
+        sessionReceiver: (receivedSession: Partial<SessionData>) => {
+          session = receivedSession
+          session.addContactJourneys = {}
+          session.addContactJourneys[journeyId] = existingJourney
+        },
+      })
       const linkedPrisoners: LinkedPrisonerDetails[] = Array(10)
         .fill(0)
         .map(

@@ -6,6 +6,7 @@ import AuditService from '../../../services/auditService'
 import ListContactsController from './list/listContactsController'
 import { ContactsService, PrisonerSearchService } from '../../../services'
 import populatePrisonerDetailsIfInCaseload from '../../../middleware/populatePrisonerDetailsIfInCaseload'
+import AlertsService from '../../../services/alertsService'
 import ContactDetailsController from './contact-details/contactDetailsController'
 import ReferenceDataService from '../../../services/referenceDataService'
 import ManageLanguageAndInterpreterController from './additional-information/language-and-interpreter/manageLanguageAndInterpreterController'
@@ -100,11 +101,13 @@ import { handleDuplicateRelationshipSchemaFactory } from '../common/relationship
 import DeleteRelationshipController from './relationship/delete-relationship/deleteRelationshipController'
 import { deleteRelationshipSchema } from './relationship/delete-relationship/deleteRelationshipActionSchema'
 import ManageContactDeleteDobController from './date-of-birth/delete/manageContactDeleteDobController'
+import ListPrisonerRestrictionsAlertsController from './list/listPrisonerRestrictionsAlertsController'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
   prisonerSearchService: PrisonerSearchService,
   contactsService: ContactsService,
+  alertsService: AlertsService,
   referenceDataService: ReferenceDataService,
   restrictionsService: RestrictionsService,
   prisonerAddressService: PrisonerAddressService,
@@ -137,7 +140,9 @@ const ManageContactsRoutes = (
       postMiddleware.push(validate(schema))
     }
     if (prisonerDetailsRequiredOnPost) {
-      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService) as RequestHandler)
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService))
     }
     post(path, controller, ...postMiddleware)
   }
@@ -169,12 +174,17 @@ const ManageContactsRoutes = (
       postMiddleware.push(validate(schema))
     }
     if (prisonerDetailsRequiredOnPost) {
-      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService) as RequestHandler)
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService))
     }
     post(path, controller, ...postMiddleware)
   }
 
-  router.get('/prisoner/:prisonerNumber/*any', populatePrisonerDetailsIfInCaseload(prisonerSearchService))
+  router.get(
+    '/prisoner/:prisonerNumber/*any',
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService),
+  )
 
   // List contacts for a prisoner
   standAloneRoute({
@@ -182,6 +192,13 @@ const ManageContactsRoutes = (
     controller: new ListContactsController(contactsService),
     noValidation: true,
   })
+
+  // View one contact
+  get(
+    '/prisoner/:prisonerNumber/alerts-restrictions',
+    new ListPrisonerRestrictionsAlertsController(contactsService, alertsService),
+    populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService),
+  )
 
   // View one contact
   get(

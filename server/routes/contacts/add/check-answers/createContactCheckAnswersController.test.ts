@@ -26,11 +26,13 @@ jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/contactsService')
 jest.mock('../../../../services/referenceDataService')
 jest.mock('../../../../services/prisonerSearchService')
+jest.mock('../../../../services/alertsService')
 
 const auditService = MockedService.AuditService()
 const contactsService = MockedService.ContactsService()
 const referenceDataService = MockedService.ReferenceDataService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
+const alertsService = MockedService.AlertsService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -70,6 +72,7 @@ beforeEach(() => {
       contactsService,
       referenceDataService,
       prisonerSearchService,
+      alertsService,
     },
     userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {

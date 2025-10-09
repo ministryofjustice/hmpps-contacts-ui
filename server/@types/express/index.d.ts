@@ -51,6 +51,7 @@ export declare global {
       prisonerPermissions?: PrisonerPermissions
       validationErrors?: fieldErrors
       digitalPrisonServicesUrl: string
+      prisonerProfileUrl: string
       feComponents?: {
         sharedData?: {
           activeCaseLoad: CaseLoad
