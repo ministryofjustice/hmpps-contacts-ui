@@ -19,7 +19,6 @@ import { PageHandler } from '../../interfaces/pageHandler'
 import { routerMethods } from '../../utils/routerMethods'
 import ensureInAddRestrictionJourney from './addRestrictionMiddleware'
 import AlertsService from '../../services/alertsService'
-import { PrisonerJourneyParams } from '../../@types/journeys'
 
 const RestrictionsRoutes = (
   auditService: AuditService,
