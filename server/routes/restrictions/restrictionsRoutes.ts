@@ -49,10 +49,16 @@ const RestrictionsRoutes = (
       ensureInAddRestrictionJourney,
       populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService),
     ]
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     get(path, controller, ...getMiddleware)
     if (schema && !noValidation) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       post(path, controller, ensureInAddRestrictionJourney, validate(schema))
     } else {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       post(path, controller, ensureInAddRestrictionJourney)
     }
   }

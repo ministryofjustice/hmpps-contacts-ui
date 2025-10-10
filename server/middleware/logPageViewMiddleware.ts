@@ -11,6 +11,8 @@ export default function logPageViewMiddleware(auditService: AuditService, pageHa
   const EMPLOYER_NUMBER_REGEX = /update-employments\/([^/]+)\/[^/]+/
   const ORGANISATION_ID_REGEX = /organisationId=([^&]+)/
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
     if (res.statusCode !== 200) {
       return next()

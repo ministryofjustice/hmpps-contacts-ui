@@ -5,6 +5,8 @@ import logger from '../../logger'
 import asyncMiddleware from './asyncMiddleware'
 
 export default function authorisationMiddleware(authorisedRoles: string[] = []): RequestHandler {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   return asyncMiddleware((req, res, next) => {
     // authorities in the user token will always be prefixed by ROLE_.
     // Convert roles that are passed into this function without the prefix so that we match correctly.

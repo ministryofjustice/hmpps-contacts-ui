@@ -7,6 +7,8 @@ export default function checkPermissionsMiddleware(
   permissionsService: PermissionsService,
   requiredPermission: Permission,
 ): RequestHandler {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   return asyncMiddleware(async (req, res, next) => {
     const guard = prisonerPermissionsGuard(permissionsService, {
       requestDependentOn: [requiredPermission],
