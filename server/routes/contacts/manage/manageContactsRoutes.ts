@@ -102,6 +102,7 @@ import DeleteRelationshipController from './relationship/delete-relationship/del
 import { deleteRelationshipSchema } from './relationship/delete-relationship/deleteRelationshipActionSchema'
 import ManageContactDeleteDobController from './date-of-birth/delete/manageContactDeleteDobController'
 import ListPrisonerRestrictionsAlertsController from './list/listPrisonerRestrictionsAlertsController'
+import { PrisonerJourneyParams } from '../../../@types/journeys'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -126,7 +127,7 @@ const ManageContactsRoutes = (
   }: {
     path: string
     controller: PageHandler
-    schema?: z.ZodTypeAny | SchemaFactory<P>
+    schema?: z.ZodTypeAny | SchemaFactory<P | PrisonerJourneyParams>
     noValidation?: boolean
     prisonerDetailsRequiredOnPost?: boolean
   }) => {
@@ -140,9 +141,9 @@ const ManageContactsRoutes = (
       postMiddleware.push(validate(schema))
     }
     if (prisonerDetailsRequiredOnPost) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService))
+      postMiddleware.push(
+        populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService) as never,
+      )
     }
     post(path, controller, ...postMiddleware)
   }
@@ -158,7 +159,7 @@ const ManageContactsRoutes = (
     path: string
     controller: PageHandler
     journeyEnsurer: RequestHandler<P> | (RequestHandler<P> | RequestHandler)[]
-    schema?: z.ZodTypeAny | SchemaFactory<P>
+    schema?: z.ZodTypeAny | SchemaFactory<P | PrisonerJourneyParams>
     noValidation?: boolean
     prisonerDetailsRequiredOnPost?: boolean
   }) => {
@@ -174,9 +175,9 @@ const ManageContactsRoutes = (
       postMiddleware.push(validate(schema))
     }
     if (prisonerDetailsRequiredOnPost) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService))
+      postMiddleware.push(
+        populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService) as never,
+      )
     }
     post(path, controller, ...postMiddleware)
   }

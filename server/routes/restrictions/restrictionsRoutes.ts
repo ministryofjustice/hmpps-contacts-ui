@@ -102,8 +102,6 @@ const RestrictionsRoutes = (
     updateRestrictionsPath,
     updateRestrictionsController,
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService),
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     validate(restrictionSchema()),
   )
 

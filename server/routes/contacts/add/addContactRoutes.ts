@@ -75,6 +75,7 @@ import { possibleExistingRecordMatchSchema } from './possible-existing-record-ma
 import TelemetryService from '../../../services/telemetryService'
 import ReviewExistingRelationshipsController from './review-existing-relationships/reviewExistingRelationshipsController'
 import AlertsService from '../../../services/alertsService'
+import { PrisonerJourneyParams } from '../../../@types/journeys'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -100,7 +101,7 @@ const AddContactRoutes = (
   }: {
     path: string
     controller: PageHandler
-    schema?: z.ZodTypeAny | SchemaFactory<P>
+    schema?: z.ZodTypeAny | SchemaFactory<P | PrisonerJourneyParams>
     noValidation?: boolean
     resetJourney?: boolean
   }) => {

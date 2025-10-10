@@ -6,6 +6,7 @@ import asyncMiddleware from '../middleware/asyncMiddleware'
 import { AuditService } from '../services'
 import { PrisonerJourneyParams } from '../@types/journeys'
 import checkPermissionsMiddleware from '../middleware/checkPermissionsMiddleware'
+import { SchemaFactory } from '../middleware/validationMiddleware'
 
 export const routerMethods = (router: Router, permissionsService: PermissionsService, auditService: AuditService) => {
   const get = <P extends { [key: string]: string }>(
@@ -23,7 +24,7 @@ export const routerMethods = (router: Router, permissionsService: PermissionsSer
   const post = <P extends { [key: string]: string }>(
     path: string,
     controller: PageHandler,
-    ...handlers: (RequestHandler<P> | RequestHandler<PrisonerJourneyParams>)[]
+    ...handlers: (RequestHandler<P> | RequestHandler<PrisonerJourneyParams> | SchemaFactory<P>)[]
   ) =>
     router.post(
       path,

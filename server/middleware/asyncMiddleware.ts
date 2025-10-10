@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction, RequestHandler } from 'express'
 
 interface ParsedQs {
-  [key: string]: undefined | string | string[] | ParsedQs | ParsedQs[]
+  [key: string]: undefined | string | ParsedQs | (ParsedQs | string)[]
 }
 
 export default function asyncMiddleware<P extends { [key: string]: string }, ResBody, ReqBody, Qs extends ParsedQs>(
