@@ -30,8 +30,6 @@ describe('createContactMiddleware', () => {
         prisonerNumber,
         isCheckingAnswers: false,
       }
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       ensureInAddContactJourney(req, res, next)
       expect(next).toHaveBeenCalledTimes(1)
       expect(new Date(req.session.addContactJourneys[journeyId].lastTouched).getTime()).toBeGreaterThan(
@@ -41,16 +39,12 @@ describe('createContactMiddleware', () => {
     it('should return to start if the journey is not in the session', () => {
       const next = jest.fn()
       req.session.addContactJourneys = {}
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       ensureInAddContactJourney(req, res, next)
       expect(next).toHaveBeenCalledTimes(0)
       expect(res.redirect).toHaveBeenCalledWith(`/prisoner/${prisonerNumber}/contacts/create/start`)
     })
     it('should return to start if no journeys created at all', () => {
       const next = jest.fn()
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       ensureInAddContactJourney(req, res, next)
       expect(next).toHaveBeenCalledTimes(0)
       expect(res.redirect).toHaveBeenCalledWith(`/prisoner/${prisonerNumber}/contacts/create/start`)

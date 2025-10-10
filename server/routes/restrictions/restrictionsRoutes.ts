@@ -19,6 +19,7 @@ import { PageHandler } from '../../interfaces/pageHandler'
 import { routerMethods } from '../../utils/routerMethods'
 import ensureInAddRestrictionJourney from './addRestrictionMiddleware'
 import AlertsService from '../../services/alertsService'
+import { PrisonerJourneyParams } from '../../@types/journeys'
 
 const RestrictionsRoutes = (
   auditService: AuditService,
@@ -49,16 +50,10 @@ const RestrictionsRoutes = (
       ensureInAddRestrictionJourney,
       populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService),
     ]
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     get(path, controller, ...getMiddleware)
     if (schema && !noValidation) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       post(path, controller, ensureInAddRestrictionJourney, validate(schema))
     } else {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       post(path, controller, ensureInAddRestrictionJourney)
     }
   }
@@ -108,8 +103,6 @@ const RestrictionsRoutes = (
     updateRestrictionsPath,
     updateRestrictionsController,
     populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService),
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     validate(restrictionSchema()),
   )
 

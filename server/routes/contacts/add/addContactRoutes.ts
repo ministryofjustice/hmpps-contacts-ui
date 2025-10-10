@@ -75,6 +75,7 @@ import { possibleExistingRecordMatchSchema } from './possible-existing-record-ma
 import TelemetryService from '../../../services/telemetryService'
 import ReviewExistingRelationshipsController from './review-existing-relationships/reviewExistingRelationshipsController'
 import AlertsService from '../../../services/alertsService'
+import { PrisonerJourneyParams } from '../../../@types/journeys'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -100,7 +101,7 @@ const AddContactRoutes = (
   }: {
     path: string
     controller: PageHandler
-    schema?: z.ZodTypeAny | SchemaFactory<P>
+    schema?: z.ZodTypeAny | SchemaFactory<P | PrisonerJourneyParams>
     noValidation?: boolean
     resetJourney?: boolean
   }) => {
@@ -114,16 +115,10 @@ const AddContactRoutes = (
     if (resetJourney) {
       getMiddleware.push(resetAddContactJourney)
     }
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     get(path, controller, ...getMiddleware)
     if (schema && !noValidation) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       post(path, controller, ensureInAddContactJourney, validate(schema))
     } else {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       post(path, controller, ensureInAddContactJourney)
     }
   }
@@ -147,8 +142,6 @@ const AddContactRoutes = (
   get(
     '/prisoner/:prisonerNumber/contacts/add/mode/:mode/:journeyId',
     new AddContactModeController(contactsService),
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     ensureInAddContactJourney,
   )
 
@@ -344,8 +337,6 @@ const AddContactRoutes = (
   get(
     '/prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/use-prisoner-address/:journeyId',
     new CreateContactUsePrisonerAddressController(prisonerAddressService),
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     ensureInAddContactJourney,
   )
 

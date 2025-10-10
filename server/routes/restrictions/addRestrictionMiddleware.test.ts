@@ -48,8 +48,6 @@ describe('addRestrictionMiddleware', () => {
         restrictionClass,
         contactNames: { lastName: 'Last', firstName: 'First' },
       }
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       ensureInAddRestrictionJourney(req, res, next)
       expect(next).toHaveBeenCalledTimes(1)
       expect(new Date(req.session.addRestrictionJourneys[journeyId].lastTouched).getTime()).toBeGreaterThan(
@@ -59,8 +57,6 @@ describe('addRestrictionMiddleware', () => {
     it('should return not found if the journey is not in the session', () => {
       status.mockReturnValue(res)
       req.session.addRestrictionJourneys = {}
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       ensureInAddRestrictionJourney(req, res, next)
       expect(next).toHaveBeenCalledTimes(0)
       expect(status).toHaveBeenCalledWith(404)
@@ -68,8 +64,6 @@ describe('addRestrictionMiddleware', () => {
     })
     it('should return not found if no journeys created at all', () => {
       status.mockReturnValue(res)
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       ensureInAddRestrictionJourney(req, res, next)
       expect(next).toHaveBeenCalledTimes(0)
       expect(status).toHaveBeenCalledWith(404)

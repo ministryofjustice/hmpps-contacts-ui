@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { z, ZodError } from 'zod'
+import { PrisonerJourneyParams } from '../@types/journeys'
 
 export type fieldErrors = {
   [field: string | number | symbol]: string[] | undefined
@@ -30,10 +31,12 @@ export const findError = (errors: fieldErrors, fieldName: string) => {
 export type SchemaFactory<P extends { [key: string]: string }> = (request: Request<P>) => Promise<z.ZodTypeAny>
 
 export const validate = <P extends { [key: string]: string }>(schema: z.ZodTypeAny | SchemaFactory<P>) => {
-  return async (req: Request<P>, res: Response, next: NextFunction) => {
+  return async (req: Request<PrisonerJourneyParams> | Request<P>, res: Response, next: NextFunction) => {
     if (!schema) {
       return next()
     }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const resolvedSchema = typeof schema === 'function' ? await schema(req) : schema
     const result = resolvedSchema.safeParse(req.body)
     if (result.success) {
