@@ -35,9 +35,7 @@ export const validate = <P extends { [key: string]: string }>(schema: z.ZodTypeA
     if (!schema) {
       return next()
     }
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const resolvedSchema = typeof schema === 'function' ? await schema(req) : schema
+    const resolvedSchema = typeof schema === 'function' ? await schema(req as Request<P>) : schema
     const result = resolvedSchema.safeParse(req.body)
     if (result.success) {
       req.body = result.data

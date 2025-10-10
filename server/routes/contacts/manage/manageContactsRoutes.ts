@@ -141,9 +141,9 @@ const ManageContactsRoutes = (
       postMiddleware.push(validate(schema))
     }
     if (prisonerDetailsRequiredOnPost) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService))
+      postMiddleware.push(
+        populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService) as never,
+      )
     }
     post(path, controller, ...postMiddleware)
   }
@@ -175,9 +175,9 @@ const ManageContactsRoutes = (
       postMiddleware.push(validate(schema))
     }
     if (prisonerDetailsRequiredOnPost) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      postMiddleware.push(populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService))
+      postMiddleware.push(
+        populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService) as never,
+      )
     }
     post(path, controller, ...postMiddleware)
   }
