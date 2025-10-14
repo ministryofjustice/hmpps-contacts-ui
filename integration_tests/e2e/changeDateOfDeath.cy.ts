@@ -7,6 +7,7 @@ import DateOfDeathPage from '../pages/contact-details/dateOfDeathPage'
 context('Change date of death', () => {
   const contactId = 654321
   const prisonerContactId = 987654
+  const { prisonerNumber } = TestData.prisoner()
   const contact = TestData.contact({
     id: contactId,
     lastName: 'Last',
@@ -39,8 +40,13 @@ context('Change date of death', () => {
         contactGlobalRestrictions: [],
       },
     })
+    cy.task('stubGetPrisonerRestrictions', {
+      prisonerNumber,
+      response: {
+        content: [],
+      },
+    })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
-    const { prisonerNumber } = TestData.prisoner()
     cy.signIn({
       startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
     })

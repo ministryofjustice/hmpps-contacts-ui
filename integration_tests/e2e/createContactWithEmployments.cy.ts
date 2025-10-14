@@ -86,6 +86,12 @@ context('Create Contact With Addresses', () => {
       organisationName: 'Corp B',
     })
     const { prisonerNumber } = TestData.prisoner()
+    cy.task('stubGetPrisonerRestrictions', {
+      prisonerNumber,
+      response: {
+        content: [],
+      },
+    })
     cy.signIn({ startUrl: `/prisoner/${prisonerNumber}/contacts/list` })
 
     Page.verifyOnPage(ListContactsPage, 'John Smith') //

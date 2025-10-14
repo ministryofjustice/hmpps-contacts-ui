@@ -54,6 +54,12 @@ context('Create a new contact and handle possible duplicates', () => {
         contactGlobalRestrictions: [],
       },
     })
+    cy.task('stubGetPrisonerRestrictions', {
+      prisonerNumber,
+      response: {
+        content: [],
+      },
+    })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
     cy.signIn({ startUrl: `/prisoner/${prisonerNumber}/contacts/list` })
 

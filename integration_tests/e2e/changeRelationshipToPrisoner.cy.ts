@@ -35,6 +35,12 @@ context('Change Relationship To Prisoner', () => {
         contactGlobalRestrictions: [],
       },
     })
+    cy.task('stubGetPrisonerRestrictions', {
+      prisonerNumber,
+      response: {
+        content: [],
+      },
+    })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
   })
 

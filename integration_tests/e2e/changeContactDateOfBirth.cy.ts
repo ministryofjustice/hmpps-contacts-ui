@@ -24,6 +24,12 @@ context('Change Contact Date Of Birth', () => {
         contactGlobalRestrictions: [],
       },
     })
+    cy.task('stubGetPrisonerRestrictions', {
+      prisonerNumber,
+      response: {
+        content: [],
+      },
+    })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
   })
 

@@ -115,7 +115,12 @@ context('Add existing contact should handle duplicate error from server', () => 
       lastName: 'Contact',
       employments: [],
     })
-
+    cy.task('stubGetPrisonerRestrictions', {
+      prisonerNumber,
+      response: {
+        content: [],
+      },
+    })
     cy.signIn({ startUrl: `/prisoner/${prisonerNumber}/contacts/list` })
 
     Page.verifyOnPage(ListContactsPage, 'John Smith') //
