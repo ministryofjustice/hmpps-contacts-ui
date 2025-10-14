@@ -21,7 +21,6 @@ generic-service:
     ENVIRONMENT_NAME: DEV
     SENTRY_ENVIRONMENT: DEV
     AUDIT_ENABLED: 'true'
-    FEATURE_ENABLED_PRISONS: 'KMI,GNI,SPI,LGI,DWI,HOI,WWI,LEI,LWI,BWI,BLI,SLI,IWI,LCI,LFI,LHI,HVI'
 
 generic-prometheus-alerts:
   alertSeverity: hmpps-contacts-ui-dev

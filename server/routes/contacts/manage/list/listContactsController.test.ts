@@ -722,81 +722,20 @@ describe('listContactsController', () => {
       expect($('#flagsNextOfKin').attr('checked')).toStrictEqual('checked')
     })
 
-    it('should render the announcement banner when prison is not feature enabled', async () => {
+    it('should render the announcement banner for all the prisons', async () => {
       // Given
       contactsService.filterPrisonerContacts.mockResolvedValue({
         content: [minimalContact],
         page: { totalElements: 1, totalPages: 1, size: 10, number: 0 },
       })
-      // Simulate a non-feature-enabled prison
-      const appWithCustomSession = appWithAllRoutes({
-        services: {
-          auditService,
-          prisonerSearchService,
-          contactsService,
-        },
-        userSupplier: () => basicPrisonUser,
-      })
-      process.env['FEATURE_ENABLED_PRISONS'] = 'KMI,GNI,SPI,LGI,DWI,HOI,WWI'
       // When
-      const response = await request(appWithCustomSession).get(`/prisoner/${prisonerNumber}/contacts/list`)
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/list`)
 
       // Then
       const $ = cheerio.load(response.text)
       const banner = $('.moj-alert__heading')
       expect(banner.length).toBe(1)
-      expect(banner.text()).toContain('You have limited access to the new Contacts service on DPS')
-      const bannerLink = $('.govuk-notification-banner__link')
-      expect(bannerLink.html()).toContain('managingcontacts@justice.gov.uk')
-    })
-
-    it('should not render the announcement banner when prison is feature enabled', async () => {
-      // Given
-      const featureEnabledPrisonId = 'WWI' // This is in the featureEnabledPrisons set
-
-      // Mock the prisoner search service to return a prisoner with a feature-enabled prison ID
-      prisonerSearchService.getByPrisonerNumber.mockResolvedValueOnce({
-        ...prisoner,
-        prisonId: featureEnabledPrisonId,
-      })
-
-      contactsService.filterPrisonerContacts.mockResolvedValue({
-        content: [minimalContact],
-        page: { totalElements: 1, totalPages: 1, size: 10, number: 0 },
-      })
-
-      const appWithCustomSession = appWithAllRoutes({
-        services: {
-          auditService,
-          prisonerSearchService,
-          contactsService,
-        },
-        userSupplier: () => ({
-          ...basicPrisonUser,
-          activeCaseLoadId: featureEnabledPrisonId,
-        }),
-        sessionReceiver: (receivedSession: Partial<SessionData>) => {
-          session = receivedSession
-          session.activeCaseLoadId = featureEnabledPrisonId
-          session.activeCaseLoad = {
-            caseLoadId: featureEnabledPrisonId,
-            caseloadFunction: '',
-            currentlyActive: true,
-            description: 'Hewell',
-            type: '',
-          }
-        },
-      })
-      process.env['FEATURE_ENABLED_PRISONS'] = 'KMI,GNI,SPI,LGI,DWI,HOI,MDI'
-      // When
-      const response = await request(appWithCustomSession).get(`/prisoner/${prisonerNumber}/contacts/list`)
-
-      // Then
-      const $ = cheerio.load(response.text)
-      const banner = $('.moj-alert__heading')
-      expect(banner.text()).toContain('Your prison is piloting the new Contacts service in DPS')
-      const bannerLink = $('.govuk-notification-banner__link')
-      expect(bannerLink.html()).toContain('SharePoint site')
+      expect(banner.text()).toContain('Your prison has the new Contacts service in DPS.')
     })
 
     it('should show no contacts at all with link to add a contact if no active results and no unfiltered contacts for users that can edit contacts', async () => {
