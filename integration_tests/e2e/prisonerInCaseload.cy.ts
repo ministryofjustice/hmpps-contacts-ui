@@ -37,6 +37,12 @@ context('Ensure Prisoner Is In Caseload', () => {
       id: prisonerContactId,
       response: TestData.prisonerContactRelationship(),
     })
+    cy.task('stubGetPrisonerRestrictions', {
+      prisonerNumber,
+      response: {
+        content: [],
+      },
+    })
   })
 
   it('Contacts page not accessible if prisoner not in caseload', () => {

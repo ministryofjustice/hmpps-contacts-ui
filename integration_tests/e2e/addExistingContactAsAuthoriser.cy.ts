@@ -55,6 +55,12 @@ context('Add existing contact as authorising user so can set visit approval', ()
         contactGlobalRestrictions: [],
       },
     })
+    cy.task('stubGetPrisonerRestrictions', {
+      prisonerNumber,
+      response: {
+        content: [],
+      },
+    })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
     cy.task('stubAddContactRelationship', { contactId, createdPrisonerContactId: prisonerContactId })
     cy.task('stubContactSearch', {

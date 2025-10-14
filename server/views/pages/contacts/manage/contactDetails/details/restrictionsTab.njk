@@ -1,5 +1,6 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "partials/restrictionsTable.njk" import restrictionsTable %}
+{% from "partials/restrictionsReviewTable.njk" import restrictionsReviewTable %}
 {% from "moj/components/alert/macro.njk" import mojAlert %}
 
 <div class="moj-page-header-actions">
@@ -48,3 +49,13 @@
     showActions: false
   } ) }}
 </div>
+
+<div>
+  {{ restrictionsReviewTable({
+    restrictionClass: 'prisoner-restrictions',
+    restrictions: prisonerRestrictions,
+    prisonerDetails: prisonerDetails,
+    hideTableTitle: false
+  }) }}
+</div>
+
