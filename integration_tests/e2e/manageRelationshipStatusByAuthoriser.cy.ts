@@ -40,6 +40,12 @@ context('Manage contact update relationship status active with Authoriser role',
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
     const { prisonerNumber } = TestData.prisoner()
+    cy.task('stubGetPrisonerRestrictions', {
+      prisonerNumber,
+      response: {
+        content: [],
+      },
+    })
     cy.signIn({
       startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
     })

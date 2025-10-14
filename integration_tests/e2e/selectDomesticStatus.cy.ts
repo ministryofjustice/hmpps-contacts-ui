@@ -34,6 +34,13 @@ context('Select Domestic Status', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
+    const { prisonerNumber } = TestData.prisoner()
+    cy.task('stubGetPrisonerRestrictions', {
+      prisonerNumber,
+      response: {
+        content: [],
+      },
+    })
   })
 
   it(`should update contact details domestic status`, () => {

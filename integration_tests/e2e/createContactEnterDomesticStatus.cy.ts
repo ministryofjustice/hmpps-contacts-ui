@@ -54,6 +54,12 @@ context('Create Contact and Enter Domestic Status', () => {
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
     const { prisonerNumber } = TestData.prisoner()
+    cy.task('stubGetPrisonerRestrictions', {
+      prisonerNumber,
+      response: {
+        content: [],
+      },
+    })
     cy.signIn({ startUrl: `/prisoner/${prisonerNumber}/contacts/list` })
 
     Page.verifyOnPage(ListContactsPage, 'John Smith') //

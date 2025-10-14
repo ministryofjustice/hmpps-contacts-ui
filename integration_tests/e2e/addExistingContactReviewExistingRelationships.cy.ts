@@ -74,6 +74,12 @@ context('Add existing contact when search reveals some existing relationships', 
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
     cy.task('stubAddContactRelationship', { contactId, createdPrisonerContactId: prisonerContactId })
+    cy.task('stubGetPrisonerRestrictions', {
+      prisonerNumber,
+      response: {
+        content: [],
+      },
+    })
 
     const searchResult = TestData.contactSearchResultItem({
       id: contact.id,

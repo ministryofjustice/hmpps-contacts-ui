@@ -32,6 +32,12 @@ context('Select Staff Status', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
+    cy.task('stubGetPrisonerRestrictions', {
+      prisonerNumber,
+      response: {
+        content: [],
+      },
+    })
   })
 
   it(`should render manage contact details staff status`, () => {

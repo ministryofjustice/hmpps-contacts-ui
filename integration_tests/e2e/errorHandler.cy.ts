@@ -17,6 +17,12 @@ context('Ensure Prisoner Is In Caseload', () => {
         contactGlobalRestrictions: [],
       },
     })
+    cy.task('stubGetPrisonerRestrictions', {
+      prisonerNumber,
+      response: {
+        content: [],
+      },
+    })
   })
 
   it('Should show not found page if root cause is 404', () => {
