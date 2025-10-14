@@ -3,7 +3,6 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { Cheerio, CheerioAPI } from 'cheerio'
 import { Element } from 'domhandler'
-import { SessionData } from 'express-session'
 import {
   adminUserPermissions,
   adminUser,
@@ -55,7 +54,6 @@ const minimalContact: PrisonerContactSummary = {
 const expectDefaultSort = ['lastName,asc', 'firstName,asc', 'middleNames,asc', 'middleNames,asc', 'contactId,asc']
 let app: Express
 let currentUser: HmppsUser
-let session: Partial<SessionData>
 
 beforeEach(() => {
   currentUser = basicPrisonUser
