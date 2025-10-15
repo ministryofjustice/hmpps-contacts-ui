@@ -21,6 +21,23 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/utility/approve-contacts': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Endpoint to trigger the approval of a specific set of contact relationships */
+    put: operations['approveContacts']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/sync/{prisonerNumber}/number-of-children': {
     parameters: {
       query?: never
@@ -1798,6 +1815,27 @@ export interface components {
   schemas: {
     UpdateInternalOfficialDobResponse: {
       contactsUpdated: number[]
+    }
+    /** @description Request containing the usernames who created relationships */
+    ApproveRelationshipsRequest: {
+      /** @description A list of usernames identifying who created the relationships */
+      createdBy: string[]
+      /**
+       * Format: int64
+       * @description How many days to look back from today
+       */
+      daysAgo: number
+    }
+    RelationshipsApproved: {
+      /** Format: int64 */
+      contactId: number
+      /** Format: int64 */
+      prisonerContactId: number
+      prisonerNumber: string
+      approvedToVisit: boolean
+    }
+    RelationshipsApprovedResponse: {
+      relationships: components['schemas']['RelationshipsApproved'][]
     }
     /** @description Request to update a prisoner's number of children */
     SyncUpdatePrisonerNumberOfChildrenRequest: {
@@ -5155,6 +5193,11 @@ export interface components {
        * @example Close family friend
        */
       comments?: string
+      /**
+       * @description The username of the person who approved this contact as a visitor
+       * @example Michel Smith
+       */
+      approvedBy?: string
     }
     /** @description Request to create a new restriction between a prisoner and a contact */
     CreatePrisonerContactRestrictionRequest: {
@@ -8047,6 +8090,30 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['UpdateInternalOfficialDobResponse']
+        }
+      }
+    }
+  }
+  approveContacts: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ApproveRelationshipsRequest']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RelationshipsApprovedResponse']
         }
       }
     }
@@ -14342,6 +14409,11 @@ export interface operations {
          * @example 30/12/2010
          */
         dateOfBirth?: string
+        /**
+         * @description If true, use sounds-like search (trigram similarity)
+         * @example false
+         */
+        soundsLike?: boolean
         /**
          * @description If a prisoner number is specified, check all matching contacts for any existing relationships to the prisoner. All matching contacts are returned regardless of whether they have an existing relationship to the prisoner or not.
          * @example A1234BC
