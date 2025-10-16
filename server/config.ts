@@ -101,6 +101,17 @@ export default {
       pageSize: 20,
       pagesLinksToShow: 3,
     },
+    alertsApi: {
+      url: get('ALERTS_API_URL', 'http://localhost:8080', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('ALERTS_API_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('ALERTS_API_TIMEOUT_DEADLINE', 10000)),
+      },
+      agent: new AgentConfig(Number(get('ALERTS_API_TIMEOUT_RESPONSE', 10000))),
+      pageSize: 20,
+      pagesLinksToShow: 3,
+    },
     prisonApi: {
       url: get('PRISON_API_URL', 'http://127.0.0.1:8080', requiredInProduction),
       healthPath: '/health/ping',
@@ -140,6 +151,7 @@ export default {
   },
   serviceUrls: {
     digitalPrison: get('DPS_HOME_PAGE_URL', 'http://localhost:3001', requiredInProduction),
+    prisonerProfileUrl: get('PRISONER_PROFILE_PAGE_URL', 'http://localhost:3001', requiredInProduction),
   },
   sqs: {
     audit: auditConfig(),

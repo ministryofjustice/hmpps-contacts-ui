@@ -14,12 +14,14 @@ jest.mock('../services/prisonerSearchService')
 jest.mock('../services/contactsService')
 jest.mock('../services/referenceDataService')
 jest.mock('../services/restrictionsService')
+jest.mock('../services/alertsService')
 
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const contactsService = MockedService.ContactsService()
 const referenceDataService = MockedService.ReferenceDataService()
 const restrictionsService = MockedService.RestrictionsService()
+const alertsService = MockedService.AlertsService()
 
 let app: Express
 const prisonerNumber = 'A1234BC'
@@ -32,6 +34,7 @@ beforeEach(() => {
       contactsService,
       referenceDataService,
       restrictionsService,
+      alertsService,
     },
   })
 
