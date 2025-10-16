@@ -23,7 +23,9 @@ jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
 jest.mock('../../../../../services/referenceDataService')
 jest.mock('../../../../../services/contactsService')
+jest.mock('../../../../../services/alertsService')
 
+const alertsService = MockedService.AlertsService()
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const referenceDataService = MockedService.ReferenceDataService()
@@ -81,6 +83,7 @@ beforeEach(() => {
       prisonerSearchService,
       referenceDataService,
       contactsService,
+      alertsService,
     },
     userSupplier: () => currentUser,
   })
@@ -145,6 +148,16 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
   it('should render previously entered details if validation errors even if values in the session', async () => {
     // Given
+    app = appWithAllRoutes({
+      services: {
+        auditService,
+        prisonerSearchService,
+        referenceDataService,
+        contactsService,
+        alertsService,
+      },
+      userSupplier: () => currentUser,
+    })
     const form = {
       flat: 'a'.repeat(200),
       property: 'b',

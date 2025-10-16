@@ -18,6 +18,10 @@ jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
 jest.mock('../../../../../services/referenceDataService')
 jest.mock('../../../../../services/organisationsService')
+jest.mock('../../../../../services/contactsService')
+jest.mock('../../../../../services/alertsService')
+const contactsService = MockedService.ContactsService()
+const alertsService = MockedService.AlertsService()
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const referenceDataService = MockedService.ReferenceDataService()
@@ -73,6 +77,8 @@ beforeEach(() => {
       prisonerSearchService,
       referenceDataService,
       organisationsService,
+      contactsService,
+      alertsService,
     },
     userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {

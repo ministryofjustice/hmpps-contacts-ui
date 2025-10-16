@@ -148,6 +148,7 @@ export default class ListContactsController implements PageHandler {
       navigation,
       hasAnyContactsAtAll,
       hasAnyFiltersApplied,
+      prisonerPermissions,
     })
   }
 
