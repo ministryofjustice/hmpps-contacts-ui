@@ -19,7 +19,9 @@ jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
 jest.mock('../../../../../services/referenceDataService')
 jest.mock('../../../../../services/contactsService')
+jest.mock('../../../../../services/alertsService')
 
+const alertsService = MockedService.AlertsService()
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const referenceDataService = MockedService.ReferenceDataService()
@@ -80,6 +82,7 @@ beforeEach(() => {
       prisonerSearchService,
       referenceDataService,
       contactsService,
+      alertsService,
     },
     userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -161,6 +164,21 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
   it('should render address check answers page with all address details', async () => {
     // Given
+    app = appWithAllRoutes({
+      services: {
+        auditService,
+        prisonerSearchService,
+        referenceDataService,
+        contactsService,
+        alertsService,
+      },
+      userSupplier: () => currentUser,
+      sessionReceiver: (receivedSession: Partial<SessionData>) => {
+        session = receivedSession
+        session.addressJourneys = {}
+        session.addressJourneys[journeyId] = existingJourney
+      },
+    })
     existingJourney.addressType = 'HOME'
     existingJourney.addressLines = {
       noFixedAddress: true,

@@ -26,12 +26,14 @@ jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
 jest.mock('../../../../services/referenceDataService')
 jest.mock('../../../../services/restrictionsService')
+jest.mock('../../../../services/alertsService')
 
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const contactsService = MockedService.ContactsService()
 const referenceDataService = MockedService.ReferenceDataService()
 const restrictionsService = MockedService.RestrictionsService()
+const alertsService = MockedService.AlertsService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -79,6 +81,7 @@ beforeEach(() => {
       contactsService,
       referenceDataService,
       restrictionsService,
+      alertsService,
     },
     userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -101,6 +104,23 @@ afterEach(() => {
 })
 describe('Contact details', () => {
   beforeEach(() => {
+    app = appWithAllRoutes({
+      services: {
+        auditService,
+        prisonerSearchService,
+        contactsService,
+        referenceDataService,
+        restrictionsService,
+        alertsService,
+      },
+      userSupplier: () => currentUser,
+      sessionReceiver: (receivedSession: Partial<SessionData>) => {
+        session = receivedSession
+        session.addContactJourneys = {}
+        session.addContactJourneys[journeyId] = existingJourney
+      },
+    })
+    mockPermissions(app, adminUserPermissions)
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.getContact.mockResolvedValue(TestData.contact())
     contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
@@ -561,6 +581,22 @@ describe('Contact details', () => {
       ])(
         'should render an address with all details and the correct title (primary %s, mail %s, expired %s, type %s, expected title %s)',
         async (primary, mail, type, expectedTitle, expectedType, expectedPrimaryOrPostal) => {
+          app = appWithAllRoutes({
+            services: {
+              auditService,
+              prisonerSearchService,
+              contactsService,
+              referenceDataService,
+              restrictionsService,
+              alertsService,
+            },
+            userSupplier: () => currentUser,
+            sessionReceiver: (receivedSession: Partial<SessionData>) => {
+              session = receivedSession
+              session.addContactJourneys = {}
+              session.addContactJourneys[journeyId] = existingJourney
+            },
+          })
           contactsService.getContact.mockResolvedValue(
             TestData.contact({
               addresses: [
@@ -740,6 +776,22 @@ describe('Contact details', () => {
       })
 
       it('should render no addresses provided', async () => {
+        app = appWithAllRoutes({
+          services: {
+            auditService,
+            prisonerSearchService,
+            contactsService,
+            referenceDataService,
+            restrictionsService,
+            alertsService,
+          },
+          userSupplier: () => currentUser,
+          sessionReceiver: (receivedSession: Partial<SessionData>) => {
+            session = receivedSession
+            session.addContactJourneys = {}
+            session.addContactJourneys[journeyId] = existingJourney
+          },
+        })
         contactsService.getContact.mockResolvedValue(
           TestData.contact({
             addresses: [],

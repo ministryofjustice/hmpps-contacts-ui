@@ -23,7 +23,9 @@ jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
 jest.mock('../../../../../services/referenceDataService')
 jest.mock('../../../../../services/contactsService')
+jest.mock('../../../../../services/alertsService')
 
+const alertsService = MockedService.AlertsService()
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const referenceDataService = MockedService.ReferenceDataService()
@@ -81,6 +83,7 @@ beforeEach(() => {
       prisonerSearchService,
       referenceDataService,
       contactsService,
+      alertsService,
     },
     userSupplier: () => currentUser,
   })
@@ -209,6 +212,16 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   })
 
   it('POST should block access without edit contacts permission', async () => {
+    app = appWithAllRoutes({
+      services: {
+        auditService,
+        prisonerSearchService,
+        referenceDataService,
+        contactsService,
+        alertsService,
+      },
+      userSupplier: () => currentUser,
+    })
     mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
 
     contactsService.updateContactAddress.mockResolvedValue({ contactAddressId } as ContactAddressDetails)

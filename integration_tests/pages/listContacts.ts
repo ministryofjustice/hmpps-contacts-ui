@@ -38,16 +38,6 @@ export default class ListContactsPage extends Page {
     return this
   }
 
-  clickOfficialContacts(): ListContactsPage {
-    this.official().check()
-    return this
-  }
-
-  hasOfficialContacts(): ListContactsPage {
-    this.official().should('be.checked')
-    return this
-  }
-
   clickEmergencyContact(): ListContactsPage {
     this.emergencyContact().check()
     return this
@@ -73,13 +63,8 @@ export default class ListContactsPage extends Page {
     return this
   }
 
-  clickIncludeInactive(): ListContactsPage {
-    this.includeInactive().check()
-    return this
-  }
-
-  hasIncludeInactive(): ListContactsPage {
-    this.includeInactive().should('be.checked')
+  clickViewAllRestrictions(): ListContactsPage {
+    this.viewAllRestrictionsOnly().click()
     return this
   }
 
@@ -88,15 +73,13 @@ export default class ListContactsPage extends Page {
     return this
   }
 
-  private official = (): PageElement => cy.get('#relationshipTypeOfficial')
-
   private social = (): PageElement => cy.get('#relationshipTypeSocial')
 
   private emergencyContact = (): PageElement => cy.get('#flagsEmergencyContact')
 
   private nextOfKin = (): PageElement => cy.get('#flagsNextOfKin')
 
-  private includeInactive = (): PageElement => cy.get(`.govuk-radios__input[value='ACTIVE_AND_INACTIVE']`)
-
   private activeOnly = (): PageElement => cy.get(`.govuk-radios__input[value='ACTIVE_ONLY']`)
+
+  private viewAllRestrictionsOnly = (): PageElement => cy.get('[data-qa*="alerts-restrictions"]')
 }

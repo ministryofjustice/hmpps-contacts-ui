@@ -15,7 +15,9 @@ jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
 jest.mock('../../../../../services/contactsService')
 jest.mock('../../../../../services/referenceDataService')
+jest.mock('../../../../../services/alertsService')
 
+const alertsService = MockedService.AlertsService()
 const auditService = MockedService.AuditService()
 const referenceDataService = MockedService.ReferenceDataService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
@@ -35,6 +37,7 @@ beforeEach(() => {
       prisonerSearchService,
       contactsService,
       referenceDataService,
+      alertsService,
     },
     userSupplier: () => currentUser,
   })
@@ -112,6 +115,16 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/language-and-interpreter', () => {
   it('should update contact when language code and interpretation requirement is provided', async () => {
+    app = appWithAllRoutes({
+      services: {
+        auditService,
+        prisonerSearchService,
+        contactsService,
+        referenceDataService,
+        alertsService,
+      },
+      userSupplier: () => currentUser,
+    })
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
     contactsService.getContactName.mockResolvedValue(TestData.contact())
     await request(app)
