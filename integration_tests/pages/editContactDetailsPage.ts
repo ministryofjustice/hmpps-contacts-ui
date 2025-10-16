@@ -100,6 +100,11 @@ export default class EditContactDetailsPage extends Page {
     return this
   }
 
+  verifyShowApprovedForVisitsByAs(expected: string): EditContactDetailsPage {
+    this.approvedForVisitsByValue().should('contain.text', expected)
+    return this
+  }
+
   clickChangeApprovedForVisitsLink() {
     this.changeApprovedForVisitsLink().click()
   }
@@ -238,7 +243,11 @@ export default class EditContactDetailsPage extends Page {
 
   private approvedForVisitsHeading = (): PageElement => cy.findByText('Approved for visits')
 
+  private approvedForVisitsByHeading = (): PageElement => cy.findByText('Visits approval recorded by')
+
   private approvedForVisitsValue = (): PageElement => this.approvedForVisitsHeading().next()
+
+  private approvedForVisitsByValue = (): PageElement => this.approvedForVisitsByHeading().next()
 
   private changeApprovedForVisitsLink = (): PageElement => this.approvedForVisitsHeading().next().next().find('a')
 
