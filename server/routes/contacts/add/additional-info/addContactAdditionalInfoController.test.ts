@@ -21,13 +21,9 @@ import Permission from '../../../../enumeration/permission'
 jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
-jest.mock('../../../../services/alertsService')
-jest.mock('../../../../services/contactsService')
 
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
-const alertsService = MockedService.AlertsService()
-const contactsService = MockedService.ContactsService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -63,8 +59,6 @@ beforeEach(() => {
     services: {
       auditService,
       prisonerSearchService,
-      contactsService,
-      alertsService,
     },
     userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -88,20 +82,6 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:journeyId', () => {
   it('should render enter additional info page for admin user', async () => {
     // Given
-    app = appWithAllRoutes({
-      services: {
-        auditService,
-        prisonerSearchService,
-        contactsService,
-        alertsService,
-      },
-      userSupplier: () => currentUser,
-      sessionReceiver: (receivedSession: Partial<SessionData>) => {
-        session = receivedSession
-        session.addContactJourneys = {}
-        session.addContactJourneys[journeyId] = { ...existingJourney }
-      },
-    })
     currentUser = adminUser
 
     // When
@@ -236,20 +216,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/add/enter-additional-info/:jour
   })
 
   it('should call the audit service for the page view', async () => {
-    app = appWithAllRoutes({
-      services: {
-        auditService,
-        prisonerSearchService,
-        contactsService,
-        alertsService,
-      },
-      userSupplier: () => currentUser,
-      sessionReceiver: (receivedSession: Partial<SessionData>) => {
-        session = receivedSession
-        session.addContactJourneys = {}
-        session.addContactJourneys[journeyId] = { ...existingJourney }
-      },
-    })
     const response = await request(app).get(
       `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`,
     )

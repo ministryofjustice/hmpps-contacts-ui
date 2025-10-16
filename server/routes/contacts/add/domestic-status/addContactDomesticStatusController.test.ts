@@ -17,11 +17,7 @@ jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/referenceDataService')
-jest.mock('../../../../services/contactsService')
-jest.mock('../../../../services/alertsService')
 
-const contactsService = MockedService.ContactsService()
-const alertsService = MockedService.AlertsService()
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const referenceDataService = MockedService.ReferenceDataService()
@@ -57,8 +53,6 @@ beforeEach(() => {
       auditService,
       prisonerSearchService,
       referenceDataService,
-      contactsService,
-      alertsService,
     },
     userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -81,21 +75,6 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/create/domestic-status/:journeyId', () => {
   it('should render page with correct navigation before CYA', async () => {
     // Given
-    app = appWithAllRoutes({
-      services: {
-        auditService,
-        prisonerSearchService,
-        referenceDataService,
-        contactsService,
-        alertsService,
-      },
-      userSupplier: () => currentUser,
-      sessionReceiver: (receivedSession: Partial<SessionData>) => {
-        session = receivedSession
-        session.addContactJourneys = {}
-        session.addContactJourneys[journeyId] = { ...existingJourney }
-      },
-    })
     existingJourney.isCheckingAnswers = false
 
     // When
@@ -180,22 +159,6 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/domestic-status/:journey
   })
 
   it('GET should block access without edit contacts permission', async () => {
-    app = appWithAllRoutes({
-      services: {
-        auditService,
-        prisonerSearchService,
-        referenceDataService,
-        contactsService,
-        alertsService,
-      },
-      userSupplier: () => currentUser,
-      sessionReceiver: (receivedSession: Partial<SessionData>) => {
-        session = receivedSession
-        session.addContactJourneys = {}
-        session.addContactJourneys[journeyId] = { ...existingJourney }
-      },
-    })
-
     mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
 
     await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/domestic-status/${journeyId}`).expect(403)
@@ -255,22 +218,6 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/domestic-status/:journe
   })
 
   it('should return to start if no journey in session', async () => {
-    app = appWithAllRoutes({
-      services: {
-        auditService,
-        prisonerSearchService,
-        referenceDataService,
-        contactsService,
-        alertsService,
-      },
-      userSupplier: () => currentUser,
-      sessionReceiver: (receivedSession: Partial<SessionData>) => {
-        session = receivedSession
-        session.addContactJourneys = {}
-        session.addContactJourneys[journeyId] = { ...existingJourney }
-      },
-    })
-
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/create/domestic-status/${uuidv4()}`)
       .type('form')

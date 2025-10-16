@@ -10,7 +10,6 @@ export default function routes({
   auditService,
   prisonerSearchService,
   contactsService,
-  alertsService,
   prisonerImageService,
   referenceDataService,
   restrictionsService,
@@ -33,7 +32,6 @@ export default function routes({
       organisationsService,
       telemetryService,
       permissionsService,
-      alertsService,
     ),
   )
   router.use(
@@ -42,7 +40,6 @@ export default function routes({
       auditService,
       prisonerSearchService,
       contactsService,
-      alertsService,
       referenceDataService,
       restrictionsService,
       prisonerAddressService,
@@ -59,7 +56,6 @@ export default function routes({
       prisonerSearchService,
       restrictionsService,
       permissionsService,
-      alertsService,
     ),
   )
 

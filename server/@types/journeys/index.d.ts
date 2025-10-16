@@ -131,8 +131,6 @@ export interface PrisonerDetails {
   prisonName?: string | undefined
   cellLocation?: string | undefined
   hasPrimaryAddress: boolean
-  alertsCount: number
-  restrictionsCount: number
 }
 
 export interface EmploymentDetails {

@@ -1,8 +1,6 @@
 import { SuperAgentRequest } from 'superagent'
 import { stubFor } from './wiremock'
 import { Prisoner } from '../../server/data/prisonerOffenderSearchTypes'
-import { PagedModelPrisonerRestrictionDetails } from '../../server/@types/contactsApiClient'
-import { PageAlert } from '../../server/data/alertsApiTypes'
 
 export default {
   stubPrisoners: ({
@@ -56,32 +54,6 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: prisoner,
-      },
-    })
-  },
-  stubPrisonerRestrictionsById: (restrictionDetails: PagedModelPrisonerRestrictionDetails): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'GET',
-        urlPath: `/prisoner-restrictions/${restrictionDetails.content[0].prisonerNumber}`,
-      },
-      response: {
-        status: 200,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: restrictionDetails,
-      },
-    })
-  },
-  stubPrisonerAlertsById: (pageAlert: PageAlert): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'GET',
-        urlPath: `/prisoners/${pageAlert.content[0].prisonNumber}/alerts`,
-      },
-      response: {
-        status: 200,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: pageAlert,
       },
     })
   },

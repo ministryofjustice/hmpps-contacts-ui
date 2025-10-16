@@ -17,11 +17,7 @@ jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/referenceDataService')
 jest.mock('../../../../../services/prisonerSearchService')
-jest.mock('../../../../../services/contactsService')
-jest.mock('../../../../../services/alertsService')
 
-const contactsService = MockedService.ContactsService()
-const alertsService = MockedService.AlertsService()
 const auditService = MockedService.AuditService()
 const referenceDataService = MockedService.ReferenceDataService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
@@ -59,8 +55,6 @@ beforeEach(() => {
       auditService,
       prisonerSearchService,
       referenceDataService,
-      contactsService,
-      alertsService,
     },
     userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -84,21 +78,6 @@ afterEach(() => {
 describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/address/phone/:journeyId`, () => {
   it('should render enter address phone page', async () => {
     // When
-    app = appWithAllRoutes({
-      services: {
-        auditService,
-        prisonerSearchService,
-        referenceDataService,
-        contactsService,
-        alertsService,
-      },
-      userSupplier: () => currentUser,
-      sessionReceiver: (receivedSession: Partial<SessionData>) => {
-        session = receivedSession
-        session.addressJourneys = {}
-        session.addressJourneys[journeyId] = { ...existingJourney }
-      },
-    })
     const response = await request(app).get(
       `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/phone/${journeyId}`,
     )

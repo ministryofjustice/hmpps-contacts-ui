@@ -15,13 +15,9 @@ import Permission from '../../../../enumeration/permission'
 jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
-jest.mock('../../../../services/alertsService')
-jest.mock('../../../../services/contactsService')
 
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
-const contactsService = MockedService.ContactsService()
-const alertsService = MockedService.AlertsService()
 
 let app: Express
 let session: Partial<SessionData>
@@ -51,8 +47,6 @@ beforeEach(() => {
     services: {
       auditService,
       prisonerSearchService,
-      contactsService,
-      alertsService,
     },
     userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -123,20 +117,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/approved-to-visit/:journ
 
   it('should call the audit service for the page view', async () => {
     // Given
-    app = appWithAllRoutes({
-      services: {
-        auditService,
-        prisonerSearchService,
-        contactsService,
-        alertsService,
-      },
-      userSupplier: () => currentUser,
-      sessionReceiver: (receivedSession: Partial<SessionData>) => {
-        session = receivedSession
-        session.addContactJourneys = {}
-        session.addContactJourneys[journeyId] = { ...existingJourney }
-      },
-    })
+
     // When
     const response = await request(app).get(
       `/prisoner/${prisonerNumber}/contacts/create/approved-to-visit/${journeyId}`,
