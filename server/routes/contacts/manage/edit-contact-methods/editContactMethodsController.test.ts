@@ -18,7 +18,9 @@ jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
 jest.mock('../../../../services/referenceDataService')
+jest.mock('../../../../services/alertsService')
 
+const alertsService = MockedService.AlertsService()
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const contactsService = MockedService.ContactsService()
@@ -36,6 +38,7 @@ beforeEach(() => {
       prisonerSearchService,
       contactsService,
       referenceDataService,
+      alertsService,
     },
     userSupplier: () => currentUser,
   })
@@ -101,6 +104,20 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
   })
 
   describe('Phone numbers summary card', () => {
+    beforeEach(() => {
+      currentUser = adminUser
+      app = appWithAllRoutes({
+        services: {
+          auditService,
+          prisonerSearchService,
+          contactsService,
+          referenceDataService,
+          alertsService,
+        },
+        userSupplier: () => currentUser,
+      })
+      mockPermissions(app, adminUserPermissions)
+    })
     it('should render all phone numbers with change and delete links including the return anchor', async () => {
       contactsService.getContact.mockResolvedValue(
         TestData.contact({

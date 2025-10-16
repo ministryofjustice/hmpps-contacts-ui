@@ -19,7 +19,9 @@ jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
 jest.mock('../../../../../services/referenceDataService')
 jest.mock('../../../../../services/contactsService')
+jest.mock('../../../../../services/alertsService')
 
+const alertsService = MockedService.AlertsService()
 const auditService = MockedService.AuditService()
 const contactsService = MockedService.ContactsService()
 const referenceDataService = MockedService.ReferenceDataService()
@@ -80,6 +82,7 @@ beforeEach(() => {
       prisonerSearchService,
       referenceDataService,
       contactsService,
+      alertsService,
     },
     userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -159,6 +162,21 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
   })
 
   it('GET should block access without edit contacts permission', async () => {
+    app = appWithAllRoutes({
+      services: {
+        auditService,
+        prisonerSearchService,
+        referenceDataService,
+        contactsService,
+        alertsService,
+      },
+      userSupplier: () => currentUser,
+      sessionReceiver: (receivedSession: Partial<SessionData>) => {
+        session = receivedSession
+        session.addressJourneys = {}
+        session.addressJourneys[journeyId] = existingJourney
+      },
+    })
     mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
 
     await request(app)

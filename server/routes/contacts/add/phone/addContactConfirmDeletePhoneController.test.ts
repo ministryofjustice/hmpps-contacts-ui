@@ -81,6 +81,19 @@ afterEach(() => {
 
 describe('GET /prisoner/:prisonerNumber/contacts/create/delete-phone-number/:index/:journeyId', () => {
   it('should render navigation and correct phone numbers details', async () => {
+    app = appWithAllRoutes({
+      services: {
+        auditService,
+        prisonerSearchService,
+        referenceDataService,
+      },
+      userSupplier: () => currentUser,
+      sessionReceiver: (receivedSession: Partial<SessionData>) => {
+        session = receivedSession
+        session.addContactJourneys = {}
+        session.addContactJourneys[journeyId] = { ...existingJourney }
+      },
+    })
     const response = await request(app).get(
       `/prisoner/${prisonerNumber}/contacts/create/delete-phone-number/1/${journeyId}`,
     )
@@ -109,6 +122,19 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/delete-phone-number/:ind
   })
 
   it('should call the audit service for the page view', async () => {
+    app = appWithAllRoutes({
+      services: {
+        auditService,
+        prisonerSearchService,
+        referenceDataService,
+      },
+      userSupplier: () => currentUser,
+      sessionReceiver: (receivedSession: Partial<SessionData>) => {
+        session = receivedSession
+        session.addContactJourneys = {}
+        session.addContactJourneys[journeyId] = { ...existingJourney }
+      },
+    })
     const response = await request(app).get(
       `/prisoner/${prisonerNumber}/contacts/create/delete-phone-number/1/${journeyId}`,
     )
@@ -131,6 +157,19 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/delete-phone-number/:ind
   })
 
   it('GET should block without access without edit contacts permission', async () => {
+    app = appWithAllRoutes({
+      services: {
+        auditService,
+        prisonerSearchService,
+        referenceDataService,
+      },
+      userSupplier: () => currentUser,
+      sessionReceiver: (receivedSession: Partial<SessionData>) => {
+        session = receivedSession
+        session.addContactJourneys = {}
+        session.addContactJourneys[journeyId] = { ...existingJourney }
+      },
+    })
     mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
 
     await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/delete-phone-number/1/${journeyId}`).expect(403)
