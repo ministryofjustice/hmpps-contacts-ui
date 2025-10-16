@@ -18,21 +18,15 @@ import TestData from '../../../testutils/testData'
 import { PrisonerContactSummary } from '../../../../@types/contactsApiClient'
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
 import mockPermissions from '../../../testutils/mockPermissions'
-import RestrictionsTestData from '../../../testutils/stubRestrictionsData'
-import AlertTestData from '../../../testutils/stubAlertsData'
 
 jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
-jest.mock('../../../../services/restrictionsService')
-jest.mock('../../../../services/alertsService')
 
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const contactsService = MockedService.ContactsService()
-const restrictionsService = MockedService.RestrictionsService()
-const alertsService = MockedService.AlertsService()
 
 const prisonerNumber = 'A1234BC'
 const prisoner = TestData.prisoner({ prisonerNumber })
@@ -70,15 +64,11 @@ beforeEach(() => {
       auditService,
       prisonerSearchService,
       contactsService,
-      restrictionsService,
-      alertsService,
     },
     userSupplier: () => currentUser,
   })
   mockPermissions(app, readOnlyPermissions)
   prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
-  contactsService.getPrisonerRestrictions.mockResolvedValue(RestrictionsTestData.stubRestrictionsData())
-  alertsService.getAlerts.mockResolvedValue(AlertTestData.stubAlertData())
 })
 
 afterEach(() => {
@@ -102,16 +92,6 @@ describe('listContactsController', () => {
   describe('GET /prisoner/:prisonerNumber/contacts/list', () => {
     it('should render with correct navigation for users that can edit contacts', async () => {
       // Given
-      app = appWithAllRoutes({
-        services: {
-          auditService,
-          prisonerSearchService,
-          contactsService,
-          restrictionsService,
-          alertsService,
-        },
-        userSupplier: () => currentUser,
-      })
       mockPermissions(app, adminUserPermissions)
 
       contactsService.filterPrisonerContacts.mockResolvedValue({
@@ -195,16 +175,6 @@ describe('listContactsController', () => {
       [adminUser, 200],
       [authorisingUser, 200],
     ])('GET should block access without required roles (%j, %s)', async (user: HmppsUser, expectedStatus: number) => {
-      app = appWithAllRoutes({
-        services: {
-          auditService,
-          prisonerSearchService,
-          contactsService,
-          restrictionsService,
-          alertsService,
-        },
-        userSupplier: () => currentUser,
-      })
       currentUser = user
 
       contactsService.filterPrisonerContacts.mockResolvedValue({
@@ -693,16 +663,6 @@ describe('listContactsController', () => {
       'should search using correct query parameters and defaults (%s)',
       async (url, expectedFilter, expectedPagination) => {
         // Given
-        app = appWithAllRoutes({
-          services: {
-            auditService,
-            prisonerSearchService,
-            contactsService,
-            restrictionsService,
-            alertsService,
-          },
-          userSupplier: () => currentUser,
-        })
         contactsService.filterPrisonerContacts.mockResolvedValue({
           content: [minimalContact],
           page: { totalElements: 1, totalPages: 1, size: 10, number: expectedPagination.page },
@@ -774,7 +734,6 @@ describe('listContactsController', () => {
           auditService,
           prisonerSearchService,
           contactsService,
-          alertsService,
         },
         userSupplier: () => basicPrisonUser,
       })
@@ -811,7 +770,6 @@ describe('listContactsController', () => {
           auditService,
           prisonerSearchService,
           contactsService,
-          alertsService,
         },
         userSupplier: () => ({
           ...basicPrisonUser,

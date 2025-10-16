@@ -13,12 +13,10 @@ jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../services/auditService')
 jest.mock('../../../services/contactsService')
 jest.mock('../../../services/prisonerSearchService')
-jest.mock('../../../services/alertsService')
 
 const auditService = MockedService.AuditService()
 const contactsService = MockedService.ContactsService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
-const alertsService = MockedService.AlertsService()
 
 let app: Express
 const prisonerNumber = 'A1234BC'
@@ -29,7 +27,6 @@ beforeEach(() => {
       auditService,
       contactsService,
       prisonerSearchService,
-      alertsService,
     },
     userSupplier: () => currentUser,
   })

@@ -12,7 +12,6 @@ import OrganisationsService from './organisationsService'
 import TelemetryService from './telemetryService'
 import config from '../config'
 import logger from '../../logger'
-import AlertsService from './alertsService'
 
 export const services = () => {
   const {
@@ -21,7 +20,6 @@ export const services = () => {
     prisonerSearchApiClient,
     contactsApiClient,
     prisonApiClient,
-    alertsApiClient,
     organisationsApiClient,
     applicationInsightsClient,
   } = dataAccess()
@@ -30,7 +28,6 @@ export const services = () => {
   const telemetryService = new TelemetryService(applicationInsightsClient)
   const prisonerSearchService = new PrisonerSearchService(prisonerSearchApiClient)
   const contactsService = new ContactsService(contactsApiClient, auditService, telemetryService)
-  const alertsService = new AlertsService(alertsApiClient, auditService)
   const prisonerImageService = new PrisonerImageService(prisonApiClient)
   const referenceDataService = new ReferenceDataService(contactsApiClient)
   const restrictionsService = new RestrictionsService(contactsApiClient, auditService)
@@ -48,7 +45,6 @@ export const services = () => {
     auditService,
     prisonerSearchService,
     contactsService,
-    alertsService,
     prisonerImageService,
     referenceDataService,
     restrictionsService,

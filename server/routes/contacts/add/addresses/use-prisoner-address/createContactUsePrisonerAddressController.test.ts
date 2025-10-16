@@ -18,11 +18,7 @@ jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
 jest.mock('../../../../../services/referenceDataService')
 jest.mock('../../../../../services/prisonerAddressService')
-jest.mock('../../../../../services/contactsService')
-jest.mock('../../../../../services/alertsService')
 
-const contactsService = MockedService.ContactsService()
-const alertsService = MockedService.AlertsService()
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const referenceDataService = MockedService.ReferenceDataService()
@@ -66,8 +62,6 @@ beforeEach(() => {
       prisonerSearchService,
       referenceDataService,
       prisonerAddressService,
-      contactsService,
-      alertsService,
     },
     userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {
@@ -90,22 +84,6 @@ afterEach(() => {
 
 describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/use-prisoner-address/:journeyId`, () => {
   it('should replace the address lines with prisoner address primary address if found', async () => {
-    app = appWithAllRoutes({
-      services: {
-        auditService,
-        prisonerSearchService,
-        referenceDataService,
-        prisonerAddressService,
-        contactsService,
-        alertsService,
-      },
-      userSupplier: () => currentUser,
-      sessionReceiver: (receivedSession: Partial<SessionData>) => {
-        session = receivedSession
-        session.addContactJourneys = {}
-        session.addContactJourneys[journeyId] = existingJourney
-      },
-    })
     existingJourney.newAddress!.addressLines = {
       noFixedAddress: false,
       flat: 'My Flat',
@@ -201,22 +179,6 @@ describe(`GET /prisoner/:prisonerNumber/contacts/create/addresses/:addressIndex/
   })
 
   it('GET should block access without edit contacts permission', async () => {
-    app = appWithAllRoutes({
-      services: {
-        auditService,
-        prisonerSearchService,
-        referenceDataService,
-        prisonerAddressService,
-        contactsService,
-        alertsService,
-      },
-      userSupplier: () => currentUser,
-      sessionReceiver: (receivedSession: Partial<SessionData>) => {
-        session = receivedSession
-        session.addContactJourneys = {}
-        session.addContactJourneys[journeyId] = existingJourney
-      },
-    })
     mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
 
     const prisonerAddress: AddressLines = {

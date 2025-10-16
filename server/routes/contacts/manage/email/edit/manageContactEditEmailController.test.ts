@@ -21,9 +21,7 @@ jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonerSearchService')
 jest.mock('../../../../../services/contactsService')
-jest.mock('../../../../../services/alertsService')
 
-const alertsService = MockedService.AlertsService()
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const contactsService = MockedService.ContactsService()
@@ -67,7 +65,6 @@ beforeEach(() => {
       auditService,
       prisonerSearchService,
       contactsService,
-      alertsService,
     },
     userSupplier: () => currentUser,
   })
@@ -84,15 +81,6 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/email/:contactEmailId/edit', () => {
   it('should render edit email page with navigation back to manage contact and all field populated', async () => {
     // Given
-    app = appWithAllRoutes({
-      services: {
-        auditService,
-        prisonerSearchService,
-        contactsService,
-        alertsService,
-      },
-      userSupplier: () => currentUser,
-    })
     contactsService.getContact.mockResolvedValue(contact)
 
     // When

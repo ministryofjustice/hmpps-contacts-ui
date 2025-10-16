@@ -3,14 +3,9 @@ import request from 'supertest'
 import { Readable } from 'stream'
 import { appWithAllRoutes, basicPrisonUser } from '../testutils/appSetup'
 import PrisonerImageService from '../../services/prisonerImageService'
-import { MockedService } from '../../testutils/mockedServices'
 
 jest.mock('../../services/prisonerImageService')
-jest.mock('../../services/contactsService')
-jest.mock('../../services/alertsService')
 
-const contactsService = MockedService.ContactsService()
-const alertsService = MockedService.AlertsService()
 // @ts-expect-error pass null param into mocked service
 const prisonerImageService = new PrisonerImageService(null) as jest.Mocked<PrisonerImageService>
 
@@ -18,11 +13,7 @@ let app: Express
 
 beforeEach(() => {
   app = appWithAllRoutes({
-    services: {
-      prisonerImageService,
-      contactsService,
-      alertsService,
-    },
+    services: { prisonerImageService },
     userSupplier: () => basicPrisonUser,
   })
 })
