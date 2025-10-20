@@ -220,3 +220,10 @@ div.moj-action-bar__filter::after { content: none !important; }
     padding-right: 0;
   }
 }
+
+.break-text {
+  word-wrap: break-word;      /* Legacy support */
+  overflow-wrap: break-word;  /* Modern standard */
+  white-space: pre-wrap;      /* Preserves newlines but allows wrapping */
+  max-width: 400px;           /* Optional: keep cells from stretching too far */
+}

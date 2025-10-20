@@ -26,10 +26,15 @@
       {% set comments ='<p>' +comments.slice(0, 255) + '...</p>' %}
      {% endif %}
 
+    {% set wrappedComments %}
+      <div class="break-text">
+        {{ comments | escape | nl2br }}
+      </div>
+    {% endset %}
 
     {% set rows = (rows.push([
       { html: retrictionTypeHtml, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-type-value"} },
-      { html: comments | escape | nl2br, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-comments-value"} },
+      { html: wrappedComments, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-comments-value"} },
       { text: startDate | formatDate('d/M/yyyy'), attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-start-date-value"} },
       { text: expiryDate | formatDate('d/M/yyyy') if expiryDate else 'Not provided', attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-expiry-date-value"} },
       { text: enteredByDisplayName, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-entered-by-value"} }

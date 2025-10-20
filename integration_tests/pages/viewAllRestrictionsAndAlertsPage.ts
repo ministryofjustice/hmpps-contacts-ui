@@ -15,6 +15,13 @@ export default class ViewAllRestrictionsAndAlertsPage extends Page {
     return this
   }
 
+  getPrisonerAlertFlagLabel() {
+    this.getPrisonerAlertFlagLabelValue().should('contain.text', `Violent`)
+    return this
+  }
+
+  private getPrisonerAlertFlagLabelValue = (): PageElement => cy.get('.dps-alert-status')
+
   private getPrisonerRestrictionsCardTitle = (): PageElement => cy.get('[data-qa="prisoner-restrictions-heading"]')
 
   private getPrisonerAlertsCardTitle = (): PageElement => cy.get('[data-qa="prisoner-alerts-heading"]')
