@@ -56,7 +56,6 @@ context('Manage contact update approved visitor contact', () => {
 
     Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
       .verifyShowApprovedForVisitsAs('Yes')
-      .verifyShowApprovedForVisitsByAs('Adam Smith')
       .clickChangeApprovedForVisitsLink()
 
     Page.verifyOnPage(SelectApprovedVisitorPage, 'First Middle Names Last', 'John Smith') //

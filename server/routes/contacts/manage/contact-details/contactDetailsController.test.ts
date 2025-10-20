@@ -675,7 +675,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           isNextOfKin: true,
           isRelationshipActive: true,
           isApprovedVisitor: true,
-          approvedBy: 'Mike Smith',
           comments: 'Some comments',
         } as PrisonerContactRelationshipDetails
         contactsService.getPrisonerContactRelationship.mockResolvedValue(prisonerContactRelationshipDetails)
@@ -703,9 +702,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         expect(
           $(relationshipInformationCard).find('dt:contains("Approved for visits")').next().text().trim(),
         ).toStrictEqual('Yes')
-        expect(
-          $(relationshipInformationCard).find('dt:contains("Visits approval recorded by")').next().text().trim(),
-        ).toStrictEqual('Mike Smith')
         expect(
           $(relationshipInformationCard).find('dt:contains("Comments on the relationship")').next().text().trim(),
         ).toStrictEqual('Some comments')
@@ -749,7 +745,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         expect(
           $(relationshipInformationCard).find('dt:contains("Approved for visits")').next().text().trim(),
         ).toStrictEqual('No')
-        expect($(relationshipInformationCard).find('dt:contains("Visits approval recorded by")')).toHaveLength(0)
         expect(
           $(relationshipInformationCard).find('dt:contains("Comments on the relationship")').next().text().trim(),
         ).toStrictEqual('Not provided')
