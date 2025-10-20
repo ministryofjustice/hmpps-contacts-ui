@@ -7,9 +7,9 @@ export default function pagedPrisonerAlertsData(overrides = {}): PageAlert {
         alertUuid: '31ab3746-3c8e-482c-8173-8833795fdfb4',
         prisonNumber: 'G5276UE',
         alertCode: {
-          alertTypeCode: 'T',
+          alertTypeCode: 'X',
           alertTypeDescription: 'Hold or transfer restriction',
-          code: 'TAP',
+          code: 'XVL',
           description: 'Accredited Programme hold',
         },
         description: 'gzmONOQRHANxDCBhAmycaZSDIfUTkIlYdGXcdhtVJLBgzmONOQRHANxDCBhAmycaZSDIfUTkIlYdGXcdhtVJL',

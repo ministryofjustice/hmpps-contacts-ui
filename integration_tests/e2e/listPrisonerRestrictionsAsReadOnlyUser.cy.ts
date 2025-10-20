@@ -68,5 +68,6 @@ context('List prisoner restrictions and alerts with a contact admin or higher ro
     Page.verifyOnPage(ViewAllRestrictionsAndAlertsPage, 'Test Prisoner', 'Test Prisoner')
       .checkPrisonerContactRestrictionsCardTitle()
       .checkPrisonerAlertsCardTitle()
+      .getPrisonerAlertFlagLabel()
   })
 })

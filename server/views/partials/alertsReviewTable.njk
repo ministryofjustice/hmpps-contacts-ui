@@ -29,10 +29,15 @@
      {% if comments.length > 255 %}
       {% set comments = comments.slice(0, 255) + '...' %}
      {% endif %}
+    {% set wrappedComments %}
+      <div class="break-text">
+        {{ comments | escape | nl2br }}
+      </div>
+    {% endset %}
 
     {% set rows = (rows.push([
       { html: alertTypeHtml, attributes: {"data-qa": alertClass + "-"  + alertId + "-type-value"} },
-      { html: comments | escape | nl2br, attributes: {"data-qa": alertClass + "-"  + alertId + "-comments-value"} },
+      { html: wrappedComments, attributes: {"data-qa": alertClass + "-"  + alertId + "-comments-value"} },
       { text: startDate | formatDate('d/M/yyyy'), attributes: {"data-qa": alertClass + "-"  + alertId + "-start-date-value"} },
       { text: expiryDate | formatDate('d/M/yyyy') if expiryDate else 'Not provided', attributes: {"data-qa": alertClass + "-"  + alertId + "-expiry-date-value"} },
       { text: enteredByDisplayName, attributes: {"data-qa": alertClass + "-"  + alertId + "-entered-by-value"} }
