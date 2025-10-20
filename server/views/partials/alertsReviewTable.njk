@@ -2,7 +2,7 @@
 {% from "dps/components/alert-flag/macro.njk" import alertFlag %}
 
 {% macro alertsReviewTable(opts) %}
-  {% set alerts = opts.restrictions %}
+  {% set alerts = opts.alerts %}
   {% set alertClass = opts.restrictionClass %}
   {% set prisonerDetails = opts.prisonerDetails %}
   {% set prisonerNumber = prisonerDetails.prisonerNumber %}
@@ -18,9 +18,11 @@
     {% set enteredByDisplayName = alert.lastModifiedByDisplayName %}
 
     {% set alertTypeHtml %}
-      {{ alertFlag({
-        alert: { label: alert.alertCode.description, classes: alertClass }
-      }) }}
+      {% for flag in alert.flagLabels %}
+        {{ alertFlag({
+          alert: flag
+        }) }}{% if not loop.last %} {% endif %}
+      {% endfor %}
       {{ ' (inactive)' if (expiryDate | isDateAndInThePast) }}
     {% endset %}
 
