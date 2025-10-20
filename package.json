@@ -21,7 +21,7 @@
     "security_audit": "npx audit-ci --config audit-ci.json",
     "int-test": "cypress run --config video=false",
     "int-test-ui": "cypress open --e2e --browser chrome",
-    "clean": "rm -rf dist node_modules",
+    "clean": "rm -rf dist node_modules package-lock.json",
     "rebuild": "npm run clean && npm i && npm run build",
     "open-api": "npx openapi-typescript https://contacts-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > ./server/@types/contactsApi/index.d.ts"
   },
@@ -107,6 +107,7 @@
     "@ministryofjustice/frontend": "^5.2.1",
     "@ministryofjustice/hmpps-auth-clients": "^0.0.3",
     "@ministryofjustice/hmpps-connect-dps-components": "^2.2.0",
+    "@ministryofjustice/hmpps-connect-dps-shared-items": "^2.2.0",
     "@ministryofjustice/hmpps-monitoring": "^0.0.2",
     "@ministryofjustice/hmpps-prison-permissions-lib": "^0.4.0",
     "@sentry/node": "^10.19.0",
