@@ -1,5 +1,5 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
-{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "dps/components/alert-flag/macro.njk" import alertFlag %}
 
 {% macro alertsReviewTable(opts) %}
   {% set alerts = opts.restrictions %}
@@ -8,16 +8,19 @@
   {% set prisonerNumber = prisonerDetails.prisonerNumber %}
   {% set rows = [] %}
 
-  {% for alert in alerts | sortRestrictions %}
+  {% for alert in alerts %}
     {% set alertId = alert.alertUuid %}
     {% set alertTypeDescription = alert.alertCode.description %}
+    {% set alertClass = alert.alertCode.code %}
     {% set comments = alert.description or 'Not provided' %}
     {% set startDate = alert.activeFrom %}
     {% set expiryDate = alert.activeTo %}
     {% set enteredByDisplayName = alert.lastModifiedByDisplayName %}
 
     {% set alertTypeHtml %}
-      {{ govukTag({ text: alertTypeDescription, classes: 'wide-tag ' + alert.alertCode.code | restrictionTagColour }) }}
+      {{ alertFlag({
+        alert: { label: alert.alertCode.description, classes: alertClass }
+      }) }}
       {{ ' (inactive)' if (expiryDate | isDateAndInThePast) }}
     {% endset %}
 

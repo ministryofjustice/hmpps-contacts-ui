@@ -192,3 +192,31 @@ div.moj-action-bar__filter::after { content: none !important; }
 .max-200-width {
   max-width: 200px;
 }
+
+.prisoner-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.prisoner-header__title {
+  padding: 0 15px;
+  flex: 1 1 auto; /* let it grow and shrink */
+  min-width: 250px; /* ensures readability */
+}
+
+.prisoner-header__note {
+  padding: 0 15px;
+  flex: 0 1 auto; /* shrink if needed */
+  white-space: nowrap; /* keep it on one line */
+}
+
+@media (max-width: 768px) {
+  /* On smaller screens, always stack vertically */
+  .prisoner-header__title,
+  .prisoner-header__note {
+    flex: 1 1 100%;
+    text-align: left;
+    padding-right: 0;
+  }
+}

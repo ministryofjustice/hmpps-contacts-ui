@@ -12,11 +12,11 @@
   <div class="govuk-grid-row">
     <div class="govuk-summary-card">
     <div class="govuk-!-margin-left-6 govuk-!-margin-top-6">
-      <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-half">
-          <h1 class="govuk-heading-l" data-qa="prisoner-restrictions-heading">{{ prisonerDetails | formatNameFirstNameFirst(possessiveSuffix = true, excludeMiddleNames = true) }} prisoner restrictions</h1>
+      <div class="govuk-grid-row prisoner-header">
+        <div class="prisoner-header__title">
+            <h1 class="govuk-heading-l" data-qa="prisoner-restrictions-heading">{{ prisonerDetails | formatNameFirstNameFirst(possessiveSuffix = true, excludeMiddleNames = true) }} prisoner restrictions</h1>
         </div>
-        <div class="govuk-!-text-align-right govuk-!-padding-right-5">
+        <div class="prisoner-header__note govuk-!-text-align-right govuk-!-padding-right-5">
           <p>To add or update prisoner restrictions, go to NOMIS.</p>
         </div>
       </div>
