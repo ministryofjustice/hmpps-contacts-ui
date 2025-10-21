@@ -52,7 +52,7 @@ export default class ListContactsController implements PageHandler {
     req: Request<{ prisonerNumber: string }, unknown, unknown, { page: string; sort: string } & Filter>,
     res: Response,
   ): Promise<void> => {
-    const { user } = res.locals
+    const { user, prisonerPermissions } = res.locals
     const { prisonerNumber } = req.params
     const { query } = req
     const page = query.page && !Number.isNaN(Number(query.page)) ? Number(query.page) : 1
