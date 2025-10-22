@@ -23,14 +23,12 @@ jest.mock('../../../services/referenceDataService')
 jest.mock('../../../services/prisonerSearchService')
 jest.mock('../../../services/restrictionsService')
 jest.mock('../../../services/contactsService')
-jest.mock('../../../services/alertsService')
 
-const contactsService = MockedService.ContactsService()
-const alertsService = MockedService.AlertsService()
 const auditService = MockedService.AuditService()
 const referenceDataService = MockedService.ReferenceDataService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const restrictionsService = MockedService.RestrictionsService()
+const contactsService = MockedService.ContactsService()
 
 let app: Express
 const prisonerNumber = 'A1234BC'
@@ -66,7 +64,6 @@ beforeEach(() => {
       prisonerSearchService,
       restrictionsService,
       contactsService,
-      alertsService,
     },
     userSupplier: () => currentUser,
   })

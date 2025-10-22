@@ -19,8 +19,6 @@ import { auditPageViewMiddleware } from '../../middleware/auditPageViewMiddlewar
 import Permission from '../../enumeration/permission'
 import { prisonerMock } from './PrisonerMocks'
 
-jest.mock('../../services/auditService')
-
 export const basicPrisonUser: HmppsUser = {
   name: 'ALL PRISON STAFF',
   userId: 'all_prison_staff_id',
@@ -153,9 +151,7 @@ function appSetup(
 
 export function appWithAllRoutes({
   production = false,
-  services = {
-    auditService: MockedService.AuditService(),
-  },
+  services = {},
   userSupplier = () => basicPrisonUser,
   validationErrors,
   sessionReceiver = undefined,
@@ -166,6 +162,16 @@ export function appWithAllRoutes({
   validationErrors?: Locals['validationErrors']
   sessionReceiver?: (session: Partial<SessionData>) => void
 }): Express {
+  // add default mocked services here as needed when changing the common services
+  const defaultServices = {
+    auditService: MockedService.AuditService(),
+    alertsService: MockedService.AlertsService(),
+    contactsService: MockedService.ContactsService(),
+  }
+  const mergedServices = {
+    ...defaultServices,
+    ...services,
+  }
   auth.default.authenticationMiddleware = () => (req, res, next) => next()
-  return appSetup(services as Services, production, userSupplier, validationErrors, sessionReceiver)
+  return appSetup(mergedServices as Services, production, userSupplier, validationErrors, sessionReceiver)
 }

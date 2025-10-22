@@ -14,9 +14,7 @@ jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
-jest.mock('../../../../services/alertsService')
 
-const alertsService = MockedService.AlertsService()
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const contactsService = MockedService.ContactsService()
@@ -34,7 +32,6 @@ beforeEach(() => {
       auditService,
       prisonerSearchService,
       contactsService,
-      alertsService,
     },
     userSupplier: () => currentUser,
   })
@@ -51,15 +48,6 @@ afterEach(() => {
 describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/delete-date-of-death', () => {
   it('should render delete deceased date page with a deceased date', async () => {
     // Given
-    app = appWithAllRoutes({
-      services: {
-        auditService,
-        prisonerSearchService,
-        contactsService,
-        alertsService,
-      },
-      userSupplier: () => currentUser,
-    })
     contactsService.getContact.mockResolvedValue(
       TestData.contact({
         firstName: 'First',

@@ -24,11 +24,7 @@ jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/referenceDataService')
 jest.mock('../../../../services/prisonerSearchService')
-jest.mock('../../../../services/contactsService')
-jest.mock('../../../../services/alertsService')
 
-const contactsService = MockedService.ContactsService()
-const alertsService = MockedService.AlertsService()
 const auditService = MockedService.AuditService()
 const referenceDataService = MockedService.ReferenceDataService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
@@ -54,8 +50,6 @@ beforeEach(() => {
       auditService,
       referenceDataService,
       prisonerSearchService,
-      contactsService,
-      alertsService,
     },
     userSupplier: () => currentUser,
     sessionReceiver: (receivedSession: Partial<SessionData>) => {

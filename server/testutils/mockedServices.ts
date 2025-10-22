@@ -6,6 +6,7 @@ import ContactsService from '../services/contactsService'
 import OrganisationsService from '../services/organisationsService'
 import TelemetryService from '../services/telemetryService'
 import AlertsService from '../services/alertsService'
+import RestrictionsTestData from '../routes/testutils/stubRestrictionsData'
 
 export const MockedService = {
   // @ts-expect-error passing null param into mock service
@@ -16,11 +17,29 @@ export const MockedService = {
   PrisonerSearchService: () => new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>,
   // @ts-expect-error passing null param into mock service
   RestrictionsService: () => new RestrictionsService(null) as jest.Mocked<RestrictionsService>,
-  // @ts-expect-error passing null param into mock service
-  ContactsService: () => new ContactsService(null) as jest.Mocked<ContactsService>,
+
+  ContactsService: (): jest.Mocked<ContactsService> => {
+    // @ts-expect-error passing null param into mock service
+    const service = new ContactsService(null) as jest.Mocked<ContactsService>
+
+    // Default mock behaviour for getPrisonerRestrictions
+    service.getPrisonerRestrictions = jest.fn().mockResolvedValue(RestrictionsTestData.stubRestrictionsData())
+
+    // Add more default mocks here if needed, e.g.:
+    // service.getPrisonerContact = jest.fn().mockResolvedValue(ContactTestData.stubContact())
+
+    return service
+  },
   // @ts-expect-error passing null param into mock service
   OrganisationsService: () => new OrganisationsService(null) as jest.Mocked<OrganisationsService>,
   TelemetryService: () => new TelemetryService(null) as jest.Mocked<TelemetryService>,
-  // @ts-expect-error passing null param into mock service
-  AlertsService: () => new AlertsService(null) as jest.Mocked<AlertsService>,
+  AlertsService: (): jest.Mocked<AlertsService> => {
+    // @ts-expect-error passing null param into mock service
+    const service = new AlertsService(null) as jest.Mocked<AlertsService>
+
+    // Example default mock
+    service.getAlerts = jest.fn().mockResolvedValue({ content: [] })
+
+    return service
+  },
 }
