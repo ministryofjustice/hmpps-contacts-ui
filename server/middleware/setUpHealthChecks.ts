@@ -8,7 +8,8 @@ import config from '../config'
 export default function setUpHealthChecks(applicationInfo: ApplicationInfo): Router {
   const router = express.Router()
 
-  const { componentApi, ...otherApis } = config.apis
+  // Exclude componentApi and alertsApi from health checks
+  const { componentApi, alertsApi, ...otherApis } = config.apis
   const apiConfig = Object.entries(otherApis)
 
   const middleware = monitoringMiddleware({
