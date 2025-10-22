@@ -56,8 +56,10 @@ export default function nunjucksSetup(app: express.Express): void {
 
   // Set up the digital prison services URL in res.locals for use in views/macros - mini profile
   app.locals.digitalPrisonServicesUrl = config.serviceUrls.digitalPrison
+  app.locals.prisonerProfileUrl = config.serviceUrls.prisonerProfileUrl
   app.use((_req, res, next) => {
     res.locals.digitalPrisonServicesUrl = config.serviceUrls.digitalPrison
+    res.locals.prisonerProfileUrl = config.serviceUrls.prisonerProfileUrl
     return next()
   })
 
@@ -70,6 +72,7 @@ export default function nunjucksSetup(app: express.Express): void {
       'node_modules/@ministryofjustice/frontend/',
       'node_modules/@ministryofjustice/frontend/moj/components/',
       'node_modules/@ministryofjustice/hmpps-connect-dps-components/dist/assets/',
+      'node_modules/@ministryofjustice/hmpps-connect-dps-shared-items/dist/assets/',
     ],
     {
       autoescape: true,
@@ -84,6 +87,7 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('findError', findError)
   njkEnv.addFilter('formatDate', formatDate)
   njkEnv.addGlobal('DPS_HOME_PAGE_URL', config.serviceUrls.digitalPrison)
+  njkEnv.addGlobal('FEATURE_RESTRICTION_ALERTS_LINK_ENABLED', config.feature.restrictionAlertsLinkEnabled)
   njkEnv.addFilter('pluralise', (word, count, plural = `${word}s`) => (count === 1 ? word : plural))
   njkEnv.addFilter('addressToLines', addressToLines)
   njkEnv.addFilter('coarseAddressToLines', coarseAddressToLines)

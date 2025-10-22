@@ -26,6 +26,13 @@
               href: "/prisoner/" + prisonerDetails.prisonerNumber + "/contacts/list"
             }
           ), breadcrumbs) %}
+        {% elseif breadcrumb === 'PRISONER_ALERTS_RESTRICTIONS' %}
+            {% set breadcrumbs = (breadcrumbs.push(
+              {
+                text: "Alerts and restrictions",
+                href: "/prisoner/" + prisonerDetails.prisonerNumber + "/alerts-restrictions"
+              }
+            ), breadcrumbs) %}
         {% endif %}
       {% endfor %}
 

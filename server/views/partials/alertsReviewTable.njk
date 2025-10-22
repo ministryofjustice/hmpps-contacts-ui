@@ -1,0 +1,80 @@
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "dps/components/alert-flag/macro.njk" import alertFlag %}
+
+{% macro alertsReviewTable(opts) %}
+  {% set alerts = opts.alerts %}
+  {% set alertClass = opts.restrictionClass %}
+  {% set prisonerDetails = opts.prisonerDetails %}
+  {% set prisonerNumber = prisonerDetails.prisonerNumber %}
+  {% set rows = [] %}
+
+  {% for alert in alerts %}
+    {% set alertId = alert.alertUuid %}
+    {% set alertTypeDescription = alert.alertCode.description %}
+    {% set alertClass = alert.alertCode.code %}
+    {% set comments = alert.description or 'Not provided' %}
+    {% set startDate = alert.activeFrom %}
+    {% set expiryDate = alert.activeTo %}
+    {% set enteredByDisplayName = alert.lastModifiedByDisplayName %}
+
+    {% set alertTypeHtml %}
+      {% for flag in alert.flagLabels %}
+        {{ alertFlag({
+          alert: flag
+        }) }}{% if not loop.last %} {% endif %}
+      {% endfor %}
+      {{ ' (inactive)' if (expiryDate | isDateAndInThePast) }}
+    {% endset %}
+
+     {% if comments.length > 255 %}
+      {% set comments = comments.slice(0, 255) + '...' %}
+     {% endif %}
+    {% set wrappedComments %}
+      <div class="break-text">
+        {{ comments | escape | nl2br }}
+      </div>
+    {% endset %}
+
+    {% set rows = (rows.push([
+      { html: alertTypeHtml, attributes: {"data-qa": alertClass + "-"  + alertId + "-type-value"} },
+      { html: wrappedComments, attributes: {"data-qa": alertClass + "-"  + alertId + "-comments-value"} },
+      { text: startDate | formatDate('d/M/yyyy'), attributes: {"data-qa": alertClass + "-"  + alertId + "-start-date-value"} },
+      { text: expiryDate | formatDate('d/M/yyyy') if expiryDate else 'Not provided', attributes: {"data-qa": alertClass + "-"  + alertId + "-expiry-date-value"} },
+      { text: enteredByDisplayName, attributes: {"data-qa": alertClass + "-"  + alertId + "-entered-by-value"} }
+    ]), rows) %}
+  {% endfor %}
+
+  {% set caption = 'These alerts apply to prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' across the whole prison estate.' %}
+  {% set emptyCaption = 'No prisoner alerts apply to ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' across the whole prison estate.' %}
+
+  {% if alerts.length %}
+    {{ govukTable({
+      firstCellIsHeader: false,
+      captionClasses: 'govuk-table__caption--s govuk-!-font-weight-regular govuk-!-margin-bottom-6 alerts-caption-' + alertClass,
+      caption: caption,
+      head: [
+        {
+          text: "Alert",
+          classes: "govuk-!-width-one-quarter"
+        },
+        {
+          text: "Comments",
+          classes: "govuk-!-width-one-quarter"
+        },
+        {
+          text: "Start date"
+        },
+        {
+          text: "End date"
+        },
+        {
+          text: "Last updated by"
+        }
+      ],
+      rows: rows
+    }) }}
+  {% else %}
+    <p class="govuk-body alerts-caption-{{ alertClass }}" >{{ emptyCaption }}</p>
+  {% endif %}
+{% endmacro %}
+

@@ -1,0 +1,76 @@
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+
+{% macro restrictionsReviewTable(opts) %}
+  {% set restrictions = opts.restrictions %}
+  {% set restrictionClass = opts.restrictionClass %}
+  {% set prisonerDetails = opts.prisonerDetails %}
+  {% set prisonerNumber = prisonerDetails.prisonerNumber %}
+  {% set rows = [] %}
+
+  {% for restriction in restrictions | sortRestrictions %}
+    {% set restrictionId = restriction.prisonerRestrictionId %}
+    {% set restrictionTypeDescription = restriction.restrictionTypeDescription %}
+    {% set comments = restriction.commentText or 'Not provided' %}
+    {% set startDate = restriction.effectiveDate %}
+    {% set expiryDate = restriction.expiryDate %}
+    {% set enteredByDisplayName = restriction.authorisedByDisplayName %}
+
+    {% set retrictionTypeHtml %}
+      {{ govukTag({ text: restrictionTypeDescription, classes: 'wide-tag ' + restriction.restrictionType | restrictionTagColour }) }}
+      {{ ' (expired)' if (expiryDate | isDateAndInThePast) }}
+      {{ ' (Previous booking)' if not restriction.currentTerm }}
+    {% endset %}
+
+     {% if comments.length > 255 %}
+      {% set comments ='<p>' +comments.slice(0, 255) + '...</p>' %}
+     {% endif %}
+
+    {% set wrappedComments %}
+      <div class="break-text">
+        {{ comments | escape | nl2br }}
+      </div>
+    {% endset %}
+
+    {% set rows = (rows.push([
+      { html: retrictionTypeHtml, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-type-value"} },
+      { html: wrappedComments, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-comments-value"} },
+      { text: startDate | formatDate('d/M/yyyy'), attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-start-date-value"} },
+      { text: expiryDate | formatDate('d/M/yyyy') if expiryDate else 'Not provided', attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-expiry-date-value"} },
+      { text: enteredByDisplayName, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-entered-by-value"} }
+    ]), rows) %}
+  {% endfor %}
+
+  {% set caption = 'These restrictions apply to prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' across the whole prison estate.' %}
+  {% set emptyCaption = 'No prisoner restrictions apply to ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' across the whole prison estate.' %}
+
+  {% if restrictions.length %}
+    {{ govukTable({
+      firstCellIsHeader: false,
+      captionClasses: 'govuk-table__caption--s govuk-!-font-weight-regular govuk-!-margin-bottom-6 restrictions-caption-' + restrictionClass,
+      caption: caption,
+      head: [
+        {
+          text: "Restriction type",
+          classes: "govuk-!-width-one-quarter"
+        },
+        {
+          text: "Comments",
+          classes: "govuk-!-width-one-quarter"
+        },
+        {
+          text: "Start date"
+        },
+        {
+          text: "Expiry date"
+        },
+        {
+          text: "Last updated by"
+        }
+      ],
+      rows: rows
+    }) }}
+  {% else %}
+    <p class="govuk-body restrictions-caption-{{ restrictionClass }}" >{{ emptyCaption }}</p>
+  {% endif %}
+{% endmacro %}
