@@ -2,7 +2,7 @@ import nock from 'nock'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import AlertsApiClient from './alertsApiClient'
 import config from '../config'
-import TestAlertsData from '../routes/testutils/testAlertsData'
+import pagedPrisonerAlertsData from '../testutils/testPrisonerAlertsData'
 
 jest.mock('./tokenStore/inMemoryTokenStore')
 
@@ -29,7 +29,7 @@ describe('Alerts api client tests', () => {
   })
 
   it('Get alerts for a prisoner', async () => {
-    const alert = TestAlertsData.getAlert()
+    const alert = pagedPrisonerAlertsData()
 
     fakeAlertsApi.get('/prisoners/A1234BC/alerts').matchHeader('authorization', `Bearer systemToken`).reply(200, alert)
     const result = await alertsApiClient.getAllAlerts('A1234BC', user)

@@ -7,7 +7,7 @@ import { basicPrisonUser } from '../routes/testutils/appSetup'
 import { PrisonerSearchAddress } from '../data/prisonerOffenderSearchTypes'
 import { MockedService } from '../testutils/mockedServices'
 import { PrisonerDetails } from '../@types/journeys'
-import AlertTestData from '../routes/testutils/stubAlertsData'
+import pagedPrisonerAlertsData from '../testutils/testPrisonerAlertsData'
 
 jest.mock('../services/prisonerSearchService')
 jest.mock('../services/contactsService')
@@ -29,7 +29,7 @@ describe('prisonerDetailsMiddleware', () => {
     delete res.locals.prisonerDetails
     // provide a sensible default so middleware won't throw when awaiting restrictions
     contactsService.getPrisonerRestrictions.mockResolvedValue(RestrictionsTestData.stubRestrictionsData())
-    alertsService.getAlerts.mockResolvedValue(AlertTestData.stubAlertData())
+    alertsService.getAlerts.mockResolvedValue(pagedPrisonerAlertsData())
   })
 
   afterEach(() => {
