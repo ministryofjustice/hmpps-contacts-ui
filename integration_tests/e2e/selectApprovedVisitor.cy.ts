@@ -43,6 +43,12 @@ context('Manage contact update approved visitor contact', () => {
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
     const { prisonerNumber } = TestData.prisoner()
+    cy.task('stubGetPrisonerRestrictions', {
+      prisonerNumber,
+      response: {
+        content: [],
+      },
+    })
     cy.signIn({
       startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
     })

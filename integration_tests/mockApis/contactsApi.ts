@@ -28,6 +28,7 @@ import {
   ContactSearchResultItem,
   LinkedPrisonerDetails,
   PagedModelPrisonerContactSummary,
+  PagedModelPrisonerRestrictionDetails,
   PatchContactResponse,
   PrisonerContactRelationshipDetails,
   PrisonerContactRestrictionDetails,
@@ -203,6 +204,23 @@ export default {
       request: {
         method: 'GET',
         urlPath: `/prisoner-contact/${params.prisonerContactId}/restriction`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: params.response,
+      },
+    })
+  },
+
+  stubGetPrisonerRestrictions: (params: {
+    prisonerNumber: string
+    response: PagedModelPrisonerRestrictionDetails
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/prisoner-restrictions/${params.prisonerNumber}`,
       },
       response: {
         status: 200,

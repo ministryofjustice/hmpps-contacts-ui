@@ -4,6 +4,7 @@ import EnterRestrictionPage from '../pages/enterRestrictionPage'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import EditRestrictionsPage from '../pages/editRestrictionsPage'
 import { PrisonerContactRestrictionDetails } from '../../server/@types/contactsApiClient'
+import RestrictionsTestData from '../../server/routes/testutils/stubRestrictionsData'
 
 context('Update Prisoner Contact Restriction', () => {
   const contactId = 654321
@@ -49,13 +50,17 @@ context('Update Prisoner Contact Restriction', () => {
         contactGlobalRestrictions: [],
       },
     })
+    cy.task('stubGetPrisonerRestrictions', {
+      prisonerNumber,
+      response: RestrictionsTestData.stubRestrictionsData(),
+    })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
     cy.signIn({
       startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
     })
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickRestrictionsTab('1')
+      .clickRestrictionsTab('2')
       .verifyOnRestrictionsTab()
       .clickLinkTo('Add or update restrictions', EditRestrictionsPage, 'First Middle Names Last', true)
       .clickLink('Change this Banned relationship restriction')

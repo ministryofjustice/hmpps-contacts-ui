@@ -48,9 +48,16 @@ export default class ManageContactDetailsPage extends Page {
     return this
   }
 
+  checkGlobalPrisonerRestrictionsCardTitle() {
+    this.getGlobalPrisonerRestrictionsCardTitle().should('contain.text', `Global prisoner restrictions`)
+    return this
+  }
+
   private getPrisonerContactRestrictionsCardTitle = (): PageElement => cy.get('[data-qa="PRISONER_CONTACT-title"]')
 
   private getGlobalRestrictionsCardTitle = (): PageElement => cy.get('[data-qa="CONTACT_GLOBAL-title"]')
+
+  private getGlobalPrisonerRestrictionsCardTitle = (): PageElement => cy.get('[data-qa="prisoner-restrictions-title"]')
 
   private getRestrictionsTab = (): PageElement => cy.get('#tab_restrictions')
 
