@@ -193,37 +193,48 @@ div.moj-action-bar__filter::after { content: none !important; }
   max-width: 200px;
 }
 
-.prisoner-header {
+.prisoner-header.container {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+  gap: 1rem;
 }
 
+/* Left side: prisoner name/title */
 .prisoner-header__title {
-  padding: 0 15px;
-  flex: 1 1 auto; /* let it grow and shrink */
-  min-width: 250px; /* ensures readability */
+  flex: 1 1 auto;
+  min-width: 0; /* allows text to wrap without overflow */
 }
 
-.prisoner-header__note {
-  padding: 0 15px;
-  flex: 0 1 auto; /* shrink if needed */
-  white-space: nowrap; /* keep it on one line */
+.prisoner-header__title h1 {
+  margin: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
+/* Right side: message */
+.message {
+  flex-shrink: 0;
+  max-width: 40%;
+  text-align: right;
+}
+
+.message p {
+  margin: 0;
+  white-space: normal;
+}
+
+/* 🔽 Responsive: stack vertically on smaller screens */
 @media (max-width: 768px) {
-  /* On smaller screens, always stack vertically */
-  .prisoner-header__title,
-  .prisoner-header__note {
-    flex: 1 1 100%;
-    text-align: left;
-    padding-right: 0;
+  .prisoner-header.container {
+    flex-direction: column;
+    align-items: flex-start;
   }
-}
 
-.break-text {
-  word-wrap: break-word;      /* Legacy support */
-  overflow-wrap: break-word;  /* Modern standard */
-  white-space: pre-wrap;      /* Preserves newlines but allows wrapping */
-  max-width: 400px;           /* Optional: keep cells from stretching too far */
+  .message {
+    max-width: 100%;
+    text-align: left;
+    margin-top: 0.5rem;
+  }
 }
