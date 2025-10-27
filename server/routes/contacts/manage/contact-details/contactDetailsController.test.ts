@@ -22,6 +22,7 @@ import {
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
 import mockPermissions from '../../../testutils/mockPermissions'
 import Permission from '../../../../enumeration/permission'
+import pagedPrisonerRestrictionDetails from '../../../../testutils/testPrisonerRestrictionsData'
 
 // Mock the config module to enable the feature flag
 jest.mock('../../../../config', () => {
@@ -74,6 +75,7 @@ beforeEach(() => {
     contactGlobalRestrictions: [],
   })
   contactsService.getLinkedPrisoners.mockResolvedValue({ content: [], page: { totalElements: 0 } })
+  contactsService.getPrisonerRestrictions.mockResolvedValue({ content: [] })
 })
 
 afterEach(() => {
@@ -229,6 +231,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           }),
         ],
       })
+      contactsService.getPrisonerRestrictions.mockResolvedValue(pagedPrisonerRestrictionDetails())
       // When
       const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
 
@@ -310,6 +313,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           }),
         ],
       })
+      contactsService.getPrisonerRestrictions.mockResolvedValue(pagedPrisonerRestrictionDetails())
       // When
       const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
 
