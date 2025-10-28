@@ -24,6 +24,7 @@ generic-service:
     SENTRY_ENVIRONMENT: DEV
     AUDIT_ENABLED: 'true'
     FEATURE_RESTRICTION_ALERTS_LINK_ENABLED: 'true'
+    FEATURE_RELATIONSHIP_APPROVED_BY_ENABLED: 'true'
 
 generic-prometheus-alerts:
   alertSeverity: hmpps-contacts-ui-dev

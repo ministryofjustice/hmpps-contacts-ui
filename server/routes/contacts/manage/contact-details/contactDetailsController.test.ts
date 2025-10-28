@@ -23,6 +23,18 @@ import { HmppsUser } from '../../../../interfaces/hmppsUser'
 import mockPermissions from '../../../testutils/mockPermissions'
 import Permission from '../../../../enumeration/permission'
 
+// Mock the config module to enable the feature flag
+jest.mock('../../../../config', () => {
+  const actualConfig = jest.requireActual('../../../../config')
+  return {
+    ...actualConfig.default,
+    feature: {
+      ...actualConfig.default.feature,
+      relationshipApprovedByEnabled: 'true',
+    },
+  }
+})
+
 jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -675,6 +687,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
           isNextOfKin: true,
           isRelationshipActive: true,
           isApprovedVisitor: true,
+          approvedBy: 'Mike Smith',
           comments: 'Some comments',
         } as PrisonerContactRelationshipDetails
         contactsService.getPrisonerContactRelationship.mockResolvedValue(prisonerContactRelationshipDetails)
@@ -702,6 +715,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         expect(
           $(relationshipInformationCard).find('dt:contains("Approved for visits")').next().text().trim(),
         ).toStrictEqual('Yes')
+        expect(
+          $(relationshipInformationCard).find('dt:contains("Visits approval recorded by")').next().text().trim(),
+        ).toStrictEqual('Mike Smith')
         expect(
           $(relationshipInformationCard).find('dt:contains("Comments on the relationship")').next().text().trim(),
         ).toStrictEqual('Some comments')
@@ -745,6 +761,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         expect(
           $(relationshipInformationCard).find('dt:contains("Approved for visits")').next().text().trim(),
         ).toStrictEqual('No')
+        expect($(relationshipInformationCard).find('dt:contains("Visits approval recorded by")')).toHaveLength(0)
         expect(
           $(relationshipInformationCard).find('dt:contains("Comments on the relationship")').next().text().trim(),
         ).toStrictEqual('Not provided')
