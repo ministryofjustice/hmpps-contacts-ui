@@ -9,6 +9,18 @@ import mockPermissions from '../../../testutils/mockPermissions'
 import Permission from '../../../../enumeration/permission'
 import RestrictionsTestData from '../../../testutils/stubRestrictionsData'
 
+// Mock the config module to enable the feature flag
+jest.mock('../../../../config', () => {
+  const actualConfig = jest.requireActual('../../../../config')
+  return {
+    ...actualConfig.default,
+    feature: {
+      ...actualConfig.default.feature,
+      showPrisonerRestrictionsEnabled: 'true',
+    },
+  }
+})
+
 jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')

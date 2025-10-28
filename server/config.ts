@@ -169,5 +169,6 @@ export default {
   feature: {
     restrictionAlertsLinkEnabled: process.env['FEATURE_RESTRICTION_ALERTS_LINK_ENABLED'],
     relationshipApprovedByEnabled: process.env['FEATURE_RELATIONSHIP_APPROVED_BY_ENABLED'],
+    showPrisonerRestrictionsEnabled: process.env['FEATURE_SHOW_PRISONER_RESTRICTIONS_ENABLED'],
   },
 }
