@@ -280,7 +280,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
       expect($('[data-qa="prisoner-restrictions-title"]').text().trim()).toContain('Global prisoner restrictions')
       expect($('[data-qa=restrictions-warning]').text().trim()).toMatch(
-        /Managing prisoner restriction is not available in DPS/,
+        /Managing prisoner restrictions is not available in DPS/,
       )
       expect($('[data-qa=restrictions-warning]').text().trim()).toMatch(
         /You still need to use NOMIS to add and update prisoner restrictions./,
@@ -364,7 +364,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
 
       expect($('[data-qa="prisoner-restrictions-title"]').text().trim()).toContain('Global prisoner restrictions')
       expect($('[data-qa=restrictions-warning]').text().trim()).toMatch(
-        /Managing prisoner restriction is not available in DPS/,
+        /Managing prisoner restrictions is not available in DPS/,
       )
       expect($('[data-qa=restrictions-warning]').text().trim()).toMatch(
         /You still need to use NOMIS to add and update prisoner restrictions./,
