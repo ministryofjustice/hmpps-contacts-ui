@@ -286,7 +286,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
         /You still need to use NOMIS to add and update prisoner restrictions./,
       )
       expect($('.restrictions-caption-prisoner-restrictions').text()).toStrictEqual(
-        'These restrictions apply to prisoner John Smith across the whole prison estate.',
+        'These restrictions apply to John Smith across the whole prison estate.',
       )
       expect($('[data-qa="prisoner-restrictions-175317-type-value"]').text().trim()).toContain('BAN')
       expect($('[data-qa="prisoner-restrictions-175317-start-date-value"]').text().trim()).toStrictEqual('2/10/2024')

@@ -160,7 +160,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-r
       )
 
       expect($('.restrictions-caption-prisoner-restrictions').text()).toStrictEqual(
-        'These restrictions apply to prisoner John Smith across the whole prison estate.',
+        'These restrictions apply to John Smith across the whole prison estate.',
       )
 
       const relationshipRestrictionTitleText = $('[data-qa="PRISONER_CONTACT-1-type-value"]').text().trim()
