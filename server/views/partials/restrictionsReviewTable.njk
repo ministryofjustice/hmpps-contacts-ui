@@ -16,7 +16,7 @@
     {% set expiryDate = restriction.expiryDate %}
     {% set enteredByDisplayName = restriction.authorisedByDisplayName %}
 
-    {% set retrictionTypeHtml %}
+    {% set restrictionTypeHtml %}
       {{ govukTag({ text: restrictionTypeDescription, classes: 'wide-tag ' + restriction.restrictionType | restrictionTagColour }) }}
       {{ ' (expired)' if (expiryDate | isDateAndInThePast) }}
       {{ ' (Previous booking)' if not restriction.currentTerm }}
@@ -26,22 +26,17 @@
       {% set comments ='<p>' +comments.slice(0, 255) + '...</p>' %}
      {% endif %}
 
-    {% set wrappedComments %}
-      <div class="break-text">
-        {{ comments | escape | nl2br }}
-      </div>
-    {% endset %}
 
     {% set rows = (rows.push([
-      { html: retrictionTypeHtml, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-type-value"} },
-      { html: wrappedComments, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-comments-value"} },
+      { html: restrictionTypeHtml, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-type-value"} },
+      { text: comments, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-comments-value"}, classes: "long-text-column" },
       { text: startDate | formatDate('d/M/yyyy'), attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-start-date-value"} },
       { text: expiryDate | formatDate('d/M/yyyy') if expiryDate else 'Not provided', attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-expiry-date-value"} },
       { text: enteredByDisplayName, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-entered-by-value"} }
     ]), rows) %}
   {% endfor %}
 
-  {% set caption = 'These restrictions apply to prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' across the whole prison estate.' %}
+  {% set caption = 'These restrictions apply to ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' across the whole prison estate.' %}
   {% set emptyCaption = 'No prisoner restrictions apply to ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' across the whole prison estate.' %}
 
   {% if restrictions.length %}
@@ -56,7 +51,7 @@
         },
         {
           text: "Comments",
-          classes: "govuk-!-width-one-quarter"
+          classes: "govuk-!-width-one-third long-text-column"
         },
         {
           text: "Start date"
