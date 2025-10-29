@@ -4,7 +4,7 @@ export default function pagedPrisonerAlertsData(overrides = {}): PageAlert {
   return {
     content: [
       {
-        alertUuid: '31ab3746-3c8e-482c-8173-8833795fdfb4',
+        alertUuid: '1',
         prisonNumber: 'G5276UE',
         alertCode: {
           alertTypeCode: 'X',

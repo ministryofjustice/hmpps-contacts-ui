@@ -1,5 +1,4 @@
 import { Request, Response } from 'express'
-import { getAlertFlagLabelsForAlerts } from '@ministryofjustice/hmpps-connect-dps-shared-items'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import Permission from '../../../../enumeration/permission'
@@ -31,19 +30,7 @@ export default class ListPrisonerRestrictionsAlertsController implements PageHan
     )
     const prisonerAlertsContent: PageAlert = await this.alertsService.getAlerts(prisonerNumber, user)
     const prisonerRestrictions = prisonerRestrictionsContent.content
-    const prisonerAlerts = prisonerAlertsContent.content
-
-    const alertForPrisoner = (prisonerAlerts ?? []).map(alert => ({
-      ...alert,
-      flagLabels: getAlertFlagLabelsForAlerts([
-        {
-          alertType: '',
-          alertCode: alert.alertCode.code,
-          active: alert.isActive,
-          expired: !alert.isActive,
-        },
-      ]),
-    }))
+    const alertForPrisoner = prisonerAlertsContent.content
 
     const navigation: Navigation = { breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_ALERTS_RESTRICTIONS'] }
     const viewModel = {

@@ -32,6 +32,7 @@ import sortContactAddresses from './sortAddress'
 import { taskStatus } from './taskStatus'
 import captionForAddContactJourney from '../routes/contacts/add/addContactsUtils'
 import sortRestrictions from './sortRestrictions'
+import sortAlerts from './sortAlerts'
 import { convertToSortableColumns } from './convertToSortableColumns'
 import { sortPhoneNumbers } from './sortPhoneNumbers'
 import { ContactAddressDetails } from '../@types/contactsApiClient'
@@ -159,6 +160,7 @@ export default function nunjucksSetup(app: express.Express): void {
       })),
   )
   njkEnv.addFilter('sortRestrictions', sortRestrictions)
+  njkEnv.addFilter('sortAlerts', sortAlerts)
   njkEnv.addFilter('sortPhoneNumbers', sortPhoneNumbers)
   njkEnv.addFilter('isInternalContact', isInternalContact)
 

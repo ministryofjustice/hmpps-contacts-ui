@@ -193,48 +193,9 @@ div.moj-action-bar__filter::after { content: none !important; }
   max-width: 200px;
 }
 
-.prisoner-header.container {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: nowrap;
-  gap: 1rem;
-}
-
-/* Left side: prisoner name/title */
-.prisoner-header__title {
-  flex: 1 1 auto;
-  min-width: 0; /* allows text to wrap without overflow */
-}
-
-.prisoner-header__title h1 {
-  margin: 0;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
-
-/* Right side: message */
-.message {
-  flex-shrink: 0;
-  max-width: 40%;
-  text-align: right;
-}
-
-.message p {
-  margin: 0;
+.govuk-table td.long-text-column {
+  word-break: break-all;
+  overflow-wrap: anywhere;
   white-space: normal;
-}
-
-/* 🔽 Responsive: stack vertically on smaller screens */
-@media (max-width: 768px) {
-  .prisoner-header.container {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .message {
-    max-width: 100%;
-    text-align: left;
-    margin-top: 0.5rem;
-  }
+  width: 20% !important;
 }
