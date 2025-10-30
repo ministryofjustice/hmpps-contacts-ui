@@ -132,6 +132,88 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect($('[data-qa=back-link]')).toHaveLength(0)
     })
 
+    it('should render approved to visit label and no change approval link when no contact authoriser permission', async () => {
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
+      contactsService.getContact.mockResolvedValue(TestData.contact())
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(
+        TestData.prisonerContactRelationship({ isApprovedVisitor: true }),
+      )
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect($('title').text()).toStrictEqual('Information on a contact linked to a prisoner - DPS')
+      expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('Information on linked contact Jones Mason')
+      expect($('.govuk-tag--green').first().text().trim()).toStrictEqual('Approved for visits')
+      expect($('[data-qa=change-approval-link]')).toHaveLength(0)
+    })
+
+    it('should render not approved to visit label and no change approval link when no contact authoriser permission', async () => {
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
+      contactsService.getContact.mockResolvedValue(TestData.contact())
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(
+        TestData.prisonerContactRelationship({ isApprovedVisitor: false }),
+      )
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect($('title').text()).toStrictEqual('Information on a contact linked to a prisoner - DPS')
+      expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('Information on linked contact Jones Mason')
+      expect($('.govuk-tag--red').first().text().trim()).toStrictEqual('Not approved for visits')
+      expect($('[data-qa=change-approval-link]')).toHaveLength(0)
+    })
+
+    it('should render approved to visit label and change approval link with contact authoriser permission', async () => {
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
+      contactsService.getContact.mockResolvedValue(TestData.contact())
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(
+        TestData.prisonerContactRelationship({ isApprovedVisitor: true }),
+      )
+      mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contact_visit_approval]: true })
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect($('title').text()).toStrictEqual('Information on a contact linked to a prisoner - DPS')
+      expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('Information on linked contact Jones Mason')
+      expect($('.govuk-tag--green').first().text().trim()).toStrictEqual('Approved for visits')
+      expect($('[data-qa=change-approval-link]').first().text().trim()).toStrictEqual('Change approval status')
+      expect($('[data-qa=change-approval-link]').first().attr('href')).toStrictEqual(
+        `/prisoner/A1234BC/contacts/manage/1/relationship/99/approved-to-visit`,
+      )
+    })
+
+    it('should render not approved to visit label and change approval link with contact authoriser permission', async () => {
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
+      contactsService.getContact.mockResolvedValue(TestData.contact())
+      contactsService.getPrisonerContactRelationship.mockResolvedValue(
+        TestData.prisonerContactRelationship({ isApprovedVisitor: false }),
+      )
+      mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contact_visit_approval]: true })
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      expect($('title').text()).toStrictEqual('Information on a contact linked to a prisoner - DPS')
+      expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('Information on linked contact Jones Mason')
+      expect($('.govuk-tag--red').first().text().trim()).toStrictEqual('Not approved for visits')
+      expect($('[data-qa=change-approval-link]').first().text().trim()).toStrictEqual('Change approval status')
+      expect($('[data-qa=change-approval-link]').first().attr('href')).toStrictEqual(
+        `/prisoner/A1234BC/contacts/manage/1/relationship/99/approved-to-visit`,
+      )
+    })
+
     it('should render contact details page for deceased contact', async () => {
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue({

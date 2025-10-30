@@ -10,13 +10,14 @@ export default class ManageContactDetailsPage extends Page {
     return this
   }
 
-  clickEditContactMethodsLink() {
-    this.editContactMethodsLink().click()
+  clickApproveVisitLink() {
+    this.approveVisitLink().click()
     return this
   }
 
-  clickRecordDateOfDeathLink() {
-    this.recordDateOfDeathLink().click()
+  clickEditContactMethodsLink() {
+    this.editContactMethodsLink().click()
+    return this
   }
 
   clickContactMethodsTab() {
@@ -55,6 +56,8 @@ export default class ManageContactDetailsPage extends Page {
   private getRestrictionsTab = (): PageElement => cy.get('#tab_restrictions')
 
   private editContactDetailsLink = (): PageElement => cy.get('[data-qa="edit-contact-details-link"]')
+
+  private approveVisitLink = (): PageElement => cy.get('[data-qa="change-approval-link"]')
 
   private editContactMethodsLink = (): PageElement => cy.get('[data-qa="edit-contact-methods-link"]')
 
