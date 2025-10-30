@@ -1,11 +1,14 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "moj/components/alert/macro.njk" import mojAlert %}
 
 {% macro restrictionsReviewTable(opts) %}
   {% set restrictions = opts.restrictions %}
   {% set restrictionClass = opts.restrictionClass %}
   {% set prisonerDetails = opts.prisonerDetails %}
   {% set prisonerNumber = prisonerDetails.prisonerNumber %}
+  {% set hideTableTitle = opts.hideTableTitle %}
+  {% set hideTableTitle = opts.hideWarning %}
   {% set rows = [] %}
 
   {% for restriction in restrictions | sortRestrictions %}
@@ -38,7 +41,19 @@
 
   {% set caption = 'These restrictions apply to ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' across the whole prison estate.' %}
   {% set emptyCaption = 'No prisoner restrictions apply to ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true))  + ' across the whole prison estate.' %}
-
+  {% if not hideTableTitle %}
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-6" data-qa="{{ restrictionClass }}-title">Global prisoner restrictions</h2>
+  {% endif %}
+  {% if not hideWarning %}
+      {{ mojAlert({
+        variant: "warning",
+        title: "Managing prisoner restrictions is not available in DPS",
+        showTitleAsHeading: true,
+        dismissible: false,
+        html: 'You still need to use NOMIS to add and update prisoner restrictions.',
+        attributes: { "data-qa": "restrictions-warning" }
+      }) }}
+   {% endif %}
   {% if restrictions.length %}
     {{ govukTable({
       firstCellIsHeader: false,

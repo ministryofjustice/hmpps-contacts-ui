@@ -44,7 +44,11 @@
           </li>
           <li class="govuk-tabs__list-item">
             <a class="govuk-tabs__tab restrictions-tab-title" href="#restrictions">
-              Restrictions ({{ contactGlobalRestrictions.length + prisonerContactRestrictions.length }})
+              {% if FEATURE_SHOW_PRISONER_RESTRICTIONS_ENABLED %}
+                Restrictions ({{ contactGlobalRestrictions.length + prisonerContactRestrictions.length + prisonerRestrictions.length}})
+              {% else %}
+                Restrictions ({{ contactGlobalRestrictions.length + prisonerContactRestrictions.length }})
+              {% endif %}
             </a>
           </li>
           <li class="govuk-tabs__list-item">

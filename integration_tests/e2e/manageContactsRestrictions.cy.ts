@@ -4,6 +4,7 @@ import ListContactsPage from '../pages/listContacts'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
 import EnterRestrictionPage from '../pages/enterRestrictionPage'
 import EditRestrictionsPage from '../pages/editRestrictionsPage'
+import RestrictionsTestData from '../../server/routes/testutils/stubRestrictionsData'
 
 context('Manage contacts restrictions', () => {
   const { prisonerNumber } = TestData.prisoner()
@@ -30,6 +31,10 @@ context('Manage contacts restrictions', () => {
     cy.task('stubGetContactById', contact)
     cy.task('stubGetContactNameById', contact)
     cy.task('stubGetPrisonerContactRelationshipById', { id: 31, response: TestData.prisonerContactRelationship() })
+    cy.task('stubGetPrisonerRestrictions', {
+      prisonerNumber,
+      response: RestrictionsTestData.stubRestrictionsData(),
+    })
   })
   it(`should render restrictions tab on manage contact details`, () => {
     cy.task('stubGetPrisonerContactRestrictions', {
@@ -45,9 +50,10 @@ context('Manage contacts restrictions', () => {
     Page.verifyOnPage(ListContactsPage, 'John Smith').clickContactNamesLink('Davis, Daniel M.')
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Daniel M. Davis')
-      .clickRestrictionsTab('2')
+      .clickRestrictionsTab('3')
       .checkPrisonerContactRestrictionsCardTitle()
       .checkGlobalRestrictionsCardTitle()
+      .checkGlobalPrisonerRestrictionsCardTitle()
   })
 
   it(`should add prisoner contact restrictions will take to add a new prisoner contact restriction page `, () => {
@@ -66,7 +72,7 @@ context('Manage contacts restrictions', () => {
     Page.verifyOnPage(ListContactsPage, 'John Smith').clickContactNamesLink('Davis, Daniel M.')
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Daniel M. Davis') //
-      .clickRestrictionsTab('2')
+      .clickRestrictionsTab('3')
       .clickLinkTo('Add or update restrictions', EditRestrictionsPage, 'Daniel M. Davis', true)
       .clickButton('Add another relationship restriction')
 
@@ -88,7 +94,7 @@ context('Manage contacts restrictions', () => {
     Page.verifyOnPage(ListContactsPage, 'John Smith').clickContactNamesLink('Davis, Daniel M.')
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Daniel M. Davis') //
-      .clickRestrictionsTab('2')
+      .clickRestrictionsTab('3')
       .clickLinkTo('Add or update restrictions', EditRestrictionsPage, 'Daniel M. Davis', true)
       .clickButton('Add another global restriction')
 

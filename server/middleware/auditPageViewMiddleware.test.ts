@@ -56,7 +56,7 @@ describe('auditPageViewMiddleware', () => {
     contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
     contactsService.getContact.mockResolvedValue(TestData.contact())
     contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
-
+    contactsService.getPrisonerRestrictions.mockResolvedValue({ content: [] })
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
 

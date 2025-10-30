@@ -64,7 +64,17 @@ export default class ContactDetailsController implements PageHandler {
       '?linkedPrisonerPage={page}#linked-prisoners',
     )
 
+    const prisonerRestrictionsContent = await this.contactsService.getPrisonerRestrictions(
+      prisonerNumber,
+      0,
+      10,
+      user,
+      false,
+      false,
+    )
+
     contact.employments = contact.employments.sort(employmentSorter)
+    const prisonerRestrictions = prisonerRestrictionsContent.content
 
     return res.render('pages/contacts/manage/contactDetails/details/index', {
       contact,
@@ -74,6 +84,7 @@ export default class ContactDetailsController implements PageHandler {
       contactId,
       prisonerContactId,
       prisonerContactRelationship,
+      prisonerRestrictions,
       manageContactRelationshipUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
       navigation,
       linkedPrisoners: linkedPrisoners.content,

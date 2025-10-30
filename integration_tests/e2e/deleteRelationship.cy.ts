@@ -42,7 +42,12 @@ context('Delete Relationship', () => {
     })
 
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
-
+    cy.task('stubGetPrisonerRestrictions', {
+      prisonerNumber,
+      response: {
+        content: [],
+      },
+    })
     cy.task('stubAllSummariesForAPrisonerAndContact', {
       prisonerNumber,
       contactId,
