@@ -1,5 +1,6 @@
 {% extends "partials/layout.njk" %}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
 {% from "partials/linkedPrisonersTable.njk" import linkedPrisonersTable %}
 {% set pageTitle = "Information on a contact linked to a prisoner - DPS" %}
 
@@ -21,6 +22,31 @@
           <p class="govuk-body"><strong>Person ID:</strong> {{ contact.id }}</p>
         </div>
         <div>
+            <div class="moj-page-header-actions no-space-approval-label">
+                <div class="moj-page-header-actions__title">
+                {% if prisonerContactRelationship.isApprovedVisitor %}
+                      {% set tagText = "Approved for visits" %}
+                      {% set tagClass = "govuk-tag--green long-label-tag" %}
+                    {% else %}
+                      {% set tagText = "Not approved for visits" %}
+                      {% set tagClass = "govuk-tag--red max-200-width" %}
+                    {% endif %}
+                     {{ govukTag({
+                      text: tagText,
+                      classes: tagClass
+                    }) }}
+              </div>
+
+            {% if isGranted(PersonalRelationshipsPermission.edit_contact_visit_approval, prisonerPermissions)  %}
+            <p class="govuk-body govuk-!-margin-bottom-1">
+                <a class="govuk-link govuk-link--no-visited-state"
+                href="{{ "/prisoner/" + prisonerNumber + "/contacts/manage/" + contactId + "/relationship/" + prisonerContactId + "/approved-to-visit" }}" data-qa="change-approval-link">
+                    Change approval status
+                </a>
+            </p>
+            {% endif %}
+          </div>
+        </div>
           {% if prisonerContactRelationship.isEmergencyContact %}<p class="emergency-contact-tag">Emergency contact</p>{% endif %}
           {% if prisonerContactRelationship.isNextOfKin %}<p class="next-of-kin-tag">Next of kin</p>{% endif %}
         </div>
