@@ -12,7 +12,7 @@ context('List prisoner restrictions and alerts with a contact admin or higher ro
     content: [{ ...pagedPrisonerRestrictionDetails().content[0], prisonerNumber: 'A1234BC' }],
   })
   const prisonerAlerts = pagedPrisonerAlertsData({
-    content: [{ ...pagedPrisonerAlertsData().content[0], prisonNumber: 'A1234BC' }],
+    prisonNumber: 'A1234BC',
   })
 
   const minimalContact: PrisonerContactSummary = {

@@ -14,8 +14,7 @@
     {% set comments = alert.description or 'Not provided' %}
     {% set startDate = alert.activeFrom %}
     {% set expiryDate = alert.activeTo %}
-    {% set enteredByDisplayName = alert.lastModifiedByDisplayName %}
-
+    {% set enteredByDisplayName = alert.lastModifiedByDisplayName if alert.lastModifiedByDisplayName else alert.createdByDisplayName %}
     {% set alertTypeHtml %}
       {{ alertTypeDescription }}
       {{ ' (inactive)' if (expiryDate | isDateAndInThePast) }}
