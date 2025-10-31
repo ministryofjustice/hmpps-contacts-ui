@@ -8,7 +8,7 @@
   {% set prisonerDetails = opts.prisonerDetails %}
   {% set prisonerNumber = prisonerDetails.prisonerNumber %}
   {% set hideTableTitle = opts.hideTableTitle %}
-  {% set hideTableTitle = opts.hideWarning %}
+  {% set hideWarning = opts.hideWarning %}
   {% set rows = [] %}
 
   {% for restriction in restrictions | sortRestrictions %}
@@ -24,11 +24,6 @@
       {{ ' (expired)' if (expiryDate | isDateAndInThePast) }}
       {{ ' (Previous booking)' if not restriction.currentTerm }}
     {% endset %}
-
-     {% if comments.length > 255 %}
-      {% set comments ='<p>' +comments.slice(0, 255) + '...</p>' %}
-     {% endif %}
-
 
     {% set rows = (rows.push([
       { html: restrictionTypeHtml, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-type-value"} },

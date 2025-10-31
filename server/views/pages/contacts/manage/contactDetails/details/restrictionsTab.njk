@@ -22,14 +22,6 @@
     </div>
   </div>
 </div>
-      {{ mojAlert({
-        variant: "warning",
-        title: "Prisoner restrictions are not yet available in DPS",
-        showTitleAsHeading: true,
-        dismissible: false,
-        html: 'You still need to use NOMIS to view and manage prisoner restrictions.',
-        attributes: { "data-qa": "restrictions-warning" }
-      }) }}
 <div class="govuk-!-padding-bottom-6">
   {{ restrictionsTable( {
     restrictionClass: 'PRISONER_CONTACT',
@@ -56,7 +48,8 @@
     restrictionClass: 'prisoner-restrictions',
     restrictions: prisonerRestrictions,
     prisonerDetails: prisonerDetails,
-    hideTableTitle: false
+    hideTableTitle: false,
+    hideWarning: true
   }) }}
 </div>
 {% endif %}
