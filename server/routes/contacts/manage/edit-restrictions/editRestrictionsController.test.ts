@@ -163,6 +163,13 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-r
         'These restrictions apply to John Smith across the whole prison estate.',
       )
 
+      expect($('[data-qa=restrictions-warning]').text().trim()).toMatch(
+        /Managing prisoner restrictions is not available in DPS/,
+      )
+      expect($('[data-qa=restrictions-warning]').text().trim()).toMatch(
+        /You still need to use NOMIS to add and update prisoner restrictions./,
+      )
+
       const relationshipRestrictionTitleText = $('[data-qa="PRISONER_CONTACT-1-type-value"]').text().trim()
       expect(relationshipRestrictionTitleText).toContain('Child Visitors to be Vetted')
       expect($('[data-qa="PRISONER_CONTACT-1-start-date-value"]').text().trim()).toStrictEqual('1/1/2024')

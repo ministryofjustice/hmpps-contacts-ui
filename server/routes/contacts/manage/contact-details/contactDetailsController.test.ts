@@ -356,17 +356,8 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect($('[data-qa="CONTACT_GLOBAL-2-comments-value"]').text().trim()).toStrictEqual('Keep an eye')
 
       expect($('[data-qa=edit-restrictions-link]').text().trim()).toStrictEqual('Add or update restrictions')
-      const warningText = $('[data-qa=restrictions-warning]').text().trim()
-      expect(warningText).toMatch(/Prisoner restrictions are not yet available in DPS/)
-      expect(warningText).toMatch(/You still need to use NOMIS to view and manage prisoner restrictions./)
 
       expect($('[data-qa="prisoner-restrictions-title"]').text().trim()).toContain('Global prisoner restrictions')
-      expect($('[data-qa=restrictions-warning]').text().trim()).toMatch(
-        /Managing prisoner restrictions is not available in DPS/,
-      )
-      expect($('[data-qa=restrictions-warning]').text().trim()).toMatch(
-        /You still need to use NOMIS to add and update prisoner restrictions./,
-      )
       expect($('.restrictions-caption-prisoner-restrictions').text()).toStrictEqual(
         'These restrictions apply to John Smith across the whole prison estate.',
       )
@@ -440,17 +431,9 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       expect($('[data-qa="CONTACT_GLOBAL-2-entered-by-value"]').text().trim()).toStrictEqual('User One')
       expect($('[data-qa="CONTACT_GLOBAL-2-comments-value"]').text().trim()).toStrictEqual('Keep an eye')
 
-      const warningText = $('[data-qa=restrictions-warning]').text().trim()
-      expect(warningText).toMatch(/Prisoner restrictions are not yet available in DPS/)
-      expect(warningText).toMatch(/You still need to use NOMIS to view and manage prisoner restrictions./)
-
       expect($('[data-qa="prisoner-restrictions-title"]').text().trim()).toContain('Global prisoner restrictions')
-      expect($('[data-qa=restrictions-warning]').text().trim()).toMatch(
-        /Managing prisoner restrictions is not available in DPS/,
-      )
-      expect($('[data-qa=restrictions-warning]').text().trim()).toMatch(
-        /You still need to use NOMIS to add and update prisoner restrictions./,
-      )
+      expect($('[data-qa=restrictions-warning]').text().trim()).toHaveLength(0)
+      expect($('[data-qa=restrictions-warning]').text().trim()).toHaveLength(0)
       expect($('[data-qa="prisoner-restrictions-175317-type-value"]').text().trim()).toContain('BAN')
       expect($('[data-qa="prisoner-restrictions-175317-start-date-value"]').text().trim()).toStrictEqual('2/10/2024')
       expect($('[data-qa="prisoner-restrictions-175317-expiry-date-value"]').text().trim()).toStrictEqual('31/10/2024')
