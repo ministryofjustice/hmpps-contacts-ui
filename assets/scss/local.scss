@@ -194,9 +194,9 @@ div.moj-action-bar__filter::after { content: none !important; }
 }
 
 .govuk-table td.long-text-column {
-  word-break: break-all;
-  overflow-wrap: anywhere;
-  white-space: normal;
+  overflow-wrap: anywhere;   /* allow breaking for long unspaced text */
+  word-break: keep-all;      /* keep words intact when spaces exist */
+  white-space: normal;       /* normal wrapping behaviour */
   width: 20% !important;
 }
 
