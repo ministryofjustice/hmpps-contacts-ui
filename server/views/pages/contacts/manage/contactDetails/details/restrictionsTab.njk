@@ -41,8 +41,6 @@
     showActions: false
   } ) }}
 </div>
-
-{% if FEATURE_SHOW_PRISONER_RESTRICTIONS_ENABLED %}
 <div>
   {{ restrictionsReviewTable({
     restrictionClass: 'prisoner-restrictions',
@@ -52,4 +50,3 @@
     hideWarning: true
   }) }}
 </div>
-{% endif %}

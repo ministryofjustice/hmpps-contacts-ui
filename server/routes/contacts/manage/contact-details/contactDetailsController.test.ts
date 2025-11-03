@@ -32,7 +32,6 @@ jest.mock('../../../../config', () => {
     feature: {
       ...actualConfig.default.feature,
       relationshipApprovedByEnabled: 'true',
-      showPrisonerRestrictionsEnabled: 'true',
     },
   }
 })
