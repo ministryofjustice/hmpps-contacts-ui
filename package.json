@@ -107,7 +107,7 @@
     "@ministryofjustice/frontend": "^7.1.0",
     "@ministryofjustice/hmpps-auth-clients": "^0.0.3",
     "@ministryofjustice/hmpps-connect-dps-components": "^2.2.0",
-    "@ministryofjustice/hmpps-monitoring": "^0.0.2",
+    "@ministryofjustice/hmpps-monitoring": "^1.0.0",
     "@ministryofjustice/hmpps-prison-permissions-lib": "^0.4.0",
     "@sentry/node": "^10.22.0",
     "@types/cypress__code-coverage": "^3.10.2",
