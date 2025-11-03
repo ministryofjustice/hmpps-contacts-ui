@@ -102,7 +102,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.917.0",
+    "@aws-sdk/client-sqs": "^3.919.0",
     "@cypress/code-coverage": "^3.14.7",
     "@ministryofjustice/frontend": "^7.1.0",
     "@ministryofjustice/hmpps-auth-clients": "^0.0.3",
@@ -156,7 +156,7 @@
     "@types/http-errors": "^2.0.5",
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^22.18.12",
+    "@types/node": "^22.18.13",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-oauth2": "^1.8.0",
