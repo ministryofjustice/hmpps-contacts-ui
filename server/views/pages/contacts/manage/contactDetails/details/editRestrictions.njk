@@ -59,19 +59,15 @@
         preventDoubleClick: true
       }) }}
       </div>
-
-      {% if FEATURE_SHOW_PRISONER_RESTRICTIONS_ENABLED %}
-          <div>
-            {{ restrictionsReviewTable({
-              restrictionClass: 'prisoner-restrictions',
-              restrictions: prisonerRestrictions,
-              prisonerDetails: prisonerDetails,
-              hideTableTitle: false,
-              hideWarning: false
-            }) }}
-          </div>
-      {% endif %}
-
+      <div>
+        {{ restrictionsReviewTable({
+          restrictionClass: 'prisoner-restrictions',
+          restrictions: prisonerRestrictions,
+          prisonerDetails: prisonerDetails,
+          hideTableTitle: false,
+          hideWarning: false
+        }) }}
+      </div>
       <div class="govuk-button-group">
         {% if navigation.cancelButton %}
           <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}"

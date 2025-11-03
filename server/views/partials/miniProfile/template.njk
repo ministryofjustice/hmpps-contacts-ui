@@ -28,25 +28,22 @@
                     <span class="govuk-heading-s govuk-!-margin-bottom-0 govuk-!-padding-0">Cell number</span>
                     <span class="govuk-body" data-qa="mini-profile-cell-location">{{ prisonerDetails.cellLocation }}</span>
                 </li>
-
-                {% if FEATURE_RESTRICTION_ALERTS_LINK_ENABLED %}
-                    {% if isGranted(PersonalRelationshipsPermission.edit_contacts, prisonerPermissions) %}
-                      <li>
-                          <span class="govuk-heading-s govuk-!-margin-bottom-0 govuk-!-padding-0">Restrictions and Alerts</span>
-                          <p class="govuk-body govuk-!-margin-bottom-1">
-                             <a id="prisoner-alerts-restrictions-link"
-                                class="govuk-link--no-visited-state"
-                                href="/prisoner/{{ prisonerDetails.prisonerNumber }}/alerts-restrictions"
-                                data-qa="contact-{{ prisonerDetails.prisonerNumber }}-alerts-restrictions">
-                               {{ prisonerDetails.restrictionsCount }}
-                               {% if prisonerDetails.restrictionsCount == 1 %}restriction{% else %}restrictions{% endif %}
-                               and
-                               {{ prisonerDetails.alertsCount }}
-                               {% if prisonerDetails.alertsCount == 1 %}alert{% else %}alerts{% endif %}
-                             </a>
-                          </p>
-                      </li>
-                    {% endif %}
+                {% if isGranted(PersonalRelationshipsPermission.edit_contacts, prisonerPermissions) %}
+                  <li>
+                      <span class="govuk-heading-s govuk-!-margin-bottom-0 govuk-!-padding-0">Restrictions and Alerts</span>
+                      <p class="govuk-body govuk-!-margin-bottom-1">
+                         <a id="prisoner-alerts-restrictions-link"
+                            class="govuk-link--no-visited-state"
+                            href="/prisoner/{{ prisonerDetails.prisonerNumber }}/alerts-restrictions"
+                            data-qa="contact-{{ prisonerDetails.prisonerNumber }}-alerts-restrictions">
+                           {{ prisonerDetails.restrictionsCount }}
+                           {% if prisonerDetails.restrictionsCount == 1 %}restriction{% else %}restrictions{% endif %}
+                           and
+                           {{ prisonerDetails.alertsCount }}
+                           {% if prisonerDetails.alertsCount == 1 %}alert{% else %}alerts{% endif %}
+                         </a>
+                      </p>
+                  </li>
                 {% endif %}
             </ul>
         </div>
