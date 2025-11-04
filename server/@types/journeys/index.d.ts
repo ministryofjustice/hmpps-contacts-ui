@@ -11,6 +11,7 @@ export interface AddContactJourney {
     | {
         soundsLike?: boolean | undefined
         contact?: Partial<ContactNames>
+        contactId?: string | undefined
         dateOfBirth?: Partial<DateOfBirth>
         page?: number
         sort?: string
@@ -90,6 +91,7 @@ export interface ManageContactsJourney {
     contact?: Partial<ContactNames>
     dateOfBirth?: Partial<DateOfBirth>
     soundsLike?: boolean
+    contactId?: string | undefined
   }
   contactId?: number
   activateListPage?: number

@@ -13,6 +13,18 @@ import { HmppsUser } from '../../../../interfaces/hmppsUser'
 import mockPermissions from '../../../testutils/mockPermissions'
 import Permission from '../../../../enumeration/permission'
 
+// Mock the config module to enable the feature flag
+jest.mock('../../../../config', () => {
+  const actualConfig = jest.requireActual('../../../../config')
+  return {
+    ...actualConfig.default,
+    feature: {
+      ...actualConfig.default.feature,
+      searchByContactIdEnabled: 'true',
+    },
+  }
+})
+
 jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonerSearchService')
@@ -87,6 +99,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     expect($('.govuk-form-group .govuk-label').eq(2).text()).toContain('Last name')
     expect($('.govuk-fieldset__legend:contains("Date of birth")').text()).toBeFalsy()
     expect($('label[for="soundsLike"]').text().trim()).toBe('Sounds like search')
+    expect($('label[for="contactId"]').text().trim()).toBe('Contact ID (optional)')
     expect($('[data-qa=search-button]').text()).toContain('Search')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(`/prisoner/${prisonerNumber}/contacts/list`)
     expect($('[data-qa=back-link]').first().text()).toStrictEqual('Back to prisoner’s contact list')
@@ -158,6 +171,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
         middleNames: undefined,
         lastName: 'last',
       },
+      contactId: undefined,
       page: 1,
       soundsLike: false,
     })
@@ -177,8 +191,29 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
         middleNames: undefined,
         lastName: 'last',
       },
+      contactId: undefined,
       page: 1,
       soundsLike: true,
+    })
+  })
+
+  it('should pass the contact id when it is provided', async () => {
+    await request(app)
+      .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      .type('form')
+      .send({ lastName: 'last', middleNames: '', firstName: '', contactId: '1234' })
+      .expect(302)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
+
+    expect(session.addContactJourneys![journeyId]!.searchContact).toStrictEqual({
+      contact: {
+        firstName: undefined,
+        middleNames: undefined,
+        lastName: 'last',
+      },
+      contactId: '1234', // assert contact id is set into the request
+      page: 1,
+      soundsLike: false,
     })
   })
 
@@ -196,6 +231,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
         middleNames: 'middle',
         lastName: undefined,
       },
+      contactId: undefined,
       page: 1,
       soundsLike: false,
     })
@@ -229,6 +265,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     expect(session.addContactJourneys![journeyId]!.searchContact).toStrictEqual({
       contact: expectedContact,
       page: 1,
+      contactId: undefined,
       soundsLike: false,
     })
     expect(contactsService.searchContact).not.toHaveBeenCalled()
