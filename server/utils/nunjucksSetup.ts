@@ -89,6 +89,7 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('formatDate', formatDate)
   njkEnv.addGlobal('DPS_HOME_PAGE_URL', config.serviceUrls.digitalPrison)
   njkEnv.addGlobal('FEATURE_RELATIONSHIP_APPROVED_BY_ENABLED', config.feature.relationshipApprovedByEnabled)
+  njkEnv.addGlobal('FEATURE_SEARCH_BY_CONTACT_ID_ENABLED', config.feature.searchByContactIdEnabled)
   njkEnv.addFilter('pluralise', (word, count, plural = `${word}s`) => (count === 1 ? word : plural))
   njkEnv.addFilter('addressToLines', addressToLines)
   njkEnv.addFilter('coarseAddressToLines', coarseAddressToLines)

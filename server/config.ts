@@ -168,5 +168,6 @@ export default {
   },
   feature: {
     relationshipApprovedByEnabled: process.env['FEATURE_RELATIONSHIP_APPROVED_BY_ENABLED'],
+    searchByContactIdEnabled: process.env['FEATURE_SEARCH_BY_CONTACT_ID_ENABLED'],
   },
 }
