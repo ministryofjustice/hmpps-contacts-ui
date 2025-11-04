@@ -26,6 +26,13 @@ generic-service:
     FEATURE_RELATIONSHIP_APPROVED_BY_ENABLED: 'true'
     FEATURE_SEARCH_BY_CONTACT_ID_ENABLED: 'true'
 
+  allowlist:
+    user-vision-office: 5.181.59.114
+    groups:
+      - prisons
+      - moj_cloud_platform
+      - digital_staff_and_mojo
+
 generic-prometheus-alerts:
   alertSeverity: hmpps-contacts-ui-dev
   businessHoursOnly: true
