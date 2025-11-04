@@ -62,7 +62,14 @@
             }) }}
         </div>
           <div class="govuk-!-width-three-quarters">
-              {% set advancedSearchInstructions %}
+
+              <details class="govuk-details govuk-!-margin-top-6 govuk-!-margin-bottom-0">
+                <summary class="govuk-details__summary">
+                  <span class="govuk-details__summary-text">
+                    Show advanced filters
+                  </span>
+                </summary>
+                <div class="govuk-details__text no-left-border">
                 <div class="govuk-!-width-three-quarters govuk-!-margin-top-4">
                   {{ govukCheckboxes({
                     idPrefix: "soundsLike",
@@ -76,13 +83,17 @@
                     ]
                   }) }}
                 </div>
-              {% endset %}
-
-              {{ govukDetails({
-                classes: "govuk-!-margin-top-6 govuk-!-margin-bottom-0",
-                summaryText: "Show advanced filters",
-                html: advancedSearchInstructions
-              }) }}
+                {% if FEATURE_SEARCH_BY_CONTACT_ID_ENABLED %}
+                  {{ govukInput({
+                    id: "contactId",
+                    name: "contactId",
+                    label: { text: "Contact ID (optional)" },
+                    classes: 'govuk-!-width-one-third',
+                    value: contactId
+                  }) }}
+                 {% endif %}
+                </div>
+              </details>
 
             <div class="govuk-details govuk-!-margin-top-6 govuk-!-margin-bottom-0">
               {{ govukButton({

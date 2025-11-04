@@ -10,6 +10,7 @@ export const contactSearchSchema = createDateInputSchema({
     lastName: z.string().optional(),
     middleNames: z.string().optional(),
     firstName: z.string().optional(),
+    contactId: z.string().optional(),
     soundsLike: z
       .union([z.literal('true'), z.literal('false')])
       .optional()

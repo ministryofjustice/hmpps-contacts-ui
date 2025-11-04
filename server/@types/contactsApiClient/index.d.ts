@@ -66,6 +66,7 @@ export type ContactSearchRequest = {
   firstName?: string | undefined
   middleNames?: string | undefined
   dateOfBirth?: string | null
+  contactId?: string | undefined
   includeAnyExistingRelationshipsToPrisoner?: string | undefined
   soundsLike?: boolean | undefined
 }
