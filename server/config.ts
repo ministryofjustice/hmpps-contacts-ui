@@ -167,8 +167,8 @@ export default {
     replayOnErrorSampleRate: Number(get('SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE', 0.1)),
   },
   feature: {
-    relationshipApprovedByEnabled: process.env['FEATURE_RELATIONSHIP_APPROVED_BY_ENABLED'],
-    searchByContactIdEnabled: process.env['FEATURE_SEARCH_BY_CONTACT_ID_ENABLED'],
-    featureContactNomisOffPilotEnabledPrisons: process.env['FEATURE_NOMIS_SCREENS_OFF_PRISONS'],
+    relationshipApprovedByEnabled: get('FEATURE_RELATIONSHIP_APPROVED_BY_ENABLED', false) === 'true',
+    searchByContactIdEnabled: get('FEATURE_SEARCH_BY_CONTACT_ID_ENABLED', false) === 'true',
+    featureContactNomisOffPilotEnabledPrisons: get('FEATURE_TEMPORARY_BLOCKING_LOCATIONS', false) === 'true',
   },
 }
