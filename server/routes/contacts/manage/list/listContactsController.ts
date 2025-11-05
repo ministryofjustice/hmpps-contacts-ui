@@ -53,6 +53,7 @@ export default class ListContactsController implements PageHandler {
     res: Response,
   ): Promise<void> => {
     const { user, prisonerPermissions } = res.locals
+    const prisonerPrisonId = req.middleware?.prisonerData?.prisonId
     const { prisonerNumber } = req.params
     const { query } = req
     const page = query.page && !Number.isNaN(Number(query.page)) ? Number(query.page) : 1
@@ -135,7 +136,7 @@ export default class ListContactsController implements PageHandler {
 
     const navigation: Navigation = { breadcrumbs: ['DPS_HOME', 'DPS_PROFILE'] }
 
-    const announcement = getAnnouncement()
+    const announcement = prisonerPrisonId ? getAnnouncement(prisonerPrisonId) : undefined
     res.render('pages/contacts/manage/listContacts', {
       relationshipStatus,
       announcement,

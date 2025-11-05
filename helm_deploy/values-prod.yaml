@@ -20,6 +20,7 @@ generic-service:
     COMMON_COMPONENTS_ENABLED: true
     SENTRY_ENVIRONMENT: PRODUCTION
     AUDIT_ENABLED: 'false'
+    FEATURE_NOMIS_CONTACT_OFF_PILOT_ENABLED_PRISONS: 'KMI,GNI,SPI,LGI,DWI,HOI,WWI,LEI,LWI,BWI,BLI,SLI,IWI,LCI,LFI,LHI'
 
 generic-prometheus-alerts:
   alertSeverity: hmpps-contacts-ui-prod
