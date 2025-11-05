@@ -733,7 +733,7 @@ describe('listContactsController', () => {
         ...prisoner,
         prisonId: featureEnabledPrisonId,
       })
-      process.env['FEATURE_NOMIS_CONTACT_OFF_PILOT_ENABLED_PRISONS'] = 'KMI,GNI,SPI,LGI,DWI,HOI,WWI'
+      process.env['FEATURE_NOMIS_SCREENS_OFF_PRISONS'] = 'KMI,GNI,SPI,LGI,DWI,HOI,WWI'
       // When
       const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/list`)
 
@@ -752,7 +752,7 @@ describe('listContactsController', () => {
         content: [minimalContact],
         page: { totalElements: 1, totalPages: 1, size: 10, number: 0 },
       })
-      process.env['FEATURE_NOMIS_CONTACT_OFF_PILOT_ENABLED_PRISONS'] = 'KMI,GNI,SPI,LGI,DWI,HOI,WWI'
+      process.env['FEATURE_NOMIS_SCREENS_OFF_PRISONS'] = 'KMI,GNI,SPI,LGI,DWI,HOI,WWI'
 
       // When
       const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/list`)

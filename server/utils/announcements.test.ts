@@ -22,17 +22,17 @@ describe('announcement', () => {
   })
 
   describe('getAnnouncement', () => {
-    it('should return announcement for prisons in FEATURE_NOMIS_CONTACT_OFF_PILOT_ENABLED_PRISONS', () => {
+    it('should return announcement for prisons in FEATURE_NOMIS_SCREENS_OFF_PRISONS', () => {
       // Arrange
-      process.env['FEATURE_NOMIS_CONTACT_OFF_PILOT_ENABLED_PRISONS'] = 'KMI,GNI,SPI'
+      process.env['FEATURE_NOMIS_SCREENS_OFF_PRISONS'] = 'KMI,GNI,SPI'
 
       // Act & Assert
       expect(getAnnouncement('KMI')).toMatchObject(NOMIS_OFF_PILOT_ANNOUNCEMENT)
     })
 
-    it('should return announcement for prisons not in FEATURE_NOMIS_CONTACT_OFF_PILOT_ENABLED_PRISONS', () => {
+    it('should return announcement for prisons not in FEATURE_NOMIS_SCREENS_OFF_PRISONS', () => {
       // Arrange
-      process.env['FEATURE_NOMIS_CONTACT_OFF_PILOT_ENABLED_PRISONS'] = 'KMI,GNI,SPI'
+      process.env['FEATURE_NOMIS_SCREENS_OFF_PRISONS'] = 'KMI,GNI,SPI'
 
       // Act & Assert
       expect(getAnnouncement('XXX')).toMatchObject(DEFAULT_ANNOUNCEMENT)

@@ -5,7 +5,7 @@ interface Announcement {
 
 const getEnabledPrisons = () => {
   return new Set(
-    (process.env['FEATURE_NOMIS_CONTACT_OFF_PILOT_ENABLED_PRISONS'] || '')
+    (process.env['FEATURE_NOMIS_SCREENS_OFF_PRISONS'] || '')
       .split(',')
       .map(code => code.trim())
       .filter(Boolean),
