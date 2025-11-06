@@ -720,12 +720,20 @@ describe('listContactsController', () => {
       expect($('#flagsNextOfKin').attr('checked')).toStrictEqual('checked')
     })
 
-    it('should render the announcement banner for all the prisons', async () => {
+    it('should render the NOMIS off announcement banner for when a prison is in nomis off pilot list', async () => {
       // Given
       contactsService.filterPrisonerContacts.mockResolvedValue({
         content: [minimalContact],
         page: { totalElements: 1, totalPages: 1, size: 10, number: 0 },
       })
+      const featureEnabledPrisonId = 'WWI' // This is in the featureEnabledPrisons set
+
+      // Mock the prisoner search service to return a prisoner with a feature-enabled prison ID
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValueOnce({
+        ...prisoner,
+        prisonId: featureEnabledPrisonId,
+      })
+      process.env['FEATURE_NOMIS_SCREENS_OFF_PRISONS'] = 'KMI,GNI,SPI,LGI,DWI,HOI,WWI'
       // When
       const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/list`)
 
@@ -734,6 +742,28 @@ describe('listContactsController', () => {
       const banner = $('.moj-alert__heading')
       expect(banner.length).toBe(1)
       expect(banner.text()).toContain('Your prison has the new Contacts service in DPS.')
+      const bannerLink = $('.govuk-notification-banner__link')
+      expect(bannerLink.html()).toContain('managingcontacts@justice.gov.uk')
+    })
+
+    it('should render the announcement banner for all other prisons when they are not in nomis off pilot list', async () => {
+      // Given
+      contactsService.filterPrisonerContacts.mockResolvedValue({
+        content: [minimalContact],
+        page: { totalElements: 1, totalPages: 1, size: 10, number: 0 },
+      })
+      process.env['FEATURE_NOMIS_SCREENS_OFF_PRISONS'] = 'KMI,GNI,SPI,LGI,DWI,HOI,WWI'
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/list`)
+
+      // Then
+      const $ = cheerio.load(response.text)
+      const banner = $('.moj-alert__heading')
+      expect(banner.length).toBe(1)
+      expect(banner.text()).toContain('Your prison has the new Contacts service in DPS.')
+      const bannerLink = $('.govuk-notification-banner__link')
+      expect(bannerLink.html()).toContain('managingcontacts@justice.gov.uk')
     })
 
     it('should show no contacts at all with link to add a contact if no active results and no unfiltered contacts for users that can edit contacts', async () => {
