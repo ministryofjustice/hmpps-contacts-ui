@@ -114,7 +114,7 @@ jobs:
           path: integration_tests/videos
       - store_artifacts:
           path: integration_tests/screenshots
-      - codecov/upload
+      - codecov/upload #  add this back in when we have some coverage to upload
 
 workflows:
   version: 2
