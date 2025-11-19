@@ -102,7 +102,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.931.0",
+    "@aws-sdk/client-sqs": "^3.932.0",
     "@cypress/code-coverage": "^3.14.7",
     "@ministryofjustice/frontend": "^7.1.0",
     "@ministryofjustice/hmpps-auth-clients": "^1.0.0",
