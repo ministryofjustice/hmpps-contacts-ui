@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
-import { RestrictedEditingNameSchemaType } from '../../common/name/nameSchemas'
+import { FullNameSchemaType } from '../../common/name/nameSchemas'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import { ContactsService } from '../../../../services'
@@ -12,7 +12,7 @@ import { FLASH_KEY__SUCCESS_BANNER } from '../../../../middleware/setUpSuccessNo
 import { PatchContactRequest } from '../../../../@types/contactsApiClient'
 import Permission from '../../../../enumeration/permission'
 
-export default class ChangeTitleOrMiddleNamesController implements PageHandler {
+export default class ChangeNamesController implements PageHandler {
   constructor(
     private readonly referenceDataService: ReferenceDataService,
     private readonly contactService: ContactsService,
@@ -53,7 +53,7 @@ export default class ChangeTitleOrMiddleNamesController implements PageHandler {
       middleNames: res.locals?.formResponses?.['middleNames'] ?? contact.middleNames,
       navigation,
     }
-    res.render('pages/contacts/manage/contactDetails/changeTitleOrMiddleNames', viewModel)
+    res.render('pages/contacts/manage/contactDetails/changeContactNames', viewModel)
   }
 
   POST = async (
@@ -64,18 +64,22 @@ export default class ChangeTitleOrMiddleNamesController implements PageHandler {
         prisonerContactId: string
       },
       unknown,
-      RestrictedEditingNameSchemaType
+      FullNameSchemaType
     >,
     res: Response,
   ): Promise<void> => {
     const { user } = res.locals
     const { prisonerNumber, contactId, prisonerContactId } = req.params
-    const { title, middleNames } = req.body
+    const { title, firstName, middleNames, lastName } = req.body
     const request: PatchContactRequest = {
       // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       titleCode: title || null,
       // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
+      firstName: firstName || null,
+      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       middleNames: middleNames || null,
+      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
+      lastName: lastName || null,
     }
     await this.contactService
       .updateContactById(Number(contactId), request, user, req.id)

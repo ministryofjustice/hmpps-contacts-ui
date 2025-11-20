@@ -2,8 +2,8 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% set pageTitle = "Change the title or middle name for the contact - Edit contact details - DPS" %}
-{% set title = "Change the title or middle name for " + (contact | formatNameFirstNameFirst) %}
+{% set pageTitle = "Change the name for the contact - Edit contact details - DPS" %}
+{% set title = "Change the name for " + (contact | formatNameFirstNameFirst) %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
@@ -23,10 +23,14 @@
                     items: titleOptions | referenceCodesToSelect('Select title') | setSelected(titleCode)
                 }) }}
 
-              <div class="govuk-form-group">
-                <label class="govuk-label" for="firstName">First name</label>
-                <p class="govuk-!-width-one-third govuk-!-font-weight-bold" id="firstName">{{ firstName | capitaliseName }}</p>
-              </div>
+                 {{ govukInput({
+                    id: "firstName",
+                    name: "firstName",
+                    label: { text: "First name" },
+                    classes: 'govuk-!-width-one-third',
+                    errorMessage: validationErrors | findError('firstName'),
+                    value: firstName
+                 }) }}
 
                 {{ govukInput({
                     id: "middleNames",
@@ -37,10 +41,14 @@
                     value: middleNames
                 }) }}
 
-              <div class="govuk-form-group">
-                <label class="govuk-label" for="lastName">Last name</label>
-                <p class="govuk-!-width-one-third govuk-!-font-weight-bold" id="lastName">{{ lastName | capitaliseName }}</p>
-              </div>
+                {{ govukInput({
+                    id: "lastName",
+                    name: "lastName",
+                    label: { text: "Last name" },
+                    classes: 'govuk-!-width-one-third',
+                    errorMessage: validationErrors | findError('lastName'),
+                    value: lastName
+                }) }}
 
                 <div class="govuk-button-group">
                     {{ govukButton({
