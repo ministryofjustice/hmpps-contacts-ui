@@ -30,6 +30,7 @@ context('Select Gender', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
+    cy.task('stubGetContactHistory', { contactId, history: [] })
     const { prisonerNumber } = TestData.prisoner()
     cy.task('stubGetPrisonerRestrictions', {
       prisonerNumber,

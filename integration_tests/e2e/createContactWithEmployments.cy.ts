@@ -56,6 +56,7 @@ context('Create Contact With Addresses', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
+    cy.task('stubGetContactHistory', { contactId, history: [] })
     cy.task('stubOrganisationSearch')
     cy.task('stubGetOrganisation', {
       organisationId: 201,

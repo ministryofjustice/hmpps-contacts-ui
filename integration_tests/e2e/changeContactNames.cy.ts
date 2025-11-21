@@ -31,6 +31,7 @@ context('Change Contact Names', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
+    cy.task('stubGetContactHistory', { contactId, history: [] })
   })
 
   it('Can edit a contact with new title, first, middle and last names', () => {

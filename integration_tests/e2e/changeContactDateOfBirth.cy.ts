@@ -31,6 +31,7 @@ context('Change Contact Date Of Birth', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
+    cy.task('stubGetContactHistory', { contactId, history: [] })
   })
 
   it('Can edit a contact with an existing date of birth to another date of birth', () => {
