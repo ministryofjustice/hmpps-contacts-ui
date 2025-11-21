@@ -53,6 +53,7 @@ context('Create Contact With Phone Numbers', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
+    cy.task('stubGetContactHistory', { contactId, history: [] })
     const { prisonerNumber } = TestData.prisoner()
     cy.task('stubGetPrisonerRestrictions', {
       prisonerNumber,
