@@ -43,6 +43,7 @@ context('Edit Address', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
+    cy.task('stubGetContactHistory', { contactId, history: [] })
 
     const address = TestData.address({
       contactId,

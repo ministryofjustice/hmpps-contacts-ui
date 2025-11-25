@@ -64,6 +64,7 @@ context('Create new contact as authoriser who can set visit approval', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
+    cy.task('stubGetContactHistory', { contactId, history: [] })
     const { prisonerNumber } = TestData.prisoner()
     cy.task('stubGetPrisonerRestrictions', {
       prisonerNumber,

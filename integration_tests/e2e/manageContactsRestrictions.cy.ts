@@ -35,6 +35,7 @@ context('Manage contacts restrictions', () => {
       prisonerNumber,
       response: RestrictionsTestData.stubRestrictionsData(),
     })
+    cy.task('stubGetContactHistory', { contactId: contact.id, history: [] })
   })
   it(`should render restrictions tab on manage contact details`, () => {
     cy.task('stubGetPrisonerContactRestrictions', {

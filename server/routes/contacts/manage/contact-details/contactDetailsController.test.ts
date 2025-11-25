@@ -42,12 +42,14 @@ jest.mock('../../../../services/prisonerSearchService')
 jest.mock('../../../../services/contactsService')
 jest.mock('../../../../services/referenceDataService')
 jest.mock('../../../../services/restrictionsService')
+jest.mock('../../../../services/contactAuditHistoryService')
 
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const contactsService = MockedService.ContactsService()
 const referenceDataService = MockedService.ReferenceDataService()
 const restrictionsService = MockedService.RestrictionsService()
+const contactAuditHistoryService = MockedService.ContactAuditHistoryService()
 
 let app: Express
 const prisonerNumber = 'A1234BC'
@@ -62,6 +64,7 @@ beforeEach(() => {
       contactsService,
       referenceDataService,
       restrictionsService,
+      contactAuditHistoryService,
     },
     userSupplier: () => currentUser,
   })
@@ -106,6 +109,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       })
       expect(contactsService.getContact).toHaveBeenCalledWith(1, basicPrisonUser)
       expect(contactsService.getPrisonerContactRelationship).toHaveBeenCalledWith(99, basicPrisonUser)
+      expect(contactAuditHistoryService.getNameChangeHistory).toHaveBeenCalledWith('1', basicPrisonUser)
     })
 
     it('should render contact details page for living contact', async () => {
@@ -754,6 +758,116 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(TestData.contact())
       contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
+    })
+
+    describe('Name change history', () => {
+      it('should not render the name change history details component when there are no changes', async () => {
+        contactAuditHistoryService.getNameChangeHistory.mockResolvedValue([])
+
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+        const $ = cheerio.load(response.text)
+
+        // No history cards and wrapper when no changes
+        const detailsSummary = $('summary .govuk-details__summary-text:contains("Show previous names")')
+        expect(detailsSummary).toHaveLength(0)
+        expect($('[data-qa=name-change-history]')).toHaveLength(0)
+      })
+
+      it('should render latest name change card when there is a single name change', async () => {
+        contactAuditHistoryService.getNameChangeHistory.mockResolvedValue([
+          {
+            newFirstName: 'Alice',
+            newMiddleNames: 'Caroline',
+            newLastName: 'Smith',
+            previousFirstName: 'Alice',
+            previousMiddleNames: 'Becky',
+            previousLastName: 'Smith',
+            updatedBy: 'User One',
+            changedOn: '2024-08-02T11:00:00.000Z',
+          },
+        ])
+
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+        const $ = cheerio.load(response.text)
+
+        const historyWrapper = $('[data-qa=name-change-history]')
+        expect(historyWrapper).toHaveLength(1)
+        expect(historyWrapper.find('h2:contains("Latest name changes")')).toHaveLength(1)
+
+        // Summary list row assertions
+        const latestCard = $('div.summary-card-wider-key-column:contains("Latest name change")').first().parent()
+        expect(latestCard.find('dt:contains("Date of name change")').next().text().trim()).toStrictEqual(
+          '2 August 2024',
+        )
+        expect(latestCard.find('dt:contains("New name")').next().text().trim()).toStrictEqual('Alice Caroline Smith')
+        expect(latestCard.find('dt:contains("Previous name")').next().text().trim()).toStrictEqual('Alice Becky Smith')
+        expect(latestCard.find('dt:contains("Name updated by")').next().text().trim()).toStrictEqual('User One')
+      })
+
+      it('should render latest and previous name change cards and the warning text when feature start date set', async () => {
+        const originalFeatureStart = process.env['FEATURE_CHANGE_CONTACT_NAME_ENABLE_DATE']
+        process.env['FEATURE_CHANGE_CONTACT_NAME_ENABLE_DATE'] = '2024-07-01'
+        contactAuditHistoryService.getNameChangeHistory.mockResolvedValue([
+          {
+            newFirstName: 'Alice',
+            newMiddleNames: 'Caroline',
+            newLastName: 'Smith',
+            previousFirstName: 'Alice',
+            previousMiddleNames: 'Becky',
+            previousLastName: 'Smith',
+            updatedBy: 'User Two',
+            changedOn: '2024-08-05T09:00:00.000Z',
+          },
+          {
+            newFirstName: 'Alice',
+            newMiddleNames: 'Becky',
+            newLastName: 'Smith',
+            previousFirstName: 'Alice',
+            previousMiddleNames: '',
+            previousLastName: 'Jones',
+            updatedBy: 'User One',
+            changedOn: '2024-07-15T10:00:00.000Z',
+          },
+        ])
+
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+        const $ = cheerio.load(response.text)
+
+        const historyWrapper = $('[data-qa=name-change-history]')
+        expect(historyWrapper).toHaveLength(1)
+        // Warning text
+        const warning = historyWrapper.find('.govuk-warning-text__text')
+        expect(warning.text()).toContain('Names changed before 1 July 2024 will not be shown.')
+
+        const latestHistoryRows = $('[data-qa=latest-history-card] .govuk-summary-list__row')
+        const latestExpected: [string, string][] = [
+          ['Date of name change', '5 August 2024'],
+          ['New name', 'Alice Caroline Smith'],
+          ['Previous name', 'Alice Becky Smith'],
+          ['Name updated by', 'User Two'],
+        ]
+        latestExpected.forEach(([label, value], i) => {
+          const row = latestHistoryRows.eq(i)
+          expect(row.find('dt').text().trim()).toBe(label)
+          expect(row.find('dd').text().trim()).toBe(value)
+        })
+
+        // Previous change card assertions
+        const previousHistoryRows = $('[data-qa=previous-history-card-2] .govuk-summary-list__row')
+        const previousExpected: [string, string][] = [
+          ['Date of name change', '15 July 2024'],
+          ['New name', 'Alice Becky Smith'],
+          ['Previous name', 'Alice Jones'],
+          ['Name updated by', 'User One'],
+        ]
+        previousExpected.forEach(([label, value], i) => {
+          const row = previousHistoryRows.eq(i)
+          expect(row.find('dt').text().trim()).toBe(label)
+          expect(row.find('dd').text().trim()).toBe(value)
+        })
+
+        process.env['FEATURE_CHANGE_CONTACT_NAME_ENABLE_DATE'] = originalFeatureStart
+      })
     })
 
     describe('Personal details card', () => {
