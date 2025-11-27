@@ -1,5 +1,5 @@
 # Stage: base image
-FROM node:24-alpine AS base
+FROM node:24.11.0-alpine3.22 AS base
 
 ARG BUILD_NUMBER
 ARG GIT_REF
@@ -8,10 +8,13 @@ ARG GIT_BRANCH
 LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
 
 ENV TZ=Europe/London
-RUN ln -snf "/usr/share/zoneinfo/$TZ" /etc/localtime && echo "$TZ" > /etc/timezone
+# Install tzdata and set timezone for Alpine
+RUN apk add --no-cache tzdata && \
+    cp /usr/share/zoneinfo/$TZ /etc/localtime && echo "$TZ" > /etc/timezone
 
-RUN addgroup --gid 2000 --system appgroup && \
-        adduser --uid 2000 --system appuser --gid 2000
+# Create system group/user in Alpine
+RUN addgroup -S -g 2000 appgroup && \
+    adduser -S -D -u 2000 -G appgroup appuser
 
 WORKDIR /app
 
@@ -25,13 +28,11 @@ ENV BUILD_NUMBER=${BUILD_NUMBER}
 ENV GIT_REF=${GIT_REF}
 ENV GIT_BRANCH=${GIT_BRANCH}
 
-RUN apt-get update && \
-        apt-get upgrade -y && \
-        apt-get autoremove -y && \
-        rm -rf /var/lib/apt/lists/*
+# Use apk instead of apt-get on Alpine
+RUN apk update && apk upgrade --no-cache
 
 # Stage: build assets
-FROM base as build
+FROM base AS build
 
 ARG BUILD_NUMBER
 ARG GIT_REF
@@ -47,7 +48,7 @@ RUN --mount=type=secret,id=sentry SENTRY_AUTH_TOKEN=$(cat /run/secrets/sentry) n
 RUN npm prune --no-audit --omit=dev
 
 # Stage: copy production assets and dependencies
-FROM base
+FROM base AS final
 
 COPY --from=build --chown=appuser:appgroup \
         /app/package.json \
