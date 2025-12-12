@@ -21,5 +21,11 @@ generic-service:
     SENTRY_ENVIRONMENT: PRODUCTION
     AUDIT_ENABLED: 'false'
 
+  allowlist:
+    groups:
+      - internal
+      - prisons
+      - private_prisons
+
 generic-prometheus-alerts:
   alertSeverity: hmpps-contacts-ui-prod
