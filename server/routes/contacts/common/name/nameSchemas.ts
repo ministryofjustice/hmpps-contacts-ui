@@ -58,4 +58,25 @@ export const fullNameSchema = createSchema({
     .refine(val => val?.trim().length > 0, { message: LAST_NAME_REQUIRED_MESSAGE }),
 })
 
+export const restrictedEditingNameSchema = createSchema({
+  title: z
+    .string()
+    .optional()
+    .transform(val => (val?.trim()?.length ? val?.trim() : undefined))
+    .transform(val => val?.trim()),
+  firstName: z.string().optional(),
+  middleNames: z
+    .string(
+      makeErrorMap({
+        invalid_string: value => MIDDLE_NAME_INVALID_PREFIX + getUniqueInvalidChars(value?.toString()),
+      }),
+    )
+    .max(35, MIDDLE_NAME_TOO_LONG_ERROR_MSG)
+    .regex(NAME_REGEX)
+    .optional()
+    .transform(val => (val?.trim()?.length ? val?.trim() : undefined)),
+  lastName: z.string().optional(),
+})
+
 export type FullNameSchemaType = z.infer<typeof fullNameSchema>
+export type RestrictedEditingNameSchemaType = z.infer<typeof restrictedEditingNameSchema>
