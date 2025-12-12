@@ -103,6 +103,7 @@ import { deleteRelationshipSchema } from './relationship/delete-relationship/del
 import ManageContactDeleteDobController from './date-of-birth/delete/manageContactDeleteDobController'
 import ListPrisonerRestrictionsAlertsController from './list/listPrisonerRestrictionsAlertsController'
 import { PrisonerJourneyParams } from '../../../@types/journeys'
+import ContactAuditHistoryService from '../../../services/contactAuditHistoryService'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -114,6 +115,7 @@ const ManageContactsRoutes = (
   prisonerAddressService: PrisonerAddressService,
   organisationsService: OrganisationsService,
   permissionsService: PermissionsService,
+  contactAuditHistoryService: ContactAuditHistoryService,
 ) => {
   const router = Router({ mergeParams: true })
   const { get, post } = routerMethods(router, permissionsService, auditService)
@@ -204,7 +206,12 @@ const ManageContactsRoutes = (
   // View one contact
   get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId',
-    new ContactDetailsController(contactsService, restrictionsService, referenceDataService),
+    new ContactDetailsController(
+      contactsService,
+      restrictionsService,
+      referenceDataService,
+      contactAuditHistoryService,
+    ),
   )
 
   get(

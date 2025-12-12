@@ -4,6 +4,8 @@
 {% from "partials/contactDetails/relationshipToPrisonerCard.njk" import relationshipToPrisonerCard %}
 {% from "partials/contactDetails/identityDocumentationCard.njk" import identityDocumentationCard %}
 {% from "partials/contactDetails/additionalInformationCard.njk" import additionalInformationCard %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "partials/contactDetails/nameChangeHistoryCard.njk" import nameChangeHistory %}
 {% from "moj/components/alert/macro.njk" import mojAlert %}
 
 <div class="govuk-grid-row">
@@ -40,6 +42,21 @@
         showActions: false,
         showRecordDateOfDeath: false
       }) }}
+
+        {% set nameChangeHistoryHtml %}
+            {{ nameChangeHistory({
+                 nameChanges: contactNameChanges,
+                 featureStartDate: featureStartDate
+             }) }}
+        {% endset -%}
+
+        {% if contactNameChanges and (contactNameChanges | length) > 0 %}
+          {{ govukDetails({
+            summaryText: "Show previous names",
+            html: nameChangeHistoryHtml,
+            open: true
+          }) }}
+        {% endif %}
 
       {{ relationshipToPrisonerCard({
         contact: contact,
