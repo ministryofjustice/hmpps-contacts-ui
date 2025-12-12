@@ -1,11 +1,11 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import ManageContactDetailsPage from '../pages/manageContactDetails'
-import ChangeNamesPage from '../pages/changeNamesPage'
+import ChangeTitleOrMiddleNamesPage from '../pages/changeTitleOrMiddleNamesPage'
 import EditContactDetailsPage from '../pages/editContactDetailsPage'
 import { PatchContactResponse } from '../../server/@types/contactsApiClient'
 
-context('Change Contact Names', () => {
+context('Change Contact Title Or Middle Names', () => {
   const contactId = 654321
   const prisonerContactId = 987654
   const { prisonerNumber } = TestData.prisoner()
@@ -34,7 +34,7 @@ context('Change Contact Names', () => {
     cy.task('stubGetContactHistory', { contactId, history: [] })
   })
 
-  it('Can edit a contact with new title, first, middle and last names', () => {
+  it('Can edit a contact with new title and middle names', () => {
     const contact = TestData.contact({
       id: contactId,
       lastName: 'Last',
@@ -57,9 +57,7 @@ context('Change Contact Names', () => {
     const updated: PatchContactResponse = {
       ...contact,
       titleCode: 'DR',
-      firstName: 'First',
       middleNames: 'Middle Updated',
-      lastName: 'Last',
     }
     cy.task('stubPatchContactById', { contactId, response: updated })
 
@@ -71,14 +69,13 @@ context('Change Contact Names', () => {
       .verifyShowNameAs('First Last')
       .clickChangeNameLink()
 
-    Page.verifyOnPage(ChangeNamesPage, 'First Last') //
+    Page.verifyOnPage(ChangeTitleOrMiddleNamesPage, 'First Last') //
+      .hasLastName('Last')
       .hasFirstName('First')
       .hasMiddleNames('')
-      .hasLastName('Last')
       .hasTitle('')
-      .enterFirstNames('First updated')
+      .middleNamesHasFocus()
       .enterMiddleNames('Middle Updated')
-      .enterLastNames('Last updated')
       .selectTitle('DR')
       .clickContinue()
 
@@ -90,7 +87,10 @@ context('Change Contact Names', () => {
         method: 'PATCH',
         urlPath: `/contact/${contactId}`,
       },
-      { titleCode: 'DR', firstName: 'First updated', middleNames: 'Middle Updated', lastName: 'Last updated' },
+      {
+        titleCode: 'DR',
+        middleNames: 'Middle Updated',
+      },
     )
   })
 
@@ -129,11 +129,12 @@ context('Change Contact Names', () => {
       .verifyShowNameAs('First Middle Names Last')
       .clickChangeNameLink()
 
-    Page.verifyOnPage(ChangeNamesPage, 'First Middle Names Last') //
+    Page.verifyOnPage(ChangeTitleOrMiddleNamesPage, 'First Middle Names Last') //
       .hasLastName('Last')
       .hasFirstName('First')
       .hasMiddleNames('Middle Names')
       .hasTitle('MR')
+      .middleNamesHasFocus()
       .clearMiddleNames()
       .selectBlankTitle()
       .clickContinue()
@@ -148,9 +149,7 @@ context('Change Contact Names', () => {
       },
       {
         titleCode: null,
-        firstName: 'First',
         middleNames: null,
-        lastName: 'Last',
       },
     )
   })
@@ -190,7 +189,7 @@ context('Change Contact Names', () => {
       .verifyShowNameAs('First Middle Names Last')
       .clickChangeTitleLink()
 
-    Page.verifyOnPage(ChangeNamesPage, 'First Middle Names Last') //
+    Page.verifyOnPage(ChangeTitleOrMiddleNamesPage, 'First Middle Names Last') //
       .hasLastName('Last')
       .hasFirstName('First')
       .hasMiddleNames('Middle Names')
@@ -210,9 +209,7 @@ context('Change Contact Names', () => {
       },
       {
         titleCode: 'DR',
-        firstName: 'First',
         middleNames: null,
-        lastName: 'Last',
       },
     )
   })
@@ -245,228 +242,12 @@ context('Change Contact Names', () => {
       .verifyShowNameAs('First Middle Names Last')
       .clickChangeNameLink()
 
-    Page.verifyOnPage(ChangeNamesPage, 'First Middle Names Last') //
+    Page.verifyOnPage(ChangeTitleOrMiddleNamesPage, 'First Middle Names Last') //
       .enterMiddleNames(''.padEnd(36, 'X'))
       .clickContinue()
 
-    const enterNamePage = Page.verifyOnPage(ChangeNamesPage, 'First Middle Names Last')
+    const enterNamePage = Page.verifyOnPage(ChangeTitleOrMiddleNamesPage, 'First Middle Names Last')
     enterNamePage.hasFieldInError('middleNames', 'Contact’s middle names must be 35 characters or less')
-  })
-
-  it('First name length is validated', () => {
-    const contact = TestData.contact({
-      id: contactId,
-      lastName: 'Last',
-      firstName: 'First',
-      middleNames: 'Middle Names',
-      titleCode: 'MR',
-      titleDescription: 'Mr',
-      dateOfBirth: null,
-    })
-    cy.task('stubGetContactById', contact)
-    cy.task('stubGetContactNameById', contact)
-    cy.task('stubGetPrisonerContactRelationshipById', {
-      id: prisonerContactId,
-      response: TestData.prisonerContactRelationship({ prisonerContactId }),
-    })
-    cy.signIn({
-      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
-    })
-
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickEditContactDetailsLink()
-
-    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
-      .verifyShowTitleAs('Mr')
-      .verifyShowNameAs('First Middle Names Last')
-      .clickChangeNameLink()
-
-    Page.verifyOnPage(ChangeNamesPage, 'First Middle Names Last') //
-      .enterFirstNames(''.padEnd(36, 'X'))
-      .clickContinue()
-
-    const enterNamePage = Page.verifyOnPage(ChangeNamesPage, 'First Middle Names Last')
-    enterNamePage.hasFieldInError('firstName', 'Contact’s first name must be 35 characters or less')
-  })
-
-  it('First name invalid characters input is validated', () => {
-    const contact = TestData.contact({
-      id: contactId,
-      lastName: 'Last',
-      firstName: 'First',
-      middleNames: 'Middle Names',
-      titleCode: 'MR',
-      titleDescription: 'Mr',
-      dateOfBirth: null,
-    })
-    cy.task('stubGetContactById', contact)
-    cy.task('stubGetContactNameById', contact)
-    cy.task('stubGetPrisonerContactRelationshipById', {
-      id: prisonerContactId,
-      response: TestData.prisonerContactRelationship({ prisonerContactId }),
-    })
-    cy.signIn({
-      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
-    })
-
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickEditContactDetailsLink()
-
-    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
-      .verifyShowTitleAs('Mr')
-      .verifyShowNameAs('First Middle Names Last')
-      .clickChangeNameLink()
-
-    Page.verifyOnPage(ChangeNamesPage, 'First Middle Names Last') //
-      .enterFirstNames('First?')
-      .clickContinue()
-
-    const enterNamePage = Page.verifyOnPage(ChangeNamesPage, 'First Middle Names Last')
-    enterNamePage.hasFieldInError('firstName', 'Contact’s first name must not contain ?')
-  })
-
-  it('First name invalid number input is validated', () => {
-    const contact = TestData.contact({
-      id: contactId,
-      lastName: 'Last',
-      firstName: 'First',
-      middleNames: 'Middle Names',
-      titleCode: 'MR',
-      titleDescription: 'Mr',
-      dateOfBirth: null,
-    })
-    cy.task('stubGetContactById', contact)
-    cy.task('stubGetContactNameById', contact)
-    cy.task('stubGetPrisonerContactRelationshipById', {
-      id: prisonerContactId,
-      response: TestData.prisonerContactRelationship({ prisonerContactId }),
-    })
-    cy.signIn({
-      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
-    })
-
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickEditContactDetailsLink()
-
-    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
-      .verifyShowTitleAs('Mr')
-      .verifyShowNameAs('First Middle Names Last')
-      .clickChangeNameLink()
-
-    Page.verifyOnPage(ChangeNamesPage, 'First Middle Names Last') //
-      .enterFirstNames('First1')
-      .clickContinue()
-
-    const enterNamePage = Page.verifyOnPage(ChangeNamesPage, 'First Middle Names Last')
-    enterNamePage.hasFieldInError('firstName', 'Contact’s first name must not contain 1')
-  })
-
-  it('Last name length is validated', () => {
-    const contact = TestData.contact({
-      id: contactId,
-      lastName: 'Last',
-      firstName: 'First',
-      middleNames: 'Middle Names',
-      titleCode: 'MR',
-      titleDescription: 'Mr',
-      dateOfBirth: null,
-    })
-    cy.task('stubGetContactById', contact)
-    cy.task('stubGetContactNameById', contact)
-    cy.task('stubGetPrisonerContactRelationshipById', {
-      id: prisonerContactId,
-      response: TestData.prisonerContactRelationship({ prisonerContactId }),
-    })
-    cy.signIn({
-      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
-    })
-
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickEditContactDetailsLink()
-
-    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
-      .verifyShowTitleAs('Mr')
-      .verifyShowNameAs('First Middle Names Last')
-      .clickChangeNameLink()
-
-    Page.verifyOnPage(ChangeNamesPage, 'First Middle Names Last') //
-      .enterLastNames(''.padEnd(36, 'X'))
-      .clickContinue()
-
-    const enterNamePage = Page.verifyOnPage(ChangeNamesPage, 'First Middle Names Last')
-    enterNamePage.hasFieldInError('lastName', 'Contact’s last name must be 35 characters or less')
-  })
-
-  it('Last name invalid characters input is validated', () => {
-    const contact = TestData.contact({
-      id: contactId,
-      lastName: 'Last',
-      firstName: 'First',
-      middleNames: 'Middle Names',
-      titleCode: 'MR',
-      titleDescription: 'Mr',
-      dateOfBirth: null,
-    })
-    cy.task('stubGetContactById', contact)
-    cy.task('stubGetContactNameById', contact)
-    cy.task('stubGetPrisonerContactRelationshipById', {
-      id: prisonerContactId,
-      response: TestData.prisonerContactRelationship({ prisonerContactId }),
-    })
-    cy.signIn({
-      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
-    })
-
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickEditContactDetailsLink()
-
-    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
-      .verifyShowTitleAs('Mr')
-      .verifyShowNameAs('First Middle Names Last')
-      .clickChangeNameLink()
-
-    Page.verifyOnPage(ChangeNamesPage, 'First Middle Names Last') //
-      .enterLastNames('Last?')
-      .clickContinue()
-
-    const enterNamePage = Page.verifyOnPage(ChangeNamesPage, 'First Middle Names Last')
-    enterNamePage.hasFieldInError('lastName', 'Contact’s last name must not contain ?')
-  })
-
-  it('Last name invalid number input is validated', () => {
-    const contact = TestData.contact({
-      id: contactId,
-      lastName: 'Last',
-      firstName: 'First',
-      middleNames: 'Middle Names',
-      titleCode: 'MR',
-      titleDescription: 'Mr',
-      dateOfBirth: null,
-    })
-    cy.task('stubGetContactById', contact)
-    cy.task('stubGetContactNameById', contact)
-    cy.task('stubGetPrisonerContactRelationshipById', {
-      id: prisonerContactId,
-      response: TestData.prisonerContactRelationship({ prisonerContactId }),
-    })
-    cy.signIn({
-      startUrl: `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,
-    })
-
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .clickEditContactDetailsLink()
-
-    Page.verifyOnPage(EditContactDetailsPage, 'First Middle Names Last') //
-      .verifyShowTitleAs('Mr')
-      .verifyShowNameAs('First Middle Names Last')
-      .clickChangeNameLink()
-
-    Page.verifyOnPage(ChangeNamesPage, 'First Middle Names Last') //
-      .enterLastNames('Last1')
-      .clickContinue()
-
-    const enterNamePage = Page.verifyOnPage(ChangeNamesPage, 'First Middle Names Last')
-    enterNamePage.hasFieldInError('lastName', 'Contact’s last name must not contain 1')
   })
 
   it('Back link goes back to manage contact', () => {
@@ -496,7 +277,7 @@ context('Change Contact Names', () => {
       .verifyShowNameAs('First Middle Names Last')
       .clickChangeNameLink()
 
-    Page.verifyOnPage(ChangeNamesPage, 'First Middle Names Last') //
+    Page.verifyOnPage(ChangeTitleOrMiddleNamesPage, 'First Middle Names Last') //
       .backTo(EditContactDetailsPage, 'First Middle Names Last')
       .backTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
@@ -528,7 +309,7 @@ context('Change Contact Names', () => {
       .verifyShowNameAs('First Middle Names Last')
       .clickChangeNameLink()
 
-    Page.verifyOnPage(ChangeNamesPage, 'First Middle Names Last') //
+    Page.verifyOnPage(ChangeTitleOrMiddleNamesPage, 'First Middle Names Last') //
       .cancelTo(ManageContactDetailsPage, 'First Middle Names Last')
   })
 })

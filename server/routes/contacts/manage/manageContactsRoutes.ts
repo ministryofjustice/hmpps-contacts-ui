@@ -22,9 +22,9 @@ import ManageContactEditIdentityController from './identities/edit/manageContact
 import ManageContactDeleteIdentityController from './identities/delete/manageContactDeleteIdentityController'
 import ManageContactEnterDobController from './date-of-birth/update/manageContactEnterDobController'
 import ManageGenderController from './gender/contactGenderController'
-import ChangeNamesController from './name/changeNamesController'
+import ChangeTitleOrMiddleNamesController from './name/changeTitleOrMiddleNamesController'
 import ManageRelationshipCommentsController from './relationship/comments/manageRelationshipCommentsController'
-import { fullNameSchema } from '../common/name/nameSchemas'
+import { restrictedEditingNameSchema } from '../common/name/nameSchemas'
 import ManageContactAddEmailController from './email/add/manageContactAddEmailController'
 import ManageContactEditEmailController from './email/edit/manageContactEditEmailController'
 import { emailSchema, emailsSchema } from './email/emailSchemas'
@@ -305,9 +305,9 @@ const ManageContactsRoutes = (
   })
 
   standAloneRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/change-contact-names',
-    controller: new ChangeNamesController(referenceDataService, contactsService),
-    schema: fullNameSchema,
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/change-contact-title-or-middle-names',
+    controller: new ChangeTitleOrMiddleNamesController(referenceDataService, contactsService),
+    schema: restrictedEditingNameSchema,
   })
 
   standAloneRoute({
