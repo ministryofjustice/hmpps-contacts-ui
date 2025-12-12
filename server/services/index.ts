@@ -13,7 +13,6 @@ import TelemetryService from './telemetryService'
 import config from '../config'
 import logger from '../../logger'
 import AlertsService from './alertsService'
-import ContactAuditHistoryService from './contactAuditHistoryService'
 
 export const services = () => {
   const {
@@ -37,7 +36,6 @@ export const services = () => {
   const restrictionsService = new RestrictionsService(contactsApiClient, auditService)
   const prisonerAddressService = new PrisonerAddressService(prisonApiClient)
   const organisationsService = new OrganisationsService(organisationsApiClient)
-  const contactAuditHistoryService = new ContactAuditHistoryService(contactsApiClient)
   const permissionsService = PrisonPermissionsService.create({
     prisonerSearchConfig: config.apis.prisonerSearchApi,
     authenticationClient: new AuthenticationClient(config.apis.hmppsAuth, logger, contactsApiClient.tokenStore),
@@ -58,7 +56,6 @@ export const services = () => {
     organisationsService,
     telemetryService,
     permissionsService,
-    contactAuditHistoryService,
   }
 }
 

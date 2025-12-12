@@ -54,7 +54,6 @@ context('Create Contact With Identity documents', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
-    cy.task('stubGetContactHistory', { contactId, history: [] })
     const { prisonerNumber } = TestData.prisoner()
     cy.task('stubGetPrisonerRestrictions', {
       prisonerNumber,

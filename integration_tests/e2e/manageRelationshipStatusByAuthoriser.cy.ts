@@ -39,7 +39,6 @@ context('Manage contact update relationship status active with Authoriser role',
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
-    cy.task('stubGetContactHistory', { contactId, history: [] })
     const { prisonerNumber } = TestData.prisoner()
     cy.task('stubGetPrisonerRestrictions', {
       prisonerNumber,

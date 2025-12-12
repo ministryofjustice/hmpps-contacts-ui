@@ -85,7 +85,6 @@ context('Handle duplicate relationship when editing relationships', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
-    cy.task('stubGetContactHistory', { contactId, history: [] })
 
     const theRelationshipBeingEdited = TestData.prisonerContactRelationship({
       prisonerContactId,

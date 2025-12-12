@@ -61,7 +61,6 @@ context('Create a new contact and handle possible duplicates', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
-    cy.task('stubGetContactHistory', { contactId, history: [] })
     cy.signIn({ startUrl: `/prisoner/${prisonerNumber}/contacts/list` })
 
     Page.verifyOnPage(ListContactsPage, 'John Smith') //

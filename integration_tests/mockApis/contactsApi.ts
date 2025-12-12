@@ -20,7 +20,6 @@ import TestData from '../../server/routes/testutils/testData'
 import {
   ContactAddressDetails,
   ContactAddressPhoneDetails,
-  ContactAuditEntry,
   ContactCreationResult,
   ContactEmailDetails,
   ContactIdentityDetails,
@@ -926,19 +925,6 @@ export default {
         status: 200,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: params.response,
-      },
-    })
-  },
-  stubGetContactHistory: (params: { contactId: number; history: ContactAuditEntry[] }): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'GET',
-        urlPath: `/contact/${params.contactId}/history`,
-      },
-      response: {
-        status: 200,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: params.history,
       },
     })
   },

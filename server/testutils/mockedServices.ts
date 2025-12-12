@@ -7,7 +7,6 @@ import OrganisationsService from '../services/organisationsService'
 import TelemetryService from '../services/telemetryService'
 import AlertsService from '../services/alertsService'
 import RestrictionsTestData from '../routes/testutils/stubRestrictionsData'
-import ContactAuditHistoryService from '../services/contactAuditHistoryService'
 
 export const MockedService = {
   // @ts-expect-error passing null param into mock service
@@ -18,23 +17,6 @@ export const MockedService = {
   PrisonerSearchService: () => new PrisonerSearchService(null) as jest.Mocked<PrisonerSearchService>,
   // @ts-expect-error passing null param into mock service
   RestrictionsService: () => new RestrictionsService(null) as jest.Mocked<RestrictionsService>,
-  ContactAuditHistoryService: (): jest.Mocked<ContactAuditHistoryService> => {
-    // @ts-expect-error passing null param into mock service
-    const service = new ContactAuditHistoryService(null) as jest.Mocked<ContactAuditHistoryService>
-    service.getNameChangeHistory = jest.fn().mockResolvedValue([
-      {
-        newFirstName: 'Harry',
-        newMiddleNames: 'Middle',
-        newLastName: 'Eight',
-        previousFirstName: 'Harry',
-        previousMiddleNames: 'Middle',
-        previousLastName: 'Eight',
-        updatedBy: 'user1',
-        changedOn: '2025-11-19T12:09:56.700724',
-      },
-    ])
-    return service
-  },
 
   ContactsService: (): jest.Mocked<ContactsService> => {
     // @ts-expect-error passing null param into mock service

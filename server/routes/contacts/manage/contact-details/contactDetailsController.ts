@@ -11,14 +11,12 @@ import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import { getReferenceDataOrderDictionary } from '../../../../utils/sortPhoneNumbers'
 import { ContactDetails, PrisonerContactRelationshipDetails } from '../../../../@types/contactsApiClient'
 import Permission from '../../../../enumeration/permission'
-import ContactAuditHistoryService from '../../../../services/contactAuditHistoryService'
 
 export default class ContactDetailsController implements PageHandler {
   constructor(
     private readonly contactsService: ContactsService,
     private readonly restrictionsService: RestrictionsService,
     private readonly referenceDataService: ReferenceDataService,
-    private readonly contactAuditHistoryService: ContactAuditHistoryService,
   ) {}
 
   public PAGE_NAME = Page.CONTACT_DETAILS_PAGE
@@ -40,11 +38,6 @@ export default class ContactDetailsController implements PageHandler {
     const { linkedPrisonerPage } = req.query
     const { user } = res.locals
     const contact: ContactDetails = await this.contactsService.getContact(Number(contactId), user)
-    // ISO format date when name change history feature was launched
-    const featureStartDate = process.env['FEATURE_CHANGE_CONTACT_NAME_ENABLE_DATE']
-    // Fetch raw revision history (list of snapshots)
-    const contactNameChanges = await this.contactAuditHistoryService.getNameChangeHistory(contactId, user)
-
     const prisonerContactRelationship: PrisonerContactRelationshipDetails =
       await this.contactsService.getPrisonerContactRelationship(Number(prisonerContactId), user)
     const navigation: Navigation = { breadcrumbs: ['DPS_HOME', 'DPS_PROFILE', 'PRISONER_CONTACTS'] }
@@ -96,8 +89,6 @@ export default class ContactDetailsController implements PageHandler {
       navigation,
       linkedPrisoners: linkedPrisoners.content,
       linkedPrisonersCount,
-      featureStartDate,
-      contactNameChanges,
       phoneTypeOrderDictionary: getReferenceDataOrderDictionary(
         await this.referenceDataService.getReferenceData(ReferenceCodeType.PHONE_TYPE, user),
       ),

@@ -43,7 +43,6 @@ context('Change Relationship Type', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
-    cy.task('stubGetContactHistory', { contactId, history: [] })
   })
 
   it('Can change from social to official', () => {
