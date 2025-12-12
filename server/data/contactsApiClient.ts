@@ -5,6 +5,7 @@ import {
   AddContactRelationshipRequest,
   ContactAddressDetails,
   ContactAddressPhoneDetails,
+  AdvancedContactSearchRequest,
   ContactAuditEntry,
   ContactCreationResult,
   ContactDetails,
@@ -44,6 +45,8 @@ import {
   UpdateIdentityRequest,
   UpdatePhoneRequest,
   UpdatePrisonerContactRestrictionRequest,
+  PagedModelAdvancedContactSearchResultItem,
+  ContactIdPartialSearchRequest,
 } from '../@types/contactsApiClient'
 
 export type Pagination = {
@@ -154,8 +157,91 @@ export default class ContactsApiClient extends RestClient {
           middleNames: contactSearchRequest.middleNames,
           dateOfBirth: contactSearchRequest.dateOfBirth,
           includeAnyExistingRelationshipsToPrisoner: contactSearchRequest.includeAnyExistingRelationshipsToPrisoner,
+          ...paginationParameters,
+        },
+      },
+      user,
+    )
+  }
+
+  async advancedSearchContact(
+    contactSearchRequest: AdvancedContactSearchRequest,
+    user: Express.User,
+    pagination?: Pagination,
+  ): Promise<PagedModelAdvancedContactSearchResultItem> {
+    const paginationParameters = pagination ?? { page: 0, size: config.apis.contactsApi.pageSize || 10 }
+    if (paginationParameters.sort === 'lastName,asc') {
+      paginationParameters.sort = ['lastName,asc', 'firstName,asc', 'middleNames,asc', 'id,asc']
+    } else if (paginationParameters.sort === 'lastName,desc') {
+      paginationParameters.sort = ['lastName,desc', 'firstName,desc', 'middleNames,desc', 'id,desc']
+    } else if (paginationParameters.sort === 'dateOfBirth,asc') {
+      paginationParameters.sort = [
+        paginationParameters.sort,
+        'lastName,asc',
+        'firstName,asc',
+        'middleNames,asc',
+        'id,asc',
+      ]
+    } else if (paginationParameters.sort === 'dateOfBirth,desc') {
+      paginationParameters.sort = [
+        paginationParameters.sort,
+        'lastName,desc',
+        'firstName,desc',
+        'middleNames,desc',
+        'id,desc',
+      ]
+    }
+    return this.get(
+      {
+        path: `/contact/advanced-search`,
+        query: {
+          lastName: contactSearchRequest.lastName,
+          firstName: contactSearchRequest.firstName,
+          middleNames: contactSearchRequest.middleNames,
+          dateOfBirth: contactSearchRequest.dateOfBirth,
           soundsLike: contactSearchRequest.soundsLike,
-          contactId: contactSearchRequest.contactId,
+          includeAnyExistingRelationshipsToPrisoner: contactSearchRequest.includeAnyExistingRelationshipsToPrisoner,
+          ...paginationParameters,
+        },
+      },
+      user,
+    )
+  }
+
+  async partialContactIdSearch(
+    request: ContactIdPartialSearchRequest,
+    user: Express.User,
+    pagination?: Pagination,
+  ): Promise<PagedModelAdvancedContactSearchResultItem> {
+    const paginationParameters = pagination ?? { page: 0, size: config.apis.contactsApi.pageSize || 10 }
+    if (paginationParameters.sort === 'lastName,asc') {
+      paginationParameters.sort = ['lastName,asc', 'firstName,asc', 'middleNames,asc', 'id,asc']
+    } else if (paginationParameters.sort === 'lastName,desc') {
+      paginationParameters.sort = ['lastName,desc', 'firstName,desc', 'middleNames,desc', 'id,desc']
+    } else if (paginationParameters.sort === 'dateOfBirth,asc') {
+      paginationParameters.sort = [
+        paginationParameters.sort,
+        'lastName,asc',
+        'firstName,asc',
+        'middleNames,asc',
+        'id,asc',
+      ]
+    } else if (paginationParameters.sort === 'dateOfBirth,desc') {
+      paginationParameters.sort = [
+        paginationParameters.sort,
+        'lastName,desc',
+        'firstName,desc',
+        'middleNames,desc',
+        'id,desc',
+      ]
+    }
+    return this.get(
+      {
+        path: `/contact/search/partial-contact-id`,
+        query: {
+          contactId: request.contactId,
+          dateOfBirth: request.dateOfBirth,
+          includeAnyExistingRelationshipsToPrisoner: request.includeAnyExistingRelationshipsToPrisoner,
           ...paginationParameters,
         },
       },

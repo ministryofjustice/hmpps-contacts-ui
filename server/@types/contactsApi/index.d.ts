@@ -1059,6 +1059,30 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/prisoner-contact/restrictions': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Get the prisoner contact restrictions for one or more prisoner contacts where matches are found
+     * @description Get the restrictions that apply for this relationship.
+     *
+     *           This includes prisoner-contact restrictions for this specific relationship only and any global (estate-wide) restrictions for the contact.
+     *
+     *           If the prisoner and contact have multiple relationships, the prisoner-contact restrictions for the other relationships will not be returned.
+     */
+    post: operations['getPrisonerContactRestrictionsByPrisonerContactIds']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/migrate/prisoner-restrictions': {
     parameters: {
       query?: never
@@ -1719,9 +1743,49 @@ export interface paths {
     }
     /**
      * Search contacts
-     * @description Search all contacts by their last name or first name or middle name or date of birth or contact id
+     * @description Search all contacts by their last name or first name or middle name or date of birth
      */
     get: operations['searchContacts']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/contact/search/partial-contact-id': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Search contacts by partial contact id
+     * @description Search contacts by a partial match on contact id (contact id as string). Returns contacts whose contactId string contains the provided value.
+     */
+    get: operations['searchContactsByIdPartialMatch']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/contact/advanced-search': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Sound like or partial Search contacts
+     * @description Search all contacts by their last name or first name or middle name or date of birth with improved matching algorithms, such as sounds-like or partial search for contacts.
+     */
+    get: operations['advancedSearchContacts']
     put?: never
     post?: never
     delete?: never
@@ -5105,6 +5169,136 @@ export interface components {
        */
       comments?: string
     }
+    /** @description The ids of the prisoner contacts to search for */
+    PrisonerContactIdsRequest: {
+      prisonerContactIds: number[]
+    }
+    /** @description Global restriction related to a contact, a.k.a estate-wide restrictions */
+    GlobalContactRestriction: {
+      /**
+       * Format: int64
+       * @description Unique identifier for the contact restriction
+       * @example 1
+       */
+      contactRestrictionId: number
+      /**
+       * Format: int64
+       * @description Unique identifier for the contact
+       * @example 123
+       */
+      contactId: number
+      /**
+       * @description The coded type of restriction that applies to this contact.
+       *         This is a coded value from the group RESTRICTION in reference codes.
+       *         Example values include ACC, BAN, CHILD, CLOSED, RESTRICTED, DIHCON, NONCON.
+       * @example BAN
+       */
+      restrictionType: string
+      /**
+       * @description The description of restrictionType
+       * @example Banned
+       */
+      restrictionTypeDescription: string
+      /**
+       * Format: date
+       * @description The date the restriction starts
+       * @example 2024-01-01
+       */
+      startDate?: string
+      /**
+       * Format: date
+       * @description The date the restriction expires
+       * @example 2024-01-01
+       */
+      expiryDate?: string
+      /**
+       * @description Any comments for the restriction
+       * @example N/A
+       */
+      comments?: string
+      /**
+       * @description The display name of either the person who created the restriction or the last person to update it if it has been modified.
+       * @example John Smith
+       */
+      enteredByDisplayName: string
+    }
+    /** @description Restriction related to a prisoner and contacts relationship */
+    PrisonerContactRestriction: {
+      /**
+       * Format: int64
+       * @description The unique identifier for the prisoner contact restriction
+       * @example 123456
+       */
+      prisonerContactRestrictionId: number
+      /**
+       * Format: int64
+       * @description The unique identifier for the prisoner contact
+       * @example 123456
+       */
+      prisonerContactId: number
+      /**
+       * Format: int64
+       * @description The unique identifier for the contact
+       * @example 123456
+       */
+      contactId: number
+      /**
+       * @description The prisoner number
+       * @example A1234BC
+       */
+      prisonerNumber: string
+      /**
+       * @description The coded type of restriction that applies to this relationship.
+       *         This is a coded value from the group RESTRICTION in reference codes.
+       *         Example values include ACC, BAN, CHILD, CLOSED, RESTRICTED, DIHCON, NONCON.
+       * @example BAN
+       */
+      restrictionType: string
+      /**
+       * @description The description of restriction type
+       * @example Banned
+       */
+      restrictionTypeDescription: string
+      /**
+       * Format: date
+       * @description The date the restriction starts
+       * @example 2024-01-01
+       */
+      startDate?: string
+      /**
+       * Format: date
+       * @description The date the restriction expires
+       * @example 2024-01-01
+       */
+      expiryDate?: string
+      /**
+       * @description Any comments for the restriction
+       * @example N/A
+       */
+      comments?: string
+      /**
+       * @description The display name of either the person who created the restriction or the last person to update it if it has been modified.
+       * @example John Smith
+       */
+      enteredByDisplayName: string
+    }
+    PrisonerContactRestrictions: {
+      /**
+       * Format: int64
+       * @description The unique identifier for the prisoner contact
+       * @example 123456
+       */
+      prisonerContactId: number
+      /** @description Relationship specific restrictions for the prisoner contact */
+      prisonerContactRestrictions: components['schemas']['PrisonerContactRestriction'][]
+      /** @description Global (estate-wide) restrictions for the prisoner contact */
+      globalContactRestrictions: components['schemas']['GlobalContactRestriction'][]
+    }
+    /** @description Restrictions related to specific relationships between prisoners and contacts */
+    PrisonerContactsRestrictionsResponse: {
+      /** @description The list of prisoner contact restrictions for each prisoner contact where found */
+      prisonerContactRestrictions: components['schemas']['PrisonerContactRestrictions'][]
+    }
     /** @description Request to migrate a prisoner's restrictions */
     MigratePrisonerRestrictionsRequest: {
       /**
@@ -7986,6 +8180,59 @@ export interface components {
     }
     PagedModelContactSearchResultItem: {
       content?: components['schemas']['ContactSearchResultItem'][]
+      page?: components['schemas']['PageMetadata']
+    }
+    /** @description The details of a contact as an individual */
+    AdvancedContactSearchResultItem: {
+      /**
+       * Format: int64
+       * @description The id of the contact
+       * @example 123456
+       */
+      id: number
+      /**
+       * @description The last name of the contact
+       * @example Doe
+       */
+      lastName: string
+      /**
+       * @description The first name of the contact
+       * @example John
+       */
+      firstName: string
+      /**
+       * @description The middle name of the contact, if any
+       * @example William
+       */
+      middleNames?: string
+      /**
+       * Format: date
+       * @description The date of birth of the contact, if known
+       * @example 1980-01-01
+       */
+      dateOfBirth?: string
+      /**
+       * Format: date
+       * @description The date the contact deceased, if known
+       * @example 1980-01-01
+       */
+      deceasedDate?: string
+      /**
+       * @description The id of the user who created the contact
+       * @example JD000001
+       */
+      createdBy?: string
+      /**
+       * Format: date-time
+       * @description The timestamp of when the contact was created
+       * @example 2024-01-01T00:00:00Z
+       */
+      createdTime?: string
+      /** @description A list of existing relationships to a prisoner if a check against the prisoner number was requested. Empty if there are no existing relationships or null if it was not requested. */
+      existingRelationships?: components['schemas']['ExistingRelationshipToPrisoner'][]
+    }
+    PagedModelAdvancedContactSearchResultItem: {
+      content?: components['schemas']['AdvancedContactSearchResultItem'][]
       page?: components['schemas']['PageMetadata']
     }
   }
@@ -12155,6 +12402,48 @@ export interface operations {
       }
     }
   }
+  getPrisonerContactRestrictionsByPrisonerContactIds: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PrisonerContactIdsRequest']
+      }
+    }
+    responses: {
+      /** @description The prisoner contact restrictions for the specified prisoner contact(s) */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PrisonerContactsRestrictionsResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   migratePrisonerRestrictions: {
     parameters: {
       query?: never
@@ -14380,14 +14669,161 @@ export interface operations {
          * @example Simon
          */
         middleNames?: string
-        contactId?: string
         /**
-         * @description The contact id
-         * @example 123456
+         * @description Date of Birth of the contact in dd/MM/yyyy format
+         * @example 30/12/2010
          */
         dateOfBirth?: string
         /**
-         * @description If true, use sounds-like search (trigram similarity)
+         * @description If a prisoner number is specified, check all matching contacts for any existing relationships to the prisoner. All matching contacts are returned regardless of whether they have an existing relationship to the prisoner or not.
+         * @example A1234BC
+         */
+        includeAnyExistingRelationshipsToPrisoner?: string
+        /** @description Zero-based page index (0..N) */
+        page?: number
+        /** @description The size of the page to be returned */
+        size?: number
+        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+        sort?: string[]
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found contacts */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PagedModelContactSearchResultItem']
+        }
+      }
+      /** @description Invalid request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  searchContactsByIdPartialMatch: {
+    parameters: {
+      query: {
+        /**
+         * @description The contact id (partial match)
+         * @example 123
+         */
+        contactId: string
+        /**
+         * @description Date of Birth of the contact in dd/MM/yyyy format
+         * @example 30/12/2010
+         */
+        dateOfBirth?: string
+        /**
+         * @description If a prisoner number is specified, check all matching contacts for any existing relationships to the prisoner.
+         * @example A1234BC
+         */
+        includeAnyExistingRelationshipsToPrisoner?: string
+        /** @description Zero-based page index (0..N) */
+        page?: number
+        /** @description The size of the page to be returned */
+        size?: number
+        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+        sort?: string[]
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found contacts */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PagedModelAdvancedContactSearchResultItem']
+        }
+      }
+      /** @description Invalid request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  advancedSearchContacts: {
+    parameters: {
+      query: {
+        /**
+         * @description Last name of the contact
+         * @example Jones
+         */
+        lastName: string
+        /**
+         * @description First name of the contact
+         * @example Elton
+         */
+        firstName?: string
+        /**
+         * @description Middle names of the contact
+         * @example Simon
+         */
+        middleNames?: string
+        /**
+         * @description Date of Birth of the contact in dd/MM/yyyy format
+         * @example 30/12/2010
+         */
+        dateOfBirth?: string
+        /**
+         * @description If true, use sounds-like search (trigram similarity) for name fields. If false, use partial match.
          * @example false
          */
         soundsLike?: boolean
@@ -14415,7 +14851,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PagedModelContactSearchResultItem']
+          'application/json': components['schemas']['PagedModelAdvancedContactSearchResultItem']
         }
       }
       /** @description Invalid request */
