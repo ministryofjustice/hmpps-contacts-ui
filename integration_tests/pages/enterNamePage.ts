@@ -5,8 +5,18 @@ export default class EnterNamePage extends Page {
     super('What’s the name of the contact you want to link to')
   }
 
+  hasLastName(lastName: string): EnterNamePage {
+    this.lastNameTextBox().should('have.value', lastName)
+    return this
+  }
+
   enterLastName(value: string): EnterNamePage {
     this.lastNameTextBox().clear().type(value, { delay: 0 })
+    return this
+  }
+
+  hasFirstName(firstName: string): EnterNamePage {
+    this.firstNameTextBox().should('have.value', firstName)
     return this
   }
 
@@ -15,8 +25,23 @@ export default class EnterNamePage extends Page {
     return this
   }
 
+  hasMiddleNames(middleNames: string): EnterNamePage {
+    this.middleNamesTextBox().should('have.value', middleNames)
+    return this
+  }
+
   enterMiddleNames(value: string): EnterNamePage {
     this.middleNamesTextBox().clear().type(value, { delay: 0 })
+    return this
+  }
+
+  clearMiddleNames(): EnterNamePage {
+    this.middleNamesTextBox().clear()
+    return this
+  }
+
+  hasTitle(value: string): EnterNamePage {
+    this.titleSelect().should('have.value', value)
     return this
   }
 
