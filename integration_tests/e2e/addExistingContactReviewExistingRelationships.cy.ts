@@ -99,7 +99,7 @@ context('Add existing contact when search reveals some existing relationships', 
       ],
     })
 
-    cy.task('stubContactSearch', {
+    cy.task('stubContactAdvancedSearch', {
       results: {
         page: {
           totalPages: 1,
