@@ -5,7 +5,6 @@ import {
   AddContactRelationshipRequest,
   ContactAddressDetails,
   ContactAddressPhoneDetails,
-  ContactAuditEntry,
   ContactCreationResult,
   ContactDetails,
   ContactEmailDetails,
@@ -165,10 +164,6 @@ export default class ContactsApiClient extends RestClient {
 
   async getContact(contactId: number, user: Express.User): Promise<ContactDetails> {
     return this.get<ContactDetails>({ path: `/contact/${contactId}` }, user)
-  }
-
-  async getContactHistory(contactId: number, user: Express.User): Promise<ContactAuditEntry[]> {
-    return this.get<ContactAuditEntry[]>({ path: `/contact/${contactId}/history` }, user)
   }
 
   async getContactName(contactId: number, user: Express.User): Promise<ContactNameDetails> {

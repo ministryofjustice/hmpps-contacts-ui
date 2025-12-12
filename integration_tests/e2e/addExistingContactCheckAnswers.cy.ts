@@ -43,7 +43,6 @@ context('Add existing contact check answers including authoriser fields', () => 
     cy.task('stubAddContactRelationship', { contactId, createdPrisonerContactId: 654321 })
     cy.task('stubGetGlobalRestrictions', [globalRestriction])
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
-    cy.task('stubGetContactHistory', { contactId, history: [] })
     cy.task('stubContactSearch', {
       results: {
         page: {

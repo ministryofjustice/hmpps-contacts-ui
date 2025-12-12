@@ -168,5 +168,6 @@ export default {
   },
   feature: {
     relationshipApprovedByEnabled: get('FEATURE_RELATIONSHIP_APPROVED_BY_ENABLED', false) === 'true',
+    featureContactNomisOffPilotEnabledPrisons: get('FEATURE_TEMPORARY_BLOCKING_LOCATIONS', false) === 'true',
   },
 }

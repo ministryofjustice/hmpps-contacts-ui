@@ -73,7 +73,6 @@ context('Add existing contact when search reveals some existing relationships', 
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
-    cy.task('stubGetContactHistory', { contactId, history: [] })
     cy.task('stubAddContactRelationship', { contactId, createdPrisonerContactId: prisonerContactId })
     cy.task('stubGetPrisonerRestrictions', {
       prisonerNumber,
