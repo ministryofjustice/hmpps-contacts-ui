@@ -26,6 +26,7 @@ context('Select Language and interpretation requirements', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
+    cy.task('stubGetContactHistory', { contactId, history: [] })
     cy.task('stubLanguagesReferenceData')
     cy.task('stubTitlesReferenceData')
     const { prisonerNumber } = TestData.prisoner()

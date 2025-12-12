@@ -57,26 +57,24 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/change-contact-title-or-middle-names', () => {
+describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/change-contact-names', () => {
   it('should render update name page with correct navigation and labeling', async () => {
     // Given
     contactsService.getContactName.mockResolvedValue(contact)
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-title-or-middle-names`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-names`,
     )
 
     // Then
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('title').text()).toStrictEqual(
-      'Change the title or middle name for the contact - Edit contact details - DPS',
-    )
+    expect($('title').text()).toStrictEqual('Change the name for the contact - Edit contact details - DPS')
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit contact details')
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Change the title or middle name for First Middle Names Last',
+      'Change the name for First Middle Names Last',
     )
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/99/relationship/42',
@@ -93,7 +91,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-title-or-middle-names`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-names`,
     )
 
     // Then
@@ -112,7 +110,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-title-or-middle-names`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-names`,
     )
 
     // Then
@@ -144,40 +142,16 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-title-or-middle-names`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-names`,
     )
 
     // Then
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
+    expect($('#firstName').val()).toStrictEqual('first')
     expect($('#middleNames').val()).toStrictEqual('middle updated')
+    expect($('#lastName').val()).toStrictEqual('last')
     expect($('#title').val()).toStrictEqual('DR')
-  })
-
-  it('should render contact names with first and last capitalised', async () => {
-    // Given
-    contactsService.getContactName.mockResolvedValue(
-      TestData.contact({
-        id: contact.id,
-        firstName: 'first',
-        lastName: 'last',
-        middleNames: 'middle',
-        titleCode: 'MR',
-      }),
-    )
-
-    // When
-    const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-title-or-middle-names`,
-    )
-
-    // Then
-    expect(response.status).toEqual(200)
-    const $ = cheerio.load(response.text)
-    expect($('#firstName').text()).toStrictEqual('First')
-    expect($('#middleNames').val()).toStrictEqual('middle')
-    expect($('#lastName').text()).toStrictEqual('Last')
-    expect($('#title').val()).toStrictEqual('MR')
   })
 
   it('should render contact names if optional values missing', async () => {
@@ -189,15 +163,15 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
 
     // When
     const response = await request(app).get(
-      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-title-or-middle-names`,
+      `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-names`,
     )
 
     // Then
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
-    expect($('#firstName').text()).toStrictEqual('First')
+    expect($('#firstName').val()).toStrictEqual('first')
     expect($('#middleNames').val()).toBeUndefined()
-    expect($('#lastName').text()).toStrictEqual('Last')
+    expect($('#lastName').val()).toStrictEqual('last')
     expect($('#title').val()).toStrictEqual('')
   })
 
@@ -212,13 +186,13 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // When
     await request(app)
       .get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-title-or-middle-names`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-names`,
       )
       .expect(403)
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/change-contact-title-or-middle-names', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/change-contact-names', () => {
   it('should pass to success page if there are no validation errors with success message including updated name', async () => {
     const patchResponse: Partial<PatchContactResponse> = {
       firstName: 'first',
@@ -230,16 +204,18 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
 
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-title-or-middle-names`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-names`,
       )
       .type('form')
-      .send({ middleNames: 'mid', title: 'DR' })
+      .send({ firstName: 'first', middleNames: 'mid', lastName: 'last', title: 'DR' })
       .expect(302)
       .expect('Location', '/prisoner/A1234BC/contacts/manage/99/relationship/42')
 
     const expectedRequest: PatchContactRequest = {
       titleCode: 'DR',
+      firstName: 'first',
       middleNames: 'mid',
+      lastName: 'last',
     }
 
     expect(contactsService.updateContactById).toHaveBeenCalledWith(
@@ -257,14 +233,14 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   it('should return to enter page with details kept if there are validation errors', async () => {
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-title-or-middle-names`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-names`,
       )
       .type('form')
-      .send({ middleNames: ''.padEnd(36, 'X') })
+      .send({ firstName: 'first', middleNames: ''.padEnd(36, 'X'), lastName: 'last', title: 'DR' })
       .expect(302)
       .expect(
         'Location',
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-title-or-middle-names#`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-names#`,
       )
   })
 
@@ -281,10 +257,10 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
 
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-title-or-middle-names`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/change-contact-names`,
       )
       .type('form')
-      .send({ middleNames: 'mid', title: 'DR' })
+      .send({ firstName: 'first', middleNames: 'mid', lastName: 'last', title: 'DR' })
       .expect(403)
   })
 })

@@ -42,6 +42,7 @@ context('Change Relationship To Prisoner', () => {
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
+    cy.task('stubGetContactHistory', { contactId, history: [] })
   })
 
   it('Can select a new social relationship', () => {

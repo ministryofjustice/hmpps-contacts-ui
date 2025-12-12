@@ -78,6 +78,7 @@ context('Add existing contact should handle duplicate error from server', () => 
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
+    cy.task('stubGetContactHistory', { contactId, history: [] })
     cy.task('stubContactSearch', {
       results: {
         page: {

@@ -130,15 +130,15 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         personalInformationCard,
         'Title',
         'Mr',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/change-contact-title-or-middle-names#title',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/change-contact-names#title',
         'Change the contact’s title (Personal information)',
       )
       expectSummaryListItem(
         personalInformationCard,
         'Name',
         'First Middle Names Last',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/change-contact-title-or-middle-names#middleNames',
-        'Change middle name (Personal information)',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/change-contact-names',
+        'Change (Personal information)',
       )
       expectSummaryListItem(
         personalInformationCard,
@@ -201,15 +201,15 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/edit-c
         personalInformationCard,
         'Title',
         'Not provided',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/change-contact-title-or-middle-names#title',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/change-contact-names#title',
         'Change the contact’s title (Personal information)',
       )
       expectSummaryListItem(
         personalInformationCard,
         'Name',
         'First Last',
-        '/prisoner/A1234BC/contacts/manage/22/relationship/99/change-contact-title-or-middle-names#middleNames',
-        'Add middle name (Personal information)',
+        '/prisoner/A1234BC/contacts/manage/22/relationship/99/change-contact-names',
+        'Change (Personal information)',
       )
       expectSummaryListItem(
         personalInformationCard,

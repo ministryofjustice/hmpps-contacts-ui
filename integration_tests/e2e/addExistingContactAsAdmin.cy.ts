@@ -62,6 +62,7 @@ context('Add existing contact as admin user so cannot set visit approval', () =>
       },
     })
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
+    cy.task('stubGetContactHistory', { contactId, history: [] })
     cy.task('stubAddContactRelationship', { contactId, createdPrisonerContactId: prisonerContactId })
     cy.task('stubContactSearch', {
       results: {

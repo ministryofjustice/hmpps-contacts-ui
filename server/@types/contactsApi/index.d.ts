@@ -47,18 +47,14 @@ export interface paths {
     }
     /**
      * Returns the number of children for a prisoner by prisonerNumber
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to get the number of children for one prisoner.
-     *
      */
     get: operations['syncGetNumberOfChildrenByPrisonerNumber']
     /**
      * Create or Updates the number of children for a prisoner
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to update a prisoner's number of children.
-     *
      */
     put: operations['syncUpdateNumberOfChildren']
     post?: never
@@ -77,18 +73,14 @@ export interface paths {
     }
     /**
      * Returns the domestic status for a prisoner by prisonerNumber
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to get the domestic status for one prisoner.
-     *
      */
     get: operations['syncGetDomesticStatusByPrisonerNumber']
     /**
      * Create or Updates the domestic status for a prisoner
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to update a prisoner's domestic status.
-     *
      */
     put: operations['syncUpdateDomesticStatus']
     post?: never
@@ -107,27 +99,21 @@ export interface paths {
     }
     /**
      * Returns the data for a prisoner restriction by id
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to get the details for one prisoner restriction.
-     *
      */
     get: operations['syncGetPrisonerRestrictionById']
     /**
      * Updates an existing prisoner restriction by internal ID
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to update a prisoner restriction.
-     *
      */
     put: operations['syncUpdatePrisonerRestriction']
     post?: never
     /**
      * Deletes one prisoner restriction by internal ID
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to delete a prisoner restriction.
-     *
      */
     delete: operations['syncDeletePrisonerRestrictionById']
     options?: never
@@ -144,27 +130,21 @@ export interface paths {
     }
     /**
      * Returns the data for a prisoner contact by prisonerContactId
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to get the details for one prisoner contact.
-     *
      */
     get: operations['syncGetPrisonerContactById']
     /**
      * Updates a prisoner contact with new or extra detail
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to update a prisoner contact.
-     *
      */
     put: operations['syncUpdatePrisonerContact']
     post?: never
     /**
      * Deletes one prisoner contact by internal ID
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to delete a prisoner contact.
-     *
      */
     delete: operations['syncDeletePrisonerContactById']
     options?: never
@@ -181,27 +161,21 @@ export interface paths {
     }
     /**
      * Returns the data for a prisoner contact restriction by id
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to get the details for one prisoner contact restriction.
-     *
      */
     get: operations['syncGetPrisonerContactRestrictionById']
     /**
      * Updates a prisoner contact restriction with new or extra detail
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to update a prisoner contact restriction.
-     *
      */
     put: operations['syncUpdatePrisonerContactRestriction']
     post?: never
     /**
      * Deletes one prisoner contact restriction by internal ID
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to delete a prisoner contact restriction.
-     *
      */
     delete: operations['syncDeletePrisonerContactRestrictionById']
     options?: never
@@ -246,27 +220,21 @@ export interface paths {
     }
     /**
      * Returns the data for a contact by contactId
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to get the details for one contact.
-     *
      */
     get: operations['syncGetContactById']
     /**
      * Updates a contact with new or extra detail
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to update a contact.
-     *
      */
     put: operations['syncUpdateContact']
     post?: never
     /**
      * Deletes one contact by internal ID
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to delete a contact.
-     *
      */
     delete: operations['syncDeleteContactById']
     options?: never
@@ -283,27 +251,21 @@ export interface paths {
     }
     /**
      * Returns the data for a contact restriction by contactRestrictionId
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to get the details for one contact restriction.
-     *
      */
     get: operations['syncGetContactRestrictionById']
     /**
      * Updates a contact restriction with new or extra detail
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to update a contact restriction.
-     *
      */
     put: operations['syncUpdateContactRestriction']
     post?: never
     /**
      * Deletes one contact restriction by internal ID
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to delete a contact restriction.
-     *
      */
     delete: operations['syncDeleteContactRestrictionById']
     options?: never
@@ -320,27 +282,21 @@ export interface paths {
     }
     /**
      * Returns the data for a contact phone by contactPhoneId
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to get the details for one contact phone.
-     *
      */
     get: operations['syncGetContactPhoneById']
     /**
      * Updates a phone number for a contact
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to update a contact's phone number.
-     *
      */
     put: operations['syncUpdateContactPhone']
     post?: never
     /**
      * Deletes one contact phone by internal ID
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to delete a contact phone.
-     *
      */
     delete: operations['syncDeleteContactPhoneById']
     options?: never
@@ -357,27 +313,21 @@ export interface paths {
     }
     /**
      * Returns the data for a contact identity by contactIdentityId
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to get the details for one contact identity.
-     *
      */
     get: operations['syncGetContactIdentityById']
     /**
      * Updates a contact identity with new or extra detail
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to update a contact identity.
-     *
      */
     put: operations['syncUpdateContactIdentity']
     post?: never
     /**
      * Deletes one contact identity by internal ID
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to delete a contact identity.
-     *
      */
     delete: operations['syncDeleteContactIdentityById']
     options?: never
@@ -394,27 +344,21 @@ export interface paths {
     }
     /**
      * Returns the data for a contact email by contactEmailId
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to get the details for one contact email.
-     *
      */
     get: operations['syncGetContactEmailById']
     /**
      * Updates a contact email with new or extra detail
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to update a contact email.
-     *
      */
     put: operations['syncUpdateContactEmail']
     post?: never
     /**
      * Deletes one contact email by internal ID
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to delete a contact email.
-     *
      */
     delete: operations['syncDeleteContactEmailById']
     options?: never
@@ -431,27 +375,21 @@ export interface paths {
     }
     /**
      * Returns the data for a contact address by contactAddressId
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to get the details for one contact address.
-     *
      */
     get: operations['syncGetContactAddressById']
     /**
      * Updates a contact address with new or extra detail
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to update a contact address.
-     *
      */
     put: operations['syncUpdateContactAddress']
     post?: never
     /**
      * Deletes a contact address by internal ID
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to delete a contact address.
-     *
      */
     delete: operations['syncDeleteContactAddressById']
     options?: never
@@ -468,27 +406,21 @@ export interface paths {
     }
     /**
      * Returns the data for an address-soecific phone number by contactAddressPhoneId
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to get the details for one address-specific phone number.
-     *
      */
     get: operations['syncGetContactPhoneById_1']
     /**
      * Updates an address-specific phone number
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to update an address-specific phone number for a contact.
-     *
      */
     put: operations['syncUpdateContactAddressPhone']
     post?: never
     /**
      * Deletes an addres-specific phone number by internal ID
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Delete an address-specific phone number by internal ID.
-     *
      */
     delete: operations['syncDeleteContactAddressPhoneById']
     options?: never
@@ -562,10 +494,8 @@ export interface paths {
     get?: never
     /**
      * Handle the details of a prisoner when merging prisoner records
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to merge a prisoner's records.
-     *
      */
     put: operations['merge']
     post?: never
@@ -778,10 +708,8 @@ export interface paths {
     put?: never
     /**
      * Creates a new prisoner restriction
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to create a prisoner restriction.
-     *
      */
     post: operations['syncCreatePrisonerRestriction']
     delete?: never
@@ -801,10 +729,8 @@ export interface paths {
     put?: never
     /**
      * Creates a new prisoner contact
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to create a prisoner contact.
-     *
      */
     post: operations['syncCreatePrisonerContact']
     delete?: never
@@ -824,10 +750,8 @@ export interface paths {
     put?: never
     /**
      * Creates a new prisoner contact restriction
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to create a prisoner contact restriction.
-     *
      */
     post: operations['syncCreatePrisonerContactRestriction']
     delete?: never
@@ -867,10 +791,8 @@ export interface paths {
     put?: never
     /**
      * Creates a new contact
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to create a contact and associate it with a contact.
-     *
      */
     post: operations['syncCreateContact']
     delete?: never
@@ -890,10 +812,8 @@ export interface paths {
     put?: never
     /**
      * Creates a new contact restriction
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to create a contact restriction and associate it with a contact.
-     *
      */
     post: operations['syncCreateContactRestriction']
     delete?: never
@@ -913,10 +833,8 @@ export interface paths {
     put?: never
     /**
      * Creates a new contact phone
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to create a contact phone and associate it with a contact.
-     *
      */
     post: operations['syncCreateContactPhone']
     delete?: never
@@ -936,10 +854,8 @@ export interface paths {
     put?: never
     /**
      * Creates a new contact identity
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to create a contact identity and associate it with a contact.
-     *
      */
     post: operations['syncCreateContactIdentity']
     delete?: never
@@ -959,10 +875,8 @@ export interface paths {
     put?: never
     /**
      * Creates a new contact email
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to create a contact email and associate it with a contact.
-     *
      */
     post: operations['syncCreateContactEmail']
     delete?: never
@@ -982,10 +896,8 @@ export interface paths {
     put?: never
     /**
      * Creates a new contact address
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to create a contact address and associate it with a contact.
-     *
      */
     post: operations['syncCreateContactAddress']
     delete?: never
@@ -1005,10 +917,8 @@ export interface paths {
     put?: never
     /**
      * Creates a new address-specific phone number
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to create an address-specific phone number.
-     *
      */
     post: operations['syncCreateContactAddressPhone']
     delete?: never
@@ -1068,11 +978,9 @@ export interface paths {
     put?: never
     /**
      * Reset a prisoner's restrictions to match what exists in NOMIS
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.
      *           Used to reset a prisoner's restrictions to match what exists in NOMIS.
      *           This is used for scenarios like booking moves, new bookings, and reinstated bookings.
-     *
      */
     post: operations['resetPrisonerRestrictions']
     delete?: never
@@ -1092,11 +1000,9 @@ export interface paths {
     put?: never
     /**
      * Merge prisoner restrictions from one prisoner to another, deleting all from the removed prisoner and resetting the list for the retained prisoner.
-     * @description
-     *           Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.\n' +
+     * @description Requires role: PERSONAL_RELATIONSHIPS_MIGRATION.\n' +
      *           'Used to merge a prisoner's restrictions records with another prisoner's restrictions.\n' +
      *           'Deletes all restrictions from the removed prisoner and resets the retained prisoner's restrictions to those in the request.'
-     *
      */
     post: operations['mergePrisonerRestrictions']
     delete?: never
@@ -1134,13 +1040,11 @@ export interface paths {
     }
     /**
      * Get the prisoner contact restrictions
-     * @description
-     *           Get the restrictions that apply for this relationship.
+     * @description Get the restrictions that apply for this relationship.
      *
      *           This includes prisoner-contact restrictions for this specific relationship only and any global (estate-wide) restrictions for the contact.
      *
      *           If the prisoner and contact have multiple relationships, the prisoner-contact restrictions for the other relationships will not be returned.
-     *
      */
     get: operations['getPrisonerContactRestrictionsByPrisonerContactId']
     put?: never
@@ -1284,11 +1188,9 @@ export interface paths {
     }
     /**
      * Get a contacts global restrictions
-     * @description
-     *           Get a contacts global restrictions only. Global restrictions apply to all of a contacts relationships and are known as estate-wide restrictions in NOMIS.
+     * @description Get a contacts global restrictions only. Global restrictions apply to all of a contacts relationships and are known as estate-wide restrictions in NOMIS.
      *
      *           Additional restrictions between the contact and specific prisoners may also apply.
-     *
      */
     get: operations['getContactGlobalRestrictions']
     put?: never
@@ -1661,7 +1563,6 @@ export interface paths {
      * Get all relationships between a specific prisoner and contact
      * @description Prisoners can have multiple relationships defined with a single contact which is a security risk and highly discouraged.
      *           |This API should be used to help dissuade users from creating multiple relationships between a single prisoner and contact wherever possible.
-     *
      */
     get: operations['getAllSummariesForPrisonerAndContact']
     put?: never
@@ -1789,6 +1690,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/contact/{contactId}/history': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get contact change history
+     * @description Gets the full change history for a contact by id. Returns Envers snapshot per revision with metadata.
+     */
+    get: operations['getContactHistory']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/contact/search': {
     parameters: {
       query?: never
@@ -1798,7 +1719,7 @@ export interface paths {
     }
     /**
      * Search contacts
-     * @description Search all contacts by their last name or first name or middle name or date of birth
+     * @description Search all contacts by their last name or first name or middle name or date of birth or contact id
      */
     get: operations['searchContacts']
     put?: never
@@ -2049,11 +1970,9 @@ export interface components {
        */
       prisonerNumber: string
       /**
-       * @description
-       *           Coded value indicating either a social or official contact (mandatory).
+       * @description Coded value indicating either a social or official contact (mandatory).
        *           This is a coded value from the group code CONTACT_TYPE in reference data.
        *           Known values are (S) Social or (O) official.
-       *
        * @example S
        */
       contactType: string
@@ -2135,11 +2054,9 @@ export interface components {
        */
       prisonerNumber: string
       /**
-       * @description
-       *           Coded value indicating either a social or official contact (mandatory).
+       * @description Coded value indicating either a social or official contact (mandatory).
        *           This is a coded value (from the group code CONTACT_TYPE in reference data).
        *           Known values are (S) Social or (O) official.
-       *
        * @example S
        */
       contactType: string
@@ -2274,11 +2191,9 @@ export interface components {
        */
       prisonerNumber: string
       /**
-       * @description
-       *         The coded type of restriction that applies to this relationship.
+       * @description The coded type of restriction that applies to this relationship.
        *         This is a coded value from the group RESTRICTION in reference codes.
        *         Example values include ACC, BAN, CHILD, CLOSED, RESTRICTED, DIHCON, NONCON.
-       *
        * @example NONCON
        */
       restrictionType?: string
@@ -2401,14 +2316,12 @@ export interface components {
        */
       updatedTime?: string
     }
-    /** @description Request to update a new contact  */
+    /** @description Request to update a new contact */
     SyncUpdateContactRequest: {
       /**
-       * @description
-       *         The title code for the contact.
+       * @description The title code for the contact.
        *         This is a coded value (from the group code TITLE in reference data).
        *         Known values are MR, MRS, MISS, DR, MS, REV, SIR, BR, SR.
-       *
        * @example MR
        */
       title?: string
@@ -2455,11 +2368,9 @@ export interface components {
        */
       deceasedDate?: string
       /**
-       * @description
-       *         The gender code for the contact.
+       * @description The gender code for the contact.
        *         This is a coded value (from the group code GENDER in reference data).
        *         Known values are (M) Male, (F) Female, (NK) Not Known, (NS) Not Specified.
-       *
        * @example M
        */
       gender?: string
@@ -2500,11 +2411,9 @@ export interface components {
        */
       id: number
       /**
-       * @description
-       *         The title code for the contact.
+       * @description The title code for the contact.
        *         This is a coded value (from the group code TITLE in reference data).
        *         Known values are MR, MRS, MISS, DR, MS, REV, SIR, BR, SR.
-       *
        * @example MR
        */
       title?: string
@@ -2551,11 +2460,9 @@ export interface components {
        */
       deceasedDate?: string
       /**
-       * @description
-       *         The gender code for the contact.
+       * @description The gender code for the contact.
        *         This is a coded value (from the group code GENDER in reference data).
        *         Known values are (M) Male, (F) Female, (NK) Not Known, (NS) Not Specified.
-       *
        * @example M
        */
       gender?: string
@@ -2598,7 +2505,7 @@ export interface components {
       updatedTime?: string
       staff?: boolean
     }
-    /** @description Request to update a contact restriction  */
+    /** @description Request to update a contact restriction */
     SyncUpdateContactRestrictionRequest: {
       /**
        * Format: int64
@@ -2786,7 +2693,7 @@ export interface components {
        */
       updatedTime?: string
     }
-    /** @description Request to update a new contact identity  */
+    /** @description Request to update a new contact identity */
     SyncUpdateContactIdentityRequest: {
       /**
        * Format: int64
@@ -2949,11 +2856,9 @@ export interface components {
        */
       contactId: number
       /**
-       * @description
-       *         The type of address.
+       * @description The type of address.
        *         This is a coded value (from the group code ADDRESS_TYPE in reference data).
        *         The known values are HOME, WORK or BUS (business address).
-       *
        * @example HOME
        */
       addressType?: string
@@ -3061,11 +2966,9 @@ export interface components {
        */
       contactId: number
       /**
-       * @description
-       *         The type of address.
+       * @description The type of address.
        *         This is a coded value (from the group code ADDRESS_TYPE in reference data).
        *         The known values are HOME, WORK or BUS (business address).
-       *
        * @example HOME
        */
       addressType?: string
@@ -3335,11 +3238,9 @@ export interface components {
     /** @description Request to update an existing new restriction between a prisoner and a contact */
     UpdatePrisonerContactRestrictionRequest: {
       /**
-       * @description
-       *         The coded type of restriction that applies to this relationship.
+       * @description The coded type of restriction that applies to this relationship.
        *         This is a coded value from the group RESTRICTION in reference codes.
        *         Example values include ACC, BAN, CHILD, CLOSED, RESTRICTED, DIHCON, NONCON.
-       *
        * @example BAN
        */
       restrictionType: string
@@ -3387,11 +3288,9 @@ export interface components {
        */
       prisonerNumber: string
       /**
-       * @description
-       *         The coded type of restriction that applies to this relationship.
+       * @description The coded type of restriction that applies to this relationship.
        *         This is a coded value from the group RESTRICTION in reference codes.
        *         Example values include ACC, BAN, CHILD, CLOSED, RESTRICTED, DIHCON, NONCON.
-       *
        * @example BAN
        */
       restrictionType: string
@@ -3453,11 +3352,9 @@ export interface components {
     /** @description Request to update an existing global restriction on a contact, a.k.a an estate-wide restriction */
     UpdateContactRestrictionRequest: {
       /**
-       * @description
-       *         The coded type of restriction that applies to this contact.
+       * @description The coded type of restriction that applies to this contact.
        *         This is a coded value from the group RESTRICTION in reference codes.
        *         Example values include ACC, BAN, CHILD, CLOSED, RESTRICTED, DIHCON, NONCON.
-       *
        * @example BAN
        */
       restrictionType: string
@@ -3494,11 +3391,9 @@ export interface components {
        */
       contactId: number
       /**
-       * @description
-       *         The coded type of restriction that applies to this contact.
+       * @description The coded type of restriction that applies to this contact.
        *         This is a coded value from the group RESTRICTION in reference codes.
        *         Example values include ACC, BAN, CHILD, CLOSED, RESTRICTED, DIHCON, NONCON.
-       *
        * @example BAN
        */
       restrictionType: string
@@ -3836,11 +3731,9 @@ export interface components {
     /** @description Request to update a contact address */
     UpdateContactAddressRequest: {
       /**
-       * @description
-       *         The type of address.
+       * @description The type of address.
        *         This is a coded value (from the group code ADDRESS_TYPE in reference data).
        *         The known values are HOME, WORK or BUS (business address).
-       *
        * @example HOME
        */
       addressType?: string
@@ -3939,11 +3832,9 @@ export interface components {
       /** @description The IDs of the contact's address phone numbers */
       phoneNumberIds: number[]
       /**
-       * @description
-       *           The type of address (optional).
+       * @description The type of address (optional).
        *           This is a coded value (from the group code ADDRESS_TYPE in reference data).
        *           The known values are HOME, WORK or BUS (business address).
-       *
        * @example HOME
        */
       addressType?: string
@@ -4209,11 +4100,9 @@ export interface components {
        */
       prisonerNumber: string
       /**
-       * @description
-       *           Coded value indicating either a social or official contact (mandatory).
+       * @description Coded value indicating either a social or official contact (mandatory).
        *           This is a coded value (from the group code CONTACT_TYPE in reference data).
        *           Known values are (S) Social or (O) official.
-       *
        * @example S
        */
       contactType: string
@@ -4394,11 +4283,9 @@ export interface components {
        */
       personId: number
       /**
-       * @description
-       *           The title code for the contact.
+       * @description The title code for the contact.
        *           This is a coded value (from the group code TITLE in reference data).
        *           Known values are MR, MRS, MISS, DR, MS, REV, SIR, BR, SR.
-       *
        * @example MR
        */
       title?: string
@@ -4447,11 +4334,9 @@ export interface components {
        */
       deceasedDate?: string
       /**
-       * @description
-       *         The gender code for the contact.
+       * @description The gender code for the contact.
        *         This is a coded value (from the group code GENDER in reference data).
        *         Known values are (M) Male, (F) Female, (NK) Not Known, (NS) Not Specified.
-       *
        * @example M
        */
       gender?: string
@@ -4483,7 +4368,7 @@ export interface components {
       createdTime: string
       staff?: boolean
     }
-    /** @description Request to create a new contact restriction  */
+    /** @description Request to create a new contact restriction */
     SyncCreateContactRestrictionRequest: {
       /**
        * Format: int64
@@ -4560,7 +4445,7 @@ export interface components {
        */
       createdTime: string
     }
-    /** @description Request to create a new contact identity  */
+    /** @description Request to create a new contact identity */
     SyncCreateContactIdentityRequest: {
       /**
        * Format: int64
@@ -4629,11 +4514,9 @@ export interface components {
        */
       contactId: number
       /**
-       * @description
-       *           The type of address.
+       * @description The type of address.
        *           This is a coded value (from the group code ADDRESS_TYPE in reference data).
        *           The known values are HOME, WORK or BUS (business address).
-       *
        * @example HOME
        */
       addressType?: string
@@ -4794,11 +4677,9 @@ export interface components {
        */
       contactId: number
       /**
-       * @description
-       *           Coded value indicating either a social or official contact (mandatory).
+       * @description Coded value indicating either a social or official contact (mandatory).
        *           This is a coded value (from the group code CONTACT_TYPE in reference data).
        *           Known values are (S) Social or (O) official.
-       *
        * @example S
        */
       contactType: components['schemas']['CodedValue']
@@ -5145,11 +5026,9 @@ export interface components {
        */
       prisonerNumber: string
       /**
-       * @description
-       *           Coded value indicating either a social or official contact (mandatory).
+       * @description Coded value indicating either a social or official contact (mandatory).
        *           This is a coded value from the group code CONTACT_TYPE in reference data.
        *           Known values are (S) Social or (O) official.
-       *
        * @example S
        */
       relationshipTypeCode: string
@@ -5202,11 +5081,9 @@ export interface components {
     /** @description Request to create a new restriction between a prisoner and a contact */
     CreatePrisonerContactRestrictionRequest: {
       /**
-       * @description
-       *         The coded type of restriction that applies to this relationship.
+       * @description The coded type of restriction that applies to this relationship.
        *         This is a coded value from the group RESTRICTION in reference codes.
        *         Example values include ACC, BAN, CHILD, CLOSED, RESTRICTED, DIHCON, NONCON.
-       *
        * @example BAN
        */
       restrictionType: string
@@ -5814,11 +5691,9 @@ export interface components {
        */
       id: number
       /**
-       * @description
-       *         Coded value indicating either a social or official contact (mandatory).
+       * @description Coded value indicating either a social or official contact (mandatory).
        *         This is a coded value (from the group code CONTACT_TYPE in reference data).
        *         Known values are (S) Social or (O) official.
-       *
        * @example S
        */
       contactType: components['schemas']['CodedValue']
@@ -5986,11 +5861,9 @@ export interface components {
     }
     Address: {
       /**
-       * @description
-       *           The type of address.
+       * @description The type of address.
        *           This is a coded value (from the group code ADDRESS_TYPE in reference data).
        *           The known values are HOME, WORK or BUS (business address).
-       *
        * @example HOME
        */
       addressType?: string
@@ -6077,11 +5950,9 @@ export interface components {
     /** @description Request to create a new contact */
     CreateContactRequest: {
       /**
-       * @description
-       *           The title code for the contact.
+       * @description The title code for the contact.
        *           This is a coded value (from the group code TITLE in reference data).
        *           Known values are MR, MRS, MISS, DR, MS, REV, SIR, BR, SR.
-       *
        * @example MR
        */
       titleCode?: string
@@ -6112,10 +5983,8 @@ export interface components {
        */
       isStaff: boolean
       /**
-       * @description
-       *           The primary language of the contact.
+       * @description The primary language of the contact.
        *           This is a coded value (from the group code LANGUAGE in reference data).
-       *
        * @example ENG
        */
       languageCode?: string
@@ -6125,18 +5994,14 @@ export interface components {
        */
       interpreterRequired: boolean
       /**
-       * @description
-       *           The domestic status of the contact.
+       * @description The domestic status of the contact.
        *           This is a coded value (from the group code DOMESTIC_STS in reference data).
-       *
        * @example S
        */
       domesticStatusCode?: string
       /**
-       * @description
-       *           The domestic status of the contact.
+       * @description The domestic status of the contact.
        *           This is a coded value (from the group code GENDER in reference data).
-       *
        * @example M
        * @example F
        */
@@ -6221,11 +6086,9 @@ export interface components {
        */
       contactId: number
       /**
-       * @description
-       *           The type of address (optional).
+       * @description The type of address (optional).
        *           This is a coded value (from the group code ADDRESS_TYPE in reference data).
        *           The known values are HOME, WORK or BUS (business address).
-       *
        * @example HOME
        */
       addressType?: string
@@ -6378,11 +6241,9 @@ export interface components {
        */
       id: number
       /**
-       * @description
-       *           The title code for the contact.
+       * @description The title code for the contact.
        *           This is a coded value (from the group code TITLE in reference data).
        *           Known values are MR, MRS, MISS, DR, MS, REV, SIR, BR, SR.
-       *
        * @example MR
        */
       titleCode?: string
@@ -6486,11 +6347,9 @@ export interface components {
     /** @description Request to create a new global restriction on a contact, a.k.a an estate-wide restriction */
     CreateContactRestrictionRequest: {
       /**
-       * @description
-       *         The coded type of restriction that applies to this contact.
+       * @description The coded type of restriction that applies to this contact.
        *         This is a coded value from the group RESTRICTION in reference codes.
        *         Example values include ACC, BAN, CHILD, CLOSED, RESTRICTED, DIHCON, NONCON.
-       *
        * @example BAN
        */
       restrictionType: string
@@ -6585,11 +6444,9 @@ export interface components {
     /** @description Request to create a new contact address */
     CreateContactAddressRequest: {
       /**
-       * @description
-       *           The type of address.
+       * @description The type of address.
        *           This is a coded value (from the group code ADDRESS_TYPE in reference data).
        *           The known values are HOME, WORK or BUS (business address).
-       *
        * @example HOME
        */
       addressType?: string
@@ -6735,7 +6592,7 @@ export interface components {
        */
       comments?: string
     }
-    /** @description Request to patch a new contact. firstName and lastName are not updatable so are intentionally missing from this request. */
+    /** @description Request to patch a contact. */
     PatchContactRequest: {
       /**
        * @description Whether the contact is a staff member
@@ -6773,11 +6630,9 @@ export interface components {
        */
       middleNames?: string
       /**
-       * @description
-       *         The optional gender code for the contact.
+       * @description The optional gender code for the contact.
        *         This is a coded value (from the group code GENDER in reference data).
        *         Known values are (M) Male, (F) Female, (NK) Not Known, (NS) Not Specified.
-       *
        * @example M
        */
       genderCode?: string
@@ -6786,6 +6641,16 @@ export interface components {
        * @example 1980-01-01
        */
       deceasedDate?: string
+      /**
+       * @description The first name of the contact
+       * @example John
+       */
+      firstName?: string
+      /**
+       * @description The last name of the contact
+       * @example Doe
+       */
+      lastName?: string
     }
     /** @description The details of a updated contact as an individual */
     PatchContactResponse: {
@@ -6796,11 +6661,9 @@ export interface components {
        */
       id: number
       /**
-       * @description
-       *         The title code for the contact.
+       * @description The title code for the contact.
        *         This is a coded value (from the group code TITLE in reference data).
        *         Known values are MR, MRS, MISS, DR, MS, REV, SIR, BR, SR.
-       *
        * @example MR
        */
       titleCode?: string
@@ -6837,11 +6700,9 @@ export interface components {
        */
       deceasedDate?: string
       /**
-       * @description
-       *         The gender code for the contact.
+       * @description The gender code for the contact.
        *         This is a coded value (from the group code GENDER in reference data).
        *         Known values are (M) Male, (F) Female, (NK) Not Known, (NS) Not Specified.
-       *
        * @example M
        */
       genderCode?: string
@@ -6912,15 +6773,14 @@ export interface components {
     }
     JsonNullableString: {
       present?: boolean
+      undefined?: boolean
     }
     /** @description Request to patch a contact address */
     PatchContactAddressRequest: {
       /**
-       * @description
-       *         The type of address.
+       * @description The type of address.
        *         This is a coded value (from the group code ADDRESS_TYPE in reference data).
        *         The known values are HOME, WORK or BUS (business address).
-       *
        * @example HOME
        */
       addressType?: components['schemas']['JsonNullableString']
@@ -7462,10 +7322,8 @@ export interface components {
        */
       prisonerNumber: string
       /**
-       * @description
-       *           The title code for the contact.
+       * @description The title code for the contact.
        *           This is a coded value (from the group code TITLE in reference data).
-       *
        * @example MR
        */
       titleCode?: string
@@ -7502,11 +7360,9 @@ export interface components {
        */
       deceasedDate?: string
       /**
-       * @description
-       *           Coded value indicating either a social or official contact (mandatory).
+       * @description Coded value indicating either a social or official contact (mandatory).
        *           This is a coded value from the group code CONTACT_TYPE in reference data.
        *           Known values are (S) Social or (O) official.
-       *
        * @example S
        */
       relationshipTypeCode: string
@@ -7694,11 +7550,9 @@ export interface components {
        */
       prisonerNumber: string
       /**
-       * @description
-       *         The coded type of restriction that applies to this contact.
+       * @description The coded type of restriction that applies to this contact.
        *         This is a coded value from the group RESTRICTION in reference codes.
        *         Example values include ACC, BAN, CHILD, CLOSED, RESTRICTED, DIHCON, NONCON.
-       *
        * @example BAN
        */
       restrictionType: string
@@ -7792,11 +7646,9 @@ export interface components {
     }
     ContactNameDetails: {
       /**
-       * @description
-       *           The title code for the contact.
+       * @description The title code for the contact.
        *           This is a coded value (from the group code TITLE in reference data).
        *           Known values are MR, MRS, MISS, DR, MS, REV, SIR, BR, SR.
-       *
        * @example MR
        */
       titleCode?: string
@@ -7860,11 +7712,9 @@ export interface components {
        */
       prisonName?: string
       /**
-       * @description
-       *           Coded value indicating either a social or official contact (mandatory).
+       * @description Coded value indicating either a social or official contact (mandatory).
        *           This is a coded value from the group code CONTACT_TYPE in reference data.
        *           Known values are (S) Social or (O) official.
-       *
        * @example S
        */
       relationshipTypeCode: string
@@ -7892,6 +7742,81 @@ export interface components {
     PagedModelLinkedPrisonerDetails: {
       content?: components['schemas']['LinkedPrisonerDetails'][]
       page?: components['schemas']['PageMetadata']
+    }
+    /** @description An audit history entry for a contact */
+    ContactAuditEntry: {
+      /**
+       * Format: int64
+       * @description Revision id
+       * @example 101
+       */
+      revisionId: number
+      /**
+       * @description Revision type
+       * @example ADD
+       * @enum {string}
+       */
+      revisionType: 'ADD' | 'MOD' | 'DEL'
+      /**
+       * Format: date-time
+       * @description Revision timestamp
+       */
+      revisionTimestamp: string
+      /**
+       * @description User who performed the change
+       * @example read_write_user
+       */
+      username?: string
+      /**
+       * Format: int64
+       * @description The id of the contact
+       * @example 123456
+       */
+      id: number
+      /** @description Title code */
+      titleCode?: string
+      /** @description Last name */
+      lastName: string
+      /** @description First name */
+      firstName: string
+      /** @description Middle names */
+      middleNames?: string
+      /**
+       * Format: date
+       * @description Date of birth
+       */
+      dateOfBirth?: string
+      /**
+       * Format: date
+       * @description Deceased date
+       */
+      deceasedDate?: string
+      /** @description Staff flag */
+      isStaff: boolean
+      /** @description Remitter flag */
+      isRemitter: boolean
+      /** @description Gender code */
+      genderCode?: string
+      /** @description Domestic status code */
+      domesticStatusCode?: string
+      /** @description Language code */
+      languageCode?: string
+      /** @description Interpreter required */
+      interpreterRequired: boolean
+      /** @description Created by */
+      createdBy: string
+      /**
+       * Format: date-time
+       * @description Created time
+       */
+      createdTime: string
+      /** @description Updated by */
+      updatedBy?: string
+      /**
+       * Format: date-time
+       * @description Updated time
+       */
+      updatedTime?: string
     }
     /** @description The details of a contact as an individual */
     ContactSearchResultItem: {
@@ -8032,11 +7957,9 @@ export interface components {
        */
       prisonerContactId: number
       /**
-       * @description
-       *           Coded value indicating either a social or official contact (mandatory).
+       * @description Coded value indicating either a social or official contact (mandatory).
        *           This is a coded value from the group code CONTACT_TYPE in reference data.
        *           Known values are (S) Social or (O) official.
-       *
        * @example S
        */
       relationshipTypeCode: string
@@ -14386,6 +14309,59 @@ export interface operations {
       }
     }
   }
+  getContactHistory: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /**
+         * @description The id of the contact
+         * @example 123456
+         */
+        contactId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Found the contact history */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ContactAuditEntry']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description No contact with that id could be found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   searchContacts: {
     parameters: {
       query: {
@@ -14404,9 +14380,10 @@ export interface operations {
          * @example Simon
          */
         middleNames?: string
+        contactId?: string
         /**
-         * @description Date of Birth of the contact in ISO format
-         * @example 30/12/2010
+         * @description The contact id
+         * @example 123456
          */
         dateOfBirth?: string
         /**
