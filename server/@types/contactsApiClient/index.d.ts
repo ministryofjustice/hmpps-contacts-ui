@@ -1,6 +1,7 @@
 import { components } from '../contactsApi'
 
 export type ContactDetails = components['schemas']['ContactDetails']
+export type ContactAuditEntry = components['schemas']['ContactAuditEntry']
 export type ContactCreationResult = components['schemas']['ContactCreationResult']
 export type PrisonerContactRelationshipDetails = components['schemas']['PrisonerContactRelationshipDetails']
 export type ContactAddressDetails = components['schemas']['ContactAddressDetails']

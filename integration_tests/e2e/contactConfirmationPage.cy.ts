@@ -38,6 +38,7 @@ context('Contact confirmation', () => {
     cy.task('stubGetContactNameById', contact)
     cy.task('stubGetGlobalRestrictions', [globalRestriction])
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
+    cy.task('stubGetContactHistory', { contactId, history: [] })
 
     cy.task('stubContactSearch', {
       results: {
