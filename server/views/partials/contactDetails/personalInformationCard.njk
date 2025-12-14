@@ -29,7 +29,7 @@
         actions: {
          items: [
             {
-              href: "/prisoner/"+ prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + prisonerContactId + "/change-contact-title-or-middle-names#title",
+              href: "/prisoner/"+ prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + prisonerContactId + "/change-contact-names#title",
               text: "Change",
               visuallyHiddenText: "the contact’s title",
               attributes: {"data-qa": "change-title-link"},
@@ -48,9 +48,9 @@
         actions: {
           items: [
             {
-              href: "/prisoner/"+ prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + prisonerContactId + "/change-contact-title-or-middle-names#middleNames",
-              text: "Change middle name" if contact.middleNames else "Add middle name",
-              attributes: {"data-qa": "change-middle-name-link"},
+              href: "/prisoner/"+ prisonerNumber + "/contacts/manage/" + contact.id + "/relationship/" + prisonerContactId + "/change-contact-names",
+              text: "Change",
+              attributes: {"data-qa": "change-name-link"},
               classes: "govuk-link--no-visited-state"
             }
           ] if showActions else []

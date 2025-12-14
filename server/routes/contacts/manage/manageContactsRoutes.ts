@@ -22,9 +22,9 @@ import ManageContactEditIdentityController from './identities/edit/manageContact
 import ManageContactDeleteIdentityController from './identities/delete/manageContactDeleteIdentityController'
 import ManageContactEnterDobController from './date-of-birth/update/manageContactEnterDobController'
 import ManageGenderController from './gender/contactGenderController'
-import ChangeTitleOrMiddleNamesController from './name/changeTitleOrMiddleNamesController'
+import ChangeNamesController from './name/changeNamesController'
 import ManageRelationshipCommentsController from './relationship/comments/manageRelationshipCommentsController'
-import { restrictedEditingNameSchema } from '../common/name/nameSchemas'
+import { fullNameSchema } from '../common/name/nameSchemas'
 import ManageContactAddEmailController from './email/add/manageContactAddEmailController'
 import ManageContactEditEmailController from './email/edit/manageContactEditEmailController'
 import { emailSchema, emailsSchema } from './email/emailSchemas'
@@ -103,6 +103,7 @@ import { deleteRelationshipSchema } from './relationship/delete-relationship/del
 import ManageContactDeleteDobController from './date-of-birth/delete/manageContactDeleteDobController'
 import ListPrisonerRestrictionsAlertsController from './list/listPrisonerRestrictionsAlertsController'
 import { PrisonerJourneyParams } from '../../../@types/journeys'
+import ContactAuditHistoryService from '../../../services/contactAuditHistoryService'
 
 const ManageContactsRoutes = (
   auditService: AuditService,
@@ -114,6 +115,7 @@ const ManageContactsRoutes = (
   prisonerAddressService: PrisonerAddressService,
   organisationsService: OrganisationsService,
   permissionsService: PermissionsService,
+  contactAuditHistoryService: ContactAuditHistoryService,
 ) => {
   const router = Router({ mergeParams: true })
   const { get, post } = routerMethods(router, permissionsService, auditService)
@@ -204,7 +206,12 @@ const ManageContactsRoutes = (
   // View one contact
   get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId',
-    new ContactDetailsController(contactsService, restrictionsService, referenceDataService),
+    new ContactDetailsController(
+      contactsService,
+      restrictionsService,
+      referenceDataService,
+      contactAuditHistoryService,
+    ),
   )
 
   get(
@@ -298,9 +305,9 @@ const ManageContactsRoutes = (
   })
 
   standAloneRoute({
-    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/change-contact-title-or-middle-names',
-    controller: new ChangeTitleOrMiddleNamesController(referenceDataService, contactsService),
-    schema: restrictedEditingNameSchema,
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/change-contact-names',
+    controller: new ChangeNamesController(referenceDataService, contactsService),
+    schema: fullNameSchema,
   })
 
   standAloneRoute({

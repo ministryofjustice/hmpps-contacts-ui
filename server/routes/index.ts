@@ -18,6 +18,7 @@ export default function routes({
   organisationsService,
   telemetryService,
   permissionsService,
+  contactAuditHistoryService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
 
@@ -48,6 +49,7 @@ export default function routes({
       prisonerAddressService,
       organisationsService,
       permissionsService,
+      contactAuditHistoryService,
     ),
   )
   router.use(
