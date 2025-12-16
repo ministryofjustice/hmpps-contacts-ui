@@ -107,11 +107,7 @@ export default class ContactSearchController implements PageHandler {
         },
         user,
       )
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       results = advancedSearchResults.body
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       truncationMessage = advancedSearchResults?.headers['x-truncation-message']
       setPaginationLocals(
         res,

@@ -171,6 +171,96 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     contactsService.advancedSearchContact.mockResolvedValue(mockResponse)
     await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`).expect(403)
   })
+
+  it('should clear date filter and redirect when clear=filter', async () => {
+    // Given
+    existingJourney.searchContact = {
+      contact: { lastName: 'name' },
+    }
+
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}?clear=filter`)
+
+    expect(response.status).toEqual(302)
+    expect(response.header['location']).toBe(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
+    expect(session.addContactJourneys![journeyId]!.searchContact!.dateOfBirth).toBeUndefined()
+  })
+
+  it('should set sort and reset page when sort is provided', async () => {
+    // Given
+    existingJourney.searchContact = {
+      contact: { lastName: 'name' },
+    }
+
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/search/${journeyId}?sort=lastName,desc`,
+    )
+
+    expect(response.status).toEqual(302)
+    expect(response.header['location']).toBe(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}#pagination`)
+    expect(session.addContactJourneys![journeyId]!.searchContact!.sort).toBe('lastName,desc')
+    expect(session.addContactJourneys![journeyId]!.searchContact!.page).toBe(1)
+  })
+
+  it('should set page when page is provided', async () => {
+    // Given
+    existingJourney.searchContact = {
+      contact: { lastName: 'name' },
+    }
+
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}?page=3`)
+
+    expect(response.status).toEqual(302)
+    expect(response.header['location']).toBe(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}#pagination`)
+    expect(session.addContactJourneys![journeyId]!.searchContact!.page).toBe(3)
+  })
+
+  it('should default page to 1 when page is invalid', async () => {
+    // Given
+    existingJourney.searchContact = {
+      contact: { lastName: 'name' },
+    }
+
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}?page=banana`)
+
+    expect(response.status).toEqual(302)
+    expect(response.header['location']).toBe(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}#pagination`)
+    expect(session.addContactJourneys![journeyId]!.searchContact!.page).toBe(1)
+  })
+
+  it('should perform partial contact ID search when contactId is present', async () => {
+    // Given
+    existingJourney.searchContact = {
+      contactId: '1234',
+    }
+
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+
+    const mockIdResults: PagedModelContactSearchResultItem = {
+      content: [TestData.contactSearchResultItem()],
+      page: { size: 10, number: 0, totalElements: 1, totalPages: 1 },
+    }
+    contactsService.partialContactIdSearch.mockResolvedValue(mockIdResults)
+
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+    const $ = cheerio.load(response.text)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect(contactsService.partialContactIdSearch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        contactId: '1234',
+        includeAnyExistingRelationshipsToPrisoner: prisonerNumber,
+      }),
+      expect.objectContaining({
+        page: 0,
+        size: 10,
+        sort: 'lastName,asc',
+      }),
+      currentUser,
+    )
+    expect(contactsService.advancedSearchContact).not.toHaveBeenCalled()
+    expect($('table')).toBeDefined()
+  })
 })
 
 describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {

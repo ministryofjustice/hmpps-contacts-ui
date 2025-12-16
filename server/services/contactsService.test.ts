@@ -11,8 +11,10 @@ import {
   ContactCreationResult,
   ContactDetails,
   ContactEmailDetails,
+  ContactIdPartialSearchRequest,
   ContactPhoneDetails,
   ContactSearchRequest,
+  ContactSearchResponse,
   CreateContactAddressRequest,
   CreateContactRequest,
   CreateMultipleEmailsRequest,
@@ -391,6 +393,79 @@ describe('contactsService', () => {
       // When
       apiClient.searchContact.mockResolvedValue(contactResults)
       const results = await service.searchContact(contactSearchRequest, pagination, user)
+
+      // Then
+      expect(results?.content?.[0]?.lastName).toEqual(searchResult.lastName)
+      expect(results?.content?.[0]?.firstName).toEqual(searchResult.firstName)
+      expect(results.page?.totalPages).toEqual(1)
+      expect(results.page?.totalElements).toEqual(1)
+    })
+
+    it('Propagates errors', async () => {
+      apiClient.searchContact.mockRejectedValue(new Error('some error'))
+      await expect(apiClient.searchContact(contactSearchRequest, user, pagination)).rejects.toEqual(
+        new Error('some error'),
+      )
+    })
+  })
+
+  describe('advancedSearchContact', () => {
+    const pagination = { page: 0, size: 20 } as PaginationRequest
+
+    it('Advanced search contact details should retrieves matching the search criteria', async () => {
+      // Given
+      const mockResponse: ContactSearchResponse = {
+        body: {
+          content: [TestData.contactSearchResultItem()],
+          page: { size: 10, number: 0, totalElements: 1, totalPages: 1 },
+        },
+        headers: {
+          'x-total-records': '500',
+          'x-truncated': 'true',
+          'x-truncation-message': 'Too many results, please refine your search',
+        },
+      }
+
+      // When
+      apiClient.advancedSearchContact.mockResolvedValue(mockResponse)
+      const results = await service.advancedSearchContact(contactSearchRequest, pagination, user)
+
+      // Then
+      expect(results?.body.content?.[0]?.lastName).toEqual(searchResult.lastName)
+      expect(results?.body.content?.[0]?.firstName).toEqual(searchResult.firstName)
+      expect(results.body.page?.totalPages).toEqual(1)
+      expect(results.body.page?.totalElements).toEqual(1)
+    })
+
+    it('Propagates errors', async () => {
+      apiClient.searchContact.mockRejectedValue(new Error('some error'))
+      await expect(apiClient.searchContact(contactSearchRequest, user, pagination)).rejects.toEqual(
+        new Error('some error'),
+      )
+    })
+  })
+
+  describe('partialContactIdSearch', () => {
+    const pagination = { page: 0, size: 20 } as PaginationRequest
+
+    it('Partial contact id search should retrieves contact details matching the search criteria', async () => {
+      // Given
+      const contactResults: PagedModelContactSearchResultItem = {
+        page: {
+          totalPages: 1,
+          totalElements: 1,
+        },
+        content: [searchResult],
+      }
+      const contactIdPartialSearchRequest: ContactIdPartialSearchRequest = {
+        contactId: '123',
+        dateOfBirth: '07/09/2020',
+        includeAnyExistingRelationshipsToPrisoner: 'AB123A',
+      }
+
+      // When
+      apiClient.partialContactIdSearch.mockResolvedValue(contactResults)
+      const results = await service.partialContactIdSearch(contactIdPartialSearchRequest, pagination, user)
 
       // Then
       expect(results?.content?.[0]?.lastName).toEqual(searchResult.lastName)
