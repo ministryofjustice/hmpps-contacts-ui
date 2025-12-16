@@ -61,6 +61,7 @@ export default class ContactSearchController implements PageHandler {
         Boolean(res.locals?.formResponses?.['year']))
 
     let results: PagedModelContactSearchResultItem | undefined
+    let truncationMessage: string | undefined
     const searchingContactId = this.trim(journey.searchContact?.contactId)
     if (journey.searchContact && searchingContactId) {
       // Contact ID search takes precedence and ignores other fields
@@ -97,7 +98,7 @@ export default class ContactSearchController implements PageHandler {
         soundsLike: journey.searchContact.soundsLike,
       }
 
-      results = await this.contactsService.advancedSearchContact(
+      const advancedSearchResults = await this.contactsService.advancedSearchContact(
         contactSearchRequest,
         {
           page: (journey.searchContact.page ?? 1) - 1,
@@ -106,6 +107,12 @@ export default class ContactSearchController implements PageHandler {
         },
         user,
       )
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      results = advancedSearchResults.body
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      truncationMessage = advancedSearchResults?.headers['x-truncation-message']
       setPaginationLocals(
         res,
         this.TABLE_ROW_COUNT,
@@ -129,6 +136,7 @@ export default class ContactSearchController implements PageHandler {
       sort: journey.searchContact?.sort,
       journey,
       results,
+      truncationMessage,
       dobError,
     }
     return res.render('pages/contacts/manage/contactSearch', view)
@@ -140,8 +148,6 @@ export default class ContactSearchController implements PageHandler {
     const journey = req.session.addContactJourneys![journeyId]!
 
     const contactIdTrim = this.trim(contactId)
-
-    const soundsLikeFlag = Boolean(soundsLike)
 
     if (contactIdTrim) {
       // If contactId provided
@@ -157,7 +163,7 @@ export default class ContactSearchController implements PageHandler {
           firstName: firstName || undefined,
         },
         contactId: undefined,
-        soundsLike: soundsLikeFlag,
+        soundsLike: soundsLike === 'true',
         page: 1,
       }
     }

@@ -47,6 +47,7 @@ import {
   UpdatePrisonerContactRestrictionRequest,
   PagedModelAdvancedContactSearchResultItem,
   ContactIdPartialSearchRequest,
+  ContactSearchResponse,
 } from '../@types/contactsApiClient'
 
 export type Pagination = {
@@ -168,7 +169,7 @@ export default class ContactsApiClient extends RestClient {
     contactSearchRequest: AdvancedContactSearchRequest,
     user: Express.User,
     pagination?: Pagination,
-  ): Promise<PagedModelAdvancedContactSearchResultItem> {
+  ): Promise<ContactSearchResponse> {
     const paginationParameters = pagination ?? { page: 0, size: config.apis.contactsApi.pageSize || 10 }
     if (paginationParameters.sort === 'lastName,asc') {
       paginationParameters.sort = ['lastName,asc', 'firstName,asc', 'middleNames,asc', 'id,asc']
@@ -191,7 +192,7 @@ export default class ContactsApiClient extends RestClient {
         'id,desc',
       ]
     }
-    return this.get(
+    return this.getWithHeaders<ContactSearchResponse>(
       {
         path: `/contact/advanced-search`,
         query: {

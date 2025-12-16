@@ -8,7 +8,7 @@ import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { AddContactJourney } from '../../../../@types/journeys'
-import { PagedModelContactSearchResultItem } from '../../../../@types/contactsApiClient'
+import { ContactSearchResponse, PagedModelContactSearchResultItem } from '../../../../@types/contactsApiClient'
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
 import mockPermissions from '../../../testutils/mockPermissions'
 import Permission from '../../../../enumeration/permission'
@@ -73,13 +73,18 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
   it('should render contact page without filter when there is no search', async () => {
     // Given
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-    contactsService.advancedSearchContact.mockResolvedValue({
-      page: {
-        totalPages: 0,
-        totalElements: 0,
+    const mockResponse: ContactSearchResponse = {
+      body: {
+        content: [TestData.contactSearchResultItem()],
+        page: { size: 10, number: 0, totalElements: 0, totalPages: 0 },
       },
-      content: [TestData.contactSearchResultItem()],
-    })
+      headers: {
+        'x-total-records': '500',
+        'x-truncated': 'true',
+        'x-truncation-message': 'Too many results, please refine your search',
+      },
+    }
+    contactsService.advancedSearchContact.mockResolvedValue(mockResponse)
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
@@ -121,13 +126,20 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     }
 
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-    contactsService.advancedSearchContact.mockResolvedValue({
-      page: {
-        totalPages: 0,
-        totalElements: 0,
+
+    // TypeScript
+    const mockResponse: ContactSearchResponse = {
+      body: {
+        content: [TestData.contactSearchResultItem()],
+        page: { size: 10, number: 0, totalElements: 500, totalPages: 50 },
       },
-      content: [TestData.contactSearchResultItem()],
-    })
+      headers: {
+        'x-total-records': '500',
+        'x-truncated': 'true',
+        'x-truncation-message': 'Too many results, please refine your search',
+      },
+    }
+    contactsService.advancedSearchContact.mockResolvedValue(mockResponse)
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
@@ -145,13 +157,18 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
 
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-    contactsService.advancedSearchContact.mockResolvedValue({
-      page: {
-        totalPages: 0,
-        totalElements: 0,
+    const mockResponse: ContactSearchResponse = {
+      body: {
+        content: [TestData.contactSearchResultItem()],
+        page: { size: 10, number: 0, totalElements: 0, totalPages: 0 },
       },
-      content: [TestData.contactSearchResultItem()],
-    })
+      headers: {
+        'x-total-records': '500',
+        'x-truncated': 'true',
+        'x-truncation-message': 'Too many results, please refine your search',
+      },
+    }
+    contactsService.advancedSearchContact.mockResolvedValue(mockResponse)
     await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`).expect(403)
   })
 })
@@ -330,13 +347,15 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
 })
 
 describe('Contact search results', () => {
-  const results: PagedModelContactSearchResultItem = {
-    content: [TestData.contactSearchResultItem()],
-    page: {
-      number: 0,
-      size: 20,
-      totalElements: 25,
-      totalPages: 3,
+  const mockResponse: ContactSearchResponse = {
+    body: {
+      content: [TestData.contactSearchResultItem()],
+      page: { size: 20, number: 0, totalElements: 25, totalPages: 3 },
+    },
+    headers: {
+      'x-total-records': '500',
+      'x-truncated': 'true',
+      'x-truncation-message': 'Too many results, please refine your search',
     },
   }
   it('should display contact search results table', async () => {
@@ -349,7 +368,7 @@ describe('Contact search results', () => {
       },
     }
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-    contactsService.advancedSearchContact.mockResolvedValue(results)
+    contactsService.advancedSearchContact.mockResolvedValue(mockResponse)
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
@@ -376,15 +395,14 @@ describe('Contact search results', () => {
       },
     }
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-    contactsService.advancedSearchContact.mockResolvedValue({
-      content: [],
-      page: {
-        number: 0,
-        size: 10,
-        totalElements: 0,
-        totalPages: 0,
+    const mockEmptyResponse: ContactSearchResponse = {
+      body: {
+        content: [],
+        page: { size: 20, number: 0, totalElements: 25, totalPages: 3 },
       },
-    })
+      headers: {},
+    }
+    contactsService.advancedSearchContact.mockResolvedValue(mockEmptyResponse)
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)

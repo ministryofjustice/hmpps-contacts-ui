@@ -37,6 +37,7 @@ import {
   AdvancedContactSearchRequest,
   PagedModelAdvancedContactSearchResultItem,
   ContactIdPartialSearchRequest,
+  ContactSearchResponse,
 } from '../@types/contactsApiClient'
 import { stripNullishAddressLines } from '../routes/contacts/add/addresses/common/utils'
 import TelemetryService from './telemetryService'
@@ -229,7 +230,7 @@ export default class ContactsService extends AuditedService {
     contactSearchRequest: AdvancedContactSearchRequest,
     pagination: Pagination,
     user: Express.User,
-  ): Promise<PagedModelAdvancedContactSearchResultItem> {
+  ): Promise<ContactSearchResponse> {
     return this.contactsApiClient.advancedSearchContact(contactSearchRequest, user, pagination)
   }
 

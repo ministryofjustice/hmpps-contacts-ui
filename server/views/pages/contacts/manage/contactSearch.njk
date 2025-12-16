@@ -179,6 +179,16 @@
             <div class="moj-action-bar"><div class="moj-action-bar__filter"></div></div>
           {% endif %}
 
+          {% if truncationMessage %}
+            {{ mojAlert({
+              variant: "warning",
+              title: "Search results truncated",
+              dismissible: true,
+              html: truncationMessage,
+              classes: 'govuk-!-margin-bottom-6'
+            }) }}
+          {% endif %}
+
           {% if results.content.length %}
             <div id="pagination" class="contact-search-pagination">{{ simplePagination(paginationParams)  }}</div>
           {% endif %}

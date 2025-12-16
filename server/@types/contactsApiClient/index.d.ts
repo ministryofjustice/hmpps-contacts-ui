@@ -87,3 +87,8 @@ export type ContactIdPartialSearchRequest = {
   dateOfBirth?: string | null
   includeAnyExistingRelationshipsToPrisoner?: string | undefined
 }
+
+export interface ContactSearchResponse {
+  body: PagedModelContactSearchResultItem
+  headers: Record<string, string>
+}

@@ -129,6 +129,37 @@ export default abstract class RestClient {
     }
   }
 
+  async getWithHeaders<Response = unknown>(
+    { path, query = {}, headers = {}, responseType = '', raw = false }: Request,
+    user: Express.User,
+    client = Client.SYSTEM_TOKEN,
+  ): Promise<Response> {
+    logger.info(`${this.name} GET: ${path}`)
+
+    const token = client === Client.SYSTEM_TOKEN ? await this.getSystemClientToken(user.username) : user.token
+
+    try {
+      const result = await superagent
+        .get(`${this.apiUrl()}${path}`)
+        .query(query)
+        .agent(this.agent)
+        .retry(2, (err, res) => {
+          if (err) logger.info(`Retry handler found ${this.name} API error with ${err.code} ${err.message}`)
+          return undefined // retry handler only for logging retries, not to influence retry logic
+        })
+        .auth(token, { type: 'bearer' })
+        .set(headers)
+        .responseType(responseType)
+        .timeout(this.timeoutConfig())
+
+      return raw ? (result as Response) : ({ body: result.body, headers: result.headers } as Response)
+    } catch (error) {
+      const sanitisedError = sanitiseError(error as Error)
+      logger.warn({ ...sanitisedError }, `Error calling ${this.name}, path: '${path}', verb: 'GET'`)
+      throw sanitisedError
+    }
+  }
+
   private async requestWithBody<Response = unknown>(
     method: 'patch' | 'post' | 'put',
     { path, query = {}, headers = {}, responseType = '', data = {}, raw = false, retry = false }: RequestWithBody,
