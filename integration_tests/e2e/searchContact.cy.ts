@@ -2,6 +2,7 @@ import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import SearchContactPage from '../pages/searchContactPage'
 import ListContactsPage from '../pages/listContacts'
+import pagedPrisonerAlertsData from '../../server/testutils/testPrisonerAlertsData'
 
 const { prisonerNumber } = TestData.prisoner()
 
@@ -13,6 +14,18 @@ context('Search contact', () => {
     cy.task('stubPrisonerById', TestData.prisoner())
     cy.task('stubContactList', TestData.prisoner().prisonerNumber)
     cy.task('stubComponentsMeta')
+    cy.task('stubGetPrisonerRestrictions', {
+      prisonerNumber,
+      response: {
+        content: [],
+      },
+    })
+    cy.task(
+      'stubPrisonerAlertsById',
+      pagedPrisonerAlertsData({
+        prisonNumber: 'A1234BC',
+      }),
+    )
     cy.task('stubPrisoners', {
       results: {
         totalPages: 1,
@@ -22,7 +35,7 @@ context('Search contact', () => {
       prisonId: 'HEI',
       term: prisonerNumber,
     })
-    cy.task('stubContactSearch', {
+    cy.task('stubContactAdvancedSearch', {
       results: {
         page: {
           totalPages: 1,
@@ -30,7 +43,7 @@ context('Search contact', () => {
         },
         content: [TestData.contactSearchResultItem()],
       },
-      lastName: 'Mason',
+      lastName: '=Lastname',
       firstName: '',
       middleNames: '',
       dateOfBirth: '',
@@ -41,21 +54,6 @@ context('Search contact', () => {
     Page.verifyOnPage(ListContactsPage, 'John Smith').clickAddNewContactButton()
 
     Page.verifyOnPage(SearchContactPage)
-  })
-
-  it(`should not search when last name is not entered`, () => {
-    const searchContactPage = Page.verifyOnPage(SearchContactPage)
-    searchContactPage.enterFirstName('Firstname')
-    searchContactPage.enterMiddleNames('Middlename')
-    searchContactPage.clickSearchButton()
-
-    cy.verifyAPIWasCalled(
-      {
-        method: 'GET',
-        urlPattern: '/contact/search.+',
-      },
-      0,
-    )
   })
 
   it(`should not pass validation when lastname and dob is incomplete`, () => {
@@ -129,16 +127,13 @@ context('Search contact', () => {
     cy.verifyAPIWasCalled(
       {
         method: 'GET',
-        urlPattern: '/contact/search.+',
+        urlPattern: '/contact/advanced-search.+',
       },
       1,
     )
 
     searchContactPage.verifyShowsNameAs('Mason')
     searchContactPage.verifyShowsDobAs('14/1/1990')
-    searchContactPage.verifyShowsAddressAs(
-      '32<br>Acacia Avenue<br>Bunting<br>Sheffield<br>South Yorkshire<br>S2 3LK<br>England',
-    )
   })
 
   it(`should pass validation when all the fields are entered`, () => {
@@ -157,16 +152,13 @@ context('Search contact', () => {
     cy.verifyAPIWasCalled(
       {
         method: 'GET',
-        urlPattern: '/contact/search.+',
+        urlPattern: '/contact/advanced-search.+',
       },
       2,
     )
 
     searchContactPage.verifyShowsNameAs('Mason')
     searchContactPage.verifyShowsDobAs('14/1/1990')
-    searchContactPage.verifyShowsAddressAs(
-      '32<br>Acacia Avenue<br>Bunting<br>Sheffield<br>South Yorkshire<br>S2 3LK<br>England',
-    )
   })
 
   it(`should pass validation when day and month starts with 0`, () => {

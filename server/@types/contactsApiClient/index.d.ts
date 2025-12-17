@@ -8,6 +8,9 @@ export type ContactAddressDetails = components['schemas']['ContactAddressDetails
 export type PagedModelPrisonerContactSummary = components['schemas']['PagedModelPrisonerContactSummary']
 export type ReferenceCode = components['schemas']['ReferenceCode']
 export type PagedModelContactSearchResultItem = components['schemas']['PagedModelContactSearchResultItem']
+export type PagedModelAdvancedContactSearchResultItem =
+  components['schemas']['PagedModelAdvancedContactSearchResultItem']
+export type AdvancedContactSearchResultItem = components['schemas']['AdvancedContactSearchResultItem']
 export type CreatePhoneRequest = components['schemas']['CreatePhoneRequest']
 export type UpdatePhoneRequest = components['schemas']['UpdatePhoneRequest']
 export type ContactPhoneDetails = components['schemas']['ContactPhoneDetails']
@@ -67,7 +70,25 @@ export type ContactSearchRequest = {
   firstName?: string | undefined
   middleNames?: string | undefined
   dateOfBirth?: string | null
-  contactId?: string | undefined
+  includeAnyExistingRelationshipsToPrisoner?: string | undefined
+}
+
+export type AdvancedContactSearchRequest = {
+  lastName: string
+  firstName?: string | undefined
+  middleNames?: string | undefined
+  dateOfBirth?: string | null
   includeAnyExistingRelationshipsToPrisoner?: string | undefined
   soundsLike?: boolean | undefined
+}
+
+export type ContactIdPartialSearchRequest = {
+  contactId: string
+  dateOfBirth?: string | null
+  includeAnyExistingRelationshipsToPrisoner?: string | undefined
+}
+
+export interface ContactSearchResponse {
+  body: PagedModelContactSearchResultItem
+  headers: Record<string, string>
 }

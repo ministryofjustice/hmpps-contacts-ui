@@ -6,7 +6,11 @@ import { ContactsService } from '../../../../services'
 import { formatDateForApi } from '../../../../utils/utils'
 import { navigationForAddContactJourney } from '../addContactFlowControl'
 import { setPaginationLocals } from '../../../../views/partials/simplePagination/utils'
-import { ContactSearchRequest, PagedModelContactSearchResultItem } from '../../../../@types/contactsApiClient'
+import {
+  AdvancedContactSearchRequest,
+  ContactIdPartialSearchRequest,
+  PagedModelContactSearchResultItem,
+} from '../../../../@types/contactsApiClient'
 import Permission from '../../../../enumeration/permission'
 import { ContactNames } from '../../../../@types/journeys'
 import { NAME_REGEX } from '../../common/name/nameSchemas'
@@ -51,25 +55,23 @@ export default class ContactSearchController implements PageHandler {
     const { day, month, year } = journey?.searchContact?.dateOfBirth ?? {}
     const hasDob = !!(day && month && year)
     const dobError =
-      res.locals.validationErrors &&
-      (res.locals?.formResponses?.['day'] ||
-        res.locals?.formResponses?.['month'] ||
-        res.locals?.formResponses?.['year'])
+      !!res.locals.validationErrors &&
+      (Boolean(res.locals?.formResponses?.['day']) ||
+        Boolean(res.locals?.formResponses?.['month']) ||
+        Boolean(res.locals?.formResponses?.['year']))
 
     let results: PagedModelContactSearchResultItem | undefined
-
-    if (journey.searchContact?.contact && this.namesAreValid(journey.searchContact?.contact) && !dobError) {
-      const contactSearchRequest: ContactSearchRequest = {
-        lastName: journey.searchContact.contact.lastName!,
-        firstName: journey.searchContact.contact.firstName,
-        middleNames: journey.searchContact.contact.middleNames,
-        dateOfBirth: formatDateForApi(journey.searchContact.dateOfBirth),
+    let truncationMessage: string | undefined
+    const searchingContactId = this.trim(journey.searchContact?.contactId)
+    if (journey.searchContact && searchingContactId) {
+      // Contact ID search takes precedence and ignores other fields
+      const dateOfBirth = formatDateForApi(journey.searchContact.dateOfBirth)
+      const contactSearchRequest: ContactIdPartialSearchRequest = {
+        contactId: searchingContactId,
+        dateOfBirth,
         includeAnyExistingRelationshipsToPrisoner: journey.prisonerNumber,
-        soundsLike: journey.searchContact.soundsLike,
-        contactId: journey.searchContact.contactId,
       }
-
-      results = await this.contactsService.searchContact(
+      results = await this.contactsService.partialContactIdSearch(
         contactSearchRequest,
         {
           page: (journey.searchContact.page ?? 1) - 1,
@@ -85,12 +87,44 @@ export default class ContactSearchController implements PageHandler {
         results?.page?.totalElements ?? 0,
         results?.content?.length ?? 0,
       )
+    } else if (journey.searchContact?.contact && this.namesAreValid(journey.searchContact.contact) && !dobError) {
+      // Advanced name search (only when names are valid and no DOB validation errors)
+      const contactSearchRequest: AdvancedContactSearchRequest = {
+        lastName: journey.searchContact.contact.lastName!,
+        firstName: journey.searchContact.contact.firstName,
+        middleNames: journey.searchContact.contact.middleNames,
+        dateOfBirth: formatDateForApi(journey.searchContact.dateOfBirth),
+        includeAnyExistingRelationshipsToPrisoner: journey.prisonerNumber,
+        soundsLike: journey.searchContact.soundsLike,
+      }
+
+      const advancedSearchResults = await this.contactsService.advancedSearchContact(
+        contactSearchRequest,
+        {
+          page: (journey.searchContact.page ?? 1) - 1,
+          size: this.TABLE_ROW_COUNT,
+          sort: journey.searchContact.sort ?? 'lastName,asc',
+        },
+        user,
+      )
+      results = advancedSearchResults.body
+      truncationMessage = advancedSearchResults?.headers['x-truncation-message']
+      setPaginationLocals(
+        res,
+        this.TABLE_ROW_COUNT,
+        journey.searchContact.page ?? 1,
+        results?.page?.totalElements ?? 0,
+        results?.content?.length ?? 0,
+      )
     }
 
+    const soundsLike = res.locals?.formResponses?.['soundsLike'] ?? journey?.searchContact?.soundsLike
     const view = {
       lastName: res.locals?.formResponses?.['lastName'] ?? journey?.searchContact?.contact?.lastName,
       firstName: res.locals?.formResponses?.['firstName'] ?? journey?.searchContact?.contact?.firstName,
       middleNames: res.locals?.formResponses?.['middleNames'] ?? journey?.searchContact?.contact?.middleNames,
+      soundsLike,
+      contactId: res.locals?.formResponses?.['contactId'] ?? journey?.searchContact?.contactId,
       day: res.locals?.formResponses?.['day'] ?? day,
       month: res.locals?.formResponses?.['month'] ?? month,
       year: res.locals?.formResponses?.['year'] ?? year,
@@ -99,6 +133,7 @@ export default class ContactSearchController implements PageHandler {
       sort: journey.searchContact?.sort,
       journey,
       results,
+      truncationMessage,
       dobError,
     }
     return res.render('pages/contacts/manage/contactSearch', view)
@@ -109,24 +144,33 @@ export default class ContactSearchController implements PageHandler {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
 
-    if (lastName || firstName || middleNames) {
+    const contactIdTrim = this.trim(contactId)
+
+    if (contactIdTrim) {
+      // If contactId provided
+      journey.searchContact = {
+        contactId: contactIdTrim,
+        page: 1,
+      }
+    } else {
       journey.searchContact = {
         contact: {
-          lastName: lastName || undefined,
+          lastName,
           middleNames: middleNames || undefined,
           firstName: firstName || undefined,
         },
-        contactId: contactId || undefined,
-        soundsLike: Boolean(soundsLike),
+        contactId: undefined,
+        soundsLike: soundsLike === 'true',
         page: 1,
       }
-    } else if (lastName === '' && firstName === '' && middleNames === '') {
-      journey.searchContact = { page: 1, soundsLike: Boolean(soundsLike) }
-    } else if (day && month && year && journey.searchContact?.contact?.lastName) {
+    }
+
+    if (day && month && year) {
       journey.searchContact.dateOfBirth = { day, month, year }
       journey.searchContact.page = 1
       delete journey.searchContact.sort
     }
+
     res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/search/${journeyId}#`)
   }
 
@@ -146,5 +190,9 @@ export default class ContactSearchController implements PageHandler {
 
   private isValidName(name: string): boolean {
     return NAME_REGEX.test(name)
+  }
+
+  private trim(value?: string): string | undefined {
+    return value?.trim()
   }
 }
