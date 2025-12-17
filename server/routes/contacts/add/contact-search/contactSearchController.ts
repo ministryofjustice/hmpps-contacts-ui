@@ -118,11 +118,12 @@ export default class ContactSearchController implements PageHandler {
       )
     }
 
+    const soundsLike = res.locals?.formResponses?.['soundsLike'] ?? journey?.searchContact?.soundsLike
     const view = {
       lastName: res.locals?.formResponses?.['lastName'] ?? journey?.searchContact?.contact?.lastName,
       firstName: res.locals?.formResponses?.['firstName'] ?? journey?.searchContact?.contact?.firstName,
       middleNames: res.locals?.formResponses?.['middleNames'] ?? journey?.searchContact?.contact?.middleNames,
-      soundsLike: res.locals?.formResponses?.['soundsLike'] ?? journey?.searchContact?.soundsLike,
+      soundsLike,
       contactId: res.locals?.formResponses?.['contactId'] ?? journey?.searchContact?.contactId,
       day: res.locals?.formResponses?.['day'] ?? day,
       month: res.locals?.formResponses?.['month'] ?? month,
