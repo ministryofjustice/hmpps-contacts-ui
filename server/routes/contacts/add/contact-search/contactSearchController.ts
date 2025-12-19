@@ -57,7 +57,6 @@ export default class ContactSearchController implements PageHandler {
         Boolean(res.locals?.formResponses?.['year']))
 
     let results: PagedModelContactSearchResultItem | undefined
-    let truncationMessage: string | undefined
     const searchingContactId = this.trim(journey.searchContact?.contactId)
     if (journey.searchContact && searchingContactId) {
       // Contact ID search takes precedence and ignores other fields
