@@ -63,7 +63,7 @@ export type PrisonerContactPagination = {
 }
 
 export type ContactSearchRequest = {
-  lastName: string
+  lastName?: string
   firstName?: string | undefined
   middleNames?: string | undefined
   dateOfBirth?: string | null
