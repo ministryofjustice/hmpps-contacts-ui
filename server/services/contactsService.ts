@@ -34,10 +34,6 @@ import {
   PatchContactAddressRequest,
   PrisonerContactSummary,
   PagedModelPrisonerRestrictionDetails,
-  AdvancedContactSearchRequest,
-  PagedModelAdvancedContactSearchResultItem,
-  ContactIdPartialSearchRequest,
-  ContactSearchResponse,
 } from '../@types/contactsApiClient'
 import { stripNullishAddressLines } from '../routes/contacts/add/addresses/common/utils'
 import TelemetryService from './telemetryService'
@@ -224,22 +220,6 @@ export default class ContactsService extends AuditedService {
     user: Express.User,
   ): Promise<PagedModelContactSearchResultItem> {
     return this.contactsApiClient.searchContact(contactSearchRequest, user, pagination)
-  }
-
-  async advancedSearchContact(
-    contactSearchRequest: AdvancedContactSearchRequest,
-    pagination: Pagination,
-    user: Express.User,
-  ): Promise<ContactSearchResponse> {
-    return this.contactsApiClient.advancedSearchContact(contactSearchRequest, user, pagination)
-  }
-
-  async partialContactIdSearch(
-    contactSearchRequest: ContactIdPartialSearchRequest,
-    pagination: Pagination,
-    user: Express.User,
-  ): Promise<PagedModelAdvancedContactSearchResultItem> {
-    return this.contactsApiClient.partialContactIdSearch(contactSearchRequest, user, pagination)
   }
 
   async getContact(contactId: number, user: Express.User): Promise<ContactDetails> {
