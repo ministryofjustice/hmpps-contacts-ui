@@ -40,7 +40,7 @@ context('Contact confirmation', () => {
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
     cy.task('stubGetContactHistory', { contactId, history: [] })
 
-    cy.task('stubContactAdvancedSearch', {
+    cy.task('stubContactSearch', {
       results: {
         page: {
           totalPages: 1,

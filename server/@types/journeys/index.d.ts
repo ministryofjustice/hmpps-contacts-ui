@@ -55,7 +55,7 @@ export interface AddContactJourney {
 export interface ContactNames {
   title?: string | undefined
   lastName: string
-  firstName?: string
+  firstName: string
   middleNames?: string | undefined
 }
 

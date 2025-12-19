@@ -28,7 +28,6 @@ import {
   ContactRestrictionDetails,
   ContactSearchResultItem,
   LinkedPrisonerDetails,
-  AdvancedContactSearchResultItem,
   PagedModelPrisonerContactSummary,
   PagedModelPrisonerRestrictionDetails,
   PatchContactResponse,
@@ -394,29 +393,6 @@ export default {
       request: {
         method: 'GET',
         urlPattern: '/contact/search.+',
-      },
-      response: {
-        status: 200,
-        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: results,
-      },
-    })
-  },
-  stubContactAdvancedSearch: ({
-    results = {
-      page: {
-        totalPages: 0,
-        totalElements: 0,
-      },
-      content: [],
-    },
-  }: {
-    results: { page: { totalPages: number; totalElements: number }; content: AdvancedContactSearchResultItem[] }
-  }): SuperAgentRequest => {
-    return stubFor({
-      request: {
-        method: 'GET',
-        urlPattern: '/contact/advanced-search.+',
       },
       response: {
         status: 200,

@@ -37,7 +37,6 @@
           <h2 class="govuk-heading-m">Search by contact name</h2>
           <form class="contact-search" method='POST'>
             <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-            <input type="hidden" name="searchType" value="NAME">
             {{ govukInput({
               classes: "moj-search__input",
               id: "firstName",
@@ -62,74 +61,55 @@
               value: lastName
             }) }}
         </div>
-        <div class="govuk-!-width-three-quarters govuk-!-margin-top-6">
-            {{ govukCheckboxes({
-                  idPrefix: "soundsLike",
-                  name: "soundsLike",
-                  classes: "govuk-checkboxes--small",
-                  items: [
-                    {
-                      value: "true",
-                      text: "Sounds like search",
-                      checked: soundsLike
-                    }
-                  ]
-                }) }}
-        </div>
-        <div class="govuk-details govuk-!-margin-top-6 govuk-!-margin-bottom-0">
-          {{ govukButton({
-            classes: "moj-search__button",
-            text: "Search",
-            attributes: {"data-qa": "search-button"},
-            preventDoubleClick: true
-          }) }}
-        </div>
-      </form>
+          <div class="govuk-!-width-three-quarters">
 
-           {% set showAdvancedFiltersHtml %}
-            <h2 class="govuk-heading-m">Search by contact ID</h2>
-               <div class="moj-search govuk-!-width-three-quarters">
-                    {{ govukInput({
-                        classes: "moj-search__input",
-                        id: "contactId",
-                        name: "contactId",
-                        label: { text: "Contact ID" },
-                        value: contactId
-                        }) }}
-                     {{ govukButton({
-                        classes: "moj-search__button",
-                        text: "Search by contact ID",
-                        attributes: {"data-qa": "search-by-contact-id-button"},
-                        preventDoubleClick: true
-                        }) }}
+              <details class="govuk-details govuk-!-margin-top-6 govuk-!-margin-bottom-0">
+                <summary class="govuk-details__summary">
+                  <span class="govuk-details__summary-text">
+                    Show advanced filters
+                  </span>
+                </summary>
+                <div class="govuk-details__text no-left-border">
+                <div class="govuk-!-width-three-quarters govuk-!-margin-top-4">
+                  {{ govukCheckboxes({
+                    idPrefix: "soundsLike",
+                    name: "soundsLike",
+                    classes: "govuk-checkboxes--small",
+                    items: [
+                      {
+                        value: "true",
+                        text: "Sounds like search"
+                      }
+                    ]
+                  }) }}
                 </div>
-           {% endset -%}
+                  {{ govukInput({
+                    id: "contactId",
+                    name: "contactId",
+                    label: { text: "Contact ID (optional)" },
+                    classes: 'govuk-!-width-one-third',
+                    value: contactId
+                  }) }}
+                </div>
+              </details>
 
-          <form class="contact-search contact-id-search" method="POST">
-          <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-          <input type="hidden" name="searchType" value="ID">
-           {% set openStatus = contactId %}
             <div class="govuk-details govuk-!-margin-top-6 govuk-!-margin-bottom-0">
-                {{ govukDetails({
-                  summaryText: "Search by contact ID",
-                  html: showAdvancedFiltersHtml,
-                  cssClasses: "govuk-!-margin-top-6 govuk-!-margin-bottom-0",
-                  open: openStatus
-                }) }}
+              {{ govukButton({
+                classes: "moj-search__button",
+                text: "Search",
+                attributes: {"data-qa": "search-button"},
+                preventDoubleClick: true
+              }) }}
             </div>
           </form>
+
+        </div>
       </div>
 
       <div class="moj-filter-layout contact-search-filter">
-          {% if results and results.content and results.content.length > 0 %}
+        {% if lastName %}
           <form class="moj-filter-layout__filter" method='POST'>
             <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-            <input type="hidden" name="lastName" value="{{ lastName }}" />
-            <input type="hidden" name="firstName" value="{{ firstName }}" />
-            <input type="hidden" name="middleNames" value="{{ middleNames }}" />
-            <input type="hidden" name="soundsLike" value="{{ soundsLike }}" />
-            <input type="hidden" name="contactId" value="{{ contactId }}" />
-            <input type="hidden" name="searchType" value="FILTER">
             {{ mojFilter({
               heading: {
                 text: "Filter"
@@ -179,16 +159,6 @@
             <div class="moj-action-bar"><div class="moj-action-bar__filter"></div></div>
           {% endif %}
 
-          {% if truncationMessage %}
-            {{ mojAlert({
-              variant: "warning",
-              title: "Search results truncated",
-              dismissible: true,
-              html: truncationMessage,
-              classes: 'govuk-!-margin-bottom-6'
-            }) }}
-          {% endif %}
-
           {% if results.content.length %}
             <div id="pagination" class="contact-search-pagination">{{ simplePagination(paginationParams)  }}</div>
           {% endif %}
@@ -203,6 +173,10 @@
                 },
                 {
                   html: contact | formatDob,
+                  classes: 'no-bottom-border' if hasExistingRelationships else ''
+                },
+                {
+                  html: (contact | addressToLines or 'Not provided') | escape | nl2br,
                   classes: 'no-bottom-border' if hasExistingRelationships else ''
                 },
                 {
@@ -243,6 +217,9 @@
                 {
                   text: "Date of birth",
                   key: 'dateOfBirth'
+                },
+                {
+                  text: "Primary or default address"
                 },
                 {
                   text: "Action",
