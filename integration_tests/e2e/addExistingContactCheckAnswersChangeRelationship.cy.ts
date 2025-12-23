@@ -43,7 +43,7 @@ context('Add Existing Contact Check Answers', () => {
     cy.task('stubGetGlobalRestrictions', [globalRestriction])
     cy.task('stubGetLinkedPrisoners', { contactId, linkedPrisoners: [] })
     cy.task('stubGetContactHistory', { contactId, history: [] })
-    cy.task('stubContactSearch', {
+    cy.task('stubContactAdvancedSearch', {
       results: {
         page: {
           totalPages: 1,

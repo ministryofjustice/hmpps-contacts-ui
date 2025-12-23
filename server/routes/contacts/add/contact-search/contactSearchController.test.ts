@@ -8,7 +8,7 @@ import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
 import { AddContactJourney } from '../../../../@types/journeys'
-import { PagedModelContactSearchResultItem } from '../../../../@types/contactsApiClient'
+import { ContactSearchResponse, PagedModelContactSearchResultItem } from '../../../../@types/contactsApiClient'
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
 import mockPermissions from '../../../testutils/mockPermissions'
 import Permission from '../../../../enumeration/permission'
@@ -73,13 +73,18 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
   it('should render contact page without filter when there is no search', async () => {
     // Given
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-    contactsService.searchContact.mockResolvedValue({
-      page: {
-        totalPages: 0,
-        totalElements: 0,
+    const mockResponse: ContactSearchResponse = {
+      body: {
+        content: [TestData.contactSearchResultItem()],
+        page: { size: 10, number: 0, totalElements: 0, totalPages: 0 },
       },
-      content: [TestData.contactSearchResultItem()],
-    })
+      headers: {
+        'x-total-records': '500',
+        'x-truncated': 'true',
+        'x-truncation-message': 'Too many results, please refine your search',
+      },
+    }
+    contactsService.advancedSearchContact.mockResolvedValue(mockResponse)
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
@@ -99,7 +104,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     expect($('.govuk-form-group .govuk-label').eq(2).text()).toContain('Last name')
     expect($('.govuk-fieldset__legend:contains("Date of birth")').text()).toBeFalsy()
     expect($('label[for="soundsLike"]').text().trim()).toBe('Sounds like search')
-    expect($('label[for="contactId"]').text().trim()).toBe('Contact ID (optional)')
+    expect($('label[for="contactId"]').text().trim()).toBe('Contact ID')
     expect($('[data-qa=search-button]').text()).toContain('Search')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(`/prisoner/${prisonerNumber}/contacts/list`)
     expect($('[data-qa=back-link]').first().text()).toStrictEqual('Back to prisoner’s contact list')
@@ -121,13 +126,20 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     }
 
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-    contactsService.searchContact.mockResolvedValue({
-      page: {
-        totalPages: 0,
-        totalElements: 0,
+
+    // TypeScript
+    const mockResponse: ContactSearchResponse = {
+      body: {
+        content: [TestData.contactSearchResultItem()],
+        page: { size: 10, number: 0, totalElements: 500, totalPages: 50 },
       },
-      content: [TestData.contactSearchResultItem()],
-    })
+      headers: {
+        'x-total-records': '500',
+        'x-truncated': 'true',
+        'x-truncation-message': 'Too many results, please refine your search',
+      },
+    }
+    contactsService.advancedSearchContact.mockResolvedValue(mockResponse)
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
@@ -145,14 +157,109 @@ describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
 
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-    contactsService.searchContact.mockResolvedValue({
-      page: {
-        totalPages: 0,
-        totalElements: 0,
+    const mockResponse: ContactSearchResponse = {
+      body: {
+        content: [TestData.contactSearchResultItem()],
+        page: { size: 10, number: 0, totalElements: 0, totalPages: 0 },
       },
-      content: [TestData.contactSearchResultItem()],
-    })
+      headers: {
+        'x-total-records': '500',
+        'x-truncated': 'true',
+        'x-truncation-message': 'Too many results, please refine your search',
+      },
+    }
+    contactsService.advancedSearchContact.mockResolvedValue(mockResponse)
     await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`).expect(403)
+  })
+
+  it('should clear date filter and redirect when clear=filter', async () => {
+    // Given
+    existingJourney.searchContact = {
+      contact: { lastName: 'name' },
+    }
+
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}?clear=filter`)
+
+    expect(response.status).toEqual(302)
+    expect(response.header['location']).toBe(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
+    expect(session.addContactJourneys![journeyId]!.searchContact!.dateOfBirth).toBeUndefined()
+  })
+
+  it('should set sort and reset page when sort is provided', async () => {
+    // Given
+    existingJourney.searchContact = {
+      contact: { lastName: 'name' },
+    }
+
+    const response = await request(app).get(
+      `/prisoner/${prisonerNumber}/contacts/search/${journeyId}?sort=lastName,desc`,
+    )
+
+    expect(response.status).toEqual(302)
+    expect(response.header['location']).toBe(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}#pagination`)
+    expect(session.addContactJourneys![journeyId]!.searchContact!.sort).toBe('lastName,desc')
+    expect(session.addContactJourneys![journeyId]!.searchContact!.page).toBe(1)
+  })
+
+  it('should set page when page is provided', async () => {
+    // Given
+    existingJourney.searchContact = {
+      contact: { lastName: 'name' },
+    }
+
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}?page=3`)
+
+    expect(response.status).toEqual(302)
+    expect(response.header['location']).toBe(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}#pagination`)
+    expect(session.addContactJourneys![journeyId]!.searchContact!.page).toBe(3)
+  })
+
+  it('should default page to 1 when page is invalid', async () => {
+    // Given
+    existingJourney.searchContact = {
+      contact: { lastName: 'name' },
+    }
+
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}?page=banana`)
+
+    expect(response.status).toEqual(302)
+    expect(response.header['location']).toBe(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}#pagination`)
+    expect(session.addContactJourneys![journeyId]!.searchContact!.page).toBe(1)
+  })
+
+  it('should perform partial contact ID search when contactId is present', async () => {
+    // Given
+    existingJourney.searchContact = {
+      contactId: '1234',
+    }
+
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+
+    const mockIdResults: PagedModelContactSearchResultItem = {
+      content: [TestData.contactSearchResultItem()],
+      page: { size: 10, number: 0, totalElements: 1, totalPages: 1 },
+    }
+    contactsService.partialContactIdSearch.mockResolvedValue(mockIdResults)
+
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+    const $ = cheerio.load(response.text)
+
+    // Then
+    expect(response.status).toEqual(200)
+    expect(contactsService.partialContactIdSearch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        contactId: '1234',
+        includeAnyExistingRelationshipsToPrisoner: prisonerNumber,
+      }),
+      expect.objectContaining({
+        page: 0,
+        size: 10,
+        sort: 'lastName,asc',
+      }),
+      currentUser,
+    )
+    expect(contactsService.advancedSearchContact).not.toHaveBeenCalled()
+    expect($('table')).toBeDefined()
   })
 })
 
@@ -161,19 +268,19 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       .type('form')
-      .send({ lastName: 'last', middleNames: '', firstName: '' })
+      .send({ searchType: 'NAME', lastName: 'last', middleNames: '', firstName: '' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
 
     expect(session.addContactJourneys![journeyId]!.searchContact).toStrictEqual({
       contact: {
         firstName: undefined,
-        middleNames: undefined,
         lastName: 'last',
+        middleNames: undefined,
       },
       contactId: undefined,
-      page: 1,
       soundsLike: false,
+      page: 1,
     })
   })
 
@@ -181,7 +288,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       .type('form')
-      .send({ lastName: 'last', middleNames: '', firstName: '', soundsLike: 'true' })
+      .send({ searchType: 'NAME', lastName: 'last', middleNames: '', firstName: '', soundsLike: 'true' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
 
@@ -197,64 +304,34 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     })
   })
 
-  it('should pass the contact id when it is provided', async () => {
+  it('should pass the contact id when searching by contact id', async () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       .type('form')
-      .send({ lastName: 'last', middleNames: '', firstName: '', contactId: '1234' })
+      .send({ searchType: 'ID', contactId: '1234' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
 
     expect(session.addContactJourneys![journeyId]!.searchContact).toStrictEqual({
-      contact: {
-        firstName: undefined,
-        middleNames: undefined,
-        lastName: 'last',
-      },
       contactId: '1234', // assert contact id is set into the request
       page: 1,
-      soundsLike: false,
-    })
-  })
-
-  it('should pass to result page when last name is not provided', async () => {
-    await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
-      .type('form')
-      .send({ lastName: '', middleNames: 'middle', firstName: 'first' })
-      .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
-
-    expect(session.addContactJourneys![journeyId]!.searchContact).toStrictEqual({
-      contact: {
-        firstName: 'first',
-        middleNames: 'middle',
-        lastName: undefined,
-      },
-      contactId: undefined,
-      page: 1,
-      soundsLike: false,
     })
   })
 
   it.each([
     [
-      { lastName: '', middleNames: 'middle', firstName: 'first' },
-      { firstName: 'first', middleNames: 'middle', lastName: undefined },
-    ],
-    [
-      { lastName: '#123', middleNames: 'middle', firstName: '' },
+      { searchType: 'NAME', lastName: '#123', middleNames: 'middle', firstName: '' },
       { firstName: undefined, middleNames: 'middle', lastName: '#123' },
     ],
     [
-      { lastName: 'last', middleNames: '%foo', firstName: '' },
+      { searchType: 'NAME', lastName: 'last', middleNames: '%foo', firstName: '' },
       { firstName: undefined, middleNames: '%foo', lastName: 'last' },
     ],
     [
-      { lastName: 'last', middleNames: 'middle', firstName: '&thisIsIt;' },
+      { searchType: 'NAME', lastName: 'last', middleNames: 'middle', firstName: '&thisIsIt;' },
       { firstName: '&thisIsIt;', middleNames: 'middle', lastName: 'last' },
     ],
-  ])('should pass to result page when names are not valid', async (form, expectedContact) => {
+  ])('should pass to result page when names are not valid(but last name present)', async (form, expectedContact) => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       .type('form')
@@ -271,34 +348,37 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     expect(contactsService.searchContact).not.toHaveBeenCalled()
   })
 
-  it('should save DoB to session when search names are in session', async () => {
+  it('should save DoB to session when filtering by name', async () => {
     existingJourney.searchContact = { contact: { lastName: 'last' } }
 
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       .type('form')
-      .send({ day: '01', month: '12', year: '1999' })
+      .send({ searchType: 'FILTER', lastName: 'last', day: '01', month: '12', year: '1999' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
 
     expect(session.addContactJourneys![journeyId]!.searchContact!.dateOfBirth).toStrictEqual({
-      day: 1,
-      month: 12,
-      year: 1999,
+      day: '01',
+      month: '12',
+      year: '1999',
     })
   })
 
-  it('should not save DoB to session when search names are not in session', async () => {
+  it('should save DoB to session when filtering by id', async () => {
     existingJourney.searchContact = {}
 
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       .type('form')
-      .send({ day: '01', month: '12', year: '1999' })
+      .send({ searchType: 'FILTER', contactId: 1234, day: '01', month: '12', year: '1999' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
-
-    expect(session.addContactJourneys![journeyId]!.searchContact!.dateOfBirth).toBeUndefined()
+    expect(session.addContactJourneys![journeyId]!.searchContact!.dateOfBirth).toStrictEqual({
+      day: '01',
+      month: '12',
+      year: '1999',
+    })
   })
 
   it('should not save DoB to session when month and year are not provided', async () => {
@@ -307,7 +387,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       .type('form')
-      .send({ day: '01', month: '', year: '' })
+      .send({ searchType: 'FILTER', day: '01', month: '', year: '' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
 
@@ -320,7 +400,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       .type('form')
-      .send({ day: '01', month: '12', year: '' })
+      .send({ searchType: 'FILTER', day: '01', month: '12', year: '' })
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
 
@@ -334,6 +414,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
       .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       .type('form')
       .send({
+        searchType: 'FILTER',
         day: '01',
         month: '12',
         year: date.setDate(date.getDate() + 1),
@@ -350,19 +431,21 @@ describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
     await request(app)
       .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       .type('form')
-      .send({ lastName: 'last', middleNames: '', firstName: '' })
+      .send({ searchType: 'NAME', lastName: 'last', middleNames: '', firstName: '' })
       .expect(403)
   })
 })
 
-describe('Contact seaarch results', () => {
-  const results: PagedModelContactSearchResultItem = {
-    content: [TestData.contactSearchResultItem()],
-    page: {
-      number: 0,
-      size: 20,
-      totalElements: 25,
-      totalPages: 3,
+describe('Contact search results', () => {
+  const mockResponse: ContactSearchResponse = {
+    body: {
+      content: [TestData.contactSearchResultItem()],
+      page: { size: 20, number: 0, totalElements: 25, totalPages: 3 },
+    },
+    headers: {
+      'x-total-records': '500',
+      'x-truncated': 'true',
+      'x-truncation-message': 'Too many results, please refine your search',
     },
   }
   it('should display contact search results table', async () => {
@@ -375,7 +458,7 @@ describe('Contact seaarch results', () => {
       },
     }
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-    contactsService.searchContact.mockResolvedValue(results)
+    contactsService.advancedSearchContact.mockResolvedValue(mockResponse)
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
@@ -386,18 +469,10 @@ describe('Contact seaarch results', () => {
     expect($('table')).toBeDefined()
     expect($('table .govuk-table__header:eq(0)').text().trim()).toStrictEqual('Contact name and person ID')
     expect($('table .govuk-table__header:eq(1)').text().trim()).toStrictEqual('Date of birth')
-    expect($('table .govuk-table__header:eq(2)').text().trim()).toStrictEqual('Primary or default address')
-    expect($('table .govuk-table__header:eq(3)').text().trim()).toStrictEqual('Action')
+    expect($('table .govuk-table__header:eq(2)').text().trim()).toStrictEqual('Action')
 
     expect($('table .govuk-table__cell:eq(0)').text().trim()).toContain('Mason, Jones')
     expect($('table .govuk-table__cell:eq(1)').text().trim()).toContain('14/1/1990')
-    expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('32')
-    expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('Acacia Avenue')
-    expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('Bunting')
-    expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('Sheffield')
-    expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('South Yorkshire')
-    expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('S2 3LK')
-    expect($('table .govuk-table__cell:eq(2)').text().trim()).toContain('England')
   })
 
   it('should display "no contact records" when there is no search results', async () => {
@@ -410,15 +485,14 @@ describe('Contact seaarch results', () => {
       },
     }
     prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-    contactsService.searchContact.mockResolvedValue({
-      content: [],
-      page: {
-        number: 0,
-        size: 10,
-        totalElements: 0,
-        totalPages: 0,
+    const mockEmptyResponse: ContactSearchResponse = {
+      body: {
+        content: [],
+        page: { size: 20, number: 0, totalElements: 25, totalPages: 3 },
       },
-    })
+      headers: {},
+    }
+    contactsService.advancedSearchContact.mockResolvedValue(mockEmptyResponse)
 
     // When
     const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
