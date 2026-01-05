@@ -76,6 +76,7 @@ import TelemetryService from '../../../services/telemetryService'
 import ReviewExistingRelationshipsController from './review-existing-relationships/reviewExistingRelationshipsController'
 import AlertsService from '../../../services/alertsService'
 import { PrisonerJourneyParams } from '../../../@types/journeys'
+import EnhancedContactSearchController from './contact-search/enhancedContactSearchController'
 
 const AddContactRoutes = (
   auditService: AuditService,
@@ -128,6 +129,13 @@ const AddContactRoutes = (
   journeyRoute({
     path: '/prisoner/:prisonerNumber/contacts/search/:journeyId',
     controller: new ContactSearchController(contactsService),
+    schema: contactSearchSchema,
+    resetJourney: true,
+  })
+
+  journeyRoute({
+    path: '/prisoner/:prisonerNumber/contacts/enhanced-search/:journeyId',
+    controller: new EnhancedContactSearchController(contactsService),
     schema: contactSearchSchema,
     resetJourney: true,
   })

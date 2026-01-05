@@ -8,11 +8,13 @@ import { isInternalContact } from '../../../utils/utils'
 type PreModePages =
   | Page.CREATE_CONTACT_START_PAGE
   | Page.CONTACT_SEARCH_PAGE
+  | Page.ENHANCED_CONTACT_SEARCH_PAGE
   | Page.CONTACT_MATCH_PAGE
   | Page.ADD_CONTACT_REVIEW_EXISTING_RELATIONSHIPS_PAGE
 type CreateContactPages =
   | Page.CREATE_CONTACT_START_PAGE
   | Page.CONTACT_SEARCH_PAGE
+  | Page.ENHANCED_CONTACT_SEARCH_PAGE
   | Page.CONTACT_MATCH_PAGE
   | Page.ADD_CONTACT_MODE_PAGE
   | Page.CREATE_CONTACT_NAME_PAGE
@@ -45,6 +47,7 @@ type CreateContactPages =
 type ExistingContactPages =
   | Page.CREATE_CONTACT_START_PAGE
   | Page.CONTACT_SEARCH_PAGE
+  | Page.ENHANCED_CONTACT_SEARCH_PAGE
   | Page.CONTACT_MATCH_PAGE
   | Page.ADD_CONTACT_MODE_PAGE
   | Page.SELECT_RELATIONSHIP_TYPE
@@ -73,6 +76,9 @@ const PAGES: Record<AllAddContactPages, PageConfig> = {
   },
   [Page.CONTACT_SEARCH_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/search/${journey.id}`,
+  },
+  [Page.ENHANCED_CONTACT_SEARCH_PAGE]: {
+    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/enhanced-search/${journey.id}`,
   },
   [Page.ADD_CONTACT_MODE_PAGE]: {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/add/mode/${journey.mode}/${journey.id}`,
@@ -182,6 +188,12 @@ const PRE_MODE_SPEC: Record<PreModePages, Spec> = {
     previousUrlLabel: _ => 'Back to prisoner’s contact list',
     nextUrl: PAGES.CONTACT_SEARCH_PAGE.url,
   },
+
+  [Page.ENHANCED_CONTACT_SEARCH_PAGE]: {
+    previousUrl: journey => `/prisoner/${journey.prisonerNumber}/contacts/list`,
+    previousUrlLabel: _ => 'Back to prisoner’s contact list',
+    nextUrl: PAGES.CONTACT_SEARCH_PAGE.url,
+  },
   [Page.CONTACT_MATCH_PAGE]: {
     previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
     previousUrlLabel: _ => 'Back to contact search',
@@ -197,6 +209,7 @@ const PRE_MODE_SPEC: Record<PreModePages, Spec> = {
 const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   [Page.CREATE_CONTACT_START_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CONTACT_SEARCH_PAGE.url },
   [Page.CONTACT_SEARCH_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CONTACT_SEARCH_PAGE.url },
+  [Page.ENHANCED_CONTACT_SEARCH_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.ENHANCED_CONTACT_SEARCH_PAGE.url },
   [Page.CONTACT_MATCH_PAGE]: {
     previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
     previousUrlLabel: _ => 'Back to contact search',
@@ -342,6 +355,7 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
 const EXISTING_CONTACT_SPEC: Record<ExistingContactPages, Spec> = {
   [Page.CREATE_CONTACT_START_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CONTACT_SEARCH_PAGE.url },
   [Page.CONTACT_SEARCH_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.CONTACT_SEARCH_PAGE.url },
+  [Page.ENHANCED_CONTACT_SEARCH_PAGE]: { previousUrl: _ => undefined, nextUrl: PAGES.ENHANCED_CONTACT_SEARCH_PAGE.url },
   [Page.CONTACT_MATCH_PAGE]: {
     previousUrl: PAGES.CONTACT_SEARCH_PAGE.url,
     previousUrlLabel: _ => 'Back to contact search',
