@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import e, { Request, Response } from 'express'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import { ContactSearchSchemaType } from './contactSearchSchema'
@@ -20,12 +20,22 @@ export default class ContactSearchController implements PageHandler {
 
   private TABLE_ROW_COUNT = 10
 
+  private getEnabledPrisons = () => {
+    return new Set(
+      (process.env['FEATURE_ENHANCED_CONTACT_SEARCH'] || '')
+        .split(',')
+        .map(code => code.trim())
+        .filter(Boolean),
+    )
+  }
+
   GET = async (
     req: Request<{ journeyId: string }, unknown, unknown, { clear?: string; page?: string; sort?: string }>,
     res: Response,
   ): Promise<void> => {
+    const prisonerPrisonId = req.middleware?.prisonerData?.prisonId
+    const enhancedFeatureEnabled = prisonerPrisonId ? this.getEnabledPrisons().has(prisonerPrisonId) : undefined
     const { journeyId } = req.params
-    const { user, prisonerPermissions } = res.locals
     const journey = req.session.addContactJourneys![journeyId]!
 
     delete journey.isContactMatched
@@ -47,6 +57,25 @@ export default class ContactSearchController implements PageHandler {
         return res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/search/${journeyId}#pagination`)
       }
     }
+
+    const view = enhancedFeatureEnabled
+      ? await this.getContactSearchView(req, res)
+      : await this.getContactSearchView(req, res)
+
+    const template = enhancedFeatureEnabled
+      ? 'pages/contacts/manage/enhancedContactSearch'
+      : 'pages/contacts/manage/contactSearch'
+
+    return res.render(template, view)
+  }
+
+  private async getContactSearchView(
+    req: Request<{ journeyId: string }, unknown, unknown, { clear?: string; page?: string; sort?: string }>,
+    res: Response,
+  ) {
+    const { journeyId } = req.params
+    const { user, prisonerPermissions } = res.locals
+    const journey = req.session.addContactJourneys![journeyId]!
 
     const { day, month, year } = journey?.searchContact?.dateOfBirth ?? {}
     const hasDob = !!(day && month && year)
@@ -101,10 +130,20 @@ export default class ContactSearchController implements PageHandler {
       results,
       dobError,
     }
-    return res.render('pages/contacts/manage/contactSearch', view)
+    return view
   }
 
   POST = async (req: Request<{ journeyId: string }, ContactSearchSchemaType>, res: Response): Promise<void> => {
+    const prisonerPrisonId = req.middleware?.prisonerData?.prisonId
+    const enhancedFeatureEnabled = prisonerPrisonId ? this.getEnabledPrisons().has(prisonerPrisonId) : undefined
+
+    const { journeyId, journey } = enhancedFeatureEnabled
+      ? await this.setContactSearchSessionParameters(req)
+      : await this.setContactSearchSessionParameters(req)
+    res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/search/${journeyId}#`)
+  }
+
+  private setContactSearchSessionParameters(req: e.Request<{ journeyId: string }, ContactSearchSchemaType>) {
     const { lastName, firstName, middleNames, day, month, year, soundsLike, contactId } = req.body
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
@@ -127,7 +166,7 @@ export default class ContactSearchController implements PageHandler {
       journey.searchContact.page = 1
       delete journey.searchContact.sort
     }
-    res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/search/${journeyId}#`)
+    return { journeyId, journey }
   }
 
   private namesAreValid(contact: Partial<ContactNames>): boolean {

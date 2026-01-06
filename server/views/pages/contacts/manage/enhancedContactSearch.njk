@@ -1,0 +1,58 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "moj/components/filter/macro.njk" import mojFilter %}
+{% from "partials/validatedDateInput/macro.njk" import validatedDateInput %}
+{% from "partials/simplePagination/macro.njk" import simplePagination %}
+{% from "../partials/addPagination.njk" import addPagination %}
+{% from "moj/components/alert/macro.njk" import mojAlert %}
+
+{% set pageTitle = "Check if the contact is already on the system - Manage contacts - DPS" %}
+{% set title = "Check if the contact is already on the system (Enhanced)" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-!-static-margin-bottom-7">
+        <span class="govuk-caption-l">Link a contact to a prisoner</span>
+        <h1 class="govuk-heading-l">{{ title }}</h1>
+      </div>
+      {{ govukWarningText({
+        html: 'Duplicate contact records are a safety and security risk. You should only <a href="/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/add/mode/NEW/' + journey.id + '" class="govuk-body govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold">add a new contact</a> if you cannot find the person on the system.',
+        iconFallbackText: "Warning"
+      }) }}
+    </div>
+  </div>
+ <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <!-- ...existing code (enhanced search form and results) ... -->
+        </div>
+      </div>
+{% endblock %}
+
+{% block pageScripts %}
+    <script nonce="{{ cspNonce }}">
+      window.onload = function () {
+        const filter = document.querySelector('[data-module="moj-filter"]')
+        filter && new window.MojFrontend.FilterToggleButton(filter, {
+          bigModeMediaQuery: '(min-width: 48.063em)',
+          startHidden: false,
+          toggleButton: {
+            showText: 'Show filter',
+            hideText: 'Hide filter',
+            classes: 'govuk-button--secondary'
+          },
+          toggleButtonContainer: { selector: '.moj-action-bar__filter' },
+          closeButton: { text: 'Close' },
+          closeButtonContainer: { selector: '.moj-filter__header-action' }
+        })
+      }
+    </script>
+{% endblock %}
