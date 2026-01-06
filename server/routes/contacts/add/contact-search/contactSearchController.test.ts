@@ -429,3 +429,66 @@ describe('Contact seaarch results', () => {
     expect($('p:contains("No contact records match your search")').text()).toBeTruthy()
   })
 })
+
+describe('contact search enhanced version', () => {
+  describe('POST /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
+    it('should pass to result page when last name provided', async () => {
+      // Arrange
+      process.env['FEATURE_ENHANCED_CONTACT_SEARCH'] = 'KMI,GNI,SPI'
+      await request(app)
+        .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+        .type('form')
+        .send({ lastName: 'last', middleNames: '', firstName: '' })
+        .expect(302)
+        .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
+
+      expect(session.addContactJourneys![journeyId]!.searchContact).toStrictEqual({
+        contact: {
+          firstName: undefined,
+          middleNames: undefined,
+          lastName: 'last',
+        },
+        contactId: undefined,
+        page: 1,
+        soundsLike: false,
+      })
+    })
+  })
+
+  describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
+    it('should render contact page without filter when there is no search', async () => {
+      // Arrange
+      process.env['FEATURE_ENHANCED_CONTACT_SEARCH'] = 'KMI,GNI,MDI'
+      // Given
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.searchContact.mockResolvedValue({
+        page: {
+          totalPages: 0,
+          totalElements: 0,
+        },
+        content: [TestData.contactSearchResultItem()],
+      })
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      const $ = cheerio.load(response.text)
+
+      // Then
+      expect(response.status).toEqual(200)
+      expect($('title').text()).toStrictEqual('Check if the contact is already on the system - Manage contacts - DPS')
+      expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Link a contact to a prisoner')
+      expect($('h1.govuk-heading-l').text()).toContain('Check if the contact is already on the system (Enhanced)')
+      expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(`/prisoner/${prisonerNumber}/contacts/list`)
+      expect($('[data-qa=back-link]').first().text()).toStrictEqual('Back to prisoner’s contact list')
+      expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+
+      expect(auditService.logPageView).toHaveBeenCalledWith(Page.CONTACT_SEARCH_PAGE, {
+        who: currentUser.username,
+        correlationId: expect.any(String),
+        details: {
+          prisonerNumber: 'A1234BC',
+        },
+      })
+    })
+  })
+})
