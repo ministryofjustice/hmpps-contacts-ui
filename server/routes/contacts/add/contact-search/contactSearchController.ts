@@ -137,10 +137,7 @@ export default class ContactSearchController implements PageHandler {
     return view
   }
 
-  private async getEnhancedContactSearchView(
-    req: Request<{ journeyId: string }>,
-    res: Response,
-  ) {
+  private async getEnhancedContactSearchView(req: Request<{ journeyId: string }>, res: Response) {
     const { journeyId } = req.params
     const { user, prisonerPermissions } = res.locals
     const journey = req.session.addContactJourneys![journeyId]!
@@ -170,7 +167,7 @@ export default class ContactSearchController implements PageHandler {
         {
           page: (journey.searchContact.page ?? 1) - 1,
           size: this.TABLE_ROW_COUNT,
-          sort: journey.searchContact.sortBy ?? 'lastName,asc',
+          sort: journey.searchContact.sort ?? 'lastName,asc',
         },
         user,
       )
@@ -193,7 +190,7 @@ export default class ContactSearchController implements PageHandler {
       searchType: res.locals?.formResponses?.['searchType'] ?? journey?.searchContact?.searchType,
       contactId: res.locals?.formResponses?.['contactId'] ?? journey?.searchContact?.contactId,
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
-      sortBy: journey.searchContact?.sortBy,
+      sort: journey.searchContact?.sort,
       journey,
       results,
       dobError, // maybe able to remove
@@ -238,7 +235,7 @@ export default class ContactSearchController implements PageHandler {
   }
 
   private setEnhancedContactSearchSessionParameters(req: e.Request<{ journeyId: string }, ContactSearchSchemaType>) {
-    const { lastName, firstName, middleNames, day, month, year, sortBy, searchType, contactId } = req.body
+    const { lastName, firstName, middleNames, day, month, year, sort, searchType, contactId } = req.body
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
 
@@ -250,7 +247,7 @@ export default class ContactSearchController implements PageHandler {
       },
       dateOfBirth: { day, month, year },
       contactId: contactId || undefined,
-      sortBy: sortBy || undefined,
+      sort: sort || undefined,
       searchType: searchType || undefined,
       page: 1,
     }

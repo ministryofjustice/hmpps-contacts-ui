@@ -67,20 +67,20 @@
 
                 {{ govukDetails({
                     summaryText: "Show advanced options",
-                    open: ((sortBy is defined and sortBy != 'lastName,asc') or (searchType is defined and searchType != 'partial') or contactId or day or month or year),
+                    open: ((sort is defined and sort != 'lastName,asc') or (searchType is defined and searchType != 'partial') or contactId or day or month or year),
                     classes: "no-left-border-details",
                     html:
                     govukSelect({
-                        id: "sortBy",
-                        name: "sortBy",
+                        id: "sort",
+                        name: "sort",
                         label: {
                             text: "Sort by"
                         },
                         items: [
-                            { value: "lastName,asc", text: "Last name (A–Z)", selected: (sortBy == 'lastName,asc') },
-                            { value: "lastName,desc", text: "Last name (Z–A)" , selected: (sortBy == 'lastName,desc') },
-                            { value: "dateOfBirth,asc", text: "Date of birth (most recent)" , selected: (sortBy == 'dateOfBirth,asc') },
-                            { value: "dateOfBirth,desc", text: "Date of birth (oldest)" , selected: (sortBy == 'dateOfBirth,desc') }
+                            { value: "lastName,asc", text: "Last name (A–Z)", selected: (sort == 'lastName,asc') },
+                            { value: "lastName,desc", text: "Last name (Z–A)" , selected: (sort == 'lastName,desc') },
+                            { value: "dateOfBirth,asc", text: "Date of birth (most recent)" , selected: (sort == 'dateOfBirth,asc') },
+                            { value: "dateOfBirth,desc", text: "Date of birth (oldest)" , selected: (sort == 'dateOfBirth,desc') }
                         ]
                     }) +
 
