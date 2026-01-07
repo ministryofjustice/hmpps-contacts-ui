@@ -477,7 +477,7 @@ describe('contact search enhanced version', () => {
       expect(response.status).toEqual(200)
       expect($('title').text()).toStrictEqual('Check if the contact is already on the system - Manage contacts - DPS')
       expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Link a contact to a prisoner')
-      expect($('h1.govuk-heading-l').text()).toContain('Check if the contact is already on the system (Enhanced)')
+      expect($('h1.govuk-heading-l').text()).toContain('Check if the contact is already on the system')
       expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(`/prisoner/${prisonerNumber}/contacts/list`)
       expect($('[data-qa=back-link]').first().text()).toStrictEqual('Back to prisoner’s contact list')
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
