@@ -10,11 +10,13 @@ export interface AddContactJourney {
   searchContact?:
     | {
         soundsLike?: boolean | undefined
+        searchType?: string | undefined
         contact?: Partial<ContactNames>
         contactId?: string | undefined
         dateOfBirth?: Partial<DateOfBirth>
         page?: number
         sort?: string
+        sortBy?: string
       }
     | undefined
   isContactMatched?: 'YES' | 'NO_SEARCH_AGAIN' | 'NO_CREATE_NEW' | 'NO_GO_BACK_TO_CONTACT_LIST'

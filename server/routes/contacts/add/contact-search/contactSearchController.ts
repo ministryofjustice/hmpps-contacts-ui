@@ -6,7 +6,11 @@ import { ContactsService } from '../../../../services'
 import { formatDateForApi } from '../../../../utils/utils'
 import { navigationForAddContactJourney } from '../addContactFlowControl'
 import { setPaginationLocals } from '../../../../views/partials/simplePagination/utils'
-import { ContactSearchRequest, PagedModelContactSearchResultItem } from '../../../../@types/contactsApiClient'
+import {
+  ContactSearchRequest,
+  EnhancedContactSearchRequest,
+  PagedModelContactSearchResultItem,
+} from '../../../../@types/contactsApiClient'
 import Permission from '../../../../enumeration/permission'
 import { ContactNames } from '../../../../@types/journeys'
 import { NAME_REGEX } from '../../common/name/nameSchemas'
@@ -59,7 +63,7 @@ export default class ContactSearchController implements PageHandler {
     }
 
     const view = enhancedFeatureEnabled
-      ? await this.getContactSearchView(req, res)
+      ? await this.getEnhancedContactSearchView(req, res)
       : await this.getContactSearchView(req, res)
 
     const template = enhancedFeatureEnabled
@@ -133,12 +137,76 @@ export default class ContactSearchController implements PageHandler {
     return view
   }
 
+  private async getEnhancedContactSearchView(
+    req: Request<{ journeyId: string }>,
+    res: Response,
+  ) {
+    const { journeyId } = req.params
+    const { user, prisonerPermissions } = res.locals
+    const journey = req.session.addContactJourneys![journeyId]!
+
+    const { day, month, year } = journey?.searchContact?.dateOfBirth ?? {}
+    const dobError =
+      res.locals.validationErrors &&
+      (res.locals?.formResponses?.['day'] ||
+        res.locals?.formResponses?.['month'] ||
+        res.locals?.formResponses?.['year'])
+
+    let results: PagedModelContactSearchResultItem | undefined
+
+    if (journey.searchContact?.contact && this.namesAreValid(journey.searchContact?.contact) && !dobError) {
+      const enhancedContactSearchRequest: EnhancedContactSearchRequest = {
+        lastName: journey.searchContact.contact.lastName!,
+        firstName: journey.searchContact.contact.firstName,
+        middleNames: journey.searchContact.contact.middleNames,
+        dateOfBirth: formatDateForApi(journey.searchContact.dateOfBirth),
+        includeAnyExistingRelationshipsToPrisoner: journey.prisonerNumber,
+        searchType: journey.searchContact.searchType,
+        contactId: journey.searchContact.contactId,
+      }
+
+      results = await this.contactsService.searchContact(
+        enhancedContactSearchRequest,
+        {
+          page: (journey.searchContact.page ?? 1) - 1,
+          size: this.TABLE_ROW_COUNT,
+          sort: journey.searchContact.sortBy ?? 'lastName,asc',
+        },
+        user,
+      )
+      setPaginationLocals(
+        res,
+        this.TABLE_ROW_COUNT,
+        journey.searchContact.page ?? 1,
+        results?.page?.totalElements ?? 0,
+        results?.content?.length ?? 0,
+      )
+    }
+
+    const view = {
+      lastName: res.locals?.formResponses?.['lastName'] ?? journey?.searchContact?.contact?.lastName,
+      firstName: res.locals?.formResponses?.['firstName'] ?? journey?.searchContact?.contact?.firstName,
+      middleNames: res.locals?.formResponses?.['middleNames'] ?? journey?.searchContact?.contact?.middleNames,
+      day: res.locals?.formResponses?.['day'] ?? day,
+      month: res.locals?.formResponses?.['month'] ?? month,
+      year: res.locals?.formResponses?.['year'] ?? year,
+      searchType: res.locals?.formResponses?.['searchType'] ?? journey?.searchContact?.searchType,
+      contactId: res.locals?.formResponses?.['contactId'] ?? journey?.searchContact?.contactId,
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
+      sortBy: journey.searchContact?.sortBy,
+      journey,
+      results,
+      dobError, // maybe able to remove
+    }
+    return view
+  }
+
   POST = async (req: Request<{ journeyId: string }, ContactSearchSchemaType>, res: Response): Promise<void> => {
     const prisonerPrisonId = req.middleware?.prisonerData?.prisonId
     const enhancedFeatureEnabled = prisonerPrisonId ? this.getEnabledPrisons().has(prisonerPrisonId) : undefined
 
     const { journeyId, journey } = enhancedFeatureEnabled
-      ? await this.setContactSearchSessionParameters(req)
+      ? await this.setEnhancedContactSearchSessionParameters(req)
       : await this.setContactSearchSessionParameters(req)
     res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/search/${journeyId}#`)
   }
@@ -166,6 +234,27 @@ export default class ContactSearchController implements PageHandler {
       journey.searchContact.page = 1
       delete journey.searchContact.sort
     }
+    return { journeyId, journey }
+  }
+
+  private setEnhancedContactSearchSessionParameters(req: e.Request<{ journeyId: string }, ContactSearchSchemaType>) {
+    const { lastName, firstName, middleNames, day, month, year, sortBy, searchType, contactId } = req.body
+    const { journeyId } = req.params
+    const journey = req.session.addContactJourneys![journeyId]!
+
+    journey.searchContact = {
+      contact: {
+        lastName: lastName || undefined,
+        middleNames: middleNames || undefined,
+        firstName: firstName || undefined,
+      },
+      dateOfBirth: { day, month, year },
+      contactId: contactId || undefined,
+      sortBy: sortBy || undefined,
+      searchType: searchType || undefined,
+      page: 1,
+    }
+
     return { journeyId, journey }
   }
 
