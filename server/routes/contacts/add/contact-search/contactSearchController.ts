@@ -12,7 +12,7 @@ import {
   PagedModelContactSearchResultItem,
 } from '../../../../@types/contactsApiClient'
 import Permission from '../../../../enumeration/permission'
-import { ContactNames } from '../../../../@types/journeys'
+import { AddContactJourney, ContactNames } from '../../../../@types/journeys'
 import { NAME_REGEX } from '../../common/name/nameSchemas'
 
 export default class ContactSearchController implements PageHandler {
@@ -142,16 +142,16 @@ export default class ContactSearchController implements PageHandler {
     const { user, prisonerPermissions } = res.locals
     const journey = req.session.addContactJourneys![journeyId]!
 
-    const { day, month, year } = journey?.searchContact?.dateOfBirth ?? {}
-    const dobError =
-      res.locals.validationErrors &&
-      (res.locals?.formResponses?.['day'] ||
-        res.locals?.formResponses?.['month'] ||
-        res.locals?.formResponses?.['year'])
+    const { day, month, year, dobError, hasContactId } = this.validateRequest(journey, res)
 
     let results: PagedModelContactSearchResultItem | undefined
 
-    if (journey.searchContact?.contact && this.namesAreValid(journey.searchContact?.contact) && !dobError) {
+    if (
+      journey.searchContact?.contact &&
+      this.namesAreValid(journey.searchContact?.contact) &&
+      !dobError &&
+      hasContactId
+    ) {
       const enhancedContactSearchRequest: EnhancedContactSearchRequest = {
         lastName: journey.searchContact.contact.lastName!,
         firstName: journey.searchContact.contact.firstName,
@@ -178,6 +178,8 @@ export default class ContactSearchController implements PageHandler {
         results?.page?.totalElements ?? 0,
         results?.content?.length ?? 0,
       )
+
+      results = results ?? ({ content: [] } as PagedModelContactSearchResultItem)
     }
 
     const view = {
@@ -193,9 +195,64 @@ export default class ContactSearchController implements PageHandler {
       sort: journey.searchContact?.sort,
       journey,
       results,
-      dobError, // maybe able to remove
     }
     return view
+  }
+
+  private validateRequest(journey: AddContactJourney, res: e.Response) {
+    const { day, month, year } = journey?.searchContact?.dateOfBirth ?? {}
+    const { firstName, lastName, middleNames } = journey?.searchContact?.contact ?? {}
+    const { contactId } = journey?.searchContact ?? {}
+    const hasDob = !!(day && month && year)
+    const dobError =
+      res.locals.validationErrors &&
+      (res.locals?.formResponses?.['day'] ||
+        res.locals?.formResponses?.['month'] ||
+        res.locals?.formResponses?.['year'])
+
+    const hasContactId = typeof contactId === 'string' && contactId.trim() !== ''
+    const hasName =
+      (firstName && firstName.trim() !== '') ||
+      (middleNames && middleNames.trim() !== '') ||
+      (lastName && lastName.trim() !== '')
+
+    if (journey.searchContact?.contact && !hasName && !hasContactId && !hasDob && !dobError) {
+      res.locals.validationErrors = {
+        ...(res.locals.validationErrors || {}),
+        search: ['Enter a contact’s name, ID, or date of birth'],
+      }
+      res.locals.formResponses = {
+        ...(res.locals.formResponses || {}),
+        search: 'Enter a contact’s name, ID, or date of birth',
+      }
+    }
+
+    // validate each name field and include the offending character in the error
+    const addNameError = (field: 'lastName' | 'firstName' | 'middleNames', value: string) => {
+      const offending = this.findOffendingCharacter(value)
+      const display = offending === ' ' ? 'space' : (offending ?? value)
+      // eslint-disable-next-line no-nested-ternary
+      const message = `${field === 'lastName' ? 'Last' : field === 'firstName' ? 'First' : 'Middle'} name must not contain "${display}"`
+      res.locals.validationErrors = {
+        ...(res.locals.validationErrors || {}),
+        [field]: [message],
+      }
+      res.locals.formResponses = {
+        ...(res.locals.formResponses || {}),
+        [field]: value,
+      }
+    }
+
+    if (lastName && !this.isValidName(lastName)) {
+      addNameError('lastName', lastName)
+    }
+    if (firstName && !this.isValidName(firstName)) {
+      addNameError('firstName', firstName)
+    }
+    if (middleNames && !this.isValidName(middleNames)) {
+      addNameError('middleNames', middleNames)
+    }
+    return { day, month, year, dobError, hasContactId }
   }
 
   POST = async (req: Request<{ journeyId: string }, ContactSearchSchemaType>, res: Response): Promise<void> => {
@@ -271,5 +328,14 @@ export default class ContactSearchController implements PageHandler {
 
   private isValidName(name: string): boolean {
     return NAME_REGEX.test(name)
+  }
+
+  private findOffendingCharacter(name: string): string | undefined {
+    // allowed: any Unicode letter, apostrophe, hyphen, or whitespace
+    const allowedChar = /[\p{L}'\-\s]/u
+    for (const ch of name) {
+      if (!allowedChar.test(ch)) return ch
+    }
+    return undefined
   }
 }

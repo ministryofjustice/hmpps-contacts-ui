@@ -43,6 +43,7 @@
                         id: "firstName",
                         name: "firstName",
                         value: firstName,
+                        errorMessage: validationErrors | findError('firstName'),
                         label: {
                             text: 'First name'
                         }
@@ -52,12 +53,14 @@
                         id: "middleNames",
                         name: "middleNames",
                         label: { text: "Middle names" },
+                        errorMessage: validationErrors | findError('middleNames'),
                         value: middleNames
                     }) }}
 
                     {{ govukInput({
                         id: "lastName",
                         name: "lastName",
+                        errorMessage: validationErrors | findError('lastName'),
                         label: { text: "Last name" },
                         value: lastName
                     }) }}
@@ -211,16 +214,7 @@
                         rows: contactRows
                     }) }}
                 {% else %}
-                    {% if dobError %}
-                        <div class="govuk-body govuk-!-margin-bottom-6">
-                            <p><strong>There is a problem with the date of birth filter.</strong></p>
-                            <p>You can either:</p>
-                            <ul class="govuk-list govuk-list--bullet">
-                                <li>correct the problem and apply the filter again</li>
-                                <li>clear the filter and return to your search results</li>
-                            </ul>
-                        </div>
-                    {% elseif not results %}
+                    {% if not results %}
                         <p class="govuk-!-margin-bottom-6"><strong>Start a search to view contact records.</strong></p>
                     {% else %}
                         <div class="govuk-body govuk-!-margin-bottom-6">
