@@ -73,12 +73,12 @@ export type ContactSearchRequest = {
 }
 
 export type EnhancedContactSearchRequest = {
-  lastName: string
+  lastName?: string | undefined
   firstName?: string | undefined
   middleNames?: string | undefined
-  dateOfBirth?: string | null
+  dateOfBirth?: string | undefined
   contactId?: string | undefined
-  includeAnyExistingRelationshipsToPrisoner?: string | undefined
-  sortBy?: string | undefined
+  previousNames?: boolean | undefined
+  includePrisonerRelationships?: string | undefined
   searchType?: string | undefined
 }

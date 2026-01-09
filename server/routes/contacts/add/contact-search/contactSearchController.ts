@@ -142,27 +142,23 @@ export default class ContactSearchController implements PageHandler {
     const { user, prisonerPermissions } = res.locals
     const journey = req.session.addContactJourneys![journeyId]!
 
-    const { day, month, year, dobError, hasContactId } = this.validateRequest(journey, res)
+    const { day, month, year } = this.validateRequest(journey, res)
 
     let results: PagedModelContactSearchResultItem | undefined
 
-    if (
-      journey.searchContact?.contact &&
-      this.namesAreValid(journey.searchContact?.contact) &&
-      !dobError &&
-      hasContactId
-    ) {
+    if (!res.locals.validationErrors && journey.searchContact) {
+      const contact = journey.searchContact.contact ?? {}
       const enhancedContactSearchRequest: EnhancedContactSearchRequest = {
-        lastName: journey.searchContact.contact.lastName!,
-        firstName: journey.searchContact.contact.firstName,
-        middleNames: journey.searchContact.contact.middleNames,
-        dateOfBirth: formatDateForApi(journey.searchContact.dateOfBirth),
-        includeAnyExistingRelationshipsToPrisoner: journey.prisonerNumber,
+        lastName: contact.lastName,
+        firstName: contact.firstName,
+        middleNames: contact.middleNames,
+        dateOfBirth: formatDateForApi(journey.searchContact.dateOfBirth) ?? undefined,
+        includePrisonerRelationships: journey.prisonerNumber,
         searchType: journey.searchContact.searchType,
         contactId: journey.searchContact.contactId,
       }
 
-      results = await this.contactsService.searchContact(
+      results = await this.contactsService.searchContactV2(
         enhancedContactSearchRequest,
         {
           page: (journey.searchContact.page ?? 1) - 1,
