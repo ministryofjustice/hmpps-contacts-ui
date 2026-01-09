@@ -4,7 +4,7 @@ import { PageHandler } from '../../../interfaces/pageHandler'
 import ReferenceCodeType from '../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../services/referenceDataService'
 import { Navigation } from '../../contacts/common/navigation'
-import { maxLengthForRestrictionClass, RestrictionSchemaType } from '../schema/restrictionSchema'
+import { RestrictionSchemaType } from '../schema/restrictionSchema'
 import Urls from '../../urls'
 import { RestrictionClass } from '../../../@types/journeys'
 import Permission from '../../../enumeration/permission'
@@ -26,7 +26,7 @@ export default class EnterNewRestrictionController implements PageHandler {
     }>,
     res: Response,
   ): Promise<void> => {
-    const { journeyId, prisonerNumber, contactId, prisonerContactId, restrictionClass } = req.params
+    const { journeyId, prisonerNumber, contactId, prisonerContactId } = req.params
     const { user } = res.locals
     const journey = req.session.addRestrictionJourneys![journeyId]!
     const types = await this.referenceDataService.getReferenceData(ReferenceCodeType.RESTRICTION, user)
@@ -43,7 +43,7 @@ export default class EnterNewRestrictionController implements PageHandler {
       expiryDate: res.locals?.formResponses?.['expiryDate'] ?? journey?.restriction?.expiryDate,
       comments: res.locals?.formResponses?.['comments'] ?? journey?.restriction?.comments,
       navigation,
-      maxCommentLength: maxLengthForRestrictionClass(restrictionClass),
+      maxCommentLength: 240,
     }
     res.render('pages/contacts/restrictions/enterRestriction', viewModel)
   }
