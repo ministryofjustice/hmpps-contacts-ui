@@ -43,7 +43,7 @@ export default class EnterNewRestrictionController implements PageHandler {
       expiryDate: res.locals?.formResponses?.['expiryDate'] ?? journey?.restriction?.expiryDate,
       comments: res.locals?.formResponses?.['comments'] ?? journey?.restriction?.comments,
       navigation,
-      maxCommentLength: maxLengthForRestrictionClass(restrictionClass),
+      maxCommentLength: 240,
     }
     res.render('pages/contacts/restrictions/enterRestriction', viewModel)
   }
