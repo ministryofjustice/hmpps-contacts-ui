@@ -210,11 +210,11 @@ export default class ContactSearchController implements PageHandler {
         res.locals?.formResponses?.['year'])
 
     const hasContactId = typeof contactId === 'string' && contactId.trim() !== ''
-    // validate contactId contains only allowed characters (letters, numbers, hyphen)
+    // validate contactId contains only numbers
     if (hasContactId) {
       const offendingContactChar = (() => {
         for (const ch of contactId as string) {
-          if (!/[\p{L}\p{N}-]/u.test(ch)) return ch
+          if (!/\p{N}/u.test(ch)) return ch
         }
         return undefined
       })()

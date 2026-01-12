@@ -615,7 +615,7 @@ describe('contact search enhanced version', () => {
       expect(response.status).toEqual(200)
       // Top-level error summary should include the message set by validateRequest
       expect(response.text).toContain('There is a problem')
-      expect(response.text).toContain('Contact ID must not contain &quot;#&quot;')
+      expect(response.text).toContain('Contact ID must not contain &quot;c&quot;')
       expect(contactsService.searchContact).not.toHaveBeenCalled()
     })
   })
