@@ -480,7 +480,7 @@ describe('contact search enhanced version', () => {
         page: { number: 0, size: 10, totalElements: 1, totalPages: 1 },
       }
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.searchContact.mockResolvedValue(results)
+      contactsService.searchContactV2.mockResolvedValue(results)
 
       // When - submit enhanced form including contactId, sort and searchType and a DOB
       await request(app)
@@ -595,7 +595,7 @@ describe('contact search enhanced version', () => {
     it('should render contact page without filter when there is no search', async () => {
       // Given
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.searchContact.mockResolvedValue({
+      contactsService.searchContactV2.mockResolvedValue({
         page: {
           totalPages: 0,
           totalElements: 0,
@@ -627,7 +627,7 @@ describe('contact search enhanced version', () => {
 
     it('should render enhanced search form with advanced controls and date fields', async () => {
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.searchContact.mockResolvedValue({
+      contactsService.searchContactV2.mockResolvedValue({
         page: {
           totalPages: 0,
           totalElements: 0,

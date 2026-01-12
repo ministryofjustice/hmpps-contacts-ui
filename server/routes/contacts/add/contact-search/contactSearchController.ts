@@ -14,6 +14,7 @@ import {
 import Permission from '../../../../enumeration/permission'
 import { AddContactJourney, ContactNames } from '../../../../@types/journeys'
 import { NAME_REGEX } from '../../common/name/nameSchemas'
+import logger from '../../../../../logger'
 
 export default class ContactSearchController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -39,6 +40,7 @@ export default class ContactSearchController implements PageHandler {
   ): Promise<void> => {
     const prisonerPrisonId = req.middleware?.prisonerData?.prisonId
     const enhancedFeatureEnabled = prisonerPrisonId ? this.getEnabledPrisons().has(prisonerPrisonId) : undefined
+    logger.info(`Is enhanced search: ${enhancedFeatureEnabled}`)
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
 
@@ -153,6 +155,7 @@ export default class ContactSearchController implements PageHandler {
         firstName: contact.firstName,
         middleNames: contact.middleNames,
         dateOfBirth: formatDateForApi(journey.searchContact.dateOfBirth) ?? undefined,
+        previousNames: true,
         includePrisonerRelationships: journey.prisonerNumber,
         searchType: journey.searchContact.searchType,
         contactId: journey.searchContact.contactId,
