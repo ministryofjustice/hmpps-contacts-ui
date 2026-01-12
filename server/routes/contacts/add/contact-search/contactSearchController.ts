@@ -210,6 +210,28 @@ export default class ContactSearchController implements PageHandler {
         res.locals?.formResponses?.['year'])
 
     const hasContactId = typeof contactId === 'string' && contactId.trim() !== ''
+    // validate contactId contains only allowed characters (letters, numbers, hyphen)
+    if (hasContactId) {
+      const offendingContactChar = (() => {
+        for (const ch of contactId as string) {
+          if (!/[\p{L}\p{N}-]/u.test(ch)) return ch
+        }
+        return undefined
+      })()
+
+      if (offendingContactChar) {
+        const display = offendingContactChar === ' ' ? 'space' : offendingContactChar
+        res.locals.validationErrors = {
+          ...(res.locals.validationErrors || {}),
+          contactId: [`Contact ID must not contain "${display}"`],
+        }
+        res.locals.formResponses = {
+          ...(res.locals.formResponses || {}),
+          contactId,
+        }
+      }
+    }
+
     const hasName =
       (firstName && firstName.trim() !== '') ||
       (middleNames && middleNames.trim() !== '') ||

@@ -589,6 +589,35 @@ describe('contact search enhanced version', () => {
       expect(response.text).toContain('Last name must not contain &quot;#&quot;')
       expect(contactsService.searchContact).not.toHaveBeenCalled()
     })
+
+    it('with invalid contact id should set validation error and not call service', async () => {
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+
+      // When - submit enhanced form with invalid contact id
+      await request(app)
+        .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+        .type('form')
+        .send({
+          lastName: 'lastName',
+          middleNames: 'middle',
+          firstName: 'first',
+          contactId: 'contact#1',
+          searchType: '',
+          day: '',
+          month: '',
+          year: '',
+        })
+        .expect(302)
+        .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
+
+      // Then GET should render page showing validation errors and should NOT call the search service
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      expect(response.status).toEqual(200)
+      // Top-level error summary should include the message set by validateRequest
+      expect(response.text).toContain('There is a problem')
+      expect(response.text).toContain('Contact ID must not contain &quot;#&quot;')
+      expect(contactsService.searchContact).not.toHaveBeenCalled()
+    })
   })
 
   describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
