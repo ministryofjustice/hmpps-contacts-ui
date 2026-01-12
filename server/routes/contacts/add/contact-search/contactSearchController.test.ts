@@ -517,11 +517,11 @@ describe('contact search enhanced version', () => {
       // And when rendering the GET, the controller should call the contactsService with the EnhancedContactSearchRequest containing contactId and searchType
       const getResponse = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       expect(getResponse.status).toEqual(200)
-      expect(contactsService.searchContact).toHaveBeenCalled()
+      expect(contactsService.searchContactV2).toHaveBeenCalled()
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      const calledRequest = contactsService.searchContact.mock.calls[0][0]
+      const calledRequest = contactsService.searchContactV2.mock.calls[0][0]
       expect(calledRequest).toMatchObject({
         contactId: '1234',
         lastName: 'last',
@@ -655,9 +655,9 @@ describe('contact search enhanced version', () => {
       expect($('label[for="sort"]').text().trim()).toContain('Sort by')
       // search type select and options + hint
       expect($('select#searchType')).toHaveLength(1)
-      expect($('select#searchType option[value="partial"]').length).toBeGreaterThan(0)
-      expect($('select#searchType option[value="exact"]').length).toBeGreaterThan(0)
-      expect($('select#searchType option[value="soundsLike"]').length).toBeGreaterThan(0)
+      expect($('select#searchType option[value="PARTIAL"]').length).toBeGreaterThan(0)
+      expect($('select#searchType option[value="EXACT"]').length).toBeGreaterThan(0)
+      expect($('select#searchType option[value="SOUNDS_LIKE"]').length).toBeGreaterThan(0)
       expect($('div#searchType-hint').text().trim()).toContain('Choose how results match your search term')
 
       // contact id input
