@@ -1,5 +1,6 @@
 import config from '../config'
 import RestClient from './restClient'
+import logger from '../../logger'
 import ReferenceCodeType from '../enumeration/referenceCodeType'
 import {
   AddContactRelationshipRequest,
@@ -170,27 +171,9 @@ export default class ContactsApiClient extends RestClient {
     pagination?: Pagination,
   ): Promise<PagedModelContactSearchResultItem> {
     const paginationParameters = pagination ?? { page: 0, size: config.apis.contactsApi.pageSize || 10 }
-    if (paginationParameters.sort === 'lastName,asc') {
-      paginationParameters.sort = ['lastName,asc', 'firstName,asc', 'middleNames,asc', 'id,asc']
-    } else if (paginationParameters.sort === 'lastName,desc') {
-      paginationParameters.sort = ['lastName,desc', 'firstName,desc', 'middleNames,desc', 'id,desc']
-    } else if (paginationParameters.sort === 'dateOfBirth,asc') {
-      paginationParameters.sort = [
-        paginationParameters.sort,
-        'lastName,asc',
-        'firstName,asc',
-        'middleNames,asc',
-        'id,asc',
-      ]
-    } else if (paginationParameters.sort === 'dateOfBirth,desc') {
-      paginationParameters.sort = [
-        paginationParameters.sort,
-        'lastName,desc',
-        'firstName,desc',
-        'middleNames,desc',
-        'id,desc',
-      ]
-    }
+    logger.debug(
+      `ContactsApiClient searchContactV2 called with request: ${JSON.stringify(contactSearchRequest)} and pagination: ${JSON.stringify(paginationParameters)}`,
+    )
     return this.get(
       {
         path: `/contact/searchV2`,
@@ -199,7 +182,7 @@ export default class ContactsApiClient extends RestClient {
           firstName: contactSearchRequest.firstName,
           middleNames: contactSearchRequest.middleNames,
           dateOfBirth: contactSearchRequest.dateOfBirth,
-          includeAnyExistingRelationshipsToPrisoner: contactSearchRequest.includePrisonerRelationships,
+          includePrisonerRelationships: contactSearchRequest.includePrisonerRelationships,
           searchType: contactSearchRequest.searchType,
           previousNames: contactSearchRequest.previousNames,
           contactId: contactSearchRequest.contactId,

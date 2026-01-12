@@ -618,6 +618,38 @@ describe('contact search enhanced version', () => {
       expect(response.text).toContain('Contact ID must not contain &quot;c&quot;')
       expect(contactsService.searchContact).not.toHaveBeenCalled()
     })
+
+    // should contain more than 2 characters for lastName, firstName, middleNames validation
+    it('should contain more than 2 characters for lastName, firstName, middleNames validation', async () => {
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+
+      // When - submit enhanced form with short names
+      await request(app)
+        .post(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+        .type('form')
+        .send({
+          lastName: 'l',
+          middleNames: 'm',
+          firstName: 'f',
+          contactId: '',
+          searchType: '',
+          day: '',
+          month: '',
+          year: '',
+        })
+        .expect(302)
+        .expect('Location', `/prisoner/${prisonerNumber}/contacts/search/${journeyId}#`)
+
+      // Then GET should render page showing validation errors and should NOT call the search service
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      expect(response.status).toEqual(200)
+      // Top
+      expect(response.text).toContain('There is a problem')
+      expect(response.text).toContain('Last name must be more than 2 characters or more')
+      expect(response.text).toContain('First name must be more than 2 characters or more')
+      expect(response.text).toContain('Middle name must be more than 2 characters or more')
+      expect(contactsService.searchContact).not.toHaveBeenCalled()
+    })
   })
 
   describe('GET /prisoner/:prisonerNumber/contacts/search/:journeyId', () => {
