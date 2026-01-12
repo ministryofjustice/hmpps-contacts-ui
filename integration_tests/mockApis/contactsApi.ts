@@ -401,6 +401,29 @@ export default {
       },
     })
   },
+  stubContactSearchV2: ({
+    results = {
+      page: {
+        totalPages: 0,
+        totalElements: 0,
+      },
+      content: [],
+    },
+  }: {
+    results: { page: { totalPages: number; totalElements: number }; content: ContactSearchResultItem[] }
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: '/contact/searchV2.+',
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: results,
+      },
+    })
+  },
 
   stubLanguagesReferenceData: (): SuperAgentRequest => {
     return stubFor({

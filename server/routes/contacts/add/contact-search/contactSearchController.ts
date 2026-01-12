@@ -199,80 +199,77 @@ export default class ContactSearchController implements PageHandler {
   }
 
   private validateRequest(journey: AddContactJourney, res: e.Response) {
-    const { day, month, year } = journey?.searchContact?.dateOfBirth ?? {}
-    const { firstName, lastName, middleNames } = journey?.searchContact?.contact ?? {}
-    const { contactId } = journey?.searchContact ?? {}
-    const hasDob = !!(day && month && year)
+    const search = journey?.searchContact
+    const dob = search?.dateOfBirth ?? {}
+    const contact = search?.contact ?? {}
+
+    const { day, month, year } = dob
+    const { firstName, lastName, middleNames } = contact
+    const { contactId } = search ?? {}
+
+    const CONTACT_ID_REGEX = /^\d+$/
+
+    const hasDob = Boolean(day && month && year)
+    const hasContactId = typeof contactId === 'string' && contactId.trim() !== ''
+    const hasName = [firstName, middleNames, lastName].some(v => v?.trim())
+
     const dobError =
       res.locals.validationErrors &&
-      (res.locals?.formResponses?.['day'] ||
-        res.locals?.formResponses?.['month'] ||
-        res.locals?.formResponses?.['year'])
+      (res.locals.formResponses?.['day'] || res.locals.formResponses?.['month'] || res.locals.formResponses?.['year'])
 
-    const hasContactId = typeof contactId === 'string' && contactId.trim() !== ''
-    // validate contactId contains only numbers
-    if (hasContactId) {
-      const offendingContactChar = (() => {
-        for (const ch of contactId as string) {
-          if (!/\p{N}/u.test(ch)) return ch
-        }
-        return undefined
-      })()
-
-      if (offendingContactChar) {
-        const display = offendingContactChar === ' ' ? 'space' : offendingContactChar
-        res.locals.validationErrors = {
-          ...(res.locals.validationErrors || {}),
-          contactId: [`Contact ID must not contain "${display}"`],
-        }
-        res.locals.formResponses = {
-          ...(res.locals.formResponses || {}),
-          contactId,
-        }
-      }
-    }
-
-    const hasName =
-      (firstName && firstName.trim() !== '') ||
-      (middleNames && middleNames.trim() !== '') ||
-      (lastName && lastName.trim() !== '')
-
-    if (journey.searchContact?.contact && !hasName && !hasContactId && !hasDob && !dobError) {
-      res.locals.validationErrors = {
-        ...(res.locals.validationErrors || {}),
-        search: ['Enter a contact’s name, ID, or date of birth'],
-      }
-      res.locals.formResponses = {
-        ...(res.locals.formResponses || {}),
-        search: 'Enter a contact’s name, ID, or date of birth',
-      }
-    }
-
-    // validate each name field and include the offending character in the error
-    const addNameError = (field: 'lastName' | 'firstName' | 'middleNames', value: string) => {
-      const offending = this.findOffendingCharacter(value)
-      const display = offending === ' ' ? 'space' : (offending ?? value)
-      // eslint-disable-next-line no-nested-ternary
-      const message = `${field === 'lastName' ? 'Last' : field === 'firstName' ? 'First' : 'Middle'} name must not contain "${display}"`
+    const addError = (field: string, message: string, value?: string) => {
       res.locals.validationErrors = {
         ...(res.locals.validationErrors || {}),
         [field]: [message],
       }
-      res.locals.formResponses = {
-        ...(res.locals.formResponses || {}),
-        [field]: value,
+      if (value !== undefined) {
+        res.locals.formResponses = {
+          ...(res.locals.formResponses || {}),
+          [field]: value,
+        }
       }
     }
 
-    if (lastName && !this.isValidName(lastName)) {
-      addNameError('lastName', lastName)
+    /* -------------------------
+     * Contact ID validation
+     * ------------------------- */
+    if (hasContactId && !CONTACT_ID_REGEX.test(contactId!)) {
+      const offending = contactId!.match(/[^\d]/)?.[0]
+      const display = offending === ' ' ? 'space' : offending
+      addError('contactId', `Contact ID must not contain "${display}"`, contactId!)
     }
-    if (firstName && !this.isValidName(firstName)) {
-      addNameError('firstName', firstName)
+
+    /* -------------------------
+     * Empty search validation
+     * ------------------------- */
+    if (search?.contact && !hasName && !hasContactId && !hasDob && !dobError) {
+      addError('search', 'Enter a contact’s name, ID, or date of birth')
     }
-    if (middleNames && !this.isValidName(middleNames)) {
-      addNameError('middleNames', middleNames)
+
+    /* -------------------------
+     * Name validation
+     * ------------------------- */
+    const validateName = (field: 'firstName' | 'lastName' | 'middleNames', label: string, value?: string) => {
+      if (!value) return
+
+      if (!NAME_REGEX.test(value)) {
+        const offending = value.match(/[^A-Za-zÀ-ÖØ-öø-ÿ' -]/u)?.[0]
+        const display = offending === ' ' ? 'space' : offending
+        addError(field, `${label} name must not contain "${display}"`, value)
+        return
+      }
+
+      if (value.length < 2) {
+        addError(field, `${label} name must be more than 2 characters or more`, value)
+      }
     }
+
+    if (hasName) {
+      validateName('lastName', 'Last', lastName)
+      validateName('firstName', 'First', firstName)
+      validateName('middleNames', 'Middle', middleNames)
+    }
+
     return { day, month, year, dobError, hasContactId }
   }
 

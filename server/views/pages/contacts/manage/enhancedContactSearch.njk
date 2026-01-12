@@ -70,7 +70,7 @@
 
                 {{ govukDetails({
                     summaryText: "Show advanced options",
-                    open: ((sort is defined and sort != 'lastName,asc') or (searchType is defined and searchType != 'partial') or contactId or day or month or year),
+                    open: ((sort is defined and sort != 'lastName,asc') or (searchType is defined and searchType != 'PARTIAL') or contactId or day or month or year),
                     classes: "no-left-border-details",
                     html:
                     govukSelect({
@@ -210,7 +210,7 @@
                                 text: "Action",
                                 format: "numeric"
                             }
-                        ] | convertToSortableColumns(sort or 'lastName,asc'),
+                        ],
                         rows: contactRows
                     }) }}
                 {% else %}
