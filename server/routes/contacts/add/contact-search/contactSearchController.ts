@@ -6,10 +6,15 @@ import { ContactsService } from '../../../../services'
 import { formatDateForApi } from '../../../../utils/utils'
 import { navigationForAddContactJourney } from '../addContactFlowControl'
 import { setPaginationLocals } from '../../../../views/partials/simplePagination/utils'
-import { ContactSearchRequest, PagedModelContactSearchResultItem } from '../../../../@types/contactsApiClient'
+import {
+  ContactSearchRequest,
+  EnhancedContactSearchRequest,
+  PagedModelContactSearchResultItem,
+} from '../../../../@types/contactsApiClient'
 import Permission from '../../../../enumeration/permission'
-import { ContactNames } from '../../../../@types/journeys'
+import { AddContactJourney, ContactNames } from '../../../../@types/journeys'
 import { NAME_REGEX } from '../../common/name/nameSchemas'
+import logger from '../../../../../logger'
 
 export default class ContactSearchController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
@@ -35,6 +40,7 @@ export default class ContactSearchController implements PageHandler {
   ): Promise<void> => {
     const prisonerPrisonId = req.middleware?.prisonerData?.prisonId
     const enhancedFeatureEnabled = prisonerPrisonId ? this.getEnabledPrisons().has(prisonerPrisonId) : undefined
+    logger.info(`Is enhanced search: ${enhancedFeatureEnabled}`)
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
 
@@ -59,7 +65,7 @@ export default class ContactSearchController implements PageHandler {
     }
 
     const view = enhancedFeatureEnabled
-      ? await this.getContactSearchView(req, res)
+      ? await this.getEnhancedContactSearchView(req, res)
       : await this.getContactSearchView(req, res)
 
     const template = enhancedFeatureEnabled
@@ -133,12 +139,149 @@ export default class ContactSearchController implements PageHandler {
     return view
   }
 
+  private async getEnhancedContactSearchView(req: Request<{ journeyId: string }>, res: Response) {
+    const { journeyId } = req.params
+    const { user, prisonerPermissions } = res.locals
+    const journey = req.session.addContactJourneys![journeyId]!
+
+    const { day, month, year } = this.validateRequest(journey, res)
+
+    let results: PagedModelContactSearchResultItem | undefined
+
+    if (!res.locals.validationErrors && journey.searchContact) {
+      const contact = journey.searchContact.contact ?? {}
+      const enhancedContactSearchRequest: EnhancedContactSearchRequest = {
+        lastName: contact.lastName,
+        firstName: contact.firstName,
+        middleNames: contact.middleNames,
+        dateOfBirth: formatDateForApi(journey.searchContact.dateOfBirth) ?? undefined,
+        previousNames: true,
+        includePrisonerRelationships: journey.prisonerNumber,
+        searchType: journey.searchContact.searchType,
+        contactId: journey.searchContact.contactId,
+      }
+
+      results = await this.contactsService.searchContactV2(
+        enhancedContactSearchRequest,
+        {
+          page: (journey.searchContact.page ?? 1) - 1,
+          size: this.TABLE_ROW_COUNT,
+          sort: journey.searchContact.sort ?? 'lastName,asc',
+        },
+        user,
+      )
+      setPaginationLocals(
+        res,
+        this.TABLE_ROW_COUNT,
+        journey.searchContact.page ?? 1,
+        results?.page?.totalElements ?? 0,
+        results?.content?.length ?? 0,
+      )
+
+      results = results ?? ({ content: [] } as PagedModelContactSearchResultItem)
+    }
+
+    const view = {
+      lastName: res.locals?.formResponses?.['lastName'] ?? journey?.searchContact?.contact?.lastName,
+      firstName: res.locals?.formResponses?.['firstName'] ?? journey?.searchContact?.contact?.firstName,
+      middleNames: res.locals?.formResponses?.['middleNames'] ?? journey?.searchContact?.contact?.middleNames,
+      day: res.locals?.formResponses?.['day'] ?? day,
+      month: res.locals?.formResponses?.['month'] ?? month,
+      year: res.locals?.formResponses?.['year'] ?? year,
+      searchType: res.locals?.formResponses?.['searchType'] ?? journey?.searchContact?.searchType,
+      contactId: res.locals?.formResponses?.['contactId'] ?? journey?.searchContact?.contactId,
+      navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
+      sort: journey.searchContact?.sort,
+      journey,
+      results,
+    }
+    return view
+  }
+
+  private validateRequest(journey: AddContactJourney, res: e.Response) {
+    const { day, month, year } = journey?.searchContact?.dateOfBirth ?? {}
+    const { firstName, lastName, middleNames } = journey?.searchContact?.contact ?? {}
+    const { contactId } = journey?.searchContact ?? {}
+    const hasDob = !!(day && month && year)
+    const dobError =
+      res.locals.validationErrors &&
+      (res.locals?.formResponses?.['day'] ||
+        res.locals?.formResponses?.['month'] ||
+        res.locals?.formResponses?.['year'])
+
+    const hasContactId = typeof contactId === 'string' && contactId.trim() !== ''
+    // validate contactId contains only numbers
+    if (hasContactId) {
+      const offendingContactChar = (() => {
+        for (const ch of contactId as string) {
+          if (!/\p{N}/u.test(ch)) return ch
+        }
+        return undefined
+      })()
+
+      if (offendingContactChar) {
+        const display = offendingContactChar === ' ' ? 'space' : offendingContactChar
+        res.locals.validationErrors = {
+          ...(res.locals.validationErrors || {}),
+          contactId: [`Contact ID must not contain "${display}"`],
+        }
+        res.locals.formResponses = {
+          ...(res.locals.formResponses || {}),
+          contactId,
+        }
+      }
+    }
+
+    const hasName =
+      (firstName && firstName.trim() !== '') ||
+      (middleNames && middleNames.trim() !== '') ||
+      (lastName && lastName.trim() !== '')
+
+    if (journey.searchContact?.contact && !hasName && !hasContactId && !hasDob && !dobError) {
+      res.locals.validationErrors = {
+        ...(res.locals.validationErrors || {}),
+        search: ['Enter a contact’s name, ID, or date of birth'],
+      }
+      res.locals.formResponses = {
+        ...(res.locals.formResponses || {}),
+        search: 'Enter a contact’s name, ID, or date of birth',
+      }
+    }
+
+    // validate each name field and include the offending character in the error
+    const addNameError = (field: 'lastName' | 'firstName' | 'middleNames', value: string) => {
+      const offending = this.findOffendingCharacter(value)
+      const display = offending === ' ' ? 'space' : (offending ?? value)
+      // eslint-disable-next-line no-nested-ternary
+      const message = `${field === 'lastName' ? 'Last' : field === 'firstName' ? 'First' : 'Middle'} name must not contain "${display}"`
+      res.locals.validationErrors = {
+        ...(res.locals.validationErrors || {}),
+        [field]: [message],
+      }
+      res.locals.formResponses = {
+        ...(res.locals.formResponses || {}),
+        [field]: value,
+      }
+    }
+
+    if (lastName && !this.isValidName(lastName)) {
+      addNameError('lastName', lastName)
+    }
+    if (firstName && !this.isValidName(firstName)) {
+      addNameError('firstName', firstName)
+    }
+    if (middleNames && !this.isValidName(middleNames)) {
+      addNameError('middleNames', middleNames)
+    }
+    return { day, month, year, dobError, hasContactId }
+  }
+
   POST = async (req: Request<{ journeyId: string }, ContactSearchSchemaType>, res: Response): Promise<void> => {
     const prisonerPrisonId = req.middleware?.prisonerData?.prisonId
     const enhancedFeatureEnabled = prisonerPrisonId ? this.getEnabledPrisons().has(prisonerPrisonId) : undefined
 
     const { journeyId, journey } = enhancedFeatureEnabled
-      ? await this.setContactSearchSessionParameters(req)
+      ? await this.setEnhancedContactSearchSessionParameters(req)
       : await this.setContactSearchSessionParameters(req)
     res.redirect(`/prisoner/${journey.prisonerNumber}/contacts/search/${journeyId}#`)
   }
@@ -169,6 +312,27 @@ export default class ContactSearchController implements PageHandler {
     return { journeyId, journey }
   }
 
+  private setEnhancedContactSearchSessionParameters(req: e.Request<{ journeyId: string }, ContactSearchSchemaType>) {
+    const { lastName, firstName, middleNames, day, month, year, sort, searchType, contactId } = req.body
+    const { journeyId } = req.params
+    const journey = req.session.addContactJourneys![journeyId]!
+
+    journey.searchContact = {
+      contact: {
+        lastName: lastName || undefined,
+        middleNames: middleNames || undefined,
+        firstName: firstName || undefined,
+      },
+      dateOfBirth: { day, month, year },
+      contactId: contactId || undefined,
+      sort: sort || undefined,
+      searchType: searchType || undefined,
+      page: 1,
+    }
+
+    return { journeyId, journey }
+  }
+
   private namesAreValid(contact: Partial<ContactNames>): boolean {
     // last name is required
     if (!contact.lastName || !this.isValidName(contact.lastName)) {
@@ -185,5 +349,14 @@ export default class ContactSearchController implements PageHandler {
 
   private isValidName(name: string): boolean {
     return NAME_REGEX.test(name)
+  }
+
+  private findOffendingCharacter(name: string): string | undefined {
+    // allowed: any Unicode letter, apostrophe, hyphen, or whitespace
+    const allowedChar = /[\p{L}'\-\s]/u
+    for (const ch of name) {
+      if (!allowedChar.test(ch)) return ch
+    }
+    return undefined
   }
 }

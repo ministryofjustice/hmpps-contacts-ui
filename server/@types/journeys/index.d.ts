@@ -10,6 +10,7 @@ export interface AddContactJourney {
   searchContact?:
     | {
         soundsLike?: boolean | undefined
+        searchType?: string | undefined
         contact?: Partial<ContactNames>
         contactId?: string | undefined
         dateOfBirth?: Partial<DateOfBirth>

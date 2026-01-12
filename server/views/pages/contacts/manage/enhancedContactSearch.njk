@@ -14,45 +14,230 @@
 {% from "moj/components/alert/macro.njk" import mojAlert %}
 
 {% set pageTitle = "Check if the contact is already on the system - Manage contacts - DPS" %}
-{% set title = "Check if the contact is already on the system (Enhanced)" %}
+{% set title = "Check if the contact is already on the system" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-  <div class="govuk-grid-row">
+<div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <div class="govuk-!-static-margin-bottom-7">
-        <span class="govuk-caption-l">Link a contact to a prisoner</span>
-        <h1 class="govuk-heading-l">{{ title }}</h1>
-      </div>
-      {{ govukWarningText({
-        html: 'Duplicate contact records are a safety and security risk. You should only <a href="/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/add/mode/NEW/' + journey.id + '" class="govuk-body govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold">add a new contact</a> if you cannot find the person on the system.',
-        iconFallbackText: "Warning"
-      }) }}
-    </div>
-  </div>
- <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-      <!-- ...existing code (enhanced search form and results) ... -->
+        <div class="govuk-!-static-margin-bottom-7">
+            <span class="govuk-caption-l">Link a contact to a prisoner</span>
+            <h1 class="govuk-heading-l">{{ title }}</h1>
         </div>
-      </div>
-{% endblock %}
+        {{ govukWarningText({
+            html: 'Duplicate contact records are a safety and security risk. You should only <a href="/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/add/mode/NEW/' + journey.id + '" class="govuk-body govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold">add a new contact</a> if you cannot find the person on the system.',
+            iconFallbackText: "Warning"
+        }) }}
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <div class="block-background govuk-!-padding-6 govuk-!-margin-bottom-7">
 
-{% block pageScripts %}
-    <script nonce="{{ cspNonce }}">
-      window.onload = function () {
-        const filter = document.querySelector('[data-module="moj-filter"]')
-        filter && new window.MojFrontend.FilterToggleButton(filter, {
-          bigModeMediaQuery: '(min-width: 48.063em)',
-          startHidden: false,
-          toggleButton: {
-            showText: 'Show filter',
-            hideText: 'Hide filter',
-            classes: 'govuk-button--secondary'
-          },
-          toggleButtonContainer: { selector: '.moj-action-bar__filter' },
-          closeButton: { text: 'Close' },
-          closeButtonContainer: { selector: '.moj-filter__header-action' }
-        })
-      }
-    </script>
-{% endblock %}
+            <div class="moj-search govuk-!-width-three-quarters">
+                <h2 class="govuk-heading-m">Search by contact name</h2>
+                <form class="contact-search" method='POST'>
+                    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                    {{ govukInput({
+                        classes: "moj-search__input",
+                        id: "firstName",
+                        name: "firstName",
+                        value: firstName,
+                        errorMessage: validationErrors | findError('firstName'),
+                        label: {
+                            text: 'First name'
+                        }
+                    }) }}
+
+                    {{ govukInput({
+                        id: "middleNames",
+                        name: "middleNames",
+                        label: { text: "Middle names" },
+                        errorMessage: validationErrors | findError('middleNames'),
+                        value: middleNames
+                    }) }}
+
+                    {{ govukInput({
+                        id: "lastName",
+                        name: "lastName",
+                        errorMessage: validationErrors | findError('lastName'),
+                        label: { text: "Last name" },
+                        value: lastName
+                    }) }}
+            </div>
+
+            <div class="govuk-!-width-three-quarters govuk-!-margin-top-7">
+
+                {{ govukDetails({
+                    summaryText: "Show advanced options",
+                    open: ((sort is defined and sort != 'lastName,asc') or (searchType is defined and searchType != 'partial') or contactId or day or month or year),
+                    classes: "no-left-border-details",
+                    html:
+                    govukSelect({
+                        id: "sort",
+                        name: "sort",
+                        label: {
+                            text: "Sort by"
+                        },
+                        items: [
+                            { value: "lastName,asc", text: "Last name (A–Z)", selected: (sort == 'lastName,asc') },
+                            { value: "lastName,desc", text: "Last name (Z–A)" , selected: (sort == 'lastName,desc') },
+                            { value: "dateOfBirth,asc", text: "Date of birth (most recent)" , selected: (sort == 'dateOfBirth,asc') },
+                            { value: "dateOfBirth,desc", text: "Date of birth (oldest)" , selected: (sort == 'dateOfBirth,desc') }
+                        ]
+                    }) +
+
+                    govukSelect({
+                        id: "searchType",
+                        name: "searchType",
+                        label: {
+                            text: "Search type"
+                        },
+                        hint: {
+                            text: "Choose how results match your search term: partial includes the term anywhere, exact matches it fully, sounds like finds similar sounding words."
+                        },
+                        items: [
+                                { value: "PARTIAL", text: "Partial", selected: (searchType == 'PARTIAL') },
+                                { value: "EXACT", text: "Exact", selected: (searchType == 'EXACT') },
+                                { value: "SOUNDS_LIKE", text: "Sounds like", selected: (searchType == 'SOUNDS_LIKE') }
+                        ]
+                    }) +
+
+                    govukInput({
+                        label: {
+                            text: "Search by contact ID"
+                        },
+                        classes: 'govuk-!-width-one-third',
+                        id: "contactId",
+                        name: "contactId",
+                        value: contactId
+                    }) +
+
+                    validatedDateInput({
+                        id: "dob",
+                        title: {
+                            text: "Date of birth",
+                            isPageHeading: false
+                        },
+                        validationErrors: validationErrors,
+                        day: day,
+                        month: month,
+                        year: year
+                    })
+                }) }}
+                <div class="govuk-details govuk-!-margin-top-6 govuk-!-margin-bottom-0">
+                    {{ govukButton({
+                        classes: "moj-search__button",
+                        text: "Search",
+                        attributes: {"data-qa": "search-button"},
+                        preventDoubleClick: true
+                    }) }}
+                </div>
+
+
+            </div>
+            </form>
+        </div>
+
+        <div class="moj-filter-layout contact-search-filter">
+
+            <div class="moj-filter-layout__content">
+
+                {% if results.content.length %}
+                    <div id="pagination"
+                         class="contact-search-pagination">{{ simplePagination(paginationParams) }}</div>
+                {% endif %}
+                {% if results.content.length %}
+                    {% set contactRows = [] %}
+                    {% for contact in results.content %}
+                        {% set hasExistingRelationships = contact.existingRelationships and contact.existingRelationships.length > 0 %}
+                        {% set contactRows = (contactRows.push([
+                            {
+                                html: (contact | formatNameLastNameFirst) + '<br/><span class="govuk-hint">' + contact.id + '</span>',
+                                classes: 'no-bottom-border' if hasExistingRelationships else ''
+                            },
+                            {
+                                html: contact | formatDob,
+                                classes: 'no-bottom-border' if hasExistingRelationships else ''
+                            },
+                            {
+                                html: (contact | addressToLines or 'Not provided') | escape | nl2br,
+                                classes: 'no-bottom-border' if hasExistingRelationships else ''
+                            },
+                            {
+                                html: '<a href="/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/add/match/' + contact.id + '/' + journey.id + '" class="govuk-link" data-qa="add-contact-' + contact.id + '-link">Check if this is the correct contact</a>',
+                                format: "numeric",
+                                classes: 'no-bottom-border' if hasExistingRelationships else ''
+                            }
+                        ]), contactRows) %}
+                        {% if hasExistingRelationships %}
+                            {% set reviewUrl = '/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/create/review-existing-relationships/' + contact.id + '/' + journey.id %}
+                            {% set alertHtml %}
+                                {{ mojAlert({
+                                    variant: "information",
+                                    title: (contact | formatNameFirstNameFirst) + ' (' + contact.id + ') is already linked to the prisoner',
+                                    dismissible: false,
+                                    html: (contact | formatNameFirstNameFirst) + ' (' + contact.id + ') is already linked to prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) + '. <br/><a href="' + reviewUrl + '" class="govuk-link">View existing record' +  ('s' if contact.existingRelationships.length > 1) + '</a>',
+                                    classes: 'govuk-!-margin-bottom-0'
+                                }) }}
+                            {% endset %}
+                            {% set contactRows = (contactRows.push([
+                                {
+                                    html: alertHtml | safe,
+                                    colspan: 4,
+                                    classes: 'no-top-border'
+                                }
+                            ]), contactRows) %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {{ govukTable({
+                        firstCellIsHeader: false,
+                        classes: 'table-vertical-align-middle govuk-!-margin-top-6',
+                        head: [
+                            {
+                                text: 'Contact name and person ID',
+                                key: 'lastName'
+                            },
+                            {
+                                text: "Date of birth",
+                                key: 'dateOfBirth'
+                            },
+                            {
+                                text: "Primary or default address"
+                            },
+                            {
+                                text: "Action",
+                                format: "numeric"
+                            }
+                        ] | convertToSortableColumns(sort or 'lastName,asc'),
+                        rows: contactRows
+                    }) }}
+                {% else %}
+                    {% if not results %}
+                        <p class="govuk-!-margin-bottom-6"><strong>Start a search to view contact records.</strong></p>
+                    {% else %}
+                        <div class="govuk-body govuk-!-margin-bottom-6">
+                            <p><strong>No contact records match your search.</strong></p>
+                            <p>You can:</p>
+                            <ul class="govuk-list govuk-list--bullet">
+                                <li>try searching again</li>
+                                <li>
+                                    <a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/add/mode/NEW/{{ journey.id }}"
+                                       class="govuk-body govuk-link govuk-link--no-visited-state">add a new contact</a>
+                                    if you cannot find the person on the system
+                                </li>
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                {% endif %}
+
+                {% if results.content.length %}
+                    <div class="contact-search-pagination">{{ simplePagination(paginationParams) }}</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% endblock %}

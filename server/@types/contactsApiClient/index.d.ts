@@ -71,3 +71,14 @@ export type ContactSearchRequest = {
   includeAnyExistingRelationshipsToPrisoner?: string | undefined
   soundsLike?: boolean | undefined
 }
+
+export type EnhancedContactSearchRequest = {
+  lastName?: string | undefined
+  firstName?: string | undefined
+  middleNames?: string | undefined
+  dateOfBirth?: string | undefined
+  contactId?: string | undefined
+  previousNames?: boolean | undefined
+  includePrisonerRelationships?: string | undefined
+  searchType?: string | undefined
+}

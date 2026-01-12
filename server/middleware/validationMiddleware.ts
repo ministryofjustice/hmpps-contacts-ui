@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { z, ZodError } from 'zod'
 import { PrisonerJourneyParams } from '../@types/journeys'
+import logger from '../../logger'
 
 export type fieldErrors = {
   [field: string | number | symbol]: string[] | undefined
@@ -44,6 +45,10 @@ export const validate = <P extends { [key: string]: string }>(schema: z.ZodTypeA
     req.flash('formResponses', JSON.stringify(req.body))
 
     const deduplicatedFieldErrors = deduplicateFieldErrors(result.error)
+    const { journeyId } = req.params
+    logger.warn(
+      `Validation errors on journey ${journeyId} for user ${res.locals.user?.username}: ${JSON.stringify(deduplicatedFieldErrors)}`,
+    )
 
     req.flash('validationErrors', JSON.stringify(deduplicatedFieldErrors))
     const urlWithDefaultFragmentSoAnyFieldFocusIsRemoved = `${req.originalUrl}#`
