@@ -25,6 +25,9 @@ export default class ContactSearchController implements PageHandler {
 
   private TABLE_ROW_COUNT = 10
 
+  private TOO_MANY_RESULTS =
+    'Your search returned a large number of results. Only the top 500 are shown. Refine your search to narrow the results.'
+
   private getEnabledPrisons = () => {
     return new Set(
       (process.env['FEATURE_ENHANCED_CONTACT_SEARCH'] || '')
@@ -180,6 +183,11 @@ export default class ContactSearchController implements PageHandler {
 
       results = results ?? ({ content: [] } as PagedModelContactSearchResultItem)
     }
+    let truncationMessage: string | undefined
+    const totalElements = Number(results?.page?.totalElements ?? 0)
+    if (totalElements > 2000) {
+      truncationMessage = this.TOO_MANY_RESULTS
+    }
 
     const view = {
       lastName: res.locals?.formResponses?.['lastName'] ?? journey?.searchContact?.contact?.lastName,
@@ -194,6 +202,7 @@ export default class ContactSearchController implements PageHandler {
       sort: journey.searchContact?.sort,
       journey,
       results,
+      truncationMessage,
     }
     return view
   }
