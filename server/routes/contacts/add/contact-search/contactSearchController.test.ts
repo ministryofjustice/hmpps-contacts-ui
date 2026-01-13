@@ -645,9 +645,9 @@ describe('contact search enhanced version', () => {
       expect(response.status).toEqual(200)
       // Top
       expect(response.text).toContain('There is a problem')
-      expect(response.text).toContain('Last name must be more than 2 characters or more')
-      expect(response.text).toContain('First name must be more than 2 characters or more')
-      expect(response.text).toContain('Middle name must be more than 2 characters or more')
+      expect(response.text).toContain('Last name must be 2 characters or more')
+      expect(response.text).not.toContain('First name must be 2 characters or more')
+      expect(response.text).not.toContain('Middle name must be 2 characters or more')
       expect(contactsService.searchContact).not.toHaveBeenCalled()
     })
   })
