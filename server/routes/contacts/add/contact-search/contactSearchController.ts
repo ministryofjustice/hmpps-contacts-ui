@@ -259,8 +259,8 @@ export default class ContactSearchController implements PageHandler {
         return
       }
 
-      if (value.length < 2) {
-        addError(field, `${label} name must be more than 2 characters or more`, value)
+      if (field === 'lastName' && value.length < 2) {
+        addError(field, `${label} name must be 2 characters or more`, value)
       }
     }
 
