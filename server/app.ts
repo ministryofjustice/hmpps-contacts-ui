@@ -2,7 +2,8 @@ import express from 'express'
 import * as Sentry from '@sentry/node'
 import './sentry'
 import createError from 'http-errors'
-import dpsComponents from '@ministryofjustice/hmpps-connect-dps-components'
+import { getFrontendComponents, retrieveCaseLoadData } from '@ministryofjustice/hmpps-connect-dps-components'
+
 // @ts-expect-error Import untyped middleware for cypress coverage
 import cypressCoverage from '@cypress/code-coverage/middleware/express'
 import config from './config'
@@ -56,18 +57,22 @@ export default function createApp(services: Services): express.Application {
     ]),
   )
   app.use(setUpCsrf())
-  app.get(
+  app.use(
     '*any',
-    dpsComponents.getPageComponents({
-      includeSharedData: true,
+    getFrontendComponents({
+      logger,
+      componentApiConfig: config.apis.componentApi,
       dpsUrl: config.serviceUrls.digitalPrison,
-      timeoutOptions: {
-        response: config.apis.componentApi.timeout.response,
-        deadline: config.apis.componentApi.timeout.deadline,
-      },
+      requestOptions: { includeSharedData: true },
     }),
   )
-  app.use(dpsComponents.retrieveCaseLoadData({ logger }))
+
+  app.use(
+    retrieveCaseLoadData({
+      logger,
+      prisonApiConfig: config.apis.prisonApi,
+    }),
+  )
   app.use(setUpCurrentUser())
   app.use(populateValidationErrors())
   app.use(setUpSuccessNotificationBanner())

@@ -1,7 +1,7 @@
 import express, { Express, Locals } from 'express'
 import { NotFound } from 'http-errors'
 import { v4 as uuidv4 } from 'uuid'
-import dpsComponents from '@ministryofjustice/hmpps-connect-dps-components'
+import { getFrontendComponents } from '@ministryofjustice/hmpps-connect-dps-components'
 import { SessionData } from 'express-session'
 import { PrisonerPermission } from '@ministryofjustice/hmpps-prison-permissions-lib'
 import config from '../../config'
@@ -139,10 +139,11 @@ function appSetup(
   app.use((req, res, next) => next(new NotFound()))
   app.use(errorHandler(production))
 
-  app.get(
+  app.use(
     '*any',
-    dpsComponents.getPageComponents({
+    getFrontendComponents({
       dpsUrl: config.serviceUrls.digitalPrison,
+      componentApiConfig: config.apis.componentApi,
     }),
   )
 
