@@ -2,7 +2,8 @@ import type { Router } from 'express'
 import express from 'express'
 import passport from 'passport'
 import flash from 'connect-flash'
-import dpsComponents from '@ministryofjustice/hmpps-connect-dps-components'
+import { getFrontendComponents } from '@ministryofjustice/hmpps-connect-dps-components'
+
 import config from '../config'
 import auth from '../authentication/auth'
 import { HmppsUser } from '../interfaces/hmppsUser'
@@ -18,7 +19,10 @@ export default function setUpAuth(): Router {
 
   router.get(
     '/autherror',
-    dpsComponents.getPageComponents({ dpsUrl: config.serviceUrls.digitalPrison }),
+    getFrontendComponents({
+      componentApiConfig: config.apis.componentApi,
+      dpsUrl: config.serviceUrls.digitalPrison,
+    }),
     (req, res) => {
       res.status(401)
       return res.render('autherror')
