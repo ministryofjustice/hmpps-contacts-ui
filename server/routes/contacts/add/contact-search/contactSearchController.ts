@@ -26,7 +26,7 @@ export default class ContactSearchController implements PageHandler {
   private TABLE_ROW_COUNT = 10
 
   private TOO_MANY_RESULTS =
-    'Your search returned a large number of results. Only the top 2000 are shown. Refine your search to narrow the results.'
+    'Your search returned a large number of results so only the top 2000 are shown. Refine your search by adding more letters, further parts of the name, or a date of birth to narrow the results.'
 
   private getEnabledPrisons = () => {
     return new Set(
@@ -185,7 +185,7 @@ export default class ContactSearchController implements PageHandler {
     }
     let truncationMessage: string | undefined
     const totalElements = Number(results?.page?.totalElements ?? 0)
-    if (totalElements > 2000) {
+    if (totalElements === 2000) {
       truncationMessage = this.TOO_MANY_RESULTS
     }
 
