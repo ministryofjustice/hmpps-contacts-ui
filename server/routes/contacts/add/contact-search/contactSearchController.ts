@@ -26,7 +26,7 @@ export default class ContactSearchController implements PageHandler {
   private TABLE_ROW_COUNT = 10
 
   private TOO_MANY_RESULTS =
-    'Your search returned a large number of results. Only the top 500 are shown. Refine your search to narrow the results.'
+    'Your search returned a large number of results. Only the top 2000 are shown. Refine your search to narrow the results.'
 
   private getEnabledPrisons = () => {
     return new Set(

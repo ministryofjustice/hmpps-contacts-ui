@@ -734,7 +734,7 @@ describe('contact search enhanced version', () => {
       expect($('label[for="soundsLike"]').text().trim()).toBe('')
     })
 
-    it('should display truncation message when totalElements > 1000', async () => {
+    it('should display truncation message when totalElements > 2000', async () => {
       // Given
       existingJourney = {
         ...existingJourney,
@@ -762,7 +762,7 @@ describe('contact search enhanced version', () => {
       expect(response.status).toEqual(200)
       expect($('div.moj-alert__content')).toBeDefined()
       expect($('div.moj-alert__content').text().trim()).toContain(
-        'Your search returned a large number of results. Only the top 500 are shown. Refine your search to narrow the results.',
+        'Your search returned a large number of results. Only the top 2000 are shown. Refine your search to narrow the results.',
       )
     })
   })
