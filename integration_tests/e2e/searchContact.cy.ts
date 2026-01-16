@@ -22,7 +22,7 @@ context('Search contact', () => {
       prisonId: 'HEI',
       term: prisonerNumber,
     })
-    cy.task('stubContactSearch', {
+    cy.task('stubContactSearchV2', {
       results: {
         page: {
           totalPages: 1,
@@ -43,7 +43,7 @@ context('Search contact', () => {
     Page.verifyOnPage(SearchContactPage)
   })
 
-  it(`should not search when last name is not entered`, () => {
+  it(`should search with first and middle name are entered`, () => {
     const searchContactPage = Page.verifyOnPage(SearchContactPage)
     searchContactPage.enterFirstName('Firstname')
     searchContactPage.enterMiddleNames('Middlename')
@@ -52,19 +52,19 @@ context('Search contact', () => {
     cy.verifyAPIWasCalled(
       {
         method: 'GET',
-        urlPattern: '/contact/search.+',
+        urlPattern: '/contact/searchV2.+',
       },
-      0,
+      1,
     )
   })
 
-  it(`should not pass validation when lastname and dob is incomplete`, () => {
+  it(`should not pass validation when dob is incomplete`, () => {
     const searchContactPage = Page.verifyOnPage(SearchContactPage)
     searchContactPage.enterLastName('Lastname')
-    searchContactPage.clickSearchButton()
+    searchContactPage.showAdvancedOption()
 
     searchContactPage.enterDay('10')
-    searchContactPage.clickFilterButton()
+    searchContactPage.clickSearchButton()
 
     searchContactPage.errorSummaryItems.spread((...$lis) => {
       expect($lis).to.have.lengthOf(1)
@@ -75,12 +75,12 @@ context('Search contact', () => {
   it(`should not pass validation when year is invalid`, () => {
     const searchContactPage = Page.verifyOnPage(SearchContactPage)
     searchContactPage.enterLastName('Lastname')
-    searchContactPage.clickSearchButton()
+    searchContactPage.showAdvancedOption()
 
     searchContactPage.enterDay('10')
     searchContactPage.enterMonth('02')
     searchContactPage.enterYear('99')
-    searchContactPage.clickFilterButton()
+    searchContactPage.clickSearchButton()
 
     searchContactPage.errorSummaryItems.spread((...$lis) => {
       expect($lis).to.have.lengthOf(1)
@@ -91,12 +91,12 @@ context('Search contact', () => {
   it(`should not pass validation when dob is in the future`, () => {
     const searchContactPage = Page.verifyOnPage(SearchContactPage)
     searchContactPage.enterLastName('Lastname')
-    searchContactPage.clickSearchButton()
+    searchContactPage.showAdvancedOption()
 
     searchContactPage.enterDay('10')
     searchContactPage.enterMonth('02')
     searchContactPage.enterYear('2090')
-    searchContactPage.clickFilterButton()
+    searchContactPage.clickSearchButton()
 
     searchContactPage.errorSummaryItems.spread((...$lis) => {
       expect($lis).to.have.lengthOf(1)
@@ -107,12 +107,12 @@ context('Search contact', () => {
   it(`should not pass validation when dob is not valid`, () => {
     const searchContactPage = Page.verifyOnPage(SearchContactPage)
     searchContactPage.enterLastName('Lastname')
-    searchContactPage.clickSearchButton()
+    searchContactPage.showAdvancedOption()
 
     searchContactPage.enterDay('29')
     searchContactPage.enterMonth('02')
     searchContactPage.enterYear('1990')
-    searchContactPage.clickFilterButton()
+    searchContactPage.clickSearchButton()
 
     searchContactPage.errorSummaryItems.spread((...$lis) => {
       expect($lis).to.have.lengthOf(1)
@@ -146,20 +146,20 @@ context('Search contact', () => {
     searchContactPage.enterFirstName('Jones')
     searchContactPage.enterLastName('Mason')
     searchContactPage.enterMiddleNames('middle')
-    searchContactPage.clickSearchButton()
+    searchContactPage.showAdvancedOption()
 
     searchContactPage.enterDay('14')
     searchContactPage.enterMonth('1')
     searchContactPage.enterYear('1990')
-    searchContactPage.clickFilterButton()
+    searchContactPage.clickSearchButton()
     searchContactPage.checkOnPage()
 
     cy.verifyAPIWasCalled(
       {
         method: 'GET',
-        urlPattern: '/contact/search.+',
+        urlPattern: '/contact/searchV2.+',
       },
-      2,
+      1,
     )
 
     searchContactPage.verifyShowsNameAs('Mason')
@@ -174,12 +174,28 @@ context('Search contact', () => {
     searchContactPage.enterFirstName('Jones')
     searchContactPage.enterLastName('Mason')
     searchContactPage.enterMiddleNames('middle')
-    searchContactPage.clickSearchButton()
+    searchContactPage.showAdvancedOption()
 
     searchContactPage.enterDay('01')
     searchContactPage.enterMonth('01')
     searchContactPage.enterYear('1990')
-    searchContactPage.clickFilterButton()
+    searchContactPage.clickSearchButton()
     searchContactPage.checkOnPage()
+  })
+
+  it(`should pass validation when only contact id is entered`, () => {
+    const searchContactPage = Page.verifyOnPage(SearchContactPage)
+    searchContactPage.showAdvancedOption()
+    searchContactPage.enterContactId('123456')
+    searchContactPage.clickSearchButton()
+    searchContactPage.checkOnPage()
+
+    cy.verifyAPIWasCalled(
+      {
+        method: 'GET',
+        urlPattern: '/contact/searchV2.+',
+      },
+      1,
+    )
   })
 })

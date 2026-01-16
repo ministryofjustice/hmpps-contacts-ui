@@ -733,5 +733,37 @@ describe('contact search enhanced version', () => {
       // ensure old soundsLike checkbox (normal version) not present in enhanced UI
       expect($('label[for="soundsLike"]').text().trim()).toBe('')
     })
+
+    it('should display truncation message when totalElements > 2000', async () => {
+      // Given
+      existingJourney = {
+        ...existingJourney,
+        searchContact: {
+          contact: { lastName: 'last', middleNames: '', firstName: '' },
+          dateOfBirth: {},
+        },
+      }
+      prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
+      contactsService.searchContactV2.mockResolvedValue({
+        content: [TestData.contactSearchResultItem()],
+        page: {
+          number: 0,
+          size: 20,
+          totalElements: 2000, // exactly 2000 to trigger message
+          totalPages: 75,
+        },
+      })
+
+      // When
+      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
+      const $ = cheerio.load(response.text)
+
+      // Then
+      expect(response.status).toEqual(200)
+      expect($('div.moj-alert__content')).toBeDefined()
+      expect($('div.moj-alert__content').text().trim()).toContain(
+        'Your search returned a large number of results. Only the top 2000 are shown. Refine your search to narrow the results.',
+      )
+    })
   })
 })

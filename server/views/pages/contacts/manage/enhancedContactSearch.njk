@@ -142,6 +142,16 @@
         <div class="moj-filter-layout contact-search-filter">
 
             <div class="moj-filter-layout__content">
+             {% if truncationMessage %}
+                {{ mojAlert({
+                  variant: "warning",
+                  title: "Search results truncated",
+                  dismissible: true,
+                  html: truncationMessage,
+                  classes: 'govuk-!-margin-bottom-6'
+                }) }}
+              {% endif %}
+
 
                 {% if results.content.length %}
                     <div id="pagination"

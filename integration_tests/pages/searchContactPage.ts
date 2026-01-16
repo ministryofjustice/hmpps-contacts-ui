@@ -35,8 +35,21 @@ export default class SearchContactPage extends Page {
     return this
   }
 
+  enterContactId(value: string): SearchContactPage {
+    this.contactIdBox().clear().type(value, { delay: 0 })
+    return this
+  }
+
   clickSearchButton() {
     this.searchButton().click()
+  }
+
+  showAdvancedOption() {
+    this.showAdvancedOptionElement().click()
+  }
+
+  selectSoundsLikeOption() {
+    this.searchTypeDropDown().select('Sounds like')
   }
 
   clickFilterButton() {
@@ -79,9 +92,13 @@ export default class SearchContactPage extends Page {
 
   private yearTextBox = (): PageElement => cy.get('#year')
 
+  private contactIdBox = (): PageElement => cy.get('#contactId')
+
   private searchButton = (): PageElement => cy.get('[data-qa=search-button]')
 
-  private theContactIsNotListedLink = (): PageElement => cy.get('[data-qa="contact-not-listed-link"]')
+  private searchTypeDropDown = (): PageElement => cy.get('#searchType')
+
+  private showAdvancedOptionElement = (): PageElement => cy.get('.govuk-details__summary-text')
 
   private contactLink = (contactId: number): PageElement => cy.get(`[data-qa="add-contact-${contactId}-link"]`)
 
