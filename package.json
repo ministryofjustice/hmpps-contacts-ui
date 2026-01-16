@@ -210,6 +210,12 @@
     "cypress": {
       "@cypress/request": "v3.0.10",
       "systeminformation": "5.27.14"
+    },
+    "sinon": {
+      "diff": "8.0.3"
+    },
+    "mocha": {
+      "diff": "8.0.3"
     }
   }
 }
