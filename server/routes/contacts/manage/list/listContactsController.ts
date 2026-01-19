@@ -136,7 +136,7 @@ export default class ListContactsController implements PageHandler {
 
     const navigation: Navigation = { breadcrumbs: ['DPS_HOME', 'DPS_PROFILE'] }
 
-    const announcement = prisonerPrisonId ? getAnnouncement(prisonerPrisonId) : undefined
+    const announcement = getAnnouncement()
     res.render('pages/contacts/manage/listContacts', {
       relationshipStatus,
       announcement,
