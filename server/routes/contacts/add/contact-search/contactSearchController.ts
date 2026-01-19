@@ -6,15 +6,10 @@ import { ContactsService } from '../../../../services'
 import { formatDateForApi } from '../../../../utils/utils'
 import { navigationForAddContactJourney } from '../addContactFlowControl'
 import { setPaginationLocals } from '../../../../views/partials/simplePagination/utils'
-import {
-  ContactSearchRequest,
-  EnhancedContactSearchRequest,
-  PagedModelContactSearchResultItem,
-} from '../../../../@types/contactsApiClient'
+import { EnhancedContactSearchRequest, PagedModelContactSearchResultItem } from '../../../../@types/contactsApiClient'
 import Permission from '../../../../enumeration/permission'
-import { AddContactJourney, ContactNames } from '../../../../@types/journeys'
+import { AddContactJourney } from '../../../../@types/journeys'
 import { NAME_REGEX } from '../../common/name/nameSchemas'
-import logger from '../../../../../logger'
 
 export default class ContactSearchController implements PageHandler {
   constructor(private readonly contactsService: ContactsService) {}
