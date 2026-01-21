@@ -141,7 +141,7 @@
     "reflect-metadata": "^0.2.2",
     "superagent": "^10.2.3",
     "uuid": "^11.1.0",
-    "zod": "^3.25.76"
+    "zod": "^4.3.5"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",

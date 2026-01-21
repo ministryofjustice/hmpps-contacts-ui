@@ -16,53 +16,38 @@ const END_YEAR_INVALID_MESSAGE = 'End year must be a real year'
 
 export const addressDatesSchema = createSchema({
   fromMonth: z
-    .union(
-      [
-        z.literal(''),
-        z.coerce
-          .number({ message: START_MONTH_INVALID_MESSAGE })
-          .min(1, START_MONTH_INVALID_MESSAGE)
-          .max(12, START_MONTH_INVALID_MESSAGE)
-          .optional(),
-      ],
-      { errorMap: () => ({ message: START_MONTH_INVALID_MESSAGE }) },
+    .preprocess(
+      val => (val === '' ? undefined : val),
+      z.coerce
+        .number({ message: START_MONTH_INVALID_MESSAGE })
+        .min(1, START_MONTH_INVALID_MESSAGE)
+        .max(12, START_MONTH_INVALID_MESSAGE)
+        .optional(),
     )
     .transform(val => val?.toString()),
   fromYear: z
-    .union(
-      [
-        z.literal(''),
-        z.coerce //
-          .number({ message: START_YEAR_INVALID_MESSAGE })
-          .min(1900, START_YEAR_INVALID_MESSAGE)
-          .optional(),
-      ],
-      { errorMap: () => ({ message: START_YEAR_INVALID_MESSAGE }) },
+    .preprocess(
+      val => (val === '' ? undefined : val),
+      z.coerce.number({ message: START_YEAR_INVALID_MESSAGE }).min(1900, START_YEAR_INVALID_MESSAGE).optional(),
     )
     .transform(val => val?.toString()),
   toMonth: z
-    .union(
-      [
-        z.literal(''),
-        z.coerce
-          .number({ message: END_MONTH_INVALID_MESSAGE })
-          .min(1, END_MONTH_INVALID_MESSAGE)
-          .max(12, END_MONTH_INVALID_MESSAGE)
-          .optional(),
-      ],
-      { errorMap: () => ({ message: END_MONTH_INVALID_MESSAGE }) },
+    .preprocess(
+      val => (val === '' ? undefined : val),
+      z.coerce
+        .number({ message: END_MONTH_INVALID_MESSAGE })
+        .min(1, END_MONTH_INVALID_MESSAGE)
+        .max(12, END_MONTH_INVALID_MESSAGE)
+        .optional(),
     )
     .transform(val => val?.toString()),
   toYear: z
-    .union(
-      [
-        z.literal(''),
-        z.coerce //
-          .number({ message: END_YEAR_INVALID_MESSAGE })
-          .min(1900, END_YEAR_INVALID_MESSAGE)
-          .optional(),
-      ],
-      { errorMap: () => ({ message: END_YEAR_INVALID_MESSAGE }) },
+    .preprocess(
+      val => (val === '' ? undefined : val),
+      z.coerce //
+        .number({ message: END_YEAR_INVALID_MESSAGE })
+        .min(1900, END_YEAR_INVALID_MESSAGE)
+        .optional(),
     )
     .transform(val => val?.toString()),
 })
