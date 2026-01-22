@@ -7,6 +7,7 @@ import {
   AddressJourney,
   AddRestrictionJourney,
   ChangeRelationshipTypeJourney,
+  SearchContactJourney,
   ManageContactsJourney,
   PrisonerDetails,
   UpdateEmploymentsJourney,
@@ -18,6 +19,7 @@ export declare module 'express-session' {
     nowInMinutes: number
     search: string
     addContactJourneys: Record<string, AddContactJourney>
+    searchContactJourneys: Record<string, SearchContactJourney>
     manageContactsJourneys: Record<string, ManageContactsJourney>
     addRestrictionJourneys: Record<string, AddRestrictionJourney>
     addressJourneys: Record<string, AddressJourney>

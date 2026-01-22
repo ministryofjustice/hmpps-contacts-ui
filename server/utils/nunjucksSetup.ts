@@ -36,6 +36,7 @@ import sortAlerts from './sortAlerts'
 import { convertToSortableColumns } from './convertToSortableColumns'
 import { sortPhoneNumbers } from './sortPhoneNumbers'
 import { ContactAddressDetails } from '../@types/contactsApiClient'
+import { hasPermission } from './permissionsUtils'
 
 export default function nunjucksSetup(app: express.Express): void {
   app.set('view engine', 'njk')
@@ -162,6 +163,7 @@ export default function nunjucksSetup(app: express.Express): void {
   njkEnv.addFilter('sortAlerts', sortAlerts)
   njkEnv.addFilter('sortPhoneNumbers', sortPhoneNumbers)
   njkEnv.addFilter('isInternalContact', isInternalContact)
+  njkEnv.addFilter('hasPermission', hasPermission)
 
   // Add prisoner permissions helpers and enums for use in templates (isGranted, PersonalRelationshipsPermission, etc.)
   setupNunjucksPermissions(njkEnv)

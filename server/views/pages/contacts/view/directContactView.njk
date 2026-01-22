@@ -1,0 +1,43 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "partials/directContactSearch/directContactContent.njk" import directContactContent %}
+{% from "moj/components/badge/macro.njk" import mojBadge %}
+{% from "moj/components/alert/macro.njk" import mojAlert %}
+{% set pageTitle = "View contact information - Search for a contacts - DPS" %}
+{% set title = 'View contact information about ' + (contact | formatNameFirstNameFirst ) %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+      <span class="govuk-caption-l">Search for a contact</span>
+      <h1 class="govuk-heading-l" data-qa="confim-title-value-top">{{ title }}</h1>
+
+      {% if globalRestrictions.length > 0 %}
+        {{ mojBadge({
+          text: "Active restrictions in place",
+          classes: "moj-badge--red"
+        }) }}
+      {% endif %}
+      <p class="govuk-body govuk-!-margin-top-3">To edit contact information, look up a linked prisoner and enter the Contacts service through the DPS prisoner profile. </p>
+    </div>
+  </div>
+
+    {{ directContactContent({
+        contact: contact,
+        restrictions: prisonerContactRestrictions,
+        globalRestrictions: globalRestrictions,
+        linkedPrisoners: linkedPrisoners,
+        linkedPrisonersCount: linkedPrisonersCount,
+        phoneTypeOrderDictionary: phoneTypeOrderDictionary,
+        paginationParams: paginationParams
+    }) }}
+
+    {{ govukButton({
+        text: "Exit",
+        href: "/direct/contacts/search/" + journey.id,
+        classes: "govuk-button--secondary"
+    }) }}
+
+{% endblock %}

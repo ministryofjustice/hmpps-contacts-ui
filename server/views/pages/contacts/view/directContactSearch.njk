@@ -1,0 +1,214 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "moj/components/filter/macro.njk" import mojFilter %}
+{% from "partials/validatedDateInput/macro.njk" import validatedDateInput %}
+{% from "partials/simplePagination/macro.njk" import simplePagination %}
+{% from "../partials/addPagination.njk" import addPagination %}
+{% from "moj/components/alert/macro.njk" import mojAlert %}
+
+{% set pageTitle = "Search for a contact - find a contacts - DPS" %}
+{% set title = "Find a contact" %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-!-static-margin-bottom-7">
+            <span class="govuk-caption-l">Search for a contact</span>
+            <h1 class="govuk-heading-l">{{ title }}</h1>
+        </div>
+        {{ govukWarningText({
+            html: 'Only search for contacts when it is necessary to do so.',
+            iconFallbackText: "Warning"
+        }) }}
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <div class="block-background govuk-!-padding-6 govuk-!-margin-bottom-7">
+
+            <div class="moj-search govuk-!-width-three-quarters">
+                <h2 class="govuk-heading-m">Search by contact name</h2>
+                <form class="contact-search" method='POST'>
+                    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+                    {{ govukInput({
+                        classes: "moj-search__input",
+                        id: "firstName",
+                        name: "firstName",
+                        value: firstName,
+                        errorMessage: validationErrors | findError('firstName'),
+                        label: {
+                            text: 'First name'
+                        }
+                    }) }}
+
+                    {{ govukInput({
+                        id: "middleNames",
+                        name: "middleNames",
+                        label: { text: "Middle names" },
+                        errorMessage: validationErrors | findError('middleNames'),
+                        value: middleNames
+                    }) }}
+
+                    {{ govukInput({
+                        id: "lastName",
+                        name: "lastName",
+                        errorMessage: validationErrors | findError('lastName'),
+                        label: { text: "Last name" },
+                        value: lastName
+                    }) }}
+            </div>
+
+            <div class="govuk-!-width-three-quarters govuk-!-margin-top-7">
+
+                {{ govukDetails({
+                    summaryText: "Show advanced options",
+                    open: ((sort is defined and sort != 'lastName,asc') or (searchType is defined and searchType != 'PARTIAL') or contactId or day or month or year),
+                    classes: "no-left-border-details",
+                    html:
+                    govukSelect({
+                        id: "sort",
+                        name: "sort",
+                        label: {
+                            text: "Sort by"
+                        },
+                        items: [
+                            { value: "lastName,asc", text: "Last name (A–Z)", selected: (sort == 'lastName,asc') },
+                            { value: "lastName,desc", text: "Last name (Z–A)" , selected: (sort == 'lastName,desc') },
+                            { value: "dateOfBirth,asc", text: "Date of birth (most recent)" , selected: (sort == 'dateOfBirth,asc') },
+                            { value: "dateOfBirth,desc", text: "Date of birth (oldest)" , selected: (sort == 'dateOfBirth,desc') }
+                        ]
+                    }) +
+
+                    govukSelect({
+                        id: "searchType",
+                        name: "searchType",
+                        label: {
+                            text: "Search type"
+                        },
+                        hint: {
+                            text: "Choose how results match your search term: partial includes the term anywhere, exact matches it fully, sounds like finds similar sounding words."
+                        },
+                        items: [
+                                { value: "PARTIAL", text: "Partial", selected: (searchType == 'PARTIAL') },
+                                { value: "EXACT", text: "Exact", selected: (searchType == 'EXACT') },
+                                { value: "SOUNDS_LIKE", text: "Sounds like", selected: (searchType == 'SOUNDS_LIKE') }
+                        ]
+                    }) +
+
+                    govukInput({
+                        label: {
+                            text: "Search by contact ID"
+                        },
+                        classes: 'govuk-!-width-one-third',
+                        id: "contactId",
+                        name: "contactId",
+                        value: contactId
+                    }) +
+
+                    validatedDateInput({
+                        id: "dob",
+                        title: {
+                            text: "Date of birth",
+                            isPageHeading: false
+                        },
+                        validationErrors: validationErrors,
+                        day: day,
+                        month: month,
+                        year: year
+                    })
+                }) }}
+                <div class="govuk-details govuk-!-margin-top-6 govuk-!-margin-bottom-0">
+                    {{ govukButton({
+                        classes: "moj-search__button",
+                        text: "Search",
+                        attributes: {"data-qa": "search-button"},
+                        preventDoubleClick: true
+                    }) }}
+                </div>
+
+
+            </div>
+            </form>
+        </div>
+
+        <div class="moj-filter-layout contact-search-filter">
+
+            <div class="moj-filter-layout__content">
+
+                {% if results.content.length %}
+                    <div id="pagination"
+                         class="contact-search-pagination">{{ simplePagination(paginationParams) }}</div>
+                {% endif %}
+                {% if results.content.length %}
+                    {% set contactRows = [] %}
+                    {% for contact in results.content %}
+                        {% set contactRows = (contactRows.push([
+                            {
+                                html: (contact | formatNameLastNameFirst) + '<br/><span class="govuk-hint">' + contact.id + '</span>'
+                            },
+                            {
+                                html: contact | formatDob
+                            },
+                            {
+                                html: (contact | addressToLines or 'Not provided') | escape | nl2br
+                            },
+                            {
+                                html: '<a href="/direct/contacts/view/' + contact.id + '/' + journey.id + '" class="govuk-link" data-qa="add-contact-' + contact.id + '-link">View contact information</a>',
+                                format: "numeric"
+                            }
+                        ]), contactRows) %}
+                    {% endfor %}
+
+                    {{ govukTable({
+                        firstCellIsHeader: false,
+                        classes: 'table-vertical-align-middle govuk-!-margin-top-6',
+                        head: [
+                            {
+                                text: 'Contact name and person ID',
+                                key: 'lastName'
+                            },
+                            {
+                                text: "Date of birth",
+                                key: 'dateOfBirth'
+                            },
+                            {
+                                text: "Primary or default address"
+                            },
+                            {
+                                text: "Action",
+                                format: "numeric"
+                            }
+                        ],
+                        rows: contactRows
+                    }) }}
+                {% else %}
+                    {% if not results %}
+                        <p class="govuk-!-margin-bottom-6"><strong>Start a search to view contact records.</strong></p>
+                    {% else %}
+                        <div class="govuk-body govuk-!-margin-bottom-6">
+                            <p><strong>No contact records match your search.</strong></p>
+                            <p>You can:</p>
+                            <ul class="govuk-list govuk-list--bullet">
+                                <li>try searching again</li>
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                {% endif %}
+
+                {% if results.content.length %}
+                    <div class="contact-search-pagination">{{ simplePagination(paginationParams) }}</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% endblock %}

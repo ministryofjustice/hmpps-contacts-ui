@@ -1,10 +1,11 @@
 import { Router } from 'express'
-import type { Services } from '../services'
+import { Services } from '../services'
 import PrisonerImageRoutes from './prisonerImage/prisonerImageRoutes'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import AddContactRoutes from './contacts/add/addContactRoutes'
 import ManageContactsRoutes from './contacts/manage/manageContactsRoutes'
 import RestrictionsRoutes from './restrictions/restrictionsRoutes'
+import SearchContactRoutes from './contacts/view/searchContactRoutes'
 
 export default function routes({
   auditService,
@@ -65,6 +66,16 @@ export default function routes({
     ),
   )
 
+  router.use(
+    '/direct',
+    SearchContactRoutes(
+      auditService,
+      contactsService,
+      referenceDataService,
+      prisonerSearchService,
+      restrictionsService,
+    ),
+  )
   // Special route - which gives the mini-profile nunjucks macro access to prisoner images
   router.get('/prisoner-image/:prisonerNumber', asyncMiddleware(new PrisonerImageRoutes(prisonerImageService).GET))
 

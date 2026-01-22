@@ -53,6 +53,22 @@ export interface AddContactJourney {
   possibleExistingRecords?: ContactSearchResultItem[] | undefined
 }
 
+export interface SearchContactJourney {
+  id: string
+  lastTouched: string
+  matchingContactId?: number | undefined
+  searchContact?:
+    | {
+        searchType: string
+        contact?: Partial<ContactNames>
+        contactId?: string | undefined
+        dateOfBirth?: Partial<DateOfBirth>
+        page?: number
+        sort?: string
+      }
+    | undefined
+}
+
 export interface ContactNames {
   title?: string | undefined
   lastName: string
