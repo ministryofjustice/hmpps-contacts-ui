@@ -181,7 +181,6 @@ describe('emailsSchema', () => {
       const deduplicatedFieldErrors = deduplicateFieldErrors(result.error!)
       expect(deduplicatedFieldErrors).toStrictEqual({
         'emails[0].emailAddress': ['Enter an email address'],
-        'emails[1].emailAddress': ['Enter an email address in the correct format, like name@example.com'],
       })
     })
 

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
-import { z, ZodError } from 'zod'
+import z from 'zod'
+import { $ZodSuperRefineIssue } from 'zod/v4/core'
 import { PrisonerJourneyParams } from '../@types/journeys'
 import logger from '../../logger'
 
@@ -68,47 +69,33 @@ const zObjectStrict = <T = object>(shape: T) => z.object({ _csrf: z.string().opt
 const zodAlwaysRefine = <T extends z.ZodTypeAny>(zodType: T) =>
   z.any().transform((val, ctx) => {
     const res = zodType.safeParse(val)
-    if (!res.success) res.error.issues.forEach(ctx.addIssue)
+    if (!res.success) res.error.issues.forEach(issue => ctx.addIssue(issue as $ZodSuperRefineIssue))
     return res.data || val
   }) as unknown as T
 
-const pathArrayToString = (previous: string | number, next: string | number): string | number => {
+const pathArrayToString = (previous: string | number | symbol, next: string | number | symbol): string | number => {
   if (!previous) {
     return next.toString()
   }
   if (typeof next === 'number') {
-    return `${previous}[${next.toString()}]`
+    return `${String(previous)}[${next.toString()}]`
   }
-  return `${previous}.${next.toString()}`
+  return `${String(previous)}.${next.toString()}`
 }
 
-export const deduplicateFieldErrors = (error: ZodError) => {
+export const deduplicateFieldErrors = (error: z.ZodError<unknown>) => {
   const flattened: Record<string, Set<string>> = {}
   error.issues.forEach(issue => {
     // only field issues have a path
     if (issue.path.length > 0) {
-      const path = issue.path.reduce(pathArrayToString)
-      if (!flattened[path]) {
-        flattened[path] = new Set([])
-      }
-      flattened[path]!.add(issue.message)
+      const path = issue.path.reduce(pathArrayToString) as string
+      flattened[path] ??= new Set([])
+      flattened[path].add(issue.message)
     }
   })
-  return Object.fromEntries(Object.entries(flattened).map(([key, value]) => [key, [...value]]))
+  return Object.fromEntries(
+    Object.entries(flattened).map(([key, value]) => [key, [...value].map(o => o.replace(/^Invalid input$/, ''))]),
+  )
 }
-
-// Handy way to override default messaging with access to the value, e.g., for regex errors
-export const makeErrorMap = (messages: {
-  [Code in z.ZodIssueCode]?: (value: unknown) => string
-}): { errorMap: z.ZodErrorMap } => {
-  return {
-    errorMap: (issue, ctx) => {
-      return {
-        message: messages[issue.code]?.(ctx.data) || ctx.defaultError,
-      }
-    },
-  }
-}
-
 export const customErrorOrderBuilder = (errorSummaryList: { href: string }[], order: string[]) =>
   order.map(key => errorSummaryList.find(error => error.href === `#${key}`)).filter(Boolean)
