@@ -23,7 +23,8 @@
     "int-test-ui": "cypress open --e2e --browser chrome",
     "clean": "rm -rf dist node_modules",
     "rebuild": "npm run clean && npm i && npm run build",
-    "open-api": "npx openapi-typescript https://contacts-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > ./server/@types/contactsApi/index.d.ts"
+    "open-api": "npx openapi-typescript https://contacts-api-dev.hmpps.service.justice.gov.uk/v3/api-docs > ./server/@types/contactsApi/index.d.ts",
+    "setup": "npm ci && hmpps-npm-script-run-allowlist"
   },
   "engines": {
     "node": "^22",
@@ -147,6 +148,7 @@
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@jgoz/esbuild-plugin-typecheck": "^4.0.4",
     "@ministryofjustice/eslint-config-hmpps": "^1.0.1",
+    "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.3",
     "@testing-library/cypress": "^10.1.0",
     "@tsconfig/node22": "^22.0.3",
     "@types/bunyan": "^1.8.11",
