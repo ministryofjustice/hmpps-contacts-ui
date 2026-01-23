@@ -34,7 +34,7 @@ jobs:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Install Dependencies
-          command: npm ci --no-audit
+          command: CYPRESS_INSTALL_BINARY=0 npm run setup
       - save_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
@@ -97,6 +97,9 @@ jobs:
           name: Run wiremock
           command: java -jar wiremock.jar --port 9091
           background: true
+      - run:
+          name: Install cypress.
+          command: npx cypress install
       - run:
           name: Run the node app.
           command: npm run start-feature
