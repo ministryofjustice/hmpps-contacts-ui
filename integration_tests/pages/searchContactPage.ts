@@ -2,7 +2,7 @@ import Page, { PageElement } from './page'
 
 export default class SearchContactPage extends Page {
   constructor() {
-    super('Find a contact')
+    super('Check if the contact is already on the system')
   }
 
   enterFirstName(value: string): SearchContactPage {
@@ -70,10 +70,6 @@ export default class SearchContactPage extends Page {
     const regex = new RegExp(expected.split('<br>').join('<br>\\n?\\s+?'))
     this.checkContactSearchTableAddressValue().then(element => expect(element.html()).match(regex))
     return this
-  }
-
-  clickViewContactInformationLink() {
-    cy.get('[data-qa="add-contact-13-link"]').click()
   }
 
   clickAddNewContactLink() {

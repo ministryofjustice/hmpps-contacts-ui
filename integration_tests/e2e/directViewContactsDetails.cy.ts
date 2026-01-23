@@ -1,7 +1,7 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import RestrictionsTestData from '../../server/routes/testutils/stubRestrictionsData'
-import DirectSearchContactsPage from '../pages/searchContactPage'
+import DirectSearchContactsPage from '../pages/directSearchContactsPage'
 import DirectViewContactDetails from '../pages/directViewContactDetails'
 
 context('Manage contacts restrictions', () => {

@@ -1,6 +1,6 @@
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
-import DirectSearchContactsPage from '../pages/searchContactPage'
+import DirectSearchContactsPage from '../pages/directSearchContactsPage'
 
 const { prisonerNumber } = TestData.prisoner()
 

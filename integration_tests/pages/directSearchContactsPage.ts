@@ -2,7 +2,7 @@ import Page, { PageElement } from './page'
 
 export default class DirectSearchContactsPage extends Page {
   constructor() {
-    super('Check if the contact is already on the system')
+    super('Find a contact')
   }
 
   enterFirstName(value: string): DirectSearchContactsPage {
@@ -48,14 +48,6 @@ export default class DirectSearchContactsPage extends Page {
     this.showAdvancedOptionElement().click()
   }
 
-  selectSoundsLikeOption() {
-    this.searchTypeDropDown().select('Sounds like')
-  }
-
-  clickFilterButton() {
-    cy.findByRole('button', { name: 'Apply filter' }).click()
-  }
-
   verifyShowsNameAs(expected: string): DirectSearchContactsPage {
     this.checkContactSearchTableNameValue().should('contain.text', expected)
     return this
@@ -72,12 +64,8 @@ export default class DirectSearchContactsPage extends Page {
     return this
   }
 
-  clickAddNewContactLink() {
-    cy.findAllByRole('link', { name: 'add a new contact' }).eq(0).click()
-  }
-
-  clickTheContactLink(contactId: number) {
-    this.contactLink(contactId).click()
+  clickViewContactInformationLink() {
+    cy.get('[data-qa="add-contact-13-link"]').click()
   }
 
   private firstNameTextBox = (): PageElement => cy.get('#firstName')
@@ -96,11 +84,7 @@ export default class DirectSearchContactsPage extends Page {
 
   private searchButton = (): PageElement => cy.get('[data-qa=search-button]')
 
-  private searchTypeDropDown = (): PageElement => cy.get('#searchType')
-
   private showAdvancedOptionElement = (): PageElement => cy.get('.govuk-details__summary-text')
-
-  private contactLink = (contactId: number): PageElement => cy.get(`[data-qa="add-contact-${contactId}-link"]`)
 
   private checkContactSearchTableNameValue = (): PageElement =>
     cy.get('.govuk-table__body > :nth-child(1) > :nth-child(1)')
