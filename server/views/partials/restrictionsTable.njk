@@ -26,7 +26,7 @@
     {% set changeUrl = '/prisoner/' +  prisonerNumber + '/contacts/' +  contactId + '/relationship/' +  prisonerContactId + '/restriction/update/' +  restrictionClass + '/enter-restriction/' +  restrictionId %}
     {% set rows = (rows.push([
       { html: retrictionTypeHtml, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-type-value"} },
-      { html: (restriction.comments or 'Not provided') | escape | nl2br, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-comments-value"} },
+      { html: (restriction.comments or 'Not provided') | escape | nl2br, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-comments-value"} , classes: "long-text-column"},
       { text: restriction.startDate | formatDate('d/M/yyyy'), attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-start-date-value"} },
       { text: restriction.expiryDate | formatDate('d/M/yyyy') if restriction.expiryDate else 'Not provided', attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-expiry-date-value"} },
       { text: restriction.enteredByDisplayName or restriction.enteredByUsername, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-entered-by-value"} },
@@ -59,7 +59,7 @@
       },
       {
         text: "Comments",
-        classes: "govuk-!-width-one-quarter"
+        classes: "govuk-!-width-one-quarter long-text-column"
       },
       {
         text: "Start date"

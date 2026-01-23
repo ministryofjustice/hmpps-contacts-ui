@@ -1,41 +1,41 @@
 import Page, { PageElement } from './page'
 
-export default class SearchContactPage extends Page {
+export default class DirectSearchContactsPage extends Page {
   constructor() {
-    super('Find a contact')
+    super('Check if the contact is already on the system')
   }
 
-  enterFirstName(value: string): SearchContactPage {
+  enterFirstName(value: string): DirectSearchContactsPage {
     this.firstNameTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
-  enterMiddleNames(value: string): SearchContactPage {
+  enterMiddleNames(value: string): DirectSearchContactsPage {
     this.middleNamesTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
-  enterLastName(value: string): SearchContactPage {
+  enterLastName(value: string): DirectSearchContactsPage {
     this.lastNameTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
-  enterDay(value: string): SearchContactPage {
+  enterDay(value: string): DirectSearchContactsPage {
     this.dayTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
-  enterMonth(value: string): SearchContactPage {
+  enterMonth(value: string): DirectSearchContactsPage {
     this.monthTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
-  enterYear(value: string): SearchContactPage {
+  enterYear(value: string): DirectSearchContactsPage {
     this.yearTextBox().clear().type(value, { delay: 0 })
     return this
   }
 
-  enterContactId(value: string): SearchContactPage {
+  enterContactId(value: string): DirectSearchContactsPage {
     this.contactIdBox().clear().type(value, { delay: 0 })
     return this
   }
@@ -56,17 +56,17 @@ export default class SearchContactPage extends Page {
     cy.findByRole('button', { name: 'Apply filter' }).click()
   }
 
-  verifyShowsNameAs(expected: string): SearchContactPage {
+  verifyShowsNameAs(expected: string): DirectSearchContactsPage {
     this.checkContactSearchTableNameValue().should('contain.text', expected)
     return this
   }
 
-  verifyShowsDobAs(expected: string): SearchContactPage {
+  verifyShowsDobAs(expected: string): DirectSearchContactsPage {
     this.checkContactSearchTableDobValue().should('contain.text', expected)
     return this
   }
 
-  verifyShowsAddressAs(expected: string): SearchContactPage {
+  verifyShowsAddressAs(expected: string): DirectSearchContactsPage {
     const regex = new RegExp(expected.split('<br>').join('<br>\\n?\\s+?'))
     this.checkContactSearchTableAddressValue().then(element => expect(element.html()).match(regex))
     return this
