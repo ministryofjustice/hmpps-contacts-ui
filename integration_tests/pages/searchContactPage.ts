@@ -72,6 +72,10 @@ export default class SearchContactPage extends Page {
     return this
   }
 
+  clickViewContactInformationLink() {
+    cy.get('[data-qa="add-contact-13-link"]').click()
+  }
+
   clickAddNewContactLink() {
     cy.findAllByRole('link', { name: 'add a new contact' }).eq(0).click()
   }
