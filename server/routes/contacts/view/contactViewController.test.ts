@@ -148,7 +148,7 @@ describe('Contact details', () => {
 
       // Page title for direct view
       expect($('title').text()).toContain('View contact information - Search for a contacts - DPS')
-      expect($('a:contains("Exit")').attr('href')).toEqual(`/direct/contacts/search/${journeyId}`)
+      expect($('a:contains("Exit")').attr('href')).toEqual(`/direct/contacts/search/start`)
       // bottom confirm text present in partial (contact details tab)
       expect($('h1:contains("Contact details")')).toHaveLength(1)
     })
@@ -175,7 +175,7 @@ describe('Contact details', () => {
       const $ = cheerio.load(response.text)
 
       expect($('title').text()).toContain('View contact information - Search for a contacts - DPS')
-      expect($('a:contains("Exit")').attr('href')).toEqual(`/direct/contacts/search/${journeyId}`)
+      expect($('a:contains("Exit")').attr('href')).toEqual(`/direct/contacts/search/start`)
       // "Linked prisoners" tab should still be present
       expect($('.linked-prisoners-tab-title').length).toBeGreaterThanOrEqual(1)
     })
@@ -209,7 +209,7 @@ describe('Contact details', () => {
       const $ = cheerio.load(response.text)
 
       expect($('title').text()).toContain('View contact information - Search for a contacts - DPS')
-      expect($('a:contains("Exit")').attr('href')).toEqual(`/direct/contacts/search/${journeyId}`)
+      expect($('a:contains("Exit")').attr('href')).toEqual(`/direct/contacts/search/start`)
 
       // link is part of different flows; presence not required for direct view - just assert linked prisoners tab exists
       expect($('.linked-prisoners-tab-title').length).toBeGreaterThanOrEqual(1)

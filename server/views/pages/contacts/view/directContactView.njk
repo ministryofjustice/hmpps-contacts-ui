@@ -36,8 +36,10 @@
 
     {{ govukButton({
         text: "Exit",
-        href: "/direct/contacts/search/" + journey.id,
-        classes: "govuk-button--secondary"
+        href: "/direct/contacts/search/start",
+        classes: "govuk-button--secondary",
+        attributes: {"data-qa": "exit-button"},
+        preventDoubleClick: true
     }) }}
 
 {% endblock %}

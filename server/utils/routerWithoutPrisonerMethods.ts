@@ -4,8 +4,9 @@ import logPageViewMiddleware from '../middleware/logPageViewMiddleware'
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import { AuditService } from '../services'
 import { PrisonerJourneyParams } from '../@types/journeys'
-import { SchemaFactory } from '../middleware/validationMiddleware'
+import { SchemaFactory, validate } from '../middleware/validationMiddleware'
 import checkPermissionsWithoutPrisonerMiddleware from '../middleware/checkPermissionsWithoutPrisonerMiddleware'
+import { contactSearchSchema } from '../routes/contacts/add/contact-search/contactSearchSchema'
 
 export const routerWithoutPrisonerMethods = (router: Router, auditService: AuditService) => {
   const get = <P extends { [key: string]: string }>(
@@ -29,6 +30,7 @@ export const routerWithoutPrisonerMethods = (router: Router, auditService: Audit
       path,
       ...(handlers as RequestHandler[]),
       checkPermissionsWithoutPrisonerMiddleware(controller.REQUIRED_PERMISSION),
+      validate(contactSearchSchema),
       asyncMiddleware(controller.POST!),
     )
   return { get, post }
