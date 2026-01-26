@@ -298,7 +298,7 @@ describe('contact search', () => {
       expect(response.status).toEqual(200)
       expect($('title').text()).toStrictEqual('Search for a contact - find a contacts - DPS')
       expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Search for a contact')
-      expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(`/contacts/homepage`)
+      expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(`/`)
       expect($('[data-qa=back-link]').first().text()).toStrictEqual('Back')
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
 

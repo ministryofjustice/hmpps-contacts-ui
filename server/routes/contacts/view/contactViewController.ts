@@ -68,7 +68,7 @@ export default class ContactViewController implements PageHandler {
 
     const linkedPrisonersAll = await this.contactsService.getLinkedPrisoners(
       contact.id,
-      linkedPrisonerPageNumber - 1,
+      0,
       100, // arbitrarily large number to get all linked prisoners
       user,
     )
