@@ -231,6 +231,23 @@ export default {
     })
   },
 
+  stubGetRelationshipAndGlobalRestrictions: (params: {
+    prisonerContactId: number
+    response: PrisonerContactRestrictionsResponse
+  }): SuperAgentRequest => {
+    return stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/prisoner-contact/${params.prisonerContactId}/restriction`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: params.response,
+      },
+    })
+  },
+
   stubGetPrisonerContactRelationshipById: (params: {
     id: number
     response: PrisonerContactRelationshipDetails

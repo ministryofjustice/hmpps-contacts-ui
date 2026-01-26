@@ -19,6 +19,9 @@ export default class ContactsSearchController implements PageHandler {
 
   private TABLE_ROW_COUNT = 10
 
+  private TOO_MANY_RESULTS =
+    'Your search returned a large number of results. Only the top 2000 are shown. Refine your search to narrow the results.'
+
   GET = async (
     req: Request<{ journeyId: string }, unknown, unknown, { clear?: string; page?: string; sort?: string }>,
     res: Response,
@@ -96,6 +99,11 @@ export default class ContactsSearchController implements PageHandler {
 
       results = results ?? ({ content: [] } as PagedModelContactSearchResultItem)
     }
+    let truncationMessage: string | undefined
+    const totalElements = Number(results?.page?.totalElements ?? 0)
+    if (totalElements === 2000) {
+      truncationMessage = this.TOO_MANY_RESULTS
+    }
 
     const view = {
       lastName: res.locals?.formResponses?.['lastName'] ?? journey?.searchContact?.contact?.lastName,
@@ -113,6 +121,7 @@ export default class ContactsSearchController implements PageHandler {
       },
       journey,
       results,
+      truncationMessage,
     }
     return view
   }
@@ -194,7 +203,7 @@ export default class ContactsSearchController implements PageHandler {
 
   POST = async (req: Request<{ journeyId: string }>, res: Response): Promise<void> => {
     // Build a temporary journey object from form input so validateRequest can run
-    const { lastName, firstName, middleNames, day, month, year, contactId, searchType, page, sort } = req.body
+    const { lastName, firstName, middleNames, day, month, year, sort, searchType, contactId } = req.body
 
     const journey = {
       contact: {
@@ -205,8 +214,8 @@ export default class ContactsSearchController implements PageHandler {
       dateOfBirth: { day, month, year },
       contactId: contactId || undefined,
       sort: sort || undefined,
-      searchType,
-      page,
+      searchType: searchType || undefined,
+      page: 1,
     }
 
     // Persist the built journey so the GET handler can access it after redirect.
