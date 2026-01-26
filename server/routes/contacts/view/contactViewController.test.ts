@@ -836,6 +836,7 @@ describe('Contact details', () => {
       })
       expect($('.moj-pagination__list')).toHaveLength(2)
       expect(contactsService.getLinkedPrisoners).toHaveBeenCalledWith(1, 0, 10, currentUser)
+      expect(contactsService.getLinkedPrisoners).toHaveBeenCalledWith(1, 0, 100, currentUser)
     })
 
     it('should load the relevant page if not default', async () => {
