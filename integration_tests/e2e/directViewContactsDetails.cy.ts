@@ -67,7 +67,7 @@ context('Manage contacts restrictions', () => {
     })
     cy.task('stubLanguagesReferenceData')
 
-    cy.signIn({ startUrl: `/direct/contacts/search/start` })
+    cy.signIn({ startUrl: `/start` })
 
     const searchContactPage = Page.verifyOnPage(DirectSearchContactsPage)
     searchContactPage.enterLastName('Lastname')

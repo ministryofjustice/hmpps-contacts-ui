@@ -114,7 +114,7 @@ describe('Contact details', () => {
       restrictionsService.getGlobalRestrictions.mockResolvedValue([TestData.getContactRestrictionDetails()])
 
       // When
-      const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+      const response = await request(app).get(`/contacts/view/22/${journeyId}`)
 
       // Then
       expect(response.status).toEqual(200)
@@ -130,7 +130,7 @@ describe('Contact details', () => {
     })
   })
 
-  describe('GET /direct/contacts/view/:matchingContactId/:journeyId', () => {
+  describe('GET /contacts/view/:matchingContactId/:journeyId', () => {
     it('should render confirmation page when there is no existing records', async () => {
       // Given
       contactsService.searchContact.mockResolvedValue({ content: [TestData.contactSearchResultItem()] })
@@ -140,15 +140,15 @@ describe('Contact details', () => {
       // existingJourney.mode = 'EXISTING'
 
       // When
-      const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+      const response = await request(app).get(`/contacts/view/22/${journeyId}`)
 
       // Then
       expect(response.status).toEqual(200)
       const $ = cheerio.load(response.text)
 
       // Page title for direct view
-      expect($('title').text()).toContain('View contact information - Search for a contacts - DPS')
-      expect($('a:contains("Exit")').attr('href')).toEqual(`/direct/contacts/search/start`)
+      expect($('title').text()).toContain('View contact information - Contacts - Digital Prison Service')
+      expect($('a:contains("Exit")').attr('href')).toEqual(`/start`)
       // bottom confirm text present in partial (contact details tab)
       expect($('h1:contains("Contact details")')).toHaveLength(1)
     })
@@ -169,13 +169,13 @@ describe('Contact details', () => {
       // existingJourney.mode = 'EXISTING'
 
       // When
-      const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+      const response = await request(app).get(`/contacts/view/22/${journeyId}`)
 
       // Then
       const $ = cheerio.load(response.text)
 
-      expect($('title').text()).toContain('View contact information - Search for a contacts - DPS')
-      expect($('a:contains("Exit")').attr('href')).toEqual(`/direct/contacts/search/start`)
+      expect($('title').text()).toContain('View contact information - Contacts - Digital Prison Service')
+      expect($('a:contains("Exit")').attr('href')).toEqual(`/start`)
       // "Linked prisoners" tab should still be present
       expect($('.linked-prisoners-tab-title').length).toBeGreaterThanOrEqual(1)
     })
@@ -203,13 +203,13 @@ describe('Contact details', () => {
       // existingJourney.mode = 'EXISTING'
 
       // When
-      const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+      const response = await request(app).get(`/contacts/view/22/${journeyId}`)
 
       // Then
       const $ = cheerio.load(response.text)
 
-      expect($('title').text()).toContain('View contact information - Search for a contacts - DPS')
-      expect($('a:contains("Exit")').attr('href')).toEqual(`/direct/contacts/search/start`)
+      expect($('title').text()).toContain('View contact information - Contacts - Digital Prison Service')
+      expect($('a:contains("Exit")').attr('href')).toEqual(`/start`)
 
       // link is part of different flows; presence not required for direct view - just assert linked prisoners tab exists
       expect($('.linked-prisoners-tab-title').length).toBeGreaterThanOrEqual(1)
@@ -221,7 +221,7 @@ describe('Contact details', () => {
         [Permission.edit_contacts]: false,
       } as Record<PrisonerPermission, boolean>)
 
-      await request(app).get(`/direct/contacts/view/22/${journeyId}`).expect(403)
+      await request(app).get(`/contacts/view/22/${journeyId}`).expect(403)
     })
   })
 
@@ -242,7 +242,7 @@ describe('Contact details', () => {
           deceasedDate: '2000-12-25',
         } as ContactDetails
         contactsService.getContact.mockResolvedValue(contactDetails)
-        const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+        const response = await request(app).get(`/contacts/view/22/${journeyId}`)
         const $ = cheerio.load(response.text)
 
         const personalInformationCard = $('h2:contains("Personal information")').parent().parent()
@@ -278,7 +278,7 @@ describe('Contact details', () => {
         delete contactDetails.deceasedDate
 
         contactsService.getContact.mockResolvedValue(contactDetails)
-        const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+        const response = await request(app).get(`/contacts/view/22/${journeyId}`)
         const $ = cheerio.load(response.text)
         const personalInformationCard = $('h2:contains("Personal information")').parent().parent()
         expect(personalInformationCard).toHaveLength(1)
@@ -310,7 +310,7 @@ describe('Contact details', () => {
           }),
         )
 
-        const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+        const response = await request(app).get(`/contacts/view/22/${journeyId}`)
         const $ = cheerio.load(response.text)
 
         const identityDocCard = $('h2:contains("Identity documentation")').parent().parent()
@@ -332,7 +332,7 @@ describe('Contact details', () => {
           }),
         )
 
-        const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+        const response = await request(app).get(`/contacts/view/22/${journeyId}`)
         const $ = cheerio.load(response.text)
 
         const identityDocCard = $('h2:contains("Identity documentation")').parent().parent()
@@ -353,7 +353,7 @@ describe('Contact details', () => {
         }
         contactsService.getContact.mockResolvedValue(contactDetails)
 
-        const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+        const response = await request(app).get(`/contacts/view/22/${journeyId}`)
         const $ = cheerio.load(response.text)
 
         const additionalInfoCard = $('h2:contains("Additional information")').parent().parent()
@@ -381,7 +381,7 @@ describe('Contact details', () => {
 
         contactsService.getContact.mockResolvedValue(contactDetails)
 
-        const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+        const response = await request(app).get(`/contacts/view/22/${journeyId}`)
         const $ = cheerio.load(response.text)
 
         const additionalInfoCard = $('h2:contains("Additional information")').parent().parent()
@@ -416,7 +416,7 @@ describe('Contact details', () => {
           }),
         )
 
-        const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+        const response = await request(app).get(`/contacts/view/22/${journeyId}`)
         const $ = cheerio.load(response.text)
 
         const phoneNumbersCard = $('h2:contains("Phone numbers")').first().parent().parent()
@@ -435,7 +435,7 @@ describe('Contact details', () => {
           }),
         )
 
-        const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+        const response = await request(app).get(`/contacts/view/22/${journeyId}`)
         const $ = cheerio.load(response.text)
 
         const phoneNumbersCard = $('h2:contains("Phone numbers")').first().parent().parent()
@@ -455,7 +455,7 @@ describe('Contact details', () => {
           }),
         )
 
-        const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+        const response = await request(app).get(`/contacts/view/22/${journeyId}`)
         const $ = cheerio.load(response.text)
 
         const emailAddressesCard = $('h2:contains("Email addresses")').first().parent().parent()
@@ -472,7 +472,7 @@ describe('Contact details', () => {
           }),
         )
 
-        const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+        const response = await request(app).get(`/contacts/view/22/${journeyId}`)
         const $ = cheerio.load(response.text)
 
         const emailAddressesCard = $('h2:contains("Email addresses")').first().parent().parent()
@@ -534,7 +534,7 @@ describe('Contact details', () => {
             }),
           )
 
-          const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+          const response = await request(app).get(`/contacts/view/22/${journeyId}`)
           const $ = cheerio.load(response.text)
 
           const addressCard = $(`h2:contains("${expectedTitle}")`).last().parent().parent()
@@ -610,7 +610,7 @@ describe('Contact details', () => {
             }),
           )
 
-          const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+          const response = await request(app).get(`/contacts/view/22/${journeyId}`)
           const $ = cheerio.load(response.text)
 
           const addressCard = $(`h2:contains("${expectedTitle}")`).last().parent().parent()
@@ -657,7 +657,7 @@ describe('Contact details', () => {
           }),
         )
 
-        const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+        const response = await request(app).get(`/contacts/view/22/${journeyId}`)
         const $ = cheerio.load(response.text)
 
         const addressCard = $(`h2:contains("Address")`).last().parent().parent()
@@ -683,7 +683,7 @@ describe('Contact details', () => {
           }),
         )
 
-        const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+        const response = await request(app).get(`/contacts/view/22/${journeyId}`)
         const $ = cheerio.load(response.text)
 
         expect($('h2:contains("Addresses")').first().next().text()).toMatch(/No addresses provided./)
@@ -758,7 +758,7 @@ describe('Contact details', () => {
       contactsService.getLinkedPrisoners.mockResolvedValue({ content: linkedPrisoners, page: { totalElements: 4 } })
       contactsService.getContact.mockResolvedValue(TestData.contact())
 
-      const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+      const response = await request(app).get(`/contacts/view/22/${journeyId}`)
       const $ = cheerio.load(response.text)
 
       // Should include all relationships in the count if a prisoner has more than one relationship to the contact
@@ -822,7 +822,7 @@ describe('Contact details', () => {
       contactsService.getLinkedPrisoners.mockResolvedValue({ content: linkedPrisoners, page: { totalElements: 240 } })
       contactsService.getContact.mockResolvedValue(TestData.contact({ id: 1 }))
 
-      const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+      const response = await request(app).get(`/contacts/view/22/${journeyId}`)
       const $ = cheerio.load(response.text)
 
       // Should include all relationships in the count if a prisoner has more than one relationship to the contact
@@ -862,7 +862,7 @@ describe('Contact details', () => {
       contactsService.getLinkedPrisoners.mockResolvedValue({ content: linkedPrisoners, page: { totalElements: 240 } })
       contactsService.getContact.mockResolvedValue(TestData.contact({ id: 1 }))
 
-      const response = await request(app).get(`/direct/contacts/view/22/${journeyId}?linkedPrisonerPage=2`)
+      const response = await request(app).get(`/contacts/view/22/${journeyId}?linkedPrisonerPage=2`)
       const $ = cheerio.load(response.text)
 
       // Should include all relationships in the count if a prisoner has more than one relationship to the contact
@@ -894,13 +894,13 @@ describe('Contact details', () => {
       })
     })
     describe('Global Restrictions', () => {
-      describe('GET /direct/contacts/view/:matchingContactId/:journeyId#restrictions', () => {
+      describe('GET /contacts/view/:matchingContactId/:journeyId#restrictions', () => {
         it('should render restrictions tab', async () => {
           // Given
           restrictionsService.getGlobalRestrictions.mockResolvedValue([TestData.getContactRestrictionDetails()])
 
           // When
-          const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+          const response = await request(app).get(`/contacts/view/22/${journeyId}`)
 
           // Then
           expect(response.status).toEqual(200)
@@ -932,7 +932,7 @@ describe('Contact details', () => {
           ])
 
           // When
-          const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+          const response = await request(app).get(`/contacts/view/22/${journeyId}`)
 
           // Then
           const $ = cheerio.load(response.text)
@@ -953,7 +953,7 @@ describe('Contact details', () => {
           restrictionsService.getGlobalRestrictions.mockResolvedValue([])
 
           // When
-          const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+          const response = await request(app).get(`/contacts/view/22/${journeyId}`)
 
           // Then
           const $ = cheerio.load(response.text)
@@ -971,7 +971,7 @@ describe('Contact details', () => {
           ])
 
           // When
-          const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+          const response = await request(app).get(`/contacts/view/22/${journeyId}`)
 
           // Then
           const $ = cheerio.load(response.text)
@@ -986,7 +986,7 @@ describe('Contact details', () => {
           ])
 
           // When
-          const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+          const response = await request(app).get(`/contacts/view/22/${journeyId}`)
 
           // Then
           const $ = cheerio.load(response.text)
@@ -1009,7 +1009,7 @@ describe('Contact details', () => {
       contactsService.getContact.mockResolvedValue(TestData.contact())
 
       // When
-      const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+      const response = await request(app).get(`/contacts/view/22/${journeyId}`)
 
       // Then
       const $ = cheerio.load(response.text)
@@ -1038,7 +1038,7 @@ describe('Contact details', () => {
       contactsService.getContact.mockResolvedValue(TestData.contact({ employments: [employment] }))
 
       // When
-      const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+      const response = await request(app).get(`/contacts/view/22/${journeyId}`)
 
       // Then
       const $ = cheerio.load(response.text)
@@ -1066,7 +1066,7 @@ describe('Contact details', () => {
       contactsService.getContact.mockResolvedValue(TestData.contact({ employments: [employment] }))
 
       // When
-      const response = await request(app).get(`/direct/contacts/view/22/${journeyId}`)
+      const response = await request(app).get(`/contacts/view/22/${journeyId}`)
 
       // Then
       const $ = cheerio.load(response.text)

@@ -16,7 +16,7 @@ const SearchContactRoutes = (
 ) => {
   const router = Router({ mergeParams: true })
   const { get, post } = routerWithoutPrisonerMethods(router, auditService)
-  get('/contacts/search/start', new StartSearchContactJourneyController())
+  get('/start', new StartSearchContactJourneyController())
   get('/contacts/search/:journeyId', new ContactsSearchController(contactsService))
   post('/contacts/search/:journeyId', new ContactsSearchController(contactsService))
   get(

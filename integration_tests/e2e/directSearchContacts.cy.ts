@@ -35,7 +35,7 @@ context('Direct Search contacts', () => {
       dateOfBirth: '',
     })
 
-    cy.signIn({ startUrl: `/direct/contacts/search/start` })
+    cy.signIn({ startUrl: `/start` })
 
     Page.verifyOnPage(DirectSearchContactsPage)
   })

@@ -67,7 +67,7 @@ export default function routes({
   )
 
   router.use(
-    '/direct',
+    '/',
     SearchContactRoutes(
       auditService,
       contactsService,
