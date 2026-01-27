@@ -29,7 +29,7 @@ export default class ContactsSearchController implements PageHandler {
     const { journeyId } = req.params
     if (!req.session.searchContactJourneys) {
       // in case session has expired or journeyId is invalid, redirect to start page
-      return res.redirect(`/direct/contacts/search/start`)
+      return res.redirect(`/start`)
     }
 
     const journey = req.session.searchContactJourneys![journeyId]!
@@ -38,17 +38,17 @@ export default class ContactsSearchController implements PageHandler {
 
       if (clear === 'filter') {
         delete journey.searchContact.dateOfBirth
-        return res.redirect(`/direct/contacts/search/${journeyId}#`)
+        return res.redirect(`/contacts/search/${journeyId}#`)
       }
       if (sort) {
         journey.searchContact.sort = sort
         journey.searchContact.page = 1
-        return res.redirect(`/direct/contacts/search/${journeyId}#pagination`)
+        return res.redirect(`/contacts/search/${journeyId}#pagination`)
       }
       if (page) {
         const pageNumber = Number(page)
         journey.searchContact.page = Number.isNaN(pageNumber) ? 1 : pageNumber
-        return res.redirect(`/direct/contacts/search/${journeyId}#pagination`)
+        return res.redirect(`/contacts/search/${journeyId}#pagination`)
       }
     }
     const template = 'pages/contacts/view/directContactSearch'
@@ -117,7 +117,7 @@ export default class ContactsSearchController implements PageHandler {
       sort: journey.searchContact?.sort,
       navigation: {
         backLinkLabel: 'Back',
-        backLink: `/contacts/homepage`,
+        backLink: `/`,
       },
       journey,
       results,
@@ -225,6 +225,6 @@ export default class ContactsSearchController implements PageHandler {
     existingJourney.searchContact = journey
 
     // Redirect to GET which will read the journey (from session) and either render errors or perform search
-    return res.redirect(`/direct/contacts/search/${journeyId}#`)
+    return res.redirect(`/contacts/search/${journeyId}#`)
   }
 }

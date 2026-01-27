@@ -68,7 +68,7 @@ export default class ContactViewController implements PageHandler {
 
     const linkedPrisonersAll = await this.contactsService.getLinkedPrisoners(
       contact.id,
-      linkedPrisonerPageNumber - 1,
+      0,
       100, // arbitrarily large number to get all linked prisoners
       user,
     )
@@ -120,8 +120,8 @@ export default class ContactViewController implements PageHandler {
       contact,
       prisonerContactRestrictions: contactRelationshipRestrictions,
       navigation: {
-        backLinkLabel: 'Back to search results',
-        backLink: `/direct/contacts/search/${journey.id}`,
+        backLinkLabel: 'Back to contact search',
+        backLink: `/contacts/search/${journey.id}`,
       },
       globalRestrictions,
       linkedPrisoners: linkedPrisoners.content,

@@ -46,12 +46,12 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /direct/contacts/search/start', () => {
+describe('GET /start', () => {
   it('should create the journey and redirect to search page', async () => {
     // Given
 
     // When
-    const response = await request(app).get(`/direct/contacts/search/start`)
+    const response = await request(app).get(`/start`)
 
     // Then
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.CONTACT_SEARCH_START_PAGE, {
@@ -74,7 +74,7 @@ describe('GET /direct/contacts/search/start', () => {
     ]
 
     // When
-    const response = await request(app).get(`/direct/contacts/search/start`)
+    const response = await request(app).get(`/start`)
     const { location } = response.headers
 
     // Then
@@ -132,7 +132,7 @@ describe('GET /direct/contacts/search/start', () => {
     ]
 
     // When
-    const response = await request(app).get(`/direct/contacts/search/start`)
+    const response = await request(app).get(`/start`)
     const { location } = response.headers
 
     // Then
@@ -150,6 +150,6 @@ describe('GET /direct/contacts/search/start', () => {
       [Permission.edit_contacts]: false,
     } as Record<PrisonerPermission, boolean>)
 
-    await request(app).get(`/direct/contacts/search/start`).expect(403)
+    await request(app).get(`/start`).expect(403)
   })
 })
