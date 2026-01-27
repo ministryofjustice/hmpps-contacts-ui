@@ -5,7 +5,7 @@
 {% from "partials/directContactSearch/directContactContent.njk" import directContactContent %}
 {% from "moj/components/badge/macro.njk" import mojBadge %}
 {% from "moj/components/alert/macro.njk" import mojAlert %}
-{% set pageTitle = "View contact information - Search for a contacts - DPS" %}
+{% set pageTitle = "View contact information - Contacts - Digital Prison Service" %}
 {% set title = 'View contact information about ' + (contact | formatNameFirstNameFirst ) %}
 
 {% block content %}
@@ -36,7 +36,7 @@
 
     {{ govukButton({
         text: "Exit",
-        href: "/direct/contacts/search/start",
+        href: "/start",
         classes: "govuk-button--secondary",
         attributes: {"data-qa": "exit-button"},
         preventDoubleClick: true

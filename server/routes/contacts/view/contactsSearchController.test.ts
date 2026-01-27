@@ -65,11 +65,11 @@ afterEach(() => {
 })
 
 describe('contact search', () => {
-  describe('POST /direct/contacts/search/:journeyId', () => {
+  describe('POST /contacts/search/:journeyId', () => {
     it('should retain journey state and pass to result page when all fields are provided', async () => {
       // Arrange
       await request(app)
-        .post(`/direct/contacts/search/${journeyId}`)
+        .post(`/contacts/search/${journeyId}`)
         .type('form')
         .send({
           lastName: 'last',
@@ -83,7 +83,7 @@ describe('contact search', () => {
           year: 1980,
         })
         .expect(302)
-        .expect('Location', `/direct/contacts/search/${journeyId}#`)
+        .expect('Location', `/contacts/search/${journeyId}#`)
 
       expect(session.searchContactJourneys![journeyId]!.searchContact).toStrictEqual({
         contact: {
@@ -110,7 +110,7 @@ describe('contact search', () => {
 
       // When - submit enhanced form including contactId, sort and searchType and a DOB
       await request(app)
-        .post(`/direct/contacts/search/${journeyId}`)
+        .post(`/contacts/search/${journeyId}`)
         .type('form')
         .send({
           lastName: 'last',
@@ -124,7 +124,7 @@ describe('contact search', () => {
           year: 1980,
         })
         .expect(302)
-        .expect('Location', `/direct/contacts/search/${journeyId}#`)
+        .expect('Location', `/contacts/search/${journeyId}#`)
 
       // Session should have enhanced parameters saved
       expect(session.searchContactJourneys![journeyId]!.searchContact).toStrictEqual({
@@ -141,7 +141,7 @@ describe('contact search', () => {
       })
 
       // And when rendering the GET, the controller should call the contactsService with the EnhancedContactSearchRequest containing contactId and searchType
-      const getResponse = await request(app).get(`/direct/contacts/search/${journeyId}`)
+      const getResponse = await request(app).get(`/contacts/search/${journeyId}`)
       expect(getResponse.status).toEqual(200)
       expect(contactsService.searchContactV2).toHaveBeenCalled()
 
@@ -160,7 +160,7 @@ describe('contact search', () => {
 
       // When - submit empty enhanced form (all blank)
       await request(app)
-        .post(`/direct/contacts/search/${journeyId}`)
+        .post(`/contacts/search/${journeyId}`)
         .type('form')
         .send({
           lastName: '',
@@ -173,10 +173,10 @@ describe('contact search', () => {
           year: '',
         })
         .expect(302)
-        .expect('Location', `/direct/contacts/search/${journeyId}#`)
+        .expect('Location', `/contacts/search/${journeyId}#`)
 
       // Then GET should render page showing validation errors and should NOT call the search service
-      const response = await request(app).get(`/direct/contacts/search/${journeyId}`)
+      const response = await request(app).get(`/contacts/search/${journeyId}`)
       expect(response.status).toEqual(200)
       // Top-level error summary should include the message set by validateRequest
       expect(response.text).toContain('There is a problem')
@@ -190,7 +190,7 @@ describe('contact search', () => {
 
       // When - submit enhanced form with invalid characters in name fields
       await request(app)
-        .post(`/direct/contacts/search/${journeyId}`)
+        .post(`/contacts/search/${journeyId}`)
         .type('form')
         .send({
           lastName: 'last#name',
@@ -203,10 +203,10 @@ describe('contact search', () => {
           year: '',
         })
         .expect(302)
-        .expect('Location', `/direct/contacts/search/${journeyId}#`)
+        .expect('Location', `/contacts/search/${journeyId}#`)
 
       // Then GET should render page showing validation errors and should NOT call the search service
-      const response = await request(app).get(`/direct/contacts/search/${journeyId}`)
+      const response = await request(app).get(`/contacts/search/${journeyId}`)
       expect(response.status).toEqual(200)
       // Top-level error summary should include the message set by validateRequest
       expect(response.text).toContain('There is a problem')
@@ -221,7 +221,7 @@ describe('contact search', () => {
 
       // When - submit enhanced form with invalid contact id
       await request(app)
-        .post(`/direct/contacts/search/${journeyId}`)
+        .post(`/contacts/search/${journeyId}`)
         .type('form')
         .send({
           lastName: 'lastName',
@@ -234,10 +234,10 @@ describe('contact search', () => {
           year: '',
         })
         .expect(302)
-        .expect('Location', `/direct/contacts/search/${journeyId}#`)
+        .expect('Location', `/contacts/search/${journeyId}#`)
 
       // Then GET should render page showing validation errors and should NOT call the search service
-      const response = await request(app).get(`/direct/contacts/search/${journeyId}`)
+      const response = await request(app).get(`/contacts/search/${journeyId}`)
       expect(response.status).toEqual(200)
       // Top-level error summary should include the message set by validateRequest
       expect(response.text).toContain('There is a problem')
@@ -251,7 +251,7 @@ describe('contact search', () => {
 
       // When - submit enhanced form with short names
       await request(app)
-        .post(`/direct/contacts/search/${journeyId}`)
+        .post(`/contacts/search/${journeyId}`)
         .type('form')
         .send({
           lastName: 'l',
@@ -264,10 +264,10 @@ describe('contact search', () => {
           year: '',
         })
         .expect(302)
-        .expect('Location', `/direct/contacts/search/${journeyId}#`)
+        .expect('Location', `/contacts/search/${journeyId}#`)
 
       // Then GET should render page showing validation errors and should NOT call the search service
-      const response = await request(app).get(`/direct/contacts/search/${journeyId}`)
+      const response = await request(app).get(`/contacts/search/${journeyId}`)
       expect(response.status).toEqual(200)
       // Top
       expect(response.text).toContain('There is a problem')
@@ -278,7 +278,7 @@ describe('contact search', () => {
     })
   })
 
-  describe('GET /direct/contacts/search/:journeyId', () => {
+  describe('GET /contacts/search/:journeyId', () => {
     it('should render contact page without filter when there is no search', async () => {
       // Given
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
@@ -291,14 +291,14 @@ describe('contact search', () => {
       })
 
       // When
-      const response = await request(app).get(`/direct/contacts/search/${journeyId}`)
+      const response = await request(app).get(`/contacts/search/${journeyId}`)
       const $ = cheerio.load(response.text)
 
       // Then
       expect(response.status).toEqual(200)
-      expect($('title').text()).toStrictEqual('Search for a contact - find a contacts - DPS')
+      expect($('title').text()).toStrictEqual('Search for a contact - Contacts - Digital Prison Service')
       expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Search for a contact')
-      expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(`/contacts/homepage`)
+      expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(`/`)
       expect($('[data-qa=back-link]').first().text()).toStrictEqual('Back')
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
 
@@ -320,7 +320,7 @@ describe('contact search', () => {
       })
 
       // When
-      const response = await request(app).get(`/direct/contacts/search/${journeyId}`)
+      const response = await request(app).get(`/contacts/search/${journeyId}`)
       const $ = cheerio.load(response.text)
 
       // Then - name inputs (optional)
@@ -379,7 +379,7 @@ describe('contact search', () => {
       })
 
       // When
-      const response = await request(app).get(`/direct/contacts/search/${journeyId}`)
+      const response = await request(app).get(`/contacts/search/${journeyId}`)
       const $ = cheerio.load(response.text)
 
       // Then

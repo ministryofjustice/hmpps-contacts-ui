@@ -13,7 +13,7 @@
 {% from "../partials/addPagination.njk" import addPagination %}
 {% from "moj/components/alert/macro.njk" import mojAlert %}
 
-{% set pageTitle = "Search for a contact - find a contacts - DPS" %}
+{% set pageTitle = "Search for a contact - Contacts - Digital Prison Service" %}
 {% set title = "Find a contact" %}
 {% set mainClasses = "app-container govuk-body" %}
 
@@ -170,7 +170,7 @@
                                 html: (contact | addressToLines or 'Not provided') | escape | nl2br
                             },
                             {
-                                html: '<a href="/direct/contacts/view/' + contact.id + '/' + journey.id + '" class="govuk-link" data-qa="add-contact-' + contact.id + '-link">View contact information</a>',
+                                html: '<a href="/contacts/view/' + contact.id + '/' + journey.id + '" class="govuk-link" data-qa="add-contact-' + contact.id + '-link">View contact information</a>',
                                 format: "numeric"
                             }
                         ]), contactRows) %}

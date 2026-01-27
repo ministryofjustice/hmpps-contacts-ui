@@ -24,7 +24,7 @@ export default class StartSearchContactJourneyController implements PageHandler 
     res: Response,
   ): Promise<void> => {
     const journey = this.setSessionData(req)
-    res.redirect(`/direct/contacts/search/${journey.id}`)
+    res.redirect(`/contacts/search/${journey.id}`)
   }
 
   private setSessionData(req: e.Request) {
