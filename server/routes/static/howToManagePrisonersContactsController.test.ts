@@ -37,5 +37,17 @@ describe('GET /how-to-manage-a-prisoners-contacts', () => {
     expect($('[data-qa=main-heading]').text().trim()).toEqual('How to manage a prisoner’s contacts')
     expect($('[data-qa=sub-heading-1]').text().trim()).toEqual("To manage a prisoner's contacts")
     expect($('[data-qa=sub-heading-2]').text().trim()).toEqual('Roles you need to manage a prisoner’s contacts')
+    expect($('[data-qa=main-dps-search-prisoner-link]').text().trim()).toStrictEqual('main DPS prisoner search')
+    expect($('[data-qa=main-dps-search-prisoner-link]').first().attr('href')).toStrictEqual(
+      `http://localhost:3001/prisoner-search`,
+    )
+
+    expect($('[data-qa=breadcrumbs]')).toHaveLength(1)
+    const breadcrumbs = $('[data-qa=breadcrumbs] a')
+    expect(breadcrumbs).toHaveLength(2)
+    expect(breadcrumbs.eq(0).text().trim()).toStrictEqual('Digital Prison Services')
+    expect(breadcrumbs.eq(0).attr('href')).toStrictEqual('http://localhost:3001')
+    expect(breadcrumbs.eq(1).text().trim()).toStrictEqual('Contacts')
+    expect(breadcrumbs.eq(1).attr('href')).toStrictEqual('/')
   })
 })
