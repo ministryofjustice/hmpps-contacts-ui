@@ -120,7 +120,7 @@ export default class ContactViewController implements PageHandler {
       contact,
       prisonerContactRestrictions: contactRelationshipRestrictions,
       navigation: {
-        backLinkLabel: 'Back to search results',
+        backLinkLabel: 'Back to contact search',
         backLink: `/contacts/search/${journey.id}`,
       },
       globalRestrictions,
