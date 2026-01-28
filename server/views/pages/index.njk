@@ -7,28 +7,33 @@
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-<h1 class="govuk-heading-l">{{ title }}</h1>
-<div class="card-group govuk-grid-row">
-  <div class="govuk-grid-column-one-third card-group__item">
-      {{ card({
-          "href": "/start",
-          "clickable": "true",
-          "heading": "Search for a contact",
-          "description": "View a contact's details.",
-          "data-qa": "manage-contacts-card"
-      }) }}
-  </div>
+    <h1 class="govuk-heading-l">{{ title }}</h1>
+    <div class="homepage-content">
+        <div class="govuk-width-container">
 
-  <div class="govuk-grid-column-one-third card-group__item">
-      {{ card({
-          "href": "/how-to-manage-a-prisoners-contacts",
-          "clickable": "true",
-          "heading": "How to manage a prisoner's contacts",
-          "description": "Information on how to manage a prisoner's contacts.",
-          "data-qa": "how-to-manage-prisoner-contacts-card"
-      }) }}
-  </div>
-</div>
+            <div class="card-group govuk-grid-row">
+                <div class="govuk-grid-column-one-third card-group__item">
+                    {{ card({
+                        "href": "/start",
+                        "clickable": "true",
+                        "heading": "Search for a contact",
+                        "description": "View a contact's details.",
+                        "data-qa": "manage-contacts-card"
+                    }) }}
+                </div>
+
+                <div class="govuk-grid-column-one-third card-group__item">
+                    {{ card({
+                        "href": "/how-to-manage-a-prisoners-contacts",
+                        "clickable": "true",
+                        "heading": "How to manage a prisoner's contacts",
+                        "description": "Information on how to manage a prisoner's contacts.",
+                        "data-qa": "how-to-manage-prisoner-contacts-card"
+                    }) }}
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
 {% block pageScripts %}

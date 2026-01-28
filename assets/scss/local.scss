@@ -215,3 +215,12 @@ div.moj-action-bar__filter::after { content: none !important; }
 .no-space-approval-label {
   justify-content: normal
 }
+
+.homepage-content {
+  padding: 50px 0;
+  background: #f0f4f5;
+  min-height: 500px;
+  position: absolute;
+  left: 0;
+  width: 100vw;
+}
