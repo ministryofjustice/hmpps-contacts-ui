@@ -12,7 +12,9 @@ export default function StaticRoutes(): Router {
     '/',
     asyncMiddleware(async (req, res) => {
       // Render the index page (server/views/pages/index.njk)
-      return res.render('pages/index')
+      return res.render('pages/index', {
+        navigation: { breadcrumbs: ['DPS_HOME'] },
+      })
     }),
   )
 
