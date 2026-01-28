@@ -1,6 +1,5 @@
 {% extends "govuk/template.njk" %}`
 {% from "partials/miniProfile/macro.njk" import miniProfile %}
-{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 
 {% block head %}
   <link href="{{ '/assets/css/app.css' | assetMap }}" rel="stylesheet"/>
@@ -23,13 +22,6 @@
 {% endblock %}
 
 {% block beforeContent %}
-  {{ govukPhaseBanner({
-    tag: {
-      text: "Beta"
-    },
-    html: 'This is a new service. Help us improve it and <a class="govuk-link" href="https://www.smartsurvey.co.uk/s/ZVE1VN/" target="_blank">give your feedback (opens in new tab)</a>.'
-  }) }}
-
   {% include 'partials/navigation.njk' %}
   {% include 'partials/formErrorSummary.njk' %}
   {% if prisonerDetails %}
