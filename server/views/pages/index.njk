@@ -2,20 +2,11 @@
 {% from "components/card.njk" import card %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 
-{% set pageTitle = applicationName + " - Home" %}
+{% set pageTitle = "Contacts - DPS" %}
 {% set title = "Contacts" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
-{{ govukBreadcrumbs({
-  items: [
-    {
-      text: "Digital Prison Services",
-      href: DPS_HOME_PAGE_URL
-    }
-  ]
-}) }}
-
 <h1 class="govuk-heading-l">{{ title }}</h1>
 <div class="card-group govuk-grid-row">
   <div class="govuk-grid-column-one-third card-group__item">
@@ -34,7 +25,7 @@
           "clickable": "true",
           "heading": "How to manage a prisoner's contacts",
           "description": "Information on how to manage a prisoner's contacts.",
-          "data-qa": "manage-restrictions-card"
+          "data-qa": "how-to-manage-prisoner-contacts-card"
       }) }}
   </div>
 </div>
