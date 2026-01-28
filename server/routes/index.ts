@@ -6,6 +6,7 @@ import AddContactRoutes from './contacts/add/addContactRoutes'
 import ManageContactsRoutes from './contacts/manage/manageContactsRoutes'
 import RestrictionsRoutes from './restrictions/restrictionsRoutes'
 import SearchContactRoutes from './contacts/view/searchContactRoutes'
+import StaticRoutes from './static/staticRoutes'
 
 export default function routes({
   auditService,
@@ -22,6 +23,8 @@ export default function routes({
   contactAuditHistoryService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
+
+  router.use('', StaticRoutes())
 
   router.use(
     '',

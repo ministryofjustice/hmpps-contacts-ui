@@ -19,6 +19,13 @@
               href: digitalPrisonServicesUrl + "/prisoner/" + prisonerDetails.prisonerNumber
             }
           ), breadcrumbs) %}
+        {% elseif breadcrumb === 'CONTACTS_HOME_PAGE' %}
+            {% set breadcrumbs = (breadcrumbs.push(
+              {
+                text: "Contacts",
+                href: "/"
+              }
+            ), breadcrumbs) %}
         {% elseif breadcrumb === 'PRISONER_CONTACTS' %}
           {% set breadcrumbs = (breadcrumbs.push(
             {
