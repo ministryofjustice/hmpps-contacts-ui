@@ -1,0 +1,83 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+{% set pageTitle = "Accessibility statement - Managing contacts - DPS" %}
+{% set title =  'Accessibility statement' %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+
+        <p class="govuk-body">This accessibility statement applies to the Managing contacts service. This service allows
+            users to add and update social and professional contacts and contact information, link contacts to
+            prisoners, and manage which contacts are approved to visit a prisoner.</p>
+
+        <p class="govuk-body">This service is available at <a href="https://contacts.hmpps.service.justice.gov.uk/"
+                                                              class="govuk-link" data-qa="service-link" target="_blank"
+                                                              rel="noreferrer noopener">https://contacts.hmpps.service.justice.gov.uk/</a>.
+            To view a prisoner’s contacts, select ‘Social and official contacts’ from the ‘External Contacts’ of a
+            prisoner’s profile in DPS.</p>
+
+        <p class="govuk-body">This website is run by HM Prison and Probation Service. We want as many people as possible
+            to be able to use this website. For example, that means you should be able to:</p>
+
+        <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+            <li>change colours, contrast levels and fonts using browser or device settings</li>
+            <li>zoom in up to 400% without the text spilling off the screen</li>
+            <li>navigate most of the website using a keyboard or speech recognition software</li>
+            <li>listen to most of the website using a screen reader (including the most recent versions of JAWS, NVDA
+                and VoiceOver)
+            </li>
+        </ul>
+
+        <p class="govuk-body">We’ve also made the website text as simple as possible to understand.</p>
+        <p class="govuk-body">AbilityNet has <a href="https://mcmw.abilitynet.org.uk/" class="govuk-link"
+                                                data-qa="ability-link" target="_blank" rel="noreferrer noopener">advice
+                on making your device easier to use</a> if you have a disability.</p>
+
+
+        <h2 class="govuk-heading-m">How accessible this website is</h2>
+        <p class="govuk-body">The Managing contacts service is 89% accessible at the time of writing.</p>
+        <p class="govuk-body">The website has been tested against the <a href="https://www.w3.org/TR/WCAG22/"
+                                                                         class="govuk-link" data-qa="accessibility-link">Web Content Accessibility
+                Guidelines version 2.2</a> (WCAG) 2.2 AA standard. The website is 89% compliant and meets 8 out of the
+            13 principles in full.</p>
+
+        <h2 class="govuk-heading-m">Compliance status</h2>
+        <p class="govuk-body">Accessibility testing was carried out by User Vision. The most viewed pages were tested
+            using automated testing tools. A further audit of the website was carried out to the WCAG 2.2 AA
+            standard. </p>
+        <p class="govuk-body">The accessibility audit was completed in November 2025 and found that the service is 89%
+            compliant to WCAG 2.2 standard level AA criteria.</p>
+        <p class="govuk-body">No high priority issues were found and of the 7 medium and low priority issues identified,
+            1 has been resolved and 6 remain open.</p>
+        <p class="govuk-body">You can read the full accessibility report on the service below:</p>
+        <p class="govuk-body"><a
+                    href="https://justiceuk.sharepoint.com/:b:/r/sites/prisons-digital/Shared%20Documents/Managing%20Prisoner%20Contacts/Accessibility%20Audit%20-%20Managing%20Contacts%20-%2025.11.25.pdf?csf=1&web=1&e=bTa681"
+                    class="govuk-link" data-qa="pdf-link" target="_blank" rel="noreferrer noopener">Accessibility Audit
+                - Managing Contacts - 25.11.25 (PDF)</a></p>
+
+        <h2 class="govuk-heading-m">Preparation of this accessibility statement</h2>
+        <p class="govuk-body">This website was last tested by a third party on 25 November 2025 against the WCAG 2.2 AA
+            standard.</p>
+        <p class="govuk-body">This statement was prepared on 29 January 2026. It was last reviewed on 29 January
+            2026.</p>
+
+        <h2 class="govuk-heading-m">Feedback and contact information</h2>
+        <p class="govuk-body">If you think we’re not meeting accessibility requirements, or you need any information
+            from the service listed in a different format, contact: <a href="mailto:moveandimprove@justice.gov.uk"
+                                                                       class="govuk-link" data-qa="mailto-link">moveandimprove@justice.gov.uk</a>
+        </p>
+
+        <h2 class="govuk-heading-m">Enforcement procedure</h2>
+        <p class="govuk-body">The Equality and Human Rights Commission (EHRC) is responsible for enforcing the Public
+            Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018 (the ‘accessibility
+            regulations’).</p>
+        <p class="govuk-body">If you’re not happy with how we respond to your complaint, <a
+                    href="https://www.equalityadvisoryservice.com/" class="govuk-link" data-qa="eass-link">contact the
+                Equality Advisory and Support Service (EASS)</a>.</p>
+
+    </div>
+</div>
+{% endblock %}
