@@ -103,15 +103,15 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.974.0",
+    "@aws-sdk/client-sqs": "^3.975.0",
     "@cypress/code-coverage": "^3.14.7",
     "@ministryofjustice/frontend": "^7.1.1",
     "@ministryofjustice/hmpps-auth-clients": "^1.0.1",
     "@ministryofjustice/hmpps-connect-dps-components": "^5.2.3",
-    "@ministryofjustice/hmpps-monitoring": "^1.0.0",
+    "@ministryofjustice/hmpps-monitoring": "^1.0.1",
     "@ministryofjustice/hmpps-prison-permissions-lib": "^0.5.0",
     "@ministryofjustice/hmpps-rest-client": "^1.0.0",
-    "@sentry/node": "^10.36.0",
+    "@sentry/node": "^10.37.0",
     "@types/cypress__code-coverage": "^3.10.2",
     "accessible-autocomplete": "^3.0.1",
     "agentkeepalive": "^4.6.0",
@@ -120,7 +120,7 @@
     "body-parser": "^2.2.2",
     "bunyan": "^1.8.15",
     "bunyan-format": "^0.2.1",
-    "cheerio": "^1.1.2",
+    "cheerio": "^1.2.0",
     "compression": "^1.8.1",
     "connect-flash": "^0.1.1",
     "connect-redis": "^9.0.0",
@@ -168,11 +168,11 @@
     "@types/uuid": "^11.0.0",
     "audit-ci": "^7.1.0",
     "aws-sdk-client-mock": "^4.1.0",
-    "cheerio": "^1.1.2",
+    "cheerio": "^1.2.0",
     "chokidar": "^3.6.0",
     "concurrently": "^9.2.1",
     "cypress": "^14.5.4",
-    "cypress-circleci-reporter": "^0.3.0",
+    "cypress-circleci-reporter": "^0.4.0",
     "cypress-multi-reporters": "^2.0.5",
     "dotenv": "^17.2.3",
     "esbuild": "^0.27.2",
@@ -211,7 +211,7 @@
     },
     "cypress": {
       "@cypress/request": "v3.0.10",
-      "systeminformation": "5.30.5"
+      "systeminformation": "5.30.6"
     },
     "sinon": {
       "diff": "8.0.3"
