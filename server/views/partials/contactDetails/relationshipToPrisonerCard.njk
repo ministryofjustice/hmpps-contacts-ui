@@ -144,7 +144,7 @@
           value: {
             text: relationship.approvedBy
           }
-      } if relationship.isApprovedVisitor and FEATURE_RELATIONSHIP_APPROVED_BY_ENABLED,
+      } if relationship.isApprovedVisitor and relationship.approvedBy,
       {
         key: {
           text: 'Comments on the relationship'
