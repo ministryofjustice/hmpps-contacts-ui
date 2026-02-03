@@ -21,7 +21,7 @@ context('Direct Search contacts', () => {
       prisonId: 'HEI',
       term: prisonerNumber,
     })
-    cy.task('stubContactSearchV2', {
+    cy.task('stubContactSearch', {
       results: {
         page: {
           totalPages: 1,

@@ -1743,29 +1743,9 @@ export interface paths {
     }
     /**
      * Search contacts
-     * @description Search all contacts by their last name or first name or middle name or date of birth or contact id
-     */
-    get: operations['searchContacts']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/contact/searchV2': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Search contacts V2
      * @description Search contacts by name, date of birth or contact ID
      */
-    get: operations['searchContactsV2']
+    get: operations['searchContacts']
     put?: never
     post?: never
     delete?: never
@@ -14579,95 +14559,6 @@ export interface operations {
     }
   }
   searchContacts: {
-    parameters: {
-      query: {
-        /**
-         * @description Last name of the contact
-         * @example Jones
-         */
-        lastName: string
-        /**
-         * @description First name of the contact
-         * @example Elton
-         */
-        firstName?: string
-        /**
-         * @description Middle names of the contact
-         * @example Simon
-         */
-        middleNames?: string
-        /**
-         * @description The contact ID
-         * @example 123456
-         */
-        contactId?: string
-        /**
-         * @description Date of Birth of the contact in ISO format
-         * @example 30/12/2010
-         */
-        dateOfBirth?: string
-        /**
-         * @description If true, use sounds-like search (trigram similarity)
-         * @example false
-         */
-        soundsLike?: boolean
-        /**
-         * @description If a prisoner number is specified, check all matching contacts for any existing relationships to the prisoner. All matching contacts are returned regardless of whether they have an existing relationship to the prisoner or not.
-         * @example A1234BC
-         */
-        includeAnyExistingRelationshipsToPrisoner?: string
-        /** @description Zero-based page index (0..N) */
-        page?: number
-        /** @description The size of the page to be returned */
-        size?: number
-        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-        sort?: string[]
-      }
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Found contacts */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['PagedModelContactSearchResultItem']
-        }
-      }
-      /** @description Invalid request */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  searchContactsV2: {
     parameters: {
       query: {
         /**

@@ -269,7 +269,7 @@ describe('contactsApiClient', () => {
       }
 
       fakeContactsApi
-        .get('/contact/search')
+        .get('/contact/searchV2')
         .query({
           lastName: contactSearchRequest.lastName,
           firstName: contactSearchRequest.firstName,

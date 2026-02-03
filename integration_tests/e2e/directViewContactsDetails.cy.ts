@@ -23,7 +23,7 @@ context('Manage contacts restrictions', () => {
       prisonId: 'HEI',
       term: prisonerNumber,
     })
-    cy.task('stubContactSearchV2', {
+    cy.task('stubContactSearch', {
       results: {
         page: {
           totalPages: 1,
