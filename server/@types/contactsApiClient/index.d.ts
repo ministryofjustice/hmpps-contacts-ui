@@ -63,16 +63,6 @@ export type PrisonerContactPagination = {
 }
 
 export type ContactSearchRequest = {
-  lastName: string
-  firstName?: string | undefined
-  middleNames?: string | undefined
-  dateOfBirth?: string | null
-  contactId?: string | undefined
-  includeAnyExistingRelationshipsToPrisoner?: string | undefined
-  soundsLike?: boolean | undefined
-}
-
-export type EnhancedContactSearchRequest = {
   lastName?: string | undefined
   firstName?: string | undefined
   middleNames?: string | undefined

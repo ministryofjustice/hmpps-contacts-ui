@@ -4,7 +4,7 @@ import { PageHandler } from '../../../interfaces/pageHandler'
 import { Page } from '../../../services/auditService'
 import { ContactsService } from '../../../services'
 import Permission from '../../../enumeration/permission'
-import { EnhancedContactSearchRequest, PagedModelContactSearchResultItem } from '../../../@types/contactsApiClient'
+import { ContactSearchRequest, PagedModelContactSearchResultItem } from '../../../@types/contactsApiClient'
 import { formatDateForApi } from '../../../utils/utils'
 import { setPaginationLocals } from '../../../views/partials/simplePagination/utils'
 import { SearchContactJourney } from '../../../@types/journeys'
@@ -70,7 +70,7 @@ export default class ContactsSearchController implements PageHandler {
 
     if (!res.locals.validationErrors && journey.searchContact) {
       const contact = journey.searchContact.contact ?? {}
-      const enhancedContactSearchRequest: EnhancedContactSearchRequest = {
+      const enhancedContactSearchRequest: ContactSearchRequest = {
         lastName: contact.lastName,
         firstName: contact.firstName,
         middleNames: contact.middleNames,
@@ -80,7 +80,7 @@ export default class ContactsSearchController implements PageHandler {
         contactId: journey.searchContact.contactId,
       }
 
-      results = await this.contactsService.searchContactV2(
+      results = await this.contactsService.searchContact(
         enhancedContactSearchRequest,
         {
           page: (journey.searchContact.page ?? 1) - 1,

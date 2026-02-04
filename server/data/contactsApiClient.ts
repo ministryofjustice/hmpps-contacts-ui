@@ -22,7 +22,6 @@ import {
   CreateMultipleIdentitiesRequest,
   CreateMultiplePhoneNumbersRequest,
   CreatePrisonerContactRestrictionRequest,
-  EnhancedContactSearchRequest,
   PagedModelContactSearchResultItem,
   PagedModelLinkedPrisonerDetails,
   PagedModelPrisonerContactSummary,
@@ -126,57 +125,12 @@ export default class ContactsApiClient extends RestClient {
     pagination?: Pagination,
   ): Promise<PagedModelContactSearchResultItem> {
     const paginationParameters = pagination ?? { page: 0, size: config.apis.contactsApi.pageSize || 10 }
-    if (paginationParameters.sort === 'lastName,asc') {
-      paginationParameters.sort = ['lastName,asc', 'firstName,asc', 'middleNames,asc', 'id,asc']
-    } else if (paginationParameters.sort === 'lastName,desc') {
-      paginationParameters.sort = ['lastName,desc', 'firstName,desc', 'middleNames,desc', 'id,desc']
-    } else if (paginationParameters.sort === 'dateOfBirth,asc') {
-      paginationParameters.sort = [
-        paginationParameters.sort,
-        'lastName,asc',
-        'firstName,asc',
-        'middleNames,asc',
-        'id,asc',
-      ]
-    } else if (paginationParameters.sort === 'dateOfBirth,desc') {
-      paginationParameters.sort = [
-        paginationParameters.sort,
-        'lastName,desc',
-        'firstName,desc',
-        'middleNames,desc',
-        'id,desc',
-      ]
-    }
-    return this.get(
-      {
-        path: `/contact/search`,
-        query: {
-          lastName: contactSearchRequest.lastName,
-          firstName: contactSearchRequest.firstName,
-          middleNames: contactSearchRequest.middleNames,
-          dateOfBirth: contactSearchRequest.dateOfBirth,
-          includeAnyExistingRelationshipsToPrisoner: contactSearchRequest.includeAnyExistingRelationshipsToPrisoner,
-          soundsLike: contactSearchRequest.soundsLike,
-          contactId: contactSearchRequest.contactId,
-          ...paginationParameters,
-        },
-      },
-      user,
-    )
-  }
-
-  async searchContactV2(
-    contactSearchRequest: EnhancedContactSearchRequest,
-    user: Express.User,
-    pagination?: Pagination,
-  ): Promise<PagedModelContactSearchResultItem> {
-    const paginationParameters = pagination ?? { page: 0, size: config.apis.contactsApi.pageSize || 10 }
     logger.debug(
       `ContactsApiClient searchContactV2 called with request: ${JSON.stringify(contactSearchRequest)} and pagination: ${JSON.stringify(paginationParameters)}`,
     )
     return this.get(
       {
-        path: `/contact/searchV2`,
+        path: `/contact/search`,
         query: {
           lastName: contactSearchRequest.lastName,
           firstName: contactSearchRequest.firstName,

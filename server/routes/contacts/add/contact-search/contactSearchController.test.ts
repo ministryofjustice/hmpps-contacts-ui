@@ -102,14 +102,14 @@ describe('contact search', () => {
       })
     })
 
-    it('should save enhanced search parameters and GET should call service with EnhancedContactSearchRequest', async () => {
+    it('should save enhanced search parameters and GET should call service with ContactSearchRequest', async () => {
       // Ensure GET will try to perform the search when called
       const results = {
         content: [TestData.contactSearchResultItem()],
         page: { number: 0, size: 10, totalElements: 1, totalPages: 1 },
       }
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.searchContactV2.mockResolvedValue(results)
+      contactsService.searchContact.mockResolvedValue(results)
 
       // When - submit enhanced form including contactId, sort and searchType and a DOB
       await request(app)
@@ -143,14 +143,14 @@ describe('contact search', () => {
         page: 1,
       })
 
-      // And when rendering the GET, the controller should call the contactsService with the EnhancedContactSearchRequest containing contactId and searchType
+      // And when rendering the GET, the controller should call the contactsService with the ContactSearchRequest containing contactId and searchType
       const getResponse = await request(app).get(`/prisoner/${prisonerNumber}/contacts/search/${journeyId}`)
       expect(getResponse.status).toEqual(200)
-      expect(contactsService.searchContactV2).toHaveBeenCalled()
+      expect(contactsService.searchContact).toHaveBeenCalled()
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      const calledRequest = contactsService.searchContactV2.mock.calls[0][0]
+      const calledRequest = contactsService.searchContact.mock.calls[0][0]
       expect(calledRequest).toMatchObject({
         contactId: '1234',
         lastName: 'last',
@@ -285,7 +285,7 @@ describe('contact search', () => {
     it('should render contact page without filter when there is no search', async () => {
       // Given
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.searchContactV2.mockResolvedValue({
+      contactsService.searchContact.mockResolvedValue({
         page: {
           totalPages: 0,
           totalElements: 0,
@@ -317,7 +317,7 @@ describe('contact search', () => {
 
     it('should render enhanced search form with advanced controls and date fields', async () => {
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.searchContactV2.mockResolvedValue({
+      contactsService.searchContact.mockResolvedValue({
         page: {
           totalPages: 0,
           totalElements: 0,
@@ -373,7 +373,7 @@ describe('contact search', () => {
         },
       }
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
-      contactsService.searchContactV2.mockResolvedValue({
+      contactsService.searchContact.mockResolvedValue({
         content: [TestData.contactSearchResultItem()],
         page: {
           number: 0,

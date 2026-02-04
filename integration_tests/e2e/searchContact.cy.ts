@@ -22,7 +22,7 @@ context('Search contact', () => {
       prisonId: 'HEI',
       term: prisonerNumber,
     })
-    cy.task('stubContactSearchV2', {
+    cy.task('stubContactSearch', {
       results: {
         page: {
           totalPages: 1,
@@ -52,7 +52,7 @@ context('Search contact', () => {
     cy.verifyAPIWasCalled(
       {
         method: 'GET',
-        urlPattern: '/contact/searchV2.+',
+        urlPattern: '/contact/search.+',
       },
       1,
     )
@@ -157,7 +157,7 @@ context('Search contact', () => {
     cy.verifyAPIWasCalled(
       {
         method: 'GET',
-        urlPattern: '/contact/searchV2.+',
+        urlPattern: '/contact/search.+',
       },
       1,
     )
@@ -193,7 +193,7 @@ context('Search contact', () => {
     cy.verifyAPIWasCalled(
       {
         method: 'GET',
-        urlPattern: '/contact/searchV2.+',
+        urlPattern: '/contact/search.+',
       },
       1,
     )
