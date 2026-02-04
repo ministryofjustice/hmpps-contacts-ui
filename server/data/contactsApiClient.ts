@@ -130,7 +130,7 @@ export default class ContactsApiClient extends RestClient {
     )
     return this.get(
       {
-        path: `/contact/searchV2`,
+        path: `/contact/search`,
         query: {
           lastName: contactSearchRequest.lastName,
           firstName: contactSearchRequest.firstName,

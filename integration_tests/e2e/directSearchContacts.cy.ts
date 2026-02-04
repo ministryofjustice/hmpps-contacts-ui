@@ -49,7 +49,7 @@ context('Direct Search contacts', () => {
     cy.verifyAPIWasCalled(
       {
         method: 'GET',
-        urlPattern: '/contact/searchV2.+',
+        urlPattern: '/contact/search.+',
       },
       1,
     )
@@ -154,7 +154,7 @@ context('Direct Search contacts', () => {
     cy.verifyAPIWasCalled(
       {
         method: 'GET',
-        urlPattern: '/contact/searchV2.+',
+        urlPattern: '/contact/search.+',
       },
       1,
     )
@@ -190,7 +190,7 @@ context('Direct Search contacts', () => {
     cy.verifyAPIWasCalled(
       {
         method: 'GET',
-        urlPattern: '/contact/searchV2.+',
+        urlPattern: '/contact/search.+',
       },
       1,
     )
