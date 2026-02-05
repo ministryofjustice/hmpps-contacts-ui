@@ -86,10 +86,13 @@
     {% set headings = headings | convertToSortableColumns(sort, '?' + sortQueryParams + '&sort={sortKey},{sortDirection}') %}
   {% endif %}
 
+
+
+  <span id="prisoner-contact-list-desc" class="govuk-visually-hidden">Use column buttons to sort results.</span>
   {{ govukTable({
     firstCellIsHeader: false,
     classes: 'govuk-!-margin-top-6',
-    attributes: { id: 'prisoner-contact-list' },
+    attributes: { id: 'prisoner-contact-list', 'aria-describedby': 'prisoner-contact-list-desc' },
     head: headings,
     rows: rows
   }) }}
