@@ -28,7 +28,11 @@ function initAll() {
     const $target = $anchor || $button
     if (!$target) continue
 
-    // if there is already an svg inside target, remove it and re-insert the correct one
+    // If an anchor exists and already contains an inline SVG rendered by the server,
+    // leave it alone to avoid redundant DOM updates and flicker.
+    if ($anchor && $anchor.querySelector('svg')) continue
+
+    // For legacy (button) markup or anchor with no SVG, remove any existing SVG before inserting
     const existingSvg = $target.querySelector('svg')
     if (existingSvg) existingSvg.remove()
 
