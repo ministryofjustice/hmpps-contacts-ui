@@ -28,6 +28,7 @@ export const convertToSortableColumns = (
     const hrefAsc = escapeHtml(urlFromTemplate(hrefTemplate, key, 'asc'))
     const hrefDesc = escapeHtml(urlFromTemplate(hrefTemplate, key, 'desc'))
     const safeText = escapeHtml(text)
+    const safeKey = escapeHtml(key)
 
     // active sorted column
     if (key === sortingKey) {
@@ -38,7 +39,7 @@ export const convertToSortableColumns = (
           },
           // Anchor-only control with accessible labels, visually-hidden hint, and an up-arrow icon to the right
           // Remove redundant aria-label because the visually-hidden text contains the same info
-          html: `<a class="pcl-sortable" href="${hrefDesc}"><span class="pcl-sortable__label">${safeText}</span><span class="govuk-visually-hidden">, sorted ascending, activate to sort descending</span>${upArrowSvg}</a>`,
+          html: `<a class="pcl-sortable" href="${hrefDesc}" data-qa="sortable-column-${safeKey}"><span class="pcl-sortable__label">${safeText}</span><span class="govuk-visually-hidden">, sorted ascending, activate to sort descending</span>${upArrowSvg}</a>`,
           ...others,
         }
       }
@@ -49,7 +50,7 @@ export const convertToSortableColumns = (
           },
           // Anchor-only control with a down-arrow icon to the right
           // Remove redundant aria-label because the visually-hidden text contains the same info
-          html: `<a class="pcl-sortable" href="${hrefAsc}"><span class="pcl-sortable__label">${safeText}</span><span class="govuk-visually-hidden">, sorted descending, activate to sort ascending</span>${downArrowSvg}</a>`,
+          html: `<a class="pcl-sortable" href="${hrefAsc}" data-qa="sortable-column-${safeKey}"><span class="pcl-sortable__label">${safeText}</span><span class="govuk-visually-hidden">, sorted descending, activate to sort ascending</span>${downArrowSvg}</a>`,
           ...others,
         }
       }
@@ -62,7 +63,7 @@ export const convertToSortableColumns = (
       },
       // Anchor-only control with combined up/down icon indicating sortable (icon on the right)
       // Remove redundant aria-label because the visually-hidden text contains the same info
-      html: `<a class="pcl-sortable" href="${hrefAsc}"><span class="pcl-sortable__label">${safeText}</span><span class="govuk-visually-hidden">, sortable column, activate to sort ascending</span>${upDownArrowSvg}</a>`,
+      html: `<a class="pcl-sortable" href="${hrefAsc}" data-qa="sortable-column-${safeKey}"><span class="pcl-sortable__label">${safeText}</span><span class="govuk-visually-hidden">, sortable column, activate to sort ascending</span>${upDownArrowSvg}</a>`,
       ...others,
     }
   })

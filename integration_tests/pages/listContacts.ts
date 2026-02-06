@@ -73,6 +73,12 @@ export default class ListContactsPage extends Page {
     return this
   }
 
+  clickSortableColumn(key: string): ListContactsPage {
+    const selector = `[data-qa=sortable-column-${Cypress.$.escapeSelector(key)}]`
+    cy.get(selector).click()
+    return this
+  }
+
   private social = (): PageElement => cy.get('#relationshipTypeSocial')
 
   private emergencyContact = (): PageElement => cy.get('#flagsEmergencyContact')

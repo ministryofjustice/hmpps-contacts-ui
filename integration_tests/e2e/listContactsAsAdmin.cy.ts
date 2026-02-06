@@ -154,7 +154,7 @@ context('List contacts with Contacts Administrator or Authoriser roles', () => {
       .hasActiveOnly()
       .clickIndexedLinkTo(0, 'Page 2 of 2', ListContactsPage, 'Test Prisoner')
       .expectNames(['Eleven, Contact', 'Twelve, Contact'])
-      .clickLinkTo('Contact name and person ID', ListContactsPage, 'Test Prisoner')
+      .clickSortableColumn('name')
       .hasSocialContacts()
       .hasNextOfKin()
       .hasEmergencyContact()
