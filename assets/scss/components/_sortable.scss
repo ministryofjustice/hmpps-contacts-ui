@@ -20,14 +20,10 @@
   flex: 0 0 22px;
   width: 22px;
   height: 22px;
+  margin-left: 6px;
 }
 
 /* Ensure icon appears to the right on narrow screens as well */
 th .pcl-sortable {
   justify-content: flex-start;
-}
-
-/* Specific tweak to move small arrow slightly right of text */
-.pcl-sortable__icon {
-  margin-left: 6px;
 }
