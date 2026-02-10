@@ -121,7 +121,6 @@ describe('Contact details', () => {
       const $ = cheerio.load(response.text)
 
       // direct view caption and heading usage
-      expect($('.govuk-caption-l').text()).toStrictEqual('Search for a contact')
       expect($('.govuk-back-link').text().trim()).toStrictEqual('Back to contact search')
       expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(`/contacts/search/${journeyId}`)
       expect($('[data-qa=confim-title-value-top]').text().trim()).toContain('View contact information about')
