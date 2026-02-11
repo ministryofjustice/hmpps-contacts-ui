@@ -25,7 +25,6 @@ generic-service:
     AUDIT_ENABLED: 'true'
 
   allowlist:
-    user-vision-office: 5.181.59.114
     groups:
       - prisons
       - moj_cloud_platform
