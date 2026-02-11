@@ -139,10 +139,13 @@ workflows:
       - hmpps/build_docker:
           name: build_docker
           additional_docker_build_args: --secret id=sentry,env=SENTRY_AUTH_TOKEN
-          filters:
-            branches:
-              only:
-                - main
+      - request-dev-approval:
+          type: approval
+          requires:
+            - helm_lint
+            - unit_test
+            - integration_test
+            - build_docker
       - hmpps/deploy_env:
           name: deploy_dev
           env: "dev"
@@ -150,15 +153,8 @@ workflows:
           pipeline_id: <<pipeline.id>>
           pipeline_number: <<pipeline.number>>
           context: hmpps-common-vars
-          filters:
-            branches:
-              only:
-                - main
           requires:
-            - helm_lint
-            - unit_test
-            - integration_test
-            - build_docker
+            - request-dev-approval
           helm_timeout: 5m
       - request-preprod-approval:
           type: approval
@@ -173,6 +169,10 @@ workflows:
           pipeline_number: <<pipeline.number>>
           slack_notification: true
           slack_channel_name: << pipeline.parameters.slack-channel-non-prod-alerts >>
+          filters:
+            branches:
+              only:
+                - main
           context:
             - hmpps-common-vars
             - hmpps-contacts-preprod
@@ -192,6 +192,10 @@ workflows:
           pipeline_number: <<pipeline.number>>
           slack_notification: true
           slack_channel_name: << pipeline.parameters.slack-channel-prod-alerts >>
+          filters:
+            branches:
+              only:
+                - main
           context:
             - hmpps-common-vars
             - hmpps-contacts-prod
