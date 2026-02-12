@@ -2,7 +2,7 @@ import Page, { PageElement } from './page'
 
 export default class DirectSearchContactsPage extends Page {
   constructor() {
-    super('Find a contact')
+    super('Search for a contact')
   }
 
   enterFirstName(value: string): DirectSearchContactsPage {
