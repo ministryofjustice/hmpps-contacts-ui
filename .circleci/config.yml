@@ -72,7 +72,8 @@ jobs:
           path: test_results/unit-test-reports.html
       - persist_to_workspace:
           root: .
-          paths: test_results
+          paths:
+            - test_results
 
   integration_test:
     executor:
@@ -144,7 +145,6 @@ workflows:
           requires:
             - helm_lint
             - unit_test
-            - integration_test
             - build_docker
       - hmpps/deploy_env:
           name: deploy_dev
@@ -160,6 +160,7 @@ workflows:
           type: approval
           requires:
             - deploy_dev
+            - integration_test
           filters:
             branches:
               only:
