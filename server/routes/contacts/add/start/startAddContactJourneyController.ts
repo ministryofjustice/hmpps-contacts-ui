@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { randomUUID } from 'crypto'
+import { v4 as uuidv4 } from 'uuid'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import { nextPageForAddContactJourney } from '../addContactFlowControl'
@@ -17,7 +17,7 @@ export default class StartAddContactJourneyController implements PageHandler {
     const { prisonerNumber } = req.params
     const { prisonerPermissions } = res.locals
     const journey: AddContactJourney = {
-      id: randomUUID(),
+      id: uuidv4(),
       lastTouched: new Date().toISOString(),
       isCheckingAnswers: false,
       prisonerNumber,

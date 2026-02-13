@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { randomUUID } from 'crypto'
+import { v4 as uuidv4 } from 'uuid'
 import { appWithAllRoutes } from '../../../../testutils/appSetup'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
@@ -17,7 +17,7 @@ const prisonerNumber = 'A1234BC'
 const contactId = 123
 const prisonerContactId = 987
 
-const journeyId = randomUUID()
+const journeyId = uuidv4()
 const prisoner = TestData.prisoner()
 
 beforeEach(() => {

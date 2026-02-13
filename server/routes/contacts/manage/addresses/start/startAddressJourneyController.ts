@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { randomUUID } from 'crypto'
+import { v4 as uuidv4 } from 'uuid'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import ContactsService from '../../../../../services/contactsService'
@@ -38,7 +38,7 @@ export default class StartAddressJourneyController implements PageHandler {
     }
 
     const journey: AddressJourney = {
-      id: randomUUID(),
+      id: uuidv4(),
       lastTouched: new Date().toISOString(),
       prisonerNumber,
       contactId: Number(contactId),

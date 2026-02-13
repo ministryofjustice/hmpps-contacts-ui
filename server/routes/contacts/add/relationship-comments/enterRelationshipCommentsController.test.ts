@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
-import { randomUUID } from 'crypto'
+import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
 import { PrisonerPermission } from '@ministryofjustice/hmpps-prison-permissions-lib'
 import { adminUserPermissions, adminUser, appWithAllRoutes, flashProvider } from '../../../testutils/appSetup'
@@ -22,7 +22,7 @@ const prisonerSearchService = MockedService.PrisonerSearchService()
 
 let app: Express
 let session: Partial<SessionData>
-const journeyId: string = randomUUID()
+const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 let existingJourney: AddContactJourney
 let currentUser: HmppsUser
@@ -233,7 +233,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-relationship-comme
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${randomUUID()}`)
+      .get(`/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${uuidv4()}`)
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
@@ -289,7 +289,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-relationship-comm
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${randomUUID()}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/enter-relationship-comments/${uuidv4()}`)
       .type('form')
       .send({})
       .expect(302)

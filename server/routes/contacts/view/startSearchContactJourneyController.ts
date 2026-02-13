@@ -1,5 +1,5 @@
 import e, { Request, Response } from 'express'
-import { randomUUID } from 'crypto'
+import { v4 as uuidv4 } from 'uuid'
 import { Page } from '../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import Permission from '../../../enumeration/permission'
@@ -29,7 +29,7 @@ export default class StartSearchContactJourneyController implements PageHandler 
 
   private setSessionData(req: e.Request) {
     const journey = {
-      id: randomUUID(),
+      id: uuidv4(),
       lastTouched: new Date().toISOString(),
       contact: {},
     }

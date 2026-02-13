@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
-import { randomUUID } from 'crypto'
+import { v4 as uuidv4 } from 'uuid'
 import * as cheerio from 'cheerio'
 import { adminUserPermissions, adminUser, appWithAllRoutes } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
@@ -21,7 +21,7 @@ const prisonerSearchService = MockedService.PrisonerSearchService()
 
 let app: Express
 let session: Partial<SessionData>
-const journeyId: string = randomUUID()
+const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 const matchingContactId = 897654
 let existingJourney: AddContactJourney
@@ -156,7 +156,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/select-relationship-type
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${randomUUID()}`)
+      .get(`/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${uuidv4()}`)
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
@@ -267,7 +267,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/select-relationship-typ
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${randomUUID()}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/select-relationship-type/${uuidv4()}`)
       .type('form')
       .send({})
       .expect(302)
