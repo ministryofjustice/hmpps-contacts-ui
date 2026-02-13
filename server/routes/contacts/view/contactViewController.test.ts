@@ -121,7 +121,6 @@ describe('Contact details', () => {
       const $ = cheerio.load(response.text)
 
       // direct view caption and heading usage
-      expect($('.govuk-caption-l').text()).toStrictEqual('Search for a contact')
       expect($('.govuk-back-link').text().trim()).toStrictEqual('Back to contact search')
       expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(`/contacts/search/${journeyId}`)
       expect($('[data-qa=confim-title-value-top]').text().trim()).toContain('View contact information about')
@@ -149,7 +148,7 @@ describe('Contact details', () => {
       const $ = cheerio.load(response.text)
 
       // Page title for direct view
-      expect($('title').text()).toContain('View contact information - Contacts - Digital Prison Service')
+      expect($('title').text()).toContain('View contact information - Contacts - DPS')
       expect($('a:contains("Exit")').attr('href')).toEqual(`/start`)
       // bottom confirm text present in partial (contact details tab)
       expect($('h1:contains("Contact details")')).toHaveLength(1)
@@ -176,7 +175,7 @@ describe('Contact details', () => {
       // Then
       const $ = cheerio.load(response.text)
 
-      expect($('title').text()).toContain('View contact information - Contacts - Digital Prison Service')
+      expect($('title').text()).toContain('View contact information - Contacts - DPS')
       expect($('a:contains("Exit")').attr('href')).toEqual(`/start`)
       // "Linked prisoners" tab should still be present
       expect($('.linked-prisoners-tab-title').length).toBeGreaterThanOrEqual(1)
@@ -210,7 +209,7 @@ describe('Contact details', () => {
       // Then
       const $ = cheerio.load(response.text)
 
-      expect($('title').text()).toContain('View contact information - Contacts - Digital Prison Service')
+      expect($('title').text()).toContain('View contact information - Contacts - DPS')
       expect($('a:contains("Exit")').attr('href')).toEqual(`/start`)
 
       // link is part of different flows; presence not required for direct view - just assert linked prisoners tab exists

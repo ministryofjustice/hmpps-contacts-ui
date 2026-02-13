@@ -13,15 +13,14 @@
 {% from "../partials/addPagination.njk" import addPagination %}
 {% from "moj/components/alert/macro.njk" import mojAlert %}
 
-{% set pageTitle = "Search for a contact - Contacts - Digital Prison Service" %}
-{% set title = "Find a contact" %}
+{% set pageTitle = "Search for a contact - Contacts - DPS" %}
+{% set title = "Search for a contact" %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <div class="govuk-!-static-margin-bottom-7">
-            <span class="govuk-caption-l">Search for a contact</span>
             <h1 class="govuk-heading-l">{{ title }}</h1>
         </div>
         {{ govukWarningText({
