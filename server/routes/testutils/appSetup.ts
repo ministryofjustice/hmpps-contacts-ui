@@ -1,6 +1,6 @@
 import express, { Express, Locals } from 'express'
 import { NotFound } from 'http-errors'
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import { getFrontendComponents } from '@ministryofjustice/hmpps-connect-dps-components'
 import { SessionData } from 'express-session'
 import { PrisonerPermission } from '@ministryofjustice/hmpps-prison-permissions-lib'
@@ -119,7 +119,7 @@ function appSetup(
     next()
   })
   app.use((req, res, next) => {
-    req.id = uuidv4()
+    req.id = randomUUID()
     next()
   })
   app.use((req, res, next) => {

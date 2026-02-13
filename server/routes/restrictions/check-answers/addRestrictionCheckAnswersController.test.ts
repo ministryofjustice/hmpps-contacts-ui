@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, authorisingUser } from '../../testutils/appSetup'
 import { Page } from '../../../services/auditService'
@@ -26,7 +26,7 @@ const restrictionsService = MockedService.RestrictionsService()
 
 let app: Express
 let session: Partial<SessionData>
-const journeyId: string = uuidv4()
+const journeyId: string = randomUUID()
 const prisonerNumber = 'A1234BC'
 const contactId = 123
 const prisonerContactId = 321
@@ -283,7 +283,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
   it('should return not found if no journey in session', async () => {
     await request(app)
       .get(
-        `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/CONTACT_GLOBAL/check-answers/${uuidv4()}`,
+        `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/CONTACT_GLOBAL/check-answers/${randomUUID()}`,
       )
       .expect(404)
       .expect('Content-Type', /html/)
@@ -346,7 +346,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
       existingJourney.restrictionClass = restrictionClass as RestrictionClass
       await request(app)
         .post(
-          `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/check-answers/${uuidv4()}`,
+          `/prisoner/${prisonerNumber}/contacts/${contactId}/relationship/${prisonerContactId}/restriction/add/${restrictionClass}/check-answers/${randomUUID()}`,
         )
         .type('form')
         .send({ firstName: 'first' })

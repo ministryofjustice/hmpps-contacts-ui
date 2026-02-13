@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import { adminUserPermissions, adminUser, appWithAllRoutes } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import PrisonerAddressService from '../../../../../services/prisonerAddressService'
@@ -28,7 +28,7 @@ const prisonerAddressService = new PrisonerAddressService(null) as jest.Mocked<P
 let app: Express
 let session: Partial<SessionData>
 let currentUser: HmppsUser
-const journeyId: string = uuidv4()
+const journeyId: string = randomUUID()
 const prisonerNumber = 'A1234BC'
 const contactId = 123456
 const prisonerContactId = 456789
@@ -183,7 +183,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
   it('should render not found if there is no journey in the session', async () => {
     await request(app)
       .get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/use-prisoner-address/${uuidv4()}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/use-prisoner-address/${randomUUID()}`,
       )
       .expect(404)
       .expect(res => {

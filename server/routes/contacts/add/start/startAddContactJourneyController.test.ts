@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import { adminUserPermissions, adminUser, appWithAllRoutes } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { MockedService } from '../../../../testutils/mockedServices'
@@ -70,7 +70,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/start', () => {
     // Given
     preExistingJourneysToAddToSession = [
       {
-        id: uuidv4(),
+        id: randomUUID(),
         lastTouched: new Date().toISOString(),
         isCheckingAnswers: false,
         prisonerNumber,
