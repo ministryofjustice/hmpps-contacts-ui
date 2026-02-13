@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, flashProvider, adminUser, adminUserPermissions } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
@@ -25,7 +25,7 @@ const referenceDataService = MockedService.ReferenceDataService()
 let app: Express
 let session: Partial<SessionData>
 let currentUser: HmppsUser
-const journeyId: string = uuidv4()
+const journeyId: string = randomUUID()
 const prisonerNumber = 'A1234BC'
 const contactId = 123456
 const prisonerContactId = 456789
@@ -215,7 +215,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
   it('should render not found no journey in session', async () => {
     await request(app)
       .get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/enter-address/${uuidv4()}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/enter-address/${randomUUID()}`,
       )
       .expect(404)
       .expect(res => {
@@ -335,7 +335,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   it('should return not found page if no journey in session', async () => {
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/enter-address/${uuidv4()}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/address/enter-address/${randomUUID()}`,
       )
       .type('form')
       .send({})

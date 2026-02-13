@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import Page from '../pages/page'
 import TestData from '../../server/routes/testutils/testData'
 import SearchContactPage from '../pages/searchContactPage'
@@ -21,7 +21,7 @@ context('Contact confirmation', () => {
     firstName: contact.firstName,
     middleNames: contact.middleNames,
   })
-  const journeyId = uuidv4()
+  const journeyId = randomUUID()
 
   const globalRestriction = TestData.getContactRestrictionDetails({ contactId: contact.id })
 
