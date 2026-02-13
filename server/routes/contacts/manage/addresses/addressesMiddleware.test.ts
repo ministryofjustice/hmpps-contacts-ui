@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto'
+import { v4 as uuidv4 } from 'uuid'
 import { Request as ExpressRequest, Response } from 'express'
 import { SessionData } from 'express-session'
 import { basicPrisonUser } from '../../../testutils/appSetup'
@@ -9,7 +9,7 @@ import { PrisonerJourneyParams } from '../../../../@types/journeys'
 type Request = ExpressRequest<PrisonerJourneyParams>
 
 describe('ensureInAddressJourney', () => {
-  const journeyId = randomUUID()
+  const journeyId = uuidv4()
   let req: Request
   let res: Response
   let next: jest.Mock

@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto'
+import { v4 as uuidv4 } from 'uuid'
 import { isGranted, PrisonerPermission, PrisonerPermissions } from '@ministryofjustice/hmpps-prison-permissions-lib'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from './addContactFlowControl'
 import { Page } from '../../../services/auditService'
@@ -16,7 +16,7 @@ const isGrantedMock = isGranted as jest.MockedFunction<typeof isGranted>
 describe('addContactFlowControl', () => {
   describe('add new contact', () => {
     describe('getNavigationForAddContactJourney', () => {
-      const journeyId = randomUUID()
+      const journeyId = uuidv4()
 
       it.each([
         [
@@ -238,7 +238,7 @@ describe('addContactFlowControl', () => {
     })
 
     describe('getNextPageForAddContactJourney', () => {
-      const journeyId = randomUUID()
+      const journeyId = uuidv4()
 
       it.each([
         [Page.CREATE_CONTACT_START_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`, adminUserPermissions],
@@ -500,7 +500,7 @@ describe('addContactFlowControl', () => {
 
   describe('add existing contact', () => {
     describe('getNavigationForAddContactJourney', () => {
-      const journeyId = randomUUID()
+      const journeyId = uuidv4()
       it.each([
         [
           Page.CONTACT_MATCH_PAGE,
@@ -640,7 +640,7 @@ describe('addContactFlowControl', () => {
     })
 
     describe('getNextPageForAddContactJourney', () => {
-      const journeyId = randomUUID()
+      const journeyId = uuidv4()
       it.each([
         [Page.CREATE_CONTACT_START_PAGE, `/prisoner/A1234BC/contacts/search/${journeyId}`, adminUserPermissions],
         [Page.CONTACT_MATCH_PAGE, `/prisoner/A1234BC/contacts/add/mode/EXISTING/${journeyId}`, adminUserPermissions],
@@ -740,7 +740,7 @@ describe('addContactFlowControl', () => {
   })
 
   describe('should work correctly before mode set', () => {
-    const journeyId = randomUUID()
+    const journeyId = uuidv4()
     it.each([
       [Page.CREATE_CONTACT_START_PAGE, undefined, undefined, undefined],
       [Page.CONTACT_SEARCH_PAGE, undefined, '/prisoner/A1234BC/contacts/list', 'Back to prisoner’s contact list'],

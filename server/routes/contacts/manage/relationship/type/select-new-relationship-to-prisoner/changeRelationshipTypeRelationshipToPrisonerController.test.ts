@@ -2,7 +2,7 @@ import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { SessionData } from 'express-session'
-import { randomUUID } from 'crypto'
+import { v4 as uuidv4 } from 'uuid'
 import createError from 'http-errors'
 import {
   appWithAllRoutes,
@@ -35,7 +35,7 @@ const contactsService = MockedService.ContactsService()
 
 let app: Express
 let session: Partial<SessionData>
-const journeyId: string = randomUUID()
+const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 const contactId = 123
 const prisonerContactId = 897
@@ -205,7 +205,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
   it('should return not found in no journey in session', async () => {
     await request(app)
       .get(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-to-prisoner/${randomUUID()}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-to-prisoner/${uuidv4()}`,
       )
       .expect(404)
       .expect(res => {
@@ -329,7 +329,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   it('should return not found in no journey in session', async () => {
     await request(app)
       .post(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-to-prisoner/${randomUUID()}`,
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/select-new-relationship-to-prisoner/${uuidv4()}`,
       )
       .type('form')
       .expect(404)

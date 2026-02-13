@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
-import { randomUUID } from 'crypto'
+import { v4 as uuidv4 } from 'uuid'
 import { adminUserPermissions, adminUser, appWithAllRoutes } from '../../../../testutils/appSetup'
 import { Page } from '../../../../../services/auditService'
 import PrisonerAddressService from '../../../../../services/prisonerAddressService'
@@ -27,7 +27,7 @@ const prisonerAddressService = new PrisonerAddressService(null) as jest.Mocked<P
 
 let app: Express
 let session: Partial<SessionData>
-const journeyId: string = randomUUID()
+const journeyId: string = uuidv4()
 const prisonerNumber = 'A1234BC'
 
 let existingJourney: AddContactJourney

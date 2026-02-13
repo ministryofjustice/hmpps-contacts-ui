@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { randomUUID } from 'crypto'
+import { v4 as uuidv4 } from 'uuid'
 import { ContactsService } from '../../../../../services'
 import { UpdateEmploymentsJourney } from '../../../../../@types/journeys'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
@@ -22,7 +22,7 @@ export default class UpdateEmploymentsStartController implements PageHandler {
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const contact = await this.contactsService.getContact(Number(req.params.contactId), res.locals.user)
     const journey: UpdateEmploymentsJourney = {
-      id: randomUUID(),
+      id: uuidv4(),
       lastTouched: new Date().toISOString(),
       contactId: contact.id,
       contactNames: {

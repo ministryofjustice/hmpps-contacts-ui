@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { randomUUID } from 'crypto'
+import { v4 as uuidv4 } from 'uuid'
 import { Page } from '../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import ContactsService from '../../../services/contactsService'
@@ -34,7 +34,7 @@ export default class StartAddRestrictionJourneyController implements PageHandler
       middleNames: contact.middleNames,
     }
     const journey: AddRestrictionJourney = {
-      id: randomUUID(),
+      id: uuidv4(),
       lastTouched: new Date().toISOString(),
       restrictionClass,
       prisonerNumber,

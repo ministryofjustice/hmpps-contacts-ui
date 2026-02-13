@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
-import { randomUUID } from 'crypto'
+import { v4 as uuidv4 } from 'uuid'
 import { PrisonerPermission } from '@ministryofjustice/hmpps-prison-permissions-lib'
 import { adminUserPermissions, adminUser, appWithAllRoutes } from '../../testutils/appSetup'
 import { Page } from '../../../services/auditService'
@@ -68,7 +68,7 @@ describe('GET /start', () => {
     // Given
     preExistingJourneysToAddToSession = [
       {
-        id: randomUUID(),
+        id: uuidv4(),
         lastTouched: new Date().toISOString(),
       },
     ]
