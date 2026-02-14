@@ -1,20 +1,15 @@
 import { formatDate } from './utils'
 
-export const formatDateRange = ({
-  startDate,
-  endDate,
-  fromMonth,
-  fromYear,
-  toMonth,
-  toYear,
-}: {
+export type FormatDateRange = {
   startDate?: string | undefined
   endDate?: string | undefined
   fromMonth?: string | undefined
   fromYear?: string | undefined
   toMonth?: string | undefined
   toYear?: string | undefined
-}) => {
+}
+
+export const formatDateRange = ({ startDate, endDate, fromMonth, fromYear, toMonth, toYear }: FormatDateRange) => {
   if (startDate && endDate) {
     return `From ${formatDate(startDate, 'MMMM yyyy')} to ${formatDate(endDate, 'MMMM yyyy')}`
   }

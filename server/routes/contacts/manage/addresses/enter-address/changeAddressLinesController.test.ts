@@ -17,6 +17,7 @@ import { ContactAddressDetails, ContactDetails } from '../../../../../@types/con
 import { HmppsUser } from '../../../../../interfaces/hmppsUser'
 import mockPermissions from '../../../../testutils/mockPermissions'
 import Permission from '../../../../../enumeration/permission'
+import { ContactAddressChanges } from '../../../../../@types/journeys'
 
 jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../../services/auditService')
@@ -216,7 +217,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       postcode: null,
       property: null,
       cityCode: null,
-    }
+    } as ContactAddressChanges
     expect(contactsService.updateContactAddress).toHaveBeenCalledWith(expected, currentUser, expect.any(String))
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,

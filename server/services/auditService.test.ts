@@ -8,7 +8,6 @@ describe('Audit service', () => {
   let auditService: AuditService
 
   beforeEach(() => {
-    // @ts-expect-error passing null param into mock client
     hmppsAuditClient = new HmppsAuditClient(null) as jest.Mocked<HmppsAuditClient>
     auditService = new AuditService(hmppsAuditClient)
   })

@@ -4,7 +4,6 @@ import './sentry'
 import createError from 'http-errors'
 import { getFrontendComponents, retrieveCaseLoadData } from '@ministryofjustice/hmpps-connect-dps-components'
 
-// @ts-expect-error Import untyped middleware for cypress coverage
 import cypressCoverage from '@cypress/code-coverage/middleware/express'
 import config from './config'
 import nunjucksSetup from './utils/nunjucksSetup'

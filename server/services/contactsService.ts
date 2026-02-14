@@ -1,7 +1,7 @@
 import ContactsApiClient, { Pagination } from '../data/contactsApiClient'
 import AuditService from './auditService'
 import AuditedService from './auditedService'
-import { AddContactJourney, AddressJourney, AddressLines, AddressMetadata } from '../@types/journeys'
+import { AddContactJourney, AddressJourney, AddressLines, AddressMetadata, ContactAddressChanges } from '../@types/journeys'
 import {
   AddContactRelationshipRequest,
   ContactCreationResult,
@@ -491,32 +491,16 @@ export default class ContactsService extends AuditedService {
     })
   }
 
-  async updateContactAddress(
-    changes: Partial<AddressJourney & AddressMetadata & AddressLines> & {
-      contactId: number
-      contactAddressId: number
-      startDate?: Date
-      endDate?: Date | null
-    },
-    user: Express.User,
-    correlationId: string,
-  ) {
+  async updateContactAddress(changes: ContactAddressChanges, user: Express.User, correlationId: string) {
     const request: PatchContactAddressRequest = {
       // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       addressType: changes.addressType === 'DO_NOT_KNOW' ? null : changes.addressType,
-      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       flat: changes.flat,
-      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       property: changes.property,
-      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       street: changes.street,
-      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       area: changes.area,
-      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       cityCode: changes.cityCode,
-      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       countyCode: changes.countyCode,
-      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       postcode: changes.postcode,
       countryCode: changes.countryCode,
       noFixedAddress: changes.noFixedAddress,
@@ -524,9 +508,7 @@ export default class ContactsService extends AuditedService {
       primaryAddress: changes.primaryAddress,
       mailFlag: changes.mailAddress,
       startDate: changes.startDate && changes.startDate.toISOString(),
-      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       endDate: changes.endDate && changes.endDate.toISOString(),
-      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       comments: changes.comments,
     }
     return this.handleAuditEvent(

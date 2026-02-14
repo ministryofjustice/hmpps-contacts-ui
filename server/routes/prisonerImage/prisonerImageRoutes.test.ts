@@ -6,7 +6,6 @@ import PrisonerImageService from '../../services/prisonerImageService'
 
 jest.mock('../../services/prisonerImageService')
 
-// @ts-expect-error pass null param into mocked service
 const prisonerImageService = new PrisonerImageService(null) as jest.Mocked<PrisonerImageService>
 
 let app: Express

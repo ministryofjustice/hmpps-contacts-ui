@@ -28,7 +28,7 @@ const journeyId = uuidv4()
 const prisoner = TestData.prisoner()
 let session: Partial<SessionData>
 const sessionInjection = {
-  setSession: (_target: Partial<SessionData>) => undefined,
+  setSession: (_target: Partial<SessionData>): undefined => undefined,
 }
 const contact = TestData.contact()
 const generateJourneyData = (): UpdateEmploymentsJourney => ({

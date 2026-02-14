@@ -246,3 +246,10 @@ export type UpdateEmploymentJourneyParams = PrisonerJourneyParams & {
   prisonerContactId: string
   employmentIdx: string
 }
+
+export type ContactAddressChanges = Partial<AddressJourney & AddressMetadata & AddressLines> & {
+  contactId: number
+  contactAddressId: number
+  startDate?: Date
+  endDate?: Date | null
+}

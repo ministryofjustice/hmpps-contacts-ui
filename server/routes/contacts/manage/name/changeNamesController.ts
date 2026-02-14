@@ -72,13 +72,9 @@ export default class ChangeNamesController implements PageHandler {
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const { title, firstName, middleNames, lastName } = req.body
     const request: PatchContactRequest = {
-      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       titleCode: title || null,
-      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       firstName: firstName || null,
-      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       middleNames: middleNames || null,
-      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       lastName: lastName || null,
     }
     await this.contactService

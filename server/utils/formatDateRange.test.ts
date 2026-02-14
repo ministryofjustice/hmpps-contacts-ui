@@ -1,11 +1,11 @@
-import { formatDateRange } from './formatDateRange'
+import { FormatDateRange, formatDateRange } from './formatDateRange'
 
 describe('formatDateRange', () => {
   it('should format start date and end date', () => {
     const dateRange = {
       startDate: '2020-12-25',
       endDate: '2021-01-01',
-    }
+    } as FormatDateRange
 
     const result = formatDateRange(dateRange)
 
@@ -16,7 +16,7 @@ describe('formatDateRange', () => {
     const dateRange = {
       startDate: '2020-12-25',
       endDate: undefined,
-    }
+    } as FormatDateRange
 
     const result = formatDateRange(dateRange)
 
@@ -27,7 +27,7 @@ describe('formatDateRange', () => {
     const dateRange = {
       startDate: undefined,
       endDate: undefined,
-    }
+    } as FormatDateRange
 
     const result = formatDateRange(dateRange)
 

@@ -17,6 +17,7 @@ import { AddContactJourney } from '../../../../@types/journeys'
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
 import mockPermissions from '../../../testutils/mockPermissions'
 import Permission from '../../../../enumeration/permission'
+import { ContactRelationship } from '../../../../data/contactsApiTypes'
 
 jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../services/auditService')
@@ -246,7 +247,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/emergency-contact-or-ne
       relationshipToPrisoner: 'MOT',
       isEmergencyContact: undefined,
       isNextOfKin: undefined,
-    }
+    } as Partial<ContactRelationship>
     expect(session.addContactJourneys![journeyId]!.relationship).toStrictEqual(expectedRelationship)
   })
 

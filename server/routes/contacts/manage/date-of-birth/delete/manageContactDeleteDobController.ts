@@ -38,7 +38,6 @@ export default class ManageContactDeleteDobController implements PageHandler {
   ): Promise<void> => {
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const { user } = res.locals
-    // @ts-expect-error set dateOfBirth to null
     const request: PatchContactRequest = { dateOfBirth: null }
     await this.contactsService
       .updateContactById(Number(contactId), request, user, req.id)
