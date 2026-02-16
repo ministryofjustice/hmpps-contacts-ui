@@ -12,6 +12,7 @@ $govuk-page-width: $moj-page-width;
 @import './components/card';
 @import './components/mini-profile';
 @import './components/autocomplete';
+@import './components/sortable';
 @import './local';
 
 @import 'node_modules/@ministryofjustice/hmpps-connect-dps-components/dist/assets/footer';
