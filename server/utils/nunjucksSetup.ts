@@ -44,7 +44,7 @@ export default function nunjucksSetup(app: express.Express): void {
   app.locals.asset_path = '/assets/'
   app.locals.applicationName = 'Contacts linked to a prisoner - DPS'
   app.locals.environmentName = config.environmentName
-  app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
+  app.locals.environmentNameColour = config.environmentName === 'preprod' ? 'govuk-tag--green' : ''
   let assetManifest: Record<string, string> = {}
 
   try {
