@@ -1,5 +1,5 @@
 import { defineConfig } from 'cypress'
-import coverageTask from '@cypress/code-coverage/task'
+// import coverageTask from '@cypress/code-coverage/task'
 import fs from 'fs'
 import { resetStubs } from './integration_tests/mockApis/wiremock'
 import auth from './integration_tests/mockApis/auth'
@@ -24,7 +24,7 @@ export default defineConfig({
   taskTimeout: 60000,
   e2e: {
     setupNodeEvents(on, config) {
-      coverageTask(on, config)
+      // coverageTask(on, config)
       on('task', {
         reset: resetStubs,
         ...auth,
