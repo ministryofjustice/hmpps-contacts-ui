@@ -19,6 +19,7 @@ generic-service:
     PRISONER_PROFILE_PAGE_URL: 'https://prisoner.digital.prison.service.justice.gov.uk'
     COMMON_COMPONENTS_ENABLED: true
     SENTRY_ENVIRONMENT: PRODUCTION
+    ENVIRONMENT_NAME: prod
     AUDIT_ENABLED: 'false'
 
   allowlist:
