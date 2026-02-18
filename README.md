@@ -1,7 +1,8 @@
 # hmpps-contacts-ui
 [![repo standards badge](https://img.shields.io/badge/endpoint.svg?&style=flat&logo=github&url=https%3A%2F%2Foperations-engineering-reports.cloud-platform.service.justice.gov.uk%2Fapi%2Fv1%2Fcompliant_public_repositories%2Fhmpps-contacts-ui)](https://operations-engineering-reports.cloud-platform.service.justice.gov.uk/public-github-repositories.html#hmpps-contacts-ui "Link to report")
 [![codecov](https://codecov.io/github/ministryofjustice/hmpps-contacts-ui/graph/badge.svg?token=SJ5M6R0CXZ)](https://codecov.io/github/ministryofjustice/hmpps-contacts-ui)
-[![CircleCI](https://circleci.com/gh/ministryofjustice/hmpps-contacts-ui/tree/main.svg?style=svg)](https://circleci.com/gh/ministryofjustice/hmpps-contacts-ui)
+[![pipeline](https://github.com/ministryofjustice/hmpps-contacts-ui/actions/workflows/pipeline.yml/badge.svg)](https://github.com/ministryofjustice/hmpps-contacts-ui) [![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
+
 
 Frontend UI to create and maintain contacts within DPS, including potential visitors and details of family and next of kin.
 
