@@ -4,8 +4,7 @@ import './sentry'
 import createError from 'http-errors'
 import { getFrontendComponents, retrieveCaseLoadData } from '@ministryofjustice/hmpps-connect-dps-components'
 
-// @ts-expect-error Import untyped middleware for cypress coverage
-import cypressCoverage from '@cypress/code-coverage/middleware/express'
+// import cypressCoverage from '@cypress/code-coverage/middleware/express'
 import config from './config'
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
@@ -31,9 +30,9 @@ import { auditPageViewMiddleware } from './middleware/auditPageViewMiddleware'
 export default function createApp(services: Services): express.Application {
   const app = express()
 
-  if (process.env.NODE_ENV === 'e2e-test') {
-    cypressCoverage(app)
-  }
+  // if (process.env.NODE_ENV === 'e2e-test') {
+  //   cypressCoverage(app)
+  // }
 
   app.set('json spaces', 2)
   app.set('trust proxy', true)
