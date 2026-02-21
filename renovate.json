@@ -35,12 +35,6 @@
       "matchPackageNames": ["node"],
       "matchUpdateTypes": ["major"],
       "enabled": false
-    },
-    {
-      "matchPackageNames": [
-        "cypress-circleci-reporter"
-      ],
-      "enabled": false
     }
   ],
   "vulnerabilityAlerts": {
