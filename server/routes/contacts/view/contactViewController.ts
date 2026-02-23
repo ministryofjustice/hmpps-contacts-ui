@@ -72,7 +72,10 @@ export default class ContactViewController implements PageHandler {
       100, // arbitrarily large number to get all linked prisoners
       user,
     )
-    const prisonerContactIds = linkedPrisonersAll.content?.flatMap(prisoner => prisoner.prisonerContactId ?? []) ?? []
+    const prisonerContactIds: number[] =
+      linkedPrisonersAll.content
+        ?.filter(prisoner => prisoner.prisonerContactId !== null && prisoner.prisonerContactId !== undefined)
+        .flatMap(prisoner => prisoner.prisonerContactId) ?? ([] as number[])
 
     const contactRelationshipRestrictions = (
       await Promise.all(
