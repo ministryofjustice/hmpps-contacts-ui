@@ -22,7 +22,6 @@ jest.mock('../../../../../services/prisonerAddressService')
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const referenceDataService = MockedService.ReferenceDataService()
-// @ts-expect-error passing null param into mocked service
 const prisonerAddressService = new PrisonerAddressService(null) as jest.Mocked<PrisonerAddressService>
 
 let app: Express
