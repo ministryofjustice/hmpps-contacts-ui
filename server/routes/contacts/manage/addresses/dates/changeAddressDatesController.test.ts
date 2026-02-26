@@ -208,7 +208,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .expect('Location', '/prisoner/A1234BC/contacts/manage/123456/relationship/456789')
 
     // Then
-    const expected = {
+    const expected: Parameters<typeof contactsService.updateContactAddress>[0] = {
       contactId,
       contactAddressId,
       startDate: new Date('1999-01-01Z'),

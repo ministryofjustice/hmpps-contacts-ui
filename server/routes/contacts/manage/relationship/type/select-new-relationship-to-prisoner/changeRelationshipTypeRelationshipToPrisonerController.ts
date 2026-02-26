@@ -89,10 +89,10 @@ export default class ChangeRelationshipTypeRelationshipToPrisonerController impl
     const { success, error } = await this.contactsService
       .updateContactRelationshipById(Number(prisonerContactId), request, user, req.id)
       .then(
-        _ => {
-          return { success: true, error: null }
+        (_value: unknown) => {
+          return { success: true, error: null as unknown }
         },
-        reason => {
+        (reason: unknown) => {
           return { success: false, error: reason }
         },
       )
@@ -106,7 +106,7 @@ export default class ChangeRelationshipTypeRelationshipToPrisonerController impl
         )
       })
       res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
-    } else if (error.status === 409) {
+    } else if ((error as { status: number })?.status === 409) {
       res.redirect(
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/edit-relationship-type/handle-duplicate/${journey.id}`,
       )

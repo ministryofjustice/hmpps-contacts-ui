@@ -2,6 +2,7 @@ import 'reflect-metadata'
 import { Request, Response } from 'express'
 import { z } from 'zod'
 import { buildErrorSummaryList, validate } from './validationMiddleware'
+import { PrisonerJourneyParams } from '../@types/journeys'
 
 const TOO_LONG_ERROR_MSG = 'Additional information must be 4,000 characters or less'
 const DESCRIPTION_OF_INFORMATION = 'Enter information description'
@@ -44,7 +45,7 @@ describe('validationMiddleware', () => {
         session: {},
       } as Request
 
-      await validate(schema)(req, res, next)
+      await validate(schema)(req as Request<PrisonerJourneyParams>, res, next)
 
       expect(next).toHaveBeenCalledTimes(1)
     })
@@ -62,7 +63,7 @@ describe('validationMiddleware', () => {
         originalUrl: '/url-being-validated',
       } as unknown as Request
 
-      await validate(schema)(req, res, next)
+      await validate(schema)(req as Request<PrisonerJourneyParams>, res, next)
 
       expect(req.flash).toHaveBeenCalledWith(
         'validationErrors',
@@ -83,7 +84,7 @@ describe('validationMiddleware', () => {
         originalUrl: '/url-being-validated',
       } as unknown as Request
 
-      await validate(schema)(req, res, next)
+      await validate(schema)(req as Request<PrisonerJourneyParams>, res, next)
 
       expect(res.redirect).toHaveBeenCalledWith('/url-being-validated#')
     })
@@ -101,7 +102,7 @@ describe('validationMiddleware', () => {
         originalUrl: '/url-being-validated',
       } as unknown as Request
 
-      await validate(schema)(req, res, next)
+      await validate(schema)(req as Request<PrisonerJourneyParams>, res, next)
 
       expect(req.flash).toHaveBeenCalledWith(
         'validationErrors',
@@ -123,7 +124,7 @@ describe('validationMiddleware', () => {
         originalUrl: '/url-being-validated',
       } as unknown as Request
 
-      await validate(schema)(req, res, next)
+      await validate(schema)(req as Request<PrisonerJourneyParams>, res, next)
 
       expect(req.flash).toHaveBeenCalledWith(
         'validationErrors',

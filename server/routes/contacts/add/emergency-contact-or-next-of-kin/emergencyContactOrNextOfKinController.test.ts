@@ -13,7 +13,7 @@ import {
 import { Page } from '../../../../services/auditService'
 import TestData from '../../../testutils/testData'
 import { MockedService } from '../../../../testutils/mockedServices'
-import { AddContactJourney } from '../../../../@types/journeys'
+import { AddContactJourney, PrisonerContactRelationship } from '../../../../@types/journeys'
 import { HmppsUser } from '../../../../interfaces/hmppsUser'
 import mockPermissions from '../../../testutils/mockPermissions'
 import Permission from '../../../../enumeration/permission'
@@ -242,7 +242,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/emergency-contact-or-ne
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`)
 
     // Then
-    const expectedRelationship = {
+    const expectedRelationship: PrisonerContactRelationship = {
       relationshipToPrisoner: 'MOT',
       isEmergencyContact: undefined,
       isNextOfKin: undefined,
