@@ -208,7 +208,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/update
     )
     expect($('input#organisationName').val()).toEqual('test')
     expect($('h1').text()).toEqual('Search for Jones Mason’s employer')
-    expect($('p:contains("Showing 11 to 11 of 11 results")').text()).toBeTruthy()
+    expect($('.moj-pagination__results').text()).toContain('Showing 11 to 11 of 11 total results')
     expect($('p:contains("No organisation records match your search.")').text()).toBeFalsy()
     expect($('td:contains("Some Corp")').first().text()).toEqual('Some Corp111')
     expect($('td:contains("1234 1234, ext. 222")').text()).toBeTruthy()
@@ -217,7 +217,7 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/update
     expect(checkEmployerLink.attr('href')).toEqual(
       `/prisoner/A1234BC/contacts/manage/2/relationship/3/update-employments/1/check-employer/${journeyId}?organisationId=111`,
     )
-    expect($('.moj-pagination__list').text()).toBeTruthy()
+    expect($('.govuk-pagination__list').text()).toBeTruthy()
   })
 
   it('should not show pagination when there is only one page', async () => {
@@ -247,10 +247,10 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/update
 
     // Then
     const $ = cheerio.load(response.text)
-    expect($('p:contains("Showing 1 to 1 of 1 results")').text()).toBeTruthy()
+    expect($('.moj-pagination__results').text()).toContain('1 total results')
     expect($('p:contains("No organisation records match your search.")').text()).toBeFalsy()
     expect($('td:contains("Some Corp")').text()).toBeTruthy()
-    expect($('.moj-pagination__list').text()).toBeFalsy()
+    expect($('.govuk-pagination__list').text()).toBeFalsy()
   })
 
   it('should render "no records match" result', async () => {

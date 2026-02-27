@@ -1,5 +1,5 @@
 # Stage: base image
-FROM node:24-alpine AS base
+FROM ghcr.io/ministryofjustice/hmpps-node:24-alpine AS base
 
 LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
 
@@ -36,14 +36,14 @@ ARG BUILD_NUMBER
 ARG GIT_REF
 ARG GIT_BRANCH
 
-COPY package*.json ./
-RUN CYPRESS_INSTALL_BINARY=0 npm run setup
+COPY package*.json .allowed-scripts.mjs ./
+RUN CYPRESS_INSTALL_BINARY=0 NPM_CONFIG_AUDIT=false NPM_CONFIG_FUND=false npm run setup
 ENV NODE_ENV='production'
 
 COPY . .
 RUN --mount=type=secret,id=sentry SENTRY_AUTH_TOKEN=$(cat /run/secrets/sentry) npm run build
 
-RUN npm prune --no-audit --omit=dev
+RUN npm prune --no-audit --no-fund --omit=dev
 
 # Stage: copy production assets and dependencies
 FROM base

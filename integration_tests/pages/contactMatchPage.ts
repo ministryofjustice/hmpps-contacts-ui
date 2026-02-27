@@ -59,11 +59,6 @@ export default class ContactMatchPage extends Page {
     return this
   }
 
-  clickPaginationLink(name: string): ContactMatchPage {
-    cy.findAllByRole('link', { name }).first().click()
-    return Page.verifyOnPage(ContactMatchPage, this.contactName, this.prisonerName)
-  }
-
   private getRestrictionsTab = (): PageElement => cy.get('#tab_restrictions')
 
   private linkedPrisonersTab = (): PageElement => cy.get('#tab_linked-prisoners')

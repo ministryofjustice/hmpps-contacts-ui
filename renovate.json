@@ -32,7 +32,7 @@
     },
     {
       "matchDatasources": ["docker"],
-      "matchPackageNames": ["node"],
+      "matchPackageNames": ["node", "hmpps-node"],
       "matchUpdateTypes": ["major"],
       "enabled": false
     },
@@ -41,6 +41,14 @@
         "cypress-circleci-reporter"
       ],
       "enabled": false
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "fileMatch": ["^\\.github/workflows/.*\\.yml$"]
+    },
+    {
+      "matchManagers": ["pre-commit"],
+      "groupName": "all pre-commit dependencies"
     }
   ],
   "vulnerabilityAlerts": {

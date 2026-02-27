@@ -71,6 +71,11 @@ export default abstract class Page {
     cy.findByRole('link', { name }).click()
   }
 
+  clickPaginationNext() {
+    cy.get('.govuk-pagination__next').first().click()
+    return this
+  }
+
   clickIndexedLink(index: number, name: string) {
     cy.findAllByRole('link', { name }).eq(index).click()
   }

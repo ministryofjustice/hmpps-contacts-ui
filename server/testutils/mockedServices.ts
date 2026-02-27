@@ -10,8 +10,11 @@ import RestrictionsTestData from '../routes/testutils/stubRestrictionsData'
 import ContactAuditHistoryService from '../services/contactAuditHistoryService'
 
 export const MockedService = {
-  // @ts-expect-error passing null param into mock service
-  AuditService: () => new AuditService(null) as jest.Mocked<AuditService>,
+  AuditService: () => {
+    const hmppsAuditClient = { sendMessage: jest.fn().mockResolvedValue(null) }
+    // @ts-expect-error partial mock client
+    return new AuditService(hmppsAuditClient) as jest.Mocked<AuditService>
+  },
   // @ts-expect-error passing null param into mock service
   ReferenceDataService: () => new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>,
   // @ts-expect-error passing null param into mock service

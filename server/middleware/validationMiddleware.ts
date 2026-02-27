@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import z from 'zod'
 import { $ZodSuperRefineIssue } from 'zod/v4/core'
+import { ParamsDictionary } from 'express-serve-static-core'
 import { PrisonerJourneyParams } from '../@types/journeys'
 import logger from '../../logger'
 
@@ -30,9 +31,9 @@ export const findError = (errors: fieldErrors, fieldName: string) => {
   }
 }
 
-export type SchemaFactory<P extends { [key: string]: string }> = (request: Request<P>) => Promise<z.ZodTypeAny>
+export type SchemaFactory<P extends ParamsDictionary> = (request: Request<P>) => Promise<z.ZodTypeAny>
 
-export const validate = <P extends { [key: string]: string }>(schema: z.ZodTypeAny | SchemaFactory<P>) => {
+export const validate = <P extends ParamsDictionary>(schema: z.ZodTypeAny | SchemaFactory<P>) => {
   return async (req: Request<PrisonerJourneyParams> | Request<P>, res: Response, next: NextFunction) => {
     if (!schema) {
       return next()
