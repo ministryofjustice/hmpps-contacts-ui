@@ -1,6 +1,7 @@
 import { Readable } from 'stream'
+import { ApiConfig } from '@ministryofjustice/hmpps-rest-client'
 import RestClient from './restClient'
-import config, { ApiConfig } from '../config'
+import config from '../config'
 import { PrisonApiAddress } from './prisonApiTypes'
 
 export default class PrisonApiClient extends RestClient {

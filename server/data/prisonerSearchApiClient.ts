@@ -1,6 +1,7 @@
+import { ApiConfig } from '@ministryofjustice/hmpps-rest-client'
 import RestClient from './restClient'
 import { Prisoner } from './prisonerOffenderSearchTypes'
-import config, { ApiConfig } from '../config'
+import config from '../config'
 
 export default class PrisonerSearchApiClient extends RestClient {
   constructor() {
