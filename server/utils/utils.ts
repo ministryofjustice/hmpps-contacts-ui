@@ -16,7 +16,7 @@ const properCase = (word: string): string =>
 const properCaseName = (name: string): string => (isBlank(name) ? '' : name.split('-').map(properCase).join('-'))
 
 export const convertToTitleCase = (sentence?: string): string => {
-  const normalisedSentence = sentence ? sentence : ''
+  const normalisedSentence = sentence || ''
   return isBlank(normalisedSentence) ? '' : normalisedSentence.split(' ').map(properCaseName).join(' ')
 }
 
