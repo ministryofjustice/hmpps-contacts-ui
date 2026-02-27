@@ -9,7 +9,7 @@ import {
   formatDate,
   ageInYears,
   capitalizeFirstLetter,
-  capitaliseName,
+  convertToTitleCase,
   sentenceCase,
   isDateAndInThePast,
   referenceCodesToSelect,
@@ -79,11 +79,12 @@ export default function nunjucksSetup(app: express.Express): void {
     {
       autoescape: true,
       express: app,
+      noCache: process.env.NODE_ENV !== 'production',
     },
   )
 
   njkEnv.addFilter('initialiseName', initialiseName)
-  njkEnv.addFilter('capitaliseName', capitaliseName)
+  njkEnv.addFilter('convertToTitleCase', convertToTitleCase)
   njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
   njkEnv.addFilter('buildErrorSummaryList', buildErrorSummaryList)
   njkEnv.addFilter('findError', findError)

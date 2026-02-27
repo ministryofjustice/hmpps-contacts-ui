@@ -7,7 +7,7 @@ import {
   extractPrisonerNumber,
   formatDateForApi,
   capitalizeFirstLetter,
-  capitaliseName,
+  convertToTitleCase,
   ageInYears,
   isDateAndInThePast,
   formatDob,
@@ -26,8 +26,8 @@ describe('convert to title case', () => {
     ['Trailing spaces', 'RobeRT  ', 'Robert  '],
     ['Hyphenated', 'Robert-John SmiTH-jONes-WILSON', 'Robert-John Smith-Jones-Wilson'],
     ['Otherwise punctuated', "billy-bob o'reilly jr.", "Billy-Bob O'Reilly Jr."],
-  ])('%s capitaliseName(%s, %s)', (_, a, expected) => {
-    expect(capitaliseName(a)).toEqual(expected)
+  ])('%s convertToTitleCase(%s, %s)', (_, a, expected) => {
+    expect(convertToTitleCase(a)).toEqual(expected)
   })
 })
 

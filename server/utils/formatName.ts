@@ -1,4 +1,4 @@
-import { capitaliseName } from './utils'
+import { convertToTitleCase } from './utils'
 import { ContactNames, PrisonerDetails } from '../@types/journeys'
 import { PatchContactResponse } from '../@types/contactsApiClient'
 
@@ -18,7 +18,7 @@ const formatNameLastNameFirst = (
       name += ` ${val.middleNames}`
     }
   }
-  return capitaliseName(name)
+  return convertToTitleCase(name)
 }
 
 const formatNameFirstNameFirst = (
@@ -47,7 +47,7 @@ const formatNameFirstNameFirst = (
 
   nameArr.push(val.lastName)
   name = nameArr.join(' ').trim()
-  name = capitaliseName(name)
+  name = convertToTitleCase(name)
 
   if (opts?.possessiveSuffix === true) {
     const requiresAnS = !name.endsWith('s')
