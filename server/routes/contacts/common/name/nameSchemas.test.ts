@@ -64,6 +64,25 @@ describe('createContactEnterNameSchema', () => {
       })
     })
 
+    it('should trim whitespace', async () => {
+      // Given
+      const form = {
+        ...baseForm,
+        firstName: ' aaa ',
+        middleNames: ' bbb ',
+        lastName: ' ccc ',
+      }
+
+      // When
+      const result = await doValidate(form)
+
+      // Then
+      expect(result.success).toStrictEqual(true)
+      expect(result.data?.firstName).toEqual('aaa')
+      expect(result.data?.middleNames).toEqual('bbb')
+      expect(result.data?.lastName).toEqual('ccc')
+    })
+
     it("whitespace shouldn't count for minimum name length", async () => {
       // Given
       const form = {

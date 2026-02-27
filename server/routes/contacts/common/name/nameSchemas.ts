@@ -55,7 +55,8 @@ export const fullNameSchema = createSchema({
         ctx.addIssue({ code: 'custom', message: `${LAST_NAME_INVALID_PREFIX}${getUniqueInvalidChars(val)}` })
       }
     })
-    .refine(val => val?.trim().length > 0, { message: LAST_NAME_REQUIRED_MESSAGE }),
+    .refine(val => val?.trim().length > 0, { message: LAST_NAME_REQUIRED_MESSAGE })
+    .transform(val => val?.trim()),
 })
 
 export type FullNameSchemaType = z.infer<typeof fullNameSchema>
