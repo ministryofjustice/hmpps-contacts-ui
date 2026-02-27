@@ -1,6 +1,6 @@
 import nock from 'nock'
 
-import { AgentConfig } from '../config'
+import { AgentConfig } from '@ministryofjustice/hmpps-rest-client'
 import RestClient, { Client } from './restClient'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 
