@@ -138,6 +138,24 @@ describe('phoneNumberSchemaFactory', () => {
       )
     })
 
+    it('should trim whitespace', async () => {
+      // Given
+      const form = {
+        type: 'aaa',
+        phoneNumber: ' 01246 121212 ',
+        extension: ' ccc ',
+      }
+
+      // When
+      const result = await doValidate(form)
+
+      // Then
+      expect(result.success).toStrictEqual(true)
+      expect(result.data?.type).toEqual('aaa')
+      expect(result.data?.phoneNumber).toEqual('01246 121212')
+      expect(result.data?.extension).toEqual('ccc')
+    })
+
     const doValidate = async (form: Form) => {
       return phoneNumberSchema.safeParse(form)
     }
