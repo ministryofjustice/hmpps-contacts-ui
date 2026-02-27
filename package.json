@@ -7,7 +7,7 @@
   "scripts": {
     "prepare": "husky",
     "watch-ts": "tsc -w",
-    "build": "node esbuild/esbuild.config.js --build",
+    "build": "node esbuild/esbuild",
     "start": "node $NODE_OPTIONS dist/server.js | bunyan -o short",
     "watch-node": "DEBUG=gov-starter-server* nodemon -r dotenv/config --inspect --watch dist/ dist/server.js | bunyan -o short",
     "start:dev": "concurrently -k -p \"[{name}]\" -n \"ESBuild,Node\" -c \"yellow.bold,cyan.bold\" \"node esbuild/esbuild.config.js --build --watch\" \"npm run watch-node\"",
