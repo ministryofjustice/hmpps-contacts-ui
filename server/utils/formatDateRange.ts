@@ -1,5 +1,14 @@
 import { formatDate } from './utils'
 
+export type formatDateRangeArguments = {
+  startDate?: string | undefined
+  endDate?: string | undefined
+  fromMonth?: string | undefined
+  fromYear?: string | undefined
+  toMonth?: string | undefined
+  toYear?: string | undefined
+}
+
 export const formatDateRange = ({
   startDate,
   endDate,
@@ -7,14 +16,7 @@ export const formatDateRange = ({
   fromYear,
   toMonth,
   toYear,
-}: {
-  startDate?: string | undefined
-  endDate?: string | undefined
-  fromMonth?: string | undefined
-  fromYear?: string | undefined
-  toMonth?: string | undefined
-  toYear?: string | undefined
-}) => {
+}: formatDateRangeArguments) => {
   if (startDate && endDate) {
     return `From ${formatDate(startDate, 'MMMM yyyy')} to ${formatDate(endDate, 'MMMM yyyy')}`
   }

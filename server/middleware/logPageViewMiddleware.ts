@@ -1,7 +1,6 @@
 import type { NextFunction, Request, RequestHandler, Response } from 'express'
 import { PageHandler } from '../interfaces/pageHandler'
 import AuditService from '../services/auditService'
-import asyncMiddleware from './asyncMiddleware'
 
 export default function logPageViewMiddleware(auditService: AuditService, pageHandler: PageHandler): RequestHandler {
   const CONTACT_ID_REGEX =
@@ -11,7 +10,7 @@ export default function logPageViewMiddleware(auditService: AuditService, pageHa
   const EMPLOYER_NUMBER_REGEX = /update-employments\/([^/]+)\/[^/]+/
   const ORGANISATION_ID_REGEX = /organisationId=([^&]+)/
 
-  return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     if (res.statusCode !== 200) {
       return next()
     }
@@ -41,5 +40,5 @@ export default function logPageViewMiddleware(auditService: AuditService, pageHa
 
     await auditService.logPageView(pageHandler.PAGE_NAME, eventDetails)
     return next()
-  })
+  }
 }

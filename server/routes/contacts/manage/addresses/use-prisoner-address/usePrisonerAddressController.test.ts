@@ -12,6 +12,7 @@ import { AddressJourney, AddressLines } from '../../../../../@types/journeys'
 import { HmppsUser } from '../../../../../interfaces/hmppsUser'
 import mockPermissions from '../../../../testutils/mockPermissions'
 import Permission from '../../../../../enumeration/permission'
+import { PrisonApiClient } from '../../../../../data'
 
 jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../../services/auditService')
@@ -22,8 +23,7 @@ jest.mock('../../../../../services/prisonerAddressService')
 const auditService = MockedService.AuditService()
 const prisonerSearchService = MockedService.PrisonerSearchService()
 const referenceDataService = MockedService.ReferenceDataService()
-// @ts-expect-error passing null param into mocked service
-const prisonerAddressService = new PrisonerAddressService(null) as jest.Mocked<PrisonerAddressService>
+const prisonerAddressService = new PrisonerAddressService({} as PrisonApiClient) as jest.Mocked<PrisonerAddressService>
 
 let app: Express
 let session: Partial<SessionData>

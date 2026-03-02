@@ -1,19 +1,15 @@
 import express, { Express, Locals } from 'express'
 import { NotFound } from 'http-errors'
 import { v4 as uuidv4 } from 'uuid'
-import { getFrontendComponents } from '@ministryofjustice/hmpps-connect-dps-components'
 import { SessionData } from 'express-session'
 import { PrisonerPermission } from '@ministryofjustice/hmpps-prison-permissions-lib'
-import config from '../../config'
 import routes from '../index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../../errorHandler'
-import * as auth from '../../authentication/auth'
 import type { Services } from '../../services'
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import setUpWebSession from '../../middleware/setUpWebSession'
 import populateValidationErrors from '../../middleware/populateValidationErrors'
-import setUpAuth from '../../middleware/setUpAuthentication'
 import { MockedService } from '../../testutils/mockedServices'
 import { auditPageViewMiddleware } from '../../middleware/auditPageViewMiddleware'
 import Permission from '../../enumeration/permission'
@@ -99,7 +95,6 @@ function appSetup(
   if (services.auditService) {
     app.get('*any', auditPageViewMiddleware(services.auditService))
   }
-  app.use(setUpAuth())
   app.use((req, res, next) => {
     req.user = userSupplier() as Express.User
     req.flash = flashProvider
@@ -139,14 +134,6 @@ function appSetup(
   app.use((req, res, next) => next(new NotFound()))
   app.use(errorHandler(production))
 
-  app.use(
-    '*any',
-    getFrontendComponents({
-      dpsUrl: config.serviceUrls.digitalPrison,
-      componentApiConfig: config.apis.componentApi,
-    }),
-  )
-
   return app
 }
 
@@ -173,6 +160,5 @@ export function appWithAllRoutes({
     ...defaultServices,
     ...services,
   }
-  auth.default.authenticationMiddleware = () => (req, res, next) => next()
   return appSetup(mergedServices as Services, production, userSupplier, validationErrors, sessionReceiver)
 }
