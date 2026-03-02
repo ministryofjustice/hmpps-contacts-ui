@@ -44,6 +44,7 @@ export default class ManageContactDeleteDateOfDeathController implements PageHan
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const { user } = res.locals
     const request: PatchContactRequest = {
+      // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
       deceasedDate: null,
     }
     await this.contactsService

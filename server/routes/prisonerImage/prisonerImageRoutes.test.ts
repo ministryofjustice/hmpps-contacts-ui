@@ -3,10 +3,11 @@ import request from 'supertest'
 import { Readable } from 'stream'
 import { appWithAllRoutes, basicPrisonUser } from '../testutils/appSetup'
 import PrisonerImageService from '../../services/prisonerImageService'
+import { PrisonApiClient } from '../../data'
 
 jest.mock('../../services/prisonerImageService')
 
-const prisonerImageService = new PrisonerImageService(null) as jest.Mocked<PrisonerImageService>
+const prisonerImageService = new PrisonerImageService({} as PrisonApiClient) as jest.Mocked<PrisonerImageService>
 
 let app: Express
 

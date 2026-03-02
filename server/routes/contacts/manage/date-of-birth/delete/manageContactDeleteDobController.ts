@@ -38,6 +38,7 @@ export default class ManageContactDeleteDobController implements PageHandler {
   ): Promise<void> => {
     const { prisonerNumber, contactId, prisonerContactId } = req.params
     const { user } = res.locals
+    // @ts-expect-error mistyped by openapi script. this property can be set to null to unset its value.
     const request: PatchContactRequest = { dateOfBirth: null }
     await this.contactsService
       .updateContactById(Number(contactId), request, user, req.id)

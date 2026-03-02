@@ -1,5 +1,5 @@
 import AuditService, { Page } from './auditService'
-import HmppsAuditClient from '../data/hmppsAuditClient'
+import HmppsAuditClient, { AuditClientConfig } from '../data/hmppsAuditClient'
 
 jest.mock('../data/hmppsAuditClient')
 
@@ -8,7 +8,7 @@ describe('Audit service', () => {
   let auditService: AuditService
 
   beforeEach(() => {
-    hmppsAuditClient = new HmppsAuditClient(null) as jest.Mocked<HmppsAuditClient>
+    hmppsAuditClient = new HmppsAuditClient({} as AuditClientConfig) as jest.Mocked<HmppsAuditClient>
     auditService = new AuditService(hmppsAuditClient)
   })
 
