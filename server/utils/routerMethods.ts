@@ -2,7 +2,6 @@ import { RequestHandler, Router } from 'express'
 import { PermissionsService } from '@ministryofjustice/hmpps-prison-permissions-lib'
 import { PageHandler } from '../interfaces/pageHandler'
 import logPageViewMiddleware from '../middleware/logPageViewMiddleware'
-import asyncMiddleware from '../middleware/asyncMiddleware'
 import { AuditService } from '../services'
 import { PrisonerJourneyParams } from '../@types/journeys'
 import checkPermissionsMiddleware from '../middleware/checkPermissionsMiddleware'
@@ -19,7 +18,7 @@ export const routerMethods = (router: Router, permissionsService: PermissionsSer
       ...handlers,
       checkPermissionsMiddleware(permissionsService, controller.REQUIRED_PERMISSION),
       logPageViewMiddleware(auditService, controller),
-      asyncMiddleware(controller.GET),
+      controller.GET,
     )
   const post = <P extends { [key: string]: string }>(
     path: string,
@@ -30,7 +29,7 @@ export const routerMethods = (router: Router, permissionsService: PermissionsSer
       path,
       ...(handlers as RequestHandler[]),
       checkPermissionsMiddleware(permissionsService, controller.REQUIRED_PERMISSION),
-      asyncMiddleware(controller.POST!),
+      controller.POST ?? [],
     )
   return { get, post }
 }

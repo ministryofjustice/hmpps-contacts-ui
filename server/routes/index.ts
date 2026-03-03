@@ -1,7 +1,6 @@
 import { Router } from 'express'
 import { Services } from '../services'
 import PrisonerImageRoutes from './prisonerImage/prisonerImageRoutes'
-import asyncMiddleware from '../middleware/asyncMiddleware'
 import AddContactRoutes from './contacts/add/addContactRoutes'
 import ManageContactsRoutes from './contacts/manage/manageContactsRoutes'
 import RestrictionsRoutes from './restrictions/restrictionsRoutes'
@@ -80,7 +79,7 @@ export default function routes({
     ),
   )
   // Special route - which gives the mini-profile nunjucks macro access to prisoner images
-  router.get('/prisoner-image/:prisonerNumber', asyncMiddleware(new PrisonerImageRoutes(prisonerImageService).GET))
+  router.get('/prisoner-image/:prisonerNumber', new PrisonerImageRoutes(prisonerImageService).GET)
 
   return router
 }
