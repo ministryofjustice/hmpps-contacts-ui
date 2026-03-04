@@ -6,6 +6,7 @@ import { PrisonerJourneyParams } from '../@types/journeys'
 import { SchemaFactory, validate } from '../middleware/validationMiddleware'
 import checkPermissionsWithoutPrisonerMiddleware from '../middleware/checkPermissionsWithoutPrisonerMiddleware'
 import { contactSearchSchema } from '../routes/contacts/add/contact-search/contactSearchSchema'
+import savedBackLinkMiddleware from '../middleware/savedBackLinkMiddleware'
 
 export const routerWithoutPrisonerMethods = (router: Router, auditService: AuditService) => {
   const get = <P extends { [key: string]: string }>(
@@ -18,6 +19,7 @@ export const routerWithoutPrisonerMethods = (router: Router, auditService: Audit
       ...handlers,
       checkPermissionsWithoutPrisonerMiddleware(controller.REQUIRED_PERMISSION),
       logPageViewMiddleware(auditService, controller),
+      savedBackLinkMiddleware(),
       controller.GET,
     )
   const post = <P extends { [key: string]: string }>(

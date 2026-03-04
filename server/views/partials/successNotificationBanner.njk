@@ -1,12 +1,21 @@
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
 {% if successNotificationBanner %}
-    {% set html %}
-        <h3 class="govuk-notification-banner__heading">{{ successNotificationBanner }}</h3>
-    {% endset %}
+  {% set html %}
+    <h3 class="govuk-notification-banner__heading">{{ successNotificationBanner }}</h3>
 
-    {{ govukNotificationBanner({
-        html: html,
-        type: "success"
-    }) }}
+    {% if user.backLink and prisonerDetails%}
+      <p>
+        <a class="govuk-link govuk-link--no-visited-state" data-qa="saved-backlink" href="{{ user.backLink.url }}">
+          Back to {{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true, possessiveSuffix = true) }} profile
+        </a>
+      </p>
+    {% endif %}
+  
+  {% endset %}
+
+  {{ govukNotificationBanner({
+      html: html,
+      type: "success"
+  }) }}
 {% endif %}
