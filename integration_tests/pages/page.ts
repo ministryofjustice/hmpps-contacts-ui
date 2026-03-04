@@ -116,6 +116,15 @@ export default abstract class Page {
     return this
   }
 
+  hasSavedBackLink(text: string, href: string) {
+    this.savedBackLink().should('contain.text', text)
+    this.savedBackLink().should('have.attr', 'href', href)
+  }
+
+  hasNoSavedBackLink() {
+    this.savedBackLink().should('not.exist')
+  }
+
   private continueButton = (): PageElement => cy.get('[data-qa=continue-button]')
 
   private backLink = (): PageElement => cy.get('[data-qa=back-link]')
@@ -123,4 +132,6 @@ export default abstract class Page {
   private cancelLink = (): PageElement => cy.get('[data-qa=cancel-button]')
 
   private successBanner = (): PageElement => cy.get('.govuk-notification-banner__heading')
+
+  private savedBackLink = (): PageElement => cy.get('[data-qa=saved-backlink]')
 }
