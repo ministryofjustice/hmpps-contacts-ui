@@ -90,6 +90,20 @@ describe('emailSchema', () => {
       })
     })
 
+    it('should trim whitespace', async () => {
+      // Given
+      const form = { ...baseForm, emailAddress: 'test@example.com ' }
+
+      // When
+      const result = await doValidate(form)
+
+      // Then
+      expect(result.success).toStrictEqual(true)
+      expect(result.data).toStrictEqual({
+        emailAddress: 'test@example.com',
+      })
+    })
+
     const doValidate = async (form: Form) => {
       return emailSchema.safeParse(form)
     }
