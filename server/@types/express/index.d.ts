@@ -12,11 +12,13 @@ import {
   PrisonerDetails,
   UpdateEmploymentsJourney,
 } from '../journeys'
+import { UserBackLink } from '../../routes/backLink/saveBackLinkController'
 
 export declare module 'express-session' {
   interface SessionData {
     returnTo: string
     nowInMinutes: number
+    userBackLink?: UserBackLink
     search: string
     addContactJourneys: Record<string, AddContactJourney>
     searchContactJourneys: Record<string, SearchContactJourney>

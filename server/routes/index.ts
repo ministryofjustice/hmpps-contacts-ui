@@ -6,6 +6,7 @@ import ManageContactsRoutes from './contacts/manage/manageContactsRoutes'
 import RestrictionsRoutes from './restrictions/restrictionsRoutes'
 import SearchContactRoutes from './contacts/view/searchContactRoutes'
 import StaticRoutes from './static/staticRoutes'
+import SaveBackLinkController from './backLink/saveBackLinkController'
 
 export default function routes({
   auditService,
@@ -80,6 +81,8 @@ export default function routes({
   )
   // Special route - which gives the mini-profile nunjucks macro access to prisoner images
   router.get('/prisoner-image/:prisonerNumber', new PrisonerImageRoutes(prisonerImageService).GET)
+
+  router.get('/save-backlink', new SaveBackLinkController().GET)
 
   return router
 }
