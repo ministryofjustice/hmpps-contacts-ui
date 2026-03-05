@@ -1,5 +1,5 @@
 import CaseLoad from '@ministryofjustice/hmpps-connect-dps-components/dist/types/CaseLoad'
-import { UserBackLink } from '../routes/backLink/saveBackLinkController'
+import type { UserBackLink } from '../routes/backLink/saveBackLinkController'
 
 export type AuthSource = 'nomis' | 'delius' | 'external' | 'azuread'
 

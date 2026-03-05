@@ -42,24 +42,36 @@ describe('GET /save-backlink', () => {
     })
   })
 
-  it('should throw an error if required query parameters missing', async () => {
+  it('should throw a Bad Request error if required query parameters missing', async () => {
     const backLinkQuery = 'service=prisoner-profile'
 
     await request(app)
       .get(`/save-backlink?${backLinkQuery}`)
-      .expect(500)
-      .expect(res => expect(res.text).toContain('Required query parameters missing'))
+      .expect(400)
+      .expect(res => expect(res.text).toContain('BadRequestError: Required query parameters missing'))
 
     expect(session.userBackLink).toBeUndefined()
   })
 
-  it('should throw an error if an unregistered back link service is specified', async () => {
+  it('should throw a Bad Request error if an unregistered back link service is specified', async () => {
     const backLinkQuery = 'service=unregistered-service&returnPath=some-path&redirectPath=some-redirect'
 
     await request(app)
       .get(`/save-backlink?${backLinkQuery}`)
-      .expect(500)
-      .expect(res => expect(res.text).toContain('Unregistered service for back link'))
+      .expect(400)
+      .expect(res => expect(res.text).toContain('BadRequestError: Unregistered service for back link'))
+
+    expect(session.userBackLink).toBeUndefined()
+  })
+
+  it('should throw a Bad Request error if an invalid redirect path is specified', async () => {
+    const backLinkQuery =
+      'service=prisoner-profile&returnPath=some-path&redirectPath=/prisoner/A1234BC/contacts/manage/123/relationship/xyz'
+
+    await request(app)
+      .get(`/save-backlink?${backLinkQuery}`)
+      .expect(400)
+      .expect(res => expect(res.text).toContain('BadRequestError: Invalid redirect path for back link'))
 
     expect(session.userBackLink).toBeUndefined()
   })

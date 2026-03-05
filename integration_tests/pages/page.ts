@@ -119,10 +119,12 @@ export default abstract class Page {
   hasSavedBackLink(text: string, href: string) {
     this.savedBackLink().should('contain.text', text)
     this.savedBackLink().should('have.attr', 'href', href)
+    return this
   }
 
   hasNoSavedBackLink() {
     this.savedBackLink().should('not.exist')
+    return this
   }
 
   private continueButton = (): PageElement => cy.get('[data-qa=continue-button]')

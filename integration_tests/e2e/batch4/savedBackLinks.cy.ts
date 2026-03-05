@@ -60,7 +60,7 @@ context('Saved backlinks back to DPS prisoner profile', () => {
     cy.signIn()
   })
 
-  it('should handle /saved-backlink to contact details redirect, show back link in banner and remove link when context changes', () => {
+  it('should handle /save-backlink to contact details redirect, show back link in banner and remove link when context changes', () => {
     // Call URL that DPS Prisoner Profile gives for changing next of kin details
     cy.visit(
       `/save-backlink?service=prisoner-profile&returnPath=/prisoner/${prisonerNumber}/personal%23next-of-kin&redirectPath=/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`,

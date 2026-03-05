@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { BadRequest } from 'http-errors'
 import config from '../../config'
 
 export type BackLinkService = {
@@ -24,17 +25,20 @@ export default class SaveBackLinkController {
     const { service, returnPath, redirectPath } = req.query
 
     if (typeof service !== 'string' || typeof returnPath !== 'string' || typeof redirectPath !== 'string') {
-      throw new Error('Required query parameters missing')
+      throw new BadRequest('Required query parameters missing')
     }
 
     const registeredService = registeredBackLinkServices.find(services => services.name === service)
-    if (!registeredService) throw new Error('Unregistered service for back link')
+    if (!registeredService) throw new BadRequest('Unregistered service for back link')
+
+    // redirectPath is in form /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId
+    const prisonerContactId = redirectPath.match(/\/relationship\/(\d+)$/)?.[1]
+    if (!prisonerContactId) throw new BadRequest('Invalid redirect path for back link')
 
     req.session.userBackLink = {
       url: registeredService.hostname + returnPath,
       service: registeredService.name,
-      // redirectPath is in form /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId
-      prisonerContactId: redirectPath.split('/relationship/')[1],
+      prisonerContactId,
     }
 
     res.redirect(config.domain + redirectPath)

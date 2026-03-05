@@ -5,10 +5,11 @@ export default function savedBackLinkMiddleware(): RequestHandler {
     const { userBackLink } = req.session
     if (!userBackLink) return next()
 
-    // Keep saved back link if still in a relevant journey and add to res.locals
+    // Keep saved back link if still in a relevant journey (same prisonerContactId) and add to res.locals
     if (
       userBackLink.service === 'prisoner-profile' &&
-      req.params?.prisonerContactId === userBackLink.prisonerContactId
+      req.params?.prisonerContactId &&
+      req.params.prisonerContactId === userBackLink.prisonerContactId
     ) {
       res.locals.user.backLink = userBackLink
       return next()
