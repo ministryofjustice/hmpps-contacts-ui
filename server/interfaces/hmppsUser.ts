@@ -1,4 +1,5 @@
 import CaseLoad from '@ministryofjustice/hmpps-connect-dps-components/dist/types/CaseLoad'
+import type { UserBackLink } from '../routes/backLink/saveBackLinkController'
 
 export type AuthSource = 'nomis' | 'delius' | 'external' | 'azuread'
 
@@ -13,6 +14,7 @@ export interface BaseUser {
   displayName: string
   userRoles: string[]
   token: string
+  backLink?: UserBackLink
 }
 
 /**
