@@ -1,6 +1,6 @@
 import type { RequestHandler } from 'express'
 
-export default function savedBackLinkMiddleware(): RequestHandler {
+export default function saveBackLinkMiddleware(): RequestHandler {
   return (req, res, next) => {
     const { userBackLink } = req.session
     if (!userBackLink) return next()

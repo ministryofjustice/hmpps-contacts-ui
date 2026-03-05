@@ -4,7 +4,7 @@ import ManageContactDetailsPage from '../../pages/manageContactDetails'
 import SelectApprovedVisitorPage from '../../pages/contact-details/relationship/selectApprovedVisitorPage'
 import pagedPrisonerAlertsData from '../../../server/testutils/testPrisonerAlertsData'
 
-context('Saved backlinks back to DPS prisoner profile', () => {
+context('Save backlinks back to DPS prisoner profile', () => {
   const contactId = 654321
   const prisonerContactId = 987654
   const contact = TestData.contact({

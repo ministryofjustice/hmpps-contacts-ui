@@ -6,7 +6,7 @@ import { AuditService } from '../services'
 import { PrisonerJourneyParams } from '../@types/journeys'
 import checkPermissionsMiddleware from '../middleware/checkPermissionsMiddleware'
 import { SchemaFactory } from '../middleware/validationMiddleware'
-import savedBackLinkMiddleware from '../middleware/savedBackLinkMiddleware'
+import saveBackLinkMiddleware from '../middleware/saveBackLinkMiddleware'
 
 export const routerMethods = (router: Router, permissionsService: PermissionsService, auditService: AuditService) => {
   const get = <P extends { [key: string]: string }>(
@@ -19,7 +19,7 @@ export const routerMethods = (router: Router, permissionsService: PermissionsSer
       ...handlers,
       checkPermissionsMiddleware(permissionsService, controller.REQUIRED_PERMISSION),
       logPageViewMiddleware(auditService, controller),
-      savedBackLinkMiddleware(),
+      saveBackLinkMiddleware(),
       controller.GET,
     )
   const post = <P extends { [key: string]: string }>(

@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express'
-import savedBackLinkMiddleware from './savedBackLinkMiddleware'
+import saveBackLinkMiddleware from './saveBackLinkMiddleware'
 
-describe('savedBackLinkMiddleware', () => {
+describe('saveBackLinkMiddleware', () => {
   const req = {
     session: {},
     params: {},
@@ -18,7 +18,7 @@ describe('savedBackLinkMiddleware', () => {
   })
 
   it('should call next if no userBackLink in session', () => {
-    savedBackLinkMiddleware()(req, res, next)
+    saveBackLinkMiddleware()(req, res, next)
 
     expect(next).toHaveBeenCalled()
   })
@@ -32,7 +32,7 @@ describe('savedBackLinkMiddleware', () => {
 
     req.params.prisonerContactId = '123'
 
-    savedBackLinkMiddleware()(req, res, next)
+    saveBackLinkMiddleware()(req, res, next)
 
     expect(res.locals.user.backLink).toEqual(req.session.userBackLink)
     expect(next).toHaveBeenCalled()
@@ -47,7 +47,7 @@ describe('savedBackLinkMiddleware', () => {
 
     req.params.prisonerContactId = '456'
 
-    savedBackLinkMiddleware()(req, res, next)
+    saveBackLinkMiddleware()(req, res, next)
 
     expect(req.session.userBackLink).toBeUndefined()
     expect(next).toHaveBeenCalled()
