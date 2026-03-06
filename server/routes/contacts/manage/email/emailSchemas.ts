@@ -74,13 +74,13 @@ export const emailsSchema = () => async (request: Request<unknown, unknown, { sa
   }).superRefine((val, ctx) => {
     if (isSaveAction) {
       const otherEmailAddresses: string[] = val.otherEmailAddresses ?? []
-      val.emails.forEach((email, index) => {
-        if (email && email.emailAddress) {
+      val.emails
+        .filter(email => email && email.emailAddress)
+        .forEach((email, index) => {
           validateEmailFormat(email.emailAddress, ctx, ['emails', index, 'emailAddress'])
           validateEmailIsNotDuplicate(email.emailAddress, otherEmailAddresses, ctx, ['emails', index, 'emailAddress'])
-          otherEmailAddresses.push(email.emailAddress.trim()) // in case they enter twice in this form
-        }
-      })
+          otherEmailAddresses.push(email.emailAddress!.trim()) // in case they enter twice in this form
+        })
     }
   })
 }
@@ -101,13 +101,13 @@ export const optionalEmailsSchema = async (
     .superRefine((val, ctx) => {
       if (isSaveAction) {
         const otherEmailAddresses: string[] = val.otherEmailAddresses ?? []
-        val.emails.forEach((email, index) => {
-          if (email && email.emailAddress) {
+        val.emails
+          .filter(email => email && email.emailAddress)
+          .forEach((email, index) => {
             validateEmailFormat(email.emailAddress, ctx, ['emails', index, 'emailAddress'])
             validateEmailIsNotDuplicate(email.emailAddress, otherEmailAddresses, ctx, ['emails', index, 'emailAddress'])
-            otherEmailAddresses.push(email.emailAddress.trim()) // in case they enter twice in this form
-          }
-        })
+            otherEmailAddresses.push(email.emailAddress!.trim()) // in case they enter twice in this form
+          })
       }
     })
     .transform(({ emails, add, save, remove }) => ({
