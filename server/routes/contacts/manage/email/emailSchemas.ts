@@ -48,7 +48,7 @@ export const emailSchema = createSchema({
   })
   .transform((val): { emailAddress: string } => {
     return {
-      emailAddress: val.emailAddress,
+      emailAddress: val.emailAddress.trim(),
     }
   })
 
@@ -56,7 +56,8 @@ const requiredEmailSchema = createSchema({
   emailAddress: z
     .string()
     .max(240, EMAIL_NUMBER_OF_CHARACTERS_LIMIT_ERROR_MESSAGE)
-    .refine(val => val?.trim().length > 0, { message: EMAIL_REQUIRED_ERROR_MESSAGE }),
+    .refine(val => val?.trim().length > 0, { message: EMAIL_REQUIRED_ERROR_MESSAGE })
+    .transform(val => val?.trim()),
 })
 
 const blankEmailSchema = createSchema({ emailAddress: z.string().optional() })
@@ -73,14 +74,13 @@ export const emailsSchema = () => async (request: Request<unknown, unknown, { sa
   }).superRefine((val, ctx) => {
     if (isSaveAction) {
       const otherEmailAddresses: string[] = val.otherEmailAddresses ?? []
-      for (let i = 0; i < val.emails.length; i += 1) {
-        const email = val.emails[i]
-        if (email && email.emailAddress) {
-          validateEmailFormat(email.emailAddress, ctx, ['emails', i, 'emailAddress'])
-          validateEmailIsNotDuplicate(email.emailAddress, otherEmailAddresses, ctx, ['emails', i, 'emailAddress'])
-          otherEmailAddresses.push(email.emailAddress) // in case they enter twice in this form
-        }
-      }
+      val.emails
+        .filter(email => email && email.emailAddress)
+        .forEach((email, index) => {
+          validateEmailFormat(email.emailAddress, ctx, ['emails', index, 'emailAddress'])
+          validateEmailIsNotDuplicate(email.emailAddress, otherEmailAddresses, ctx, ['emails', index, 'emailAddress'])
+          otherEmailAddresses.push(email.emailAddress!.trim()) // in case they enter twice in this form
+        })
     }
   })
 }
@@ -101,14 +101,13 @@ export const optionalEmailsSchema = async (
     .superRefine((val, ctx) => {
       if (isSaveAction) {
         const otherEmailAddresses: string[] = val.otherEmailAddresses ?? []
-        for (let i = 0; i < val.emails.length; i += 1) {
-          const email = val.emails[i]
-          if (email && email.emailAddress) {
-            validateEmailFormat(email.emailAddress, ctx, ['emails', i, 'emailAddress'])
-            validateEmailIsNotDuplicate(email.emailAddress, otherEmailAddresses, ctx, ['emails', i, 'emailAddress'])
-            otherEmailAddresses.push(email.emailAddress) // in case they enter twice in this form
-          }
-        }
+        val.emails
+          .filter(email => email && email.emailAddress)
+          .forEach((email, index) => {
+            validateEmailFormat(email.emailAddress, ctx, ['emails', index, 'emailAddress'])
+            validateEmailIsNotDuplicate(email.emailAddress, otherEmailAddresses, ctx, ['emails', index, 'emailAddress'])
+            otherEmailAddresses.push(email.emailAddress!.trim()) // in case they enter twice in this form
+          })
       }
     })
     .transform(({ emails, add, save, remove }) => ({
