@@ -20,7 +20,7 @@ generic-service:
     COMMON_COMPONENTS_ENABLED: true
     SENTRY_ENVIRONMENT: PRODUCTION
     ENVIRONMENT_NAME: prod
-    AUDIT_ENABLED: 'false'
+    AUDIT_ENABLED: 'true'
 
   allowlist:
     groups:
