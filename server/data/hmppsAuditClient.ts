@@ -44,7 +44,7 @@ export default class HmppsAuditClient {
     this.sqsClient = new SQSClient({ region: config.region })
   }
 
-  async sendMessage(event: AuditEvent, throwOnError: boolean = true) {
+  async sendMessage(event: AuditEvent, throwOnError: boolean = false) {
     if (!this.enabled) return null
 
     const sqsMessage: SqsMessage = {
