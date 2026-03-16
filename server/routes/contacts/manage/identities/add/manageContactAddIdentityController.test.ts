@@ -1,6 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
+import { Conflict, InternalServerError } from 'http-errors'
 import {
   appWithAllRoutes,
   flashProvider,
@@ -156,8 +157,6 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
   })
 })
 
-// TODO add tests for duplicate handling
-
 describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/identity/create`, () => {
   it('should create identity document and pass to manage contact details page if there are no validation errors', async () => {
     contactsService.createContactIdentity.mockResolvedValue({} as ContactIdentityDetails)
@@ -228,5 +227,56 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       )
     expect(contactsService.createContactIdentity).not.toHaveBeenCalled()
     expect(flashProvider).toHaveBeenCalledWith('validationErrors', expect.anything())
+  })
+
+  it('should return to input page with details kept if there is an API duplicate record (409) response', async () => {
+    contactsService.createContactIdentity.mockRejectedValue(new Conflict())
+    contactsService.getContactName.mockResolvedValue(TestData.contactName({ middleNames: 'Middle Names' }))
+
+    await request(app)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/create`,
+      )
+      .send({
+        identityType: 'PASS',
+        identityValue: '123',
+        issuingAuthority: 'authority',
+      })
+      .expect(302)
+      .expect(
+        'Location',
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/create`,
+      )
+    expect(contactsService.createContactIdentity).toHaveBeenCalledWith(
+      contactId,
+      currentUser,
+      { identityType: 'PASS', identityValue: '123', issuingAuthority: 'authority' },
+      expect.any(String),
+    )
+
+    expect(flashProvider).toHaveBeenCalledWith(
+      'formResponses',
+      '{"identityType":"PASS","identityValue":"123","issuingAuthority":"authority"}',
+    )
+    expect(flashProvider).toHaveBeenCalledWith(
+      'validationErrors',
+      '{"identityValue":["Enter a different document number. This document number has already been added."]}',
+    )
+  })
+
+  it('should throw any other API errors', async () => {
+    contactsService.createContactIdentity.mockRejectedValue(new InternalServerError())
+    contactsService.getContactName.mockResolvedValue(TestData.contactName({ middleNames: 'Middle Names' }))
+
+    await request(app)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/create`,
+      )
+      .send({
+        identityType: 'PASS',
+        identityValue: '123',
+        issuingAuthority: 'authority',
+      })
+      .expect(500)
   })
 })
