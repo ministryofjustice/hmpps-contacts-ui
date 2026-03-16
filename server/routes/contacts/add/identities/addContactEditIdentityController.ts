@@ -16,7 +16,7 @@ import { IdentityDocument } from '../../../../@types/contactsApiClient'
 export default class AddContactEditIdentityController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
-  public PAGE_NAME = Page.ADD_CONTACT_ADD_IDENTITY_PAGE
+  public PAGE_NAME = Page.ADD_CONTACT_EDIT_IDENTITY_PAGE
 
   public REQUIRED_PERMISSION = Permission.edit_contacts
 
@@ -27,7 +27,7 @@ export default class AddContactEditIdentityController implements PageHandler {
 
     const identityToEdit = journey.identities?.[parseInt(index, 10) - 1]
     if (!identityToEdit) {
-      throw new Error(`Couldn't find a identity at index ${index}`)
+      throw new Error(`Couldn't find an identity at index ${index}`)
     }
 
     const viewModel = {

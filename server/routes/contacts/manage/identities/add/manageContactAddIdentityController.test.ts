@@ -88,8 +88,8 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('title').text()).toStrictEqual('Add identity documents for the contact - Edit contact details - DPS')
-    expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('Add identity documents for First Middle Last')
+    expect($('title').text()).toStrictEqual('Add an identity document for the contact - Edit contact details - DPS')
+    expect($('.govuk-heading-l').first().text().trim()).toStrictEqual('Add an identity document for First Middle Last')
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit identity documentation for a contact')
     expect($('[data-qa=cancel-button]').first().attr('href')).toStrictEqual(
       '/prisoner/A1234BC/contacts/manage/987654/relationship/456789',

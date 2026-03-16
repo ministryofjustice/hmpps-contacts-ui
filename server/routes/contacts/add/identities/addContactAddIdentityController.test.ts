@@ -82,9 +82,9 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/identity/:journeyId', ()
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('title').text()).toStrictEqual('Add identity documents - Add a contact - DPS')
+    expect($('title').text()).toStrictEqual('Add an identity document - Add a contact - DPS')
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Add identity documents for First Middle Last (optional)',
+      'Add an identity document for First Middle Last (optional)',
     )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
     expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
@@ -116,7 +116,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/identity/:journeyId', ()
 
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Add identity documents for First Middle Last (optional)',
+      'Add an identity document for First Middle Last (optional)',
     )
     expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(

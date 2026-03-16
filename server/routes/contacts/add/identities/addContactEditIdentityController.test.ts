@@ -105,7 +105,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/edit-identity/:index/:jo
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
     expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')
 
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADD_CONTACT_ADD_IDENTITY_PAGE, {
+    expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADD_CONTACT_EDIT_IDENTITY_PAGE, {
       who: currentUser.username,
       correlationId: expect.any(String),
       details: {

@@ -323,6 +323,7 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   [Page.ADD_CONTACT_EDIT_IDENTITY_PAGE]: {
     previousUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
+    cancelUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.ADD_CONTACT_DELETE_IDENTITY_PAGE]: {
     previousUrl: checkAnswersOr(PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url),

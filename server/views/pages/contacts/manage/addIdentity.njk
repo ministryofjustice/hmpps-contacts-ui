@@ -4,8 +4,8 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 
-{% set pageTitle = 'Add identity documents - Add a contact - DPS' if isNewContact else 'Add identity documents for the contact - Edit contact details - DPS' %}
-{% set title = ("Add identity documents for " + contact | formatNameFirstNameFirst + " (optional)") if isNewContact else ("Add identity documents for " + contact | formatNameFirstNameFirst) %}
+{% set pageTitle = 'Add an identity document - Add a contact - DPS' if isNewContact else 'Add an identity document for the contact - Edit contact details - DPS' %}
+{% set title = ("Add an identity document for " + contact | formatNameFirstNameFirst + " (optional)") if isNewContact else ("Add an identity document for " + contact | formatNameFirstNameFirst) %}
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}

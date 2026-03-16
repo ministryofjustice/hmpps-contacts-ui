@@ -68,18 +68,17 @@ export default class ManageContactEditIdentityController implements PageHandler 
     const { identityType, identityValue, issuingAuthority } = req.body
 
     try {
-      const [, contactName] = await Promise.all([
-        this.contactsService.updateContactIdentity(
-          parseInt(contactId, 10),
-          parseInt(contactIdentityId, 10),
-          user,
-          req.id,
-          identityType,
-          identityValue,
-          issuingAuthority,
-        ),
-        this.contactsService.getContactName(Number(contactId), user),
-      ])
+      await this.contactsService.updateContactIdentity(
+        parseInt(contactId, 10),
+        parseInt(contactIdentityId, 10),
+        user,
+        req.id,
+        identityType,
+        identityValue,
+        issuingAuthority,
+      )
+
+      const contactName = await this.contactsService.getContactName(Number(contactId), user)
 
       req.flash(
         FLASH_KEY__SUCCESS_BANNER,

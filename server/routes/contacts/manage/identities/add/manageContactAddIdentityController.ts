@@ -70,15 +70,14 @@ export default class ManageContactAddIdentityController implements PageHandler {
     const { user } = res.locals
 
     try {
-      const [, contactName] = await Promise.all([
-        this.contactsService.createContactIdentity(
-          parseInt(contactId, 10),
-          user,
-          { identityType, identityValue, issuingAuthority },
-          req.id,
-        ),
-        this.contactsService.getContactName(Number(contactId), user),
-      ])
+      await this.contactsService.createContactIdentity(
+        parseInt(contactId, 10),
+        user,
+        { identityType, identityValue, issuingAuthority },
+        req.id,
+      )
+
+      const contactName = await this.contactsService.getContactName(Number(contactId), user)
 
       req.flash(
         FLASH_KEY__SUCCESS_BANNER,
