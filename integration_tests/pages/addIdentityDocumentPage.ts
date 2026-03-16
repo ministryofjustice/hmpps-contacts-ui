@@ -2,7 +2,7 @@ import Page, { PageElement } from './page'
 
 export default class AddIdentityDocumentPage extends Page {
   constructor(name: string, isOptional: boolean = false) {
-    super(`Add identity documents for ${name}${isOptional ? ' (optional)' : ''}`)
+    super(`Add an identity document for ${name}${isOptional ? ' (optional)' : ''}`)
   }
 
   hasIdentity(value: string): AddIdentityDocumentPage {
