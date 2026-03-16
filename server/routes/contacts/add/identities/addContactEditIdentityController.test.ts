@@ -156,8 +156,8 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/edit-identity/1/:journe
       .post(`/prisoner/${prisonerNumber}/contacts/create/edit-identity/2/${journeyId}`)
       .type('form')
       .send('identityType=PASS')
-      .send('identityValue=987654321')
-      .send('issuingAuthority=Authority')
+      .send('identityValue=987654321-updated')
+      .send('issuingAuthority=Authority (updated)')
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`)
 
@@ -166,8 +166,8 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/edit-identity/1/:journe
       { identityType: 'DL', identityValue: '0123456789' },
       {
         identityType: 'PASS',
-        identityValue: '987654321',
-        issuingAuthority: 'Authority',
+        identityValue: '987654321-updated',
+        issuingAuthority: 'Authority (updated)',
       },
     ])
   })
