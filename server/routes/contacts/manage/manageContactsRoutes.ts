@@ -16,7 +16,7 @@ import { phoneNumberSchema } from './phone/phoneSchemas'
 import ManageContactEditPhoneController from './phone/edit/manageContactEditPhoneController'
 import ManageDomesticStatusController from './additional-information/domestic-status/manageDomesticStatusController'
 import ManageContactDeletePhoneController from './phone/delete/manageContactDeletePhoneController'
-import { identitiesSchema, identitySchema } from './identities/IdentitySchemas'
+import { identitySchema } from './identities/IdentitySchemas'
 import ManageContactAddIdentityController from './identities/add/manageContactAddIdentityController'
 import ManageContactEditIdentityController from './identities/edit/manageContactEditIdentityController'
 import ManageContactDeleteIdentityController from './identities/delete/manageContactDeleteIdentityController'
@@ -253,7 +253,7 @@ const ManageContactsRoutes = (
   standAloneRoute({
     path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/identity/create',
     controller: new ManageContactAddIdentityController(contactsService, referenceDataService),
-    schema: identitiesSchema(),
+    schema: identitySchema,
   })
 
   standAloneRoute({

@@ -13,7 +13,6 @@ import {
   CreateContactAddressRequest,
   CreateContactRequest,
   CreateMultipleEmailsRequest,
-  CreateMultipleIdentitiesRequest,
   CreateMultiplePhoneNumbersRequest,
   IdentityDocument,
   PagedModelContactSearchResultItem,
@@ -294,17 +293,14 @@ export default class ContactsService extends AuditedService {
     })
   }
 
-  async createContactIdentities(
+  async createContactIdentity(
     contactId: number,
     user: Express.User,
-    identities: IdentityDocument[],
+    identity: IdentityDocument,
     correlationId: string,
   ) {
-    const request: CreateMultipleIdentitiesRequest = {
-      identities,
-    }
-    return this.handleAuditEvent(this.contactsApiClient.createContactIdentities(contactId, request, user), {
-      what: 'API_POST_CONTACT_IDENTITIES',
+    return this.handleAuditEvent(this.contactsApiClient.createContactIdentity(contactId, identity, user), {
+      what: 'API_POST_CONTACT_IDENTITY',
       who: user.username,
       subjectType: 'CONTACT_IDENTITY',
       details: { contactId },

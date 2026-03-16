@@ -175,6 +175,8 @@ describe('GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
   })
 })
 
+// TODO add tests for duplicate handling
+
 describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/identity/:contactIdentityId/edit', () => {
   it('should edit identity number with issuing authority and pass to manage contact details page if there are no validation errors', async () => {
     contactsService.updateContactIdentity.mockResolvedValue({} as ContactIdentityDetails)

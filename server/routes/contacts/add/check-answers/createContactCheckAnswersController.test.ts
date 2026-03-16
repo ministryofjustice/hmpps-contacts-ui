@@ -402,7 +402,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     const dlHeading = $('dt:contains("Driving licence")')
     expect(dlHeading.next().text().trim()).toStrictEqual('0123456789')
     expect(dlHeading.next().next().find('a').first().attr('href')).toStrictEqual(
-      `/prisoner/A1234BC/contacts/create/identities/${journeyId}#identities[0].identityValue`,
+      `/prisoner/A1234BC/contacts/create/edit-identity/1/${journeyId}`,
     )
     expect(dlHeading.next().next().find('a').last().attr('href')).toStrictEqual(
       `/prisoner/A1234BC/contacts/create/delete-identity/1/${journeyId}`,
@@ -410,7 +410,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/check-answers/:journeyId
     const ppHeading = $('dt:contains("Passport number")')
     expect(ppHeading.next().text().trim()).toStrictEqual('987654321Issued by Authority')
     expect(ppHeading.next().next().find('a').first().attr('href')).toStrictEqual(
-      `/prisoner/A1234BC/contacts/create/identities/${journeyId}#identities[1].identityValue`,
+      `/prisoner/A1234BC/contacts/create/edit-identity/2/${journeyId}`,
     )
     expect(ppHeading.next().next().find('a').last().attr('href')).toStrictEqual(
       `/prisoner/A1234BC/contacts/create/delete-identity/2/${journeyId}`,

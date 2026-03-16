@@ -4,11 +4,16 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import ReferenceCodeType from '../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../services/referenceDataService'
 import { navigationForAddContactJourney, nextPageForAddContactJourney } from '../addContactFlowControl'
-import { OptionalIdentitiesSchemaType } from '../../manage/identities/IdentitySchemas'
+import {
+  IDENTITY_NUMBER_DUPLICATE,
+  IdentitySchemaType,
+  isADuplicateIdentity,
+} from '../../manage/identities/IdentitySchemas'
 import { PrisonerJourneyParams } from '../../../../@types/journeys'
 import Permission from '../../../../enumeration/permission'
+import { IdentityDocument } from '../../../../@types/contactsApiClient'
 
-export default class AddContactAddIdentitiesController implements PageHandler {
+export default class AddContactAddIdentityController implements PageHandler {
   constructor(private readonly referenceDataService: ReferenceDataService) {}
 
   public PAGE_NAME = Page.ADD_CONTACT_ADD_IDENTITY_PAGE
@@ -19,46 +24,46 @@ export default class AddContactAddIdentitiesController implements PageHandler {
     const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
     const { user, prisonerPermissions } = res.locals
-    const existingIdentities = journey.identities ?? []
-    if (existingIdentities.length === 0) {
-      existingIdentities.push({ identityType: '', identityValue: '', issuingAuthority: '' })
-    }
+
     const viewModel = {
       caption: 'Add a contact and link to a prisoner',
       isNewContact: true,
       continueButtonLabel: 'Continue',
       contact: journey.names,
       typeOptions: await this.referenceDataService.getReferenceData(ReferenceCodeType.ID_TYPE, user),
-      identities: res.locals?.formResponses?.['identities'] ?? existingIdentities,
+      identityValue: res.locals?.formResponses?.['identityValue'],
+      identityType: res.locals?.formResponses?.['identityType'],
+      issuingAuthority: res.locals?.formResponses?.['issuingAuthority'],
       navigation: navigationForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions),
     }
-    res.render('pages/contacts/manage/addIdentities', viewModel)
+    res.render('pages/contacts/manage/addIdentity', viewModel)
   }
 
-  POST = async (
-    req: Request<PrisonerJourneyParams, unknown, OptionalIdentitiesSchemaType>,
-    res: Response,
-  ): Promise<void> => {
-    const { prisonerNumber, journeyId } = req.params
+  POST = async (req: Request<PrisonerJourneyParams, unknown, IdentitySchemaType>, res: Response): Promise<void> => {
+    const { journeyId } = req.params
     const journey = req.session.addContactJourneys![journeyId]!
     const { prisonerPermissions } = res.locals
 
-    const { identities, save, add, remove } = req.body
-    if (save !== undefined) {
-      journey.identities = identities
+    const { identityType, identityValue, issuingAuthority } = req.body
+    const newIdentity: IdentityDocument = { identityType, identityValue, issuingAuthority }
+
+    if (!journey.identities?.length) {
+      journey.identities = [newIdentity]
       return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
     }
 
-    req.body.identities ??= [{ identityType: '', identityValue: '', issuingAuthority: '' }]
-    if (add !== undefined) {
-      req.body.identities.push({ identityType: '', identityValue: '', issuingAuthority: '' })
-    } else if (remove !== undefined) {
-      req.body.identities.splice(Number(remove), 1)
+    if (isADuplicateIdentity(journey.identities, newIdentity)) {
+      req.flash('formResponses', JSON.stringify(req.body))
+      req.flash(
+        'validationErrors',
+        JSON.stringify({
+          identityValue: [IDENTITY_NUMBER_DUPLICATE],
+        }),
+      )
+      return res.redirect(req.originalUrl)
     }
 
-    // Always redirect back to input even if we didn't find an action, which should be impossible but there is a small
-    // possibility if JS is disabled after a page load or the user somehow removes all identities.
-    req.flash('formResponses', JSON.stringify(req.body))
-    return res.redirect(`/prisoner/${prisonerNumber}/contacts/create/identities/${journeyId}`)
+    journey.identities?.push(newIdentity)
+    return res.redirect(nextPageForAddContactJourney(this.PAGE_NAME, journey, prisonerPermissions))
   }
 }

@@ -18,8 +18,8 @@ import {
   CreateContactAddressRequest,
   CreateContactRequest,
   CreateContactRestrictionRequest,
+  CreateIdentityRequest,
   CreateMultipleEmailsRequest,
-  CreateMultipleIdentitiesRequest,
   CreateMultiplePhoneNumbersRequest,
   CreatePrisonerContactRestrictionRequest,
   PagedModelContactSearchResultItem,
@@ -204,14 +204,14 @@ export default class ContactsApiClient extends RestClient {
     )
   }
 
-  async createContactIdentities(
+  async createContactIdentity(
     contactId: number,
-    request: CreateMultipleIdentitiesRequest,
+    request: CreateIdentityRequest,
     user: Express.User,
-  ): Promise<ContactIdentityDetails[]> {
-    return this.post<ContactIdentityDetails[]>(
+  ): Promise<ContactIdentityDetails> {
+    return this.post<ContactIdentityDetails>(
       {
-        path: `/contact/${contactId}/identities`,
+        path: `/contact/${contactId}/identity`,
         data: request,
       },
       user,

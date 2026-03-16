@@ -13,7 +13,7 @@ import { mockedReferenceData } from '../../../../testutils/stubReferenceData'
 import TestData from '../../../../testutils/testData'
 import { MockedService } from '../../../../../testutils/mockedServices'
 import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSuccessNotificationBanner'
-import { ContactDetails, IdentityDocument } from '../../../../../@types/contactsApiClient'
+import { ContactDetails, ContactIdentityDetails, IdentityDocument } from '../../../../../@types/contactsApiClient'
 import { HmppsUser } from '../../../../../interfaces/hmppsUser'
 import mockPermissions from '../../../../testutils/mockPermissions'
 import Permission from '../../../../../enumeration/permission'
@@ -132,21 +132,12 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
       .expect(403)
   })
 
-  it('should render previously entered details if validation errors or adding or removing without javascript', async () => {
+  it('should render previously entered details if validation errors', async () => {
     // Given
     const form = {
-      identities: [
-        {
-          identityType: 'DL',
-          identityValue: '123456789',
-          issuingAuthority: '000',
-        },
-        {
-          identityType: '',
-          identityValue: '',
-          issuingAuthority: '',
-        },
-      ],
+      identityType: 'DL',
+      identityValue: '123456789',
+      issuingAuthority: '000',
     }
     contactsService.getContact.mockResolvedValue(contact)
     flashProvider.mockImplementation(key => (key === 'formResponses' ? [JSON.stringify(form)] : []))
@@ -159,43 +150,39 @@ describe(`GET /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/
     // Then
     expect(response.status).toEqual(200)
     const $ = cheerio.load(response.text)
-    expect($('[data-qa=identities-0-identityType]').val()).toStrictEqual('DL')
-    expect($('[data-qa=identities-0-identityValue]').val()).toStrictEqual('123456789')
-    expect($('[data-qa=identities-0-issuing-authority]').val()).toStrictEqual('000')
-    expect($('[data-qa=identities-1-identityType]').val()).toStrictEqual('')
-    expect($('[data-qa=identities-1-identityValue]').val()).toStrictEqual('')
-    expect($('[data-qa=identities-1-issuing-authority]').val()).toStrictEqual('')
+    expect($('[data-qa=identityType]').val()).toStrictEqual('DL')
+    expect($('[data-qa=identityValue]').val()).toStrictEqual('123456789')
+    expect($('[data-qa=issuing-authority]').val()).toStrictEqual('000')
   })
 })
 
+// TODO add tests for duplicate handling
+
 describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/identity/create`, () => {
-  it('should create all identity documents and pass to manage contact details page if there are no validation errors and it is a save action', async () => {
-    contactsService.createContactIdentities.mockResolvedValue([])
+  it('should create identity document and pass to manage contact details page if there are no validation errors', async () => {
+    contactsService.createContactIdentity.mockResolvedValue({} as ContactIdentityDetails)
     contactsService.getContactName.mockResolvedValue(TestData.contactName({ middleNames: 'Middle Names' }))
     await request(app)
       .post(
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/create`,
       )
       .type('form')
-      .send('save=')
-      .send('identities[0][identityType]=DL')
-      .send('identities[0][identityValue]=123456789')
-      .send('identities[0][issuingAuthority]=000')
-      .send('identities[1][identityType]=PASS')
-      .send('identities[1][identityValue]=987564321')
-      .send('identities[1][issuingAuthority]=')
+      .send('identityType=DL')
+      .send('identityValue=123456789')
+      .send('issuingAuthority=000')
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}`)
 
-    const expectedIdentities: IdentityDocument[] = [
-      { identityType: 'DL', identityValue: '123456789', issuingAuthority: '000' },
-      { identityType: 'PASS', identityValue: '987564321' },
-    ]
+    const expectedIdentity: IdentityDocument = {
+      identityType: 'DL',
+      identityValue: '123456789',
+      issuingAuthority: '000',
+    }
 
-    expect(contactsService.createContactIdentities).toHaveBeenCalledWith(
+    expect(contactsService.createContactIdentity).toHaveBeenCalledWith(
       contactId,
       currentUser,
-      expectedIdentities,
+      expectedIdentity,
       expect.any(String),
     )
     expect(flashProvider).toHaveBeenCalledWith(
@@ -207,7 +194,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
   it('POST should block access without edit contacts permission', async () => {
     mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
 
-    contactsService.createContactIdentities.mockResolvedValue([])
+    contactsService.createContactIdentity.mockResolvedValue({} as ContactIdentityDetails)
     contactsService.getContactName.mockResolvedValue(TestData.contactName({ middleNames: 'Middle Names' }))
 
     await request(app)
@@ -215,20 +202,17 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/create`,
       )
       .type('form')
-      .send('save=')
-      .send('identities[0][identityType]=DL')
-      .send('identities[0][identityValue]=123456789')
-      .send('identities[0][issuingAuthority]=000')
-      .send('identities[1][identityType]=PASS')
-      .send('identities[1][identityValue]=987564321')
-      .send('identities[1][issuingAuthority]=')
+      .send('identityType=DL')
+      .send('identityValue=123456789')
+      .send('issuingAuthority=000')
       .expect(403)
   })
 
   it('should return to input page with details kept if there are validation errors', async () => {
     const form = {
-      save: '',
-      identities: [{ identityType: '', identityValue: '', issuingAuthority: '' }],
+      identityType: '',
+      identityValue: '',
+      issuingAuthority: '',
     }
 
     await request(app)
@@ -242,116 +226,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
         'Location',
         `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/create#`,
       )
-    expect(contactsService.createContactIdentities).not.toHaveBeenCalled()
+    expect(contactsService.createContactIdentity).not.toHaveBeenCalled()
     expect(flashProvider).toHaveBeenCalledWith('validationErrors', expect.anything())
-  })
-
-  describe('should work without javascript enabled', () => {
-    it('should return to input page without validating if we are adding an identity', async () => {
-      await request(app)
-        .post(
-          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/create`,
-        )
-        .type('form')
-        .send('add=')
-        .send('identities[0][identityType]=DL')
-        .send('identities[0][identityValue]=VALUE')
-        .send(
-          'identities[0][issuingAuthority]=A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR!',
-        )
-        .expect(302)
-        .expect(
-          'Location',
-          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/create`,
-        )
-      expect(contactsService.createContactIdentities).not.toHaveBeenCalled()
-      expect(flashProvider).toHaveBeenCalledWith(
-        'formResponses',
-        JSON.stringify({
-          identities: [
-            {
-              identityType: 'DL',
-              identityValue: 'VALUE',
-              issuingAuthority:
-                'A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR!',
-            },
-            { identityType: '', identityValue: '', issuingAuthority: '' },
-          ],
-          add: '',
-        }),
-      )
-      expect(flashProvider).not.toHaveBeenCalledWith('validationErrors', expect.anything())
-    })
-
-    it('should return to input page without validating if we are removing an identity', async () => {
-      await request(app)
-        .post(
-          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/create`,
-        )
-        .type('form')
-        .send('remove=1')
-        .send('identities[0][identityType]=DL')
-        .send('identities[0][identityValue]=VALUE')
-        .send(
-          'identities[0][issuingAuthority]=A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR!',
-        )
-        .send('identities[1][identityType]=DL')
-        .send('identities[1][identityValue]=TO BE REMOVED')
-        .send('identities[1][issuingAuthority]=')
-        .expect(302)
-        .expect(
-          'Location',
-          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/create`,
-        )
-      expect(contactsService.createContactIdentities).not.toHaveBeenCalled()
-      expect(flashProvider).toHaveBeenCalledWith(
-        'formResponses',
-        JSON.stringify({
-          identities: [
-            {
-              identityType: 'DL',
-              identityValue: 'VALUE',
-              issuingAuthority:
-                'A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR!',
-            },
-          ],
-          remove: '1',
-        }),
-      )
-      expect(flashProvider).not.toHaveBeenCalledWith('validationErrors', expect.anything())
-    })
-
-    it('should return to input page without validating even if action is not save, add or remove', async () => {
-      await request(app)
-        .post(
-          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/create`,
-        )
-        .type('form')
-        .send('identities[0][identityType]=DL')
-        .send('identities[0][identityValue]=VALUE')
-        .send(
-          'identities[0][issuingAuthority]=A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR!',
-        )
-        .expect(302)
-        .expect(
-          'Location',
-          `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/create`,
-        )
-      expect(contactsService.createContactIdentities).not.toHaveBeenCalled()
-      expect(flashProvider).toHaveBeenCalledWith(
-        'formResponses',
-        JSON.stringify({
-          identities: [
-            {
-              identityType: 'DL',
-              identityValue: 'VALUE',
-              issuingAuthority:
-                'A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR! A LONG VALUE THAT WOULD TRIGGER ERROR!',
-            },
-          ],
-        }),
-      )
-      expect(flashProvider).not.toHaveBeenCalledWith('validationErrors', expect.anything())
-    })
   })
 })
