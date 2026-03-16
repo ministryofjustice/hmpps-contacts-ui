@@ -48,6 +48,14 @@ beforeEach(() => {
       isEmergencyContact: true,
       isNextOfKin: true,
     },
+    identities: [
+      { identityType: 'DL', identityValue: '0123456789' },
+      {
+        identityType: 'PASS',
+        identityValue: '987654321',
+        issuingAuthority: 'Authority',
+      },
+    ],
     mode: 'NEW',
   }
   app = appWithAllRoutes({
@@ -74,19 +82,19 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /prisoner/:prisonerNumber/contacts/create/identity/:journeyId', () => {
-  it('should render create identity with correct navigation before check answers', async () => {
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/identity/${journeyId}`)
+describe('GET /prisoner/:prisonerNumber/contacts/create/edit-identity/:index/:journeyId', () => {
+  it('should render edit identity page with correct navigation before check answers', async () => {
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/edit-identity/1/${journeyId}`)
 
     // Then
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
-    expect($('title').text()).toStrictEqual('Add identity documents - Add a contact - DPS')
+    expect($('title').text()).toStrictEqual('Update an identity document - Add a contact - DPS')
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Add identity documents for First Middle Last (optional)',
+      'Update an identity document for First Middle Last',
     )
-    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit identity documentation for a contact')
     expect($('.govuk-back-link').text().trim()).toStrictEqual('Back')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`,
@@ -95,7 +103,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/identity/:journeyId', ()
       `/prisoner/${prisonerNumber}/contacts/add/enter-additional-info/${journeyId}`,
     )
     expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
-    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Continue')
+    expect($('[data-qa=continue-button]').first().text().trim()).toStrictEqual('Confirm and save')
 
     expect(auditService.logPageView).toHaveBeenCalledWith(Page.ADD_CONTACT_ADD_IDENTITY_PAGE, {
       who: currentUser.username,
@@ -106,19 +114,19 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/identity/:journeyId', ()
     })
   })
 
-  it('should render create identity with correct navigation when checking answers', async () => {
+  it('should render edit identity page with correct navigation when checking answers', async () => {
     existingJourney.isCheckingAnswers = true
 
-    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/identity/${journeyId}`)
+    const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/edit-identity/1/${journeyId}`)
 
     // Then
     expect(response.status).toEqual(200)
 
     const $ = cheerio.load(response.text)
     expect($('[data-qa=main-heading]').first().text().trim()).toStrictEqual(
-      'Add identity documents for First Middle Last (optional)',
+      'Update an identity document for First Middle Last',
     )
-    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Add a contact and link to a prisoner')
+    expect($('.govuk-caption-l').first().text().trim()).toStrictEqual('Edit identity documentation for a contact')
     expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
       `/prisoner/${prisonerNumber}/contacts/create/check-answers/${journeyId}`,
     )
@@ -126,7 +134,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/identity/:journeyId', ()
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/create/identity/${uuidv4()}`)
+      .get(`/prisoner/${prisonerNumber}/contacts/create/edit-identity/1/${uuidv4()}`)
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
@@ -134,18 +142,18 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/identity/:journeyId', ()
   it('GET should block access without edit contacts permission', async () => {
     mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
 
-    await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/identity/${journeyId}`).expect(403)
+    await request(app).get(`/prisoner/${prisonerNumber}/contacts/create/edit-identity/1/${journeyId}`).expect(403)
   })
 })
 
-describe('POST /prisoner/:prisonerNumber/contacts/create/identity/:journeyId', () => {
+describe('POST /prisoner/:prisonerNumber/contacts/create/edit-identity/1/:journeyId', () => {
   it('should pass to additional info if there are no validation errors and we are not checking answers', async () => {
     // Given
     existingJourney.isCheckingAnswers = false
 
     // When
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/identity/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/edit-identity/2/${journeyId}`)
       .type('form')
       .send('identityType=PASS')
       .send('identityValue=987654321')
@@ -155,6 +163,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/identity/:journeyId', (
 
     // Then
     expect(session.addContactJourneys![journeyId]!.identities).toStrictEqual([
+      { identityType: 'DL', identityValue: '0123456789' },
       {
         identityType: 'PASS',
         identityValue: '987654321',
@@ -169,7 +178,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/identity/:journeyId', (
 
     // When
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/identity/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/edit-identity/1/${journeyId}`)
       .type('form')
       .send('identityType=DL')
       .send('identityValue=0123456789')
@@ -180,38 +189,47 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/identity/:journeyId', (
     // Then
     expect(session.addContactJourneys![journeyId]!.identities).toStrictEqual([
       { identityType: 'DL', identityValue: '0123456789', issuingAuthority: undefined },
+      {
+        identityType: 'PASS',
+        identityValue: '987654321',
+        issuingAuthority: 'Authority',
+      },
     ])
   })
 
-  it('should return to enter page if there are validation errors', async () => {
+  it('should return to edit page if there are validation errors', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/identity/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/edit-identity/1/${journeyId}`)
       .type('form')
       .send('identityType=')
       .send('identityValue=0123456789')
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/identity/${journeyId}#`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/edit-identity/1/${journeyId}#`)
   })
 
-  it('should return to enter page with validation errors if attempting to add a duplicate identity', async () => {
-    existingJourney.identities = [{ identityType: 'PASS', identityValue: '0123456789' }]
-
+  it('should return to edit page with validation errors if attempting to add a duplicate identity', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/identity/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/edit-identity/1/${journeyId}`)
       .type('form')
-      .send('identityType=PASS')
-      .send('identityValue=0123456789')
+      .send({ identityType: 'PASS', identityValue: '987654321' })
       .expect(302)
-      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/identity/${journeyId}`)
+      .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/edit-identity/1/${journeyId}`)
 
-    expect(existingJourney.identities.length).toBe(1)
-    expect(flashProvider).toHaveBeenCalledWith('formResponses', '{"identityType":"PASS","identityValue":"0123456789"}')
+    expect(existingJourney.identities).toStrictEqual([
+      { identityType: 'DL', identityValue: '0123456789' },
+      {
+        identityType: 'PASS',
+        identityValue: '987654321',
+        issuingAuthority: 'Authority',
+      },
+    ])
+    expect(flashProvider).toHaveBeenCalledWith('formResponses', '{"identityType":"PASS","identityValue":"987654321"}')
     expect(flashProvider).toHaveBeenCalledWith('validationErrors', `{"identityValue":["${IDENTITY_NUMBER_DUPLICATE}"]}`)
   })
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/identity/${uuidv4()}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/edit-identity/1/${uuidv4()}`)
       .type('form')
       .send({})
       .expect(302)
@@ -222,7 +240,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/identity/:journeyId', (
     mockPermissions(app, { [Permission.read_contacts]: true, [Permission.edit_contacts]: false })
 
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/identity/${journeyId}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/edit-identity/1/${journeyId}`)
       .type('form')
       .send('identityType=DL')
       .send('identityValue=0123456789')
