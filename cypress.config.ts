@@ -20,6 +20,8 @@ export default defineConfig({
     configFile: 'reporter-config.json',
   },
   taskTimeout: 60000,
+  viewportWidth: 1280,
+  viewportHeight: 1400,
   e2e: {
     setupNodeEvents(on) {
       on('task', {

@@ -557,17 +557,17 @@ export default {
       },
     })
   },
-  stubCreateContactIdentities: ({
+  stubCreateContactIdentity: ({
     contactId,
     created,
   }: {
     contactId: number
-    created: ContactIdentityDetails[]
+    created: ContactIdentityDetails
   }): SuperAgentRequest => {
     return stubFor({
       request: {
         method: 'POST',
-        urlPath: `/contact/${contactId}/identities`,
+        urlPath: `/contact/${contactId}/identity`,
       },
       response: {
         status: 201,
