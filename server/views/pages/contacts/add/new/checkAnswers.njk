@@ -451,7 +451,7 @@
                 </div>
                 <div class="moj-page-header-actions__actions">
                   <div class="moj-button-group moj-button-group--inline">
-                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold" data-qa="add-identities-link" href="{{ baseChangeUrl + "/identities/" + journey.id }}">Add identity document</a>
+                    <a class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold" data-qa="add-identities-link" href="{{ baseChangeUrl + "/identity/" + journey.id }}">Add identity document</a>
                   </div>
                 </div>
               </div>
@@ -468,7 +468,7 @@
                     actions: {
                     items: [
                       {
-                        href: baseChangeUrl + "/identities/" + journey.id + '#identities[' + loop.index0 + '].identityValue',
+                        href: baseChangeUrl + "/edit-identity/" + loop.index + "/" + journey.id,
                         text: "Change",
                         visuallyHiddenText: "the information about this " + identity.identityTypeDescription,
                         attributes: {"data-qa": "edit-identity-" + loop.index0},

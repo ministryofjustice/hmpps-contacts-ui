@@ -1,12 +1,14 @@
 import { z } from 'zod'
-import { Request } from 'express'
 import { createSchema } from '../../../../middleware/validationMiddleware'
 import isValidPNC from '../../../../utils/pncValidation'
+import { IdentityDocument } from '../../../../@types/contactsApiClient'
 
 const TYPE_REQUIRED_MESSAGE = 'Select the document type'
 
 const IDENTITY_NUMBER_REQUIRED_MESSAGE = 'Enter the document number'
 const IDENTITY_NUMBER_TOO_LONG_ERROR_MSG = 'Document number must be 20 characters or less'
+export const IDENTITY_NUMBER_DUPLICATE =
+  'Enter a different document number. This document number has already been added.'
 
 const ISSUING_AUTHORITY_TOO_LONG_ERROR_MSG = 'Issuing authority must be 40 characters or less'
 
@@ -31,68 +33,12 @@ export const identitySchema = createSchema({
   }
 })
 
-const blankIdentitySchema = createSchema({
-  identityType: z.string().optional(),
-  identityValue: z.string().optional(),
-  issuingAuthority: z.string().optional(),
-})
-
-export const identitiesSchema = () => async (request: Request<unknown, unknown, { save?: string }>) => {
-  const childSchema = typeof request.body.save !== 'undefined' ? identitySchema : blankIdentitySchema
-  return createSchema({
-    identities: z.array(childSchema),
-    save: z.string().optional(),
-    add: z.string().optional(),
-    remove: z.string().optional(),
-  }).transform(({ identities, save, add, remove }) => ({
-    identities: identities.map(({ identityType, identityValue, issuingAuthority }) => ({
-      identityType: identityType!,
-      identityValue: identityValue!,
-      ...(issuingAuthority === undefined ? {} : { issuingAuthority }),
-    })),
-    save,
-    add,
-    remove,
-  }))
-}
-
-export const optionalIdentitiesSchema = async (
-  request: Request<
-    unknown,
-    unknown,
-    {
-      save?: string
-      identities?: {
-        identityType?: string
-        identityValue?: string
-        issuingAuthority?: string
-      }[]
-    }
-  >,
-) => {
-  const isAllBlank = request.body.identities?.every(
-    identity => identity.identityType === '' && identity.identityValue === '' && identity.issuingAuthority === '',
+export const isADuplicateIdentity = (identities: IdentityDocument[], newIdentity: IdentityDocument): boolean => {
+  if (!identities) return false
+  return identities.some(
+    identity =>
+      identity.identityType === newIdentity.identityType && identity.identityValue === newIdentity.identityValue,
   )
-  const childSchema = request.body.save === undefined || isAllBlank ? blankIdentitySchema : identitySchema
-  return createSchema({
-    identities: z.array(childSchema),
-    save: z.string().optional(),
-    add: z.string().optional(),
-    remove: z.string().optional(),
-  }).transform(({ identities, save, add, remove }) => ({
-    identities: isAllBlank
-      ? undefined
-      : identities.map(({ identityType, identityValue, issuingAuthority }) => ({
-          identityType: identityType!,
-          identityValue: identityValue!,
-          ...(issuingAuthority === undefined ? {} : { issuingAuthority }),
-        })),
-    save,
-    add,
-    remove,
-  }))
 }
 
 export type IdentitySchemaType = z.infer<typeof identitySchema>
-export type IdentitiesSchemaType = z.infer<Awaited<ReturnType<ReturnType<typeof identitiesSchema>>>>
-export type OptionalIdentitiesSchemaType = z.infer<Awaited<ReturnType<typeof optionalIdentitiesSchema>>>

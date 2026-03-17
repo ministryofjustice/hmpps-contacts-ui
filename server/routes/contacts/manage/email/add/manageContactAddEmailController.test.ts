@@ -204,7 +204,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
           'Location',
           `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`,
         )
-      expect(contactsService.createContactIdentities).not.toHaveBeenCalled()
+      expect(contactsService.createContactIdentity).not.toHaveBeenCalled()
       expect(flashProvider).toHaveBeenCalledWith(
         'formResponses',
         JSON.stringify({
@@ -227,7 +227,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
           'Location',
           `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`,
         )
-      expect(contactsService.createContactIdentities).not.toHaveBeenCalled()
+      expect(contactsService.createContactIdentity).not.toHaveBeenCalled()
       expect(flashProvider).toHaveBeenCalledWith(
         'formResponses',
         JSON.stringify({
@@ -248,7 +248,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
           'Location',
           `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/email/create`,
         )
-      expect(contactsService.createContactIdentities).not.toHaveBeenCalled()
+      expect(contactsService.createContactIdentity).not.toHaveBeenCalled()
       expect(flashProvider).toHaveBeenCalledWith(
         'formResponses',
         JSON.stringify({

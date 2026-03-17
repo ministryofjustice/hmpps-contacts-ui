@@ -1,6 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
+import { Conflict, InternalServerError } from 'http-errors'
 import {
   appWithAllRoutes,
   flashProvider,
@@ -17,6 +18,7 @@ import { ContactDetails, ContactIdentityDetails } from '../../../../../@types/co
 import { HmppsUser } from '../../../../../interfaces/hmppsUser'
 import mockPermissions from '../../../../testutils/mockPermissions'
 import Permission from '../../../../../enumeration/permission'
+import { IDENTITY_NUMBER_DUPLICATE } from '../IdentitySchemas'
 
 jest.mock('@ministryofjustice/hmpps-prison-permissions-lib')
 jest.mock('../../../../../services/auditService')
@@ -260,5 +262,48 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
       .type('form')
       .send({ identityType: 'MOB', identityValue: '123456789', issuingAuthority: '000' })
       .expect(403)
+  })
+
+  it('should return to input page with details kept if there is an API duplicate record (409) response', async () => {
+    contactsService.updateContactIdentity.mockRejectedValue(new Conflict())
+    contactsService.getContactName.mockResolvedValue(TestData.contactName())
+
+    await request(app)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/999/edit`,
+      )
+      .type('form')
+      .send({ identityType: 'MOB', identityValue: '123456789', issuingAuthority: '' })
+      .expect(302)
+      .expect(
+        'Location',
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/999/edit`,
+      )
+
+    expect(contactsService.updateContactIdentity).toHaveBeenCalledWith(
+      contactId,
+      999,
+      currentUser,
+      expect.any(String),
+      'MOB',
+      '123456789',
+      undefined,
+    )
+
+    expect(flashProvider).toHaveBeenCalledWith('formResponses', '{"identityType":"MOB","identityValue":"123456789"}')
+    expect(flashProvider).toHaveBeenCalledWith('validationErrors', `{"identityValue":["${IDENTITY_NUMBER_DUPLICATE}"]}`)
+  })
+
+  it('should throw any other API errors', async () => {
+    contactsService.updateContactIdentity.mockRejectedValue(new InternalServerError())
+    contactsService.getContactName.mockResolvedValue(TestData.contactName())
+
+    await request(app)
+      .post(
+        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/999/edit`,
+      )
+      .type('form')
+      .send({ identityType: 'MOB', identityValue: '123456789', issuingAuthority: '' })
+      .expect(500)
   })
 })

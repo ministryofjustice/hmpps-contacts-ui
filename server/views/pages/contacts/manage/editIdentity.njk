@@ -3,8 +3,9 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% set pageTitle = "Update an identity document for the contact - Edit contact details - DPS" %}
+{% set pageTitle = 'Update an identity document - Add a contact - DPS' if isNewContact else 'Update an identity document for the contact - Edit contact details - DPS' %}
 {% set title = "Update an identity document for " + (contact | formatNameFirstNameFirst) %}
+
 {% set mainClasses = "app-container govuk-body" %}
 
 {% block content %}

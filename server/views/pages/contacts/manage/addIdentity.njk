@@ -1,0 +1,83 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
+{% set pageTitle = 'Add an identity document - Add a contact - DPS' if isNewContact else 'Add an identity document for the contact - Edit contact details - DPS' %}
+{% set title = ("Add an identity document for " + contact | formatNameFirstNameFirst + " (optional)") if isNewContact else ("Add an identity document for " + contact | formatNameFirstNameFirst) %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-l">{{ caption }}</span>
+      <h1 class="govuk-heading-l" data-qa="main-heading">{{ title }}</h1>
+      <form method="POST">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+        {% call govukFieldset({
+          legend: {
+            text: "Identity document",
+            classes: "govuk-fieldset__legend--m",
+            isPageHeading: false
+          }
+        }) %}
+
+          {{ govukSelect({
+            id: "identityType",
+            name: "identityType",
+            label: {
+              text: "Document type"
+            },
+            classes: 'govuk-!-width-one-half',
+            items: typeOptions | referenceCodesToSelect('Select document type') | setSelected(identityType),
+            errorMessage: validationErrors | findError('identityType'),
+            attributes: {
+              "data-qa": "identityType"
+            }
+          }) }}
+
+          {{ govukInput({
+            id: "identityValue",
+            name: "identityValue",
+            label: { text: "Document number" },
+            classes: 'govuk-!-width-one-third',
+            errorMessage: validationErrors | findError('identityValue'),
+            value: identityValue,
+            attributes: {
+              "data-qa": "identityValue"
+            }
+          }) }}
+
+          {{ govukInput({
+            id: "issuingAuthority",
+            name: "issuingAuthority",
+            label: { text: "Issuing authority (optional)" },
+            classes: 'govuk-!-width-one-half',
+            errorMessage: validationErrors | findError('issuingAuthority'),
+            value: issuingAuthority,
+            attributes: {
+              "data-qa": "issuing-authority"
+            }
+          }) }}
+        {% endcall %}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: continueButtonLabel,
+            type: "submit",
+            classes: 'govuk-!-margin-top-6',
+            attributes: {"data-qa": "continue-button"},
+            preventDoubleClick: true
+          }) }}
+
+          {% if navigation.cancelButton %}
+            <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ navigation.cancelButton }}" data-qa="cancel-button">Cancel</a>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

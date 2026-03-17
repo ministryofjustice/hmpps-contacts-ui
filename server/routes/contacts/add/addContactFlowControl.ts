@@ -34,6 +34,7 @@ type CreateContactPages =
   | Page.ADD_CONTACT_IS_STAFF_PAGE
   | Page.ADD_CONTACT_LANGUAGE_INTERPRETER_PAGE
   | Page.ADD_CONTACT_ADD_IDENTITY_PAGE
+  | Page.ADD_CONTACT_EDIT_IDENTITY_PAGE
   | Page.ADD_CONTACT_DELETE_IDENTITY_PAGE
   | Page.ADD_CONTACT_DOMESTIC_STATUS_PAGE
   | Page.ADD_CONTACT_ADD_EMAIL_PAGE
@@ -139,7 +140,11 @@ const PAGES: Record<AllAddContactPages, PageConfig> = {
     url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/language-and-interpreter/${journey.id}`,
   },
   [Page.ADD_CONTACT_ADD_IDENTITY_PAGE]: {
-    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/identities/${journey.id}`,
+    url: journey => `/prisoner/${journey.prisonerNumber}/contacts/create/identity/${journey.id}`,
+  },
+  [Page.ADD_CONTACT_EDIT_IDENTITY_PAGE]: {
+    // this page can only be accessed by check answers
+    url: _ => '#',
   },
   [Page.ADD_CONTACT_DELETE_IDENTITY_PAGE]: {
     // this page can only be accessed by check answers
@@ -313,6 +318,12 @@ const CREATE_CONTACT_SPEC: Record<CreateContactPages, Spec> = {
   [Page.ADD_CONTACT_ADD_IDENTITY_PAGE]: {
     previousUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
     nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
+    cancelUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
+  },
+  [Page.ADD_CONTACT_EDIT_IDENTITY_PAGE]: {
+    previousUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
+    nextUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
+    cancelUrl: checkAnswersOr(PAGES.ENTER_ADDITIONAL_INFORMATION_PAGE.url),
   },
   [Page.ADD_CONTACT_DELETE_IDENTITY_PAGE]: {
     previousUrl: checkAnswersOr(PAGES.CREATE_CONTACT_CHECK_ANSWERS_PAGE.url),

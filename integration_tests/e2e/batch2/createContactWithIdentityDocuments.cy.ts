@@ -8,10 +8,11 @@ import SearchContactPage from '../../pages/searchContactPage'
 import CreateContactSuccessPage from '../../pages/createContactSuccessPage'
 import SelectRelationshipTypePage from '../../pages/selectRelationshipTypePage'
 import AddContactAdditionalInfoPage from '../../pages/addContactAdditionalInfoPage'
-import AddIdentityDocumentsPage from '../../pages/addIdentityDocumentsPage'
+import AddIdentityDocumentPage from '../../pages/addIdentityDocumentPage'
 import ConfirmDeleteIdentityPage from '../../pages/contact-details/confirmDeleteIdentityPage'
 import SelectEmergencyContactOrNextOfKinPage from '../../pages/contact-details/relationship/selectEmergencyContactOrNextOfKinPage'
 import ManageDobPage from '../../pages/contact-details/dobPage'
+import ChangeIdentityDocumentPage from '../../pages/changeIdentityDocumentPage'
 
 context('Create Contact With Identity documents', () => {
   const contactId = 654321
@@ -94,35 +95,46 @@ context('Create Contact With Identity documents', () => {
 
     // Can submit without entering an identity document and also go back to additional info
     Page.verifyOnPage(AddContactAdditionalInfoPage, 'First Last') //
-      .clickLinkTo('Identity documents', AddIdentityDocumentsPage, 'First Last', true)
-      .clickButtonTo('Continue', AddContactAdditionalInfoPage, 'First Last')
-      .clickLinkTo('Identity documents', AddIdentityDocumentsPage, 'First Last', true)
+      .clickLinkTo('Identity documents', AddIdentityDocumentPage, 'First Last', true)
+      .clickLinkTo('Cancel', AddContactAdditionalInfoPage, 'First Last')
+      .clickLinkTo('Identity documents', AddIdentityDocumentPage, 'First Last', true)
       .clickLink('Back')
 
-    // Can enter some identity documents
+    // Can enter some identity documents (first)
     Page.verifyOnPage(AddContactAdditionalInfoPage, 'First Last') //
-      .clickLinkTo('Identity documents', AddIdentityDocumentsPage, 'First Last', true)
-      .selectType(0, 'DL')
-      .enterIdentity(0, '0123456789')
-      .enterIssuingAuthority(0, 'some authority')
-      .clickAddAnotherButton()
-      .selectType(1, 'NINO')
-      .enterIdentity(1, '222222')
-      .clickAddAnotherButton()
-      .selectType(2, 'PASS')
-      .enterIdentity(2, '987654321')
-      .enterIssuingAuthority(2, 'Authority')
+      .clickLinkTo('Identity documents', AddIdentityDocumentPage, 'First Last', true)
+      .selectType('DL')
+      .enterIdentity('0123456789')
+      .enterIssuingAuthority('some authority')
+      .clickContinue()
+
+    // Can enter some identity documents (second)
+    Page.verifyOnPage(AddContactAdditionalInfoPage, 'First Last') //
+      .clickLinkTo('Identity documents', AddIdentityDocumentPage, 'First Last', true)
+      .selectType('NINO')
+      .enterIdentity('222222')
+      .clickContinue()
+
+    // Can enter some identity documents (third)
+    Page.verifyOnPage(AddContactAdditionalInfoPage, 'First Last') //
+      .clickLinkTo('Identity documents', AddIdentityDocumentPage, 'First Last', true)
+      .selectType('PASS')
+      .enterIdentity('987654321')
+      .enterIssuingAuthority('Authority')
       .clickButtonTo('Continue', AddContactAdditionalInfoPage, 'First Last')
       .clickContinue()
 
     // Edit some identity documents and check we can go back
     Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
-      .clickLinkTo('Change the information about this Driving licence', AddIdentityDocumentsPage, 'First Last', true)
+      .clickLinkTo('Change the information about this Driving licence', ChangeIdentityDocumentPage, 'First Last', true)
       .clickLinkTo('Back', CreateContactCheckYourAnswersPage, 'John Smith')
-      .clickLinkTo('Change the information about this Passport number', AddIdentityDocumentsPage, 'First Last', true)
-      .enterIdentity(0, '0123456789x')
-      .clearIssuingAuthority(0)
-      .enterIdentity(2, '987654321x')
+      .clickLinkTo('Change the information about this Driving licence', ChangeIdentityDocumentPage, 'First Last', true)
+      .clearIssuingAuthority()
+      .enterIdentity('0123456789x')
+      .clickContinue()
+    Page.verifyOnPage(CreateContactCheckYourAnswersPage, 'John Smith') //
+      .clickLinkTo('Change the information about this Passport number', ChangeIdentityDocumentPage, 'First Last', true)
+      .enterIdentity('987654321x')
       .clickContinue()
 
     // Can delete identity document or cancel deleting them

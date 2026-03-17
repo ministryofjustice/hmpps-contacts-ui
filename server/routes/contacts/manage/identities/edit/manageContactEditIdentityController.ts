@@ -3,7 +3,7 @@ import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../../services/referenceDataService'
-import { IdentitySchemaType } from '../IdentitySchemas'
+import { IDENTITY_NUMBER_DUPLICATE, IdentitySchemaType } from '../IdentitySchemas'
 import { ContactsService } from '../../../../../services'
 import { Navigation } from '../../../common/navigation'
 import Urls from '../../../../urls'
@@ -11,6 +11,7 @@ import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSucces
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import { ContactDetails, ContactIdentityDetails } from '../../../../../@types/contactsApiClient'
 import Permission from '../../../../../enumeration/permission'
+import { SanitisedError } from '../../../../../sanitisedError'
 
 export default class ManageContactEditIdentityController implements PageHandler {
   constructor(
@@ -65,8 +66,9 @@ export default class ManageContactEditIdentityController implements PageHandler 
     const { user } = res.locals
     const { prisonerNumber, contactId, prisonerContactId, contactIdentityId } = req.params
     const { identityType, identityValue, issuingAuthority } = req.body
-    await this.contactsService
-      .updateContactIdentity(
+
+    try {
+      await this.contactsService.updateContactIdentity(
         parseInt(contactId, 10),
         parseInt(contactIdentityId, 10),
         user,
@@ -75,13 +77,28 @@ export default class ManageContactEditIdentityController implements PageHandler 
         identityValue,
         issuingAuthority,
       )
-      .then(_ => this.contactsService.getContactName(Number(contactId), user))
-      .then(response =>
-        req.flash(
-          FLASH_KEY__SUCCESS_BANNER,
-          `You’ve updated the identity documentation for ${formatNameFirstNameFirst(response)}.`,
-        ),
+
+      const contactName = await this.contactsService.getContactName(Number(contactId), user)
+
+      req.flash(
+        FLASH_KEY__SUCCESS_BANNER,
+        `You’ve updated the identity documentation for ${formatNameFirstNameFirst(contactName)}.`,
       )
-    res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
+      return res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
+    } catch (error) {
+      // Catch duplicate identity document error
+      if ((error as SanitisedError)?.status === 409) {
+        req.flash('formResponses', JSON.stringify(req.body))
+        req.flash(
+          'validationErrors',
+          JSON.stringify({
+            identityValue: [IDENTITY_NUMBER_DUPLICATE],
+          }),
+        )
+        return res.redirect(req.originalUrl)
+      }
+
+      throw error
+    }
   }
 }

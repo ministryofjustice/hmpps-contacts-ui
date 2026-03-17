@@ -11,8 +11,8 @@ import {
   CreateContactAddressRequest,
   CreateContactRequest,
   CreateContactRestrictionRequest,
+  CreateIdentityRequest,
   CreateMultipleEmailsRequest,
-  CreateMultipleIdentitiesRequest,
   CreatePrisonerContactRestrictionRequest,
   PagedModelPrisonerContactSummary,
   PatchContactAddressRequest,
@@ -503,7 +503,7 @@ describe('contactsApiClient', () => {
   })
 
   describe('Identity', () => {
-    describe('createContactIdentities', () => {
+    describe('createContactIdentity', () => {
       it('should create the contact identity and return the response', async () => {
         // Given
         const expectedContactIdentityDetails = {
@@ -514,38 +514,30 @@ describe('contactsApiClient', () => {
           createdBy: 'user1',
           createdTime: new Date().toISOString(),
         }
-        const request: CreateMultipleIdentitiesRequest = {
-          identities: [
-            {
-              identityType: 'PASS',
-              identityValue: '0123456789',
-              issuingAuthority: 'UK',
-            },
-          ],
+        const request: CreateIdentityRequest = {
+          identityType: 'PASS',
+          identityValue: '0123456789',
+          issuingAuthority: 'UK',
         }
 
         fakeContactsApi
-          .post('/contact/99/identities', request)
+          .post('/contact/99/identity', request)
           .matchHeader('authorization', `Bearer systemToken`)
-          .reply(201, [expectedContactIdentityDetails])
+          .reply(201, expectedContactIdentityDetails)
 
         // When
-        const createdContact = await contactsApiClient.createContactIdentities(99, request, user)
+        const createdContact = await contactsApiClient.createContactIdentity(99, request, user)
 
         // Then
-        expect(createdContact).toEqual([expectedContactIdentityDetails])
+        expect(createdContact).toStrictEqual(expectedContactIdentityDetails)
       })
 
       it.each([400, 401, 403, 500])('should propagate errors creating contact identity', async (errorCode: number) => {
         // Given
-        const request: CreateMultipleIdentitiesRequest = {
-          identities: [
-            {
-              identityType: 'PASS',
-              identityValue: '0123456789',
-              issuingAuthority: 'UK',
-            },
-          ],
+        const request: CreateIdentityRequest = {
+          identityType: 'PASS',
+          identityValue: '0123456789',
+          issuingAuthority: 'UK',
         }
         const expectedErrorBody = {
           status: errorCode,
@@ -554,13 +546,13 @@ describe('contactsApiClient', () => {
         }
 
         fakeContactsApi
-          .post('/contact/99/identities', request)
+          .post('/contact/99/identity', request)
           .matchHeader('authorization', `Bearer systemToken`)
           .reply(errorCode, expectedErrorBody)
 
         // When
         try {
-          await contactsApiClient.createContactIdentities(99, request, user)
+          await contactsApiClient.createContactIdentity(99, request, user)
         } catch (error) {
           const e = error as { status: unknown; data: unknown }
           // Then

@@ -3,7 +3,7 @@ import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../../interfaces/pageHandler'
 import ReferenceCodeType from '../../../../../enumeration/referenceCodeType'
 import ReferenceDataService from '../../../../../services/referenceDataService'
-import { IdentitiesSchemaType } from '../IdentitySchemas'
+import { IDENTITY_NUMBER_DUPLICATE, IdentitySchemaType } from '../IdentitySchemas'
 import { ContactsService } from '../../../../../services'
 import { Navigation } from '../../../common/navigation'
 import Urls from '../../../../urls'
@@ -11,6 +11,7 @@ import { FLASH_KEY__SUCCESS_BANNER } from '../../../../../middleware/setUpSucces
 import { formatNameFirstNameFirst } from '../../../../../utils/formatName'
 import { ContactDetails } from '../../../../../@types/contactsApiClient'
 import Permission from '../../../../../enumeration/permission'
+import { SanitisedError } from '../../../../../sanitisedError'
 
 export default class ManageContactAddIdentityController implements PageHandler {
   constructor(
@@ -43,11 +44,13 @@ export default class ManageContactAddIdentityController implements PageHandler {
       isNewContact: false,
       continueButtonLabel: 'Confirm and save',
       typeOptions,
-      identities: res.locals?.formResponses?.['identities'] ?? [this.blankItem()],
+      identityValue: res.locals?.formResponses?.['identityValue'],
+      identityType: res.locals?.formResponses?.['identityType'],
+      issuingAuthority: res.locals?.formResponses?.['issuingAuthority'],
       contact,
       navigation,
     }
-    res.render('pages/contacts/manage/addIdentities', viewModel)
+    res.render('pages/contacts/manage/addIdentity', viewModel)
   }
 
   POST = async (
@@ -58,40 +61,44 @@ export default class ManageContactAddIdentityController implements PageHandler {
         prisonerContactId: string
       },
       unknown,
-      IdentitiesSchemaType
+      IdentitySchemaType
     >,
     res: Response,
   ): Promise<void> => {
     const { prisonerNumber, contactId, prisonerContactId } = req.params
-    const { save, add, remove, identities } = req.body
+    const { identityType, identityValue, issuingAuthority } = req.body
     const { user } = res.locals
-    if (typeof save !== 'undefined' && identities) {
-      await this.contactsService
-        .createContactIdentities(parseInt(contactId, 10), user, identities, req.id)
-        .then(_ => this.contactsService.getContactName(Number(contactId), user))
-        .then(response =>
-          req.flash(
-            FLASH_KEY__SUCCESS_BANNER,
-            `You’ve updated the identity documentation for ${formatNameFirstNameFirst(response)}.`,
-          ),
-        )
-      res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
-    } else {
-      if (typeof add !== 'undefined') {
-        identities.push(this.blankItem())
-      } else if (typeof remove !== 'undefined') {
-        identities.splice(Number(remove), 1)
-      }
-      // Always redirect back to input even if we didn't find an action, which should be impossible but there is a small
-      // possibility if JS is disabled after a page load or the user somehow removes all identities.
-      req.flash('formResponses', JSON.stringify(req.body))
-      res.redirect(
-        `/prisoner/${prisonerNumber}/contacts/manage/${contactId}/relationship/${prisonerContactId}/identity/create`,
-      )
-    }
-  }
 
-  private blankItem = (): { identityType: string; identityValue: string; issuingAuthority?: string } => {
-    return { identityType: '', identityValue: '', issuingAuthority: '' }
+    try {
+      await this.contactsService.createContactIdentity(
+        parseInt(contactId, 10),
+        user,
+        { identityType, identityValue, issuingAuthority },
+        req.id,
+      )
+
+      const contactName = await this.contactsService.getContactName(Number(contactId), user)
+
+      req.flash(
+        FLASH_KEY__SUCCESS_BANNER,
+        `You’ve updated the identity documentation for ${formatNameFirstNameFirst(contactName)}.`,
+      )
+
+      return res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
+    } catch (error) {
+      // Catch duplicate identity document error
+      if ((error as SanitisedError)?.status === 409) {
+        req.flash('formResponses', JSON.stringify(req.body))
+        req.flash(
+          'validationErrors',
+          JSON.stringify({
+            identityValue: [IDENTITY_NUMBER_DUPLICATE],
+          }),
+        )
+        return res.redirect(req.originalUrl)
+      }
+
+      throw error
+    }
   }
 }
