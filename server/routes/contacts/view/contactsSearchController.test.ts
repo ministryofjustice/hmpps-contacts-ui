@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import * as cheerio from 'cheerio'
 import { adminUserPermissions, adminUser, appWithAllRoutes } from '../../testutils/appSetup'
 import { Page } from '../../../services/auditService'
@@ -34,7 +34,7 @@ const contactsService = MockedService.ContactsService()
 
 let app: Express
 let session: Partial<SessionData>
-const journeyId: string = uuidv4()
+const journeyId: string = randomUUID()
 let existingJourney: SearchContactJourney
 let currentUser: HmppsUser
 

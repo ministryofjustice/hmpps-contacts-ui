@@ -1,5 +1,5 @@
 import { Request as ExpressRequest, Response } from 'express'
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import { SessionData } from 'express-session'
 import ensureInAddRestrictionJourney from './addRestrictionMiddleware'
 import { basicPrisonUser } from '../testutils/appSetup'
@@ -15,7 +15,7 @@ type Request = ExpressRequest<{
 
 describe('addRestrictionMiddleware', () => {
   describe('ensureInAddRestrictionJourney', () => {
-    const journeyId = uuidv4()
+    const journeyId = randomUUID()
     const prisonerNumber = 'A1234BC'
     const contactId = 999
     const prisonerContactId = 777

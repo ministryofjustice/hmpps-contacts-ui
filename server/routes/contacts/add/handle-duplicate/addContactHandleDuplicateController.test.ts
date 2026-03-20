@@ -2,7 +2,7 @@ import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { SessionData } from 'express-session'
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import { adminUserPermissions, adminUser, appWithAllRoutes } from '../../../testutils/appSetup'
 import { Page } from '../../../../services/auditService'
 import { mockedGetReferenceDescriptionForCode } from '../../../testutils/stubReferenceData'
@@ -27,7 +27,7 @@ const contactsService = MockedService.ContactsService()
 
 let app: Express
 let session: Partial<SessionData>
-const journeyId: string = uuidv4()
+const journeyId: string = randomUUID()
 const prisonerNumber = 'A1234BC'
 const contactId = 123
 const prisonerContactId = 897
@@ -254,7 +254,7 @@ describe(`GET /prisoner/:prisonerNumber/contacts/add/handle-duplicate/:journeyId
   it('should return not found in no journey in session', async () => {
     contactsService.getAllSummariesForPrisonerAndContact.mockResolvedValue([])
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/add/handle-duplicate/${uuidv4()}`)
+      .get(`/prisoner/${prisonerNumber}/contacts/add/handle-duplicate/${randomUUID()}`)
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
@@ -331,7 +331,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/add/handle-duplicate/:journeyI
 
   it('should return not found in no journey in session', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/add/handle-duplicate/${uuidv4()}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/add/handle-duplicate/${randomUUID()}`)
       .type('form')
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)

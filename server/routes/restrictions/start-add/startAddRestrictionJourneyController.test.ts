@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import { appWithAllRoutes, authorisingUser, basicPrisonUser } from '../../testutils/appSetup'
 import { Page } from '../../../services/auditService'
 import { MockedService } from '../../../testutils/mockedServices'
@@ -107,7 +107,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/:contactId/relationship/:prison
     contactsService.getContactName.mockResolvedValue(contact)
     preExistingJourneysToAddToSession = [
       {
-        id: uuidv4(),
+        id: randomUUID(),
         lastTouched: new Date().toISOString(),
         prisonerNumber,
         contactId,
