@@ -98,7 +98,7 @@
     "cypress": "^15.12.0",
     "cypress-axe": "^1.7.0",
     "cypress-multi-reporters": "^2.0.5",
-    "domhandler": "^5.0.3",
+    "domhandler": "^6.0.1",
     "dotenv": "^17.3.1",
     "esbuild": "^0.27.4",
     "esbuild-plugin-clean": "^1.0.1",
