@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, authorisingUser, authorisingUserPermissions } from '../../../testutils/appSetup'
 import TestData from '../../../testutils/testData'
@@ -26,7 +26,7 @@ const restrictionsService = MockedService.RestrictionsService()
 
 let app: Express
 let session: Partial<SessionData>
-const journeyId: string = uuidv4()
+const journeyId: string = randomUUID()
 const prisonerNumber = 'A1234BC'
 let existingJourney: AddContactJourney
 let currentUser: HmppsUser

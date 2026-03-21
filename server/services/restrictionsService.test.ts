@@ -1,5 +1,5 @@
 import createError, { BadRequest } from 'http-errors'
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import ContactsApiClient from '../data/contactsApiClient'
 import RestrictionsService from './restrictionsService'
 import { RestrictionSchemaType } from '../routes/restrictions/schema/restrictionSchema'
@@ -25,7 +25,7 @@ describe('restrictionsService', () => {
   let apiClient: jest.Mocked<ContactsApiClient>
   let service: RestrictionsService
   const journey: AddRestrictionJourney = {
-    id: uuidv4(),
+    id: randomUUID(),
     lastTouched: new Date().toISOString(),
     restrictionClass: 'PRISONER_CONTACT',
     prisonerNumber: 'A1234BC',
