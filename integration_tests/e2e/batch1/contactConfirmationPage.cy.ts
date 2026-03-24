@@ -1,4 +1,3 @@
-import { randomUUID } from 'crypto'
 import Page from '../../pages/page'
 import TestData from '../../../server/routes/testutils/testData'
 import SearchContactPage from '../../pages/searchContactPage'
@@ -21,7 +20,7 @@ context('Contact confirmation', () => {
     firstName: contact.firstName,
     middleNames: contact.middleNames,
   })
-  const journeyId = randomUUID()
+  const journeyId = '24b556d8-facf-4a06-9957-4b3fd5319cc6'
 
   const globalRestriction = TestData.getContactRestrictionDetails({ contactId: contact.id })
 
