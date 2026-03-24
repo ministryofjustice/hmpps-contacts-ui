@@ -720,24 +720,6 @@ describe('listContactsController', () => {
       expect($('#flagsNextOfKin').attr('checked')).toStrictEqual('checked')
     })
 
-    it('should render the NOMIS off announcement banner', async () => {
-      // Given
-      contactsService.filterPrisonerContacts.mockResolvedValue({
-        content: [minimalContact],
-        page: { totalElements: 1, totalPages: 1, size: 10, number: 0 },
-      })
-      // When
-      const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/list`)
-
-      // Then
-      const $ = cheerio.load(response.text)
-      const banner = $('.moj-alert__heading')
-      expect(banner.length).toBe(1)
-      expect(banner.text()).toContain('You must use DPS to manage contacts in your prison')
-      const bannerLink = $('.govuk-notification-banner__link')
-      expect(bannerLink.html()).toContain('managingcontacts@justice.gov.uk')
-    })
-
     it('should show no contacts at all with link to add a contact if no active results and no unfiltered contacts for users that can edit contacts', async () => {
       // Given
       mockPermissions(app, adminUserPermissions)
