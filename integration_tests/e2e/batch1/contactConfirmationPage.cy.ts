@@ -20,7 +20,8 @@ context('Contact confirmation', () => {
     firstName: contact.firstName,
     middleNames: contact.middleNames,
   })
-  const journeyId = '24b556d8-facf-4a06-9957-4b3fd5319cc6'
+  // eslint-disable-next-line no-restricted-globals
+  const journeyId = self.crypto.randomUUID()
 
   const globalRestriction = TestData.getContactRestrictionDetails({ contactId: contact.id })
 
