@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import * as cheerio from 'cheerio'
 import { Cheerio } from 'cheerio'
 import { Element } from 'domhandler'
@@ -25,7 +25,7 @@ const referenceDataService = MockedService.ReferenceDataService()
 
 let app: Express
 let session: Partial<SessionData>
-const journeyId: string = uuidv4()
+const journeyId: string = randomUUID()
 const prisonerNumber = 'A1234BC'
 let existingJourney: AddContactJourney
 let currentUser: HmppsUser
@@ -237,7 +237,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/addresses/:journeyId', (
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/create/addresses/${uuidv4()}`)
+      .get(`/prisoner/${prisonerNumber}/contacts/create/addresses/${randomUUID()}`)
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
@@ -291,7 +291,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/addresses', () => {
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/addresses/${uuidv4()}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/addresses/${randomUUID()}`)
       .type('form')
       .send({})
       .expect(302)

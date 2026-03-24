@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { SessionData } from 'express-session'
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import * as cheerio from 'cheerio'
 import {
   appWithAllRoutes,
@@ -31,7 +31,7 @@ const prisonerSearchService = MockedService.PrisonerSearchService()
 
 let app: Express
 let session: Partial<SessionData>
-const journeyId: string = uuidv4()
+const journeyId: string = randomUUID()
 const prisonerNumber = 'A1234BC'
 let existingJourney: AddContactJourney
 let currentUser: HmppsUser
@@ -232,7 +232,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/enter-name', () => {
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .get(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${uuidv4()}`)
+      .get(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${randomUUID()}`)
       .expect(302)
       .expect('Location', `/prisoner/${prisonerNumber}/contacts/create/start`)
   })
@@ -309,7 +309,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/create/enter-name/:journeyId',
 
   it('should return to start if no journey in session', async () => {
     await request(app)
-      .post(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${uuidv4()}`)
+      .post(`/prisoner/${prisonerNumber}/contacts/create/enter-name/${randomUUID()}`)
       .type('form')
       .send({ firstName: 'first' })
       .expect(302)

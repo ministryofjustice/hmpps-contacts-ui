@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import { ContactsService } from '../../../../../../services'
 import { PageHandler } from '../../../../../../interfaces/pageHandler'
 import { Page } from '../../../../../../services/auditService'
@@ -26,7 +26,7 @@ export default class ChangeRelationshipTypeStartController implements PageHandle
       res.locals.user,
     )
     const journey: ChangeRelationshipTypeJourney = {
-      id: uuidv4(),
+      id: randomUUID(),
       lastTouched: new Date().toISOString(),
       mode: mode as 'all' | 'relationship-to-prisoner',
       prisonerNumber,
