@@ -1,7 +1,7 @@
 import accessibleAutocomplete from 'accessible-autocomplete'
 
-function escapeHtml(str) {
-  if (typeof str !== 'string') {
+function escapeHtml(html) {
+  if (typeof html !== 'string') {
     return ''
   }
 
@@ -24,7 +24,7 @@ function escapeHtml(str) {
     }
   }
 
-  return str.replace(/[&<>"'`]/g, escapeCharacter)
+  return html.replace(/[&<>"'`]/g, escapeCharacter)
 }
 
 function AutoComplete(meta) {
@@ -32,7 +32,7 @@ function AutoComplete(meta) {
 
   var autocompleteElements = this.meta.content.split(',')
   autocompleteElements.forEach(el => {
-    var selectElement = document.querySelector('#' + el)
+    var selectElement = document.querySelector(`#${el}`)
     accessibleAutocomplete.enhanceSelectElement({
       selectElement,
       showAllValues: true,
@@ -42,7 +42,7 @@ function AutoComplete(meta) {
       },
     })
 
-    selectElement = document.querySelector('#' + el)
+    selectElement = document.querySelector(`#${el}`)
     // By default accessible-autocomplete creates an input element with type="text".
     // We want to use type="search" to enable the clear button (cross) on these inputs
     selectElement.setAttribute('type', 'search')
