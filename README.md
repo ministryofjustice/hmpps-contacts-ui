@@ -1,6 +1,6 @@
 # hmpps-contacts-ui
 
-[![Ministry of Justice Repository Compliance Badge](https://github-community.service.justice.gov.uk/repository-standards/api/hmpps-contacts-ui/badge)](https://github-community.service.justice.gov.uk/repository-standards/hmpps-contacts-ui)
+[![Ministry of Justice Repository Compliance Badge](https://github-community.service.justice.gov.uk/repository-standards/api/hmpps-contacts-ui/badge?style=flat)](https://github-community.service.justice.gov.uk/repository-standards/hmpps-contacts-ui)
 [![codecov](https://codecov.io/github/ministryofjustice/hmpps-contacts-ui/graph/badge.svg?token=SJ5M6R0CXZ)](https://codecov.io/github/ministryofjustice/hmpps-contacts-ui)
 [![pipeline](https://github.com/ministryofjustice/hmpps-contacts-ui/actions/workflows/pipeline.yml/badge.svg)](https://github.com/ministryofjustice/hmpps-contacts-ui) [![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
