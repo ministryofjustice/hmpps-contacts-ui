@@ -2,7 +2,7 @@
 {% from "partials/miniProfile/macro.njk" import miniProfile %}
 
 {% block head %}
-  <link href="{{ '/assets/css/app.css' | assetMap }}" rel="stylesheet"/>
+  <link href="{{ '/assets/css/index.css' | assetMap }}" rel="stylesheet"/>
 
   {% for js in feComponents.jsIncludes %}
     <script src="{{ js }}" nonce="{{ cspNonce }}"></script>
@@ -54,6 +54,6 @@
     </script>
     <script src="https://js.sentry-cdn.com/{{ sentry.loaderScriptId }}.min.js" nonce="{{ cspNonce }}" crossorigin="anonymous"></script>
   {% endif %}
-  <script type="module" src="{{ '/assets/js/app.js' | assetMap }}"></script>
+  <script type="module" src="{{ '/assets/js/index.js' | assetMap }}"></script>
   {% block pageScripts %}{% endblock %}
 {% endblock %}
