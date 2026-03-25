@@ -14,7 +14,7 @@
       {% if existingRelationshipSummaries and existingRelationshipSummaries.length > 0 %}
         {% set reviewUrl = '/prisoner/' + prisonerDetails.prisonerNumber + '/contacts/create/review-possible-duplicate-existing-relationships/' + contact.id + '/' + journey.id %}
         {{ mojAlert({
-          variant: "information",
+          variant: "warning",
           title: (contact | formatNameFirstNameFirst) + ' (' + contact.id + ') is already linked to the prisoner',
           dismissible: false,
           html: (contact | formatNameFirstNameFirst) + ' (' + contact.id + ') is already linked to prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) + '. <br/><a href="' + reviewUrl + '" class="govuk-link" data-qa="view-existing-record-link">View existing record' +  ('s' if existingRelationshipSummaries.length > 1) + '</a>'
