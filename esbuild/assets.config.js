@@ -2,7 +2,6 @@ const path = require('node:path')
 const { copy } = require('esbuild-plugin-copy')
 const { sassPlugin } = require('esbuild-sass-plugin')
 const manifestPlugin = require('esbuild-plugin-manifest')
-const { globSync } = require('node:fs')
 const { buildNotificationPlugin, cleanPlugin } = require('./utils')
 
 /**
@@ -25,7 +24,7 @@ const getAdditionalAssetsConfig = buildConfig => ({
 const getAssetsConfig = buildConfig => ({
   entryPoints: buildConfig.assets.entryPoints,
   outdir: buildConfig.assets.outDir,
-  entryNames: '[ext]/app.[hash]',
+  entryNames: '[ext]/[name].[hash]',
   minify: buildConfig.isProduction,
   sourcemap: !buildConfig.isProduction,
   platform: 'browser',
@@ -33,7 +32,7 @@ const getAssetsConfig = buildConfig => ({
   external: ['/assets/*'],
   bundle: true,
   plugins: [
-    cleanPlugin(globSync(buildConfig.assets.clear)),
+    cleanPlugin(buildConfig.assets.clear),
     manifestPlugin({
       generate: entries =>
         Object.fromEntries(Object.entries(entries).map(paths => paths.map(p => p.replace(/^dist\//, '/')))),
