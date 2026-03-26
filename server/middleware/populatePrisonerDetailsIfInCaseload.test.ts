@@ -1,4 +1,3 @@
-import 'reflect-metadata'
 import { Request as ExpressRequest, Response } from 'express'
 import populatePrisonerDetailsIfInCaseload from './populatePrisonerDetailsIfInCaseload'
 import TestData from '../routes/testutils/testData'
