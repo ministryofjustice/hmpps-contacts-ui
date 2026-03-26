@@ -84,10 +84,8 @@ jobs:
       helm_timeout: '5m'
   deploy_preprod:
     name: Deploy to the preprod environment
-    if: github.ref == 'refs/heads/main'
     needs:
       - build
-      - node_integration_tests
       - helm_lint
       - deploy_dev
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2 # WORKFLOW_VERSION
