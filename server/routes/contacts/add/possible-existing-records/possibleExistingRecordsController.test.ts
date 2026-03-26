@@ -115,7 +115,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/possible-existing-record
 
     const matchCounts = $('[data-qa=match-count]')
     expect(matchCounts).toHaveLength(2)
-    expect(matchCounts.first().text().trim()).toStrictEqual('Showing 1 to 2 of 2 results')
+    expect(matchCounts.first().text().trim()).toStrictEqual('Showing 1 to 2 of 2 total results')
     expect(contactsService.searchContact).toHaveBeenCalled()
 
     expect($('[data-qa=add-contact-123456-link]').first().attr('href')).toStrictEqual(
@@ -256,7 +256,7 @@ describe('GET /prisoner/:prisonerNumber/contacts/create/possible-existing-record
     const $ = cheerio.load(response.text)
     const matchCounts = $('[data-qa=match-count]')
     expect(matchCounts).toHaveLength(2)
-    expect(matchCounts.first().text().trim()).toStrictEqual('Showing 1 to 2 of 2 results')
+    expect(matchCounts.first().text().trim()).toStrictEqual('Showing 1 to 2 of 2 total results')
 
     expect(contactsService.searchContact).not.toHaveBeenCalled()
     expect(telemetryService.trackEvent).not.toHaveBeenCalled()

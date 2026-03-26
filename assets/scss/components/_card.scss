@@ -1,4 +1,3 @@
-@use 'sass:color';
 /* ==========================================================================
    COMPONENTS / #CARD
    ========================================================================== */
@@ -6,7 +5,7 @@
    $card-border-width: 1px;
    $card-border-bottom-width: govuk-spacing(1);
    $card-border-hover-color: $govuk-border-colour;
-   $card-border-color: color.adjust($card-border-hover-color, $lightness: 15%);
+   $card-border-color: var(--govuk-border-colour, #cecece);
    
    .card {
      margin-bottom: govuk-spacing(7);

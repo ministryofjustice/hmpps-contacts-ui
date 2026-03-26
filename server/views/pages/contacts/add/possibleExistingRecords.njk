@@ -22,9 +22,9 @@
   </div>
   {% set matchCount %}
     {% if multipleMatches %}
-      <nav class="moj-pagination" data-qa="match-count">
-        <ul class="moj-pagination__list"></ul>
-        <p class="moj-pagination__results">Showing <b>1</b> to <b>{{ matches.length }}</b> of <b>{{ matches.length }}</b> results</p>
+      <nav class="govuk-pagination moj-pagination__pagination" data-qa="match-count" aria-label="Pagination">
+        <ul class="govuk-pagination__list"></ul>
+        <p class="moj-pagination__results">Showing 1 to {{ matches.length }} of {{ matches.length }} total results</p>
       </nav>
     {% endif %}
   {% endset %}
