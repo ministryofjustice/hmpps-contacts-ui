@@ -3,7 +3,7 @@
 }
 
 .block-background {
-  background-color: govuk-colour("light-grey");
+  background-color: govuk-colour("black", $variant: "tint-95");
   padding: 30px 15px;
 }
 
@@ -41,7 +41,7 @@ div.contact-list {
 
 .summary-card-key-hint {
   margin-bottom: 0;
-  color: govuk-colour("dark-grey");
+  color: govuk-colour("black", $variant: "tint-25");
 }
 .summary-card-header-link {
   padding-top: 6px;
@@ -50,12 +50,12 @@ div.contact-list {
 
 // DPS standard styling on top of GDS summary cards.
 .govuk-summary-card {
-  border: 1px solid govuk-colour("dark-grey");
+  border: 1px solid govuk-colour("black", $variant: "tint-25");
   box-shadow: 0 5px #D9D9D9;
 }
 
 .govuk-summary-card__title-wrapper {
-  background-color: govuk-colour("light-grey");
+  background-color: govuk-colour("black", $variant: "tint-95");
   padding: 0 15px 0 15px;
 }
 
@@ -70,7 +70,7 @@ div.contact-list {
 }
 
 .contact-record-banner-bottom{
-  border-bottom: 1px solid govuk-colour("mid-grey");
+  border-bottom: 1px solid govuk-colour("black", $variant: "tint-80");
   padding: 10px 0 10px 0;
 }
 
@@ -78,7 +78,7 @@ div.contact-list {
   background: url('/assets/images/emergencycontact.svg') 8px 8px no-repeat;
   width: 170px;
   padding: 3px 3px 3px 33px;
-  border: 2px solid govuk-colour("mid-grey");
+  border: 2px solid govuk-colour("black", $variant: "tint-80");
   border-radius: 100px;
   margin-bottom: 5px;
 }
@@ -87,17 +87,17 @@ div.contact-list {
   background: url('/assets/images/nextofkin.svg') 8px 8px no-repeat;
   width: 100px;
   padding: 3px 3px 3px 33px;
-  border: 2px solid govuk-colour("mid-grey");
+  border: 2px solid govuk-colour("black", $variant: "tint-80");
   border-radius: 100px;
   margin-bottom: 5px;
 }
 
 .light-grey {
-  background-color: govuk-colour("light-grey");
+  background-color: govuk-colour("black", $variant: "tint-95");
 }
 
 .prisoner-contact-filter {
-  background-color: govuk-colour("light-grey");
+  background-color: govuk-colour("black", $variant: "tint-95");
   h2 {
     margin: 0;
     @include govuk-responsive-padding(6, "top");
