@@ -200,7 +200,7 @@ context('Contact confirmation', () => {
       .hasLinkedPrisonersCount(35)
       .clickLinkedPrisonerTab()
       .hasLinkedPrisonerRow(0, 'A0BC')
-      .clickPaginationLink('2')
+      .clickPaginationLink('Page 2')
       .hasLinkedPrisonerRow(0, 'A10BC')
   })
 
