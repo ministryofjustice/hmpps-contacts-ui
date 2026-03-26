@@ -1,4 +1,3 @@
-import 'reflect-metadata'
 import { Request, Response } from 'express'
 import { z } from 'zod'
 import { buildErrorSummaryList, validate } from './validationMiddleware'

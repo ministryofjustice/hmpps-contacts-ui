@@ -102,7 +102,6 @@
     "esbuild-plugin-copy": "^2.1.1",
     "esbuild-plugin-manifest": "^1.0.5",
     "esbuild-sass-plugin": "^3.7.0",
-    "glob": "^13.0.6",
     "husky": "^9.1.7",
     "jest": "^30.3.0",
     "jest-html-reporter": "^4.3.0",
@@ -114,7 +113,6 @@
     "nodemon": "^3.1.14",
     "openapi-typescript": "^7.13.0",
     "prettier": "^3.8.1",
-    "reflect-metadata": "^0.2.2",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.6",
     "typescript": "^5.9.3"
