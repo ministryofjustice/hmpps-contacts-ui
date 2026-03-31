@@ -3,7 +3,7 @@
 {% if successNotificationBanner %}
 
   {% set title %}
-    {{ successNotificationBanner }}
+      {{ successNotificationBanner }}
   {% endset %}
 
   {% set html %}
@@ -21,7 +21,8 @@
     title: title,
     showTitleAsHeading: true,
     dismissible: false,
-    html: html
+    html: html,
+    attributes: { "data-qa": "success-banner" }
   }) }}
 
 {% endif %}
