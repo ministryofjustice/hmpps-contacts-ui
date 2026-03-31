@@ -1,4 +1,4 @@
-{%- from "moj/components/alert/macro.njk" import mojAlert -%}
+{% from "moj/components/alert/macro.njk" import mojAlert %}
 
 {% if successNotificationBanner %}
 
@@ -7,7 +7,7 @@
   {% endset %}
 
   {% set html %}
-    {% if user.backLink and prisonerDetails%}
+    {% if user.backLink and prisonerDetails %}
       <p>
         <a class="govuk-link govuk-link--no-visited-state" data-qa="saved-backlink" href="{{ user.backLink.url }}">
           Back to {{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true, possessiveSuffix = true) }} profile
@@ -21,8 +21,7 @@
     title: title,
     showTitleAsHeading: true,
     dismissible: false,
-    html: html,
-    classes: 'govuk-!-margin-bottom-0'
+    html: html
   }) }}
 
 {% endif %}
