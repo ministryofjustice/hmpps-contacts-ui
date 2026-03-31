@@ -1,9 +1,12 @@
-{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+{%- from "moj/components/alert/macro.njk" import mojAlert -%}
 
 {% if successNotificationBanner %}
-  {% set html %}
-    <h3 class="govuk-notification-banner__heading">{{ successNotificationBanner }}</h3>
 
+  {% set title %}
+    {{ successNotificationBanner }}
+  {% endset %}
+
+  {% set html %}
     {% if user.backLink and prisonerDetails%}
       <p>
         <a class="govuk-link govuk-link--no-visited-state" data-qa="saved-backlink" href="{{ user.backLink.url }}">
@@ -11,11 +14,15 @@
         </a>
       </p>
     {% endif %}
-  
   {% endset %}
 
-  {{ govukNotificationBanner({
-      html: html,
-      type: "success"
+  {{ mojAlert({
+    variant: "success",
+    title: title,
+    showTitleAsHeading: true,
+    dismissible: false,
+    html: html,
+    classes: 'govuk-!-margin-bottom-0'
   }) }}
+
 {% endif %}
