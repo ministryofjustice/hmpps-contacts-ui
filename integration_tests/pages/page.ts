@@ -133,7 +133,5 @@ export default abstract class Page {
 
   private cancelLink = (): PageElement => cy.get('[data-qa=cancel-button]')
 
-  private successBanner = (): PageElement => cy.get('.govuk-notification-banner__heading')
-
   private savedBackLink = (): PageElement => cy.get('[data-qa=saved-backlink]')
 }
