@@ -106,7 +106,7 @@ context('Edit Address', () => {
       .hasAddressType('DO_NOT_KNOW')
       .selectAddressType('WORK')
       .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last.')
+      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last')
 
     cy.verifyLastAPICall(
       {
@@ -143,7 +143,7 @@ context('Edit Address', () => {
       .enterPostcode('P1')
       .selectCountry('Scotland') // code: SCOT
       .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last.')
+      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last')
 
     cy.verifyLastAPICall(
       {
@@ -188,7 +188,7 @@ context('Edit Address', () => {
       .clearPostcode()
       .selectCountry('Scotland')
       .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last.')
+      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last')
 
     cy.verifyLastAPICall(
       {
@@ -224,7 +224,7 @@ context('Edit Address', () => {
       .enterToMonth('12')
       .enterToYear('2077')
       .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last.')
+      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last')
 
     cy.verifyLastAPICall(
       {
@@ -251,7 +251,7 @@ context('Edit Address', () => {
       .clearToMonth()
       .clearToYear()
       .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last.')
+      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last')
 
     cy.verifyLastAPICall(
       {
@@ -274,7 +274,7 @@ context('Edit Address', () => {
       .verifyIsPrimaryOrPostalAnswer('NONE')
       .selectIsPrimaryOrPostal('PM')
       .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last.')
+      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last')
 
     cy.verifyLastAPICall(
       {
@@ -297,7 +297,7 @@ context('Edit Address', () => {
       .hasComments('Some comments')
       .enterComments('new text')
       .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last.')
+      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last')
 
     cy.verifyLastAPICall(
       {
@@ -319,7 +319,7 @@ context('Edit Address', () => {
       .hasComments('Some comments')
       .clearComments()
       .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last.')
+      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last')
 
     cy.verifyLastAPICall(
       {

@@ -66,7 +66,7 @@ context('Select Language and interpretation requirements', () => {
       .selectFirstLanguage('Arabic')
       .selectIsInterpreterNeeded('YES')
       .continueTo(ManageContactDetailsPage, 'Jones Mason')
-      .hasSuccessBanner('You’ve updated the additional information for Jones Mason.')
+      .hasSuccessBanner('You’ve updated the additional information for Jones Mason')
 
     cy.verifyLastAPICall(
       {

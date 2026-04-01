@@ -75,7 +75,7 @@ context('Save backlinks back to DPS prisoner profile', () => {
       .selectIsApprovedVisitor('NO')
       .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
       .hasSuccessBanner(
-        'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith.',
+        'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith',
       )
       .hasSavedBackLink('Back to John Smith’s profile', 'http://localhost:9091/prisoner/A1234BC/personal#next-of-kin')
 
@@ -86,7 +86,7 @@ context('Save backlinks back to DPS prisoner profile', () => {
       .selectIsApprovedVisitor('YES')
       .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
       .hasSuccessBanner(
-        'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith.',
+        'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith',
       )
       .hasSavedBackLink('Back to John Smith’s profile', 'http://localhost:9091/prisoner/A1234BC/personal#next-of-kin')
 
@@ -103,7 +103,7 @@ context('Save backlinks back to DPS prisoner profile', () => {
       .selectIsApprovedVisitor('NO')
       .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
       .hasSuccessBanner(
-        'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith.',
+        'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith',
       )
       .hasNoSavedBackLink()
   })

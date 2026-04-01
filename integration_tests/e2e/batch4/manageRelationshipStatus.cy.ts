@@ -67,7 +67,7 @@ context('Manage contact update relationship status active', () => {
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
-      'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith.',
+      'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith',
     )
 
     cy.verifyLastAPICall(

@@ -108,7 +108,7 @@ context('Edit Address Phones', () => {
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
-      'You’ve updated the contact methods for First Middle Names Last.',
+      'You’ve updated the contact methods for First Middle Names Last',
     )
 
     cy.verifyLastAPICall(
@@ -153,7 +153,7 @@ context('Edit Address Phones', () => {
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
-      'You’ve updated the contact methods for First Middle Names Last.',
+      'You’ve updated the contact methods for First Middle Names Last',
     )
 
     cy.verifyLastAPICall(

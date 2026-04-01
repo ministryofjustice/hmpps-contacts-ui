@@ -70,7 +70,7 @@ context('Delete Contact Identity', () => {
       .hasType('Driving licence')
       .hasIssuingAuthority('UK')
       .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .hasSuccessBanner('You’ve updated the identity documentation for First Middle Names Last.')
+      .hasSuccessBanner('You’ve updated the identity documentation for First Middle Names Last')
 
     cy.verifyAPIWasCalled(
       {

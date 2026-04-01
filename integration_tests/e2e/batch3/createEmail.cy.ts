@@ -79,7 +79,7 @@ context('Create Email Addresses', () => {
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').hasSuccessBanner(
-      'You’ve updated the contact methods for Jones Mason.',
+      'You’ve updated the contact methods for Jones Mason',
     )
     cy.verifyLastAPICall(
       {

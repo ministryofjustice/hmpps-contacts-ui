@@ -80,7 +80,7 @@ context('Create Address Phones', () => {
       .selectType(2, 'HOME')
       .clickRemoveButton(1)
       .clickButtonTo('Confirm and save', ManageContactDetailsPage, 'First Middle Names Last')
-      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last.')
+      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last')
 
     cy.verifyLastAPICall(
       {

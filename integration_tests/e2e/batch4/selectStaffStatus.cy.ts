@@ -62,7 +62,7 @@ context('Select Staff Status', () => {
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason') //
-      .hasSuccessBanner('You’ve updated the personal information for Jones Mason.')
+      .hasSuccessBanner('You’ve updated the personal information for Jones Mason')
 
     cy.verifyLastAPICall(
       {
