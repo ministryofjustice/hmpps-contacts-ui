@@ -89,7 +89,7 @@ context('Update Prisoner Contact Restriction', () => {
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .hasSuccessBanner(
-        'You’ve updated the relationship restrictions between contact First Middle Names Last and prisoner John Smith.',
+        'You’ve updated the relationship restrictions between contact First Middle Names Last and prisoner John Smith',
       )
 
     cy.verifyLastAPICall(
@@ -126,7 +126,7 @@ context('Update Prisoner Contact Restriction', () => {
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
       .hasSuccessBanner(
-        'You’ve updated the relationship restrictions between contact First Middle Names Last and prisoner John Smith.',
+        'You’ve updated the relationship restrictions between contact First Middle Names Last and prisoner John Smith',
       )
 
     cy.verifyLastAPICall(

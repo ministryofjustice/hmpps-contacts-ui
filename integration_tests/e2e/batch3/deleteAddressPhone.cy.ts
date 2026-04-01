@@ -93,7 +93,7 @@ context('Delete Address Phones', () => {
       .hasType('Mobile')
       .hasExtension('123')
       .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
-      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last.')
+      .hasSuccessBanner('You’ve updated the contact methods for First Middle Names Last')
 
     cy.verifyAPIWasCalled(
       {

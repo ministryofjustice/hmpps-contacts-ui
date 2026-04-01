@@ -230,7 +230,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     )
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
-      'You’ve deleted a relationship from Person Prison’s contact list.',
+      'You’ve deleted a relationship from Person Prison’s contact list',
     )
   })
 

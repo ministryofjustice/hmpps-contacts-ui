@@ -70,7 +70,7 @@ context('Edit Email Address', () => {
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').hasSuccessBanner(
-      'You’ve updated the contact methods for Jones Mason.',
+      'You’ve updated the contact methods for Jones Mason',
     )
 
     cy.verifyLastAPICall(
@@ -99,7 +99,7 @@ context('Edit Email Address', () => {
     Page.verifyOnPage(EditEmailPage, 'Jones Mason').hasEmail('last@example.com').clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'Jones Mason').hasSuccessBanner(
-      'You’ve updated the contact methods for Jones Mason.',
+      'You’ve updated the contact methods for Jones Mason',
     )
 
     cy.verifyLastAPICall(

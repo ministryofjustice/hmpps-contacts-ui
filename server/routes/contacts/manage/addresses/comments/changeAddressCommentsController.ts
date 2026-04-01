@@ -67,7 +67,7 @@ export default class ChangeAddressCommentsController implements PageHandler {
       .then(response =>
         req.flash(
           FLASH_KEY__SUCCESS_BANNER,
-          `You’ve updated the contact methods for ${formatNameFirstNameFirst(response)}.`,
+          `You’ve updated the contact methods for ${formatNameFirstNameFirst(response)}`,
         ),
       )
     res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))

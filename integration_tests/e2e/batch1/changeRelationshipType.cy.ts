@@ -85,7 +85,7 @@ context('Change Relationship Type', () => {
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
-      'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith.',
+      'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith',
     )
 
     cy.verifyLastAPICall(
@@ -138,7 +138,7 @@ context('Change Relationship Type', () => {
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
-      'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith.',
+      'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith',
     )
 
     cy.verifyLastAPICall(
@@ -191,7 +191,7 @@ context('Change Relationship Type', () => {
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
-      'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith.',
+      'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith',
     )
 
     cy.verifyLastAPICall(

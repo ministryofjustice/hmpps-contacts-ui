@@ -92,7 +92,7 @@ context('Create Contact Identity', () => {
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .hasSuccessBanner('You’ve updated the identity documentation for First Middle Names Last.')
+      .hasSuccessBanner('You’ve updated the identity documentation for First Middle Names Last')
 
     cy.verifyLastAPICall(
       {
@@ -121,7 +121,7 @@ context('Create Contact Identity', () => {
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .hasSuccessBanner('You’ve updated the identity documentation for First Middle Names Last.')
+      .hasSuccessBanner('You’ve updated the identity documentation for First Middle Names Last')
 
     cy.verifyLastAPICall(
       {

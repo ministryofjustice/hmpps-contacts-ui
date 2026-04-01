@@ -116,7 +116,7 @@ context('Delete Relationship', () => {
 
     Page.verifyOnPage(DeleteRelationshipPage, true, 'John Smith', 'First Middle Names Last') //
       .clickButtonTo('Yes, delete', ListContactsPage, 'John Smith')
-      .hasSuccessBanner('You’ve deleted a relationship from John Smith’s contact list.')
+      .hasSuccessBanner('You’ve deleted a relationship from John Smith’s contact list')
 
     cy.verifyAPIWasCalled(
       {

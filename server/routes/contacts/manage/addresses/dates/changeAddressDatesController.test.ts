@@ -217,7 +217,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     expect(contactsService.updateContactAddress).toHaveBeenCalledWith(expected, currentUser, expect.any(String))
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
-      'You’ve updated the contact methods for First Middle Last.',
+      'You’ve updated the contact methods for First Middle Last',
     )
   })
 

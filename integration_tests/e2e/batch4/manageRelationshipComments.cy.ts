@@ -68,7 +68,7 @@ context('Manage contact update comments for a contact', () => {
       .enterComments('my comments')
       .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
       .hasSuccessBanner(
-        'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith.',
+        'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith',
       )
 
     cy.verifyLastAPICall(
@@ -92,7 +92,7 @@ context('Manage contact update comments for a contact', () => {
       .clearComments()
       .continueTo(ManageContactDetailsPage, 'First Middle Names Last')
       .hasSuccessBanner(
-        'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith.',
+        'You’ve updated the relationship information for contact First Middle Names Last and prisoner John Smith',
       )
 
     cy.verifyLastAPICall(

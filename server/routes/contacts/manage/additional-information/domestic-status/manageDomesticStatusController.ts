@@ -63,7 +63,7 @@ export default class ManageDomesticStatusController implements PageHandler {
     await this.contactsService.getContactName(Number(contactId), user).then(response => {
       req.flash(
         FLASH_KEY__SUCCESS_BANNER,
-        `You’ve updated the additional information for ${formatNameFirstNameFirst(response)}.`,
+        `You’ve updated the additional information for ${formatNameFirstNameFirst(response)}`,
       )
     })
     res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))

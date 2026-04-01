@@ -74,7 +74,7 @@ export default class ManageContactEnterDateOfDeathController implements PageHand
       .then(response =>
         req.flash(
           FLASH_KEY__SUCCESS_BANNER,
-          `You’ve updated the personal information for ${formatNameFirstNameFirst(response)}.`,
+          `You’ve updated the personal information for ${formatNameFirstNameFirst(response)}`,
         ),
       )
     res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))

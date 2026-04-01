@@ -83,7 +83,7 @@ context('Change Contact Names', () => {
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Last') //
-      .hasSuccessBanner('You’ve updated the personal information for First Middle Updated Last.')
+      .hasSuccessBanner('You’ve updated the personal information for First Middle Updated Last')
 
     cy.verifyLastAPICall(
       {
@@ -139,7 +139,7 @@ context('Change Contact Names', () => {
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .hasSuccessBanner('You’ve updated the personal information for First Last.')
+      .hasSuccessBanner('You’ve updated the personal information for First Last')
 
     cy.verifyLastAPICall(
       {
@@ -201,7 +201,7 @@ context('Change Contact Names', () => {
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last') //
-      .hasSuccessBanner('You’ve updated the personal information for First Last.')
+      .hasSuccessBanner('You’ve updated the personal information for First Last')
 
     cy.verifyLastAPICall(
       {

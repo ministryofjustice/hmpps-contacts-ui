@@ -64,7 +64,7 @@ export default class DeleteRelationshipController implements PageHandler {
         .then(() => {
           req.flash(
             FLASH_KEY__SUCCESS_BANNER,
-            `You’ve deleted a relationship from ${formatNameFirstNameFirst(prisonerDetails!, { excludeMiddleNames: true, possessiveSuffix: true })} contact list.`,
+            `You’ve deleted a relationship from ${formatNameFirstNameFirst(prisonerDetails!, { excludeMiddleNames: true, possessiveSuffix: true })} contact list`,
           )
         })
       return res.redirect(Urls.contactList(prisonerNumber))

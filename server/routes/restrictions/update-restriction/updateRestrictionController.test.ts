@@ -251,7 +251,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
     )
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
-      'You’ve updated the relationship restrictions between contact First Middle Last and prisoner John Smith.',
+      'You’ve updated the relationship restrictions between contact First Middle Last and prisoner John Smith',
     )
   })
 
@@ -281,7 +281,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/:contactId/relationship/:priso
     )
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
-      'You’ve updated the global restrictions for First Middle Last.',
+      'You’ve updated the global restrictions for First Middle Last',
     )
   })
 

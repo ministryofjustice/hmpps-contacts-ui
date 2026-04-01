@@ -78,7 +78,7 @@ context('Change Contact Date Of Birth', () => {
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
-      'You’ve updated the personal information for First Middle Names Last.',
+      'You’ve updated the personal information for First Middle Names Last',
     )
 
     cy.verifyLastAPICall(
@@ -132,7 +132,7 @@ context('Change Contact Date Of Birth', () => {
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Middle Names Last').hasSuccessBanner(
-      'You’ve updated the personal information for First Middle Names Last.',
+      'You’ve updated the personal information for First Middle Names Last',
     )
 
     cy.verifyLastAPICall(
