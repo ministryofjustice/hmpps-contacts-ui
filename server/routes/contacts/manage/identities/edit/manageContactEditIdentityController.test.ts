@@ -202,7 +202,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     )
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
-      'You’ve updated the identity documentation for Jones Middle Names Mason.',
+      'You’ve updated the identity documentation for Jones Middle Names Mason',
     )
   })
 
@@ -230,7 +230,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     )
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
-      'You’ve updated the identity documentation for Jones Mason.',
+      'You’ve updated the identity documentation for Jones Mason',
     )
   })
 

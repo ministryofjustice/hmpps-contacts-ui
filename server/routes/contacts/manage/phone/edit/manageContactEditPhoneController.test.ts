@@ -194,7 +194,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     )
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
-      'You’ve updated the contact methods for First Middle Last.',
+      'You’ve updated the contact methods for First Middle Last',
     )
   })
 
@@ -219,7 +219,7 @@ describe('POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     )
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
-      'You’ve updated the contact methods for First Middle Last.',
+      'You’ve updated the contact methods for First Middle Last',
     )
   })
 

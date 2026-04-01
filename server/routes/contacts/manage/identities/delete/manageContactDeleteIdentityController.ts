@@ -60,7 +60,7 @@ export default class ManageContactDeleteIdentityController implements PageHandle
       .then(response =>
         req.flash(
           FLASH_KEY__SUCCESS_BANNER,
-          `You’ve updated the identity documentation for ${formatNameFirstNameFirst(response)}.`,
+          `You’ve updated the identity documentation for ${formatNameFirstNameFirst(response)}`,
         ),
       )
     res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))

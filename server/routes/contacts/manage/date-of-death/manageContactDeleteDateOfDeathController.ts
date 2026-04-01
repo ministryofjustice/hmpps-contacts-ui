@@ -52,7 +52,7 @@ export default class ManageContactDeleteDateOfDeathController implements PageHan
       .then(response =>
         req.flash(
           FLASH_KEY__SUCCESS_BANNER,
-          `You’ve updated the personal information for ${formatNameFirstNameFirst(response)}.`,
+          `You’ve updated the personal information for ${formatNameFirstNameFirst(response)}`,
         ),
       )
     res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))

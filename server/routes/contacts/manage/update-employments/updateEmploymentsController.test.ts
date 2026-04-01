@@ -261,7 +261,7 @@ describe('POST /contacts/manage/:contactId/relationship/:prisonerContactId/updat
 
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
-      'You’ve updated the professional information for Jones Mason.',
+      'You’ve updated the professional information for Jones Mason',
     )
 
     expect(response.status).toEqual(302)

@@ -82,7 +82,7 @@ export default class ManageContactEditIdentityController implements PageHandler 
 
       req.flash(
         FLASH_KEY__SUCCESS_BANNER,
-        `You’ve updated the identity documentation for ${formatNameFirstNameFirst(contactName)}.`,
+        `You’ve updated the identity documentation for ${formatNameFirstNameFirst(contactName)}`,
       )
       return res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
     } catch (error) {

@@ -254,7 +254,7 @@ describe(`POST /prisoner/:prisonerNumber/contacts/manage/:contactId/relationship
     )
     expect(flashProvider).toHaveBeenCalledWith(
       FLASH_KEY__SUCCESS_BANNER,
-      'You’ve updated the relationship information for contact First Middle Last and prisoner John Smith.',
+      'You’ve updated the relationship information for contact First Middle Last and prisoner John Smith',
     )
     expect(session.changeRelationshipTypeJourneys![journeyId]).toBeUndefined()
   })
