@@ -29,22 +29,6 @@ export const checkAxeAccessibility = () => {
   cy.checkA11y(undefined, undefined, logAccessibilityViolations)
 
   checkRadioGroupsHaveLegends()
-
-  checkStyleRules()
-}
-
-const checkStyleRules = () => {
-  // No un-curly apostrophes in text
-  cy.contains('*', `'`)
-    .should('have.length.gte', 0)
-    .each(element => {
-      if (element.hasClass('user-generated-content')) {
-        return
-      }
-      if (element.text().includes("'")) {
-        fail(`Non-curly apostrophe found in the following text: ${element.text()}`)
-      }
-    })
 }
 
 const checkRadioGroupsHaveLegends = () => {

@@ -2,10 +2,6 @@
 
 {% if successNotificationBanner %}
 
-  {% set title %}
-      {{ successNotificationBanner }}
-  {% endset %}
-
   {% set html %}
     {% if user.backLink and prisonerDetails %}
       <p>
@@ -18,7 +14,7 @@
 
   {{ mojAlert({
     variant: "success",
-    title: title,
+    title: successNotificationBanner,
     showTitleAsHeading: true,
     dismissible: false,
     html: html,
