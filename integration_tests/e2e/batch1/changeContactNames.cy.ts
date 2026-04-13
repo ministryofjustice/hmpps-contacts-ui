@@ -57,9 +57,9 @@ context('Change Contact Names', () => {
     const updated: PatchContactResponse = {
       ...contact,
       titleCode: 'DR',
-      firstName: 'First',
-      middleNames: 'Middle Updated',
-      lastName: 'Last',
+      firstName: "F'irst",
+      middleNames: "Mid'dle",
+      lastName: "Las't",
     }
     cy.task('stubPatchContactById', { contactId, response: updated })
 
@@ -76,21 +76,21 @@ context('Change Contact Names', () => {
       .hasMiddleNames('')
       .hasLastName('Last')
       .hasTitle('')
-      .enterFirstNames('First updated')
-      .enterMiddleNames('Middle Updated')
-      .enterLastNames('Last updated')
+      .enterFirstNames("F'irst")
+      .enterMiddleNames("Mid'dle")
+      .enterLastNames("Las't")
       .selectTitle('DR')
       .clickContinue()
 
     Page.verifyOnPage(ManageContactDetailsPage, 'First Last') //
-      .hasSuccessBanner('You’ve updated the personal information for First Middle Updated Last')
+      .hasSuccessBanner("You’ve updated the personal information for F'Irst Mid'Dle Las'T")
 
     cy.verifyLastAPICall(
       {
         method: 'PATCH',
         urlPath: `/contact/${contactId}`,
       },
-      { titleCode: 'DR', firstName: 'First updated', middleNames: 'Middle Updated', lastName: 'Last updated' },
+      { titleCode: 'DR', firstName: "F'irst", middleNames: "Mid'dle", lastName: "Las't" },
     )
   })
 
