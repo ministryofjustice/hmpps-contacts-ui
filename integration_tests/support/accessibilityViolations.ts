@@ -29,26 +29,7 @@ export const checkAxeAccessibility = () => {
   cy.checkA11y(undefined, undefined, logAccessibilityViolations)
 
   checkRadioGroupsHaveLegends()
-
-  // checkStyleRules()
 }
-
-// The user could type a regular ' apostrophe, which is then displayed in banner
-// This was being incorrectly escaped, so has been added to test - and highlighted this rule
-// Possible to maybe skip this rule for one test, but if typed ' - it should still be displayed
-// const checkStyleRules = () => {
-//   // No un-curly apostrophes in text
-//   cy.contains('*', `'`)
-//     .should('have.length.gte', 0)
-//     .each(element => {
-//       if (element.hasClass('user-generated-content')) {
-//         return
-//       }
-//       if (element.text().includes("'")) {
-//         fail(`Non-curly apostrophe found in the following text: ${element.text()}`)
-//       }
-//     })
-// }
 
 const checkRadioGroupsHaveLegends = () => {
   cy.get('body').then($body => {
