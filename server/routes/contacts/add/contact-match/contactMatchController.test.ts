@@ -121,7 +121,7 @@ describe('Contact details', () => {
       expect($('[data-qa=confim-title-value-top]').text().trim()).toStrictEqual(
         'Check and confirm if you want to link contact Jones Mason to prisoner John Smith',
       )
-      expect($('.moj-badge').text().trim()).toStrictEqual('Active restrictions in place')
+      expect($('.govuk-tag').first().text().trim()).toStrictEqual('Restrictions in place')
       expect($('p.govuk-body.govuk-\\!-margin-top-3').text().trim()).toStrictEqual(
         'If this is the correct contact record but their information needs to be updated, you can make updates after you link the record to the prisoner.',
       )

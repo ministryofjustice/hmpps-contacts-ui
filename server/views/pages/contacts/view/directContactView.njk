@@ -3,8 +3,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 {% from "partials/directContactSearch/directContactContent.njk" import directContactContent %}
-{% from "moj/components/badge/macro.njk" import mojBadge %}
-{% from "moj/components/alert/macro.njk" import mojAlert %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
 
 {% set pageTitle = "View contact information - Contacts - DPS" %}
 {% set title = 'View contact information about ' + (contact | formatNameFirstNameFirst ) %}
@@ -13,11 +12,10 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
       <h1 class="govuk-heading-l" data-qa="confim-title-value-top">{{ title }}</h1>
-
       {% if globalRestrictions.length > 0 %}
-        {{ mojBadge({
-          text: "Active restrictions in place",
-          classes: "moj-badge--red"
+        {{ govukTag({
+          text: "Restrictions in place",
+          classes: "govuk-tag--red max-200-width"
         }) }}
       {% endif %}
       <p class="govuk-body govuk-!-margin-top-3">To edit contact information, look up a linked prisoner and enter the Contacts service through the DPS prisoner profile. </p>

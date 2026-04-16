@@ -1,5 +1,5 @@
 {% extends "partials/layout.njk" %}
-{% from "moj/components/badge/macro.njk" import mojBadge %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "partials/matchContactContent.njk" import matchContactContent %}
@@ -24,9 +24,9 @@
         }) }}
       {% endif %}
       {% if globalRestrictions.length > 0 %}
-        {{ mojBadge({
-          text: "Active restrictions in place",
-          classes: "moj-badge--red"
+        {{ govukTag({
+          text: "Restrictions in place",
+          classes: "govuk-tag--red max-200-width"
         }) }}
       {% endif %}
       <p class="govuk-body govuk-!-margin-top-3">If this is the correct contact record but their information needs to be updated, you can make updates after you link the record to the prisoner. </p>

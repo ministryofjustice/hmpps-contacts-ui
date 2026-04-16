@@ -88,7 +88,7 @@ describe('Contact details', () => {
         'Check and confirm if you want to link contact Jones Mason to prisoner John Smith',
       )
       expect($('[data-qa=authoriser-permission-warning]')).toHaveLength(0)
-      expect($('.moj-badge').text().trim()).toStrictEqual('Active restrictions in place')
+      expect($('.govuk-tag').first().text().trim()).toStrictEqual('Restrictions in place')
       expect($('p.govuk-body.govuk-\\!-margin-top-3').text().trim()).toStrictEqual(
         'If this is the correct contact record but their information needs to be updated, you can make updates after you link the record to the prisoner.',
       )
