@@ -23,15 +23,14 @@
           html: (contact | formatNameFirstNameFirst) + ' (' + contact.id + ') is already linked to prisoner ' + (prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true)) + '. <br/><a href="' + reviewUrl + '" class="govuk-link" data-qa="view-existing-record-link">View existing record' +  ('s' if existingRelationshipSummaries.length > 1) + '</a>'
         }) }}
       {% endif %}
-      {% if globalRestrictions.length > 0 %}
-
+      {% set restrictionSummary = contact.restrictionSummary %}
+      {% if restrictionSummary.totalActive > 0 %}
         {{ govukTag({
           text: "Restrictions in place",
           classes: "govuk-tag--red"
         }) }}
-      
-
       {% endif %}
+      
       <p class="govuk-body govuk-!-margin-top-3">If this is the correct contact record but their information needs to be updated, you can make updates after you link the record to the prisoner. </p>
 
       {% if not isGranted(PersonalRelationshipsPermission.edit_contact_restrictions, prisonerPermissions) %}
