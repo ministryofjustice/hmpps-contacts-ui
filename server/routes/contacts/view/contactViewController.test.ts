@@ -124,7 +124,7 @@ describe('Contact details', () => {
       expect($('.govuk-back-link').text().trim()).toStrictEqual('Back to contact search')
       expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(`/contacts/search/${journeyId}`)
       expect($('[data-qa=confim-title-value-top]').text().trim()).toContain('View contact information about')
-      expect($('.govuk-tag').text().trim()).toStrictEqual('Restrictions in place')
+      expect($('.govuk-tag').first.text().trim()).toStrictEqual('Restrictions in place')
       expect($('p.govuk-body.govuk-\\!-margin-top-3').text().trim()).toStrictEqual(
         'To edit contact information, look up a linked prisoner and enter the Contacts service through the DPS prisoner profile.',
       )
