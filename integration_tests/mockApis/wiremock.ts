@@ -25,10 +25,7 @@ const getAPICallCountMatching = async (matching: string | object): Promise<numbe
 const resetStubs = (): Promise<Array<Response>> =>
   Promise.all([superagent.delete(`${url}/mappings`), superagent.delete(`${url}/requests`)])
 
-const stubGet = (
-  urlPattern: string,
-  jsonBody?: { header: Component; footer: Component; meta: SharedData },
-) =>
+const stubGet = (urlPattern: string, jsonBody?: { header: Component; footer: Component; meta: SharedData }) =>
   stubFor({
     request: { method: 'GET', urlPattern },
     response: {
