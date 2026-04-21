@@ -1,5 +1,5 @@
 import Component from '@ministryofjustice/hmpps-connect-dps-components/dist/types/Component'
-import HeaderFooterSharedData from '@ministryofjustice/hmpps-connect-dps-components/dist/types/HeaderFooterSharedData'
+import SharedData from '@ministryofjustice/hmpps-connect-dps-components/dist/types/SharedData'
 import superagent, { Response, SuperAgentRequest } from 'superagent'
 
 const url = 'http://localhost:9091/__admin'
@@ -27,7 +27,7 @@ const resetStubs = (): Promise<Array<Response>> =>
 
 const stubGet = (
   urlPattern: string,
-  jsonBody?: { header: Component; footer: Component; meta: HeaderFooterSharedData },
+  jsonBody?: { header: Component; footer: Component; meta: SharedData },
 ) =>
   stubFor({
     request: { method: 'GET', urlPattern },
