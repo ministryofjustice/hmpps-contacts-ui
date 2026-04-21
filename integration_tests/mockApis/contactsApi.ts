@@ -106,7 +106,7 @@ export default {
     const queryParameters = {
       ...args.matchQueryParams,
       page: {
-        equalTo: `${args.page.page.number}`,
+        equalTo: `${args.page?.page?.number}`,
       },
     }
 

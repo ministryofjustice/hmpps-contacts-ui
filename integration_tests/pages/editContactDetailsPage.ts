@@ -182,13 +182,13 @@ export default class EditContactDetailsPage extends Page {
 
   private titleValue = (): PageElement => this.titleHeading().next()
 
-  private changeTitleLink = (): PageElement => this.titleHeading().next().next().find('a')
+  private changeTitleLink = (): PageElement => this.titleHeading().next().next().find<HTMLElement>('a')
 
   private nameHeading = (): PageElement => cy.findByText('Name')
 
   private nameValue = (): PageElement => this.nameHeading().next()
 
-  private changeNameLink = (): PageElement => this.nameHeading().next().next().find('a')
+  private changeNameLink = (): PageElement => this.nameHeading().next().next().find<HTMLElement>('a')
 
   // there are 2 DOB as the prisoner's is in the mini profile. The 2nd one is the summary card
   private dateOfBirthHeading = (): PageElement => cy.findAllByText('Date of birth').last()
@@ -202,44 +202,47 @@ export default class EditContactDetailsPage extends Page {
 
   private genderValue = (): PageElement => this.genderHeading().next()
 
-  private changeGenderLink = (): PageElement => this.genderHeading().next().next().find('a')
+  private changeGenderLink = (): PageElement => this.genderHeading().next().next().find<HTMLElement>('a')
 
   private staffMemberHeading = (): PageElement => cy.findByText('Staff member')
 
   private staffMemberValue = (): PageElement => this.staffMemberHeading().next()
 
-  private changeStaffMemberLink = (): PageElement => this.staffMemberHeading().next().next().find('a')
+  private changeStaffMemberLink = (): PageElement => this.staffMemberHeading().next().next().find<HTMLElement>('a')
 
   private relationshipToPrisonerHeading = (): PageElement => cy.findByText('Relationship to prisoner')
 
   private relationshipToPrisonerValue = (): PageElement => this.relationshipToPrisonerHeading().next()
 
   private changeRelationshipToPrisonerLink = (): PageElement =>
-    this.relationshipToPrisonerHeading().next().next().find('a')
+    this.relationshipToPrisonerHeading().next().next().find<HTMLElement>('a')
 
   private relationshipTypeHeading = (): PageElement => cy.findByText('Relationship type')
 
   private relationshipTypeValue = (): PageElement => this.relationshipTypeHeading().next()
 
-  private changeRelationshipTypeLink = (): PageElement => this.relationshipTypeHeading().next().next().find('a')
+  private changeRelationshipTypeLink = (): PageElement =>
+    this.relationshipTypeHeading().next().next().find<HTMLElement>('a')
 
   private relationshipStatusHeading = (): PageElement => cy.findByText('Relationship status')
 
   private relationshipStatusValue = (): PageElement => this.relationshipStatusHeading().next()
 
-  private changeRelationshipStatusLink = (): PageElement => this.relationshipStatusHeading().next().next().find('a')
+  private changeRelationshipStatusLink = (): PageElement =>
+    this.relationshipStatusHeading().next().next().find<HTMLElement>('a')
 
   private emergencyContactHeading = (): PageElement => cy.findByText('Emergency contact')
 
   private emergencyContactValue = (): PageElement => this.emergencyContactHeading().next()
 
-  private changeEmergencyContactLink = (): PageElement => this.emergencyContactHeading().next().next().find('a')
+  private changeEmergencyContactLink = (): PageElement =>
+    this.emergencyContactHeading().next().next().find<HTMLElement>('a')
 
   private nextOfKinHeading = (): PageElement => cy.findByText('Next of kin')
 
   private nextOfKinValue = (): PageElement => this.nextOfKinHeading().next()
 
-  private changeNextOfKinLink = (): PageElement => this.nextOfKinHeading().next().next().find('a')
+  private changeNextOfKinLink = (): PageElement => this.nextOfKinHeading().next().next().find<HTMLElement>('a')
 
   private approvedForVisitsHeading = (): PageElement => cy.findByText('Approved for visits')
 
@@ -249,15 +252,17 @@ export default class EditContactDetailsPage extends Page {
 
   private approvedForVisitsByValue = (): PageElement => this.approvedForVisitsByHeading().next()
 
-  private changeApprovedForVisitsLink = (): PageElement => this.approvedForVisitsHeading().next().next().find('a')
+  private changeApprovedForVisitsLink = (): PageElement =>
+    this.approvedForVisitsHeading().next().next().find<HTMLElement>('a')
 
   private commentsHeading = (): PageElement => cy.findByText('Comments on the relationship')
 
   private commentsValue = (): PageElement => this.commentsHeading().next()
 
-  private changeCommentsLink = (): PageElement => this.commentsHeading().next().next().find('a')
+  private changeCommentsLink = (): PageElement => this.commentsHeading().next().next().find<HTMLElement>('a')
 
-  private addIdentityDocumentLink = (): PageElement => cy.findByText('Identity documentation').next().find('a')
+  private addIdentityDocumentLink = (): PageElement =>
+    cy.findByText('Identity documentation').next().find<HTMLElement>('a')
 
   private editIdentityByDocumentNumberLink = (documentNumber: string): PageElement =>
     cy.findByText(documentNumber).next().findByText('Change')
@@ -269,19 +274,21 @@ export default class EditContactDetailsPage extends Page {
 
   private languageValue = (): PageElement => this.languageHeading().next()
 
-  private changeLanguageLink = (): PageElement => this.languageHeading().next().next().find('a')
+  private changeLanguageLink = (): PageElement => this.languageHeading().next().next().find<HTMLElement>('a')
 
   private interpreterHeading = (): PageElement => cy.findByText('Interpreter required')
 
   private interpreterRequiredValue = (): PageElement => this.interpreterHeading().next()
 
-  private changeInterpreterRequiredLink = (): PageElement => this.interpreterHeading().next().next().find('a')
+  private changeInterpreterRequiredLink = (): PageElement =>
+    this.interpreterHeading().next().next().find<HTMLElement>('a')
 
   private domesticStatusHeading = (): PageElement => cy.findByText('Contact’s domestic status')
 
   private domesticStatusValue = (): PageElement => this.domesticStatusHeading().next()
 
-  private changeDomesticStatusLink = (): PageElement => this.domesticStatusHeading().next().next().find('a')
+  private changeDomesticStatusLink = (): PageElement =>
+    this.domesticStatusHeading().next().next().find<HTMLElement>('a')
 
   private recordDateOfDeathLink = (): PageElement => cy.findByRole('link', { name: 'Record the death of this contact' })
 

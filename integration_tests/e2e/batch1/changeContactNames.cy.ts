@@ -39,10 +39,10 @@ context('Change Contact Names', () => {
       id: contactId,
       lastName: 'Last',
       firstName: 'First',
-      middleNames: null,
-      titleCode: null,
-      titleDescription: null,
-      dateOfBirth: null,
+      middleNames: undefined,
+      titleCode: undefined,
+      titleDescription: undefined,
+      dateOfBirth: undefined,
     })
     cy.task('stubGetContactById', contact)
     cy.task('stubGetContactNameById', contact)
@@ -102,7 +102,7 @@ context('Change Contact Names', () => {
       middleNames: 'Middle Names',
       titleCode: 'MR',
       titleDescription: 'Mr',
-      dateOfBirth: null,
+      dateOfBirth: undefined,
     })
     cy.task('stubGetContactById', contact)
     cy.task('stubGetContactNameById', contact)
@@ -117,7 +117,7 @@ context('Change Contact Names', () => {
     const updated: PatchContactResponse = {
       ...contact,
       titleCode: 'DR',
-      middleNames: null,
+      middleNames: undefined,
     }
     cy.task('stubPatchContactById', { contactId, response: updated })
 
@@ -163,7 +163,7 @@ context('Change Contact Names', () => {
       middleNames: 'Middle Names',
       titleCode: 'MR',
       titleDescription: 'Mr',
-      dateOfBirth: null,
+      dateOfBirth: undefined,
     })
     cy.task('stubGetContactById', contact)
     cy.task('stubGetContactNameById', contact)
@@ -178,7 +178,7 @@ context('Change Contact Names', () => {
     const updated: PatchContactResponse = {
       ...contact,
       titleCode: 'DR',
-      middleNames: null,
+      middleNames: undefined,
     }
     cy.task('stubPatchContactById', { contactId, response: updated })
 
@@ -225,7 +225,7 @@ context('Change Contact Names', () => {
       middleNames: 'Middle Names',
       titleCode: 'MR',
       titleDescription: 'Mr',
-      dateOfBirth: null,
+      dateOfBirth: undefined,
     })
     cy.task('stubGetContactById', contact)
     cy.task('stubGetContactNameById', contact)
@@ -261,7 +261,7 @@ context('Change Contact Names', () => {
       middleNames: 'Middle Names',
       titleCode: 'MR',
       titleDescription: 'Mr',
-      dateOfBirth: null,
+      dateOfBirth: undefined,
     })
     cy.task('stubGetContactById', contact)
     cy.task('stubGetContactNameById', contact)
@@ -297,7 +297,7 @@ context('Change Contact Names', () => {
       middleNames: 'Middle Names',
       titleCode: 'MR',
       titleDescription: 'Mr',
-      dateOfBirth: null,
+      dateOfBirth: undefined,
     })
     cy.task('stubGetContactById', contact)
     cy.task('stubGetContactNameById', contact)
@@ -333,7 +333,7 @@ context('Change Contact Names', () => {
       middleNames: 'Middle Names',
       titleCode: 'MR',
       titleDescription: 'Mr',
-      dateOfBirth: null,
+      dateOfBirth: undefined,
     })
     cy.task('stubGetContactById', contact)
     cy.task('stubGetContactNameById', contact)
@@ -369,7 +369,7 @@ context('Change Contact Names', () => {
       middleNames: 'Middle Names',
       titleCode: 'MR',
       titleDescription: 'Mr',
-      dateOfBirth: null,
+      dateOfBirth: undefined,
     })
     cy.task('stubGetContactById', contact)
     cy.task('stubGetContactNameById', contact)
@@ -405,7 +405,7 @@ context('Change Contact Names', () => {
       middleNames: 'Middle Names',
       titleCode: 'MR',
       titleDescription: 'Mr',
-      dateOfBirth: null,
+      dateOfBirth: undefined,
     })
     cy.task('stubGetContactById', contact)
     cy.task('stubGetContactNameById', contact)
@@ -441,7 +441,7 @@ context('Change Contact Names', () => {
       middleNames: 'Middle Names',
       titleCode: 'MR',
       titleDescription: 'Mr',
-      dateOfBirth: null,
+      dateOfBirth: undefined,
     })
     cy.task('stubGetContactById', contact)
     cy.task('stubGetContactNameById', contact)
@@ -477,7 +477,7 @@ context('Change Contact Names', () => {
       middleNames: 'Middle Names',
       titleCode: 'MR',
       titleDescription: 'Mr',
-      dateOfBirth: null,
+      dateOfBirth: undefined,
     })
     cy.task('stubGetContactById', contact)
     cy.task('stubGetContactNameById', contact)
@@ -509,7 +509,7 @@ context('Change Contact Names', () => {
       middleNames: 'Middle Names',
       titleCode: 'MR',
       titleDescription: 'Mr',
-      dateOfBirth: null,
+      dateOfBirth: undefined,
     })
     cy.task('stubGetContactById', contact)
     cy.task('stubGetContactNameById', contact)

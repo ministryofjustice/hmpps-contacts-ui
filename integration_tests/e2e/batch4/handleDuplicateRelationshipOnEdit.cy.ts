@@ -20,7 +20,7 @@ context('Handle duplicate relationship when editing relationships', () => {
     firstName: 'First',
     middleNames: 'Middle Names',
     titleCode: 'MR',
-    dateOfBirth: null,
+    dateOfBirth: undefined,
   })
   const minimalContact: PrisonerContactSummary = {
     prisonerContactId: 987654321,

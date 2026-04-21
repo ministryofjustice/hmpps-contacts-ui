@@ -70,7 +70,7 @@ export default class EditContactMethodsPage extends Page {
     this.deleteAddressPhoneLink(contactAddressPhoneId).click()
   }
 
-  private addPhoneNumberLink = (): PageElement => cy.findByText('Phone numbers').next().find('a')
+  private addPhoneNumberLink = (): PageElement => cy.findByText('Phone numbers').next().find<HTMLElement>('a')
 
   private editPhoneNumberLink = (phoneNumber: string): PageElement =>
     cy.findByText(phoneNumber).next().findByText('Change')
@@ -79,14 +79,15 @@ export default class EditContactMethodsPage extends Page {
     cy.findByText(phoneNumber).next().findByText('Delete')
   // There are 2 instances of "Email addresses" one in the header of the card and one as the first list label
 
-  private addEmailLink = (): PageElement => cy.findAllByText('Email addresses').first().next().find('a')
+  private addEmailLink = (): PageElement => cy.findAllByText('Email addresses').first().next().find<HTMLElement>('a')
 
   private editEmailLink = (emailAddress: string): PageElement => cy.findByText(emailAddress).next().findByText('Change')
 
   private deleteEmailLink = (emailAddress: string): PageElement =>
     cy.findByText(emailAddress).next().findByText('Delete')
 
-  private addAddressLink = (): PageElement => cy.findAllByText('Addresses').first().parent().next().find('a')
+  private addAddressLink = (): PageElement =>
+    cy.findAllByText('Addresses').first().parent().next().find<HTMLElement>('a')
 
   private viewPreviousAddresses = (): PageElement => cy.findAllByText('View previous addresses').first()
 

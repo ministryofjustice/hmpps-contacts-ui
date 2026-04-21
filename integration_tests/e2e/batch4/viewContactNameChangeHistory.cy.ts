@@ -37,10 +37,10 @@ context('View Contact Name Change History', () => {
       id: contactId,
       lastName: 'Last',
       firstName: 'First',
-      middleNames: null,
-      titleCode: null,
-      titleDescription: null,
-      dateOfBirth: null,
+      middleNames: undefined,
+      titleCode: undefined,
+      titleDescription: undefined,
+      dateOfBirth: undefined,
     })
     cy.task('stubGetContactById', contact)
     cy.task('stubGetContactNameById', contact)
@@ -103,10 +103,10 @@ context('View Contact Name Change History', () => {
       id: contactId,
       lastName: 'Last',
       firstName: 'First',
-      middleNames: null,
-      titleCode: null,
-      titleDescription: null,
-      dateOfBirth: null,
+      middleNames: undefined,
+      titleCode: undefined,
+      titleDescription: undefined,
+      dateOfBirth: undefined,
     })
     cy.task('stubGetContactById', contact)
     cy.task('stubGetContactNameById', contact)

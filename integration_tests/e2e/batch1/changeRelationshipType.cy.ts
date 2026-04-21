@@ -15,7 +15,7 @@ context('Change Relationship Type', () => {
     firstName: 'First',
     middleNames: 'Middle Names',
     titleCode: 'MR',
-    dateOfBirth: null,
+    dateOfBirth: undefined,
   })
 
   beforeEach(() => {

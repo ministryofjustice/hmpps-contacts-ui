@@ -17,7 +17,7 @@ export default class OrganisationSearchPage extends Page {
     cy.findAllByRole('link', { name: /Check if this is the correct employer/ }).should('have.length', count)
   }
 
-  selectEmployer(employerName) {
+  selectEmployer(employerName: string) {
     cy.findByRole('link', { name: `Check if this is the correct employer (${employerName})` }).click()
   }
 }

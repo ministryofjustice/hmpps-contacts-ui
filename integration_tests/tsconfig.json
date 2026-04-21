@@ -2,9 +2,11 @@
   "compilerOptions": {
     "noEmit": true,
     "lib": ["es5", "dom", "es2015.promise"],
-    "types": ["cypress", "@testing-library/cypress"],
+    "types": ["cypress", "cypress-axe", "@testing-library/cypress"],
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "ignoreDeprecations": "6.0",
+    "rootDirs": [".", "../"]
   },
   "include": ["**/*.ts"]
 }

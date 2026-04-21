@@ -79,8 +79,8 @@ context('Select Gender', () => {
     cy.task(
       'stubGetContactById',
       TestData.contact({
-        genderCode: null,
-        genderDescription: null,
+        genderCode: undefined,
+        genderDescription: undefined,
       }),
     )
 

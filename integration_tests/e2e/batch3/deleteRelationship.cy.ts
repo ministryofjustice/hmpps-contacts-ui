@@ -16,7 +16,7 @@ context('Delete Relationship', () => {
     firstName: 'First',
     middleNames: 'Middle Names',
     titleCode: 'MR',
-    dateOfBirth: null,
+    dateOfBirth: undefined,
   })
 
   beforeEach(() => {

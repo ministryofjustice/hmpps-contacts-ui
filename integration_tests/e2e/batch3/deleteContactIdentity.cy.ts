@@ -15,7 +15,7 @@ context('Delete Contact Identity', () => {
     identities: [
       TestData.getContactIdentityDetails('DL', 'Driving licence', 'LAST-87736799M', 'UK', 1, true),
       TestData.getContactIdentityDetails('PASS', 'Passport number', '425362965', 'UK passport office', 2, true),
-      TestData.getContactIdentityDetails('NINO', 'National insurance number', '06/614465M', null, 3, true),
+      TestData.getContactIdentityDetails('NINO', 'National insurance number', '06/614465M', undefined, 3, true),
     ],
   })
 

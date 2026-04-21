@@ -83,9 +83,9 @@ context('Select Language and interpretation requirements', () => {
   it(`should require mandatory input`, () => {
     visitContactPage(
       TestData.contact({
-        languageCode: null,
-        languageDescription: null,
-        interpreterRequired: null,
+        languageCode: undefined,
+        languageDescription: undefined,
+        interpreterRequired: undefined,
       }),
     )
 

@@ -25,12 +25,13 @@ export default class CreateContactCheckYourAnswersPage extends Page {
     this.changeCommentsLink().click()
   }
 
-  clickChangeEmailLinkTo<T>(index: number, constructor: new (...args: unknown[]) => T, ...args: unknown[]): T {
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  clickChangeEmailLinkTo<T>(index: number, constructor: new (...args: any) => T, ...args: any): T {
     cy.findAllByRole('link', { name: 'Change this email address' }).eq(index).click()
     return new constructor(...args)
   }
 
-  clickDeleteEmailLinkTo<T>(index: number, constructor: new (...args: unknown[]) => T, ...args: unknown[]): T {
+  clickDeleteEmailLinkTo<T>(index: number, constructor: new (...args: any) => T, ...args: any): T {
     cy.findAllByRole('link', { name: 'Delete this email address' }).eq(index).click()
     return new constructor(...args)
   }

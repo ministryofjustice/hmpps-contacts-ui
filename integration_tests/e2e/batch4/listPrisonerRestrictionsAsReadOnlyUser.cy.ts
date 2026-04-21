@@ -8,8 +8,14 @@ import ViewAllRestrictionsAndAlertsPage from '../../pages/viewAllRestrictionsAnd
 
 context('List prisoner restrictions and alerts with a contact admin or higher roles', () => {
   const prisoner = TestData.prisoner({ prisonerNumber: 'A1234BC', lastName: 'Prisoner', firstName: 'Test' })
+  const defaultPrisonerRestriction = pagedPrisonerRestrictionDetails().content?.[0]
+
+  if (!defaultPrisonerRestriction) {
+    throw new Error('Expected default prisoner restriction details to include at least one record')
+  }
+
   const prisonerRestrictions = pagedPrisonerRestrictionDetails({
-    content: [{ ...pagedPrisonerRestrictionDetails().content[0], prisonerNumber: 'A1234BC' }],
+    content: [{ ...defaultPrisonerRestriction, prisonerNumber: 'A1234BC' }],
   })
   const prisonerAlerts = pagedPrisonerAlertsData({
     prisonNumber: 'A1234BC',

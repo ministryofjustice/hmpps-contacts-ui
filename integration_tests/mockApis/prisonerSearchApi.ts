@@ -4,6 +4,16 @@ import { Prisoner } from '../../server/data/prisonerOffenderSearchTypes'
 import { PagedModelPrisonerRestrictionDetails } from '../../server/@types/contactsApiClient'
 import { PageAlert } from '../../server/data/alertsApiTypes'
 
+const getFirstPagedItem = <T>(items: T[] | undefined, message: string): T => {
+  const firstItem = items?.[0]
+
+  if (!firstItem) {
+    throw new Error(message)
+  }
+
+  return firstItem
+}
+
 export default {
   stubPrisoners: ({
     results = {
@@ -60,10 +70,16 @@ export default {
     })
   },
   stubPrisonerRestrictionsById: (restrictionDetails: PagedModelPrisonerRestrictionDetails): SuperAgentRequest => {
+    const { content: restrictionContent = [] } = restrictionDetails
+    const firstRestriction = getFirstPagedItem(
+      restrictionContent,
+      'Expected prisoner restriction details to include at least one record',
+    )
+
     return stubFor({
       request: {
         method: 'GET',
-        urlPath: `/prisoner-restrictions/${restrictionDetails.content[0].prisonerNumber}`,
+        urlPath: `/prisoner-restrictions/${firstRestriction.prisonerNumber}`,
       },
       response: {
         status: 200,
@@ -73,10 +89,13 @@ export default {
     })
   },
   stubPrisonerAlertsById: (pageAlert: PageAlert): SuperAgentRequest => {
+    const { content: alertContent = [] } = pageAlert
+    const firstAlert = getFirstPagedItem(alertContent, 'Expected prisoner alerts to include at least one record')
+
     return stubFor({
       request: {
         method: 'GET',
-        urlPath: `/prisoners/${pageAlert.content[0].prisonNumber}/alerts`,
+        urlPath: `/prisoners/${firstAlert.prisonNumber}/alerts`,
       },
       response: {
         status: 200,

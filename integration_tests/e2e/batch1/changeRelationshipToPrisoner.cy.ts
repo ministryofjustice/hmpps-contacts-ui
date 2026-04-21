@@ -14,7 +14,7 @@ context('Change Relationship To Prisoner', () => {
     firstName: 'First',
     middleNames: 'Middle Names',
     titleCode: 'MR',
-    dateOfBirth: null,
+    dateOfBirth: undefined,
   })
 
   beforeEach(() => {
