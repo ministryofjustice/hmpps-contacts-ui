@@ -10,6 +10,13 @@ export default function setUpStaticResources(): Router {
 
   router.use(compression())
 
+  // Rewrite /favicon.ico requests to the GOV.UK asset path otherwise they get an auth redirect and end up as 404s
+  // (Safari, for example, requests /favicon.ico even though a different path is specified in the HTML head)
+  router.get('/favicon.ico', (req, _res, next) => {
+    req.url = '/assets/images/favicon.ico'
+    next()
+  })
+
   //  Static Resources Configuration
   const cacheControl = { maxAge: config.staticResourceCacheDuration }
 
