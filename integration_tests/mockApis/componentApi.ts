@@ -30,6 +30,7 @@ const componentsNoServices: SharedData = {
   ],
   allocationJobResponsibilities: [],
   services: [],
+  cspDirectives: {},
 }
 
 const stubComponentsMeta = () => {
