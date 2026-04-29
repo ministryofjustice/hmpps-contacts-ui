@@ -31,18 +31,38 @@
                 {% if isGranted(PersonalRelationshipsPermission.edit_contacts, prisonerPermissions) %}
                   <li>
                       <span class="govuk-heading-s govuk-!-margin-bottom-0 govuk-!-padding-0">Restrictions and Alerts</span>
-                      <p class="govuk-body govuk-!-margin-bottom-1">
-                         <a id="prisoner-alerts-restrictions-link"
+                      {% if prisonerDetails.restrictionsCount is not null or prisonerDetails.alertsCount is not null %}
+                        <p class="govuk-body govuk-!-margin-bottom-1">
+                          <a id="prisoner-alerts-restrictions-link"
                             class="govuk-link--no-visited-state"
                             href="/prisoner/{{ prisonerDetails.prisonerNumber }}/alerts-restrictions"
                             data-qa="contact-{{ prisonerDetails.prisonerNumber }}-alerts-restrictions">
-                           {{ prisonerDetails.restrictionsCount }}
-                           {% if prisonerDetails.restrictionsCount == 1 %}restriction{% else %}restrictions{% endif %}
-                           and
-                           {{ prisonerDetails.alertsCount }}
-                           {% if prisonerDetails.alertsCount == 1 %}alert{% else %}alerts{% endif %}
-                         </a>
-                      </p>
+                              {% if prisonerDetails.restrictionsCount is not null %}
+                                {{ prisonerDetails.restrictionsCount }}
+                                {% if prisonerDetails.restrictionsCount == 1 %}restriction{% else %}restrictions{% endif %}
+                              {% endif %}
+
+                              {{ "and" if prisonerDetails.restrictionsCount and prisonerDetails.alertsCount }}
+
+                              {% if prisonerDetails.alertsCount is not null %}
+                                {{ prisonerDetails.alertsCount }}
+                                {% if prisonerDetails.alertsCount == 1 %}alert{% else %}alerts{% endif %}
+                              {% endif %}
+                          </a>
+                        </p>
+                      {% endif %}
+
+                      {% if prisonerDetails.restrictionsCount is null or prisonerDetails.alertsCount is null %}
+                        <div>
+                          {%- if prisonerDetails.restrictionsCount is null %}Restrictions {% endif -%}
+                          {%- if prisonerDetails.restrictionsCount is null and prisonerDetails.alertsCount is null %}and {% endif -%}
+                          {%- if prisonerDetails.alertsCount is null and prisonerDetails.restrictionsCount is null -%}
+                            alerts
+                          {%- elseif prisonerDetails.alertsCount is null -%}
+                            Alerts
+                          {%- endif %} information is currently unavailable. Try again later.
+                        </div>
+                      {% endif %}
                   </li>
                 {% endif %}
             </ul>
