@@ -1,10 +1,7 @@
-import { Request, Response, NextFunction } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { PrisonerSearchService, ContactsService } from '../services'
 import { Prisoner } from '../data/prisonerOffenderSearchTypes'
 import { PrisonerDetails } from '../@types/journeys'
-import { PagedModelPrisonerRestrictionDetails } from '../@types/contactsApiClient'
-import logger from '../../logger'
-import { PageAlert } from '../data/alertsApiTypes'
 import AlertsService from '../services/alertsService'
 
 const populatePrisonerDetailsIfInCaseload = (
@@ -17,43 +14,32 @@ const populatePrisonerDetailsIfInCaseload = (
     const { prisonerNumber } = req.params
     const { user } = res.locals
 
-    try {
-      // get prisoner first - if prisoner lookup fails we won't attempt restrictions
-      const prisoner: Prisoner | undefined = await prisonerSearchService.getByPrisonerNumber(prisonerNumber, user)
+    // get prisoner first - if prisoner lookup fails we won't attempt restrictions
+    const prisoner = await prisonerSearchService.getByPrisonerNumber(prisonerNumber, user)
 
-      if (prisoner) {
-        // fetch restrictions count safely
-        let restrictionsCount = 0
-        let alertsCount = 0
-        try {
-          const restrictions: PagedModelPrisonerRestrictionDetails = await contactsService.getPrisonerRestrictions(
-            prisonerNumber,
-            0,
-            10,
-            user,
-            false,
-            false,
-          )
-          restrictionsCount = restrictions?.content?.length ?? 0
+    if (prisoner) {
+      // get restrictions and alerts in parallel - then if either fails set count to null so template can render API failure message
+      const [restrictionsPromise, alertsPromise] = await Promise.allSettled([
+        contactsService.getPrisonerRestrictions(prisonerNumber, 0, 10, user, false, false),
+        alertsService.getAlerts(prisonerNumber, user),
+      ])
 
-          const prisonerAlertsContent: PageAlert = await alertsService.getAlerts(prisonerNumber, user)
-          alertsCount = prisonerAlertsContent?.content?.length ?? 0
-        } catch (err) {
-          // do nothing if restrictions fetch fails - we can still show prisoner details
-          logger.error(err, `Failed to populate alerts and restrictions for prisoner: ${req.params.prisonerNumber}`)
-        }
+      const restrictionsCount =
+        restrictionsPromise.status === 'fulfilled' ? (restrictionsPromise.value?.content?.length ?? 0) : null
 
-        res.locals.prisonerDetails = toPrisonerDetails(prisoner, restrictionsCount, alertsCount)
-      }
-    } catch (err) {
-      logger.error(err, `Failed to populate prisoner details for prisoner: ${req.params.prisonerNumber}`)
-      next(err)
-    } finally {
-      next()
+      const alertsCount = alertsPromise.status === 'fulfilled' ? (alertsPromise.value?.content?.length ?? 0) : null
+
+      res.locals.prisonerDetails = toPrisonerDetails(prisoner, restrictionsCount, alertsCount)
     }
+
+    next()
   }
 
-  function toPrisonerDetails(prisoner: Prisoner, restrictionsCount: number, alertsCount: number): PrisonerDetails {
+  function toPrisonerDetails(
+    prisoner: Prisoner,
+    restrictionsCount: number | null,
+    alertsCount: number | null,
+  ): PrisonerDetails {
     const hasPrimaryAddress = !!(
       prisoner.addresses &&
       prisoner.addresses.length > 0 &&
