@@ -53,7 +53,7 @@
                       {% endif %}
 
                       {% if prisonerDetails.restrictionsCount is null or prisonerDetails.alertsCount is null %}
-                        <div>
+                        <p class="inset-api-error" data-qa="alerts-restrictions-unavailable">
                           {%- if prisonerDetails.restrictionsCount is null %}Restrictions {% endif -%}
                           {%- if prisonerDetails.restrictionsCount is null and prisonerDetails.alertsCount is null %}and {% endif -%}
                           {%- if prisonerDetails.alertsCount is null and prisonerDetails.restrictionsCount is null -%}
@@ -61,7 +61,7 @@
                           {%- elseif prisonerDetails.alertsCount is null -%}
                             Alerts
                           {%- endif %} information is currently unavailable. Try again later.
-                        </div>
+                        </p>
                       {% endif %}
                   </li>
                 {% endif %}
