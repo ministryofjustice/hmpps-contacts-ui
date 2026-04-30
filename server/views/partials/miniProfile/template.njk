@@ -29,33 +29,33 @@
                     <span class="govuk-body" data-qa="mini-profile-cell-location">{{ prisonerDetails.cellLocation }}</span>
                 </li>
                 {% if isGranted(PersonalRelationshipsPermission.edit_contacts, prisonerPermissions) %}
-                  <li>
+                  <li class="mini-profile-alerts-restrictions">
                       <span class="govuk-heading-s govuk-!-margin-bottom-0 govuk-!-padding-0">Restrictions and Alerts</span>
                       {% if prisonerDetails.restrictionsCount is not null or prisonerDetails.alertsCount is not null %}
                         <p class="govuk-body govuk-!-margin-bottom-1">
                           <a id="prisoner-alerts-restrictions-link"
                             class="govuk-link--no-visited-state"
                             href="/prisoner/{{ prisonerDetails.prisonerNumber }}/alerts-restrictions"
-                            data-qa="contact-{{ prisonerDetails.prisonerNumber }}-alerts-restrictions">
-                              {% if prisonerDetails.restrictionsCount is not null %}
-                                {{ prisonerDetails.restrictionsCount }}
-                                {% if prisonerDetails.restrictionsCount == 1 %}restriction{% else %}restrictions{% endif %}
-                              {% endif %}
+                            data-qa="mini-profile-alerts-restrictions">
+                              {%- if prisonerDetails.restrictionsCount is not null -%}
+                                {{- prisonerDetails.restrictionsCount -}}
+                                {%- if prisonerDetails.restrictionsCount == 1 %} restriction{% else %}restrictions {% endif -%}
+                              {%- endif -%}
 
-                              {{ "and" if prisonerDetails.restrictionsCount and prisonerDetails.alertsCount }}
+                              {%- if prisonerDetails.restrictionsCount is not null and prisonerDetails.alertsCount is not null %} and {% endif -%}
 
-                              {% if prisonerDetails.alertsCount is not null %}
-                                {{ prisonerDetails.alertsCount }}
-                                {% if prisonerDetails.alertsCount == 1 %}alert{% else %}alerts{% endif %}
-                              {% endif %}
+                              {%- if prisonerDetails.alertsCount is not null -%}
+                                {{- prisonerDetails.alertsCount -}}
+                                {%- if prisonerDetails.alertsCount == 1 %} alert{% else %} alerts{% endif -%}
+                              {%- endif -%}
                           </a>
                         </p>
                       {% endif %}
 
                       {% if prisonerDetails.restrictionsCount is null or prisonerDetails.alertsCount is null %}
-                        <p class="inset-api-error" data-qa="alerts-restrictions-unavailable">
-                          {%- if prisonerDetails.restrictionsCount is null %}Restrictions {% endif -%}
-                          {%- if prisonerDetails.restrictionsCount is null and prisonerDetails.alertsCount is null %}and {% endif -%}
+                        <p class="inset-api-error" data-qa="mini-profile-alerts-restrictions-unavailable">
+                          {%- if prisonerDetails.restrictionsCount is null %}Restrictions{% endif -%}
+                          {%- if prisonerDetails.restrictionsCount is null and prisonerDetails.alertsCount is null %} and {% endif -%}
                           {%- if prisonerDetails.alertsCount is null and prisonerDetails.restrictionsCount is null -%}
                             alerts
                           {%- elseif prisonerDetails.alertsCount is null -%}

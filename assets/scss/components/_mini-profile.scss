@@ -43,10 +43,10 @@
 .mini-profile-info li {
   margin-right: 25px;
   color: #0b0c0c;
+}
 
-  &:last-child {
-    max-width: 30%;
-  }
+.mini-profile-alerts-restrictions {
+  max-width: 30%;
 }
 
 .mini-profile .inset-api-error {
