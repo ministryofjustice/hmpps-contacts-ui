@@ -3,7 +3,7 @@ import populatePrisonerDetailsIfInCaseload from './populatePrisonerDetailsIfInCa
 import TestData from '../routes/testutils/testData'
 import RestrictionsTestData from '../routes/testutils/stubRestrictionsData'
 import { basicPrisonUser } from '../routes/testutils/appSetup'
-import { PrisonerSearchAddress } from '../data/prisonerOffenderSearchTypes'
+import { Prisoner, PrisonerSearchAddress } from '../data/prisonerOffenderSearchTypes'
 import { MockedService } from '../testutils/mockedServices'
 import { PrisonerDetails } from '../@types/journeys'
 import pagedPrisonerAlertsData from '../testutils/testPrisonerAlertsData'
@@ -19,16 +19,26 @@ const alertsService = MockedService.AlertsService()
 type Request = ExpressRequest<{ prisonerNumber: string }>
 
 describe('prisonerDetailsMiddleware', () => {
-  const prisoner = TestData.prisoner()
+  let prisoner: Prisoner
   const res = { locals: { user: basicPrisonUser }, render: jest.fn(), status: jest.fn() } as unknown as Response
 
   let req = {} as Request
+  const next = jest.fn()
 
   beforeEach(() => {
     delete res.locals.prisonerDetails
-    // provide a sensible default so middleware won't throw when awaiting restrictions
+
+    prisoner = TestData.prisoner()
+
+    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
     contactsService.getPrisonerRestrictions.mockResolvedValue(RestrictionsTestData.stubRestrictionsData())
     alertsService.getAlerts.mockResolvedValue(pagedPrisonerAlertsData())
+
+    req = {
+      params: {
+        prisonerNumber: 'A1234BC',
+      },
+    } as Request
   })
 
   afterEach(() => {
@@ -36,15 +46,7 @@ describe('prisonerDetailsMiddleware', () => {
   })
 
   it('should add prisoner details and call next', async () => {
-    const next = jest.fn()
-    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
     contactsService.getPrisonerRestrictions.mockResolvedValue(RestrictionsTestData.stubRestrictionsData())
-
-    req = {
-      params: {
-        prisonerNumber: 'A1234BC',
-      },
-    } as Request
 
     await populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService)(req, res, next)
 
@@ -65,15 +67,7 @@ describe('prisonerDetailsMiddleware', () => {
   })
 
   it('should add prisoner details if no addresses', async () => {
-    const next = jest.fn()
-    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
     prisoner.addresses = []
-
-    req = {
-      params: {
-        prisonerNumber: 'A1234BC',
-      },
-    } as Request
 
     await populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService)(req, res, next)
 
@@ -92,19 +86,11 @@ describe('prisonerDetailsMiddleware', () => {
   })
 
   it('should add prisoner details if no primary addresses', async () => {
-    const next = jest.fn()
-    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
     const prisonerAddress: PrisonerSearchAddress = {
       fullAddress: '12, my street, england',
       primaryAddress: false,
     }
     prisoner.addresses = [prisonerAddress]
-
-    req = {
-      params: {
-        prisonerNumber: 'A1234BC',
-      },
-    } as Request
 
     await populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService)(req, res, next)
 
@@ -123,19 +109,11 @@ describe('prisonerDetailsMiddleware', () => {
   })
 
   it('should add prisoner details if has a primary address', async () => {
-    const next = jest.fn()
-    prisonerSearchService.getByPrisonerNumber.mockResolvedValue(prisoner)
     const prisonerAddress: PrisonerSearchAddress = {
       fullAddress: '12, my street, england',
       primaryAddress: true,
     }
     prisoner.addresses = [prisonerAddress]
-
-    req = {
-      params: {
-        prisonerNumber: 'A1234BC',
-      },
-    } as Request
 
     await populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService)(req, res, next)
 
@@ -153,19 +131,21 @@ describe('prisonerDetailsMiddleware', () => {
     expect(res.locals.prisonerDetails).toStrictEqual(expectedPrisonerDetails)
   })
 
-  it('should deal with problems coming from the service without blowing up', async () => {
-    const next = jest.fn()
-    const error = new Error('Bang!')
-    prisonerSearchService.getByPrisonerNumber.mockRejectedValue(error)
-
-    req = {
-      params: {
-        prisonerNumber: 'A1234BC',
-      },
-    } as Request
+  it('should handle alerts API failure', async () => {
+    alertsService.getAlerts.mockRejectedValue(new Error())
 
     await populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService)(req, res, next)
 
-    expect(prisonerSearchService.getByPrisonerNumber).toHaveBeenCalledWith('A1234BC', basicPrisonUser)
+    expect(res.locals.prisonerDetails!.alertsCount).toBeNull()
+    expect(res.locals.prisonerDetails!.restrictionsCount).toBe(1)
+  })
+
+  it('should propagate errors (to be handled by the error middleware)', async () => {
+    const error = new Error('Bang!')
+    prisonerSearchService.getByPrisonerNumber.mockRejectedValue(error)
+
+    await expect(
+      populatePrisonerDetailsIfInCaseload(prisonerSearchService, contactsService, alertsService)(req, res, next),
+    ).rejects.toThrow(error)
   })
 })

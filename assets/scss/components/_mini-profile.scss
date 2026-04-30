@@ -45,6 +45,17 @@
   color: #0b0c0c;
 }
 
+.mini-profile-alerts-restrictions {
+  max-width: 30%;
+}
+
+.mini-profile .inset-api-error {
+  @include govuk-font($size: 16);
+  padding: 4px 8px;
+  border-left: $govuk-border-width solid govuk-colour('red');
+  margin-bottom: 4px;
+}
+
 /* Media query for larger screens */
 @media (max-width: 768px) {
   .mini-profile-info li {

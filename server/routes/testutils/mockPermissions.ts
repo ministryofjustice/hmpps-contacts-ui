@@ -1,4 +1,5 @@
 import {
+  CorePersonRecordPermission,
   isGranted,
   PersonalRelationshipsPermission,
   PrisonerPermission,
@@ -16,7 +17,9 @@ export default function mockPermissions(app: Express, permissions: Partial<Recor
   isGrantedMock.mockImplementation((perm, _perms) => permissions[perm] || false)
   setupNunjucksPermissionsMock.mockImplementation(njkEnv => {
     njkEnv.addGlobal('isGranted', isGrantedMock)
-    Object.entries({ PersonalRelationshipsPermission }).forEach(([key, value]) => njkEnv.addGlobal(key, value))
+    Object.entries({ PersonalRelationshipsPermission, CorePersonRecordPermission }).forEach(([key, value]) =>
+      njkEnv.addGlobal(key, value),
+    )
   })
   prisonerPermissionsGuardMock.mockImplementation((_service, options) => async (_req, _res, next) => {
     return options.requestDependentOn.some(perm => !permissions[perm]) ? next(new Error('Permission denied')) : next()

@@ -150,8 +150,8 @@ export interface PrisonerDetails {
   prisonName?: string | undefined
   cellLocation?: string | undefined
   hasPrimaryAddress: boolean
-  alertsCount: number
-  restrictionsCount: number
+  alertsCount: number | null // null if alerts count failed to fetch
+  restrictionsCount: number | null // null if restrictions count failed to fetch
 }
 
 export interface EmploymentDetails {
