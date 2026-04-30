@@ -39,7 +39,7 @@
                             data-qa="mini-profile-alerts-restrictions">
                               {%- if prisonerDetails.restrictionsCount is not null -%}
                                 {{- prisonerDetails.restrictionsCount -}}
-                                {%- if prisonerDetails.restrictionsCount == 1 %} restriction{% else %}restrictions {% endif -%}
+                                {%- if prisonerDetails.restrictionsCount == 1 %} restriction{% else %} restrictions{% endif -%}
                               {%- endif -%}
 
                               {%- if prisonerDetails.restrictionsCount is not null and prisonerDetails.alertsCount is not null %} and {% endif -%}
