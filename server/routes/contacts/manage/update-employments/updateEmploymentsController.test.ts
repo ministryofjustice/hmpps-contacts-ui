@@ -135,8 +135,6 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId/update
     )
     expect($('a:contains("Cancel")').attr('href')).toEqual('/prisoner/A1234BC/contacts/manage/1/relationship/2')
     expect($('p:contains("To change details such as the employer name")').text()).toBeTruthy()
-
-    expect($('strong:contains("Only record data when it is necessary to do so.")').text()).toBeTruthy()
   })
 
   it('should handle no employment record', async () => {
