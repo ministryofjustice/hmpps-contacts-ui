@@ -24,6 +24,9 @@
         <h1 class="govuk-heading-l">{{ title }}</h1>
       </div>
 
+      {% if not isNewContact %}
+      {% endif %}
+
       {% if hasExistingEmployment %}
         <p>You can link the contact to employers and change employment status using this service, however the employer organisation records have not yet been moved into DPS.</p>
         <p>To change details such as the employer name, address or phone number, you’ll need to update the organisation record in NOMIS.</p>
