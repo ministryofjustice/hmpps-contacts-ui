@@ -9,7 +9,7 @@ export default class PrisonApiClient extends RestClient {
   }
 
   async getImage(prisonerNumber: string, user: Express.User): Promise<Readable> {
-    return this.stream({ path: `/api/bookings/offenderNo/${prisonerNumber}/image/data` }, user)
+    return this.prisonerThumbnail({ path: `/api/bookings/offenderNo/${prisonerNumber}/image/data` }, user)
   }
 
   async getOffenderAddresses(prisonerNumber: string, user: Express.User): Promise<PrisonApiAddress[]> {
