@@ -242,7 +242,6 @@ export default abstract class RestClient {
         .timeout(this.timeoutConfig())
         .set(headers)
         .end((error, response) => {
-          logger.info(`Status: ${response.status}`)
           if (error) {
             if (response.status === 404) {
               const s = new Readable()
@@ -258,9 +257,10 @@ export default abstract class RestClient {
                 s.push(null)
                 resolve(s)
               })
+            } else {
+              logger.warn(sanitiseError(error), `Error calling ${this.name}`)
+              reject(error)
             }
-            logger.warn(sanitiseError(error), `Error calling ${this.name}`)
-            reject(error)
           } else if (response) {
             const s = new Readable()
             // eslint-disable-next-line no-underscore-dangle
