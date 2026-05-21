@@ -1,3 +1,5 @@
+import { Readable } from 'stream'
+
 import nock from 'nock'
 
 import { AgentConfig } from '../config'
@@ -5,6 +7,7 @@ import RestClient, { Client } from './restClient'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 
 jest.mock('./tokenStore/inMemoryTokenStore')
+jest.mock('node:fs', () => ({ createReadStream: jest.fn() }))
 
 const user = { token: 'userToken', username: 'jbloggs' } as Express.User
 
@@ -219,5 +222,68 @@ describe.each(['get', 'patch', 'post', 'put', 'delete'] as const)('Method: %s', 
     expect(result).toStrictEqual({
       success: true,
     })
+  })
+})
+
+describe('prisonerThumbnail', () => {
+  beforeEach(() => {
+    jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
+  })
+
+  it('should return a readable stream containing the response body on a 200 response', async () => {
+    nock('http://localhost:8080', {
+      reqheaders: { authorization: 'Bearer systemToken' },
+    })
+      .get('/api/thumbnail')
+      .reply(200, Buffer.from('image data'), { 'Content-Type': 'image/jpeg' })
+
+    const result = await restClient.prisonerThumbnail({ path: '/thumbnail' }, user)
+
+    expect(nock.isDone()).toBe(true)
+    expect(result).toBeInstanceOf(Readable)
+  })
+
+  it('should return a placeholder image stream on a 404 response', async () => {
+    nock('http://localhost:8080', {
+      reqheaders: { authorization: 'Bearer systemToken' },
+    })
+      .get('/api/thumbnail')
+      .reply(404)
+
+    const placeholderData = Buffer.from('placeholder image data')
+    const mockFileStream = new Readable({
+      read() {
+        /* empty */
+      },
+    })
+    const { createReadStream } = jest.requireMock('node:fs') as { createReadStream: jest.Mock }
+    createReadStream.mockImplementation(() => {
+      process.nextTick(() => {
+        mockFileStream.emit('data', placeholderData)
+        mockFileStream.emit('close')
+      })
+      return mockFileStream
+    })
+
+    const result = await restClient.prisonerThumbnail({ path: '/thumbnail' }, user)
+
+    expect(nock.isDone()).toBe(true)
+    expect(result).toBeInstanceOf(Readable)
+  })
+
+  it('should reject with an error on a 500 response', async () => {
+    nock('http://localhost:8080', {
+      reqheaders: { authorization: 'Bearer systemToken' },
+    })
+      .get('/api/thumbnail')
+      .reply(500)
+      .get('/api/thumbnail')
+      .reply(500)
+      .get('/api/thumbnail')
+      .reply(500)
+
+    await expect(restClient.prisonerThumbnail({ path: '/thumbnail' }, user)).rejects.toThrow()
+
+    expect(nock.isDone()).toBe(true)
   })
 })
