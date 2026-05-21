@@ -2,6 +2,8 @@ import { Readable } from 'stream'
 
 import { HttpAgent, HttpsAgent } from 'agentkeepalive'
 import superagent from 'superagent'
+import { join } from 'path'
+import { createReadStream } from 'node:fs'
 
 import { URLSearchParams } from 'url'
 import logger from '../../logger'
@@ -219,7 +221,7 @@ export default abstract class RestClient {
     }
   }
 
-  async stream(
+  async prisonerThumbnail(
     { path = undefined, headers = {} }: StreamRequest,
     user: Express.User,
     client = Client.SYSTEM_TOKEN,
@@ -241,6 +243,21 @@ export default abstract class RestClient {
         .set(headers)
         .end((error, response) => {
           if (error) {
+            if (response.statusCode === 404) {
+              const s = new Readable()
+              // eslint-disable-next-line no-underscore-dangle
+              s._read = () => {}
+              const placeHolderImage = join(process.cwd(), '/dist/assets/images/prisoner-profile-image.png')
+              const readableStream = createReadStream(placeHolderImage)
+
+              readableStream.on('data', chunk => {
+                s.push(chunk)
+              })
+              readableStream.on('close', () => {
+                s.push(null)
+                resolve(s)
+              })
+            }
             logger.warn(sanitiseError(error), `Error calling ${this.name}`)
             reject(error)
           } else if (response) {

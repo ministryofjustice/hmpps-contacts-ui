@@ -9,7 +9,7 @@ const user = { token: 'userToken', username: 'user1' } as Express.User
 
 describe('Prison api client tests', () => {
   let prisonApiClient: PrisonApiClient
-  const stream = jest.spyOn(RestClient.prototype, 'stream')
+  const prisonerThumbnail = jest.spyOn(RestClient.prototype, 'prisonerThumbnail')
 
   beforeEach(() => {
     prisonApiClient = new PrisonApiClient()
@@ -21,9 +21,9 @@ describe('Prison api client tests', () => {
   })
 
   it('Get prisoner image', async () => {
-    stream.mockResolvedValue(Readable.from('image'))
+    prisonerThumbnail.mockResolvedValue(Readable.from('image'))
     const result = await prisonApiClient.getImage('ABC1234', user)
-    expect(stream).toHaveBeenCalledWith({ path: '/api/bookings/offenderNo/ABC1234/image/data' }, user)
+    expect(prisonerThumbnail).toHaveBeenCalledWith({ path: '/api/bookings/offenderNo/ABC1234/image/data' }, user)
     expect(result.read()).toEqual('image')
   })
 })
