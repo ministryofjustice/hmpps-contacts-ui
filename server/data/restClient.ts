@@ -244,19 +244,12 @@ export default abstract class RestClient {
         .end((error, response) => {
           if (error) {
             if (response.status === 404) {
-              const s = new Readable()
-              // eslint-disable-next-line no-underscore-dangle
-              s._read = () => {}
               const placeHolderImage = join(process.cwd(), '/dist/assets/images/prisoner-profile-image.png')
               const readableStream = createReadStream(placeHolderImage)
 
-              readableStream.on('data', chunk => {
-                s.push(chunk)
-              })
-              readableStream.on('close', () => {
-                s.push(null)
-                resolve(s)
-              })
+              readableStream.on('error', streamError => reject(streamError))
+
+              resolve(readableStream)
             } else {
               logger.warn(sanitiseError(error), `Error calling ${this.name}`)
               reject(error)
