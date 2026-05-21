@@ -243,7 +243,8 @@ export default abstract class RestClient {
         .set(headers)
         .end((error, response) => {
           if (error) {
-            if (response.status === 404) {
+            const status = error.status ?? response?.status
+            if (status === 404) {
               const s = new Readable()
               // eslint-disable-next-line no-underscore-dangle
               s._read = () => {}
