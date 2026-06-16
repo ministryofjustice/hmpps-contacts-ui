@@ -6,6 +6,7 @@ import { Navigation } from '../../common/navigation'
 import Urls from '../../../urls'
 import { ContactDetails } from '../../../../@types/contactsApiClient'
 import Permission from '../../../../enumeration/permission'
+import { EditContactConfirmSchemaType } from './editContactConfirmSchema'
 
 export default class EditContactConfirmController implements PageHandler {
   constructor(
@@ -28,10 +29,9 @@ export default class EditContactConfirmController implements PageHandler {
     const linkedPrisonersCount =
       (await this.contactsService.getLinkedPrisoners(contact.id, 0, 1, user)).page?.totalElements ?? 0
 
-    const contactDetailsUrl = Urls.contactDetails(prisonerNumber, contactId, prisonerContactId)
     const navigation: Navigation = {
       backLinkLabel: 'Back to contact record',
-      backLink: `${contactDetailsUrl}#${this.editType}`,
+      backLink: Urls.contactDetails(prisonerNumber, contactId, prisonerContactId),
     }
 
     return res.render('pages/contacts/manage/editContactConfirm', {
@@ -40,5 +40,26 @@ export default class EditContactConfirmController implements PageHandler {
       contact,
       navigation,
     })
+  }
+
+  POST = async (
+    req: Request<
+      { prisonerNumber: string; contactId: string; prisonerContactId: string },
+      unknown,
+      EditContactConfirmSchemaType
+    >,
+    res: Response,
+  ): Promise<void> => {
+    const { prisonerNumber, contactId, prisonerContactId } = req.params
+
+    if (req.body.confirmContactEdit === 'YES') {
+      const redirectUrl =
+        this.editType === 'contact-details'
+          ? Urls.editContactDetails(prisonerNumber, contactId, prisonerContactId)
+          : Urls.editContactMethods(prisonerNumber, contactId, prisonerContactId)
+      return res.redirect(redirectUrl)
+    }
+
+    return res.redirect(Urls.contactDetails(prisonerNumber, contactId, prisonerContactId))
   }
 }

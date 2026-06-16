@@ -58,6 +58,7 @@ import OrganisationsService from '../../../services/organisationsService'
 import EditContactDetailsController from './edit-contact-details/editContactDetailsController'
 import EditContactMethodsController from './edit-contact-methods/editContactMethodsController'
 import EditContactConfirmController from './edit-contact-confirm/editContactConfirmController'
+import { editContactConfirmSchema } from './edit-contact-confirm/editContactConfirmSchema'
 import CheckEmployerController from './update-employments/check-employer/checkEmployerController'
 import { checkEmployerSchema } from './update-employments/check-employer/checkEmployerSchema'
 import { employmentStatusSchema } from './update-employments/employment-status/employmentStatusSchema'
@@ -220,20 +221,24 @@ const ManageContactsRoutes = (
     new EditContactDetailsController(contactsService),
   )
 
-  get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-contact-details/confirm',
-    new EditContactConfirmController(contactsService, 'contact-details'),
-  )
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-contact-details/confirm',
+    controller: new EditContactConfirmController(contactsService, 'contact-details'),
+    schema: editContactConfirmSchema,
+    prisonerDetailsRequiredOnPost: false,
+  })
 
   get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-contact-methods',
     new EditContactMethodsController(contactsService, referenceDataService),
   )
 
-  get(
-    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-contact-methods/confirm',
-    new EditContactConfirmController(contactsService, 'contact-methods'),
-  )
+  standAloneRoute({
+    path: '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-contact-methods/confirm',
+    controller: new EditContactConfirmController(contactsService, 'contact-methods'),
+    schema: editContactConfirmSchema,
+    prisonerDetailsRequiredOnPost: false,
+  })
 
   get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-restrictions',
