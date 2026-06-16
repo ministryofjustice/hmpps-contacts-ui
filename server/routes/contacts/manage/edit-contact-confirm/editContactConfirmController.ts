@@ -14,7 +14,7 @@ export default class EditContactConfirmController implements PageHandler {
     private readonly editType: 'contact-details' | 'contact-methods',
   ) {}
 
-  public PAGE_NAME = Page.EDIT_CONTACT_DETAILS_CONFIRM_PAGE
+  public PAGE_NAME = Page.EDIT_CONTACT_CONFIRM_PAGE
 
   public REQUIRED_PERMISSION = Permission.edit_contacts
 
