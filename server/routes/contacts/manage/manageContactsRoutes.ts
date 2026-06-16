@@ -57,6 +57,7 @@ import OrganisationSearchController from './update-employments/organisation-sear
 import OrganisationsService from '../../../services/organisationsService'
 import EditContactDetailsController from './edit-contact-details/editContactDetailsController'
 import EditContactMethodsController from './edit-contact-methods/editContactMethodsController'
+import EditContactConfirmController from './edit-contact-confirm/editContactConfirmController'
 import CheckEmployerController from './update-employments/check-employer/checkEmployerController'
 import { checkEmployerSchema } from './update-employments/check-employer/checkEmployerSchema'
 import { employmentStatusSchema } from './update-employments/employment-status/employmentStatusSchema'
@@ -220,8 +221,18 @@ const ManageContactsRoutes = (
   )
 
   get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-contact-details/confirm',
+    new EditContactConfirmController(contactsService, 'contact-details'),
+  )
+
+  get(
     '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-contact-methods',
     new EditContactMethodsController(contactsService, referenceDataService),
+  )
+
+  get(
+    '/prisoner/:prisonerNumber/contacts/manage/:contactId/relationship/:prisonerContactId/edit-contact-methods/confirm',
+    new EditContactConfirmController(contactsService, 'contact-methods'),
   )
 
   get(

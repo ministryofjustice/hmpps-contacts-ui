@@ -24,7 +24,7 @@
 {% block beforeContent %}
   {% include 'partials/navigation.njk' %}
   {% include 'partials/formErrorSummary.njk' %}
-  {% if prisonerDetails %}
+  {% if prisonerDetails and not hideMiniProfile %}
     {{ miniProfile(prisonerDetails, prisonerPermissions) }}
   {% endif %}
 {% endblock %}
