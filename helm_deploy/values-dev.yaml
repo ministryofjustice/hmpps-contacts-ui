@@ -24,6 +24,8 @@ generic-service:
     SENTRY_ENVIRONMENT: DEV
     AUDIT_ENABLED: 'true'
 
+    LINKED_PRISONERS_CONFIRMATION_THRESHOLD: "5"
+
   allowlist:
     groups:
       - prisons
