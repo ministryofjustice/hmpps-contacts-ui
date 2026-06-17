@@ -4,6 +4,7 @@ import ManageContactDetailsPage from '../../pages/manageContactDetails'
 import pagedPrisonerAlertsData from '../../../server/testutils/testPrisonerAlertsData'
 import EditContactConfirmPage from '../../pages/editContactConfirmPage'
 import EditContactDetailsPage from '../../pages/editContactDetailsPage'
+import EditContactMethodsPage from '../../pages/editContactMethodsPage'
 
 context('Edit contact confirmation with multiple linked prisoners', () => {
   const contactId = 654321
@@ -59,25 +60,53 @@ context('Edit contact confirmation with multiple linked prisoners', () => {
     })
   })
 
-  it('Editing a contact with the threshold number of linked prisoners requires confirmation', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Last') //
-      .clickEditContactDetailsLink()
+  describe('Edit contact details', () => {
+    it('Editing a contact with the threshold number of linked prisoners requires confirmation', () => {
+      Page.verifyOnPage(ManageContactDetailsPage, 'First Last') //
+        .clickEditContactDetailsLink()
 
-    Page.verifyOnPage(EditContactConfirmPage, 5, 'First Last') //
-      .selectConfirmContactEdit('YES')
-      .clickContinue()
+      Page.verifyOnPage(EditContactConfirmPage, 5, 'First Last') //
+        .selectConfirmContactEdit('YES')
+        .clickContinue()
 
-    Page.verifyOnPage(EditContactDetailsPage, 'First Last')
+      Page.verifyOnPage(EditContactDetailsPage, 'First Last')
+    })
+
+    it('Selecting NO on the edit contact confirmation page cancels the edit', () => {
+      Page.verifyOnPage(ManageContactDetailsPage, 'First Last') //
+        .clickEditContactDetailsLink()
+
+      Page.verifyOnPage(EditContactConfirmPage, 5, 'First Last') //
+        .selectConfirmContactEdit('NO')
+        .clickContinue()
+
+      Page.verifyOnPage(ManageContactDetailsPage, 'First Last')
+    })
   })
 
-  it('Selecting NO on the edit contact confirmation page cancels the edit', () => {
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Last') //
-      .clickEditContactDetailsLink()
+  describe('Edit contact methods', () => {
+    it('Editing a contact with the threshold number of linked prisoners requires confirmation', () => {
+      Page.verifyOnPage(ManageContactDetailsPage, 'First Last') //
+        .clickContactMethodsTab()
+        .clickEditContactMethodsLink()
 
-    Page.verifyOnPage(EditContactConfirmPage, 5, 'First Last') //
-      .selectConfirmContactEdit('NO')
-      .clickContinue()
+      Page.verifyOnPage(EditContactConfirmPage, 5, 'First Last') //
+        .selectConfirmContactEdit('YES')
+        .clickContinue()
 
-    Page.verifyOnPage(ManageContactDetailsPage, 'First Last')
+      Page.verifyOnPage(EditContactMethodsPage, 'First Last')
+    })
+
+    it('Selecting NO on the edit contact confirmation page cancels the edit', () => {
+      Page.verifyOnPage(ManageContactDetailsPage, 'First Last') //
+        .clickContactMethodsTab()
+        .clickEditContactMethodsLink()
+
+      Page.verifyOnPage(EditContactConfirmPage, 5, 'First Last') //
+        .selectConfirmContactEdit('NO')
+        .clickContinue()
+
+      Page.verifyOnPage(ManageContactDetailsPage, 'First Last')
+    })
   })
 })
