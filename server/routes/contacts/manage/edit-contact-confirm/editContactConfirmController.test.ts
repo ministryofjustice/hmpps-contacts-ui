@@ -67,6 +67,7 @@ describe.each(pageVariants)(
         '/prisoner/A1234BC/contacts/manage/22/relationship/12232',
       )
       expect($('[data-qa=breadcrumbs]')).toHaveLength(0)
+      expect($('[data-qa=mini-profile]')).toHaveLength(0)
       expect($('.main-heading').text().trim()).toBe(
         `${linkedPrisonersConfirmationThreshold} prisoners are linked to Jones Mason. Are you sure you want to edit this contact?`,
       )
