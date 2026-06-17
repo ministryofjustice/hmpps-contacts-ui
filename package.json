@@ -41,7 +41,7 @@
     "@ministryofjustice/hmpps-monitoring": "^2.1.0",
     "@ministryofjustice/hmpps-prison-permissions-lib": "^3.0.0",
     "@ministryofjustice/hmpps-rest-client": "^2.1.0",
-    "@sentry/node": "^10.56.0",
+    "@sentry/node": "^10.57.0",
     "accessible-autocomplete": "^3.0.1",
     "agentkeepalive": "^4.6.0",
     "applicationinsights": "^2.9.8",
@@ -114,6 +114,8 @@
     "typescript": "^6.0.3"
   },
   "overrides": {
+    "@opentelemetry/core": "2.8.0",
+    "js-yaml": "4.2.0",
     "mocha": {
       "diff": "^8.0.4",
       "serialize-javascript": "^7.0.5"

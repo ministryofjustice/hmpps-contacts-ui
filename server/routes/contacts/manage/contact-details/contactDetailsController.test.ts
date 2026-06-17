@@ -23,6 +23,7 @@ import { HmppsUser } from '../../../../interfaces/hmppsUser'
 import mockPermissions from '../../../testutils/mockPermissions'
 import Permission from '../../../../enumeration/permission'
 import pagedPrisonerRestrictionDetails from '../../../../testutils/testPrisonerRestrictionsData'
+import config from '../../../../config'
 
 // Mock the config module to enable the feature flag
 jest.mock('../../../../config', () => {
@@ -744,6 +745,32 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
     })
 
+    describe('Edit contact details link', () => {
+      it('should render the edit contact details link', async () => {
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+        const $ = cheerio.load(response.text)
+        const editLink = $('a[data-qa="edit-contact-details-link"]')
+        expect(editLink.attr('href')).toBe(
+          `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details`,
+        )
+      })
+
+      it('should render the edit contact details confirmation link when number of linked prisoners exceeds threshold', async () => {
+        const { linkedPrisonersConfirmationThreshold } = config
+        contactsService.getLinkedPrisoners.mockResolvedValue({
+          content: [],
+          page: { totalElements: linkedPrisonersConfirmationThreshold },
+        })
+
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+        const $ = cheerio.load(response.text)
+        const editLink = $('a[data-qa="edit-contact-details-link"]')
+        expect(editLink.attr('href')).toBe(
+          `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-details/confirm`,
+        )
+      })
+    })
+
     describe('Name change history', () => {
       it('should not render the name change history details component when there are no changes', async () => {
         contactAuditHistoryService.getNameChangeHistory.mockResolvedValue([])
@@ -1146,6 +1173,32 @@ describe('GET /contacts/manage/:contactId/relationship/:prisonerContactId', () =
       prisonerSearchService.getByPrisonerNumber.mockResolvedValue(TestData.prisoner())
       contactsService.getContact.mockResolvedValue(TestData.contact())
       contactsService.getPrisonerContactRelationship.mockResolvedValue(TestData.prisonerContactRelationship())
+    })
+
+    describe('Edit contact methods link', () => {
+      it('should render the edit contact methods link', async () => {
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+        const $ = cheerio.load(response.text)
+        const editLink = $('a[data-qa="edit-contact-methods-link"]')
+        expect(editLink.attr('href')).toBe(
+          `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-methods`,
+        )
+      })
+
+      it('should render the edit contact methods confirmation link when number of linked prisoners exceeds threshold', async () => {
+        const { linkedPrisonersConfirmationThreshold } = config
+        contactsService.getLinkedPrisoners.mockResolvedValue({
+          content: [],
+          page: { totalElements: linkedPrisonersConfirmationThreshold },
+        })
+
+        const response = await request(app).get(`/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99`)
+        const $ = cheerio.load(response.text)
+        const editLink = $('a[data-qa="edit-contact-methods-link"]')
+        expect(editLink.attr('href')).toBe(
+          `/prisoner/${prisonerNumber}/contacts/manage/1/relationship/99/edit-contact-methods/confirm`,
+        )
+      })
     })
 
     describe('Phone numbers summary card', () => {

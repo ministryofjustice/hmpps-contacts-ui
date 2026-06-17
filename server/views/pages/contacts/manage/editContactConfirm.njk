@@ -1,0 +1,54 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = "Confirm you want to edit - " + pageTitlePage + " - DPS" %}
+
+{% set pageHeading = linkedPrisonersCount + " prisoners are linked to " + (contact | formatNameFirstNameFirst) + ". Are you sure you want to edit this contact?" %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form method="POST" novalidate>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+        {{ govukRadios({
+          name: "confirmContactEdit",
+          fieldset: {
+            legend: {
+              text: pageHeading,
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l main-heading"
+            }
+          },
+          formGroup: {
+            beforeInputs: {
+              html: "<p>If you edit this contact, information for " + linkedPrisonersCount + " prisoners will be changed.</p>"
+            }
+          },
+          items: [
+            {
+              value: "YES",
+              text: "YES" | formatYesNo
+            },
+            {
+              value: "NO",
+              text: "NO" | formatYesNo
+            }
+          ],
+          errorMessage: validationErrors | findError("confirmContactEdit")
+        }) }}
+
+        {{ govukButton({
+            text: "Continue",
+            type: "submit",
+            classes: "govuk-!-margin-top-6",
+            attributes: {"data-qa": "continue-button"},
+            preventDoubleClick: true
+        }) }}
+      </form>
+
+    </div>
+  </div>
+{% endblock %}
