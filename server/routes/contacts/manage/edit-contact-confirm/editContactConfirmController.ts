@@ -26,6 +26,8 @@ export default class EditContactConfirmController implements PageHandler {
     const { user } = res.locals
     const contact: ContactDetails = await this.contactsService.getContact(Number(contactId), user)
 
+    const pageTitlePage = this.editType === 'contact-details' ? 'Edit contact details' : 'Edit contact methods'
+
     const linkedPrisonersCount =
       (await this.contactsService.getLinkedPrisoners(contact.id, 0, 1, user)).page?.totalElements ?? 0
 
@@ -36,6 +38,7 @@ export default class EditContactConfirmController implements PageHandler {
 
     return res.render('pages/contacts/manage/editContactConfirm', {
       hideMiniProfile: true,
+      pageTitlePage,
       linkedPrisonersCount,
       contact,
       navigation,

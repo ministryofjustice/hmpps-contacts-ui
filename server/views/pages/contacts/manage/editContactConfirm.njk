@@ -2,7 +2,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-{% set pageTitle = "Confirm you want to edit - Edit contact details - DPS" %}
+{% set pageTitle = "Confirm you want to edit - " + pageTitlePage + " - DPS" %}
 
 {% set pageHeading = linkedPrisonersCount + " prisoners are linked to " + (contact | formatNameFirstNameFirst) + ". Are you sure you want to edit this contact?" %}
 

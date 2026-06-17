@@ -62,7 +62,9 @@ describe.each(pageVariants)(
       const $ = cheerio.load(response.text)
 
       expect(response.status).toEqual(200)
-      expect($('title').text()).toStrictEqual('Confirm you want to edit - Edit contact details - DPS')
+      expect($('title').text()).toMatch(
+        new RegExp(`Confirm you want to edit - ${pageVariant.replaceAll('-', ' ')} - DPS`, 'i'),
+      )
       expect($('[data-qa=back-link]').first().attr('href')).toStrictEqual(
         '/prisoner/A1234BC/contacts/manage/22/relationship/12232',
       )
@@ -133,7 +135,6 @@ describe.each(pageVariants)(
         .post(
           `/prisoner/${prisonerNumber}/contacts/manage/${contactDetails.id}/relationship/${prisonerContactId}/${pageVariant}/confirm`,
         )
-        // .send({ isApprovedToVisit: undefined })
         .expect(302)
         .expect(
           'Location',
