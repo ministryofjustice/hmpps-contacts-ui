@@ -9,7 +9,7 @@
 
 {% set editContactDetailsUrl = "/prisoner/" + prisonerNumber + "/contacts/manage/" +
   contactId + "/relationship/" + prisonerContactId + "/edit-contact-details" +
-  ("/confirm" if linkedPrisonersCount >= linkedPrisonersConfirmationThreshold)
+  ("/confirm" if linkedPrisonersCount >= linkedPrisonersConfirmationThreshold else "")
 %}
 
 <div class="govuk-grid-row">

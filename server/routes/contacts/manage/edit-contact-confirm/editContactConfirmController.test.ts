@@ -25,7 +25,7 @@ const prisonerContactId = 12232
 let currentUser: HmppsUser
 
 const { linkedPrisonersConfirmationThreshold } = config
-const pageVariants = [['edit-contact-details'], ['edit-contact-methods']]
+const pageVariants = ['edit-contact-details', 'edit-contact-methods']
 const contactDetails = TestData.contact()
 
 beforeEach(() => {
