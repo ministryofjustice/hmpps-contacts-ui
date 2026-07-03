@@ -171,7 +171,7 @@ const INTERNAL_OFFICIAL_ROLES = new Set(['RO', 'CUSPO', 'CUSPO2', 'COM', 'PROB',
 
 export const isInternalContact = (relationshipCode: string) => INTERNAL_OFFICIAL_ROLES.has(relationshipCode)
 
-const escapeRegex = /[&"'<>]/g;
+const escapeRegex = /[&"'<>]/g
 
 export function escapeHtml(input: string) {
   return input.replace(escapeRegex, character => {

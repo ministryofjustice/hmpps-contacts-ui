@@ -246,8 +246,8 @@ describe('formatDob', () => {
   it.each([
     ['<b>lt gt</b>', '&lt;b&gt;lt gt&lt;/b&gt;'],
     ['"quote"', '&quot;quote&quot;'],
-    ['&ampersand&', "&amp;ampersand&amp;"],
-    ['<&>"mixed', '&lt;&amp;&gt;&quot;mixed']
+    ['&ampersand&', '&amp;ampersand&amp;'],
+    ['<&>"mixed', '&lt;&amp;&gt;&quot;mixed'],
   ])('should escape all HTML characters in strings', (input: string, expected: string) => {
     expect(escapeHtml(input)).toEqual(expected)
   })

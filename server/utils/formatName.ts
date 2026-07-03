@@ -59,5 +59,4 @@ const formatNameFirstNameFirst = (
   return escapeHtml(name)
 }
 
-
 export { formatNameLastNameFirst, formatNameFirstNameFirst }
