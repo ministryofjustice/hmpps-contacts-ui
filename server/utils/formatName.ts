@@ -1,4 +1,4 @@
-import { capitaliseName } from './utils'
+import { capitaliseName, escapeHtml } from './utils'
 import { ContactNames, PrisonerDetails } from '../@types/journeys'
 import { PatchContactResponse } from '../@types/contactsApiClient'
 
@@ -18,7 +18,7 @@ const formatNameLastNameFirst = (
       name += ` ${val.middleNames}`
     }
   }
-  return capitaliseName(name)
+  return escapeHtml(capitaliseName(name))
 }
 
 const formatNameFirstNameFirst = (
@@ -56,7 +56,8 @@ const formatNameFirstNameFirst = (
       name += 's'
     }
   }
-  return name
+  return escapeHtml(name)
 }
+
 
 export { formatNameLastNameFirst, formatNameFirstNameFirst }
