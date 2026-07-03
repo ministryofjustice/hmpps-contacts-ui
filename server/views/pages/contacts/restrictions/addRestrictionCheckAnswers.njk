@@ -27,7 +27,7 @@
                                 text: "Restriction type"
                             },
                             value: {
-                                html: restrictionDescription,
+                                html: restrictionDescription | escape | nl2br,
                                 classes: 'check-answers-type-value'
                             },
                             actions: {
