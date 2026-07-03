@@ -15,7 +15,7 @@
 
 {% block content %}
  <div class="govuk-grid-row">
-        {% set prisonerNameForPanel = '<div><strong>Prisoner: </strong><span data-qa="prisoner-name">' + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) + '</span></div>' if showPrisonerNameInSuccessPanel %}
+        {% set prisonerNameForPanel = '<div><strong>Prisoner: </strong><span data-qa="prisoner-name">' + prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) | escape + '</span></div>' if showPrisonerNameInSuccessPanel %}
         <div class="govuk-grid-column-two-thirds">
             {{ govukPanel({
                 titleText: successMessage,
@@ -27,12 +27,12 @@
             }) }}
             <div>
                 <a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/manage/{{ contactId }}/relationship/{{ prisonerContactId }}" class="govuk-body govuk-link--no-visited-state" data-qa="go-to-contact-info-link">
-                    View {{ journey.names | formatNameFirstNameFirst }}’s contact information
+                    View {{ journey.names | formatNameFirstNameFirst | escape }}’s contact information
                 </a>
             </div>
             <div class="govuk-!-margin-top-4">
                 <a href="/prisoner/{{ prisonerDetails.prisonerNumber }}/contacts/list" class="govuk-body govuk-link--no-visited-state" data-qa="go-to-contacts-list-link">
-                    Go to {{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) }}’s contacts list
+                    Go to {{ prisonerDetails | formatNameFirstNameFirst(excludeMiddleNames = true) | escape }}’s contacts list
                 </a>
             </div>
         </div>

@@ -90,7 +90,7 @@
       text: "Business hours"
     },
       value: {
-      html: (params.address.businessHours or "Not provided") | escape
+      text: params.address.businessHours or "Not provided"
     }
     },
     {
@@ -98,7 +98,7 @@
       text: "Special needs provision"
     },
       value: {
-      text: (params.address.specialNeedsCodeDescription or "Not provided") | escape
+      text: params.address.specialNeedsCodeDescription or "Not provided"
     }
     },
     {
@@ -106,7 +106,7 @@
       text: "Comments on this address"
     },
       value: {
-      html: (params.address.comments or 'Not provided') | escape | nl2br
+      text: params.address.comments or 'Not provided'
     }
     }
   ), rows) %}

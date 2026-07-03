@@ -9,7 +9,7 @@
   {% set rows = [] %}
   {% for linkedPrisoner in linkedPrisoners %}
     {% set prisonerNameAndNumberHtml %}
-      {{ linkedPrisoner | formatNameLastNameFirst }}<br />
+      {{ linkedPrisoner | formatNameLastNameFirst | escape }}<br />
       <span class="govuk-hint">{{ linkedPrisoner.prisonerNumber }}</span>
     {% endset %}
     {% set classes = 'light-grey' if not linkedPrisoner.isRelationshipActive else '' %}

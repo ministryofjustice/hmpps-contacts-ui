@@ -30,7 +30,7 @@
       { text: restriction.startDate | formatDate('d/M/yyyy'), attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-start-date-value"} },
       { text: restriction.expiryDate | formatDate('d/M/yyyy') if restriction.expiryDate else 'Not provided', attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-expiry-date-value"} },
       { text: restriction.enteredByDisplayName or restriction.enteredByUsername, attributes: {"data-qa": restrictionClass + "-"  + restrictionId + "-entered-by-value"} },
-      { html: '<a href="' + changeUrl + '" data-qa="manage-' + restrictionClass + '-restriction-link-' + restrictionId + '">Change<span class="govuk-visually-hidden">' + visuallyHiddenText + '</span></a>' } if showActions
+      { html: '<a href="' + changeUrl + '" data-qa="manage-' + restrictionClass + '-restriction-link-' + restrictionId + '">Change<span class="govuk-visually-hidden">' + (visuallyHiddenText | escape) + '</span></a>' } if showActions
     ]), rows) %}
   {% endfor %}
 
