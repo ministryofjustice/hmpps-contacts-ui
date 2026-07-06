@@ -170,22 +170,3 @@ export const formatAge = (contact: ContactSearchResultItem) => {
 const INTERNAL_OFFICIAL_ROLES = new Set(['RO', 'CUSPO', 'CUSPO2', 'COM', 'PROB', 'POM', 'PPA', 'OFS', 'CA'])
 
 export const isInternalContact = (relationshipCode: string) => INTERNAL_OFFICIAL_ROLES.has(relationshipCode)
-
-const escapeRegex = /[&"'<>]/g
-
-export function escapeHtml(input: string) {
-  return input.replace(escapeRegex, character => {
-    switch (character) {
-      case '&':
-        return '&amp;'
-      case '"':
-        return '&quot;'
-      case '<':
-        return '&lt;'
-      case '>':
-        return '&gt;'
-      default:
-        return character // should be unreachable
-    }
-  })
-}

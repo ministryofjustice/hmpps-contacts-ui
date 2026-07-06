@@ -11,7 +11,6 @@ import {
   ageInYears,
   isDateAndInThePast,
   formatDob,
-  escapeHtml,
 } from './utils'
 import { ContactSearchResultItem } from '../@types/contactsApiClient'
 
@@ -241,14 +240,5 @@ describe('formatDob', () => {
     expect(formatDob({ deceasedDate: '2010-01-01' } as ContactSearchResultItem)).toEqual(
       `Not provided<br/><span class="govuk-hint">(Deceased)</span>`,
     )
-  })
-
-  it.each([
-    ['<b>lt gt</b>', '&lt;b&gt;lt gt&lt;/b&gt;'],
-    ['"quote"', '&quot;quote&quot;'],
-    ['&ampersand&', '&amp;ampersand&amp;'],
-    ['<&>"mixed', '&lt;&amp;&gt;&quot;mixed'],
-  ])('should escape all HTML characters in strings', (input: string, expected: string) => {
-    expect(escapeHtml(input)).toEqual(expected)
   })
 })
