@@ -158,10 +158,10 @@
                                 html: (contact | formatNameLastNameFirst | escape) + '<br/><span class="govuk-hint">' + contact.id + '</span>'
                             },
                             {
-                                text: contact | formatDob
+                                html: contact | formatDob
                             },
                             {
-                                text: contact | addressToLines or 'Not provided'
+                                html: (contact | addressToLines or 'Not provided') | escape | nl2br
                             },
                             {
                                 html: '<a href="/contacts/view/' + contact.id + '/' + journey.id + '" class="govuk-link" data-qa="add-contact-' + contact.id + '-link">View contact information</a>',
