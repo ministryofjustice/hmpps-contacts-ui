@@ -136,11 +136,4 @@ describe('formatNameFirstNameFirst', () => {
       formatNameFirstNameFirst({ firstName: 'First', lastName: 'Last' }, { possessiveSuffix: false }),
     ).toStrictEqual('First Last')
   })
-
-  it.each([
-    [is<ContactNames>({ firstName: '<b>bold first</b>', lastName: 'Last' }), '&lt;B&gt;Bold First&lt;/B&gt; Last'],
-    [is<ContactNames>({ firstName: 'first', lastName: '<b>bold last</b>' }), 'First &lt;B&gt;Bold Last&lt;/B&gt;'],
-  ])('should sanitise html from names', (names: ContactNames, expected: string) => {
-    expect(formatNameFirstNameFirst(names)).toStrictEqual(expected)
-  })
 })
